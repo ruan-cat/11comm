@@ -1,0 +1,58 @@
+#费用项设置
+expenses-setup:
+  expensesID: 费用项ID
+  expensesItem: 收费项目
+  expensesUnit: 费用标识
+  expensesType: 付费类型
+  expensesAmount: 账户抵扣
+  expensesAmountType: 自定义费用
+
+#房屋收费
+house-charges:
+  houseNumber: 房屋编号
+  ownerName: 业主名称
+
+# 合同收费
+contracte-charge:
+  contractNumber: 合同编号
+  contractName: 合同名称
+  contractType: 合同类型
+  payFee: 欠费缴费
+  viewFee: 查看费用
+
+# 优惠申请
+discount-apply:
+  houseInfo: 房屋(楼栋-单元-房屋)
+  applyType: 申请类型
+  useStatus: 使用状态
+  discountType: 优惠类型
+  phoneApply: 电话申请
+  export: 导出
+
+# 折扣设置
+discount-setting:
+  discountID: 折扣ID
+  discountName: 折扣名称
+  discountType: 折扣类型
+  ruleName: 规则名称
+
+# 车辆收费
+vehicle-charge:
+  vehicleSpaceNumber: 车位号
+  vehicleLicensePlate: 车牌号
+  ownerName: 业主名称
+  vehicleSpaceStatus: 车位状态
+  customTemplate: 自定义模板
+  customCreate: 自定义创建
+  batchCreate: 批量创建
+  monthlyCardPurchase: 购买月卡
+  viewFee: 查看收费
+
+# 水电抄表
+water-and-electricity-meter-reading:
+  tableType: 表类型
+  tableId: 表ID
+  meterReading: 抄表
+  meterReadingType: 抄表类型
+  readingImport1: 抄表导入1
+  readingImport2: 抄表导入2

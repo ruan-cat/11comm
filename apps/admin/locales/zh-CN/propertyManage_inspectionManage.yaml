@@ -1,0 +1,14 @@
+#巡查管理
+inspection:
+  inspectionPersonnel: 巡检人
+  inspectionStartTame: 巡检开始时间
+  inspectionCompletionTime: 巡检结束时间
+  executor: 执行人
+  inspectionStatus: 巡检状态
+  planID: 计划ID
+  projectName: 计划名称
+  status: 状态
+  inspectionRoute: 巡检路线
+  inspectionPoint: 巡检点
+  projectNumber: 项目编号
+  inspectionItems: 巡检项目

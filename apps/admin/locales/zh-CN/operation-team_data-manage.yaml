@@ -1,0 +1,23 @@
+# 物业公司
+property-management-company:
+  manageCommunity: 管理小区
+  limitLogin: 限制登录
+  resetPassword: 重置密码
+  propertyManagementNumber: 物业编号
+  name: 名称
+  phone: 电话
+
+# 小区信息
+community-information:
+  communityID: 小区ID
+  communityName: 小区名称
+  province: 省
+  city: 城市
+  district: 区县
+
+#物业公司-管理小区按钮
+property-management-company-community-management:
+  communityNumber: 小区编号
+  communityName: 小区名称
+  joinCommunity: 加入小区
+  quitCommunity: 退出小区

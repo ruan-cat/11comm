@@ -1,0 +1,31 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"rm:types": {
+			"cache": false
+		},
+		"vite:dev": {
+			"cache": false,
+			"persistent": true,
+			"dependsOn": ["rm:types"]
+		},
+		"vite:build:staging": {
+			"cache": true,
+			"outputs": ["dist/**"]
+		},
+		"vite:build:prod": {
+			"cache": true,
+			"outputs": ["dist/**"]
+		},
+		"typedoc": {
+			"cache": false
+		},
+		"do-docs-dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"do-docs-build": {
+			"cache": true
+		}
+	}
+}

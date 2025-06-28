@@ -1,0 +1,28 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.eslintcache
+report.html
+vite.config.*.timestamp*
+
+yarn.lock
+npm-debug.log*
+.pnpm-error.log*
+.pnpm-debug.log
+tests/**/coverage/
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+tsconfig.tsbuildinfo
+
+# 在本项目内 作为子包的项目 应该提交全部的环境变量信息
+# 子包的环境变量 不需要增加任何敏感的token信息 故不需要忽略提交
+# 子包配置覆盖掉根包的 .gitignore 配置项
+!.env
+!.env.staging

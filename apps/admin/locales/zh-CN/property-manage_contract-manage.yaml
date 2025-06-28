@@ -1,0 +1,48 @@
+# 合同类型
+contract-type:
+  title: 合同类型
+  add: 添加合同类型
+  edit: 编辑合同类型
+  delete: 删除合同类型
+  name: 合同类型名称
+  description: 合同类型描述
+  status: 状态
+  addpeople: 设置审核人员
+  addpeopleplaceholder: 请选择审核
+  contracttypename: 合同类型名称
+  button:
+    extent: 扩展信息
+    template: 合同模板
+
+# 起草合同
+draft-contract:
+  title: 起草合同
+  add: 起草
+  edit: 编辑合同
+  delete: 删除合同
+  contract-name: 合同名称
+  contract-type: 合同类型
+  contract-number: 合同编号
+  contract-amount: 合同金额
+  contract-start-date: 合同开始日期
+  contract-end-date: 合同结束日期
+  contract-description: 合同描述
+  status: 状态
+  addpeople: 设置审核人员
+  addpeopleplaceholder: 请选择审核人员
+  print: 打印
+
+# 合同变更
+contract-change:
+  title: 合同变更
+  details: 明细
+  cencel: 取消
+  subjectChange: 主体变更
+  termadjustment: 租期调整
+  assetchange: 资产变更
+
+# 到期合同
+expired-contract:
+  title: 到期合同
+  renewal: 续签
+  termination: 终止

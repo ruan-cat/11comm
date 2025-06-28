@@ -1,0 +1,28 @@
+# 报修管理:
+repairs:
+  order: Order
+  return: Return
+  binding: Binding
+  revisit: Revisit
+  registration: Registration
+  doc: Doc
+  add: Add
+  typeName: TypeName
+  orderMethod: OrderMethod
+  repairReportingSettingType: RepairReportingSettingType
+  regionalSelection: RegionalSelection
+  whetherToMakeAReturnVisit: WhetherToMakeAReturnVisit
+  workOrderNumber: WorkOrderNumber
+  repairman: Repairman
+  repairPhone: RepairPhone
+  repairType: RepairType
+  repairLocation: RepairLocation
+  maintenanceType: MaintenanceType
+  startTime: StartTime
+  endTime: EndTime
+  repairStatus: RepairStatus
+  returnStatus: ReturnStatus
+  transferOrder: TransferOrder
+  returnOrder: ReturnOrder
+  completed: Completed
+  pause: Pause

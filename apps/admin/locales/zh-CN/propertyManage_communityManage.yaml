@@ -1,0 +1,29 @@
+# 房屋装修
+house-decoration:
+  houseNumber: 房屋编号
+  contacts: 联系人
+  phone: 联系电话
+  houseState: 房屋状态
+  deferredStatus: 延期状态
+  renovationTime: 装修时间
+  startTimeForDecorationApplication: 装修申请开始时间
+  endTimeForDecorationApplication: 装修申请结束时间
+  decorationOk: 装修完成
+  trackingRecord: 跟踪记录
+
+# 产权登记
+property-register:
+  houseID: 房屋ID
+  houseNumber: 房屋编号
+  name: 姓名
+  contactWay: 联系方式
+  idNumber: 身份证号
+  address: 地址
+  auditStatus: 审核状态
+  building: 楼栋
+  unit: 单元
+
+# 小区公示
+notice:
+  publicityTitle: 公示标题
+  publicityType: 公示类型

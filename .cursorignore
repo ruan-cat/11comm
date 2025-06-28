@@ -1,0 +1,55 @@
+
+*/**/.turbo
+*/**/.vercel
+
+*/**/.vitepress/dist
+*/**/.vitepress/cache
+
+node_modules
+
+scripts
+
+auto-imports.d.ts
+*.code-workspace
+pnpm-lock.yaml
+typedoc.config.mjs
+
+# 各个monorepo参考项目内要忽略的配置文件
+.dockerignore
+.editorconfig
+.gitattributes
+.prettierignore
+.stylelintignore
+.lintstagedrc
+.gitpod.yml
+.npmrc
+.nvmrc
+.browserslistrc
+.cursorignore
+Dockerfile
+.prettierrc.js
+CHANGELOG.*.md
+CHANGELOG.md
+stylelint.config.js
+
+# 忽略环境变量
+.env
+.env.*
+
+# 参考项目忽略的文件夹
+# 其中 根目录的 .github 文件夹不做忽略
+examples/**/.github
+.husky
+.vscode
+dist
+public
+assets
+# 暂时地允许AI读取 i18n 文件
+# locales
+
+# 忽略文档配置 不考虑让AI参与文档制作
+.vitepress
+
+# 忽略部分的例子 避免过度索引
+examples/10wms
+examples/vue-pure-admin

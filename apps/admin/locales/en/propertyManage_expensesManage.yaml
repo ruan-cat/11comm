@@ -1,0 +1,58 @@
+#费用项设置
+expenses-setup:
+  expensesID: expenses id
+  expensesItem: expenses item
+  expensesUnit: expenses unit
+  expensesType: expenses type
+  expensesAmount: expenses amount
+  expensesAmountType: expenses amount type
+
+#房屋收费
+house-charges:
+  houseNumber: house number
+  ownerName: owner name
+
+# 合同收费
+contracte-charge:
+  contractNumber: contract number
+  contractName: contract name
+  contractType: contract type
+  payFee: Pay
+  viewFee: View
+
+# 优惠申请
+discount-apply:
+  houseInfo: House (building-unit-house)
+  applyType: apply type
+  useStatus: use status
+  discountType: discount type
+  phoneApply: phone apply
+  export: export
+
+# 折扣设置
+discount-setting:
+  discountID: discount ID
+  discountName: discount name
+  discountType: discount type
+  ruleName: rule name
+
+# 车辆收费
+vehicle-charge:
+  vehicleSpaceNumber: vehicle space number
+  vehicleLicensePlate: vehicle license plate
+  ownerName: owner name
+  vehicleSpaceStatus: vehicle space status
+  customTemplate: custom template
+  customCreate: custom create
+  batchCreate: batch create
+  monthlyCardPurchase: monthly card purchase
+  viewFee: view fee
+
+# 水电抄表
+water-and-electricity-meter-reading:
+  tableType: table type
+  tableId: table ID
+  meterReading: meter reading
+  meterReadingType: reading type
+  readingImport1: reading import 1
+  readingImport2: reading import 2

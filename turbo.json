@@ -1,0 +1,12 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"tasks": {
+		"@01s-11comm/admin#build": {
+			"cache": true
+		},
+		"//#deploy": {
+			"cache": false,
+			"dependsOn": ["@01s-11comm/admin#build"]
+		}
+	}
+}

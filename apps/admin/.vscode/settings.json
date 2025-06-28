@@ -1,0 +1,37 @@
+{
+	"editor.formatOnSave": true,
+	"[vue]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"editor.tabSize": 2,
+	"editor.guides.bracketPairs": "active",
+	"git.confirmSync": false,
+	"workbench.startupEditor": "newUntitledFile",
+	"editor.suggestSelection": "first",
+	"editor.acceptSuggestionOnCommitCharacter": false,
+	"css.lint.propertyIgnoredDueToDisplay": "ignore",
+	"editor.quickSuggestions": {
+		"other": true,
+		"comments": true,
+		"strings": true
+	},
+	"files.associations": {
+		"editor.snippetSuggestions": "top"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+	"iconify.excludes": ["el"],
+	"vsmqtt.brokerProfiles": [
+		{
+			"name": "broker.emqx.io",
+			"host": "broker.emqx.io/mqtt",
+			"port": 1883,
+			"clientId": "vsmqtt_client_db34"
+		}
+	],
+	"i18n-ally.localesPaths": ["locales"]
+}
