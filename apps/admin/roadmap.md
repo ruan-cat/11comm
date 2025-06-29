@@ -92,3 +92,10 @@ TODO: 将这些页面排除生产环境打包。
 ### 实现业务的页面一律在 pages 文件夹下
 
 pages 文件夹将会使用自动路由功能。views 文件夹下面的页面，仅仅被当做是案例页面，未来不会被打包。
+
+## 项目迁移到 cloudflare worker 内部署
+
+- 01s-11comm-admin
+- pnpm i && pnpm run build:admin
+- npx wrangler deploy --assets=./apps/admin/dist --compatibility-date 2025-06-29
+- `apps/admin/*`
