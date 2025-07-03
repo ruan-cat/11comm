@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import demoData from "./dataTurbo.json";
-import "@logicflow/core/dist/style/index.css";
+/**
+ * 更新为2版本需要的导入语句
+ * @see https://site.logic-flow.cn/tutorial/update
+ */
+import "@logicflow/core/lib/style/index.css";
 import "@logicflow/extension/lib/style/index.css";
 
 import LogicFlow from "@logicflow/core";
