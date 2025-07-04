@@ -15,6 +15,7 @@ export default defineConfig({
 	packageMode: {
 		codemirror: "ignore",
 		// regex starts and ends with '/'
+		"/@ruan-cat/": "latest",
 		"/@form-create/": "next",
 		"/@wangeditor/": "next",
 	},
