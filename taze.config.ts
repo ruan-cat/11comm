@@ -14,6 +14,7 @@ export default defineConfig({
 	// override with different bumping mode for each package
 	packageMode: {
 		codemirror: "ignore",
+		vite: "ignore",
 		// regex starts and ends with '/'
 		"/@ruan-cat/": "latest",
 		"/@form-create/": "next",
