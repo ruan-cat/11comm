@@ -13,3 +13,25 @@ packages:
 
 overrides:
   "css-select@^5.2.1": "5.2.0"
+
+allowedDeprecatedVersions:
+  "are-we-there-yet": "*"
+  "sourcemap-codec": "*"
+  "lodash.isequal": "*"
+  "domexception": "*"
+  "w3c-hr-time": "*"
+  "inflight": "*"
+  "npmlog": "*"
+  "rimraf": "*"
+  "stable": "*"
+  "gauge": "*"
+  "abab": "*"
+  "glob": "*"
+
+onlyBuiltDependencies:
+  "@parcel/watcher": true
+  "core-js": true
+  "es5-ext": true
+  "esbuild": true
+  "typeit": true
+  "vue-demi": true

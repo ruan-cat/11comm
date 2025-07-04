@@ -204,32 +204,5 @@
     "vitepress-demo-plugin": "^1.4.5",
     "vue-eslint-parser": "^10.2.0",
     "vue-tsc": "^2.2.12"
-  },
-  "overrides": {
-    "css-select": "5.2.0"
-  },
-  "pnpm": {
-    "allowedDeprecatedVersions": {
-      "are-we-there-yet": "*",
-      "sourcemap-codec": "*",
-      "lodash.isequal": "*",
-      "domexception": "*",
-      "w3c-hr-time": "*",
-      "inflight": "*",
-      "npmlog": "*",
-      "rimraf": "*",
-      "stable": "*",
-      "gauge": "*",
-      "abab": "*",
-      "glob": "*"
-    },
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "core-js",
-      "es5-ext",
-      "esbuild",
-      "typeit",
-      "vue-demi"
-    ]
   }
 }
