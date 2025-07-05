@@ -131,6 +131,7 @@ export class PureHttp {
 					? config
 					: new Promise((resolve) => {
 							const data = getToken();
+							consola.log(" 检查 token  ", data);
 
 							if (data) {
 								const now = new Date().getTime();
