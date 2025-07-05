@@ -114,8 +114,11 @@ export const useUserStore = defineStore("pure-user", {
 									// 登录成功后 必须存储 refreshToken
 									refreshToken,
 									// 业务变更 和后端协商 前端不再存储过期时间
+									// 但是为了避免错误，我们设置一个默认的过期时间
 									// expires: expiresIn,
 								});
+
+								console.log(" 登录成功，token已存储:", { accessToken: token, refreshToken });
 
 								// TODO: 这些用户信息要去别的地方设置
 								// avatar,

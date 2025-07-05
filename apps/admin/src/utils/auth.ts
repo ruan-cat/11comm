@@ -40,7 +40,12 @@ export const multipleTabsKey = "multiple-tabs";
 /** 获取`token` */
 export function getToken(): DataInfo<number> {
 	// 此处与`TokenKey`相同，此写法解决初始化时`Cookies`中不存在`TokenKey`报错
-	return Cookies.get(TokenKey) ? JSON.parse(Cookies.get(TokenKey)) : storageLocal().getItem(userKey);
+	/**
+	 * FIXME: 无法获得数据 无法存储到有意义的数据 获取的是 localStorage 的数据
+	 */
+	const res = Cookies.get(TokenKey) ? JSON.parse(Cookies.get(TokenKey)) : storageLocal().getItem(userKey);
+	// consola.log(" 获取 token ", res, Cookies.get(TokenKey));
+	return res;
 }
 
 /**
@@ -50,6 +55,7 @@ export function getToken(): DataInfo<number> {
  * 将`avatar`、`username`、`nickname`、`roles`、`permissions`、`refreshToken`、`expires`这七条信息放在key值为`user-info`的localStorage里（利用`multipleTabsKey`当浏览器完全关闭后自动销毁）
  */
 export function setToken(data: DataInfo<number>) {
+	// consola.log(" 设置 token ", data);
 	let expires = 0;
 	const { accessToken, refreshToken } = data;
 	const { isRemembered, loginDay } = useUserStoreHook();
@@ -84,6 +90,8 @@ export function setToken(data: DataInfo<number>) {
 		useUserStoreHook().SET_ROLES(roles);
 		useUserStoreHook().SET_PERMS(permissions);
 		storageLocal().setItem(userKey, {
+			/** 多存储token 因为实际使用时 token无法获取 */
+			accessToken,
 			refreshToken,
 			expires,
 			avatar,
