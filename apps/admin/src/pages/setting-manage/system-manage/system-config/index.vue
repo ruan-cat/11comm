@@ -199,7 +199,7 @@ function openEditDialog() {
 				</div>
 			</template>
 			<ElScrollbar>
-				<PureDescriptions border :columns="basicColumns" :column="2" size="default" />
+				<PureDescriptions :border="true" :columns="basicColumns" :column="2" />
 			</ElScrollbar>
 		</ElCard>
 
@@ -210,7 +210,7 @@ function openEditDialog() {
 				</div>
 			</template>
 			<ElScrollbar>
-				<PureDescriptions border :columns="urlColumns" :column="1" size="default" />
+				<PureDescriptions :border="true" :columns="urlColumns" :column="1" />
 			</ElScrollbar>
 		</ElCard>
 
@@ -221,7 +221,7 @@ function openEditDialog() {
 				</div>
 			</template>
 			<ElScrollbar>
-				<PureDescriptions border :columns="businessColumns" :column="2" size="default" />
+				<PureDescriptions :border="true" :columns="businessColumns" :column="2" />
 			</ElScrollbar>
 		</ElCard>
 	</div>
