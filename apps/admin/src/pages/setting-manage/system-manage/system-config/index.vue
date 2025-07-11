@@ -14,6 +14,8 @@ import { transformI18n } from "@/plugins/i18n";
 import { type SystemConfigForm, type SystemConfigFormProps, defaultForm } from "./components/form";
 import SystemConfigFormComponent from "./components/form.vue";
 
+const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
+
 /** 系统配置数据 */
 const systemConfig = ref({
 	title: "HC小区管理系统",
@@ -113,12 +115,6 @@ async function testAsync() {
 
 /** 弹框模式控制 */
 const { setMode } = useMode();
-
-/** 表单实例引用 */
-const systemConfigFormInstance = ref();
-
-/** 默认值 */
-const defaultValues = ref<SystemConfigForm>({ ...defaultForm });
 
 /** 打开修改弹框 */
 function openEditDialog() {
