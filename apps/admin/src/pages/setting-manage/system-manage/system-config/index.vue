@@ -124,38 +124,41 @@ const defaultValues = ref<SystemConfigForm>({ ...defaultForm });
 function openEditDialog() {
 	setMode("edit");
 
-	/** 设置表单数据 */
-	const formData = ref<SystemConfigForm>({
-		...systemConfig.value,
-	});
+	/** 弹框标题 */
+	const title = "修改系统配置";
 
-	/** 更新默认值 */
-	defaultValues.value = { ...systemConfig.value };
+	/** 表单组件需要的props */
+	const formProps: SystemConfigFormProps = {
+		form: cloneDeep(systemConfig.value),
+		defaultValues: cloneDeep(systemConfig.value),
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
-		title: "修改",
-		props: {
-			form: formData.value,
-			defaultValues: defaultValues.value,
-		},
-		width: "600px",
-		draggable: true,
-		fullscreen: deviceDetection(),
-		fullscreenIcon: true,
-		closeOnClickModal: false,
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+
 		contentRenderer: () =>
 			h(SystemConfigFormComponent, {
 				ref: systemConfigFormInstance,
-				form: formData.value,
-				defaultValues: defaultValues.value,
+				...formProps,
 			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = systemConfigFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = systemConfigFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues: defaultValues.value, formComputed, index, options });
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
 			{
@@ -175,7 +178,7 @@ function openEditDialog() {
 						await testAsync();
 
 						/** 更新系统配置数据 */
-						Object.assign(systemConfig.value, formData.value);
+						Object.assign(systemConfig.value, formProps.form);
 
 						button.btn.loading = false;
 						closeDialog(options, index);
