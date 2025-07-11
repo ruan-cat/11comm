@@ -1,77 +1,103 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import type { SystemConfigFormProps, SystemConfigForm } from "./form";
+import { ref, computed, useTemplateRef } from "vue";
+import { SystemConfigFormProps, SystemConfigForm, defaultForm } from "./form";
 
-/** 定义组件Props */
-const props = withDefaults(defineProps<SystemConfigFormProps>(), {});
+const props = defineProps<SystemConfigFormProps>();
+
+/** 默认的表单重置变量 */
+const defaultValues = props.defaultValues as FieldValues & SystemConfigForm;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
+
 usePlusFormReset(plusFormInstance);
 
-/** 动态计算的，只读的，当前表单对象 */
-const formComputed = computed(() => props.form);
+/**
+ * 本表单组件 实际使用的表单对象
+ * @description
+ * 用强制类型转换 确保表单对象满足表单组件的类型要求
+ *
+ * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
+ */
+const toRefForm = cloneDeep(props.form) as FieldValues & SystemConfigForm;
 
-/** 表单配置 */
-const plusFormColumns = computed(() => [
+/**
+ * 表单对象
+ * @description
+ * 本表单对象都来自于外部传递
+ */
+const form = ref(toRefForm);
+
+/** 只读的表单对象 用于外部做判断 */
+const formComputed = computed(() => {
+	return form.value;
+});
+
+/** 表单项配置 */
+const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "标题名称",
 		prop: "title",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "副标题",
 		prop: "subtitle",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "简写标题",
 		prop: "shortName",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "公司名称",
 		prop: "companyName",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "logo地址",
 		prop: "logoUrl",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "静态url",
 		prop: "staticUrl",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "默认小区编号",
 		prop: "defaultCommunityCode",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "业主标题",
 		prop: "ownerTitle",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "物业手机标题",
 		prop: "propertyMobileTitle",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "qq地图key",
 		prop: "qqMapKey",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 	{
 		label: "商城地址",
 		prop: "mallUrl",
-		valueType: "input" as const,
+		valueType: "input",
 	},
 ]);
 
-/** 对外导出 */
+/** 表单项配置 动态计算 只读 */
+const plusFormColumnsComputed = computed(() => plusFormColumns.value);
+
+/** 表单校验 */
+const plusFormRules = {};
+
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -81,11 +107,13 @@ defineExpose({
 <template>
 	<PlusForm
 		ref="plusFormRef"
-		v-model="props.form as any"
-		:columns="plusFormColumns"
-		:default-values="props.defaultValues as any"
-		label-width="120px"
 		class="form-root"
+		:has-footer="false"
+		v-model="form"
+		:default-values="defaultValues"
+		:columns="plusFormColumnsComputed"
+		:rules="plusFormRules"
+		label-width="120px"
 	/>
 </template>
 
