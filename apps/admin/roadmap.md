@@ -103,3 +103,5 @@ pages 文件夹将会使用自动路由功能。views 文件夹下面的页面�
 - pnpm i && pnpm run build:admin
 - npx wrangler deploy --assets=./apps/admin/dist --compatibility-date 2025-06-29
 - `apps/admin/*`
+
+已完成改造迁移，现在（2025-7-12）项目已经实现了基于 cloudflare worker 的自动部署。每次在 dev 分支提交时，都会触发一次部署。
