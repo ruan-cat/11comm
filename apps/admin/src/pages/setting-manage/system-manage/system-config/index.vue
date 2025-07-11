@@ -9,6 +9,10 @@ definePage({
 });
 
 import { ref } from "vue";
+import { addDialog } from "@/components/ReDialog";
+import { transformI18n } from "@/plugins/i18n";
+import { type SystemConfigForm, type SystemConfigFormProps, defaultForm } from "./components/form";
+import SystemConfigFormComponent from "./components/form.vue";
 
 /** 系统配置数据 */
 const systemConfig = ref({
@@ -96,6 +100,91 @@ const businessColumns = [
 		copy: true,
 	},
 ];
+
+/** 模拟异步操作 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 弹框模式控制 */
+const { setMode } = useMode();
+
+/** 表单实例引用 */
+const systemConfigFormInstance = ref();
+
+/** 默认值 */
+const defaultValues = ref<SystemConfigForm>({ ...defaultForm });
+
+/** 打开修改弹框 */
+function openEditDialog() {
+	setMode("edit");
+
+	/** 设置表单数据 */
+	const formData = ref<SystemConfigForm>({
+		...systemConfig.value,
+	});
+
+	/** 更新默认值 */
+	defaultValues.value = { ...systemConfig.value };
+
+	addDialog({
+		title: "修改",
+		props: {
+			form: formData.value,
+			defaultValues: defaultValues.value,
+		},
+		width: "600px",
+		draggable: true,
+		fullscreen: deviceDetection(),
+		fullscreenIcon: true,
+		closeOnClickModal: false,
+		contentRenderer: () =>
+			h(SystemConfigFormComponent, {
+				ref: systemConfigFormInstance,
+				form: formData.value,
+				defaultValues: defaultValues.value,
+			}),
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = systemConfigFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues: defaultValues.value, formComputed, index, options });
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					systemConfigFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await systemConfigFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+
+						/** 更新系统配置数据 */
+						Object.assign(systemConfig.value, formData.value);
+
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
 </script>
 
 <template>
@@ -104,6 +193,9 @@ const businessColumns = [
 			<template #header>
 				<div class="card-header">
 					<span class="font-medium">系统基本信息</span>
+					<ElButton type="warning" @click="openEditDialog">
+						{{ transformI18n($t("common.buttons.edit")) }}
+					</ElButton>
 				</div>
 			</template>
 			<ElScrollbar>
