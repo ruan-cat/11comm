@@ -10,7 +10,7 @@ definePage({
 
 import { ref } from "vue";
 
-// 系统配置数据
+/** 系统配置数据 */
 const systemConfig = ref({
 	title: "HC小区管理系统",
 	subtitle: "智慧物业系统",
@@ -25,7 +25,7 @@ const systemConfig = ref({
 	mallUrl: "http://mallapp.homecommunity.cn",
 });
 
-// 系统基本信息配置
+/** 系统基本信息配置 */
 const basicColumns = [
 	{
 		label: "标题名称",
@@ -49,7 +49,7 @@ const basicColumns = [
 	},
 ];
 
-// 系统地址配置
+/** 系统地址配置 */
 const urlColumns = [
 	{
 		label: "logo地址",
@@ -71,7 +71,7 @@ const urlColumns = [
 	},
 ];
 
-// 业务配置
+/** 业务配置 */
 const businessColumns = [
 	{
 		label: "默认小区编号",
@@ -100,38 +100,38 @@ const businessColumns = [
 
 <template>
 	<div class="system-config-container">
-		<el-card class="mb-4 box-card" shadow="never">
+		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
 					<span class="font-medium">系统基本信息</span>
 				</div>
 			</template>
-			<el-scrollbar>
+			<ElScrollbar>
 				<PureDescriptions border :columns="basicColumns" :column="2" size="default" />
-			</el-scrollbar>
-		</el-card>
+			</ElScrollbar>
+		</ElCard>
 
-		<el-card class="mb-4 box-card" shadow="never">
+		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
 					<span class="font-medium">系统地址配置</span>
 				</div>
 			</template>
-			<el-scrollbar>
+			<ElScrollbar>
 				<PureDescriptions border :columns="urlColumns" :column="1" size="default" />
-			</el-scrollbar>
-		</el-card>
+			</ElScrollbar>
+		</ElCard>
 
-		<el-card class="mb-4 box-card" shadow="never">
+		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
 					<span class="font-medium">业务配置</span>
 				</div>
 			</template>
-			<el-scrollbar>
+			<ElScrollbar>
 				<PureDescriptions border :columns="businessColumns" :column="2" size="default" />
-			</el-scrollbar>
-		</el-card>
+			</ElScrollbar>
+		</ElCard>
 	</div>
 </template>
 
