@@ -16,6 +16,8 @@
 		"up-ruan-cat": "pnpm -w up '@ruan-cat/*@latest' && pnpm -r up '@ruan-cat/*@latest'",
 		"up": "pnpm -r up -L",
 		"up-taze": "npx taze -r",
+		"git:dev-2-main": "git rebase dev main && pnpm run git:push",
+		"git:main-2-dev": "git rebase main dev",
 		"changeset:add": "changeset add",
 		"changeset:version": "changeset version && changeset tag",
 		"build:docs": "turbo build:docs",
