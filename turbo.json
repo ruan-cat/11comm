@@ -4,7 +4,7 @@
 		"@01s-11comm/admin#build": {
 			"cache": true,
 			"outputs": [
-				"./apps/admin/dist/**"
+				"apps/admin/dist/**"
 			]
 		},
 		"//#deploy": {
