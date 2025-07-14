@@ -20,21 +20,8 @@ export default <Config>{
 			type: "static",
 			isNeedVercelBuild: false,
 			targetCWD: "./apps/admin",
-			// TODO: 设置正式的地址
-			// url: domains["10wms"] as unknown as string[],
-			url: ["01s-11comm.ruancat6312.top", "01s-11.ruancat6312.top"],
+			url: domains["11comm"] as unknown as string[],
 		},
-
-		// 11comm智慧社区 主项目 预发布环境
-		// {
-		// 	type: "userCommands",
-		// 	targetCWD: "./apps/admin",
-		// 	outputDirectory: "dist",
-		// 	// TODO: 设置正式的地址
-		// 	// url: domains["10wms"] as unknown as string[],
-		// 	url: ["01s-11comm.ruancat6312.top", "01s-11.ruancat6312.top"],
-		// 	userCommands: ["pnpm -C=./apps/admin build"],
-		// },
 
 		// 11comm智慧社区 前端技术文档
 		// {
