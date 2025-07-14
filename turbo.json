@@ -2,11 +2,16 @@
 	"$schema": "https://turbo.build/schema.json",
 	"tasks": {
 		"@01s-11comm/admin#build": {
-			"cache": true
+			"cache": true,
+			"outputs": [
+				"./apps/admin/dist/**"
+			]
 		},
 		"//#deploy": {
 			"cache": false,
-			"dependsOn": ["@01s-11comm/admin#build"]
+			"dependsOn": [
+				"@01s-11comm/admin#build"
+			]
 		}
 	}
 }
