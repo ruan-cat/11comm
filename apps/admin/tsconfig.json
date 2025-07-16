@@ -1,64 +1,114 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "bundler",
-		"strict": false,
-		"strictFunctionTypes": false,
-		"noImplicitThis": true,
-		"jsx": "preserve",
-		"importHelpers": true,
-		"experimentalDecorators": true,
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"isolatedModules": true,
-		"allowSyntheticDefaultImports": true,
-		"allowImportingTsExtensions": true,
-		"noEmit": true,
-		"forceConsistentCasingInFileNames": true,
-		"sourceMap": true,
-		"baseUrl": ".",
-		"allowJs": false,
-		"resolveJsonModule": true,
-		"lib": ["ESNext", "DOM"],
-		"paths": {
-			"@/*": ["src/*"],
-			"api/*": ["src/api/*"],
-			"assets/*": ["src/assets/*"],
-			"components/*": ["src/components/*"],
-			"composables/*": ["src/composables/*"],
-			"config/*": ["src/config/*"],
-			"directives/*": ["src/directives/*"],
-			"layout/*": ["src/layout/*"],
-			"pages/*": ["src/pages/*"],
-			"plugins/*": ["src/plugins/*"],
-			"router/*": ["src/router/*"],
-			"store/*": ["src/store/*"],
-			"utils/*": ["src/utils/*"],
-			"tools/*": ["src/tools/*"],
-			"views/*": ["src/views/*"],
-			"@build/*": ["build/*"]
-		},
-		"types": [
-			"node",
-			"vite/client",
-			"element-plus/global",
-			"@pureadmin/table/volar",
-			"unplugin-icons/types/vue",
-			"@pureadmin/descriptions/volar",
-			// 保证自动导入插件提供了充足的类型
-			"unplugin-auto-import",
-			/**
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": false,
+    "strictFunctionTypes": false,
+    "noImplicitThis": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "api/*": [
+        "src/api/*"
+      ],
+      "assets/*": [
+        "src/assets/*"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "composables/*": [
+        "src/composables/*"
+      ],
+      "config/*": [
+        "src/config/*"
+      ],
+      "directives/*": [
+        "src/directives/*"
+      ],
+      "layout/*": [
+        "src/layout/*"
+      ],
+      "pages/*": [
+        "src/pages/*"
+      ],
+      "plugins/*": [
+        "src/plugins/*"
+      ],
+      "router/*": [
+        "src/router/*"
+      ],
+      "store/*": [
+        "src/store/*"
+      ],
+      "utils/*": [
+        "src/utils/*"
+      ],
+      "tools/*": [
+        "src/tools/*"
+      ],
+      "views/*": [
+        "src/views/*"
+      ],
+      "@build/*": [
+        "build/*"
+      ]
+    },
+    "types": [
+      "node",
+      "vite/client",
+      "element-plus/global",
+      "@pureadmin/table/volar",
+      "unplugin-icons/types/vue",
+      "@pureadmin/descriptions/volar",
+      // 保证自动导入插件提供了充足的类型
+      "unplugin-auto-import",
+      /**
         自动化路由插件 准备类型识别
         https://uvr.esm.is/introduction.html#setup
       */
-			"unplugin-vue-router/client",
-			// 自动化布局插件 准备类型识别
-			"vite-plugin-vue-meta-layouts/client",
-			// 全局组件类型
-			"plus-pro-components/global.d.ts"
-		]
-	},
-	"include": ["mock/*.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/*.d.ts", "vite.config.ts"],
-	"exclude": ["dist", "**/*.js", "node_modules"]
+      "unplugin-vue-router/client",
+      // 自动化布局插件 准备类型识别
+      "vite-plugin-vue-meta-layouts/client",
+      // 全局组件类型
+      "plus-pro-components/global.d.ts"
+    ]
+  },
+  "include": [
+    "mock/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "types/*.d.ts",
+    "vite.config.ts",
+    // vitepress 全部的文件
+    "**/.vitepress/**/*.ts",
+    "**/.vitepress/**/*.mts",
+    "**/.vitepress/**/*.vue"
+  ],
+  "exclude": [
+    "dist",
+    "**/*.js",
+    "node_modules"
+  ]
 }
