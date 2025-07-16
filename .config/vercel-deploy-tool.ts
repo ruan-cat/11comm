@@ -15,7 +15,7 @@ export default <Config>{
 	// vercelJsonPath: "./vercel.404.json",
 
 	deployTargets: [
-		// 11comm智慧社区 主项目 预发布环境 静态设计
+		// 11comm智慧社区 主项目
 		{
 			type: "static",
 			isNeedVercelBuild: false,
@@ -24,12 +24,10 @@ export default <Config>{
 		},
 
 		// 11comm智慧社区 前端技术文档
-		// {
-		// 	type: "userCommands",
-		// 	targetCWD: "./apps/admin/src",
-		// 	outputDirectory: ".vitepress/dist",
-		// 	url: ["01s-11comm-frontend-docs.ruancat6312.top"],
-		// 	userCommands: ["pnpm -C=./apps/admin/src docs:build"],
-		// },
+		{
+			type: "static",
+			targetCWD: "./apps/admin/src/.vitepress/dist",
+			url: domains["11comm-doc"] as unknown as string[],
+		},
 	],
 };
