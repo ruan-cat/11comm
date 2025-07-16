@@ -10,8 +10,9 @@
   },
   "scripts": {
     "dev": "turbo vite:dev",
-    "docs:dev": "vitepress dev src --port 3000",
     "build": "pnpm build:prod",
+    "docs:dev": "vitepress dev src --port 3000",
+    "docs:build": "vitepress build src",
     "test": "vitest --ui --watch --api.port=4000",
     "build:staging": "turbo vite:build:staging",
     "build:prod": "turbo vite:build:prod",
@@ -22,7 +23,6 @@
     "vite:build:prod": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
     "vite:build:staging": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode staging --configLoader runner",
     "vite:preview": "vite preview --configLoader runner",
-    "docs:build": "vitepress build src",
     "typecheck": "tsc --noEmit && vue-tsc --noEmit --skipLibCheck",
     "svgo": "svgo -f . -r",
     "clean:cache": "rimraf .eslintcache && rimraf pnpm-lock.yaml && rimraf node_modules && pnpm store prune && pnpm install",
