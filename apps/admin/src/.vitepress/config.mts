@@ -23,18 +23,26 @@ addChangelog2doc({
 	},
 });
 
-const userConfig = setUserConfig({
-	title: "11comm前端组技术文档",
-	description: "本前端项目的使用文档，说明文档",
-	themeConfig: {
-		socialLinks: [
-			{
-				icon: "github",
-				link: "https://github.com/ruan-cat/11comm",
-			},
-		],
+const userConfig = setUserConfig(
+	{
+		title: "11comm前端组技术文档",
+		description: "本前端项目的使用文档，说明文档",
+		themeConfig: {
+			socialLinks: [
+				{
+					icon: "github",
+					link: "https://github.com/ruan-cat/11comm",
+				},
+			],
+		},
 	},
-});
+	{
+		plugins: {
+			// 不使用该插件
+			vitePluginVercel: false,
+		},
+	},
+);
 // @ts-ignore
 userConfig.themeConfig.sidebar = setGenerateSidebar({
 	documentRootPath: "./src",
