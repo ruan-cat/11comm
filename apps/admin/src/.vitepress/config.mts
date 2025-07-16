@@ -1,7 +1,14 @@
-import { addChangelog2doc, setGenerateSidebar, setUserConfig } from "@ruan-cat/vitepress-preset-config/config";
+import {
+	addChangelog2doc,
+	setGenerateSidebar,
+	setUserConfig,
+	copyReadmeMd,
+} from "@ruan-cat/vitepress-preset-config/config";
 
 // import AutoImport from "../plugins/unplugin-auto-import/index.ts";
 // import tsAlias from "../plugins/vite-plugin-ts-alias/index.ts";
+
+copyReadmeMd("./src");
 
 // 为文档添加自动生成的changelog
 addChangelog2doc({
