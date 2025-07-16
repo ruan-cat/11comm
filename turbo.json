@@ -4,12 +4,14 @@
 		"@01s-11comm/admin#build": {
 			"cache": true,
 			"outputs": [
+				"**/dist/**",
 				"apps/admin/dist/**"
 			]
 		},
 		"@01s-11comm/admin#docs:build": {
 			"cache": true,
 			"outputs": [
+				"**/.vitepress/dist/**",
 				"apps/admin/src/.vitepress/dist/**"
 			]
 		},
