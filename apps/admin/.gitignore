@@ -26,3 +26,7 @@ tsconfig.tsbuildinfo
 # 子包配置覆盖掉根包的 .gitignore 配置项
 !.env
 !.env.staging
+
+# 忽略自动复制过来的文件
+src/CHANGELOG.md
+src/index.md
