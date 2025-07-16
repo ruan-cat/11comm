@@ -7,10 +7,17 @@
 				"apps/admin/dist/**"
 			]
 		},
+		"@01s-11comm/admin#docs:build": {
+			"cache": true,
+			"outputs": [
+				"apps/admin/src/.vitepress/dist/**"
+			]
+		},
 		"//#deploy": {
 			"cache": false,
 			"dependsOn": [
-				"@01s-11comm/admin#build"
+				"@01s-11comm/admin#build",
+				"@01s-11comm/admin#docs:build"
 			]
 		}
 	}
