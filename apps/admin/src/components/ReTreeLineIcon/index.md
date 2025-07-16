@@ -219,30 +219,30 @@ useReTreeLineIcon(
 
 #### 参数说明
 
-| 参数             | 类型                                | 必填 | 默认值 | 说明                    |
-| ---------------- | ----------------------------------- | ---- | ------ | ----------------------- |
-| treeComponentRef | Ref<ReTreeLineIconInstance \| null> | ✅   | -      | ReTreeLineIcon 组件实例 |
-| options          | Object                              | ❌   | -      | 配置选项                |
-| watchSelection   | boolean                             | ❌   | true   | 是否监听选择变化        |
-| autoSearch       | boolean                             | ❌   | true   | 是否启用自动搜索        |
+| 参数             | 类型                                  | 必填 | 默认值 | 说明                    |
+| ---------------- | ------------------------------------- | ---- | ------ | ----------------------- |
+| treeComponentRef | `Ref<ReTreeLineIconInstance \| null>` | ✅   | -      | ReTreeLineIcon 组件实例 |
+| options          | Object                                | ❌   | -      | 配置选项                |
+| watchSelection   | boolean                               | ❌   | true   | 是否监听选择变化        |
+| autoSearch       | boolean                               | ❌   | true   | 是否启用自动搜索        |
 
 ### 返回值说明
 
 #### 响应式状态
 
-| 属性          | 类型                                    | 说明                   |
-| ------------- | --------------------------------------- | ---------------------- |
-| selectedNode  | Readonly<Ref<TreeNodeWithIcon \| null>> | 当前选中的节点（只读） |
-| searchKeyword | Readonly<Ref<string>>                   | 搜索关键字（只读）     |
-| isExpanded    | Readonly<Ref<boolean>>                  | 展开状态（只读）       |
+| 属性          | 类型                                      | 说明                   |
+| ------------- | ----------------------------------------- | ---------------------- |
+| selectedNode  | `Readonly<Ref<TreeNodeWithIcon \| null>>` | 当前选中的节点（只读） |
+| searchKeyword | `Readonly<Ref<string>>`                   | 搜索关键字（只读）     |
+| isExpanded    | `Readonly<Ref<boolean>>`                  | 展开状态（只读）       |
 
 #### 计算属性
 
-| 属性             | 类型                        | 说明           |
-| ---------------- | --------------------------- | -------------- |
-| hasSelection     | ComputedRef<boolean>        | 是否有选中节点 |
-| selectedNodeId   | ComputedRef<string \| null> | 选中节点的 ID  |
-| selectedNodeName | ComputedRef<string>         | 选中节点的名称 |
+| 属性             | 类型                          | 说明           |
+| ---------------- | ----------------------------- | -------------- |
+| hasSelection     | `ComputedRef<boolean>`        | 是否有选中节点 |
+| selectedNodeId   | `ComputedRef<string \| null>` | 选中节点的 ID  |
+| selectedNodeName | `ComputedRef<string>`         | 选中节点的名称 |
 
 #### 基础方法
 
