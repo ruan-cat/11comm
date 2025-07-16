@@ -224,7 +224,7 @@ console.log("来源页面:", route.meta.activePath);
 
 ## 🔗 与存储工具的关系
 
-该工具与[详情页路由信息存储工具](../store/modules/details-page-router-info.md)的协作关系：
+该工具与[详情页路由信息存储工具](../../store/modules/details-page-router-info.md)的协作关系：
 
 ```mermaid
 graph TB
