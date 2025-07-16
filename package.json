@@ -45,7 +45,7 @@
 		"@changesets/cli": "^2.29.5",
 		"@plus-pro-components/resolver": "^0.0.3",
 		"@ruan-cat/commitlint-config": "^1.3.1",
-		"@ruan-cat/domains": "^0.6.7",
+		"@ruan-cat/domains": "^0.8.0",
 		"@ruan-cat/generate-code-workspace": "^0.4.12",
 		"@ruan-cat/taze-config": "^0.1.0",
 		"@ruan-cat/utils": "^4.9.0",
