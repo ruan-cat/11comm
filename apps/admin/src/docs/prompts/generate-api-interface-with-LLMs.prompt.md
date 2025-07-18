@@ -4,6 +4,8 @@
 
 在本次对话中，我们将按照指定的要求，逐步地，批量的，少量多次的生成接口和接口请求用例。
 
+请你主动的使用 web_search 工具来搜索本文提供的 url 链接。
+
 ## 全部核心资料的上下文
 
 - 全部的 github 实现代码： @https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
