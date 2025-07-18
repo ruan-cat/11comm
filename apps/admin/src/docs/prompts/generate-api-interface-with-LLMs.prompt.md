@@ -6,9 +6,9 @@
 
 ## 全部核心资料的上下文
 
-- 全部的 github 实现代码： https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
-- 文档：01s 内封装好的 useAxios 函数： https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
-- 文档：使用 useRequestIn01s 函数：https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
+- 全部的 github 实现代码： @https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
+- 文档：01s 内封装好的 useAxios 函数： @https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
+- 文档：使用 useRequestIn01s 函数：@https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
 
 生成 api 接口的工具，以及工具如何使用，均在此文档内有详细讲述。
 
@@ -16,13 +16,13 @@
 
 你应当主动的阅读以下文档：
 
-- https://01s-11.apifox.cn/llms.txt
+- @https://01s-11.apifox.cn/llms.txt
 
 我要求生成的全部接口信息，都在上述文档内。
 
 ## 工作范围
 
-我会要求你修改、编辑或新建文件。你的文件修改范围仅限于 `apps\admin\src\api` 目录。你只可以在该目录内新建并修改文件。
+我会要求你修改、编辑或新建文件。你的文件修改范围仅限于 @apps\admin\src\api 目录。你只可以在该目录内新建并修改文件。
 
 ## 文件后缀类型
 
