@@ -176,7 +176,7 @@
     "rimraf": "^6.0.1",
     "rollup-plugin-visualizer": "^6.0.3",
     "sass": "^1.89.2",
-    "stylelint": "^16.21.1",
+    "stylelint": "^16.22.0",
     "stylelint-config-recess-order": "^7.1.0",
     "stylelint-config-recommended-vue": "^1.6.1",
     "stylelint-config-standard-scss": "^15.0.1",
