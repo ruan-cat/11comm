@@ -10,7 +10,7 @@
 	"scripts": {
 		"dev": "turbo vite:dev",
 		"build": "vite build --mode production",
-		"deploy": "node --import=tsx ./scripts/deploy.ts --env-path=.env.production",
+		"deploy": "tsx ./scripts/deploy.ts --env-path=.env.production",
 		"preview": "vite preview",
 		"test": "vitest --ui --watch --api.port=4000",
 		"format": "prettier --config=../../prettier.config.js --ignore-path ../.gitignore --write .",
@@ -27,7 +27,7 @@
 		"lint": "eslint --fix .",
 		"corepack:pnpm": "corepack enable && corepack prepare pnpm@9.5.0 --activate",
 		"notuse-preinstall": "npx only-allow pnpm && npm run corepack:pnpm",
-		"rm:types": "node --import=tsx ./scripts/del-types.ts",
+		"rm:types": "tsx ./scripts/del-types.ts",
 		"typedoc": "typedoc --options typedoc.config.mjs --tsconfig tsconfig.typedoc.json",
 		"do-docs-dev": "vitepress dev src --port 8080",
 		"do-docs-build": "vitepress build src"
