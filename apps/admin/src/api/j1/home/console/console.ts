@@ -94,7 +94,7 @@ export function dashboardConsoleAppraise<T = OwnerFeedbackVO[]>(options: UseAxio
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {},
+			params: {},
 		},
 	});
 }
@@ -111,7 +111,7 @@ export function dashboardConsoleBusinessCommunity<T = BusinessCommunityVO[]>(opt
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {},
+			params: {},
 		},
 	});
 }
@@ -128,7 +128,7 @@ export function dashboardConsoleComplaintStats<T = ComplaintStatsVO[]>(options: 
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {},
+			params: {},
 		},
 	});
 }
@@ -145,7 +145,7 @@ export function dashboardConsoleRegisterStats<T = RegistrationStatsVO[]>(options
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {},
+			params: {},
 		},
 	});
 }
@@ -162,7 +162,7 @@ export function dashboardConsoleRepairStats<T = RepairStatsVO[]>(options: UseAxi
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {},
+			params: {},
 		},
 	});
 }

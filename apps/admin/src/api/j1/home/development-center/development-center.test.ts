@@ -13,7 +13,7 @@ describe("常用功能接口测试", () => {
 
 		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {},
+			params: {},
 		});
 
 		console.warn("查看简单的 data.value ", printFormat(data.value));

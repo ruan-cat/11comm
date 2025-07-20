@@ -26,7 +26,7 @@ export function getCenterCommonMenu<T = CommonMenuInfo[]>(options: UseAxiosOptio
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {},
+			params: {},
 		},
 	});
 }
