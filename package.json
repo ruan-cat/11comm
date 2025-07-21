@@ -7,7 +7,7 @@
 	"description": "01s-11comm智慧社区 monorepo根目录",
 	"main": "index.js",
 	"type": "module",
-	"packageManager": "pnpm@9.15.9",
+	"packageManager": "pnpm@10.13.1",
 	"engines": {
 		"node": ">=22.14.0"
 	},
@@ -37,6 +37,19 @@
 		"commit": "git-cz",
 		"build:admin": "pnpm -F=@01s-11comm/admin build",
 		"format:*": "prettier --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@parcel/watcher",
+			"@tailwindcss/oxide",
+			"core-js",
+			"core-js-pure",
+			"es5-ext",
+			"esbuild",
+			"typeit",
+			"vue-demi",
+			"vue3-danmaku"
+		]
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^4.17.0",
