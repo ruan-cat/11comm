@@ -21,7 +21,7 @@ export interface CommonMenuInfo {
  */
 export function getCenterCommonMenu<T = CommonMenuInfo[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
-		url: "/dashboard/center/commonmenu",
+		url: "/j1-dashboard/center/commonmenu",
 		options,
 		httpParamWay: "query",
 		config: {

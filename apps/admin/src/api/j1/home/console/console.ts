@@ -89,7 +89,7 @@ export interface RepairStatsVO {
  */
 export function dashboardConsoleAppraise<T = OwnerFeedbackVO[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
-		url: "/dashboard/console/appraise",
+		url: "/j1-dashboard/console/appraise",
 		options,
 		httpParamWay: "query",
 		config: {
@@ -106,7 +106,7 @@ export function dashboardConsoleAppraise<T = OwnerFeedbackVO[]>(options: UseAxio
  */
 export function dashboardConsoleBusinessCommunity<T = BusinessCommunityVO[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
-		url: "/dashboard/console/business-community",
+		url: "/j1-dashboard/console/business-community",
 		options,
 		httpParamWay: "query",
 		config: {
@@ -123,7 +123,7 @@ export function dashboardConsoleBusinessCommunity<T = BusinessCommunityVO[]>(opt
  */
 export function dashboardConsoleComplaintStats<T = ComplaintStatsVO[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
-		url: "/dashboard/console/complaint-stats",
+		url: "/j1-dashboard/console/complaint-stats",
 		options,
 		httpParamWay: "query",
 		config: {
@@ -140,7 +140,7 @@ export function dashboardConsoleComplaintStats<T = ComplaintStatsVO[]>(options: 
  */
 export function dashboardConsoleRegisterStats<T = RegistrationStatsVO[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
-		url: "/dashboard/console/register-stats",
+		url: "/j1-dashboard/console/register-stats",
 		options,
 		httpParamWay: "query",
 		config: {
@@ -157,7 +157,7 @@ export function dashboardConsoleRegisterStats<T = RegistrationStatsVO[]>(options
  */
 export function dashboardConsoleRepairStats<T = RepairStatsVO[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
-		url: "/dashboard/console/repair-stats",
+		url: "/j1-dashboard/console/repair-stats",
 		options,
 		httpParamWay: "query",
 		config: {
