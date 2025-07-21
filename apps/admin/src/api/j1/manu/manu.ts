@@ -18,11 +18,23 @@ export interface AddGroupCatalogResponse {
 	createTime: string;
 }
 
+/** 删除对应菜单组请求参数 */
+export interface DeleteGroupCatalogParams {
+	/** 菜单组目录编号 */
+	gcId: string;
+}
+
+/** 删除对应菜单组响应参数 */
+export interface DeleteGroupCatalogResponse {
+	/** 菜单组目录编号 */
+	gcId: string;
+}
+
 /**
  * 添加对应菜单组
  * @description 添加对应菜单组
  */
-export function addGroupCatalog<T = JsonVO<AddGroupCatalogResponse>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function addGroupCatalog<T = AddGroupCatalogResponse>(options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, AddGroupCatalogParams>({
 		url: "/j1-manumana/groupCatalog/add",
 		httpParamWay: "body",
@@ -33,6 +45,24 @@ export function addGroupCatalog<T = JsonVO<AddGroupCatalogResponse>>(options?: U
 				caId: "",
 				gid: "",
 				storeType: "",
+			},
+		},
+	});
+}
+
+/**
+ * 删除对应菜单组
+ * @description 删除对应菜单组
+ */
+export function deleteGroupCatalog<T = DeleteGroupCatalogResponse>(options?: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, DeleteGroupCatalogParams>({
+		url: "/j1-manumana/groupCatalog/delete",
+		httpParamWay: "body",
+		options,
+		config: {
+			method: "DELETE",
+			data: {
+				gcId: "",
 			},
 		},
 	});
