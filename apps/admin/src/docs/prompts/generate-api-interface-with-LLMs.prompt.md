@@ -167,6 +167,7 @@ export function addColumn<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 2. 当接口请求的返回参数含有 `PageDTO` 时，不要生成该类型。直接使用已经有的全局 `PageDTO` 类型即可。
 3. 生成的泛型 T，不要包裹多余的 `JsonVO<T>` 泛型。
 4. 当你生成分页接口时，应该主动的使用 PageDTO 泛型来包裹返回值。
+5. **options 必传**：二次包装 useRequest 时，其参数 options 必须是必填项。外部调用本函数时，options 参数必须是必填项，
 
 ### 从正确的位置内导入 `useRequest` 接口请求工具
 
