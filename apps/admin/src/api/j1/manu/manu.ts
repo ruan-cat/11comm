@@ -50,6 +50,44 @@ export interface QueryGroupCatalogResponse {
 	gid: string;
 }
 
+/** 添加菜单目录请求参数 */
+export interface AddMenuCatalogParams {
+	/** 图标 */
+	icon: string;
+	/** 是否显示 */
+	isShow: string;
+	/** 菜单组名称 */
+	name: string;
+	/** 顺序 */
+	seq: number;
+	/** 商户类型 */
+	storeType: string;
+	/** 页面 */
+	url: string;
+	/** 权限编号 */
+	privId?: string;
+}
+
+/** 修改菜单目录请求参数 */
+export interface ModifyMenuCatalogParams {
+	/** 编号 */
+	caId: string;
+	/** 图标 */
+	icon: string;
+	/** 是否显示 */
+	isShow: string;
+	/** 菜单组名称 */
+	name: string;
+	/** 顺序 */
+	seq: number;
+	/** 商户类型 */
+	storeType: string;
+	/** 页面 */
+	url: string;
+	/** 权限编号 */
+	privId?: string;
+}
+
 /**
  * 添加对应菜单组
  * @description 添加对应菜单组
@@ -104,6 +142,53 @@ export function queryGroupCatalog<T = PageDTO<QueryGroupCatalogResponse>>(option
 				pageIndex: 1,
 				pageSize: 10,
 				storeType: "",
+			},
+		},
+	});
+}
+
+/**
+ * 添加菜单目录
+ * @description 添加菜单目录
+ */
+export function addMenuCatalog<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, AddMenuCatalogParams>({
+		url: "/j1-menumana/add-menucatalog",
+		httpParamWay: "body",
+		options,
+		config: {
+			method: "POST",
+			data: {
+				icon: "",
+				isShow: "",
+				name: "",
+				seq: 0,
+				storeType: "",
+				url: "",
+			},
+		},
+	});
+}
+
+/**
+ * 修改菜单目录
+ * @description 修改菜单目录
+ */
+export function modifyMenuCatalog<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ModifyMenuCatalogParams>({
+		url: "/j1-menumana/modify-menucatalog",
+		httpParamWay: "body",
+		options,
+		config: {
+			method: "PUT",
+			data: {
+				caId: "",
+				icon: "",
+				isShow: "",
+				name: "",
+				seq: 0,
+				storeType: "",
+				url: "",
 			},
 		},
 	});
