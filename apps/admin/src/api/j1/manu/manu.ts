@@ -88,6 +88,46 @@ export interface ModifyMenuCatalogParams {
 	privId?: string;
 }
 
+/** 分页查询菜单目录请求参数 */
+export interface QueryMenuCatalogPageParams {
+	/** 页码 */
+	pageIndex: number;
+	/** 每页数量 */
+	pageSize: number;
+	/** 商户类型 */
+	storeType: string;
+	/** 是否显示 */
+	isShow?: string;
+	/** 菜单目录名称 */
+	name?: string;
+}
+
+/** 菜单目录数据对象 */
+export interface MenuCatalogDataObject {
+	/** 菜单目录编号 */
+	caId: string;
+	/** 图标 */
+	icon: string;
+	/** 是否显示 */
+	isShow: string;
+	/** 菜单组名称 */
+	name: string;
+	/** 顺序 */
+	seq: number;
+	/** 商户类型 */
+	storeType: string;
+	/** 页面 */
+	url: string;
+	/** 权限编号 */
+	privId?: string;
+}
+
+/** 删除菜单目录请求参数 */
+export interface RemoveMenuCatalogParams {
+	/** id */
+	id: string;
+}
+
 /**
  * 添加对应菜单组
  * @description 添加对应菜单组
@@ -190,6 +230,42 @@ export function modifyMenuCatalog<T = string>(options: UseAxiosOptionsJsonVO<T>)
 				storeType: "",
 				url: "",
 			},
+		},
+	});
+}
+
+/**
+ * 分页查询菜单目录
+ * @description 分页查询菜单目录
+ */
+export function queryMenuCatalogPage<T = PageDTO<MenuCatalogDataObject>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryMenuCatalogPageParams>({
+		url: "/j1-menumana/query-menucatalogpage",
+		httpParamWay: "query",
+		options,
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				storeType: "",
+			},
+		},
+	});
+}
+
+/**
+ * 删除菜单目录
+ * @description 删除菜单目录
+ */
+export function removeMenuCatalog<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsPathKey, T, RemoveMenuCatalogParams>({
+		url: "/j1-menumana/remove-menucatalog/{id}",
+		httpParamWay: "path",
+		options,
+		config: {
+			url: "/j1-menumana/remove-menucatalog/{id}",
+			method: "DELETE",
 		},
 	});
 }
