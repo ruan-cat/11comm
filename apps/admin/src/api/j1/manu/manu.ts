@@ -54,7 +54,7 @@ export interface QueryGroupCatalogResponse {
  * 添加对应菜单组
  * @description 添加对应菜单组
  */
-export function addGroupCatalog<T = AddGroupCatalogResponse>(options?: UseAxiosOptionsJsonVO<T>) {
+export function addGroupCatalog<T = AddGroupCatalogResponse>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, AddGroupCatalogParams>({
 		url: "/j1-manumana/groupCatalog/add",
 		httpParamWay: "body",
@@ -74,7 +74,7 @@ export function addGroupCatalog<T = AddGroupCatalogResponse>(options?: UseAxiosO
  * 删除对应菜单组
  * @description 删除对应菜单组
  */
-export function deleteGroupCatalog<T = DeleteGroupCatalogResponse>(options?: UseAxiosOptionsJsonVO<T>) {
+export function deleteGroupCatalog<T = DeleteGroupCatalogResponse>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, DeleteGroupCatalogParams>({
 		url: "/j1-manumana/groupCatalog/delete",
 		httpParamWay: "body",
@@ -92,7 +92,7 @@ export function deleteGroupCatalog<T = DeleteGroupCatalogResponse>(options?: Use
  * 获取对应菜单组
  * @description 获取对应菜单组列表(条件+分页)
  */
-export function queryGroupCatalog<T = PageDTO<QueryGroupCatalogResponse>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function queryGroupCatalog<T = PageDTO<QueryGroupCatalogResponse>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryGroupCatalogParams>({
 		url: "/j1-manumana/groupCatalog/query",
 		httpParamWay: "query",
