@@ -7,8 +7,6 @@ import {
 	deleteReportComponent,
 	modifyReportComponent,
 	addComponentCondition,
-	addReportComponent,
-	modifyComponentCondition,
 } from "./report-component";
 
 describe("报表组件接口测试", () => {
@@ -17,12 +15,14 @@ describe("报表组件接口测试", () => {
 			onSuccess(data) {
 				console.warn("获取报表组件列表成功", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("获取报表组件列表失败:", error);
+			},
 		});
 
 		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -43,7 +43,7 @@ describe("报表组件接口测试", () => {
 
 		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				componentId: "102023070480690007",
@@ -67,7 +67,7 @@ describe("报表组件接口测试", () => {
 
 		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				componentId: "102023070480690007",
 				pageIndex: 1,
 				pageSize: 10,
@@ -150,6 +150,7 @@ describe("报表组件接口测试", () => {
 				console.error("添加条件失败:", error);
 			},
 		});
+
 		await execute({
 			data: {
 				componentId: "102023070480690000",
@@ -161,53 +162,7 @@ describe("报表组件接口测试", () => {
 				remark: "阿巴啊吧啊吧",
 			},
 		});
-		console.warn("查看简单的 data.value ", printFormat(data.value));
-	});
 
-	it("添加报表组件", async () => {
-		const { execute, data } = addReportComponent({
-			onSuccess(data) {
-				console.warn("添加报表组件成功", printFormat(data));
-			},
-			onError(error) {
-				console.error("添加报表组件失败:", error);
-			},
-		});
-		await execute({
-			data: {
-				componentGroup: "C",
-				componentType: "1001",
-				name: "房屋入驻报表",
-				queryModel: "1",
-				statusCd: "0",
-				componentSql: "SELECT * FROM house_report WHERE status = 'occupied'",
-				remark: "无",
-			},
-		});
-		console.warn("查看简单的 data.value ", printFormat(data.value));
-	});
-
-	it("修改条件", async () => {
-		const { execute, data } = modifyComponentCondition({
-			onSuccess(data) {
-				console.warn("修改条件成功", printFormat(data));
-			},
-			onError(error) {
-				console.error("修改条件失败:", error);
-			},
-		});
-		await execute({
-			data: {
-				componentId: "102023070480690000",
-				conditionId: "102021111302592100",
-				holdpace: "请输入开始时间YYYY-MM-DD格式",
-				name: "开始时间",
-				param: "startTime",
-				seq: 1,
-				type: "date",
-				remark: "用于筛选特定用户的数据",
-			},
-		});
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

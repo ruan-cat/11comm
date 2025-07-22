@@ -82,7 +82,7 @@ export function queryReportComponentList<T = PageDTO<RCCVO>>(options: UseAxiosOp
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -101,7 +101,7 @@ export function queryComponentConditionList<T = PageDTO<ComponentConditionVO>>(o
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				componentId: "",
 				pageIndex: 1,
 				pageSize: 10,
