@@ -9,38 +9,38 @@ import {
 	addTaskDetail,
 } from "./work-order-pool";
 
-describe("工单池工单接口测试", () => {
-	it("获取工单池工单详情", async () => {
+describe("c2/维修管理/工单池", () => {
+	it("使用 query 接口 - 获取工单池工单详情", async () => {
 		const { execute, data } = queryTaskDetailById({
 			onSuccess(data) {
-				console.warn("获取工单池工单详情成功", printFormat(data));
+				console.warn("queryTaskDetailById onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryTaskDetailById onError", error);
 			},
 		});
 
 		await execute({
-			data: {
+			params: {
 				repair_id: "822023080257540003",
 			},
 		});
 
-		console.warn("查看工单池工单详情数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取工单列表", async () => {
+	it("使用 query 接口 - 获取工单列表", async () => {
 		const { execute, data } = queryTaskList({
 			onSuccess(data) {
-				console.warn("获取工单列表成功", printFormat(data));
+				console.warn("queryTaskList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryTaskList onError", error);
 			},
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2023052267100146",
@@ -56,16 +56,16 @@ describe("工单池工单接口测试", () => {
 			},
 		});
 
-		console.warn("查看工单列表分页数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改工单", async () => {
+	it("使用 body 接口 - 修改工单", async () => {
 		const { execute, data } = modifyTask({
 			onSuccess(data) {
-				console.warn("修改工单成功", printFormat(data));
+				console.warn("modifyTask onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("modifyTask onError", error);
 			},
 		});
 
@@ -81,16 +81,16 @@ describe("工单池工单接口测试", () => {
 			},
 		});
 
-		console.warn("查看修改工单结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除工单", async () => {
+	it("使用 body 接口 - 删除工单", async () => {
 		const { execute, data } = removeTask({
 			onSuccess(data) {
-				console.warn("删除工单成功", printFormat(data));
+				console.warn("removeTask onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("removeTask onError", error);
 			},
 		});
 
@@ -100,35 +100,35 @@ describe("工单池工单接口测试", () => {
 			},
 		});
 
-		console.warn("查看删除工单结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("打印工单", async () => {
+	it("使用 query 接口 - 打印工单", async () => {
 		const { execute, data } = exportTaskDetail({
 			onSuccess(data) {
-				console.warn("打印工单成功", printFormat(data));
+				console.warn("exportTaskDetail onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("exportTaskDetail onError", error);
 			},
 		});
 
 		await execute({
-			data: {
+			params: {
 				repair_id: "822025053099540019",
 			},
 		});
 
-		console.warn("查看打印工单结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("派单", async () => {
+	it("使用 body 接口 - 派单", async () => {
 		const { execute, data } = addTaskDetail({
 			onSuccess(data) {
-				console.warn("派单成功", printFormat(data));
+				console.warn("addTaskDetail onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("addTaskDetail onError", error);
 			},
 		});
 
@@ -140,6 +140,6 @@ describe("工单池工单接口测试", () => {
 			},
 		});
 
-		console.warn("查看派单结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

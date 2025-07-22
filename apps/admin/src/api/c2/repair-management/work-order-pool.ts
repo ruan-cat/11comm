@@ -35,18 +35,25 @@ export interface TaskDetailGetDTO {
 }
 
 /**
+ * 获取工单池工单详情参数
+ */
+export interface QueryTaskDetailParams {
+	/** 工单编号 */
+	repair_id: string;
+}
+
+/**
  * 获取工单池工单详情
- * @description
- * 根据工单编号获取工单池工单详情
+ * @description 根据工单编号获取工单池工单详情
  */
 export function queryTaskDetailById<T = TaskDetailGetDTO>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
+	return useRequest<ParamsQueryKey, T, QueryTaskDetailParams>({
 		url: "/comm-c2-repairsetting/task-detail/query-by-id",
-		options,
 		httpParamWay: "query",
+		options,
 		config: {
-			method: "get",
-			data: {
+			method: "GET",
+			params: {
 				repair_id: "",
 			},
 		},
@@ -82,18 +89,47 @@ export interface TaskListDTO {
 }
 
 /**
+ * 获取工单列表参数
+ */
+export interface QueryTaskListParams {
+	/** 页码 */
+	pageIndex: number;
+	/** 页大小 */
+	pageSize: number;
+	/** 小区编号 */
+	community_id?: string;
+	/** 工单编号 */
+	repair_id?: string;
+	/** 报修人 */
+	repair_name?: string;
+	/** 联系电话 */
+	tel?: string;
+	/** 报修类型 */
+	repair_type?: string;
+	/** 报修设置类型 */
+	repair_setting_type?: string;
+	/** 报修位置名称 */
+	repair_obj_name?: string;
+	/** 维修类型 */
+	maintenance_type?: string;
+	/** 开始时间 */
+	start_time?: string;
+	/** 结束时间 */
+	end_time?: string;
+}
+
+/**
  * 获取工单列表
- * @description
- * 获取工单池工单分页列表
+ * @description 获取工单池工单分页列表
  */
 export function queryTaskList<T = PageDTO<TaskListDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
+	return useRequest<ParamsQueryKey, T, QueryTaskListParams>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/query-all",
-		options,
 		httpParamWay: "query",
+		options,
 		config: {
-			method: "get",
-			data: {
+			method: "GET",
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
@@ -133,16 +169,15 @@ export interface TaskListUpdateDTO {
 
 /**
  * 修改工单
- * @description
- * 修改工单池工单信息
+ * @description 修改工单池工单信息
  */
 export function modifyTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskListUpdateDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/modify",
-		options,
 		httpParamWay: "body",
+		options,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				community_id: "",
 				repair_id: "",
@@ -166,16 +201,15 @@ export interface TaskListGetIdDTO {
 
 /**
  * 删除工单
- * @description
- * 删除指定工单池工单
+ * @description 删除指定工单池工单
  */
 export function removeTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskListGetIdDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/remove",
-		options,
 		httpParamWay: "body",
+		options,
 		config: {
-			method: "delete",
+			method: "DELETE",
 			data: {
 				repair_id: "",
 			},
@@ -184,18 +218,25 @@ export function removeTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 }
 
 /**
+ * 打印工单参数
+ */
+export interface ExportTaskDetailParams {
+	/** 工单编号 */
+	repair_id: string;
+}
+
+/**
  * 打印工单
- * @description
- * 根据工单编号打印工单
+ * @description 根据工单编号打印工单
  */
 export function exportTaskDetail<T = void>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
+	return useRequest<ParamsQueryKey, T, ExportTaskDetailParams>({
 		url: "/comm-c2-repairsetting/taskpool/task-detail/export",
-		options,
 		httpParamWay: "query",
+		options,
 		config: {
-			method: "get",
-			data: {
+			method: "GET",
+			params: {
 				repair_id: "",
 			},
 		},
@@ -224,16 +265,15 @@ export interface TaskDetailAddDTO {
 
 /**
  * 派单
- * @description
- * 新增工单池派单
+ * @description 新增工单池派单
  */
 export function addTaskDetail<T = TaskDetailGetIdDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskDetailAddDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-detail/add",
-		options,
 		httpParamWay: "body",
+		options,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				repair_id: "",
 				staff_name: "",
