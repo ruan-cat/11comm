@@ -167,6 +167,7 @@
     "eslint-plugin-vue": "^10.3.0",
     "gradient-string": "^3.0.0",
     "http-proxy-middleware": "^3.0.5",
+    "jsdom": "^26.1.0",
     "lint-staged": "^16.1.2",
     "postcss": "^8.5.6",
     "postcss-html": "^1.8.0",
