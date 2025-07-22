@@ -1,21 +1,26 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { addComponentCount, queryComponentCountList, modifyComponentCount } from "./report-component-count";
+import {
+	queryComponentCountList,
+	addComponentCount,
+	modifyComponentCount,
+	removeComponentCount,
+} from "./report-component-count";
 
-describe("报表组件底层统计接口测试", () => {
-	it("查询报表组件底层统计列表", async () => {
+describe("j3/报表/报表组件底层统计", () => {
+	it("使用 query 接口 - 查询报表组件底层统计列表", async () => {
 		const { execute, data } = queryComponentCountList({
 			onSuccess(data) {
-				console.warn("查询报表组件底层统计列表成功", printFormat(data));
+				console.warn("queryComponentCountList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("查询报表组件底层统计列表失败:", error);
+				console.error("queryComponentCountList onError", error);
 			},
 		});
 
 		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				componentId: "102023070480690000",
@@ -25,13 +30,13 @@ describe("报表组件底层统计接口测试", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("添加报表组件底层统计", async () => {
+	it("使用 body 接口 - 添加报表组件底层统计", async () => {
 		const { execute, data } = addComponentCount({
 			onSuccess(data) {
-				console.warn("添加报表组件底层统计成功", printFormat(data));
+				console.warn("addComponentCount onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("添加报表组件底层统计失败:", error);
+				console.error("addComponentCount onError", error);
 			},
 		});
 
@@ -48,13 +53,13 @@ describe("报表组件底层统计接口测试", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改报表组件底层统计", async () => {
+	it("使用 body 接口 - 修改报表组件底层统计", async () => {
 		const { execute, data } = modifyComponentCount({
 			onSuccess(data) {
-				console.warn("修改报表组件底层统计成功", printFormat(data));
+				console.warn("modifyComponentCount onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("修改报表组件底层统计失败:", error);
+				console.error("modifyComponentCount onError", error);
 			},
 		});
 
@@ -66,6 +71,26 @@ describe("报表组件底层统计接口测试", () => {
 				name: "报表统计测试-1（已更新）",
 				queryModel: "1",
 				footerDescription: "这是一个测试...（已更新）",
+			},
+		});
+
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 删除报表组件底层统计", async () => {
+		const { execute, data } = removeComponentCount({
+			onSuccess(data) {
+				console.warn("removeComponentCount onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("removeComponentCount onError", error);
+			},
+		});
+
+		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
+		await execute({
+			params: {
+				footerID: "102025052043900000",
 			},
 		});
 

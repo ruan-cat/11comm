@@ -1,4 +1,4 @@
-import { useRequest } from "composables/use-request";
+import { useRequest } from "@/composables/use-request";
 
 /**
  * 报表统计信息
@@ -70,19 +70,18 @@ export interface RemoveComponentCountParams {
  * 查询报表组件底层统计列表
  * @description 支持按组件ID进行条件查询，并返回分页数据
  */
-export function queryComponentCountList(options: { onSuccess?: (data: any) => void; onError?: (error: any) => void }) {
-	return useRequest({
+export function queryComponentCountList<T = PageDTO<ReportComponentCountInfo>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryComponentCountParams>({
 		url: "/j3-report/report-component-count/query-count",
 		httpParamWay: "query",
-		config: {
-			url: "/j3-report/report-component-count/query-count",
-			method: "GET",
-			baseURL: "",
-			headers: {},
-			params: {},
-			data: {},
-		} as CreateAxiosRequestConfig<any>,
 		options,
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+			},
+		},
 	});
 }
 
@@ -90,19 +89,19 @@ export function queryComponentCountList(options: { onSuccess?: (data: any) => vo
  * 添加报表组件底层统计
  * @description 新增报表组件底层统计信息
  */
-export function addComponentCount(options: { onSuccess?: (data: any) => void; onError?: (error: any) => void }) {
-	return useRequest({
+export function addComponentCount<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, AddComponentCountParams>({
 		url: "/j3-report/report-component-count/add-count",
 		httpParamWay: "body",
-		config: {
-			url: "/j3-report/report-component-count/add-count",
-			method: "POST",
-			baseURL: "",
-			headers: {},
-			params: {},
-			data: {},
-		} as CreateAxiosRequestConfig<any>,
 		options,
+		config: {
+			method: "POST",
+			data: {
+				componentId: "",
+				name: "",
+				queryModel: "",
+			},
+		},
 	});
 }
 
@@ -110,19 +109,20 @@ export function addComponentCount(options: { onSuccess?: (data: any) => void; on
  * 修改报表组件底层统计
  * @description 更新已有报表组件底层统计信息
  */
-export function modifyComponentCount(options: { onSuccess?: (data: any) => void; onError?: (error: any) => void }) {
-	return useRequest({
+export function modifyComponentCount<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ModifyComponentCountParams>({
 		url: "/j3-report/report-component-count/modify-count",
 		httpParamWay: "body",
-		config: {
-			url: "/j3-report/report-component-count/modify-count",
-			method: "PUT",
-			baseURL: "",
-			headers: {},
-			params: {},
-			data: {},
-		} as CreateAxiosRequestConfig<any>,
 		options,
+		config: {
+			method: "PUT",
+			data: {
+				componentId: "",
+				footerId: "",
+				name: "",
+				queryModel: "",
+			},
+		},
 	});
 }
 
@@ -130,18 +130,16 @@ export function modifyComponentCount(options: { onSuccess?: (data: any) => void;
  * 删除报表组件底层统计
  * @description 删除指定的报表组件底层统计信息
  */
-export function removeComponentCount(options: { onSuccess?: (data: any) => void; onError?: (error: any) => void }) {
-	return useRequest({
+export function removeComponentCount<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, RemoveComponentCountParams>({
 		url: "/j3-report/report-component-count/remove-count",
 		httpParamWay: "query",
-		config: {
-			url: "/j3-report/report-component-count/remove-count",
-			method: "DELETE",
-			baseURL: "",
-			headers: {},
-			params: {},
-			data: {},
-		} as CreateAxiosRequestConfig<any>,
 		options,
+		config: {
+			method: "DELETE",
+			params: {
+				footerID: "",
+			},
+		},
 	});
 }
