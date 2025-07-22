@@ -103,24 +103,23 @@ describe("c2/维修管理/工单池", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 打印工单", async () => {
-		const { execute, data } = exportTaskDetail({
-			onSuccess(data) {
-				console.warn("exportTaskDetail onSuccess", printFormat(data));
-			},
-			onError(error) {
-				console.error("exportTaskDetail onError", error);
-			},
-		});
-
-		await execute({
-			params: {
-				repair_id: "822025053099540019",
-			},
-		});
-
-		console.warn("查看简单的 data.value ", printFormat(data.value));
-	});
+	// TODO: 文件接口 不做导出测试
+	// it("使用 query 接口 - 打印工单", async () => {
+	// 	const { execute, data } = exportTaskDetail({
+	// 		onSuccess(data) {
+	// 			console.warn("exportTaskDetail onSuccess", printFormat(data));
+	// 		},
+	// 		onError(error) {
+	// 			console.error("exportTaskDetail onError", error);
+	// 		},
+	// 	});
+	// 	await execute({
+	// 		params: {
+	// 			repair_id: "822025053099540019",
+	// 		},
+	// 	});
+	// 	console.warn("查看简单的 data.value ", printFormat(data.value));
+	// });
 
 	it("使用 body 接口 - 派单", async () => {
 		const { execute, data } = addTaskDetail({
