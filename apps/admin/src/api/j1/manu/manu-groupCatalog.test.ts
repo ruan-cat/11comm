@@ -8,7 +8,7 @@ import {
 	modifyMenuCatalog,
 	queryMenuCatalogPage,
 	removeMenuCatalog,
-} from "./manu";
+} from "./manu-groupCatalog";
 
 describe("j1/菜单管理/菜单目录", () => {
 	it("使用 body 接口 - 添加对应菜单组", async () => {
