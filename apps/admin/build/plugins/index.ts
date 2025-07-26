@@ -37,6 +37,7 @@ import vueDevTools from "vite-plugin-vue-devtools";
 import consola from "consola";
 
 import vercel from "vite-plugin-vercel";
+
 export function getPluginsList(
 	VITE_CDN: boolean,
 	VITE_COMPRESSION: ViteCompression,
@@ -48,6 +49,21 @@ export function getPluginsList(
 	mode: ConfigEnv["mode"],
 ): PluginOption[] {
 	const lifecycle = process.env.npm_lifecycle_event;
+
+	const VITE_IS_REVERSE_PROXY = process.env.VITE_IS_REVERSE_PROXY;
+	function IS_REVERSE_PROXY() {
+		return VITE_IS_REVERSE_PROXY === "true";
+	}
+
+	const vercelPlugin = IS_REVERSE_PROXY() /**
+	 * 生成指定vercel目录结构
+	 * @description
+	 * Bundle your Vite application as supported by Vercel Output API (v3).
+	 * @see https://github.com/magne4000/vite-plugin-vercel/tree/v9
+	 */
+		? vercel()
+		: [];
+
 	return [
 		tailwindcss(),
 
@@ -187,12 +203,6 @@ export function getPluginsList(
 		// 路径别名插件
 		tsAlias,
 
-		/**
-		 * 生成指定vercel目录结构
-		 * @description
-		 * Bundle your Vite application as supported by Vercel Output API (v3).
-		 * @see https://github.com/magne4000/vite-plugin-vercel/tree/v9
-		 */
-		vercel(),
+		vercelPlugin,
 	];
 }
