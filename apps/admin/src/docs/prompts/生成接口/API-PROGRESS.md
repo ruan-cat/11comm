@@ -724,14 +724,19 @@
 
 ### 2025-01-27
 
-- ✅ **新增 J2 模块数据权限接口**
-  - 添加数据权限接口 (`/j2-orgmanager/data-permission/add`)
-  - 修改数据权限接口 (`/j2-orgmanager/data-permission/update`)
-  - 获取数据权限列表接口 (`/j2-orgmanager/data-permission/query`)
-  - 删除数据权限接口 (`/j2-orgmanager/data-permission/delete`)
-- 📁 创建文件: `apps/admin/src/api/j2/organization-manage/data-permission/data-permission.ts`
-- 🧪 创建测试文件: `apps/admin/src/api/j2/organization-manage/data-permission/data-permission.test.ts`
-- 📊 更新 J2 模块进度: 5/25 (20%)
+- ✅ **修正 J2 模块数据权限接口**
+  - 根据实际 API 文档修正接口 URL 和参数结构
+  - 添加数据权限接口 (`/j2-orgmanager/data/add`) - 使用 POST + body 传参
+  - 修改数据权限接口 (`/j2-orgmanager/data/data-privilege`) - 使用 PUT + body 传参
+  - 获取数据权限列表接口 (`/j2-orgmanager/data/dataPrivilege/{communityId}`) - 使用 GET + path 传参
+  - 删除数据权限接口 (`/j2-orgmanager/data/delete/{dpId}`) - 使用 DELETE + path 传参
+- 🔧 **修正参数结构**：
+  - 使用实际字段：`code`, `communityId`, `dpId`, `name`, `remark`
+  - 移除推断字段：`description`, `scope`, `seq`, `status` 等
+- 🔧 **修正 Path 传参方式**：根据 [useAxios 文档](https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html) 正确配置 path 参数传递
+- 📁 修正文件: `apps/admin/src/api/j2/organization-manage/data-permission/data-permission.ts`
+- 🧪 修正测试文件: `apps/admin/src/api/j2/organization-manage/data-permission/data-permission.test.ts`
+- 📊 保持 J2 模块进度: 5/25 (20%)
 
 ### 2025-07-26
 
