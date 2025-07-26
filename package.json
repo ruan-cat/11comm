@@ -23,7 +23,7 @@
 		"format": "pnpm -r format",
 		"create-code-workspace": "tsx ./scripts/generate.code-workspace.ts --name=11comm智慧社区-前端工作区",
 		"deploy:turbo": "turbo deploy",
-		"deploy": "pnpm dotenvx run -- tsx ./scripts/deploy.ts",
+		"deploy": "dotenvx run -f apps/admin/.env.production -f .env -- tsx ./scripts/deploy.ts",
 		"not-use-in-cloudflare-worker-preinstall": "npm run corepack:pnpm && npx only-allow pnpm",
 		"corepack:pnpm": "corepack enable && corepack install",
 		"clear": "pnpm run clear:deps && pnpm run clear:cache",
