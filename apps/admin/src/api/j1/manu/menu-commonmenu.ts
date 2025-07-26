@@ -1,76 +1,78 @@
 import { useRequest } from "@/composables/use-request";
 
-/** 添加通用菜单请求参数 */
+/** 添加常用菜单请求参数 */
 export interface AddCommonMenuParams {
-	/** 菜单名称 */
-	name: string;
-	/** 菜单图标 */
-	icon?: string;
-	/** 菜单路径 */
-	path?: string;
-	/** 菜单组件 */
-	component?: string;
-	/** 父级菜单ID */
-	parentId?: string;
+	/** 菜单编号 */
+	mid: string;
 	/** 排序 */
 	sort?: number;
-	/** 菜单类型 */
-	menuType?: string;
-	/** 权限标识 */
-	permission?: string;
 	/** 状态 */
 	status?: string;
-	/** 描述 */
-	description?: string;
+	/** 备注 */
+	remark?: string;
 }
 
-/** 删除通用菜单请求参数 */
+/** 删除常用菜单请求参数 */
 export interface RemoveCommonMenuParams {
-	/** 菜单ID */
-	menuId: string;
+	/** 常用菜单编号 */
+	commonMenuId: string;
 }
 
-/** 通用菜单数据对象 */
-export interface CommonMenuData {
-	/** 菜单ID */
-	menuId: string;
+/** 获取常用菜单列表请求参数 */
+export interface QueryCommonMenuListParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
 	/** 菜单名称 */
-	name: string;
-	/** 菜单图标 */
-	icon?: string;
-	/** 菜单路径 */
-	path?: string;
-	/** 菜单组件 */
-	component?: string;
-	/** 父级菜单ID */
-	parentId?: string;
-	/** 排序 */
-	sort?: number;
-	/** 菜单类型 */
-	menuType?: string;
-	/** 权限标识 */
-	permission?: string;
+	menuName?: string;
 	/** 状态 */
 	status?: string;
-	/** 描述 */
-	description?: string;
+	/** 商户类型 */
+	storeType?: string;
+}
+
+/** 常用菜单数据对象 */
+export interface CommonMenuData {
+	/** 常用菜单编号 */
+	commonMenuId: string;
+	/** 菜单编号 */
+	mid: string;
+	/** 菜单名称 */
+	menuName: string;
+	/** 菜单路径 */
+	menuPath?: string;
+	/** 菜单图标 */
+	icon?: string;
+	/** 排序 */
+	sort: number;
+	/** 状态 */
+	status: string;
+	/** 备注 */
+	remark?: string;
 	/** 创建时间 */
 	createTime?: string;
 	/** 更新时间 */
 	updateTime?: string;
 }
 
-/** 通用菜单名称数据对象 */
-export interface CommonMenuNameData {
-	/** 菜单ID */
-	menuId: string;
+/** 可选菜单下拉列表数据对象 */
+export interface OptionalMenuData {
+	/** 菜单编号 */
+	mid: string;
 	/** 菜单名称 */
-	name: string;
+	menuName: string;
+	/** 菜单路径 */
+	menuPath?: string;
+	/** 菜单图标 */
+	icon?: string;
+	/** 父级菜单编号 */
+	parentId?: string;
 }
 
 /**
- * 添加通用菜单
- * @description 添加新的通用菜单项
+ * 添加常用菜单
+ * @description 将指定菜单添加到常用菜单列表
  */
 export function addCommonMenu<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, AddCommonMenuParams>({
@@ -80,56 +82,58 @@ export function addCommonMenu<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 		config: {
 			method: "POST",
 			data: {
-				name: "",
-				icon: "",
-				path: "",
-				component: "",
-				parentId: "",
+				mid: "",
 				sort: 0,
-				menuType: "",
-				permission: "",
 				status: "",
-				description: "",
+				remark: "",
 			},
 		},
 	});
 }
 
 /**
- * 获取所有通用菜单
- * @description 获取所有通用菜单列表
+ * 获取常用菜单列表（条件+分页）
+ * @description 分页查询常用菜单列表，支持条件筛选
  */
-export function queryAllCommonMenu<T = CommonMenuData[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
+export function queryCommonMenuList<T = PageDTO<CommonMenuData>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryCommonMenuListParams>({
 		url: "/j1-menumana/commonmenu/queryall",
 		httpParamWay: "query",
 		options,
 		config: {
 			method: "GET",
-			params: {},
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				menuName: "",
+				status: "",
+				storeType: "",
+			},
 		},
 	});
 }
 
 /**
- * 获取通用菜单名称列表
- * @description 获取通用菜单名称列表
+ * 获取可选菜单下拉列表
+ * @description 获取可以添加为常用菜单的菜单选项列表
  */
-export function queryCommonMenuName<T = CommonMenuNameData[]>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryOptionalMenuList<T = OptionalMenuData[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
 		url: "/j1-menumana/commonmenu/queryname",
 		httpParamWay: "query",
 		options,
 		config: {
 			method: "GET",
-			params: {},
+			params: {
+				storeType: "",
+			},
 		},
 	});
 }
 
 /**
- * 删除通用菜单
- * @description 删除指定的通用菜单
+ * 删除常用菜单
+ * @description 从常用菜单列表中删除指定菜单
  */
 export function removeCommonMenu<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, RemoveCommonMenuParams>({
@@ -139,7 +143,7 @@ export function removeCommonMenu<T = string>(options: UseAxiosOptionsJsonVO<T>) 
 		config: {
 			method: "DELETE",
 			params: {
-				menuId: "",
+				commonMenuId: "",
 			},
 		},
 	});

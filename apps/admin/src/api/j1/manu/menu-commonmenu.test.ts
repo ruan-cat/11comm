@@ -1,29 +1,24 @@
 import { describe, it, expect } from "vitest";
 import {
 	addCommonMenu,
-	queryAllCommonMenu,
-	queryCommonMenuName,
+	queryCommonMenuList,
+	queryOptionalMenuList,
 	removeCommonMenu,
 	type AddCommonMenuParams,
 	type RemoveCommonMenuParams,
+	type QueryCommonMenuListParams,
 	type CommonMenuData,
-	type CommonMenuNameData,
+	type OptionalMenuData,
 } from "./menu-commonmenu";
 
-describe("通用菜单接口测试", () => {
-	// 添加通用菜单测试
-	it("应该能够添加通用菜单", async () => {
+describe("常用菜单接口测试", () => {
+	// 添加常用菜单测试
+	it("应该能够添加常用菜单", async () => {
 		const params: AddCommonMenuParams = {
-			name: "测试菜单",
-			icon: "icon-test",
-			path: "/test",
-			component: "TestComponent",
-			parentId: "",
+			mid: "menu-001",
 			sort: 1,
-			menuType: "menu",
-			permission: "test:view",
 			status: "1",
-			description: "这是一个测试菜单",
+			remark: "测试常用菜单",
 		};
 
 		const { data, execute } = addCommonMenu<string>({
@@ -35,37 +30,55 @@ describe("通用菜单接口测试", () => {
 		});
 
 		expect(execute).toBeDefined();
-		// 这里可以添加更多的断言，比如检查返回值等
+		// 验证必填参数
+		expect(params.mid).toBeDefined();
+		expect(params.mid).toBe("menu-001");
 	});
 
-	// 获取所有通用菜单测试
-	it("应该能够获取所有通用菜单", async () => {
-		const { data, execute } = queryAllCommonMenu<CommonMenuData[]>({
+	// 获取常用菜单列表测试
+	it("应该能够获取常用菜单列表", async () => {
+		const params: QueryCommonMenuListParams = {
+			pageIndex: 1,
+			pageSize: 10,
+			menuName: "测试菜单",
+			status: "1",
+			storeType: "admin",
+		};
+
+		const { data, execute } = queryCommonMenuList<PageDTO<CommonMenuData>>({
 			immediate: false,
 		});
 
-		await execute();
+		await execute({
+			params,
+		});
 
 		expect(execute).toBeDefined();
-		// 可以添加更多断言来验证返回的菜单数据结构
+		// 验证分页参数
+		expect(params.pageIndex).toBe(1);
+		expect(params.pageSize).toBe(10);
 	});
 
-	// 获取通用菜单名称列表测试
-	it("应该能够获取通用菜单名称列表", async () => {
-		const { data, execute } = queryCommonMenuName<CommonMenuNameData[]>({
+	// 获取可选菜单下拉列表测试
+	it("应该能够获取可选菜单下拉列表", async () => {
+		const { data, execute } = queryOptionalMenuList<OptionalMenuData[]>({
 			immediate: false,
 		});
 
-		await execute();
+		await execute({
+			params: {
+				storeType: "admin",
+			},
+		});
 
 		expect(execute).toBeDefined();
-		// 可以验证返回的名称列表数据结构
+		// 可以验证返回的数据结构
 	});
 
-	// 删除通用菜单测试
-	it("应该能够删除通用菜单", async () => {
+	// 删除常用菜单测试
+	it("应该能够删除常用菜单", async () => {
 		const params: RemoveCommonMenuParams = {
-			menuId: "test-menu-id",
+			commonMenuId: "common-menu-001",
 		};
 
 		const { data, execute } = removeCommonMenu<string>({
@@ -77,99 +90,117 @@ describe("通用菜单接口测试", () => {
 		});
 
 		expect(execute).toBeDefined();
-		// 可以添加更多断言来验证删除操作
+		// 验证必填参数
+		expect(params.commonMenuId).toBeDefined();
+		expect(params.commonMenuId).toBe("common-menu-001");
 	});
 
 	// 参数验证测试
-	it("添加菜单时应该验证必填参数", () => {
+	it("添加常用菜单时应该验证必填参数", () => {
 		const validParams: AddCommonMenuParams = {
-			name: "有效菜单名称",
+			mid: "menu-001",
 		};
 
 		const invalidParams = {
-			// 缺少必填的 name 字段
-			icon: "icon-test",
+			// 缺少必填的 mid 字段
+			sort: 1,
 		};
 
-		expect(validParams.name).toBeDefined();
-		expect(validParams.name).toBe("有效菜单名称");
+		expect(validParams.mid).toBeDefined();
+		expect(validParams.mid).toBe("menu-001");
 	});
 
 	// 数据类型测试
-	it("应该正确定义数据类型", () => {
+	it("应该正确定义常用菜单数据类型", () => {
 		const menuData: CommonMenuData = {
-			menuId: "menu-001",
-			name: "测试菜单",
+			commonMenuId: "common-001",
+			mid: "menu-001",
+			menuName: "测试菜单",
+			menuPath: "/test",
 			icon: "icon-test",
-			path: "/test",
-			component: "TestComponent",
-			parentId: "",
 			sort: 1,
-			menuType: "menu",
-			permission: "test:view",
 			status: "1",
-			description: "测试描述",
+			remark: "测试描述",
 			createTime: "2025-01-01 12:00:00",
 			updateTime: "2025-01-01 12:00:00",
 		};
 
-		expect(menuData.menuId).toBe("menu-001");
-		expect(menuData.name).toBe("测试菜单");
+		expect(menuData.commonMenuId).toBe("common-001");
+		expect(menuData.mid).toBe("menu-001");
+		expect(menuData.menuName).toBe("测试菜单");
 		expect(typeof menuData.sort).toBe("number");
 	});
 
-	// 菜单名称数据测试
-	it("应该正确处理菜单名称数据", () => {
-		const menuNameData: CommonMenuNameData = {
-			menuId: "menu-001",
-			name: "测试菜单",
+	// 可选菜单数据测试
+	it("应该正确定义可选菜单数据类型", () => {
+		const optionalMenuData: OptionalMenuData = {
+			mid: "menu-001",
+			menuName: "测试菜单",
+			menuPath: "/test",
+			icon: "icon-test",
+			parentId: "parent-001",
 		};
 
-		expect(menuNameData.menuId).toBeDefined();
-		expect(menuNameData.name).toBeDefined();
-		expect(typeof menuNameData.menuId).toBe("string");
-		expect(typeof menuNameData.name).toBe("string");
+		expect(optionalMenuData.mid).toBeDefined();
+		expect(optionalMenuData.menuName).toBeDefined();
+		expect(typeof optionalMenuData.mid).toBe("string");
+		expect(typeof optionalMenuData.menuName).toBe("string");
+	});
+
+	// 分页参数测试
+	it("分页查询应该验证分页参数", () => {
+		const pageParams: QueryCommonMenuListParams = {
+			pageIndex: 1,
+			pageSize: 10,
+		};
+
+		expect(pageParams.pageIndex).toBeGreaterThan(0);
+		expect(pageParams.pageSize).toBeGreaterThan(0);
+		expect(typeof pageParams.pageIndex).toBe("number");
+		expect(typeof pageParams.pageSize).toBe("number");
 	});
 });
 
 // 接口集成测试
-describe("通用菜单接口集成测试", () => {
-	it("应该能够完成完整的菜单CRUD操作流程", async () => {
-		// 1. 添加菜单
+describe("常用菜单接口集成测试", () => {
+	it("应该能够完成完整的常用菜单CRUD操作流程", async () => {
+		// 1. 获取可选菜单列表
+		const { execute: queryOptionalExecute } = queryOptionalMenuList<OptionalMenuData[]>({
+			immediate: false,
+		});
+
+		// 2. 添加常用菜单
 		const addParams: AddCommonMenuParams = {
-			name: "集成测试菜单",
-			icon: "icon-integration",
-			path: "/integration-test",
-			component: "IntegrationTestComponent",
+			mid: "integration-test-menu",
 			sort: 100,
-			menuType: "menu",
-			permission: "integration:test",
 			status: "1",
+			remark: "集成测试菜单",
 		};
 
 		const { execute: addExecute } = addCommonMenu<string>({
 			immediate: false,
 		});
 
-		// 2. 查询所有菜单
-		const { execute: queryAllExecute } = queryAllCommonMenu<CommonMenuData[]>({
+		// 3. 查询常用菜单列表
+		const queryParams: QueryCommonMenuListParams = {
+			pageIndex: 1,
+			pageSize: 10,
+			menuName: "集成测试",
+		};
+
+		const { execute: queryListExecute } = queryCommonMenuList<PageDTO<CommonMenuData>>({
 			immediate: false,
 		});
 
-		// 3. 查询菜单名称
-		const { execute: queryNameExecute } = queryCommonMenuName<CommonMenuNameData[]>({
-			immediate: false,
-		});
-
-		// 4. 删除菜单
+		// 4. 删除常用菜单
 		const { execute: removeExecute } = removeCommonMenu<string>({
 			immediate: false,
 		});
 
 		// 执行测试流程
+		expect(queryOptionalExecute).toBeDefined();
 		expect(addExecute).toBeDefined();
-		expect(queryAllExecute).toBeDefined();
-		expect(queryNameExecute).toBeDefined();
+		expect(queryListExecute).toBeDefined();
 		expect(removeExecute).toBeDefined();
 	});
 });
