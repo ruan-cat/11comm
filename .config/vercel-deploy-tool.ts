@@ -13,7 +13,7 @@ const isNeedVercelBuild = !IS_REVERSE_PROXY();
 
 /**
  * - 需要 vercel 的 build 命令时   ./apps/admin/dist
- * - 不需要 vercel 的 build 命令时 ./apps/admin/.vercel
+ * - 不需要 vercel 的 build 命令时 ./apps/admin
  */
 const targetCWD = isNeedVercelBuild ? "./apps/admin/dist" : "./apps/admin";
 
