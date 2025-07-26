@@ -4,7 +4,8 @@
       "WebFetch(domain:01s-11.apifox.cn)",
       "WebFetch(domain:01s-11.apifox.cn)",
       "WebFetch(domain:01s-11.apifox.cn)",
-      "WebFetch(domain:01s-11.apifox.cn)"
+      "WebFetch(domain:01s-11.apifox.cn)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": []
   }

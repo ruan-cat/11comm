@@ -96,12 +96,13 @@ export function queryCommonMenuList<T = PageDTO<CommonMenuData>>(options: UseAxi
  * @description 获取可以添加为常用菜单的菜单选项列表
  */
 export function queryOptionalMenuList<T = OptionalMenuData[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
+	return useRequest<ParamsQueryKey, T, {}>({
 		url: "/j1-menumana/commonmenu/queryname",
 		httpParamWay: "query",
 		options,
 		config: {
 			method: "GET",
+			params: {},
 		},
 	});
 }
