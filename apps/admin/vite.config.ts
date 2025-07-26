@@ -2,6 +2,7 @@ import { getPluginsList } from "./build/plugins/index";
 import { include, exclude } from "./build/optimize";
 import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
 import { consola } from "consola";
+import { type ViteVercelConfig } from "vite-plugin-vercel";
 import { root, alias, wrapperEnv, pathResolve, __APP_INFO__ } from "./build/utils";
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
@@ -14,6 +15,24 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 	const VITE_PROXY_PREFIX = env.VITE_PROXY_PREFIX;
 	const VITE_BASE_URL = env.VITE_BASE_URL;
 	const VITE_IS_REVERSE_PROXY = env.VITE_IS_REVERSE_PROXY;
+
+	function IS_REVERSE_PROXY() {
+		return VITE_IS_REVERSE_PROXY === "true";
+	}
+
+	/** @see https://github.com/magne4000/vite-plugin-vercel/tree/v9 */
+	const vercel: ViteVercelConfig = IS_REVERSE_PROXY()
+		? {
+				rewrites: [
+					// https://cloud.tencent.com/developer/ask/sof/107190446
+					// { source: "/backend/:path(.*)", destination: "http://47.93.160.11:10001/:path" },
+					// { source: "/(.*)", destination: "/index.html" },
+
+					// https://segmentfault.com/a/1190000042276351
+					{ source: "/backend/(.*)", destination: "/api/proxy" },
+				],
+			}
+		: {};
 
 	return {
 		base: VITE_PUBLIC_PATH,
@@ -34,7 +53,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			 */
 			proxy: {
 				// 是否需要对接口配置反向代理？
-				...(VITE_IS_REVERSE_PROXY === "true"
+				...(IS_REVERSE_PROXY()
 					? {
 							// 对特定前缀的请求地址 做反向代理
 							[VITE_PROXY_PREFIX]: {
@@ -81,16 +100,6 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			__APP_INFO__: JSON.stringify(__APP_INFO__),
 		},
 
-		/** @see https://github.com/magne4000/vite-plugin-vercel/tree/v9 */
-		vercel: {
-			rewrites: [
-				// https://cloud.tencent.com/developer/ask/sof/107190446
-				// { source: "/backend/:path(.*)", destination: "http://47.93.160.11:10001/:path" },
-				// { source: "/(.*)", destination: "/index.html" },
-
-				// https://segmentfault.com/a/1190000042276351
-				{ source: "/backend/(.*)", destination: "/api/proxy" },
-			],
-		},
+		vercel,
 	};
 };
