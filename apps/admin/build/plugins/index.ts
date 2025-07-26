@@ -47,10 +47,18 @@ export function getPluginsList(
 	 * 原框架没有 这里额外拓展的
 	 */
 	mode: ConfigEnv["mode"],
+
+	/**
+	 * 环境变量
+	 * @description
+	 * 原框架没有 这里额外拓展的
+	 * 用来获取vite配置的环境变量
+	 */
+	env: ImportMetaEnv,
 ): PluginOption[] {
 	const lifecycle = process.env.npm_lifecycle_event;
 
-	const VITE_IS_REVERSE_PROXY = process.env.VITE_IS_REVERSE_PROXY;
+	const VITE_IS_REVERSE_PROXY = env.VITE_IS_REVERSE_PROXY;
 	function IS_REVERSE_PROXY() {
 		return VITE_IS_REVERSE_PROXY === "true";
 	}
