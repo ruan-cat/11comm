@@ -3,7 +3,10 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 /** @see https://yalisky.eu.org/blogs/2023/12/28/vercel配置跨域 */
 export default async function handler(req, res) {
 	// 判断请求路径是否以 '/backend' 开头，设置代理目标
-	const target = req.url.startsWith("/backend") ? "http://47.93.160.11:10001" : "";
+	const target = req.url.startsWith("/backend")
+		? // "http://47.93.160.11:10001"
+			"https://m1.apifoxmock.com/m1/6386631-6083270-default"
+		: "";
 
 	console.log(" 在边缘请求内：req.url ", req.url);
 
@@ -12,7 +15,7 @@ export default async function handler(req, res) {
 		res.setHeader("Access-Control-Allow-Origin", "*");
 		res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE");
 		res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-		// res.setHeader("T-RuanCat", "T-RuanCat");
+		res.setHeader("T-RuanCat", "T-RuanCat");
 
 		// 创建代理并等待完成
 		await new Promise((resolve) => {
