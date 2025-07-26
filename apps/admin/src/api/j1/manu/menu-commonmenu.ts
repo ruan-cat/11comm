@@ -2,20 +2,18 @@ import { useRequest } from "@/composables/use-request";
 
 /** 添加常用菜单请求参数 */
 export interface AddCommonMenuParams {
-	/** 菜单编号 */
+	/** 菜单ID */
 	mid: string;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
-	/** 备注 */
-	remark?: string;
+	/** 图标ID */
+	icon: string;
+	/** 列顺序 */
+	seq: string;
 }
 
 /** 删除常用菜单请求参数 */
 export interface RemoveCommonMenuParams {
-	/** 常用菜单编号 */
-	commonMenuId: string;
+	/** 菜单编号 */
+	muId: string;
 }
 
 /** 获取常用菜单列表请求参数 */
@@ -24,50 +22,34 @@ export interface QueryCommonMenuListParams {
 	pageIndex: number;
 	/** 查询条数 */
 	pageSize: number;
+	/** 菜单编号 */
+	muId?: string;
 	/** 菜单名称 */
-	menuName?: string;
-	/** 状态 */
-	status?: string;
-	/** 商户类型 */
-	storeType?: string;
+	name?: string;
+	/** 列顺序 */
+	seq?: number;
 }
 
 /** 常用菜单数据对象 */
 export interface CommonMenuData {
-	/** 常用菜单编号 */
-	commonMenuId: string;
 	/** 菜单编号 */
-	mid: string;
+	muId: string;
 	/** 菜单名称 */
-	menuName: string;
-	/** 菜单路径 */
-	menuPath?: string;
-	/** 菜单图标 */
-	icon?: string;
-	/** 排序 */
-	sort: number;
-	/** 状态 */
-	status: string;
-	/** 备注 */
-	remark?: string;
-	/** 创建时间 */
-	createTime?: string;
-	/** 更新时间 */
-	updateTime?: string;
+	name: string;
+	/** 图标ID */
+	icon: string;
+	/** 菜单链接地址 */
+	url: string;
+	/** 列顺序 */
+	seq: number;
 }
 
 /** 可选菜单下拉列表数据对象 */
 export interface OptionalMenuData {
-	/** 菜单编号 */
+	/** 菜单ID */
 	mid: string;
-	/** 菜单名称 */
-	menuName: string;
-	/** 菜单路径 */
-	menuPath?: string;
-	/** 菜单图标 */
-	icon?: string;
-	/** 父级菜单编号 */
-	parentId?: string;
+	/** 模块-菜单名称 */
+	mixName: string;
 }
 
 /**
@@ -83,9 +65,8 @@ export function addCommonMenu<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 			method: "POST",
 			data: {
 				mid: "",
-				sort: 0,
-				status: "",
-				remark: "",
+				icon: "",
+				seq: "",
 			},
 		},
 	});
@@ -105,9 +86,6 @@ export function queryCommonMenuList<T = PageDTO<CommonMenuData>>(options: UseAxi
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
-				menuName: "",
-				status: "",
-				storeType: "",
 			},
 		},
 	});
@@ -124,9 +102,6 @@ export function queryOptionalMenuList<T = OptionalMenuData[]>(options: UseAxiosO
 		options,
 		config: {
 			method: "GET",
-			params: {
-				storeType: "",
-			},
 		},
 	});
 }
@@ -141,9 +116,9 @@ export function removeCommonMenu<T = string>(options: UseAxiosOptionsJsonVO<T>) 
 		httpParamWay: "query",
 		options,
 		config: {
-			method: "DELETE",
+			method: "PUT",
 			params: {
-				commonMenuId: "",
+				muId: "",
 			},
 		},
 	});
