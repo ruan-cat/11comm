@@ -20,11 +20,10 @@ describe("j2/组织管理/数据权限", () => {
 
 		await execute({
 			data: {
+				code: "111111",
+				communityId: "123456",
 				name: "测试数据权限",
-				description: "用于测试的数据权限",
-				scope: "test_scope",
-				seq: 1,
-				status: 1,
+				remark: "测试",
 			},
 		});
 
@@ -43,19 +42,18 @@ describe("j2/组织管理/数据权限", () => {
 
 		await execute({
 			data: {
-				id: "6002025051438010001",
-				name: "修改后的数据权限",
-				description: "修改后的权限描述",
-				scope: "updated_scope",
-				seq: 2,
-				status: 1,
+				code: "111111",
+				communityId: "123456",
+				dpId: "11111111111",
+				name: "测试数据权限",
+				remark: "测试",
 			},
 		});
 
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 获取数据权限列表（条件+分页）", async () => {
+	it("使用 path 接口 - 获取数据权限列表（条件+分页）", async () => {
 		const { execute, data } = queryDataPermissionList({
 			onSuccess(data) {
 				console.warn("queryDataPermissionList onSuccess", printFormat(data));
@@ -66,18 +64,13 @@ describe("j2/组织管理/数据权限", () => {
 		});
 
 		await execute({
-			params: {
-				pageIndex: 1,
-				pageSize: 10,
-				name: "测试",
-				status: 1,
-			},
+			url: "/j2-orgmanager/data/dataPrivilege/123456",
 		});
 
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 删除数据权限", async () => {
+	it("使用 path 接口 - 删除数据权限", async () => {
 		const { execute, data } = deleteDataPermission({
 			onSuccess(data) {
 				console.warn("deleteDataPermission onSuccess", printFormat(data));
@@ -88,9 +81,7 @@ describe("j2/组织管理/数据权限", () => {
 		});
 
 		await execute({
-			params: {
-				id: "6002025051438010001",
-			},
+			url: "/j2-orgmanager/data/delete/11111111111",
 		});
 
 		console.warn("查看简单的 data.value ", printFormat(data.value));
