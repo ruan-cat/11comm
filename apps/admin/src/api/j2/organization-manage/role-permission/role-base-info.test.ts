@@ -2,16 +2,17 @@ import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 import { addRole, deleteRole, queryAllRole, updateRole } from "./role-base-info";
 
-describe("角色基础信息接口测试", () => {
-	it("添加角色", async () => {
+describe("j2/组织管理/角色权限/角色基础信息", () => {
+	it("使用 body 接口 - 添加角色", async () => {
 		const { execute, data } = addRole({
 			onSuccess(data) {
-				console.warn("添加角色成功", printFormat(data));
+				console.warn("addRole onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("addRole onError", error);
+			},
 		});
 
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				name: "管理员角色",
@@ -23,15 +24,16 @@ describe("角色基础信息接口测试", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("添加角色（最小数据）", async () => {
+	it("使用 body 接口 - 添加角色（最小数据）", async () => {
 		const { execute, data } = addRole({
 			onSuccess(data) {
-				console.warn("添加角色成功", printFormat(data));
+				console.warn("addRole onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("addRole onError", error);
+			},
 		});
 
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				name: "测试角色",
@@ -41,17 +43,18 @@ describe("角色基础信息接口测试", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除角色", async () => {
+	it("使用 query 接口 - 删除角色", async () => {
 		const { execute, data } = deleteRole({
 			onSuccess(data) {
-				console.warn("删除角色成功", printFormat(data));
+				console.warn("deleteRole onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("deleteRole onError", error);
+			},
 		});
 
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pg_id: "6002025051438010007",
 			},
 		});
@@ -59,31 +62,33 @@ describe("角色基础信息接口测试", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取角色列表", async () => {
+	it("使用 query 接口 - 获取角色列表", async () => {
 		const { execute, data } = queryAllRole({
 			onSuccess(data) {
-				console.warn("获取角色列表成功", printFormat(data));
+				console.warn("queryAllRole onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("queryAllRole onError", error);
+			},
 		});
 
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {},
+			params: {},
 		});
 
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改角色", async () => {
+	it("使用 body 接口 - 修改角色", async () => {
 		const { execute, data } = updateRole({
 			onSuccess(data) {
-				console.warn("修改角色成功", printFormat(data));
+				console.warn("updateRole onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("updateRole onError", error);
+			},
 		});
 
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				name: "管理员角色",

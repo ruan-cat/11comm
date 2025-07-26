@@ -1,4 +1,4 @@
-import { useRequest } from "composables/use-request";
+import { useRequest } from "@/composables/use-request";
 
 /**
  * 添加角色请求参数
@@ -54,8 +54,8 @@ export interface UpdateRoleRequest {
 export function addRole<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, AddRoleRequest>({
 		url: "/j2-orgmanager/role-manage/add",
-		options,
 		httpParamWay: "body",
+		options,
 		upType: UpType.json,
 		config: {
 			method: "POST",
@@ -70,17 +70,16 @@ export function addRole<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 
 /**
  * 删除角色
- * @description
- * 根据角色id删除指定角色
+ * @description 根据角色id删除指定角色
  */
 export function deleteRole<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, DeleteRoleRequest>({
 		url: "/j2-orgmanager/role-manage/delete",
-		options,
 		httpParamWay: "query",
+		options,
 		config: {
 			method: "DELETE",
-			data: {
+			params: {
 				pg_id: "",
 			},
 		},
@@ -89,31 +88,29 @@ export function deleteRole<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 
 /**
  * 获取角色列表
- * @description
- * 获取所有角色权限信息列表
+ * @description 获取所有角色权限信息列表
  */
 export function queryAllRole<T = RolePermissionInfo[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
 		url: "/j2-orgmanager/role-manage/query",
-		options,
 		httpParamWay: "query",
+		options,
 		config: {
 			method: "GET",
-			data: {},
+			params: {},
 		},
 	});
 }
 
 /**
  * 修改角色
- * @description
- * 修改角色权限信息
+ * @description 修改角色权限信息
  */
 export function updateRole<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, UpdateRoleRequest>({
 		url: "/j2-orgmanager/role-manage/update",
-		options,
 		httpParamWay: "body",
+		options,
 		upType: UpType.json,
 		config: {
 			method: "PUT",
