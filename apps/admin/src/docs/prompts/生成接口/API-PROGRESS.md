@@ -748,15 +748,6 @@
 - 📊 更新 J2 模块进度: 9/25 (36%)
 - 📊 更新总体进度: 60/400+ (约 15%)
 
-- ✅ **新增 J2 模块数据权限员工关联接口**
-  - 获取关联员工列表接口 (`/orgmanager/dataprivilege/staff`) - 使用 GET + query 传参，返回 `PageDTO<StaffDTO>`
-  - 新增关联员工接口 (`/orgmanager/dataprivilege/staff`) - 使用 PUT + body 传参，返回 `number`
-  - 删除关联员工接口 (`/orgmanager/dataprivilege/staff/{staffId}`) - 使用 DELETE + path 传参
-- 📁 创建文件: `apps/admin/src/api/j2/organization-manage/data-permission/related-staff.ts`
-- 🧪 创建测试文件: `apps/admin/src/api/j2/organization-manage/data-permission/related-staff.test.ts`
-- 📊 更新 J2 模块进度: 12/25 (48%)
-- 📊 更新总体进度: 63/400+ (约 16%)
-
 ### 2025-07-26
 
 - ✅ 创建 API 接口生成进度跟踪文件
@@ -770,6 +761,15 @@
   - 删除通用菜单接口 (`/j1-menumana/commonmenu/remove`)
 - 📁 创建文件: `apps/admin/src/api/j1/manu/menu-commonmenu.ts`
 - 🧪 创建测试文件: `apps/admin/src/api/j1/manu/menu-commonmenu.test.ts`
+
+- ✅ **新增 J2 模块数据权限员工关联接口**
+  - 获取关联员工列表接口 (`/orgmanager/dataprivilege/staff`) - 使用 GET + query 传参，返回 `PageDTO<StaffDTO>`
+  - 新增关联员工接口 (`/orgmanager/dataprivilege/staff`) - 使用 PUT + body 传参，返回 `number`
+  - 删除关联员工接口 (`/orgmanager/dataprivilege/staff/{staffId}`) - 使用 DELETE + path 传参
+- 📁 创建文件: `apps/admin/src/api/j2/organization-manage/data-permission/related-staff.ts`
+- 🧪 创建测试文件: `apps/admin/src/api/j2/organization-manage/data-permission/related-staff.test.ts`
+- 📊 更新 J2 模块进度: 12/25 (48%)
+- 📊 更新总体进度: 63/400+ (约 16%)
 
 ---
 
