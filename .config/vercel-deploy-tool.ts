@@ -1,6 +1,22 @@
 import type { Config } from "@ruan-cat/vercel-deploy-tool/src/config.ts";
 import { domains } from "@ruan-cat/domains";
 
+const VITE_IS_REVERSE_PROXY = process.env.VITE_IS_REVERSE_PROXY;
+function IS_REVERSE_PROXY() {
+	return VITE_IS_REVERSE_PROXY === "true";
+}
+/**
+ * 需要反向代理时 就不需要vercel构建生成 .vercel 文件夹
+ * 不需要反向代理时 就需要生成 .vercel 文件夹
+ */
+const isNeedVercelBuild = !IS_REVERSE_PROXY();
+
+/**
+ * - 需要 vercel 的 build 命令时   ./apps/admin/dist
+ * - 不需要 vercel 的 build 命令时 ./apps/admin/.vercel
+ */
+const targetCWD = isNeedVercelBuild ? "./apps/admin/dist" : "./apps/admin/.vercel";
+
 // 这里使用的是阮喵喵的vercel账号
 export default <Config>{
 	// 01星球专门的vercel部署项目
@@ -18,8 +34,8 @@ export default <Config>{
 		// 11comm智慧社区 主项目
 		{
 			type: "static",
-			isNeedVercelBuild: false,
-			targetCWD: "./apps/admin",
+			isNeedVercelBuild,
+			targetCWD,
 			url: domains["11comm"] as unknown as string[],
 		},
 
