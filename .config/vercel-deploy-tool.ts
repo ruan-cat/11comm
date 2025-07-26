@@ -32,25 +32,25 @@ export default <Config>{
 
 	deployTargets: [
 		// 11comm智慧社区 主项目
-		// {
-		// 	type: "static",
-		// 	// isNeedVercelBuild,
-		// 	targetCWD,
-		// 	url: domains["11comm"] as unknown as string[],
-		// },
 		{
-			type: "userCommands",
-			targetCWD: "./apps/admin",
-			outputDirectory: "dist",
-			userCommands: ["pnpm -C=./apps/admin build"],
+			type: "static",
+			isNeedVercelBuild,
+			targetCWD,
 			url: domains["11comm"] as unknown as string[],
 		},
+		// {
+		// 	type: "userCommands",
+		// 	targetCWD: "./apps/admin",
+		// 	outputDirectory: "dist",
+		// 	userCommands: ["pnpm -C=./apps/admin build"],
+		// 	url: domains["11comm"] as unknown as string[],
+		// },
 
 		// 11comm智慧社区 前端技术文档
-		// {
-		// 	type: "static",
-		// 	targetCWD: "./apps/admin/src/.vitepress/dist",
-		// 	url: domains["11comm-doc"] as unknown as string[],
-		// },
+		{
+			type: "static",
+			targetCWD: "./apps/admin/src/.vitepress/dist",
+			url: domains["11comm-doc"] as unknown as string[],
+		},
 	],
 };
