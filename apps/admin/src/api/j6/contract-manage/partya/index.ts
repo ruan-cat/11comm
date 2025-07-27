@@ -56,6 +56,20 @@ export interface AddContractPartyaParams {
 	alink: string;
 }
 
+/**
+ * 修改合同甲方参数
+ */
+export interface UpdateContractPartyaParams {
+	/** 甲方 */
+	partyA: string;
+	/** 甲方ID */
+	partyaId: string;
+	/** 甲方联系人 */
+	aContacts: string;
+	/** 甲方电话 */
+	aLink: string;
+}
+
 // ==================== 接口函数 ====================
 
 /**
@@ -124,6 +138,26 @@ export function addContractPartya<T = boolean>(options: UseAxiosOptionsJsonVO<T>
 				partyA: "",
 				acontacts: "",
 				alink: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 修改合同甲方
+ */
+export function updateContractPartya<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, UpdateContractPartyaParams>({
+		url: "/j6-contract/partya/update-contract-partya",
+		httpParamWay: "body",
+		config: {
+			method: "PUT",
+			data: {
+				partyA: "",
+				partyaId: "",
+				aContacts: "",
+				aLink: "",
 			},
 		},
 		options,
