@@ -1,15 +1,19 @@
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
+
 /**
- * 删除成员车辆参数类型
+ * 删除成员车辆参数
  */
-interface DeleteMemberVehicleParams {
-	/** carId */
+export interface DeleteMemberVehicleParams {
+	/** 车辆ID */
 	carId: string;
 }
 
 /**
- * 续租车位参数类型
+ * 续租车位参数
  */
-interface RenewParkingSpaceLeaseParams {
+export interface RenewParkingSpaceLeaseParams {
 	/** 车辆ID */
 	carId: string;
 	/** 结租时间 */
@@ -23,9 +27,9 @@ interface RenewParkingSpaceLeaseParams {
 }
 
 /**
- * 获取车辆基础信息视图对象
+ * 车辆基础信息数据模型
  */
-interface VehicleBasicInfoViewModel {
+export interface VehicleBasicInfoDataModel {
 	/** 车辆品牌 */
 	carBrand?: string;
 	/** 颜色 */
@@ -53,17 +57,17 @@ interface VehicleBasicInfoViewModel {
 }
 
 /**
- * 获取车辆基础信息参数类型
+ * 获取车辆基础信息参数
  */
-interface GetVehicleBasicInfoParams {
-	/** carId */
+export interface GetVehicleBasicInfoParams {
+	/** 车辆ID */
 	carId: string;
 }
 
 /**
- * 添加车辆参数类型
+ * 添加车辆参数
  */
-interface AddCarParams {
+export interface AddCarParams {
 	/** 汽车品牌 */
 	carBrand?: string;
 	/** 颜色 */
@@ -89,9 +93,9 @@ interface AddCarParams {
 }
 
 /**
- * 添加成员车辆参数类型
+ * 添加成员车辆参数
  */
-interface AddMemberVehicleParams {
+export interface AddMemberVehicleParams {
 	/** 车辆品牌 */
 	carBrand: string;
 	/** 车辆颜色 */
@@ -109,9 +113,9 @@ interface AddMemberVehicleParams {
 }
 
 /**
- * 导出车辆数据参数类型
+ * 导出车辆数据参数
  */
-interface ExportVehicleParams {
+export interface ExportVehicleParams {
 	/** 车牌号 */
 	carNum?: string;
 	/** 主车辆 */
@@ -133,17 +137,17 @@ interface ExportVehicleParams {
 }
 
 /**
- * 导入车辆参数类型
+ * 导入车辆参数
  */
-interface ImportVehicleParams {
+export interface ImportVehicleParams {
 	/** 文件 */
 	file: File;
 }
 
 /**
- * 成员车辆模型
+ * 成员车辆数据模型
  */
-interface MemberVehicleModel {
+export interface MemberVehicleDataModel {
 	/** 车辆品牌 */
 	carBrand?: string;
 	/** 车辆颜色 */
@@ -171,9 +175,9 @@ interface MemberVehicleModel {
 }
 
 /**
- * 获取成员车辆列表参数类型
+ * 获取成员车辆列表参数
  */
-interface GetMemberVehicleListParams {
+export interface GetMemberVehicleListParams {
 	/** 车辆ID */
 	carId: string;
 	/** 成员ID */
@@ -185,9 +189,9 @@ interface GetMemberVehicleListParams {
 }
 
 /**
- * 修改车辆参数类型
+ * 修改车辆参数
  */
-interface ModifyCarParams {
+export interface ModifyCarParams {
 	/** 汽车品牌 */
 	carBrand?: string;
 	/** 颜色 */
@@ -213,9 +217,9 @@ interface ModifyCarParams {
 }
 
 /**
- * 修改成员车辆参数类型
+ * 修改成员车辆参数
  */
-interface ModifyOwnerVehicleParams {
+export interface ModifyOwnerVehicleParams {
 	/** 车辆品牌 */
 	carBrand?: string;
 	/** 车辆颜色 */
@@ -231,9 +235,9 @@ interface ModifyOwnerVehicleParams {
 }
 
 /**
- * 车辆修改记录模型
+ * 车辆修改记录数据模型
  */
-interface VehicleModifyRecordModel {
+export interface VehicleModifyRecordDataModel {
 	/** 车辆品牌 */
 	carBrand?: string;
 	/** 车辆颜色 */
@@ -257,9 +261,9 @@ interface VehicleModifyRecordModel {
 }
 
 /**
- * 获取车辆修改记录参数类型
+ * 获取车辆修改记录参数
  */
-interface GetModifyRecordListParams {
+export interface GetModifyRecordListParams {
 	/** 车辆ID */
 	carId: string;
 	/** 成员ID */
@@ -271,9 +275,9 @@ interface GetModifyRecordListParams {
 }
 
 /**
- * 获取车辆列表视图模型
+ * 车辆列表数据模型
  */
-interface GetCarListViewModel {
+export interface CarListDataModel {
 	/** 停车场编号 */
 	areaNum?: string;
 	/** 车颜色 */
@@ -317,9 +321,9 @@ interface GetCarListViewModel {
 }
 
 /**
- * 获取车辆列表参数类型
+ * 获取车辆列表参数
  */
-interface GetCarListParams {
+export interface GetCarListParams {
 	/** 车牌号 */
 	carNum?: string;
 	/** 社区id */
@@ -343,34 +347,49 @@ interface GetCarListParams {
 }
 
 /**
- * 删除成员车辆接口
- * @description 删除指定的成员车辆
+ * 释放车位参数
  */
-export function deleteMemberVehicle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+export interface ReleaseParkingSpaceParams {
+	/** 车辆ID */
+	carId: string;
+}
+
+/**
+ * 删除车辆参数
+ */
+export interface RemoveOwnerVehicleParams {
+	/** 车辆ID */
+	carId: string;
+}
+
+// ==================== 接口函数 ====================
+
+/**
+ * 删除成员车辆
+ */
+export function deleteMemberVehicle<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, DeleteMemberVehicleParams>({
 		url: "/j7-park/park-manage/owner-vehicle/delete-owner-vehicle",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "delete",
+			method: "DELETE",
 			params: {
 				carId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 续租车位接口
- * @description 续租指定车辆的车位
+ * 续租车位
  */
-export function renewParkingSpaceLease<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+export function renewParkingSpaceLease<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RenewParkingSpaceLeaseParams>({
 		url: "/j7-park/park-manage/owner-vehicle/renew-parking-space-lease",
-		options,
 		httpParamWay: "body",
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				carId: "",
 				endTime: "",
@@ -378,38 +397,36 @@ export function renewParkingSpaceLease<T = string>(options: UseAxiosOptionsJsonV
 				startTime: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 获取车辆基础信息接口
- * @description 根据车辆ID获取车辆基础信息
+ * 获取车辆基础信息
  */
-export function getVehicleBasicInfo<T = VehicleBasicInfoViewModel>(options: UseAxiosOptionsJsonVO<T>) {
+export function getVehicleBasicInfo<T = VehicleBasicInfoDataModel>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetVehicleBasicInfoParams>({
 		url: "/j7-park/park-manage/owner-vehicle/query-vehicle-info",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				carId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 添加车辆接口
- * @description 添加新的业主车辆信息
+ * 添加车辆
  */
-export function addCar<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+export function addCar<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, AddCarParams>({
 		url: "/j7-park/park-manage/owner-vehicle/add-car",
-		options,
 		httpParamWay: "body",
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				carNum: "",
 				carType: "",
@@ -419,79 +436,75 @@ export function addCar<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				psId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 添加成员车辆接口
- * @description 添加新的成员车辆信息
+ * 添加成员车辆
  */
-export function addMemberVehicle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, AddMemberVehicleParams>({
+export function addMemberVehicle<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, AddMemberVehicleParams>({
 		url: "/j7-park/park-manage/owner-vehicle/add-member-vehicle",
-		options,
-		httpParamWay: "query",
+		httpParamWay: "body",
 		config: {
-			method: "post",
-			params: {
+			method: "POST",
+			data: {
 				carBrand: "",
 				carColor: "",
 				carNum: "",
 				carType: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 导出车辆数据接口
- * @description 根据查询条件导出车辆数据，返回Excel文件的字节流
+ * 导出车辆数据
  */
-export function exportVehicle<T = Record<string, string>>(options: UseAxiosOptionsJsonVO<T>) {
+export function exportVehicle<T = ArrayBuffer>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, ExportVehicleParams>({
 		url: "/j7-park/park-manage/owner-vehicle/export-vehicle",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				carTypeCd: "",
 				communityId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 导入车辆接口
- * @description 通过Excel文件导入车辆数据
+ * 导入车辆
  */
-export function importVehicle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+export function importVehicle<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ImportVehicleParams>({
 		url: "/j7-park/park-manage/owner-vehicle/import-vehicle",
-		options,
 		httpParamWay: "body",
 		upType: UpType.file,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				file: null as any,
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 获取成员车辆列表接口
- * @description 获取成员车辆列表（条件+分页）
+ * 获取成员车辆列表（条件+分页）
  */
-export function getMemberVehicleList<T = PageDTO<MemberVehicleModel>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getMemberVehicleList<T = PageDTO<MemberVehicleDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetMemberVehicleListParams>({
 		url: "/j7-park/park-manage/owner-vehicle/member-vehicle",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				carId: "",
 				memberId: "",
@@ -499,20 +512,19 @@ export function getMemberVehicleList<T = PageDTO<MemberVehicleModel>>(options: U
 				pageSize: 10,
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 修改车辆接口
- * @description 修改车辆信息
+ * 修改车辆
  */
-export function modifyCar<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+export function modifyCar<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ModifyCarParams>({
 		url: "/j7-park/park-manage/owner-vehicle/modify-car",
-		options,
 		httpParamWay: "body",
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				carId: "",
 				carNum: "",
@@ -522,39 +534,37 @@ export function modifyCar<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				memberId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 修改成员车辆接口
- * @description 修改成员车辆信息
+ * 修改成员车辆
  */
-export function modifyOwnerVehicle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+export function modifyOwnerVehicle<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ModifyOwnerVehicleParams>({
 		url: "/j7-park/park-manage/owner-vehicle/modify-owner-vehicle",
-		options,
 		httpParamWay: "body",
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				carType: "",
 				id: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 获取车辆修改记录接口
- * @description 获取车辆修改记录（条件+分页）
+ * 获取车辆修改记录（条件+分页）
  */
-export function getModifyRecordList<T = PageDTO<VehicleModifyRecordModel>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getModifyRecordList<T = PageDTO<VehicleModifyRecordDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetModifyRecordListParams>({
 		url: "/j7-park/park-manage/owner-vehicle/modify-record",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				carId: "",
 				memberId: "",
@@ -562,61 +572,59 @@ export function getModifyRecordList<T = PageDTO<VehicleModifyRecordModel>>(optio
 				pageSize: 10,
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 获取车辆列表接口
- * @description 获取车辆列表（条件+分页）
+ * 获取车辆列表（条件+分页）
  */
-export function getCarList<T = PageDTO<GetCarListViewModel>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getCarList<T = PageDTO<CarListDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetCarListParams>({
 		url: "/j7-park/park-manage/owner-vehicle/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				communityId: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 释放车位接口
- * @description 通过车辆ID释放指定车位
+ * 释放车位
  */
-export function releaseParkingSpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, { carId: string }>({
+export function releaseParkingSpace<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, ReleaseParkingSpaceParams>({
 		url: "/j7-park/park-manage/owner-vehicle/release-parking-space",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "put",
+			method: "PUT",
 			params: {
 				carId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 删除车辆接口
- * @description 通过车辆ID删除指定车辆
+ * 删除车辆
  */
-export function removeOwnerVehicle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, { carId: string }>({
+export function removeOwnerVehicle<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, RemoveOwnerVehicleParams>({
 		url: "/j7-park/park-manage/owner-vehicle/remove-owner-vehicle",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "delete",
+			method: "DELETE",
 			params: {
 				carId: "",
 			},
 		},
+		options,
 	});
 }

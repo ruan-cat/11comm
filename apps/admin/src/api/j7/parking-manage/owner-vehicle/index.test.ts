@@ -1,9 +1,9 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-
 import {
-	removeOwnerVehicle,
-	releaseParkingSpace,
+	deleteMemberVehicle,
+	renewParkingSpaceLease,
+	getVehicleBasicInfo,
 	addCar,
 	addMemberVehicle,
 	exportVehicle,
@@ -13,18 +13,76 @@ import {
 	modifyOwnerVehicle,
 	getModifyRecordList,
 	getCarList,
-	getVehicleBasicInfo,
-	renewParkingSpaceLease,
-	deleteMemberVehicle,
-} from ".";
+	releaseParkingSpace,
+	removeOwnerVehicle,
+} from "./index";
 
-describe("业主车辆管理接口测试", () => {
-	it("添加车辆接口", async () => {
-		const { execute, data } = addCar({
-			immediate: false,
+describe("j7/停车管理/业主车辆", () => {
+	it("使用 query 接口 - 删除成员车辆", async () => {
+		const { execute, data } = deleteMemberVehicle({
+			onSuccess(data) {
+				console.warn("deleteMemberVehicle onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("deleteMemberVehicle onError", error);
+			},
 		});
+		await execute({
+			params: {
+				carId: "car123456",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
 
-		const result = await execute({
+	it("使用 body 接口 - 续租车位", async () => {
+		const { execute, data } = renewParkingSpaceLease({
+			onSuccess(data) {
+				console.warn("renewParkingSpaceLease onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("renewParkingSpaceLease onError", error);
+			},
+		});
+		await execute({
+			data: {
+				carId: "car123456",
+				endTime: "2025-12-31 23:59:59",
+				psId: "ps123456",
+				startTime: "2025-01-01 00:00:00",
+				remark: "续租一年",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 获取车辆基础信息", async () => {
+		const { execute, data } = getVehicleBasicInfo({
+			onSuccess(data) {
+				console.warn("getVehicleBasicInfo onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getVehicleBasicInfo onError", error);
+			},
+		});
+		await execute({
+			params: {
+				carId: "car123456",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 body 接口 - 添加车辆", async () => {
+		const { execute, data } = addCar({
+			onSuccess(data) {
+				console.warn("addCar onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("addCar onError", error);
+			},
+		});
+		await execute({
 			data: {
 				carNum: "渝A12345",
 				carType: "9901",
@@ -39,232 +97,218 @@ describe("业主车辆管理接口测试", () => {
 				remark: "测试车辆",
 			},
 		});
-
-		console.warn("添加车辆结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("添加成员车辆接口", async () => {
+	it("使用 body 接口 - 添加成员车辆", async () => {
 		const { execute, data } = addMemberVehicle({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("addMemberVehicle onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("addMemberVehicle onError", error);
+			},
 		});
-
-		const result = await execute({
-			params: {
+		await execute({
+			data: {
 				carBrand: "本田",
 				carColor: "黑色",
+				carId: "car123456",
 				carNum: "渝B67890",
 				carType: "9901",
-				carId: "car123456",
-				memberId: "member123456",
+				memberId: "member123",
 				remark: "成员车辆",
 			},
 		});
-
-		console.warn("添加成员车辆结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("导出车辆数据接口", async () => {
+	it("使用 query 接口 - 导出车辆数据", async () => {
 		const { execute, data } = exportVehicle({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("exportVehicle onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("exportVehicle onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			params: {
 				carTypeCd: "9901",
 				communityId: "2024022643710121",
-				carNum: "渝A12345",
+				carNum: "渝A",
 				leaseType: "H",
-				link: "15044108708",
-				memberCarNum: "渝B67890",
-				name: "测试业主",
-				num: "A01",
-				valid: 1,
+				name: "张三",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 body 接口 - 导入车辆", async () => {
+		const { execute, data } = importVehicle({
+			onSuccess(data) {
+				console.warn("importVehicle onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("importVehicle onError", error);
 			},
 		});
 
-		console.warn("导出车辆数据结果:", printFormat(result));
-	});
-
-	it("导入车辆接口", async () => {
-		const { execute, data } = importVehicle({
-			immediate: false,
+		// 创建一个模拟的文件对象
+		const file = new File(["车辆数据"], "vehicles.xlsx", {
+			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 		});
 
-		// 跳过实际文件上传测试，避免Node环境中File对象不支持
-		console.warn("导入车辆接口测试跳过 - 需要实际文件上传环境");
+		await execute({
+			data: {
+				file: file,
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取成员车辆列表接口", async () => {
+	it("使用 query 接口 - 获取成员车辆列表（条件+分页）", async () => {
 		const { execute, data } = getMemberVehicleList({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("getMemberVehicleList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getMemberVehicleList onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			params: {
 				carId: "car123456",
-				memberId: "member123456",
+				memberId: "member123",
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		});
-
-		console.warn("获取成员车辆列表结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改车辆接口", async () => {
+	it("使用 body 接口 - 修改车辆", async () => {
 		const { execute, data } = modifyCar({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("modifyCar onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("modifyCar onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			data: {
 				carId: "car123456",
 				carNum: "渝A12345",
 				carType: "9901",
 				communityId: "2024022643710121",
 				leaseType: "H",
-				memberId: "member123456",
-				carBrand: "丰田",
-				carColor: "白色",
+				memberId: "member123",
+				carBrand: "丰田（已修改）",
+				carColor: "银色",
 				startTime: "2024-01-01 00:00:00",
-				endTime: "2024-12-31 23:59:59",
+				endTime: "2025-12-31 23:59:59",
 				remark: "修改后的车辆信息",
 			},
 		});
-
-		console.warn("修改车辆结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改成员车辆接口", async () => {
+	it("使用 body 接口 - 修改成员车辆", async () => {
 		const { execute, data } = modifyOwnerVehicle({
-			immediate: false,
-		});
-
-		const result = await execute({
-			data: {
-				id: "vehicle123456",
-				carType: "9901",
-				carBrand: "本田",
-				carColor: "黑色",
-				carNum: "渝B67890",
-				remark: "修改后的成员车辆信息",
+			onSuccess(data) {
+				console.warn("modifyOwnerVehicle onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("modifyOwnerVehicle onError", error);
 			},
 		});
-
-		console.warn("修改成员车辆结果:", printFormat(result));
+		await execute({
+			data: {
+				carType: "9902",
+				id: "memberCar123",
+				carBrand: "大众",
+				carColor: "红色",
+				carNum: "渝C11111",
+				remark: "修改后的成员车辆",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取车辆修改记录接口", async () => {
+	it("使用 query 接口 - 获取车辆修改记录（条件+分页）", async () => {
 		const { execute, data } = getModifyRecordList({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("getModifyRecordList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getModifyRecordList onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			params: {
 				carId: "car123456",
-				memberId: "member123456",
+				memberId: "member123",
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		});
-
-		console.warn("获取车辆修改记录结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取车辆列表接口", async () => {
+	it("使用 query 接口 - 获取车辆列表（条件+分页）", async () => {
 		const { execute, data } = getCarList({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("getCarList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getCarList onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			params: {
 				communityId: "2024022643710121",
 				pageIndex: 1,
 				pageSize: 10,
-				carNum: "渝A12345",
+				carNum: "渝A",
 				leaseType: "H",
-				link: "15044108708",
-				memberCarNum: "渝B67890",
-				name: "测试业主",
-				num: "A01",
-				valid: 1,
+				name: "张三",
 			},
 		});
-
-		console.warn("获取车辆列表结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取车辆基础信息接口", async () => {
-		const { execute, data } = getVehicleBasicInfo({
-			immediate: false,
-		});
-
-		const result = await execute({
-			params: {
-				carId: "car123456",
-			},
-		});
-
-		console.warn("获取车辆基础信息结果:", printFormat(result));
-	});
-
-	it("续租车位接口", async () => {
-		const { execute, data } = renewParkingSpaceLease({
-			immediate: false,
-		});
-
-		const result = await execute({
-			data: {
-				carId: "car123456",
-				psId: "ps123456",
-				startTime: "2024-01-01 00:00:00",
-				endTime: "2024-12-31 23:59:59",
-				remark: "续租车位",
-			},
-		});
-
-		console.warn("续租车位结果:", printFormat(result));
-	});
-
-	it("删除成员车辆接口", async () => {
-		const { execute, data } = deleteMemberVehicle({
-			immediate: false,
-		});
-
-		const result = await execute({
-			params: {
-				carId: "car123456",
-			},
-		});
-
-		console.warn("删除成员车辆结果:", printFormat(result));
-	});
-
-	it("释放车位接口", async () => {
+	it("使用 query 接口 - 释放车位", async () => {
 		const { execute, data } = releaseParkingSpace({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("releaseParkingSpace onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("releaseParkingSpace onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			params: {
 				carId: "car123456",
 			},
 		});
-
-		console.warn("释放车位结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除车辆接口", async () => {
+	it("使用 query 接口 - 删除车辆", async () => {
 		const { execute, data } = removeOwnerVehicle({
-			immediate: false,
+			onSuccess(data) {
+				console.warn("removeOwnerVehicle onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("removeOwnerVehicle onError", error);
+			},
 		});
-
-		const result = await execute({
+		await execute({
 			params: {
 				carId: "car123456",
 			},
 		});
-
-		console.warn("删除车辆结果:", printFormat(result));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
