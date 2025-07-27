@@ -16,7 +16,7 @@ import {
 	getVehicleBasicInfo,
 	renewParkingSpaceLease,
 	deleteMemberVehicle,
-} from "./owner-vehicle";
+} from ".";
 
 describe("业主车辆管理接口测试", () => {
 	it("添加车辆接口", async () => {
