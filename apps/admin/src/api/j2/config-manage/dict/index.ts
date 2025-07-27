@@ -70,6 +70,30 @@ export interface DeleteDictParams {
 	id: string;
 }
 
+/**
+ * 查询字典名称列表参数
+ */
+export interface QueryDictNameListParams {
+	/** 员工岗位 */
+	name?: string;
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+}
+
+/**
+ * 字典名称列表数据模型
+ */
+export interface DictNameListDataModel {
+	/** 唯一标识 */
+	id: number;
+	/** 名称 */
+	name?: string;
+	/** 编码 */
+	statusCd?: string;
+}
+
 // ==================== 接口函数 ====================
 
 /**
@@ -145,6 +169,25 @@ export function deleteDict<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 			method: "DELETE",
 			params: {
 				id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取字典名称列表
+ */
+export function queryDictNameList<T = PageDTO<DictNameListDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryDictNameListParams>({
+		url: "/j2-configmanager/sys/query-dictionary",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				name: "",
+				pageIndex: 1,
+				pageSize: 10,
 			},
 		},
 		options,

@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { addDict, updateDict, queryDictList, deleteDict } from "./index";
+import { addDict, updateDict, queryDictList, deleteDict, queryDictNameList } from "./index";
 
 describe("j2/配置管理/字典", () => {
 	it("使用 body 接口 - 添加字典", async () => {
@@ -77,6 +77,25 @@ describe("j2/配置管理/字典", () => {
 		await execute({
 			params: {
 				id: "1",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 获取字典名称列表", async () => {
+		const { execute, data } = queryDictNameList({
+			onSuccess(data) {
+				console.warn("queryDictNameList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("queryDictNameList onError", error);
+			},
+		});
+		await execute({
+			params: {
+				name: "普通员工",
+				pageIndex: 1,
+				pageSize: 10,
 			},
 		});
 		console.warn("查看简单的 data.value ", printFormat(data.value));
