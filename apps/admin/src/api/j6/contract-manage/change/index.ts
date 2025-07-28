@@ -294,7 +294,7 @@ export function modifyAssetChange<T = boolean>(options: UseAxiosOptionsJsonVO<T>
 		url: "/j6-contract/change/modify-asset-change",
 		httpParamWay: "body",
 		config: {
-			method: "PUT",
+			method: "get",
 			data: {
 				contractCode: "",
 				contractId: "",
