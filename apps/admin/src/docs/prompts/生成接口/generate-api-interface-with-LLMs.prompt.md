@@ -88,7 +88,33 @@ export function sysManagerModifyUserDetail<T = string>(options: UseAxiosOptionsJ
 2. 导入 `useRequest` 接口请求工具时，导入语法要严格使用上述文档提供的例子来导入。我们导入时已经使用路径别名了。
 3. 在生成接口代码时，同时生成业务类型。其中，在生成分页接口时，不要生成额外的 PageDTO 类型。请使用全局自动提供的全局类型。PageDTO 是全局类型，你应该直接使用。
 
-## api 测试代码，生成案例
+## api 接口代码 代码风格
+
+在你生成 api 接口代码时，请遵守以下代码风格：
+
+### 仅仅导入一行接口请求工具
+
+正确的例子：
+
+```ts
+import { useRequest } from "@/composables/use-request";
+```
+
+整个文件只需要导入一行接口请求工具即可。不需要你手动导入其他多余的类型。
+
+以下是错误的例子：
+
+```ts
+import { useRequest } from "@/composables/use-request";
+import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
+import type { ParamsBodyKey, ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
+import type { AxiosRequestConfig } from "axios";
+import type { PageDTO } from "@/composables/use-request/useRequestIn01s/types/PageDTO";
+```
+
+不应该导入过多多余的内容。我们项目使用了自动导入，很多工具不需要你手动导入。
+
+## api 测试代码 生成案例
 
 请严格遵守以下的测试用例代码生成规则。
 
