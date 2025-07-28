@@ -252,7 +252,11 @@ function formatTwoStageRoutes(routesList: RouteRecordRaw[]) {
 }
 
 /** 处理缓存路由（添加、删除、刷新） */
-function handleAliveRoute({ name }: ToRouteType, mode?: string) {
+function handleAliveRoute(
+	// @ts-ignore 类型“ToRouteType”上不存在属性“name”。
+	{ name }: ToRouteType,
+	mode?: string,
+) {
 	switch (mode) {
 		case "add":
 			usePermissionStoreHook().cacheOperate({
