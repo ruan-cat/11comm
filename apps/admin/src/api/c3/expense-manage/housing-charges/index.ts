@@ -220,6 +220,76 @@ export interface QueryPaymentRecordsParams {
 	opt?: string;
 }
 
+/**
+ * 获取缴纳记录详情查询参数
+ */
+export interface PaymentRecordDetailParams {
+	/** 记录ID */
+	id: string;
+}
+
+/**
+ * 缴纳记录详情信息
+ */
+export interface PaymentDetailDTO {
+	/** 缴费ID */
+	fee_id?: string;
+	/** 周期(单位:月) */
+	cycle?: string;
+	/** 缴费方式 */
+	pay_path?: string;
+	/** 应收金额 */
+	receivable_amount?: string;
+	/** 实收金额 */
+	amount?: string;
+	/** 缴费时间 */
+	pay_time?: string;
+	/** 缴费开始 */
+	start_time?: string;
+	/** 缴费结束 */
+	end_time?: string;
+	/** 收银员 */
+	receive_id?: string;
+	/** 状态 */
+	status_cd?: string;
+	/** 备注 */
+	remark?: string;
+	/** 操作 */
+	opt?: string;
+}
+
+/**
+ * 获取费用修改记录查询参数
+ */
+export interface QueryFeeModifyRecordsParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 费用类型 */
+	fee_id: string;
+}
+
+/**
+ * 费用修改记录信息
+ */
+export interface FeeModifyDTO {
+	/** 费用类型 */
+	fee_id?: string;
+	/** 费用项 */
+	fee_pro?: string;
+	/** 建账时间 */
+	pay_start?: string;
+	/** 计费起始时间 */
+	pay_end?: string;
+	/** 动作 */
+	actions?: string;
+	/** 操作人 */
+	oporator?: string;
+	/** 操作时间 */
+	opt_time?: string;
+}
+
 // ==================== 接口函数 ====================
 
 /**
@@ -387,6 +457,44 @@ export function getPaymentRecords<T = PageDTO<RemitFeeDTO>>(options: UseAxiosOpt
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取缴纳记录详情
+ * @description 根据记录ID获取缴纳记录详细信息
+ */
+export function getPaymentRecordDetail<T = PaymentDetailDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, PaymentRecordDetailParams>({
+		url: "/c3-housefeemgr/query-paymentrecord-detail",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取费用修改记录
+ * @description 分页获取费用修改记录列表，支持条件查询
+ */
+export function getFeeModifyRecords<T = PageDTO<FeeModifyDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryFeeModifyRecordsParams>({
+		url: "/c3-housefeemgr/query-modifyrecord-page",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				fee_id: "",
 			},
 		},
 		options,

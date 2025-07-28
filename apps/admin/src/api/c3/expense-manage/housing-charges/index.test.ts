@@ -9,6 +9,8 @@ import {
 	getHouseFeeDetail,
 	getHouseFeeItems,
 	getPaymentRecords,
+	getPaymentRecordDetail,
+	getFeeModifyRecords,
 } from "./index";
 
 describe("c3/房屋收费管理", () => {
@@ -185,6 +187,42 @@ describe("c3/房屋收费管理", () => {
 				receive_id: "YFίҵ",
 				status_cd: "0",
 				opt: "Y",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 获取缴纳记录详情", async () => {
+		const { execute, data } = getPaymentRecordDetail({
+			onSuccess(data) {
+				console.warn("getPaymentRecordDetail onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getPaymentRecordDetail onError", error);
+			},
+		});
+		await execute({
+			params: {
+				id: "912025053026800053",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 获取费用修改记录", async () => {
+		const { execute, data } = getFeeModifyRecords({
+			onSuccess(data) {
+				console.warn("getFeeModifyRecords onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getFeeModifyRecords onError", error);
+			},
+		});
+		await execute({
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				fee_id: "902025052290680034",
 			},
 		});
 		console.warn("查看简单的 data.value ", printFormat(data.value));
