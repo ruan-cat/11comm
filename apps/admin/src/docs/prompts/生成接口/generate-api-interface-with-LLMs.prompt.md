@@ -4,8 +4,6 @@
 
 在本次对话中，我们将按照指定的要求，逐步地，批量的，少量多次的生成接口和接口请求用例。
 
-请你主动的使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具来搜索本文提供的 url 链接。
-
 ## 主动使用 mcp 工具 fetch-mcp
 
 在后续的对话中，请你主动使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具，访问我提供的 url 地址。
