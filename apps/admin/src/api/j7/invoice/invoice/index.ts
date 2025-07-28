@@ -438,6 +438,8 @@ export function auditInvoice<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 
 /**
  * 上传发票
+ * @description
+ * 警告 该接口无法通过 vitest 做文件上传测试 ，需要手动测试
  */
 export function uploadInvoice<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, UploadInvoiceParams>({

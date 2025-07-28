@@ -212,28 +212,29 @@ describe("j7/发票管理", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 上传发票", async () => {
-		const { execute, data } = uploadInvoice({
-			onSuccess(data) {
-				console.warn("uploadInvoice onSuccess", printFormat(data));
-			},
-			onError(error) {
-				console.error("uploadInvoice onError", error);
-			},
-		});
+	// 警告 该接口无法通过 vitest 做文件上传测试 ，需要手动测试
+	// it("使用 body 接口 - 上传发票", async () => {
+	// 	const { execute, data } = uploadInvoice({
+	// 		onSuccess(data) {
+	// 			console.warn("uploadInvoice onSuccess", printFormat(data));
+	// 		},
+	// 		onError(error) {
+	// 			console.error("uploadInvoice onError", error);
+	// 		},
+	// 	});
 
-		// 创建模拟的文件对象
-		const file = new File(["发票图片内容"], "invoice.jpg", {
-			type: "image/jpeg",
-		});
+	// 	// 创建模拟的文件对象
+	// 	const file = new File(["发票图片内容"], "invoice.jpg", {
+	// 		type: "image/jpeg",
+	// 	});
 
-		await execute({
-			data: {
-				applyId: "102025051675600020",
-				communityId: "2025051506460033",
-				uploadFiles: [file],
-			},
-		});
-		console.warn("查看简单的 data.value ", printFormat(data.value));
-	});
+	// 	await execute({
+	// 		data: {
+	// 			applyId: "102025051675600020",
+	// 			communityId: "2025051506460033",
+	// 			uploadFiles: [file],
+	// 		},
+	// 	});
+	// 	console.warn("查看简单的 data.value ", printFormat(data.value));
+	// });
 });
