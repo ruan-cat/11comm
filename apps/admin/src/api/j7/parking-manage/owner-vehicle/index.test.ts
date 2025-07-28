@@ -144,28 +144,27 @@ describe("j7/停车管理/业主车辆", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 导入车辆", async () => {
-		const { execute, data } = importVehicle({
-			onSuccess(data) {
-				console.warn("importVehicle onSuccess", printFormat(data));
-			},
-			onError(error) {
-				console.error("importVehicle onError", error);
-			},
-		});
-
-		// 创建一个模拟的文件对象
-		const file = new File(["车辆数据"], "vehicles.xlsx", {
-			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		});
-
-		await execute({
-			data: {
-				file: file,
-			},
-		});
-		console.warn("查看简单的 data.value ", printFormat(data.value));
-	});
+	// 警告 该接口无法通过 vitest 进行文件上传测试
+	// it("使用 body 接口 - 导入车辆", async () => {
+	// 	const { execute, data } = importVehicle({
+	// 		onSuccess(data) {
+	// 			console.warn("importVehicle onSuccess", printFormat(data));
+	// 		},
+	// 		onError(error) {
+	// 			console.error("importVehicle onError", error);
+	// 		},
+	// 	});
+	// 	// 创建一个模拟的文件对象
+	// 	const file = new File(["车辆数据"], "vehicles.xlsx", {
+	// 		type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	// 	});
+	// 	await execute({
+	// 		data: {
+	// 			file: file,
+	// 		},
+	// 	});
+	// 	console.warn("查看简单的 data.value ", printFormat(data.value));
+	// });
 
 	it("使用 query 接口 - 获取成员车辆列表（条件+分页）", async () => {
 		const { execute, data } = getMemberVehicleList({

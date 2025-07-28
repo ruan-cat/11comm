@@ -480,6 +480,8 @@ export function exportVehicle<T = ArrayBuffer>(options: UseAxiosOptionsJsonVO<T>
 
 /**
  * 导入车辆
+ * @description
+ * 警告 该接口无法通过 vitest 进行文件上传测试
  */
 export function importVehicle<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ImportVehicleParams>({
