@@ -382,6 +382,8 @@ export function queryAuditRecords<T = PageDTO<InvoiceAuditRecordDataModel>>(opti
 
 /**
  * 发票详情----查看发票
+ * @description
+ * 警告 接口返回值不满足格式，不是JsonVO 故前端不对接该接口。
  */
 export function queryInvoiceDownloadLink<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryInvoiceDownloadLinkParams>({

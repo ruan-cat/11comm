@@ -141,25 +141,26 @@ describe("j7/发票管理", () => {
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 发票详情----查看发票", async () => {
-		const { execute, data } = queryInvoiceDownloadLink({
-			onSuccess(data) {
-				console.warn("queryInvoiceDownloadLink onSuccess", printFormat(data));
-			},
-			onError(error) {
-				console.error("queryInvoiceDownloadLink onError", error);
-			},
-		});
-		await execute({
-			params: {
-				applyId: "111111111111111111",
-				communityId: "2024022647620054",
-				pageIndex: 1,
-				pageSize: 10,
-			},
-		});
-		console.warn("查看简单的 data.value ", printFormat(data.value));
-	});
+	// 警告 接口返回值不满足格式，不是JsonVO 故前端不对接该接口。
+	// it("使用 query 接口 - 发票详情----查看发票", async () => {
+	// 	const { execute, data } = queryInvoiceDownloadLink({
+	// 		onSuccess(data) {
+	// 			console.warn("queryInvoiceDownloadLink onSuccess", printFormat(data));
+	// 		},
+	// 		onError(error) {
+	// 			console.error("queryInvoiceDownloadLink onError", error);
+	// 		},
+	// 	});
+	// 	await execute({
+	// 		params: {
+	// 			applyId: "111111111111111111",
+	// 			communityId: "2024022647620054",
+	// 			pageIndex: 1,
+	// 			pageSize: 10,
+	// 		},
+	// 	});
+	// 	console.warn("查看简单的 data.value ", printFormat(data.value));
+	// });
 
 	it("使用 body 接口 - 登记发票", async () => {
 		const { execute, data } = registerInvoice({
