@@ -6,21 +6,23 @@
 
 请你主动的使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具来搜索本文提供的 url 链接。
 
+## 主动使用 mcp 工具 fetch-mcp
+
 在后续的对话中，请你主动使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具，访问我提供的 url 地址。
+
+如果你未发现可用的 `fetch-mcp` 工具，请立刻停止，并要求我检查该工具是否可用。
 
 ## 全部核心资料的上下文
 
-- 全部的 github 实现代码： @https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
-- 文档：01s 内封装好的 useAxios 函数： @https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
-- 文档：使用 useRequestIn01s 函数：@https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
+- 文档：使用 useRequestIn01s 函数：https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
+- 文档：01s 内封装好的 useAxios 函数： https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
+- 全部的 github 实现代码： https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
 
 生成 api 接口的工具，以及工具如何使用，均在此文档内有详细讲述。
 
 ## 阅读 LLM.txt 文档
 
-你应当主动的阅读以下文档：
-
-- @https://01s-11.apifox.cn/llms.txt
+- https://01s-11.apifox.cn/llms.txt
 
 我要求生成的全部接口信息，都在上述文档内。
 
