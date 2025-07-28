@@ -139,123 +139,9 @@ export interface QueryVenueListParams {
 	/** 查询条数 */
 	pageSize: number;
 	/** 场馆名称 */
-	name?: string;
-	/** 场馆编号 */
-	id?: string;
-}
-
-/**
- * 场馆场地预约信息
- */
-export interface VenueReservationMgrDTO {
-	/** 场地ID */
-	spaceId?: string;
+	name: string;
 	/** 场馆ID */
-	venueId?: string;
-	/** 预约人 */
-	personName?: string;
-	/** 预约电话 */
-	personTel?: string;
-	/** 预约日期 */
-	appointmentDate?: string;
-	/** 预约时间 */
-	appointmentTime?: string;
-	/** 应收金额 */
-	receivableAmount?: number;
-	/** 实收金额 */
-	receivedAmount?: number;
-	/** 支付方式 */
-	payWay?: string;
-	/** 状态 */
-	state?: string;
-	/** 备注 */
-	remark?: string;
-	/** 订单编号 */
-	orderId?: string;
-	/** 创建时间 */
-	createTime?: string;
-	/** 场馆名称 */
-	venueName?: string;
-	/** 场地名称 */
-	spaceName?: string;
-}
-
-/**
- * 获取场馆场地预约列表查询参数
- */
-export interface QueryVenueReservationsParams {
-	/** 查询页码 */
-	pageIndex: number;
-	/** 查询条数 */
-	pageSize: number;
-	/** 预约时间 */
-	appointmentTime?: string;
-}
-
-/**
- * 预约订单信息
- */
-export interface OrderDTO {
-	/** 订单编号 */
-	cspId?: string;
-	/** 场馆名 */
-	venueName?: string;
-	/** 场地名 */
-	spaceName?: string;
-	/** 预约人名字 */
-	personName?: string;
-	/** 预约人电话 */
-	personTel?: string;
-	/** 预约日期 */
-	appointmentTime?: string;
-	/** 预约时间段 */
-	times?: string;
-	/** 应收金额 */
-	receivableAmount?: string;
-	/** 实收金额 */
-	receivedAmount?: string;
-	/** 支付方式：1为现金 2为微信 3为支付宝 */
-	payWay?: string;
-	/** 支付方式名称 */
-	payWayName?: string;
-	/** 场馆场地预约订单状态：S为预约成功 F为预约失败 W为待审核 F为待支付 CL为已取消 */
-	state?: string;
-	/** 状态名称 */
-	stateName?: string;
-	/** 创建时间 */
-	createTime?: string;
-	/** 备注 */
-	remark?: string;
-}
-
-/**
- * 获取预约订单列表查询参数
- */
-export interface QueryOrderListParams {
-	/** 查询页码 */
-	pageIndex: number;
-	/** 查询条数 */
-	pageSize: number;
-	/** 小区ID */
-	communityId?: string;
-	/** 场地ID */
-	spaceId?: string;
-	/** 状态 */
-	state?: string;
-	/** 预约人名字 */
-	personName?: string;
-	/** 预约人电话 */
-	personTel?: string;
-	/** 预约时间 */
-	appointmentTime?: string;
-}
-
-/**
- * 订单ID参数
- */
-export interface OrderIdDTO {
-	/** 订单编号 */
-	cspId: string;
+	id: string;
 }
 
 // ==================== 接口函数 ====================
@@ -266,7 +152,7 @@ export interface OrderIdDTO {
  */
 export function addSpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, SpaceAddDTO>({
-		url: "/c3-housemanagement/sitemanagement/add-venue",
+		url: "/c3-pacemgr/add-venue",
 		httpParamWay: "body",
 		config: {
 			method: "POST",
@@ -288,7 +174,7 @@ export function addSpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
  */
 export function modifySpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, SpaceUpdateDTO>({
-		url: "/c3-housemanagement/sitemanagement/modify-venue",
+		url: "/c3-pacemgr/modify-venue",
 		httpParamWay: "body",
 		config: {
 			method: "PUT",
@@ -311,7 +197,7 @@ export function modifySpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
  */
 export function removeSpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string[]>({
-		url: "/c3-housemanagement/sitemanagement/remove-venue",
+		url: "/c3-pacemgr/remove-venue",
 		httpParamWay: "body",
 		config: {
 			method: "DELETE",
@@ -327,7 +213,7 @@ export function removeSpace<T = string>(options: UseAxiosOptionsJsonVO<T>) {
  */
 export function querySpaceList<T = PageDTO<CommunitySpaceMgrDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QuerySpaceListParams>({
-		url: "/c3-housemanagement/communityspacemgr/query-space-page",
+		url: "/c3-pacemgr/query-space-page",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -344,9 +230,9 @@ export function querySpaceList<T = PageDTO<CommunitySpaceMgrDTO>>(options: UseAx
  * 获取场地开放时间
  * @description 获取指定场地的开放时间列表
  */
-export function querySpaceTime<T = CommunitySpaceTimeMgrDTO[]>(options: UseAxiosOptionsJsonVO<T>) {
+export function querySpaceTime<T = PageDTO<CommunitySpaceTimeMgrDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QuerySpaceTimeParams>({
-		url: "/c3-housemanagement/communityspacemgr/query-time",
+		url: "/c3-pacemgr/query-time",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -364,7 +250,7 @@ export function querySpaceTime<T = CommunitySpaceTimeMgrDTO[]>(options: UseAxios
  */
 export function modifySpaceTime<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, CommunitySpaceTimeMgrDTO>({
-		url: "/c3-housemanagement/communityspacemgr/modify-time",
+		url: "/c3-pacemgr/modify-time",
 		httpParamWay: "body",
 		config: {
 			method: "PUT",
@@ -385,13 +271,15 @@ export function modifySpaceTime<T = string>(options: UseAxiosOptionsJsonVO<T>) {
  */
 export function queryVenueList<T = PageDTO<CommunityVenueDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryVenueListParams>({
-		url: "/c3-housemanagement/sitemanagement/query-stadium-page",
+		url: "/c3-pacemgr/query-stadium-page",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
+				name: "",
+				id: "",
 			},
 		},
 		options,
@@ -404,7 +292,7 @@ export function queryVenueList<T = PageDTO<CommunityVenueDTO>>(options: UseAxios
  */
 export function addVenue<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, CommunityVenueAddDTO>({
-		url: "/c3-housemanagement/sitemanagement/add-stadium",
+		url: "/c3-pacemgr/add-stadium",
 		httpParamWay: "body",
 		config: {
 			method: "POST",
@@ -425,7 +313,7 @@ export function addVenue<T = string>(options: UseAxiosOptionsJsonVO<T>) {
  */
 export function modifyVenue<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, CommunityVenueModifyDTO>({
-		url: "/c3-housemanagement/sitemanagement/modify-stadium",
+		url: "/c3-pacemgr/modify-stadium",
 		httpParamWay: "body",
 		config: {
 			method: "PUT",
@@ -447,83 +335,11 @@ export function modifyVenue<T = string>(options: UseAxiosOptionsJsonVO<T>) {
  */
 export function deleteVenue<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string[]>({
-		url: "/c3-housemanagement/sitemanagement/delete-stadium",
+		url: "/c3-pacemgr/delete-stadium",
 		httpParamWay: "body",
 		config: {
 			method: "DELETE",
 			data: [],
-		},
-		options,
-	});
-}
-
-/**
- * 获取场馆场地预约列表
- * @description 分页获取场馆场地预约列表，支持条件查询
- */
-export function queryVenueReservations<T = PageDTO<VenueReservationMgrDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryVenueReservationsParams>({
-		url: "/c3-venueres/query-page",
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			params: {
-				pageIndex: 1,
-				pageSize: 10,
-			},
-		},
-		options,
-	});
-}
-
-/**
- * 添加预约
- * @description 添加新的场馆场地预约信息
- */
-export function addReservation<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, VenueReservationMgrDTO>({
-		url: "/c3-venueres/add",
-		httpParamWay: "body",
-		config: {
-			method: "POST",
-			data: {},
-		},
-		options,
-	});
-}
-
-/**
- * 获取预约订单列表
- * @description 分页获取预约订单列表，支持条件查询
- */
-export function queryOrderList<T = PageDTO<OrderDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryOrderListParams>({
-		url: "/c3-paceapp/query-order-page",
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			params: {
-				pageIndex: 1,
-				pageSize: 10,
-			},
-		},
-		options,
-	});
-}
-
-/**
- * 取消预约
- * @description 取消指定订单编号的预约
- */
-export function removeOrder<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, OrderIdDTO>({
-		url: "/c3-paceapp/remove-order",
-		httpParamWay: "body",
-		config: {
-			method: "DELETE",
-			data: {
-				cspId: "",
-			},
 		},
 		options,
 	});
