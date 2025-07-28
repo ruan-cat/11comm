@@ -101,6 +101,16 @@ export function sysManagerModifyUserDetail<T = string>(options: UseAxiosOptionsJ
 
 如果有代码不遵守其严格的代码风格，我会要求你按照该风格修改。
 
+### 可供参考的代码风格案例
+
+以下文件的代码风格，可供你学习。在接下来的接口生成中，请使用这些代码风格：
+
+- apps\admin\src\api\c5\payment-audit\index.ts
+- apps\admin\src\api\c5\payment-audit\index.test.ts
+
+- apps\admin\src\api\c5\arrears\index.ts
+- apps\admin\src\api\c5\arrears\index.test.ts
+
 ### 仅仅导入一行接口请求工具
 
 正确的例子：
