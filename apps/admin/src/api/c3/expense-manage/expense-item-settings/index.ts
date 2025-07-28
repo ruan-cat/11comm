@@ -1,13 +1,11 @@
 import { useRequest } from "@/composables/use-request";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
-import type { AxiosRequestConfig } from "axios";
-import type { PageDTO } from "@/composables/use-request/useRequestIn01s/types/PageDTO";
+
+// ==================== 类型定义 ====================
 
 /**
  * 费用项信息
  */
-interface ChargeItemDTO {
+export interface ChargeItemDTO {
 	/** 主键ID */
 	config_id: string;
 	/** 费用类型 */
@@ -19,38 +17,25 @@ interface ChargeItemDTO {
 /**
  * 费用项列表
  */
-interface ChargeItemListDTO {
+export interface ChargeItemListDTO {
 	/** 费用项列表 */
 	chargeItemList: ChargeItemDTO[];
 }
 
 /**
- * 获取费用项名称列表
- * @description
- * 根据小区ID和费用类型获取费用项名称列表
+ * 获取费用项名称列表查询参数
  */
-export function queryChargeItemList<T = ChargeItemListDTO>(
-	options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig },
-) {
-	return useRequest<ParamsQueryKey, T, ChargeItemListDTO>({
-		url: "/c3-expensesetting/query-feeitemname",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			data: {
-				community_id: "",
-				feeType: "",
-			},
-			...options.config,
-		},
-	});
+export interface QueryChargeItemListParams {
+	/** 小区ID */
+	community_id: string;
+	/** 费用类型 */
+	feeType: string;
 }
 
 /**
  * 费用项详细信息
  */
-interface PayFeeDTO {
+export interface PayFeeDTO {
 	/** 主键ID */
 	config_id: string;
 	/** 费用类型 */
@@ -76,39 +61,33 @@ interface PayFeeDTO {
 }
 
 /**
- * 获取费用项列表
- * @description
- * 分页获取费用项列表，支持条件查询
+ * 获取费用项列表查询参数
  */
-export function queryFeeItemList<T = PageDTO<PayFeeDTO>>(
-	options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig },
-) {
-	return useRequest<ParamsQueryKey, T, PageDTO<PayFeeDTO>>({
-		url: "/c3-expensesetting/query-feeitem-page",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-				community_id: "",
-				fee_type_cd: "",
-				feeId: "",
-				chargeItem: "",
-				fee_flag: "",
-				payment_cd: "",
-				deduct_from: "",
-			},
-			...options.config,
-		},
-	});
+export interface QueryFeeItemListParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 小区ID */
+	community_id?: string;
+	/** 费用类型 */
+	fee_type_cd?: string;
+	/** 费用ID */
+	feeId?: string;
+	/** 收费项目 */
+	chargeItem?: string;
+	/** 费用标识 */
+	fee_flag?: string;
+	/** 付费类型 */
+	payment_cd?: string;
+	/** 是否支持账户抵扣 */
+	deduct_from?: string;
 }
 
 /**
  * 费用项修改记录
  */
-interface FeeItemDTO {
+export interface FeeItemDTO {
 	/** 费用类型 */
 	fee_type_cd: string;
 	/** 费用标识 */
@@ -152,33 +131,21 @@ interface FeeItemDTO {
 }
 
 /**
- * 获取费用项修改记录
- * @description
- * 分页获取费用项修改记录，支持条件查询
+ * 获取费用项修改记录查询参数
  */
-export function queryFeeItemLog<T = PageDTO<FeeItemDTO>>(
-	options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig },
-) {
-	return useRequest<ParamsQueryKey, T, PageDTO<FeeItemDTO>>({
-		url: "/c3-expensesetting/query-feemodifyrecord-page",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-				config_id: "",
-			},
-			...options.config,
-		},
-	});
+export interface QueryFeeItemLogParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 配置ID */
+	config_id: string;
 }
 
 /**
  * 添加费用项参数
  */
-interface FeeItemAddDTO {
+export interface FeeItemAddDTO {
 	/** 费用类型 */
 	fee_type_cd: string;
 	/** 费用标识 */
@@ -216,118 +183,25 @@ interface FeeItemAddDTO {
 }
 
 /**
- * 添加费用项
- * @description
- * 添加新的费用项信息
- */
-export function addFeeItem<T = string>(options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig }) {
-	return useRequest<ParamsBodyKey, T, FeeItemAddDTO>({
-		url: "/c3-expensesetting/insert-fee",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "POST",
-			data: {
-				fee_type_cd: "",
-				fee_flag: "",
-				payment_cycle: "",
-				fee_name: "",
-				payment_cd: "",
-				prepayment_period: "",
-				start_time: "",
-				end_time: "",
-				units: "",
-				deduct_from: "",
-				pay_online: "",
-				scale: "",
-				decimal_place: 2,
-				computing_formula: "",
-				square_price: "",
-				additional_amount: "",
-				community_id: "",
-			},
-			...options.config,
-		},
-	});
-}
-
-/**
  * 修改费用项参数
  */
-interface FeeItemModifyDTO extends FeeItemAddDTO {
+export interface FeeItemModifyDTO extends FeeItemAddDTO {
 	/** 配置ID */
 	config_id: string;
-}
-
-/**
- * 修改费用项
- * @description
- * 修改现有费用项信息
- */
-export function modifyFeeItem<T = string>(options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig }) {
-	return useRequest<ParamsBodyKey, T, FeeItemModifyDTO>({
-		url: "/c3-expensesetting/modify-fee",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "PUT",
-			data: {
-				fee_type_cd: "",
-				fee_flag: "",
-				payment_cycle: "",
-				fee_name: "",
-				payment_cd: "",
-				prepayment_period: "",
-				start_time: "",
-				end_time: "",
-				units: "",
-				deduct_from: "",
-				pay_online: "",
-				scale: "",
-				decimal_place: 2,
-				computing_formula: "",
-				square_price: "",
-				additional_amount: "",
-				community_id: "",
-				config_id: "",
-			},
-			...options.config,
-		},
-	});
 }
 
 /**
  * 删除费用项参数
  */
-interface FeeItemDeleteDTO {
+export interface FeeItemDeleteDTO {
 	/** 配置ID */
 	config_id: string;
 }
 
 /**
- * 删除费用项
- * @description
- * 删除指定的费用项
- */
-export function deleteFeeItem<T = string>(options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig }) {
-	return useRequest<ParamsBodyKey, T, FeeItemDeleteDTO>({
-		url: "/c3-expensesetting/delete-fee",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "DELETE",
-			data: {
-				config_id: "",
-			},
-			...options.config,
-		},
-	});
-}
-
-/**
  * 折扣信息
  */
-interface FeeMgrDTO {
+export interface FeeMgrDTO {
 	/** 折扣类型 */
 	discount_type: string;
 	/** 打折名称 */
@@ -343,38 +217,31 @@ interface FeeMgrDTO {
 }
 
 /**
- * 获取折扣信息
- * @description
- * 分页获取折扣信息，支持条件查询
+ * 获取折扣信息查询参数
  */
-export function queryDiscountList<T = PageDTO<FeeMgrDTO>>(
-	options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig },
-) {
-	return useRequest<ParamsQueryKey, T, PageDTO<FeeMgrDTO>>({
-		url: "/c3-expensesetting/query-discount-page",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-				discount_name: "",
-				discount_rule: "",
-				discount_type: "",
-				start_time: "",
-				end_time: "",
-				discount_end_time: "",
-			},
-			...options.config,
-		},
-	});
+export interface QueryDiscountListParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 打折名称 */
+	discount_name?: string;
+	/** 折扣规则 */
+	discount_rule?: string;
+	/** 折扣类型 */
+	discount_type?: string;
+	/** 缴费起始时间 */
+	start_time?: string;
+	/** 缴费结束时间 */
+	end_time?: string;
+	/** 折扣终止时间 */
+	discount_end_time?: string;
 }
 
 /**
  * 添加折扣参数
  */
-interface FeeMgrAddDTO {
+export interface FeeMgrAddDTO {
 	/** 折扣类型 */
 	discount_type: string;
 	/** 打折名称 */
@@ -388,61 +255,17 @@ interface FeeMgrAddDTO {
 }
 
 /**
- * 添加折扣
- * @description
- * 添加新的折扣信息
- */
-export function addDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig }) {
-	return useRequest<ParamsBodyKey, T, FeeMgrAddDTO>({
-		url: "/c3-expensesetting/insert-discount",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "POST",
-			data: {
-				discount_type: "",
-				discount_name: "",
-				start_time: "",
-				end_time: "",
-				discount_end_time: "",
-			},
-			...options.config,
-		},
-	});
-}
-
-/**
  * 删除折扣参数
  */
-interface FeeMgrDeleteDTO {
+export interface FeeMgrDeleteDTO {
 	/** 打折id */
 	discount_id: string;
 }
 
 /**
- * 删除折扣
- * @description
- * 删除指定的折扣信息
- */
-export function deleteDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig }) {
-	return useRequest<ParamsBodyKey, T, FeeMgrDeleteDTO>({
-		url: "/c3-expensesetting/delete-discount",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "DELETE",
-			data: {
-				discount_id: "",
-			},
-			...options.config,
-		},
-	});
-}
-
-/**
  * 费用项基础信息查询参数
  */
-interface FeeMgrGetDTO {
+export interface FeeMgrGetDTO {
 	/** 编号 */
 	fee_id: string;
 	/** 费用类型 */
@@ -469,15 +292,219 @@ interface FeeMgrGetDTO {
 	account_deduction: string;
 }
 
+// ==================== 接口函数 ====================
+
+/**
+ * 获取费用项名称列表
+ * @description 根据小区ID和费用类型获取费用项名称列表
+ */
+export function queryChargeItemList<T = ChargeItemListDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryChargeItemListParams>({
+		url: "/c3-expensesetting/query-feeitemname",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				community_id: "",
+				feeType: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取费用项列表
+ * @description 分页获取费用项列表，支持条件查询
+ */
+export function queryFeeItemList<T = PageDTO<PayFeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryFeeItemListParams>({
+		url: "/c3-expensesetting/query-feeitem-page",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取费用项修改记录
+ * @description 分页获取费用项修改记录，支持条件查询
+ */
+export function queryFeeItemLog<T = PageDTO<FeeItemDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryFeeItemLogParams>({
+		url: "/c3-expensesetting/query-feemodifyrecord-page",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				config_id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 添加费用项
+ * @description 添加新的费用项信息
+ */
+export function addFeeItem<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, FeeItemAddDTO>({
+		url: "/c3-expensesetting/insert-fee",
+		httpParamWay: "body",
+		config: {
+			method: "POST",
+			data: {
+				fee_type_cd: "",
+				fee_flag: "",
+				payment_cycle: "",
+				fee_name: "",
+				payment_cd: "",
+				prepayment_period: "",
+				start_time: "",
+				end_time: "",
+				units: "",
+				deduct_from: "",
+				pay_online: "",
+				scale: "",
+				decimal_place: 2,
+				computing_formula: "",
+				square_price: "",
+				additional_amount: "",
+				community_id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 修改费用项
+ * @description 修改现有费用项信息
+ */
+export function modifyFeeItem<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, FeeItemModifyDTO>({
+		url: "/c3-expensesetting/modify-fee",
+		httpParamWay: "body",
+		config: {
+			method: "PUT",
+			data: {
+				fee_type_cd: "",
+				fee_flag: "",
+				payment_cycle: "",
+				fee_name: "",
+				payment_cd: "",
+				prepayment_period: "",
+				start_time: "",
+				end_time: "",
+				units: "",
+				deduct_from: "",
+				pay_online: "",
+				scale: "",
+				decimal_place: 2,
+				computing_formula: "",
+				square_price: "",
+				additional_amount: "",
+				community_id: "",
+				config_id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 删除费用项
+ * @description 删除指定的费用项
+ */
+export function deleteFeeItem<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, FeeItemDeleteDTO>({
+		url: "/c3-expensesetting/delete-fee",
+		httpParamWay: "body",
+		config: {
+			method: "DELETE",
+			data: {
+				config_id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取折扣信息
+ * @description 分页获取折扣信息，支持条件查询
+ */
+export function queryDiscountList<T = PageDTO<FeeMgrDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryDiscountListParams>({
+		url: "/c3-expensesetting/query-discount-page",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 添加折扣
+ * @description 添加新的折扣信息
+ */
+export function addDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, FeeMgrAddDTO>({
+		url: "/c3-expensesetting/insert-discount",
+		httpParamWay: "body",
+		config: {
+			method: "POST",
+			data: {
+				discount_type: "",
+				discount_name: "",
+				start_time: "",
+				end_time: "",
+				discount_end_time: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 删除折扣
+ * @description 删除指定的折扣信息
+ */
+export function deleteDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, FeeMgrDeleteDTO>({
+		url: "/c3-expensesetting/delete-discount",
+		httpParamWay: "body",
+		config: {
+			method: "DELETE",
+			data: {
+				discount_id: "",
+			},
+		},
+		options,
+	});
+}
+
 /**
  * 获取费用项基础信息
- * @description
- * 获取费用项的基础信息
+ * @description 获取费用项的基础信息
  */
-export function getFeeItemInfo<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T> & { config?: AxiosRequestConfig }) {
+export function getFeeItemInfo<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, FeeMgrGetDTO>({
 		url: "/c3-expensesetting/query-feeiteminfo",
-		options,
 		httpParamWay: "body",
 		config: {
 			method: "GET",
@@ -495,7 +522,7 @@ export function getFeeItemInfo<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T> 
 				pay_extra: "",
 				account_deduction: "",
 			},
-			...options.config,
 		},
+		options,
 	});
 }
