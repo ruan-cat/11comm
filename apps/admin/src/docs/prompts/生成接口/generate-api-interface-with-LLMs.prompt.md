@@ -127,6 +127,11 @@ import type { PageDTO } from "@/composables/use-request/useRequestIn01s/types/Pa
 
 你生成的代码应该增加这两行分隔注释，以便增强代码可读性。
 
+### 先定义接口类型，再定义函数
+
+- 先定义接口类型
+- 再定义函数
+
 ## api 测试代码 生成案例
 
 请严格遵守以下的测试用例代码生成规则。
