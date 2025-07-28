@@ -65,6 +65,9 @@ export function queryRelatedStaffList<T = PageDTO<StaffListDataModel>>(options: 
 /**
  * 新增关联
  * @description 根据ID新增关联
+ * https://app.apifox.com/link/project/6386631/apis/api-305019427
+ *
+ * 接口文档有问题 无法使用
  */
 export function addRelatedStaff<T = boolean>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string>({
@@ -81,6 +84,10 @@ export function addRelatedStaff<T = boolean>(options: UseAxiosOptionsJsonVO<T>) 
 /**
  * 删除关联
  * @description 根据ID删除关联
+ *
+ * https://app.apifox.com/link/project/6386631/apis/api-305019428
+ *
+ * 接口文档有问题 无法使用
  */
 export function removeRelatedStaff<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string>({
