@@ -1,6 +1,15 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { setRedirectByRank } from "../index";
 import type { RouteRecordRaw } from "vue-router";
+
+// Mock @/router/utils 模块 - 必须在文件顶部
+vi.mock("@/router/utils", () => ({
+	isRoutePathDetailPage: (path: string) => {
+		// 模拟 isRoutePathDetailPage 函数的逻辑
+		// 根据 router/utils.ts 中的实现，检查路径是否包含 "-detail-page"
+		return path.includes("-detail-page");
+	},
+}));
 
 describe("setRedirectByRank", () => {
 	describe("基础功能测试", () => {
@@ -53,11 +62,11 @@ describe("setRedirectByRank", () => {
 		it("应该跳过详情页路由本身", () => {
 			const routes = [
 				{
-					path: "/detail-page",
-					name: "DetailPage",
+					path: "/user-info-detail-page",
+					name: "UserInfoDetailPage",
 					children: [
 						{
-							path: "/detail-page/child1",
+							path: "/user-info-detail-page/child1",
 							name: "Child1",
 						},
 					],
@@ -146,8 +155,8 @@ describe("setRedirectByRank", () => {
 							name: "UserManagement",
 							children: [
 								{
-									path: "/management/user/detail-page",
-									name: "UserDetailPage",
+									path: "/management/user/user-info-detail-page",
+									name: "UserInfoDetailPage",
 								},
 								{
 									path: "/management/user/list",
@@ -189,12 +198,12 @@ describe("setRedirectByRank", () => {
 					name: "AllDetails",
 					children: [
 						{
-							path: "/all-details/detail-page-1",
-							name: "DetailPage1",
+							path: "/all-details/user-info-detail-page",
+							name: "UserInfoDetailPage",
 						},
 						{
-							path: "/all-details/detail-page-2",
-							name: "DetailPage2",
+							path: "/all-details/order-info-detail-page",
+							name: "OrderInfoDetailPage",
 						},
 					],
 				},

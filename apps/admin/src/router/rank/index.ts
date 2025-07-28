@@ -140,7 +140,8 @@ export function setRedirectByRank(autoRoutesParams: RouteRecordRaw[]) {
 			let targetChildRoute: RouteRecordRaw | null = null;
 
 			for (const childRoute of route.children) {
-				if (!childRoute.path || !isRoutePathDetailPage(childRoute.path)) {
+				// 子路由必须有有效路径，且不能是详情页
+				if (childRoute.path && childRoute.path.trim() !== "" && !isRoutePathDetailPage(childRoute.path)) {
 					// 找到第一个非详情页的子路由
 					targetChildRoute = childRoute;
 					break;
