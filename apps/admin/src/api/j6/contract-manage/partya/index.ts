@@ -74,6 +74,11 @@ export interface UpdateContractPartyaParams {
 
 /**
  * 获取合同甲方名称列表
+ *
+ * @description
+ * 该接口有异常 未开发完成
+ *
+ * https://app.apifox.com/link/project/6386631/apis/api-305749927
  */
 export function getContractPartyaNameList<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, {}>({
@@ -106,6 +111,9 @@ export function deleteContractPartya<T = boolean>(options: UseAxiosOptionsJsonVO
 
 /**
  * 获取合同甲方列表（条件+分页）
+ *
+ * @description
+ * 警告 接口重名 无法对接接口
  */
 export function getContractPartyaList<T = PageDTO<ContractPartyaDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetContractPartyaListParams>({
