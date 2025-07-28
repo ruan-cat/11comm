@@ -8,7 +8,7 @@ import {
 	getHouseFeeDetail,
 	getHouseFeeItems,
 	getPaymentRecords,
-} from "./Housing-charges";
+} from ".";
 import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
 import type { AxiosRequestConfig } from "axios";
 
