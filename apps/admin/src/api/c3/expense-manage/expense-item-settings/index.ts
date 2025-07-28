@@ -292,6 +292,36 @@ export interface FeeMgrGetDTO {
 	account_deduction: string;
 }
 
+/**
+ * 费用项基础信息返回类型
+ */
+export interface FeeItemInfoDTO {
+	/** 编号 */
+	fee_id?: string;
+	/** 费用类型 */
+	fee_type?: string;
+	/** 收费项目 */
+	fee_project?: string;
+	/** 费用标识 */
+	fee_flag?: string;
+	/** 催缴类型 */
+	urge_type?: string;
+	/** 付费类型 */
+	pay_type?: string;
+	/** 付费周期 */
+	pay_cycle?: string;
+	/** 有效期 */
+	valid_time?: string;
+	/** 公式 */
+	pay_formula?: string;
+	/** 计费单价 */
+	pay_price?: string;
+	/** 计费附加 */
+	pay_extra?: string;
+	/** 账户抵扣 */
+	account_deduction?: string;
+}
+
 // ==================== 接口函数 ====================
 
 /**
@@ -502,12 +532,12 @@ export function deleteDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>)
  * 获取费用项基础信息
  * @description 获取费用项的基础信息
  */
-export function getFeeItemInfo<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function getFeeItemInfo<T = FeeItemInfoDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, FeeMgrGetDTO>({
 		url: "/c3-expensesetting/query-feeiteminfo",
 		httpParamWay: "body",
 		config: {
-			method: "GET",
+			method: "POST",
 			data: {
 				fee_id: "",
 				fee_type: "",
