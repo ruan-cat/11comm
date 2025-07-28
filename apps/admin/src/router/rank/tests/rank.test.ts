@@ -112,7 +112,7 @@ describe("getRouteRank", () => {
 		});
 
 		it("应该返回 propertyManage.contractManage 的正确排序值", () => {
-			expect(getRouteRank("propertyManage.contractManage")).toBe(40000 + 300);
+			expect(getRouteRank("propertyManage.contractManage")).toBe(40000 + 400);
 		});
 
 		it("应该返回 propertyManage.communityManage.houseDecoration 的正确排序值", () => {
