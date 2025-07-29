@@ -8,43 +8,38 @@ import {
 	deleteReportMessage,
 	modifyReportMessage,
 	addComponentRel,
-} from ".";
+} from "./index";
 
-describe("报表信息接口测试", () => {
-	it("获取报表信息列表", async () => {
+describe("j3/报表信息管理", () => {
+	it("使用 queryReportMessageList 接口 - 分页查询报表信息", async () => {
 		const { execute, data } = queryReportMessageList({
 			onSuccess(data) {
-				console.warn("获取报表信息列表成功", printFormat(data));
+				console.warn("queryReportMessageList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("获取报表信息列表失败:", error);
+				console.error("queryReportMessageList onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用条件查询报表信息列表", async () => {
+	it("使用 queryReportMessageList 接口 - 条件查询报表信息列表", async () => {
 		const { execute, data } = queryReportMessageList({
 			onSuccess(data) {
-				console.warn("条件查询报表信息列表成功", printFormat(data));
+				console.warn("queryReportMessageList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("条件查询报表信息列表失败:", error);
+				console.error("queryReportMessageList onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				customId: "1020211112807918355",
@@ -52,21 +47,18 @@ describe("报表信息接口测试", () => {
 				title: "报修分项表",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("新增报表信息", async () => {
+	it("使用 addReportMessage 接口 - 新增报表信息", async () => {
 		const { execute, data } = addReportMessage({
 			onSuccess(data) {
-				console.warn("新增报表信息成功", printFormat(data));
+				console.warn("addReportMessage onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("新增报表信息失败:", error);
+				console.error("addReportMessage onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				groupId: "102021111007300001",
@@ -75,21 +67,18 @@ describe("报表信息接口测试", () => {
 				remark: "这是2021年11月的销售报表",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改报表信息", async () => {
+	it("使用 modifyReportMessage 接口 - 修改报表信息", async () => {
 		const { execute, data } = modifyReportMessage({
 			onSuccess(data) {
-				console.warn("修改报表信息成功", printFormat(data));
+				console.warn("modifyReportMessage onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("修改报表信息失败:", error);
+				console.error("modifyReportMessage onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				customId: "102021111204870300",
@@ -99,65 +88,56 @@ describe("报表信息接口测试", () => {
 				remark: "这是2021年11月的销售报表（已更新）",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取关联组件列表", async () => {
+	it("使用 queryComponentRelList 接口 - 分页获取关联组件列表", async () => {
 		const { execute, data } = queryComponentRelList({
 			onSuccess(data) {
-				console.warn("获取关联组件列表成功", printFormat(data));
+				console.warn("queryComponentRelList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("获取关联组件列表失败:", error);
+				console.error("queryComponentRelList onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用条件查询关联组件列表", async () => {
+	it("使用 queryComponentRelList 接口 - 条件查询关联组件列表", async () => {
 		const { execute, data } = queryComponentRelList({
 			onSuccess(data) {
-				console.warn("条件查询关联组件列表成功", printFormat(data));
+				console.warn("queryComponentRelList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("条件查询关联组件列表失败:", error);
+				console.error("queryComponentRelList onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				customId: "1020211112807918300",
 				relId: "102025051509590020",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除关联组件", async () => {
+	it("使用 deleteComponentRel 接口 - 删除关联组件", async () => {
 		const { execute, data } = deleteComponentRel({
 			onSuccess(data) {
-				console.warn("删除关联组件成功", printFormat(data));
+				console.warn("deleteComponentRel onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("删除关联组件失败:", error);
+				console.error("deleteComponentRel onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				componentId: "102022040879310020",
@@ -165,41 +145,35 @@ describe("报表信息接口测试", () => {
 				relId: "102025051509590020",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除报表信息", async () => {
+	it("使用 deleteReportMessage 接口 - 删除报表信息", async () => {
 		const { execute, data } = deleteReportMessage({
 			onSuccess(data) {
-				console.warn("删除报表信息成功", printFormat(data));
+				console.warn("deleteReportMessage onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("删除报表信息失败:", error);
+				console.error("deleteReportMessage onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
-			data: {
+			params: {
 				customId: "1020211112807918300",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("关联组件", async () => {
+	it("使用 addComponentRel 接口 - 关联组件", async () => {
 		const { execute, data } = addComponentRel({
 			onSuccess(data) {
-				console.warn("关联组件成功", printFormat(data));
+				console.warn("addComponentRel onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.error("关联组件失败:", error);
+				console.error("addComponentRel onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				componentId: "102022040879310020",
@@ -207,7 +181,6 @@ describe("报表信息接口测试", () => {
 				seq: 1,
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

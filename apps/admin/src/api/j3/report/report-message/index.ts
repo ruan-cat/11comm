@@ -1,4 +1,6 @@
-import { useRequest } from "composables/use-request";
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
 
 /**
  * 报表信息查询参数
@@ -134,6 +136,8 @@ export interface AddComponentRelParams {
 	seq?: number;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 分页查询报表信息
  * @description 支持按报表编号、组编号、选项标题进行条件查询，并返回分页数据
@@ -144,7 +148,7 @@ export function queryReportMessageList<T = PageDTO<ReportMessageInfo>>(options: 
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -208,7 +212,7 @@ export function queryComponentRelList<T = PageDTO<ComponentRelInfo>>(options: Us
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -248,7 +252,7 @@ export function deleteReportMessage<T = string>(options: UseAxiosOptionsJsonVO<T
 		httpParamWay: "query",
 		config: {
 			method: "DELETE",
-			data: {
+			params: {
 				customId: "",
 			},
 		},
