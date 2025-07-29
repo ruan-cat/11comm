@@ -11,8 +11,8 @@
 你应该先参考这些上下文信息，生成满足规范的 git commit 信息。
 
 - commitlint.config.cjs
-- https://github.com/ruan-cat/monorepo/blob/dev/configs-package/commitlint-config/README.md
-- https://github.com/ruan-cat/monorepo/blob/dev/configs-package/commitlint-config/src/config.ts
+- https://raw.githubusercontent.com/ruan-cat/monorepo/refs/heads/dev/configs-package/commitlint-config/README.md
+- https://raw.githubusercontent.com/ruan-cat/monorepo/refs/heads/dev/configs-package/commitlint-config/src/config.ts
 
 认真阅读 `commitlint.config.cjs` 提供的配置。
 
