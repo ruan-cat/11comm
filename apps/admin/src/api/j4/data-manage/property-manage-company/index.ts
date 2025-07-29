@@ -1,4 +1,6 @@
-import { useRequest } from "composables/use-request";
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
 
 /**
  * 物业公司新增和修改的条件
@@ -130,16 +132,17 @@ export interface CommunityMenuGroup {
 	statusCd: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
- * 添加物业公司
- * @description
- * 添加新的物业公司信息
+ * 添加物业公司接口
+ * @description 添加新的物业公司信息
  */
 export function addPropertyCompany<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, PropertyCompanyParams>({
 		url: "/j4-datamanager/addCompany",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
 			method: "POST",
 			data: {
@@ -153,19 +156,19 @@ export function addPropertyCompany<T = string>(options: UseAxiosOptionsJsonVO<T>
 				userName: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 加入小区
- * @description
- * 物业公司加入指定小区
+ * 加入小区接口
+ * @description 物业公司加入指定小区
  */
 export function addJoinCommunity<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, CommunityFunction>({
 		url: "/j4-datamanager/addJoinCommunity",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
 			method: "PUT",
 			data: {
@@ -174,60 +177,63 @@ export function addJoinCommunity<T = string>(options: UseAxiosOptionsJsonVO<T>) 
 				menuGroups: [],
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 获取物业公司列表
- * @description
- * 获取物业公司列表（条件+分页接口）
+ * 获取物业公司列表接口
+ * @description 获取物业公司列表（条件+分页接口）
  */
 export function getCompanyList<T = PageDTO<PropertyCompanyResult>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetCompanyListParams>({
 		url: "/j4-datamanager/getCompanyList",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
+				storeId: "",
+				storeName: "",
+				tel: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 获取加入小区列表
- * @description
- * 获取加入小区列表（条件+分页）
+ * 获取加入小区列表接口
+ * @description 获取加入小区列表（条件+分页）
  */
 export function getJoinCommunityList<T = PageDTO<JoinCommunityList>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetJoinCommunityListParams>({
 		url: "/j4-datamanager/joinCommunityList",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
 			params: {
+				communityId: "",
 				communityMemberId: "",
+				communityName: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 修改物业公司
- * @description
- * 修改物业公司信息
+ * 修改物业公司接口
+ * @description 修改物业公司信息
  */
 export function modifyPropertyCompany<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, PropertyCompanyParams>({
 		url: "/j4-datamanager/modifyCompany/{storeId}",
-		options,
 		httpParamWay: "path",
+		upType: UpType.json,
 		config: {
 			url: "/j4-datamanager/modifyCompany/{storeId}",
 			method: "PUT",
@@ -240,104 +246,99 @@ export function modifyPropertyCompany<T = string>(options: UseAxiosOptionsJsonVO
 				userName: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 退出小区
- * @description
- * 物业公司退出指定小区
+ * 退出小区接口
+ * @description 物业公司退出指定小区
  */
 export function quitJoinCommunity<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, void>({
 		url: "/j4-datamanager/quitJoinCommunity/{communityId}",
-		options,
 		httpParamWay: "path",
 		config: {
 			url: "/j4-datamanager/quitJoinCommunity/{communityId}",
 			method: "PUT",
 		},
+		options,
 	});
 }
 
 /**
- * 重置物业公司密码
- * @description
- * 重置指定物业公司的密码
+ * 重置物业公司密码接口
+ * @description 重置指定物业公司的密码
  */
 export function resetCompanyPassword<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, void>({
 		url: "/j4-datamanager/resetCompanyPassword/{storeId}",
-		options,
 		httpParamWay: "path",
 		config: {
 			url: "/j4-datamanager/resetCompanyPassword/{storeId}",
 			method: "PUT",
 		},
+		options,
 	});
 }
 
 /**
- * 删除物业公司
- * @description
- * 删除指定的物业公司
+ * 删除物业公司接口
+ * @description 删除指定的物业公司
  */
 export function deleteCompany<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, void>({
 		url: "/j4-datamanager/updateCompany/{storeId}",
-		options,
 		httpParamWay: "path",
 		config: {
 			url: "/j4-datamanager/updateCompany/{storeId}",
 			method: "DELETE",
 		},
+		options,
 	});
 }
 
 /**
- * 获取小区功能
- * @description
- * 根据communityId获取小区功能菜单组
+ * 获取小区功能接口
+ * @description 根据communityId获取小区功能菜单组
  */
 export function getCommunityMenuGroupList<T = CommunityMenuGroup[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, void>({
 		url: "/j4-datamanager/getCommunityMenuGroupList/{communityId}",
-		options,
 		httpParamWay: "path",
 		config: {
 			url: "/j4-datamanager/getCommunityMenuGroupList/{communityId}",
 			method: "GET",
 		},
+		options,
 	});
 }
 
 /**
- * 限制物业登录
- * @description
- * 通过storeId和operate限制物业公司登录
+ * 限制物业登录接口
+ * @description 通过storeId和operate限制物业公司登录
  */
 export function limitCompanyLogin<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, void>({
 		url: "/j4-datamanager/limitCompanyLogin/{storeId}/operate/{operate}",
-		options,
 		httpParamWay: "path",
 		config: {
 			url: "/j4-datamanager/limitCompanyLogin/{storeId}/operate/{operate}",
 			method: "PUT",
 		},
+		options,
 	});
 }
 
 /**
- * 修改小区功能
- * @description
- * 修改指定小区的功能菜单组
+ * 修改小区功能接口
+ * @description 修改指定小区的功能菜单组
  */
 export function updateCommunityMenuGroup<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, CommunityFunction>({
 		url: "/j4-datamanager/updateCommunityMenuGroup",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
 			method: "PUT",
 			data: {
@@ -346,5 +347,6 @@ export function updateCommunityMenuGroup<T = string>(options: UseAxiosOptionsJso
 				menuGroups: [],
 			},
 		},
+		options,
 	});
 }
