@@ -1,5 +1,7 @@
 import { http } from "@/utils/http";
 
+// TODO: 这些接口未来需要被废弃掉 换成正常的接口
+
 type Result = {
 	success: boolean;
 	data?: {
