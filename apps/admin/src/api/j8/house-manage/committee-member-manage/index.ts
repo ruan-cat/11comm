@@ -1,3 +1,7 @@
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
+
 /**
  * 紧急联系人
  */
@@ -93,6 +97,8 @@ export interface QueryCommitteeListParams {
 	state?: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 获取业委会详情
  * @description 根据 ocId 获取业委会成员详情
@@ -100,12 +106,12 @@ export interface QueryCommitteeListParams {
 export function queryCommitteeDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsPathKey, T, { ocId: string }>({
 		url: "/j8-housemgt/committee/query-detail/{ocId}",
-		options,
 		httpParamWay: "path",
 		config: {
 			method: "GET",
 			url: "/j8-housemgt/committee/query-detail/{ocId}",
 		},
+		options,
 	});
 }
 
@@ -116,7 +122,6 @@ export function queryCommitteeDetail<T = string>(options: UseAxiosOptionsJsonVO<
 export function queryCommitteeList<T = PageDTO<CommitteeMemberListItem>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryCommitteeListParams>({
 		url: "/j8-housemgt/committee/query-list",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -126,5 +131,6 @@ export function queryCommitteeList<T = PageDTO<CommitteeMemberListItem>>(options
 				state: "1000",
 			},
 		},
+		options,
 	});
 }

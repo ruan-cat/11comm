@@ -1,7 +1,11 @@
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
+
 /**
  * 紧急联系人类型
  */
-interface EmergencyContact {
+export interface EmergencyContact {
 	/** 地址 */
 	address: string;
 	/** 联系电话 */
@@ -15,7 +19,7 @@ interface EmergencyContact {
 /**
  * 添加业委会参数类型
  */
-interface AddCommitteeParams {
+export interface AddCommitteeParams {
 	/** 地址 */
 	address: string;
 	/** 届期 */
@@ -49,26 +53,36 @@ interface AddCommitteeParams {
 /**
  * 修改业委会参数类型
  */
-interface ModifyCommitteeParams extends AddCommitteeParams {
+export interface ModifyCommitteeParams extends AddCommitteeParams {
 	/** 业委会编号 */
 	ocId: string;
 }
+
+/**
+ * 删除业委会参数类型
+ */
+export interface RemoveCommitteeParams {
+	/** 业委会编号 */
+	ocId: string;
+}
+
+// ==================== 接口函数 ====================
 
 /**
  * 删除业委会接口
  * @description 通过业委会编号删除指定业委会
  */
 export function removeCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, { ocId: string }>({
+	return useRequest<ParamsQueryKey, T, RemoveCommitteeParams>({
 		url: "/j8-housemgt/committee/remove-committee",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "delete",
+			method: "DELETE",
 			params: {
 				ocId: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -79,10 +93,10 @@ export function removeCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 export function addCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, AddCommitteeParams>({
 		url: "/j8-housemgt/committee/add-committee",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				address: "",
 				appointTime: "",
@@ -96,6 +110,7 @@ export function addCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				state: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -106,10 +121,10 @@ export function addCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 export function modifyCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ModifyCommitteeParams>({
 		url: "/j8-housemgt/committee/modify-committee",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				address: "",
 				appointTime: "",
@@ -124,5 +139,6 @@ export function modifyCommittee<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				state: "",
 			},
 		},
+		options,
 	});
 }

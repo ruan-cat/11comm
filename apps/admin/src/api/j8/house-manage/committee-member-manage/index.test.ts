@@ -3,8 +3,8 @@ import { printFormat } from "@ruan-cat/utils";
 
 import { queryCommitteeDetail, queryCommitteeList } from ".";
 
-describe("业委会管理接口测试", () => {
-	it("获取业委会详情", async () => {
+describe("j8/业委会成员管理", () => {
+	it("使用 queryCommitteeDetail 接口 - 获取业委会详情", async () => {
 		const { execute, data } = queryCommitteeDetail({
 			onSuccess(data) {
 				console.warn("获取业委会详情成功", printFormat(data));
@@ -21,7 +21,7 @@ describe("业委会管理接口测试", () => {
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("获取业委会列表", async () => {
+	it("使用 queryCommitteeList 接口 - 获取业委会列表", async () => {
 		const { execute, data } = queryCommitteeList({
 			onSuccess(data) {
 				console.warn("获取业委会列表成功", printFormat(data));
