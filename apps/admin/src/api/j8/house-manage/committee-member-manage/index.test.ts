@@ -1,7 +1,7 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 
-import { queryCommitteeDetail, queryCommitteeList } from "./committee-member-manage";
+import { queryCommitteeDetail, queryCommitteeList } from ".";
 
 describe("业委会管理接口测试", () => {
 	it("获取业委会详情", async () => {

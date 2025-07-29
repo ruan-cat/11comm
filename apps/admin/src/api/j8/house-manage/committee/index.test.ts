@@ -1,7 +1,7 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 
-import { removeCommittee, addCommittee, modifyCommittee } from "./committee";
+import { removeCommittee, addCommittee, modifyCommittee } from ".";
 
 describe("业委会管理接口测试", () => {
 	describe("业委会成员管理", () => {
