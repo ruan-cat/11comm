@@ -13,7 +13,7 @@ import {
 	getCommunityMenuGroupList,
 	limitCompanyLogin,
 	updateCommunityMenuGroup,
-} from "./property-management-company";
+} from ".";
 
 describe("物业公司管理接口测试", () => {
 	describe("物业公司基础信息管理", () => {
