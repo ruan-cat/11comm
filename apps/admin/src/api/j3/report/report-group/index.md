@@ -11,7 +11,7 @@
 - **接口名称**: `queryReportGroupList`
 - **请求方式**: GET
 - **接口路径**: `/j3-report/report-group/query-all`
-- **功能描述**: 支持按组ID、组名称、组url进行条件查询，并返回分页数据
+- **功能描述**: 支持按组 ID、组名称、组 url 进行条件查询，并返回分页数据
 
 ### 2. 获取报表组名称列表
 
@@ -39,13 +39,13 @@
 - **接口名称**: `deleteReportGroup`
 - **请求方式**: DELETE
 - **接口路径**: `/j3-report/report-group/remove-group`
-- **功能描述**: 根据组ID删除指定的报表组
+- **功能描述**: 根据组 ID 删除指定的报表组
 
 ## 📊 数据类型
 
 ### 核心数据类型
 
-- **ReportGroupInfo**: 报表组信息模型，包含组ID、组名称、描述、组url等
+- **ReportGroupInfo**: 报表组信息模型，包含组 ID、组名称、描述、组 url 等
 - **ReportGroupQueryParams**: 报表组查询参数，支持分页和多条件筛选
 - **AddReportGroupParams**: 添加报表组参数
 - **ModifyReportGroupParams**: 修改报表组参数，包含完整的组信息
@@ -53,10 +53,10 @@
 
 ### 字段说明
 
-- **groupId**: 组ID（唯一标识）
+- **groupId**: 组 ID（唯一标识）
 - **name**: 组名称
 - **remark**: 描述信息
-- **url**: 组url地址
+- **url**: 组 url 地址
 - **pageIndex**: 查询页码
 - **pageSize**: 查询条数
 
@@ -121,10 +121,10 @@ const { execute: deleteGroup } = deleteReportGroup({
 ✅ **参数标准**: 统一使用 `UseAxiosOptionsJsonVO<T>` 参数格式  
 ✅ **参数位置**: 统一将 options 参数放在 useRequest 配置的最后  
 ✅ **测试规范**: 按照标准测试格式，使用 `j3/模块名` 命名规范  
-✅ **上传类型**: 正确使用 `upType: UpType.json` 标识请求类型  
+✅ **上传类型**: 正确使用 `upType: UpType.json` 标识请求类型
 
 ## 📈 模块完成状态
 
 **报表组管理模块**: 5/5 (100%) ✅ **已完成**
 
-所有接口都已实现并通过测试，代码符合项目规范标准。 
+所有接口都已实现并通过测试，代码符合项目规范标准。
