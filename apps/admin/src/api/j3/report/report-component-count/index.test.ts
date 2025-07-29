@@ -1,11 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	queryComponentCountList,
-	addComponentCount,
-	modifyComponentCount,
-	removeComponentCount,
-} from "./report-component-count";
+import { queryComponentCountList, addComponentCount, modifyComponentCount, removeComponentCount } from ".";
 
 describe("j3/报表/报表组件底层统计", () => {
 	it("使用 query 接口 - 查询报表组件底层统计列表", async () => {
