@@ -1,4 +1,6 @@
-import { useRequest } from "composables/use-request";
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
 
 /**
  * 报表组查询参数
@@ -63,6 +65,8 @@ export interface DeleteReportGroupParams {
 	/** 组ID */
 	groupId: string;
 }
+
+// ==================== 接口函数 ====================
 
 /**
  * 获取报表组列表（条件+分页）

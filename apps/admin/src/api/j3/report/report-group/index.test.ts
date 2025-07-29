@@ -6,37 +6,36 @@ import {
 	addReportGroup,
 	modifyReportGroup,
 	deleteReportGroup,
-} from ".";
+} from "./index";
 
-describe("报表组接口测试", () => {
-	it("获取报表组列表", async () => {
+describe("j3/报表组管理", () => {
+	it("使用 queryReportGroupList 接口 - 获取报表组列表（条件+分页）", async () => {
 		const { execute, data } = queryReportGroupList({
 			onSuccess(data) {
-				console.warn("获取报表组列表成功", printFormat(data));
+				console.warn("queryReportGroupList onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("queryReportGroupList onError", error);
+			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用条件查询报表组列表", async () => {
+	it("使用 queryReportGroupList 接口 - 条件查询报表组列表", async () => {
 		const { execute, data } = queryReportGroupList({
 			onSuccess(data) {
-				console.warn("条件查询报表组列表成功", printFormat(data));
+				console.warn("queryReportGroupList onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("queryReportGroupList onError", error);
+			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			params: {
 				pageIndex: 1,
@@ -46,33 +45,31 @@ describe("报表组接口测试", () => {
 				url: "/#/pages/property/custom.html",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取报表组名称列表", async () => {
+	it("使用 queryReportGroupNameList 接口 - 获取报表组名称列表", async () => {
 		const { execute, data } = queryReportGroupNameList({
 			onSuccess(data) {
-				console.warn("获取报表组名称列表成功", printFormat(data));
+				console.warn("queryReportGroupNameList onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("queryReportGroupNameList onError", error);
+			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute();
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("添加报表组", async () => {
+	it("使用 addReportGroup 接口 - 添加报表组", async () => {
 		const { execute, data } = addReportGroup({
 			onSuccess(data) {
-				console.warn("添加报表组成功", printFormat(data));
+				console.warn("addReportGroup onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("addReportGroup onError", error);
+			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				name: "报修报表",
@@ -80,19 +77,18 @@ describe("报表组接口测试", () => {
 				url: "/#/pages/property/custom.html",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改报表组", async () => {
+	it("使用 modifyReportGroup 接口 - 修改报表组", async () => {
 		const { execute, data } = modifyReportGroup({
 			onSuccess(data) {
-				console.warn("修改报表组成功", printFormat(data));
+				console.warn("modifyReportGroup onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("modifyReportGroup onError", error);
+			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				groupId: "102021111007300000",
@@ -101,25 +97,23 @@ describe("报表组接口测试", () => {
 				url: "/#/pages/property/custom.html",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除报表组", async () => {
+	it("使用 deleteReportGroup 接口 - 删除报表组", async () => {
 		const { execute, data } = deleteReportGroup({
 			onSuccess(data) {
-				console.warn("删除报表组成功", printFormat(data));
+				console.warn("deleteReportGroup onSuccess", printFormat(data));
 			},
-			onError(error) {},
+			onError(error) {
+				console.error("deleteReportGroup onError", error);
+			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			params: {
 				groupId: "102021111007300000",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
