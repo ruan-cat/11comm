@@ -1,4 +1,6 @@
-import { useRequest } from "composables/use-request";
+import { useRequest } from "@/composables/use-request";
+
+// ==================== 类型定义 ====================
 
 /**
  * 修改小区相关设置项
@@ -156,15 +158,15 @@ export interface CommunitySettingKeyVO {
 	statusCd?: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 提交配置项修改接口
- * @description
- * 修改小区相关设置项配置
+ * @description 修改小区相关设置项配置
  */
 export function modifyCommunitySetting<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ModifyCommunitySettingParams>({
 		url: "/j3-system/community-setting/modify-communitysetting",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
@@ -173,79 +175,75 @@ export function modifyCommunitySetting<T = string>(options: UseAxiosOptionsJsonV
 				settingItems: [],
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 获取配置项数据接口
- * @description
- * 根据小区ID和设置类型获取配置项数据
+ * @description 根据小区ID和设置类型获取配置项数据
  */
 export function queryCommunitySettingList<T = CommunitySetting[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryCommunitySettingParams>({
 		url: "/j3-system/community-setting/query-communitysetting",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				communityId: "",
 				settingType: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 获取配置项列表接口
- * @description
- * 获取配置项列表
+ * @description 获取配置项列表
  */
 export function queryCommunitySettingKeyList<T = CommunitySettingKeyVO[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryCommunitySettingKeyParams>({
 		url: "/j3-system/community-setting/query-communitysettingkey",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				communityId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 获取小区列表接口
- * @description
- * 获取小区列表（分页+条件）
+ * @description 获取小区列表（分页+条件）
  */
 export function queryCommunitiesList<T = PageDTO<InitCommunityDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryCommunitiesParams>({
 		url: "/j3-system/init-community/query-coummunities",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				communityId: "",
 				name: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 修改密码接口
- * @description
- * 修改员工密码
+ * @description 修改员工密码
  */
 export function modifyStaffPwd<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ModifyStaffPwdParams>({
 		url: "/j3-system/password/modify-staff-pwd",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
@@ -256,18 +254,17 @@ export function modifyStaffPwd<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				userId: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 修改注册协议接口
- * @description
- * 修改用户和商家注册协议内容
+ * @description 修改用户和商家注册协议内容
  */
 export function updateRegisterProtocol<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, UpdateRegisterProtocolParams>({
 		url: "/j3-system/register/update-register-protocol",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
@@ -278,18 +275,17 @@ export function updateRegisterProtocol<T = string>(options: UseAxiosOptionsJsonV
 				userProtocol: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 修改系统配置接口
- * @description
- * 修改系统配置信息
+ * @description 修改系统配置信息
  */
 export function updateSystemInfo<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, UpdateSystemInfoParams>({
 		url: "/j3-system/system-config/update-system-info",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
@@ -308,25 +304,25 @@ export function updateSystemInfo<T = string>(options: UseAxiosOptionsJsonVO<T>) 
 				systemTitle: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 格式化数据接口
- * @description
- * 格式化指定小区的数据
+ * @description 格式化指定小区的数据
  */
 export function removeData<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, RemoveDataParams>({
 		url: "/j3-system/init-community/remove-data",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "DELETE",
-			data: {
+			params: {
 				communityId: "",
 				password: "",
 			},
 		},
+		options,
 	});
 }
