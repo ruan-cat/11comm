@@ -1,14 +1,18 @@
 import { describe, it } from "vitest";
-import { printFormat } from "@/utils/print";
+import { printFormat } from "@ruan-cat/utils";
 import { getPersonnelScheduleList } from "./index";
 
 describe("j4/排班表管理", () => {
-	it("使用 getPersonnelScheduleList 接口 - 获取人员排班列表", () => {
+	it("使用 getPersonnelScheduleList 接口 - 获取人员排班列表", async () => {
 		const { execute, data } = getPersonnelScheduleList({
-			onError: (error) => console.warn("getPersonnelScheduleList 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getPersonnelScheduleList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getPersonnelScheduleList onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				month: 6,
 				name: "李四",
@@ -18,7 +22,6 @@ describe("j4/排班表管理", () => {
 				year: 2025,
 			},
 		});
-
-		console.warn("getPersonnelScheduleList 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

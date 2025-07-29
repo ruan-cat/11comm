@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { printFormat } from "@/utils/print";
+import { printFormat } from "@ruan-cat/utils";
 import {
 	addOrganization,
 	associateEmployee,
@@ -11,69 +11,85 @@ import {
 } from "./index";
 
 describe("j4/组织信息管理", () => {
-	it("使用 addOrganization 接口 - 添加新的组织", () => {
+	it("使用 addOrganization 接口 - 添加新的组织", async () => {
 		const { execute, data } = addOrganization({
-			onError: (error) => console.warn("addOrganization 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("addOrganization onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("addOrganization onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				description: "测试组织描述",
 				orgname: "测试组织",
 				parentOrgId: "parent-org-id",
 			},
 		});
-
-		console.warn("addOrganization 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 associateEmployee 接口 - 将员工关联到组织", () => {
+	it("使用 associateEmployee 接口 - 将员工关联到组织", async () => {
 		const { execute, data } = associateEmployee({
-			onError: (error) => console.warn("associateEmployee 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("associateEmployee onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("associateEmployee onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				orgId: "test-org-id",
 				userIds: ["user1", "user2", "user3"],
 			},
 		});
-
-		console.warn("associateEmployee 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 deleteOrganization 接口 - 删除指定组织", () => {
+	it("使用 deleteOrganization 接口 - 删除指定组织", async () => {
 		const { execute, data } = deleteOrganization({
-			onError: (error) => console.warn("deleteOrganization 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("deleteOrganization onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("deleteOrganization onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				orgId: "test-org-id",
 			},
 		});
-
-		console.warn("deleteOrganization 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getOrganizationTree 接口 - 获取组织结构树", () => {
+	it("使用 getOrganizationTree 接口 - 获取组织结构树", async () => {
 		const { execute, data } = getOrganizationTree({
-			onError: (error) => console.warn("getOrganizationTree 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getOrganizationTree onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getOrganizationTree onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {},
 		});
-
-		console.warn("getOrganizationTree 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 modifyOrganization 接口 - 修改组织信息", () => {
+	it("使用 modifyOrganization 接口 - 修改组织信息", async () => {
 		const { execute, data } = modifyOrganization({
-			onError: (error) => console.warn("modifyOrganization 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("modifyOrganization onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("modifyOrganization onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				orgId: "test-org-id",
 				description: "修改后描述",
@@ -81,16 +97,19 @@ describe("j4/组织信息管理", () => {
 				parentOrgId: "new-parent-org-id",
 			},
 		});
-
-		console.warn("modifyOrganization 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 queryBeforeAssociate 接口 - 关联员工前查询可用员工列表", () => {
+	it("使用 queryBeforeAssociate 接口 - 关联员工前查询可用员工列表", async () => {
 		const { execute, data } = queryBeforeAssociate({
-			onError: (error) => console.warn("queryBeforeAssociate 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("queryBeforeAssociate onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("queryBeforeAssociate onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				orgId: "test-org-id",
 				pageIndex: 1,
@@ -98,16 +117,19 @@ describe("j4/组织信息管理", () => {
 				name: "测试员工",
 			},
 		});
-
-		console.warn("queryBeforeAssociate 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getOrgEmployeeList 接口 - 获取指定组织的员工列表", () => {
+	it("使用 getOrgEmployeeList 接口 - 获取指定组织的员工列表", async () => {
 		const { execute, data } = getOrgEmployeeList({
-			onError: (error) => console.warn("getOrgEmployeeList 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getOrgEmployeeList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getOrgEmployeeList onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				orgId: "test-org-id",
 				pageIndex: 1,
@@ -115,7 +137,6 @@ describe("j4/组织信息管理", () => {
 				name: "员工姓名",
 			},
 		});
-
-		console.warn("getOrgEmployeeList 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

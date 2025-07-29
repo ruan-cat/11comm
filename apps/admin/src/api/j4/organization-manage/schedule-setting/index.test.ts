@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { printFormat } from "@/utils/print";
+import { printFormat } from "@ruan-cat/utils";
 import {
 	deleteAssociatedPersonnel,
 	deleteSchedule,
@@ -14,38 +14,48 @@ import {
 } from "./index";
 
 describe("j4/排班设置管理", () => {
-	it("使用 deleteAssociatedPersonnel 接口 - 删除排班关联的人员", () => {
+	it("使用 deleteAssociatedPersonnel 接口 - 删除排班关联的人员", async () => {
 		const { execute, data } = deleteAssociatedPersonnel({
-			onError: (error) => console.warn("deleteAssociatedPersonnel 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("deleteAssociatedPersonnel onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("deleteAssociatedPersonnel onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				associatedId: "test-associated-id",
 			},
 		});
-
-		console.warn("deleteAssociatedPersonnel 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 deleteSchedule 接口 - 删除指定的排班设置", () => {
+	it("使用 deleteSchedule 接口 - 删除指定的排班设置", async () => {
 		const { execute, data } = deleteSchedule({
-			onError: (error) => console.warn("deleteSchedule 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("deleteSchedule onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("deleteSchedule onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			url: "/j4-orgmanager/scheduling/delete/123",
 		});
-
-		console.warn("deleteSchedule 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 queryScheduleList 接口 - 获取排班设置列表", () => {
+	it("使用 queryScheduleList 接口 - 获取排班设置列表", async () => {
 		const { execute, data } = queryScheduleList({
-			onError: (error) => console.warn("queryScheduleList 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("queryScheduleList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("queryScheduleList onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				name: "早班",
 				pageIndex: 1,
@@ -53,28 +63,34 @@ describe("j4/排班设置管理", () => {
 				state: "1001",
 			},
 		});
-
-		console.warn("queryScheduleList 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getScheduleNameList 接口 - 获取所有排班设置的名称列表", () => {
+	it("使用 getScheduleNameList 接口 - 获取所有排班设置的名称列表", async () => {
 		const { execute, data } = getScheduleNameList({
-			onError: (error) => console.warn("getScheduleNameList 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getScheduleNameList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getScheduleNameList onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {},
 		});
-
-		console.warn("getScheduleNameList 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 addAssociatedPersonnel 接口 - 为排班设置添加关联的员工", () => {
+	it("使用 addAssociatedPersonnel 接口 - 为排班设置添加关联的员工", async () => {
 		const { execute, data } = addAssociatedPersonnel({
-			onError: (error) => console.warn("addAssociatedPersonnel 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("addAssociatedPersonnel onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("addAssociatedPersonnel onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				createTime: "2024-01-01 12:00:00",
 				scheduleId: "test-schedule-id",
@@ -84,16 +100,19 @@ describe("j4/排班设置管理", () => {
 				storeId: "test-store-id",
 			},
 		});
-
-		console.warn("addAssociatedPersonnel 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 addSchedule 接口 - 创建新的排班设置", () => {
+	it("使用 addSchedule 接口 - 创建新的排班设置", async () => {
 		const { execute, data } = addSchedule({
-			onError: (error) => console.warn("addSchedule 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("addSchedule onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("addSchedule onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				details: [
 					{
@@ -109,30 +128,36 @@ describe("j4/排班设置管理", () => {
 				storeId: "test-store-id",
 			},
 		});
-
-		console.warn("addSchedule 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getScheduleDetail 接口 - 获取指定排班设置的详细信息", () => {
+	it("使用 getScheduleDetail 接口 - 获取指定排班设置的详细信息", async () => {
 		const { execute, data } = getScheduleDetail({
-			onError: (error) => console.warn("getScheduleDetail 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getScheduleDetail onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getScheduleDetail onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				scheduleId: "test-schedule-id",
 			},
 		});
-
-		console.warn("getScheduleDetail 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getAssociatedPersonnelList 接口 - 获取排班设置关联的人员列表", () => {
+	it("使用 getAssociatedPersonnelList 接口 - 获取排班设置关联的人员列表", async () => {
 		const { execute, data } = getAssociatedPersonnelList({
-			onError: (error) => console.warn("getAssociatedPersonnelList 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getAssociatedPersonnelList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getAssociatedPersonnelList onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				scheduleId: "test-schedule-id",
 				pageIndex: 1,
@@ -140,28 +165,34 @@ describe("j4/排班设置管理", () => {
 				staffName: "张三",
 			},
 		});
-
-		console.warn("getAssociatedPersonnelList 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 toggleScheduleStatus 接口 - 启用或停用指定的排班设置", () => {
+	it("使用 toggleScheduleStatus 接口 - 启用或停用指定的排班设置", async () => {
 		const { execute, data } = toggleScheduleStatus({
-			onError: (error) => console.warn("toggleScheduleStatus 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("toggleScheduleStatus onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("toggleScheduleStatus onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			url: "/j4-orgmanager/scheduling/status/123",
 		});
-
-		console.warn("toggleScheduleStatus 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 modifySchedule 接口 - 修改排班设置信息", () => {
+	it("使用 modifySchedule 接口 - 修改排班设置信息", async () => {
 		const { execute, data } = modifySchedule({
-			onError: (error) => console.warn("modifySchedule 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("modifySchedule onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("modifySchedule onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				scheduleId: "test-schedule-id",
 				details: [
@@ -178,7 +209,6 @@ describe("j4/排班设置管理", () => {
 				storeId: "modified-store-id",
 			},
 		});
-
-		console.warn("modifySchedule 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

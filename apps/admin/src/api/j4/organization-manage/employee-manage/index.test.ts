@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { printFormat } from "@/utils/print";
+import { printFormat } from "@ruan-cat/utils";
 import {
 	addEmployee,
 	deleteEmployee,
@@ -12,12 +12,16 @@ import {
 } from "./index";
 
 describe("j4/员工信息管理", () => {
-	it("使用 addEmployee 接口 - 添加新的员工信息", () => {
+	it("使用 addEmployee 接口 - 添加新的员工信息", async () => {
 		const { execute, data } = addEmployee({
-			onError: (error) => console.warn("addEmployee 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("addEmployee onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("addEmployee onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				address: "测试地址",
 				associatedOrg: "测试组织",
@@ -28,44 +32,53 @@ describe("j4/员工信息管理", () => {
 				tel: "13800138000",
 			},
 		});
-
-		console.warn("addEmployee 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 deleteEmployee 接口 - 删除指定员工", () => {
+	it("使用 deleteEmployee 接口 - 删除指定员工", async () => {
 		const { execute, data } = deleteEmployee({
-			onError: (error) => console.warn("deleteEmployee 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("deleteEmployee onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("deleteEmployee onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				userId: "test-user-id",
 			},
 		});
-
-		console.warn("deleteEmployee 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getEmployeeScheduleInfo 接口 - 获取指定员工的排班信息", () => {
+	it("使用 getEmployeeScheduleInfo 接口 - 获取指定员工的排班信息", async () => {
 		const { execute, data } = getEmployeeScheduleInfo({
-			onError: (error) => console.warn("getEmployeeScheduleInfo 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getEmployeeScheduleInfo onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getEmployeeScheduleInfo onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				userID: "test-user-id",
 			},
 		});
-
-		console.warn("getEmployeeScheduleInfo 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getEmployeeList 接口 - 获取员工列表", () => {
+	it("使用 getEmployeeList 接口 - 获取员工列表", async () => {
 		const { execute, data } = getEmployeeList({
-			onError: (error) => console.warn("getEmployeeList 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getEmployeeList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getEmployeeList onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				name: "测试",
 				orgId: "test-org-id",
@@ -75,16 +88,19 @@ describe("j4/员工信息管理", () => {
 				userID: "test-user",
 			},
 		});
-
-		console.warn("getEmployeeList 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 modifyEmployee 接口 - 修改员工信息", () => {
+	it("使用 modifyEmployee 接口 - 修改员工信息", async () => {
 		const { execute, data } = modifyEmployee({
-			onError: (error) => console.warn("modifyEmployee 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("modifyEmployee onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("modifyEmployee onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				userID: "test-user-id",
 				address: "修改后地址",
@@ -96,49 +112,57 @@ describe("j4/员工信息管理", () => {
 				tel: "13900139000",
 			},
 		});
-
-		console.warn("modifyEmployee 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getEmployeeBaseInfo 接口 - 获取指定员工的基础信息", () => {
+	it("使用 getEmployeeBaseInfo 接口 - 获取指定员工的基础信息", async () => {
 		const { execute, data } = getEmployeeBaseInfo({
-			onError: (error) => console.warn("getEmployeeBaseInfo 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getEmployeeBaseInfo onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getEmployeeBaseInfo onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				userID: "test-user-id",
 			},
 		});
-
-		console.warn("getEmployeeBaseInfo 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 getEmployeeOrgPermissionInfo 接口 - 获取指定员工的组织权限信息", () => {
+	it("使用 getEmployeeOrgPermissionInfo 接口 - 获取指定员工的组织权限信息", async () => {
 		const { execute, data } = getEmployeeOrgPermissionInfo({
-			onError: (error) => console.warn("getEmployeeOrgPermissionInfo 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("getEmployeeOrgPermissionInfo onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getEmployeeOrgPermissionInfo onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			params: {
 				userID: "test-user-id",
 			},
 		});
-
-		console.warn("getEmployeeOrgPermissionInfo 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 resetEmployeePassword 接口 - 重置指定员工的密码", () => {
+	it("使用 resetEmployeePassword 接口 - 重置指定员工的密码", async () => {
 		const { execute, data } = resetEmployeePassword({
-			onError: (error) => console.warn("resetEmployeePassword 接口请求失败:", error),
+			onSuccess(data) {
+				console.warn("resetEmployeePassword onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("resetEmployeePassword onError", error);
+			},
 		});
-
-		execute({
+		await execute({
 			data: {
 				userID: "test-user-id",
 			},
 		});
-
-		console.warn("resetEmployeePassword 接口响应数据:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
