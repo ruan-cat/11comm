@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 报表统计信息
  */
@@ -66,6 +68,8 @@ export interface RemoveComponentCountParams {
 	footerID: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 查询报表组件底层统计列表
  * @description 支持按组件ID进行条件查询，并返回分页数据
@@ -74,7 +78,6 @@ export function queryComponentCountList<T = PageDTO<ReportComponentCountInfo>>(o
 	return useRequest<ParamsQueryKey, T, QueryComponentCountParams>({
 		url: "/j3-report/report-component-count/query-count",
 		httpParamWay: "query",
-		options,
 		config: {
 			method: "GET",
 			params: {
@@ -82,6 +85,7 @@ export function queryComponentCountList<T = PageDTO<ReportComponentCountInfo>>(o
 				pageSize: 10,
 			},
 		},
+		options,
 	});
 }
 
@@ -93,7 +97,6 @@ export function addComponentCount<T = string>(options: UseAxiosOptionsJsonVO<T>)
 	return useRequest<ParamsBodyKey, T, AddComponentCountParams>({
 		url: "/j3-report/report-component-count/add-count",
 		httpParamWay: "body",
-		options,
 		config: {
 			method: "POST",
 			data: {
@@ -102,6 +105,7 @@ export function addComponentCount<T = string>(options: UseAxiosOptionsJsonVO<T>)
 				queryModel: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -113,7 +117,6 @@ export function modifyComponentCount<T = string>(options: UseAxiosOptionsJsonVO<
 	return useRequest<ParamsBodyKey, T, ModifyComponentCountParams>({
 		url: "/j3-report/report-component-count/modify-count",
 		httpParamWay: "body",
-		options,
 		config: {
 			method: "PUT",
 			data: {
@@ -123,6 +126,7 @@ export function modifyComponentCount<T = string>(options: UseAxiosOptionsJsonVO<
 				queryModel: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -134,12 +138,12 @@ export function removeComponentCount<T = string>(options: UseAxiosOptionsJsonVO<
 	return useRequest<ParamsQueryKey, T, RemoveComponentCountParams>({
 		url: "/j3-report/report-component-count/remove-count",
 		httpParamWay: "query",
-		options,
 		config: {
 			method: "DELETE",
 			params: {
 				footerID: "",
 			},
 		},
+		options,
 	});
 }

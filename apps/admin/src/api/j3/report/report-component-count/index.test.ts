@@ -1,8 +1,8 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryComponentCountList, addComponentCount, modifyComponentCount, removeComponentCount } from ".";
+import { queryComponentCountList, addComponentCount, modifyComponentCount, removeComponentCount } from "./index";
 
-describe("j3/报表/报表组件底层统计", () => {
+describe("j3/报表组件底层统计", () => {
 	it("使用 query 接口 - 查询报表组件底层统计列表", async () => {
 		const { execute, data } = queryComponentCountList({
 			onSuccess(data) {
@@ -12,8 +12,6 @@ describe("j3/报表/报表组件底层统计", () => {
 				console.error("queryComponentCountList onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			params: {
 				pageIndex: 1,
@@ -21,7 +19,6 @@ describe("j3/报表/报表组件底层统计", () => {
 				componentId: "102023070480690000",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
@@ -34,8 +31,6 @@ describe("j3/报表/报表组件底层统计", () => {
 				console.error("addComponentCount onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				componentId: "102023070480690000",
@@ -44,7 +39,6 @@ describe("j3/报表/报表组件底层统计", () => {
 				footerDescription: "这是一个测试...",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
@@ -57,8 +51,6 @@ describe("j3/报表/报表组件底层统计", () => {
 				console.error("modifyComponentCount onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			data: {
 				componentId: "102023070480690000",
@@ -68,7 +60,6 @@ describe("j3/报表/报表组件底层统计", () => {
 				footerDescription: "这是一个测试...（已更新）",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
@@ -81,14 +72,11 @@ describe("j3/报表/报表组件底层统计", () => {
 				console.error("removeComponentCount onError", error);
 			},
 		});
-
-		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象
 		await execute({
 			params: {
 				footerID: "102025052043900000",
 			},
 		});
-
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
