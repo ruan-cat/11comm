@@ -12,6 +12,7 @@
 
 - commitlint.config.cjs
 - https://github.com/ruan-cat/monorepo/blob/dev/configs-package/commitlint-config/README.md
+- https://github.com/ruan-cat/monorepo/blob/dev/configs-package/commitlint-config/src/config.ts
 
 认真阅读 `commitlint.config.cjs` 提供的配置。
 
@@ -20,5 +21,4 @@
 按照以下步骤来生成 git commit 信息。
 
 1. 使用终端，运行命令 `git add .` ，先暂存修改内容。
-2. 运行命令 `cz` ，触发交互式提交。
-3. 在交互式的终端内，选择提交范围、生成提交信息。
+2. 根据提交规范，生成提交信息。
