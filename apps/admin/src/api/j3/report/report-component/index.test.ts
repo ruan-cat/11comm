@@ -7,7 +7,7 @@ import {
 	deleteReportComponent,
 	modifyReportComponent,
 	addComponentCondition,
-} from "./report-component";
+} from ".";
 
 describe("报表组件接口测试", () => {
 	it("获取报表组件列表", async () => {

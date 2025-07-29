@@ -8,7 +8,7 @@ import {
 	deleteReportMessage,
 	modifyReportMessage,
 	addComponentRel,
-} from "./report-message";
+} from ".";
 
 describe("报表信息接口测试", () => {
 	it("获取报表信息列表", async () => {

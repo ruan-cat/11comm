@@ -9,7 +9,7 @@ import {
 	updateRegisterProtocol,
 	updateSystemInfo,
 	removeData,
-} from "./j3-system";
+} from ".";
 
 describe("系统管理接口测试", () => {
 	it("提交配置项修改", async () => {

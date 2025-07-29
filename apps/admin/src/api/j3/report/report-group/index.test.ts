@@ -6,7 +6,7 @@ import {
 	addReportGroup,
 	modifyReportGroup,
 	deleteReportGroup,
-} from "./report-group";
+} from ".";
 
 describe("报表组接口测试", () => {
 	it("获取报表组列表", async () => {
