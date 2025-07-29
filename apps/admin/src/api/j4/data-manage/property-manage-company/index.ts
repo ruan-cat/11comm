@@ -132,6 +132,14 @@ export interface CommunityMenuGroup {
 	statusCd: string;
 }
 
+/**
+ * 获取未加入小区列表参数
+ */
+export interface GetNoJoinCommunityListParams {
+	/** 业务id */
+	communityMemberId: string;
+}
+
 // ==================== 接口函数 ====================
 
 /**
@@ -345,6 +353,25 @@ export function updateCommunityMenuGroup<T = string>(options: UseAxiosOptionsJso
 				communityId: "",
 				communityName: "",
 				menuGroups: [],
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取未加入小区列表接口
+ * @description 获取未加入小区列表
+ */
+export function getNoJoinCommunityList<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsPathKey, T, GetNoJoinCommunityListParams>({
+		url: "/j4-datamanager/noJoinCommunityList/{communityMemberId}",
+		httpParamWay: "path",
+		config: {
+			url: "/j4-datamanager/noJoinCommunityList/{communityMemberId}",
+			method: "GET",
+			params: {
+				communityMemberId: "",
 			},
 		},
 		options,

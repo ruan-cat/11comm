@@ -12,6 +12,7 @@ import {
 	getCommunityMenuGroupList,
 	limitCompanyLogin,
 	updateCommunityMenuGroup,
+	getNoJoinCommunityList,
 } from "./index";
 
 describe("j4/物业公司管理", () => {
@@ -220,6 +221,24 @@ describe("j4/物业公司管理", () => {
 						statusCd: "0",
 					},
 				],
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 getNoJoinCommunityList 接口 - 获取未加入小区列表", async () => {
+		const { execute, data } = getNoJoinCommunityList({
+			onSuccess(data) {
+				console.warn("getNoJoinCommunityList onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getNoJoinCommunityList onError", error);
+			},
+		});
+		await execute({
+			url: "/j4-datamanager/noJoinCommunityList/10202305221014333605000192",
+			params: {
+				communityMemberId: "10202305221014333605000192",
 			},
 		});
 		console.warn("查看简单的 data.value ", printFormat(data.value));

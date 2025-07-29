@@ -87,6 +87,13 @@
 - **接口路径**: `/j4-datamanager/updateCommunityMenuGroup`
 - **功能描述**: 修改指定小区的功能菜单组
 
+#### 12. 获取未加入小区列表
+
+- **接口名称**: `getNoJoinCommunityList`
+- **请求方式**: GET
+- **接口路径**: `/j4-datamanager/noJoinCommunityList/{communityMemberId}`
+- **功能描述**: 获取未加入小区列表，返回字符串数组
+
 ## 📊 数据类型
 
 ### 物业公司相关类型
@@ -102,6 +109,7 @@
 - **JoinCommunityList**: 加入小区列表信息
 - **GetJoinCommunityListParams**: 获取加入小区列表参数
 - **CommunityMenuGroup**: 小区功能菜单组
+- **GetNoJoinCommunityListParams**: 获取未加入小区列表参数
 
 ### 字段说明
 
@@ -130,7 +138,7 @@
 
 ## 🧪 测试用例
 
-模块包含完整的测试套件，覆盖所有 11 个接口的功能测试：
+模块包含完整的测试套件，覆盖所有 12 个接口的功能测试：
 
 ### 物业公司基础信息管理测试
 
@@ -148,6 +156,7 @@
 9. 退出小区
 10. 获取小区功能
 11. 修改小区功能
+12. 获取未加入小区列表
 
 ## 📝 使用示例
 
@@ -157,6 +166,7 @@ import {
 	getCompanyList,
 	addJoinCommunity,
 	getJoinCommunityList,
+	getNoJoinCommunityList,
 	modifyPropertyCompany,
 	deleteCompany,
 } from "@/api/j4/data-manage/property-manage-company";
@@ -186,6 +196,13 @@ const { execute: joinCommunity } = addJoinCommunity({
 const { execute: getCommunityList } = getJoinCommunityList({
 	onSuccess(data) {
 		console.log("小区列表", data);
+	},
+});
+
+// 获取未加入小区列表
+const { execute: getNoJoinList } = getNoJoinCommunityList({
+	onSuccess(data) {
+		console.log("未加入小区列表", data);
 	},
 });
 ```
@@ -258,6 +275,6 @@ const { execute: getCommunityList } = getJoinCommunityList({
 
 ## 📈 模块完成状态
 
-**物业公司管理模块**: 11/11 (100%) ✅ **已完成**
+**物业公司管理模块**: 12/12 (100%) ✅ **已完成**
 
-所有接口都已实现、测试并通过代码规范修复，代码完全符合项目规范标准。模块现在可以安全、正确地在项目中使用。该模块为 J4 数据管理系统提供了完善的物业公司管理能力，支持物业公司的全生命周期管理和灵活的小区关联管理功能。
+所有接口都已实现、测试并通过代码规范修复，代码完全符合项目规范标准。模块现在可以安全、正确地在项目中使用。该模块为 J4 数据管理系统提供了完善的物业公司管理能力，支持物业公司的全生命周期管理和灵活的小区关联管理功能。新增的"获取未加入小区列表"接口为物业公司提供了查看可加入小区的功能，进一步完善了小区管理体系。
