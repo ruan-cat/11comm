@@ -2,21 +2,21 @@ import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 
 import {
-	addInspectProject,
-	modifyInspectProject,
-	deleteInspectProject,
-	queryInspectProjectList,
-	queryInspectProjectNameList,
-	addInspectQuestion,
-	modifyInspectQuestion,
-	deleteInspectQuestion,
-	queryInspectQuestionList,
+	addInspectItem,
+	modifyInspectItem,
+	deleteInspectItem,
+	queryInspectItemList,
+	queryInspectItemNameList,
+	addInspectTitle,
+	modifyInspectTitle,
+	deleteInspectTitle,
+	queryInspectTitleList,
 } from ".";
 
 describe("j8/巡检项目", () => {
 	// 巡检项目相关接口测试
-	it("使用 addInspectProject 接口 - 添加巡检项目", async () => {
-		const { execute, data } = addInspectProject({
+	it("使用 addInspectItem 接口 - 添加巡检项目", async () => {
+		const { execute, data } = addInspectItem({
 			onSuccess(data) {
 				console.warn("添加巡检项目成功", printFormat(data));
 			},
@@ -27,20 +27,17 @@ describe("j8/巡检项目", () => {
 
 		await execute({
 			data: {
-				projectName: "消防安全巡检",
-				projectCode: "FIRE_SAFETY",
-				projectDesc: "消防安全巡检项目",
-				projectType: "安全检查",
-				status: "1",
-				sort: 1,
+				communityId: "2024012252790005",
+				itemName: "电梯安全巡检",
+				remark: "每日电梯安全巡检",
 			},
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 modifyInspectProject 接口 - 修改巡检项目", async () => {
-		const { execute, data } = modifyInspectProject({
+	it("使用 modifyInspectItem 接口 - 修改巡检项目", async () => {
+		const { execute, data } = modifyInspectItem({
 			onSuccess(data) {
 				console.warn("修改巡检项目成功", printFormat(data));
 			},
@@ -51,18 +48,18 @@ describe("j8/巡检项目", () => {
 
 		await execute({
 			data: {
-				id: "123456",
-				projectName: "电梯安全巡检",
-				projectDesc: "电梯安全巡检项目",
-				sort: 2,
+				communityId: "2024012252790005",
+				itemId: "102022122193930560",
+				itemName: "消防设备巡检",
+				remark: "消防设备日常巡检",
 			},
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 deleteInspectProject 接口 - 删除巡检项目", async () => {
-		const { execute, data } = deleteInspectProject({
+	it("使用 deleteInspectItem 接口 - 删除巡检项目", async () => {
+		const { execute, data } = deleteInspectItem({
 			onSuccess(data) {
 				console.warn("删除巡检项目成功", printFormat(data));
 			},
@@ -72,16 +69,14 @@ describe("j8/巡检项目", () => {
 		});
 
 		await execute({
-			params: {
-				id: "123456",
-			},
+			url: "/j8-patrolmgt/item/remove-item/102022050608420018",
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 queryInspectProjectList 接口 - 获取巡检项目列表", async () => {
-		const { execute, data } = queryInspectProjectList({
+	it("使用 queryInspectItemList 接口 - 获取巡检项目列表", async () => {
+		const { execute, data } = queryInspectItemList({
 			onSuccess(data) {
 				console.warn("获取巡检项目列表成功", printFormat(data));
 			},
@@ -92,18 +87,18 @@ describe("j8/巡检项目", () => {
 
 		await execute({
 			params: {
+				communityId: "2024022692080516",
 				pageIndex: 1,
 				pageSize: 10,
-				projectName: "消防",
-				status: "1",
+				itemName: "电梯",
 			},
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 queryInspectProjectNameList 接口 - 获取巡检项目名称列表", async () => {
-		const { execute, data } = queryInspectProjectNameList({
+	it("使用 queryInspectItemNameList 接口 - 获取巡检项目名称列表", async () => {
+		const { execute, data } = queryInspectItemNameList({
 			onSuccess(data) {
 				console.warn("获取巡检项目名称列表成功", printFormat(data));
 			},
@@ -113,15 +108,17 @@ describe("j8/巡检项目", () => {
 		});
 
 		await execute({
-			params: {},
+			params: {
+				communityId: "2024022692080516",
+			},
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
 	// 巡检题目相关接口测试
-	it("使用 addInspectQuestion 接口 - 增加巡检题目", async () => {
-		const { execute, data } = addInspectQuestion({
+	it("使用 addInspectTitle 接口 - 增加巡检题目", async () => {
+		const { execute, data } = addInspectTitle({
 			onSuccess(data) {
 				console.warn("增加巡检题目成功", printFormat(data));
 			},
@@ -132,21 +129,31 @@ describe("j8/巡检项目", () => {
 
 		await execute({
 			data: {
-				projectId: "123456",
-				questionName: "消防栓水压检查",
-				questionType: "单选题",
-				questionContent: "消防栓水压是否正常？",
-				required: true,
-				sort: 1,
-				status: "1",
+				communityId: "2024022692080516",
+				itemId: "102025051504330000",
+				itemTitle: "楼道是否干净",
+				seq: 0,
+				titleType: "1001",
+				values: [
+					{
+						communityId: "2024022692080516",
+						itemValue: "很干净",
+						seq: 0,
+					},
+					{
+						communityId: "2024022692080516",
+						itemValue: "一般",
+						seq: 1,
+					},
+				],
 			},
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 modifyInspectQuestion 接口 - 修改巡检题目", async () => {
-		const { execute, data } = modifyInspectQuestion({
+	it("使用 modifyInspectTitle 接口 - 修改巡检题目", async () => {
+		const { execute, data } = modifyInspectTitle({
 			onSuccess(data) {
 				console.warn("修改巡检题目成功", printFormat(data));
 			},
@@ -157,18 +164,20 @@ describe("j8/巡检项目", () => {
 
 		await execute({
 			data: {
-				id: "789012",
-				questionName: "消防设备检查",
-				questionContent: "消防设备运行状态是否正常？",
-				required: false,
+				communityId: "2024022692080516",
+				itemId: "102025051504330000",
+				itemTitle: "电梯运行是否正常",
+				seq: 1,
+				titleId: "1930243903590158300",
+				titleType: "1001",
 			},
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 deleteInspectQuestion 接口 - 删除巡检题目", async () => {
-		const { execute, data } = deleteInspectQuestion({
+	it("使用 deleteInspectTitle 接口 - 删除巡检题目", async () => {
+		const { execute, data } = deleteInspectTitle({
 			onSuccess(data) {
 				console.warn("删除巡检题目成功", printFormat(data));
 			},
@@ -178,16 +187,14 @@ describe("j8/巡检项目", () => {
 		});
 
 		await execute({
-			params: {
-				id: "789012",
-			},
+			url: "/j8-patrolmgt/item/remove-inspection-item/123456",
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 queryInspectQuestionList 接口 - 获取巡检题目列表", async () => {
-		const { execute, data } = queryInspectQuestionList({
+	it("使用 queryInspectTitleList 接口 - 获取巡检题目列表", async () => {
+		const { execute, data } = queryInspectTitleList({
 			onSuccess(data) {
 				console.warn("获取巡检题目列表成功", printFormat(data));
 			},
@@ -198,11 +205,12 @@ describe("j8/巡检项目", () => {
 
 		await execute({
 			params: {
+				communityId: "2024022692080516",
+				itemId: "102025051235020211",
 				pageIndex: 1,
 				pageSize: 10,
-				projectId: "123456",
-				questionName: "消防",
-				status: "1",
+				itemTitle: "电梯",
+				titleType: "1001",
 			},
 		});
 

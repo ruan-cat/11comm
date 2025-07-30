@@ -5,173 +5,173 @@ import { useRequest } from "@/composables/use-request";
 /**
  * 巡检项目数据模型
  */
-export interface InspectProjectData {
-	/** 项目ID */
-	id?: string;
-	/** 项目名称 */
-	projectName?: string;
-	/** 项目编码 */
-	projectCode?: string;
-	/** 项目描述 */
-	projectDesc?: string;
-	/** 项目类型 */
-	projectType?: string;
-	/** 状态 */
-	status?: string;
-	/** 排序 */
-	sort?: number;
-	/** 创建时间 */
+export interface InspectItemData {
+	/** 巡检项目编号 */
+	itemId?: string;
+	/** 巡检项目名称 */
+	itemName?: string;
+	/** 巡检项目备注 */
+	remark?: string;
+	/** 项目创建时间 */
 	createTime?: string;
-	/** 更新时间 */
-	updateTime?: string;
 }
 
 /**
  * 巡检题目数据模型
  */
-export interface InspectQuestionData {
-	/** 题目ID */
-	id?: string;
-	/** 项目ID */
-	projectId?: string;
-	/** 题目名称 */
-	questionName?: string;
+export interface InspectTitleData {
+	/** 巡检题目编号 */
+	titleId?: string;
+	/** 巡检题目名称 */
+	itemTitle?: string;
+	/** 题目顺序 */
+	seq?: string;
 	/** 题目类型 */
-	questionType?: string;
-	/** 题目内容 */
-	questionContent?: string;
-	/** 是否必填 */
-	required?: boolean;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
-	/** 创建时间 */
+	titleType?: string;
+	/** 题目创建时间 */
 	createTime?: string;
-	/** 更新时间 */
-	updateTime?: string;
+}
+
+/**
+ * 巡检项目选项DTO
+ */
+export interface InspectItemOptionDTO {
+	/** 小区ID */
+	communityId: string;
+	/** 选项说明 */
+	itemValue: string;
+	/** 选项顺序 */
+	seq: number;
+	/** 题目ID */
+	titleId?: string;
+	/** 选项ID */
+	valueId?: string;
 }
 
 /**
  * 添加巡检项目参数
  */
-export interface AddInspectProjectParams {
-	/** 项目名称 */
-	projectName: string;
-	/** 项目编码 */
-	projectCode?: string;
-	/** 项目描述 */
-	projectDesc?: string;
-	/** 项目类型 */
-	projectType?: string;
-	/** 状态 */
-	status?: string;
-	/** 排序 */
-	sort?: number;
+export interface AddInspectItemParams {
+	/** 小区ID */
+	communityId: string;
+	/** 巡检项目名称 */
+	itemName: string;
+	/** 备注 */
+	remark: string;
 }
 
 /**
  * 修改巡检项目参数
  */
-export interface ModifyInspectProjectParams {
-	/** 项目ID */
-	id: string;
-	/** 项目名称 */
-	projectName?: string;
-	/** 项目编码 */
-	projectCode?: string;
-	/** 项目描述 */
-	projectDesc?: string;
-	/** 项目类型 */
-	projectType?: string;
-	/** 状态 */
-	status?: string;
-	/** 排序 */
-	sort?: number;
+export interface ModifyInspectItemParams {
+	/** 小区ID */
+	communityId: string;
+	/** 巡检项目的主键id */
+	itemId: string;
+	/** 巡检项目名称 */
+	itemName: string;
+	/** 备注 */
+	remark: string;
 }
 
 /**
  * 添加巡检题目参数
  */
-export interface AddInspectQuestionParams {
-	/** 项目ID */
-	projectId: string;
-	/** 题目名称 */
-	questionName: string;
-	/** 题目类型 */
-	questionType?: string;
-	/** 题目内容 */
-	questionContent?: string;
-	/** 是否必填 */
-	required?: boolean;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
+export interface AddInspectTitleParams {
+	/** 小区ID */
+	communityId: string;
+	/** 关联项目ID */
+	itemId: string;
+	/** 巡检题目 */
+	itemTitle: string;
+	/** 显示顺序，显示顺序最小值为0 */
+	seq: number;
+	/** 题目类型，1001单选，2002多选，3003简答题 */
+	titleType: string;
+	/** 题目ID */
+	titleId?: string;
+	/** 选项列表(简答题可为空) */
+	values?: InspectItemOptionDTO[];
 }
 
 /**
  * 修改巡检题目参数
  */
-export interface ModifyInspectQuestionParams {
+export interface ModifyInspectTitleParams {
+	/** 小区ID */
+	communityId: string;
+	/** 关联项目ID */
+	itemId: string;
+	/** 巡检题目 */
+	itemTitle: string;
+	/** 显示顺序，显示顺序最小值为0 */
+	seq: number;
 	/** 题目ID */
-	id: string;
-	/** 项目ID */
-	projectId?: string;
-	/** 题目名称 */
-	questionName?: string;
-	/** 题目类型 */
-	questionType?: string;
-	/** 题目内容 */
-	questionContent?: string;
-	/** 是否必填 */
-	required?: boolean;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
+	titleId: string;
+	/** 题目类型，1001单选，2002多选，3003简答题 */
+	titleType: string;
+	/** 选项列表(简答题可为空) */
+	values?: InspectItemOptionDTO[];
 }
 
 /**
  * 获取巡检项目列表参数
  */
-export interface QueryInspectProjectListParams {
+export interface QueryInspectItemListParams {
+	/** 小区编号 */
+	communityId: string;
 	/** 查询页码 */
 	pageIndex: number;
 	/** 查询条数 */
 	pageSize: number;
-	/** 项目名称 */
-	projectName?: string;
-	/** 项目类型 */
-	projectType?: string;
-	/** 状态 */
-	status?: string;
+	/** 巡检项目编号 */
+	itemId?: string;
+	/** 巡检项目名称 */
+	itemName?: string;
+}
+
+/**
+ * 获取巡检项目名称列表参数
+ */
+export interface QueryInspectItemNameListParams {
+	/** 小区编号 */
+	communityId: string;
 }
 
 /**
  * 获取巡检题目列表参数
  */
-export interface QueryInspectQuestionListParams {
+export interface QueryInspectTitleListParams {
+	/** 小区编号 */
+	communityId: string;
+	/** 巡检项目编号 */
+	itemId: string;
 	/** 查询页码 */
 	pageIndex: number;
 	/** 查询条数 */
 	pageSize: number;
-	/** 项目ID */
-	projectId?: string;
-	/** 题目名称 */
-	questionName?: string;
+	/** 巡检题目编号 */
+	titleId?: string;
+	/** 巡检题目名称 */
+	itemTitle?: string;
 	/** 题目类型 */
-	questionType?: string;
-	/** 状态 */
-	status?: string;
+	titleType?: string;
 }
 
 /**
- * 删除参数
+ * 删除巡检项目参数
  */
-export interface DeleteParams {
-	/** ID */
-	id: string;
+export interface DeleteInspectItemParams {
+	/** 巡检项目的主键id */
+	itemId: string;
+}
+
+/**
+ * 删除巡检题目参数
+ */
+export interface DeleteInspectTitleParams {
+	/** 题目id */
+	titleId: string;
 }
 
 // ==================== 接口函数 ====================
@@ -180,15 +180,17 @@ export interface DeleteParams {
  * 添加巡检项目
  * @description 添加新的巡检项目
  */
-export function addInspectProject<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, AddInspectProjectParams>({
-		url: "/j8-patrolmgt/project/add",
+export function addInspectItem<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, AddInspectItemParams>({
+		url: "/j8-patrolmgt/item/add-item",
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
 			method: "POST",
 			data: {
-				projectName: "",
+				communityId: "",
+				itemName: "",
+				remark: "",
 			},
 		},
 		options,
@@ -199,15 +201,18 @@ export function addInspectProject<T = string>(options: UseAxiosOptionsJsonVO<T>)
  * 修改巡检项目
  * @description 修改已有的巡检项目
  */
-export function modifyInspectProject<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, ModifyInspectProjectParams>({
-		url: "/j8-patrolmgt/project/modify",
+export function modifyInspectItem<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ModifyInspectItemParams>({
+		url: "/j8-patrolmgt/item/modify-item",
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
 			method: "PUT",
 			data: {
-				id: "",
+				communityId: "",
+				itemId: "",
+				itemName: "",
+				remark: "",
 			},
 		},
 		options,
@@ -218,15 +223,13 @@ export function modifyInspectProject<T = string>(options: UseAxiosOptionsJsonVO<
  * 删除巡检项目
  * @description 删除指定的巡检项目
  */
-export function deleteInspectProject<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, DeleteParams>({
-		url: "/j8-patrolmgt/project/delete",
-		httpParamWay: "query",
+export function deleteInspectItem<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsPathKey, T, DeleteInspectItemParams>({
+		url: "/j8-patrolmgt/item/remove-item/{itemId}",
+		httpParamWay: "path",
 		config: {
 			method: "DELETE",
-			params: {
-				id: "",
-			},
+			url: "/j8-patrolmgt/item/remove-item/{itemId}",
 		},
 		options,
 	});
@@ -236,13 +239,14 @@ export function deleteInspectProject<T = string>(options: UseAxiosOptionsJsonVO<
  * 获取巡检项目列表（条件+分页）
  * @description 获取巡检项目列表，支持按条件查询和分页
  */
-export function queryInspectProjectList<T = PageDTO<InspectProjectData>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryInspectProjectListParams>({
-		url: "/j8-patrolmgt/project/query-list",
+export function queryInspectItemList<T = PageDTO<InspectItemData>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryInspectItemListParams>({
+		url: "/j8-patrolmgt/item/query-item-list",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
 			params: {
+				communityId: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -255,13 +259,15 @@ export function queryInspectProjectList<T = PageDTO<InspectProjectData>>(options
  * 获取巡检项目名称列表
  * @description 获取所有巡检项目的名称列表
  */
-export function queryInspectProjectNameList<T = InspectProjectData[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
-		url: "/j8-patrolmgt/project/query-name-list",
+export function queryInspectItemNameList<T = PageDTO<InspectItemData>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryInspectItemNameListParams>({
+		url: "/j8-patrolmgt/item/query-item-name-list",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			params: {},
+			params: {
+				communityId: "",
+			},
 		},
 		options,
 	});
@@ -271,16 +277,19 @@ export function queryInspectProjectNameList<T = InspectProjectData[]>(options: U
  * 增加巡检题目
  * @description 为指定项目添加新的巡检题目
  */
-export function addInspectQuestion<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, AddInspectQuestionParams>({
-		url: "/j8-patrolmgt/question/add",
+export function addInspectTitle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, AddInspectTitleParams>({
+		url: "/j8-patrolmgt/item/add-inspection-item",
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
 			method: "POST",
 			data: {
-				projectId: "",
-				questionName: "",
+				communityId: "",
+				itemId: "",
+				itemTitle: "",
+				seq: 0,
+				titleType: "",
 			},
 		},
 		options,
@@ -291,15 +300,20 @@ export function addInspectQuestion<T = string>(options: UseAxiosOptionsJsonVO<T>
  * 修改巡检题目
  * @description 修改已有的巡检题目
  */
-export function modifyInspectQuestion<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, ModifyInspectQuestionParams>({
-		url: "/j8-patrolmgt/question/modify",
+export function modifyInspectTitle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ModifyInspectTitleParams>({
+		url: "/j8-patrolmgt/item/modify-inspection-item",
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
 			method: "PUT",
 			data: {
-				id: "",
+				communityId: "",
+				itemId: "",
+				itemTitle: "",
+				seq: 0,
+				titleId: "",
+				titleType: "",
 			},
 		},
 		options,
@@ -310,15 +324,13 @@ export function modifyInspectQuestion<T = string>(options: UseAxiosOptionsJsonVO
  * 删除巡检题目
  * @description 删除指定的巡检题目
  */
-export function deleteInspectQuestion<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, DeleteParams>({
-		url: "/j8-patrolmgt/question/delete",
-		httpParamWay: "query",
+export function deleteInspectTitle<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsPathKey, T, DeleteInspectTitleParams>({
+		url: "/j8-patrolmgt/item/remove-inspection-item/{titleId}",
+		httpParamWay: "path",
 		config: {
 			method: "DELETE",
-			params: {
-				id: "",
-			},
+			url: "/j8-patrolmgt/item/remove-inspection-item/{titleId}",
 		},
 		options,
 	});
@@ -328,13 +340,15 @@ export function deleteInspectQuestion<T = string>(options: UseAxiosOptionsJsonVO
  * 获取巡检题目列表（条件+分页）
  * @description 获取巡检题目列表，支持按条件查询和分页
  */
-export function queryInspectQuestionList<T = PageDTO<InspectQuestionData>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryInspectQuestionListParams>({
-		url: "/j8-patrolmgt/question/query-list",
+export function queryInspectTitleList<T = PageDTO<InspectTitleData>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryInspectTitleListParams>({
+		url: "/j8-patrolmgt/item/query-inspection-item-list",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
 			params: {
+				communityId: "",
+				itemId: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
