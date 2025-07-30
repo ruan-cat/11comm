@@ -158,9 +158,7 @@ describe("j8/巡检计划", () => {
 		});
 
 		await execute({
-			params: {
-				inspectionPlanId: "plan001",
-			},
+			url: "/j8-patrolmgt/plan/remove-inspection-plan/plan001",
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));

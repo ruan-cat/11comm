@@ -279,9 +279,7 @@ export function deleteInspectPlan<T = string>(options: UseAxiosOptionsJsonVO<T>)
 		httpParamWay: "path",
 		config: {
 			method: "DELETE",
-			params: {
-				inspectionPlanId: "",
-			},
+			url: "/j8-patrolmgt/plan/remove-inspection-plan/{inspectionPlanId}",
 		},
 		options,
 	});
