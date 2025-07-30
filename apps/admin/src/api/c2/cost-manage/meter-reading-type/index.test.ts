@@ -1,14 +1,9 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	queryAllMeterReadingType,
-	addMeterReadingType,
-	updateMeterReadingType,
-	removeMeterReadingType,
-} from "./meter-reading-type";
+import { queryAllMeterReadingType, addMeterReadingType, updateMeterReadingType, removeMeterReadingType } from ".";
 
-describe("抄表类型接口测试", () => {
-	it("分页查询抄表类型", async () => {
+describe("c2/抄表类型", () => {
+	it("使用 queryAllMeterReadingType 接口 - 抄表类型分页查询", async () => {
 		const { execute, data } = queryAllMeterReadingType({
 			onSuccess(data) {
 				console.warn("分页查询抄表类型成功", printFormat(data));
@@ -19,7 +14,7 @@ describe("抄表类型接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2024022647620054",
@@ -29,7 +24,7 @@ describe("抄表类型接口测试", () => {
 		console.warn("查看分页数据", printFormat(data.value));
 	});
 
-	it("新增抄表类型", async () => {
+	it("使用 addMeterReadingType 接口 - 新增抄表类型", async () => {
 		const { execute, data } = addMeterReadingType({
 			onSuccess(data) {
 				console.warn("新增抄表类型成功", printFormat(data));
@@ -50,7 +45,7 @@ describe("抄表类型接口测试", () => {
 		console.warn("查看新增结果", printFormat(data.value));
 	});
 
-	it("修改抄表类型", async () => {
+	it("使用 updateMeterReadingType 接口 - 修改抄表类型", async () => {
 		const { execute, data } = updateMeterReadingType({
 			onSuccess(data) {
 				console.warn("修改抄表类型成功", printFormat(data));
@@ -71,7 +66,7 @@ describe("抄表类型接口测试", () => {
 		console.warn("查看修改结果", printFormat(data.value));
 	});
 
-	it("删除抄表类型", async () => {
+	it("使用 removeMeterReadingType 接口 - 删除抄表类型", async () => {
 		const { execute, data } = removeMeterReadingType({
 			onSuccess(data) {
 				console.warn("删除抄表类型成功", printFormat(data));

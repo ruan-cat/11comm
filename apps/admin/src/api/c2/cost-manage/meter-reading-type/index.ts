@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 抄表类型信息
  */
@@ -48,6 +50,8 @@ export interface TableReadingTypeRemoveDTO {
 	type_id: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 抄表类型分页查询
  * @description
@@ -56,16 +60,16 @@ export interface TableReadingTypeRemoveDTO {
 export function queryAllMeterReadingType<T = PageDTO<TableReadingTypeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T>({
 		url: "/comm-c2-tablereadingtype/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
-			data: {
+			method: "GET",
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -77,16 +81,17 @@ export function queryAllMeterReadingType<T = PageDTO<TableReadingTypeDTO>>(optio
 export function addMeterReadingType<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TableReadingTypeAddDTO>({
 		url: "/comm-c2-tablereadingtype/add",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				type_name: "",
 				remark: "",
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -98,16 +103,17 @@ export function addMeterReadingType<T = string>(options: UseAxiosOptionsJsonVO<T
 export function updateMeterReadingType<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TableReadingTypeUpdateDTO>({
 		url: "/comm-c2-tablereadingtype/upadte",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				type_name: "",
 				remark: "",
 				type_id: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -119,13 +125,14 @@ export function updateMeterReadingType<T = string>(options: UseAxiosOptionsJsonV
 export function removeMeterReadingType<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TableReadingTypeRemoveDTO>({
 		url: "/comm-c2-tablereadingtype/delete",
-		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				type_id: "",
 			},
 		},
+		options,
 	});
 }
