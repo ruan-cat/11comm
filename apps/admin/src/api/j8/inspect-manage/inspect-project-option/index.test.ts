@@ -16,12 +16,10 @@ describe("j8/巡检项目选项管理", () => {
 
 		await execute({
 			data: {
-				projectId: "123456",
-				optionName: "测试选项",
-				optionValue: "测试值",
-				optionType: "single",
-				sort: 1,
-				status: "1",
+				communityId: "2024022692080516",
+				itemValue: "选项A",
+				seq: 0,
+				titleId: "1930243903590158300",
 			},
 		});
 
@@ -40,10 +38,11 @@ describe("j8/巡检项目选项管理", () => {
 
 		await execute({
 			data: {
-				id: "123456",
-				optionName: "修改后的选项",
-				optionValue: "修改后的值",
-				sort: 2,
+				communityId: "2024022692080516",
+				itemValue: "修改后的选项",
+				seq: 1,
+				titleId: "1930243903590158300",
+				valueId: "value123",
 			},
 		});
 
@@ -61,9 +60,7 @@ describe("j8/巡检项目选项管理", () => {
 		});
 
 		await execute({
-			params: {
-				id: "123456",
-			},
+			url: "/j8-patrolmgt/inspectionTitle/inspection-item-title-value/delete/value123",
 		});
 
 		console.warn("查看简单的 data.value", printFormat(data.value));

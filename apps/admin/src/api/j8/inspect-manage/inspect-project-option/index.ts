@@ -5,71 +5,57 @@ import { useRequest } from "@/composables/use-request";
 /**
  * 巡检项目选项数据模型
  */
-export interface InspectProjectOptionData {
+export interface InspectTitleValueData {
+	/** 小区ID */
+	communityId?: string;
+	/** 选项说明 */
+	itemValue?: string;
+	/** 选项顺序 */
+	seq?: number;
+	/** 题目ID */
+	titleId?: string;
 	/** 选项ID */
-	id?: string;
-	/** 项目ID */
-	projectId?: string;
-	/** 选项名称 */
-	optionName?: string;
-	/** 选项值 */
-	optionValue?: string;
-	/** 选项类型 */
-	optionType?: string;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
-	/** 创建时间 */
-	createTime?: string;
-	/** 更新时间 */
-	updateTime?: string;
+	valueId?: string;
 }
 
 /**
  * 添加巡检项目选项参数
  */
-export interface AddInspectProjectOptionParams {
-	/** 项目ID */
-	projectId: string;
-	/** 选项名称 */
-	optionName: string;
-	/** 选项值 */
-	optionValue: string;
-	/** 选项类型 */
-	optionType?: string;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
+export interface AddInspectTitleValueParams {
+	/** 小区ID */
+	communityId: string;
+	/** 选项说明 */
+	itemValue: string;
+	/** 选项顺序 */
+	seq: number;
+	/** 题目ID */
+	titleId?: string;
+	/** 选项ID */
+	valueId?: string;
 }
 
 /**
  * 修改巡检项目选项参数
  */
-export interface ModifyInspectProjectOptionParams {
+export interface ModifyInspectTitleValueParams {
+	/** 小区ID */
+	communityId: string;
+	/** 选项说明 */
+	itemValue: string;
+	/** 选项顺序 */
+	seq: number;
+	/** 题目ID */
+	titleId: string;
 	/** 选项ID */
-	id: string;
-	/** 项目ID */
-	projectId?: string;
-	/** 选项名称 */
-	optionName?: string;
-	/** 选项值 */
-	optionValue?: string;
-	/** 选项类型 */
-	optionType?: string;
-	/** 排序 */
-	sort?: number;
-	/** 状态 */
-	status?: string;
+	valueId?: string;
 }
 
 /**
  * 删除巡检项目选项参数
  */
-export interface DeleteInspectProjectOptionParams {
+export interface DeleteInspectTitleValueParams {
 	/** 选项ID */
-	id: string;
+	valueId: string;
 }
 
 // ==================== 接口函数 ====================
@@ -79,16 +65,16 @@ export interface DeleteInspectProjectOptionParams {
  * @description 添加新的巡检项目选项
  */
 export function addInspectProjectOption<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, AddInspectProjectOptionParams>({
-		url: "/j8-patrolmgt/project-option/add",
+	return useRequest<ParamsBodyKey, T, AddInspectTitleValueParams>({
+		url: "/j8-patrolmgt/inspectionTitle/inspection-item-title-value/add",
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
 			method: "POST",
 			data: {
-				projectId: "",
-				optionName: "",
-				optionValue: "",
+				communityId: "",
+				itemValue: "",
+				seq: 0,
 			},
 		},
 		options,
@@ -100,14 +86,17 @@ export function addInspectProjectOption<T = string>(options: UseAxiosOptionsJson
  * @description 修改已有的巡检项目选项
  */
 export function modifyInspectProjectOption<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, ModifyInspectProjectOptionParams>({
-		url: "/j8-patrolmgt/project-option/modify",
+	return useRequest<ParamsBodyKey, T, ModifyInspectTitleValueParams>({
+		url: "/j8-patrolmgt/inspectionTitle/inspection-item-title-value/update",
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
 			method: "PUT",
 			data: {
-				id: "",
+				communityId: "",
+				itemValue: "",
+				seq: 0,
+				titleId: "",
 			},
 		},
 		options,
@@ -119,14 +108,12 @@ export function modifyInspectProjectOption<T = string>(options: UseAxiosOptionsJ
  * @description 删除指定的巡检项目选项
  */
 export function deleteInspectProjectOption<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, DeleteInspectProjectOptionParams>({
-		url: "/j8-patrolmgt/project-option/delete",
-		httpParamWay: "query",
+	return useRequest<ParamsPathKey, T, DeleteInspectTitleValueParams>({
+		url: "/j8-patrolmgt/inspectionTitle/inspection-item-title-value/delete/{valueId}",
+		httpParamWay: "path",
 		config: {
 			method: "DELETE",
-			params: {
-				id: "",
-			},
+			url: "/j8-patrolmgt/inspectionTitle/inspection-item-title-value/delete/{valueId}",
 		},
 		options,
 	});
