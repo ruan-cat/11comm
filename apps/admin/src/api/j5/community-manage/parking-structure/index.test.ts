@@ -1,9 +1,28 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 
-// TODO: 导入车位结构相关的接口函数
+import { queryParkingStructure } from ".";
 
 describe("j5/车位结构图", () => {
-	// TODO: 实现以下1个接口的测试用例：
-	// - 使用 xxx 接口 - 获取指定单元车位结构
+	it("使用 queryParkingStructure 接口 - 获取指定单元车位结构", async () => {
+		const { execute, data } = queryParkingStructure({
+			onSuccess(data) {
+				console.warn("获取指定单元车位结构成功", printFormat(data));
+			},
+			onError(error) {
+				console.warn("获取指定单元车位结构失败", printFormat(error));
+			},
+		});
+
+		await execute({
+			params: {
+				communityId: "2023052267100146",
+				pageIndex: 1,
+				pageSize: 10,
+				unitId: "742023120517690335",
+			},
+		});
+
+		console.warn("查看简单的 data.value", printFormat(data.value));
+	});
 });
