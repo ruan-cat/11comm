@@ -6,112 +6,110 @@ import { useRequest } from "@/composables/use-request";
  * 巡检路线数据模型
  */
 export interface InspectRouteData {
-	/** 路线ID */
-	routeId?: string;
+	/** 路线id */
+	inspectionRouteId?: string;
 	/** 路线名称 */
 	routeName?: string;
-	/** 路线描述 */
-	routeDesc?: string;
+	/** 备注 */
+	remark?: string;
+	/** 路线顺序 */
+	seq?: string;
 	/** 创建时间 */
 	createTime?: string;
-	/** 更新时间 */
-	updateTime?: string;
-	/** 状态 */
-	status?: string;
-	/** 小区ID */
-	communityId?: string;
-}
-
-/**
- * 巡检路线名称数据模型
- */
-export interface InspectRouteNameData {
-	/** 路线ID */
-	routeId?: string;
-	/** 路线名称 */
-	routeName?: string;
 }
 
 /**
  * 巡检路线巡检点数据模型
  */
 export interface InspectRoutePointData {
-	/** 路线点ID */
-	routePointId?: string;
-	/** 路线ID */
-	routeId?: string;
-	/** 巡检点ID */
+	/** 巡检点id */
 	inspectionId?: string;
 	/** 巡检点名称 */
 	inspectionName?: string;
-	/** 顺序号 */
-	orderNum?: number;
-	/** 预计时长（分钟） */
-	estimatedTime?: number;
+	/** 巡检位置 */
+	pointObjName?: string;
+	/** 巡检点类型 */
+	pointObjType?: string;
+	/** 开始时间 */
+	pointStartTime?: string;
+	/** 结束时间 */
+	pointEndTime?: string;
 }
 
 /**
  * 添加巡检路线参数
  */
 export interface AddInspectRouteParams {
+	/** 小区id */
+	communityId: string;
 	/** 路线名称 */
 	routeName: string;
-	/** 路线描述 */
-	routeDesc?: string;
-	/** 小区ID */
-	communityId: string;
-	/** 状态 */
-	status?: string;
+	/** 顺序 */
+	seq: string;
+	/** 备注 */
+	remark?: string;
 }
 
 /**
  * 修改巡检路线参数
  */
 export interface ModifyInspectRouteParams {
-	/** 路线ID */
-	routeId: string;
+	/** Route_ID */
+	inspectionRouteId: string;
 	/** 路线名称 */
-	routeName?: string;
-	/** 路线描述 */
-	routeDesc?: string;
-	/** 状态 */
-	status?: string;
+	routeName: string;
+	/** 顺序 */
+	seq: string;
+	/** 备注 */
+	remark?: string;
+}
+
+/**
+ * 获取巡检路线名称列表参数
+ */
+export interface QueryInspectRouteNameListParams {
+	/** 社区id */
+	communityId: string;
 }
 
 /**
  * 获取巡检路线列表参数
  */
 export interface QueryInspectRouteListParams {
+	/** 社区id */
+	communityId: string;
 	/** 查询页码 */
 	pageIndex: number;
 	/** 查询条数 */
 	pageSize: number;
+	/** 路线id */
+	inspectionRouteId?: string;
 	/** 路线名称 */
 	routeName?: string;
-	/** 状态 */
-	status?: string;
+	/** 路线顺序 */
+	seq?: string;
 }
 
 /**
  * 获取巡检路线巡检点列表参数
  */
 export interface QueryInspectRoutePointListParams {
+	/** 社区id */
+	communityId: string;
+	/** 巡检路线id */
+	inspectionRouteId: string;
 	/** 查询页码 */
 	pageIndex: number;
 	/** 查询条数 */
 	pageSize: number;
-	/** 路线ID */
-	routeId?: string;
-	/** 巡检点名称 */
-	inspectionName?: string;
 }
 
 /**
  * 删除巡检路线参数
  */
 export interface DeleteInspectRouteParams {
-	/** 路线ID */
-	routeId: string;
+	/** 巡检路线id */
+	inspectionRouteId: string;
 }
 
 // ==================== 接口函数 ====================
@@ -128,8 +126,9 @@ export function addInspectRoute<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 		config: {
 			method: "POST",
 			data: {
-				routeName: "",
 				communityId: "",
+				routeName: "",
+				seq: "",
 			},
 		},
 		options,
@@ -148,7 +147,9 @@ export function modifyInspectRoute<T = string>(options: UseAxiosOptionsJsonVO<T>
 		config: {
 			method: "PUT",
 			data: {
-				routeId: "",
+				inspectionRouteId: "",
+				routeName: "",
+				seq: "",
 			},
 		},
 		options,
@@ -159,13 +160,15 @@ export function modifyInspectRoute<T = string>(options: UseAxiosOptionsJsonVO<T>
  * 获取巡检路线名称列表
  * @description 获取所有巡检路线的名称列表
  */
-export function queryInspectRouteNameList<T = InspectRouteNameData[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
-		url: "/j8-patrolmgt/route/query-route-name-list",
+export function queryInspectRouteNameList<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryInspectRouteNameListParams>({
+		url: "/j8-patrolmgt/route/query-name-rout",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			params: {},
+			params: {
+				communityId: "",
+			},
 		},
 		options,
 	});
@@ -177,11 +180,12 @@ export function queryInspectRouteNameList<T = InspectRouteNameData[]>(options: U
  */
 export function queryInspectRouteList<T = PageDTO<InspectRouteData>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryInspectRouteListParams>({
-		url: "/j8-patrolmgt/route/query-route-list",
+		url: "/j8-patrolmgt/route/query-rout-list",
 		httpParamWay: "query",
 		config: {
 			method: "GET",
 			params: {
+				communityId: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -201,6 +205,8 @@ export function queryInspectRoutePointList<T = PageDTO<InspectRoutePointData>>(o
 		config: {
 			method: "GET",
 			params: {
+				communityId: "",
+				inspectionRouteId: "",
 				pageIndex: 1,
 				pageSize: 10,
 			},
@@ -215,12 +221,12 @@ export function queryInspectRoutePointList<T = PageDTO<InspectRoutePointData>>(o
  */
 export function deleteInspectRoute<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, DeleteInspectRouteParams>({
-		url: "/j8-patrolmgt/route/delete-route",
+		url: "/j8-patrolmgt/route/remove-route",
 		httpParamWay: "query",
 		config: {
 			method: "DELETE",
 			params: {
-				routeId: "",
+				inspectionRouteId: "",
 			},
 		},
 		options,
