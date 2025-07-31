@@ -1,4 +1,3 @@
-// @ts-ignore
 import tsAlias from "vite-plugin-ts-alias";
 
 export default tsAlias({
