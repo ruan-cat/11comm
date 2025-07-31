@@ -7,7 +7,7 @@
 	"description": "01s-11comm智慧社区 monorepo根目录",
 	"main": "index.js",
 	"type": "module",
-	"packageManager": "pnpm@10.13.1",
+	"packageManager": "pnpm@10.14.0",
 	"engines": {
 		"node": ">=22.14.0"
 	},
@@ -54,7 +54,7 @@
 	"devDependencies": {
 		"@antfu/eslint-config": "^4.19.0",
 		"@changesets/cli": "^2.29.5",
-		"@dotenvx/dotenvx": "^1.48.3",
+		"@dotenvx/dotenvx": "^1.48.4",
 		"@plus-pro-components/resolver": "^0.0.3",
 		"@ruan-cat/commitlint-config": "^1.3.1",
 		"@ruan-cat/domains": "^0.8.2",
@@ -90,9 +90,9 @@
 		"turbo": "^2.5.5",
 		"type-fest": "^4.41.0",
 		"type-plus": "^7.6.2",
-		"typescript": "^5.8.3",
+		"typescript": "^5.9.2",
 		"typescript-lodash": "^0.2.2",
-		"vercel": "^44.6.3",
+		"vercel": "^44.6.5",
 		"vite": "^6.3.5",
 		"vitest": "^3.2.4",
 		"vue": "^3.5.18",
