@@ -200,12 +200,12 @@
     "vite-plugin-router-warn": "^1.0.0",
     "vite-plugin-ts-alias": "^0.1.1",
     "vite-plugin-vercel": "^9.0.7",
-    "vite-plugin-vue-devtools": "^7.7.7",
+    "vite-plugin-vue-devtools": "^8.0.0",
     "vite-plugin-vue-meta-layouts": "^0.5.1",
     "vite-svg-loader": "^5.1.0",
     "vitepress": "^1.6.3",
     "vitepress-demo-plugin": "^1.4.5",
     "vue-eslint-parser": "^10.2.0",
-    "vue-tsc": "^2.2.12"
+    "vue-tsc": "^3.0.4"
   }
 }
