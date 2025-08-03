@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 业主账户明细
  */
@@ -22,6 +24,8 @@ export interface OwnerDetailGetDTO {
 	detail_type_text?: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 获取业主账户明细（条件+分页）
  * @description
@@ -33,8 +37,8 @@ export function queryAllOwnerAccountDetail<T = PageDTO<OwnerDetailGetDTO>>(optio
 		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
-			data: {
+			method: "GET",
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				acct_id: "",
@@ -76,8 +80,8 @@ export function queryAllOwnerAccountList<T = PageDTO<OwnerListDTO>>(options: Use
 		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
-			data: {
+			method: "GET",
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				name: "",
@@ -119,8 +123,9 @@ export function addOwnerDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 		url: "/comm-c2-owneraccount/owner-detail/add",
 		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				link: "",
 				owner_name: "",
@@ -145,6 +150,35 @@ export interface OwnerDetailUndoDTO {
 }
 
 /**
+ * 根据手机号获取业主名称参数
+ */
+export interface GetOwnerNameByPhoneDTO {
+	/** 手机号 */
+	link: string;
+}
+
+// ==================== 接口函数 ====================
+
+/**
+ * 根据手机号获取业主名称
+ * @description
+ * 预存-根据手机号获取业主名称
+ */
+export function getOwnerNameByPhone<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, GetOwnerNameByPhoneDTO>({
+		url: "/comm-c2-owneraccount/owner-detail/get-owner-name",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				link: "",
+			},
+		},
+	});
+}
+
+/**
  * 撤销预存
  * @description
  * 撤销业主账户预存
@@ -154,8 +188,9 @@ export function undoOwnerDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 		url: "/comm-c2-owneraccount/owner-detail/undo",
 		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				pre_detail_id: "",
 				remark: "",

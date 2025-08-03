@@ -1,6 +1,12 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryAllOwnerAccountDetail, queryAllOwnerAccountList, addOwnerDetail, undoOwnerDetail } from ".";
+import {
+	queryAllOwnerAccountDetail,
+	queryAllOwnerAccountList,
+	addOwnerDetail,
+	undoOwnerDetail,
+	getOwnerNameByPhone,
+} from ".";
 
 describe("业主账户明细接口测试", () => {
 	it("分页查询业主账户明细", async () => {
@@ -14,7 +20,7 @@ describe("业主账户明细接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				acct_id: "312025051870320017",
@@ -35,7 +41,7 @@ describe("业主账户明细接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				name: "孙悟空",
@@ -91,5 +97,24 @@ describe("业主账户明细接口测试", () => {
 		});
 
 		console.warn("查看撤销预存结果", printFormat(data.value));
+	});
+
+	it("根据手机号获取业主名称", async () => {
+		const { execute, data } = getOwnerNameByPhone({
+			onSuccess(data) {
+				console.warn("根据手机号获取业主名称成功", printFormat(data));
+			},
+			onError(error) {
+				console.warn("接口请求失败", error);
+			},
+		});
+
+		await execute({
+			params: {
+				link: "13111011002",
+			},
+		});
+
+		console.warn("查看业主名称结果", printFormat(data.value));
 	});
 });
