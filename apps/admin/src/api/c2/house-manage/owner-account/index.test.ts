@@ -1,5 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
+
 import {
 	queryAllOwnerAccountDetail,
 	queryAllOwnerAccountList,
@@ -8,14 +9,14 @@ import {
 	getOwnerNameByPhone,
 } from ".";
 
-describe("业主账户明细接口测试", () => {
-	it("分页查询业主账户明细", async () => {
+describe("c2/业主账户管理", () => {
+	it("使用 queryAllOwnerAccountDetail 接口 - 分页查询业主账户明细", async () => {
 		const { execute, data } = queryAllOwnerAccountDetail({
 			onSuccess(data) {
 				console.warn("分页查询业主账户明细成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.warn("分页查询业主账户明细失败", printFormat(error));
 			},
 		});
 
@@ -27,16 +28,16 @@ describe("业主账户明细接口测试", () => {
 			},
 		});
 
-		console.warn("查看分页数据", printFormat(data.value));
+		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("分页查询业主账户列表", async () => {
+	it("使用 queryAllOwnerAccountList 接口 - 分页查询业主账户列表", async () => {
 		const { execute, data } = queryAllOwnerAccountList({
 			onSuccess(data) {
 				console.warn("分页查询业主账户列表成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.warn("分页查询业主账户列表失败", printFormat(error));
 			},
 		});
 
@@ -51,16 +52,16 @@ describe("业主账户明细接口测试", () => {
 			},
 		});
 
-		console.warn("查看账户列表分页数据", printFormat(data.value));
+		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("业主账户预存", async () => {
+	it("使用 addOwnerDetail 接口 - 业主账户预存", async () => {
 		const { execute, data } = addOwnerDetail({
 			onSuccess(data) {
 				console.warn("业主账户预存成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.warn("业主账户预存失败", printFormat(error));
 			},
 		});
 
@@ -76,16 +77,16 @@ describe("业主账户明细接口测试", () => {
 			},
 		});
 
-		console.warn("查看预存结果", printFormat(data.value));
+		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("撤销预存", async () => {
+	it("使用 undoOwnerDetail 接口 - 撤销预存", async () => {
 		const { execute, data } = undoOwnerDetail({
 			onSuccess(data) {
 				console.warn("撤销预存成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.warn("撤销预存失败", printFormat(error));
 			},
 		});
 
@@ -96,16 +97,16 @@ describe("业主账户明细接口测试", () => {
 			},
 		});
 
-		console.warn("查看撤销预存结果", printFormat(data.value));
+		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("根据手机号获取业主名称", async () => {
+	it("使用 getOwnerNameByPhone 接口 - 根据手机号获取业主名称", async () => {
 		const { execute, data } = getOwnerNameByPhone({
 			onSuccess(data) {
 				console.warn("根据手机号获取业主名称成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.warn("根据手机号获取业主名称失败", printFormat(error));
 			},
 		});
 
@@ -115,6 +116,6 @@ describe("业主账户明细接口测试", () => {
 			},
 		});
 
-		console.warn("查看业主名称结果", printFormat(data.value));
+		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 });
