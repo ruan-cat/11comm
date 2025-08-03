@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryAllOwnerAccountDetail, queryAllOwnerAccountList, addOwnerDetail, undoOwnerDetail } from "./owner-account";
+import { queryAllOwnerAccountDetail, queryAllOwnerAccountList, addOwnerDetail, undoOwnerDetail } from ".";
 
 describe("业主账户明细接口测试", () => {
 	it("分页查询业主账户明细", async () => {
