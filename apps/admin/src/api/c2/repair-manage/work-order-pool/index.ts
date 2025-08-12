@@ -53,7 +53,7 @@ export function queryTaskDetailById<T = TaskDetailGetDTO>(options: UseAxiosOptio
 		options,
 		config: {
 			method: "GET",
-			params: {
+			data: {
 				repair_id: "",
 			},
 		},
@@ -175,6 +175,7 @@ export function modifyTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskListUpdateDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/modify",
 		httpParamWay: "body",
+		upType: UpType.json,
 		options,
 		config: {
 			method: "PUT",
@@ -236,9 +237,10 @@ export function exportTaskDetail<T = void>(options: UseAxiosOptionsJsonVO<T>) {
 		options,
 		config: {
 			method: "GET",
-			params: {
+			data: {
 				repair_id: "",
 			},
+			responseType: "blob",
 		},
 	});
 }
@@ -271,6 +273,7 @@ export function addTaskDetail<T = TaskDetailGetIdDTO>(options: UseAxiosOptionsJs
 	return useRequest<ParamsBodyKey, T, TaskDetailAddDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-detail/add",
 		httpParamWay: "body",
+		upType: UpType.json,
 		options,
 		config: {
 			method: "POST",
