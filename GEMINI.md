@@ -86,3 +86,13 @@
 - **代码风格:** 项目使用 `Prettier` 进行代码格式化，使用 `ESLint` 进行代码检查。运行 `pnpm format` 可以格式化整个代码库。
 - **提交:** 项目可能遵循“约定式提交”规范，因为项目中存在 `commitlint` 和 `cz-git`。使用 `pnpm commit` 来创建一个合规的提交信息。
 - **变更集 (Changesets):** 项目使用 `changeset` 来进行版本管理和生成变更日志。要添加一个新的变更集，请运行 `pnpm changeset:add`。
+
+## 生成接口时的代码风格
+
+以下文件的代码风格，可供你学习。在接下来的接口生成中，请使用这些代码风格：
+
+- `apps\admin\src\api\c5\payment-audit\index.ts`
+- `apps\admin\src\api\c5\payment-audit\index.test.ts`
+
+- `apps\admin\src\api\c5\arrears\index.ts`
+- `apps\admin\src\api\c5\arrears\index.test.ts`
