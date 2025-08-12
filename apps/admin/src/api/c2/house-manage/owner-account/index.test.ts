@@ -2,21 +2,21 @@ import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 
 import {
-	queryAllOwnerAccountDetail,
-	queryAllOwnerAccountList,
+	queryOwnerAccountDetailList,
+	queryOwnerAccountList,
 	addOwnerDetail,
 	undoOwnerDetail,
 	getOwnerNameByPhone,
 } from ".";
 
-describe("c2/业主账户管理", () => {
-	it("使用 queryAllOwnerAccountDetail 接口 - 分页查询业主账户明细", async () => {
-		const { execute, data } = queryAllOwnerAccountDetail({
+describe("c2/房屋管理/业主账户", () => {
+	it("使用 queryOwnerAccountDetailList 接口 - 获取业主账户明细列表", async () => {
+		const { execute, data } = queryOwnerAccountDetailList({
 			onSuccess(data) {
-				console.warn("分页查询业主账户明细成功", printFormat(data));
+				console.warn("获取业主账户明细列表成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("分页查询业主账户明细失败", printFormat(error));
+				console.warn("获取业主账户明细列表失败", printFormat(error));
 			},
 		});
 
@@ -31,13 +31,13 @@ describe("c2/业主账户管理", () => {
 		console.warn("查看简单的 data.value", printFormat(data.value));
 	});
 
-	it("使用 queryAllOwnerAccountList 接口 - 分页查询业主账户列表", async () => {
-		const { execute, data } = queryAllOwnerAccountList({
+	it("使用 queryOwnerAccountList 接口 - 获取业主账户列表", async () => {
+		const { execute, data } = queryOwnerAccountList({
 			onSuccess(data) {
-				console.warn("分页查询业主账户列表成功", printFormat(data));
+				console.warn("获取业主账户列表成功", printFormat(data));
 			},
 			onError(error) {
-				console.warn("分页查询业主账户列表失败", printFormat(error));
+				console.warn("获取业主账户列表失败", printFormat(error));
 			},
 		});
 
@@ -45,10 +45,10 @@ describe("c2/业主账户管理", () => {
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
+				community_id: "2024022647620054",
 				name: "孙悟空",
 				id_card: "111111111111111111",
 				link: "13111011002",
-				community_id: "2024022647620054",
 			},
 		});
 

@@ -5,7 +5,7 @@ import { useRequest } from "@/composables/use-request";
 /**
  * 业主账户明细
  */
-export interface OwnerDetailGetDTO {
+export interface OwnerAccountDetailItem {
 	/** 明细编号 */
 	detail_id?: string;
 	/** 交易编号（交易单号） */
@@ -24,33 +24,22 @@ export interface OwnerDetailGetDTO {
 	detail_type_text?: string;
 }
 
-// ==================== 接口函数 ====================
-
 /**
- * 获取业主账户明细（条件+分页）
- * @description
- * 获取业主账户明细分页列表
+ * 获取业主账户明细列表参数
  */
-export function queryAllOwnerAccountDetail<T = PageDTO<OwnerDetailGetDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
-		url: "/comm-c2-owneraccount/owner-detail/query-all",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			params: {
-				pageIndex: 1,
-				pageSize: 10,
-				acct_id: "",
-			},
-		},
-	});
+export interface QueryOwnerAccountDetailParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 账户ID */
+	acct_id: string;
 }
 
 /**
- * 业主账户列表
+ * 业主账户列表项
  */
-export interface OwnerListDTO {
+export interface OwnerAccountListItem {
 	/** 账户编号 */
 	acct_id?: string;
 	/** 账户名称 */
@@ -70,33 +59,27 @@ export interface OwnerListDTO {
 }
 
 /**
- * 获取业主账户列表（分页+查询）
- * @description
- * 获取业主账户分页列表
+ * 获取业主账户列表参数
  */
-export function queryAllOwnerAccountList<T = PageDTO<OwnerListDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
-		url: "/comm-c2-owneraccount/owner-list-queryAll",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			params: {
-				pageIndex: 1,
-				pageSize: 10,
-				name: "",
-				id_card: "",
-				link: "",
-				community_id: "",
-			},
-		},
-	});
+export interface QueryOwnerAccountListParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 小区ID */
+	community_id: string;
+	/** 账户名称 */
+	name?: string;
+	/** 身份证号 */
+	id_card?: string;
+	/** 手机号 */
+	link?: string;
 }
 
 /**
  * 预存参数
  */
-export interface OwnerDetailAddDTO {
+export interface AddOwnerDetailParams {
 	/** 业主手机号 */
 	link: string;
 	/** 业主名称 */
@@ -114,14 +97,72 @@ export interface OwnerDetailAddDTO {
 }
 
 /**
+ * 撤销预存参数
+ */
+export interface UndoOwnerDetailParams {
+	/** 明细编号 */
+	pre_detail_id: string;
+	/** 备注（说明） */
+	remark: string;
+}
+
+/**
+ * 根据手机号获取业主名称参数
+ */
+export interface GetOwnerNameByPhoneParams {
+	/** 业主手机号 */
+	link?: string;
+}
+
+// ==================== 接口函数 ====================
+
+/**
+ * 获取业主账户明细列表（条件+分页）
+ * @description 根据账户ID查询该账户的收支明细
+ */
+export function queryOwnerAccountDetailList<T = PageDTO<OwnerAccountDetailItem>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryOwnerAccountDetailParams>({
+		url: "/comm-c2-owneraccount/owner-detail/query-all",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				acct_id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
+ * 获取业主账户列表（分页+查询）
+ * @description 获取业主账户分页列表
+ */
+export function queryOwnerAccountList<T = PageDTO<OwnerAccountListItem>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryOwnerAccountListParams>({
+		url: "/comm-c2-owneraccount/owner-list-queryAll",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "",
+			},
+		},
+		options,
+	});
+}
+
+/**
  * 预存
- * @description
- * 业主账户预存
+ * @description 业主账户预存
  */
 export function addOwnerDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, OwnerDetailAddDTO>({
+	return useRequest<ParamsBodyKey, T, AddOwnerDetailParams>({
 		url: "/comm-c2-owneraccount/owner-detail/add",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
@@ -132,61 +173,20 @@ export function addOwnerDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				receivable_amount: 0,
 				prime_rate: "",
 				obj_type: "",
-				remark: "",
 				community_id: "",
 			},
 		},
-	});
-}
-
-/**
- * 撤销预存参数
- */
-export interface OwnerDetailUndoDTO {
-	/** 明细编号 */
-	pre_detail_id: string;
-	/** 备注（说明） */
-	remark: string;
-}
-
-/**
- * 根据手机号获取业主名称参数
- */
-export interface GetOwnerNameByPhoneDTO {
-	/** 手机号 */
-	link: string;
-}
-
-// ==================== 接口函数 ====================
-
-/**
- * 根据手机号获取业主名称
- * @description
- * 预存-根据手机号获取业主名称
- */
-export function getOwnerNameByPhone<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, GetOwnerNameByPhoneDTO>({
-		url: "/comm-c2-owneraccount/owner-detail/get-owner-name",
 		options,
-		httpParamWay: "query",
-		config: {
-			method: "GET",
-			params: {
-				link: "",
-			},
-		},
 	});
 }
 
 /**
  * 撤销预存
- * @description
- * 撤销业主账户预存
+ * @description 撤销业主账户预存
  */
 export function undoOwnerDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, OwnerDetailUndoDTO>({
+	return useRequest<ParamsBodyKey, T, UndoOwnerDetailParams>({
 		url: "/comm-c2-owneraccount/owner-detail/undo",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
@@ -196,5 +196,22 @@ export function undoOwnerDetail<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				remark: "",
 			},
 		},
+		options,
+	});
+}
+
+/**
+ * 根据手机号获取业主名称
+ * @description 预存-根据手机号获取业主名称
+ */
+export function getOwnerNameByPhone<T = PageDTO<{ owner_name: string }>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, GetOwnerNameByPhoneParams>({
+		url: "/comm-c2-owneraccount/owner-detail/query-account-name",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {},
+		},
+		options,
 	});
 }
