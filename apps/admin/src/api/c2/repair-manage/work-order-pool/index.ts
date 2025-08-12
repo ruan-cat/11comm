@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 工单池工单详情
  */
@@ -43,24 +45,6 @@ export interface QueryTaskDetailParams {
 }
 
 /**
- * 获取工单池工单详情
- * @description 根据工单编号获取工单池工单详情
- */
-export function queryTaskDetailById<T = TaskDetailGetDTO>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryTaskDetailParams>({
-		url: "/comm-c2-repairsetting/task-detail/query-by-id",
-		httpParamWay: "query",
-		options,
-		config: {
-			method: "GET",
-			data: {
-				repair_id: "",
-			},
-		},
-	});
-}
-
-/**
  * 工单列表项
  */
 export interface TaskListDTO {
@@ -97,7 +81,7 @@ export interface QueryTaskListParams {
 	/** 页大小 */
 	pageSize: number;
 	/** 小区编号 */
-	community_id?: string;
+	community_id: string;
 	/** 工单编号 */
 	repair_id?: string;
 	/** 报修人 */
@@ -119,35 +103,6 @@ export interface QueryTaskListParams {
 }
 
 /**
- * 获取工单列表
- * @description 获取工单池工单分页列表
- */
-export function queryTaskList<T = PageDTO<TaskListDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryTaskListParams>({
-		url: "/comm-c2-repairsetting/taskpool/task-list/query-all",
-		httpParamWay: "query",
-		options,
-		config: {
-			method: "GET",
-			params: {
-				pageIndex: 1,
-				pageSize: 10,
-				community_id: "",
-				repair_id: "",
-				repair_name: "",
-				tel: "",
-				repair_type: "",
-				repair_setting_type: "",
-				repair_obj_name: "",
-				maintenance_type: "",
-				start_time: "",
-				end_time: "",
-			},
-		},
-	});
-}
-
-/**
  * 修改工单参数
  */
 export interface TaskListUpdateDTO {
@@ -165,6 +120,91 @@ export interface TaskListUpdateDTO {
 	appointment_time: string;
 	/** 报修内容 */
 	context: string;
+}
+
+/**
+ * 删除工单参数
+ */
+export interface TaskListGetIdDTO {
+	/** 工单编号 */
+	repair_id: string;
+}
+
+/**
+ * 打印工单参数
+ */
+export interface ExportTaskDetailParams {
+	/** 工单编号 */
+	repair_id: string;
+}
+
+/**
+ * 派单返回信息
+ */
+export interface TaskDetailGetIdDTO {
+	/** 工单编号 */
+	repair_id: string;
+}
+
+/**
+ * 派单参数
+ */
+export interface TaskDetailAddDTO {
+	/** 工单编号（前端传入） */
+	repair_id: string;
+	/** 处理人 */
+	staff_name: string;
+	/** 意见 */
+	context: string;
+}
+
+// ==================== 接口函数 ====================
+
+/**
+ * 获取工单池工单详情
+ * @description 根据工单编号获取工单池工单详情
+ */
+export function queryTaskDetailById<T = TaskDetailGetDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryTaskDetailParams>({
+		url: "/comm-c2-repairsetting/task-detail/query-by-id",
+		httpParamWay: "query",
+		options,
+		config: {
+			method: "GET",
+			data: {
+				repair_id: "",
+			},
+		},
+	});
+}
+
+/**
+ * 获取工单列表
+ * @description 获取工单池工单分页列表
+ */
+export function queryTaskList<T = PageDTO<TaskListDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryTaskListParams>({
+		url: "/comm-c2-repairsetting/taskpool/task-list/query-all",
+		httpParamWay: "query",
+		options,
+		config: {
+			method: "GET",
+			data: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "",
+				repair_id: "",
+				repair_name: "",
+				tel: "",
+				repair_type: "",
+				repair_setting_type: "",
+				repair_obj_name: "",
+				maintenance_type: "",
+				start_time: "",
+				end_time: "",
+			},
+		},
+	});
 }
 
 /**
@@ -193,14 +233,6 @@ export function modifyTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 }
 
 /**
- * 删除工单参数
- */
-export interface TaskListGetIdDTO {
-	/** 工单编号 */
-	repair_id: string;
-}
-
-/**
  * 删除工单
  * @description 删除指定工单池工单
  */
@@ -208,6 +240,7 @@ export function removeTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskListGetIdDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/remove",
 		httpParamWay: "body",
+		upType: UpType.json,
 		options,
 		config: {
 			method: "DELETE",
@@ -216,14 +249,6 @@ export function removeTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 			},
 		},
 	});
-}
-
-/**
- * 打印工单参数
- */
-export interface ExportTaskDetailParams {
-	/** 工单编号 */
-	repair_id: string;
 }
 
 /**
@@ -243,26 +268,6 @@ export function exportTaskDetail<T = void>(options: UseAxiosOptionsJsonVO<T>) {
 			responseType: "blob",
 		},
 	});
-}
-
-/**
- * 派单返回信息
- */
-export interface TaskDetailGetIdDTO {
-	/** 工单编号 */
-	repair_id: string;
-}
-
-/**
- * 派单参数
- */
-export interface TaskDetailAddDTO {
-	/** 工单编号（前端传入） */
-	repair_id: string;
-	/** 处理人 */
-	staff_name: string;
-	/** 意见 */
-	context: string;
 }
 
 /**

@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 强制回单信息
  */
@@ -27,27 +29,21 @@ export interface ForceBackDTO {
 }
 
 /**
- * 获取强制回单列表
- * @description
- * 获取强制回单分页列表
+ * 获取强制回单列表查询参数
  */
-export function queryForceBackList<T = PageDTO<ForceBackDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
-		url: "/comm-c2-repairsetting/force-back/force-back/query-all",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "get",
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-				community_id: "",
-				repair_type: "",
-				repair_name: "",
-				tel: "",
-			},
-		},
-	});
+export interface QueryForceBackListParams {
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 小区id */
+	community_id: string;
+	/** 报修类型 */
+	repair_type?: string;
+	/** 报修人 */
+	repair_name?: string;
+	/** 报修人电话 */
+	tel?: string;
 }
 
 /**
@@ -86,6 +82,56 @@ export interface ForceBackModifyDTO {
 	context: string;
 }
 
+// ==================== 接口函数 ====================
+
+/**
+ * 获取强制回单列表
+ * @description
+ * 获取强制回单分页列表
+ */
+export function queryForceBackList<T = PageDTO<ForceBackDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryForceBackListParams>({
+		url: "/c2-repairsetting/force-back/force-back/query-all",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "get",
+			data: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "",
+				repair_type: "",
+				repair_name: "",
+				tel: "",
+			},
+		},
+	});
+}
+
+/**
+ * 获取强制回单列表 (comm-)
+ * @description
+ * 获取强制回单分页列表
+ */
+export function queryForceBackListComm<T = PageDTO<ForceBackDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryForceBackListParams>({
+		url: "/comm-c2-repairsetting/force-back/force-back/query-all",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "get",
+			data: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "",
+				repair_type: "",
+				repair_name: "",
+				tel: "",
+			},
+		},
+	});
+}
+
 /**
  * 强制回单操作
  * @description
@@ -93,9 +139,35 @@ export interface ForceBackModifyDTO {
  */
 export function modifyForceBack<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ForceBackModifyDTO>({
+		url: "/c2-repairsetting/force-back/force-back/modify",
+		options,
+		httpParamWay: "body",
+		upType: UpType.json,
+		config: {
+			method: "put",
+			data: {
+				repair_id: "",
+				maintenance_type: "",
+				materials: [],
+				repair_fee: "",
+				pay_type: "",
+				context: "",
+			},
+		},
+	});
+}
+
+/**
+ * 强制回单操作 (comm-)
+ * @description
+ * 提交强制回单操作
+ */
+export function modifyForceBackComm<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ForceBackModifyDTO>({
 		url: "/comm-c2-repairsetting/force-back/force-back/modify",
 		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
 			method: "put",
 			data: {

@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 回访单列表项数据
  */
@@ -63,9 +65,44 @@ export interface QueryRepairReturnParams {
 }
 
 /**
+ * 添加报修回访反馈参数
+ */
+export interface RepairReturnAddDTO {
+	/** 小区id */
+	community_id: string;
+	/** 工单编码 */
+	repair_id: string;
+	/** 满意度 */
+	visit_type: string;
+	/** 回访内容 */
+	context: string;
+}
+
+// ==================== 接口函数 ====================
+
+/**
  * 获取回访单列表
  */
 export function queryRepairReturn<T = RepairReturnPageDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryRepairReturnParams>({
+		url: "/c2-repairsetting/repair-return/repair-return/query-all",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "get",
+			data: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "",
+			},
+		},
+	});
+}
+
+/**
+ * 获取回访单列表 (comm-)
+ */
+export function queryRepairReturnComm<T = RepairReturnPageDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryRepairReturnParams>({
 		url: "/comm-c2-repairsetting/repair-return/repair-return/query-all",
 		options,
@@ -82,27 +119,35 @@ export function queryRepairReturn<T = RepairReturnPageDTO>(options: UseAxiosOpti
 }
 
 /**
- * 添加报修回访反馈参数
- */
-export interface RepairReturnAddDTO {
-	/** 小区id */
-	community_id: string;
-	/** 工单编码 */
-	repair_id: string;
-	/** 满意度 */
-	visit_type: string;
-	/** 回访内容 */
-	context: string;
-}
-
-/**
  * 添加一条报修回访反馈数据
  */
 export function addRepairReturn<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairReturnAddDTO>({
+		url: "/c2-repairsetting/repair-return/repair-return/add",
+		options,
+		httpParamWay: "body",
+		upType: UpType.json,
+		config: {
+			method: "post",
+			data: {
+				community_id: "",
+				repair_id: "",
+				visit_type: "",
+				context: "",
+			},
+		},
+	});
+}
+
+/**
+ * 添加一条报修回访反馈数据 (comm-)
+ */
+export function addRepairReturnComm<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, RepairReturnAddDTO>({
 		url: "/comm-c2-repairsetting/repair-return/repair-return/add",
 		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
 			method: "post",
 			data: {

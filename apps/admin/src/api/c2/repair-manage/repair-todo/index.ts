@@ -1,5 +1,7 @@
 import { useRequest } from "@/composables/use-request";
 
+// ==================== 类型定义 ====================
+
 /**
  * 报修待办-暂停参数
  */
@@ -8,26 +10,6 @@ export interface RepairToDoUpdateToSuspendDTO {
 	repair_id: string;
 	/** 暂停原因 */
 	context: string;
-}
-
-/**
- * 报修管理-报修待办-暂停
- * @description
- * 暂停指定报修单
- */
-export function modifyStateToSuspend<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, RepairToDoUpdateToSuspendDTO>({
-		url: "/comm-c2-repairsetting/repair-to-do/modify-state-suspend",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "put",
-			data: {
-				repair_id: "",
-				context: "",
-			},
-		},
-	});
 }
 
 /**
@@ -54,33 +36,25 @@ export interface RepairToDoQueryDTO {
 	pre_staff_id?: string;
 	/** 上一级维修师傅姓名 */
 	pre_staff_name?: string;
+	/** 是否公共区域（T/F） */
+	public_area?: string;
+	/** 报修对象ID,如果是公共区域那么就是小区ID，否则是房屋ID */
+	repair_obj_id?: string;
 }
 
 /**
- * 报修待办--分页查询获取待办列表
- * @description
- * 获取报修待办分页列表
+ * 报修待办--分页查询获取待办列表参数
  */
-export function queryAllRepairToDo<T = PageDTO<RepairToDoQueryDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
-		url: "/comm-c2-repairsetting/repair-to-do/query-all",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "get",
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-				community_id: "",
-				staff_id: "",
-				repair_id: "",
-				repair_name: "",
-				tel: "",
-				repair_type_name: "",
-				state: "",
-			},
-		},
-	});
+export interface QueryAllRepairToDoParams {
+	pageIndex: number;
+	pageSize: number;
+	community_id: string;
+	staff_id: string;
+	repair_id?: string;
+	repair_name?: string;
+	tel?: string;
+	repair_type_name?: string;
+	state?: string;
 }
 
 /**
@@ -94,22 +68,10 @@ export interface RepairToDoQueryAllRepairTypeDTO {
 }
 
 /**
- * 查询该小区中的所有报修类型
- * @description
- * 获取指定小区中的所有报修类型列表
+ * 查询该小区中的所有报修类型参数
  */
-export function queryAllRepairType<T = PageDTO<RepairToDoQueryAllRepairTypeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
-		url: "/comm-c2-repairsetting/repair-to-do/query-all-repair-type",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "get",
-			data: {
-				community_id: "",
-			},
-		},
-	});
+export interface QueryAllRepairTypeParams {
+	community_id: string;
 }
 
 /**
@@ -123,22 +85,10 @@ export interface RepairToDoQueryAllStaffDTO {
 }
 
 /**
- * 查询该报修类型对应的所有报修师傅
- * @description
- * 根据报修类型ID获取所有报修师傅列表
+ * 查询该报修类型对应的所有报修师傅参数
  */
-export function queryAllStaff<T = PageDTO<RepairToDoQueryAllStaffDTO>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T>({
-		url: "/comm-c2-repairsetting/repair-to-do/query-all-staff",
-		options,
-		httpParamWay: "query",
-		config: {
-			method: "get",
-			data: {
-				repair_type: "",
-			},
-		},
-	});
+export interface QueryAllStaffParams {
+	repair_type: string;
 }
 
 /**
@@ -154,27 +104,6 @@ export interface RepairToDoUpdateDTO {
 }
 
 /**
- * 报修待办--改单处理
- * @description
- * 修改报修待办信息
- */
-export function modifyRepairToDo<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, RepairToDoUpdateDTO>({
-		url: "/comm-c2-repairsetting/repair-to-do/modify",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "put",
-			data: {
-				repair_id: "",
-				context: "",
-				staff_id: "",
-			},
-		},
-	});
-}
-
-/**
  * 报修待办-退单处理参数
  */
 export interface RepairToDoUpdateToRemoveDTO {
@@ -182,26 +111,6 @@ export interface RepairToDoUpdateToRemoveDTO {
 	repair_id: string;
 	/** 退单原因 */
 	context: string;
-}
-
-/**
- * 报修待办--退单处理
- * @description
- * 退单处理报修待办
- */
-export function removeRepairToDo<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, RepairToDoUpdateToRemoveDTO>({
-		url: "/comm-c2-repairsetting/repair-to-do/delete",
-		options,
-		httpParamWay: "body",
-		config: {
-			method: "put",
-			data: {
-				repair_id: "",
-				context: "",
-			},
-		},
-	});
 }
 
 /**
@@ -246,6 +155,139 @@ export interface RepairToDoUpdateToFinishDTO {
 	total_price?: string;
 }
 
+// ==================== 接口函数 ====================
+
+/**
+ * 报修管理-报修待办-暂停
+ * @description
+ * 暂停指定报修单
+ */
+export function modifyStateToSuspend<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, RepairToDoUpdateToSuspendDTO>({
+		url: "/comm-c2-repairsetting/repair-to-do/modify-state-suspend",
+		options,
+		httpParamWay: "body",
+		upType: UpType.json,
+		config: {
+			method: "put",
+			data: {
+				repair_id: "",
+				context: "",
+			},
+		},
+	});
+}
+
+/**
+ * 报修待办--分页查询获取待办列表
+ * @description
+ * 获取报修待办分页列表
+ */
+export function queryAllRepairToDo<T = PageDTO<RepairToDoQueryDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryAllRepairToDoParams>({
+		url: "/comm-c2-repairsetting/repair-to-do/query-all",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "get",
+			data: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "",
+				staff_id: "",
+				repair_id: "",
+				repair_name: "",
+				tel: "",
+				repair_type_name: "",
+				state: "",
+			},
+		},
+	});
+}
+
+/**
+ * 查询该小区中的所有报修类型
+ * @description
+ * 获取指定小区中的所有报修类型列表
+ */
+export function queryAllRepairType<T = PageDTO<RepairToDoQueryAllRepairTypeDTO>>(
+	options: UseAxiosOptionsJsonVO<T>,
+) {
+	return useRequest<ParamsQueryKey, T, QueryAllRepairTypeParams>({
+		url: "/comm-c2-repairsetting/repair-to-do/query-all-repair-type",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "get",
+			data: {
+				community_id: "",
+			},
+		},
+	});
+}
+
+/**
+ * 查询该报修类型对应的所有报修师傅
+ * @description
+ * 根据报修类型ID获取所有报修师傅列表
+ */
+export function queryAllStaff<T = PageDTO<RepairToDoQueryAllStaffDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, QueryAllStaffParams>({
+		url: "/comm-c2-repairsetting/repair-to-do/query-all-staff",
+		options,
+		httpParamWay: "query",
+		config: {
+			method: "get",
+			data: {
+				repair_type: "",
+			},
+		},
+	});
+}
+
+/**
+ * 报修待办--改单处理
+ * @description
+ * 修改报修待办信息
+ */
+export function modifyRepairToDo<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, RepairToDoUpdateDTO>({
+		url: "/comm-c2-repairsetting/repair-to-do/modify",
+		options,
+		httpParamWay: "body",
+		upType: UpType.json,
+		config: {
+			method: "put",
+			data: {
+				repair_id: "",
+				context: "",
+				staff_id: "",
+			},
+		},
+	});
+}
+
+/**
+ * 报修待办--退单处理
+ * @description
+ * 退单处理报修待办
+ */
+export function removeRepairToDo<T = string>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, RepairToDoUpdateToRemoveDTO>({
+		url: "/comm-c2-repairsetting/repair-to-do/delete",
+		options,
+		httpParamWay: "body",
+		upType: UpType.json,
+		config: {
+			method: "put",
+			data: {
+				repair_id: "",
+				context: "",
+			},
+		},
+	});
+}
+
 /**
  * 报修待办--办结处理
  */
@@ -254,6 +296,7 @@ export function modifyStateToFinish<T = string>(options: UseAxiosOptionsJsonVO<T
 		url: "/comm-c2-repairsetting/repair-to-do/finish",
 		options,
 		httpParamWay: "body",
+		upType: UpType.json,
 		config: {
 			method: "PUT",
 			data: {
