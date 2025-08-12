@@ -10,7 +10,7 @@ import {
 	removeRepairSettingType,
 	removeRepairWorker,
 	queryAllRepairWorkerName,
-} from "./repair-setting";
+} from ".";
 
 describe("报修设置类型接口测试", () => {
 	it("分页查询报修设置类型列表", async () => {
@@ -27,6 +27,7 @@ describe("报修设置类型接口测试", () => {
 			data: {
 				pageIndex: 1,
 				pageSize: 10,
+				community_id: "", // 修正：添加 community_id
 				repair_type_name: "修水管",
 				repair_way: "100",
 				repair_setting_type: "100",
@@ -121,6 +122,7 @@ describe("报修设置类型接口测试", () => {
 
 		await execute({
 			data: {
+				setting_id: "", // 修正：添加 setting_id
 				repair_type_name: "修水管",
 				repair_setting_type: "200",
 				repair_way: "200",
@@ -128,7 +130,6 @@ describe("报修设置类型接口测试", () => {
 				is_show: "Y",
 				notify_way: "WECHAT",
 				return_visit_flag: "003",
-				community_id: "2024022154856948",
 				remark: "修改说明",
 			},
 		});

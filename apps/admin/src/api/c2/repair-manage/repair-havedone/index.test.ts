@@ -16,6 +16,7 @@ describe("报修已办接口测试", () => {
 			data: {
 				pageIndex: 1,
 				pageSize: 10,
+				community_id: "", // 修正：添加 community_id
 				maintenance_type: "1001",
 				repair_name: "张三",
 				tel: "18909711442",

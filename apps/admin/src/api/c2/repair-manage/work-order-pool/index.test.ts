@@ -7,7 +7,7 @@ import {
 	removeTask,
 	exportTaskDetail,
 	addTaskDetail,
-} from "./work-order-pool";
+} from ".";
 
 describe("c2/维修管理/工单池", () => {
 	it("使用 query 接口 - 获取工单池工单详情", async () => {
@@ -21,7 +21,7 @@ describe("c2/维修管理/工单池", () => {
 		});
 
 		await execute({
-			params: {
+			data: { // 修正：使用 data 替代 params
 				repair_id: "822023080257540003",
 			},
 		});
@@ -40,7 +40,7 @@ describe("c2/维修管理/工单池", () => {
 		});
 
 		await execute({
-			params: {
+			data: { // 修正：使用 data 替代 params
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2023052267100146",

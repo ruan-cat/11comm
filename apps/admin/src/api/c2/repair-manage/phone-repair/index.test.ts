@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryAllPhoneRepair, addPhoneRepair, modifyPhoneRepair, removePhoneRepair } from "./phone-repair";
+import { queryAllPhoneRepair, addPhoneRepair, modifyPhoneRepair, removePhoneRepair } from ".";
 
 describe("电话报修接口测试", () => {
 	it("分页查询报修列表", async () => {
@@ -17,11 +17,12 @@ describe("电话报修接口测试", () => {
 			data: {
 				pageIndex: 1,
 				pageSize: 10,
+				community_id: "", // 修正：添加 community_id
 				repair_id: "",
 				repair_name: "张三",
 				repair_type: "水管维修",
 				tel: "13800138000",
-				status_cd: "",
+				state: "", // 修正：将 status_cd 改为 state
 			},
 		});
 
@@ -40,10 +41,9 @@ describe("电话报修接口测试", () => {
 
 		await execute({
 			data: {
+				community_id: "", // 修正：添加 community_id
 				repair_obj_type: "001",
-				building: "1号楼",
-				unit: "2单元",
-				house: "101",
+				repair_obj_name: "1号楼1单元101", // 修正：添加 repair_obj_name
 				repair_type: "水管维修",
 				repair_name: "李四",
 				tel: "13800138001",
@@ -67,16 +67,12 @@ describe("电话报修接口测试", () => {
 
 		await execute({
 			data: {
-				repair_obj_type: "001",
-				building: "1号楼",
-				unit: "2单元",
-				house: "101",
+				repair_id: "202406010001", // 修正：保留必要字段
 				repair_type: "水管维修",
 				repair_name: "李四",
 				tel: "13800138001",
 				appointment_time: "2024-06-01 10:00:00",
 				context: "厨房水管漏水，需要维修。",
-				repair_id: "202406010001",
 			},
 		});
 
