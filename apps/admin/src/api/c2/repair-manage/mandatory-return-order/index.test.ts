@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryForceBackList, modifyForceBack } from "./mandatory-return-order";
+import { queryForceBackList, modifyForceBack } from ".";
 
 describe("强制回单接口测试", () => {
 	it("分页查询强制回单列表", async () => {
@@ -14,7 +14,7 @@ describe("强制回单接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2024022647620054",

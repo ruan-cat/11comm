@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryAllRepairHavedone } from "./repair-havedone";
+import { queryAllRepairHavedone } from ".";
 
 describe("报修已办接口测试", () => {
 	it("分页查询报修已办数据", async () => {
@@ -13,7 +13,7 @@ describe("报修已办接口测试", () => {
 			},
 		});
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "", // 修正：添加 community_id

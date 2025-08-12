@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryRepairReturn, addRepairReturn } from "./repair-return-visit";
+import { queryRepairReturn, addRepairReturn } from ".";
 
 describe("报修回访接口测试", () => {
 	it("分页查询报修回访数据", async () => {
@@ -14,7 +14,7 @@ describe("报修回访接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2024022647620054",

@@ -8,7 +8,7 @@ import {
 	modifyRepairToDo,
 	removeRepairToDo,
 	modifyStateToFinish,
-} from "./repair-todo";
+} from ".";
 
 describe("报修待办接口测试", () => {
 	it("暂停报修单", async () => {
@@ -42,7 +42,7 @@ describe("报修待办接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2025052665960005",
@@ -69,7 +69,7 @@ describe("报修待办接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				community_id: "2025052665960005",
 			},
 		});
@@ -88,7 +88,7 @@ describe("报修待办接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				repair_type: "102025052701090065",
 			},
 		});

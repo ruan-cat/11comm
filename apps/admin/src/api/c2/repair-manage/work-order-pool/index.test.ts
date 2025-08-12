@@ -1,13 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	queryTaskDetailById,
-	queryTaskList,
-	modifyTask,
-	removeTask,
-	exportTaskDetail,
-	addTaskDetail,
-} from ".";
+import { queryTaskDetailById, queryTaskList, modifyTask, removeTask, exportTaskDetail, addTaskDetail } from ".";
 
 describe("c2/维修管理/工单池", () => {
 	it("使用 query 接口 - 获取工单池工单详情", async () => {
@@ -21,7 +14,7 @@ describe("c2/维修管理/工单池", () => {
 		});
 
 		await execute({
-			data: { // 修正：使用 data 替代 params
+			params: {
 				repair_id: "822023080257540003",
 			},
 		});
@@ -40,7 +33,7 @@ describe("c2/维修管理/工单池", () => {
 		});
 
 		await execute({
-			data: { // 修正：使用 data 替代 params
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "2023052267100146",

@@ -24,7 +24,7 @@ describe("报修设置类型接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "", // 修正：添加 community_id
@@ -50,7 +50,7 @@ describe("报修设置类型接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				repair_type_name: "修水管",
