@@ -190,7 +190,7 @@ export function queryAllRepairToDo<T = PageDTO<RepairToDoQueryDTO>>(options: Use
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
@@ -210,16 +210,14 @@ export function queryAllRepairToDo<T = PageDTO<RepairToDoQueryDTO>>(options: Use
  * @description
  * 获取指定小区中的所有报修类型列表
  */
-export function queryAllRepairType<T = PageDTO<RepairToDoQueryAllRepairTypeDTO>>(
-	options: UseAxiosOptionsJsonVO<T>,
-) {
+export function queryAllRepairType<T = PageDTO<RepairToDoQueryAllRepairTypeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairTypeParams>({
 		url: "/comm-c2-repairsetting/repair-to-do/query-all-repair-type",
 		options,
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				community_id: "",
 			},
 		},
@@ -238,7 +236,7 @@ export function queryAllStaff<T = PageDTO<RepairToDoQueryAllStaffDTO>>(options: 
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				repair_type: "",
 			},
 		},

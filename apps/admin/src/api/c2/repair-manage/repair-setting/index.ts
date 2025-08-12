@@ -196,7 +196,7 @@ export function queryRepairSettingTypeList<T = PageDTO<RepairSettingGetDTO>>(opt
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
@@ -222,7 +222,7 @@ export function queryAllRepairWorker<T = PageDTO<RepairWorkerQueryDTO>>(options:
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				repair_type_name: "",
@@ -383,7 +383,7 @@ export function queryAllRepairWorkerName<T = RepairWorkerNameDTO[]>(options: Use
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				repair_type_name: "",
 				repair_id: "",
 				community_id: "",

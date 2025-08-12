@@ -112,7 +112,7 @@ export function queryAllPhoneRepair<T = PageDTO<TellRepairDTO>>(options: UseAxio
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",

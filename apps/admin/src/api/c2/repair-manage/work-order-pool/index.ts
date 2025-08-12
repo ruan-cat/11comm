@@ -171,7 +171,7 @@ export function queryTaskDetailById<T = TaskDetailGetDTO>(options: UseAxiosOptio
 		options,
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				repair_id: "",
 			},
 		},
@@ -189,7 +189,7 @@ export function queryTaskList<T = PageDTO<TaskListDTO>>(options: UseAxiosOptions
 		options,
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
@@ -262,7 +262,7 @@ export function exportTaskDetail<T = void>(options: UseAxiosOptionsJsonVO<T>) {
 		options,
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				repair_id: "",
 			},
 			responseType: "blob",

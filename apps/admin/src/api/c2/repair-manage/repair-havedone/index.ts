@@ -77,7 +77,7 @@ export function queryAllRepairHavedone<T = RepairDonePageDTO>(options: UseAxiosO
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
@@ -96,7 +96,7 @@ export function queryAllRepairHavedoneComm<T = RepairDonePageDTO>(options: UseAx
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",

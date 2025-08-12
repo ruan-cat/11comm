@@ -90,7 +90,7 @@ export function queryRepairReturn<T = RepairReturnPageDTO>(options: UseAxiosOpti
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
@@ -109,7 +109,7 @@ export function queryRepairReturnComm<T = RepairReturnPageDTO>(options: UseAxios
 		httpParamWay: "query",
 		config: {
 			method: "get",
-			data: {
+			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
