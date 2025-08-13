@@ -8,36 +8,36 @@ import {
 	modifyRepairToDo,
 	removeRepairToDo,
 	modifyStateToFinish,
-} from ".";
+} from "./index";
 
-describe("报修待办接口测试", () => {
-	it("暂停报修单", async () => {
+describe("c2/报修管理/报修待办", () => {
+	it("使用 body 接口 - 报修管理-报修待办-暂停", async () => {
 		const { execute, data } = modifyStateToSuspend({
 			onSuccess(data) {
-				console.warn("暂停报修单成功", printFormat(data));
+				console.warn("modifyStateToSuspend onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("modifyStateToSuspend onError", error);
 			},
 		});
 
 		await execute({
 			data: {
 				repair_id: "822024021727861281",
-				context: "我要暂停",
+				context: "系统维护需要暂停该报修单处理",
 			},
 		});
 
-		console.warn("查看暂停报修单结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("分页查询报修待办列表", async () => {
+	it("使用 query 接口 - 报修待办--分页查询获取待办列表", async () => {
 		const { execute, data } = queryAllRepairToDo({
 			onSuccess(data) {
-				console.warn("分页查询报修待办列表成功", printFormat(data));
+				console.warn("queryAllRepairToDo onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryAllRepairToDo onError", error);
 			},
 		});
 
@@ -48,23 +48,23 @@ describe("报修待办接口测试", () => {
 				community_id: "2025052665960005",
 				staff_id: "302025052626190081",
 				repair_id: "822025052766720091",
-				repair_name: "张三",
+				repair_name: "李维修",
 				tel: "13812345678",
 				repair_type_name: "电梯维修",
 				state: "接单",
 			},
 		});
 
-		console.warn("查看报修待办分页数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("查询该小区中的所有报修类型", async () => {
+	it("使用 query 接口 - 查询该小区中的所有报修类型", async () => {
 		const { execute, data } = queryAllRepairType({
 			onSuccess(data) {
-				console.warn("查询报修类型成功", printFormat(data));
+				console.warn("queryAllRepairType onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryAllRepairType onError", error);
 			},
 		});
 
@@ -74,16 +74,16 @@ describe("报修待办接口测试", () => {
 			},
 		});
 
-		console.warn("查看所有报修类型数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("查询该报修类型对应的所有报修师傅", async () => {
+	it("使用 query 接口 - 查询该报修类型对应的所有报修师傅", async () => {
 		const { execute, data } = queryAllStaff({
 			onSuccess(data) {
-				console.warn("查询报修师傅成功", printFormat(data));
+				console.warn("queryAllStaff onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryAllStaff onError", error);
 			},
 		});
 
@@ -93,59 +93,60 @@ describe("报修待办接口测试", () => {
 			},
 		});
 
-		console.warn("查看报修师傅数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("改单处理报修待办", async () => {
+	it("使用 body 接口 - 报修待办--改单处理", async () => {
 		const { execute, data } = modifyRepairToDo({
 			onSuccess(data) {
-				console.warn("改单处理报修待办成功", printFormat(data));
+				console.warn("modifyRepairToDo onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("modifyRepairToDo onError", error);
 			},
 		});
 
 		await execute({
 			data: {
 				repair_id: "822024021727861281",
-				context: "我要改单",
+				context: "根据实际情况调整维修师傅安排",
 				staff_id: "302025052972240004",
 			},
 		});
 
-		console.warn("查看改单处理报修待办结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("退单处理报修待办", async () => {
+	it("使用 body 接口 - 报修待办--退单处理", async () => {
 		const { execute, data } = removeRepairToDo({
 			onSuccess(data) {
-				console.warn("退单处理报修待办成功", printFormat(data));
+				console.warn("removeRepairToDo onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("removeRepairToDo onError", error);
 			},
 		});
 
 		await execute({
 			data: {
 				repair_id: "822024021727861281",
-				context: "我要退单",
+				context: "业主取消报修申请，进行退单处理",
 			},
 		});
 
-		console.warn("查看退单处理报修待办结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("报修待办--办结处理", async () => {
+	it("使用 body 接口 - 报修待办--办结处理", async () => {
 		const { execute, data } = modifyStateToFinish({
 			onSuccess(data) {
-				console.warn("报修待办--办结处理成功", printFormat(data));
+				console.warn("modifyStateToFinish onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("modifyStateToFinish onError", error);
 			},
 		});
+
 		await execute({
 			data: {
 				repair_id: "822024021727861281",
@@ -160,22 +161,23 @@ describe("报修待办接口测试", () => {
 						material_price: 10,
 					},
 				],
-				context: "处理意见：我要办结",
+				context: "维修完成，设备恢复正常运行，业主满意",
 				repair_before_photo_path: [
-					"D:\\computer practice\\imgs\\repair_before_1.jpg",
-					"D:\\computer practice\\imgs\\repair_before_2.jpg",
-					"D:\\computer practice\\imgs\\repair_before_3.jpg",
+					"/upload/repair/before/repair_before_1.jpg",
+					"/upload/repair/before/repair_before_2.jpg",
+					"/upload/repair/before/repair_before_3.jpg",
 				],
 				repair_after_photo_path: [
-					"D:\\computer practice\\imgs\\repair_after_1.jpg",
-					"D:\\computer practice\\imgs\\repair_after_2.jpg",
-					"D:\\computer practice\\imgs\\repair_after_3.jpg",
+					"/upload/repair/after/repair_after_1.jpg",
+					"/upload/repair/after/repair_after_2.jpg",
+					"/upload/repair/after/repair_after_3.jpg",
 				],
 				room_id: "102025052701090065",
 				pay_type: "微信转账",
-				total_price: "2",
+				total_price: "120.00",
 			},
 		});
-		console.warn("报修待办--办结处理:", printFormat(data));
+
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
