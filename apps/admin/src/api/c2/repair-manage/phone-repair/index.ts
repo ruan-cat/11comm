@@ -108,10 +108,9 @@ export interface TellRepairUpdateDTO {
 export function queryAllPhoneRepair<T = PageDTO<TellRepairDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllPhoneRepairParams>({
 		url: "/comm-c2-repairsetting/tell-repair/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
@@ -123,6 +122,7 @@ export function queryAllPhoneRepair<T = PageDTO<TellRepairDTO>>(options: UseAxio
 				state: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -134,11 +134,9 @@ export function queryAllPhoneRepair<T = PageDTO<TellRepairDTO>>(options: UseAxio
 export function addPhoneRepair<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TellRepairAddDTO>({
 		url: "/comm-c2-repairsetting/tell-repair/add",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				community_id: "",
 				repair_obj_type: "",
@@ -150,6 +148,7 @@ export function addPhoneRepair<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				context: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -161,11 +160,9 @@ export function addPhoneRepair<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 export function modifyPhoneRepair<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TellRepairUpdateDTO>({
 		url: "/comm-c2-repairsetting/tell-repair/modify",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				repair_type: "",
 				repair_name: "",
@@ -175,6 +172,7 @@ export function modifyPhoneRepair<T = string>(options: UseAxiosOptionsJsonVO<T>)
 				repair_id: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -186,12 +184,11 @@ export function modifyPhoneRepair<T = string>(options: UseAxiosOptionsJsonVO<T>)
 export function removePhoneRepair<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string[]>({
 		url: "/comm-c2-repairsetting/tell-repair/delete",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "delete",
+			method: "DELETE",
 			data: [],
 		},
+		options,
 	});
 }
