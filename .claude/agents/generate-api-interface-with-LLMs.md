@@ -10,27 +10,30 @@ color: blue
 
 在本次对话中，我们将按照指定的要求，逐步地，批量的，少量多次的生成接口和接口请求用例。
 
-请你主动的使用 web_search 工具来搜索本文提供的 url 链接。
+## 提醒我文件或目录找不到
+
+如果你在阅读本文时，发现有文件地址找不到，文件不存在时，请你主动和我反馈，并立刻停止工作。等待我提供正确的文件地址。
+
+## 主动使用 mcp 工具 fetch-mcp
+
+在后续的对话中，请你主动使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具，访问我提供的 url 地址。
+
+如果你未发现可用的 `fetch-mcp` 工具，请立刻停止，并要求我检查该工具是否可用。
 
 ## 全部核心资料的上下文
 
-- 全部的 github 实现代码： @https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
-- 文档：01s 内封装好的 useAxios 函数： @https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
-- 文档：使用 useRequestIn01s 函数：@https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
+- 文档：使用 useRequestIn01s 函数：https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
+- 文档：01s 内封装好的 useAxios 函数： https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
+- 全部的 github 实现代码： https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
 
 生成 api 接口的工具，以及工具如何使用，均在此文档内有详细讲述。
 
-## 阅读 LLM.txt 文档
-
-你应当主动的阅读以下文档：
-
-- @https://01s-11.apifox.cn/llms.txt
-
-我要求生成的全部接口信息，都在上述文档内。
-
 ## 工作范围
 
-我会要求你修改、编辑或新建文件。你的文件修改范围仅限于 @apps\admin\src\api 目录。你只可以在该目录内新建并修改文件。
+你的文件修改范围仅限于 apps\admin\src\api 目录。
+
+- 我会要求你修改、编辑或新建文件。
+- 你只可以在该目录内新建并修改文件。
 
 ## 文件后缀类型
 
@@ -92,7 +95,61 @@ export function sysManagerModifyUserDetail<T = string>(options: UseAxiosOptionsJ
 2. 导入 `useRequest` 接口请求工具时，导入语法要严格使用上述文档提供的例子来导入。我们导入时已经使用路径别名了。
 3. 在生成接口代码时，同时生成业务类型。其中，在生成分页接口时，不要生成额外的 PageDTO 类型。请使用全局自动提供的全局类型。PageDTO 是全局类型，你应该直接使用。
 
-## api 测试代码，生成案例
+## api 接口代码 代码风格
+
+在你生成 api 接口代码时，请遵守以下代码风格：
+
+如果有代码不遵守其严格的代码风格，我会要求你按照该风格修改。
+
+### 可供参考的代码风格案例
+
+以下文件的代码风格，可供你学习。在接下来的接口生成中，请使用这些代码风格：
+
+- apps\admin\src\api\c5\payment-audit\index.ts
+- apps\admin\src\api\c5\payment-audit\index.test.ts
+
+- apps\admin\src\api\c5\arrears\index.ts
+- apps\admin\src\api\c5\arrears\index.test.ts
+
+### 仅仅导入一行接口请求工具
+
+正确的例子：
+
+```ts
+import { useRequest } from "@/composables/use-request";
+```
+
+整个文件只需要导入一行接口请求工具即可。不需要你手动导入其他多余的类型。
+
+以下是错误的例子：
+
+```ts
+import { useRequest } from "@/composables/use-request";
+import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
+import type { ParamsBodyKey, ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
+import type { AxiosRequestConfig } from "axios";
+import type { PageDTO } from "@/composables/use-request/useRequestIn01s/types/PageDTO";
+```
+
+不应该导入过多多余的内容。我们项目使用了自动导入，很多工具不需要你手动导入。
+
+### 增加明显的注释段做分隔
+
+增加明显的注释段做分隔，增加代码的可读性。如下：
+
+```ts
+// ==================== 类型定义 ====================
+// ==================== 接口函数 ====================
+```
+
+你生成的代码应该增加这两行分隔注释，以便增强代码可读性。
+
+### 先定义接口类型，再定义函数
+
+- 先定义接口类型
+- 再定义函数
+
+## api 测试代码 生成案例
 
 请严格遵守以下的测试用例代码生成规则。
 
