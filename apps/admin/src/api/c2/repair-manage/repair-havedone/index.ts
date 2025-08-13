@@ -59,8 +59,9 @@ export interface RepairDoneDTO {
 
 /**
  * 获取报修已办单列表
+ * @description 查询报修已办工单列表，支持多种过滤条件
  */
-export function queryAllRepairHavedone<T = PageDTO<RepairDoneDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getRepairDoneList<T = PageDTO<RepairDoneDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairHavedoneParams>({
 		url: "/c2-repairsetting/repair-done/repair-done/query-all",
 		httpParamWay: "query",
@@ -77,9 +78,10 @@ export function queryAllRepairHavedone<T = PageDTO<RepairDoneDTO>>(options: UseA
 }
 
 /**
- * 获取报修已办单列表 (comm-)
+ * 获取报修已办单列表 (comm-前缀)
+ * @description 使用comm-前缀的API路径查询报修已办工单列表，支持多种过滤条件
  */
-export function queryAllRepairHavedoneComm<T = PageDTO<RepairDoneDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getRepairDoneListComm<T = PageDTO<RepairDoneDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairHavedoneParams>({
 		url: "/comm-c2-repairsetting/repair-done/repair-done/query-all",
 		httpParamWay: "query",

@@ -1,15 +1,15 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryAllRepairHavedone, queryAllRepairHavedoneComm } from "./index";
+import { getRepairDoneList, getRepairDoneListComm } from "./index";
 
-describe("报修已办接口测试", () => {
-	it("获取报修已办单列表", async () => {
-		const { execute, data } = queryAllRepairHavedone({
+describe("c2/报修管理/报修已办", () => {
+	it("使用 query 接口 - 获取报修已办单列表", async () => {
+		const { execute, data } = getRepairDoneList({
 			onSuccess(data) {
-				console.warn("获取报修已办单列表成功", printFormat(data));
+				console.warn("getRepairDoneList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("getRepairDoneList onError", error);
 			},
 		});
 		await execute({
@@ -25,16 +25,16 @@ describe("报修已办接口测试", () => {
 				repair_id: "822024022794890018",
 			},
 		});
-		console.warn("获取报修已办单列表:", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("获取报修已办单列表 (comm-)", async () => {
-		const { execute, data } = queryAllRepairHavedoneComm({
+	it("使用 query 接口 - 获取报修已办单列表 (comm-前缀)", async () => {
+		const { execute, data } = getRepairDoneListComm({
 			onSuccess(data) {
-				console.warn("获取报修已办单列表 (comm-) 成功", printFormat(data));
+				console.warn("getRepairDoneListComm onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("getRepairDoneListComm onError", error);
 			},
 		});
 		await execute({
@@ -49,6 +49,47 @@ describe("报修已办接口测试", () => {
 				state: "1900",
 			},
 		});
-		console.warn("获取报修已办单列表 (comm-):", printFormat(data));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 获取报修已办单列表（无偿服务）", async () => {
+		const { execute, data } = getRepairDoneList({
+			onSuccess(data) {
+				console.warn("getRepairDoneList 无偿服务 onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("getRepairDoneList 无偿服务 onError", error);
+			},
+		});
+		await execute({
+			params: {
+				pageIndex: 1,
+				pageSize: 5,
+				community_id: "2024022647620054",
+				maintenance_type: "1002",
+				state: "1900",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
+	});
+
+	it("使用 query 接口 - 按工单编码搜索", async () => {
+		const { execute, data } = getRepairDoneListComm({
+			onSuccess(data) {
+				console.warn("按工单编码搜索 onSuccess", printFormat(data));
+			},
+			onError(error) {
+				console.error("按工单编码搜索 onError", error);
+			},
+		});
+		await execute({
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+				community_id: "2024022647620054",
+				repair_id: "822024022794890018",
+			},
+		});
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
