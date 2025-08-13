@@ -27,22 +27,6 @@ export interface RepairReturnDTO {
 }
 
 /**
- * 回访单分页数据
- */
-export interface RepairReturnPageDTO {
-	/** 当前页码 */
-	pageIndex: number;
-	/** 每页数据条数 */
-	pageSize: number;
-	/** 数据的总条数 */
-	total: number;
-	/** 数据的总页数 */
-	pages: number;
-	/** 当前页数据列表 */
-	rows: RepairReturnDTO[];
-}
-
-/**
  * 回访单列表查询参数
  */
 export interface QueryRepairReturnParams {
@@ -83,38 +67,38 @@ export interface RepairReturnAddDTO {
 /**
  * 获取回访单列表
  */
-export function queryRepairReturn<T = RepairReturnPageDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryRepairReturn<T = PageDTO<RepairReturnDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryRepairReturnParams>({
 		url: "/c2-repairsetting/repair-return/repair-return/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 获取回访单列表 (comm-)
  */
-export function queryRepairReturnComm<T = RepairReturnPageDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryRepairReturnComm<T = PageDTO<RepairReturnDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryRepairReturnParams>({
 		url: "/comm-c2-repairsetting/repair-return/repair-return/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -124,11 +108,9 @@ export function queryRepairReturnComm<T = RepairReturnPageDTO>(options: UseAxios
 export function addRepairReturn<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairReturnAddDTO>({
 		url: "/c2-repairsetting/repair-return/repair-return/add",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				community_id: "",
 				repair_id: "",
@@ -136,6 +118,7 @@ export function addRepairReturn<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				context: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -145,11 +128,9 @@ export function addRepairReturn<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 export function addRepairReturnComm<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairReturnAddDTO>({
 		url: "/comm-c2-repairsetting/repair-return/repair-return/add",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				community_id: "",
 				repair_id: "",
@@ -157,5 +138,6 @@ export function addRepairReturnComm<T = string>(options: UseAxiosOptionsJsonVO<T
 				context: "",
 			},
 		},
+		options,
 	});
 }
