@@ -343,3 +343,13 @@ pnpm -F @01s-11comm/admin typecheck
 
 <assistant>
 让我们思考AI聊天UI的布局设计。以下是关键组件和布局考虑：
+
+## 生成接口时的代码风格
+
+以下文件的代码风格，可供你学习。在接下来的接口生成中，请使用这些代码风格：
+
+- `apps\admin\src\api\c5\payment-audit\index.ts`
+- `apps\admin\src\api\c5\payment-audit\index.test.ts`
+
+- `apps\admin\src\api\c5\arrears\index.ts`
+- `apps\admin\src\api\c5\arrears\index.test.ts`
