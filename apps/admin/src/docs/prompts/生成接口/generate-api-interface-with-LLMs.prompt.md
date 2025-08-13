@@ -4,43 +4,6 @@
 
 在本次对话中，我们将按照指定的要求，逐步地，批量的，少量多次的生成接口和接口请求用例。
 
-## 提醒我文件或目录找不到
-
-如果你在阅读本文时，发现有文件地址找不到，文件不存在时，请你主动和我反馈，并立刻停止工作。等待我提供正确的文件地址。
-
-## 主动使用 mcp 工具 fetch-mcp
-
-在后续的对话中，请你主动使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具，访问我提供的 url 地址。
-
-如果你未发现可用的 `fetch-mcp` 工具，请立刻停止，并要求我检查该工具是否可用。
-
-## 全部核心资料的上下文
-
-- 文档：使用 useRequestIn01s 函数：https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
-- 文档：01s 内封装好的 useAxios 函数： https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
-- 全部的 github 实现代码： https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
-
-生成 api 接口的工具，以及工具如何使用，均在此文档内有详细讲述。
-
-## 工作范围
-
-你的文件修改范围仅限于 apps\admin\src\api 目录。
-
-- 我会要求你修改、编辑或新建文件。
-- 你只可以在该目录内新建并修改文件。
-
-## 文件后缀类型以及文件命名风格
-
-你将生成 `*.ts` 和 `*.test.ts` 格式的文件。
-
-- `*.ts` 即真实的接口请求。
-- `*.test.ts` 即接口请求的测试套件。
-
-其中，生成的文件遵循以下约定：
-
-- `index.ts` 是接口文件。存放着接口请求函数。
-- `index.test.ts` 是测试文件。存放着接口请求用例。
-
 ## 交互注意事项
 
 我会向你这样提问，如下例子：
@@ -82,9 +45,42 @@ D:\code\github-desktop-store\01s-11comm\apps\admin\src\api\c2\repair-manage\repa
 6. 如果我要求你**生成接口**，请新建文件；如果我要求你**检查接口**，请修改文件。
 7. 按照本文提出的其他要求，完成任务。
 
-## 新建文件夹时提醒我
+### 提醒我文件或目录找不到
 
-在你想新建文件夹时，提醒我，并由我审核你的文件夹命名。
+如果你在阅读本文时，发现有文件地址找不到，文件不存在时，请你主动和我反馈，并立刻停止工作。等待我提供正确的文件地址。
+
+## 主动使用 mcp 工具 fetch-mcp
+
+在后续的对话中，请你主动使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具，访问我提供的 url 地址。
+
+如果你未发现可用的 `fetch-mcp` 工具，请立刻停止，并要求我检查该工具是否可用。
+
+## 全部核心资料的上下文
+
+- 文档：使用 useRequestIn01s 函数：https://utils.ruan-cat.com/vueuse/useAxios-for-01s/use.html
+- 文档：01s 内封装好的 useAxios 函数： https://utils.ruan-cat.com/vueuse/useAxios-for-01s/
+- 全部的 github 实现代码： https://github.com/ruan-cat/monorepo/tree/main/packages/utils/src/vueuse/useAxios-for-01s
+
+生成 api 接口的工具，以及工具如何使用，均在此文档内有详细讲述。
+
+## 工作范围
+
+你的文件修改范围仅限于 apps\admin\src\api 目录。
+
+- 我会要求你修改、编辑或新建文件。
+- 你只可以在该目录内新建并修改文件。
+
+## 文件后缀类型以及文件命名风格
+
+你将生成 `*.ts` 和 `*.test.ts` 格式的文件。
+
+- `*.ts` 即真实的接口请求。
+- `*.test.ts` 即接口请求的测试套件。
+
+其中，生成的文件遵循以下约定：
+
+- `index.ts` 是接口文件。存放着接口请求函数。
+- `index.test.ts` 是测试文件。存放着接口请求用例。
 
 ## 标准以本文档为主
 
