@@ -3,7 +3,7 @@ import { useRequest } from "@/composables/use-request";
 // ==================== 类型定义 ====================
 
 /**
- * 分页查询报修已办数据参数
+ * 获取报修已办单列表查询参数
  */
 export interface QueryAllRepairHavedoneParams {
 	/** 查询页码 */
@@ -54,26 +54,15 @@ export interface RepairDoneDTO {
 	state_detail?: string;
 }
 
-/**
- * 报修已办分页数据 DTO
- */
-export interface RepairDonePageDTO {
-	pageIndex: number; // 当前页码
-	pageSize: number; // 每页数据条数
-	total: number; // 数据的总条数
-	pages: number; // 数据的总页数
-	rows?: RepairDoneDTO[]; // 当前页数据列表
-}
 
 // ==================== 接口函数 ====================
 
 /**
- * 分页查询报修已办数据
+ * 获取报修已办单列表
  */
-export function queryAllRepairHavedone<T = RepairDonePageDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryAllRepairHavedone<T = PageDTO<RepairDoneDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairHavedoneParams>({
 		url: "/c2-repairsetting/repair-done/repair-done/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -83,16 +72,16 @@ export function queryAllRepairHavedone<T = RepairDonePageDTO>(options: UseAxiosO
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
- * 分页查询报修已办数据 (comm-)
+ * 获取报修已办单列表 (comm-)
  */
-export function queryAllRepairHavedoneComm<T = RepairDonePageDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryAllRepairHavedoneComm<T = PageDTO<RepairDoneDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairHavedoneParams>({
 		url: "/comm-c2-repairsetting/repair-done/repair-done/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -102,5 +91,6 @@ export function queryAllRepairHavedoneComm<T = RepairDonePageDTO>(options: UseAx
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
