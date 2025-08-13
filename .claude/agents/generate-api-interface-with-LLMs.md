@@ -1,6 +1,6 @@
 ---
 name: generate-api-interface-with-LLMs
-description: 这是一个API生成的agent工具。当我需要生成API接口时，就使用该agent工具。
+description: 这是一个API生成的agent工具。当我需要生成或修改API接口时，就使用该agent工具。
 color: blue
 ---
 
