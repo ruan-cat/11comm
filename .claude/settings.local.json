@@ -8,7 +8,8 @@
       "mcp__ide__getDiagnostics",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:utils.ruan-cat.com)",
-      "WebFetch(domain:utils.ruan-cat.com)"
+      "WebFetch(domain:utils.ruan-cat.com)",
+      "mcp__fetch-mcp__fetch_markdown"
     ],
     "deny": []
   }
