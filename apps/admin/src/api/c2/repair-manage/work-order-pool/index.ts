@@ -7,7 +7,7 @@ import { useRequest } from "@/composables/use-request";
  */
 export interface TaskDetailGetDTO {
 	/** 工单编号 */
-	repairId?: string;
+	repairId: string;
 	/** 工单类型 */
 	repairType?: string;
 	/** 工单类型文本 */
@@ -215,7 +215,6 @@ export function modifyTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskListUpdateDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/modify",
 		httpParamWay: "body",
-		upType: UpType.json,
 		options,
 		config: {
 			method: "PUT",
@@ -240,7 +239,6 @@ export function removeTask<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, TaskListGetIdDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-list/remove",
 		httpParamWay: "body",
-		upType: UpType.json,
 		options,
 		config: {
 			method: "DELETE",
@@ -278,7 +276,6 @@ export function addTaskDetail<T = TaskDetailGetIdDTO>(options: UseAxiosOptionsJs
 	return useRequest<ParamsBodyKey, T, TaskDetailAddDTO>({
 		url: "/comm-c2-repairsetting/taskpool/task-detail/add",
 		httpParamWay: "body",
-		upType: UpType.json,
 		options,
 		config: {
 			method: "POST",
