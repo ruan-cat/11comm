@@ -92,19 +92,16 @@ export interface ForceBackModifyDTO {
 export function queryForceBackList<T = PageDTO<ForceBackDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryForceBackListParams>({
 		url: "/c2-repairsetting/force-back/force-back/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
-				repair_type: "",
-				repair_name: "",
-				tel: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -116,19 +113,16 @@ export function queryForceBackList<T = PageDTO<ForceBackDTO>>(options: UseAxiosO
 export function queryForceBackListComm<T = PageDTO<ForceBackDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryForceBackListParams>({
 		url: "/comm-c2-repairsetting/force-back/force-back/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
-				repair_type: "",
-				repair_name: "",
-				tel: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -140,20 +134,17 @@ export function queryForceBackListComm<T = PageDTO<ForceBackDTO>>(options: UseAx
 export function modifyForceBack<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ForceBackModifyDTO>({
 		url: "/c2-repairsetting/force-back/force-back/modify",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				repair_id: "",
 				maintenance_type: "",
-				materials: [],
-				repair_fee: "",
-				pay_type: "",
 				context: "",
 			},
 		},
+		options,
 	});
 }
 
@@ -165,19 +156,16 @@ export function modifyForceBack<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 export function modifyForceBackComm<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, ForceBackModifyDTO>({
 		url: "/comm-c2-repairsetting/force-back/force-back/modify",
-		options,
 		httpParamWay: "body",
 		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				repair_id: "",
 				maintenance_type: "",
-				materials: [],
-				repair_fee: "",
-				pay_type: "",
 				context: "",
 			},
 		},
+		options,
 	});
 }
