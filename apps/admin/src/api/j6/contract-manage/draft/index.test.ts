@@ -6,7 +6,7 @@ import {
 	printContract,
 	modifyContract,
 	getContractDetail,
-	getContractList,
+	getDraftContractList,
 	getContractChangeRecord,
 	selectContractList,
 } from "./index";
@@ -139,7 +139,7 @@ describe("j6/合同管理/起草合同", () => {
 	});
 
 	it("使用 query 接口 - 获取合同列表（条件+分页）", async () => {
-		const { execute, data } = getContractList({
+		const { execute, data } = getDraftContractList({
 			onSuccess(data) {
 				console.warn("getContractList onSuccess", printFormat(data));
 			},

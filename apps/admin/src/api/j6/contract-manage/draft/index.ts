@@ -619,7 +619,7 @@ export function getContractDetail<T = ContractDetailDataModel>(options: UseAxios
 /**
  * 获取合同列表（条件+分页）
  */
-export function getContractList<T = PageDTO<ContractListDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getDraftContractList<T = PageDTO<ContractListDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetContractListParams>({
 		url: "/j6-contract/draft/query-contract",
 		httpParamWay: "query",

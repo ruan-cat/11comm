@@ -91,7 +91,7 @@ export interface QueryBeforeAssociateParams {
 /**
  * 员工信息数据传输对象
  */
-export interface EmployeeDTO {
+export interface OrgEmployeeDTO {
 	/** 地址 */
 	address?: string;
 	/** 邮箱 */
@@ -218,7 +218,7 @@ export function modifyOrganization<T = string>(options: UseAxiosOptionsJsonVO<T>
  * 关联员工之前要查询接口
  * @description 关联员工前查询可用员工列表
  */
-export function queryBeforeAssociate<T = PageDTO<EmployeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryBeforeAssociate<T = PageDTO<OrgEmployeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryBeforeAssociateParams>({
 		url: "/j4-orgmanager/organization/query-before-associate",
 		httpParamWay: "query",
@@ -239,7 +239,7 @@ export function queryBeforeAssociate<T = PageDTO<EmployeeDTO>>(options: UseAxios
  * 获取组织员工列表接口
  * @description 获取指定组织的员工列表
  */
-export function getOrgEmployeeList<T = PageDTO<EmployeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+export function getOrgEmployeeList<T = PageDTO<OrgEmployeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, GetOrgEmployeeListParams>({
 		url: "/j4-orgmanager/organization/get-org-employee-list",
 		httpParamWay: "query",

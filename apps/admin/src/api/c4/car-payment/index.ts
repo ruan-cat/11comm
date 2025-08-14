@@ -167,7 +167,7 @@ export interface VehicleFeeDataModel {
 /**
  * 获取缴费记录查询参数
  */
-export interface QueryPaymentRecordsParams {
+export interface QueryCarPaymentRecordsParams {
 	/** 查询页码 */
 	pageIndex: number;
 	/** 查询条数 */
@@ -370,7 +370,7 @@ export function queryVehicleFeeDetail<T = VehicleFeeDataModel>(options: UseAxios
  * 获取缴费记录
  */
 export function queryPaymentRecords<T = PageDTO<PaymentRecordDataModel>>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, QueryPaymentRecordsParams>({
+	return useRequest<ParamsQueryKey, T, QueryCarPaymentRecordsParams>({
 		url: "/c4-carpayment/query-get-payment-records",
 		httpParamWay: "query",
 		config: {

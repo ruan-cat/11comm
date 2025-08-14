@@ -147,7 +147,7 @@ export interface ContractChangeListDataModel {
 /**
  * 房间信息模型
  */
-export interface RoomInfoModel {
+export interface ChangeRoomInfoModel {
 	/** 户型 */
 	apartment: string;
 	/** 户型 */
@@ -235,7 +235,7 @@ export interface ModifyAssetChangeParams {
 	/** 计划类型 */
 	planType?: string;
 	/** 关联房间列表 */
-	rooms?: RoomInfoModel[];
+	rooms?: ChangeRoomInfoModel[];
 	/** 签订时间（变更后） */
 	signingTime: string;
 	/** 员工姓名（可选） */

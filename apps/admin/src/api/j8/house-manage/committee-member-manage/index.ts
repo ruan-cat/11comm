@@ -5,7 +5,7 @@ import { useRequest } from "@/composables/use-request";
 /**
  * 紧急联系人
  */
-export interface EmergencyContact {
+export interface MemberEmergencyContact {
 	/** 地址 */
 	address: string;
 	/** 联系电话 */
@@ -25,7 +25,7 @@ export interface CommitteeMemberDetail {
 	/** 届期 */
 	appointTime: string;
 	/** 紧急联系人列表 */
-	contacts: EmergencyContact[];
+	contacts: MemberEmergencyContact[];
 	/** 任期 */
 	curTime: string;
 	/** 身份证号 */

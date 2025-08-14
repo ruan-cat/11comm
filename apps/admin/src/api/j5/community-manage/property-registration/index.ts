@@ -179,7 +179,7 @@ export interface PropertyListModel {
 /**
  * 文件上传数据
  */
-export interface UploadFileData {
+export interface PropertyUploadFileData {
 	/** 上传图片 */
 	file: File;
 }
@@ -370,7 +370,7 @@ export function queryPropertyList<T = PageDTO<PropertyListModel>>(options: UseAx
  * @description 上传房屋产权相关的图片文件
  */
 export function uploadPropertyImage<T = string>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsBodyKey, T, UploadFileData>({
+	return useRequest<ParamsBodyKey, T, PropertyUploadFileData>({
 		url: "/j5-community/property/upload",
 		httpParamWay: "body",
 		upType: UpType.file,

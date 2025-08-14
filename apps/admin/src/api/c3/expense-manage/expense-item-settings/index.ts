@@ -35,7 +35,7 @@ export interface QueryChargeItemListParams {
 /**
  * 费用项详细信息
  */
-export interface PayFeeDTO {
+export interface ExpensePayFeeDTO {
 	/** 主键ID */
 	config_id: string;
 	/** 费用类型 */
@@ -347,7 +347,7 @@ export function queryChargeItemList<T = ChargeItemListDTO>(options: UseAxiosOpti
  * 获取费用项列表
  * @description 分页获取费用项列表，支持条件查询
  */
-export function queryFeeItemList<T = PageDTO<PayFeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryFeeItemList<T = PageDTO<ExpensePayFeeDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryFeeItemListParams>({
 		url: "/c3-expensesetting/query-feeitem-page",
 		httpParamWay: "query",
@@ -492,7 +492,7 @@ export function queryDiscountList<T = PageDTO<FeeMgrDTO>>(options: UseAxiosOptio
  * 添加折扣
  * @description 添加新的折扣信息
  */
-export function addDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function addExpenseDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, FeeMgrAddDTO>({
 		url: "/c3-expensesetting/insert-discount",
 		httpParamWay: "body",
@@ -514,7 +514,7 @@ export function addDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
  * 删除折扣
  * @description 删除指定的折扣信息
  */
-export function deleteDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
+export function deleteExpenseDiscount<T = FeeMgrDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, FeeMgrDeleteDTO>({
 		url: "/c3-expensesetting/delete-discount",
 		httpParamWay: "body",

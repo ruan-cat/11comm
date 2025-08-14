@@ -8,8 +8,8 @@ import {
 	modifyFeeItem,
 	deleteFeeItem,
 	queryDiscountList,
-	addDiscount,
-	deleteDiscount,
+	addExpenseDiscount,
+	deleteExpenseDiscount,
 	getFeeItemInfo,
 } from "./index";
 
@@ -185,7 +185,7 @@ describe("c3/费用项设置管理", () => {
 	});
 
 	it("使用 body 接口 - 添加折扣", async () => {
-		const { execute, data } = addDiscount({
+		const { execute, data } = addExpenseDiscount({
 			onSuccess(data) {
 				console.warn("addDiscount onSuccess", printFormat(data));
 			},
@@ -206,7 +206,7 @@ describe("c3/费用项设置管理", () => {
 	});
 
 	it("使用 body 接口 - 删除折扣", async () => {
-		const { execute, data } = deleteDiscount({
+		const { execute, data } = deleteExpenseDiscount({
 			onSuccess(data) {
 				console.warn("deleteDiscount onSuccess", printFormat(data));
 			},
