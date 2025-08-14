@@ -84,4 +84,4 @@ export function queryRepairReportSummary(params: RepairReportSummaryQueryParams)
 			params: params,
 		},
 	});
-} 
+}

@@ -99,4 +99,4 @@ export function exportBuildingFeeDetaile(params?: BuildingFeeDetaileExportParams
 			responseType: "blob",
 		},
 	});
-} 
+}

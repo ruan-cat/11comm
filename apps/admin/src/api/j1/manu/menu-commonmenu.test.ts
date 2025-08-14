@@ -1,11 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	addCommonMenu,
-	queryCommonMenuList,
-	queryOptionalMenuList,
-	removeCommonMenu,
-} from "./menu-commonmenu";
+import { addCommonMenu, queryCommonMenuList, queryOptionalMenuList, removeCommonMenu } from "./menu-commonmenu";
 
 describe("j1/菜单管理/常用菜单", () => {
 	it("使用 body 接口 - 添加常用菜单", async () => {

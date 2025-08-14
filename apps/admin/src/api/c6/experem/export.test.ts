@@ -1,5 +1,10 @@
 import { describe, it } from "vitest";
-import { exportOverExperem, exportPreExperem, type OverExperemExportParams, type PreExperemExportParams } from "./export";
+import {
+	exportOverExperem,
+	exportPreExperem,
+	type OverExperemExportParams,
+	type PreExperemExportParams,
+} from "./export";
 
 describe("费用提醒导出模块", () => {
 	describe("exportOverExperem - 导出到期费用提醒", () => {
@@ -167,4 +172,3 @@ describe("费用提醒导出模块", () => {
 		});
 	});
 });
-

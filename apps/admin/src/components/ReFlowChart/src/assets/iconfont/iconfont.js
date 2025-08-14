@@ -21,9 +21,9 @@
 	function h() {
 		n || ((n = !0), o());
 	}
-	(t = function () {
+	((t = function () {
 		var c, t, e, o;
-		((o = document.createElement("div")).innerHTML = i),
+		(((o = document.createElement("div")).innerHTML = i),
 			(i = null),
 			(e = o.getElementsByTagName("svg")[0]) &&
 				((e.style.position = "absolute"),
@@ -33,13 +33,13 @@
 				(c = e),
 				(t = document.body).firstChild
 					? ((o = c), (e = t.firstChild).parentNode.insertBefore(o, e))
-					: t.appendChild(c));
+					: t.appendChild(c)));
 	}),
 		document.addEventListener
 			? ~["complete", "loaded", "interactive"].indexOf(document.readyState)
 				? setTimeout(t, 0)
 				: ((e = function () {
-						document.removeEventListener("DOMContentLoaded", e, !1), t();
+						(document.removeEventListener("DOMContentLoaded", e, !1), t());
 					}),
 					document.addEventListener("DOMContentLoaded", e, !1))
 			: document.attachEvent &&
@@ -56,5 +56,5 @@
 				})(),
 				(a.onreadystatechange = function () {
 					"complete" == a.readyState && ((a.onreadystatechange = null), h());
-				}));
+				})));
 })(window);

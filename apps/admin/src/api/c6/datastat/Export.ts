@@ -1,7 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
-import type { JsonVO } from "@/composables/use-request/useRequestIn01s/types/JsonVO";
 
 /** 欠费明细导出查询参数 */
 export interface FeeDetailExportQueryParams {
@@ -65,14 +62,11 @@ export interface MonthFeeQueryParams {
 /**
  * 欠费明细导出接口
  */
-export function exportFeeDetail<T = void>(
-	params: FeeDetailExportQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
-) {
+export function exportFeeDetail<T = void>(params: FeeDetailExportQueryParams, options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, FeeDetailExportQueryParams>({
 		url: "/c6-repomanage/datastat/feeDetaileExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",
@@ -86,12 +80,12 @@ export function exportFeeDetail<T = void>(
  */
 export function exportChargeDetail<T = void>(
 	params: ChargeDetailExportQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
+	options?: UseAxiosOptionsJsonVO<T>,
 ) {
 	return useRequest<ParamsQueryKey, T, ChargeDetailExportQueryParams>({
 		url: "/c6-repomanage/datastat/chargeDetaileExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",
@@ -103,14 +97,11 @@ export function exportChargeDetail<T = void>(
 /**
  * 月度明细导出接口
  */
-export function exportMonthDetail<T = void>(
-	params: MonthDetailExportQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
-) {
+export function exportMonthDetail<T = void>(params: MonthDetailExportQueryParams, options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, MonthDetailExportQueryParams>({
 		url: "/c6-repomanage/datastat/monthDetaileExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",
@@ -122,14 +113,11 @@ export function exportMonthDetail<T = void>(
 /**
  * 收款统计导出接口
  */
-export function exportReceiptsStat<T = void>(
-	params: ReceiptsExportQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
-) {
+export function exportReceiptsStat<T = void>(params: ReceiptsExportQueryParams, options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, ReceiptsExportQueryParams>({
 		url: "/c6-repomanage/datastat/receiptsExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",
@@ -143,12 +131,12 @@ export function exportReceiptsStat<T = void>(
  */
 export function exportReceiptsDetail<T = void>(
 	params: ReceiptsDetailExportQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
+	options?: UseAxiosOptionsJsonVO<T>,
 ) {
 	return useRequest<ParamsQueryKey, T, ReceiptsDetailExportQueryParams>({
 		url: "/c6-repomanage/datastat/receiptsDetailExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",
@@ -160,14 +148,11 @@ export function exportReceiptsDetail<T = void>(
 /**
  * 缴费方式统计导出接口
  */
-export function exportPaymentMethod<T = void>(
-	params: MethodExportQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
-) {
+export function exportPaymentMethod<T = void>(params: MethodExportQueryParams, options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, MethodExportQueryParams>({
 		url: "/c6-repomanage/datastat/methodExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",
@@ -179,13 +164,11 @@ export function exportPaymentMethod<T = void>(
 /**
  * 导出欠费统计
  */
-export function exportArrearsStat<T = void>(
-	options?: UseAxiosOptionsJsonVO<T>
-) {
+export function exportArrearsStat<T = void>(options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, {}>({
 		url: "/c6-repomanage/datastat/arrearsExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: {},
 			responseType: "blob",
@@ -197,14 +180,11 @@ export function exportArrearsStat<T = void>(
 /**
  * 导出月欠费明细
  */
-export function exportMonthFee<T = void>(
-	params: MonthFeeQueryParams,
-	options?: UseAxiosOptionsJsonVO<T>
-) {
+export function exportMonthFee<T = void>(params: MonthFeeQueryParams, options?: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, MonthFeeQueryParams>({
 		url: "/c6-repomanage/datastat/monthFeeExport",
 		httpParamWay: "query",
-		config: { 
+		config: {
 			method: "GET",
 			params: params,
 			responseType: "blob",

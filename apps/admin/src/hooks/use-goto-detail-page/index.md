@@ -19,9 +19,13 @@
 
 ```typescript
 function useGotoDetailPage(): {
-  gotoDetailPage: (to: RouteLocationRaw) => Promise<void | NavigationFailure | undefined>;
-  handleDetailPageBeforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => void;
-}
+	gotoDetailPage: (to: RouteLocationRaw) => Promise<void | NavigationFailure | undefined>;
+	handleDetailPageBeforeEnter: (
+		to: RouteLocationNormalized,
+		from: RouteLocationNormalized,
+		next: NavigationGuardNext,
+	) => void;
+};
 ```
 
 ### gotoDetailPage
@@ -29,36 +33,38 @@ function useGotoDetailPage(): {
 跳转到详情页的函数，支持与 `router.push` 相同的参数格式。
 
 ```typescript
-function gotoDetailPage(to: RouteLocationRaw): Promise<void | NavigationFailure | undefined>
+function gotoDetailPage(to: RouteLocationRaw): Promise<void | NavigationFailure | undefined>;
 ```
 
 参数：
+
 - `to`: 路由位置，与 router.push 参数相同，可以是字符串路径或包含 name/path 的对象
 
 返回值：
+
 - 返回 Promise，与 router.push 返回值相同
 
 示例：
 
 ```typescript
 // 在组件中使用组合式 API
-import { useGotoDetailPage } from '@/hooks/use-goto-detail-page';
+import { useGotoDetailPage } from "@/hooks/use-goto-detail-page";
 
 const { gotoDetailPage } = useGotoDetailPage();
 
 // 使用路由名称跳转
-gotoDetailPage({ name: 'user-detail', params: { id: 123 } });
+gotoDetailPage({ name: "user-detail", params: { id: 123 } });
 
 // 使用路径跳转
-gotoDetailPage('/user/detail/123');
+gotoDetailPage("/user/detail/123");
 ```
 
 ```typescript
 // 直接使用独立函数
-import { gotoDetailPage } from '@/hooks/use-goto-detail-page';
+import { gotoDetailPage } from "@/hooks/use-goto-detail-page";
 
 // 使用路由名称跳转
-gotoDetailPage({ name: 'user-detail', params: { id: 123 } });
+gotoDetailPage({ name: "user-detail", params: { id: 123 } });
 ```
 
 ### handleDetailPageBeforeEnter
@@ -67,13 +73,14 @@ gotoDetailPage({ name: 'user-detail', params: { id: 123 } });
 
 ```typescript
 function handleDetailPageBeforeEnter(
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext
-): void
+	to: RouteLocationNormalized,
+	from: RouteLocationNormalized,
+	next: NavigationGuardNext,
+): void;
 ```
 
 参数：
+
 - `to`: 目标路由对象
 - `from`: 来源路由对象
 - `next`: 路由守卫 next 函数
@@ -82,18 +89,18 @@ function handleDetailPageBeforeEnter(
 
 ```typescript
 // 在路由配置中使用
-import { handleDetailPageBeforeEnter } from '@/hooks/use-goto-detail-page';
+import { handleDetailPageBeforeEnter } from "@/hooks/use-goto-detail-page";
 
 const routes = [
-  {
-    path: '/user/detail/:id',
-    name: 'user-detail',
-    component: () => import('@/pages/user/detail.vue'),
-    beforeEnter: (to, from, next) => {
-      handleDetailPageBeforeEnter(to, from, next);
-      next();
-    }
-  }
+	{
+		path: "/user/detail/:id",
+		name: "user-detail",
+		component: () => import("@/pages/user/detail.vue"),
+		beforeEnter: (to, from, next) => {
+			handleDetailPageBeforeEnter(to, from, next);
+			next();
+		},
+	},
 ];
 ```
 
@@ -104,44 +111,44 @@ const routes = [
 ### 1. 使用独立函数
 
 ```typescript
-import { handleDetailPageBeforeEnter } from '@/hooks/use-goto-detail-page';
+import { handleDetailPageBeforeEnter } from "@/hooks/use-goto-detail-page";
 
 const routes = [
-  {
-    path: '/user/detail/:id',
-    name: 'user-detail',
-    component: () => import('@/pages/user/detail.vue'),
-    beforeEnter: (to, from, next) => {
-      handleDetailPageBeforeEnter(to, from, next);
-      next();
-    }
-  }
+	{
+		path: "/user/detail/:id",
+		name: "user-detail",
+		component: () => import("@/pages/user/detail.vue"),
+		beforeEnter: (to, from, next) => {
+			handleDetailPageBeforeEnter(to, from, next);
+			next();
+		},
+	},
 ];
 ```
 
 ### 2. 自定义路由守卫
 
 ```typescript
-import { handleDetailPageBeforeEnter } from '@/hooks/use-goto-detail-page';
+import { handleDetailPageBeforeEnter } from "@/hooks/use-goto-detail-page";
 
 // 自定义路由守卫
 function customBeforeEnter(to, from, next) {
-  // 处理详情页路由守卫
-  handleDetailPageBeforeEnter(to, from, next);
-  
-  // 其他自定义逻辑
-  console.log('进入详情页');
-  
-  next();
+	// 处理详情页路由守卫
+	handleDetailPageBeforeEnter(to, from, next);
+
+	// 其他自定义逻辑
+	console.log("进入详情页");
+
+	next();
 }
 
 const routes = [
-  {
-    path: '/user/detail/:id',
-    name: 'user-detail',
-    component: () => import('@/pages/user/detail.vue'),
-    beforeEnter: customBeforeEnter
-  }
+	{
+		path: "/user/detail/:id",
+		name: "user-detail",
+		component: () => import("@/pages/user/detail.vue"),
+		beforeEnter: customBeforeEnter,
+	},
 ];
 ```
 
@@ -149,22 +156,22 @@ const routes = [
 
 ```typescript
 // 在详情页组件中
-import { useGotoDetailPage } from '@/hooks/use-goto-detail-page';
-import { onBeforeRouteEnter } from 'vue-router';
+import { useGotoDetailPage } from "@/hooks/use-goto-detail-page";
+import { onBeforeRouteEnter } from "vue-router";
 
 export default {
-  setup() {
-    const { handleDetailPageBeforeEnter } = useGotoDetailPage();
-    
-    onBeforeRouteEnter((to, from, next) => {
-      next(instance => {
-        // 在组件实例创建后调用
-        handleDetailPageBeforeEnter(to, from, () => {});
-      });
-    });
-    
-    // ...
-  }
+	setup() {
+		const { handleDetailPageBeforeEnter } = useGotoDetailPage();
+
+		onBeforeRouteEnter((to, from, next) => {
+			next((instance) => {
+				// 在组件实例创建后调用
+				handleDetailPageBeforeEnter(to, from, () => {});
+			});
+		});
+
+		// ...
+	},
 };
 ```
 
@@ -201,8 +208,8 @@ const users = ref([
 
 function viewDetail(id: number) {
   // 跳转到详情页，自动保存当前页面路径
-  gotoDetailPage({ 
-    name: 'user-detail', 
+  gotoDetailPage({
+    name: 'user-detail',
     params: { id }
   });
 }
@@ -235,7 +242,7 @@ const user = ref(null);
 onMounted(async () => {
   // 获取用户ID
   const userId = route.params.id;
-  
+
   // 加载用户数据
   // 实际应用中这里会调用API
   user.value = {
@@ -261,24 +268,24 @@ function goBack() {
 ### 路由配置
 
 ```typescript
-import { handleDetailPageBeforeEnter } from '@/hooks/use-goto-detail-page';
+import { handleDetailPageBeforeEnter } from "@/hooks/use-goto-detail-page";
 
 const routes = [
-  {
-    path: '/user/list',
-    name: 'user-list',
-    component: () => import('@/pages/user/list.vue')
-  },
-  {
-    path: '/user/detail/:id',
-    name: 'user-detail',
-    component: () => import('@/pages/user/detail.vue'),
-    // 使用路由守卫处理详情页
-    beforeEnter: (to, from, next) => {
-      handleDetailPageBeforeEnter(to, from, next);
-      next();
-    }
-  }
+	{
+		path: "/user/list",
+		name: "user-list",
+		component: () => import("@/pages/user/list.vue"),
+	},
+	{
+		path: "/user/detail/:id",
+		name: "user-detail",
+		component: () => import("@/pages/user/detail.vue"),
+		// 使用路由守卫处理详情页
+		beforeEnter: (to, from, next) => {
+			handleDetailPageBeforeEnter(to, from, next);
+			next();
+		},
+	},
 ];
 ```
 

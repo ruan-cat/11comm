@@ -7,14 +7,14 @@ import type { JsonVO } from "@/composables/use-request/useRequestIn01s/types/Jso
  * 未收情况数据项
  */
 export interface AnalysisArrearsBasicDTO {
-  /** 楼栋号 */
-  buildingNum: string;
-  /** 总未收金额 */
-  totalArrear: number;
-  /** 今年未收金额 */
-  thisYearTotalArrear: number;
-  /** 之前未收金额 */
-  beforeTotalArrear: number;
+	/** 楼栋号 */
+	buildingNum: string;
+	/** 总未收金额 */
+	totalArrear: number;
+	/** 今年未收金额 */
+	thisYearTotalArrear: number;
+	/** 之前未收金额 */
+	beforeTotalArrear: number;
 }
 
 /**
@@ -26,16 +26,16 @@ export type AnalysisArrearsBasicListPageDTO = PageDTO<AnalysisArrearsBasicDTO>;
  * 未收情况查询参数
  */
 export interface QueryAnalysisArrearsBasicParams {
-  /** 查询页码 */
-  pageIndex: number;
-  /** 查询条数 */
-  pageSize: number;
-  /** 收费类型编号 */
-  feeType?: string;
-  /** 楼栋号 */
-  buildingNum?: string;
-  /** 小区ID */
-  communityId: string;
+	/** 查询页码 */
+	pageIndex: number;
+	/** 查询条数 */
+	pageSize: number;
+	/** 收费类型编号 */
+	feeType?: string;
+	/** 楼栋号 */
+	buildingNum?: string;
+	/** 小区ID */
+	communityId: string;
 }
 
 /**
@@ -45,16 +45,16 @@ export interface QueryAnalysisArrearsBasicParams {
  * @returns 未收情况分页数据
  */
 export function queryAnalysisArrearsBasic(
-  params: QueryAnalysisArrearsBasicParams,
-  options?: UseAxiosOptionsJsonVO<JsonVO<AnalysisArrearsBasicListPageDTO>>
+	params: QueryAnalysisArrearsBasicParams,
+	options?: UseAxiosOptionsJsonVO<JsonVO<AnalysisArrearsBasicListPageDTO>>,
 ) {
-  return useRequest<"params", JsonVO<AnalysisArrearsBasicListPageDTO>, QueryAnalysisArrearsBasicParams>({
-    url: "/c7-repomanage/analysis-arrears/query-basic",
-    httpParamWay: "query",
-    config: {
-      method: "GET",
-      params: {},
-    },
-    options,
-  });
-} 
+	return useRequest<"params", JsonVO<AnalysisArrearsBasicListPageDTO>, QueryAnalysisArrearsBasicParams>({
+		url: "/c7-repomanage/analysis-arrears/query-basic",
+		httpParamWay: "query",
+		config: {
+			method: "GET",
+			params: {},
+		},
+		options,
+	});
+}

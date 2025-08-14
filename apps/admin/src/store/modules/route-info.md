@@ -7,6 +7,7 @@
 ## 核心功能
 
 本工具本质上是一个 Map 对象，其中：
+
 - **key**: 路由的名称（RouteRecordName）
 - **value**: 路由相关信息（RouteInfoData）
 
@@ -22,29 +23,29 @@
 ```typescript
 /** 路由信息数据类型 */
 export interface RouteInfoData {
-  /** 路由元信息 */
-  meta?: {
-    /** 激活路径 - 前驱页面的路由地址 */
-    activePath?: string;
-    /** 其他元信息 */
-    [key: string]: any;
-  };
-  /** 其他路由信息 */
-  [key: string]: any;
+	/** 路由元信息 */
+	meta?: {
+		/** 激活路径 - 前驱页面的路由地址 */
+		activePath?: string;
+		/** 其他元信息 */
+		[key: string]: any;
+	};
+	/** 其他路由信息 */
+	[key: string]: any;
 }
 
 /** Store 状态类型 */
 export interface RouteInfoState {
-  /** 路由信息映射表，key 为路由名称，value 为路由信息 */
-  routeInfoMap: Record<string, RouteInfoData>;
+	/** 路由信息映射表，key 为路由名称，value 为路由信息 */
+	routeInfoMap: Record<string, RouteInfoData>;
 }
 
 /** setRouteInfo 参数类型 */
 export interface SetRouteInfoParams {
-  /** 路由名称作为 key */
-  key: RouteRecordName;
-  /** 路由信息 */
-  info: RouteInfoData;
+	/** 路由名称作为 key */
+	key: RouteRecordName;
+	/** 路由信息 */
+	info: RouteInfoData;
 }
 ```
 
@@ -55,10 +56,11 @@ export interface SetRouteInfoParams {
 设置路由信息，支持智能合并已有数据。
 
 ```typescript
-function setRouteInfo(params: SetRouteInfoParams): void
+function setRouteInfo(params: SetRouteInfoParams): void;
 ```
 
 参数：
+
 - `params`: 包含 key 和 info 的参数对象
   - `key`: 路由的名称，类型为 RouteRecordName
   - `info`: 路由信息，类型为 RouteInfoData
@@ -66,21 +68,21 @@ function setRouteInfo(params: SetRouteInfoParams): void
 示例：
 
 ```typescript
-import { useRouteInfoStoreHook } from '@/store/modules/route-info';
+import { useRouteInfoStoreHook } from "@/store/modules/route-info";
 
 const routeInfoStore = useRouteInfoStoreHook();
 
 routeInfoStore.setRouteInfo({
-  key: 'detail-page',
-  info: {
-    meta: {
-      activePath: '/list-page',
-      title: '详情页'
-    },
-    customData: {
-      id: 123
-    }
-  }
+	key: "detail-page",
+	info: {
+		meta: {
+			activePath: "/list-page",
+			title: "详情页",
+		},
+		customData: {
+			id: 123,
+		},
+	},
 });
 ```
 
@@ -89,25 +91,27 @@ routeInfoStore.setRouteInfo({
 获取指定路由名称的路由信息。
 
 ```typescript
-function getRouteInfo(key: RouteRecordName): RouteInfoData | null
+function getRouteInfo(key: RouteRecordName): RouteInfoData | null;
 ```
 
 参数：
+
 - `key`: 路由的名称，类型为 RouteRecordName
 
 返回值：
+
 - 路由信息对象或 null（如果不存在）
 
 示例：
 
 ```typescript
-import { useRouteInfoStoreHook } from '@/store/modules/route-info';
+import { useRouteInfoStoreHook } from "@/store/modules/route-info";
 
 const routeInfoStore = useRouteInfoStoreHook();
-const detailPageInfo = routeInfoStore.getRouteInfo('detail-page');
+const detailPageInfo = routeInfoStore.getRouteInfo("detail-page");
 
 if (detailPageInfo?.meta?.activePath) {
-  console.log('前驱页面路径:', detailPageInfo.meta.activePath);
+	console.log("前驱页面路径:", detailPageInfo.meta.activePath);
 }
 ```
 
@@ -116,10 +120,11 @@ if (detailPageInfo?.meta?.activePath) {
 删除指定路由名称的路由信息。
 
 ```typescript
-function removeRouteInfo(key: RouteRecordName): void
+function removeRouteInfo(key: RouteRecordName): void;
 ```
 
 参数：
+
 - `key`: 路由的名称，类型为 RouteRecordName
 
 ### clearAllRouteInfo
@@ -127,7 +132,7 @@ function removeRouteInfo(key: RouteRecordName): void
 清空所有路由信息。
 
 ```typescript
-function clearAllRouteInfo(): void
+function clearAllRouteInfo(): void;
 ```
 
 ### getAllRouteInfo
@@ -135,7 +140,7 @@ function clearAllRouteInfo(): void
 获取所有路由信息的映射表。
 
 ```typescript
-const getAllRouteInfo: ComputedRef<Record<string, RouteInfoData>>
+const getAllRouteInfo: ComputedRef<Record<string, RouteInfoData>>;
 ```
 
 ## 使用方式
@@ -143,52 +148,52 @@ const getAllRouteInfo: ComputedRef<Record<string, RouteInfoData>>
 ### 在组件中使用
 
 ```typescript
-import { useRouteInfoStoreHook } from '@/store/modules/route-info';
-import { defineComponent } from 'vue';
+import { useRouteInfoStoreHook } from "@/store/modules/route-info";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-    const routeInfoStore = useRouteInfoStoreHook();
-    
-    // 设置路由信息
-    routeInfoStore.setRouteInfo({
-      key: 'user-detail',
-      info: {
-        meta: {
-          activePath: '/user-list',
-          title: '用户详情'
-        }
-      }
-    });
-    
-    // 获取路由信息
-    const userDetailInfo = routeInfoStore.getRouteInfo('user-detail');
-    
-    return {
-      userDetailInfo
-    };
-  }
+	setup() {
+		const routeInfoStore = useRouteInfoStoreHook();
+
+		// 设置路由信息
+		routeInfoStore.setRouteInfo({
+			key: "user-detail",
+			info: {
+				meta: {
+					activePath: "/user-list",
+					title: "用户详情",
+				},
+			},
+		});
+
+		// 获取路由信息
+		const userDetailInfo = routeInfoStore.getRouteInfo("user-detail");
+
+		return {
+			userDetailInfo,
+		};
+	},
 });
 ```
 
 ### 在路由守卫中使用
 
 ```typescript
-import { useRouteInfoStoreHook } from '@/store/modules/route-info';
-import { Router } from 'vue-router';
+import { useRouteInfoStoreHook } from "@/store/modules/route-info";
+import { Router } from "vue-router";
 
 export function setupRouterGuard(router: Router) {
-  router.beforeEach((to, from, next) => {
-    const routeInfoStore = useRouteInfoStoreHook();
-    const routeInfo = routeInfoStore.getRouteInfo(to.name);
-    
-    if (routeInfo?.meta?.activePath) {
-      // 设置当前路由的 meta 信息
-      to.meta.activePath = routeInfo.meta.activePath;
-    }
-    
-    next();
-  });
+	router.beforeEach((to, from, next) => {
+		const routeInfoStore = useRouteInfoStoreHook();
+		const routeInfo = routeInfoStore.getRouteInfo(to.name);
+
+		if (routeInfo?.meta?.activePath) {
+			// 设置当前路由的 meta 信息
+			to.meta.activePath = routeInfo.meta.activePath;
+		}
+
+		next();
+	});
 }
 ```
 

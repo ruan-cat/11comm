@@ -11,20 +11,13 @@
 						"meta": {
 							"title": "组织信息",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队",
-								"运营团队"
-							],
+							"roles": ["物业团队", "运营团队"],
 							"rank": 10110
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							0
-						]
+						"pathList": [2, 0, 0]
 					},
 					{
 						"path": "/setting-manage/organize-manage/staff-info",
@@ -32,20 +25,13 @@
 						"meta": {
 							"title": "员工信息",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队",
-								"运营团队"
-							],
+							"roles": ["物业团队", "运营团队"],
 							"rank": 10120
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							1
-						]
+						"pathList": [2, 0, 1]
 					},
 					{
 						"path": "/setting-manage/organize-manage/role-permission",
@@ -53,20 +39,13 @@
 						"meta": {
 							"title": "角色权限",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队",
-								"运营团队"
-							],
+							"roles": ["物业团队", "运营团队"],
 							"rank": 10130
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							2
-						]
+						"pathList": [2, 0, 2]
 					},
 					{
 						"path": "/setting-manage/organize-manage/data-permission",
@@ -74,19 +53,13 @@
 						"meta": {
 							"title": "数据权限",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 10140
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							3
-						]
+						"pathList": [2, 0, 3]
 					},
 					{
 						"path": "/setting-manage/organize-manage/shift-setting",
@@ -94,19 +67,13 @@
 						"meta": {
 							"title": "班次设置",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 10150
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							4
-						]
+						"pathList": [2, 0, 4]
 					},
 					{
 						"path": "/setting-manage/organize-manage/scheduling-setting",
@@ -114,19 +81,13 @@
 						"meta": {
 							"title": "排班设置",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 10160
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							5
-						]
+						"pathList": [2, 0, 5]
 					},
 					{
 						"path": "/setting-manage/organize-manage/working-schedule",
@@ -134,19 +95,13 @@
 						"meta": {
 							"title": "排班表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 10170
 						},
 						"alias": [],
 						"id": 6,
 						"parentId": 0,
-						"pathList": [
-							2,
-							0,
-							6
-						]
+						"pathList": [2, 0, 6]
 					}
 				],
 				"name": "setting-manage-organize-manage",
@@ -159,10 +114,7 @@
 				"redirect": "/setting-manage/organize-manage/org-info",
 				"id": 0,
 				"parentId": 2,
-				"pathList": [
-					2,
-					0
-				]
+				"pathList": [2, 0]
 			},
 			{
 				"path": "/setting-manage/system-manage",
@@ -178,11 +130,7 @@
 						"alias": [],
 						"id": 0,
 						"parentId": 1,
-						"pathList": [
-							2,
-							1,
-							0
-						]
+						"pathList": [2, 1, 0]
 					},
 					{
 						"path": "/setting-manage/system-manage/system-config",
@@ -190,19 +138,13 @@
 						"meta": {
 							"title": "系统配置",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 10220
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 1,
-						"pathList": [
-							2,
-							1,
-							1
-						]
+						"pathList": [2, 1, 1]
 					},
 					{
 						"path": "/setting-manage/system-manage/register-protocol",
@@ -210,19 +152,13 @@
 						"meta": {
 							"title": "注册协议",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 10230
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 1,
-						"pathList": [
-							2,
-							1,
-							2
-						]
+						"pathList": [2, 1, 2]
 					},
 					{
 						"path": "/setting-manage/system-manage/initialize-cell",
@@ -230,19 +166,13 @@
 						"meta": {
 							"title": "初始化小区",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 10240
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 1,
-						"pathList": [
-							2,
-							1,
-							3
-						]
+						"pathList": [2, 1, 3]
 					},
 					{
 						"path": "/setting-manage/system-manage/community-configuration",
@@ -250,19 +180,13 @@
 						"meta": {
 							"title": "小区配置",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 10250
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 1,
-						"pathList": [
-							2,
-							1,
-							4
-						]
+						"pathList": [2, 1, 4]
 					}
 				],
 				"name": "setting-manage-system-manage",
@@ -275,10 +199,7 @@
 				"redirect": "/setting-manage/system-manage/change-password",
 				"id": 1,
 				"parentId": 2,
-				"pathList": [
-					2,
-					1
-				]
+				"pathList": [2, 1]
 			}
 		],
 		"name": "setting-manage",
@@ -291,9 +212,7 @@
 		"redirect": "/setting-manage/organize-manage",
 		"id": 2,
 		"parentId": null,
-		"pathList": [
-			2
-		]
+		"pathList": [2]
 	},
 	{
 		"path": "/dev-team",
@@ -307,19 +226,13 @@
 						"meta": {
 							"title": "菜单目录",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20110
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 0,
-						"pathList": [
-							3,
-							0,
-							0
-						]
+						"pathList": [3, 0, 0]
 					},
 					{
 						"path": "/dev-team/menu-manage/group",
@@ -327,19 +240,13 @@
 						"meta": {
 							"title": "菜单组",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20120
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 0,
-						"pathList": [
-							3,
-							0,
-							1
-						]
+						"pathList": [3, 0, 1]
 					},
 					{
 						"path": "/dev-team/menu-manage/item",
@@ -347,19 +254,13 @@
 						"meta": {
 							"title": "菜单项",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20130
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 0,
-						"pathList": [
-							3,
-							0,
-							2
-						]
+						"pathList": [3, 0, 2]
 					}
 				],
 				"name": "dev-team-menu-manage",
@@ -372,10 +273,7 @@
 				"redirect": "/dev-team/menu-manage/catalog",
 				"id": 0,
 				"parentId": 3,
-				"pathList": [
-					3,
-					0
-				]
+				"pathList": [3, 0]
 			},
 			{
 				"path": "/dev-team/cache-manage",
@@ -387,19 +285,13 @@
 							"title": "刷新缓存",
 							"icon": "f7:menu",
 							"showParent": true,
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20210
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 1,
-						"pathList": [
-							3,
-							1,
-							0
-						]
+						"pathList": [3, 1, 0]
 					}
 				],
 				"name": "dev-team-cache-manage",
@@ -412,10 +304,7 @@
 				"redirect": "/dev-team/cache-manage/refresh-cache",
 				"id": 1,
 				"parentId": 3,
-				"pathList": [
-					3,
-					1
-				]
+				"pathList": [3, 1]
 			},
 			{
 				"path": "/dev-team/config-manage",
@@ -426,19 +315,13 @@
 						"meta": {
 							"title": "配置项",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20310
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 2,
-						"pathList": [
-							3,
-							2,
-							0
-						]
+						"pathList": [3, 2, 0]
 					},
 					{
 						"path": "/dev-team/config-manage/center",
@@ -446,19 +329,13 @@
 						"meta": {
 							"title": "配置中心",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20320
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 2,
-						"pathList": [
-							3,
-							2,
-							1
-						]
+						"pathList": [3, 2, 1]
 					},
 					{
 						"path": "/dev-team/config-manage/type",
@@ -466,19 +343,13 @@
 						"meta": {
 							"title": "字典类型",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20330
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 2,
-						"pathList": [
-							3,
-							2,
-							2
-						]
+						"pathList": [3, 2, 2]
 					},
 					{
 						"path": "/dev-team/config-manage/dictionary",
@@ -486,19 +357,13 @@
 						"meta": {
 							"title": "字典",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 20340
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 2,
-						"pathList": [
-							3,
-							2,
-							3
-						]
+						"pathList": [3, 2, 3]
 					}
 				],
 				"name": "dev-team-config-manage",
@@ -511,10 +376,7 @@
 				"redirect": "/dev-team/config-manage/item",
 				"id": 2,
 				"parentId": 3,
-				"pathList": [
-					3,
-					2
-				]
+				"pathList": [3, 2]
 			}
 		],
 		"name": "dev-team",
@@ -527,9 +389,7 @@
 		"redirect": "/dev-team/menu-manage",
 		"id": 3,
 		"parentId": null,
-		"pathList": [
-			3
-		]
+		"pathList": [3]
 	},
 	{
 		"path": "/operation-team",
@@ -551,12 +411,7 @@
 								"alias": [],
 								"id": 0,
 								"parentId": 0,
-								"pathList": [
-									4,
-									0,
-									0,
-									0
-								]
+								"pathList": [4, 0, 0, 0]
 							}
 						],
 						"name": "operation-team-data-manage--detail-page",
@@ -569,11 +424,7 @@
 						"alias": [],
 						"id": 0,
 						"parentId": 0,
-						"pathList": [
-							4,
-							0,
-							0
-						]
+						"pathList": [4, 0, 0]
 					},
 					{
 						"path": "/operation-team/data-manage/community-information",
@@ -581,19 +432,13 @@
 						"meta": {
 							"title": "小区信息",
 							"icon": "f7:menu",
-							"roles": [
-								"运营团队"
-							],
+							"roles": ["运营团队"],
 							"rank": 30210
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 0,
-						"pathList": [
-							4,
-							0,
-							1
-						]
+						"pathList": [4, 0, 1]
 					},
 					{
 						"path": "/operation-team/data-manage/property-management-company",
@@ -601,19 +446,13 @@
 						"meta": {
 							"title": "物业公司",
 							"icon": "f7:menu",
-							"roles": [
-								"运营团队"
-							],
+							"roles": ["运营团队"],
 							"rank": 30220
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 0,
-						"pathList": [
-							4,
-							0,
-							2
-						]
+						"pathList": [4, 0, 2]
 					}
 				],
 				"name": "operation-team-data-manage",
@@ -626,10 +465,7 @@
 				"redirect": "/operation-team/data-manage/community-information",
 				"id": 0,
 				"parentId": 4,
-				"pathList": [
-					4,
-					0
-				]
+				"pathList": [4, 0]
 			},
 			{
 				"path": "/operation-team/merchant-manage",
@@ -640,19 +476,13 @@
 						"meta": {
 							"title": "商户信息",
 							"icon": "f7:menu",
-							"roles": [
-								"运营团队"
-							],
+							"roles": ["运营团队"],
 							"rank": 30310
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 1,
-						"pathList": [
-							4,
-							1,
-							0
-						]
+						"pathList": [4, 1, 0]
 					},
 					{
 						"path": "/operation-team/merchant-manage/merchant-admin",
@@ -660,19 +490,13 @@
 						"meta": {
 							"title": "商户管理员",
 							"icon": "f7:menu",
-							"roles": [
-								"运营团队"
-							],
+							"roles": ["运营团队"],
 							"rank": 30320
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 1,
-						"pathList": [
-							4,
-							1,
-							1
-						]
+						"pathList": [4, 1, 1]
 					}
 				],
 				"name": "operation-team-merchant-manage",
@@ -685,10 +509,7 @@
 				"redirect": "/operation-team/merchant-manage/merchant-Info",
 				"id": 1,
 				"parentId": 4,
-				"pathList": [
-					4,
-					1
-				]
+				"pathList": [4, 1]
 			},
 			{
 				"path": "/operation-team/report-configuration",
@@ -699,19 +520,13 @@
 						"meta": {
 							"title": "报表组",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 30410
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 2,
-						"pathList": [
-							4,
-							2,
-							0
-						]
+						"pathList": [4, 2, 0]
 					},
 					{
 						"path": "/operation-team/report-configuration/report-info",
@@ -719,19 +534,13 @@
 						"meta": {
 							"title": "报表信息",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 30420
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 2,
-						"pathList": [
-							4,
-							2,
-							1
-						]
+						"pathList": [4, 2, 1]
 					},
 					{
 						"path": "/operation-team/report-configuration/report-component",
@@ -739,19 +548,13 @@
 						"meta": {
 							"title": "报表组件",
 							"icon": "f7:menu",
-							"roles": [
-								"开发团队"
-							],
+							"roles": ["开发团队"],
 							"rank": 30430
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 2,
-						"pathList": [
-							4,
-							2,
-							2
-						]
+						"pathList": [4, 2, 2]
 					}
 				],
 				"name": "operation-team-report-configuration",
@@ -764,10 +567,7 @@
 				"redirect": "/operation-team/report-configuration/report-group",
 				"id": 2,
 				"parentId": 4,
-				"pathList": [
-					4,
-					2
-				]
+				"pathList": [4, 2]
 			}
 		],
 		"name": "operation-team",
@@ -780,9 +580,7 @@
 		"redirect": "/operation-team/data-manage",
 		"id": 4,
 		"parentId": null,
-		"pathList": [
-			4
-		]
+		"pathList": [4]
 	},
 	{
 		"path": "/property-manage",
@@ -807,13 +605,7 @@
 										"alias": [],
 										"id": 0,
 										"parentId": 0,
-										"pathList": [
-											5,
-											0,
-											0,
-											0,
-											0
-										]
+										"pathList": [5, 0, 0, 0, 0]
 									}
 								],
 								"name": "property-manage-community-manage--detail-page-house-decoration",
@@ -826,12 +618,7 @@
 								"alias": [],
 								"id": 0,
 								"parentId": 0,
-								"pathList": [
-									5,
-									0,
-									0,
-									0
-								]
+								"pathList": [5, 0, 0, 0]
 							}
 						],
 						"name": "property-manage-community-manage--detail-page",
@@ -844,11 +631,7 @@
 						"alias": [],
 						"id": 0,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							0
-						]
+						"pathList": [5, 0, 0]
 					},
 					{
 						"path": "/property-manage/community-manage/my",
@@ -856,19 +639,13 @@
 						"meta": {
 							"title": "我的小区",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40110
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							1
-						]
+						"pathList": [5, 0, 1]
 					},
 					{
 						"path": "/property-manage/community-manage/handing-business",
@@ -876,19 +653,13 @@
 						"meta": {
 							"title": "业务受理",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40120
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							2
-						]
+						"pathList": [5, 0, 2]
 					},
 					{
 						"path": "/property-manage/community-manage/house-decoration",
@@ -896,19 +667,13 @@
 						"meta": {
 							"title": "房屋装修",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40130
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							3
-						]
+						"pathList": [5, 0, 3]
 					},
 					{
 						"path": "/property-manage/community-manage/building-space-structure-diagram",
@@ -916,19 +681,13 @@
 						"meta": {
 							"title": "楼栋结构图",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40140
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							4
-						]
+						"pathList": [5, 0, 4]
 					},
 					{
 						"path": "/property-manage/community-manage/parking-space-structure-diagram",
@@ -936,19 +695,13 @@
 						"meta": {
 							"title": "车位结构图",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40150
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							5
-						]
+						"pathList": [5, 0, 5]
 					},
 					{
 						"path": "/property-manage/community-manage/property-register",
@@ -956,19 +709,13 @@
 						"meta": {
 							"title": "产权登记",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40160
 						},
 						"alias": [],
 						"id": 6,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							6
-						]
+						"pathList": [5, 0, 6]
 					},
 					{
 						"path": "/property-manage/community-manage/notice",
@@ -976,38 +723,27 @@
 						"meta": {
 							"title": "小区公示",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40170
 						},
 						"alias": [],
 						"id": 7,
 						"parentId": 0,
-						"pathList": [
-							5,
-							0,
-							7
-						]
+						"pathList": [5, 0, 7]
 					}
 				],
 				"name": "property-manage-community-manage",
 				"meta": {
 					"title": "小区",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40100
 				},
 				"alias": [],
 				"redirect": "/property-manage/community-manage/my",
 				"id": 0,
 				"parentId": 5,
-				"pathList": [
-					5,
-					0
-				]
+				"pathList": [5, 0]
 			},
 			{
 				"path": "/property-manage/house-property-manage",
@@ -1026,12 +762,7 @@
 								"alias": [],
 								"id": 0,
 								"parentId": 0,
-								"pathList": [
-									5,
-									1,
-									0,
-									0
-								]
+								"pathList": [5, 1, 0, 0]
 							}
 						],
 						"name": "property-manage-house-property-manage--detail-page",
@@ -1044,11 +775,7 @@
 						"alias": [],
 						"id": 0,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							0
-						]
+						"pathList": [5, 1, 0]
 					},
 					{
 						"path": "/property-manage/house-property-manage/house",
@@ -1056,19 +783,13 @@
 						"meta": {
 							"title": "房屋管理",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40210
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							1
-						]
+						"pathList": [5, 1, 1]
 					},
 					{
 						"path": "/property-manage/house-property-manage/owner-information",
@@ -1076,19 +797,13 @@
 						"meta": {
 							"title": "业主信息",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40215
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							2
-						]
+						"pathList": [5, 1, 2]
 					},
 					{
 						"path": "/property-manage/house-property-manage/owner-member",
@@ -1096,19 +811,13 @@
 						"meta": {
 							"title": "业主成员",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40220
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							3
-						]
+						"pathList": [5, 1, 3]
 					},
 					{
 						"path": "/property-manage/house-property-manage/owner-account",
@@ -1116,19 +825,13 @@
 						"meta": {
 							"title": "业主账户",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40225
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							4
-						]
+						"pathList": [5, 1, 4]
 					},
 					{
 						"path": "/property-manage/house-property-manage/site-management",
@@ -1136,19 +839,13 @@
 						"meta": {
 							"title": "场地管理",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40230
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							5
-						]
+						"pathList": [5, 1, 5]
 					},
 					{
 						"path": "/property-manage/house-property-manage/reserve-venue",
@@ -1156,19 +853,13 @@
 						"meta": {
 							"title": "场地预约",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40235
 						},
 						"alias": [],
 						"id": 6,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							6
-						]
+						"pathList": [5, 1, 6]
 					},
 					{
 						"path": "/property-manage/house-property-manage/reserve-venue-order",
@@ -1176,19 +867,13 @@
 						"meta": {
 							"title": "场地预约订单",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40240
 						},
 						"alias": [],
 						"id": 7,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							7
-						]
+						"pathList": [5, 1, 7]
 					},
 					{
 						"path": "/property-manage/house-property-manage/owners-committee",
@@ -1196,19 +881,13 @@
 						"meta": {
 							"title": "业委会",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40245
 						},
 						"alias": [],
 						"id": 8,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							8
-						]
+						"pathList": [5, 1, 8]
 					},
 					{
 						"path": "/property-manage/house-property-manage/invoice-title",
@@ -1216,19 +895,13 @@
 						"meta": {
 							"title": "发票抬头",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40250
 						},
 						"alias": [],
 						"id": 9,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							9
-						]
+						"pathList": [5, 1, 9]
 					},
 					{
 						"path": "/property-manage/house-property-manage/invoice",
@@ -1236,38 +909,27 @@
 						"meta": {
 							"title": "发票",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40255
 						},
 						"alias": [],
 						"id": 10,
 						"parentId": 1,
-						"pathList": [
-							5,
-							1,
-							10
-						]
+						"pathList": [5, 1, 10]
 					}
 				],
 				"name": "property-manage-house-property-manage",
 				"meta": {
 					"title": "房产管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40200
 				},
 				"alias": [],
 				"redirect": "/property-manage/house-property-manage/house",
 				"id": 1,
 				"parentId": 5,
-				"pathList": [
-					5,
-					1
-				]
+				"pathList": [5, 1]
 			},
 			{
 				"path": "/property-manage/parking-manage",
@@ -1286,12 +948,7 @@
 								"alias": [],
 								"id": 0,
 								"parentId": 0,
-								"pathList": [
-									5,
-									2,
-									0,
-									0
-								]
+								"pathList": [5, 2, 0, 0]
 							}
 						],
 						"name": "property-manage-parking-manage--detail-page",
@@ -1304,11 +961,7 @@
 						"alias": [],
 						"id": 0,
 						"parentId": 2,
-						"pathList": [
-							5,
-							2,
-							0
-						]
+						"pathList": [5, 2, 0]
 					},
 					{
 						"path": "/property-manage/parking-manage/carport-apply",
@@ -1316,19 +969,13 @@
 						"meta": {
 							"title": "车位申请",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40310
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 2,
-						"pathList": [
-							5,
-							2,
-							1
-						]
+						"pathList": [5, 2, 1]
 					},
 					{
 						"path": "/property-manage/parking-manage/carport-info",
@@ -1336,19 +983,13 @@
 						"meta": {
 							"title": "车位信息",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40320
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 2,
-						"pathList": [
-							5,
-							2,
-							2
-						]
+						"pathList": [5, 2, 2]
 					},
 					{
 						"path": "/property-manage/parking-manage/owner-vehicle",
@@ -1356,19 +997,13 @@
 						"meta": {
 							"title": "业主车辆",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40330
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 2,
-						"pathList": [
-							5,
-							2,
-							3
-						]
+						"pathList": [5, 2, 3]
 					},
 					{
 						"path": "/property-manage/parking-manage/parking-lot",
@@ -1376,38 +1011,27 @@
 						"meta": {
 							"title": "停车场管理",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40340
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 2,
-						"pathList": [
-							5,
-							2,
-							4
-						]
+						"pathList": [5, 2, 4]
 					}
 				],
 				"name": "property-manage-parking-manage",
 				"meta": {
 					"title": "停车管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40300
 				},
 				"alias": [],
 				"redirect": "/property-manage/parking-manage/carport-apply",
 				"id": 2,
 				"parentId": 5,
-				"pathList": [
-					5,
-					2
-				]
+				"pathList": [5, 2]
 			},
 			{
 				"path": "/property-manage/contract-manage",
@@ -1418,19 +1042,13 @@
 						"meta": {
 							"title": "合同变更",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 20000
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 3,
-						"pathList": [
-							5,
-							3,
-							0
-						]
+						"pathList": [5, 3, 0]
 					},
 					{
 						"path": "/property-manage/contract-manage/draft-contract",
@@ -1438,19 +1056,13 @@
 						"meta": {
 							"title": "起草合同",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 20001
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 3,
-						"pathList": [
-							5,
-							3,
-							1
-						]
+						"pathList": [5, 3, 1]
 					},
 					{
 						"path": "/property-manage/contract-manage/expire",
@@ -1458,19 +1070,13 @@
 						"meta": {
 							"title": "到期合同",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 20002
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 3,
-						"pathList": [
-							5,
-							3,
-							2
-						]
+						"pathList": [5, 3, 2]
 					},
 					{
 						"path": "/property-manage/contract-manage/first-party",
@@ -1478,19 +1084,13 @@
 						"meta": {
 							"title": "合同甲方",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 20003
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 3,
-						"pathList": [
-							5,
-							3,
-							3
-						]
+						"pathList": [5, 3, 3]
 					},
 					{
 						"path": "/property-manage/contract-manage/type",
@@ -1498,38 +1098,27 @@
 						"meta": {
 							"title": "合同类型",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40410
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 3,
-						"pathList": [
-							5,
-							3,
-							4
-						]
+						"pathList": [5, 3, 4]
 					}
 				],
 				"name": "property-manage-contract-manage",
 				"meta": {
 					"title": "合同管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40400
 				},
 				"alias": [],
 				"redirect": "/property-manage/contract-manage/change",
 				"id": 3,
 				"parentId": 5,
-				"pathList": [
-					5,
-					3
-				]
+				"pathList": [5, 3]
 			},
 			{
 				"path": "/property-manage/expense-manage",
@@ -1540,19 +1129,13 @@
 						"meta": {
 							"title": "费用项设置",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40510
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							0
-						]
+						"pathList": [5, 4, 0]
 					},
 					{
 						"path": "/property-manage/expense-manage/meter-reading-type",
@@ -1560,19 +1143,13 @@
 						"meta": {
 							"title": "抄表类型",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40515
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							1
-						]
+						"pathList": [5, 4, 1]
 					},
 					{
 						"path": "/property-manage/expense-manage/water-and-electricity-meter-reading",
@@ -1580,19 +1157,13 @@
 						"meta": {
 							"title": "水电抄表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40520
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							2
-						]
+						"pathList": [5, 4, 2]
 					},
 					{
 						"path": "/property-manage/expense-manage/discount-setting",
@@ -1600,19 +1171,13 @@
 						"meta": {
 							"title": "折扣设置",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40525
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							3
-						]
+						"pathList": [5, 4, 3]
 					},
 					{
 						"path": "/property-manage/expense-manage/house-charge",
@@ -1620,19 +1185,13 @@
 						"meta": {
 							"title": "房屋收费",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40530
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							4
-						]
+						"pathList": [5, 4, 4]
 					},
 					{
 						"path": "/property-manage/expense-manage/vehicle-charge",
@@ -1640,19 +1199,13 @@
 						"meta": {
 							"title": "车辆收费",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40535
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							5
-						]
+						"pathList": [5, 4, 5]
 					},
 					{
 						"path": "/property-manage/expense-manage/contracte-charge",
@@ -1660,19 +1213,13 @@
 						"meta": {
 							"title": "合同收费",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40540
 						},
 						"alias": [],
 						"id": 6,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							6
-						]
+						"pathList": [5, 4, 6]
 					},
 					{
 						"path": "/property-manage/expense-manage/discount-type",
@@ -1680,19 +1227,13 @@
 						"meta": {
 							"title": "优惠类型",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40545
 						},
 						"alias": [],
 						"id": 7,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							7
-						]
+						"pathList": [5, 4, 7]
 					},
 					{
 						"path": "/property-manage/expense-manage/discount-apply",
@@ -1700,19 +1241,13 @@
 						"meta": {
 							"title": "优惠申请",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40550
 						},
 						"alias": [],
 						"id": 8,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							8
-						]
+						"pathList": [5, 4, 8]
 					},
 					{
 						"path": "/property-manage/expense-manage/reprint-voucher",
@@ -1720,19 +1255,13 @@
 						"meta": {
 							"title": "补打收据",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40555
 						},
 						"alias": [],
 						"id": 9,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							9
-						]
+						"pathList": [5, 4, 9]
 					},
 					{
 						"path": "/property-manage/expense-manage/payment-review",
@@ -1740,19 +1269,13 @@
 						"meta": {
 							"title": "缴费审核",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40560
 						},
 						"alias": [],
 						"id": 10,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							10
-						]
+						"pathList": [5, 4, 10]
 					},
 					{
 						"path": "/property-manage/expense-manage/refund-review",
@@ -1760,19 +1283,13 @@
 						"meta": {
 							"title": "退费审核",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40565
 						},
 						"alias": [],
 						"id": 11,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							11
-						]
+						"pathList": [5, 4, 11]
 					},
 					{
 						"path": "/property-manage/expense-manage/cancel-fee",
@@ -1780,19 +1297,13 @@
 						"meta": {
 							"title": "取消费用",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40570
 						},
 						"alias": [],
 						"id": 12,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							12
-						]
+						"pathList": [5, 4, 12]
 					},
 					{
 						"path": "/property-manage/expense-manage/overdue-payment-information",
@@ -1800,19 +1311,13 @@
 						"meta": {
 							"title": "欠费信息",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40575
 						},
 						"alias": [],
 						"id": 13,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							13
-						]
+						"pathList": [5, 4, 13]
 					},
 					{
 						"path": "/property-manage/expense-manage/reminder-for-overdue-payments",
@@ -1820,19 +1325,13 @@
 						"meta": {
 							"title": "欠费催缴",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40580
 						},
 						"alias": [],
 						"id": 14,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							14
-						]
+						"pathList": [5, 4, 14]
 					},
 					{
 						"path": "/property-manage/expense-manage/expense-summary-table",
@@ -1840,38 +1339,27 @@
 						"meta": {
 							"title": "费用汇总表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40585
 						},
 						"alias": [],
 						"id": 15,
 						"parentId": 4,
-						"pathList": [
-							5,
-							4,
-							15
-						]
+						"pathList": [5, 4, 15]
 					}
 				],
 				"name": "property-manage-expense-manage",
 				"meta": {
 					"title": "费用管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40500
 				},
 				"alias": [],
 				"redirect": "/property-manage/expense-manage/expense-item-setting",
 				"id": 4,
 				"parentId": 5,
-				"pathList": [
-					5,
-					4
-				]
+				"pathList": [5, 4]
 			},
 			{
 				"path": "/property-manage/repairs-manage",
@@ -1882,19 +1370,13 @@
 						"meta": {
 							"title": "报修设置",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40610
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							0
-						]
+						"pathList": [5, 5, 0]
 					},
 					{
 						"path": "/property-manage/repairs-manage/phone-report-repairs",
@@ -1902,19 +1384,13 @@
 						"meta": {
 							"title": "电话报修",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40620
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							1
-						]
+						"pathList": [5, 5, 1]
 					},
 					{
 						"path": "/property-manage/repairs-manage/issues",
@@ -1922,19 +1398,13 @@
 						"meta": {
 							"title": "工单池",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40630
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							2
-						]
+						"pathList": [5, 5, 2]
 					},
 					{
 						"path": "/property-manage/repairs-manage/repairs-todo",
@@ -1942,19 +1412,13 @@
 						"meta": {
 							"title": "报修待办",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40640
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							3
-						]
+						"pathList": [5, 5, 3]
 					},
 					{
 						"path": "/property-manage/repairs-manage/repairs-have-done",
@@ -1962,19 +1426,13 @@
 						"meta": {
 							"title": "报修已办",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40650
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							4
-						]
+						"pathList": [5, 5, 4]
 					},
 					{
 						"path": "/property-manage/repairs-manage/return-visit",
@@ -1982,19 +1440,13 @@
 						"meta": {
 							"title": "报修回访",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40660
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							5
-						]
+						"pathList": [5, 5, 5]
 					},
 					{
 						"path": "/property-manage/repairs-manage/mandatory-return-issue",
@@ -2002,38 +1454,27 @@
 						"meta": {
 							"title": "强制回单",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40670
 						},
 						"alias": [],
 						"id": 6,
 						"parentId": 5,
-						"pathList": [
-							5,
-							5,
-							6
-						]
+						"pathList": [5, 5, 6]
 					}
 				],
 				"name": "property-manage-repairs-manage",
 				"meta": {
 					"title": "报修管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40600
 				},
 				"alias": [],
 				"redirect": "/property-manage/repairs-manage/repairs-setting",
 				"id": 5,
 				"parentId": 5,
-				"pathList": [
-					5,
-					5
-				]
+				"pathList": [5, 5]
 			},
 			{
 				"path": "/property-manage/patrol-manage",
@@ -2044,19 +1485,13 @@
 						"meta": {
 							"title": "巡检项目",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40710
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 6,
-						"pathList": [
-							5,
-							6,
-							0
-						]
+						"pathList": [5, 6, 0]
 					},
 					{
 						"path": "/property-manage/patrol-manage/point",
@@ -2064,19 +1499,13 @@
 						"meta": {
 							"title": "巡检点",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40720
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 6,
-						"pathList": [
-							5,
-							6,
-							1
-						]
+						"pathList": [5, 6, 1]
 					},
 					{
 						"path": "/property-manage/patrol-manage/path",
@@ -2084,19 +1513,13 @@
 						"meta": {
 							"title": "巡检路线",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40730
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 6,
-						"pathList": [
-							5,
-							6,
-							2
-						]
+						"pathList": [5, 6, 2]
 					},
 					{
 						"path": "/property-manage/patrol-manage/plan",
@@ -2104,19 +1527,13 @@
 						"meta": {
 							"title": "巡检计划",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40740
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 6,
-						"pathList": [
-							5,
-							6,
-							3
-						]
+						"pathList": [5, 6, 3]
 					},
 					{
 						"path": "/property-manage/patrol-manage/task",
@@ -2124,19 +1541,13 @@
 						"meta": {
 							"title": "巡检任务",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40750
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 6,
-						"pathList": [
-							5,
-							6,
-							4
-						]
+						"pathList": [5, 6, 4]
 					},
 					{
 						"path": "/property-manage/patrol-manage/detail",
@@ -2144,38 +1555,27 @@
 						"meta": {
 							"title": "巡检明细",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40760
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 6,
-						"pathList": [
-							5,
-							6,
-							5
-						]
+						"pathList": [5, 6, 5]
 					}
 				],
 				"name": "property-manage-patrol-manage",
 				"meta": {
 					"title": "巡检管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40700
 				},
 				"alias": [],
 				"redirect": "/property-manage/patrol-manage/item",
 				"id": 6,
 				"parentId": 5,
-				"pathList": [
-					5,
-					6
-				]
+				"pathList": [5, 6]
 			},
 			{
 				"path": "/property-manage/report-manage",
@@ -2186,19 +1586,13 @@
 						"meta": {
 							"title": "数据统计",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40810
 						},
 						"alias": [],
 						"id": 0,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							0
-						]
+						"pathList": [5, 7, 0]
 					},
 					{
 						"path": "/property-manage/report-manage/expense-summary-table",
@@ -2206,19 +1600,13 @@
 						"meta": {
 							"title": "费用汇总表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40815
 						},
 						"alias": [],
 						"id": 1,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							1
-						]
+						"pathList": [5, 7, 1]
 					},
 					{
 						"path": "/property-manage/report-manage/statement-expenses",
@@ -2226,19 +1614,13 @@
 						"meta": {
 							"title": "费用明细表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40820
 						},
 						"alias": [],
 						"id": 2,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							2
-						]
+						"pathList": [5, 7, 2]
 					},
 					{
 						"path": "/property-manage/report-manage/fee-reminder",
@@ -2246,19 +1628,13 @@
 						"meta": {
 							"title": "费用提醒",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40825
 						},
 						"alias": [],
 						"id": 3,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							3
-						]
+						"pathList": [5, 7, 3]
 					},
 					{
 						"path": "/property-manage/report-manage/arrears-details-list",
@@ -2266,19 +1642,13 @@
 						"meta": {
 							"title": "欠费明细表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40830
 						},
 						"alias": [],
 						"id": 4,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							4
-						]
+						"pathList": [5, 7, 4]
 					},
 					{
 						"path": "/property-manage/report-manage/payment-details-form",
@@ -2286,19 +1656,13 @@
 						"meta": {
 							"title": "缴费明细表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40835
 						},
 						"alias": [],
 						"id": 5,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							5
-						]
+						"pathList": [5, 7, 5]
 					},
 					{
 						"path": "/property-manage/report-manage/owner-payment-details",
@@ -2306,19 +1670,13 @@
 						"meta": {
 							"title": "业主缴费明细",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40840
 						},
 						"alias": [],
 						"id": 6,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							6
-						]
+						"pathList": [5, 7, 6]
 					},
 					{
 						"path": "/property-manage/report-manage/no-charge-house",
@@ -2326,19 +1684,13 @@
 						"meta": {
 							"title": "未收费房屋",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40845
 						},
 						"alias": [],
 						"id": 7,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							7
-						]
+						"pathList": [5, 7, 7]
 					},
 					{
 						"path": "/property-manage/report-manage/outstanding-fees-analysis",
@@ -2346,19 +1698,13 @@
 						"meta": {
 							"title": "欠费分析",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40850
 						},
 						"alias": [],
 						"id": 8,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							8
-						]
+						"pathList": [5, 7, 8]
 					},
 					{
 						"path": "/property-manage/report-manage/deposit-report",
@@ -2366,19 +1712,13 @@
 						"meta": {
 							"title": "押金报表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40855
 						},
 						"alias": [],
 						"id": 9,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							9
-						]
+						"pathList": [5, 7, 9]
 					},
 					{
 						"path": "/property-manage/report-manage/repair-reports-summary-table",
@@ -2386,19 +1726,13 @@
 						"meta": {
 							"title": "报修汇总表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40860
 						},
 						"alias": [],
 						"id": 10,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							10
-						]
+						"pathList": [5, 7, 10]
 					},
 					{
 						"path": "/property-manage/report-manage/repair-report-form",
@@ -2406,19 +1740,13 @@
 						"meta": {
 							"title": "报修报表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40865
 						},
 						"alias": [],
 						"id": 11,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							11
-						]
+						"pathList": [5, 7, 11]
 					},
 					{
 						"path": "/property-manage/report-manage/patrol-report",
@@ -2426,38 +1754,27 @@
 						"meta": {
 							"title": "巡检报表",
 							"icon": "f7:menu",
-							"roles": [
-								"物业团队"
-							],
+							"roles": ["物业团队"],
 							"rank": 40870
 						},
 						"alias": [],
 						"id": 12,
 						"parentId": 7,
-						"pathList": [
-							5,
-							7,
-							12
-						]
+						"pathList": [5, 7, 12]
 					}
 				],
 				"name": "property-manage-report-manage",
 				"meta": {
 					"title": "报表管理",
 					"icon": "f7:menu",
-					"roles": [
-						"物业团队"
-					],
+					"roles": ["物业团队"],
 					"rank": 40800
 				},
 				"alias": [],
 				"redirect": "/property-manage/report-manage/data-statistics",
 				"id": 7,
 				"parentId": 5,
-				"pathList": [
-					5,
-					7
-				]
+				"pathList": [5, 7]
 			}
 		],
 		"name": "property-manage",
@@ -2470,8 +1787,6 @@
 		"redirect": "/property-manage/community-manage",
 		"id": 5,
 		"parentId": null,
-		"pathList": [
-			5
-		]
+		"pathList": [5]
 	}
 ]

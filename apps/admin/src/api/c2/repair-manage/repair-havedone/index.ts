@@ -54,7 +54,6 @@ export interface RepairDoneDTO {
 	state_detail?: string;
 }
 
-
 // ==================== 接口函数 ====================
 
 /**
