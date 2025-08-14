@@ -10,45 +10,42 @@ import {
 	removeRepairSettingType,
 	removeRepairWorker,
 	queryAllRepairWorkerName,
-} from ".";
+} from "./index";
 
-describe("报修设置类型接口测试", () => {
-	it("分页查询报修设置类型列表", async () => {
+describe("c2/报修管理/报修设置", () => {
+	it("使用 query 接口 - 获取报修设置类型列表", async () => {
 		const { execute, data } = queryRepairSettingTypeList({
 			onSuccess(data) {
-				console.warn("分页查询报修设置类型列表成功", printFormat(data));
+				console.warn("queryRepairSettingTypeList onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryRepairSettingTypeList onError", error);
 			},
 		});
-
 		await execute({
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
-				community_id: "", // 修正：添加 community_id
+				community_id: "2024022154856948",
 				repair_type_name: "修水管",
 				repair_way: "100",
-				repair_setting_type: "100",
-				public_area: "T",
-				return_visit_flag: "001",
+				repair_setting_type: "200",
+				public_area: "F",
+				return_visit_flag: "003",
 			},
 		});
-
-		console.warn("查看报修设置类型分页数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("分页查询报修师傅列表", async () => {
+	it("使用 query 接口 - 获取报修师傅列表（条件+分页）", async () => {
 		const { execute, data } = queryAllRepairWorker({
 			onSuccess(data) {
-				console.warn("分页查询报修师傅列表成功", printFormat(data));
+				console.warn("queryAllRepairWorker onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryAllRepairWorker onError", error);
 			},
 		});
-
 		await execute({
 			params: {
 				pageIndex: 1,
@@ -57,20 +54,18 @@ describe("报修设置类型接口测试", () => {
 				community_id: "2024022154856948",
 			},
 		});
-
-		console.warn("查看报修师傅分页数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("添加报修设置类型", async () => {
+	it("使用 body 接口 - 添加报修设置类型", async () => {
 		const { execute, data } = addRepairSettingType({
 			onSuccess(data) {
-				console.warn("添加报修设置类型成功", printFormat(data));
+				console.warn("addRepairSettingType onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("addRepairSettingType onError", error);
 			},
 		});
-
 		await execute({
 			data: {
 				repair_type_name: "修水管",
@@ -81,48 +76,44 @@ describe("报修设置类型接口测试", () => {
 				notify_way: "WECHAT",
 				return_visit_flag: "003",
 				community_id: "2024022154856948",
-				remark: "说明",
+				remark: "新增报修设置类型说明",
 			},
 		});
-
-		console.warn("查看添加结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("添加报修师傅", async () => {
+	it("使用 body 接口 - 添加报修师傅", async () => {
 		const { execute, data } = addRepairWorker({
 			onSuccess(data) {
-				console.warn("添加报修师傅成功", printFormat(data));
+				console.warn("addRepairWorker onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("addRepairWorker onError", error);
 			},
 		});
-
 		await execute({
 			data: {
-				org_name: "xx物业",
-				staff_name: "cjy",
+				org_name: "华润物业",
+				staff_name: "张师傅",
 				repair_type_name: "修水管",
-				community_id: "2023052267100146",
+				community_id: "2024022154856948",
 			},
 		});
-
-		console.warn("查看添加报修师傅结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("修改报修设置类型", async () => {
+	it("使用 body 接口 - 修改报修设置类型", async () => {
 		const { execute, data } = modifyRepairSettingType({
 			onSuccess(data) {
-				console.warn("修改报修设置类型成功", printFormat(data));
+				console.warn("modifyRepairSettingType onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("modifyRepairSettingType onError", error);
 			},
 		});
-
 		await execute({
 			data: {
-				setting_id: "", // 修正：添加 setting_id
+				setting_id: "setting_12345",
 				repair_type_name: "修水管",
 				repair_setting_type: "200",
 				repair_way: "200",
@@ -130,88 +121,79 @@ describe("报修设置类型接口测试", () => {
 				is_show: "Y",
 				notify_way: "WECHAT",
 				return_visit_flag: "003",
-				remark: "修改说明",
+				remark: "修改报修设置类型说明",
 			},
 		});
-
-		console.warn("查看修改结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("变更报修师傅", async () => {
+	it("使用 body 接口 - 变更报修师傅", async () => {
 		const { execute, data } = modifyRepairWorker({
 			onSuccess(data) {
-				console.warn("变更报修师傅成功", printFormat(data));
+				console.warn("modifyRepairWorker onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("modifyRepairWorker onError", error);
 			},
 		});
-
 		await execute({
 			data: {
 				state: "9999",
 				staff_id: "302025052791430008",
-				remark: "生病",
-				community_id: "2023052267100146",
+				remark: "师傅临时请假",
+				community_id: "2024022154856948",
 				repair_type_name: "修水管",
 			},
 		});
-
-		console.warn("查看变更报修师傅结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除报修设置类型", async () => {
+	it("使用 body 接口 - 删除报修设置类型", async () => {
 		const { execute, data } = removeRepairSettingType({
 			onSuccess(data) {
-				console.warn("删除报修设置类型成功", printFormat(data));
+				console.warn("removeRepairSettingType onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("removeRepairSettingType onError", error);
 			},
 		});
-
 		await execute({
-			data: ["repair_setting_type_id_1", "repair_setting_type_id_2"],
+			data: ["setting_001", "setting_002", "setting_003"],
 		});
-
-		console.warn("查看删除报修设置类型结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("删除报修师傅", async () => {
+	it("使用 body 接口 - 删除报修师傅", async () => {
 		const { execute, data } = removeRepairWorker({
 			onSuccess(data) {
-				console.warn("删除报修师傅成功", printFormat(data));
+				console.warn("removeRepairWorker onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("removeRepairWorker onError", error);
 			},
 		});
-
 		await execute({
-			data: ["repair_worker_id_1", "repair_worker_id_2"],
+			data: ["worker_001", "worker_002"],
 		});
-
-		console.warn("查看删除报修师傅结果", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("查询符合条件的所有维修师傅的名字", async () => {
+	it("使用 query 接口 - 查询符合条件的所有维修师傅的名字", async () => {
 		const { execute, data } = queryAllRepairWorkerName({
 			onSuccess(data) {
-				console.warn("查询维修师傅名字成功", printFormat(data));
+				console.warn("queryAllRepairWorkerName onSuccess", printFormat(data));
 			},
 			onError(error) {
-				console.warn("接口请求失败", error);
+				console.error("queryAllRepairWorkerName onError", error);
 			},
 		});
-
 		await execute({
 			params: {
-				repair_type_name: "下水道堵塞",
 				repair_id: "822024022794890018",
 				community_id: "2024022154856948",
+				repair_type_name: "修水管",
 			},
 		});
-
-		console.warn("查看维修师傅名字数据", printFormat(data.value));
+		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

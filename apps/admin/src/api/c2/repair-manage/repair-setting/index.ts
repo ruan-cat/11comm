@@ -6,6 +6,8 @@ import { useRequest } from "@/composables/use-request";
  * 报修设置类型信息
  */
 export interface RepairSettingGetDTO {
+	/** 设置ID */
+	setting_id?: string;
 	/** 类型名称 */
 	repair_type_name?: string;
 	/** 报修类型设置 */
@@ -186,42 +188,34 @@ export interface QueryAllRepairWorkerNameParams {
 
 /**
  * 获取报修设置类型列表
- * @description
- * 获取报修设置类型分页列表
+ * @description 根据条件查询报修设置类型列表，支持分页
  */
 export function queryRepairSettingTypeList<T = PageDTO<RepairSettingGetDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryRepairSettingTypeListParams>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-setting-type/query",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
 				community_id: "",
-				repair_type_name: "",
-				repair_way: "",
-				repair_setting_type: "",
-				public_area: "",
-				return_visit_flag: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 获取报修师傅列表（条件+分页）
- * @description
- * 获取报修师傅分页列表
+ * @description 根据条件查询报修师傅列表，支持分页
  */
 export function queryAllRepairWorker<T = PageDTO<RepairWorkerQueryDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairWorkerParams>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-worker/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
 				pageIndex: 1,
 				pageSize: 10,
@@ -229,22 +223,20 @@ export function queryAllRepairWorker<T = PageDTO<RepairWorkerQueryDTO>>(options:
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 添加报修设置类型
- * @description
- * 新增报修设置类型
+ * @description 新增一个报修设置类型配置
  */
 export function addRepairSettingType<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairSettingAddDTO>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-setting-type/add",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				repair_type_name: "",
 				repair_setting_type: "",
@@ -254,25 +246,22 @@ export function addRepairSettingType<T = string>(options: UseAxiosOptionsJsonVO<
 				notify_way: "",
 				return_visit_flag: "",
 				community_id: "",
-				remark: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 添加报修师傅
- * @description
- * 新增报修师傅
+ * @description 新增一个报修师傅信息
  */
 export function addRepairWorker<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairWorkerAddDTO>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-worker/add",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "post",
+			method: "POST",
 			data: {
 				org_name: "",
 				staff_name: "",
@@ -280,22 +269,20 @@ export function addRepairWorker<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 修改报修设置类型
- * @description
- * 修改报修设置类型信息
+ * @description 根据setting_id修改报修设置类型配置
  */
 export function modifyRepairSettingType<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairSettingModifyDTO>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-setting-type/modify",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				setting_id: "",
 				repair_type_name: "",
@@ -305,25 +292,22 @@ export function modifyRepairSettingType<T = string>(options: UseAxiosOptionsJson
 				is_show: "",
 				notify_way: "",
 				return_visit_flag: "",
-				remark: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 变更报修师傅
- * @description
- * 修改报修师傅信息
+ * @description 修改报修师傅的状态和备注信息
  */
 export function modifyRepairWorker<T = string>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, RepairWorkerModifyDTO>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-worker/modify",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "put",
+			method: "PUT",
 			data: {
 				state: "",
 				staff_id: "",
@@ -332,62 +316,57 @@ export function modifyRepairWorker<T = string>(options: UseAxiosOptionsJsonVO<T>
 				repair_type_name: "",
 			},
 		},
+		options,
 	});
 }
 
 /**
  * 删除报修设置类型
- * @description
- * 删除指定的报修设置类型
+ * @description 批量删除报修设置类型，传入setting_id数组
  */
 export function removeRepairSettingType<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string[]>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-setting-type/delete",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "delete",
+			method: "DELETE",
 			data: [],
 		},
+		options,
 	});
 }
 
 /**
  * 删除报修师傅
- * @description
- * 删除指定的报修师傅
+ * @description 批量删除报修师傅，传入staff_id数组
  */
 export function removeRepairWorker<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsBodyKey, T, string[]>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-worker/delete",
-		options,
 		httpParamWay: "body",
-		upType: UpType.json,
 		config: {
-			method: "delete",
+			method: "DELETE",
 			data: [],
 		},
+		options,
 	});
 }
 
 /**
  * 查询符合条件的所有维修师傅的名字
- * @description
- * 获取所有符合条件的维修师傅姓名列表
+ * @description 根据报修工单ID和社区ID查询可用的维修师傅信息
  */
-export function queryAllRepairWorkerName<T = RepairWorkerNameDTO[]>(options: UseAxiosOptionsJsonVO<T>) {
+export function queryAllRepairWorkerName<T = RepairWorkerNameDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, QueryAllRepairWorkerNameParams>({
 		url: "/comm-c2-repairsetting/repair-setting/repair-worker-name/query-all",
-		options,
 		httpParamWay: "query",
 		config: {
-			method: "get",
+			method: "GET",
 			params: {
-				repair_type_name: "",
 				repair_id: "",
 				community_id: "",
 			},
 		},
+		options,
 	});
 }
