@@ -11,6 +11,9 @@
       "WebFetch(domain:utils.ruan-cat.com)",
       "mcp__fetch-mcp__fetch_markdown"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "F:\\store\\PixPin"
+    ]
   }
 }
