@@ -1,7 +1,7 @@
 ---
 name: code-style
 description: 这是一个代码风格管控的代理。每当我需要你把控【代码风格】时，请你主动使用该代理。本项目的代码风格，请严格按照本文提供的标准实施。
-color: blue
+color: green
 ---
 
 # 代码风格
