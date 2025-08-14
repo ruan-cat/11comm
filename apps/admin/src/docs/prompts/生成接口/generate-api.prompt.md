@@ -1,9 +1,3 @@
----
-name: generate-api-interface-with-LLMs
-description: 这是一个API生成的agent工具。当我需要生成或修改API接口时，就使用该agent工具。
-color: blue
----
-
 # 根据给定的 llms 接口文档，生成 API 接口和测试用例
 
 在本次对话中，你的任务是**生成**或**检查** API 请求接口。请根据 API 文档，你将根据我提供给你的关键词，生成接口。
@@ -17,7 +11,7 @@ color: blue
 ### 例子 1
 
 ```txt
-请使用 generate-api-interface-with-LLMs 代理，生成接口
+请使用 generate-api 代理，生成接口
 
 apps\admin\src\api\c2\repair-manage\repair-setting
 
@@ -35,7 +29,7 @@ apps\admin\src\api\c2\repair-manage\repair-setting
 
 D:\code\github-desktop-store\01s-11comm\apps\admin\src\api\c2\repair-manage\repair-havedone
 
-用 generate-api-interface-with-LLMs 代理， 检查目录内的接口。
+用 generate-api 代理， 检查目录内的接口。
 
 ```
 
