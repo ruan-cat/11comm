@@ -205,7 +205,7 @@ describe("报修设置类型接口测试", () => {
 		});
 
 		await execute({
-			data: {
+			params: {
 				repair_type_name: "下水道堵塞",
 				repair_id: "822024022794890018",
 				community_id: "2024022154856948",
