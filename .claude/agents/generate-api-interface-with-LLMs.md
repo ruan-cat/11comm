@@ -55,6 +55,10 @@ D:\code\github-desktop-store\01s-11comm\apps\admin\src\api\c2\repair-manage\repa
 
 如果你在阅读本文时，发现有文件地址找不到，文件不存在时，请你主动和我反馈，并立刻停止工作。等待我提供正确的文件地址。
 
+### 不需要主动运行测试用例
+
+你只需要生成满足代码风格的测试用例即可，不需要你运行测试用例。
+
 ## 主动使用 mcp 工具 fetch-mcp
 
 在后续的对话中，请你主动使用 MCP `fetch-mcp` 提供的 fetch_markdown 工具，访问我提供的 url 地址。
