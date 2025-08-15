@@ -81,10 +81,9 @@ const pureTableProps = ref<PureTableProps>({
 		<h2>初始化小区</h2>
 
 		<!-- @vue-ignore-->
-
 		<PureTable :="pureTableProps">
 			<template #operation="{ row }">
-				        <ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
+				<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
 			</template>
 		</PureTable>
 	</section>
