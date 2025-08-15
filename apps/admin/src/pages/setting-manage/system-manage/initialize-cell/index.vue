@@ -8,9 +8,14 @@ definePage({
 	},
 });
 
-import { ref, computed } from "vue";
+import { ref, computed, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type 初始化小区_列表数据, type 初始化小区_列表查询_VO, tableData as mockTableData } from "./test-data";
+
+import { type FormatFormProps, defaultForm } from "./components/format-form";
+import FormatForm from "./components/format-form.vue";
+
+const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<初始化小区_列表数据[]>(mockTableData);
@@ -62,13 +67,13 @@ const pagination = ref<PaginationProps>({
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	/** 做异步接口请求 */
 }
 
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	/** 做异步接口请求 */
 }
 
 /** 表格组件 配置 */
@@ -135,7 +140,7 @@ const plusSearchProps = ref<PlusSearchProps>({
  */
 async function handleReSearch() {
 	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	/** 重置搜索条件并重新加载数据 */
 	pagination.value.currentPage = 1;
 }
 
@@ -144,8 +149,110 @@ async function handleReSearch() {
  */
 async function handleSearch() {
 	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
+	/** 根据搜索条件过滤数据 */
 	pagination.value.currentPage = 1;
+}
+
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/**
+ * 测试异步函数
+ */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/**
+ * 打开格式化确认弹框
+ */
+function openFormatDialog(row: 初始化小区_列表数据) {
+	/** 弹框标题 */
+	const title = "温馨提示！";
+
+	/** 表单组件需要的props */
+	const formProps: FormatFormProps = {
+		form: cloneDeep(defaultForm),
+		defaultValues: cloneDeep(defaultForm),
+	};
+
+	/** 弹框组件所需的变量 */
+	const props = formProps;
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+		width: "500px",
+
+		contentRenderer: () =>
+			h("div", { class: "format-dialog-content" }, [
+				// 警告提示
+				h("div", { class: "warning-text", style: { marginBottom: "20px" } }, [
+					h(
+						"p",
+						{
+							style: {
+								color: "#e74c3c",
+								fontSize: "14px",
+								lineHeight: "1.6",
+								marginBottom: "20px",
+							},
+						},
+						[
+							h("span", { style: { color: "#e74c3c" } }, "• "),
+							`请谨慎操作，此操作将清空所有 【${row.小区名称}】 小区数据，小区编码为 【${row.小区ID}】 ，连错期间，请再次跟相关人员核实确认！`,
+						]
+					),
+				]),
+				// 表单组件
+				h(FormatForm, {
+					ref: formatFormInstance,
+					...formProps,
+				}),
+			]),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = formatFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: "点错了",
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = formatFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: "确认格式化",
+				type: "danger",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					/** 提交表单时 校验 */
+					const res = await formatFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						/** 这里可以添加实际的格式化逻辑 */
+						consola.success("格式化操作完成！");
+					}
+				},
+			},
+		],
+	});
 }
 
 /**
@@ -153,7 +260,7 @@ async function handleSearch() {
  */
 function handleFormat(row: 初始化小区_列表数据) {
 	console.log("格式化操作", row);
-	// 实现格式化逻辑
+	openFormatDialog(row);
 }
 </script>
 
