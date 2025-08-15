@@ -156,7 +156,7 @@ export function useReTreeLineIcon(
 
 		const flatNodes = getFlatNodes();
 		const path: TreeNodeWithIcon[] = [];
-		let currentNode = selectedNode.value;
+		const currentNode = selectedNode.value;
 
 		// 简化版路径查找，实际可以更复杂
 		path.unshift(currentNode);

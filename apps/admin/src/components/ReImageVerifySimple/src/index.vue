@@ -91,14 +91,14 @@ onMounted(async () => {
 <template>
 	<div class="re-image-verify-simple">
 		<div
+			v-loading="isLoading"
 			class="captcha-container"
 			:class="{ loading: isLoading }"
-			@click="handleRefresh"
 			:title="isLoading ? '验证码加载中...' : '点击刷新验证码'"
-			v-loading="isLoading"
 			element-loading-text="验证码加载中..."
 			element-loading-spinner="el-icon-loading"
 			element-loading-background="rgba(255, 255, 255, 0.8)"
+			@click="handleRefresh"
 		>
 			<!-- 验证码图片 -->
 			<img
@@ -121,7 +121,7 @@ onMounted(async () => {
 			</div>
 
 			<!-- 刷新提示 -->
-			<div class="refresh-hint" v-show="!isLoading && !hasError && captchaData">
+			<div v-show="!isLoading && !hasError && captchaData" class="refresh-hint">
 				<component :is="useRenderIcon('material-symbols:refresh')" class="refresh-icon" />
 			</div>
 		</div>

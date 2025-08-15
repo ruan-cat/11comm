@@ -21,10 +21,10 @@ import {
 	/** @see https://pure-admin.cn/pages/routerMenu/#如何只要静态路由 */
 	addPathMatch,
 } from "./utils";
-import {
-	type Router,
-	type RouteRecordRaw,
-	type RouteComponent,
+import type {
+	Router,
+	RouteRecordRaw,
+	RouteComponent,
 	// 使用 unplugin-vue-router 自动化路由插件 故不使用原版路由提供的函数
 	// createRouter
 } from "vue-router";

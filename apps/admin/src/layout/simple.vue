@@ -5,7 +5,7 @@ import { ref, computed, watch } from "vue";
 <template>
 	<section class="simple-root">
 		<!-- 简单布局页 仅仅是提供一个空的容器 -->
-		<router-view></router-view>
+		<router-view />
 	</section>
 </template>
 

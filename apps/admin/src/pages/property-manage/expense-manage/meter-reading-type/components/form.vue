@@ -67,9 +67,9 @@ defineExpose({
 <template>
 	<PlusForm
 		ref="plusFormRef"
+		v-model="form"
 		class="form-root"
 		:has-footer="false"
-		v-model="form"
 		:default-values="defaultValues"
 		:columns="plusFormColumnsComputed"
 		:rules="plusFormRules"

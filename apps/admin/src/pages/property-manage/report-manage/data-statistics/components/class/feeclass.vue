@@ -5,7 +5,7 @@
 			<div class="title">{{ item.title }}</div>
 			<div class="value">{{ item.value }}</div>
 		</div>
-		<div class="null"></div>
+		<div class="null" />
 	</div>
 </template>
 

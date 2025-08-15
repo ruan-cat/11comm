@@ -141,7 +141,7 @@ const handleCheckOut = (house: HouseInfo) => {
 					<div class="card-header">
 						<span class="card-title">{{ index === 0 ? "101房屋 信息" : "1109房屋 信息" }}</span>
 						<el-button type="primary" size="small" @click="handleCheckOut(house)">
-							<i class="fa fa-sign-out"></i> 我要迁出
+							<i class="fa fa-sign-out" /> 我要迁出
 						</el-button>
 					</div>
 				</template>

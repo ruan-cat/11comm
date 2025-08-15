@@ -1,10 +1,10 @@
 import {
 	useRouter,
 	useRoute,
-	RouteLocationRaw,
-	NavigationFailure,
-	RouteLocationNormalized,
-	NavigationGuardNext,
+	type RouteLocationRaw,
+	type NavigationFailure,
+	type RouteLocationNormalized,
+	type NavigationGuardNext,
 } from "vue-router";
 import { useRouteInfoStoreHook } from "@/store/modules/route-info";
 import { getRouteByName } from "@/router/utils";

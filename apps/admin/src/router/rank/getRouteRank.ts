@@ -1,6 +1,6 @@
 import { routesRank } from "@/pages/rank";
 
-import { type RankRouteKeys } from "./rank-route-keys";
+import type { RankRouteKeys } from "./rank-route-keys";
 
 /**
  * 根据key值来获取路由排序

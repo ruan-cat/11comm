@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-import { JsonVO } from "@ruan-cat/utils/vueuse";
+import type { JsonVO } from "@ruan-cat/utils/vueuse";
 
 /** 框架自带的用户信息 */
 export type UserResult = {
