@@ -191,32 +191,33 @@ defineExpose({
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-		:row-props="{ gutter: 20 }"
-		:col-props="{ span: 12 }"
-		label-width="120px"
-		label-position="right"
-	>
-		<!-- 照片上传插槽 -->
-		<template #plus-field-照片>
-			<div class="upload-container">
-				<el-upload class="avatar-uploader" action="#" :show-file-list="false" :auto-upload="false" accept="image/*">
-					<div class="upload-area">
-						<el-icon class="upload-icon">
-							<Plus />
-						</el-icon>
-					</div>
-				</el-upload>
-			</div>
-		</template>
-	</PlusForm>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+			:row-props="{ gutter: 20 }"
+			:col-props="{ span: 12 }"
+			label-width="120px"
+			label-position="right"
+		>
+			<!-- 照片上传插槽 -->
+			<template #plus-field-照片>
+				<div class="upload-container">
+					<el-upload class="avatar-uploader" action="#" :show-file-list="false" :auto-upload="false" accept="image/*">
+						<div class="upload-area">
+							<el-icon class="upload-icon">
+								<Plus />
+							</el-icon>
+						</div>
+					</el-upload>
+				</div>
+			</template>
+		</PlusForm>
+	</section>
 </template>
 
 <style lang="scss" scoped>
