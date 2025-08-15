@@ -20,13 +20,12 @@ const columns = ref<TableColumnList>([
 	{
 		label: "小区ID",
 		prop: "小区ID",
-		width: 120,
-		fixed: true,
+		minWidth: 120,
 	},
 	{
 		label: "小区名称",
 		prop: "小区名称",
-		width: 150,
+		minWidth: 150,
 	},
 	{
 		label: "附近地标",
