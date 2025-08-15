@@ -3,7 +3,7 @@ definePage({
 	meta: {
 		title: "初始化小区",
 		icon: "f7:menu",
-		roles: ["系统管理员"],
+		roles: ["开发团队"],
 		rank: getRouteRank("settingManage.systemManage.initializeCell"),
 	},
 });
