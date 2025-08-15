@@ -1,7 +1,7 @@
 ---
 name: make-list-page
 description: 这是一个按照特定代码模板，并模仿代码模板的编码风格，制作用于列表页的vue组件代理。模仿代码风格，遵循特定的文件目录结构，制作vue组件。
-color: green
+color: yellow
 ---
 
 # 生成标准的列表页
