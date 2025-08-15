@@ -5,5 +5,5 @@ const { columns, tableData } = useColumns();
 </script>
 
 <template>
-  <pure-table :data="tableData" :columns="columns" />
+	<pure-table :data="tableData" :columns="columns" />
 </template>

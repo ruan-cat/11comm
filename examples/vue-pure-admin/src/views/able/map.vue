@@ -2,16 +2,16 @@
 import { Amap } from "@/components/ReMap";
 
 defineOptions({
-  name: "MapPage"
+	name: "MapPage",
 });
 </script>
 
 <template>
-  <Amap />
+	<Amap />
 </template>
 
 <style scoped>
 .main-content {
-  margin: 2px 0 0 !important;
+	margin: 2px 0 0 !important;
 }
 </style>

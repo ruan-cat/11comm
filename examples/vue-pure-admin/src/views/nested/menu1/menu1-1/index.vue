@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 defineOptions({
-  name: "Menu1-1"
+	name: "Menu1-1",
 });
 
 const input = ref("");
@@ -11,9 +11,9 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="dark:text-white">
-    <p>{{ t("menus.pureMenu1") }}</p>
-    <p style="text-indent: 2em">{{ t("menus.pureMenu1-1") }}</p>
-    <el-input v-model="input" />
-  </div>
+	<div class="dark:text-white">
+		<p>{{ t("menus.pureMenu1") }}</p>
+		<p style="text-indent: 2em">{{ t("menus.pureMenu1-1") }}</p>
+		<el-input v-model="input" />
+	</div>
 </template>

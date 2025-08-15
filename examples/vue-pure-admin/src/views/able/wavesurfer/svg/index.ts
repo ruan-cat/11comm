@@ -4,12 +4,12 @@ import Forward from "./forward.svg?component";
 import Rewind from "./rewind.svg?component";
 
 export {
-  /** 播放 */
-  Play,
-  /** 暂停 */
-  Pause,
-  /** 快进 */
-  Forward,
-  /** 快退 */
-  Rewind
+	/** 播放 */
+	Play,
+	/** 暂停 */
+	Pause,
+	/** 快进 */
+	Forward,
+	/** 快退 */
+	Rewind,
 };

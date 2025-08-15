@@ -3,24 +3,15 @@
 	"tasks": {
 		"@01s-11comm/admin#build": {
 			"cache": true,
-			"outputs": [
-				"**/dist/**",
-				"apps/admin/dist/**"
-			]
+			"outputs": ["**/dist/**", "apps/admin/dist/**"]
 		},
 		"@01s-11comm/admin#docs:build": {
 			"cache": true,
-			"outputs": [
-				"**/.vitepress/dist/**",
-				"apps/admin/src/.vitepress/dist/**"
-			]
+			"outputs": ["**/.vitepress/dist/**", "apps/admin/src/.vitepress/dist/**"]
 		},
 		"//#deploy": {
 			"cache": false,
-			"dependsOn": [
-				"@01s-11comm/admin#build",
-				"@01s-11comm/admin#docs:build"
-			]
+			"dependsOn": ["@01s-11comm/admin#build", "@01s-11comm/admin#docs:build"]
 		}
 	}
 }

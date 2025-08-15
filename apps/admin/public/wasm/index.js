@@ -3856,7 +3856,7 @@
 									)
 								: PromiseImpl.resolve(value).then(
 										function (unwrapped) {
-											(result.value = unwrapped), resolve(result);
+											((result.value = unwrapped), resolve(result));
 										},
 										function (error) {
 											return invoke("throw", error, resolve, reject);
@@ -3925,14 +3925,19 @@
 								"throw" === context.method)
 							)
 								return ContinueSentinel;
-							(context.method = "throw"),
-								(context.arg = new TypeError("The iterator does not provide a 'throw' method"));
+							((context.method = "throw"),
+								(context.arg = new TypeError("The iterator does not provide a 'throw' method")));
 						}
 						return ContinueSentinel;
 					}
 					var record = tryCatch(method, delegate.iterator, context.arg);
 					if ("throw" === record.type)
-						return (context.method = "throw"), (context.arg = record.arg), (context.delegate = null), ContinueSentinel;
+						return (
+							(context.method = "throw"),
+							(context.arg = record.arg),
+							(context.delegate = null),
+							ContinueSentinel
+						);
 					var info = record.arg;
 					return info
 						? info.done
@@ -3949,16 +3954,16 @@
 				}
 				function pushTryEntry(locs) {
 					var entry = { tryLoc: locs[0] };
-					1 in locs && (entry.catchLoc = locs[1]),
+					(1 in locs && (entry.catchLoc = locs[1]),
 						2 in locs && ((entry.finallyLoc = locs[2]), (entry.afterLoc = locs[3])),
-						this.tryEntries.push(entry);
+						this.tryEntries.push(entry));
 				}
 				function resetTryEntry(entry) {
 					var record = entry.completion || {};
-					(record.type = "normal"), delete record.arg, (entry.completion = record);
+					((record.type = "normal"), delete record.arg, (entry.completion = record));
 				}
 				function Context(tryLocsList) {
-					(this.tryEntries = [{ tryLoc: "root" }]), tryLocsList.forEach(pushTryEntry, this), this.reset(!0);
+					((this.tryEntries = [{ tryLoc: "root" }]), tryLocsList.forEach(pushTryEntry, this), this.reset(!0));
 				}
 				function values(iterable) {
 					if (iterable) {
@@ -3969,8 +3974,8 @@
 							var i = -1,
 								next = function next() {
 									for (; ++i < iterable.length; )
-										if (hasOwn.call(iterable, i)) return (next.value = iterable[i]), (next.done = !1), next;
-									return (next.value = undefined), (next.done = !0), next;
+										if (hasOwn.call(iterable, i)) return ((next.value = iterable[i]), (next.done = !1), next);
+									return ((next.value = undefined), (next.done = !0), next);
 								};
 							return (next.next = next);
 						}
@@ -4039,9 +4044,9 @@
 							function next() {
 								for (; keys.length; ) {
 									var key = keys.pop();
-									if (key in object) return (next.value = key), (next.done = !1), next;
+									if (key in object) return ((next.value = key), (next.done = !1), next);
 								}
-								return (next.done = !0), next;
+								return ((next.done = !0), next);
 							}
 						);
 					}),
@@ -4140,7 +4145,7 @@
 							for (var i = this.tryEntries.length - 1; i >= 0; --i) {
 								var entry = this.tryEntries[i];
 								if (entry.finallyLoc === finallyLoc)
-									return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel;
+									return (this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel);
 							}
 						},
 						catch: function _catch(tryLoc) {
@@ -4234,11 +4239,11 @@
 				var keys = Object.keys(object);
 				if (Object.getOwnPropertySymbols) {
 					var symbols = Object.getOwnPropertySymbols(object);
-					enumerableOnly &&
+					(enumerableOnly &&
 						(symbols = symbols.filter(function (sym) {
 							return Object.getOwnPropertyDescriptor(object, sym).enumerable;
 						})),
-						keys.push.apply(keys, symbols);
+						keys.push.apply(keys, symbols));
 				}
 				return keys;
 			}
@@ -4470,7 +4475,7 @@
 							while (1)
 								switch ((_context4.prev = _context4.next)) {
 									case 0:
-										(workerPath = _ref.workerPath), (wasmPath = _ref.wasmPath);
+										((workerPath = _ref.workerPath), (wasmPath = _ref.wasmPath));
 										_context4.next = 3;
 										return initWorker(workerPath, wasmPath);
 									case 3:
@@ -4523,15 +4528,15 @@
 																						: 26;
 																		break;
 																	case 3:
-																		(_ref3 = e.data || {}),
+																		((_ref3 = e.data || {}),
 																			(imageDataBuffer = _ref3.imageDataBuffer),
 																			(width = _ref3.width),
 																			(height = _ref3.height),
 																			(duration = _ref3.duration),
 																			(id = _ref3.id),
 																			(_ref3$meta = _ref3.meta),
-																			(meta = _ref3$meta === void 0 ? {} : _ref3$meta);
-																		(_meta$angle = meta.angle), (angle = _meta$angle === void 0 ? 0 : _meta$angle);
+																			(meta = _ref3$meta === void 0 ? {} : _ref3$meta));
+																		((_meta$angle = meta.angle), (angle = _meta$angle === void 0 ? 0 : _meta$angle));
 																		_context3.next = 7;
 																		return getUrl(width, height, imageDataBuffer, angle);
 																	case 7:
@@ -4543,7 +4548,7 @@
 																			height,
 																			duration: duration / 1000000,
 																		};
-																		(_pool$getCbk = pool.getCbk(id)), (url = _pool$getCbk.url);
+																		((_pool$getCbk = pool.getCbk(id)), (url = _pool$getCbk.url));
 																		onChange &&
 																			onChange(
 																				{
@@ -4555,10 +4560,10 @@
 																		url.push(img.url);
 																		return _context3.abrupt("break", 27);
 																	case 15:
-																		(_ref4 = e.data || {}), (id = _ref4.id), (meta = _ref4.meta);
+																		((_ref4 = e.data || {}), (id = _ref4.id), (meta = _ref4.meta));
 																		cbk = pool.getCbk(id);
 																		onSuccess = cbk.onSuccess;
-																		(_pool$getCbk2 = pool.getCbk(id)), (url = _pool$getCbk2.url);
+																		((_pool$getCbk2 = pool.getCbk(id)), (url = _pool$getCbk2.url));
 																		onSuccess &&
 																			onSuccess({
 																				url,
@@ -4566,7 +4571,7 @@
 																			});
 																		return _context3.abrupt("break", 27);
 																	case 21:
-																		(_ref5 = e.data || {}), (errmsg = _ref5.errmsg), (id = _ref5.id);
+																		((_ref5 = e.data || {}), (errmsg = _ref5.errmsg), (id = _ref5.id));
 																		cbk = pool.getCbk(id);
 																		onError = cbk.onError;
 																		onError && onError(errmsg);

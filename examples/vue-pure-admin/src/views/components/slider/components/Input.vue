@@ -5,20 +5,20 @@ const value = ref(0);
 </script>
 
 <template>
-  <div class="slider-demo-block">
-    <el-slider v-model="value" show-input />
-  </div>
+	<div class="slider-demo-block">
+		<el-slider v-model="value" show-input />
+	</div>
 </template>
 
 <style lang="scss" scoped>
 .slider-demo-block {
-  display: flex;
-  align-items: center;
-  max-width: 600px;
+	display: flex;
+	align-items: center;
+	max-width: 600px;
 }
 
 .slider-demo-block .el-slider {
-  margin-top: 0;
-  margin-left: 12px;
+	margin-top: 0;
+	margin-left: 12px;
 }
 </style>

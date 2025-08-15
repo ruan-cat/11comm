@@ -4,29 +4,26 @@ import { isUrl } from "@pureadmin/utils";
 import { menuType } from "@/layout/types";
 
 const props = defineProps<{
-  to: menuType;
+	to: menuType;
 }>();
 
 const isExternalLink = computed(() => isUrl(props.to.name));
 const getLinkProps = (item: menuType) => {
-  if (isExternalLink.value) {
-    return {
-      href: item.name,
-      target: "_blank",
-      rel: "noopener"
-    };
-  }
-  return {
-    to: item
-  };
+	if (isExternalLink.value) {
+		return {
+			href: item.name,
+			target: "_blank",
+			rel: "noopener",
+		};
+	}
+	return {
+		to: item,
+	};
 };
 </script>
 
 <template>
-  <component
-    :is="isExternalLink ? 'a' : 'router-link'"
-    v-bind="getLinkProps(to)"
-  >
-    <slot />
-  </component>
+	<component :is="isExternalLink ? 'a' : 'router-link'" v-bind="getLinkProps(to)">
+		<slot />
+	</component>
 </template>

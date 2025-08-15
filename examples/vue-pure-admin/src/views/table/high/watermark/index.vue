@@ -7,11 +7,5 @@ const { columns, dataList } = useColumns(waterRef);
 </script>
 
 <template>
-  <pure-table
-    ref="waterRef"
-    row-key="id"
-    border
-    :data="dataList"
-    :columns="columns"
-  />
+	<pure-table ref="waterRef" row-key="id" border :data="dataList" :columns="columns" />
 </template>

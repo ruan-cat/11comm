@@ -5,10 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-bg_color: var(--el-bg-color);
-  --color-primary: var(--el-color-primary);
-  --color-text_color_primary: var(--el-text-color-primary);
-  --color-text_color_regular: var(--el-text-color-regular);
+	--color-bg_color: var(--el-bg-color);
+	--color-primary: var(--el-color-primary);
+	--color-text_color_primary: var(--el-text-color-primary);
+	--color-text_color_regular: var(--el-text-color-regular);
 }
 
 /*
@@ -20,27 +20,27 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
 }
 
 @utility flex-c {
-  @apply flex justify-center items-center;
+	@apply flex justify-center items-center;
 }
 
 @utility flex-ac {
-  @apply flex justify-around items-center;
+	@apply flex justify-around items-center;
 }
 
 @utility flex-bc {
-  @apply flex justify-between items-center;
+	@apply flex justify-between items-center;
 }
 
 @utility navbar-bg-hover {
-  @apply dark:text-white dark:hover:bg-[#242424]!;
+	@apply dark:text-white dark:hover:bg-[#242424]!;
 }

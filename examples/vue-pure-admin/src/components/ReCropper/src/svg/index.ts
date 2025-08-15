@@ -14,18 +14,18 @@ import RotateRight from "./rotate-right.svg?component";
 import SearchMinus from "./search-minus.svg?component";
 
 export {
-  Reload,
-  Upload,
-  ArrowH,
-  ArrowV,
-  ArrowUp,
-  ArrowDown,
-  ArrowLeft,
-  ChangeIcon,
-  ArrowRight,
-  RotateLeft,
-  SearchPlus,
-  RotateRight,
-  SearchMinus,
-  DownloadIcon
+	Reload,
+	Upload,
+	ArrowH,
+	ArrowV,
+	ArrowUp,
+	ArrowDown,
+	ArrowLeft,
+	ChangeIcon,
+	ArrowRight,
+	RotateLeft,
+	SearchPlus,
+	RotateRight,
+	SearchMinus,
+	DownloadIcon,
 };

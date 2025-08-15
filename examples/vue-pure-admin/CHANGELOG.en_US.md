@@ -503,7 +503,7 @@ Totally `ESM` version
 ### ✔️ Refactor
 
 - completely removed `lodash` and its related libraries
-  [Click here to see Why Removed? How to integrate it yourself? ](https://pure-admin.cn/pages/FAQ/#%E5%B9%B3%E5%8F%B0%E5%9C%A8-v3-9-5-%E7%89%88%E6%9C%AC%E5%AE%8C%E5%85%A8%E7%A7%BB%E9%99%A4%E4%BA%86-lodash-%E5%92%8C%E5%85%B6%E7%9B%B8%E5%85%B3%E5%BA%93-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%A7%BB%E9%99%A4-%E5%A6%82%E4%BD%95%E8%87%AA%E8%A1%8C%E9%9B%86%E6%88%90)
+  [Click here to see Why Removed? How to integrate it yourself?](https://pure-admin.cn/pages/FAQ/#%E5%B9%B3%E5%8F%B0%E5%9C%A8-v3-9-5-%E7%89%88%E6%9C%AC%E5%AE%8C%E5%85%A8%E7%A7%BB%E9%99%A4%E4%BA%86-lodash-%E5%92%8C%E5%85%B6%E7%9B%B8%E5%85%B3%E5%BA%93-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%A7%BB%E9%99%A4-%E5%A6%82%E4%BD%95%E8%87%AA%E8%A1%8C%E9%9B%86%E6%88%90)
 
 ### 🎫 Feat
 
@@ -582,7 +582,7 @@ Totally `ESM` version
 
 ### 🍏 Perf
 
-- perf: Great package optimization, please be sure to upgrade! Use `unplugin-vue-define-options` to replace `unplugin-vue-macros`, the packaging speed is increased several times, use `unplugin-vue-macros` to take `mac` with moderate performance as an example, the packaging time of the full version is` 6` minutes😭, after replacing it with `unplugin-vue-define-options`, the packaging time on the same computer is `50` seconds☺️
+- perf: Great package optimization, please be sure to upgrade! Use `unplugin-vue-define-options` to replace `unplugin-vue-macros`, the packaging speed is increased several times, use `unplugin-vue-macros` to take `mac` with moderate performance as an example, the packaging time of the full version is`6` minutes😭, after replacing it with `unplugin-vue-define-options`, the packaging time on the same computer is `50` seconds☺️
 
 # 3.8.6 (2022-11-27)
 
@@ -598,7 +598,7 @@ Totally `ESM` version
 
 ### 🍏 Perf
 
-- Great optimization, remove `@pureadmin/components` and use compatible writing, the package size of the platform is reduced by `0.4` MB before compression is not enabled, and the resource of `2.3` MB is reduced for the first screen request, which is for the [lite version ](https://github.com/pure-admin/pure-admin-thin) is a very big optimization, the streamlined version has synchronized code
+- Great optimization, remove `@pureadmin/components` and use compatible writing, the package size of the platform is reduced by `0.4` MB before compression is not enabled, and the resource of `2.3` MB is reduced for the first screen request, which is for the [lite version](https://github.com/pure-admin/pure-admin-thin) is a very big optimization, the streamlined version has synchronized code
 
 # 3.8.0 (2022-11-26)
 

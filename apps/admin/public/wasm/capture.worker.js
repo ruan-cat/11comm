@@ -4503,7 +4503,7 @@ var Module = typeof Module != "undefined" ? Module : {};
 								)
 							: PromiseImpl.resolve(value).then(
 									function (unwrapped) {
-										(result.value = unwrapped), resolve(result);
+										((result.value = unwrapped), resolve(result));
 									},
 									function (error) {
 										return invoke("throw", error, resolve, reject);
@@ -4570,13 +4570,14 @@ var Module = typeof Module != "undefined" ? Module : {};
 							"throw" === context.method)
 						)
 							return ContinueSentinel;
-						(context.method = "throw"), (context.arg = new TypeError("The iterator does not provide a 'throw' method"));
+						((context.method = "throw"),
+							(context.arg = new TypeError("The iterator does not provide a 'throw' method")));
 					}
 					return ContinueSentinel;
 				}
 				var record = tryCatch(method, delegate.iterator, context.arg);
 				if ("throw" === record.type)
-					return (context.method = "throw"), (context.arg = record.arg), (context.delegate = null), ContinueSentinel;
+					return ((context.method = "throw"), (context.arg = record.arg), (context.delegate = null), ContinueSentinel);
 				var info = record.arg;
 				return info
 					? info.done
@@ -4593,16 +4594,16 @@ var Module = typeof Module != "undefined" ? Module : {};
 			}
 			function pushTryEntry(locs) {
 				var entry = { tryLoc: locs[0] };
-				1 in locs && (entry.catchLoc = locs[1]),
+				(1 in locs && (entry.catchLoc = locs[1]),
 					2 in locs && ((entry.finallyLoc = locs[2]), (entry.afterLoc = locs[3])),
-					this.tryEntries.push(entry);
+					this.tryEntries.push(entry));
 			}
 			function resetTryEntry(entry) {
 				var record = entry.completion || {};
-				(record.type = "normal"), delete record.arg, (entry.completion = record);
+				((record.type = "normal"), delete record.arg, (entry.completion = record));
 			}
 			function Context(tryLocsList) {
-				(this.tryEntries = [{ tryLoc: "root" }]), tryLocsList.forEach(pushTryEntry, this), this.reset(!0);
+				((this.tryEntries = [{ tryLoc: "root" }]), tryLocsList.forEach(pushTryEntry, this), this.reset(!0));
 			}
 			function values(iterable) {
 				if (iterable) {
@@ -4613,8 +4614,8 @@ var Module = typeof Module != "undefined" ? Module : {};
 						var i = -1,
 							next = function next() {
 								for (; ++i < iterable.length; )
-									if (hasOwn.call(iterable, i)) return (next.value = iterable[i]), (next.done = !1), next;
-								return (next.value = undefined), (next.done = !0), next;
+									if (hasOwn.call(iterable, i)) return ((next.value = iterable[i]), (next.done = !1), next);
+								return ((next.value = undefined), (next.done = !0), next);
 							};
 						return (next.next = next);
 					}
@@ -4683,9 +4684,9 @@ var Module = typeof Module != "undefined" ? Module : {};
 						function next() {
 							for (; keys.length; ) {
 								var key = keys.pop();
-								if (key in object) return (next.value = key), (next.done = !1), next;
+								if (key in object) return ((next.value = key), (next.done = !1), next);
 							}
-							return (next.done = !0), next;
+							return ((next.done = !0), next);
 						}
 					);
 				}),
@@ -4781,7 +4782,7 @@ var Module = typeof Module != "undefined" ? Module : {};
 						for (var i = this.tryEntries.length - 1; i >= 0; --i) {
 							var entry = this.tryEntries[i];
 							if (entry.finallyLoc === finallyLoc)
-								return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel;
+								return (this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel);
 						}
 					},
 					catch: function _catch(tryLoc) {
@@ -4847,11 +4848,11 @@ var Module = typeof Module != "undefined" ? Module : {};
 			var keys = Object.keys(object);
 			if (Object.getOwnPropertySymbols) {
 				var symbols = Object.getOwnPropertySymbols(object);
-				enumerableOnly &&
+				(enumerableOnly &&
 					(symbols = symbols.filter(function (sym) {
 						return Object.getOwnPropertyDescriptor(object, sym).enumerable;
 					})),
-					keys.push.apply(keys, symbols);
+					keys.push.apply(keys, symbols));
 			}
 			return keys;
 		}
@@ -8574,7 +8575,7 @@ var SYSCALLS = {
 		HEAP32[(buf + 12) >> 2] = stat.uid;
 		HEAP32[(buf + 16) >> 2] = stat.gid;
 		HEAP32[(buf + 20) >> 2] = stat.rdev;
-		(tempI64 = [
+		((tempI64 = [
 			stat.size >>> 0,
 			((tempDouble = stat.size),
 			+Math.abs(tempDouble) >= 1.0
@@ -8584,13 +8585,13 @@ var SYSCALLS = {
 				: 0),
 		]),
 			(HEAP32[(buf + 24) >> 2] = tempI64[0]),
-			(HEAP32[(buf + 28) >> 2] = tempI64[1]);
+			(HEAP32[(buf + 28) >> 2] = tempI64[1]));
 		HEAP32[(buf + 32) >> 2] = 4096;
 		HEAP32[(buf + 36) >> 2] = stat.blocks;
 		var atime = stat.atime.getTime();
 		var mtime = stat.mtime.getTime();
 		var ctime = stat.ctime.getTime();
-		(tempI64 = [
+		((tempI64 = [
 			Math.floor(atime / 1000) >>> 0,
 			((tempDouble = Math.floor(atime / 1000)),
 			+Math.abs(tempDouble) >= 1.0
@@ -8600,9 +8601,9 @@ var SYSCALLS = {
 				: 0),
 		]),
 			(HEAP32[(buf + 40) >> 2] = tempI64[0]),
-			(HEAP32[(buf + 44) >> 2] = tempI64[1]);
+			(HEAP32[(buf + 44) >> 2] = tempI64[1]));
 		HEAPU32[(buf + 48) >> 2] = (atime % 1000) * 1000;
-		(tempI64 = [
+		((tempI64 = [
 			Math.floor(mtime / 1000) >>> 0,
 			((tempDouble = Math.floor(mtime / 1000)),
 			+Math.abs(tempDouble) >= 1.0
@@ -8612,9 +8613,9 @@ var SYSCALLS = {
 				: 0),
 		]),
 			(HEAP32[(buf + 56) >> 2] = tempI64[0]),
-			(HEAP32[(buf + 60) >> 2] = tempI64[1]);
+			(HEAP32[(buf + 60) >> 2] = tempI64[1]));
 		HEAPU32[(buf + 64) >> 2] = (mtime % 1000) * 1000;
-		(tempI64 = [
+		((tempI64 = [
 			Math.floor(ctime / 1000) >>> 0,
 			((tempDouble = Math.floor(ctime / 1000)),
 			+Math.abs(tempDouble) >= 1.0
@@ -8624,9 +8625,9 @@ var SYSCALLS = {
 				: 0),
 		]),
 			(HEAP32[(buf + 72) >> 2] = tempI64[0]),
-			(HEAP32[(buf + 76) >> 2] = tempI64[1]);
+			(HEAP32[(buf + 76) >> 2] = tempI64[1]));
 		HEAPU32[(buf + 80) >> 2] = (ctime % 1000) * 1000;
-		(tempI64 = [
+		((tempI64 = [
 			stat.ino >>> 0,
 			((tempDouble = stat.ino),
 			+Math.abs(tempDouble) >= 1.0
@@ -8636,7 +8637,7 @@ var SYSCALLS = {
 				: 0),
 		]),
 			(HEAP32[(buf + 88) >> 2] = tempI64[0]),
-			(HEAP32[(buf + 92) >> 2] = tempI64[1]);
+			(HEAP32[(buf + 92) >> 2] = tempI64[1]));
 		return 0;
 	},
 	doMsync: function (addr, stream, len, flags, offset) {
@@ -8800,7 +8801,7 @@ function ___syscall_getdents64(fd, dirp, count) {
 							? 10 // DT_LNK, symbolic link.
 							: 8; // DT_REG, regular file.
 			}
-			(tempI64 = [
+			((tempI64 = [
 				id >>> 0,
 				((tempDouble = id),
 				+Math.abs(tempDouble) >= 1.0
@@ -8810,8 +8811,8 @@ function ___syscall_getdents64(fd, dirp, count) {
 					: 0),
 			]),
 				(HEAP32[(dirp + pos) >> 2] = tempI64[0]),
-				(HEAP32[(dirp + pos + 4) >> 2] = tempI64[1]);
-			(tempI64 = [
+				(HEAP32[(dirp + pos + 4) >> 2] = tempI64[1]));
+			((tempI64 = [
 				((idx + 1) * struct_size) >>> 0,
 				((tempDouble = (idx + 1) * struct_size),
 				+Math.abs(tempDouble) >= 1.0
@@ -8821,7 +8822,7 @@ function ___syscall_getdents64(fd, dirp, count) {
 					: 0),
 			]),
 				(HEAP32[(dirp + pos + 8) >> 2] = tempI64[0]),
-				(HEAP32[(dirp + pos + 12) >> 2] = tempI64[1]);
+				(HEAP32[(dirp + pos + 12) >> 2] = tempI64[1]));
 			HEAP16[(dirp + pos + 16) >> 1] = 280;
 			HEAP8[(dirp + pos + 18) >> 0] = type;
 			stringToUTF8(name, dirp + pos + 19, 256);
@@ -9271,7 +9272,7 @@ function _fd_fdstat_get(fd, pbuf) {
 		}
 		HEAP8[pbuf >> 0] = type;
 		HEAP16[(pbuf + 2) >> 1] = flags;
-		(tempI64 = [
+		((tempI64 = [
 			rightsBase >>> 0,
 			((tempDouble = rightsBase),
 			+Math.abs(tempDouble) >= 1.0
@@ -9281,8 +9282,8 @@ function _fd_fdstat_get(fd, pbuf) {
 				: 0),
 		]),
 			(HEAP32[(pbuf + 8) >> 2] = tempI64[0]),
-			(HEAP32[(pbuf + 12) >> 2] = tempI64[1]);
-		(tempI64 = [
+			(HEAP32[(pbuf + 12) >> 2] = tempI64[1]));
+		((tempI64 = [
 			rightsInheriting >>> 0,
 			((tempDouble = rightsInheriting),
 			+Math.abs(tempDouble) >= 1.0
@@ -9292,7 +9293,7 @@ function _fd_fdstat_get(fd, pbuf) {
 				: 0),
 		]),
 			(HEAP32[(pbuf + 16) >> 2] = tempI64[0]),
-			(HEAP32[(pbuf + 20) >> 2] = tempI64[1]);
+			(HEAP32[(pbuf + 20) >> 2] = tempI64[1]));
 		return 0;
 	} catch (e) {
 		if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
@@ -9337,7 +9338,7 @@ function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
 		if (isNaN(offset)) return 61;
 		var stream = SYSCALLS.getStreamFromFD(fd);
 		FS.llseek(stream, offset, whence);
-		(tempI64 = [
+		((tempI64 = [
 			stream.position >>> 0,
 			((tempDouble = stream.position),
 			+Math.abs(tempDouble) >= 1.0
@@ -9347,7 +9348,7 @@ function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
 				: 0),
 		]),
 			(HEAP32[newOffset >> 2] = tempI64[0]),
-			(HEAP32[(newOffset + 4) >> 2] = tempI64[1]);
+			(HEAP32[(newOffset + 4) >> 2] = tempI64[1]));
 		if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null; // reset readdir state
 		return 0;
 	} catch (e) {
