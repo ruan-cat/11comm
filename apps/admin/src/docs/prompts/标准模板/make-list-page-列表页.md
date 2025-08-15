@@ -31,7 +31,7 @@
 
 ## 组件命名风格
 
-详情请阅读文件 @.github\prompts\标准模板\代码风格.md 。
+详情请阅读文件 `apps\admin\src\docs\prompts\标准模板\code-style-代码风格.md` 。
 
 ## 没有要求就不要生成左侧可能的单选按钮栏
 
