@@ -148,29 +148,30 @@ defineExpose({
 </script>
 
 <template>
-	<!-- 需要配置分组表单，一旦配置分组表单，columns将会失效
-    1.配置两列：
-      :row-props="{ gutter: 20 }"
-      :col-props="{
-        span: 12, //24/12=2列
-      }"
-    2.为了“身份证号码”label好看点，配置label宽度：
-      :label-width="100"
-  -->
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-		:row-props="{ gutter: 20 }"
-		:col-props="{
-			span: 12, //24/12=2列
-		}"
-		:label-width="100"
-	/>
+	<section class="form-root">
+		<!-- 需要配置分组表单，一旦配置分组表单，columns将会失效
+	    1.配置两列：
+	      :row-props="{ gutter: 20 }"
+	      :col-props="{
+	        span: 12, //24/12=2列
+	      }"
+	    2.为了"身份证号码"label好看点，配置label宽度：
+	      :label-width="100"
+	  -->
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+			:row-props="{ gutter: 20 }"
+			:col-props="{
+				span: 12, //24/12=2列
+			}"
+			:label-width="100"
+		/>
+	</section>
 </template>
 
 <style lang="scss" scoped>

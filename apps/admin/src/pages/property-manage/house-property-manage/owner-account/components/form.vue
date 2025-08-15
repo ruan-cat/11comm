@@ -110,15 +110,16 @@ defineExpose({
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-	/>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+		/>
+	</section>
 </template>
 
 <style lang="scss" scoped>
