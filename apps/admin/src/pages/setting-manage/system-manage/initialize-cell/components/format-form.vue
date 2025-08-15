@@ -1,6 +1,6 @@
 <!--
-  格式化确认表单
-  用于确认格式化小区数据操作
+ * 格式化确认表单
+ * 用于确认格式化小区数据操作
 -->
 <script lang="ts" setup>
 import { ref, computed } from "vue";
@@ -86,7 +86,17 @@ defineExpose({
 </script>
 
 <template>
-	<section>
+	<section class="form-root">
+		<!-- 警告提示 -->
+		<div class="warning-text">
+			<p style="color: #e74c3c; font-size: 14px; line-height: 1.6; margin-bottom: 20px">
+				<span style="color: #e74c3c">• </span>
+				请谨慎操作，此操作将清空所有 <strong>【{{ props.小区名称 }}】</strong> 小区数据，小区编码为
+				<strong>【{{ props.小区ID }}】</strong> ，连错期间，请再次跟相关人员核实确认！
+			</p>
+		</div>
+
+		<!-- 表单组件 -->
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
@@ -103,5 +113,9 @@ defineExpose({
 .form-root {
 	height: 100%;
 	width: 100%;
+
+	.warning-text {
+		margin-bottom: 20px;
+	}
 }
 </style>

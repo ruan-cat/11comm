@@ -179,6 +179,8 @@ function openFormatDialog(row: 初始化小区_列表数据) {
 	const formProps: FormatFormProps = {
 		form: cloneDeep(defaultForm),
 		defaultValues: cloneDeep(defaultForm),
+		小区ID: row.小区ID,
+		小区名称: row.小区名称,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -194,31 +196,10 @@ function openFormatDialog(row: 初始化小区_列表数据) {
 		width: "500px",
 
 		contentRenderer: () =>
-			h("div", { class: "format-dialog-content" }, [
-				// 警告提示
-				h("div", { class: "warning-text", style: { marginBottom: "20px" } }, [
-					h(
-						"p",
-						{
-							style: {
-								color: "#e74c3c",
-								fontSize: "14px",
-								lineHeight: "1.6",
-								marginBottom: "20px",
-							},
-						},
-						[
-							h("span", { style: { color: "#e74c3c" } }, "• "),
-							`请谨慎操作，此操作将清空所有 【${row.小区名称}】 小区数据，小区编码为 【${row.小区ID}】 ，连错期间，请再次跟相关人员核实确认！`,
-						]
-					),
-				]),
-				// 表单组件
-				h(FormatForm, {
-					ref: formatFormInstance,
-					...formProps,
-				}),
-			]),
+			h(FormatForm, {
+				ref: formatFormInstance,
+				...formProps,
+			}),
 
 		async doBeforeClose({ options, index }) {
 			const formComputed = formatFormInstance.value.formComputed;

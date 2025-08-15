@@ -24,4 +24,8 @@ export interface FormatFormProps {
 	form: 格式化确认表单_VO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 格式化确认表单_VO;
+	/** 小区ID */
+	小区ID: string;
+	/** 小区名称 */
+	小区名称: string;
 }
