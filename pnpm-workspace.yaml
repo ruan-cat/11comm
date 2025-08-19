@@ -29,9 +29,12 @@ allowedDeprecatedVersions:
   "glob": "*"
 
 onlyBuiltDependencies:
-  "@parcel/watcher": true
-  "core-js": true
-  "es5-ext": true
-  "esbuild": true
-  "typeit": true
-  "vue-demi": true
+  - "@parcel/watcher"
+  - "@tailwindcss/oxide"
+  - "core-js"
+  - "core-js-pure"
+  - "es5-ext"
+  - "esbuild"
+  - "typeit"
+  - "vue-demi"
+  - "vue3-danmaku"
