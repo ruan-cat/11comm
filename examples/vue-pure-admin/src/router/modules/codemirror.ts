@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/code-box-line",
 		title: $t("menus.pureCodeMirror"),
-		rank: codemirror,
+		rank: codemirror
 	},
 	children: [
 		{
@@ -16,8 +16,8 @@ export default {
 			component: () => import("@/views/codemirror/index.vue"),
 			meta: {
 				title: $t("menus.pureCodeMirror"),
-				extraIcon: "IF-pure-iconfont-new svg",
-			},
-		},
-	],
+				extraIcon: "IF-pure-iconfont-new svg"
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

@@ -7,8 +7,8 @@ const props = withDefaults(defineProps<FormProps>(), {
 	formInline: () => ({
 		name: "",
 		code: "",
-		remark: "",
-	}),
+		remark: ""
+	})
 });
 
 const ruleFormRef = ref();

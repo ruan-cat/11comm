@@ -20,7 +20,7 @@ const { columns, dataList, onAdd, onDel } = useColumns();
 			align-whole="center"
 			:header-cell-style="{
 				background: 'var(--el-fill-color-light)',
-				color: 'var(--el-text-color-primary)',
+				color: 'var(--el-text-color-primary)'
 			}"
 			:data="dataList"
 			:columns="columns"

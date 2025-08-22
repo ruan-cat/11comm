@@ -2,7 +2,7 @@
 import { ReNormalCountTo, ReboundCountTo } from "@/components/ReCountTo";
 
 defineOptions({
-	name: "CountTo",
+	name: "CountTo"
 });
 </script>
 

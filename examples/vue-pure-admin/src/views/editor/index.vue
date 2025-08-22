@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { EditorBase, EditorMulti, EditorUpload } from "./components";
 
 defineOptions({
-	name: "Editor",
+	name: "Editor"
 });
 
 const activeNames = ref("1");

@@ -44,7 +44,7 @@ import {
 	// List,
 	// Pulldown,
 	// 表格
-	Table,
+	Table
 } from "vxe-table";
 
 // 全局默认参数

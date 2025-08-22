@@ -6,12 +6,12 @@ import { ref, computed } from "vue";
 export function useColumns() {
 	const search = ref("");
 	const filterTableData = computed(() =>
-		tableData.filter((data) => !search.value || data.name.toLowerCase().includes(search.value.toLowerCase())),
+		tableData.filter(data => !search.value || data.name.toLowerCase().includes(search.value.toLowerCase()))
 	);
 
 	const handleEdit = (index: number, row) => {
 		message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
-			type: "success",
+			type: "success"
 		});
 	};
 
@@ -23,15 +23,15 @@ export function useColumns() {
 		{
 			prop: "date",
 			// 自定义表头，slot用法  #nameHeader="{ column, $index }"
-			headerSlot: "nameHeader",
+			headerSlot: "nameHeader"
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "地址",
-			prop: "address",
+			prop: "address"
 		},
 		{
 			align: "right",
@@ -46,12 +46,12 @@ export function useColumns() {
 						Delete
 					</el-button>
 				</>
-			),
-		},
+			)
+		}
 	];
 
 	return {
 		columns,
-		filterTableData,
+		filterTableData
 	};
 }

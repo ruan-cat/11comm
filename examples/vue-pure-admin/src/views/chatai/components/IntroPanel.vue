@@ -6,12 +6,12 @@ const chatRef = ref();
 
 onMounted(() => {
 	chatRef.value.demo = {
-		response: (message) => {
+		response: message => {
 			console.log(message);
 			return {
-				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect",
+				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect"
 			};
-		},
+		}
 	};
 });
 </script>
@@ -20,7 +20,7 @@ onMounted(() => {
 	<deep-chat
 		ref="chatRef"
 		:textInput="{
-			placeholder: { text: '发送消息' },
+			placeholder: { text: '发送消息' }
 		}"
 		demo="true"
 		style="border-radius: 8px"

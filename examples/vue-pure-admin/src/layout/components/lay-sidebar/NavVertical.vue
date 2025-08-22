@@ -15,7 +15,7 @@ import LaySidebarCenterCollapse from "../lay-sidebar/components/SidebarCenterCol
 const route = useRoute();
 const isShow = ref(false);
 const showLogo = ref(
-	storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showLogo ?? true,
+	storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showLogo ?? true
 );
 
 const { device, pureApp, isCollapse, tooltipEffect, menuSelect, toggleSideBar } = useNav();
@@ -50,13 +50,13 @@ watch(
 		if (route.path.includes("/redirect")) return;
 		getSubMenuData();
 		menuSelect(route.path);
-	},
+	}
 );
 
 onMounted(() => {
 	getSubMenuData();
 
-	emitter.on("logoChange", (key) => {
+	emitter.on("logoChange", key => {
 		showLogo.value = key;
 	});
 });

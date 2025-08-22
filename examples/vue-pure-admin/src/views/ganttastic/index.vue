@@ -14,10 +14,10 @@ const context = ref([
 				hasHandles: true,
 				label: "需求收集和分析  负责人：小张",
 				style: {
-					background: "#e96560",
-				},
-			},
-		},
+					background: "#e96560"
+				}
+			}
+		}
 	],
 	[
 		{
@@ -29,10 +29,10 @@ const context = ref([
 				hasHandles: true,
 				label: "系统设计  负责人：小强",
 				style: {
-					background: "#5ccfa3",
-				},
-			},
-		},
+					background: "#5ccfa3"
+				}
+			}
+		}
 	],
 	[
 		{
@@ -44,10 +44,10 @@ const context = ref([
 				hasHandles: true,
 				label: "编码实现  负责人：老李",
 				style: {
-					background: "#77d6fa",
-				},
-			},
-		},
+					background: "#77d6fa"
+				}
+			}
+		}
 	],
 	[
 		{
@@ -60,10 +60,10 @@ const context = ref([
 				label: "编码实现  负责人：小明",
 				style: {
 					color: "#fff",
-					background: "#1b2a47",
-				},
-			},
-		},
+					background: "#1b2a47"
+				}
+			}
+		}
 	],
 	[
 		{
@@ -75,10 +75,10 @@ const context = ref([
 				hasHandles: true,
 				label: "内部测试  负责人：小雪",
 				style: {
-					background: "#5ccfa3",
-				},
-			},
-		},
+					background: "#5ccfa3"
+				}
+			}
+		}
 	],
 	[
 		{
@@ -90,10 +90,10 @@ const context = ref([
 				hasHandles: true,
 				label: "系统优化和文档整理  负责人：小欣",
 				style: {
-					background: "#f8bc45",
-				},
-			},
-		},
+					background: "#f8bc45"
+				}
+			}
+		}
 	],
 	[
 		{
@@ -106,11 +106,11 @@ const context = ref([
 				hasHandles: false,
 				label: "部署和上线  负责人：老王",
 				style: {
-					background: "#f3953d",
-				},
-			},
-		},
-	],
+					background: "#f3953d"
+				}
+			}
+		}
+	]
 ]);
 
 function getWeekRange() {
@@ -123,7 +123,7 @@ function getWeekRange() {
 	const endDate = new Date(startDate);
 	endDate.setDate(startDate.getDate() + 6);
 
-	const formatDate = (date) => {
+	const formatDate = date => {
 		const year = date.getFullYear();
 		const month = String(date.getMonth() + 1).padStart(2, "0");
 		const day = String(date.getDate()).padStart(2, "0");
@@ -135,7 +135,7 @@ function getWeekRange() {
 
 	return {
 		currentWeekStart,
-		currentWeekEnd,
+		currentWeekEnd
 	};
 }
 

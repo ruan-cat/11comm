@@ -5,22 +5,22 @@ import { Handle, useNodeConnections } from "@vue-flow/core";
 const props = defineProps({
 	data: {
 		type: Object,
-		required: true,
+		required: true
 	},
 	sourcePosition: {
-		type: String,
+		type: String
 	},
 	targetPosition: {
-		type: String,
-	},
+		type: String
+	}
 });
 
 const sourceConnections = useNodeConnections({
-	handleType: "target",
+	handleType: "target"
 });
 
 const targetConnections = useNodeConnections({
-	handleType: "source",
+	handleType: "source"
 });
 
 const isSender = toRef(() => sourceConnections.value.length <= 0);
@@ -77,7 +77,7 @@ const processLabel = toRef(() => {
 		class="process-node"
 		:style="{
 			backgroundColor: bgColor,
-			boxShadow: data.isRunning ? '0 0 10px rgba(0, 0, 0, 0.5)' : '',
+			boxShadow: data.isRunning ? '0 0 10px rgba(0, 0, 0, 0.5)' : ''
 		}"
 	>
 		<Handle v-if="!isSender" type="target" :position="targetPosition as any">

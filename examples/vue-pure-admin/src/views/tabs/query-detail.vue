@@ -2,7 +2,7 @@
 import { useDetail } from "./hooks";
 
 defineOptions({
-	name: "TabQueryDetail",
+	name: "TabQueryDetail"
 });
 
 const { initToDetail, getParameter } = useDetail();

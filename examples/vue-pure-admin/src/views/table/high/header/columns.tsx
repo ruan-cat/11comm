@@ -7,16 +7,16 @@ export function useColumns() {
 	const columns = ref<TableColumnList>([
 		{
 			label: "日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "地址",
-			prop: "address",
-		},
+			prop: "address"
+		}
 	]);
 
 	function onChange() {
@@ -24,16 +24,16 @@ export function useColumns() {
 		columns.value = [
 			{
 				label: "日期" + Math.round(Math.random() * 99),
-				prop: "date",
+				prop: "date"
 			},
 			{
 				label: Math.round(Math.random() * 99) + "姓名",
-				prop: "name",
+				prop: "name"
 			},
 			{
 				label: "地址",
-				prop: "address",
-			},
+				prop: "address"
+			}
 		];
 	}
 
@@ -46,6 +46,6 @@ export function useColumns() {
 	return {
 		columns,
 		dataList,
-		onChange,
+		onChange
 	};
 }

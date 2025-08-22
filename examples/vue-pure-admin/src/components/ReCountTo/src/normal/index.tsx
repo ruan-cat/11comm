@@ -30,7 +30,7 @@ export default defineComponent({
 			remaining: null,
 			rAF: null,
 			color: null,
-			fontSize: "16px",
+			fontSize: "16px"
 		});
 
 		const getCountDown = computed(() => {
@@ -98,7 +98,7 @@ export default defineComponent({
 						progress,
 						state.localStartVal,
 						endVal - state.localStartVal,
-						state.localDuration as number,
+						state.localDuration as number
 					);
 				}
 			} else {
@@ -151,12 +151,12 @@ export default defineComponent({
 				<span
 					style={{
 						color: props.color,
-						fontSize: props.fontSize,
+						fontSize: props.fontSize
 					}}
 				>
 					{state.displayValue}
 				</span>
 			</>
 		);
-	},
+	}
 });

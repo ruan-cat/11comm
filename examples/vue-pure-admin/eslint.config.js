@@ -40,11 +40,11 @@ export default defineConfig([
 				PromiseFn: "readonly",
 				ComponentElRef: "readonly",
 				parseInt: "readonly",
-				parseFloat: "readonly",
-			},
+				parseFloat: "readonly"
+			}
 		},
 		plugins: {
-			prettier: pluginPrettier,
+			prettier: pluginPrettier
 		},
 		rules: {
 			...configPrettier.rules,
@@ -54,16 +54,16 @@ export default defineConfig([
 				"error",
 				{
 					argsIgnorePattern: "^_",
-					varsIgnorePattern: "^_",
-				},
+					varsIgnorePattern: "^_"
+				}
 			],
 			"prettier/prettier": [
 				"error",
 				{
-					endOfLine: "auto",
-				},
-			],
-		},
+					endOfLine: "auto"
+				}
+			]
+		}
 	},
 	...tseslint.config({
 		extends: [...tseslint.configs.recommended],
@@ -81,17 +81,17 @@ export default defineConfig([
 			"@typescript-eslint/explicit-module-boundary-types": "off",
 			"@typescript-eslint/consistent-type-imports": [
 				"error",
-				{ disallowTypeAnnotations: false, fixStyle: "inline-type-imports" },
+				{ disallowTypeAnnotations: false, fixStyle: "inline-type-imports" }
 			],
 			"@typescript-eslint/prefer-literal-enum-member": ["error", { allowBitwiseExpressions: true }],
 			"@typescript-eslint/no-unused-vars": [
 				"error",
 				{
 					argsIgnorePattern: "^_",
-					varsIgnorePattern: "^_",
-				},
-			],
-		},
+					varsIgnorePattern: "^_"
+				}
+			]
+		}
 	}),
 	{
 		files: ["**/*.d.ts"],
@@ -99,14 +99,14 @@ export default defineConfig([
 			"eslint-comments/no-unlimited-disable": "off",
 			"import/no-duplicates": "off",
 			"no-restricted-syntax": "off",
-			"unused-imports/no-unused-vars": "off",
-		},
+			"unused-imports/no-unused-vars": "off"
+		}
 	},
 	{
 		files: ["**/*.?([cm])js"],
 		rules: {
-			"@typescript-eslint/no-require-imports": "off",
-		},
+			"@typescript-eslint/no-require-imports": "off"
+		}
 	},
 	{
 		files: ["**/*.vue"],
@@ -118,21 +118,21 @@ export default defineConfig([
 				$customRef: "readonly",
 				$ref: "readonly",
 				$shallowRef: "readonly",
-				$toRef: "readonly",
+				$toRef: "readonly"
 			},
 			parser: parserVue,
 			parserOptions: {
 				ecmaFeatures: {
-					jsx: true,
+					jsx: true
 				},
 				extraFileExtensions: [".vue"],
 				parser: tseslint.parser,
-				sourceType: "module",
-			},
+				sourceType: "module"
+			}
 		},
 		plugins: {
 			"@typescript-eslint": tseslint.plugin,
-			vue: pluginVue,
+			vue: pluginVue
 		},
 		processor: pluginVue.processors[".vue"],
 		rules: {
@@ -152,12 +152,12 @@ export default defineConfig([
 					html: {
 						void: "always",
 						normal: "always",
-						component: "always",
+						component: "always"
 					},
 					svg: "always",
-					math: "always",
-				},
-			],
-		},
-	},
+					math: "always"
+				}
+			]
+		}
+	}
 ]);

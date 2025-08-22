@@ -135,7 +135,7 @@ type ButtonProps = {
 	/** 点击按钮后触发的回调 */
 	btnClick?: ({
 		dialog,
-		button,
+		button
 	}: {
 		/** 当前 `Dialog` 信息 */
 		dialog: BtnClickDialog;
@@ -160,7 +160,7 @@ interface DialogOptions extends DialogProps {
 	headerRenderer?: ({
 		close,
 		titleId,
-		titleClass,
+		titleClass
 	}: {
 		close: Function;
 		titleId: string;
@@ -189,11 +189,11 @@ interface DialogOptions extends DialogProps {
 		done: Function,
 		{
 			options,
-			index,
+			index
 		}: {
 			options: DialogOptions;
 			index: number;
-		},
+		}
 	) => void;
 	/** 点击底部确定按钮的回调，会暂停 `Dialog` 的关闭. 回调函数内执行 `done` 参数方法的时候才是真正关闭对话框的时候 */
 	beforeSure?: (
@@ -201,13 +201,13 @@ interface DialogOptions extends DialogProps {
 		{
 			options,
 			index,
-			closeLoading,
+			closeLoading
 		}: {
 			options: DialogOptions;
 			index: number;
 			/** 关闭确定按钮的 `loading` 加载动画 */
 			closeLoading: Function;
-		},
+		}
 	) => void;
 }
 

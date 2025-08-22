@@ -13,16 +13,16 @@ const tableRowClassName = ({ rowIndex }: { rowIndex: number }) => {
 const columns: TableColumnList = [
 	{
 		label: "日期",
-		prop: "date",
+		prop: "date"
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "地址",
-		prop: "address",
-	},
+		prop: "address"
+	}
 ];
 </script>
 

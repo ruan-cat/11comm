@@ -8,7 +8,7 @@ import userAvatarIcon from "@/assets/svg/user_avatar.svg?component";
 import More2Fill from "~icons/ri/more-2-fill";
 
 defineOptions({
-	name: "ReCard",
+	name: "ReCard"
 });
 
 interface CardProductType {
@@ -20,8 +20,8 @@ interface CardProductType {
 
 const props = defineProps({
 	product: {
-		type: Object as PropType<CardProductType>,
-	},
+		type: Object as PropType<CardProductType>
+	}
 });
 
 const emit = defineEmits(["manage-product", "delete-item"]);
@@ -38,7 +38,7 @@ const cardClass = computed(() => ["list-card-item", { "list-card-item__disabled"
 
 const cardLogoClass = computed(() => [
 	"list-card-item_detail--logo",
-	{ "list-card-item_detail--logo__disabled": !props.product.isSetup },
+	{ "list-card-item_detail--logo__disabled": !props.product.isSetup }
 ]);
 </script>
 

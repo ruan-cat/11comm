@@ -3,7 +3,7 @@ import {
 	type RouteRecordRaw,
 	type RouteComponent,
 	createWebHistory,
-	createWebHashHistory,
+	createWebHashHistory
 } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";
@@ -116,7 +116,7 @@ function addPathMatch() {
 		router.addRoute({
 			path: "/:pathMatch(.*)",
 			name: "pathMatch",
-			redirect: "/error/404",
+			redirect: "/error/404"
 		});
 	}
 }
@@ -128,7 +128,7 @@ function handleAsyncRoutes(routeList) {
 	} else {
 		formatFlatteningRoutes(addAsyncRoutes(routeList)).map((v: RouteRecordRaw) => {
 			// 防止重复添加路由
-			if (router.options.routes[0].children.findIndex((value) => value.path === v.path) !== -1) {
+			if (router.options.routes[0].children.findIndex(value => value.path === v.path) !== -1) {
 				return;
 			} else {
 				// 切记将路由push到routes后还需要使用addRoute，这样路由才能正常跳转
@@ -136,7 +136,7 @@ function handleAsyncRoutes(routeList) {
 				// 最终路由进行升序
 				ascending(router.options.routes[0].children);
 				if (!router.hasRoute(v?.name)) router.addRoute(v);
-				const flattenRouters: any = router.getRoutes().find((n) => n.path === "/");
+				const flattenRouters: any = router.getRoutes().find(n => n.path === "/");
 				// 保持router.options.routes[0].children与path为"/"的children一致，防止数据不一致导致异常
 				flattenRouters.children = router.options.routes[0].children;
 				router.addRoute(flattenRouters);
@@ -147,7 +147,7 @@ function handleAsyncRoutes(routeList) {
 	if (!useMultiTagsStoreHook().getMultiTagsCache) {
 		useMultiTagsStoreHook().handleTags("equal", [
 			...routerArrays,
-			...usePermissionStoreHook().flatteningRoutes.filter((v) => v?.meta?.fixedTag),
+			...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)
 		]);
 	}
 	addPathMatch();
@@ -160,12 +160,12 @@ function initRouter() {
 		const key = "async-routes";
 		const asyncRouteList = storageLocal().getItem(key) as any;
 		if (asyncRouteList && asyncRouteList?.length > 0) {
-			return new Promise((resolve) => {
+			return new Promise(resolve => {
 				handleAsyncRoutes(asyncRouteList);
 				resolve(router);
 			});
 		} else {
-			return new Promise((resolve) => {
+			return new Promise(resolve => {
 				getAsyncRoutes().then(({ data }) => {
 					handleAsyncRoutes(cloneDeep(data));
 					storageLocal().setItem(key, data);
@@ -174,7 +174,7 @@ function initRouter() {
 			});
 		}
 	} else {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			getAsyncRoutes().then(({ data }) => {
 				handleAsyncRoutes(cloneDeep(data));
 				resolve(router);
@@ -216,7 +216,7 @@ function formatTwoStageRoutes(routesList: RouteRecordRaw[]) {
 				path: v.path,
 				redirect: v.redirect,
 				meta: v.meta,
-				children: [],
+				children: []
 			});
 		} else {
 			newRoutesList[0]?.children.push({ ...v });
@@ -231,30 +231,30 @@ function handleAliveRoute({ name }: ToRouteType, mode?: string) {
 		case "add":
 			usePermissionStoreHook().cacheOperate({
 				mode: "add",
-				name,
+				name
 			});
 			break;
 		case "delete":
 			usePermissionStoreHook().cacheOperate({
 				mode: "delete",
-				name,
+				name
 			});
 			break;
 		case "refresh":
 			usePermissionStoreHook().cacheOperate({
 				mode: "refresh",
-				name,
+				name
 			});
 			break;
 		default:
 			usePermissionStoreHook().cacheOperate({
 				mode: "delete",
-				name,
+				name
 			});
 			useTimeoutFn(() => {
 				usePermissionStoreHook().cacheOperate({
 					mode: "add",
-					name,
+					name
 				});
 			}, 100);
 	}
@@ -276,8 +276,8 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
 		} else {
 			// 对后端传component组件路径和不传做兼容（如果后端传component组件路径，那么path可以随便写，如果不传，component组件路径会跟path保持一致）
 			const index = v?.component
-				? modulesRoutesKeys.findIndex((ev) => ev.includes(v.component as any))
-				: modulesRoutesKeys.findIndex((ev) => ev.includes(v.path));
+				? modulesRoutesKeys.findIndex(ev => ev.includes(v.component as any))
+				: modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
 			v.component = modulesRoutes[modulesRoutesKeys[index]];
 		}
 		if (v?.children && v.children.length) {
@@ -328,7 +328,7 @@ function hasAuth(value: string | Array<string>): boolean {
 function handleTopMenu(route) {
 	if (route?.children && route.children.length > 1) {
 		if (route.redirect) {
-			return route.children.filter((cur) => cur.path === route.redirect)[0];
+			return route.children.filter(cur => cur.path === route.redirect)[0];
 		} else {
 			return route.children[0];
 		}
@@ -360,5 +360,5 @@ export {
 	handleAliveRoute,
 	formatTwoStageRoutes,
 	formatFlatteningRoutes,
-	filterNoPermissionTree,
+	filterNoPermissionTree
 };

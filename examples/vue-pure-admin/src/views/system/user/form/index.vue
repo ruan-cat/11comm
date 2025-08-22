@@ -17,19 +17,19 @@ const props = withDefaults(defineProps<FormProps>(), {
 		email: "",
 		sex: "",
 		status: 1,
-		remark: "",
-	}),
+		remark: ""
+	})
 });
 
 const sexOptions = [
 	{
 		value: 0,
-		label: "男",
+		label: "男"
 	},
 	{
 		value: 1,
-		label: "女",
-	},
+		label: "女"
+	}
 ];
 const ruleFormRef = ref();
 const { switchStyle } = usePublicHooks();
@@ -90,7 +90,7 @@ defineExpose({ getRef });
 							value: 'id',
 							label: 'name',
 							emitPath: false,
-							checkStrictly: true,
+							checkStrictly: true
 						}"
 						clearable
 						filterable

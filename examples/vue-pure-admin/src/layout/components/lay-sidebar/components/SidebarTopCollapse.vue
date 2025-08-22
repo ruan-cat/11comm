@@ -8,7 +8,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-	isActive: false,
+	isActive: false
 });
 
 const { t } = useI18n();

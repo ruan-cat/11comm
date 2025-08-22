@@ -10,8 +10,8 @@
 			"</template>\n",
 			"<style lang='scss' scoped>\n",
 			"</style>",
-			"$2",
+			"$2"
 		],
-		"description": "Vue3.2+",
-	},
+		"description": "Vue3.2+"
+	}
 }

@@ -13,29 +13,29 @@ export const configCompressPlugin = (compress: ViteCompression): Plugin | Plugin
 		// 默认压缩.js|mjs|json|css|html后缀文件，设置成true，压缩全部文件
 		filter: () => true,
 		// 压缩后是否删除原始文件
-		deleteOriginFile: false,
+		deleteOriginFile: false
 	};
 	const br = {
 		ext: ".br",
 		algorithm: "brotliCompress",
 		threshold: 0,
 		filter: () => true,
-		deleteOriginFile: false,
+		deleteOriginFile: false
 	};
 
 	const codeList = [
 		{ k: "gzip", v: gz },
 		{ k: "brotli", v: br },
-		{ k: "both", v: [gz, br] },
+		{ k: "both", v: [gz, br] }
 	];
 
 	const plugins: Plugin[] = [];
 
-	codeList.forEach((item) => {
+	codeList.forEach(item => {
 		if (compress.includes(item.k)) {
 			if (compress.includes("clear")) {
 				if (isArray(item.v)) {
-					item.v.forEach((vItem) => {
+					item.v.forEach(vItem => {
 						plugins.push(compressPlugin(Object.assign(vItem, { deleteOriginFile: true })));
 					});
 				} else {
@@ -43,7 +43,7 @@ export const configCompressPlugin = (compress: ViteCompression): Plugin | Plugin
 				}
 			} else {
 				if (isArray(item.v)) {
-					item.v.forEach((vItem) => {
+					item.v.forEach(vItem => {
 						plugins.push(compressPlugin(vItem));
 					});
 				} else {

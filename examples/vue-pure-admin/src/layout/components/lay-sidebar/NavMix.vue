@@ -33,7 +33,7 @@ const {
 	avatarsStyle,
 	toAccountSettings,
 	getDropdownItemStyle,
-	getDropdownItemClass,
+	getDropdownItemClass
 } = useNav();
 
 function getDefaultActive(routePath) {
@@ -57,7 +57,7 @@ watch(
 	() => [route.path, usePermissionStoreHook().wholeMenus],
 	() => {
 		getDefaultActive(route.path);
-	},
+	}
 );
 </script>
 

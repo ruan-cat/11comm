@@ -10,9 +10,9 @@ const noticesNum = ref(0);
 const notices = ref(noticesData);
 const activeKey = ref(noticesData[0]?.key);
 
-notices.value.map((v) => (noticesNum.value += v.list.length));
+notices.value.map(v => (noticesNum.value += v.list.length));
 
-const getLabel = computed(() => (item) => t(item.name) + (item.list.length > 0 ? `(${item.list.length})` : ""));
+const getLabel = computed(() => item => t(item.name) + (item.list.length > 0 ? `(${item.list.length})` : ""));
 </script>
 
 <template>

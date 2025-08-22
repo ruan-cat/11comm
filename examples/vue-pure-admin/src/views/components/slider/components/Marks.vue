@@ -16,10 +16,10 @@ const marks = reactive<Marks>({
 	37: "37°C",
 	50: {
 		style: {
-			color: "#1989FA",
+			color: "#1989FA"
 		},
-		label: "50%",
-	},
+		label: "50%"
+	}
 });
 </script>
 

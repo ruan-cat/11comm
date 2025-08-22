@@ -4,7 +4,7 @@ import { useDark } from "@pureadmin/utils";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
 defineOptions({
-	name: "PureButton",
+	name: "PureButton"
 });
 
 const { isDark } = useDark();
@@ -16,36 +16,36 @@ const buttonList = [
 	{
 		type: "",
 		text: "Default",
-		icon: "ep:search",
+		icon: "ep:search"
 	},
 	{
 		type: "primary",
 		text: "Primary",
-		icon: "ep:edit",
+		icon: "ep:edit"
 	},
 	{
 		type: "success",
 		text: "Success",
-		icon: "ep:check",
+		icon: "ep:check"
 	},
 	{
 		type: "info",
 		text: "Info",
-		icon: "ep:message",
+		icon: "ep:message"
 	},
 	{
 		type: "warning",
 		text: "Warning",
-		icon: "ep:star",
+		icon: "ep:star"
 	},
 	{
 		type: "danger",
 		text: "Danger",
-		icon: "ep:delete",
-	},
+		icon: "ep:delete"
+	}
 ];
 
-watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
+watch(size, val => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
 </script>
 
 <template>
@@ -55,7 +55,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 				<el-space wrap :size="40">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/button.html"
 						target="_blank"

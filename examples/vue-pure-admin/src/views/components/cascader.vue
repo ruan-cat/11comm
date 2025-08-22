@@ -5,12 +5,12 @@ import {
 	convertTextToCode,
 	regionDataPlus,
 	regionData,
-	CodeToText,
+	CodeToText
 } from "@/utils/chinaArea";
 import { ref } from "vue";
 
 defineOptions({
-	name: "Cascader",
+	name: "Cascader"
 });
 
 const selectedOptions1 = ref(["110000", "110100"]);
@@ -18,7 +18,7 @@ const selectedOptions2 = ref(["120000", "120100", "120101"]);
 const selectedOptions3 = ref(["130000", ""]);
 const selectedOptions4 = ref(["120000", "120100", ""]);
 
-const handleChange = (value) => {
+const handleChange = value => {
 	console.log(value);
 };
 </script>
@@ -95,7 +95,7 @@ const handleChange = (value) => {
 								convertTextToCode(
 									CodeToText[selectedOptions2[0]],
 									CodeToText[selectedOptions2[1]],
-									CodeToText[selectedOptions2[2]],
+									CodeToText[selectedOptions2[2]]
 								)
 							}}
 						</div>
@@ -121,7 +121,7 @@ const handleChange = (value) => {
 								convertTextToCode(
 									CodeToText[selectedOptions4[0]],
 									CodeToText[selectedOptions4[1]],
-									CodeToText[selectedOptions4[2]],
+									CodeToText[selectedOptions4[2]]
 								)
 							}}
 						</div>

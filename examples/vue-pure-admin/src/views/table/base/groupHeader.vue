@@ -5,7 +5,7 @@ const columns: TableColumnList = [
 	{
 		label: "日期",
 		prop: "date",
-		fixed: true,
+		fixed: true
 	},
 	{
 		label: "姓名",
@@ -16,20 +16,20 @@ const columns: TableColumnList = [
 				children: [
 					{
 						label: "城市",
-						prop: "city",
+						prop: "city"
 					},
 					{
 						label: "地址",
-						prop: "address",
-					},
-				],
-			},
-		],
+						prop: "address"
+					}
+				]
+			}
+		]
 	},
 	{
 		label: "邮编",
-		prop: "post-code",
-	},
+		prop: "post-code"
+	}
 ];
 </script>
 

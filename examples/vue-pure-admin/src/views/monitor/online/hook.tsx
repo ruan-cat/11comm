@@ -6,7 +6,7 @@ import type { PaginationProps } from "@pureadmin/table";
 
 export function useRole() {
 	const form = reactive({
-		username: "",
+		username: ""
 	});
 	const dataList = ref([]);
 	const loading = ref(true);
@@ -14,50 +14,50 @@ export function useRole() {
 		total: 0,
 		pageSize: 10,
 		currentPage: 1,
-		background: true,
+		background: true
 	});
 	const columns: TableColumnList = [
 		{
 			label: "序号",
 			prop: "id",
-			minWidth: 60,
+			minWidth: 60
 		},
 		{
 			label: "用户名",
 			prop: "username",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "登录 IP",
 			prop: "ip",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "登录地点",
 			prop: "address",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "操作系统",
 			prop: "system",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "浏览器类型",
 			prop: "browser",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "登录时间",
 			prop: "loginTime",
 			minWidth: 180,
-			formatter: ({ loginTime }) => dayjs(loginTime).format("YYYY-MM-DD HH:mm:ss"),
+			formatter: ({ loginTime }) => dayjs(loginTime).format("YYYY-MM-DD HH:mm:ss")
 		},
 		{
 			label: "操作",
 			fixed: "right",
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 
 	function handleSizeChange(val: number) {
@@ -90,7 +90,7 @@ export function useRole() {
 		}, 500);
 	}
 
-	const resetForm = (formEl) => {
+	const resetForm = formEl => {
 		if (!formEl) return;
 		formEl.resetFields();
 		onSearch();
@@ -111,6 +111,6 @@ export function useRole() {
 		handleOffline,
 		handleSizeChange,
 		handleCurrentChange,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

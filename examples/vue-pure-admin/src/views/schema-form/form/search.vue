@@ -6,7 +6,7 @@ import { type PlusColumn, PlusSearch } from "plus-pro-components";
 
 const state = ref({
 	status: "0",
-	time: new Date().toString(),
+	time: new Date().toString()
 });
 
 const columns: PlusColumn[] = [
@@ -14,7 +14,7 @@ const columns: PlusColumn[] = [
 		label: "名称",
 		prop: "name",
 		valueType: "copy",
-		tooltip: "名称最多显示6个字符",
+		tooltip: "名称最多显示6个字符"
 	},
 	{
 		label: "状态",
@@ -24,35 +24,35 @@ const columns: PlusColumn[] = [
 			{
 				label: "未解决",
 				value: "0",
-				color: "red",
+				color: "red"
 			},
 			{
 				label: "已解决",
 				value: "1",
-				color: "blue",
+				color: "blue"
 			},
 			{
 				label: "解决中",
 				value: "2",
-				color: "yellow",
+				color: "yellow"
 			},
 			{
 				label: "失败",
 				value: "3",
-				color: "red",
-			},
-		],
+				color: "red"
+			}
+		]
 	},
 	{
 		label: "时间",
 		prop: "time",
-		valueType: "date-picker",
+		valueType: "date-picker"
 	},
 	{
 		label: "数量",
 		prop: "number",
 		valueType: "input-number",
-		fieldProps: { precision: 2, step: 2 },
+		fieldProps: { precision: 2, step: 2 }
 	},
 	{
 		label: "城市",
@@ -69,19 +69,19 @@ const columns: PlusColumn[] = [
 						children: [
 							{
 								value: "0-0-0",
-								label: "新城区",
+								label: "新城区"
 							},
 							{
 								value: "0-0-1",
-								label: "高新区",
+								label: "高新区"
 							},
 							{
 								value: "0-0-2",
-								label: "灞桥区",
-							},
-						],
-					},
-				],
+								label: "灞桥区"
+							}
+						]
+					}
+				]
 			},
 			{
 				value: "1",
@@ -93,29 +93,29 @@ const columns: PlusColumn[] = [
 						children: [
 							{
 								value: "1-0-0",
-								label: "小店区",
+								label: "小店区"
 							},
 							{
 								value: "1-0-1",
-								label: "古交市",
+								label: "古交市"
 							},
 							{
 								value: "1-0-2",
-								label: "万柏林区",
-							},
-						],
-					},
-				],
-			},
-		],
+								label: "万柏林区"
+							}
+						]
+					}
+				]
+			}
+		]
 	},
 	{
 		label: "地区",
 		prop: "place",
 		tooltip: "请精确到门牌号",
 		fieldProps: {
-			placeholder: "请精确到门牌号",
-		},
+			placeholder: "请精确到门牌号"
+		}
 	},
 	{
 		label: "到期时间",
@@ -124,17 +124,17 @@ const columns: PlusColumn[] = [
 		fieldProps: {
 			type: "datetimerange",
 			startPlaceholder: "请选择",
-			endPlaceholder: "请选择",
-		},
+			endPlaceholder: "请选择"
+		}
 	},
 	{
 		label: "奖励",
-		prop: "price",
+		prop: "price"
 	},
 	{
 		label: "提成",
-		prop: "percentage",
-	},
+		prop: "percentage"
+	}
 ];
 
 const handleChange = (values: any) => {

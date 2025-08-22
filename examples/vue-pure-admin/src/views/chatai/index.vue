@@ -15,11 +15,11 @@ import {
 	Group,
 	MessageCode,
 	Speech,
-	IntroPanel,
+	IntroPanel
 } from "./components";
 
 defineOptions({
-	name: "ChatAi",
+	name: "ChatAi"
 });
 
 const swiperExample: any[] = [
@@ -27,71 +27,71 @@ const swiperExample: any[] = [
 	{
 		id: 1,
 		label: "Gemini 风格",
-		component: Bard,
+		component: Bard
 	},
 	{
 		id: 2,
 		label: "BingChat 风格",
-		component: Bing,
+		component: Bing
 	},
 	{
 		id: 3,
 		label: "iMessage 风格",
-		component: iMessage,
+		component: iMessage
 	},
 	{
 		id: 4,
 		label: "蓝色主题且可设置背景图像",
-		component: Blue,
+		component: Blue
 	},
 	{
 		id: 5,
 		label: "渐变主题且可设置背景图像",
-		component: LoFi,
+		component: LoFi
 	},
 	{
 		id: 6,
 		label: "红色风格",
-		component: Red,
+		component: Red
 	},
 	{
 		id: 7,
 		label: "深色模式",
-		component: Dark,
+		component: Dark
 	},
 	{
 		id: 8,
 		label: "全宽输入框",
-		component: FullInput,
+		component: FullInput
 	},
 	{
 		id: 9,
 		label: "分组消息",
-		component: Group,
+		component: Group
 	},
 	{
 		id: 10,
 		label: "代码消息",
-		component: MessageCode,
+		component: MessageCode
 	},
 	{
 		id: 11,
 		label: "语音输入",
-		component: Speech,
+		component: Speech
 	},
 	{
 		id: 12,
 		label: "简介面板",
-		component: IntroPanel,
+		component: IntroPanel
 	},
 	{
 		id: 13,
 		label: "更多示例",
 		component: h(ElEmpty, {
 			description: "敬请期待",
-			style: { minWidth: "320px", height: "350px" },
-		}),
-	},
+			style: { minWidth: "320px", height: "350px" }
+		})
+	}
 ];
 </script>
 

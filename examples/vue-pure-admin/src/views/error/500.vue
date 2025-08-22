@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import noServer from "@/assets/status/500.svg?component";
 
 defineOptions({
-	name: "500",
+	name: "500"
 });
 
 const router = useRouter();
@@ -18,14 +18,14 @@ const router = useRouter();
 				class="font-medium text-4xl mb-4! dark:text-white"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 80,
-					},
+						delay: 80
+					}
 				}"
 			>
 				500
@@ -35,14 +35,14 @@ const router = useRouter();
 				class="mb-4! text-gray-500"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 120,
-					},
+						delay: 120
+					}
 				}"
 			>
 				抱歉，服务器出错了
@@ -52,14 +52,14 @@ const router = useRouter();
 				type="primary"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 160,
-					},
+						delay: 160
+					}
 				}"
 				@click="router.push('/')"
 			>

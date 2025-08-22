@@ -57,5 +57,5 @@ export {
 	ppt,
 	mind,
 	guide,
-	menuoverflow,
+	menuoverflow
 };

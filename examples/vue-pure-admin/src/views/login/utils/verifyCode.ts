@@ -10,7 +10,7 @@ export const useVerifyCode = () => {
 	const start = async (formEl: FormInstance | undefined, props: FormItemProp, time = 60) => {
 		if (!formEl) return;
 		const initTime = clone(time, true);
-		await formEl.validateField(props, (isValid) => {
+		await formEl.validateField(props, isValid => {
 			if (isValid) {
 				clearInterval(timer.value);
 				isDisabled.value = true;
@@ -41,6 +41,6 @@ export const useVerifyCode = () => {
 		timer,
 		text,
 		start,
-		end,
+		end
 	};
 };

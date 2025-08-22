@@ -3,7 +3,7 @@ import { ref, nextTick } from "vue";
 import { cloneDeep, isAllEmpty } from "@pureadmin/utils";
 
 defineOptions({
-	name: "PureTag",
+	name: "PureTag"
 });
 
 const size = ref("default");
@@ -13,26 +13,26 @@ const baseTag = ref("dark");
 const tagList = ref([
 	{
 		type: "primary",
-		text: "Primary",
+		text: "Primary"
 	},
 	{
 		type: "success",
-		text: "Success",
+		text: "Success"
 	},
 	{
 		type: "info",
-		text: "Info",
+		text: "Info"
 	},
 	{
 		type: "warning",
-		text: "Warning",
+		text: "Warning"
 	},
 	{
 		type: "danger",
-		text: "Danger",
-	},
+		text: "Danger"
+	}
 ]);
-const handleClose = (tag) => {
+const handleClose = tag => {
 	tagList.value.splice(tagList.value.indexOf(tag), 1);
 };
 const copyTagList = cloneDeep(tagList.value);
@@ -70,7 +70,7 @@ const handleInputConfirm = () => {
 				<el-space wrap :size="40">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/tag.html"
 						target="_blank"

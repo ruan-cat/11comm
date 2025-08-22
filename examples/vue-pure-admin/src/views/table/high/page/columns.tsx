@@ -15,23 +15,23 @@ export function useColumns() {
 			type: "selection",
 			align: "left",
 			reserveSelection: true,
-			hide: () => (select.value === "no" ? true : false),
+			hide: () => (select.value === "no" ? true : false)
 		},
 		{
 			label: "日期",
 			prop: "date",
-			hide: () => (hideVal.value === "hideDate" ? true : false),
+			hide: () => (hideVal.value === "hideDate" ? true : false)
 		},
 		{
 			label: "姓名",
 			prop: "name",
-			hide: () => (hideVal.value === "hideName" ? true : false),
+			hide: () => (hideVal.value === "hideName" ? true : false)
 		},
 		{
 			label: "地址",
 			prop: "address",
-			hide: () => (hideVal.value === "hideAddress" ? true : false),
-		},
+			hide: () => (hideVal.value === "hideAddress" ? true : false)
+		}
 	];
 
 	/** 分页配置 */
@@ -42,7 +42,7 @@ export function useColumns() {
 		total: 0,
 		align: "right",
 		background: true,
-		size: "default",
+		size: "default"
 	});
 
 	/** 加载动画配置 */
@@ -58,7 +58,7 @@ export function useColumns() {
           A 15 15, 0, 1, 1, 27.99 7.5
           L 15 15
         " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-      `,
+      `
 		// svg: "",
 		// background: rgba()
 	});
@@ -109,6 +109,6 @@ export function useColumns() {
 		paginationAlign,
 		onChange,
 		onSizeChange,
-		onCurrentChange,
+		onCurrentChange
 	};
 }

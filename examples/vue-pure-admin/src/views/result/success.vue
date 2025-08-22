@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineOptions({
-	name: "Success",
+	name: "Success"
 });
 
 const { lastBuildTime } = __APP_INFO__;
@@ -8,16 +8,16 @@ const { lastBuildTime } = __APP_INFO__;
 const columns = [
 	{
 		label: "项目 ID：",
-		value: "12345",
+		value: "12345"
 	},
 	{
 		label: "负责人：",
-		value: "明明",
+		value: "明明"
 	},
 	{
 		label: "生效时间：",
-		value: lastBuildTime,
-	},
+		value: lastBuildTime
+	}
 ];
 </script>
 

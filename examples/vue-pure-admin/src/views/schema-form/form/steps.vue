@@ -11,7 +11,7 @@ const stepForm = ref([
 			labelPosition: "top",
 			style: {
 				width: "400px",
-				margin: "40px auto",
+				margin: "40px auto"
 			},
 			modelValue: {},
 			columns: [
@@ -20,7 +20,7 @@ const stepForm = ref([
 					width: 120,
 					prop: "name",
 					valueType: "copy",
-					tooltip: "名称最多显示6个字符",
+					tooltip: "名称最多显示6个字符"
 				},
 				{
 					label: "状态",
@@ -31,35 +31,35 @@ const stepForm = ref([
 						{
 							label: "未解决",
 							value: "0",
-							color: "red",
+							color: "red"
 						},
 						{
 							label: "已解决",
 							value: "1",
-							color: "blue",
+							color: "blue"
 						},
 						{
 							label: "解决中",
 							value: "2",
-							color: "yellow",
+							color: "yellow"
 						},
 						{
 							label: "失败",
 							value: "3",
-							color: "red",
-						},
-					],
-				},
+							color: "red"
+						}
+					]
+				}
 			],
 			rules: {
 				name: [
 					{
 						required: true,
-						message: "请输入名称",
-					},
-				],
-			},
-		},
+						message: "请输入名称"
+					}
+				]
+			}
+		}
 	},
 	{
 		title: "第二步",
@@ -67,7 +67,7 @@ const stepForm = ref([
 			labelPosition: "top",
 			style: {
 				width: "400px",
-				margin: "40px auto",
+				margin: "40px auto"
 			},
 			labelWidth: "100",
 			modelValue: {},
@@ -75,41 +75,41 @@ const stepForm = ref([
 				{
 					label: "标签",
 					width: 120,
-					prop: "tag",
+					prop: "tag"
 				},
 				{
 					label: "执行进度",
 					width: 200,
-					prop: "progress",
+					prop: "progress"
 				},
 				{
 					label: "评分",
 					width: 200,
 					prop: "rate",
-					valueType: "rate",
+					valueType: "rate"
 				},
 				{
 					label: "是否显示",
 					width: 100,
 					prop: "switch",
-					valueType: "switch",
-				},
+					valueType: "switch"
+				}
 			],
 			rules: {
 				tag: [
 					{
 						required: true,
-						message: "请输入标签",
-					},
+						message: "请输入标签"
+					}
 				],
 				progress: [
 					{
 						required: true,
-						message: "请输入执行进度",
-					},
-				],
-			},
-		},
+						message: "请输入执行进度"
+					}
+				]
+			}
+		}
 	},
 	{
 		title: "第三步",
@@ -117,14 +117,14 @@ const stepForm = ref([
 			labelPosition: "top",
 			style: {
 				width: "400px",
-				margin: "40px auto",
+				margin: "40px auto"
 			},
 			modelValue: {},
 			columns: [
 				{
 					label: "时间",
 					prop: "time",
-					valueType: "date-picker",
+					valueType: "date-picker"
 				},
 				{
 					label: "要求",
@@ -133,25 +133,25 @@ const stepForm = ref([
 					options: [
 						{
 							label: "四六级",
-							value: "0",
+							value: "0"
 						},
 						{
 							label: "计算机二级证书",
-							value: "1",
+							value: "1"
 						},
 						{
 							label: "普通话证书",
-							value: "2",
-						},
-					],
+							value: "2"
+						}
+					]
 				},
 				{
 					label: "奖励",
-					prop: "price",
+					prop: "price"
 				},
 				{
 					label: "提成",
-					prop: "percentage",
+					prop: "percentage"
 				},
 				{
 					label: "说明",
@@ -160,28 +160,28 @@ const stepForm = ref([
 					fieldProps: {
 						maxlength: 10,
 						showWordLimit: true,
-						autosize: { minRows: 2, maxRows: 4 },
-					},
-				},
+						autosize: { minRows: 2, maxRows: 4 }
+					}
+				}
 			],
 			rules: {
 				time: [
 					{
 						required: true,
 						trigger: "change",
-						message: "请选择时间",
-					},
+						message: "请选择时间"
+					}
 				],
 				demand: [
 					{
 						required: true,
 						trigger: "change",
-						message: "请选择要求",
-					},
-				],
-			},
-		},
-	},
+						message: "请选择要求"
+					}
+				]
+			}
+		}
+	}
 ]);
 
 const active = ref(1);

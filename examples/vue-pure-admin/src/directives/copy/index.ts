@@ -25,5 +25,5 @@ export const copy: Directive = {
 	},
 	updated(el: CopyEl, binding: DirectiveBinding) {
 		el.copyValue = binding.value;
-	},
+	}
 };

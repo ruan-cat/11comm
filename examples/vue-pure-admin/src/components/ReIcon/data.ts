@@ -298,7 +298,7 @@ export const IconJson = {
 		"watermelon",
 		"wind-power",
 		"zoom-in",
-		"zoom-out",
+		"zoom-out"
 	],
 	// https://icones.js.org/collections/ri-meta.json
 	"ri:": [
@@ -2838,7 +2838,7 @@ export const IconJson = {
 		"zoom-out-fill",
 		"zoom-out-line",
 		"zzz-fill",
-		"zzz-line",
+		"zzz-line"
 	],
 	// https://icones.js.org/collections/fa-solid-meta.json
 	"fa-solid:": [
@@ -3864,6 +3864,6 @@ export const IconJson = {
 		"wrench",
 		"x-ray",
 		"yen-sign",
-		"yin-yang",
-	],
+		"yin-yang"
+	]
 };

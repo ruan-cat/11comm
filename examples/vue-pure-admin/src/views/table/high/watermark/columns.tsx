@@ -8,20 +8,20 @@ export function useColumns(waterRef: Ref) {
 	const columns: TableColumnList = [
 		{
 			label: "ID",
-			prop: "id",
+			prop: "id"
 		},
 		{
 			label: "日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "地址",
-			prop: "address",
-		},
+			prop: "address"
+		}
 	];
 
 	onMounted(() => {
@@ -33,13 +33,13 @@ export function useColumns(waterRef: Ref) {
 				globalAlpha: 0.8,
 				forever: true,
 				width: 240,
-				height: 90,
+				height: 90
 			});
 		});
 	});
 
 	return {
 		columns,
-		dataList,
+		dataList
 	};
 }

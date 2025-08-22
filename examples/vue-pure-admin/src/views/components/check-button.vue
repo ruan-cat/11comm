@@ -4,7 +4,7 @@ import { message } from "@/utils/message";
 import { getKeyList } from "@pureadmin/utils";
 
 defineOptions({
-	name: "CheckButton",
+	name: "CheckButton"
 });
 
 const spaceSize = ref(20);
@@ -24,29 +24,29 @@ const checkboxGroupCustom = ref(["tomato", "watermelon", "strawberry"]);
 const checkTag = ref([
 	{
 		title: "等待中",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "进行中",
-		checked: true,
+		checked: true
 	},
 	{
 		title: "已完成",
-		checked: false,
-	},
+		checked: false
+	}
 ]);
 const curTagMap = ref({});
 function onChecked(tag, index) {
 	if (size.value === "disabled") return;
 	curTagMap.value[index] = Object.assign({
 		...tag,
-		checked: !tag.checked,
+		checked: !tag.checked
 	});
-	checkTag.value.map((item) => (item.checked = false));
+	checkTag.value.map(item => (item.checked = false));
 	checkTag.value[index].checked = curTagMap.value[index].checked;
 	const { title, checked } = curTagMap.value[index];
 	message(checked ? `已选中${title}` : `取消选中${title}`, {
-		type: "success",
+		type: "success"
 	});
 }
 
@@ -54,23 +54,23 @@ function onChecked(tag, index) {
 const checkGroupTag = ref([
 	{
 		title: "苹果",
-		checked: true,
+		checked: true
 	},
 	{
 		title: "西红柿",
-		checked: true,
+		checked: true
 	},
 	{
 		title: "香蕉",
-		checked: false,
-	},
+		checked: false
+	}
 ]);
 const curTagGroupMap = ref({});
 function onGroupChecked(tag, index) {
 	if (size.value === "disabled") return;
 	curTagGroupMap.value[index] = Object.assign({
 		...tag,
-		checked: !tag.checked,
+		checked: !tag.checked
 	});
 	checkGroupTag.value[index].checked = curTagGroupMap.value[index].checked;
 }
@@ -80,7 +80,7 @@ function onSingleChecked() {
 	checked.value = !checked.value;
 }
 
-watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
+watch(size, val => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
 </script>
 
 <template>
@@ -206,8 +206,8 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			多选
 			{{
 				getKeyList(
-					checkGroupTag.filter((tag) => tag.checked),
-					"title",
+					checkGroupTag.filter(tag => tag.checked),
+					"title"
 				)
 			}}
 		</div>

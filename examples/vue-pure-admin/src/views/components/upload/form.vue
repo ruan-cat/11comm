@@ -10,17 +10,17 @@ const formRef = ref();
 const uploadRef = ref();
 const validateForm = reactive({
 	fileList: [],
-	date: "",
+	date: ""
 });
 
-const submitForm = (formEl) => {
+const submitForm = formEl => {
 	if (!formEl) return;
-	formEl.validate((valid) => {
+	formEl.validate(valid => {
 		if (valid) {
 			// 多个 file 在一个接口同时上传
 			const formData = createFormData({
-				files: validateForm.fileList.map((file) => ({ raw: file.raw })), // file 文件
-				date: validateForm.date, // 别的字段
+				files: validateForm.fileList.map(file => ({ raw: file.raw })), // file 文件
+				date: validateForm.date // 别的字段
 			});
 			formUpload(formData)
 				.then(({ success }) => {
@@ -30,7 +30,7 @@ const submitForm = (formEl) => {
 						message("提交失败");
 					}
 				})
-				.catch((error) => {
+				.catch(error => {
 					message(`提交异常 ${error}`, { type: "error" });
 				});
 		} else {
@@ -39,7 +39,7 @@ const submitForm = (formEl) => {
 	});
 };
 
-const resetForm = (formEl) => {
+const resetForm = formEl => {
 	if (!formEl) return;
 	formEl.resetFields();
 };

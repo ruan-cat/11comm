@@ -23,14 +23,14 @@ const pagerConfig = reactive({
 	total: 0,
 	currentPage: 1,
 	pageSize: 10,
-	pageSizes: [5, 10, 15, 20],
+	pageSizes: [5, 10, 15, 20]
 });
 
 const columns = [
 	{ type: "seq", field: "seq", title: "序号", width: 100 },
 	{ field: "name", title: "名称", sortable: true },
 	{ field: "role", title: "角色" },
-	{ field: "sex", title: "性别" },
+	{ field: "sex", title: "性别" }
 ];
 
 async function onSearch() {
@@ -42,7 +42,7 @@ async function onSearch() {
 			id: index,
 			name: "Test" + index,
 			role: "Developer",
-			sex: "男",
+			sex: "男"
 		});
 	}
 	pagerConfig.total = 20;

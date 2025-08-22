@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { message } from "@/utils/message";
 
 defineOptions({
-	name: "Directives",
+	name: "Directives"
 });
 
 const search = ref("");
@@ -74,7 +74,7 @@ function onReset() {
 					event: 'input',
 					fn: onInput,
 					immediate: true,
-					timeout: 1000,
+					timeout: 1000
 				}"
 				class="w-[200px]!"
 				clearable
@@ -98,7 +98,7 @@ function onReset() {
 					event: 'input',
 					fn: onInputThree,
 					timeout: 400,
-					params: { name: '小明', sex: '男' },
+					params: { name: '小明', sex: '男' }
 				}"
 				class="w-[200px]!"
 				clearable
@@ -123,7 +123,7 @@ function onReset() {
 				v-optimize:throttle="{
 					event: 'input',
 					fn: onInputFive,
-					params: { name: '小明', sex: '男' },
+					params: { name: '小明', sex: '男' }
 				}"
 				class="w-[200px]!"
 				clearable

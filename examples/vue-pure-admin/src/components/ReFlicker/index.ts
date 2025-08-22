@@ -31,13 +31,13 @@ export function useRenderFlicker(attrs?: attrsType): Component {
 						"--point-height": attrs?.height ?? "12px",
 						"--point-background": attrs?.background ?? "var(--el-color-primary)",
 						"--point-border-radius": attrs?.borderRadius ?? "50%",
-						"--point-scale": attrs?.scale ?? "2",
-					},
+						"--point-scale": attrs?.scale ?? "2"
+					}
 				},
 				{
-					default: () => [],
-				},
+					default: () => []
+				}
 			);
-		},
+		}
 	});
 }

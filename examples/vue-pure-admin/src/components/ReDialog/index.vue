@@ -6,7 +6,7 @@ import Fullscreen from "~icons/ri/fullscreen-fill";
 import ExitFullscreen from "~icons/ri/fullscreen-exit-fill";
 
 defineOptions({
-	name: "ReDialog",
+	name: "ReDialog"
 });
 
 const sureBtnMap = ref({});
@@ -28,7 +28,7 @@ const footerButtons = computed(() => {
 							} else {
 								done();
 							}
-						},
+						}
 					},
 					{
 						label: "确定",
@@ -39,7 +39,7 @@ const footerButtons = computed(() => {
 						btnClick: ({ dialog: { options, index } }) => {
 							if (options?.sureBtnLoading) {
 								sureBtnMap.value[index] = Object.assign({}, sureBtnMap.value[index], {
-									loading: true,
+									loading: true
 								});
 							}
 							const closeLoading = () => {
@@ -56,8 +56,8 @@ const footerButtons = computed(() => {
 							} else {
 								done();
 							}
-						},
-					},
+						}
+					}
 				] as Array<ButtonProps>);
 	};
 });
@@ -117,7 +117,7 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 		<component
 			v-bind="options?.props"
 			:is="options.contentRenderer({ options, index })"
-			@close="(args) => handleClose(options, index, args)"
+			@close="args => handleClose(options, index, args)"
 		/>
 		<!-- footer -->
 		<template v-if="!options?.hideFooter" #footer>
@@ -132,7 +132,7 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 						@confirm="
 							btn.btnClick({
 								dialog: { options, index },
-								button: { btn, index: key },
+								button: { btn, index: key }
 							})
 						"
 					>
@@ -147,7 +147,7 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 						@click="
 							btn.btnClick({
 								dialog: { options, index },
-								button: { btn, index: key },
+								button: { btn, index: key }
 							})
 						"
 					>

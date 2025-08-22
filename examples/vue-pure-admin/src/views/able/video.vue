@@ -8,7 +8,7 @@ import Player from "xgplayer";
 import "xgplayer/dist/index.min.css";
 
 defineOptions({
-	name: "VideoPage",
+	name: "VideoPage"
 });
 
 onMounted(() => {
@@ -20,13 +20,13 @@ onMounted(() => {
 		autoplay: false,
 		screenShot: true,
 		videoAttributes: {
-			crossOrigin: "anonymous",
+			crossOrigin: "anonymous"
 		},
 		url: "//lf3-static.bytednsdoc.com/obj/eden-cn/nupenuvpxnuvo/xgplayer_doc/xgplayer-demo.mp4",
 		poster: "//lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/byted-player-videos/1.0.0/poster.jpg",
 		fluid: deviceDetection(),
 		//传入倍速可选数组
-		playbackRate: [0.5, 0.75, 1, 1.5, 2],
+		playbackRate: [0.5, 0.75, 1, 1.5, 2]
 	});
 });
 </script>

@@ -6,7 +6,7 @@ export default {
 	meta: {
 		icon: "ri/chat-search-line",
 		title: "chat-ai",
-		rank: chatai,
+		rank: chatai
 	},
 	children: [
 		{
@@ -15,8 +15,8 @@ export default {
 			component: () => import("@/views/chatai/index.vue"),
 			meta: {
 				title: "chat-ai",
-				extraIcon: "IF-pure-iconfont-new svg",
-			},
-		},
-	],
+				extraIcon: "IF-pure-iconfont-new svg"
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

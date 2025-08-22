@@ -2,7 +2,7 @@
 import { html } from "pinyin-pro";
 
 defineOptions({
-	name: "Pinyin",
+	name: "Pinyin"
 });
 </script>
 

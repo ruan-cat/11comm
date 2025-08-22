@@ -8,7 +8,7 @@ export default {
 		icon: "ri/information-line",
 		// showLink: false,
 		title: $t("menus.pureAbnormal"),
-		rank: error,
+		rank: error
 	},
 	children: [
 		{
@@ -16,24 +16,24 @@ export default {
 			name: "403",
 			component: () => import("@/views/error/403.vue"),
 			meta: {
-				title: $t("menus.pureFourZeroOne"),
-			},
+				title: $t("menus.pureFourZeroOne")
+			}
 		},
 		{
 			path: "/error/404",
 			name: "404",
 			component: () => import("@/views/error/404.vue"),
 			meta: {
-				title: $t("menus.pureFourZeroFour"),
-			},
+				title: $t("menus.pureFourZeroFour")
+			}
 		},
 		{
 			path: "/error/500",
 			name: "500",
 			component: () => import("@/views/error/500.vue"),
 			meta: {
-				title: $t("menus.pureFive"),
-			},
-		},
-	],
+				title: $t("menus.pureFive")
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

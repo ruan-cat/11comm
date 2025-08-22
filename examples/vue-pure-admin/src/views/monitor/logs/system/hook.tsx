@@ -11,7 +11,7 @@ import Info from "~icons/ri/question-line";
 export function useRole(tableRef: Ref) {
 	const form = reactive({
 		module: "",
-		requestTime: "",
+		requestTime: ""
 	});
 	const dataList = ref([]);
 	const loading = ref(true);
@@ -22,7 +22,7 @@ export function useRole(tableRef: Ref) {
 		total: 0,
 		pageSize: 10,
 		currentPage: 1,
-		background: true,
+		background: true
 	});
 
 	// const getLevelType = (type, text = false) => {
@@ -45,17 +45,17 @@ export function useRole(tableRef: Ref) {
 			label: "勾选列", // 如果需要表格多选，此处label必须设置
 			type: "selection",
 			fixed: "left",
-			reserveSelection: true, // 数据刷新后保留选项
+			reserveSelection: true // 数据刷新后保留选项
 		},
 		{
 			label: "ID",
 			prop: "id",
-			minWidth: 90,
+			minWidth: 90
 		},
 		{
 			label: "所属模块",
 			prop: "module",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			headerRenderer: () => (
@@ -65,38 +65,38 @@ export function useRole(tableRef: Ref) {
 						icon={Info}
 						class='ml-1 cursor-help'
 						v-tippy={{
-							content: "双击下面请求接口进行拷贝",
+							content: "双击下面请求接口进行拷贝"
 						}}
 					/>
 				</span>
 			),
 			prop: "url",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "请求方法",
 			prop: "method",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "IP 地址",
 			prop: "ip",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "地点",
 			prop: "address",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "操作系统",
 			prop: "system",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "浏览器类型",
 			prop: "browser",
-			minWidth: 100,
+			minWidth: 100
 		},
 		// {
 		//   label: "级别",
@@ -116,19 +116,19 @@ export function useRole(tableRef: Ref) {
 				<el-tag size={props.size} type={row.takesTime < 1000 ? "success" : "warning"} effect='plain'>
 					{row.takesTime} ms
 				</el-tag>
-			),
+			)
 		},
 		{
 			label: "请求时间",
 			prop: "requestTime",
 			minWidth: 180,
-			formatter: ({ requestTime }) => dayjs(requestTime).format("YYYY-MM-DD HH:mm:ss"),
+			formatter: ({ requestTime }) => dayjs(requestTime).format("YYYY-MM-DD HH:mm:ss")
 		},
 		{
 			label: "操作",
 			fixed: "right",
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 
 	function handleSizeChange(val: number) {
@@ -166,7 +166,7 @@ export function useRole(tableRef: Ref) {
 		const curSelected = tableRef.value.getTableRef().getSelectionRows();
 		// 接下来根据实际业务，通过选中行的某项数据，比如下面的id，调用接口进行批量删除
 		message(`已删除序号为 ${getKeyList(curSelected, "id")} 的数据`, {
-			type: "success",
+			type: "success"
 		});
 		tableRef.value.getTableRef().clearSelection();
 		onSearch();
@@ -176,21 +176,21 @@ export function useRole(tableRef: Ref) {
 	function clearAll() {
 		// 根据实际业务，调用接口删除所有日志数据
 		message("已删除所有日志数据", {
-			type: "success",
+			type: "success"
 		});
 		onSearch();
 	}
 
 	function onDetail(row) {
-		getSystemLogsDetail({ id: row.id }).then((res) => {
+		getSystemLogsDetail({ id: row.id }).then(res => {
 			addDialog({
 				title: "系统日志详情",
 				fullscreen: true,
 				hideFooter: true,
 				contentRenderer: () => Detail,
 				props: {
-					data: [res],
-				},
+					data: [res]
+				}
 			});
 		});
 	}
@@ -208,7 +208,7 @@ export function useRole(tableRef: Ref) {
 		}, 500);
 	}
 
-	const resetForm = (formEl) => {
+	const resetForm = formEl => {
 		if (!formEl) return;
 		formEl.resetFields();
 		onSearch();
@@ -234,6 +234,6 @@ export function useRole(tableRef: Ref) {
 		onSelectionCancel,
 		handleCellDblclick,
 		handleCurrentChange,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

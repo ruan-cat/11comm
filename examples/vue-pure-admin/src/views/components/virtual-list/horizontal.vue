@@ -7,14 +7,14 @@ const search = ref("");
 
 for (let i = 0; i < 800; i++) {
 	items.value.push({
-		id: i,
+		id: i
 	});
 }
 
 const filteredItems = computed(() => {
 	if (!search.value) return items.value;
 	const lowerCaseSearch = search.value;
-	return items.value.filter((i) => i.id == lowerCaseSearch);
+	return items.value.filter(i => i.id == lowerCaseSearch);
 });
 </script>
 
@@ -35,7 +35,7 @@ const filteredItems = computed(() => {
 					:data-active="active"
 					:title="`Click to change message ${index}`"
 					:style="{
-						width: `${Math.max(130, Math.round((item.id?.length / 20) * 20))}px`,
+						width: `${Math.max(130, Math.round((item.id?.length / 20) * 20))}px`
 					}"
 					class="message"
 				>

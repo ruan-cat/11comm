@@ -6,40 +6,40 @@ import { Position, BaseEdge, useVueFlow, useNodesData, getSmoothStepPath, EdgeLa
 const props = defineProps({
 	id: {
 		type: String,
-		required: true,
+		required: true
 	},
 	source: {
 		type: String,
-		required: true,
+		required: true
 	},
 	target: {
 		type: String,
-		required: true,
+		required: true
 	},
 	sourceX: {
 		type: Number,
-		required: true,
+		required: true
 	},
 	sourceY: {
 		type: Number,
-		required: true,
+		required: true
 	},
 	targetX: {
 		type: Number,
-		required: true,
+		required: true
 	},
 	targetY: {
 		type: Number,
-		required: true,
+		required: true
 	},
 	sourcePosition: {
 		type: String,
-		default: Position.Right,
+		default: Position.Right
 	},
 	targetPosition: {
 		type: String,
-		default: Position.Left,
-	},
+		default: Position.Left
+	}
 });
 
 const { findEdge } = useVueFlow();
@@ -87,24 +87,24 @@ const edgeColor = toRef(() => {
 // @ts-expect-error
 const path = computed(() => getSmoothStepPath(props));
 
-watch(isCancelled, (isCancelled) => {
+watch(isCancelled, isCancelled => {
 	if (isCancelled) {
 		reset();
 	}
 });
 
-watch(isAnimating, (isAnimating) => {
+watch(isAnimating, isAnimating => {
 	const edge = findEdge(props.id);
 
 	if (edge) {
 		edge.data = {
 			...edge.data,
-			isAnimating,
+			isAnimating
 		};
 	}
 });
 
-watch(edgePoint, (point) => {
+watch(edgePoint, point => {
 	const pathEl = edgeRef.value?.pathEl;
 
 	if (!pathEl || point === 0 || !isAnimating.value) {
@@ -121,7 +121,7 @@ watch(edgePoint, (point) => {
 	labelPosition.value = pathEl.getPointAtLength(point);
 });
 
-watch(isFinished, (isFinished) => {
+watch(isFinished, isFinished => {
 	if (isFinished) {
 		runAnimation();
 	}
@@ -149,7 +149,7 @@ async function runAnimation() {
 	await executeTransition(edgePoint, from, totalLength, {
 		transition: TransitionPresets.easeInOutCubic,
 		duration: Math.max(1500, totalLength / 2),
-		abort: () => !isAnimating.value,
+		abort: () => !isAnimating.value
 	});
 
 	reset();
@@ -171,7 +171,7 @@ function reset() {
 	<EdgeLabelRenderer v-if="isAnimating">
 		<div
 			:style="{
-				transform: `translate(-50%, -50%) translate(${labelPosition.x}px,${labelPosition.y}px)`,
+				transform: `translate(-50%, -50%) translate(${labelPosition.x}px,${labelPosition.y}px)`
 			}"
 			class="nodrag nopan animated-edge-label"
 		>

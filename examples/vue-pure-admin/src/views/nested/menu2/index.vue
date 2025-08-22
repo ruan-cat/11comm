@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 defineOptions({
-	name: "Menu2",
+	name: "Menu2"
 });
 
 const input = ref("");

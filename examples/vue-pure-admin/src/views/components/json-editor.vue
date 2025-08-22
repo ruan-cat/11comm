@@ -4,7 +4,7 @@ import "vue-json-pretty/lib/styles.css";
 import VueJsonPretty from "vue-json-pretty";
 
 defineOptions({
-	name: "JsonEditor",
+	name: "JsonEditor"
 });
 
 const defaultData = {
@@ -16,21 +16,21 @@ const defaultData = {
 		{
 			news_id: 51184,
 			title: "iPhone X Review: Innovative future with real black technology",
-			source: "Netease phone",
+			source: "Netease phone"
 		},
 		{
 			news_id: 51183,
 			title: "Traffic paradise: How to design streets for people and unmanned vehicles in the future?",
 			source: "Netease smart",
-			link: "http://netease.smart/traffic-paradise/1235",
+			link: "http://netease.smart/traffic-paradise/1235"
 		},
 		{
 			news_id: 51182,
 			title: "Teslamask's American Business Relations: The government does not pay billions to build factories",
 			source: "AI Finance",
-			members: ["Daniel", "Mike", "John"],
-		},
-	],
+			members: ["Daniel", "Mike", "John"]
+		}
+	]
 };
 
 const state = reactive({
@@ -43,29 +43,29 @@ const state = reactive({
 	editable: true,
 	showIcon: true,
 	editableTrigger: "click",
-	deep: 3,
+	deep: 3
 });
 
 watch(
 	() => state.val,
-	(newVal) => {
+	newVal => {
 		try {
 			state.data = JSON.parse(newVal);
 		} catch (err) {
 			// console.log('JSON ERROR');
 		}
-	},
+	}
 );
 
 watch(
 	() => state.data,
-	(newVal) => {
+	newVal => {
 		try {
 			state.val = JSON.stringify(newVal);
 		} catch (err) {
 			// console.log('JSON ERROR');
 		}
-	},
+	}
 );
 </script>
 

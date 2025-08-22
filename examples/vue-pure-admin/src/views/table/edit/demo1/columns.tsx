@@ -8,7 +8,7 @@ export function useColumns() {
 		{
 			label: "姓名",
 			prop: "name",
-			cellRenderer: ({ row }) => <el-input v-model={row.name} />,
+			cellRenderer: ({ row }) => <el-input v-model={row.name} />
 		},
 		{
 			label: "性别",
@@ -22,18 +22,18 @@ export function useColumns() {
 					active-text='男'
 					inactive-text='女'
 				/>
-			),
+			)
 		},
 		{
 			label: "爱好",
 			prop: "hobby",
 			cellRenderer: ({ row }) => (
 				<el-select v-model={row.hobby} clearable placeholder='请选择爱好'>
-					{options.map((item) => {
+					{options.map(item => {
 						return <el-option key={item.value} label={item.label} value={item.value} />;
 					})}
 				</el-select>
-			),
+			)
 		},
 		{
 			label: "日期",
@@ -47,14 +47,14 @@ export function useColumns() {
 					placeholder='请选择日期'
 				/>
 			),
-			minWidth: 110,
+			minWidth: 110
 		},
 		{
 			label: "操作",
 			fixed: "right",
 			width: 90,
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 
 	function onAdd() {
@@ -63,7 +63,7 @@ export function useColumns() {
 			name: "",
 			sex: 0,
 			hobby: "",
-			date: "",
+			date: ""
 		});
 	}
 
@@ -76,6 +76,6 @@ export function useColumns() {
 		columns,
 		dataList,
 		onAdd,
-		onDel,
+		onDel
 	};
 }

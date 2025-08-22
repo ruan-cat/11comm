@@ -8,8 +8,8 @@ const props = withDefaults(defineProps<RoleFormProps>(), {
 		username: "",
 		nickname: "",
 		roleOptions: [],
-		ids: [],
-	}),
+		ids: []
+	})
 });
 
 const newFormInline = ref(props.formInline);

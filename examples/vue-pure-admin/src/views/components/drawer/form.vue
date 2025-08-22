@@ -12,7 +12,7 @@ export interface FormProps {
 // 声明 props 默认值
 // 推荐阅读：https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-props
 const props = withDefaults(defineProps<FormProps>(), {
-	formInline: () => ({ user: "", region: "" }),
+	formInline: () => ({ user: "", region: "" })
 });
 
 // vue 规定所有的 prop 都遵循着单向绑定原则，直接修改 prop 时，Vue 会抛出警告。此处的写法仅仅是为了消除警告。

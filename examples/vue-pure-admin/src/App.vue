@@ -22,12 +22,12 @@ export default defineComponent({
 	components: {
 		[ElConfigProvider.name]: ElConfigProvider,
 		ReDialog,
-		ReDrawer,
+		ReDrawer
 	},
 	computed: {
 		currentLocale() {
 			return this.$storage.locale?.locale === "zh" ? { ...zhCn, ...plusZhCn } : { ...en, ...plusEn };
-		},
+		}
 	},
 	beforeCreate() {
 		const { version, name: title } = __APP_INFO__.pkg;
@@ -41,16 +41,16 @@ export default defineComponent({
 					// 5分钟检测一次版本
 					pollingTime: 300000,
 					localPackageVersion: version,
-					originVersionFileUrl: `${location.origin}${VITE_PUBLIC_PATH}version.json`,
+					originVersionFileUrl: `${location.origin}${VITE_PUBLIC_PATH}version.json`
 				},
 				// options
 				{
 					title,
 					description: "检测到新版本",
-					buttonText: "立即更新",
-				},
+					buttonText: "立即更新"
+				}
 			);
 		}
-	},
+	}
 });
 </script>

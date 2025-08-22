@@ -78,7 +78,7 @@ const icons = [
 	["ri/information-line", RiInformationLine],
 	["ri/terminal-window-line", RiTerminalWindowLine],
 	["ri/checkbox-circle-line", RiCheckboxCircleLine],
-	["ri/bar-chart-horizontal-line", RiBarChartHorizontalLine],
+	["ri/bar-chart-horizontal-line", RiBarChartHorizontalLine]
 ];
 
 // 本地菜单图标，后端在路由的 icon 中返回对应的图标字符串并且前端在此处使用 addIcon 添加即可渲染菜单图标

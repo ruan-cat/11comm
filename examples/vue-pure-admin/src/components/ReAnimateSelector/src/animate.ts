@@ -110,5 +110,5 @@ export const animates = [
 	"slideOutDown",
 	"slideOutLeft",
 	"slideOutRight",
-	"slideOutUp",
+	"slideOutUp"
 ];

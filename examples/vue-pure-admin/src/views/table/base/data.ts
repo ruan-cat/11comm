@@ -7,65 +7,65 @@ const tableData = [
 	{
 		date,
 		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Jack",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Dick",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Harry",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Sam",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Lucy",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Mary",
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date,
 		name: "Mike",
-		address: "No. 189, Grove St, Los Angeles",
-	},
+		address: "No. 189, Grove St, Los Angeles"
+	}
 ];
 
 const cloneData = clone(tableData, true);
 
-const tableDataMore = cloneData.map((item) =>
+const tableDataMore = cloneData.map(item =>
 	Object.assign(item, {
 		state: "California",
 		city: "Los Angeles",
-		"post-code": "CA 90036",
-	}),
+		"post-code": "CA 90036"
+	})
 );
 
 const tableDataImage = cloneData.map((item, index) =>
 	Object.assign(item, {
-		image: `https://pure-admin.github.io/pure-admin-table/imgs/${index + 1}.jpg`,
-	}),
+		image: `https://pure-admin.github.io/pure-admin-table/imgs/${index + 1}.jpg`
+	})
 );
 
 const tableDataSortable = cloneData.map((item, index) =>
 	Object.assign(item, {
-		date: `${dayjs(new Date()).format("YYYY-MM")}-${index + 1}`,
-	}),
+		date: `${dayjs(new Date()).format("YYYY-MM")}-${index + 1}`
+	})
 );
 
 const tableDataExpand = [
@@ -82,23 +82,23 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
+				zip: "CA 94114"
+			}
+		]
 	},
 	{
 		date: "2016-05-02",
@@ -113,23 +113,23 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
+				zip: "CA 94114"
+			}
+		]
 	},
 	{
 		date: "2016-05-04",
@@ -144,23 +144,23 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
+				zip: "CA 94114"
+			}
+		]
 	},
 	{
 		date: "2016-05-01",
@@ -175,23 +175,23 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
+				zip: "CA 94114"
+			}
+		]
 	},
 	{
 		date: "2016-05-08",
@@ -206,23 +206,23 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
+				zip: "CA 94114"
+			}
+		]
 	},
 	{
 		date: "2016-05-06",
@@ -237,23 +237,23 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
+				zip: "CA 94114"
+			}
+		]
 	},
 	{
 		date: "2016-05-07",
@@ -268,24 +268,24 @@ const tableDataExpand = [
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Spike",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
+				zip: "CA 94114"
 			},
 			{
 				name: "Tyke",
 				state: "California",
 				city: "San Francisco",
 				address: "3650 21st St, San Francisco",
-				zip: "CA 94114",
-			},
-		],
-	},
+				zip: "CA 94114"
+			}
+		]
+	}
 ];
 
 export { tableData, tableDataMore, tableDataImage, tableDataExpand, tableDataSortable };

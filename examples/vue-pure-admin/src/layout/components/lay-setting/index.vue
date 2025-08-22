@@ -50,18 +50,18 @@ const settings = reactive({
 	showModel: $storage.configure.showModel,
 	hideFooter: $storage.configure.hideFooter,
 	multiTagsCache: $storage.configure.multiTagsCache,
-	stretch: $storage.configure.stretch,
+	stretch: $storage.configure.stretch
 });
 
 const getThemeColorStyle = computed(() => {
-	return (color) => {
+	return color => {
 		return { background: color };
 	};
 });
 
 /** 当网页整体为暗色风格时不显示亮白色主题配色切换选项 */
 const showThemeColors = computed(() => {
-	return (themeColor) => {
+	return themeColor => {
 		return themeColor === "light" && isDark.value ? false : true;
 	};
 });
@@ -120,7 +120,7 @@ function logoChange() {
 }
 
 function setFalse(Doms): any {
-	Doms.forEach((v) => {
+	Doms.forEach(v => {
 		toggleClass(false, "is-select", unref(v));
 	});
 }
@@ -131,17 +131,17 @@ const stretchTypeOptions = computed<Array<OptionsType>>(() => {
 		{
 			label: t("panel.pureStretchFixed"),
 			tip: t("panel.pureStretchFixedTip"),
-			value: "fixed",
+			value: "fixed"
 		},
 		{
 			label: t("panel.pureStretchCustom"),
 			tip: t("panel.pureStretchCustomTip"),
-			value: "custom",
-		},
+			value: "custom"
+		}
 	];
 });
 
-const setStretch = (value) => {
+const setStretch = value => {
 	settings.stretch = value;
 	storageConfigureChange("stretch", value);
 };
@@ -153,7 +153,7 @@ const stretchTypeChange = ({ option }) => {
 
 /** 主题色 激活选择项 */
 const getThemeColor = computed(() => {
-	return (current) => {
+	return current => {
 		if (current === layoutTheme.value.theme && layoutTheme.value.theme !== "light") {
 			return "#fff";
 		} else if (current === layoutTheme.value.theme && layoutTheme.value.theme === "light") {
@@ -175,22 +175,22 @@ const themeOptions = computed<Array<OptionsType>>(() => {
 			icon: DayIcon,
 			theme: "light",
 			tip: t("panel.pureOverallStyleLightTip"),
-			iconAttrs: { fill: isDark.value ? "#fff" : "#000" },
+			iconAttrs: { fill: isDark.value ? "#fff" : "#000" }
 		},
 		{
 			label: t("panel.pureOverallStyleDark"),
 			icon: DarkIcon,
 			theme: "dark",
 			tip: t("panel.pureOverallStyleDarkTip"),
-			iconAttrs: { fill: isDark.value ? "#fff" : "#000" },
+			iconAttrs: { fill: isDark.value ? "#fff" : "#000" }
 		},
 		{
 			label: t("panel.pureOverallStyleSystem"),
 			icon: SystemIcon,
 			theme: "system",
 			tip: t("panel.pureOverallStyleSystemTip"),
-			iconAttrs: { fill: isDark.value ? "#fff" : "#000" },
-		},
+			iconAttrs: { fill: isDark.value ? "#fff" : "#000" }
+		}
 	];
 });
 
@@ -199,18 +199,18 @@ const markOptions = computed<Array<OptionsType>>(() => {
 		{
 			label: t("panel.pureTagsStyleSmart"),
 			tip: t("panel.pureTagsStyleSmartTip"),
-			value: "smart",
+			value: "smart"
 		},
 		{
 			label: t("panel.pureTagsStyleCard"),
 			tip: t("panel.pureTagsStyleCardTip"),
-			value: "card",
+			value: "card"
 		},
 		{
 			label: t("panel.pureTagsStyleChrome"),
 			tip: t("panel.pureTagsStyleChromeTip"),
-			value: "chrome",
-		},
+			value: "chrome"
+		}
 	];
 });
 
@@ -225,7 +225,7 @@ function setLayoutModel(layout: string) {
 		sidebarStatus: $storage.layout?.sidebarStatus,
 		epThemeColor: $storage.layout?.epThemeColor,
 		themeColor: $storage.layout?.themeColor,
-		overallStyle: $storage.layout?.overallStyle,
+		overallStyle: $storage.layout?.overallStyle
 	};
 	useAppStoreHook().setLayout(layout);
 }
@@ -298,7 +298,7 @@ onUnmounted(() => removeMatchMedia);
 				:modelValue="overallStyle === 'system' ? 2 : dataTheme ? 1 : 0"
 				:options="themeOptions"
 				@change="
-					(theme) => {
+					theme => {
 						theme.index === 1 && theme.index !== 2 ? (dataTheme = true) : (dataTheme = false);
 						overallStyle = theme.option.theme;
 						dataThemeChange(theme.option.theme);
@@ -328,7 +328,7 @@ onUnmounted(() => removeMatchMedia);
 					ref="verticalRef"
 					v-tippy="{
 						content: t('panel.pureVerticalTip'),
-						zIndex: 41000,
+						zIndex: 41000
 					}"
 					:class="layoutTheme.layout === 'vertical' ? 'is-select' : ''"
 					@click="setLayoutModel('vertical')"
@@ -341,7 +341,7 @@ onUnmounted(() => removeMatchMedia);
 					ref="horizontalRef"
 					v-tippy="{
 						content: t('panel.pureHorizontalTip'),
-						zIndex: 41000,
+						zIndex: 41000
 					}"
 					:class="layoutTheme.layout === 'horizontal' ? 'is-select' : ''"
 					@click="setLayoutModel('horizontal')"
@@ -354,7 +354,7 @@ onUnmounted(() => removeMatchMedia);
 					ref="mixRef"
 					v-tippy="{
 						content: t('panel.pureMixTip'),
-						zIndex: 41000,
+						zIndex: 41000
 					}"
 					:class="layoutTheme.layout === 'mix' ? 'is-select' : ''"
 					@click="setLayoutModel('mix')"
@@ -379,7 +379,7 @@ onUnmounted(() => removeMatchMedia);
 					:min="1280"
 					:max="1600"
 					controls-position="right"
-					@change="(value) => setStretch(value)"
+					@change="value => setStretch(value)"
 				/>
 				<button
 					v-else

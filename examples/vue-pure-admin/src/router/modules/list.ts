@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/list-check",
 		title: $t("menus.pureList"),
-		rank: list,
+		rank: list
 	},
 	children: [
 		{
@@ -17,8 +17,8 @@ export default {
 			meta: {
 				icon: "ri/bank-card-line",
 				title: $t("menus.pureCardList"),
-				showParent: true,
-			},
-		},
-	],
+				showParent: true
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

@@ -26,7 +26,7 @@ export function useLayout() {
 
 			dagreGraph.setNode(node.id, {
 				width: graphNode.dimensions.width || 150,
-				height: graphNode.dimensions.height || 50,
+				height: graphNode.dimensions.height || 50
 			});
 		}
 
@@ -36,14 +36,14 @@ export function useLayout() {
 
 		dagre.layout(dagreGraph);
 
-		return nodes.map((node) => {
+		return nodes.map(node => {
 			const nodeWithPosition = dagreGraph.node(node.id);
 
 			return {
 				...node,
 				targetPosition: isHorizontal ? Position.Left : Position.Top,
 				sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
-				position: { x: nodeWithPosition.x, y: nodeWithPosition.y },
+				position: { x: nodeWithPosition.x, y: nodeWithPosition.y }
 			};
 		});
 	}

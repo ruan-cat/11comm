@@ -21,24 +21,24 @@ const props = {
 	// 二维码内容
 	text: {
 		type: [String, Array] as PropType<string | Recordable[]>,
-		default: null,
+		default: null
 	},
 	// qrcode.js配置项
 	options: {
 		type: Object as PropType<QRCodeRenderersOptions>,
-		default: (): QRCodeRenderersOptions => ({}),
+		default: (): QRCodeRenderersOptions => ({})
 	},
 	// 宽度
 	width: propTypes.number.def(200),
 	// logo
 	logo: {
 		type: [String, Object] as PropType<Partial<QrcodeLogo> | string>,
-		default: (): QrcodeLogo | string => "",
+		default: (): QrcodeLogo | string => ""
 	},
 	// 是否过期
 	disabled: propTypes.bool.def(false),
 	// 过期提示内容
-	disabledText: propTypes.string.def(""),
+	disabledText: propTypes.string.def("")
 };
 
 export default defineComponent({
@@ -53,7 +53,7 @@ export default defineComponent({
 		const wrapStyle = computed(() => {
 			return {
 				width: props.width + "px",
-				height: props.width + "px",
+				height: props.width + "px"
 			};
 		});
 		const initQrcode = async () => {
@@ -77,7 +77,7 @@ export default defineComponent({
 				const url = await toDataURL(renderText.value, {
 					errorCorrectionLevel: "H",
 					width: props.width,
-					...options,
+					...options
 				});
 				(unref(wrapRef) as any).src = url;
 				emit("done", url);
@@ -86,14 +86,14 @@ export default defineComponent({
 		};
 		watch(
 			() => renderText.value,
-			(val) => {
+			val => {
 				if (!val) return;
 				initQrcode();
 			},
 			{
 				deep: true,
-				immediate: true,
-			},
+				immediate: true
+			}
 		);
 		const createLogoCode = (canvasRef: HTMLCanvasElement) => {
 			const canvasWidth = canvasRef.width;
@@ -104,9 +104,9 @@ export default defineComponent({
 					borderSize: 0.05,
 					crossOrigin: "anonymous",
 					borderRadius: 8,
-					logoRadius: 0,
+					logoRadius: 0
 				},
-				isString(props.logo) ? {} : props.logo,
+				isString(props.logo) ? {} : props.logo
 			);
 			const {
 				logoSize = 0.15,
@@ -114,7 +114,7 @@ export default defineComponent({
 				borderSize = 0.05,
 				crossOrigin = "anonymous",
 				borderRadius = 8,
-				logoRadius = 0,
+				logoRadius = 0
 			} = logoOptions;
 			const logoSrc = isString(props.logo) ? props.logo : props.logo.src;
 			const logoWidth = canvasWidth * logoSize;
@@ -227,5 +227,5 @@ export default defineComponent({
 				</div>
 			</>
 		);
-	},
+	}
 });

@@ -4,7 +4,7 @@ const TurboType = {
 	END_EVENT: 3,
 	USER_TASK: 4,
 	SERVICE_TASK: 5,
-	EXCLUSIVE_GATEWAY: 6,
+	EXCLUSIVE_GATEWAY: 6
 };
 
 function getTurboType(type) {
@@ -39,9 +39,9 @@ function convertNodeToTurboElement(node) {
 			x: x,
 			y: y,
 			text,
-			logicFlowType: type,
+			logicFlowType: type
 		},
-		key: id,
+		key: id
 	};
 }
 
@@ -59,23 +59,23 @@ function convertEdgeToTurboElement(edge) {
 			startPoint,
 			endPoint,
 			pointsList,
-			logicFlowType: type,
+			logicFlowType: type
 		},
-		key: id,
+		key: id
 	};
 }
 
 export function toTurboData(data) {
 	const nodeMap = new Map();
 	const turboData = {
-		flowElementList: [],
+		flowElementList: []
 	};
-	data.nodes.forEach((node) => {
+	data.nodes.forEach(node => {
 		const flowElement = convertNodeToTurboElement(node);
 		turboData.flowElementList.push(flowElement);
 		nodeMap.set(node.id, flowElement);
 	});
-	data.edges.forEach((edge) => {
+	data.edges.forEach(edge => {
 		const flowElement = convertEdgeToTurboElement(edge);
 		const sourceElement = nodeMap.get(edge.sourceNodeId);
 		sourceElement.outgoing.push(flowElement.key);
@@ -98,10 +98,10 @@ function convertFlowElementToEdge(element) {
 		startPoint,
 		endPoint,
 		pointsList,
-		properties: {},
+		properties: {}
 	};
 	const excludeProperties = ["startPoint", "endPoint", "pointsList", "text", "logicFlowType"];
-	Object.keys(element.properties).forEach((property) => {
+	Object.keys(element.properties).forEach(property => {
 		if (excludeProperties.indexOf(property) === -1) {
 			edge.properties[property] = element.properties[property];
 		}
@@ -118,10 +118,10 @@ function convertFlowElementToNode(element) {
 		x,
 		y,
 		text,
-		properties: {},
+		properties: {}
 	};
 	const excludeProperties = ["x", "y", "text", "logicFlowType"];
-	Object.keys(element.properties).forEach((property) => {
+	Object.keys(element.properties).forEach(property => {
 		if (excludeProperties.indexOf(property) === -1) {
 			node.properties[property] = element.properties[property];
 		}
@@ -132,12 +132,12 @@ function convertFlowElementToNode(element) {
 export function toLogicflowData(data) {
 	const lfData = {
 		nodes: [],
-		edges: [],
+		edges: []
 	};
 	const list = data.flowElementList;
 	list &&
 		list.length > 0 &&
-		list.forEach((element) => {
+		list.forEach(element => {
 			if (element.type === TurboType.SEQUENCE_FLOW) {
 				const edge = convertFlowElementToEdge(element);
 				lfData.edges.push(edge);

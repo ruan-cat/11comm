@@ -13,7 +13,7 @@ import Eye from "~icons/ri/eye-line";
 import Delete from "~icons/ri/delete-bin-7-line";
 
 defineOptions({
-	name: "PureUpload",
+	name: "PureUpload"
 });
 
 const fileList = ref([]);
@@ -24,13 +24,13 @@ const dialogVisible = ref(false);
 const urlList = computed(() => getKeyList(fileList.value, "url"));
 const imgInfos = computed(() => extractFields(fileList.value, "name", "size"));
 
-const getImgUrl = (name) => new URL(`./imgs/${name}.jpg`, import.meta.url).href;
+const getImgUrl = name => new URL(`./imgs/${name}.jpg`, import.meta.url).href;
 const srcList = Array.from({ length: 3 }).map((_, index) => {
 	return getImgUrl(index + 1);
 });
 
 /** 上传文件前校验 */
-const onBefore = (file) => {
+const onBefore = file => {
 	if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
 		message("只能上传图片");
 		return false;
@@ -54,16 +54,16 @@ const handleRemove = (file: UploadFile) => {
 
 /** 大图预览 */
 const handlePictureCardPreview = (file: UploadFile) => {
-	curOpenImgIndex.value = fileList.value.findIndex((img) => img.uid === file.uid);
+	curOpenImgIndex.value = fileList.value.findIndex(img => img.uid === file.uid);
 	dialogVisible.value = true;
 };
 
 const getUploadItem = () => document.querySelectorAll("#pure-upload-item");
 
 /** 缩略图拖拽排序 */
-const imgDrop = (uid) => {
+const imgDrop = uid => {
 	const CLASSNAME = "el-upload-list";
-	const _curIndex = fileList.value.findIndex((img) => img.uid === uid);
+	const _curIndex = fileList.value.findIndex(img => img.uid === uid);
 	getUploadItem()?.[_curIndex]?.classList?.add(`${CLASSNAME}__item-actions`);
 	const wrapper: HTMLElement = document.querySelector(`.${CLASSNAME}`);
 	Sortable.create(wrapper, {
@@ -73,10 +73,10 @@ const imgDrop = (uid) => {
 			fileList.value.splice(oldIndex, 1);
 			fileList.value.splice(newIndex, 0, oldFile);
 			// fix: https://github.com/SortableJS/Sortable/issues/232 (firefox is ok, but chromium is bad. see https://bugs.chromium.org/p/chromium/issues/detail?id=410328)
-			getUploadItem().forEach((ele) => {
+			getUploadItem().forEach(ele => {
 				ele.classList.remove(`${CLASSNAME}__item-actions`);
 			});
-		},
+		}
 	});
 };
 
@@ -87,11 +87,11 @@ const onDownload = () => {
 		{ name: "恭喜发财.png", type: "img" },
 		{ name: "可爱动物.gif", type: "gif" },
 		{ name: "pure-upload.csv", type: "other" },
-		{ name: "pure-upload.txt", type: "other" },
-	].forEach((img) => {
+		{ name: "pure-upload.txt", type: "other" }
+	].forEach(img => {
 		axios
 			.get(`https://xiaoxian521.github.io/hyperlink/${img.type}/${img.name}`, {
-				responseType: "blob",
+				responseType: "blob"
 			})
 			.then(({ data }) => {
 				downloadByData(data, img.name);
@@ -106,7 +106,7 @@ const onDownload = () => {
 			<div class="card-header">
 				<el-link
 					v-tippy="{
-						content: '点击查看详细文档',
+						content: '点击查看详细文档'
 					}"
 					href="https://element-plus.org/zh-CN/component/upload.html"
 					target="_blank"
@@ -183,7 +183,7 @@ const onDownload = () => {
 			:max-scale="7"
 			:min-scale="0.2"
 			@close="dialogVisible = false"
-			@switch="(index) => (curOpenImgIndex = index)"
+			@switch="index => (curOpenImgIndex = index)"
 		/>
 		<!-- 将自定义内容插入到body里，有了它在图片预览的时候，想插入个分页器或者别的东东在预览区某个位置就很方便咯（用户需求可以很灵活，开源组件库几乎不可能尽善尽美，很多时候寻找别的解决途径或许更好） -->
 		<teleport to="body">

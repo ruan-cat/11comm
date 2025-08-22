@@ -7,8 +7,8 @@ import { deviceDetection } from "@pureadmin/utils";
 defineProps({
 	noticeItem: {
 		type: Object as PropType<ListItem>,
-		default: () => {},
-	},
+		default: () => {}
+	}
 });
 
 const titleRef = ref(null);

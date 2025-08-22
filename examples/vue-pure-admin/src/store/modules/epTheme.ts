@@ -6,8 +6,7 @@ export const useEpThemeStore = defineStore("pure-epTheme", {
 		epThemeColor:
 			storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}layout`)?.epThemeColor ??
 			getConfig().EpThemeColor,
-		epTheme:
-			storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}layout`)?.theme ?? getConfig().Theme,
+		epTheme: storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}layout`)?.theme ?? getConfig().Theme
 	}),
 	getters: {
 		getEpThemeColor(state) {
@@ -20,7 +19,7 @@ export const useEpThemeStore = defineStore("pure-epTheme", {
 			} else {
 				return "#fff";
 			}
-		},
+		}
 	},
 	actions: {
 		setEpThemeColor(newColor: string): void {
@@ -30,8 +29,8 @@ export const useEpThemeStore = defineStore("pure-epTheme", {
 			if (!layout) return;
 			layout.epThemeColor = newColor;
 			storageLocal().setItem(`${responsiveStorageNameSpace()}layout`, layout);
-		},
-	},
+		}
+	}
 });
 
 export function useEpThemeStoreHook() {

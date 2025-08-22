@@ -35,7 +35,7 @@ import {
 	ContextmenuItem,
 	ContextmenuDivider,
 	ContextmenuSubmenu,
-	ContextmenuGroup,
+	ContextmenuGroup
 } from "v-contextmenu";
 
 const ExampleSFC = defineComponent({
@@ -46,12 +46,12 @@ const ExampleSFC = defineComponent({
 		[ContextmenuItem.name]: ContextmenuItem,
 		[ContextmenuDivider.name]: ContextmenuDivider,
 		[ContextmenuSubmenu.name]: ContextmenuSubmenu,
-		[ContextmenuGroup.name]: ContextmenuGroup,
+		[ContextmenuGroup.name]: ContextmenuGroup
 	},
 
 	directives: {
-		contextmenu: directive,
-	},
+		contextmenu: directive
+	}
 });
 
 export default ExampleSFC;

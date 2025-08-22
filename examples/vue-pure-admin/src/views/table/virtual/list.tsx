@@ -9,18 +9,18 @@ export const list = [
 		key: "list",
 		content: rendContent("list"),
 		title: "虚拟表格",
-		component: List,
+		component: List
 	},
 	{
 		key: "treeList",
 		content: rendContent("treeList"),
 		title: "虚拟树形表格",
-		component: TreeList,
+		component: TreeList
 	},
 	{
 		key: "pageList",
 		content: rendContent("pageList"),
 		title: "分页表格",
-		component: PageList,
-	},
+		component: PageList
+	}
 ];

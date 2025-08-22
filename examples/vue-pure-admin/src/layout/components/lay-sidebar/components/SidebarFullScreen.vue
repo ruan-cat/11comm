@@ -14,12 +14,12 @@ isFullscreen.value = !!(
 
 watch(
 	isFullscreen,
-	(full) => {
+	full => {
 		screenIcon.value = full ? ExitFullscreen : Fullscreen;
 	},
 	{
-		immediate: true,
-	},
+		immediate: true
+	}
 );
 </script>
 

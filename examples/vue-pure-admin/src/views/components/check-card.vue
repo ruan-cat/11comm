@@ -5,7 +5,7 @@ import "plus-pro-components/es/components/check-card-group/style/css";
 import { PlusCheckCardGroup } from "plus-pro-components";
 
 defineOptions({
-	name: "CheckCard",
+	name: "CheckCard"
 });
 
 const size = ref("default");
@@ -18,17 +18,17 @@ const options = [
 		title: "标题一",
 		value: "0",
 		description: "坚持梦想，成就不凡的自己",
-		avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+		avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
 	},
 	{
 		title: "标题二",
 		value: "1",
 		description: "每一次努力，都是成长的契机",
-		avatar: "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
-	},
+		avatar: "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg"
+	}
 ];
 
-watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
+watch(size, val => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
 </script>
 
 <template>
@@ -38,7 +38,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 				<el-space wrap :size="40">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://plus-pro-components.com/components/check-card-group.html"
 						target="_blank"

@@ -6,8 +6,8 @@ withDefaults(
 		height?: string;
 	}>(),
 	{
-		height: null,
-	},
+		height: null
+	}
 );
 
 const columns: TableColumnList = [
@@ -15,39 +15,39 @@ const columns: TableColumnList = [
 		label: "日期",
 		prop: "date",
 		width: "260",
-		fixed: true,
+		fixed: true
 	},
 	{
 		label: "姓名",
 		prop: "name",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "地区",
 		prop: "state",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "城市",
 		prop: "city",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "地址",
 		prop: "address",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "邮编",
 		prop: "post-code",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "操作",
 		width: "120",
 		fixed: "right",
-		slot: "operation",
-	},
+		slot: "operation"
+	}
 ];
 
 function handleClick(row) {

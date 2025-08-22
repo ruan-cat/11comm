@@ -2,10 +2,10 @@
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
 defineOptions({
-	name: "PureProgress",
+	name: "PureProgress"
 });
 
-const format = (percentage) => (percentage === 100 ? "Full" : `${percentage}%`);
+const format = percentage => (percentage === 100 ? "Full" : `${percentage}%`);
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const format = (percentage) => (percentage === 100 ? "Full" : `${percentage}%`);
 			<div class="card-header">
 				<el-link
 					v-tippy="{
-						content: '点击查看详细文档',
+						content: '点击查看详细文档'
 					}"
 					href="https://element-plus.org/zh-CN/component/progress.html"
 					target="_blank"

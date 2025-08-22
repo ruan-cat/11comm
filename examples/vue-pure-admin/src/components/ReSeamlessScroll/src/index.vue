@@ -6,16 +6,16 @@ const { animationFrame, copyObj } = utilsMethods;
 animationFrame();
 
 defineOptions({
-	name: "ReSeamlessScroll",
+	name: "ReSeamlessScroll"
 });
 
 const props = defineProps({
 	data: {
-		type: Array as PropType<unknown>,
+		type: Array as PropType<unknown>
 	},
 	classOption: {
-		type: Object as PropType<unknown>,
-	},
+		type: Object as PropType<unknown>
+	}
 });
 
 const emit = defineEmits<{
@@ -87,7 +87,7 @@ const defaultOption = computed(() => {
 		switchDelay: 400,
 		switchDisabledClass: "disabled",
 		// singleWidth/singleHeight 是否开启rem度量
-		isSingleRemUnit: false,
+		isSingleRemUnit: false
 	};
 });
 
@@ -108,7 +108,7 @@ const leftSwitch = computed((): CSSProperties => {
 	return {
 		position: "absolute",
 		margin: `${unref(height) / 2}px 0 0 -${unref(options).switchOffset}px`,
-		transform: "translate(-100%,-50%)",
+		transform: "translate(-100%,-50%)"
 	};
 });
 
@@ -116,7 +116,7 @@ const rightSwitch = computed((): CSSProperties => {
 	return {
 		position: "absolute",
 		margin: `${unref(height) / 2}px 0 0 ${unref(width) + unref(options).switchOffset}px`,
-		transform: "translateY(-50%)",
+		transform: "translateY(-50%)"
 	};
 });
 
@@ -132,7 +132,7 @@ const pos = computed(() => {
 	return {
 		transform: `translate(${unref(xPos)}px,${unref(yPos)}px)`,
 		transition: `all ${ease} ${unref(delay)}ms`,
-		overflow: "hidden",
+		overflow: "hidden"
 	};
 });
 
@@ -226,7 +226,7 @@ function touchStart(e) {
 	//取第一个touch的坐标值
 	startPos = {
 		x: touch.pageX,
-		y: touch.pageY,
+		y: touch.pageY
 	};
 	//记录touchStart时候的posY
 	startPosY = unref(yPos);
@@ -249,7 +249,7 @@ function touchMove(e) {
 	const { direction } = unref(options);
 	const endPos = {
 		x: touch.pageX - startPos.x,
-		y: touch.pageY - startPos.y,
+		y: touch.pageY - startPos.y
 	};
 	//阻止触摸事件的默认行为，即阻止滚屏
 	e.preventDefault();
@@ -452,7 +452,7 @@ tryOnUnmounted(() => {
 });
 
 defineExpose({
-	reset,
+	reset
 });
 </script>
 

@@ -41,7 +41,7 @@ export class CanvasRenderer {
 			x,
 			y,
 			width,
-			height,
+			height
 		});
 
 		this.render();
@@ -50,7 +50,7 @@ export class CanvasRenderer {
 	public render() {
 		this.clearRect();
 
-		this.images.forEach((imgProps) => {
+		this.images.forEach(imgProps => {
 			const x = imgProps.x + this.positionX;
 			this.ctx.drawImage(imgProps.img, x, imgProps.y, imgProps.width, imgProps.height);
 		});

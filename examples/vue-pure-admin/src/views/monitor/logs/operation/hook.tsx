@@ -10,7 +10,7 @@ export function useRole(tableRef: Ref) {
 	const form = reactive({
 		module: "",
 		status: "",
-		operatingTime: "",
+		operatingTime: ""
 	});
 	const dataList = ref([]);
 	const loading = ref(true);
@@ -21,54 +21,54 @@ export function useRole(tableRef: Ref) {
 		total: 0,
 		pageSize: 10,
 		currentPage: 1,
-		background: true,
+		background: true
 	});
 	const columns: TableColumnList = [
 		{
 			label: "勾选列", // 如果需要表格多选，此处label必须设置
 			type: "selection",
 			fixed: "left",
-			reserveSelection: true, // 数据刷新后保留选项
+			reserveSelection: true // 数据刷新后保留选项
 		},
 		{
 			label: "序号",
 			prop: "id",
-			minWidth: 90,
+			minWidth: 90
 		},
 		{
 			label: "操作人员",
 			prop: "username",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "所属模块",
 			prop: "module",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "操作概要",
 			prop: "summary",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "操作 IP",
 			prop: "ip",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "操作地点",
 			prop: "address",
-			minWidth: 140,
+			minWidth: 140
 		},
 		{
 			label: "操作系统",
 			prop: "system",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "浏览器类型",
 			prop: "browser",
-			minWidth: 100,
+			minWidth: 100
 		},
 		{
 			label: "操作状态",
@@ -78,14 +78,14 @@ export function useRole(tableRef: Ref) {
 				<el-tag size={props.size} style={tagStyle.value(row.status)}>
 					{row.status === 1 ? "成功" : "失败"}
 				</el-tag>
-			),
+			)
 		},
 		{
 			label: "操作时间",
 			prop: "operatingTime",
 			minWidth: 180,
-			formatter: ({ operatingTime }) => dayjs(operatingTime).format("YYYY-MM-DD HH:mm:ss"),
-		},
+			formatter: ({ operatingTime }) => dayjs(operatingTime).format("YYYY-MM-DD HH:mm:ss")
+		}
 	];
 
 	function handleSizeChange(val: number) {
@@ -116,7 +116,7 @@ export function useRole(tableRef: Ref) {
 		const curSelected = tableRef.value.getTableRef().getSelectionRows();
 		// 接下来根据实际业务，通过选中行的某项数据，比如下面的id，调用接口进行批量删除
 		message(`已删除序号为 ${getKeyList(curSelected, "id")} 的数据`, {
-			type: "success",
+			type: "success"
 		});
 		tableRef.value.getTableRef().clearSelection();
 		onSearch();
@@ -126,7 +126,7 @@ export function useRole(tableRef: Ref) {
 	function clearAll() {
 		// 根据实际业务，调用接口删除所有日志数据
 		message("已删除所有日志数据", {
-			type: "success",
+			type: "success"
 		});
 		onSearch();
 	}
@@ -144,7 +144,7 @@ export function useRole(tableRef: Ref) {
 		}, 500);
 	}
 
-	const resetForm = (formEl) => {
+	const resetForm = formEl => {
 		if (!formEl) return;
 		formEl.resetFields();
 		onSearch();
@@ -168,6 +168,6 @@ export function useRole(tableRef: Ref) {
 		handleSizeChange,
 		onSelectionCancel,
 		handleCurrentChange,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

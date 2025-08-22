@@ -5,7 +5,7 @@ import ReCropper from "@/components/ReCropper";
 import { formatBytes } from "@pureadmin/utils";
 
 defineOptions({
-	name: "Cropping",
+	name: "Cropping"
 });
 
 const infos = ref();

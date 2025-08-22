@@ -6,12 +6,12 @@ export default defineComponent({
 	props: {
 		split: {
 			type: String,
-			required: true,
+			required: true
 		},
 		className: {
 			type: String,
-			default: "",
-		},
+			default: ""
+		}
 	},
 	setup(props) {
 		const classes = computed(() => {
@@ -19,5 +19,5 @@ export default defineComponent({
 		});
 
 		return () => <div class={unref(classes)}></div>;
-	},
+	}
 });

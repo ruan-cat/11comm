@@ -19,7 +19,7 @@ interface Tree {
 
 defineProps({
 	treeLoading: Boolean,
-	treeData: Array,
+	treeData: Array
 });
 
 const emit = defineEmits(["tree-select"]);
@@ -31,7 +31,7 @@ const highlightMap = ref({});
 const { proxy } = getCurrentInstance();
 const defaultProps = {
 	children: "children",
-	label: "name",
+	label: "name"
 };
 const buttonClass = computed(() => {
 	return [
@@ -40,7 +40,7 @@ const buttonClass = computed(() => {
 		"reset-margin",
 		"text-(--el-text-color-regular)!",
 		"dark:text-white!",
-		"dark:hover:text-primary!",
+		"dark:hover:text-primary!"
 	];
 });
 
@@ -53,10 +53,10 @@ function nodeClick(value) {
 	const nodeId = value.$treeNodeId;
 	highlightMap.value[nodeId] = highlightMap.value[nodeId]?.highlight
 		? Object.assign({ id: nodeId }, highlightMap.value[nodeId], {
-				highlight: false,
+				highlight: false
 			})
 		: Object.assign({ id: nodeId }, highlightMap.value[nodeId], {
-				highlight: true,
+				highlight: true
 			});
 	Object.values(highlightMap.value).forEach((v: Tree) => {
 		if (v.id !== nodeId) {
@@ -67,7 +67,7 @@ function nodeClick(value) {
 		"tree-select",
 		highlightMap.value[nodeId]?.highlight
 			? Object.assign({ ...value, selected: true })
-			: Object.assign({ ...value, selected: false }),
+			: Object.assign({ ...value, selected: false })
 	);
 }
 
@@ -86,7 +86,7 @@ function onTreeReset() {
 	toggleRowExpansionAll(true);
 }
 
-watch(searchValue, (val) => {
+watch(searchValue, val => {
 	treeRef.value!.filter(val);
 });
 
@@ -159,11 +159,11 @@ defineExpose({ onTreeReset });
 							'select-none',
 							'hover:text-primary',
 							searchValue.trim().length > 0 && node.label.includes(searchValue) && 'text-red-500',
-							highlightMap[node.id]?.highlight ? 'dark:text-primary' : '',
+							highlightMap[node.id]?.highlight ? 'dark:text-primary' : ''
 						]"
 						:style="{
 							color: highlightMap[node.id]?.highlight ? 'var(--el-color-primary)' : '',
-							background: highlightMap[node.id]?.highlight ? 'var(--el-color-primary-light-7)' : 'transparent',
+							background: highlightMap[node.id]?.highlight ? 'var(--el-color-primary-light-7)' : 'transparent'
 						}"
 					>
 						<IconifyIconOffline :icon="data.type === 1 ? OfficeBuilding : data.type === 2 ? LocationCompany : Dept" />

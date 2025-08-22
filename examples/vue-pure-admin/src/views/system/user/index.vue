@@ -15,7 +15,7 @@ import Refresh from "~icons/ep/refresh";
 import AddFill from "~icons/ri/add-circle-line";
 
 defineOptions({
-	name: "SystemUser",
+	name: "SystemUser"
 });
 
 const treeRef = ref();
@@ -46,7 +46,7 @@ const {
 	handleSizeChange,
 	onSelectionCancel,
 	handleCurrentChange,
-	handleSelectionChange,
+	handleSelectionChange
 } = useUser(tableRef, treeRef);
 </script>
 
@@ -125,7 +125,7 @@ const {
 						:pagination="{ ...pagination, size }"
 						:header-cell-style="{
 							background: 'var(--el-fill-color-light)',
-							color: 'var(--el-text-color-primary)',
+							color: 'var(--el-text-color-primary)'
 						}"
 						@selection-change="handleSelectionChange"
 						@page-size-change="handleSizeChange"

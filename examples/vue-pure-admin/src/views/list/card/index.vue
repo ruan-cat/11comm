@@ -9,7 +9,7 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import AddFill from "~icons/ri/add-circle-line";
 
 defineOptions({
-	name: "CardList",
+	name: "CardList"
 });
 
 const svg = `
@@ -28,7 +28,7 @@ const INITIAL_DATA = {
 	status: "",
 	description: "",
 	type: "",
-	mark: "",
+	mark: ""
 };
 
 const pagination = ref({ current: 1, pageSize: 12, total: 0 });
@@ -42,7 +42,7 @@ const getCardListData = async () => {
 		productList.value = data.list;
 		pagination.value = {
 			...pagination.value,
-			total: data.list.length,
+			total: data.list.length
 		};
 	} catch (e) {
 		console.log(e);
@@ -68,16 +68,16 @@ const onPageSizeChange = (size: number) => {
 const onCurrentChange = (current: number) => {
 	pagination.value.current = current;
 };
-const handleDeleteItem = (product) => {
+const handleDeleteItem = product => {
 	ElMessageBox.confirm(product ? `确认删除后${product.name}的所有产品信息将被清空, 且无法恢复` : "", "提示", {
-		type: "warning",
+		type: "warning"
 	})
 		.then(() => {
 			message("删除成功", { type: "success" });
 		})
 		.catch(() => {});
 };
-const handleManageProduct = (product) => {
+const handleManageProduct = product => {
 	formDialogVisible.value = true;
 	nextTick(() => {
 		formData.value = { ...product, status: product?.isSetup ? "1" : "0" };
@@ -102,7 +102,7 @@ const handleManageProduct = (product) => {
 				v-show="
 					productList
 						.slice(pagination.pageSize * (pagination.current - 1), pagination.pageSize * pagination.current)
-						.filter((v) => v.name.toLowerCase().includes(searchValue.toLowerCase())).length === 0
+						.filter(v => v.name.toLowerCase().includes(searchValue.toLowerCase())).length === 0
 				"
 				:description="`${searchValue} 产品不存在`"
 			/>
@@ -111,7 +111,7 @@ const handleManageProduct = (product) => {
 					<el-col
 						v-for="(product, index) in productList
 							.slice(pagination.pageSize * (pagination.current - 1), pagination.pageSize * pagination.current)
-							.filter((v) => v.name.toLowerCase().includes(searchValue.toLowerCase()))"
+							.filter(v => v.name.toLowerCase().includes(searchValue.toLowerCase()))"
 						:key="index"
 						:xs="24"
 						:sm="12"

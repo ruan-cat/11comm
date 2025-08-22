@@ -28,7 +28,7 @@ export function useDataThemeChange() {
 		/* 绿宝石 */
 		{ color: "#13c2c2", themeColor: "mingQing" },
 		/* 酸橙绿 */
-		{ color: "#52c41a", themeColor: "auroraGreen" },
+		{ color: "#52c41a", themeColor: "auroraGreen" }
 	]);
 
 	const { $storage } = useGlobal<GlobalPropertiesApi>();
@@ -56,13 +56,13 @@ export function useDataThemeChange() {
 			sidebarStatus: $storage.layout?.sidebarStatus,
 			epThemeColor: $storage.layout?.epThemeColor,
 			themeColor: isClick ? theme : storageThemeColor,
-			overallStyle: overallStyle.value,
+			overallStyle: overallStyle.value
 		};
 
 		if (theme === "default" || theme === "light") {
 			setEpThemeColor(getConfig().EpThemeColor);
 		} else {
-			const colors = themeColors.value.find((v) => v.themeColor === theme);
+			const colors = themeColors.value.find(v => v.themeColor === theme);
 			setEpThemeColor(colors.color);
 		}
 	}
@@ -70,7 +70,7 @@ export function useDataThemeChange() {
 	function setPropertyPrimary(mode: string, i: number, color: string) {
 		document.documentElement.style.setProperty(
 			`--el-color-primary-${mode}-${i}`,
-			dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10),
+			dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10)
 		);
 	}
 
@@ -130,6 +130,6 @@ export function useDataThemeChange() {
 		toggleClass,
 		dataThemeChange,
 		setEpThemeColor,
-		setLayoutThemeColor,
+		setLayoutThemeColor
 	};
 }

@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 
 defineOptions({
-	name: "DateTimePicker",
+	name: "DateTimePicker"
 });
 
 const size = ref("default");
@@ -12,7 +12,7 @@ const value = ref("");
 const shortcuts = [
 	{
 		text: "今天",
-		value: new Date(),
+		value: new Date()
 	},
 	{
 		text: "昨天",
@@ -20,7 +20,7 @@ const shortcuts = [
 			const date = new Date();
 			date.setTime(date.getTime() - 3600 * 1000 * 24);
 			return date;
-		},
+		}
 	},
 	{
 		text: "一周前",
@@ -28,8 +28,8 @@ const shortcuts = [
 			const date = new Date();
 			date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
 			return date;
-		},
-	},
+		}
+	}
 ];
 
 const value1 = ref("");
@@ -44,7 +44,7 @@ const shortcuts1 = [
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
 			return [start, end];
-		},
+		}
 	},
 	{
 		text: "上个月",
@@ -53,7 +53,7 @@ const shortcuts1 = [
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
 			return [start, end];
-		},
+		}
 	},
 	{
 		text: "三个月前",
@@ -62,8 +62,8 @@ const shortcuts1 = [
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
 			return [start, end];
-		},
-	},
+		}
+	}
 ];
 
 const value3 = ref("");
@@ -72,64 +72,64 @@ const placement = ref("auto");
 const checkTag = ref([
 	{
 		title: "auto", // https://popper.js.org/docs/v2/constructors/#options
-		checked: false,
+		checked: false
 	},
 	{
 		title: "auto-start",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "auto-end",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "top",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "top-start",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "top-end",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "bottom",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "bottom-start",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "bottom-end",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "right",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "right-start",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "right-end",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "left",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "left-start",
-		checked: false,
+		checked: false
 	},
 	{
 		title: "left-end",
-		checked: false,
-	},
+		checked: false
+	}
 ]);
 const curTagMap = ref({});
 function onChecked(tag, index) {
@@ -137,15 +137,15 @@ function onChecked(tag, index) {
 	placement.value = tag.title;
 	curTagMap.value[index] = Object.assign({
 		...tag,
-		checked: !tag.checked,
+		checked: !tag.checked
 	});
-	checkTag.value.map((item) => (item.checked = false));
+	checkTag.value.map(item => (item.checked = false));
 	checkTag.value[index].checked = curTagMap.value[index].checked;
 	// 外部触发日期时间选择面板的打开与关闭
 	curTagMap.value[index].checked ? datePickerRef.value.handleOpen() : datePickerRef.value.handleClose();
 }
 
-watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
+watch(size, val => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
 </script>
 
 <template>
@@ -155,7 +155,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 				<el-space wrap :size="40">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/datetime-picker.html"
 						target="_blank"
@@ -221,7 +221,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			start-placeholder="开始日期时间"
 			end-placeholder="结束日期时间"
 			:popper-options="{
-				placement: 'bottom-start',
+				placement: 'bottom-start'
 			}"
 			:size="dynamicSize"
 			:disabled="size === 'disabled'"
@@ -246,7 +246,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			class="ml-[15%]"
 			placeholder="请选择日期时间"
 			:popper-options="{
-				placement,
+				placement
 			}"
 			:size="dynamicSize"
 			:disabled="size === 'disabled'"

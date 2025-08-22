@@ -7,12 +7,12 @@ import { transformI18n } from "@/plugins/i18n";
 defineProps({
 	list: {
 		type: Array as PropType<Array<ListItem>>,
-		default: () => [],
+		default: () => []
 	},
 	emptyText: {
 		type: String,
-		default: "",
-	},
+		default: ""
+	}
 });
 </script>
 

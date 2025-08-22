@@ -6,8 +6,8 @@ export default defineComponent({
 	props: {
 		icon: {
 			type: String,
-			default: "",
-		},
+			default: ""
+		}
 	},
 	render() {
 		const attrs = this.$attrs;
@@ -16,29 +16,29 @@ export default defineComponent({
 				"i",
 				{
 					class: "iconfont",
-					...attrs,
+					...attrs
 				},
-				this.icon,
+				this.icon
 			);
 		} else if (Object.keys(attrs).includes("svg") || attrs?.iconType === "svg") {
 			return h(
 				"svg",
 				{
-					class: "icon-svg",
+					class: "icon-svg"
 				},
 				{
 					default: () => [
 						h("use", {
-							"xlink:href": `#${this.icon}`,
-						}),
-					],
-				},
+							"xlink:href": `#${this.icon}`
+						})
+					]
+				}
 			);
 		} else {
 			return h("i", {
 				class: `iconfont ${this.icon}`,
-				...attrs,
+				...attrs
 			});
 		}
-	},
+	}
 });

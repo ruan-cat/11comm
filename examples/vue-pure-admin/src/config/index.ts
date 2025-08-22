@@ -13,7 +13,7 @@ const getConfig = (key?: string): PlatformConfigs => {
 		const arr = key.split(".");
 		if (arr && arr.length) {
 			let data = config;
-			arr.forEach((v) => {
+			arr.forEach(v => {
 				if (data && typeof data[v] !== "undefined") {
 					data = data[v];
 				} else {
@@ -31,7 +31,7 @@ export const getPlatformConfig = async (app: App): Promise<undefined> => {
 	app.config.globalProperties.$config = getConfig();
 	return axios({
 		method: "get",
-		url: `${VITE_PUBLIC_PATH}platform-config.json`,
+		url: `${VITE_PUBLIC_PATH}platform-config.json`
 	})
 		.then(({ data: config }) => {
 			let $config = app.config.globalProperties.$config;

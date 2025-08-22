@@ -10,23 +10,23 @@ const setCurrent = (row?: any) => {
 	const { setCurrentRow } = tableRef.value.getTableRef();
 	setCurrentRow(row);
 };
-const handleCurrentChange = (val) => {
+const handleCurrentChange = val => {
 	currentRow.value = val;
 };
 
 const columns: TableColumnList = [
 	{
 		label: "日期",
-		prop: "date",
+		prop: "date"
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "地址",
-		prop: "address",
-	},
+		prop: "address"
+	}
 ];
 </script>
 

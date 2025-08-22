@@ -4,7 +4,7 @@ import { onMounted, onUnmounted, reactive, ref } from "vue";
 import VueDanmaku from "vue3-danmaku";
 
 defineOptions({
-	name: "Danmaku",
+	name: "Danmaku"
 });
 
 const danmaku = ref();
@@ -20,7 +20,7 @@ const config = reactive({
 	top: 10, // 弹幕轨道间的垂直间距
 	right: 0, // 同一轨道弹幕的水平间距
 	debounce: 100, // 弹幕刷新频率（多少毫秒插入一条弹幕，建议不小于50）
-	randomChannel: true, // 随机弹幕轨道
+	randomChannel: true // 随机弹幕轨道
 });
 
 onMounted(() => {
@@ -94,7 +94,7 @@ function addDanmu() {
 		? {
 				avatar: "https://i.loli.net/2021/01/17/xpwbm3jKytfaNOD.jpg",
 				name: "你",
-				text: danmuMsg.value,
+				text: danmuMsg.value
 			}
 		: danmuMsg.value;
 	danmaku.value.add(_danmuMsg);

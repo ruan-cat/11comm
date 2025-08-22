@@ -6,12 +6,12 @@ const chatRef = ref();
 
 onMounted(() => {
 	chatRef.value.demo = {
-		response: (message) => {
+		response: message => {
 			console.log(message);
 			return {
-				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect",
+				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect"
 			};
-		},
+		}
 	};
 });
 </script>
@@ -27,37 +27,37 @@ onMounted(() => {
 						maxWidth: '100%',
 						backgroundColor: 'unset',
 						marginTop: '10px',
-						marginBottom: '10px',
-					},
+						marginBottom: '10px'
+					}
 				},
 				user: {
 					bubble: {
 						marginLeft: '0px',
-						color: 'black',
-					},
+						color: 'black'
+					}
 				},
 				ai: {
 					outerContainer: {
 						backgroundColor: 'rgba(247,247,248)',
 						borderTop: '1px solid rgba(0,0,0,.1)',
-						borderBottom: '1px solid rgba(0,0,0,.1)',
-					},
-				},
-			},
+						borderBottom: '1px solid rgba(0,0,0,.1)'
+					}
+				}
+			}
 		}"
 		:avatars="{
 			default: { styles: { position: 'left' } },
-			ai: { src: 'https://xiaoxian521.github.io/hyperlink/svg/openai.svg' },
+			ai: { src: 'https://xiaoxian521.github.io/hyperlink/svg/openai.svg' }
 		}"
 		:submitButtonStyles="{
 			submit: {
 				container: {
 					default: {
 						padding: '1px 0 0 5px',
-						backgroundColor: '#19c37d',
+						backgroundColor: '#19c37d'
 					},
 					hover: { backgroundColor: '#0bab69' },
-					click: { backgroundColor: '#068e56' },
+					click: { backgroundColor: '#068e56' }
 				},
 				svg: {
 					content:
@@ -65,10 +65,10 @@ onMounted(() => {
 					styles: {
 						default: {
 							filter:
-								'brightness(0) saturate(100%) invert(100%) sepia(28%) saturate(2%) hue-rotate(69deg) brightness(107%) contrast(100%)',
-						},
-					},
-				},
+								'brightness(0) saturate(100%) invert(100%) sepia(28%) saturate(2%) hue-rotate(69deg) brightness(107%) contrast(100%)'
+						}
+					}
+				}
 			},
 			loading: {
 				container: { default: { backgroundColor: 'white' } },
@@ -76,15 +76,15 @@ onMounted(() => {
 					styles: {
 						default: {
 							filter:
-								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)',
-						},
-					},
-				},
+								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)'
+						}
+					}
+				}
 			},
 			stop: {
 				container: {
 					default: { backgroundColor: 'white' },
-					hover: { backgroundColor: '#dadada52' },
+					hover: { backgroundColor: '#dadada52' }
 				},
 				svg: {
 					content:
@@ -94,19 +94,19 @@ onMounted(() => {
 							width: '0.95em',
 							marginTop: '0.32em',
 							filter:
-								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)',
-						},
-					},
-				},
-			},
+								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)'
+						}
+					}
+				}
+			}
 		}"
 		:textInput="{ placeholder: { text: '发送消息' } }"
 		:history="[
 			{ text: '李白是谁？', role: 'user' },
 			{
 				text: '李白（701年2月28日－762年），号青莲居士，又号“谪仙人”，是唐代著名的浪漫主义诗人，被后人誉为“诗仙”。',
-				role: 'ai',
-			},
+				role: 'ai'
+			}
 		]"
 		:demo="true"
 		:connect="{ stream: true }"

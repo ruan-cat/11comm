@@ -26,7 +26,7 @@ const {
 	toggleSideBar,
 	toAccountSettings,
 	getDropdownItemStyle,
-	getDropdownItemClass,
+	getDropdownItemClass
 } = useNav();
 
 const { t, locale, translationCh, translationEn } = useTranslationLang();

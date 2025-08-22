@@ -9,8 +9,8 @@ export default [
 		meta: {
 			title: $t("menus.pureLogin"),
 			showLink: false,
-			rank: 101,
-		},
+			rank: 101
+		}
 	},
 	{
 		path: "/redirect",
@@ -18,15 +18,15 @@ export default [
 		meta: {
 			title: $t("status.pureLoad"),
 			showLink: false,
-			rank: 102,
+			rank: 102
 		},
 		children: [
 			{
 				path: "/redirect/:path(.*)",
 				name: "Redirect",
-				component: () => import("@/layout/redirect.vue"),
-			},
-		],
+				component: () => import("@/layout/redirect.vue")
+			}
+		]
 	},
 	// 下面是一个无layout菜单的例子（一个全屏空白页面），因为这种情况极少发生，所以只需要在前端配置即可（配置路径：src/router/modules/remaining.ts）
 	{
@@ -36,8 +36,8 @@ export default [
 		meta: {
 			title: $t("menus.pureEmpty"),
 			showLink: false,
-			rank: 103,
-		},
+			rank: 103
+		}
 	},
 	{
 		path: "/account-settings",
@@ -46,7 +46,7 @@ export default [
 		meta: {
 			title: $t("buttons.pureAccountSettings"),
 			showLink: false,
-			rank: 104,
-		},
-	},
+			rank: 104
+		}
+	}
 ] satisfies Array<RouteConfigsTable>;

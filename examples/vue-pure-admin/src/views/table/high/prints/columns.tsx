@@ -9,20 +9,20 @@ export function useColumns(printRef: Ref) {
 	const columns: TableColumnList = [
 		{
 			label: "ID",
-			prop: "id",
+			prop: "id"
 		},
 		{
 			label: "日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "地址",
-			prop: "address",
-		},
+			prop: "address"
+		}
 	];
 
 	const print = () => {
@@ -49,6 +49,6 @@ export function useColumns(printRef: Ref) {
 		print,
 		rowStyle,
 		cellStyle,
-		headerCellStyle,
+		headerCellStyle
 	};
 }

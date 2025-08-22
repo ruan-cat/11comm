@@ -59,14 +59,14 @@ const show = computed({
 	},
 	set(val: boolean) {
 		emit("update:value", val);
-	},
+	}
 });
 
 watch(
 	() => props.value,
-	(newValue) => {
+	newValue => {
 		if (newValue) getHistory();
-	},
+	}
 );
 
 const showSearchResult = computed(() => {
@@ -93,7 +93,7 @@ function setStorageItem(key, value) {
 function flatTree(arr) {
 	const res = [];
 	function deep(arr) {
-		arr.forEach((item) => {
+		arr.forEach(item => {
 			res.push(item);
 			item.children && deep(item.children);
 		});
@@ -105,14 +105,14 @@ function flatTree(arr) {
 /** 查询 */
 function search() {
 	const flatMenusData = flatTree(menusData.value);
-	resultOptions.value = flatMenusData.filter((menu) =>
+	resultOptions.value = flatMenusData.filter(menu =>
 		keyword.value
 			? transformI18n(menu.meta?.title).toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase().trim()) ||
 				(locale.value === "zh" &&
 					!isAllEmpty(
-						match(transformI18n(menu.meta?.title).toLocaleLowerCase(), keyword.value.toLocaleLowerCase().trim()),
+						match(transformI18n(menu.meta?.title).toLocaleLowerCase(), keyword.value.toLocaleLowerCase().trim())
 					))
-			: false,
+			: false
 	);
 	activePath.value = resultOptions.value?.length > 0 ? resultOptions.value[0].path : "";
 }
@@ -155,7 +155,7 @@ function updatePathAndScroll(newIndex, isResultOptions) {
 function handleUp() {
 	const { options, currentPath, isResultOptions } = getCurrentOptionsAndPath();
 	if (options.length === 0) return;
-	const index = options.findIndex((item) => item.path === currentPath);
+	const index = options.findIndex(item => item.path === currentPath);
 	const prevIndex = (index - 1 + options.length) % options.length;
 	updatePathAndScroll(prevIndex, isResultOptions);
 }
@@ -164,7 +164,7 @@ function handleUp() {
 function handleDown() {
 	const { options, currentPath, isResultOptions } = getCurrentOptionsAndPath();
 	if (options.length === 0) return;
-	const index = options.findIndex((item) => item.path === currentPath);
+	const index = options.findIndex(item => item.path === currentPath);
 	const nextIndex = (index + 1) % options.length;
 	updatePathAndScroll(nextIndex, isResultOptions);
 }
@@ -173,7 +173,7 @@ function handleDown() {
 function handleEnter() {
 	const { options, currentPath, isResultOptions } = getCurrentOptionsAndPath();
 	if (options.length === 0 || currentPath === "") return;
-	const index = options.findIndex((item) => item.path === currentPath);
+	const index = options.findIndex(item => item.path === currentPath);
 	if (index === -1) return;
 	if (isResultOptions) {
 		saveHistory();
@@ -188,7 +188,7 @@ function handleEnter() {
 function handleDelete(item) {
 	const key = item.type === HISTORY_TYPE ? LOCALEHISTORYKEY : LOCALECOLLECTKEY;
 	let list = getStorageItem(key);
-	list = list.filter((listItem) => listItem.path !== item.path);
+	list = list.filter(listItem => listItem.path !== item.path);
 	setStorageItem(key, list);
 	getHistory();
 }
@@ -197,9 +197,9 @@ function handleDelete(item) {
 function handleCollect(item) {
 	let searchHistoryList = getStorageItem(LOCALEHISTORYKEY);
 	let searchCollectList = getStorageItem(LOCALECOLLECTKEY);
-	searchHistoryList = searchHistoryList.filter((historyItem) => historyItem.path !== item.path);
+	searchHistoryList = searchHistoryList.filter(historyItem => historyItem.path !== item.path);
 	setStorageItem(LOCALEHISTORYKEY, searchHistoryList);
-	if (!searchCollectList.some((collectItem) => collectItem.path === item.path)) {
+	if (!searchCollectList.some(collectItem => collectItem.path === item.path)) {
 		searchCollectList.unshift({ ...item, type: COLLECT_TYPE });
 		setStorageItem(LOCALECOLLECTKEY, searchCollectList);
 	}
@@ -208,11 +208,11 @@ function handleCollect(item) {
 
 /** 存储搜索记录 */
 function saveHistory() {
-	const { path, meta } = resultOptions.value.find((item) => item.path === activePath.value);
+	const { path, meta } = resultOptions.value.find(item => item.path === activePath.value);
 	const searchHistoryList = getStorageItem(LOCALEHISTORYKEY);
 	const searchCollectList = getStorageItem(LOCALECOLLECTKEY);
-	const isCollected = searchCollectList.some((item) => item.path === path);
-	const existingIndex = searchHistoryList.findIndex((item) => item.path === path);
+	const isCollected = searchCollectList.some(item => item.path === path);
+	const existingIndex = searchHistoryList.findIndex(item => item.path === path);
 	if (!isCollected) {
 		if (existingIndex !== -1) searchHistoryList.splice(existingIndex, 1);
 		if (searchHistoryList.length >= historyNum) searchHistoryList.pop();
@@ -224,7 +224,7 @@ function saveHistory() {
 /** 更新存储的搜索记录 */
 function updateHistory() {
 	let searchHistoryList = getStorageItem(LOCALEHISTORYKEY);
-	const historyIndex = searchHistoryList.findIndex((item) => item.path === historyPath.value);
+	const historyIndex = searchHistoryList.findIndex(item => item.path === historyPath.value);
 	if (historyIndex !== -1) {
 		const [historyItem] = searchHistoryList.splice(historyIndex, 1);
 		searchHistoryList.unshift(historyItem);
@@ -264,7 +264,7 @@ onKeyStroke("ArrowDown", handleDown);
 		:width="device === 'mobile' ? '80vw' : '40vw'"
 		:before-close="handleClose"
 		:style="{
-			borderRadius: '6px',
+			borderRadius: '6px'
 		}"
 		append-to-body
 		@opened="inputRef.focus()"

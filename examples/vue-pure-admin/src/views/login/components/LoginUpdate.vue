@@ -19,7 +19,7 @@ const ruleForm = reactive({
 	phone: "",
 	verifyCode: "",
 	password: "",
-	repeatPassword: "",
+	repeatPassword: ""
 });
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
@@ -34,19 +34,19 @@ const repeatPasswordRule = [
 				callback();
 			}
 		},
-		trigger: "blur",
-	},
+		trigger: "blur"
+	}
 ];
 
 const onUpdate = async (formEl: FormInstance | undefined) => {
 	loading.value = true;
 	if (!formEl) return;
-	await formEl.validate((valid) => {
+	await formEl.validate(valid => {
 		if (valid) {
 			// 模拟请求，需根据实际开发进行修改
 			setTimeout(() => {
 				message(transformI18n($t("login.purePassWordUpdateReg")), {
-					type: "success",
+					type: "success"
 				});
 				loading.value = false;
 			}, 2000);

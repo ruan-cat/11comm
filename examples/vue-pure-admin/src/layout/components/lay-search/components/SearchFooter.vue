@@ -7,7 +7,7 @@ import ArrowUpLine from "~icons/ri/arrow-up-line";
 import ArrowDownLine from "~icons/ri/arrow-down-line";
 
 withDefaults(defineProps<{ total?: number }>(), {
-	total: 0,
+	total: 0
 });
 
 const { t } = useI18n();

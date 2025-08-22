@@ -7,33 +7,33 @@ import { type PropType, h, ref, toRef, watch, nextTick, defineComponent, getCurr
 const props = {
 	options: {
 		type: Array<OptionsType>,
-		default: () => [],
+		default: () => []
 	},
 	/** 默认选中，按照第一个索引为 `0` 的模式，可选（`modelValue`只有传`number`类型时才为响应式） */
 	modelValue: {
 		type: undefined,
 		require: false,
-		default: "0",
+		default: "0"
 	},
 	/** 将宽度调整为父元素宽度	 */
 	block: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	/** 控件尺寸 */
 	size: {
-		type: String as PropType<"small" | "default" | "large">,
+		type: String as PropType<"small" | "default" | "large">
 	},
 	/** 是否全局禁用，默认 `false` */
 	disabled: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	/** 当内容发生变化时，设置 `resize` 可使其自适应容器位置 */
 	resize: {
 		type: Boolean,
-		default: false,
-	},
+		default: false
+	}
 };
 
 export default defineComponent({
@@ -97,18 +97,18 @@ export default defineComponent({
 
 		watch(
 			() => curIndex.value,
-			(index) => {
+			index => {
 				nextTick(() => {
 					handleInit(index);
 				});
 			},
 			{
-				immediate: true,
-			},
+				immediate: true
+			}
 		);
 
 		watch(() => props.size, handleResizeInit, {
-			immediate: true,
+			immediate: true
 		});
 
 		const rendLabel = () => {
@@ -125,26 +125,26 @@ export default defineComponent({
 									? isDark.value
 										? "rgba(255, 255, 255, 0.85)"
 										: "rgba(0,0,0,.88)"
-									: "",
+									: ""
 						}}
-						onMouseenter={(event) => handleMouseenter({ option, index }, event)}
-						onMouseleave={(event) => handleMouseleave({ option, index }, event)}
-						onClick={(event) => handleChange({ option, index }, event)}
+						onMouseenter={event => handleMouseenter({ option, index }, event)}
+						onMouseleave={event => handleMouseleave({ option, index }, event)}
+						onClick={event => handleChange({ option, index }, event)}
 					>
 						<input type='radio' name='segmented' />
 						<div
 							class='pure-segmented-item-label'
 							v-tippy={{
 								content: option?.tip,
-								zIndex: 41000,
+								zIndex: 41000
 							}}
 						>
 							{option.icon && !isFunction(option.label) ? (
 								<span class='pure-segmented-item-icon' style={{ marginRight: option.label ? "6px" : 0 }}>
 									{h(
 										useRenderIcon(option.icon, {
-											...option?.iconAttrs,
-										}),
+											...option?.iconAttrs
+										})
 									)}
 								</span>
 							) : null}
@@ -161,7 +161,7 @@ export default defineComponent({
 					"pure-segmented": true,
 					"pure-segmented-block": props.block,
 					"pure-segmented--large": props.size === "large",
-					"pure-segmented--small": props.size === "small",
+					"pure-segmented--small": props.size === "small"
 				}}
 			>
 				<div class='pure-segmented-group'>
@@ -170,12 +170,12 @@ export default defineComponent({
 						style={{
 							width: `${width.value}px`,
 							transform: `translateX(${translateX.value}px)`,
-							display: initStatus.value ? "block" : "none",
+							display: initStatus.value ? "block" : "none"
 						}}
 					></div>
 					{rendLabel()}
 				</div>
 			</div>
 		);
-	},
+	}
 });

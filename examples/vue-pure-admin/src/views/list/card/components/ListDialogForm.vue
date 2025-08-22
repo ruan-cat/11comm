@@ -8,20 +8,20 @@ const SELECT_OPTIONS = [
 	{ label: "人工智能", value: 2 },
 	{ label: "CVM", value: 3 },
 	{ label: "防火墙", value: 4 },
-	{ label: "未知", value: 5 },
+	{ label: "未知", value: 5 }
 ];
 
 const props = defineProps({
 	visible: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	data: {
 		type: Object,
 		default: () => {
 			return {};
-		},
-	},
+		}
+	}
 });
 
 const ruleFormRef = ref<FormInstance>();
@@ -32,7 +32,7 @@ const textareaValue = ref("");
 
 const submitForm = async (formEl: FormInstance | undefined) => {
 	if (!formEl) return;
-	await formEl.validate((valid) => {
+	await formEl.validate(valid => {
 		if (valid) {
 			message("提交成功", { type: "success" });
 			formVisible.value = false;
@@ -54,27 +54,27 @@ const closeDialog = () => {
 const emit = defineEmits(["update:visible"]);
 watch(
 	() => formVisible.value,
-	(val) => {
+	val => {
 		emit("update:visible", val);
-	},
+	}
 );
 
 watch(
 	() => props.visible,
-	(val) => {
+	val => {
 		formVisible.value = val;
-	},
+	}
 );
 
 watch(
 	() => props.data,
-	(val) => {
+	val => {
 		formData.value = val;
-	},
+	}
 );
 
 const rules = {
-	name: [{ required: true, message: "请输入产品名称", trigger: "blur" }],
+	name: [{ required: true, message: "请输入产品名称", trigger: "blur" }]
 };
 </script>
 

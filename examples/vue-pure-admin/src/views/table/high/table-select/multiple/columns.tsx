@@ -10,46 +10,46 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 	const selectValue = ref([1, 3, 4]);
 	const searchForm = reactive({
 		sexValue: "",
-		searchDate: "",
+		searchDate: ""
 	});
 	const sexOptions = [
 		{
 			value: 0,
-			label: "男",
+			label: "男"
 		},
 		{
 			value: 1,
-			label: "女",
-		},
+			label: "女"
+		}
 	];
 	const columns: TableColumnList = [
 		{
 			type: "selection",
 			reserveSelection: true,
-			align: "left",
+			align: "left"
 		},
 		{
 			label: "ID",
 			prop: "id",
-			width: 50,
+			width: 50
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "性别",
-			prop: "sex",
+			prop: "sex"
 		},
 		{
 			label: "地址",
-			prop: "address",
+			prop: "address"
 		},
 		{
 			label: "日期",
 			prop: "date",
-			minWidth: 120,
-		},
+			minWidth: 120
+		}
 	];
 
 	/** 分页配置 */
@@ -59,12 +59,12 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 		layout: "prev, pager, next",
 		total: tableData.value.length,
 		background: true,
-		size: "small",
+		size: "small"
 	});
 
-	const handleSelectionChange = (val) => {
+	const handleSelectionChange = val => {
 		const arr = [];
-		val.forEach((v) => {
+		val.forEach(v => {
 			arr.push({ label: v.name, id: v.id });
 		});
 		selectValue.value = arr;
@@ -73,11 +73,11 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 	const onSearch = () => {
 		tableData.value = cloneTableData;
 		if (!isAllEmpty(searchForm.sexValue)) {
-			const sex = sexOptions.map((sex) => sex.value === Number(searchForm.sexValue) && sex.label).filter(Boolean)[0];
-			tableData.value = tableData.value.filter((data) => data.sex === sex);
+			const sex = sexOptions.map(sex => sex.value === Number(searchForm.sexValue) && sex.label).filter(Boolean)[0];
+			tableData.value = tableData.value.filter(data => data.sex === sex);
 		}
 		if (!isAllEmpty(searchForm.searchDate)) {
-			tableData.value = tableData.value.filter((data) => data.date === searchForm.searchDate);
+			tableData.value = tableData.value.filter(data => data.date === searchForm.searchDate);
 		}
 		pagination.total = tableData.value.length;
 	};
@@ -91,7 +91,7 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 
 	const removeTag = ({ id }) => {
 		const { toggleRowSelection } = tableRef.value.getTableRef();
-		toggleRowSelection(tableData.value.filter((v) => v.id == id)?.[0], false);
+		toggleRowSelection(tableData.value.filter(v => v.id == id)?.[0], false);
 	};
 
 	const onClear = () => {
@@ -102,7 +102,7 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 	const onSure = () => {
 		selectRef.value.blur();
 		message(`当前选中的数据为：${JSON.stringify(selectValue.value)}`, {
-			type: "success",
+			type: "success"
 		});
 	};
 
@@ -111,14 +111,14 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 		async () => {
 			await nextTick();
 			const { toggleRowSelection } = tableRef.value.getTableRef();
-			selectValue.value.forEach((val) => {
-				tableData.value.forEach((row) => {
+			selectValue.value.forEach(val => {
+				tableData.value.forEach(row => {
 					// 默认回显
 					row.id === val ? toggleRowSelection(row) : undefined;
 				});
 			});
 		},
-		{ immediate: true },
+		{ immediate: true }
 	);
 
 	return {
@@ -133,6 +133,6 @@ export function useColumns(selectRef: Ref, formRef: Ref, tableRef: Ref) {
 		onReset,
 		onSearch,
 		removeTag,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

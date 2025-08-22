@@ -5,17 +5,17 @@ const columns: TableColumnList = [
 	{
 		label: "日期",
 		prop: "date",
-		sortable: true,
+		sortable: true
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "地址",
 		prop: "address",
-		formatter: ({ address }) => `格式化后的内容：${address}`,
-	},
+		formatter: ({ address }) => `格式化后的内容：${address}`
+	}
 ];
 </script>
 

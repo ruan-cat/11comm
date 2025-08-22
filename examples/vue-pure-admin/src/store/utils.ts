@@ -11,6 +11,6 @@ export {
 	isBoolean,
 	getKeyList,
 	storageLocal,
-	deviceDetection,
+	deviceDetection
 } from "@pureadmin/utils";
 export type { setType, appType, userType, multiType, cacheType, positionType } from "./types";

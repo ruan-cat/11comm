@@ -11,7 +11,7 @@ const props = {
 	backText: propTypes.number.def(1),
 	// flipping duration, please be consistent with the CSS animation-duration value.
 	// 翻牌动画时间，与CSS中设置的animation-duration保持一致
-	duration: propTypes.number.def(600),
+	duration: propTypes.number.def(600)
 };
 
 export default defineComponent({
@@ -74,7 +74,7 @@ export default defineComponent({
 			flipDown,
 			flipUp,
 			setFront,
-			setBack,
+			setBack
 		};
 	},
 
@@ -88,5 +88,5 @@ export default defineComponent({
 				<div class={back} />
 			</div>
 		);
-	},
+	}
 });

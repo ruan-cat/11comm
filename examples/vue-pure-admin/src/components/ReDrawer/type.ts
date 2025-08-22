@@ -135,7 +135,7 @@ type ButtonProps = {
 	/** 点击按钮后触发的回调 */
 	btnClick?: ({
 		drawer,
-		button,
+		button
 	}: {
 		/** 当前 `Drawer` 信息 */
 		drawer: BtnClickDrawer;
@@ -160,7 +160,7 @@ interface DrawerOptions extends DrawerProps {
 	headerRenderer?: ({
 		close,
 		titleId,
-		titleClass,
+		titleClass
 	}: {
 		close: Function;
 		titleId: string;
@@ -188,11 +188,11 @@ interface DrawerOptions extends DrawerProps {
 		done: Function,
 		{
 			options,
-			index,
+			index
 		}: {
 			options: DrawerOptions;
 			index: number;
-		},
+		}
 	) => void;
 	/** 点击底部确定按钮的回调，会暂停 `Drawer` 的关闭. 回调函数内执行 `done` 参数方法的时候才是真正关闭对话框的时候 */
 	beforeSure?: (
@@ -200,12 +200,12 @@ interface DrawerOptions extends DrawerProps {
 		{
 			options,
 			index,
-			closeLoading,
+			closeLoading
 		}: {
 			options: DrawerOptions;
 			index: number;
 			closeLoading: Function;
-		},
+		}
 	) => void;
 }
 

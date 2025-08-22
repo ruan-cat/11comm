@@ -13,7 +13,7 @@ export function useColumns() {
 					<iconify-icon-online icon='ep:timer' />
 					<span style='margin-left: 10px'>{row.date}</span>
 				</div>
-			),
+			)
 		},
 		{
 			label: "姓名",
@@ -27,14 +27,14 @@ export function useColumns() {
 								<div>address: {row.address}</div>
 							</>
 						),
-						reference: () => <el-tag>{row.name}</el-tag>,
+						reference: () => <el-tag>{row.name}</el-tag>
 					}}
 				</el-popover>
-			),
+			)
 		},
 		{
 			label: "地址",
-			prop: "address",
+			prop: "address"
 		},
 		{
 			label: "操作",
@@ -47,13 +47,13 @@ export function useColumns() {
 						Delete
 					</el-button>
 				</>
-			),
-		},
+			)
+		}
 	];
 
 	const handleEdit = (index: number, row) => {
 		message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
-			type: "success",
+			type: "success"
 		});
 	};
 
@@ -63,6 +63,6 @@ export function useColumns() {
 
 	return {
 		columns,
-		tableData,
+		tableData
 	};
 }

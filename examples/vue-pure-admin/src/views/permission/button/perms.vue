@@ -5,7 +5,7 @@ import { useUserStoreHook } from "@/store/modules/user";
 const { permissions } = useUserStoreHook();
 
 defineOptions({
-	name: "PermissionButtonLogin",
+	name: "PermissionButtonLogin"
 });
 </script>
 

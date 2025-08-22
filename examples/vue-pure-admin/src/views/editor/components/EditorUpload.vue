@@ -4,7 +4,7 @@ import "@wangeditor/editor/dist/css/style.css";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 defineOptions({
-	name: "picUpload",
+	name: "picUpload"
 });
 
 const mode = "default";
@@ -33,10 +33,10 @@ editorConfig.MENU_CONF["uploadImage"] = {
 				insertFn(res.data.url);
 			}, 2000);
 		}
-	},
+	}
 };
 
-const handleCreated = (editor) => {
+const handleCreated = editor => {
 	// 记录 editor 实例，重要！
 	editorRef.value = editor;
 };

@@ -8,17 +8,17 @@ const theme = computed(() => (isDark.value ? "dark" : "light"));
 
 const pieChartRef = ref();
 const { setOptions } = useECharts(pieChartRef, {
-	theme,
+	theme
 });
 
 setOptions({
 	tooltip: {
-		trigger: "item",
+		trigger: "item"
 	},
 	legend: {
 		icon: "circle",
 		//@ts-expect-error
-		right: true,
+		right: true
 	},
 	series: [
 		{
@@ -31,10 +31,10 @@ setOptions({
 			data: [
 				{ value: 400, name: "watchers" },
 				{ value: 1600, name: "forks" },
-				{ value: 7200, name: "star" },
-			],
-		},
-	],
+				{ value: 7200, name: "star" }
+			]
+		}
+	]
 });
 </script>
 

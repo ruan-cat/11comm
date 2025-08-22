@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import VuePdfEmbed from "vue-pdf-embed";
 
 defineOptions({
-	name: "Pdf",
+	name: "Pdf"
 });
 
 const { t } = useI18n();
@@ -73,7 +73,7 @@ const onPrint = () => {
 					<IconifyIconOnline
 						v-tippy="{
 							maxWidth: 'none',
-							content: `翻转（当前角度${rotations[currentRotation]}度）`,
+							content: `翻转（当前角度${rotations[currentRotation]}度）`
 						}"
 						icon="ic:baseline-rotate-90-degrees-ccw"
 						class="cursor-pointer outline-transparent"
@@ -82,7 +82,7 @@ const onPrint = () => {
 					<IconifyIconOnline
 						v-tippy="{
 							maxWidth: 'none',
-							content: '打印',
+							content: '打印'
 						}"
 						icon="ri:printer-line"
 						class="cursor-pointer outline-transparent"

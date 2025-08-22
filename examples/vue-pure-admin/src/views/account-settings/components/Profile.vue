@@ -9,7 +9,7 @@ import { createFormData, deviceDetection } from "@pureadmin/utils";
 import uploadLine from "~icons/ri/upload-line";
 
 defineOptions({
-	name: "Profile",
+	name: "Profile"
 });
 
 const imgSrc = ref("");
@@ -24,27 +24,27 @@ const userInfos = reactive({
 	nickname: "",
 	email: "",
 	phone: "",
-	description: "",
+	description: ""
 });
 
 const rules = reactive<FormRules<UserInfo>>({
-	nickname: [{ required: true, message: "昵称必填", trigger: "blur" }],
+	nickname: [{ required: true, message: "昵称必填", trigger: "blur" }]
 });
 
 function queryEmail(queryString, callback) {
 	const emailList = [{ value: "@qq.com" }, { value: "@126.com" }, { value: "@163.com" }];
 	let results = [];
 	let queryList = [];
-	emailList.map((item) => queryList.push({ value: queryString.split("@")[0] + item.value }));
+	emailList.map(item => queryList.push({ value: queryString.split("@")[0] + item.value }));
 	results = queryString
-		? queryList.filter((item) => item.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+		? queryList.filter(item => item.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
 		: queryList;
 	callback(results);
 }
 
-const onChange = (uploadFile) => {
+const onChange = uploadFile => {
 	const reader = new FileReader();
-	reader.onload = (e) => {
+	reader.onload = e => {
 		imgSrc.value = e.target.result as string;
 		isShow.value = true;
 	};
@@ -61,7 +61,7 @@ const onCropper = ({ blob }) => (cropperBlob.value = blob);
 
 const handleSubmitImage = () => {
 	const formData = createFormData({
-		files: new File([cropperBlob.value], "avatar"),
+		files: new File([cropperBlob.value], "avatar")
 	});
 	formUpload(formData)
 		.then(({ success, data }) => {
@@ -72,7 +72,7 @@ const handleSubmitImage = () => {
 				message("更新头像失败");
 			}
 		})
-		.catch((error) => {
+		.catch(error => {
 			message(`提交异常 ${error}`, { type: "error" });
 		});
 };
@@ -89,7 +89,7 @@ const onSubmit = async (formEl: FormInstance) => {
 	});
 };
 
-getMine().then((res) => {
+getMine().then(res => {
 	Object.assign(userInfos, res.data);
 });
 </script>

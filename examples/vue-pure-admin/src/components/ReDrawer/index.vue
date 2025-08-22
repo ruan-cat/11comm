@@ -4,7 +4,7 @@ import { computed, ref } from "vue";
 import { isFunction } from "@pureadmin/utils";
 
 defineOptions({
-	name: "ReDrawer",
+	name: "ReDrawer"
 });
 
 const sureBtnMap = ref({});
@@ -25,7 +25,7 @@ const footerButtons = computed(() => {
 							} else {
 								done();
 							}
-						},
+						}
 					},
 					{
 						label: "确定",
@@ -36,7 +36,7 @@ const footerButtons = computed(() => {
 						btnClick: ({ drawer: { options, index } }) => {
 							if (options?.sureBtnLoading) {
 								sureBtnMap.value[index] = Object.assign({}, sureBtnMap.value[index], {
-									loading: true,
+									loading: true
 								});
 							}
 							const closeLoading = () => {
@@ -53,8 +53,8 @@ const footerButtons = computed(() => {
 							} else {
 								done();
 							}
-						},
-					},
+						}
+					}
 				] as Array<ButtonProps>);
 	};
 });
@@ -102,7 +102,7 @@ function handleClose(options: DrawerOptions, index: number, args = { command: "c
 		<component
 			v-bind="options?.props"
 			:is="options.contentRenderer({ options, index })"
-			@close="(args) => handleClose(options, index, args)"
+			@close="args => handleClose(options, index, args)"
 		/>
 		<!-- footer  -->
 		<template v-if="!options?.hideFooter" #footer>
@@ -117,7 +117,7 @@ function handleClose(options: DrawerOptions, index: number, args = { command: "c
 						@confirm="
 							btn.btnClick({
 								drawer: { options, index },
-								button: { btn, index: key },
+								button: { btn, index: key }
 							})
 						"
 					>
@@ -132,7 +132,7 @@ function handleClose(options: DrawerOptions, index: number, args = { command: "c
 						@click="
 							btn.btnClick({
 								drawer: { options, index },
-								button: { btn, index: key },
+								button: { btn, index: key }
 							})
 						"
 					>

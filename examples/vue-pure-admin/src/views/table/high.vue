@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { list } from "./high/list";
 
 defineOptions({
-	name: "PureTableHigh",
+	name: "PureTableHigh"
 });
 
 const selected = ref(0);
@@ -52,7 +52,7 @@ function tabClick({ index }) {
 						<span
 							v-tippy="{
 								maxWidth: 'none',
-								content: `（第 ${index + 1} 个示例）${item.content}`,
+								content: `（第 ${index + 1} 个示例）${item.content}`
 							}"
 						>
 							{{ item.title }}

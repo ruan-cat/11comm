@@ -10,7 +10,7 @@ import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { chartData, barChartData, progressData, latestNewsData } from "./data";
 
 defineOptions({
-	name: "Welcome",
+	name: "Welcome"
 });
 
 const { isDark } = useDark();
@@ -18,11 +18,11 @@ const { isDark } = useDark();
 let curWeek = ref(1); // 0上周、1本周
 const optionsBasis: Array<OptionsType> = [
 	{
-		label: "上周",
+		label: "上周"
 	},
 	{
-		label: "本周",
-	},
+		label: "本周"
+	}
 ];
 </script>
 
@@ -40,14 +40,14 @@ const optionsBasis: Array<OptionsType> = [
 				:xs="24"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 80 * (index + 1),
-					},
+						delay: 80 * (index + 1)
+					}
 				}"
 			>
 				<el-card class="line-card" shadow="never">
@@ -58,7 +58,7 @@ const optionsBasis: Array<OptionsType> = [
 						<div
 							class="w-8 h-8 flex justify-center items-center rounded-md"
 							:style="{
-								backgroundColor: isDark ? 'transparent' : item.bgColor,
+								backgroundColor: isDark ? 'transparent' : item.bgColor
 							}"
 						>
 							<IconifyIconOffline :icon="item.icon" :color="item.color" width="18" height="18" />
@@ -82,14 +82,14 @@ const optionsBasis: Array<OptionsType> = [
 				:xs="24"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 400,
-					},
+						delay: 400
+					}
 				}"
 			>
 				<el-card class="bar-card" shadow="never">
@@ -113,14 +113,14 @@ const optionsBasis: Array<OptionsType> = [
 				:xs="24"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 480,
-					},
+						delay: 480
+					}
 				}"
 			>
 				<el-card shadow="never">
@@ -155,14 +155,14 @@ const optionsBasis: Array<OptionsType> = [
 				:xs="24"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 560,
-					},
+						delay: 560
+					}
 				}"
 			>
 				<el-card shadow="never" class="h-[580px]">
@@ -180,14 +180,14 @@ const optionsBasis: Array<OptionsType> = [
 				:xs="24"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 640,
-					},
+						delay: 640
+					}
 				}"
 			>
 				<el-card shadow="never">
@@ -205,9 +205,9 @@ const optionsBasis: Array<OptionsType> = [
 									markRaw(
 										useRenderFlicker({
 											background: randomGradient({
-												randomizeHue: true,
-											}),
-										}),
+												randomizeHue: true
+											})
+										})
 									)
 								"
 								:timestamp="item.date"

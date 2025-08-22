@@ -6,7 +6,7 @@ export default {
 	meta: {
 		icon: "ep/set-up",
 		title: "vue-flow",
-		rank: vueflow,
+		rank: vueflow
 	},
 	children: [
 		{
@@ -14,8 +14,8 @@ export default {
 			name: "VueFlow",
 			component: () => import("@/views/vue-flow/layouting/index.vue"),
 			meta: {
-				title: "vue-flow",
-			},
-		},
-	],
+				title: "vue-flow"
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

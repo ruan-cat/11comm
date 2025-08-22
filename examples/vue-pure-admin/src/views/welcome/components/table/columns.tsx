@@ -13,7 +13,7 @@ export function useColumns() {
 		{
 			sortable: true,
 			label: "序号",
-			prop: "id",
+			prop: "id"
 		},
 		{
 			sortable: true,
@@ -23,21 +23,21 @@ export function useColumns() {
 			filterClassName: "pure-table-filter",
 			filters: [
 				{ text: "≥16000", value: "more" },
-				{ text: "<16000", value: "less" },
+				{ text: "<16000", value: "less" }
 			],
 			filterMethod: (value, { requiredNumber }) => {
 				return value === "more" ? requiredNumber >= 16000 : requiredNumber < 16000;
-			},
+			}
 		},
 		{
 			sortable: true,
 			label: "提问数量",
-			prop: "questionNumber",
+			prop: "questionNumber"
 		},
 		{
 			sortable: true,
 			label: "解决数量",
-			prop: "resolveNumber",
+			prop: "resolveNumber"
 		},
 		{
 			sortable: true,
@@ -51,18 +51,18 @@ export function useColumns() {
 						<iconifyIconOffline icon={row.satisfaction > 98 ? Hearts : ThumbUp} color='#e85f33' />
 					</span>
 				</div>
-			),
+			)
 		},
 		{
 			sortable: true,
 			label: "统计日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "操作",
 			fixed: "right",
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 
 	/** 分页配置 */
@@ -71,7 +71,7 @@ export function useColumns() {
 		currentPage: 1,
 		layout: "prev, pager, next",
 		total: 0,
-		align: "center",
+		align: "center"
 	});
 
 	function onCurrentChange(page: number) {
@@ -94,6 +94,6 @@ export function useColumns() {
 		columns,
 		dataList,
 		pagination,
-		onCurrentChange,
+		onCurrentChange
 	};
 }

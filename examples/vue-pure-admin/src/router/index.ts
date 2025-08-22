@@ -17,7 +17,7 @@ import {
 	findRouteByPath,
 	handleAliveRoute,
 	formatTwoStageRoutes,
-	formatFlatteningRoutes,
+	formatFlatteningRoutes
 } from "./utils";
 import { type Router, type RouteRecordRaw, type RouteComponent, createRouter } from "vue-router";
 import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/auth";
@@ -27,19 +27,19 @@ import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/au
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
 const modules: Record<string, any> = import.meta.glob(["./modules/**/*.ts", "!./modules/**/remaining.ts"], {
-	eager: true,
+	eager: true
 });
 
 /** 原始静态路由（未做任何处理） */
 const routes = [];
 
-Object.keys(modules).forEach((key) => {
+Object.keys(modules).forEach(key => {
 	routes.push(modules[key].default);
 });
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-	formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
+	formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
 );
 
 /** 初始的静态路由，用于退出登录时重置路由 */
@@ -49,7 +49,7 @@ const initConstantRoutes: Array<RouteRecordRaw> = cloneDeep(constantRoutes);
 export const constantMenus: Array<RouteComponent> = ascending(routes.flat(Infinity)).concat(...remainingRouter);
 
 /** 不参与菜单的路由 */
-export const remainingPaths = Object.keys(remainingRouter).map((v) => {
+export const remainingPaths = Object.keys(remainingRouter).map(v => {
 	return remainingRouter[v].path;
 });
 
@@ -59,7 +59,7 @@ export const router: Router = createRouter({
 	routes: constantRoutes.concat(...(remainingRouter as any)),
 	strict: true,
 	scrollBehavior(to, from, savedPosition) {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			if (savedPosition) {
 				return savedPosition;
 			} else {
@@ -69,7 +69,7 @@ export const router: Router = createRouter({
 				}
 			}
 		});
-	},
+	}
 });
 
 /** 重置路由 */
@@ -79,7 +79,7 @@ export function resetRouter() {
 		router.addRoute(route);
 	}
 	router.options.routes = formatTwoStageRoutes(
-		formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))),
+		formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
 	);
 	usePermissionStoreHook().clearAllCachePage();
 }
@@ -101,7 +101,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
 	NProgress.start();
 	const externalLink = isUrl(to?.name as string);
 	if (!externalLink) {
-		to.matched.some((item) => {
+		to.matched.some(item => {
 			if (!item.meta.title) return "";
 			const Title = getConfig().Title;
 			if (Title) document.title = `${transformI18n(item.meta.title)} | ${Title}`;
@@ -145,14 +145,14 @@ router.beforeEach((to: ToRouteType, _from, next) => {
 								useMultiTagsStoreHook().handleTags("push", {
 									path,
 									name,
-									meta,
+									meta
 								});
 							} else {
 								const { path, name, meta } = route;
 								useMultiTagsStoreHook().handleTags("push", {
 									path,
 									name,
-									meta,
+									meta
 								});
 							}
 						}

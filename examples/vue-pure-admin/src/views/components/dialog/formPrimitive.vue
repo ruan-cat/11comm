@@ -9,7 +9,7 @@ export interface FormProps {
 // 声明 props 默认值
 // 推荐阅读：https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-props
 const props = withDefaults(defineProps<FormProps>(), {
-	data: () => "",
+	data: () => ""
 });
 
 // 使用 vueuse 的双向绑定工具

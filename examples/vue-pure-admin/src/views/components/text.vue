@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { ReText } from "@/components/ReText";
 
 defineOptions({
-	name: "PureText",
+	name: "PureText"
 });
 
 const customContent = ref("自定义tooltip内容");

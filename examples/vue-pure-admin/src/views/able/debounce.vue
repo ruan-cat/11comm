@@ -3,7 +3,7 @@ import { message } from "@/utils/message";
 import { debounce, throttle } from "@pureadmin/utils";
 
 defineOptions({
-	name: "Debounce",
+	name: "Debounce"
 });
 
 const handle = () => message("恭喜你，这是一条成功消息", { type: "success" });

@@ -15,18 +15,18 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	lf: null,
-	nodeList: null,
+	nodeList: null
 });
 
 const properties = ref({
 	a: "efrwe",
-	b: "wewe",
+	b: "wewe"
 });
 
-const nodeDragNode = (item) => {
+const nodeDragNode = item => {
 	props.lf.dnd.startDrag({
 		type: item.type,
-		properties: unref(properties),
+		properties: unref(properties)
 	});
 };
 </script>

@@ -11,7 +11,7 @@ const tableData = ref([]);
 const columns = [
 	{ type: "seq", field: "seq", title: "序号", width: 200, treeNode: true },
 	{ field: "id", title: "Id" },
-	{ field: "name", title: "地点" },
+	{ field: "name", title: "地点" }
 ];
 
 async function onSearch() {

@@ -5,7 +5,7 @@ import ReCol from "@/components/ReCol";
 import { useTransition } from "@vueuse/core";
 
 defineOptions({
-	name: "Statistic",
+	name: "Statistic"
 });
 
 const value = ref(Date.now() + 1000 * 60 * 60 * 7);
@@ -14,7 +14,7 @@ const value2 = ref(dayjs().add(1, "month").startOf("month"));
 
 const source = ref(0);
 const outputValue = useTransition(source, {
-	duration: 1500,
+	duration: 1500
 });
 source.value = 36000;
 
@@ -30,7 +30,7 @@ function reset() {
 				<div class="card-header">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/statistic.html"
 						target="_blank"

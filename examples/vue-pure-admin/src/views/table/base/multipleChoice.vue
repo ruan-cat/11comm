@@ -8,34 +8,34 @@ const multipleSelection = ref([]);
 const toggleSelection = (rows?: any) => {
 	const { toggleRowSelection, clearSelection } = tableRef.value.getTableRef();
 	if (rows) {
-		rows.forEach((row) => {
+		rows.forEach(row => {
 			toggleRowSelection(row, undefined);
 		});
 	} else {
 		clearSelection();
 	}
 };
-const handleSelectionChange = (val) => {
+const handleSelectionChange = val => {
 	multipleSelection.value = val;
 };
 
 const columns: TableColumnList = [
 	{
 		type: "selection",
-		align: "left",
+		align: "left"
 	},
 	{
 		label: "日期",
-		prop: "date",
+		prop: "date"
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "地址",
-		prop: "address",
-	},
+		prop: "address"
+	}
 ];
 </script>
 

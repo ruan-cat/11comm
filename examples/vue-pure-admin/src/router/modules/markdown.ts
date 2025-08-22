@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/markdown-line",
 		title: $t("menus.pureMarkdown"),
-		rank: markdown,
+		rank: markdown
 	},
 	children: [
 		{
@@ -16,8 +16,8 @@ export default {
 			component: () => import("@/views/markdown/index.vue"),
 			meta: {
 				title: $t("menus.pureMarkdown"),
-				extraIcon: "IF-pure-iconfont-new svg",
-			},
-		},
-	],
+				extraIcon: "IF-pure-iconfont-new svg"
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

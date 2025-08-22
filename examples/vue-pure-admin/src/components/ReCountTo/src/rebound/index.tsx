@@ -11,7 +11,7 @@ export default defineComponent({
 
 		onBeforeMount(() => {
 			const ua = navigator.userAgent.toLowerCase();
-			const testUA = (regexp) => regexp.test(ua);
+			const testUA = regexp => regexp.test(ua);
 			const isSafari = testUA(/safari/g) && !testUA(/chrome/g);
 
 			// Safari浏览器的兼容代码
@@ -22,7 +22,7 @@ export default defineComponent({
 						`
         animation: none;
         transform: translateY(calc(var(--i) * -9.09%))
-      `,
+      `
 					);
 				}, props.delay * 1000));
 		});
@@ -56,5 +56,5 @@ export default defineComponent({
 				</div>
 			</>
 		);
-	},
+	}
 });

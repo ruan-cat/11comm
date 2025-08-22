@@ -2,30 +2,30 @@
 import ReBarcode from "@/components/ReBarcode";
 
 defineOptions({
-	name: "BarCode",
+	name: "BarCode"
 });
 
 const barcodes = [
 	{
 		text: "CODE128",
 		type: "CODE128",
-		options: {},
+		options: {}
 	},
 	{
 		text: "CODE39",
 		type: "CODE39",
 		options: {
-			lineColor: "#990000",
-		},
+			lineColor: "#990000"
+		}
 	},
 	{
 		text: "123456",
 		type: "pharmacode",
 		options: {
 			background: "#eee",
-			width: 5,
-		},
-	},
+			width: 5
+		}
+	}
 ];
 </script>
 

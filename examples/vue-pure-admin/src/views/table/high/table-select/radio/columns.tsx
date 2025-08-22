@@ -9,21 +9,21 @@ export function useColumns(selectRef: Ref) {
 		{
 			label: "ID",
 			prop: "id",
-			width: 80,
+			width: 80
 		},
 		{
 			label: "日期",
 			prop: "date",
-			minWidth: 120,
+			minWidth: 120
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "地址",
-			prop: "address",
-		},
+			prop: "address"
+		}
 	];
 
 	/** 分页配置 */
@@ -33,14 +33,14 @@ export function useColumns(selectRef: Ref) {
 		layout: "prev, pager, next",
 		total: tableDataEdit.length,
 		background: true,
-		size: "small",
+		size: "small"
 	});
 
 	/** 高亮当前选中行 */
 	function rowStyle({ row: { name } }) {
 		return {
 			cursor: "pointer",
-			background: name === selectValue.value ? "var(--el-fill-color-light)" : "",
+			background: name === selectValue.value ? "var(--el-fill-color-light)" : ""
 		};
 	}
 
@@ -57,6 +57,6 @@ export function useColumns(selectRef: Ref) {
 		selectValue,
 		tableDataEdit,
 		rowStyle,
-		onRowClick,
+		onRowClick
 	};
 }

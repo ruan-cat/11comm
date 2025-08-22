@@ -6,76 +6,76 @@ import VueJsonPretty from "vue-json-pretty";
 const props = defineProps({
 	data: {
 		type: Array,
-		default: () => [],
-	},
+		default: () => []
+	}
 });
 
 const columns = [
 	{
 		label: "IP 地址",
-		prop: "ip",
+		prop: "ip"
 	},
 	{
 		label: "地点",
-		prop: "address",
+		prop: "address"
 	},
 	{
 		label: "操作系统",
-		prop: "system",
+		prop: "system"
 	},
 	{
 		label: "浏览器类型",
-		prop: "browser",
+		prop: "browser"
 	},
 	{
 		label: "所属模块",
-		prop: "module",
+		prop: "module"
 	},
 	{
 		label: "请求时间",
-		prop: "requestTime",
+		prop: "requestTime"
 	},
 	{
 		label: "请求方法",
-		prop: "method",
+		prop: "method"
 	},
 	{
 		label: "请求耗时",
-		prop: "takesTime",
+		prop: "takesTime"
 	},
 	{
 		label: "请求接口",
 		prop: "url",
-		copy: true,
+		copy: true
 	},
 	{
 		label: "TraceId",
 		prop: "traceId",
-		copy: true,
-	},
+		copy: true
+	}
 ];
 
 const dataList = ref([
 	{
 		title: "响应头",
 		name: "responseHeaders",
-		data: (props.data[0] as any).responseHeaders,
+		data: (props.data[0] as any).responseHeaders
 	},
 	{
 		title: "响应体",
 		name: "responseBody",
-		data: (props.data[0] as any).responseBody,
+		data: (props.data[0] as any).responseBody
 	},
 	{
 		title: "请求头",
 		name: "requestHeaders",
-		data: (props.data[0] as any).requestHeaders,
+		data: (props.data[0] as any).requestHeaders
 	},
 	{
 		title: "请求体",
 		name: "requestBody",
-		data: (props.data[0] as any).requestBody,
-	},
+		data: (props.data[0] as any).requestBody
+	}
 ]);
 </script>
 

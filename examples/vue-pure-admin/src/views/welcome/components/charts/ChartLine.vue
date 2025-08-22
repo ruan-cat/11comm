@@ -5,12 +5,12 @@ import { useDark, useECharts } from "@pureadmin/utils";
 const props = defineProps({
 	data: {
 		type: Array as PropType<Array<number>>,
-		default: () => [],
+		default: () => []
 	},
 	color: {
 		type: String,
-		default: "#41b6ff",
-	},
+		default: "#41b6ff"
+	}
 });
 
 const { isDark } = useDark();
@@ -20,7 +20,7 @@ const theme = computed(() => (isDark.value ? "dark" : "light"));
 const chartRef = ref();
 const { setOptions } = useECharts(chartRef, {
 	theme,
-	renderer: "svg",
+	renderer: "svg"
 });
 
 setOptions({
@@ -28,17 +28,17 @@ setOptions({
 	xAxis: {
 		type: "category",
 		show: false,
-		data: props.data,
+		data: props.data
 	},
 	grid: {
 		top: "15px",
 		bottom: 0,
 		left: 0,
-		right: 0,
+		right: 0
 	},
 	yAxis: {
 		show: false,
-		type: "value",
+		type: "value"
 	},
 	series: [
 		{
@@ -50,10 +50,10 @@ setOptions({
 			lineStyle: {
 				shadowOffsetY: 3,
 				shadowBlur: 7,
-				shadowColor: props.color,
-			},
-		},
-	],
+				shadowColor: props.color
+			}
+		}
+	]
 });
 </script>
 

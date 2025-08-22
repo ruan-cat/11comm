@@ -9,5 +9,5 @@ export const auth: Directive = {
 		} else {
 			throw new Error("[Directive: auth]: need auths! Like v-auth=\"['btn.add','btn.edit']\"");
 		}
-	},
+	}
 };

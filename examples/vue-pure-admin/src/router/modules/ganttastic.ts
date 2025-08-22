@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/bar-chart-horizontal-line",
 		title: $t("menus.pureGanttastic"),
-		rank: ganttastic,
+		rank: ganttastic
 	},
 	children: [
 		{
@@ -15,8 +15,8 @@ export default {
 			name: "Ganttastic",
 			component: () => import("@/views/ganttastic/index.vue"),
 			meta: {
-				title: $t("menus.pureGanttastic"),
-			},
-		},
-	],
+				title: $t("menus.pureGanttastic")
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

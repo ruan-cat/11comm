@@ -9,7 +9,7 @@ import Delete from "~icons/ep/delete";
 import Refresh from "~icons/ep/refresh";
 
 defineOptions({
-	name: "OperationLog",
+	name: "OperationLog"
 });
 
 const formRef = ref();
@@ -29,7 +29,7 @@ const {
 	handleSizeChange,
 	onSelectionCancel,
 	handleCurrentChange,
-	handleSelectionChange,
+	handleSelectionChange
 } = useRole(tableRef);
 </script>
 
@@ -111,7 +111,7 @@ const {
 					:pagination="{ ...pagination, size }"
 					:header-cell-style="{
 						background: 'var(--el-fill-color-light)',
-						color: 'var(--el-text-color-primary)',
+						color: 'var(--el-text-color-primary)'
 					}"
 					@selection-change="handleSelectionChange"
 					@page-size-change="handleSizeChange"

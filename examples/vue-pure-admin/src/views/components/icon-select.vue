@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { IconSelect } from "@/components/ReIcon";
 
 defineOptions({
-	name: "IconSelect",
+	name: "IconSelect"
 });
 
 const icon = ref("ep:add-location");

@@ -33,7 +33,7 @@ interface LocalForageDbMethodsCore {
 
 	iterate<T, U>(
 		iteratee: (value: T, key: string, iterationNumber: number) => U,
-		callback?: (err: any, result: U) => void,
+		callback?: (err: any, result: U) => void
 	): Promise<U>;
 }
 

@@ -8,7 +8,7 @@ import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 
 defineOptions({
-	name: "Tabs",
+	name: "Tabs"
 });
 
 const { toDetail, router } = useDetail();
@@ -16,7 +16,7 @@ const menusTree = clone(usePermissionStoreHook().wholeMenus, true);
 
 const treeData = computed(() => {
 	return appendFieldByUniqueId(deleteChildren(menusTree), 0, {
-		disabled: true,
+		disabled: true
 	});
 });
 
@@ -28,13 +28,13 @@ const multiTags = computed(() => {
 
 function onCloseTags() {
 	if (currentValues.value.length === 0) return;
-	currentValues.value.forEach((uniqueId) => {
+	currentValues.value.forEach(uniqueId => {
 		const currentPath =
 			getNodeByUniqueId(treeData.value, uniqueId).redirect ?? getNodeByUniqueId(treeData.value, uniqueId).path;
 		useMultiTagsStoreHook().handleTags("splice", currentPath);
 		if (currentPath === "/tabs/index")
 			router.push({
-				path: multiTags.value[(multiTags as any).value.length - 1].path,
+				path: multiTags.value[(multiTags as any).value.length - 1].path
 			});
 	});
 }
@@ -80,10 +80,10 @@ function onCloseTags() {
 			filterable
 			default-expand-all
 			:props="{
-				label: (data) => transformI18n(data.meta.title),
+				label: data => transformI18n(data.meta.title),
 				value: 'uniqueId',
 				children: 'children',
-				disabled: 'disabled',
+				disabled: 'disabled'
 			}"
 			:data="treeData"
 		>
@@ -105,7 +105,7 @@ function onCloseTags() {
 			@click="
 				router.push({
 					name: 'Menu1-2-2',
-					query: { text: '传name对象，优先推荐' },
+					query: { text: '传name对象，优先推荐' }
 				})
 			"
 		>
@@ -115,7 +115,7 @@ function onCloseTags() {
 			@click="
 				router.push({
 					path: '/nested/menu1/menu1-2/menu1-2-2',
-					query: { text: '传path对象' },
+					query: { text: '传path对象' }
 				})
 			"
 		>

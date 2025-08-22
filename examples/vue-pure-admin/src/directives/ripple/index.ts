@@ -128,7 +128,7 @@ const ripples = {
 				if (animation.parentNode?.parentNode === el) el.removeChild(animation.parentNode);
 			}, 300);
 		}, delay);
-	},
+	}
 };
 
 function isRippleEnabled(value: any): value is true {
@@ -210,5 +210,5 @@ function updated(el: HTMLElement, binding: RippleDirectiveBinding) {
 export const Ripple: Directive = {
 	mounted,
 	unmounted,
-	updated,
+	updated
 };

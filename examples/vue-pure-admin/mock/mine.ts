@@ -15,10 +15,10 @@ export default defineFakeRoute([
 					nickname: "小铭",
 					email: "pureadmin@163.com",
 					phone: "15888886789",
-					description: "一个热爱开源的前端工程师",
-				},
+					description: "一个热爱开源的前端工程师"
+				}
 			};
-		},
+		}
 	},
 	// 账户设置-个人安全日志
 	{
@@ -33,7 +33,7 @@ export default defineFakeRoute([
 					system: "macOS",
 					browser: "Chrome",
 					summary: "账户登录", // 详情
-					operatingTime: new Date(), // 时间
+					operatingTime: new Date() // 时间
 				},
 				{
 					id: 2,
@@ -42,8 +42,8 @@ export default defineFakeRoute([
 					system: "Windows",
 					browser: "Firefox",
 					summary: "绑定了手机号码",
-					operatingTime: new Date().setDate(new Date().getDate() - 1),
-				},
+					operatingTime: new Date().setDate(new Date().getDate() - 1)
+				}
 			];
 			return {
 				success: true,
@@ -51,9 +51,9 @@ export default defineFakeRoute([
 					list,
 					total: list.length, // 总条目数
 					pageSize: 10, // 每页显示条目个数
-					currentPage: 1, // 当前页数
-				},
+					currentPage: 1 // 当前页数
+				}
 			};
-		},
-	},
+		}
+	}
 ]);

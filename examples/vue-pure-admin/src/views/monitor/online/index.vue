@@ -8,7 +8,7 @@ import Plane from "~icons/ri/plane-line";
 import Refresh from "~icons/ep/refresh";
 
 defineOptions({
-	name: "OnlineUser",
+	name: "OnlineUser"
 });
 
 const formRef = ref();
@@ -23,7 +23,7 @@ const {
 	handleOffline,
 	handleSizeChange,
 	handleCurrentChange,
-	handleSelectionChange,
+	handleSelectionChange
 } = useRole();
 </script>
 
@@ -61,7 +61,7 @@ const {
 					:pagination="{ ...pagination, size }"
 					:header-cell-style="{
 						background: 'var(--el-fill-color-light)',
-						color: 'var(--el-text-color-primary)',
+						color: 'var(--el-text-color-primary)'
 					}"
 					@selection-change="handleSelectionChange"
 					@page-size-change="handleSizeChange"

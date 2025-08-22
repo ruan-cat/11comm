@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ep/edit",
 		title: $t("menus.pureEditor"),
-		rank: editor,
+		rank: editor
 	},
 	children: [
 		{
@@ -16,8 +16,8 @@ export default {
 			component: () => import("@/views/editor/index.vue"),
 			meta: {
 				title: $t("menus.pureEditor"),
-				keepAlive: true,
-			},
-		},
-	],
+				keepAlive: true
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

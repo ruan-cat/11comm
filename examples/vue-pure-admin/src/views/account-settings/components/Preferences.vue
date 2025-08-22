@@ -4,25 +4,25 @@ import { message } from "@/utils/message";
 import { deviceDetection } from "@pureadmin/utils";
 
 defineOptions({
-	name: "Preferences",
+	name: "Preferences"
 });
 
 const list = ref([
 	{
 		title: "账户密码",
 		illustrate: "其他用户的消息将以站内信的形式通知",
-		checked: true,
+		checked: true
 	},
 	{
 		title: "系统消息",
 		illustrate: "系统消息将以站内信的形式通知",
-		checked: true,
+		checked: true
 	},
 	{
 		title: "待办任务",
 		illustrate: "待办任务将以站内信的形式通知",
-		checked: true,
-	},
+		checked: true
+	}
 ]);
 
 function onChange(val, item) {
@@ -49,7 +49,7 @@ function onChange(val, item) {
 					inline-prompt
 					active-text="是"
 					inactive-text="否"
-					@change="(val) => onChange(val, item)"
+					@change="val => onChange(val, item)"
 				/>
 			</div>
 			<el-divider />

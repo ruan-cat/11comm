@@ -4,24 +4,24 @@ import { tableDataImage } from "./data";
 const columns: TableColumnList = [
 	{
 		label: "日期",
-		prop: "date",
+		prop: "date"
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "地址",
-		prop: "address",
+		prop: "address"
 	},
 	{
 		label: "视频",
-		slot: "video",
+		slot: "video"
 	},
 	{
 		label: "图像",
-		slot: "image",
-	},
+		slot: "image"
+	}
 ];
 </script>
 
@@ -46,7 +46,7 @@ const columns: TableColumnList = [
 				preview-teleported
 				loading="lazy"
 				:src="row.image"
-				:preview-src-list="tableDataImage.map((v) => v.image)"
+				:preview-src-list="tableDataImage.map(v => v.image)"
 				:initial-index="index"
 				fit="cover"
 				class="w-[100px] h-[100px]"

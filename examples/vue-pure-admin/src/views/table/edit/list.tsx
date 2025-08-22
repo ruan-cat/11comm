@@ -9,18 +9,18 @@ export const list = [
 		key: "demo1",
 		content: rendContent("demo1"),
 		title: "整体编辑",
-		component: Demo1,
+		component: Demo1
 	},
 	{
 		key: "demo2",
 		content: rendContent("demo2"),
 		title: "单行编辑",
-		component: Demo2,
+		component: Demo2
 	},
 	{
 		key: "demo3",
 		content: rendContent("demo3"),
 		title: "单元格编辑",
-		component: Demo3,
-	},
+		component: Demo3
+	}
 ];

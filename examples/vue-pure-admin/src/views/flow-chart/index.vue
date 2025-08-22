@@ -11,7 +11,7 @@ import { Control, NodePanel, DataDialog } from "@/components/ReFlowChart";
 import { toLogicflowData } from "@/components/ReFlowChart/src/adpterForTurbo";
 
 defineOptions({
-	name: "FlowChart",
+	name: "FlowChart"
 });
 
 const lf = ref(null);
@@ -20,11 +20,11 @@ const dataVisible = ref<boolean>(false);
 const config = ref({
 	grid: true,
 	background: {
-		color: "#f7f9ff",
+		color: "#f7f9ff"
 	},
 	keyboard: {
-		enabled: true,
-	},
+		enabled: true
+	}
 });
 const nodeList = BpmnNode;
 
@@ -37,7 +37,7 @@ function initLf() {
 	LogicFlow.use(Menu);
 	const domLf = new LogicFlow({
 		...unref(config),
-		container: document.querySelector("#turbo"),
+		container: document.querySelector("#turbo")
 	});
 	lf.value = domLf;
 	// 设置边类型bpmn:sequenceFlow为默认类型

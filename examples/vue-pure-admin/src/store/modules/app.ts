@@ -8,7 +8,7 @@ export const useAppStore = defineStore("pure-app", {
 				storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}layout`)?.sidebarStatus ??
 				getConfig().SidebarStatus,
 			withoutAnimation: false,
-			isClickCollapse: false,
+			isClickCollapse: false
 		},
 		// 这里的layout用于监听容器拖拉后恢复对应的导航模式
 		layout:
@@ -17,10 +17,10 @@ export const useAppStore = defineStore("pure-app", {
 		// 浏览器窗口的可视区域大小
 		viewportSize: {
 			width: document.documentElement.clientWidth,
-			height: document.documentElement.clientHeight,
+			height: document.documentElement.clientHeight
 		},
 		// 作用于 src/views/components/draggable/index.vue 页面，当离开页面并不会销毁 new Swap()，sortablejs 官网也没有提供任何销毁的 api
-		sortSwap: false,
+		sortSwap: false
 	}),
 	getters: {
 		getSidebarStatus(state) {
@@ -34,7 +34,7 @@ export const useAppStore = defineStore("pure-app", {
 		},
 		getViewportHeight(state) {
 			return state.viewportSize.height;
-		},
+		}
 	},
 	actions: {
 		TOGGLE_SIDEBAR(opened?: boolean, resize?: string) {
@@ -69,8 +69,8 @@ export const useAppStore = defineStore("pure-app", {
 		},
 		setSortSwap(val) {
 			this.sortSwap = val;
-		},
-	},
+		}
+	}
 });
 
 export function useAppStoreHook() {

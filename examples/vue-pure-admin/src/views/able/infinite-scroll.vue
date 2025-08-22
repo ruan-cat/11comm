@@ -3,13 +3,13 @@ import { ref } from "vue";
 import { default as vElTableInfiniteScroll } from "el-table-infinite-scroll";
 
 defineOptions({
-	name: "InfiniteScroll",
+	name: "InfiniteScroll"
 });
 
 const dataTemplate = new Array(10).fill({
 	date: "2022-08-24",
 	name: "RealityBoy",
-	age: "18",
+	age: "18"
 });
 
 const data = ref([]);

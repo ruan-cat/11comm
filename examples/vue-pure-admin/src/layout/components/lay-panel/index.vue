@@ -22,7 +22,7 @@ const iconClass = computed(() => {
 		"transition-colors",
 		"hover:bg-[#0000000f]",
 		"dark:hover:bg-[#ffffff1f]",
-		"dark:hover:text-[#ffffffd9]",
+		"dark:hover:text-[#ffffffd9]"
 	];
 });
 
@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
 					v-tippy="{
 						content: t('panel.pureCloseSystemSet'),
 						placement: 'bottom-start',
-						zIndex: 41000,
+						zIndex: 41000
 					}"
 					:class="iconClass"
 				>
@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
 					v-tippy="{
 						content: t('panel.pureClearCacheAndToLogin'),
 						placement: 'left-start',
-						zIndex: 41000,
+						zIndex: 41000
 					}"
 					type="danger"
 					text

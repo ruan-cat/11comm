@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
 defineOptions({
-	name: "Menu1-2-2",
+	name: "Menu1-2-2"
 });
 
 const input = ref("");

@@ -16,7 +16,7 @@ const { t } = useI18n();
 const loading = ref(false);
 const ruleForm = reactive({
 	phone: "",
-	verifyCode: "",
+	verifyCode: ""
 });
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
@@ -24,12 +24,12 @@ const { isDisabled, text } = useVerifyCode();
 const onLogin = async (formEl: FormInstance | undefined) => {
 	loading.value = true;
 	if (!formEl) return;
-	await formEl.validate((valid) => {
+	await formEl.validate(valid => {
 		if (valid) {
 			// 模拟登录请求，需根据实际开发进行修改
 			setTimeout(() => {
 				message(transformI18n($t("login.pureLoginSuccess")), {
-					type: "success",
+					type: "success"
 				});
 				loading.value = false;
 			}, 2000);

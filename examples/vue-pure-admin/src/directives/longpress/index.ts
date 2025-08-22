@@ -56,8 +56,8 @@ export const longpress: Directive = {
 			useEventListener(el, "pointerleave", clear);
 		} else {
 			throw new Error(
-				'[Directive: longpress]: need callback and callback must be a function! Like v-longpress="callback"',
+				'[Directive: longpress]: need callback and callback must be a function! Like v-longpress="callback"'
 			);
 		}
-	},
+	}
 };

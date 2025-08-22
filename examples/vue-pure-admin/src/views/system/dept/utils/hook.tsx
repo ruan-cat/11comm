@@ -12,7 +12,7 @@ import { cloneDeep, isAllEmpty, deviceDetection } from "@pureadmin/utils";
 export function useDept() {
 	const form = reactive({
 		name: "",
-		status: null,
+		status: null
 	});
 
 	const formRef = ref();
@@ -25,12 +25,12 @@ export function useDept() {
 			label: "部门名称",
 			prop: "name",
 			width: 180,
-			align: "left",
+			align: "left"
 		},
 		{
 			label: "排序",
 			prop: "sort",
-			minWidth: 70,
+			minWidth: 70
 		},
 		{
 			label: "状态",
@@ -40,25 +40,25 @@ export function useDept() {
 				<el-tag size={props.size} style={tagStyle.value(row.status)}>
 					{row.status === 1 ? "启用" : "停用"}
 				</el-tag>
-			),
+			)
 		},
 		{
 			label: "创建时间",
 			minWidth: 200,
 			prop: "createTime",
-			formatter: ({ createTime }) => dayjs(createTime).format("YYYY-MM-DD HH:mm:ss"),
+			formatter: ({ createTime }) => dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
 		},
 		{
 			label: "备注",
 			prop: "remark",
-			minWidth: 320,
+			minWidth: 320
 		},
 		{
 			label: "操作",
 			fixed: "right",
 			width: 210,
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 
 	function handleSelectionChange(val) {
@@ -77,11 +77,11 @@ export function useDept() {
 		let newData = data;
 		if (!isAllEmpty(form.name)) {
 			// 前端搜索部门名称
-			newData = newData.filter((item) => item.name.includes(form.name));
+			newData = newData.filter(item => item.name.includes(form.name));
 		}
 		if (!isAllEmpty(form.status)) {
 			// 前端搜索状态
-			newData = newData.filter((item) => item.status === form.status);
+			newData = newData.filter(item => item.status === form.status);
 		}
 		dataList.value = handleTree(newData); // 处理成树结构
 		setTimeout(() => {
@@ -114,8 +114,8 @@ export function useDept() {
 					email: row?.email ?? "",
 					sort: row?.sort ?? 0,
 					status: row?.status ?? 1,
-					remark: row?.remark ?? "",
-				},
+					remark: row?.remark ?? ""
+				}
 			},
 			width: "40%",
 			draggable: true,
@@ -128,12 +128,12 @@ export function useDept() {
 				const curData = options.props.formInline as FormItemProps;
 				function chores() {
 					message(`您${title}了部门名称为${curData.name}的这条数据`, {
-						type: "success",
+						type: "success"
 					});
 					done(); // 关闭弹框
 					onSearch(); // 刷新表格数据
 				}
-				FormRef.validate((valid) => {
+				FormRef.validate(valid => {
 					if (valid) {
 						console.log("curData", curData);
 						// 表单规则校验通过
@@ -146,7 +146,7 @@ export function useDept() {
 						}
 					}
 				});
-			},
+			}
 		});
 	}
 
@@ -172,6 +172,6 @@ export function useDept() {
 		openDialog,
 		/** 删除部门 */
 		handleDelete,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

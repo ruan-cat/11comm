@@ -10,7 +10,7 @@ import type { TreeNode } from "element-plus/es/components/tree-v2/src/types";
 import NodeTree from "~icons/ri/node-tree";
 
 defineOptions({
-	name: "MenuTree",
+	name: "MenuTree"
 });
 
 interface treeNode extends TreeNode {
@@ -22,7 +22,7 @@ interface treeNode extends TreeNode {
 const query = ref("");
 const dataProps = ref({
 	value: "uniqueId",
-	children: "children",
+	children: "children"
 });
 const treeRef = ref<InstanceType<typeof ElTreeV2>>();
 const menusTree = clone(usePermissionStoreHook().wholeMenus, true);

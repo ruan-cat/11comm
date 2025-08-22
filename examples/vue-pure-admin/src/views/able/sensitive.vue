@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Mint from "mint-filter";
 
 defineOptions({
-	name: "Sensitive",
+	name: "Sensitive"
 });
 
 // 自定义敏感词字典

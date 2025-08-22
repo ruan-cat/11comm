@@ -23,7 +23,7 @@ export const useUserStore = defineStore("pure-user", {
 		// 是否勾选了登录页的免登录
 		isRemembered: false,
 		// 登录页的免登录存储几天，默认7天
-		loginDay: 7,
+		loginDay: 7
 	}),
 	actions: {
 		/** 存储头像 */
@@ -66,11 +66,11 @@ export const useUserStore = defineStore("pure-user", {
 		async loginByUsername(data) {
 			return new Promise<UserResult>((resolve, reject) => {
 				getLogin(data)
-					.then((data) => {
+					.then(data => {
 						if (data?.success) setToken(data.data);
 						resolve(data);
 					})
-					.catch((error) => {
+					.catch(error => {
 						reject(error);
 					});
 			});
@@ -89,18 +89,18 @@ export const useUserStore = defineStore("pure-user", {
 		async handRefreshToken(data) {
 			return new Promise<RefreshTokenResult>((resolve, reject) => {
 				refreshTokenApi(data)
-					.then((data) => {
+					.then(data => {
 						if (data) {
 							setToken(data.data);
 							resolve(data);
 						}
 					})
-					.catch((error) => {
+					.catch(error => {
 						reject(error);
 					});
 			});
-		},
-	},
+		}
+	}
 });
 
 export function useUserStoreHook() {

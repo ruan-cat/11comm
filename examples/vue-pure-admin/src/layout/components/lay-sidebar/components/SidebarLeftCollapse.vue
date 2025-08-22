@@ -11,7 +11,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-	isActive: false,
+	isActive: false
 });
 
 const { t } = useI18n();
@@ -26,7 +26,7 @@ const iconClass = computed(() => {
 		"inline-block!",
 		"align-middle",
 		"cursor-pointer",
-		"duration-[100ms]",
+		"duration-[100ms]"
 	];
 });
 
@@ -49,7 +49,7 @@ const toggleClick = () => {
 				content: isActive ? t('buttons.pureClickCollapse') : t('buttons.pureClickExpand'),
 				theme: tooltipEffect,
 				hideOnClick: 'toggle',
-				placement: 'right',
+				placement: 'right'
 			}"
 			:icon="MenuFold"
 			:class="[iconClass, themeColor === 'light' ? '' : 'text-primary']"

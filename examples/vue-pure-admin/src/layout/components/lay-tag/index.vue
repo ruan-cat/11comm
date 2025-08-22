@@ -47,7 +47,7 @@ const {
 	onMouseenter,
 	onMouseleave,
 	transformI18n,
-	onContentFullScreen,
+	onContentFullScreen
 } = useTags();
 
 const tabDom = ref();
@@ -57,11 +57,11 @@ const contextmenuRef = ref();
 const isShowArrow = ref(false);
 const topPath = getTopMenu()?.path;
 const { VITE_HIDE_HOME } = import.meta.env;
-const fixedTags = [...routerArrays, ...usePermissionStoreHook().flatteningRoutes.filter((v) => v?.meta?.fixedTag)];
+const fixedTags = [...routerArrays, ...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)];
 
 const dynamicTagView = async () => {
 	await nextTick();
-	const index = multiTags.value.findIndex((item) => {
+	const index = multiTags.value.findIndex(item => {
 		if (!isAllEmpty(route.query)) {
 			return isEqual(route.query, item.query);
 		} else if (!isAllEmpty(route.params)) {
@@ -153,7 +153,7 @@ const smoothScroll = (offset: number): void => {
 };
 
 function dynamicRouteTag(value: string): void {
-	const hasValue = multiTags.value.some((item) => {
+	const hasValue = multiTags.value.some(item => {
 		return item.path === value;
 	});
 
@@ -164,7 +164,7 @@ function dynamicRouteTag(value: string): void {
 					useMultiTagsStoreHook().handleTags("push", {
 						path: value,
 						meta: arrItem.meta,
-						name: arrItem.name,
+						name: arrItem.name
 					});
 				} else {
 					if (arrItem.children && arrItem.children.length > 0) {
@@ -182,7 +182,7 @@ function onFresh() {
 	const { fullPath, query } = unref(route);
 	router.replace({
 		path: "/redirect" + fullPath,
-		query,
+		query
 	});
 	handleAliveRoute(route as ToRouteType, "refresh");
 }
@@ -206,12 +206,12 @@ function deleteDynamicTag(obj: any, current: any, tag?: string) {
 		if (other) {
 			useMultiTagsStoreHook().handleTags(
 				"equal",
-				[VITE_HIDE_HOME === "false" ? fixedTags : toRaw(getTopMenu()), obj].flat(),
+				[VITE_HIDE_HOME === "false" ? fixedTags : toRaw(getTopMenu()), obj].flat()
 			);
 		} else {
 			useMultiTagsStoreHook().handleTags("splice", "", {
 				startIndex,
-				length,
+				length
 			}) as any;
 		}
 		dynamicTagView();
@@ -240,7 +240,7 @@ function deleteDynamicTag(obj: any, current: any, tag?: string) {
 		}
 	} else {
 		if (!multiTags.value.length) return;
-		if (multiTags.value.some((item) => item.path === route.path)) return;
+		if (multiTags.value.some(item => item.path === route.path)) return;
 		if (newRoute[0]?.query) {
 			router.push({ name: newRoute[0].name, query: newRoute[0].query });
 		} else if (newRoute[0]?.params) {
@@ -266,7 +266,7 @@ function onClickDrop(key, item, selectRoute?: RouteConfigs) {
 			meta: selectRoute.meta,
 			name: selectRoute.name,
 			query: selectRoute?.query,
-			params: selectRoute?.params,
+			params: selectRoute?.params
 		};
 	} else {
 		selectTagRoute = { path: route.path, meta: route.meta };
@@ -298,7 +298,7 @@ function onClickDrop(key, item, selectRoute?: RouteConfigs) {
 			// 关闭全部标签页
 			useMultiTagsStoreHook().handleTags("splice", "", {
 				startIndex: fixedTags.length,
-				length: multiTags.value.length,
+				length: multiTags.value.length
 			});
 			router.push(topPath);
 			// router.push(fixedTags[fixedTags.length - 1]?.path);
@@ -335,13 +335,13 @@ function selectTag(key, item) {
 }
 
 function showMenus(value: boolean) {
-	Array.of(1, 2, 3, 4, 5).forEach((v) => {
+	Array.of(1, 2, 3, 4, 5).forEach(v => {
 		tagsViews[v].show = value;
 	});
 }
 
 function disabledMenus(value: boolean, fixedTag = false) {
-	Array.of(1, 2, 3, 4, 5).forEach((v) => {
+	Array.of(1, 2, 3, 4, 5).forEach(v => {
 		tagsViews[v].disabled = value;
 	});
 	if (fixedTag) {
@@ -356,13 +356,13 @@ function showMenuModel(currentPath: string, query: object = {}, refresh = false)
 	const routeLength = multiTags.value.length;
 	let currentIndex = -1;
 	if (isAllEmpty(query)) {
-		currentIndex = allRoute.findIndex((v) => v.path === currentPath);
+		currentIndex = allRoute.findIndex(v => v.path === currentPath);
 	} else {
-		currentIndex = allRoute.findIndex((v) => isEqual(v.query, query));
+		currentIndex = allRoute.findIndex(v => isEqual(v.query, query));
 	}
 	function fixedTagDisabled() {
 		if (allRoute[currentIndex]?.meta?.fixedTag) {
-			Array.of(1, 2, 3, 4, 5).forEach((v) => {
+			Array.of(1, 2, 3, 4, 5).forEach(v => {
 				tagsViews[v].disabled = true;
 			});
 		}
@@ -381,7 +381,7 @@ function showMenuModel(currentPath: string, query: object = {}, refresh = false)
 	if (currentIndex === 1 && routeLength !== 2) {
 		// 左侧的菜单是顶级菜单，右侧存在别的菜单
 		tagsViews[2].show = false;
-		Array.of(1, 3, 4, 5).forEach((v) => {
+		Array.of(1, 3, 4, 5).forEach(v => {
 			tagsViews[v].disabled = false;
 		});
 		tagsViews[2].disabled = true;
@@ -389,7 +389,7 @@ function showMenuModel(currentPath: string, query: object = {}, refresh = false)
 	} else if (currentIndex === 1 && routeLength === 2) {
 		disabledMenus(false);
 		// 左侧的菜单是顶级菜单，右侧不存在别的菜单
-		Array.of(2, 3, 4).forEach((v) => {
+		Array.of(2, 3, 4).forEach(v => {
 			tagsViews[v].show = false;
 			tagsViews[v].disabled = true;
 		});
@@ -397,7 +397,7 @@ function showMenuModel(currentPath: string, query: object = {}, refresh = false)
 	} else if (routeLength - 1 === currentIndex && currentIndex !== 0) {
 		// 当前路由是所有路由中的最后一个
 		tagsViews[3].show = false;
-		Array.of(1, 2, 4, 5).forEach((v) => {
+		Array.of(1, 2, 4, 5).forEach(v => {
 			tagsViews[v].disabled = false;
 		});
 		tagsViews[3].disabled = true;
@@ -458,12 +458,12 @@ function tagOnClick(item) {
 		if (item.query) {
 			router.push({
 				name,
-				query: item.query,
+				query: item.query
 			});
 		} else if (item.params) {
 			router.push({
 				name,
-				params: item.params,
+				params: item.params
 			});
 		} else {
 			router.push({ name });
@@ -475,7 +475,7 @@ function tagOnClick(item) {
 }
 
 onClickOutside(contextmenuRef, closeMenu, {
-	detectIframe: true,
+	detectIframe: true
 });
 
 watch(route, () => {
@@ -496,12 +496,12 @@ onMounted(() => {
 	});
 
 	// 改变标签风格
-	emitter.on("tagViewsShowModel", (key) => {
+	emitter.on("tagViewsShowModel", key => {
 		showModel.value = key;
 	});
 
 	//  接收侧边栏切换传递过来的参数
-	emitter.on("changLayoutRoute", (indexPath) => {
+	emitter.on("changLayoutRoute", indexPath => {
 		dynamicRouteTag(indexPath);
 		setTimeout(() => {
 			showMenuModel(indexPath);
@@ -540,7 +540,7 @@ onBeforeUnmount(() => {
 						'scroll-item is-closable',
 						linkIsActive(item),
 						showModel === 'chrome' && 'chrome-item',
-						isFixedTag(item) && 'fixed-tag',
+						isFixedTag(item) && 'fixed-tag'
 					]"
 					@contextmenu.prevent="openMenu(item, $event)"
 					@mouseenter.prevent="onMouseenter(index)"

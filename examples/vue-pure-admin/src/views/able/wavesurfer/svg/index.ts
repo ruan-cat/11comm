@@ -11,5 +11,5 @@ export {
 	/** 快进 */
 	Forward,
 	/** 快退 */
-	Rewind,
+	Rewind
 };

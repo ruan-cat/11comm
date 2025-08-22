@@ -17,7 +17,7 @@ const {
 	onReset,
 	onSearch,
 	removeTag,
-	handleSelectionChange,
+	handleSelectionChange
 } = useColumns(selectRef, formRef, tableRef);
 </script>
 
@@ -71,12 +71,12 @@ const {
 					alignWhole="center"
 					:header-cell-style="{
 						background: 'var(--el-fill-color-light)',
-						color: 'var(--el-text-color-primary)',
+						color: 'var(--el-text-color-primary)'
 					}"
 					:data="
 						tableData.slice(
 							(pagination.currentPage - 1) * pagination.pageSize,
-							pagination.currentPage * pagination.pageSize,
+							pagination.currentPage * pagination.pageSize
 						)
 					"
 					:columns="columns"

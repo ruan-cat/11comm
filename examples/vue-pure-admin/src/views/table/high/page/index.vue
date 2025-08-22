@@ -13,7 +13,7 @@ const {
 	paginationAlign,
 	onChange,
 	onSizeChange,
-	onCurrentChange,
+	onCurrentChange
 } = useColumns();
 </script>
 

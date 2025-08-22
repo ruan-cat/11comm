@@ -24,7 +24,7 @@ export function useTranslationLang(ref?: Ref) {
 		() => locale.value,
 		() => {
 			changeTitle(route.meta);
-		},
+		}
 	);
 
 	onBeforeMount(() => {
@@ -36,6 +36,6 @@ export function useTranslationLang(ref?: Ref) {
 		route,
 		locale,
 		translationCh,
-		translationEn,
+		translationEn
 	};
 }

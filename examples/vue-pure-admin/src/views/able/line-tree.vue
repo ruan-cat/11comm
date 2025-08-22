@@ -7,7 +7,7 @@ import { extractPathList, deleteChildren } from "@/utils/tree";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 
 defineOptions({
-	name: "LineTree",
+	name: "LineTree"
 });
 
 const menusTree = clone(usePermissionStoreHook().wholeMenus, true);
@@ -17,7 +17,7 @@ const menusData = computed(() => {
 const expandedKeys = extractPathList(menusData.value);
 const dataProps = {
 	value: "uniqueId",
-	children: "children",
+	children: "children"
 };
 </script>
 

@@ -17,7 +17,7 @@ export function useColumns() {
 				onEnd: ({ newIndex, oldIndex }) => {
 					const currentRow = dataList.value.splice(oldIndex, 1)[0];
 					dataList.value.splice(newIndex, 0, currentRow);
-				},
+				}
 			});
 		});
 	};
@@ -47,20 +47,20 @@ export function useColumns() {
 					/>
 					<p class='ml-[16px]'>{row.id}</p>
 				</div>
-			),
+			)
 		},
 		{
 			label: "日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "姓名",
-			prop: "name",
-		},
+			prop: "name"
+		}
 	];
 
 	return {
 		columns,
-		dataList,
+		dataList
 	};
 }

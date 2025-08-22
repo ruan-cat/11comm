@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Vditor from "./components/Vditor.vue";
 
 defineOptions({
-	name: "Markdown",
+	name: "Markdown"
 });
 
 const text = ref(`
@@ -48,7 +48,7 @@ sayHello();
 			v-model="text"
 			:options="{
 				height: 560, // 高度
-				outline: { enable: true, position: 'right' }, // 大纲
+				outline: { enable: true, position: 'right' } // 大纲
 			}"
 		/>
 	</el-card>

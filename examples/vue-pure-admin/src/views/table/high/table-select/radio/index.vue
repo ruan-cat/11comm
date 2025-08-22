@@ -15,13 +15,13 @@ const { columns, pagination, selectValue, tableDataEdit, rowStyle, onRowClick } 
 					alignWhole="center"
 					:header-cell-style="{
 						background: 'var(--el-fill-color-light)',
-						color: 'var(--el-text-color-primary)',
+						color: 'var(--el-text-color-primary)'
 					}"
 					:row-style="rowStyle"
 					:data="
 						tableDataEdit.slice(
 							(pagination.currentPage - 1) * pagination.pageSize,
-							pagination.currentPage * pagination.pageSize,
+							pagination.currentPage * pagination.pageSize
 						)
 					"
 					:columns="columns"

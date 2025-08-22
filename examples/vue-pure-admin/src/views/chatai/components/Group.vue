@@ -6,12 +6,12 @@ const chatRef = ref();
 
 onMounted(() => {
 	chatRef.value.demo = {
-		response: (message) => {
+		response: message => {
 			console.log(message);
 			return {
-				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect",
+				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect"
 			};
-		},
+		}
 	};
 });
 </script>
@@ -39,13 +39,13 @@ onMounted(() => {
 			default: {
 				shared: {
 					bubble: {
-						borderRadius: '0px',
-					},
-				},
-			},
+						borderRadius: '0px'
+					}
+				}
+			}
 		}"
 		:textInput="{
-			placeholder: { text: '发送消息' },
+			placeholder: { text: '发送消息' }
 		}"
 		:history="[
 			{ text: '组1', role: 'group1' },
@@ -53,7 +53,7 @@ onMounted(() => {
 			{ text: '组2-2', role: 'group2' },
 			{ text: '组2-3', role: 'group2' },
 			{ text: '组3-1', role: 'group3' },
-			{ text: '组3-2', role: 'group3' },
+			{ text: '组3-2', role: 'group3' }
 		]"
 		:demo="true"
 	/>

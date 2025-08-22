@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 
 defineOptions({
-	name: "TimePicker",
+	name: "TimePicker"
 });
 
 const size = ref("default");
@@ -39,7 +39,7 @@ const disabledSeconds = (hour: number, minute: number) => {
 	}
 };
 
-watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
+watch(size, val => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
 
 /** 时间选择 */
 const value4 = ref("");
@@ -56,7 +56,7 @@ const endTime = ref("");
 					<el-space wrap :size="40">
 						<el-link
 							v-tippy="{
-								content: '点击查看详细文档',
+								content: '点击查看详细文档'
 							}"
 							href="https://element-plus.org/zh-CN/component/time-picker.html"
 							target="_blank"
@@ -134,7 +134,7 @@ const endTime = ref("");
 				<div class="card-header">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/time-select.html"
 						target="_blank"

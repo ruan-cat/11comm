@@ -2,7 +2,7 @@
 import { utils, writeFile } from "xlsx";
 
 defineOptions({
-	name: "Excel",
+	name: "Excel"
 });
 
 interface DataItem {
@@ -24,7 +24,7 @@ const generateColumns = (length = 10, prefix = "column-", props?: any) =>
 		key: `${prefix}${columnIndex}`,
 		dataKey: `${prefix}${columnIndex}`,
 		title: `Column ${columnIndex}`,
-		width: 150,
+		width: 150
 	}));
 
 const generateData = (columns: ReturnType<typeof generateColumns>, length = 200, prefix = "row-") =>
@@ -36,8 +36,8 @@ const generateData = (columns: ReturnType<typeof generateColumns>, length = 200,
 			},
 			{
 				id: `${prefix}${rowIndex}`,
-				parentId: null,
-			},
+				parentId: null
+			}
 		);
 	});
 

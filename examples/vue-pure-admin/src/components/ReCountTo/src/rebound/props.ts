@@ -10,6 +10,6 @@ export const reboundProps = {
 		default: 0,
 		validator(value: number) {
 			return value < 10 && value >= 0 && Number.isInteger(value);
-		},
-	},
+		}
+	}
 };

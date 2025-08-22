@@ -9,12 +9,12 @@ const chatRef = ref();
 
 onMounted(() => {
 	chatRef.value.demo = {
-		response: (message) => {
+		response: message => {
 			console.log(message);
 			return {
-				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect",
+				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect"
 			};
-		},
+		}
 	};
 });
 </script>
@@ -26,18 +26,18 @@ onMounted(() => {
 		:history="[
 			{
 				text: '```java\nwhile (i < 5) {\n console.log(&quot;hi&quot;);\n i+= 1;\n}\n```',
-				role: 'ai',
-			},
+				role: 'ai'
+			}
 		]"
 		:textInput="{
-			placeholder: { text: '发送消息' },
+			placeholder: { text: '发送消息' }
 		}"
 		:messageStyles="{
 			default: {
 				shared: {
-					bubble: { maxWidth: '270px' },
-				},
-			},
+					bubble: { maxWidth: '270px' }
+				}
+			}
 		}"
 		:demo="true"
 	/>

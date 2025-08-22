@@ -2,33 +2,33 @@ import { $t } from "@/plugins/i18n";
 
 const operates = [
 	{
-		title: $t("login.purePhoneLogin"),
+		title: $t("login.purePhoneLogin")
 	},
 	{
-		title: $t("login.pureQRCodeLogin"),
+		title: $t("login.pureQRCodeLogin")
 	},
 	{
-		title: $t("login.pureRegister"),
-	},
+		title: $t("login.pureRegister")
+	}
 ];
 
 const thirdParty = [
 	{
 		title: $t("login.pureWeChatLogin"),
-		icon: "wechat",
+		icon: "wechat"
 	},
 	{
 		title: $t("login.pureAlipayLogin"),
-		icon: "alipay",
+		icon: "alipay"
 	},
 	{
 		title: $t("login.pureQQLogin"),
-		icon: "qq",
+		icon: "qq"
 	},
 	{
 		title: $t("login.pureWeiBoLogin"),
-		icon: "weibo",
-	},
+		icon: "weibo"
+	}
 ];
 
 export { operates, thirdParty };

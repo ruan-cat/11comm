@@ -43,7 +43,7 @@ import {
 	ContextmenuItem,
 	ContextmenuDivider,
 	ContextmenuSubmenu,
-	ContextmenuGroup,
+	ContextmenuGroup
 } from "v-contextmenu";
 
 export default defineComponent({
@@ -54,16 +54,16 @@ export default defineComponent({
 		[ContextmenuItem.name]: ContextmenuItem,
 		[ContextmenuDivider.name]: ContextmenuDivider,
 		[ContextmenuSubmenu.name]: ContextmenuSubmenu,
-		[ContextmenuGroup.name]: ContextmenuGroup,
+		[ContextmenuGroup.name]: ContextmenuGroup
 	},
 
 	directives: {
-		contextmenu: directive,
+		contextmenu: directive
 	},
 
 	data() {
 		return {
-			extra: [],
+			extra: []
 		};
 	},
 
@@ -73,8 +73,8 @@ export default defineComponent({
 		},
 		removeItem() {
 			this.extra.pop();
-		},
-	},
+		}
+	}
 });
 </script>
 

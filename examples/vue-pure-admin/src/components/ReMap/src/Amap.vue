@@ -16,7 +16,7 @@ export interface MapConfigureInter {
 }
 
 defineOptions({
-	name: "Amap",
+	name: "Amap"
 });
 
 let MarkerCluster;
@@ -25,7 +25,7 @@ let map: MapConfigureInter;
 const instance = getCurrentInstance();
 
 const mapSet = reactive({
-	loading: deviceDetection() ? false : true,
+	loading: deviceDetection() ? false : true
 });
 
 // 地图创建完成(动画关闭)
@@ -45,9 +45,9 @@ onBeforeMount(() => {
 	AMapLoader.load({
 		key: MapConfigure.amapKey,
 		version: "2.0",
-		plugins: ["AMap.MarkerCluster"],
+		plugins: ["AMap.MarkerCluster"]
 	})
-		.then((AMap) => {
+		.then(AMap => {
 			// 创建地图实例
 			map = new AMap.Map(instance.refs.mapview, options);
 
@@ -57,8 +57,8 @@ onBeforeMount(() => {
 				//地图类型切换
 				map.addControl(
 					new AMap.MapType({
-						defaultType: 0,
-					}),
+						defaultType: 0
+					})
 				);
 			});
 
@@ -77,7 +77,7 @@ onBeforeMount(() => {
 							//设置文本标注偏移量
 							offset: new AMap.Pixel(-4, 0),
 							//设置文本标注内容
-							content: `<div> ${plateNumber}(${driver})</div>`,
+							content: `<div> ${plateNumber}(${driver})</div>`
 						});
 						marker.setOffset(new AMap.Pixel(-18, -10));
 						marker.on("click", ({ lnglat }) => {
@@ -85,21 +85,21 @@ onBeforeMount(() => {
 							map.setCenter(lnglat);
 						});
 					}
-				},
+				}
 			});
 
 			// 获取模拟车辆信息
 			mapJson()
 				.then(({ data }) => {
-					const points: object = data.map((v) => {
+					const points: object = data.map(v => {
 						return {
 							lnglat: [v.lng, v.lat],
-							...v,
+							...v
 						};
 					});
 					if (MarkerCluster) MarkerCluster.setData(points);
 				})
-				.catch((err) => {
+				.catch(err => {
 					console.log("err:", err);
 				});
 

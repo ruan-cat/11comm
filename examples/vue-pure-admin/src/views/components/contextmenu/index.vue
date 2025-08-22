@@ -5,7 +5,7 @@ import menuDynamic from "./menuDynamic.vue";
 import "v-contextmenu/dist/themes/default.css";
 
 defineOptions({
-	name: "ContextMenu",
+	name: "ContextMenu"
 });
 </script>
 

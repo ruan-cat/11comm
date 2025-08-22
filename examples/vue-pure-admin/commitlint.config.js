@@ -2,7 +2,7 @@
 
 /** @type {import("@commitlint/types").UserConfig} */
 export default {
-	ignores: [(commit) => commit.includes("init")],
+	ignores: [commit => commit.includes("init")],
 	extends: ["@commitlint/config-conventional"],
 	rules: {
 		"body-leading-blank": [2, "always"],
@@ -28,8 +28,8 @@ export default {
 				"wip",
 				"workflow",
 				"types",
-				"release",
-			],
-		],
-	},
+				"release"
+			]
+		]
+	}
 };

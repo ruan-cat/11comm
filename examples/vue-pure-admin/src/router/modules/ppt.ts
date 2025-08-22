@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/file-ppt-2-line",
 		title: "PPT",
-		rank: ppt,
+		rank: ppt
 	},
 	children: [
 		{
@@ -18,8 +18,8 @@ export default {
 				title: "PPT",
 				keepAlive: true,
 				frameSrc: "https://pipipi-pikachu.github.io/PPTist/",
-				frameLoading: false,
-			},
-		},
-	],
+				frameLoading: false
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

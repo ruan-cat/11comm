@@ -7,14 +7,14 @@ const search = ref("");
 
 for (let i = 0; i < 800; i++) {
 	items.value.push({
-		id: i,
+		id: i
 	});
 }
 
 const filteredItems = computed(() => {
 	if (!search.value) return items.value;
 	const lowerCaseSearch = search.value;
-	return items.value.filter((i) => i.id == lowerCaseSearch);
+	return items.value.filter(i => i.id == lowerCaseSearch);
 });
 </script>
 

@@ -5,8 +5,8 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 defineProps({
 	extraIcon: {
 		type: String,
-		default: "",
-	},
+		default: ""
+	}
 });
 </script>
 

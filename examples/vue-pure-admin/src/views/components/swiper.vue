@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
 defineOptions({
-	name: "Swiper",
+	name: "Swiper"
 });
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
@@ -18,22 +18,22 @@ const swiperExample: any[] = [
 		id: 1,
 		label: "按钮切换",
 		options: {
-			navigation: true,
-		},
+			navigation: true
+		}
 	},
 	{
 		id: 2,
 		label: "分页器",
 		options: {
-			pagination: true,
-		},
+			pagination: true
+		}
 	},
 	{
 		id: 3,
 		label: "分页器 / 动态指示点",
 		options: {
-			pagination: { dynamicBullets: true },
-		},
+			pagination: { dynamicBullets: true }
+		}
 	},
 	{
 		id: 4,
@@ -41,9 +41,9 @@ const swiperExample: any[] = [
 		options: {
 			navigation: true,
 			pagination: {
-				type: "progressbar",
-			},
-		},
+				type: "progressbar"
+			}
+		}
 	},
 	{
 		id: 5,
@@ -51,20 +51,20 @@ const swiperExample: any[] = [
 		options: {
 			navigation: true,
 			pagination: {
-				type: "fraction",
-			},
-		},
+				type: "fraction"
+			}
+		}
 	},
 	{
 		id: 6,
 		label: "一次显示多个Slides",
 		options: {
 			pagination: {
-				clickable: true,
+				clickable: true
 			},
 			slidesPerView: 3,
-			spaceBetween: 30,
-		},
+			spaceBetween: 30
+		}
 	},
 	{
 		id: 7,
@@ -72,15 +72,15 @@ const swiperExample: any[] = [
 		options: {
 			autoplay: {
 				delay: 2000,
-				disableOnInteraction: false,
+				disableOnInteraction: false
 			},
 			navigation: true,
 			pagination: {
-				clickable: true,
+				clickable: true
 			},
-			loop: true,
-		},
-	},
+			loop: true
+		}
+	}
 ];
 </script>
 

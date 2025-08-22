@@ -6,13 +6,13 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 
 defineOptions({
-	name: "PermissionPage",
+	name: "PermissionPage"
 });
 
 const elStyle = computed((): CSSProperties => {
 	return {
 		width: "85vw",
-		justifyContent: "start",
+		justifyContent: "start"
 	};
 });
 
@@ -21,18 +21,18 @@ const username = ref(useUserStoreHook()?.username);
 const options = [
 	{
 		value: "admin",
-		label: "管理员角色",
+		label: "管理员角色"
 	},
 	{
 		value: "common",
-		label: "普通角色",
-	},
+		label: "普通角色"
+	}
 ];
 
 function onChange() {
 	useUserStoreHook()
 		.loginByUsername({ username: username.value, password: "admin123" })
-		.then((res) => {
+		.then(res => {
 			if (res.success) {
 				storageLocal().removeItem("async-routes");
 				usePermissionStoreHook().clearAllCachePage();

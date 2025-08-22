@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/file-info-line",
 		title: $t("menus.pureAbout"),
-		rank: about,
+		rank: about
 	},
 	children: [
 		{
@@ -15,8 +15,8 @@ export default {
 			name: "About",
 			component: () => import("@/views/about/index.vue"),
 			meta: {
-				title: $t("menus.pureAbout"),
-			},
-		},
-	],
+				title: $t("menus.pureAbout")
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

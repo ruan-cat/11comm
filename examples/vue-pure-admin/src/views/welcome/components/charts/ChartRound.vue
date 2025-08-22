@@ -9,7 +9,7 @@ const theme = computed(() => (isDark.value ? "dark" : "light"));
 const chartRef = ref();
 const { setOptions } = useECharts(chartRef, {
 	theme,
-	renderer: "svg",
+	renderer: "svg"
 });
 
 setOptions({
@@ -21,29 +21,29 @@ setOptions({
 		textAlign: "center",
 		textStyle: {
 			fontSize: "16",
-			fontWeight: 600,
-		},
+			fontWeight: 600
+		}
 	},
 	polar: {
 		radius: ["100%", "90%"],
-		center: ["50%", "50%"],
+		center: ["50%", "50%"]
 	},
 	angleAxis: {
 		max: 100,
-		show: false,
+		show: false
 	},
 	radiusAxis: {
 		type: "category",
 		show: true,
 		axisLabel: {
-			show: false,
+			show: false
 		},
 		axisLine: {
-			show: false,
+			show: false
 		},
 		axisTick: {
-			show: false,
-		},
+			show: false
+		}
 	},
 	series: [
 		{
@@ -52,7 +52,7 @@ setOptions({
 			barWidth: 2,
 			showBackground: true,
 			backgroundStyle: {
-				color: "#dfe7ef",
+				color: "#dfe7ef"
 			},
 			data: [100],
 			coordinateSystem: "polar",
@@ -61,10 +61,10 @@ setOptions({
 				shadowBlur: 2,
 				shadowColor: "#7846e5",
 				shadowOffsetX: 0,
-				shadowOffsetY: 0,
-			},
-		},
-	],
+				shadowOffsetY: 0
+			}
+		}
+	]
 });
 </script>
 

@@ -15,8 +15,8 @@ export default defineComponent({
 	props: {
 		splitSet: {
 			type: Object as PropType<ContextProps>,
-			require: true,
-		},
+			require: true
+		}
 	},
 	emits: ["resize"],
 	setup(props, ctx) {
@@ -113,5 +113,5 @@ export default defineComponent({
 				</div>
 			</>
 		);
-	},
+	}
 });

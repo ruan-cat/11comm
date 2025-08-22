@@ -3,7 +3,7 @@ import { ref, watch } from "vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
 defineOptions({
-	name: "DatePicker",
+	name: "DatePicker"
 });
 
 const size = ref("default");
@@ -13,7 +13,7 @@ const value = ref("");
 const shortcuts = [
 	{
 		text: "今天",
-		value: new Date(),
+		value: new Date()
 	},
 	{
 		text: "昨天",
@@ -21,7 +21,7 @@ const shortcuts = [
 			const date = new Date();
 			date.setTime(date.getTime() - 3600 * 1000 * 24);
 			return date;
-		},
+		}
 	},
 	{
 		text: "一周前",
@@ -29,8 +29,8 @@ const shortcuts = [
 			const date = new Date();
 			date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
 			return date;
-		},
-	},
+		}
+	}
 ];
 
 const disabledDate = (time: Date) => {
@@ -51,7 +51,7 @@ const shortcuts1 = [
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
 			return [start, end];
-		},
+		}
 	},
 	{
 		text: "上个月",
@@ -60,7 +60,7 @@ const shortcuts1 = [
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
 			return [start, end];
-		},
+		}
 	},
 	{
 		text: "三个月前",
@@ -69,15 +69,15 @@ const shortcuts1 = [
 			const start = new Date();
 			start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
 			return [start, end];
-		},
-	},
+		}
+	}
 ];
 
 const value6 = ref("");
 const shortcuts2 = [
 	{
 		text: "本月",
-		value: [new Date(), new Date()],
+		value: [new Date(), new Date()]
 	},
 	{
 		text: "今年",
@@ -85,7 +85,7 @@ const shortcuts2 = [
 			const end = new Date();
 			const start = new Date(new Date().getFullYear(), 0);
 			return [start, end];
-		},
+		}
 	},
 	{
 		text: "六个月前",
@@ -94,8 +94,8 @@ const shortcuts2 = [
 			const start = new Date();
 			start.setMonth(start.getMonth() - 6);
 			return [start, end];
-		},
-	},
+		}
+	}
 ];
 
 const value7 = ref("");
@@ -114,14 +114,14 @@ const holidays = [
 	"2023-10-28",
 	"2023-10-29",
 	"2023-10-30",
-	"2023-10-31",
+	"2023-10-31"
 ];
 
 const isHoliday = ({ dayjs }) => {
 	return holidays.includes(dayjs.format("YYYY-MM-DD"));
 };
 
-watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
+watch(size, val => (val === "disabled" ? (dynamicSize.value = "default") : (dynamicSize.value = size.value)));
 </script>
 
 <template>
@@ -131,7 +131,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 				<el-space wrap :size="40">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/date-picker.html"
 						target="_blank"
@@ -165,7 +165,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			:disabled-date="disabledDate"
 			:shortcuts="shortcuts"
 			:popper-options="{
-				placement: 'bottom-start',
+				placement: 'bottom-start'
 			}"
 			:size="dynamicSize"
 			:disabled="size === 'disabled'"
@@ -219,7 +219,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			end-placeholder="结束时间"
 			:shortcuts="shortcuts1"
 			:popper-options="{
-				placement: 'bottom-start', // 下拉面板出现的位置，或 'top-start'、'bottom-end'、'top-end' 等，具体看 https://popper.js.org/docs/v2/constructors/#options
+				placement: 'bottom-start' // 下拉面板出现的位置，或 'top-start'、'bottom-end'、'top-end' 等，具体看 https://popper.js.org/docs/v2/constructors/#options
 			}"
 			:size="dynamicSize"
 			:disabled="size === 'disabled'"
@@ -235,7 +235,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			end-placeholder="结束月份"
 			:shortcuts="shortcuts2"
 			:popper-options="{
-				placement: 'bottom-start',
+				placement: 'bottom-start'
 			}"
 			:size="dynamicSize"
 			:disabled="size === 'disabled'"

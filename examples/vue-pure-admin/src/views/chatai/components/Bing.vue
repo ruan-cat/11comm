@@ -6,12 +6,12 @@ const chatRef = ref();
 
 onMounted(() => {
 	chatRef.value.demo = {
-		response: (message) => {
+		response: message => {
 			console.log(message);
 			return {
-				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect",
+				text: "仅演示，如需AI服务，请参考 https://deepchat.dev/docs/connect"
 			};
-		},
+		}
 	};
 });
 </script>
@@ -62,11 +62,11 @@ onMounted(() => {
 					border: 'unset',
 					width: '78%',
 					marginLeft: '-15px',
-					boxShadow: '0px 0.3px 0.9px rgba(0, 0, 0, 0.12), 0px 1.6px 3.6px rgba(0, 0, 0, 0.16)',
+					boxShadow: '0px 0.3px 0.9px rgba(0, 0, 0, 0.12), 0px 1.6px 3.6px rgba(0, 0, 0, 0.16)'
 				},
-				text: { padding: '10px', paddingLeft: '15px', paddingRight: '34px' },
+				text: { padding: '10px', paddingLeft: '15px', paddingRight: '34px' }
 			},
-			placeholder: { text: '发送消息', style: { color: '#606060' } },
+			placeholder: { text: '发送消息', style: { color: '#606060' } }
 		}"
 		:messageStyles="{
 			default: {
@@ -75,16 +75,16 @@ onMounted(() => {
 						backgroundColor: 'unset',
 						marginTop: '10px',
 						marginBottom: '10px',
-						boxShadow: '0px 0.3px 0.9px rgba(0, 0, 0, 0.12), 0px 1.6px 3.6px rgba(0, 0, 0, 0.16)',
-					},
+						boxShadow: '0px 0.3px 0.9px rgba(0, 0, 0, 0.12), 0px 1.6px 3.6px rgba(0, 0, 0, 0.16)'
+					}
 				},
 				user: {
 					bubble: {
-						background: 'linear-gradient(130deg, #2870EA 20%, #1B4AEF 77.5%)',
-					},
+						background: 'linear-gradient(130deg, #2870EA 20%, #1B4AEF 77.5%)'
+					}
 				},
-				ai: { bubble: { background: 'rgba(255,255,255,0.7)' } },
-			},
+				ai: { bubble: { background: 'rgba(255,255,255,0.7)' } }
+			}
 		}"
 		:submitButtonStyles="{
 			position: 'outside-right',
@@ -94,10 +94,10 @@ onMounted(() => {
 						bottom: '0.8em',
 						borderRadius: '25px',
 						padding: '6px 5px 4px',
-						backgroundColor: 'unset',
+						backgroundColor: 'unset'
 					},
 					hover: { backgroundColor: '#b0deff4f' },
-					click: { backgroundColor: '#b0deffb5' },
+					click: { backgroundColor: '#b0deffb5' }
 				},
 				svg: {
 					content:
@@ -105,20 +105,20 @@ onMounted(() => {
 					styles: {
 						default: {
 							filter:
-								'brightness(0) saturate(100%) invert(10%) sepia(86%) saturate(6044%) hue-rotate(205deg) brightness(100%) contrast(100%)',
-						},
-					},
-				},
+								'brightness(0) saturate(100%) invert(10%) sepia(86%) saturate(6044%) hue-rotate(205deg) brightness(100%) contrast(100%)'
+						}
+					}
+				}
 			},
 			loading: {
 				svg: {
 					styles: {
 						default: {
 							filter:
-								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)',
-						},
-					},
-				},
+								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)'
+						}
+					}
+				}
 			},
 			stop: {
 				container: { hover: { backgroundColor: '#ededed94' } },
@@ -126,18 +126,18 @@ onMounted(() => {
 					styles: {
 						default: {
 							filter:
-								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)',
-						},
-					},
-				},
-			},
+								'brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)'
+						}
+					}
+				}
+			}
 		}"
 		:history="[
 			{ text: '赵云是谁？', role: 'user' },
 			{
 				text: '赵云（约168年－229年），字子龙，是三国时期蜀汉的重要将领，以其忠诚和勇敢著称。',
-				role: 'ai',
-			},
+				role: 'ai'
+			}
 		]"
 		:demo="true"
 		:connect="{ stream: true }"

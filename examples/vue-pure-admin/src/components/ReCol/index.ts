@@ -7,8 +7,8 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Number,
-			default: 24,
-		},
+			default: 24
+		}
 	},
 	render() {
 		const attrs = this.$attrs;
@@ -21,9 +21,9 @@ export default defineComponent({
 				md: val,
 				lg: val,
 				xl: val,
-				...attrs,
+				...attrs
 			},
-			{ default: () => this.$slots.default() },
+			{ default: () => this.$slots.default() }
 		);
-	},
+	}
 });

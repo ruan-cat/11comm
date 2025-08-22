@@ -44,7 +44,7 @@
 				if (ArrayPrototype[UNSCOPABLES] == undefined) {
 					definePropertyModule.f(ArrayPrototype, UNSCOPABLES, {
 						configurable: true,
-						value: create(null),
+						value: create(null)
 					});
 				}
 
@@ -137,7 +137,7 @@
 					includes: createMethod(true),
 					// `Array.prototype.indexOf` method
 					// https://tc39.github.io/ecma262/#sec-array.prototype.indexof
-					indexOf: createMethod(false),
+					indexOf: createMethod(false)
 				};
 
 				/***/
@@ -215,7 +215,7 @@
 					find: createMethod(5),
 					// `Array.prototype.findIndex` method
 					// https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
-					findIndex: createMethod(6),
+					findIndex: createMethod(6)
 				};
 
 				/***/
@@ -265,7 +265,7 @@
 									function () {
 										throw 1;
 									},
-								1,
+								1
 							);
 						})
 					);
@@ -368,7 +368,7 @@
 						},
 						return: function () {
 							SAFE_CLOSING = true;
-						},
+						}
 					};
 					iteratorWithReturn[ITERATOR] = function () {
 						return this;
@@ -390,7 +390,7 @@
 							return {
 								next: function () {
 									return { done: (ITERATION_SUPPORT = true) };
-								},
+								}
 							};
 						};
 						exec(object);
@@ -424,7 +424,7 @@
 					classofRaw(
 						(function () {
 							return arguments;
-						})(),
+						})()
 					) == "Arguments";
 
 				// fallback for IE11 Script Access Denied error
@@ -487,7 +487,7 @@
 								index: create(null),
 								first: undefined,
 								last: undefined,
-								size: 0,
+								size: 0
 							});
 							if (!DESCRIPTORS) that.size = 0;
 							if (iterable != undefined) iterate(iterable, that[ADDER], that, IS_MAP);
@@ -510,7 +510,7 @@
 									value: value,
 									previous: (previous = state.last),
 									next: undefined,
-									removed: false,
+									removed: false
 								};
 								if (!state.first) state.first = entry;
 								if (previous) previous.next = entry;
@@ -588,7 +588,7 @@
 							// 23.2.3.7 Set.prototype.has(value)
 							has: function has(key) {
 								return !!getEntry(this, key);
-							},
+							}
 						});
 
 						redefineAll(
@@ -603,20 +603,20 @@
 										// 23.1.3.9 Map.prototype.set(key, value)
 										set: function set(key, value) {
 											return define(this, key === 0 ? 0 : key, value);
-										},
+										}
 									}
 								: {
 										// 23.2.3.1 Set.prototype.add(value)
 										add: function add(value) {
 											return define(this, (value = value === 0 ? 0 : value), value);
-										},
-									},
+										}
+									}
 						);
 						if (DESCRIPTORS)
 							defineProperty(C.prototype, "size", {
 								get: function () {
 									return getInternalState(this).size;
-								},
+								}
 							});
 						return C;
 					},
@@ -635,7 +635,7 @@
 									target: iterated,
 									state: getInternalCollectionState(iterated),
 									kind: kind,
-									last: undefined,
+									last: undefined
 								});
 							},
 							function () {
@@ -657,12 +657,12 @@
 							},
 							IS_MAP ? "entries" : "values",
 							!IS_MAP,
-							true,
+							true
 						);
 
 						// add [@@species], 23.1.2.2, 23.2.2.2
 						setSpecies(CONSTRUCTOR_NAME);
-					},
+					}
 				};
 
 				/***/
@@ -718,7 +718,7 @@
 											: function set(key, value) {
 													nativeMethod.call(this, key === 0 ? 0 : key, value);
 													return this;
-												},
+												}
 						);
 					};
 
@@ -733,7 +733,7 @@
 										!fails(function () {
 											new NativeConstructor().entries().next();
 										}))
-								),
+								)
 						)
 					) {
 						// create collection constructor
@@ -848,7 +848,7 @@
 				module.exports = function (IteratorConstructor, NAME, next) {
 					var TO_STRING_TAG = NAME + " Iterator";
 					IteratorConstructor.prototype = create(IteratorPrototype, {
-						next: createPropertyDescriptor(1, next),
+						next: createPropertyDescriptor(1, next)
 					});
 					setToStringTag(IteratorConstructor, TO_STRING_TAG, false, true);
 					Iterators[TO_STRING_TAG] = returnThis;
@@ -881,7 +881,7 @@
 						enumerable: !(bitmap & 1),
 						configurable: !(bitmap & 2),
 						writable: !(bitmap & 4),
-						value: value,
+						value: value
 					};
 				};
 
@@ -1000,7 +1000,7 @@
 						methods = {
 							values: getIterationMethod(VALUES),
 							keys: IS_SET ? defaultIterator : getIterationMethod(KEYS),
-							entries: getIterationMethod(ENTRIES),
+							entries: getIterationMethod(ENTRIES)
 						};
 						if (FORCED)
 							for (KEY in methods) {
@@ -1013,9 +1013,9 @@
 								{
 									target: NAME,
 									proto: true,
-									forced: BUGGY_SAFARI_ITERATORS || INCORRECT_VALUES_NAME,
+									forced: BUGGY_SAFARI_ITERATORS || INCORRECT_VALUES_NAME
 								},
-								methods,
+								methods
 							);
 					}
 
@@ -1035,7 +1035,7 @@
 					var Symbol = path.Symbol || (path.Symbol = {});
 					if (!has(Symbol, NAME))
 						defineProperty(Symbol, NAME, {
-							value: wrappedWellKnownSymbolModule.f(NAME),
+							value: wrappedWellKnownSymbolModule.f(NAME)
 						});
 				};
 
@@ -1051,7 +1051,7 @@
 						Object.defineProperty({}, 1, {
 							get: function () {
 								return 7;
-							},
+							}
 						})[1] != 7
 					);
 				});
@@ -1108,7 +1108,7 @@
 					StyleSheetList: 0,
 					TextTrackCueList: 0,
 					TextTrackList: 0,
-					TouchList: 0,
+					TouchList: 0
 				};
 
 				/***/
@@ -1164,7 +1164,7 @@
 					"propertyIsEnumerable",
 					"toLocaleString",
 					"toString",
-					"valueOf",
+					"valueOf"
 				];
 
 				/***/
@@ -1384,7 +1384,7 @@
 							Object.defineProperty(createElement("div"), "a", {
 								get: function () {
 									return 7;
-								},
+								}
 							}).a != 7
 						);
 					});
@@ -1473,8 +1473,8 @@
 					defineProperty(it, METADATA, {
 						value: {
 							objectID: "O" + ++id, // object ID
-							weakData: {}, // weak collections IDs
-						},
+							weakData: {} // weak collections IDs
+						}
 					});
 				};
 
@@ -1516,7 +1516,7 @@
 					REQUIRED: false,
 					fastKey: fastKey,
 					getWeakData: getWeakData,
-					onFreeze: onFreeze,
+					onFreeze: onFreeze
 				});
 
 				hiddenKeys[METADATA] = true;
@@ -1585,7 +1585,7 @@
 					get: get,
 					has: has,
 					enforce: enforce,
-					getterFor: getterFor,
+					getterFor: getterFor
 				};
 
 				/***/
@@ -1753,7 +1753,7 @@
 
 				module.exports = {
 					IteratorPrototype: IteratorPrototype,
-					BUGGY_SAFARI_ITERATORS: BUGGY_SAFARI_ITERATORS,
+					BUGGY_SAFARI_ITERATORS: BUGGY_SAFARI_ITERATORS
 				};
 
 				/***/
@@ -2396,7 +2396,7 @@
 							configurable: true,
 							get: function () {
 								return this;
-							},
+							}
 						});
 					}
 				};
@@ -2415,7 +2415,7 @@
 					if (it && !has((it = STATIC ? it : it.prototype), TO_STRING_TAG)) {
 						defineProperty(it, TO_STRING_TAG, {
 							configurable: true,
-							value: TAG,
+							value: TAG
 						});
 					}
 				};
@@ -2457,7 +2457,7 @@
 				})("versions", []).push({
 					version: "3.6.5",
 					mode: IS_PURE ? "pure" : "global",
-					copyright: "© 2020 Denis Pushkarev (zloirock.ru)",
+					copyright: "© 2020 Denis Pushkarev (zloirock.ru)"
 				});
 
 				/***/
@@ -2587,7 +2587,7 @@
 
 				module.exports = {
 					set: set,
-					clear: clear,
+					clear: clear
 				};
 
 				/***/
@@ -2769,13 +2769,13 @@
 					{
 						target: "Array",
 						proto: true,
-						forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH,
+						forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH
 					},
 					{
 						filter: function filter(callbackfn /* , thisArg */) {
 							return $filter(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-						},
-					},
+						}
+					}
 				);
 
 				/***/
@@ -2795,7 +2795,7 @@
 				var STRICT_METHOD = arrayMethodIsStrict("indexOf");
 				var USES_TO_LENGTH = arrayMethodUsesToLength("indexOf", {
 					ACCESSORS: true,
-					1: 0,
+					1: 0
 				});
 
 				// `Array.prototype.indexOf` method
@@ -2804,7 +2804,7 @@
 					{
 						target: "Array",
 						proto: true,
-						forced: NEGATIVE_ZERO || !STRICT_METHOD || !USES_TO_LENGTH,
+						forced: NEGATIVE_ZERO || !STRICT_METHOD || !USES_TO_LENGTH
 					},
 					{
 						indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
@@ -2812,8 +2812,8 @@
 								? // convert -0 to +0
 									nativeIndexOf.apply(this, arguments) || 0
 								: $indexOf(this, searchElement, arguments.length > 1 ? arguments[1] : undefined);
-						},
-					},
+						}
+					}
 				);
 
 				/***/
@@ -2850,7 +2850,7 @@
 							type: ARRAY_ITERATOR,
 							target: toIndexedObject(iterated), // target
 							index: 0, // next index
-							kind: kind, // kind
+							kind: kind // kind
 						});
 						// `%ArrayIteratorPrototype%.next` method
 						// https://tc39.github.io/ecma262/#sec-%arrayiteratorprototype%.next
@@ -2868,7 +2868,7 @@
 						if (kind == "values") return { value: target[index], done: false };
 						return { value: [index, target[index]], done: false };
 					},
-					"values",
+					"values"
 				);
 
 				// argumentsList[@@iterator] is %ArrayProto_values%
@@ -2902,7 +2902,7 @@
 				var USES_TO_LENGTH = arrayMethodUsesToLength("slice", {
 					ACCESSORS: true,
 					0: 0,
-					1: 2,
+					1: 2
 				});
 
 				var SPECIES = wellKnownSymbol("species");
@@ -2916,7 +2916,7 @@
 					{
 						target: "Array",
 						proto: true,
-						forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH,
+						forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH
 					},
 					{
 						slice: function slice(start, end) {
@@ -2943,8 +2943,8 @@
 							for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
 							result.length = n;
 							return result;
-						},
-					},
+						}
+					}
 				);
 
 				/***/
@@ -2976,7 +2976,7 @@
 							return init(this, arguments.length ? arguments[0] : undefined);
 						};
 					},
-					collectionStrong,
+					collectionStrong
 				);
 
 				/***/
@@ -3017,8 +3017,8 @@
 								if (descriptor !== undefined) createProperty(result, key, descriptor);
 							}
 							return result;
-						},
-					},
+						}
+					}
 				);
 
 				/***/
@@ -3103,7 +3103,7 @@
 							},
 							function () {
 								/* empty */
-							},
+							}
 						);
 					};
 					var constructor = (promise.constructor = {});
@@ -3249,7 +3249,7 @@
 									then.call(
 										value,
 										bind(internalResolve, promise, wrapper, state),
-										bind(internalReject, promise, wrapper, state),
+										bind(internalReject, promise, wrapper, state)
 									);
 								} catch (error) {
 									internalReject(promise, wrapper, error, state);
@@ -3289,7 +3289,7 @@
 							reactions: [],
 							rejection: false,
 							state: PENDING,
-							value: undefined,
+							value: undefined
 						});
 					};
 					Internal.prototype = redefineAll(PromiseConstructor.prototype, {
@@ -3310,7 +3310,7 @@
 						// https://tc39.github.io/ecma262/#sec-promise.prototype.catch
 						catch: function (onRejected) {
 							return this.then(undefined, onRejected);
-						},
+						}
 					});
 					OwnPromiseCapability = function () {
 						var promise = new Internal();
@@ -3339,7 +3339,7 @@
 								}).then(onFulfilled, onRejected);
 								// https://github.com/zloirock/core-js/issues/640
 							},
-							{ unsafe: true },
+							{ unsafe: true }
 						);
 
 						// wrap fetch result
@@ -3350,8 +3350,8 @@
 									// eslint-disable-next-line no-unused-vars
 									fetch: function fetch(input /* , init */) {
 										return promiseResolve(PromiseConstructor, $fetch.apply(global, arguments));
-									},
-								},
+									}
+								}
 							);
 					}
 				}
@@ -3359,8 +3359,8 @@
 				$(
 					{ global: true, wrap: true, forced: FORCED },
 					{
-						Promise: PromiseConstructor,
-					},
+						Promise: PromiseConstructor
+					}
 				);
 
 				setToStringTag(PromiseConstructor, PROMISE, false, true);
@@ -3378,8 +3378,8 @@
 							var capability = newPromiseCapability(this);
 							capability.reject.call(undefined, r);
 							return capability.promise;
-						},
-					},
+						}
+					}
 				);
 
 				$(
@@ -3389,8 +3389,8 @@
 						// https://tc39.github.io/ecma262/#sec-promise.resolve
 						resolve: function resolve(x) {
 							return promiseResolve(IS_PURE && this === PromiseWrapper ? PromiseConstructor : this, x);
-						},
-					},
+						}
+					}
 				);
 
 				$(
@@ -3439,8 +3439,8 @@
 							});
 							if (result.error) reject(result.value);
 							return capability.promise;
-						},
-					},
+						}
+					}
 				);
 
 				/***/
@@ -3475,11 +3475,11 @@
 							var p = String(R.source);
 							var rf = R.flags;
 							var f = String(
-								rf === undefined && R instanceof RegExp && !("flags" in RegExpPrototype) ? flags.call(R) : rf,
+								rf === undefined && R instanceof RegExp && !("flags" in RegExpPrototype) ? flags.call(R) : rf
 							);
 							return "/" + p + "/" + f;
 						},
-						{ unsafe: true },
+						{ unsafe: true }
 					);
 				}
 
@@ -3547,14 +3547,14 @@
 							if (has(EmptyStringDescriptionStore, symbol)) return "";
 							var desc = native ? string.slice(7, -1) : string.replace(regexp, "$1");
 							return desc === "" ? undefined : desc;
-						},
+						}
 					});
 
 					$(
 						{ global: true, forced: true },
 						{
-							Symbol: SymbolWrapper,
-						},
+							Symbol: SymbolWrapper
+						}
 					);
 				}
 
@@ -3621,7 +3621,7 @@
 				}
 
 				/***/
-			},
+			}
 
 			/******/
 		};
@@ -3641,7 +3641,7 @@
 			/******/ var module = (__webpack_module_cache__[moduleId] = {
 				/******/ // no module.id needed
 				/******/ // no module.loaded needed
-				/******/ exports: {},
+				/******/ exports: {}
 				/******/
 			});
 			/******/
@@ -3661,7 +3661,7 @@
 					/******/ if (__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 						/******/ Object.defineProperty(exports, key, {
 							enumerable: true,
-							get: definition[key],
+							get: definition[key]
 						});
 						/******/
 					}
@@ -3699,7 +3699,7 @@
 			/******/ __webpack_require__.r = function (exports) {
 				/******/ if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
 					/******/ Object.defineProperty(exports, Symbol.toStringTag, {
-						value: "Module",
+						value: "Module"
 					});
 					/******/
 				}
@@ -3724,7 +3724,7 @@
 				},
 				initCapture: function () {
 					return /* binding */ initCapture;
-				},
+				}
 			});
 
 			// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.filter.js
@@ -3759,7 +3759,7 @@
 				startCapture: "startCapture",
 				receiveImageOnchange: "receiveImageOnchange",
 				receiveImageOnSuccess: "receiveImageOnSuccess",
-				receiveError: "receiveError",
+				receiveError: "receiveError"
 			}; // CONCATENATED MODULE: ./src/index.ts
 			const _excluded = ["info", "path", "file"];
 			function _regeneratorRuntime() {
@@ -3786,7 +3786,7 @@
 							value: value,
 							enumerable: !0,
 							configurable: !0,
-							writable: !0,
+							writable: !0
 						}),
 						obj[key]
 					);
@@ -3804,7 +3804,7 @@
 						context = new Context(tryLocsList || []);
 					return (
 						defineProperty(generator, "_invoke", {
-							value: makeInvokeMethod(innerFn, self, context),
+							value: makeInvokeMethod(innerFn, self, context)
 						}),
 						generator
 					);
@@ -3852,7 +3852,7 @@
 										},
 										function (err) {
 											invoke("throw", err, resolve, reject);
-										},
+										}
 									)
 								: PromiseImpl.resolve(value).then(
 										function (unwrapped) {
@@ -3860,7 +3860,7 @@
 										},
 										function (error) {
 											return invoke("throw", error, resolve, reject);
-										},
+										}
 									);
 						}
 						reject(record.arg);
@@ -3876,7 +3876,7 @@
 							return (previousPromise = previousPromise
 								? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg)
 								: callInvokeWithMethodAndArg());
-						},
+						}
 					});
 				}
 				function makeInvokeMethod(innerFn, self, context) {
@@ -3989,11 +3989,11 @@
 					(GeneratorFunction.prototype = GeneratorFunctionPrototype),
 					defineProperty(Gp, "constructor", {
 						value: GeneratorFunctionPrototype,
-						configurable: !0,
+						configurable: !0
 					}),
 					defineProperty(GeneratorFunctionPrototype, "constructor", {
 						value: GeneratorFunction,
-						configurable: !0,
+						configurable: !0
 					}),
 					(GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction")),
 					(exports.isGeneratorFunction = function (genFun) {
@@ -4167,12 +4167,12 @@
 								(this.delegate = {
 									iterator: values(iterable),
 									resultName: resultName,
-									nextLoc: nextLoc,
+									nextLoc: nextLoc
 								}),
 								"next" === this.method && (this.arg = undefined),
 								ContinueSentinel
 							);
-						},
+						}
 					}),
 					exports
 				);
@@ -4268,7 +4268,7 @@
 						value: value,
 						enumerable: true,
 						configurable: true,
-						writable: true,
+						writable: true
 					});
 				} else {
 					obj[key] = value;
@@ -4301,11 +4301,11 @@
 										captureWorker = new Worker(url);
 										workerPost({
 											type: "initPath",
-											info: wasmPath.toString(),
+											info: wasmPath.toString()
 										});
-										promise = new Promise((resolve) => {
+										promise = new Promise(resolve => {
 											captureWorker &&
-												captureWorker.addEventListener("message", (e) => {
+												captureWorker.addEventListener("message", e => {
 													var _e$data;
 													if (
 														(e === null || e === void 0
@@ -4325,7 +4325,7 @@
 										return _context.stop();
 								}
 						}, _callee);
-					}),
+					})
 				);
 				return _initWorker.apply(this, arguments);
 			}
@@ -4342,16 +4342,16 @@
 								_objectSpread({}, item),
 								{},
 								{
-									url: [],
-								},
-							),
+									url: []
+								}
+							)
 						);
 						return id;
 					},
 					// 设置
 					getCbk(idx) {
 						return map.get(idx);
-					},
+					}
 				};
 			}
 			const pool = createRequest();
@@ -4435,7 +4435,7 @@
 										ctx.putImageData(imgData, 0, 0, 0, 0, canvasWith, canvasHeight);
 										// const blob = new Blob([imageDataBuffer.buffer], {type: 'image/png'} /* (1) */);
 										return _context2.abrupt("return", {
-											url: canvas.toDataURL("image/jpeg"),
+											url: canvas.toDataURL("image/jpeg")
 											// blob: blob,
 										});
 									case 24:
@@ -4443,7 +4443,7 @@
 										return _context2.stop();
 								}
 						}, _callee2);
-					}),
+					})
 				);
 				return _getUrl.apply(this, arguments);
 			}
@@ -4453,7 +4453,7 @@
 					id,
 					info,
 					path,
-					file,
+					file
 				});
 			}
 			function capture(data) {
@@ -4546,16 +4546,16 @@
 																		info = {
 																			width,
 																			height,
-																			duration: duration / 1000000,
+																			duration: duration / 1000000
 																		};
 																		((_pool$getCbk = pool.getCbk(id)), (url = _pool$getCbk.url));
 																		onChange &&
 																			onChange(
 																				{
-																					url,
+																					url
 																				},
 																				img,
-																				info,
+																				info
 																			);
 																		url.push(img.url);
 																		return _context3.abrupt("break", 27);
@@ -4567,7 +4567,7 @@
 																		onSuccess &&
 																			onSuccess({
 																				url,
-																				meta,
+																				meta
 																			});
 																		return _context3.abrupt("break", 27);
 																	case 21:
@@ -4583,22 +4583,22 @@
 																		return _context3.stop();
 																}
 														}, _callee3);
-													}),
+													})
 												);
 												return function (_x8) {
 													return _ref2.apply(this, arguments);
 												};
-											})(),
+											})()
 										);
 										return _context4.abrupt("return", {
-											capture,
+											capture
 										});
 									case 6:
 									case "end":
 										return _context4.stop();
 								}
 						}, _callee4);
-					}),
+					})
 				);
 				return _initCapture.apply(this, arguments);
 			}

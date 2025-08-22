@@ -20,23 +20,23 @@ const { layout, isCollapse, tooltipEffect, getDivStyle } = useNav();
 
 const props = defineProps({
 	item: {
-		type: Object as PropType<menuType>,
+		type: Object as PropType<menuType>
 	},
 	isNest: {
 		type: Boolean,
-		default: false,
+		default: false
 	},
 	basePath: {
 		type: String,
-		default: "",
-	},
+		default: ""
+	}
 });
 
 const getNoDropdownStyle = computed((): CSSProperties => {
 	return {
 		width: "100%",
 		display: "flex",
-		alignItems: "center",
+		alignItems: "center"
 	};
 });
 
@@ -45,7 +45,7 @@ const getSubMenuIconStyle = computed((): CSSProperties => {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		margin: layout.value === "horizontal" ? "0 5px 0 0" : isCollapse.value ? "0 auto" : "0 5px 0 0",
+		margin: layout.value === "horizontal" ? "0 5px 0 0" : isCollapse.value ? "0 auto" : "0 5px 0 0"
 	};
 });
 
@@ -69,7 +69,7 @@ const expandCloseIcon = computed(() => {
 		"expand-close-icon": useRenderIcon(EpArrowDown),
 		"expand-open-icon": useRenderIcon(ArrowUp),
 		"collapse-close-icon": useRenderIcon(ArrowRight),
-		"collapse-open-icon": useRenderIcon(ArrowLeft),
+		"collapse-open-icon": useRenderIcon(ArrowLeft)
 	};
 });
 
@@ -136,7 +136,7 @@ function resolvePath(routePath) {
 					<ReText
 						:tippyProps="{
 							offset: [0, -10],
-							theme: tooltipEffect,
+							theme: tooltipEffect
 						}"
 						class="w-full! text-inherit!"
 					>
@@ -160,7 +160,7 @@ function resolvePath(routePath) {
 				"
 				:tippyProps="{
 					offset: [0, -10],
-					theme: tooltipEffect,
+					theme: tooltipEffect
 				}"
 				:class="textClass"
 			>

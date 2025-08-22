@@ -24,7 +24,7 @@ export default class PureHttp {
 		method: RequestMethods,
 		url: string,
 		param?: AxiosRequestConfig,
-		axiosConfig?: PureHttpRequestConfig,
+		axiosConfig?: PureHttpRequestConfig
 	): Promise<T>;
 	post<T, P>(url: string, params?: P, config?: PureHttpRequestConfig): Promise<T>;
 	get<T, P>(url: string, params?: P, config?: PureHttpRequestConfig): Promise<T>;

@@ -4,7 +4,7 @@ import { message } from "@/utils/message";
 import ReQrcode from "@/components/ReQrcode";
 
 defineOptions({
-	name: "QrCode",
+	name: "QrCode"
 });
 
 const qrcodeText = "vue-pure-admin";
@@ -65,8 +65,8 @@ const disabledClick = () => {
 							:options="{
 								color: {
 									dark: '#55D187',
-									light: '#2d8cf0',
-								},
+									light: '#2d8cf0'
+								}
 							}"
 						/>
 					</el-card>
@@ -105,7 +105,7 @@ const disabledClick = () => {
 								logoSize: 0.2,
 								borderSize: 0.05,
 								borderRadius: 50,
-								bgColor: 'blue',
+								bgColor: 'blue'
 							}"
 						/>
 					</el-card>

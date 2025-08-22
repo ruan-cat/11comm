@@ -3,7 +3,7 @@ import { ref, watch } from "vue";
 import ReAnimateSelector from "@/components/ReAnimateSelector";
 
 defineOptions({
-	name: "AnimateCss",
+	name: "AnimateCss"
 });
 
 const animate = ref("");

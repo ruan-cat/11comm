@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useColumns } from "./columns";
 defineOptions({
-	name: "Fail",
+	name: "Fail"
 });
 
 const { columns } = useColumns();

@@ -11,7 +11,7 @@ import { cloneDeep, isAllEmpty, deviceDetection } from "@pureadmin/utils";
 
 export function useMenu() {
 	const form = reactive({
-		title: "",
+		title: ""
 	});
 
 	const formRef = ref();
@@ -40,12 +40,12 @@ export function useMenu() {
 				<>
 					<span class='inline-block mr-1'>
 						{h(useRenderIcon(row.icon), {
-							style: { paddingTop: "1px" },
+							style: { paddingTop: "1px" }
 						})}
 					</span>
 					<span>{transformI18n(row.title)}</span>
 				</>
-			),
+			)
 		},
 		{
 			label: "菜单类型",
@@ -55,38 +55,38 @@ export function useMenu() {
 				<el-tag size={props.size} type={getMenuType(row.menuType)} effect='plain'>
 					{getMenuType(row.menuType, true)}
 				</el-tag>
-			),
+			)
 		},
 		{
 			label: "路由路径",
-			prop: "path",
+			prop: "path"
 		},
 		{
 			label: "组件路径",
 			prop: "component",
-			formatter: ({ path, component }) => (isAllEmpty(component) ? path : component),
+			formatter: ({ path, component }) => (isAllEmpty(component) ? path : component)
 		},
 		{
 			label: "权限标识",
-			prop: "auths",
+			prop: "auths"
 		},
 		{
 			label: "排序",
 			prop: "rank",
-			width: 100,
+			width: 100
 		},
 		{
 			label: "隐藏",
 			prop: "showLink",
 			formatter: ({ showLink }) => (showLink ? "否" : "是"),
-			width: 100,
+			width: 100
 		},
 		{
 			label: "操作",
 			fixed: "right",
 			width: 210,
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 
 	function handleSelectionChange(val) {
@@ -105,7 +105,7 @@ export function useMenu() {
 		let newData = data;
 		if (!isAllEmpty(form.title)) {
 			// 前端搜索菜单名称
-			newData = newData.filter((item) => transformI18n(item.title).includes(form.title));
+			newData = newData.filter(item => transformI18n(item.title).includes(form.title));
 		}
 		dataList.value = handleTree(newData); // 处理成树结构
 		setTimeout(() => {
@@ -150,8 +150,8 @@ export function useMenu() {
 					hiddenTag: row?.hiddenTag ?? false,
 					fixedTag: row?.fixedTag ?? false,
 					showLink: row?.showLink ?? true,
-					showParent: row?.showParent ?? false,
-				},
+					showParent: row?.showParent ?? false
+				}
 			},
 			width: "45%",
 			draggable: true,
@@ -164,12 +164,12 @@ export function useMenu() {
 				const curData = options.props.formInline as FormItemProps;
 				function chores() {
 					message(`您${title}了菜单名称为${transformI18n(curData.title)}的这条数据`, {
-						type: "success",
+						type: "success"
 					});
 					done(); // 关闭弹框
 					onSearch(); // 刷新表格数据
 				}
-				FormRef.validate((valid) => {
+				FormRef.validate(valid => {
 					if (valid) {
 						console.log("curData", curData);
 						// 表单规则校验通过
@@ -182,13 +182,13 @@ export function useMenu() {
 						}
 					}
 				});
-			},
+			}
 		});
 	}
 
 	function handleDelete(row) {
 		message(`您删除了菜单名称为${transformI18n(row.title)}的这条数据`, {
-			type: "success",
+			type: "success"
 		});
 		onSearch();
 	}
@@ -210,6 +210,6 @@ export function useMenu() {
 		openDialog,
 		/** 删除菜单 */
 		handleDelete,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 const tableRef = ref();
 
-const clearFilter = (val) => {
+const clearFilter = val => {
 	const { clearFilter } = tableRef.value.getTableRef();
 	clearFilter(val);
 };
@@ -31,29 +31,29 @@ const columns: TableColumnList = [
 			{ text: "2016-05-01", value: "2016-05-01" },
 			{ text: "2016-05-02", value: "2016-05-02" },
 			{ text: "2016-05-03", value: "2016-05-03" },
-			{ text: "2016-05-04", value: "2016-05-04" },
+			{ text: "2016-05-04", value: "2016-05-04" }
 		],
-		filterMethod: filterHandler,
+		filterMethod: filterHandler
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "地址",
-		prop: "address",
+		prop: "address"
 	},
 	{
 		label: "标签",
 		prop: "tag",
 		filters: [
 			{ text: "Home", value: "Home" },
-			{ text: "Office", value: "Office" },
+			{ text: "Office", value: "Office" }
 		],
 		filterMethod: filterTag,
 		filterPlacement: "bottom-end",
-		slot: "tag",
-	},
+		slot: "tag"
+	}
 ];
 
 const tableData = [
@@ -61,26 +61,26 @@ const tableData = [
 		date: "2016-05-03",
 		name: "Tom",
 		address: "No. 189, Grove St, Los Angeles",
-		tag: "Home",
+		tag: "Home"
 	},
 	{
 		date: "2016-05-02",
 		name: "Tom",
 		address: "No. 189, Grove St, Los Angeles",
-		tag: "Office",
+		tag: "Office"
 	},
 	{
 		date: "2016-05-04",
 		name: "Tom",
 		address: "No. 189, Grove St, Los Angeles",
-		tag: "Home",
+		tag: "Home"
 	},
 	{
 		date: "2016-05-01",
 		name: "Tom",
 		address: "No. 189, Grove St, Los Angeles",
-		tag: "Office",
-	},
+		tag: "Office"
+	}
 ];
 </script>
 

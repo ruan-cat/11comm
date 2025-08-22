@@ -10,7 +10,7 @@ import {
 	getConfig,
 	routerArrays,
 	storageLocal,
-	responsiveStorageNameSpace,
+	responsiveStorageNameSpace
 } from "../utils";
 import { usePermissionStoreHook } from "./permission";
 
@@ -19,13 +19,13 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 		// 存储标签页信息（路由信息）
 		multiTags: storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.multiTagsCache
 			? storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}tags`)
-			: ([...routerArrays, ...usePermissionStoreHook().flatteningRoutes.filter((v) => v?.meta?.fixedTag)] as any),
-		multiTagsCache: storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.multiTagsCache,
+			: ([...routerArrays, ...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)] as any),
+		multiTagsCache: storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.multiTagsCache
 	}),
 	getters: {
 		getMultiTagsCache(state) {
 			return state.multiTagsCache;
-		},
+		}
 	},
 	actions: {
 		multiTagsCacheChange(multiTagsCache: boolean) {
@@ -58,17 +58,17 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 						if (isBoolean(tagVal?.meta?.showLink) && !tagVal?.meta?.showLink) return;
 						const tagPath = tagVal.path;
 						// 判断tag是否已存在
-						const tagHasExits = this.multiTags.some((tag) => {
+						const tagHasExits = this.multiTags.some(tag => {
 							return tag.path === tagPath;
 						});
 
 						// 判断tag中的query键值是否相等
-						const tagQueryHasExits = this.multiTags.some((tag) => {
+						const tagQueryHasExits = this.multiTags.some(tag => {
 							return isEqual(tag?.query, tagVal?.query);
 						});
 
 						// 判断tag中的params键值是否相等
-						const tagParamsHasExits = this.multiTags.some((tag) => {
+						const tagParamsHasExits = this.multiTags.some(tag => {
 							return isEqual(tag?.params, tagVal?.params);
 						});
 
@@ -77,9 +77,9 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 						// 动态路由可打开的最大数量
 						const dynamicLevel = tagVal?.meta?.dynamicLevel ?? -1;
 						if (dynamicLevel > 0) {
-							if (this.multiTags.filter((e) => e?.path === tagPath).length >= dynamicLevel) {
+							if (this.multiTags.filter(e => e?.path === tagPath).length >= dynamicLevel) {
 								// 如果当前已打开的动态路由数大于dynamicLevel，替换第一个动态路由标签
-								const index = this.multiTags.findIndex((item) => item?.path === tagPath);
+								const index = this.multiTags.findIndex(item => item?.path === tagPath);
 								index !== -1 && this.multiTags.splice(index, 1);
 							}
 						}
@@ -94,7 +94,7 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 					break;
 				case "splice":
 					if (!position) {
-						const index = this.multiTags.findIndex((v) => v.path === value);
+						const index = this.multiTags.findIndex(v => v.path === value);
 						if (index === -1) return;
 						this.multiTags.splice(index, 1);
 					} else {
@@ -105,8 +105,8 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 				case "slice":
 					return this.multiTags.slice(-1);
 			}
-		},
-	},
+		}
+	}
 });
 
 export function useMultiTagsStoreHook() {

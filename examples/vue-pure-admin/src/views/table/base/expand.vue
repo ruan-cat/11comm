@@ -8,39 +8,39 @@ const childBorder = ref(false);
 const columns: TableColumnList = [
 	{
 		type: "expand",
-		slot: "expand",
+		slot: "expand"
 	},
 	{
 		label: "日期",
-		prop: "date",
+		prop: "date"
 	},
 	{
 		label: "姓名",
-		prop: "name",
-	},
+		prop: "name"
+	}
 ];
 
 const childColumns: TableColumnList = [
 	{
 		label: "Name",
-		prop: "name",
+		prop: "name"
 	},
 	{
 		label: "State",
-		prop: "state",
+		prop: "state"
 	},
 	{
 		label: "City",
-		prop: "city",
+		prop: "city"
 	},
 	{
 		label: "Address",
-		prop: "address",
+		prop: "address"
 	},
 	{
 		label: "Zip",
-		prop: "zip",
-	},
+		prop: "zip"
+	}
 ];
 </script>
 

@@ -5,12 +5,12 @@ import { type PropType, ref, computed, watch, nextTick } from "vue";
 const props = defineProps({
 	requireData: {
 		type: Array as PropType<Array<number>>,
-		default: () => [],
+		default: () => []
 	},
 	questionData: {
 		type: Array as PropType<Array<number>>,
-		default: () => [],
-	},
+		default: () => []
+	}
 });
 
 const { isDark } = useDark();
@@ -19,7 +19,7 @@ const theme = computed(() => (isDark.value ? "dark" : "light"));
 
 const chartRef = ref();
 const { setOptions } = useECharts(chartRef, {
-	theme,
+	theme
 });
 
 watch(
@@ -32,45 +32,45 @@ watch(
 			tooltip: {
 				trigger: "axis",
 				axisPointer: {
-					type: "none",
-				},
+					type: "none"
+				}
 			},
 			grid: {
 				top: "20px",
 				left: "50px",
-				right: 0,
+				right: 0
 			},
 			legend: {
 				data: ["需求人数", "提问数量"],
 				textStyle: {
 					color: "#606266",
-					fontSize: "0.875rem",
+					fontSize: "0.875rem"
 				},
-				bottom: 0,
+				bottom: 0
 			},
 			xAxis: [
 				{
 					type: "category",
 					data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
 					axisLabel: {
-						fontSize: "0.875rem",
+						fontSize: "0.875rem"
 					},
 					axisPointer: {
-						type: "shadow",
-					},
-				},
+						type: "shadow"
+					}
+				}
 			],
 			yAxis: [
 				{
 					type: "value",
 					axisLabel: {
-						fontSize: "0.875rem",
+						fontSize: "0.875rem"
 					},
 					splitLine: {
-						show: false, // 去网格线
-					},
+						show: false // 去网格线
+					}
 					// name: "单位: 个"
-				},
+				}
 			],
 			series: [
 				{
@@ -79,9 +79,9 @@ watch(
 					barWidth: 10,
 					itemStyle: {
 						color: "#41b6ff",
-						borderRadius: [10, 10, 0, 0],
+						borderRadius: [10, 10, 0, 0]
 					},
-					data: props.requireData,
+					data: props.requireData
 				},
 				{
 					name: "提问数量",
@@ -89,17 +89,17 @@ watch(
 					barWidth: 10,
 					itemStyle: {
 						color: "#e86033ce",
-						borderRadius: [10, 10, 0, 0],
+						borderRadius: [10, 10, 0, 0]
 					},
-					data: props.questionData,
-				},
-			],
+					data: props.questionData
+				}
+			]
 		});
 	},
 	{
 		deep: true,
-		immediate: true,
-	},
+		immediate: true
+	}
 );
 </script>
 

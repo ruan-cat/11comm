@@ -4,7 +4,7 @@ import Print from "@/utils/print";
 import pieChart from "./pieChart.vue";
 
 defineOptions({
-	name: "Print",
+	name: "Print"
 });
 
 interface User {
@@ -20,22 +20,22 @@ const options = [
 	{
 		value: "1",
 		el: ".el-table",
-		label: "Table",
+		label: "Table"
 	},
 	{
 		value: "2",
 		el: ".echart",
-		label: "Echart",
+		label: "Echart"
 	},
 	{
 		value: "3",
 		el: ".img",
-		label: "Image",
-	},
+		label: "Image"
+	}
 ];
 
 function onPrint() {
-	const el = options.filter((v) => v.value === value.value)[0]?.el;
+	const el = options.filter(v => v.value === value.value)[0]?.el;
 	Print(el).toPrint;
 }
 
@@ -53,26 +53,26 @@ const tableData: User[] = [
 		date: "2016-05-03",
 		name: "Tom",
 		age: 18,
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date: "2016-05-02",
 		name: "Tom",
 		age: 18,
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date: "2016-05-04",
 		name: "Tom",
 		age: 18,
-		address: "No. 189, Grove St, Los Angeles",
+		address: "No. 189, Grove St, Los Angeles"
 	},
 	{
 		date: "2016-05-01",
 		name: "Tom",
 		age: 18,
-		address: "No. 189, Grove St, Los Angeles",
-	},
+		address: "No. 189, Grove St, Los Angeles"
+	}
 ];
 </script>
 
@@ -104,14 +104,14 @@ const tableData: User[] = [
 				:xl="24"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 200,
-					},
+						delay: 200
+					}
 				}"
 			>
 				<p class="font-medium text-lg text-center">Table</p>
@@ -132,14 +132,14 @@ const tableData: User[] = [
 				:xl="11"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 200,
-					},
+						delay: 200
+					}
 				}"
 			>
 				<p class="font-medium text-lg text-center">Echart</p>
@@ -155,14 +155,14 @@ const tableData: User[] = [
 				:xl="11"
 				:initial="{
 					opacity: 0,
-					y: 100,
+					y: 100
 				}"
 				:enter="{
 					opacity: 1,
 					y: 0,
 					transition: {
-						delay: 200,
-					},
+						delay: 200
+					}
 				}"
 			>
 				<p class="font-medium text-lg text-center">Image</p>

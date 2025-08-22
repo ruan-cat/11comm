@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ri/edit-box-line",
 		title: $t("menus.pureSchemaForm"),
-		rank: form,
+		rank: form
 	},
 	children: [
 		{
@@ -15,8 +15,8 @@ export default {
 			name: "SchemaForm",
 			component: () => import("@/views/schema-form/index.vue"),
 			meta: {
-				title: $t("menus.pureSchemaForm"),
-			},
-		},
-	],
+				title: $t("menus.pureSchemaForm")
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

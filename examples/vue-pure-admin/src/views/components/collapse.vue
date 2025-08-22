@@ -2,7 +2,7 @@
 import { ref } from "vue";
 
 defineOptions({
-	name: "Collapse",
+	name: "Collapse"
 });
 
 const radio = ref();
@@ -31,7 +31,7 @@ const handleChange = (val: string[]) => {
 				<el-space wrap :size="40">
 					<el-link
 						v-tippy="{
-							content: '点击查看详细文档',
+							content: '点击查看详细文档'
 						}"
 						href="https://element-plus.org/zh-CN/component/collapse.html"
 						target="_blank"

@@ -14,7 +14,7 @@ import {
 	keepAliveOptions,
 	hiddenTagOptions,
 	showParentOptions,
-	frameLoadingOptions,
+	frameLoadingOptions
 } from "./utils/enums";
 
 const props = withDefaults(defineProps<FormProps>(), {
@@ -40,8 +40,8 @@ const props = withDefaults(defineProps<FormProps>(), {
 		hiddenTag: false,
 		fixedTag: false,
 		showLink: true,
-		showParent: false,
-	}),
+		showParent: false
+	})
 });
 
 const ruleFormRef = ref();
@@ -73,7 +73,7 @@ defineExpose({ getRef });
 							value: 'id',
 							label: 'title',
 							emitPath: false,
-							checkStrictly: true,
+							checkStrictly: true
 						}"
 						clearable
 						filterable

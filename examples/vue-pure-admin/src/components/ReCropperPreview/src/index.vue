@@ -4,11 +4,11 @@ import ReCropper from "@/components/ReCropper";
 import { formatBytes } from "@pureadmin/utils";
 
 defineOptions({
-	name: "ReCropperPreview",
+	name: "ReCropperPreview"
 });
 
 defineProps({
-	imgSrc: String,
+	imgSrc: String
 });
 
 const emit = defineEmits(["cropper"]);

@@ -4,7 +4,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { onBeforeUnmount, ref, shallowRef, onMounted } from "vue";
 
 defineOptions({
-	name: "BaseEditor",
+	name: "BaseEditor"
 });
 
 const mode = "default";
@@ -24,7 +24,7 @@ onMounted(() => {
 const toolbarConfig: any = { excludeKeys: "fullScreen" };
 const editorConfig = { placeholder: "请输入内容..." };
 
-const handleCreated = (editor) => {
+const handleCreated = editor => {
 	// 记录 editor 实例，重要！
 	editorRef.value = editor;
 };

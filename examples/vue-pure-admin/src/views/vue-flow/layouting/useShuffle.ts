@@ -17,7 +17,7 @@ function generatePossibleEdges(nodes) {
 					source: sourceNode.id,
 					target: targetNode.id,
 					type: "animation",
-					animated: true,
+					animated: true
 				});
 			}
 		}
@@ -27,7 +27,7 @@ function generatePossibleEdges(nodes) {
 }
 
 export function useShuffle() {
-	return (nodes) => {
+	return nodes => {
 		const possibleEdges = generatePossibleEdges(nodes);
 		shuffleArray(possibleEdges);
 

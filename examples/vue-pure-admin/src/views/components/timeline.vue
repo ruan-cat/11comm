@@ -6,7 +6,7 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import Iphone from "~icons/ep/iphone";
 
 defineOptions({
-	name: "TimeLine",
+	name: "TimeLine"
 });
 
 const { lastBuildTime } = __APP_INFO__;
@@ -14,12 +14,12 @@ const activities = [
 	{
 		content: "支持圆点发光",
 		timestamp: lastBuildTime,
-		icon: markRaw(useRenderFlicker()),
+		icon: markRaw(useRenderFlicker())
 	},
 	{
 		content: "支持方形发光",
 		timestamp: lastBuildTime,
-		icon: markRaw(useRenderFlicker({ borderRadius: 0, background: "#67C23A" })),
+		icon: markRaw(useRenderFlicker({ borderRadius: 0, background: "#67C23A" }))
 	},
 	{
 		content: "支持渐变发光",
@@ -27,28 +27,28 @@ const activities = [
 		icon: markRaw(
 			useRenderFlicker({
 				background: randomGradient({
-					randomizeHue: true,
-				}),
-			}),
-		),
+					randomizeHue: true
+				})
+			})
+		)
 	},
 	{
 		content: "支持默认颜色",
-		timestamp: lastBuildTime,
+		timestamp: lastBuildTime
 	},
 	{
 		content: "支持自定义颜色",
 		timestamp: lastBuildTime,
-		color: "#F56C6C",
+		color: "#F56C6C"
 	},
 	{
 		content: "支持自定义图标",
 		timestamp: lastBuildTime,
 		color: "transparent",
 		icon: useRenderIcon(Iphone, {
-			color: "#0bbd87",
-		}),
-	},
+			color: "#0bbd87"
+		})
+	}
 ];
 </script>
 

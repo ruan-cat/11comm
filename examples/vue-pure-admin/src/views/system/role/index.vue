@@ -16,7 +16,7 @@ import Close from "~icons/ep/close";
 import Check from "~icons/ep/check";
 
 defineOptions({
-	name: "SystemRole",
+	name: "SystemRole"
 });
 
 const iconClass = computed(() => {
@@ -32,7 +32,7 @@ const iconClass = computed(() => {
 		"transition-colors",
 		"hover:bg-[#0000000f]",
 		"dark:hover:bg-[#ffffff1f]",
-		"dark:hover:text-[#ffffffd9]",
+		"dark:hover:text-[#ffffffd9]"
 	];
 });
 
@@ -70,7 +70,7 @@ const {
 	// handleDatabase,
 	handleSizeChange,
 	handleCurrentChange,
-	handleSelectionChange,
+	handleSelectionChange
 } = useRole(treeRef);
 
 onMounted(() => {
@@ -138,7 +138,7 @@ onMounted(() => {
 						:pagination="{ ...pagination, size }"
 						:header-cell-style="{
 							background: 'var(--el-fill-color-light)',
-							color: 'var(--el-text-color-primary)',
+							color: 'var(--el-text-color-primary)'
 						}"
 						@selection-change="handleSelectionChange"
 						@page-size-change="handleSizeChange"
@@ -220,7 +220,7 @@ onMounted(() => {
 						<span :class="iconClass">
 							<IconifyIconOffline
 								v-tippy="{
-									content: '关闭',
+									content: '关闭'
 								}"
 								class="dark:text-white"
 								width="18px"
@@ -232,7 +232,7 @@ onMounted(() => {
 						<span :class="[iconClass, 'ml-2']">
 							<IconifyIconOffline
 								v-tippy="{
-									content: '保存菜单权限',
+									content: '保存菜单权限'
 								}"
 								class="dark:text-white"
 								width="18px"

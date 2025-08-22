@@ -6,7 +6,7 @@ import { deviceDetection } from "@pureadmin/utils";
 import type { PaginationProps } from "@pureadmin/table";
 
 defineOptions({
-	name: "SecurityLog",
+	name: "SecurityLog"
 });
 
 const loading = ref(true);
@@ -16,40 +16,40 @@ const pagination = reactive<PaginationProps>({
 	pageSize: 10,
 	currentPage: 1,
 	background: true,
-	layout: "prev, pager, next",
+	layout: "prev, pager, next"
 });
 const columns: TableColumnList = [
 	{
 		label: "详情",
 		prop: "summary",
-		minWidth: 140,
+		minWidth: 140
 	},
 	{
 		label: "IP 地址",
 		prop: "ip",
-		minWidth: 100,
+		minWidth: 100
 	},
 	{
 		label: "地点",
 		prop: "address",
-		minWidth: 140,
+		minWidth: 140
 	},
 	{
 		label: "操作系统",
 		prop: "system",
-		minWidth: 100,
+		minWidth: 100
 	},
 	{
 		label: "浏览器类型",
 		prop: "browser",
-		minWidth: 100,
+		minWidth: 100
 	},
 	{
 		label: "时间",
 		prop: "operatingTime",
 		minWidth: 180,
-		formatter: ({ operatingTime }) => dayjs(operatingTime).format("YYYY-MM-DD HH:mm:ss"),
-	},
+		formatter: ({ operatingTime }) => dayjs(operatingTime).format("YYYY-MM-DD HH:mm:ss")
+	}
 ];
 
 async function onSearch() {

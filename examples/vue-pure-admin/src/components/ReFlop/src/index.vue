@@ -3,7 +3,7 @@ import flippers from "./filpper";
 import { ref, unref, nextTick, onUnmounted } from "vue";
 
 defineOptions({
-	name: "ReFlop",
+	name: "ReFlop"
 });
 
 const timer = ref(null);
@@ -57,7 +57,7 @@ const formatDate = (date: Date, dateFormat: string) => {
 		"d+": date.getDate(),
 		"h+": date.getHours(),
 		"i+": date.getMinutes(),
-		"s+": date.getSeconds(),
+		"s+": date.getSeconds()
 	};
 	for (const k in o) {
 		if (new RegExp(`(${k})`).test(dateFormat)) {
@@ -86,7 +86,7 @@ nextTick(() => {
 		unref(flipperMinute1),
 		unref(flipperMinute2),
 		unref(flipperSecond1),
-		unref(flipperSecond2),
+		unref(flipperSecond2)
 	];
 
 	init();

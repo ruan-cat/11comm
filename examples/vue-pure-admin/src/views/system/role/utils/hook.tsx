@@ -16,7 +16,7 @@ export function useRole(treeRef: Ref) {
 	const form = reactive({
 		name: "",
 		code: "",
-		status: "",
+		status: ""
 	});
 	const curRow = ref();
 	const formRef = ref();
@@ -34,30 +34,30 @@ export function useRole(treeRef: Ref) {
 	const treeProps = {
 		value: "id",
 		label: "title",
-		children: "children",
+		children: "children"
 	};
 	const pagination = reactive<PaginationProps>({
 		total: 0,
 		pageSize: 10,
 		currentPage: 1,
-		background: true,
+		background: true
 	});
 	const columns: TableColumnList = [
 		{
 			label: "角色编号",
-			prop: "id",
+			prop: "id"
 		},
 		{
 			label: "角色名称",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "角色标识",
-			prop: "code",
+			prop: "code"
 		},
 		{
 			label: "状态",
-			cellRenderer: (scope) => (
+			cellRenderer: scope => (
 				<el-switch
 					size={scope.props.size === "small" ? "small" : "default"}
 					loading={switchLoadMap.value[scope.index]?.loading}
@@ -71,25 +71,25 @@ export function useRole(treeRef: Ref) {
 					onChange={() => onChange(scope as any)}
 				/>
 			),
-			minWidth: 90,
+			minWidth: 90
 		},
 		{
 			label: "备注",
 			prop: "remark",
-			minWidth: 160,
+			minWidth: 160
 		},
 		{
 			label: "创建时间",
 			prop: "createTime",
 			minWidth: 160,
-			formatter: ({ createTime }) => dayjs(createTime).format("YYYY-MM-DD HH:mm:ss"),
+			formatter: ({ createTime }) => dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
 		},
 		{
 			label: "操作",
 			fixed: "right",
 			width: 210,
-			slot: "operation",
-		},
+			slot: "operation"
+		}
 	];
 	// const buttonClass = computed(() => {
 	//   return [
@@ -112,19 +112,19 @@ export function useRole(treeRef: Ref) {
 				cancelButtonText: "取消",
 				type: "warning",
 				dangerouslyUseHTMLString: true,
-				draggable: true,
-			},
+				draggable: true
+			}
 		)
 			.then(() => {
 				switchLoadMap.value[index] = Object.assign({}, switchLoadMap.value[index], {
-					loading: true,
+					loading: true
 				});
 				setTimeout(() => {
 					switchLoadMap.value[index] = Object.assign({}, switchLoadMap.value[index], {
-						loading: false,
+						loading: false
 					});
 					message(`已${row.status === 0 ? "停用" : "启用"}${row.name}`, {
-						type: "success",
+						type: "success"
 					});
 				}, 300);
 			})
@@ -163,7 +163,7 @@ export function useRole(treeRef: Ref) {
 		}, 500);
 	}
 
-	const resetForm = (formEl) => {
+	const resetForm = formEl => {
 		if (!formEl) return;
 		formEl.resetFields();
 		onSearch();
@@ -176,8 +176,8 @@ export function useRole(treeRef: Ref) {
 				formInline: {
 					name: row?.name ?? "",
 					code: row?.code ?? "",
-					remark: row?.remark ?? "",
-				},
+					remark: row?.remark ?? ""
+				}
 			},
 			width: "40%",
 			draggable: true,
@@ -190,12 +190,12 @@ export function useRole(treeRef: Ref) {
 				const curData = options.props.formInline as FormItemProps;
 				function chores() {
 					message(`您${title}了角色名称为${curData.name}的这条数据`, {
-						type: "success",
+						type: "success"
 					});
 					done(); // 关闭弹框
 					onSearch(); // 刷新表格数据
 				}
-				FormRef.validate((valid) => {
+				FormRef.validate(valid => {
 					if (valid) {
 						console.log("curData", curData);
 						// 表单规则校验通过
@@ -208,7 +208,7 @@ export function useRole(treeRef: Ref) {
 						}
 					}
 				});
-			},
+			}
 		});
 	}
 
@@ -230,7 +230,7 @@ export function useRole(treeRef: Ref) {
 	function rowStyle({ row: { id } }) {
 		return {
 			cursor: "pointer",
-			background: id === curRow.value?.id ? "var(--el-fill-color-light)" : "",
+			background: id === curRow.value?.id ? "var(--el-fill-color-light)" : ""
 		};
 	}
 
@@ -240,7 +240,7 @@ export function useRole(treeRef: Ref) {
 		// 根据用户 id 调用实际项目中菜单权限修改接口
 		console.log(id, treeRef.value.getCheckedKeys());
 		message(`角色名称为${name}的菜单权限修改成功`, {
-			type: "success",
+			type: "success"
 		});
 	}
 
@@ -262,11 +262,11 @@ export function useRole(treeRef: Ref) {
 		treeData.value = handleTree(data);
 	});
 
-	watch(isExpandAll, (val) => {
+	watch(isExpandAll, val => {
 		val ? treeRef.value.setExpandedKeys(treeIds.value) : treeRef.value.setExpandedKeys([]);
 	});
 
-	watch(isSelectAll, (val) => {
+	watch(isSelectAll, val => {
 		val ? treeRef.value.setCheckedKeys(treeIds.value) : treeRef.value.setCheckedKeys([]);
 	});
 
@@ -298,6 +298,6 @@ export function useRole(treeRef: Ref) {
 		// handleDatabase,
 		handleSizeChange,
 		handleCurrentChange,
-		handleSelectionChange,
+		handleSelectionChange
 	};
 }

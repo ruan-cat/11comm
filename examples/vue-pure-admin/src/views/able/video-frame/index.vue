@@ -5,7 +5,7 @@ import { CanvasRenderer } from "./canvasRenderer";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 defineOptions({
-	name: "VideoFrame",
+	name: "VideoFrame"
 });
 
 const num = 200;
@@ -16,26 +16,26 @@ const loading = ref(false);
 const { loadScript } = useLoader();
 
 const { VITE_PUBLIC_PATH } = import.meta.env;
-const getPath = (path) => `${VITE_PUBLIC_PATH}wasm/${path}`;
+const getPath = path => `${VITE_PUBLIC_PATH}wasm/${path}`;
 const src = getPath("index.js");
 const workerPath = getPath("capture.worker.js");
 const wasmPath = getPath("capture.worker.wasm");
 
 loadScript({
-	src,
-}).then((mgs) => {
+	src
+}).then(mgs => {
 	if (mgs[0].message === "加载成功") {
 		// @ts-expect-error
 		captureUtil.value = cheetahCapture.initCapture({
 			workerPath,
-			wasmPath,
+			wasmPath
 		});
 	}
 });
 
 onMounted(() => {
 	renderer.value = new CanvasRenderer("canvas-container");
-	emitter.on("imageInfo", (info) => (curImg.value = info.img.src));
+	emitter.on("imageInfo", info => (curImg.value = info.img.src));
 });
 
 function beforeUpload(file) {
@@ -43,7 +43,7 @@ function beforeUpload(file) {
 	loading.value = true;
 	renderer.value.clearImages();
 	// api参考 https://github.com/wanwu/cheetah-capture#api
-	captureUtil.value.then((res) => {
+	captureUtil.value.then(res => {
 		res.capture({
 			// 视频文件
 			file,
@@ -63,7 +63,7 @@ function beforeUpload(file) {
 			// 当抽帧过程出现错误的回调
 			onError: () => {
 				loading.value = false;
-			},
+			}
 		});
 	});
 

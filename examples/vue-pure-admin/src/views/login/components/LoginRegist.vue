@@ -22,7 +22,7 @@ const ruleForm = reactive({
 	phone: "",
 	verifyCode: "",
 	password: "",
-	repeatPassword: "",
+	repeatPassword: ""
 });
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
@@ -37,27 +37,27 @@ const repeatPasswordRule = [
 				callback();
 			}
 		},
-		trigger: "blur",
-	},
+		trigger: "blur"
+	}
 ];
 
 const onUpdate = async (formEl: FormInstance | undefined) => {
 	loading.value = true;
 	if (!formEl) return;
-	await formEl.validate((valid) => {
+	await formEl.validate(valid => {
 		if (valid) {
 			if (checked.value) {
 				// 模拟请求，需根据实际开发进行修改
 				setTimeout(() => {
 					message(transformI18n($t("login.pureRegisterSuccess")), {
-						type: "success",
+						type: "success"
 					});
 					loading.value = false;
 				}, 2000);
 			} else {
 				loading.value = false;
 				message(transformI18n($t("login.pureTickPrivacy")), {
-					type: "warning",
+					type: "warning"
 				});
 			}
 		} else {
@@ -80,8 +80,8 @@ function onBack() {
 					{
 						required: true,
 						message: transformI18n($t('login.pureUsernameReg')),
-						trigger: 'blur',
-					},
+						trigger: 'blur'
+					}
 				]"
 				prop="username"
 			>

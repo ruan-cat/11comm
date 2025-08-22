@@ -27,5 +27,5 @@ export {
 	SearchPlus,
 	RotateRight,
 	SearchMinus,
-	DownloadIcon,
+	DownloadIcon
 };

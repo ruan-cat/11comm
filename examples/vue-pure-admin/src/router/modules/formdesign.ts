@@ -8,7 +8,7 @@ export default {
 	meta: {
 		icon: "ri/terminal-window-line",
 		title: $t("menus.pureFormDesign"),
-		rank: formdesign,
+		rank: formdesign
 	},
 	children: [
 		{
@@ -19,8 +19,8 @@ export default {
 				title: $t("menus.pureFormDesign"),
 				keepAlive: true,
 				frameSrc: "https://haixin-fang.github.io/vue-form-design/playground/index.html",
-				frameLoading: false,
-			},
-		},
-	],
+				frameLoading: false
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

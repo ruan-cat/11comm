@@ -8,39 +8,39 @@ const columns: TableColumnList = [
 		label: "日期",
 		prop: "date",
 		width: "260",
-		fixed: true,
+		fixed: true
 	},
 	{
 		label: "姓名",
 		prop: "name",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "地区",
 		prop: "state",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "城市",
 		prop: "city",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "地址",
 		prop: "address",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "邮编",
 		prop: "post-code",
-		width: "260",
+		width: "260"
 	},
 	{
 		label: "操作",
 		width: "120",
 		fixed: "right",
-		slot: "operation",
-	},
+		slot: "operation"
+	}
 ];
 
 const now = new Date();
@@ -58,7 +58,7 @@ const onAddItem = () => {
 		address: "No. 189, Grove St, Los Angeles",
 		state: "California",
 		city: "Los Angeles",
-		"post-code": "CA 90036",
+		"post-code": "CA 90036"
 	});
 };
 </script>

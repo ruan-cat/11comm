@@ -7,7 +7,7 @@ export default {
 	meta: {
 		icon: "ep/set-up",
 		title: $t("menus.pureFlowChart"),
-		rank: flowchart,
+		rank: flowchart
 	},
 	children: [
 		{
@@ -15,8 +15,8 @@ export default {
 			name: "FlowChart",
 			component: () => import("@/views/flow-chart/index.vue"),
 			meta: {
-				title: $t("menus.pureFlowChart"),
-			},
-		},
-	],
+				title: $t("menus.pureFlowChart")
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

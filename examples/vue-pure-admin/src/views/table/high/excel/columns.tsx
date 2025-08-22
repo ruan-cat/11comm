@@ -10,28 +10,28 @@ export function useColumns() {
 	const columns: TableColumnList = [
 		{
 			label: "ID",
-			prop: "id",
+			prop: "id"
 		},
 		{
 			label: "日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "姓名",
-			prop: "name",
-		},
+			prop: "name"
+		}
 	];
 
 	const exportExcel = () => {
-		const res = dataList.value.map((item) => {
+		const res = dataList.value.map(item => {
 			const arr = [];
-			columns.forEach((column) => {
+			columns.forEach(column => {
 				arr.push(item[column.prop as string]);
 			});
 			return arr;
 		});
 		const titleList = [];
-		columns.forEach((column) => {
+		columns.forEach(column => {
 			titleList.push(column.label);
 		});
 		res.unshift(titleList);
@@ -40,13 +40,13 @@ export function useColumns() {
 		utils.book_append_sheet(workBook, workSheet, "数据报表");
 		writeFile(workBook, "pure-admin-table.xlsx");
 		message("导出成功", {
-			type: "success",
+			type: "success"
 		});
 	};
 
 	return {
 		columns,
 		dataList,
-		exportExcel,
+		exportExcel
 	};
 }

@@ -52,7 +52,7 @@ const include = [
 	"vue-waterfall-plugin-next",
 	"@infectoone/vue-ganttastic",
 	"@wangeditor/editor-for-vue",
-	"vuedraggable/src/vuedraggable",
+	"vuedraggable/src/vuedraggable"
 ];
 
 /**

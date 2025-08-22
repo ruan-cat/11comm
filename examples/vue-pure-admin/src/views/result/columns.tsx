@@ -36,11 +36,11 @@ export function useColumns() {
 						</div>
 					</div>
 				);
-			},
-		},
+			}
+		}
 	];
 
 	return {
-		columns,
+		columns
 	};
 }

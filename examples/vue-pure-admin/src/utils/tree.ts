@@ -82,11 +82,11 @@ export const getNodeByUniqueId = (tree: any[], uniqueId: number | string): any =
 		return [];
 	}
 	if (!tree || tree.length === 0) return [];
-	const item = tree.find((node) => node.uniqueId === uniqueId);
+	const item = tree.find(node => node.uniqueId === uniqueId);
 	if (item) return item;
 	const childrenList = tree
-		.filter((node) => node.children)
-		.map((i) => i.children)
+		.filter(node => node.children)
+		.map(i => i.children)
 		.flat(1) as unknown;
 	return getNodeByUniqueId(childrenList as any[], uniqueId);
 };
@@ -131,7 +131,7 @@ export const handleTree = (data: any[], id?: string, parentId?: string, children
 	const config = {
 		id: id || "id",
 		parentId: parentId || "parentId",
-		childrenList: children || "children",
+		childrenList: children || "children"
 	};
 
 	const childrenListMap: any = {};

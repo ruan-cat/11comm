@@ -9,5 +9,5 @@ export const perms: Directive = {
 		} else {
 			throw new Error("[Directive: perms]: need perms! Like v-perms=\"['btn.add','btn.edit']\"");
 		}
-	},
+	}
 };

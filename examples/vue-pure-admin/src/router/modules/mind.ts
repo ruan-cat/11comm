@@ -8,7 +8,7 @@ export default {
 	meta: {
 		icon: "ri/mind-map",
 		title: $t("menus.pureMindMap"),
-		rank: mind,
+		rank: mind
 	},
 	children: [
 		{
@@ -18,8 +18,8 @@ export default {
 			meta: {
 				title: $t("menus.pureMindMap"),
 				keepAlive: true,
-				frameSrc: "https://wanglin2.github.io/mind-map/#/",
-			},
-		},
-	],
+				frameSrc: "https://wanglin2.github.io/mind-map/#/"
+			}
+		}
+	]
 } satisfies RouteConfigsTable;

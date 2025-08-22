@@ -18,25 +18,25 @@ const connection = reactive({
 	password: "emqx_test",
 	clean: true,
 	connectTimeout: 30 * 1000, // ms
-	reconnectPeriod: 4000, // ms
+	reconnectPeriod: 4000 // ms
 	// for more options and details, please refer to https://github.com/mqttjs/MQTT.js#mqttclientstreambuilder-options
 });
 
 // 订阅 topic/mqttx 主题
 const subscription = ref({
 	topic: "topic/mqttx",
-	qos: 0 as any,
+	qos: 0 as any
 });
 
 // 发布 topic/browser 主题
 const publish = ref({
 	topic: "topic/browser",
 	qos: 0 as any,
-	payload: '{ "msg": "Hello, I am browser." }',
+	payload: '{ "msg": "Hello, I am browser." }'
 });
 
 let client = ref({
-	connected: false,
+	connected: false
 } as mqtt.MqttClient);
 
 const receivedMessages = ref("");
@@ -46,7 +46,7 @@ const retryTimes = ref(0);
 
 const initData = () => {
 	client.value = {
-		connected: false,
+		connected: false
 	} as mqtt.MqttClient;
 	retryTimes.value = 0;
 	btnLoadingType.value = "";
@@ -85,7 +85,7 @@ const createConnection = () => {
 			client.value.on("reconnect", handleOnReConnect);
 
 			// https://github.com/mqttjs/MQTT.js#event-error
-			client.value.on("error", (error) => {
+			client.value.on("error", error => {
 				console.log("connection error:", error);
 			});
 
@@ -122,7 +122,7 @@ const doSubscribe = () => {
 const doUnSubscribe = () => {
 	btnLoadingType.value = "unsubscribe";
 	const { topic, qos } = subscription.value;
-	client.value.unsubscribe(topic, { qos }, (error) => {
+	client.value.unsubscribe(topic, { qos }, error => {
 		btnLoadingType.value = "";
 		subscribedSuccess.value = false;
 		if (error) {
@@ -138,7 +138,7 @@ const doUnSubscribe = () => {
 const doPublish = () => {
 	btnLoadingType.value = "publish";
 	const { topic, qos, payload } = publish.value;
-	client.value.publish(topic, payload, { qos }, (error) => {
+	client.value.publish(topic, payload, { qos }, error => {
 		btnLoadingType.value = "";
 		if (error) {
 			console.log("publish error:", error);

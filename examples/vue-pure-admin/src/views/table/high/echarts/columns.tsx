@@ -10,20 +10,20 @@ export function useColumns() {
 	const columns: TableColumnList = [
 		{
 			label: "ID",
-			prop: "id",
+			prop: "id"
 		},
 		{
 			label: "姓名",
-			prop: "name",
+			prop: "name"
 		},
 		{
 			label: "日期",
-			prop: "date",
+			prop: "date"
 		},
 		{
 			label: "echarts图表",
-			slot: "echart",
-		},
+			slot: "echart"
+		}
 	];
 
 	const { isDark } = useDark();
@@ -32,7 +32,7 @@ export function useColumns() {
 
 	dataList.value.forEach((_, i) => {
 		const { setOptions } = useECharts(templateRef(`PieChartRef${i}`), {
-			theme,
+			theme
 		});
 
 		setOptions(
@@ -40,7 +40,7 @@ export function useColumns() {
 				tooltip: {
 					trigger: "item",
 					// 将 tooltip 控制在图表区域里
-					confine: true,
+					confine: true
 				},
 				series: [
 					{
@@ -50,31 +50,31 @@ export function useColumns() {
 						data: [
 							{ value: 1067, name: "watchers" },
 							{ value: 4037, name: "star" },
-							{ value: 859, name: "forks" },
+							{ value: 859, name: "forks" }
 						],
 						emphasis: {
 							itemStyle: {
 								shadowBlur: 10,
 								shadowOffsetX: 0,
-								shadowColor: "rgba(0, 0, 0, 0.5)",
-							},
-						},
-					},
-				],
+								shadowColor: "rgba(0, 0, 0, 0.5)"
+							}
+						}
+					}
+				]
 			},
 			{
 				name: "click",
 				callback: ({ data: { name, value } }) => {
 					message(`您点击了第 ${i + 1} 行，图表标题为${name}，图表数据为：${value}`, {
-						type: "success",
+						type: "success"
 					});
-				},
-			},
+				}
+			}
 		);
 	});
 
 	return {
 		columns,
-		dataList,
+		dataList
 	};
 }

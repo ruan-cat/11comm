@@ -6,7 +6,7 @@ export default {
 	redirect: "/menuoverflow/index",
 	meta: {
 		title: $t("menus.pureMenuOverflow"),
-		rank: menuoverflow,
+		rank: menuoverflow
 	},
 	children: [
 		{
@@ -15,8 +15,8 @@ export default {
 			component: () => import("@/views/menuoverflow/index.vue"),
 			meta: {
 				title: $t("menus.pureChildMenuOverflow"),
-				showParent: true,
-			},
-		},
-	],
+				showParent: true
+			}
+		}
+	]
 } satisfies RouteConfigsTable;
