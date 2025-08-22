@@ -7,7 +7,7 @@
 	"description": "01s-11comm智慧社区 monorepo根目录",
 	"main": "index.js",
 	"type": "module",
-	"packageManager": "pnpm@10.14.0",
+	"packageManager": "pnpm@10.15.0",
 	"engines": {
 		"node": ">=22.14.0"
 	},
@@ -59,7 +59,7 @@
 		"commander": "^14.0.0",
 		"commitizen": "^4.3.1",
 		"consola": "^3.4.2",
-		"cross-env": "^7.0.3",
+		"cross-env": "^10.0.0",
 		"cz-git": "^1.12.0",
 		"del": "^8.0.0",
 		"eslint": "^9.33.0",
@@ -69,21 +69,21 @@
 		"js-yaml": "^4.1.0",
 		"lodash-es": "^4.17.21",
 		"only-allow": "^1.2.1",
-		"pkg-types": "^2.2.0",
+		"pkg-types": "^2.3.0",
 		"prettier": "^3.6.2",
 		"prettier-plugin-lint-md": "^1.0.1",
 		"rimraf": "^6.0.1",
-		"taze": "^19.1.0",
+		"taze": "^19.3.0",
 		"tsx": "^4.20.4",
 		"turbo": "^2.5.6",
 		"type-fest": "^4.41.0",
 		"type-plus": "^7.6.2",
 		"typescript": "^5.9.2",
 		"typescript-lodash": "^0.2.2",
-		"vercel": "^44.7.3",
+		"vercel": "^46.0.2",
 		"vite": "^6.3.5",
 		"vitest": "^3.2.4",
-		"vue": "^3.5.18",
-		"vue-tsc": "^3.0.5"
+		"vue": "^3.5.19",
+		"vue-tsc": "^3.0.6"
 	}
 }
