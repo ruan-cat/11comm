@@ -84,6 +84,10 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			// 消除打包大小超过500kb警告
 			chunkSizeWarningLimit: 4000,
 			rollupOptions: {
+				external: [
+					// 修复 Element Plus CSS 模块导入问题
+					"@element-plus/components/color-picker-panel/css",
+				],
 				input: {
 					index: pathResolve("./index.html", import.meta.url),
 				},
