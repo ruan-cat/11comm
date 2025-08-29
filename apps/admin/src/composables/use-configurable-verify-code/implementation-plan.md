@@ -4,22 +4,12 @@
 
 本功能实现了通过项目级别配置来控制验证码功能的开启与关闭，支持图片验证码和短信验证码的独立配置。采用组合式 API `useConfigurableVerifyCode` 实现，提供更好的代码复用性和维护性。
 
-## 改造背景
-
-原先的验证码实现直接使用 `useGlobal` 从全局配置中读取验证码配置，存在以下问题：
-
-1. **配置读取方式不统一** - 项目中其他地方都使用 `getConfig()` 函数读取配置
-2. **代码重复** - 多个页面都需要重复相同的配置读取逻辑
-3. **可维护性差** - 配置变更时需要修改多个文件
-4. **扩展性不足** - 添加新的验证码类型需要修改多处代码
-
-## 改造目标
+## 设计目标
 
 1. **统一配置读取** - 使用项目统一的 `getConfig()` 函数
 2. **封装组合式 API** - 将验证码配置逻辑封装为可复用的组合式函数
 3. **简化组件代码** - 减少组件中的配置处理逻辑
 4. **提升扩展性** - 便于后续添加新的验证码类型
-5. **向后兼容性** - 确保现有功能不受影响
 
 ## 技术架构
 
@@ -95,34 +85,11 @@ interface StorageConfigs {
 
 :::
 
-### 4. 组件重构
+### 4. 组件使用示例
 
-#### 改造前后对比
-
-**改造前（登录页面）**：
+**登录页面实现**：
 
 ```typescript
-// 直接使用 useGlobal
-import { useGlobal } from "@pureadmin/utils";
-
-const { $config } = useGlobal<GlobalPropertiesApi>();
-const isImageCaptchaEnabled = computed(() => $config?.CaptchaConfig?.isImageCaptchaEnabled ?? false);
-
-// 手动构建登录参数
-const loginData = {
-	username: ruleForm.username,
-	password: ruleForm.password,
-	...(isImageCaptchaEnabled.value && {
-		verifyCode: ruleForm.verifyCode,
-		uuid: captchaInfo.value?.uuid,
-	}),
-};
-```
-
-**改造后（登录页面）**：
-
-```typescript
-// 使用组合式 API
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
 const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
@@ -152,22 +119,19 @@ const loginData = buildLoginParams(
 </Motion>
 ```
 
-## 改造效果对比
+## 实现效果
 
-| 改造项   | 改造前                | 改造后           |
-| -------- | --------------------- | ---------------- |
-| 配置读取 | `useGlobal().$config` | `getConfig()`    |
-| 代码行数 | ~10 行/页面           | ~3 行/页面       |
-| 重复代码 | 3 个页面重复相同逻辑  | 无重复，统一调用 |
-| 参数构建 | 手动扩展运算符        | 自动构建函数     |
-| 类型安全 | 部分类型安全          | 完全类型安全     |
-| 变量命名 | enableXXX             | isXXXEnabled     |
+- **配置统一** - 使用 `getConfig()` 统一读取配置
+- **代码简洁** - 组件代码从 ~10 行减少到 ~3 行
+- **无重复代码** - 多个页面统一调用组合式 API
+- **自动构建** - 登录参数自动构建，无需手动扩展
+- **完全类型安全** - 完整的 TypeScript 类型支持
 
 ## 技术实现细节
 
 ### 1. 配置读取机制
 
-使用项目统一的 `getConfig()` 函数而非 `useGlobal`：
+使用项目统一的 `getConfig()` 函数：
 
 ```typescript
 const isImageCaptchaEnabled = computed(() => {
@@ -175,11 +139,11 @@ const isImageCaptchaEnabled = computed(() => {
 });
 ```
 
-**优势**：
+**特点**：
 
-- 与项目现有配置管理体系保持一致
-- 减少对外部依赖的耦合
+- 与项目配置管理体系保持一致
 - 提供默认值兜底机制
+- 响应式配置更新
 
 ### 2. 条件渲染策略
 
@@ -313,15 +277,3 @@ if (isVoiceCaptchaEnabled.value && captchaData?.voiceCode) {
 | 配置文件损坏 | 低       | 系统启动   | 默认值兜底机制     |
 | 类型定义错误 | 中       | 编译时错误 | 完善的类型测试     |
 | 逻辑分支遗漏 | 中       | 功能异常   | 全面的测试用例覆盖 |
-
-## 总结
-
-本次改造成功实现了验证码功能的可配置化，具有以下特点：
-
-1. **设计合理** - 采用项目级配置，支持独立开关控制
-2. **实现优雅** - 利用 Vue 3 组合式 API，代码简洁高效
-3. **兼容性好** - 向后兼容，不影响现有功能
-4. **维护性强** - 统一的配置管理，便于扩展
-5. **用户友好** - 默认配置减少操作负担，支持多种使用场景
-
-该方案为系统提供了灵活的验证码控制能力，满足不同环境和安全级别的需求。
