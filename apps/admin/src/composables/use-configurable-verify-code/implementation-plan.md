@@ -48,8 +48,8 @@
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": true
 	}
 }
 ```
@@ -68,9 +68,9 @@ interface PlatformConfigs {
 	/** 验证码相关配置 */
 	CaptchaConfig?: {
 		/** 是否启用图片验证码，默认false */
-		enableImageCaptcha?: boolean;
+		isImageCaptchaEnabled?: boolean;
 		/** 是否启用短信验证码，默认true */
-		enableSmsCaptcha?: boolean;
+		isSmsCaptchaEnabled?: boolean;
 	};
 }
 
@@ -78,9 +78,9 @@ interface StorageConfigs {
 	/** 验证码相关配置（驼峰命名用于本地存储） */
 	captchaConfig?: {
 		/** 是否启用图片验证码，默认false */
-		enableImageCaptcha?: boolean;
+		isImageCaptchaEnabled?: boolean;
 		/** 是否启用短信验证码，默认true */
-		enableSmsCaptcha?: boolean;
+		isSmsCaptchaEnabled?: boolean;
 	};
 }
 ```
@@ -95,11 +95,11 @@ import { getConfig } from "@/config";
 
 export function useConfigurableVerifyCode() {
 	const isImageCaptchaEnabled: ComputedRef<boolean> = computed(() => {
-		return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
+		return getConfig()?.CaptchaConfig?.isImageCaptchaEnabled ?? false;
 	});
 
 	const isSmsCaptchaEnabled: ComputedRef<boolean> = computed(() => {
-		return getConfig()?.CaptchaConfig?.enableSmsCaptcha ?? true;
+		return getConfig()?.CaptchaConfig?.isSmsCaptchaEnabled ?? true;
 	});
 
 	const isVerificationRequired = computed(() => {
@@ -142,13 +142,13 @@ export function useConfigurableVerifyCode() {
 import { useGlobal } from "@pureadmin/utils";
 
 const { $config } = useGlobal<GlobalPropertiesApi>();
-const enableImageCaptcha = computed(() => $config?.CaptchaConfig?.enableImageCaptcha ?? false);
+const isImageCaptchaEnabled = computed(() => $config?.CaptchaConfig?.isImageCaptchaEnabled ?? false);
 
 // 手动构建登录参数
 const loginData = {
 	username: ruleForm.username,
 	password: ruleForm.password,
-	...(enableImageCaptcha.value && {
+	...(isImageCaptchaEnabled.value && {
 		verifyCode: ruleForm.verifyCode,
 		uuid: captchaInfo.value?.uuid,
 	}),
@@ -207,7 +207,7 @@ const loginData = buildLoginParams(
 
 ```typescript
 const isImageCaptchaEnabled = computed(() => {
-	return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
+	return getConfig()?.CaptchaConfig?.isImageCaptchaEnabled ?? false;
 });
 ```
 
@@ -259,7 +259,7 @@ function buildLoginParams(baseParams, captchaData) {
 {
 	"CaptchaConfig": {
 		"enableImageCaptcha": false,
-		"enableSmsCaptcha": false
+		"isSmsCaptchaEnabled": false
 	}
 }
 ```
@@ -269,7 +269,7 @@ function buildLoginParams(baseParams, captchaData) {
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": true,
+		"isImageCaptchaEnabled": true,
 		"enableSmsCaptcha": true
 	}
 }
@@ -280,8 +280,8 @@ function buildLoginParams(baseParams, captchaData) {
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": true
 	}
 }
 ```
@@ -296,9 +296,9 @@ function buildLoginParams(baseParams, captchaData) {
 
 ```typescript
 interface CaptchaConfig {
-	enableImageCaptcha?: boolean;
-	enableSmsCaptcha?: boolean;
-	enableVoiceCaptcha?: boolean; // 新增
+	isImageCaptchaEnabled?: boolean;
+	isSmsCaptchaEnabled?: boolean;
+	isVoiceCaptchaEnabled?: boolean; // 新增
 }
 ```
 
@@ -306,7 +306,7 @@ interface CaptchaConfig {
 
 ```typescript
 const isVoiceCaptchaEnabled = computed(() => {
-	return getConfig()?.CaptchaConfig?.enableVoiceCaptcha ?? false;
+	return getConfig()?.CaptchaConfig?.isVoiceCaptchaEnabled ?? false;
 });
 ```
 

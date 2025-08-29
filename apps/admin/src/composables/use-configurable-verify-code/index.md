@@ -62,8 +62,8 @@ export default {
 
 ```typescript
 interface CaptchaConfig {
-	enableImageCaptcha?: boolean;
-	enableSmsCaptcha?: boolean;
+	isImageCaptchaEnabled?: boolean;
+	isSmsCaptchaEnabled?: boolean;
 }
 ```
 
@@ -249,8 +249,8 @@ const handlePhoneLogin = async () => {
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": true
 	}
 }
 ```
@@ -301,6 +301,6 @@ watch(
 ```typescript
 // 示例：添加语音验证码支持
 const isVoiceCaptchaEnabled = computed(() => {
-	return getConfig()?.CaptchaConfig?.enableVoiceCaptcha ?? false;
+	return getConfig()?.CaptchaConfig?.isVoiceCaptchaEnabled ?? false;
 });
 ```

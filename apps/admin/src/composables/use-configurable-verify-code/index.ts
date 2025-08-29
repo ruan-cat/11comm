@@ -14,7 +14,7 @@ export function useConfigurableVerifyCode() {
 	 * @default false
 	 */
 	const isImageCaptchaEnabled: ComputedRef<boolean> = computed(() => {
-		return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
+		return getConfig()?.CaptchaConfig?.isImageCaptchaEnabled ?? false;
 	});
 
 	/**
@@ -23,7 +23,7 @@ export function useConfigurableVerifyCode() {
 	 * @default true
 	 */
 	const isSmsCaptchaEnabled: ComputedRef<boolean> = computed(() => {
-		return getConfig()?.CaptchaConfig?.enableSmsCaptcha ?? true;
+		return getConfig()?.CaptchaConfig?.isSmsCaptchaEnabled ?? true;
 	});
 
 	/**
@@ -33,8 +33,8 @@ export function useConfigurableVerifyCode() {
 	const captchaConfig = computed(() => {
 		return (
 			getConfig()?.CaptchaConfig ?? {
-				enableImageCaptcha: false,
-				enableSmsCaptcha: true,
+				isImageCaptchaEnabled: false,
+				isSmsCaptchaEnabled: true,
 			}
 		);
 	});

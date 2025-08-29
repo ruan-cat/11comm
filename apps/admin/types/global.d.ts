@@ -122,9 +122,9 @@ declare global {
 		/** 验证码相关配置 */
 		CaptchaConfig?: {
 			/** 是否启用图片验证码，默认false */
-			enableImageCaptcha?: boolean;
+			isImageCaptchaEnabled?: boolean;
 			/** 是否启用短信验证码，默认true */
-			enableSmsCaptcha?: boolean;
+			isSmsCaptchaEnabled?: boolean;
 		};
 	}
 
@@ -165,9 +165,9 @@ declare global {
 		/** 验证码相关配置（驼峰命名用于本地存储） */
 		captchaConfig?: {
 			/** 是否启用图片验证码，默认false */
-			enableImageCaptcha?: boolean;
+			isImageCaptchaEnabled?: boolean;
 			/** 是否启用短信验证码，默认true */
-			enableSmsCaptcha?: boolean;
+			isSmsCaptchaEnabled?: boolean;
 		};
 		username?: string;
 	}

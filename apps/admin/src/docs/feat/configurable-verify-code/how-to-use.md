@@ -17,22 +17,22 @@
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false, // 是否启用图片验证码，默认false
-		"enableSmsCaptcha": true // 是否启用短信验证码，默认true
+		"isImageCaptchaEnabled": false, // 是否启用图片验证码，默认false
+		"isSmsCaptchaEnabled": true // 是否启用短信验证码，默认true
 	}
 }
 ```
 
 ### 配置项详细说明
 
-| 配置项               | 类型    | 默认值 | 说明                                             |
-| -------------------- | ------- | ------ | ------------------------------------------------ |
-| `enableImageCaptcha` | boolean | false  | 控制登录页面是否显示图片验证码输入框和验证逻辑   |
-| `enableSmsCaptcha`   | boolean | true   | 控制手机登录和忘记密码页面是否显示短信验证码功能 |
+| 配置项                  | 类型    | 默认值 | 说明                                             |
+| ----------------------- | ------- | ------ | ------------------------------------------------ |
+| `isImageCaptchaEnabled` | boolean | false  | 控制登录页面是否显示图片验证码输入框和验证逻辑   |
+| `isSmsCaptchaEnabled`   | boolean | true   | 控制手机登录和忘记密码页面是否显示短信验证码功能 |
 
 ## 功能影响范围
 
-### 图片验证码配置 (`enableImageCaptcha`)
+### 图片验证码配置 (`isImageCaptchaEnabled`)
 
 **影响页面：**
 
@@ -50,7 +50,7 @@
   - 强制验证验证码输入
   - 登录接口发送验证码和 UUID 参数
 
-### 短信验证码配置 (`enableSmsCaptcha`)
+### 短信验证码配置 (`isSmsCaptchaEnabled`)
 
 **影响页面：**
 
@@ -76,8 +76,8 @@
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": false
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": false
 	}
 }
 ```
@@ -89,8 +89,8 @@
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": true,
-		"enableSmsCaptcha": false
+		"isImageCaptchaEnabled": true,
+		"isSmsCaptchaEnabled": false
 	}
 }
 ```
@@ -102,8 +102,8 @@
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": true
 	}
 }
 ```
@@ -115,8 +115,8 @@
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": true,
-		"enableSmsCaptcha": true
+		"isImageCaptchaEnabled": true,
+		"isSmsCaptchaEnabled": true
 	}
 }
 ```
@@ -126,8 +126,8 @@
 1. **配置生效时间**：修改配置后需要重新加载页面才能生效。
 
 2. **默认值处理**：如果配置文件中没有 `CaptchaConfig` 配置项，系统将使用默认值：
-   - `enableImageCaptcha`: false
-   - `enableSmsCaptcha`: true
+   - `isImageCaptchaEnabled`: false
+   - `isSmsCaptchaEnabled`: true
 
 3. **后端接口适配**：
    - 图片验证码关闭时，登录接口不会发送 `code` 和 `uuid` 参数
