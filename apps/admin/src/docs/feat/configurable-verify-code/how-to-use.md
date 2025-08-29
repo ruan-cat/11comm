@@ -1,4 +1,4 @@
-# 可配置验证码功能使用指南
+# 使用指南
 
 ## 功能概述
 
@@ -192,4 +192,3 @@ const loginData = buildLoginParams(
 更多技术细节请参考：
 
 - [组合式 API 技术文档](/src/composables/use-configurable-verify-code/index.md)
-- [改造方案文档](/src/composables/use-configurable-verify-code/README.md)

@@ -1,4 +1,4 @@
-# useConfigurableVerifyCode
+# 可配置的验证码
 
 基于 Vue 3 Composition API 的验证码配置管理组合式函数。
 
