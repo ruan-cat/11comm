@@ -119,6 +119,10 @@ declare global {
 				zoom?: number;
 			};
 		};
+		CaptchaConfig?: {
+			enableImageCaptcha?: boolean;
+			enableSmsCaptcha?: boolean;
+		};
 	}
 
 	/**
@@ -154,6 +158,10 @@ declare global {
 				center?: number[];
 				zoom?: number;
 			};
+		};
+		captchaConfig?: {
+			enableImageCaptcha?: boolean;
+			enableSmsCaptcha?: boolean;
 		};
 		username?: string;
 	}

@@ -12,6 +12,7 @@ import type { FormInstance } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { operates, thirdParty } from "./utils/enums";
 import { useLayout } from "@/layout/hooks/useLayout";
+import { useGlobal } from "@pureadmin/utils";
 import LoginPhone from "./components/LoginPhone.vue";
 import LoginRegist from "./components/LoginRegist.vue";
 import LoginUpdate from "./components/LoginUpdate.vue";
@@ -67,6 +68,11 @@ dataThemeChange(overallStyle.value);
 const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
+// 获取全局配置
+const { $config } = useGlobal<GlobalPropertiesApi>();
+// 验证码配置
+const enableImageCaptcha = computed(() => $config?.CaptchaConfig?.enableImageCaptcha ?? false);
+
 const ruleForm = reactive({
 	// 业务变更 框架原版的密码规则是 admin admin123
 	// username: "admin",
@@ -85,15 +91,17 @@ async function onLogin(formEl: FormInstance | undefined) {
 	if (!formEl) return;
 	await formEl.validate(async (valid) => {
 		if (valid) {
-			// 检查验证码
-			if (!captchaInfo.value?.uuid) {
-				message("请获取验证码", { type: "warning" });
-				return;
-			}
+			// 检查验证码（仅在启用图片验证码时）
+			if (enableImageCaptcha.value) {
+				if (!captchaInfo.value?.uuid) {
+					message("请获取验证码", { type: "warning" });
+					return;
+				}
 
-			if (!ruleForm.verifyCode.trim()) {
-				message("请输入验证码", { type: "warning" });
-				return;
+				if (!ruleForm.verifyCode.trim()) {
+					message("请输入验证码", { type: "warning" });
+					return;
+				}
 			}
 
 			/** 框架自带的登录逻辑 */
@@ -128,8 +136,10 @@ async function onLogin(formEl: FormInstance | undefined) {
 				const loginData = {
 					username: ruleForm.username,
 					password: ruleForm.password,
-					verifyCode: ruleForm.verifyCode,
-					uuid: captchaInfo.value?.uuid,
+					...(enableImageCaptcha.value && {
+						verifyCode: ruleForm.verifyCode,
+						uuid: captchaInfo.value?.uuid,
+					}),
 				};
 
 				console.log("登录数据:", loginData);
@@ -159,13 +169,19 @@ async function onLogin(formEl: FormInstance | undefined) {
 				 * 执行真实的登录请求
 				 * 携带验证码 和uuid
 				 */
+				const loginParams: any = {
+					username: ruleForm.username,
+					password: ruleForm.password,
+				};
+
+				// 仅在启用图片验证码时添加验证码参数
+				if (enableImageCaptcha.value) {
+					loginParams.code = ruleForm.verifyCode;
+					loginParams.uuid = captchaInfo.value?.uuid;
+				}
+
 				await useUserStoreHook()
-					.loginByUsername({
-						username: ruleForm.username,
-						password: ruleForm.password,
-						code: ruleForm.verifyCode,
-						uuid: captchaInfo.value?.uuid,
-					})
+					.loginByUsername(loginParams)
 					.then(() => {
 						// TODO: 对接获取菜单的接口 并存储菜单
 						// TODO: 模拟设置用户角色
@@ -333,7 +349,7 @@ onMounted(async () => {});
 							</el-form-item>
 						</Motion>
 
-						<Motion :delay="200">
+						<Motion v-if="enableImageCaptcha" :delay="200">
 							<el-form-item prop="verifyCode">
 								<el-input
 									v-model="ruleForm.verifyCode"

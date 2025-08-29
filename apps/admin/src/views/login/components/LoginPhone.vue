@@ -9,6 +9,8 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { useVerifyCode } from "../utils/verifyCode";
 import { useUserStoreHook } from "@/store/modules/user";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { useGlobal } from "@pureadmin/utils";
+import { computed } from "vue";
 import Iphone from "~icons/ep/iphone";
 import Keyhole from "~icons/ri/shield-keyhole-line";
 
@@ -20,6 +22,11 @@ const ruleForm = reactive({
 });
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
+
+// 获取全局配置
+const { $config } = useGlobal<GlobalPropertiesApi>();
+// 短信验证码配置
+const enableSmsCaptcha = computed(() => $config?.CaptchaConfig?.enableSmsCaptcha ?? true);
 
 const onLogin = async (formEl: FormInstance | undefined) => {
 	loading.value = true;
@@ -58,7 +65,7 @@ function onBack() {
 			</el-form-item>
 		</Motion>
 
-		<Motion :delay="100">
+		<Motion v-if="enableSmsCaptcha" :delay="100">
 			<el-form-item prop="verifyCode">
 				<div class="w-full flex justify-between">
 					<el-input

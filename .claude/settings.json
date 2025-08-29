@@ -1,15 +1,3 @@
 {
-	"hooks": {
-		"PostToolUse": [
-			{
-				"matcher": "Edit|Write|MultiEdit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm prettier --config prettier.config.js --write ."
-					}
-				]
-			}
-		]
-	}
+	"hooks": {}
 }
