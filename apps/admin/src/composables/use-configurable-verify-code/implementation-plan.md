@@ -89,47 +89,11 @@ interface StorageConfigs {
 
 **文件**：`src/composables/use-configurable-verify-code/index.ts`
 
-```typescript
-import { computed, type ComputedRef } from "vue";
-import { getConfig } from "@/config";
+::: details 创建组合式 API
 
-export function useConfigurableVerifyCode() {
-	const isImageCaptchaEnabled: ComputedRef<boolean> = computed(() => {
-		return getConfig()?.CaptchaConfig?.isImageCaptchaEnabled ?? false;
-	});
+<<< ./index.ts
 
-	const isSmsCaptchaEnabled: ComputedRef<boolean> = computed(() => {
-		return getConfig()?.CaptchaConfig?.isSmsCaptchaEnabled ?? true;
-	});
-
-	const isVerificationRequired = computed(() => {
-		return isImageCaptchaEnabled.value || isSmsCaptchaEnabled.value;
-	});
-
-	function buildLoginParams(baseParams, captchaData) {
-		const params = { ...baseParams };
-
-		if (isImageCaptchaEnabled.value && captchaData?.verifyCode) {
-			params.code = captchaData.verifyCode;
-			params.uuid = captchaData.uuid;
-		}
-
-		if (isSmsCaptchaEnabled.value && captchaData?.smsCode) {
-			params.smsCode = captchaData.smsCode;
-			params.phone = captchaData.phone;
-		}
-
-		return params;
-	}
-
-	return {
-		isImageCaptchaEnabled,
-		isSmsCaptchaEnabled,
-		isVerificationRequired,
-		buildLoginParams,
-	};
-}
-```
+:::
 
 ### 4. 组件重构
 
