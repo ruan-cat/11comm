@@ -26,7 +26,7 @@ const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
 
 // 短信验证码配置
-const { enableSmsCaptcha } = useConfigurableVerifyCode();
+const { isSmsCaptchaEnabled } = useConfigurableVerifyCode();
 const repeatPasswordRule = [
 	{
 		validator: (rule, value, callback) => {
@@ -79,7 +79,7 @@ function onBack() {
 			</el-form-item>
 		</Motion>
 
-		<Motion v-if="enableSmsCaptcha" :delay="100">
+		<Motion v-if="isSmsCaptchaEnabled" :delay="100">
 			<el-form-item prop="verifyCode">
 				<div class="w-full flex justify-between">
 					<el-input

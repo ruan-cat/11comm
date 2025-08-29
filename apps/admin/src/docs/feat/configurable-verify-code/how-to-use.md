@@ -148,11 +148,11 @@ import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify
 
 export default {
 	setup() {
-		const { enableImageCaptcha, enableSmsCaptcha, buildLoginParams } = useConfigurableVerifyCode();
+		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 		return {
-			enableImageCaptcha,
-			enableSmsCaptcha,
+			isImageCaptchaEnabled,
+			isSmsCaptchaEnabled,
 			buildLoginParams,
 		};
 	},
@@ -166,7 +166,7 @@ export default {
 const loginData = {
 	username: form.username,
 	password: form.password,
-	...(enableImageCaptcha.value && {
+	...(isImageCaptchaEnabled.value && {
 		verifyCode: form.verifyCode,
 		uuid: captchaInfo.value?.uuid,
 	}),

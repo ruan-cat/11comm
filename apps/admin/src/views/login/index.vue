@@ -69,7 +69,7 @@ const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
 // 验证码配置
-const { enableImageCaptcha, buildLoginParams } = useConfigurableVerifyCode();
+const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 const ruleForm = reactive({
 	// 业务变更 框架原版的密码规则是 admin admin123
@@ -90,7 +90,7 @@ async function onLogin(formEl: FormInstance | undefined) {
 	await formEl.validate(async (valid) => {
 		if (valid) {
 			// 检查验证码（仅在启用图片验证码时）
-			if (enableImageCaptcha.value) {
+			if (isImageCaptchaEnabled.value) {
 				if (!captchaInfo.value?.uuid) {
 					message("请获取验证码", { type: "warning" });
 					return;
@@ -349,7 +349,7 @@ onMounted(async () => {});
 							</el-form-item>
 						</Motion>
 
-						<Motion v-if="enableImageCaptcha" :delay="200">
+						<Motion v-if="isImageCaptchaEnabled" :delay="200">
 							<el-form-item prop="verifyCode">
 								<el-input
 									v-model="ruleForm.verifyCode"

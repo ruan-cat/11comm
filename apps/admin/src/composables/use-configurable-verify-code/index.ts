@@ -13,7 +13,7 @@ export function useConfigurableVerifyCode() {
 	 * @description 控制登录页面图片验证码的显示和验证逻辑
 	 * @default false
 	 */
-	const enableImageCaptcha: ComputedRef<boolean> = computed(() => {
+	const isImageCaptchaEnabled: ComputedRef<boolean> = computed(() => {
 		return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
 	});
 
@@ -22,7 +22,7 @@ export function useConfigurableVerifyCode() {
 	 * @description 控制手机登录和忘记密码页面短信验证码功能
 	 * @default true
 	 */
-	const enableSmsCaptcha: ComputedRef<boolean> = computed(() => {
+	const isSmsCaptchaEnabled: ComputedRef<boolean> = computed(() => {
 		return getConfig()?.CaptchaConfig?.enableSmsCaptcha ?? true;
 	});
 
@@ -43,8 +43,8 @@ export function useConfigurableVerifyCode() {
 	 * 检查是否需要验证码
 	 * @description 判断当前是否启用了任何类型的验证码
 	 */
-	const needsVerification = computed(() => {
-		return enableImageCaptcha.value || enableSmsCaptcha.value;
+	const isVerificationRequired = computed(() => {
+		return isImageCaptchaEnabled.value || isSmsCaptchaEnabled.value;
 	});
 
 	/**
@@ -65,13 +65,13 @@ export function useConfigurableVerifyCode() {
 		const params: any = { ...baseParams };
 
 		// 图片验证码参数
-		if (enableImageCaptcha.value && captchaData?.verifyCode && captchaData?.uuid) {
+		if (isImageCaptchaEnabled.value && captchaData?.verifyCode && captchaData?.uuid) {
 			params.code = captchaData.verifyCode;
 			params.uuid = captchaData.uuid;
 		}
 
 		// 短信验证码参数
-		if (enableSmsCaptcha.value && captchaData?.smsCode) {
+		if (isSmsCaptchaEnabled.value && captchaData?.smsCode) {
 			params.smsCode = captchaData.smsCode;
 			if (captchaData.phone) {
 				params.phone = captchaData.phone;
@@ -83,13 +83,13 @@ export function useConfigurableVerifyCode() {
 
 	return {
 		/** 是否启用图片验证码 */
-		enableImageCaptcha,
+		isImageCaptchaEnabled,
 		/** 是否启用短信验证码 */
-		enableSmsCaptcha,
+		isSmsCaptchaEnabled,
 		/** 完整的验证码配置 */
 		captchaConfig,
 		/** 是否需要验证码 */
-		needsVerification,
+		isVerificationRequired,
 		/** 构建登录参数 */
 		buildLoginParams,
 	};

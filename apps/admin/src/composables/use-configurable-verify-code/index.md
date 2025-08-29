@@ -13,14 +13,11 @@ import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify
 
 export default {
 	setup() {
-		const { enableImageCaptcha, enableSmsCaptcha, captchaConfig, needsVerification, buildLoginParams } =
-			useConfigurableVerifyCode();
+		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 		return {
-			enableImageCaptcha,
-			enableSmsCaptcha,
-			captchaConfig,
-			needsVerification,
+			isImageCaptchaEnabled,
+			isSmsCaptchaEnabled,
 			buildLoginParams,
 		};
 	},
@@ -31,30 +28,28 @@ export default {
 
 ### 返回值
 
-#### enableImageCaptcha
+#### isImageCaptchaEnabled
 
 - **类型**: `ComputedRef<boolean>`
 - **默认值**: `false`
 - **描述**: 是否启用图片验证码
 - **用途**: 用于控制登录页面图片验证码的显示和验证逻辑
 
-```typescript
-// 在模板中使用
-<el-form-item v-if="enableImageCaptcha" prop="verifyCode">
+```vue
+<el-form-item v-if="isImageCaptchaEnabled" prop="verifyCode">
   <!-- 验证码输入框 -->
 </el-form-item>
 ```
 
-#### enableSmsCaptcha
+#### isSmsCaptchaEnabled
 
 - **类型**: `ComputedRef<boolean>`
 - **默认值**: `true`
 - **描述**: 是否启用短信验证码
 - **用途**: 用于控制手机登录和忘记密码页面的短信验证码功能
 
-```typescript
-// 在模板中使用
-<el-form-item v-if="enableSmsCaptcha" prop="smsCode">
+```vue
+<el-form-item v-if="isSmsCaptchaEnabled" prop="smsCode">
   <!-- 短信验证码输入框 -->
 </el-form-item>
 ```
@@ -72,15 +67,14 @@ interface CaptchaConfig {
 }
 ```
 
-#### needsVerification
+#### isVerificationRequired
 
 - **类型**: `ComputedRef<boolean>`
 - **描述**: 是否需要任何类型的验证码
 - **用途**: 判断当前是否启用了任何验证码功能
 
 ```typescript
-// 根据是否需要验证码来决定提交逻辑
-if (needsVerification.value) {
+if (isVerificationRequired.value) {
 	// 需要验证码的提交逻辑
 } else {
 	// 不需要验证码的快速提交
@@ -140,7 +134,7 @@ const loginParams = buildLoginParams(
 		</el-form-item>
 
 		<!-- 图片验证码 - 根据配置显示 -->
-		<el-form-item v-if="enableImageCaptcha" prop="verifyCode">
+		<el-form-item v-if="isImageCaptchaEnabled" prop="verifyCode">
 			<el-input v-model="form.verifyCode" placeholder="验证码">
 				<template #append>
 					<CaptchaImage @loaded="handleCaptchaLoaded" />
@@ -156,7 +150,7 @@ const loginParams = buildLoginParams(
 import { reactive, ref } from "vue";
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
-const { enableImageCaptcha, buildLoginParams } = useConfigurableVerifyCode();
+const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 const form = reactive({
 	username: "",
@@ -208,7 +202,7 @@ const handleLogin = async () => {
 		</el-form-item>
 
 		<!-- 短信验证码 - 根据配置显示 -->
-		<el-form-item v-if="enableSmsCaptcha" prop="smsCode">
+		<el-form-item v-if="isSmsCaptchaEnabled" prop="smsCode">
 			<el-input v-model="phoneForm.smsCode" placeholder="短信验证码">
 				<template #append>
 					<el-button @click="sendSmsCode">获取验证码</el-button>
@@ -224,7 +218,7 @@ const handleLogin = async () => {
 import { reactive } from "vue";
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
-const { enableSmsCaptcha, buildLoginParams } = useConfigurableVerifyCode();
+const { isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 const phoneForm = reactive({
 	phone: "",
@@ -269,7 +263,7 @@ const handlePhoneLogin = async () => {
 
 ```typescript
 // 配置变化时自动更新
-watch(enableImageCaptcha, (newValue) => {
+watch(isImageCaptchaEnabled, (newValue) => {
 	console.log("图片验证码配置变更为:", newValue);
 });
 
@@ -306,7 +300,7 @@ watch(
 
 ```typescript
 // 示例：添加语音验证码支持
-const enableVoiceCaptcha = computed(() => {
+const isVoiceCaptchaEnabled = computed(() => {
 	return getConfig()?.CaptchaConfig?.enableVoiceCaptcha ?? false;
 });
 ```

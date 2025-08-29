@@ -1,17 +1,17 @@
 {
-  "currentState": "initialized",
-  "stateHistory": [
-    {
-      "from": "initial",
-      "command": "init",
-      "timestamp": "2025-08-29T14:38:58.808Z",
-      "args": [
-        {
-          "workingDirectory": "D:\\code\\github-desktop-store\\01s-11comm",
-          "ideType": "claude"
-        }
-      ]
-    }
-  ],
-  "lastUpdated": "2025-08-29T14:38:58.831Z"
+	"currentState": "initialized",
+	"stateHistory": [
+		{
+			"from": "initial",
+			"command": "init",
+			"timestamp": "2025-08-29T14:38:58.808Z",
+			"args": [
+				{
+					"workingDirectory": "D:\\code\\github-desktop-store\\01s-11comm",
+					"ideType": "claude"
+				}
+			]
+		}
+	],
+	"lastUpdated": "2025-08-29T14:38:58.831Z"
 }

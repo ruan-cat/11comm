@@ -1,8 +1,12 @@
-# useConfigurableVerifyCode 改造方案
+# 可配置验证码功能实现方案
+
+## 功能概述
+
+本功能实现了通过项目级别配置来控制验证码功能的开启与关闭，支持图片验证码和短信验证码的独立配置。采用组合式 API `useConfigurableVerifyCode` 实现，提供更好的代码复用性和维护性。
 
 ## 改造背景
 
-原先的验证码实现直接使用 `useGlobal` 从全局配置中读取验证码配置，这种方式存在以下问题：
+原先的验证码实现直接使用 `useGlobal` 从全局配置中读取验证码配置，存在以下问题：
 
 1. **配置读取方式不统一** - 项目中其他地方都使用 `getConfig()` 函数读取配置
 2. **代码重复** - 多个页面都需要重复相同的配置读取逻辑
@@ -15,63 +19,123 @@
 2. **封装组合式 API** - 将验证码配置逻辑封装为可复用的组合式函数
 3. **简化组件代码** - 减少组件中的配置处理逻辑
 4. **提升扩展性** - 便于后续添加新的验证码类型
+5. **向后兼容性** - 确保现有功能不受影响
 
-## 技术选型
+## 技术架构
 
-### 组合式 API vs Options API
+### 配置层级结构
 
-选择组合式 API 的理由：
+```plain
+平台配置 (platform-config.json)
+    ↓
+类型定义 (global.d.ts)
+    ↓
+全局配置服务 (config/index.ts)
+    ↓
+组合式API (useConfigurableVerifyCode)
+    ↓
+组件响应式配置 (computed properties)
+    ↓
+条件渲染和逻辑控制 (v-if, 动态参数)
+```
 
-- 更好的逻辑复用性
-- 更清晰的类型推导
-- 更好的 Tree-shaking 支持
-- 符合 Vue 3 最佳实践
+## 详细实现方案
 
-### getConfig vs useGlobal
+### 1. 配置文件设置
 
-选择 `getConfig()` 的理由：
+**文件**：`apps/admin/public/platform-config.json`
 
-- 与项目现有配置管理体系保持一致
-- 减少对 `@pureadmin/utils` 的依赖
-- 更轻量的实现方式
-- 更好的性能表现
+```json
+{
+	"CaptchaConfig": {
+		"enableImageCaptcha": false,
+		"enableSmsCaptcha": true
+	}
+}
+```
 
-## 实现方案
+**设计说明**：
 
-### 1. 创建组合式 API
+- 使用嵌套对象 `CaptchaConfig` 组织验证码相关配置
+- 默认值：图片验证码关闭，短信验证码开启
 
-在 `src/composables/use-configurable-verify-code/index.ts` 创建组合式函数：
+### 2. 类型定义
+
+**文件**：`apps/admin/types/global.d.ts`
+
+```typescript
+interface PlatformConfigs {
+	/** 验证码相关配置 */
+	CaptchaConfig?: {
+		/** 是否启用图片验证码，默认false */
+		enableImageCaptcha?: boolean;
+		/** 是否启用短信验证码，默认true */
+		enableSmsCaptcha?: boolean;
+	};
+}
+
+interface StorageConfigs {
+	/** 验证码相关配置（驼峰命名用于本地存储） */
+	captchaConfig?: {
+		/** 是否启用图片验证码，默认false */
+		enableImageCaptcha?: boolean;
+		/** 是否启用短信验证码，默认true */
+		enableSmsCaptcha?: boolean;
+	};
+}
+```
+
+### 3. 创建组合式 API
+
+**文件**：`src/composables/use-configurable-verify-code/index.ts`
 
 ```typescript
 import { computed, type ComputedRef } from "vue";
 import { getConfig } from "@/config";
 
 export function useConfigurableVerifyCode() {
-	// 响应式配置
-	const enableImageCaptcha: ComputedRef<boolean> = computed(() => {
+	const isImageCaptchaEnabled: ComputedRef<boolean> = computed(() => {
 		return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
 	});
 
-	const enableSmsCaptcha: ComputedRef<boolean> = computed(() => {
+	const isSmsCaptchaEnabled: ComputedRef<boolean> = computed(() => {
 		return getConfig()?.CaptchaConfig?.enableSmsCaptcha ?? true;
 	});
 
-	// 工具函数
+	const isVerificationRequired = computed(() => {
+		return isImageCaptchaEnabled.value || isSmsCaptchaEnabled.value;
+	});
+
 	function buildLoginParams(baseParams, captchaData) {
-		// 根据配置自动构建参数
+		const params = { ...baseParams };
+
+		if (isImageCaptchaEnabled.value && captchaData?.verifyCode) {
+			params.code = captchaData.verifyCode;
+			params.uuid = captchaData.uuid;
+		}
+
+		if (isSmsCaptchaEnabled.value && captchaData?.smsCode) {
+			params.smsCode = captchaData.smsCode;
+			params.phone = captchaData.phone;
+		}
+
+		return params;
 	}
 
 	return {
-		enableImageCaptcha,
-		enableSmsCaptcha,
+		isImageCaptchaEnabled,
+		isSmsCaptchaEnabled,
+		isVerificationRequired,
 		buildLoginParams,
 	};
 }
 ```
 
-### 2. 重构组件代码
+### 4. 组件重构
 
-#### 改造前（登录页面）
+#### 改造前后对比
+
+**改造前（登录页面）**：
 
 ```typescript
 // 直接使用 useGlobal
@@ -91,28 +155,40 @@ const loginData = {
 };
 ```
 
-#### 改造后（登录页面）
+**改造后（登录页面）**：
 
 ```typescript
 // 使用组合式 API
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
-const { enableImageCaptcha, buildLoginParams } = useConfigurableVerifyCode();
+const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 // 自动构建登录参数
 const loginData = buildLoginParams(
-	{
-		username: ruleForm.username,
-		password: ruleForm.password,
-	},
-	{
-		verifyCode: ruleForm.verifyCode,
-		uuid: captchaInfo.value?.uuid,
-	},
+	{ username: ruleForm.username, password: ruleForm.password },
+	{ verifyCode: ruleForm.verifyCode, uuid: captchaInfo.value?.uuid },
 );
 ```
 
-### 3. 改造效果对比
+#### 模板条件渲染
+
+```vue
+<!-- 图片验证码 -->
+<Motion v-if="isImageCaptchaEnabled" :delay="200">
+  <el-form-item prop="verifyCode">
+    <!-- 验证码输入框 -->
+  </el-form-item>
+</Motion>
+
+<!-- 短信验证码 -->
+<Motion v-if="isSmsCaptchaEnabled" :delay="100">
+  <el-form-item prop="verifyCode">
+    <!-- 短信验证码输入框 -->
+  </el-form-item>
+</Motion>
+```
+
+## 改造效果对比
 
 | 改造项   | 改造前                | 改造后           |
 | -------- | --------------------- | ---------------- |
@@ -121,208 +197,167 @@ const loginData = buildLoginParams(
 | 重复代码 | 3 个页面重复相同逻辑  | 无重复，统一调用 |
 | 参数构建 | 手动扩展运算符        | 自动构建函数     |
 | 类型安全 | 部分类型安全          | 完全类型安全     |
+| 变量命名 | enableXXX             | isXXXEnabled     |
 
-## 优化亮点
+## 技术实现细节
 
-### 1. 配置读取优化
+### 1. 配置读取机制
+
+使用项目统一的 `getConfig()` 函数而非 `useGlobal`：
 
 ```typescript
-// 改造前：依赖外部全局状态
-const { $config } = useGlobal<GlobalPropertiesApi>();
-const enableImageCaptcha = computed(() => $config?.CaptchaConfig?.enableImageCaptcha ?? false);
-
-// 改造后：直接读取配置
-const enableImageCaptcha = computed(() => {
+const isImageCaptchaEnabled = computed(() => {
 	return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
 });
 ```
 
-### 2. 参数构建优化
+**优势**：
 
-```typescript
-// 改造前：手动条件判断
-const loginParams: any = {
-	username: ruleForm.username,
-	password: ruleForm.password,
-};
+- 与项目现有配置管理体系保持一致
+- 减少对外部依赖的耦合
+- 提供默认值兜底机制
 
-if (enableImageCaptcha.value) {
-	loginParams.code = ruleForm.verifyCode;
-	loginParams.uuid = captchaInfo.value?.uuid;
-}
+### 2. 条件渲染策略
 
-// 改造后：自动构建
-const loginParams = buildLoginParams(
-	{ username: ruleForm.username, password: ruleForm.password },
-	{ verifyCode: ruleForm.verifyCode, uuid: captchaInfo.value?.uuid },
-);
+使用 `v-if` 实现完全的条件控制：
+
+```vue
+<Motion v-if="isImageCaptchaEnabled" :delay="200">
+  <!-- 验证码相关组件 -->
+</Motion>
 ```
 
-### 3. 组件代码简化
+**设计考虑**：
 
-```typescript
-// 改造前：每个组件都需要配置相关代码
-import { useGlobal } from "@pureadmin/utils";
-import { computed } from "vue";
+- 配置关闭时完全移除 DOM 节点
+- 保留原有的 Motion 动画效果
+- 不影响其他表单项的延迟时间
 
-const { $config } = useGlobal<GlobalPropertiesApi>();
-const enableSmsCaptcha = computed(() => $config?.CaptchaConfig?.enableSmsCaptcha ?? true);
+### 3. 自动参数构建
 
-// 改造后：一行搞定
-const { enableSmsCaptcha } = useConfigurableVerifyCode();
-```
-
-## 性能优化
-
-### 1. 计算属性缓存
-
-使用 `computed` 创建响应式配置，自动缓存计算结果：
-
-```typescript
-const enableImageCaptcha = computed(() => {
-	return getConfig()?.CaptchaConfig?.enableImageCaptcha ?? false;
-});
-```
-
-### 2. 按需导入
-
-组合式 API 支持按需导入，只使用需要的功能：
-
-```typescript
-// 只导入需要的功能
-const { enableImageCaptcha } = useConfigurableVerifyCode();
-```
-
-### 3. 函数式设计
-
-`buildLoginParams` 采用纯函数设计，无副作用，便于优化：
+`buildLoginParams` 函数根据配置自动构建请求参数：
 
 ```typescript
 function buildLoginParams(baseParams, captchaData) {
-	const params = { ...baseParams }; // 浅拷贝，性能最优
-
-	// 条件添加参数，避免不必要的属性
-	if (enableImageCaptcha.value && captchaData?.verifyCode) {
-		params.code = captchaData.verifyCode;
-		params.uuid = captchaData.uuid;
-	}
-
+	const params = { ...baseParams };
+	// 根据配置条件添加验证码参数
 	return params;
+}
+```
+
+**优势**：
+
+- 代码简洁，逻辑清晰
+- 避免不必要的参数传递
+- 统一的参数构建逻辑
+
+## 配置场景示例
+
+### 开发环境（关闭所有验证码）
+
+```json
+{
+	"CaptchaConfig": {
+		"enableImageCaptcha": false,
+		"enableSmsCaptcha": false
+	}
+}
+```
+
+### 生产环境（启用所有验证码）
+
+```json
+{
+	"CaptchaConfig": {
+		"enableImageCaptcha": true,
+		"enableSmsCaptcha": true
+	}
+}
+```
+
+### 默认配置（仅短信验证码）
+
+```json
+{
+	"CaptchaConfig": {
+		"enableImageCaptcha": false,
+		"enableSmsCaptcha": true
+	}
 }
 ```
 
 ## 扩展性设计
 
-### 1. 新增验证码类型
+### 添加新验证码类型
 
-添加新的验证码类型只需三步：
+只需三步即可添加新的验证码类型：
+
+1. **扩展类型定义**：
 
 ```typescript
-// 1. 在配置接口中添加
 interface CaptchaConfig {
 	enableImageCaptcha?: boolean;
 	enableSmsCaptcha?: boolean;
-	enableVoiceCaptcha?: boolean; // 新增语音验证码
+	enableVoiceCaptcha?: boolean; // 新增
 }
+```
 
-// 2. 在组合式函数中添加计算属性
-const enableVoiceCaptcha = computed(() => {
+2. **添加组合式函数属性**：
+
+```typescript
+const isVoiceCaptchaEnabled = computed(() => {
 	return getConfig()?.CaptchaConfig?.enableVoiceCaptcha ?? false;
 });
+```
 
-// 3. 在参数构建函数中添加处理逻辑
-if (enableVoiceCaptcha.value && captchaData?.voiceCode) {
+3. **更新参数构建逻辑**：
+
+```typescript
+if (isVoiceCaptchaEnabled.value && captchaData?.voiceCode) {
 	params.voiceCode = captchaData.voiceCode;
 }
 ```
 
-### 2. 配置项扩展
+## 性能优化
 
-支持更复杂的配置结构：
+1. **计算属性缓存** - 使用 `computed` 自动缓存计算结果
+2. **按需导入** - 只导入需要的功能
+3. **函数式设计** - `buildLoginParams` 采用纯函数设计
+4. **条件渲染** - 使用 `v-if` 避免不必要的组件初始化
 
-```typescript
-const captchaConfig = computed(() => {
-	return (
-		getConfig()?.CaptchaConfig ?? {
-			enableImageCaptcha: false,
-			enableSmsCaptcha: true,
-			imageConfig: {
-				timeout: 300,
-				refreshInterval: 60,
-			},
-			smsConfig: {
-				timeout: 300,
-				resendInterval: 60,
-			},
-		}
-	);
-});
-```
+## 测试验证
 
-## 测试策略
+### 功能测试场景
 
-### 1. 单元测试
+| 场景     | isImageCaptchaEnabled | isSmsCaptchaEnabled | 预期结果                                 |
+| -------- | --------------------- | ------------------- | ---------------------------------------- |
+| 默认配置 | false                 | true                | 登录页无图片验证码，手机登录有短信验证码 |
+| 全关闭   | false                 | false               | 所有验证码功能都关闭                     |
+| 全开启   | true                  | true                | 所有验证码功能都开启                     |
+| 仅图片   | true                  | false               | 仅登录页显示图片验证码                   |
 
-```typescript
-import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
-import { getConfig } from "@/config";
+### 兼容性测试
 
-jest.mock("@/config");
+1. **向后兼容** - 在没有新配置的情况下使用默认值
+2. **异常处理** - 配置文件格式错误时降级到默认行为
+3. **类型检查** - 确保 TypeScript 编译无错误
 
-describe("useConfigurableVerifyCode", () => {
-	it("should return correct default values", () => {
-		(getConfig as jest.Mock).mockReturnValue({});
+## 风险评估
 
-		const { enableImageCaptcha, enableSmsCaptcha } = useConfigurableVerifyCode();
-
-		expect(enableImageCaptcha.value).toBe(false);
-		expect(enableSmsCaptcha.value).toBe(true);
-	});
-});
-```
-
-### 2. 集成测试
-
-```typescript
-describe("Login with configurable captcha", () => {
-	it("should build correct params when image captcha enabled", () => {
-		// Mock config
-		mockConfig({ CaptchaConfig: { enableImageCaptcha: true } });
-
-		const { buildLoginParams } = useConfigurableVerifyCode();
-		const params = buildLoginParams({ username: "test", password: "123" }, { verifyCode: "1234", uuid: "abc" });
-
-		expect(params).toEqual({
-			username: "test",
-			password: "123",
-			code: "1234",
-			uuid: "abc",
-		});
-	});
-});
-```
-
-## 文档完善
-
-### 1. API 文档
-
-详细的 TypeScript 类型定义和使用示例。
-
-### 2. 使用指南
-
-面向开发者的使用指南，包含最佳实践。
-
-### 3. 迁移指南
-
-从旧版本迁移到新版本的步骤说明。
+| 风险项       | 风险等级 | 影响范围   | 应对措施           |
+| ------------ | -------- | ---------- | ------------------ |
+| 配置文件损坏 | 低       | 系统启动   | 默认值兜底机制     |
+| 类型定义错误 | 中       | 编译时错误 | 完善的类型测试     |
+| 逻辑分支遗漏 | 中       | 功能异常   | 全面的测试用例覆盖 |
 
 ## 总结
 
-通过这次改造，我们实现了：
+本次改造成功实现了验证码功能的可配置化，具有以下特点：
 
-1. **代码质量提升** - 更加统一和规范的配置读取方式
-2. **可维护性提升** - 集中管理验证码相关逻辑
-3. **开发效率提升** - 减少重复代码，简化组件开发
-4. **扩展性提升** - 便于后续功能扩展和维护
+1. **设计合理** - 采用项目级配置，支持独立开关控制
+2. **实现优雅** - 利用 Vue 3 组合式 API，代码简洁高效
+3. **兼容性好** - 向后兼容，不影响现有功能
+4. **维护性强** - 统一的配置管理，便于扩展
+5. **用户友好** - 默认配置减少操作负担，支持多种使用场景
 
-改造后的代码更加符合 Vue 3 的最佳实践，同时保持了与项目现有架构的一致性。
+该方案为系统提供了灵活的验证码控制能力，满足不同环境和安全级别的需求。
