@@ -9,8 +9,7 @@ import { useVerifyCode } from "../utils/verifyCode";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useUserStoreHook } from "@/store/modules/user";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { useGlobal } from "@pureadmin/utils";
-import { computed } from "vue";
+import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 import Lock from "~icons/ri/lock-fill";
 import Iphone from "~icons/ep/iphone";
 import Keyhole from "~icons/ri/shield-keyhole-line";
@@ -26,10 +25,8 @@ const ruleForm = reactive({
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
 
-// 获取全局配置
-const { $config } = useGlobal<GlobalPropertiesApi>();
 // 短信验证码配置
-const enableSmsCaptcha = computed(() => $config?.CaptchaConfig?.enableSmsCaptcha ?? true);
+const { enableSmsCaptcha } = useConfigurableVerifyCode();
 const repeatPasswordRule = [
 	{
 		validator: (rule, value, callback) => {

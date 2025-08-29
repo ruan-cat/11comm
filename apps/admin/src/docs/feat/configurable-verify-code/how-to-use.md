@@ -4,6 +4,8 @@
 
 本功能实现了通过项目级别配置来控制验证码功能的开启与关闭，支持图片验证码和短信验证码的独立配置。默认情况下不需要图片验证码，短信验证码功能默认开启。
 
+> **优化说明**：本功能已优化为使用组合式 API `useConfigurableVerifyCode` 实现，提供更好的代码复用性和维护性。
+
 ## 配置说明
 
 ### 配置文件位置
@@ -135,13 +137,59 @@
 
 5. **安全考虑**：在生产环境中建议至少启用一种验证码功能以提高安全性。
 
+## 开发者指南
+
+### 使用组合式 API
+
+在组件中使用验证码配置：
+
+```typescript
+import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
+
+export default {
+	setup() {
+		const { enableImageCaptcha, enableSmsCaptcha, buildLoginParams } = useConfigurableVerifyCode();
+
+		return {
+			enableImageCaptcha,
+			enableSmsCaptcha,
+			buildLoginParams,
+		};
+	},
+};
+```
+
+### 自动构建登录参数
+
+```typescript
+// 旧方式 - 手动构建参数
+const loginData = {
+	username: form.username,
+	password: form.password,
+	...(enableImageCaptcha.value && {
+		verifyCode: form.verifyCode,
+		uuid: captchaInfo.value?.uuid,
+	}),
+};
+
+// 新方式 - 自动构建参数
+const loginData = buildLoginParams(
+	{ username: form.username, password: form.password },
+	{ verifyCode: form.verifyCode, uuid: captchaInfo.value?.uuid },
+);
+```
+
 ## 技术实现细节
 
 本功能通过以下方式实现：
 
-1. **配置读取**：使用 `useGlobal<GlobalPropertiesApi>()` 获取全局配置
-2. **响应式控制**：使用 Vue 3 的 `computed` 创建响应式配置值
-3. **条件渲染**：使用 `v-if` 指令控制组件的显示与隐藏
-4. **动态参数**：根据配置动态构建登录请求参数
+1. **配置读取**：使用项目统一的 `getConfig()` 函数获取配置
+2. **组合式 API**：封装为 `useConfigurableVerifyCode` 组合式函数
+3. **响应式控制**：使用 Vue 3 的 `computed` 创建响应式配置值
+4. **条件渲染**：使用 `v-if` 指令控制组件的显示与隐藏
+5. **自动构建参数**：提供 `buildLoginParams` 函数自动构建登录参数
 
-更多技术细节请参考改造方案文档。
+更多技术细节请参考：
+
+- [组合式 API 技术文档](/src/composables/use-configurable-verify-code/index.md)
+- [改造方案文档](/src/composables/use-configurable-verify-code/README.md)

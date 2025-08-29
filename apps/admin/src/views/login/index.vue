@@ -12,7 +12,7 @@ import type { FormInstance } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { operates, thirdParty } from "./utils/enums";
 import { useLayout } from "@/layout/hooks/useLayout";
-import { useGlobal } from "@pureadmin/utils";
+import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 import LoginPhone from "./components/LoginPhone.vue";
 import LoginRegist from "./components/LoginRegist.vue";
 import LoginUpdate from "./components/LoginUpdate.vue";
@@ -68,10 +68,8 @@ dataThemeChange(overallStyle.value);
 const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
-// 获取全局配置
-const { $config } = useGlobal<GlobalPropertiesApi>();
 // 验证码配置
-const enableImageCaptcha = computed(() => $config?.CaptchaConfig?.enableImageCaptcha ?? false);
+const { enableImageCaptcha, buildLoginParams } = useConfigurableVerifyCode();
 
 const ruleForm = reactive({
 	// 业务变更 框架原版的密码规则是 admin admin123
@@ -133,14 +131,16 @@ async function onLogin(formEl: FormInstance | undefined) {
 			/** @see https://pure-admin.cn/pages/routerMenu/#如何只要静态路由 */
 			function newLogin() {
 				// 模拟登录请求，实际应该发送到后端
-				const loginData = {
-					username: ruleForm.username,
-					password: ruleForm.password,
-					...(enableImageCaptcha.value && {
+				const loginData = buildLoginParams(
+					{
+						username: ruleForm.username,
+						password: ruleForm.password,
+					},
+					{
 						verifyCode: ruleForm.verifyCode,
 						uuid: captchaInfo.value?.uuid,
-					}),
-				};
+					},
+				);
 
 				console.log("登录数据:", loginData);
 
@@ -169,16 +169,16 @@ async function onLogin(formEl: FormInstance | undefined) {
 				 * 执行真实的登录请求
 				 * 携带验证码 和uuid
 				 */
-				const loginParams: any = {
-					username: ruleForm.username,
-					password: ruleForm.password,
-				};
-
-				// 仅在启用图片验证码时添加验证码参数
-				if (enableImageCaptcha.value) {
-					loginParams.code = ruleForm.verifyCode;
-					loginParams.uuid = captchaInfo.value?.uuid;
-				}
+				const loginParams = buildLoginParams(
+					{
+						username: ruleForm.username,
+						password: ruleForm.password,
+					},
+					{
+						verifyCode: ruleForm.verifyCode,
+						uuid: captchaInfo.value?.uuid,
+					},
+				);
 
 				await useUserStoreHook()
 					.loginByUsername(loginParams)
