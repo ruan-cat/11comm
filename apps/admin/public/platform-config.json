@@ -34,7 +34,7 @@
 	},
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": true,
-		"isSystemCaptchaEnabled": true
+		"isSystemCaptchaEnabled": true,
+		"isSmsCaptchaEnabled": false
 	}
 }
