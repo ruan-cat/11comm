@@ -27,6 +27,15 @@ export function useConfigurableVerifyCode() {
 	});
 
 	/**
+	 * 是否启用系统自带的前端验证码
+	 * @description 控制是否使用框架自带的ReImageVerify组件
+	 * @default true
+	 */
+	const isSystemCaptchaEnabled: ComputedRef<boolean> = computed(() => {
+		return getConfig()?.CaptchaConfig?.isSystemCaptchaEnabled ?? true;
+	});
+
+	/**
 	 * 获取完整的验证码配置
 	 * @description 返回当前的验证码配置对象
 	 */
@@ -35,6 +44,7 @@ export function useConfigurableVerifyCode() {
 			getConfig()?.CaptchaConfig ?? {
 				isImageCaptchaEnabled: false,
 				isSmsCaptchaEnabled: true,
+				isSystemCaptchaEnabled: true,
 			}
 		);
 	});
@@ -86,6 +96,8 @@ export function useConfigurableVerifyCode() {
 		isImageCaptchaEnabled,
 		/** 是否启用短信验证码 */
 		isSmsCaptchaEnabled,
+		/** 是否启用系统自带的前端验证码 */
+		isSystemCaptchaEnabled,
 		/** 完整的验证码配置 */
 		captchaConfig,
 		/** 是否需要验证码 */

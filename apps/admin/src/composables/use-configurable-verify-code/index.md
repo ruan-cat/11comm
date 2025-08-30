@@ -13,7 +13,8 @@ import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify
 
 export default {
 	setup() {
-		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
+		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } =
+			useConfigurableVerifyCode();
 
 		return {
 			isImageCaptchaEnabled,
@@ -54,6 +55,22 @@ export default {
 </el-form-item>
 ```
 
+#### isSystemCaptchaEnabled
+
+- **类型**: `ComputedRef<boolean>`
+- **默认值**: `true`
+- **描述**: 是否启用系统自带的前端验证码
+- **用途**: 用于控制是否使用框架自带的 ReImageVerify 验证码组件
+
+```vue
+<template v-slot:append v-if="isImageCaptchaEnabled">
+	<!-- 系统自带验证码组件 -->
+	<ReImageVerify v-if="isSystemCaptchaEnabled" v-model:code="imgCode" />
+	<!-- 自定义验证码组件 -->
+	<ReImageVerifySimple v-else ref="captchaRef" @captcha-loaded="handleCaptchaLoaded" />
+</template>
+```
+
 #### captchaConfig
 
 - **类型**: `ComputedRef<CaptchaConfig>`
@@ -64,6 +81,7 @@ export default {
 interface CaptchaConfig {
 	isImageCaptchaEnabled?: boolean;
 	isSmsCaptchaEnabled?: boolean;
+	isSystemCaptchaEnabled?: boolean;
 }
 ```
 
@@ -150,7 +168,7 @@ const loginParams = buildLoginParams(
 import { reactive, ref } from "vue";
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
-const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
+const { isImageCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 const form = reactive({
 	username: "",
@@ -218,7 +236,7 @@ const handleLogin = async () => {
 import { reactive } from "vue";
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
-const { isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
+const { isSmsCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 const phoneForm = reactive({
 	phone: "",
@@ -250,7 +268,8 @@ const handlePhoneLogin = async () => {
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```

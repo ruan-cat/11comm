@@ -18,17 +18,19 @@
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": false, // 是否启用图片验证码，默认false
-		"isSmsCaptchaEnabled": true // 是否启用短信验证码，默认true
+		"isSmsCaptchaEnabled": true, // 是否启用短信验证码，默认true
+		"isSystemCaptchaEnabled": true // 是否启用系统自带的前端验证码，默认true
 	}
 }
 ```
 
 ### 配置项详细说明
 
-| 配置项                  | 类型    | 默认值 | 说明                                             |
-| ----------------------- | ------- | ------ | ------------------------------------------------ |
-| `isImageCaptchaEnabled` | boolean | false  | 控制登录页面是否显示图片验证码输入框和验证逻辑   |
-| `isSmsCaptchaEnabled`   | boolean | true   | 控制手机登录和忘记密码页面是否显示短信验证码功能 |
+| 配置项                   | 类型    | 默认值 | 说明                                             |
+| ------------------------ | ------- | ------ | ------------------------------------------------ |
+| `isImageCaptchaEnabled`  | boolean | false  | 控制登录页面是否显示图片验证码输入框和验证逻辑   |
+| `isSmsCaptchaEnabled`    | boolean | true   | 控制手机登录和忘记密码页面是否显示短信验证码功能 |
+| `isSystemCaptchaEnabled` | boolean | true   | 控制是否使用系统自带的 ReImageVerify 验证码组件  |
 
 ## 功能影响范围
 
@@ -77,7 +79,8 @@
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": false
+		"isSmsCaptchaEnabled": false,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -90,7 +93,8 @@
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": false
+		"isSmsCaptchaEnabled": false,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -103,7 +107,8 @@
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -116,7 +121,8 @@
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": true
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -128,6 +134,7 @@
 2. **默认值处理**：如果配置文件中没有 `CaptchaConfig` 配置项，系统将使用默认值：
    - `isImageCaptchaEnabled`: false
    - `isSmsCaptchaEnabled`: true
+   - `isSystemCaptchaEnabled`: true
 
 3. **后端接口适配**：
    - 图片验证码关闭时，登录接口不会发送 `code` 和 `uuid` 参数
@@ -148,11 +155,13 @@ import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify
 
 export default {
 	setup() {
-		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
+		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } =
+			useConfigurableVerifyCode();
 
 		return {
 			isImageCaptchaEnabled,
 			isSmsCaptchaEnabled,
+			isSystemCaptchaEnabled,
 			buildLoginParams,
 		};
 	},

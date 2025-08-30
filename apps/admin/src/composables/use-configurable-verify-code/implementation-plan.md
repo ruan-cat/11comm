@@ -39,7 +39,8 @@
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -47,7 +48,7 @@
 **设计说明**：
 
 - 使用嵌套对象 `CaptchaConfig` 组织验证码相关配置
-- 默认值：图片验证码关闭，短信验证码开启
+- 默认值：图片验证码关闭，短信验证码开启，系统自带验证码开启
 
 ### 2. 类型定义
 
@@ -61,6 +62,8 @@ interface PlatformConfigs {
 		isImageCaptchaEnabled?: boolean;
 		/** 是否启用短信验证码，默认true */
 		isSmsCaptchaEnabled?: boolean;
+		/** 是否启用系统自带的前端验证码，默认true */
+		isSystemCaptchaEnabled?: boolean;
 	};
 }
 
@@ -71,6 +74,8 @@ interface StorageConfigs {
 		isImageCaptchaEnabled?: boolean;
 		/** 是否启用短信验证码，默认true */
 		isSmsCaptchaEnabled?: boolean;
+		/** 是否启用系统自带的前端验证码，默认true */
+		isSystemCaptchaEnabled?: boolean;
 	};
 }
 ```
@@ -92,7 +97,7 @@ interface StorageConfigs {
 ```typescript
 import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
 
-const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
+const { isImageCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 // 自动构建登录参数
 const loginData = buildLoginParams(
@@ -186,8 +191,9 @@ function buildLoginParams(baseParams, captchaData) {
 ```json
 {
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"isSmsCaptchaEnabled": false
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": false,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -198,7 +204,8 @@ function buildLoginParams(baseParams, captchaData) {
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": true,
-		"enableSmsCaptcha": true
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
 	}
 }
 ```
@@ -209,7 +216,22 @@ function buildLoginParams(baseParams, captchaData) {
 {
 	"CaptchaConfig": {
 		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
+	}
+}
+```
+
+### 使用自定义验证码（仅图片验证码，使用自定义验证码组件）
+
+适用于需要图片验证码但不使用框架自带验证码组件的场景。
+
+```json
+{
+	"CaptchaConfig": {
+		"isImageCaptchaEnabled": true,
+		"isSmsCaptchaEnabled": false,
+		"isSystemCaptchaEnabled": false
 	}
 }
 ```
@@ -226,6 +248,7 @@ function buildLoginParams(baseParams, captchaData) {
 interface CaptchaConfig {
 	isImageCaptchaEnabled?: boolean;
 	isSmsCaptchaEnabled?: boolean;
+	isSystemCaptchaEnabled?: boolean;
 	isVoiceCaptchaEnabled?: boolean; // 新增
 }
 ```
@@ -257,12 +280,14 @@ if (isVoiceCaptchaEnabled.value && captchaData?.voiceCode) {
 
 ### 功能测试场景
 
-| 场景     | isImageCaptchaEnabled | isSmsCaptchaEnabled | 预期结果                                 |
-| -------- | --------------------- | ------------------- | ---------------------------------------- |
-| 默认配置 | false                 | true                | 登录页无图片验证码，手机登录有短信验证码 |
-| 全关闭   | false                 | false               | 所有验证码功能都关闭                     |
-| 全开启   | true                  | true                | 所有验证码功能都开启                     |
-| 仅图片   | true                  | false               | 仅登录页显示图片验证码                   |
+| 场景                   | isImageCaptchaEnabled | isSmsCaptchaEnabled | isSystemCaptchaEnabled | 预期结果                                       |
+| ---------------------- | --------------------- | ------------------- | ---------------------- | ---------------------------------------------- |
+| 默认配置               | false                 | true                | true                   | 登录页无图片验证码，手机登录有短信验证码       |
+| 全关闭                 | false                 | false               | true                   | 所有验证码功能都关闭                           |
+| 全开启（系统验证码）   | true                  | true                | true                   | 所有验证码功能都开启，使用系统自带验证码组件   |
+| 全开启（自定义验证码） | true                  | true                | false                  | 所有验证码功能都开启，使用自定义验证码组件     |
+| 仅图片（系统验证码）   | true                  | false               | true                   | 仅登录页显示图片验证码，使用系统自带验证码组件 |
+| 仅图片（自定义验证码） | true                  | false               | false                  | 仅登录页显示图片验证码，使用自定义验证码组件   |
 
 ### 兼容性测试
 

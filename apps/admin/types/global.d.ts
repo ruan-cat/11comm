@@ -125,6 +125,8 @@ declare global {
 			isImageCaptchaEnabled?: boolean;
 			/** 是否启用短信验证码，默认true */
 			isSmsCaptchaEnabled?: boolean;
+			/** 是否启用系统自带的前端验证码，默认true */
+			isSystemCaptchaEnabled?: boolean;
 		};
 	}
 
@@ -168,6 +170,8 @@ declare global {
 			isImageCaptchaEnabled?: boolean;
 			/** 是否启用短信验证码，默认true */
 			isSmsCaptchaEnabled?: boolean;
+			/** 是否启用系统自带的前端验证码，默认true */
+			isSystemCaptchaEnabled?: boolean;
 		};
 		username?: string;
 	}

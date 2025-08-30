@@ -33,7 +33,8 @@
 		}
 	},
 	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
+		"isImageCaptchaEnabled": false,
+		"isSmsCaptchaEnabled": true,
+		"isSystemCaptchaEnabled": true
 	}
 }
