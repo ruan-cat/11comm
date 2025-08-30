@@ -33,7 +33,7 @@
 		}
 	},
 	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false,
+		"isImageCaptchaEnabled": true,
 		"isSmsCaptchaEnabled": true,
 		"isSystemCaptchaEnabled": true
 	}

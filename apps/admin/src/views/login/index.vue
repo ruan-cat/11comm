@@ -69,7 +69,7 @@ const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
 // 验证码配置
-const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
+const { isImageCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 const ruleForm = reactive({
 	// 业务变更 框架原版的密码规则是 admin admin123
@@ -91,12 +91,17 @@ async function onLogin(formEl: FormInstance | undefined) {
 		if (valid) {
 			// 检查验证码（仅在启用图片验证码时）
 			if (isImageCaptchaEnabled.value) {
-				if (!captchaInfo.value?.uuid) {
-					message("请获取验证码", { type: "warning" });
-					return;
+				// 使用自定义验证码组件时，需要检查 UUID
+				if (!isSystemCaptchaEnabled.value) {
+					if (!captchaInfo.value?.uuid) {
+						message("请获取验证码", { type: "warning" });
+						return;
+					}
 				}
 
-				if (!ruleForm.verifyCode.trim()) {
+				// 根据验证码类型检查不同的验证码变量
+				const currentVerifyCode = isSystemCaptchaEnabled.value ? imgCode.value : ruleForm.verifyCode;
+				if (!currentVerifyCode.trim()) {
 					message("请输入验证码", { type: "warning" });
 					return;
 				}
@@ -137,7 +142,7 @@ async function onLogin(formEl: FormInstance | undefined) {
 						password: ruleForm.password,
 					},
 					{
-						verifyCode: ruleForm.verifyCode,
+						verifyCode: isSystemCaptchaEnabled.value ? imgCode.value : ruleForm.verifyCode,
 						uuid: captchaInfo.value?.uuid,
 					},
 				);
@@ -175,7 +180,7 @@ async function onLogin(formEl: FormInstance | undefined) {
 						password: ruleForm.password,
 					},
 					{
-						verifyCode: ruleForm.verifyCode,
+						verifyCode: isSystemCaptchaEnabled.value ? imgCode.value : ruleForm.verifyCode,
 						uuid: captchaInfo.value?.uuid,
 					},
 				);
@@ -358,9 +363,11 @@ onMounted(async () => {});
 									:prefix-icon="useRenderIcon(Keyhole)"
 								>
 									<template v-slot:append>
-										<!-- 业务变更 不使用框架自带的前端验证码 -->
-										<!-- <ReImageVerify v-model:code="imgCode" /> -->
+										<!-- 系统自带验证码组件 -->
+										<ReImageVerify v-if="isSystemCaptchaEnabled" v-model:code="imgCode" />
+										<!-- 自定义验证码组件 -->
 										<ReImageVerifySimple
+											v-else
 											ref="captchaRef"
 											@captcha-loaded="handleCaptchaLoaded"
 											@captcha-error="handleCaptchaError"
