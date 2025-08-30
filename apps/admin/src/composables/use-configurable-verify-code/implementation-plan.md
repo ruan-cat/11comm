@@ -35,15 +35,11 @@
 
 **文件**：`apps/admin/public/platform-config.json`
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 平台配置文件示例
+
+<<< ./tests/basic-config-example.json
+
+:::
 
 **设计说明**：
 
@@ -54,31 +50,11 @@
 
 **文件**：`apps/admin/types/global.d.ts`
 
-```typescript
-interface PlatformConfigs {
-	/** 验证码相关配置 */
-	CaptchaConfig?: {
-		/** 是否启用图片验证码，默认false */
-		isImageCaptchaEnabled?: boolean;
-		/** 是否启用短信验证码，默认true */
-		isSmsCaptchaEnabled?: boolean;
-		/** 是否启用系统自带的前端验证码，默认true */
-		isSystemCaptchaEnabled?: boolean;
-	};
-}
+::: details 类型定义示例
 
-interface StorageConfigs {
-	/** 验证码相关配置（驼峰命名用于本地存储） */
-	captchaConfig?: {
-		/** 是否启用图片验证码，默认false */
-		isImageCaptchaEnabled?: boolean;
-		/** 是否启用短信验证码，默认true */
-		isSmsCaptchaEnabled?: boolean;
-		/** 是否启用系统自带的前端验证码，默认true */
-		isSystemCaptchaEnabled?: boolean;
-	};
-}
-```
+<<< ./tests/config-types-example.ts
+
+:::
 
 ### 3. 创建组合式 API
 
@@ -188,53 +164,37 @@ function buildLoginParams(baseParams, captchaData) {
 
 ### 开发环境（关闭所有验证码）
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": false,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 开发环境配置
+
+<<< ./tests/scenario-1-disable-all-example.json
+
+:::
 
 ### 生产环境（启用所有验证码）
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": true,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 生产环境配置
+
+<<< ./tests/scenario-4-enable-all-example.json
+
+:::
 
 ### 默认配置（仅短信验证码）
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 默认配置
+
+<<< ./tests/scenario-3-sms-only-example.json
+
+:::
 
 ### 使用自定义验证码（仅图片验证码，使用自定义验证码组件）
 
 适用于需要图片验证码但不使用框架自带验证码组件的场景。
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": false,
-		"isSystemCaptchaEnabled": false
-	}
-}
-```
+::: details 使用自定义验证码
+
+<<< ./tests/custom-captcha-example.json
+
+:::
 
 ## 扩展性设计
 

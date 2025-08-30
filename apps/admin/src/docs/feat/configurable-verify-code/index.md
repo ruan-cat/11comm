@@ -34,14 +34,11 @@
 
 在 `apps/admin/public/platform-config.json` 文件中添加配置：
 
-```json
-{
-	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
-	}
-}
-```
+::: details 基础配置示例
+
+<<< ./tests/basic-config-example.json
+
+:::
 
 ### 2. 刷新页面
 
@@ -58,53 +55,41 @@
 
 ### 开发环境
 
-```json
-{
-	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": false
-	}
-}
-```
+::: details 开发环境配置
+
+<<< ./tests/dev-env-example.json
+
+:::
 
 适用于开发调试，免去验证码输入的繁琐步骤。
 
 ### 测试环境
 
-```json
-{
-	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
-	}
-}
-```
+::: details 测试环境配置
+
+<<< ./tests/test-env-example.json
+
+:::
 
 关闭图片验证码，保留短信验证码进行功能测试。
 
 ### 生产环境
 
-```json
-{
-	"CaptchaConfig": {
-		"enableImageCaptcha": true,
-		"enableSmsCaptcha": true
-	}
-}
-```
+::: details 生产环境配置
+
+<<< ./tests/prod-env-example.json
+
+:::
 
 开启全部验证码功能，保障系统安全。
 
 ### 内网部署
 
-```json
-{
-	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": false
-	}
-}
-```
+::: details 内网部署配置
+
+<<< ./tests/intranet-env-example.json
+
+:::
 
 内网环境相对安全，可关闭验证码提升用户体验。
 

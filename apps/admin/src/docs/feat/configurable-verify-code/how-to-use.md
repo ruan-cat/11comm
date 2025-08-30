@@ -14,15 +14,11 @@
 
 ### 配置项说明
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false, // 是否启用图片验证码，默认false
-		"isSmsCaptchaEnabled": true, // 是否启用短信验证码，默认true
-		"isSystemCaptchaEnabled": true // 是否启用系统自带的前端验证码，默认true
-	}
-}
-```
+::: details 基础配置示例
+
+<<< ./tests/basic-config-example.json
+
+:::
 
 ### 配置项详细说明
 
@@ -75,57 +71,41 @@
 
 适用于开发环境或内网环境，不需要任何验证码验证。
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": false,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 场景一：完全关闭验证码功能
+
+<<< ./tests/scenario-1-disable-all-example.json
+
+:::
 
 ### 场景二：仅使用图片验证码
 
 适用于不需要短信功能的环境。
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": false,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 场景二：仅使用图片验证码
+
+<<< ./tests/scenario-2-image-only-example.json
+
+:::
 
 ### 场景三：仅使用短信验证码
 
 适用于移动端优先或需要手机验证的环境。
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": false,
-		"isSmsCaptchaEnabled": true,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 场景三：仅使用短信验证码
+
+<<< ./tests/scenario-3-sms-only-example.json
+
+:::
 
 ### 场景四：启用所有验证码功能
 
 适用于高安全性要求的生产环境。
 
-```json
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": true,
-		"isSystemCaptchaEnabled": true
-	}
-}
-```
+::: details 场景四：启用所有验证码功能
+
+<<< ./tests/scenario-4-enable-all-example.json
+
+:::
 
 ## 注意事项
 
@@ -150,43 +130,19 @@
 
 在组件中使用验证码配置：
 
-```typescript
-import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify-code";
+::: details 组合式 API 使用示例
 
-export default {
-	setup() {
-		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } =
-			useConfigurableVerifyCode();
+<<< ./tests/composable-usage-example.ts
 
-		return {
-			isImageCaptchaEnabled,
-			isSmsCaptchaEnabled,
-			isSystemCaptchaEnabled,
-			buildLoginParams,
-		};
-	},
-};
-```
+:::
 
 ### 自动构建登录参数
 
-```typescript
-// 旧方式 - 手动构建参数
-const loginData = {
-	username: form.username,
-	password: form.password,
-	...(isImageCaptchaEnabled.value && {
-		verifyCode: form.verifyCode,
-		uuid: captchaInfo.value?.uuid,
-	}),
-};
+::: details 自动构建登录参数示例
 
-// 新方式 - 自动构建参数
-const loginData = buildLoginParams(
-	{ username: form.username, password: form.password },
-	{ verifyCode: form.verifyCode, uuid: captchaInfo.value?.uuid },
-);
-```
+<<< ./tests/auto-build-params-example.ts
+
+:::
 
 ## 技术实现细节
 
