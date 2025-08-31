@@ -306,8 +306,8 @@ async function handleSearch() {
 }
 
 // 页面初始化
-onMounted(() => {
-	loadTableData();
+onMounted(async () => {
+	await loadTableData();
 });
 </script>
 

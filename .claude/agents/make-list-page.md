@@ -28,11 +28,82 @@ color: yellow
 
 请阅读文件 `.claude\agents\code-style.md` ，或者是自己调用子代理 `code-style`。
 
+## 术语说明
+
+本文使用的术语如下：
+
+- **列表页**： 即我传递给你的 vue 组件。
+- **假分页请求**： 即 loadTableData 函数，是一个直接写在 `列表页` 里面的函数。一个模拟接口请求的异步函数。
+
 ## 业务类型与假数据存储
 
 请你在我给定的页面内，在对应的 `index.vue` 文件旁边，新建一个 `test-data.ts` 文件。并在此处存储业务类型，和假数据。不要把用于填充的占位数据，放到组件内。
 
 给表格组件准备假数据时，请你准备好 35 条假数据。
+
+## 制作 `假分页请求` 函数
+
+需要你制作出假的请求接口函数，在列表页内模拟接口请求。要求模拟：
+
+1. 搜索栏查询。
+2. 分页查询。
+3. 函数名必须是 `loadTableData` 函数。
+
+loadTableData 函数的写法例子如下：
+
+```ts
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = mockTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.小区ID) {
+			filteredData = filteredData.filter((item) => item.小区ID.includes(plusSearchModel.value.小区ID!));
+		}
+		if (plusSearchModel.value.小区名称) {
+			filteredData = filteredData.filter((item) => item.小区名称.includes(plusSearchModel.value.小区名称!));
+		}
+		if (plusSearchModel.value.省) {
+			filteredData = filteredData.filter((item) => item.省份 === plusSearchModel.value.省);
+		}
+		if (plusSearchModel.value.城市) {
+			filteredData = filteredData.filter((item) => item.城市 === plusSearchModel.value.城市);
+		}
+		if (plusSearchModel.value.区县) {
+			filteredData = filteredData.filter((item) => item.区县 === plusSearchModel.value.区县);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+```
+
+### 在 onMounted 回调内调用 `假分页请求`
+
+在 onMounted 回调内，必须按照以下格式调用 `假分页请求` ：
+
+```ts
+onMounted(async () => {
+	await loadTableData();
+});
+```
+
+1. onMounted 的回调函数必须写成 async 异步函数。
 
 ## 分批次生成表格
 
