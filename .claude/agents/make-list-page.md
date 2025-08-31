@@ -176,6 +176,49 @@ onMounted(async () => {
 
 plusSearchColumns 必须设计成 computed，用于实现动态切换的 i18n 文本
 
+### 数值类型的搜索栏字段
+
+**不需要**你为了数值类型的搜索栏而实现专门的配置。请参考以下例子：
+
+错误的例子：
+
+```ts
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 物业电话
+	{
+		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
+		prop: "物业电话",
+		valueType: "input",
+		fieldProps: {
+			type: "number",
+		},
+	},
+]);
+```
+
+正确的例子：
+
+不需要在 fieldProps 内配置任何 type 。
+
+```ts
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 物业电话
+	{
+		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
+		prop: "物业电话",
+		valueType: "input",
+	},
+]);
+```
+
 ### 不需要配置 fieldProps.placeholder 占位符文本
 
 在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。
