@@ -1,0 +1,41 @@
+# Merchant Information Management
+merchant-info:
+  merchantNumber: Merchant Number
+  merchantName: Merchant Name
+  merchantAddress: Merchant Address
+  contactPhone: Contact Phone
+  merchantType: Merchant Type
+  enterpriseLegalPerson: Enterprise Legal Person
+  establishDate: Establish Date
+  operatingStatus: Operating Status
+  belongCommunity: Belong Community
+  businessHours: Business Hours
+  businessArea: Business Area
+  createTime: Create Time
+  
+  # Merchant Type Options
+  merchantTypeOptions:
+    cateringService: Catering Service
+    retailStore: Retail Store
+    lifeService: Life Service
+    leisureEntertainment: Leisure Entertainment
+    educationTraining: Education Training
+    medicalHealth: Medical Health
+    other: Other
+    
+  # Operating Status Options
+  operatingStatusOptions:
+    normalOperation: Normal Operation
+    suspendedOperation: Suspended Operation
+    preparingToOpen: Preparing to Open
+    closed: Closed
+    
+  # Operation Buttons
+  viewDetails: View Details
+  merchantManagement: Merchant Management
+
+# Merchant Administrator
+merchant-admin:
+  adminName: Admin Name
+  adminPhone: Admin Phone
+  adminRole: Admin Role

@@ -19,7 +19,7 @@
 			</el-input>
 		</el-form-item>
 
-		<el-button @click="handleLogin" :loading="loading"> 登录 </el-button>
+		<el-button :loading="loading" @click="handleLogin"> 登录 </el-button>
 	</el-form>
 </template>
 

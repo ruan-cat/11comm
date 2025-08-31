@@ -1,0 +1,41 @@
+# 商户信息管理
+merchant-info:
+  merchantNumber: 商户编号
+  merchantName: 商户名称
+  merchantAddress: 商户地址
+  contactPhone: 联系电话
+  merchantType: 商户类型
+  enterpriseLegalPerson: 企业法人
+  establishDate: 成立日期
+  operatingStatus: 经营状态
+  belongCommunity: 所属小区
+  businessHours: 营业时间
+  businessArea: 经营面积
+  createTime: 创建时间
+  
+  # 商户类型选项
+  merchantTypeOptions:
+    cateringService: 餐饮服务
+    retailStore: 零售商店
+    lifeService: 生活服务
+    leisureEntertainment: 休闲娱乐
+    educationTraining: 教育培训
+    medicalHealth: 医疗健康
+    other: 其他
+    
+  # 经营状态选项
+  operatingStatusOptions:
+    normalOperation: 正常营业
+    suspendedOperation: 暂停营业
+    preparingToOpen: 准备开业
+    closed: 已停业
+    
+  # 操作按钮
+  viewDetails: 查看详情
+  merchantManagement: 商户管理
+
+# 商户管理员
+merchant-admin:
+  adminName: 管理员姓名
+  adminPhone: 管理员电话
+  adminRole: 管理员角色

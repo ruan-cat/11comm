@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 小区信息列表数据类型 */
 export interface 小区信息_列表数据 {
