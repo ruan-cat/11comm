@@ -25,63 +25,63 @@ const tableData = ref<商户信息_列表数据[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
-		headerRenderer: () => transformI18n($t("operation-team_merchant-manage.merchant-info.merchantNumber")),
+		label: "商户编号",
 		prop: "商户编号",
 		width: 120,
 		fixed: true,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantName")),
+		label: "商户名称",
 		prop: "商户名称",
 		minWidth: 150,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantAddress")),
+		label: "商户地址",
 		prop: "商户地址",
 		minWidth: 200,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.contactPhone")),
+		label: "联系电话",
 		prop: "联系电话",
 		width: 130,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantType")),
+		label: "商户类型",
 		prop: "商户类型",
 		width: 100,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.enterpriseLegalPerson")),
+		label: "企业法人",
 		prop: "企业法人",
 		width: 100,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.establishDate")),
+		label: "成立日期",
 		prop: "成立日期",
 		width: 110,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.operatingStatus")),
+		label: "经营状态",
 		prop: "经营状态",
 		width: 100,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.belongCommunity")),
+		label: "所属小区",
 		prop: "所属小区",
 		width: 150,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.businessHours")),
+		label: "营业时间",
 		prop: "营业时间",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.businessArea")) + "(㎡)",
+		label: "经营面积(㎡)",
 		prop: "经营面积",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.createTime")),
+		label: "创建时间",
 		prop: "创建时间",
 		width: 160,
 	},
@@ -123,7 +123,7 @@ const pureTableProps = ref<PureTableProps>({
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantName")),
+	title: "商户管理",
 	columns: columns.value,
 });
 
