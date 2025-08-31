@@ -1,6 +1,0 @@
-{
-	"CaptchaConfig": {
-		"enableImageCaptcha": false,
-		"enableSmsCaptcha": true
-	}
-}

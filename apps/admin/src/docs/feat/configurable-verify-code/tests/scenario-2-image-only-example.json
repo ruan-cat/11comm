@@ -1,7 +1,0 @@
-{
-	"CaptchaConfig": {
-		"isImageCaptchaEnabled": true,
-		"isSmsCaptchaEnabled": false,
-		"isSystemCaptchaEnabled": true
-	}
-}
