@@ -315,8 +315,6 @@ onMounted(async () => {
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
 
-		<!-- {{ plusSearchModel }} -->
-
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
 				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
