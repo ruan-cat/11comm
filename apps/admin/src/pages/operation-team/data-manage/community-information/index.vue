@@ -10,11 +10,11 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { 
-	type 小区信息_列表数据, 
-	type 小区信息_列表查询_VO, 
+import {
+	type 小区信息_列表数据,
+	type 小区信息_列表查询_VO,
 	tableData as mockTableData,
-	searchOptions 
+	searchOptions,
 } from "./test-data";
 
 /** 表格数据 */

@@ -8,9 +8,8 @@ definePage({
 	},
 });
 
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-// import { router as adminRouter } from "router/index";
 import { type 物业公司_列表数据, type 物业公司_列表查询_VO, tableData as mockTableData } from "./test-data";
 
 import { type PropertyManagementCompanyFormProps, defaultForm } from "./components/form";
@@ -18,7 +17,7 @@ import PropertyManagementCompanyForm from "./components/form.vue";
 const PropertyManagementCompanyFormInstance = ref<InstanceType<typeof PropertyManagementCompanyForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<物业公司_列表数据[]>(mockTableData);
+const tableData = ref<物业公司_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -82,18 +81,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: tableData.value.length,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
@@ -151,9 +150,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
 		prop: "物业电话",
 		valueType: "input",
-		fieldProps: {
-			type: "number",
-		},
 	},
 ]);
 
@@ -166,16 +162,52 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = mockTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.物业编号) {
+			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.物业编号!));
+		}
+		if (plusSearchModel.value.物业名称) {
+			filteredData = filteredData.filter((item) => item.名称.includes(plusSearchModel.value.物业名称!));
+		}
+		if (plusSearchModel.value.物业电话) {
+			filteredData = filteredData.filter((item) => item.电话.includes(plusSearchModel.value.物业电话!));
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
 async function handleReSearch() {
 	console.log("重新搜索");
 	// 重置搜索条件并重新加载数据
 	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
 	console.log("搜索", plusSearchModel.value);
 	// 根据搜索条件过滤数据
 	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /** 打开弹框 参数 */
@@ -304,13 +336,15 @@ function gotoManageCommunityPage(row: 物业公司_列表数据) {
 		},
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
