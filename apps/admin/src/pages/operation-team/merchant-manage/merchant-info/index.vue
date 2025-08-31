@@ -25,7 +25,7 @@ const tableData = ref<商户信息_列表数据[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantNumber")),
+		headerRenderer: () => transformI18n($t("operation-team_merchant-manage.merchant-info.merchantNumber")),
 		prop: "商户编号",
 		width: 120,
 		fixed: true,

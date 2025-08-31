@@ -44,6 +44,7 @@ color: yellow
 - **列表页**： 即我传递给你的 vue 组件。
 - **假分页请求**： 即 loadTableData 函数，是一个直接写在 `列表页` 里面的函数。一个模拟接口请求的异步函数。
 - **假数据文件**： 即 `列表页` 旁边的 `test-data.ts` 文件。用于存放各种在前端层面写死的假数据。
+- **表格列配置**： 即表格组件渲染的关键配置。该配置实现表格的表头、操作栏配置等。
 
 ## 业务类型与假数据存储
 
@@ -150,9 +151,70 @@ onMounted(async () => {
 
 ## 无多余样式
 
-我不希望你写多余的样式。我们套模板时，不需要生成多余样式。没有我的明确要求下，请不要主动写任何多余的样式。
+不需要生成多余样式。没有我的明确要求下，请不要主动写任何多余的样式。
 
 请你预留一个空的选择器。
+
+## 表格列配置 `columns`
+
+在表格组件中，columns 用来配置表格列的表头、操作栏等关键表格信息。
+
+### 在 `表格列配置` 内使用 i18n 的函数
+
+如果你打算使用 i18n 函数来获取文本，请你使用以下写法来调用 i18n ：
+
+错误的例子：
+
+在这个例子内，label 标签是不会因为 i18n 而实现全局变化的。
+
+```ts
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	{
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantNumber")),
+		prop: "商户编号",
+		width: 120,
+		fixed: true,
+	},
+	// 更多表列配置……
+]);
+```
+
+正确的例子：
+
+应该用 headerRenderer 搭配函数的方式来使用 i18n 文本。
+
+```ts
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	{
+		headerRenderer: () => transformI18n($t("operation-team_merchant-manage.merchant-info.merchantNumber")),
+		prop: "商户编号",
+		width: 120,
+		fixed: true,
+	},
+	// 更多表列配置……
+]);
+```
+
+### 不需要总是去准备表格表头的 i18n 文本
+
+直接准备好平时常用的中文文本即可，并不需要每一个表头都要应用 i18n 文本。
+
+比如以下例子就是可以接受的：
+
+```ts
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	{
+		label: "商户编号",
+		prop: "商户编号",
+		width: 120,
+		fixed: true,
+	},
+	// 更多表列配置……
+]);
+```
 
 ## 基于 `<PureTable>` 表格组件的列表页
 
