@@ -129,7 +129,10 @@ const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 表格搜索栏组件 表单配置 */
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 商户名称
 	{

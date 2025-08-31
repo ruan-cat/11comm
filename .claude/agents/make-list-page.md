@@ -174,7 +174,28 @@ onMounted(async () => {
 
 ### plusSearchColumns 表格搜索栏组件的表单配置必须是 computed
 
-plusSearchColumns 必须设计成 computed，用于实现动态切换的 i18n 文本
+plusSearchColumns 必须设计成 computed ，用于实现动态切换的 i18n 文本
+
+### plusSearchColumns 的 jsdoc 注释必须提供额外的说明注释
+
+plusSearchColumns 需要提供明确的 issue 链接，告诉其他人为什么要写成 computed 的形式。其 jsdoc 格式如下例子：
+
+错误例子：
+
+```ts
+/** 表格搜索栏组件 表单配置 */
+```
+
+正确例子：
+
+```ts
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+```
+
+你有且只能写固定的 `@see https://github.com/plus-pro-components/plus-pro-components/issues/184` 注释。不能胡编乱造，照抄即可。
 
 ### 数值类型的搜索栏字段
 
@@ -221,4 +242,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 ### 不需要配置 fieldProps.placeholder 占位符文本
 
-在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。
+在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。比如以下例子：
+
+错误例子：
