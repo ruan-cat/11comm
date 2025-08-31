@@ -1,3 +1,5 @@
+import { type OptionsType } from "plus-pro-components";
+
 /** 小区信息列表数据类型 */
 export interface 小区信息_列表数据 {
 	小区ID: string;
@@ -24,6 +26,81 @@ export interface 小区信息_列表查询_VO {
 	城市?: string;
 	区县?: string;
 }
+
+/** 搜索栏下拉选项数据 */
+export const searchOptions = {
+	/** 省份选项 */
+	provinces: [
+		{
+			label: "福建省",
+			value: "福建省",
+		},
+		{
+			label: "浙江省",
+			value: "浙江省",
+		},
+		{
+			label: "江苏省",
+			value: "江苏省",
+		},
+		{
+			label: "广东省",
+			value: "广东省",
+		},
+	] as OptionsType,
+
+	/** 城市选项 */
+	cities: [
+		{
+			label: "福州市",
+			value: "福州市",
+		},
+		{
+			label: "厦门市",
+			value: "厦门市",
+		},
+		{
+			label: "漳州市",
+			value: "漳州市",
+		},
+		{
+			label: "泉州市",
+			value: "泉州市",
+		},
+	] as OptionsType,
+
+	/** 区县选项 */
+	districts: [
+		{
+			label: "仓山区",
+			value: "仓山区",
+		},
+		{
+			label: "鼓楼区",
+			value: "鼓楼区",
+		},
+		{
+			label: "台江区",
+			value: "台江区",
+		},
+		{
+			label: "晋安区",
+			value: "晋安区",
+		},
+		{
+			label: "马尾区",
+			value: "马尾区",
+		},
+		{
+			label: "长乐区",
+			value: "长乐区",
+		},
+		{
+			label: "闽侯县",
+			value: "闽侯县",
+		},
+	] as OptionsType,
+};
 
 /** 表格假数据 */
 export const tableData: 小区信息_列表数据[] = [

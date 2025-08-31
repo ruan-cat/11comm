@@ -10,7 +10,12 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 小区信息_列表数据, type 小区信息_列表查询_VO, tableData as mockTableData } from "./test-data";
+import { 
+	type 小区信息_列表数据, 
+	type 小区信息_列表查询_VO, 
+	tableData as mockTableData,
+	searchOptions 
+} from "./test-data";
 
 /** 表格数据 */
 const tableData = ref<小区信息_列表数据[]>(mockTableData);
@@ -159,24 +164,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("operation-team_data-manage.community-information.province")),
 		prop: "省",
 		valueType: "select",
-		options: [
-			{
-				label: "福建省",
-				value: "福建省",
-			},
-			{
-				label: "浙江省",
-				value: "浙江省",
-			},
-			{
-				label: "江苏省",
-				value: "江苏省",
-			},
-			{
-				label: "广东省",
-				value: "广东省",
-			},
-		],
+		options: searchOptions.provinces,
 	},
 
 	// 城市
@@ -184,24 +172,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("operation-team_data-manage.community-information.city")),
 		prop: "城市",
 		valueType: "select",
-		options: [
-			{
-				label: "福州市",
-				value: "福州市",
-			},
-			{
-				label: "厦门市",
-				value: "厦门市",
-			},
-			{
-				label: "漳州市",
-				value: "漳州市",
-			},
-			{
-				label: "泉州市",
-				value: "泉州市",
-			},
-		],
+		options: searchOptions.cities,
 	},
 
 	// 区县
@@ -209,36 +180,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("operation-team_data-manage.community-information.district")),
 		prop: "区县",
 		valueType: "select",
-		options: [
-			{
-				label: "仓山区",
-				value: "仓山区",
-			},
-			{
-				label: "鼓楼区",
-				value: "鼓楼区",
-			},
-			{
-				label: "台江区",
-				value: "台江区",
-			},
-			{
-				label: "晋安区",
-				value: "晋安区",
-			},
-			{
-				label: "马尾区",
-				value: "马尾区",
-			},
-			{
-				label: "长乐区",
-				value: "长乐区",
-			},
-			{
-				label: "闽侯县",
-				value: "闽侯县",
-			},
-		],
+		options: searchOptions.districts,
 	},
 ]);
 
