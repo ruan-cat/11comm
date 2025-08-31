@@ -10,6 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { ElMessage, ElMessageBox } from "element-plus";
 import {
 	type 商户信息_列表数据,
 	type 商户信息_列表查询_VO,
@@ -20,9 +21,6 @@ import {
 
 /** 表格数据 */
 const tableData = ref<商户信息_列表数据[]>([]);
-
-/** 加载状态 */
-const loading = ref(false);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -121,7 +119,6 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: loading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -204,8 +201,6 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		loading.value = true;
-
 		// TODO: 替换为真实的API调用
 		// 当前使用模拟数据和本地搜索过滤
 		let filteredData = mockTableData;
@@ -237,12 +232,9 @@ async function loadTableData() {
 
 		// 更新表格配置
 		pureTableProps.value.data = tableData.value;
-		pureTableProps.value.loading = loading.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
 		ElMessage.error("加载数据失败，请稍后重试");
-	} finally {
-		loading.value = false;
 	}
 }
 
