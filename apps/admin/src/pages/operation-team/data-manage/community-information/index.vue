@@ -8,37 +8,12 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-
-interface 我的小区_列表数据 {
-	小区ID: string;
-	小区名称: string;
-	物业公司: string;
-	附近地标: string;
-	城市编码: string;
-	创建时间: string;
-	社区编码: string;
-	状态: string;
-}
-
-const tableDataItem: 我的小区_列表数据 = {
-	小区ID: "小区ID",
-	小区名称: "小区名称",
-	物业公司: "物业公司",
-	附近地标: "附近地标",
-	城市编码: "城市编码",
-	创建时间: "创建时间",
-	社区编码: "社区编码",
-	状态: "状态",
-};
+import { type 小区信息_列表数据, type 小区信息_列表查询_VO, tableData as mockTableData } from "./test-data";
 
 /** 表格数据 */
-const tableData = ref<我的小区_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<小区信息_列表数据[]>(mockTableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -51,41 +26,57 @@ const columns = ref<TableColumnList>([
 	{
 		label: "小区名称",
 		prop: "小区名称",
-		width: 120,
+		minWidth: 150,
 	},
 	{
 		label: "物业公司",
 		prop: "物业公司",
-		width: 120,
+		minWidth: 200,
 	},
 	{
 		label: "附近地标",
 		prop: "附近地标",
+		width: 150,
+	},
+	{
+		label: "省份",
+		prop: "省份",
+		width: 100,
+	},
+	{
+		label: "城市",
+		prop: "城市",
+		width: 100,
+	},
+	{
+		label: "区县",
+		prop: "区县",
+		width: 100,
+	},
+	{
+		label: "联系电话",
+		prop: "联系电话",
 		width: 120,
 	},
 	{
-		label: "城市编码",
-		prop: "城市编码",
-		width: 120,
-	},
-	{
-		label: "创建时间",
-		prop: "创建时间",
-		width: 120,
-	},
-	{
-		label: "社区编码",
-		prop: "社区编码",
-		width: 120,
+		label: "管理员",
+		prop: "管理员",
+		width: 100,
 	},
 	{
 		label: "状态",
 		prop: "状态",
-		width: 120,
+		width: 100,
 	},
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		label: "创建时间",
+		prop: "创建时间",
+		width: 160,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 320,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -96,18 +87,19 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: tableData.value.length,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
@@ -120,17 +112,9 @@ const pureTableProps = ref<PureTableProps>({
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "我的小区",
+	title: "小区信息",
 	columns: columns.value,
 });
-
-interface 小区信息_列表查询_VO {
-	小区ID?: string;
-	小区名称?: string;
-	省?: string;
-	城市?: string;
-	区县?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -188,6 +172,10 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 				label: "江苏省",
 				value: "江苏省",
 			},
+			{
+				label: "广东省",
+				value: "广东省",
+			},
 		],
 	},
 
@@ -209,6 +197,10 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 				label: "漳州市",
 				value: "漳州市",
 			},
+			{
+				label: "泉州市",
+				value: "泉州市",
+			},
 		],
 	},
 
@@ -223,8 +215,24 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 				value: "仓山区",
 			},
 			{
-				label: "高新区",
-				value: "高新区",
+				label: "鼓楼区",
+				value: "鼓楼区",
+			},
+			{
+				label: "台江区",
+				value: "台江区",
+			},
+			{
+				label: "晋安区",
+				value: "晋安区",
+			},
+			{
+				label: "马尾区",
+				value: "马尾区",
+			},
+			{
+				label: "长乐区",
+				value: "长乐区",
 			},
 			{
 				label: "闽侯县",
@@ -240,16 +248,67 @@ const plusSearchProps = ref<PlusSearchProps>({
 	columns: [],
 	labelWidth: 140,
 	labelPosition: "right",
-	showNumber: 5,
+	showNumber: 3,
 });
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = mockTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.小区ID) {
+			filteredData = filteredData.filter((item) => item.小区ID.includes(plusSearchModel.value.小区ID!));
+		}
+		if (plusSearchModel.value.小区名称) {
+			filteredData = filteredData.filter((item) => item.小区名称.includes(plusSearchModel.value.小区名称!));
+		}
+		if (plusSearchModel.value.省) {
+			filteredData = filteredData.filter((item) => item.省份 === plusSearchModel.value.省);
+		}
+		if (plusSearchModel.value.城市) {
+			filteredData = filteredData.filter((item) => item.城市 === plusSearchModel.value.城市);
+		}
+		if (plusSearchModel.value.区县) {
+			filteredData = filteredData.filter((item) => item.区县 === plusSearchModel.value.区县);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
 
 async function handleReSearch() {
 	console.log("重新搜索");
+	// 重置搜索条件并重新加载数据
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	console.log("搜索");
+	console.log("搜索", plusSearchModel.value);
+	// 根据搜索条件过滤数据
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+// 页面初始化
+onMounted(() => {
+	loadTableData();
+});
 </script>
 
 <template>
