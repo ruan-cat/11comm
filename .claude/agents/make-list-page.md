@@ -245,3 +245,36 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。比如以下例子：
 
 错误例子：
+
+```ts
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 商户名称
+	{
+		label: "商户名称",
+		prop: "商户名称",
+		valueType: "input",
+		fieldProps: {
+			placeholder: "请输入商户名称",
+		},
+	},
+]);
+```
+
+正确例子：
+
+不需要配置 fieldProps.placeholder 占位符文本。
+
+```ts
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 商户名称
+	{ label: "商户名称", prop: "商户名称", valueType: "input" },
+]);
+```
