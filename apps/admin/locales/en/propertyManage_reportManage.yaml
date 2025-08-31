@@ -1,0 +1,17 @@
+#报表管理
+report:
+  chargeCategories: chargeCategories
+  cell: cell
+  chargeItem: chargeItem
+  employerName: employerName
+  startTime: startTime
+  endTime: endTime
+  payMethod: payMethod
+  payState: payState
+  houseNumberCarNumber: houseNumberCarNumber
+  paymentItem: paymentItem
+  employerPhone: employerPhone
+  derived: derived
+  houseNumber: houseNumber
+  phoneNumber: phoneNumber
+  build: build

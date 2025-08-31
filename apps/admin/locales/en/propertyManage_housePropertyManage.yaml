@@ -1,0 +1,33 @@
+# 房产管理
+houses:
+  account: Account
+  accountName: AccountName
+  idCard: IDCard
+  phone: Phone
+  unionId: BuildingUnit
+  type: HouseType
+
+# 场地管理
+field-management:
+  fieldNumber: field number
+  fieldType: field type
+  fieldState: field state
+
+#场地预定订单
+field-order:
+  fieldTime: field time
+  fieldMan: field man
+  fieldPhone: field phone
+  orderState: order state
+  fieldType: field type
+
+#场地预约
+field-reservation:
+  fieldDate: field date
+# 业委会
+owners-committee:
+  name: Name
+  phone: Phone
+  status: Status
+  detail: Detail
+  telephone: Telephone

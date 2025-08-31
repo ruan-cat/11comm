@@ -1,0 +1,14 @@
+#巡查管理
+inspection:
+  inspectionPersonnel: InspectionPersonnel
+  inspectionStartTame: InspectionStartTame
+  inspectionCompletionTime: InspectionCompletionTime
+  executor: Executor
+  inspectionStatus: InspectionStatus
+  planID: PlanID
+  projectName: ProjectName
+  status: Status
+  inspectionRoute: InspectionRoute
+  inspectionPoint: InspectionPoint
+  projectNumber: ProjectNumber
+  inspectionItems: InspectionItems

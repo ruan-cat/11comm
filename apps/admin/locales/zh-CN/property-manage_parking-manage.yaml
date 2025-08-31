@@ -1,0 +1,13 @@
+# 业主车辆
+owner-vehicle:
+  plateNumber: 车牌号
+  parkingSpaceNumber: 车位编号
+  parkingSpaceStatus: 车位状态
+  ownerName: 业主名称
+  phone: 联系方式
+  memberPlateNumber: 成员车牌号
+  carImport: 车辆导入
+  output: 导出
+  renewLease: 续租
+  release: 释放
+  buyMonthlyCard: 买月卡

@@ -1,0 +1,23 @@
+{
+	"framework": null,
+	"buildCommand": null,
+	"installCommand": null,
+	"outputDirectory": null,
+	"devCommand": null,
+	"public": false,
+	"git": {
+		"deploymentEnabled": {
+			"main": false
+		}
+	},
+	"rewrites": [
+		{
+			"source": "/backend/:path(.*)",
+			"destination": "http://47.93.160.11:10001/:path"
+		},
+		{
+			"source": "/(.*)",
+			"destination": "/index.html"
+		}
+	]
+}

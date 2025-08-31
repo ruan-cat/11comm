@@ -1,0 +1,29 @@
+# 房屋装修
+house-decoration:
+  houseNumber: house number
+  contacts: contacts
+  phone: phone
+  houseState: house state
+  deferredStatus: deferred status
+  renovationTime: renovation time
+  startTimeForDecorationApplication: start time for decoration application
+  endTimeForDecorationApplication: end time for decoration application
+  decorationOk: decoration ok
+  trackingRecord: tracking record
+
+# 产权登记
+property-register:
+  houseID: houseID
+  houseNumber: houseNumber
+  name: name
+  contactWay: contactWay
+  idNumber: idNumber
+  address: address
+  auditStatus: auditStatus
+  building: building
+  unit: unit
+
+  # 小区公示
+notice:
+  publicityTitle: publicityTitle
+  publicityType: publicityType

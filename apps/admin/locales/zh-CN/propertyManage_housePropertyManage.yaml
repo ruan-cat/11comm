@@ -1,0 +1,33 @@
+# 房产管理
+houses:
+  account: 账户明细
+  accountName: 账户名称
+  idCard: 身份证号
+  phone: 联系方式
+  unionId: 楼栋单元
+  type: 房屋类型
+
+# 场地管理
+field-management:
+  fieldNumber: 场地编号
+  fieldType: 场地类型
+  fieldState: 场地状态
+
+#场地预定订单
+field-order:
+  fieldTime: 预约时间
+  fieldMan: 预约人
+  fieldPhone: 预约电话
+  orderState: 场地状态
+  fieldType: 预约场地
+
+#场地预约
+field-reservation:
+  fieldDate: 预约时间
+# 业委会
+owners-committee:
+  name: 姓名
+  phone: 电话
+  status: 状态
+  detail: 详情
+  telephone: 电话

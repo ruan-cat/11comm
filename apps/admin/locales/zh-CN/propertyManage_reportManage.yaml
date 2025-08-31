@@ -1,0 +1,17 @@
+#报表管理
+report:
+  chargeCategories: 收费大类
+  cell: 小区
+  chargeItem: 收费项
+  employerName: 业主名称
+  startTime: 开始时间
+  endTime: 结束时间
+  payMethod: 支付方式
+  payState: 费用状态
+  houseNumberCarNumber: 房屋编号车牌号
+  paymentItem: 费用项
+  employerPhone: 业主电话
+  derived: 导出
+  houseNumber: 房屋编号
+  phoneNumber: 手机号
+  build: 楼栋
