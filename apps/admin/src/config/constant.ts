@@ -14,6 +14,16 @@ export const defaultPureTableProps: Prettify<Omit<PureTableProps, "columns" | "d
 	showOverflowTooltip: true,
 };
 
+/** 默认的 表格组件 序号列配置 */
+export const defaultPureTableIndexColumn: TableColumns = {
+	label: "序号",
+	type: "index",
+	align: "center",
+	fixed: true,
+	index: (index: number) => index + 1,
+	width: 55,
+};
+
 /**
  * 默认的 分页栏配置
  * @description

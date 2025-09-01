@@ -22,10 +22,18 @@ const tableData = ref<报表信息_列表数据[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
+		label: "序号",
+		type: "index",
+		align: "center",
+		fixed: true,
+		index: (index: number) => index + 1,
+		width: 55,
+	},
+
+	{
 		label: "报表编号",
 		prop: "报表编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "报表组",
@@ -38,19 +46,14 @@ const columns = ref<TableColumnList>([
 		width: 150,
 	},
 	{
-		label: "排序",
-		prop: "排序",
-		width: 100,
-	},
-	{
 		label: "描述",
 		prop: "描述",
-		width: 200,
+		minWidth: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 300,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
