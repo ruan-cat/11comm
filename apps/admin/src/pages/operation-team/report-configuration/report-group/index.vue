@@ -8,70 +8,48 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 报表组_列表数据,
+	type 报表组_列表查询_VO,
+	tableData as mockTableData,
+} from "./test-data";
 import { type ReportGroupFormProps, defaultForm } from "./components/form";
 import ReportGroupForm from "./components/form.vue";
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
 
-const {
-	execute: queryReportGroupListExecute,
-	data: queryReportGroupListData,
-	isLoading: queryReportGroupListIsLoading,
-} = queryReportGroupList({
-	onSuccess(data) {
-		tableData.value = data.data.rows;
-		// tableData.value = queryReportGroupListData.value.data.rows;
-		// console.log("查询报表组列表成功:", data);
-	},
-	onError(error) {
-		console.error("查询报表组列表失败:", error);
-	},
-});
-
-async function doQueryReportGroupListExecute() {
-	const params: ReportGroupQueryParams = {
-		pageIndex: pagination.value.currentPage,
-		pageSize: pagination.value.pageSize,
-	};
-	Object.keys(plusSearchModel.value).forEach((key) => {
-		if (!isEmpty(plusSearchModel.value[key])) {
-			params[key] = plusSearchModel.value[key];
-		}
-	});
-	await queryReportGroupListExecute({ params });
-}
-
 /** 表格数据 */
-const tableData = ref<ReportGroupInfo[]>([]);
+const tableData = ref<报表组_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "组ID",
-		prop: "groupId",
-		width: 100,
-		fixed: true,
+		prop: "组ID",
+		width: 120,
 	},
 	{
 		label: "组名称",
-		prop: "name",
+		prop: "组名称",
 		width: 150,
 	},
 	{
 		label: "组url",
-		prop: "url",
+		prop: "组url",
 		minWidth: 200,
 	},
 	{
 		label: "描述",
-		prop: "remark",
+		prop: "描述",
 		minWidth: 200,
 	},
 	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 160,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -82,49 +60,44 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	await doQueryReportGroupListExecute();
+	await loadTableData();
 }
 
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	await doQueryReportGroupListExecute();
+	await loadTableData();
 }
 
-/** 表格组件配置 */
-const pureTableProps = computed<PureTableProps>(() => {
-	return {
-		...defaultPureTableProps,
-		data: tableData.value,
-		columns: [],
-		pagination: pagination.value,
-		loading: queryReportGroupListIsLoading.value,
-	};
+/** 表格组件 配置 */
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
 });
 
-/** 表格操作栏组件配置 */
+/** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报表组信息",
+	title: "报表组",
 	columns: columns.value,
 });
 
-interface 报表组_列表查询_VO {
-	组ID?: string;
-	组名称?: string;
-	组url?: string;
-}
-
-/** 搜索字段初始值 */
-const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<ReportGroupQueryParams> = {
-	groupId: "",
-	name: "",
-	url: "",
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 报表组_列表查询_VO = {
+	组ID: "",
+	组名称: "",
+	组url: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -133,25 +106,32 @@ const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 表格搜索栏组件 表单配置 */
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 组ID
 	{
 		label: "组ID",
-		prop: "groupId",
+		prop: "组ID",
 		valueType: "input",
 	},
+	// 组名称
 	{
 		label: "组名称",
-		prop: "name",
+		prop: "组名称",
 		valueType: "input",
 	},
+	// 组url
 	{
 		label: "组url",
-		prop: "url",
+		prop: "组url",
 		valueType: "input",
 	},
 ]);
 
+/** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
@@ -160,18 +140,58 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = mockTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.组ID) {
+			filteredData = filteredData.filter((item) => item.组ID.includes(plusSearchModel.value.组ID!));
+		}
+		if (plusSearchModel.value.组名称) {
+			filteredData = filteredData.filter((item) => item.组名称.includes(plusSearchModel.value.组名称!));
+		}
+		if (plusSearchModel.value.组url) {
+			filteredData = filteredData.filter((item) => item.组url.includes(plusSearchModel.value.组url!));
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
 async function handleReSearch() {
-	await doQueryReportGroupListExecute();
+	console.log("重新搜索");
+	// 重置搜索条件并重新加载数据
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	await doQueryReportGroupListExecute();
+	console.log("搜索", plusSearchModel.value);
+	// 根据搜索条件过滤数据
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: ReportGroupInfo;
+	row?: 报表组_列表数据;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -254,7 +274,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await queryReportGroupListExecute();
+	await loadTableData();
 });
 </script>
 
