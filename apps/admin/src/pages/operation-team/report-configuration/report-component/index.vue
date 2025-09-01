@@ -10,7 +10,13 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 报表组件_列表数据, type 报表组件_列表查询_VO, tableData as mockTableData, 组件类型Options, 查询方式Options } from "./test-data";
+import {
+	type 报表组件_列表数据,
+	type 报表组件_列表查询_VO,
+	tableData as mockTableData,
+	组件类型Options,
+	查询方式Options,
+} from "./test-data";
 import { type ReportComponentFormProps, defaultForm } from "./components/form";
 import ReportComponentForm from "./components/form.vue";
 
@@ -50,7 +56,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		width: 160,
 		fixed: "right",
 		slot: "operation",
 	},
