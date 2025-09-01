@@ -10,46 +10,42 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 报表组_列表数据,
-	type 报表组_列表查询_VO,
-	tableData as mockTableData,
-} from "./test-data";
+import { tableData as mockTableData } from "./test-data";
 import { type ReportGroupFormProps, defaultForm } from "./components/form";
 import ReportGroupForm from "./components/form.vue";
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<报表组_列表数据[]>([]);
+const tableData = ref<ReportGroupInfo[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "组ID",
-		prop: "组ID",
+		prop: "groupId",
 		width: 120,
 	},
 	{
 		label: "组名称",
-		prop: "组名称",
+		prop: "name",
 		width: 150,
 	},
 	{
 		label: "组url",
-		prop: "组url",
+		prop: "url",
 		minWidth: 200,
 	},
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "remark",
 		minWidth: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		width: 160,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -94,10 +90,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报表组_列表查询_VO = {
-	组ID: "",
-	组名称: "",
-	组url: "",
+const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<ReportGroupQueryParams> = {
+	groupId: "",
+	name: "",
+	url: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -114,19 +110,19 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 组ID
 	{
 		label: "组ID",
-		prop: "组ID",
+		prop: "groupId",
 		valueType: "input",
 	},
 	// 组名称
 	{
 		label: "组名称",
-		prop: "组名称",
+		prop: "name",
 		valueType: "input",
 	},
 	// 组url
 	{
 		label: "组url",
-		prop: "组url",
+		prop: "url",
 		valueType: "input",
 	},
 ]);
@@ -148,14 +144,14 @@ async function loadTableData() {
 		let filteredData = mockTableData;
 
 		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.组ID) {
-			filteredData = filteredData.filter((item) => item.组ID.includes(plusSearchModel.value.组ID!));
+		if (plusSearchModel.value.groupId) {
+			filteredData = filteredData.filter((item) => item.groupId.includes(plusSearchModel.value.groupId!));
 		}
-		if (plusSearchModel.value.组名称) {
-			filteredData = filteredData.filter((item) => item.组名称.includes(plusSearchModel.value.组名称!));
+		if (plusSearchModel.value.name) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.name!));
 		}
-		if (plusSearchModel.value.组url) {
-			filteredData = filteredData.filter((item) => item.组url.includes(plusSearchModel.value.组url!));
+		if (plusSearchModel.value.url) {
+			filteredData = filteredData.filter((item) => item.url.includes(plusSearchModel.value.url!));
 		}
 
 		// 更新总数
@@ -191,7 +187,7 @@ async function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 报表组_列表数据;
+	row?: ReportGroupInfo;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
