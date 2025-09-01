@@ -159,7 +159,50 @@ onMounted(async () => {
 
 在表格组件中，columns 用来配置表格列的表头、操作栏等关键表格信息。
 
-### 在 `表格列配置` 内使用 i18n 的函数
+### `表格列配置` 的首列必须是 序号列配置
+
+例子如下：
+
+```ts
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "报表编号",
+		prop: "报表编号",
+		width: 120,
+	},
+	{
+		label: "报表组",
+		prop: "报表组",
+		width: 150,
+	},
+	{
+		label: "选项标题",
+		prop: "选项标题",
+		width: 150,
+	},
+	{
+		label: "描述",
+		prop: "描述",
+		minWidth: 200,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+```
+
+其首列必须是 `defaultPureTableIndexColumn` 配置。
+
+1. 这是一个全局配置。你直接使用即可。不需要你手动导入该变量。
+2. 首列已经默认配置了 fixed 固定列配置。如果你看到第二列的配置包含了 fixed 配置。请务必移除掉该配置，避免冗余配置。
+
+### 在 `表格列配置` 内使用 i18n 函数的规范
 
 如果你打算使用 i18n 函数来获取文本，请你使用以下写法来调用 i18n ：
 
@@ -219,6 +262,27 @@ const columns = ref<TableColumnList>([
 ### 优先使用中文
 
 如果 `表格列配置` 的 label 项本来就准备好了中文，那么你就不需要主动增加 i18n 翻译。
+
+### 表格操作栏的标题必须用 i18n 函数
+
+表格操作栏，其标题必须使用固定的 i18n 函数写法。如下例子：
+
+```ts
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	// ... 其他配置
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+```
+
+1. 必须使用 i18n 函数来渲染表头。
+2. 宽度必须是 width 。不允许使用 minWidth 。
 
 ## 基于 `<PureTable>` 表格组件的列表页
 

@@ -21,15 +21,7 @@ const tableData = ref<报表信息_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
-	{
-		label: "序号",
-		type: "index",
-		align: "center",
-		fixed: true,
-		index: (index: number) => index + 1,
-		width: 55,
-	},
-
+	defaultPureTableIndexColumn,
 	{
 		label: "报表编号",
 		prop: "报表编号",
