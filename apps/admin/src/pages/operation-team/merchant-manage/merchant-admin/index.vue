@@ -52,7 +52,7 @@ const columns = ref<TableColumnList>([
 	{
 		label: "创建时间",
 		prop: "创建时间",
-		width: 150,
+		minWidth: 150,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
