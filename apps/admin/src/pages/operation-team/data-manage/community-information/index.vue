@@ -22,11 +22,11 @@ const tableData = ref<小区信息_列表数据[]>(mockTableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "小区ID",
 		prop: "小区ID",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "小区名称",
