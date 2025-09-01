@@ -8,47 +8,24 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { type 报表组件_列表数据, type 报表组件_列表查询_VO, tableData as mockTableData, 组件类型Options, 查询方式Options } from "./test-data";
 import { type ReportComponentFormProps, defaultForm } from "./components/form";
 import ReportComponentForm from "./components/form.vue";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
 
-interface 报表组件_列表数据 {
-	组件ID: string;
-	组件名称: string;
-	组件类型: string;
-	查询方式: string;
-	sql: string;
-	java: string;
-	描述: string;
-}
-
-const tableDataItem: 报表组件_列表数据 = {
-	组件ID: "组件ID",
-	组件名称: "组件名称",
-	组件类型: "组件类型",
-	查询方式: "查询方式",
-	sql: "sql",
-	java: "java",
-	描述: "描述",
-};
-
 /** 表格数据 */
-const tableData = ref<报表组件_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<报表组件_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "组件ID",
 		prop: "组件ID",
-		width: 100,
-		fixed: true,
+		width: 120,
 	},
 	{
 		label: "组件名称",
@@ -68,11 +45,12 @@ const columns = ref<TableColumnList>([
 	{
 		label: "描述",
 		prop: "描述",
-		width: 200,
+		minWidth: 200,
 	},
 	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 200,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -83,42 +61,39 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
-/** 表格组件配置 */
+/** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
-	columns: columns.value,
+	columns: [],
 	pagination: pagination.value,
 });
 
-/** 表格操作栏组件配置 */
+/** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报表组件信息",
+	title: "报表组件",
 	columns: columns.value,
 });
 
-interface 报表组件_列表查询_VO {
-	组件ID?: string;
-	组件名称?: string;
-	组件类型?: string;
-	查询方式?: string;
-}
-
-/** 搜索字段初始值 */
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
 const plusSearchModelRef: FieldValues & 报表组件_列表查询_VO = {
 	组件ID: "",
 	组件名称: "",
@@ -132,42 +107,40 @@ const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 表格搜索栏组件 表单配置 */
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 组件ID
 	{
 		label: "组件ID",
 		prop: "组件ID",
 		valueType: "input",
-		placeholder: "请输入组件ID",
 	},
+	// 组件名称
 	{
 		label: "组件名称",
 		prop: "组件名称",
 		valueType: "input",
-		placeholder: "请输入组件名称",
 	},
+	// 组件类型
 	{
 		label: "组件类型",
 		prop: "组件类型",
 		valueType: "select",
-		options: [
-			{ label: "表格", value: "表格" },
-			{ label: "饼状图", value: "饼状图" },
-		],
-		placeholder: "请选择组件类型",
+		options: 组件类型Options,
 	},
+	// 查询方式
 	{
 		label: "查询方式",
 		prop: "查询方式",
 		valueType: "select",
-		options: [
-			{ label: "SQL", value: "sql" },
-			{ label: "JAVA", value: "java" },
-		],
-		placeholder: "请选择查询方式",
+		options: 查询方式Options,
 	},
 ]);
 
+/** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
@@ -176,12 +149,55 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = mockTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.组件ID) {
+			filteredData = filteredData.filter((item) => item.组件ID.includes(plusSearchModel.value.组件ID!));
+		}
+		if (plusSearchModel.value.组件名称) {
+			filteredData = filteredData.filter((item) => item.组件名称.includes(plusSearchModel.value.组件名称!));
+		}
+		if (plusSearchModel.value.组件类型) {
+			filteredData = filteredData.filter((item) => item.组件类型 === plusSearchModel.value.组件类型);
+		}
+		if (plusSearchModel.value.查询方式) {
+			filteredData = filteredData.filter((item) => item.查询方式 === plusSearchModel.value.查询方式);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
 async function handleReSearch() {
 	console.log("重新搜索");
+	// 重置搜索条件并重新加载数据
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	console.log("搜索");
+	console.log("搜索", plusSearchModel.value);
+	// 根据搜索条件过滤数据
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /** 打开弹框 参数 */
@@ -268,6 +284,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
@@ -282,6 +302,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
