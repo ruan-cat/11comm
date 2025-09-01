@@ -23,11 +23,11 @@ const tableData = ref<商户管理员_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "物业名称",
 		prop: "物业名称",
 		minWidth: 150,
-		fixed: true,
 	},
 	{
 		label: "管理员",
