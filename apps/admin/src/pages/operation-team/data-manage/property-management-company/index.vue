@@ -21,11 +21,11 @@ const tableData = ref<物业公司_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "名称",
