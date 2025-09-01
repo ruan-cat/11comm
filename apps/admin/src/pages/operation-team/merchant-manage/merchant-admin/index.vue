@@ -105,6 +105,7 @@ const plusSearchModelRef: FieldValues & 商户管理员_列表查询_VO = {
 	物业名称: "",
 	管理员: "",
 	联系电话: "",
+	状态: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -138,6 +139,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "联系电话",
 		valueType: "input",
 	},
+
+	// 状态
+	{
+		label: "状态",
+		prop: "状态",
+		valueType: "select",
+		options: 状态选项,
+	},
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -165,6 +174,9 @@ async function loadTableData() {
 		}
 		if (plusSearchModel.value.联系电话) {
 			filteredData = filteredData.filter((item) => item.管理员电话.includes(plusSearchModel.value.联系电话!));
+		}
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
 		}
 
 		// 更新总数

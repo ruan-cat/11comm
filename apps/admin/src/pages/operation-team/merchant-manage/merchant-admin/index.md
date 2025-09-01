@@ -7,3 +7,10 @@
 1. 请阅读 .claude\agents\make-list-page.md 文件
 2. 根据上一个文件的要求，修改 apps\admin\src\pages\operation-team\merchant-manage\merchant-admin\index.vue 文件。
 3. 不要运行任何类型检查命令，不要运行任何类似于 vue-tsc 的类型检查命令。
+
+## 002
+
+请深度思考。
+
+1. 使用 make-list-page 代理。
+2. 在 apps\admin\src\pages\operation-team\merchant-manage\merchant-admin\index.vue 内，搜索栏增加筛选条件。根据【状态】字段来筛选表格数据。

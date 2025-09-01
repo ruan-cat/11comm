@@ -15,6 +15,7 @@ export interface 商户管理员_列表查询_VO {
 	物业名称?: string;
 	管理员?: string;
 	联系电话?: string;
+	状态?: string;
 }
 
 /** 状态选项 */
