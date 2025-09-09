@@ -1,5 +1,7 @@
 # 11comm 智慧社区项目 前端仓库
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ruan-cat/11comm)
+
 请点击此链接：
 
 <!-- TODO: -->
