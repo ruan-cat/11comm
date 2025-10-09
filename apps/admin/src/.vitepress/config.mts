@@ -11,7 +11,14 @@ import {
 
 copyReadmeMd("./src");
 
-copyClaudeAgents("apps/admin/src/docs/prompts/agents");
+copyClaudeAgents({
+	/**
+	 * 该地址是写相对路径的 不能写绝对路径，容易导致意外。
+	 * vitepress 命令运行在 apps/admin 目录内，该地址是相对于该运行目录的。
+	 */
+	target: "src/docs/prompts/agents",
+	// rootDir: "../../",
+});
 
 // 为文档添加自动生成的changelog
 addChangelog2doc({
