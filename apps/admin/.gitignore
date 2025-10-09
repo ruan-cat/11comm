@@ -30,3 +30,4 @@ tsconfig.tsbuildinfo
 # 忽略自动复制过来的文件
 src/CHANGELOG.md
 src/index.md
+src/docs/prompts/agents
