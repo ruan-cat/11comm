@@ -191,6 +191,7 @@ export function getPluginsList(
 			logger: false,
 			include: "mock",
 			infixName: false,
+			// FIXME: 该配置导致生产环境多出来莫名其妙的模块 目前不清楚为什么
 			enableProd: true,
 		}),
 
