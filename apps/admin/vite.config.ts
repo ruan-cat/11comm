@@ -100,7 +100,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			},
 			commonjsOptions: {
 				transformMixedEsModules: true,
-				strictRequires: true,
+				strictRequires: "auto",
 			},
 		},
 		define: {
