@@ -27,5 +27,6 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 
 1. 运行 `build:prod` 命令，做生产环境构建。
 2. 运行 `preview` 命令，预览本地效果。
-3. 控制台出现报错，称找不到 `require` 模块。
-4. 请处理该故障，并告诉我为什么打包后会出现残留的 `require` 模块 ？
+3. 用谷歌浏览器 MCP，查看预览的界面。
+4. 控制台出现报错，称找不到 `require` 模块。
+5. 请处理该故障，并告诉我为什么打包后会出现残留的 `require` 模块 ？
