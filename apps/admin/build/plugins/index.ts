@@ -191,7 +191,7 @@ export function getPluginsList(
 			logger: false,
 			include: "mock",
 			infixName: false,
-			enableProd: false,
+			enableProd: true,
 		}),
 
 		// svg组件化支持

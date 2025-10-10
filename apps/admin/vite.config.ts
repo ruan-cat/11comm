@@ -98,6 +98,10 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 					assetFileNames: "static/[ext]/[name]-[hash].[ext]",
 				},
 			},
+			commonjsOptions: {
+				transformMixedEsModules: true,
+				strictRequires: true,
+			},
 		},
 		define: {
 			__INTLIFY_PROD_DEVTOOLS__: false,
