@@ -421,3 +421,16 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{ label: "商户名称", prop: "商户名称", valueType: "input" },
 ]);
 ```
+
+## 不要准备任何样式，不要编写任何样式
+
+在你生成列表页时，请你不要编写任何样式。样式这一块就保留这样的写法即可。留空。
+
+在没有得到任何样式优化的任务时，你处理的列表页组件，其样式就是默认留空的。
+
+```html
+<style lang="scss" scoped>
+	.index-root {
+	}
+</style>
+```
