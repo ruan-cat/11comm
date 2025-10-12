@@ -189,3 +189,14 @@ import { ref } from "vue";
 ```ts
 import { transformI18n } from "@/plugins/i18n";
 ```
+
+### 使用模板插值
+
+在你使用 i18n 的模板插值语法时，请你使用以下代码写法来完成翻译。
+
+```ts
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+```
+
+请你用组合式 api 提供的 `t` 函数来使用模板插值语法。
