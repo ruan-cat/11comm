@@ -200,3 +200,39 @@ const { t } = useI18n();
 ```
 
 请你用组合式 api 提供的 `t` 函数来使用模板插值语法。
+
+### i18n 的部分文本应该用双引号括起来
+
+针对 `apps/admin/locales/en/*.yaml` 和 `apps/admin/locales/zh-CN/*.yaml` 的 i18n 文本配置文件，满足以下规则的文本，都应该用双引号括起来。
+
+#### 例子 1： 含有尾缀冒号的文本
+
+冒号也作为文本的一部分，为了避免出现 yaml 的语法识别错误，应该连同冒号也一同放在双引号内部。
+
+错误例子：
+
+```yaml
+titleCharCount: Title characters:
+```
+
+正确例子：
+
+```yaml
+titleCharCount: "Title characters:"
+```
+
+#### 例子 2： 含有插值语法的英文文本
+
+为了防止前缀的括号造成 yaml 语法错误，这里应该连同整行文本都纳入双引号内。
+
+错误例子：
+
+```yaml
+operationSuccess: {operation} successful
+```
+
+正确例子：
+
+```yaml
+operationSuccess: "{operation} successful"
+```
