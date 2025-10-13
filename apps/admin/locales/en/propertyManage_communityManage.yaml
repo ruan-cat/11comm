@@ -51,7 +51,7 @@ notice:
   clearSelection: Clear Selection
 
   # 提示信息
-  selectedCount: Selected {count} items
+  selectedCount: "Selected {count} items"
   noSelection: Please select data to operate first
   noDraftData: No draft notices in the selected data
 
@@ -63,21 +63,21 @@ notice:
   publishFailed: Publish failed, please try again later
   unpublishSuccess: Unpublish successful
   unpublishFailed: Unpublish failed, please try again later
-  operationSuccess: {operation} successful
-  operationFailed: {operation} failed, please try again later
+  operationSuccess: "{operation} successful"
+  operationFailed: "{operation} failed, please try again later"
   saveSuccess: Save successful
   saveFailed: Save failed, please try again later
 
   # 确认对话框
-  batchDeleteConfirm: Are you sure you want to delete the selected {count} notices? This operation cannot be undone!
+  batchDeleteConfirm: "Are you sure you want to delete the selected {count} notices? This operation cannot be undone!"
   batchDeleteTitle: Batch Delete Confirmation
-  batchPublishConfirm: Are you sure you want to publish the selected {count} draft notices?
+  batchPublishConfirm: "Are you sure you want to publish the selected {count} draft notices?"
   batchPublishTitle: Batch Publish Confirmation
-  deleteConfirm: Are you sure you want to delete notice "{title}"? This operation cannot be undone!
+  deleteConfirm: "Are you sure you want to delete notice \"{title}\"? This operation cannot be undone!"
   deleteTitle: Delete Confirmation
-  publishConfirm: Are you sure you want to publish notice "{title}"?
+  publishConfirm: "Are you sure you want to publish notice \"{title}\"?"
   publishTitle: Publish Confirmation
-  unpublishConfirm: Are you sure you want to unpublish notice "{title}"?
+  unpublishConfirm: "Are you sure you want to unpublish notice \"{title}\"?"
   unpublishTitle: Unpublish Confirmation
 
   # 表单字段
@@ -97,20 +97,20 @@ notice:
 
     # 表单验证
     titleRequired: Please enter publicity title
-    titleLength: Title length should be between {min}-{max} characters
+    titleLength: "Title length should be between {min}-{max} characters"
     typeRequired: Please select publicity type
     validityStartRequired: Please select start date
     validityEndRequired: Please select end date
     statusRequired: Please select publicity status
     contentSummaryRequired: Please enter content summary
-    contentSummaryLength: Summary length should be between {min}-{max} characters
+    contentSummaryLength: "Summary length should be between {min}-{max} characters"
     endBeforeStart: End date cannot be earlier than start date
 
     # 表单提示
     titleTip: Title will be used as the main identification of the notice
     summaryTip: Content summary will be displayed in the notice list, it is recommended to be concise
-    titleCharCount: Title characters:
-    summaryCharCount: Summary characters:
+    titleCharCount: "Title characters:"
+    summaryCharCount: "Summary characters:"
     previewEffect: Preview Effect
     backToEdit: Back to Edit
 
@@ -119,12 +119,12 @@ notice:
       titlePreview: Publicity Title Preview
       type: Type
       status: Status
-      contentSummary: Content Summary:
+      contentSummary: "Content Summary:"
       noSummary: No content summary
-      validityPeriod: Validity Period:
+      validityPeriod: "Validity Period:"
       startDate: Start Date
       endDate: End Date
-      publisher: Publisher:
+      publisher: "Publisher:"
       systemAdmin: System Administrator
 
   # 状态值
