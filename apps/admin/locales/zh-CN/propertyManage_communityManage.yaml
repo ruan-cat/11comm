@@ -25,5 +25,119 @@ property-register:
 
 # 小区公示
 notice:
+  pageTitle: 小区公示
+  # 表格字段
+  publicityId: 公示编号
   publicityTitle: 公示标题
   publicityType: 公示类型
+  publishTime: 发布时间
+  validityPeriod: 有效期
+  status: 状态
+  publisher: 发布人
+  viewCount: 浏览次数
+  contentSummary: 内容摘要
+
+  # 搜索字段
+  publicityIdPlaceholder: 请输入公示编号
+  publicityTitlePlaceholder: 请输入公示标题
+  publishTimeRange: 发布时间范围
+
+  # 操作按钮（使用通用按钮，此处仅保留业务特定按钮）
+  batchPublish: 批量发布
+  batchDelete: 批量删除
+  view: 查看
+  publish: 发布
+  unpublish: 取消发布
+  clearSelection: 清空选择
+
+  # 提示信息
+  selectedCount: 已选择 {count} 条数据
+  noSelection: 请先选择要操作的数据
+  noDraftData: 选中的数据中没有草稿状态的公示
+
+  # 消息提示
+  loadFailed: 加载数据失败，请稍后重试
+  deleteSuccess: 删除成功
+  deleteFailed: 删除失败，请稍后重试
+  publishSuccess: 发布成功
+  publishFailed: 发布失败，请稍后重试
+  unpublishSuccess: 取消发布成功
+  unpublishFailed: 取消发布失败，请稍后重试
+  operationSuccess: "{operation}成功"
+  operationFailed: "{operation}失败，请稍后重试"
+  saveSuccess: 保存成功
+  saveFailed: 保存失败，请稍后重试
+
+  # 确认对话框
+  batchDeleteConfirm: 确定要删除选中的 {count} 条公示信息吗？此操作不可恢复！
+  batchDeleteTitle: 批量删除确认
+  batchPublishConfirm: 确定要发布选中的 {count} 条草稿公示吗？
+  batchPublishTitle: 批量发布确认
+  deleteConfirm: 确定要删除公示"{title}"吗？此操作不可恢复！
+  deleteTitle: 删除确认
+  publishConfirm: 确定要发布公示"{title}"吗？
+  publishTitle: 发布确认
+  unpublishConfirm: 确定要取消发布公示"{title}"吗？
+  unpublishTitle: 取消发布确认
+
+  # 表单字段
+  form:
+    title: 公示标题
+    titlePlaceholder: 请输入公示标题
+    type: 公示类型
+    typePlaceholder: 请选择公示类型
+    validityStart: 有效期开始
+    validityStartPlaceholder: 请选择开始日期
+    validityEnd: 有效期结束
+    validityEndPlaceholder: 请选择结束日期
+    status: 公示状态
+    statusPlaceholder: 请选择公示状态
+    contentSummary: 内容摘要
+    contentSummaryPlaceholder: 请输入内容摘要，将在列表中显示
+
+    # 表单验证
+    titleRequired: 请输入公示标题
+    titleLength: 标题长度应在{min}-{max}个字符之间
+    typeRequired: 请选择公示类型
+    validityStartRequired: 请选择开始日期
+    validityEndRequired: 请选择结束日期
+    statusRequired: 请选择公示状态
+    contentSummaryRequired: 请输入内容摘要
+    contentSummaryLength: 摘要长度应在{min}-{max}个字符之间
+    endBeforeStart: 结束日期不能早于开始日期
+
+    # 表单提示
+    titleTip: 标题将作为公示的主要识别信息
+    summaryTip: 内容摘要将在公示列表中显示，建议简洁明了
+    titleCharCount: 标题字数：
+    summaryCharCount: 摘要字数：
+    previewEffect: 预览效果
+    backToEdit: 返回编辑
+
+    # 预览模式
+    preview:
+      titlePreview: 公示标题预览
+      type: 类型
+      status: 状态
+      contentSummary: 内容摘要：
+      noSummary: 暂无内容摘要
+      validityPeriod: 有效期：
+      startDate: 开始日期
+      endDate: 结束日期
+      publisher: 发布人：
+      systemAdmin: 系统管理员
+
+  # 状态值
+  statusOptions:
+    draft: 草稿
+    published: 已发布
+    expired: 已过期
+
+  # 类型值
+  typeOptions:
+    notice: 通知
+    announcement: 公告
+    reminder: 提醒
+    activity: 活动
+    maintenance: 维修
+    security: 安全

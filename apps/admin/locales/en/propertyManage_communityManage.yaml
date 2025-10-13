@@ -25,5 +25,119 @@ property-register:
 
   # 小区公示
 notice:
-  publicityTitle: publicityTitle
-  publicityType: publicityType
+  pageTitle: Community Notice
+  # 表格字段
+  publicityId: Publicity ID
+  publicityTitle: Publicity Title
+  publicityType: Publicity Type
+  publishTime: Publish Time
+  validityPeriod: Validity Period
+  status: Status
+  publisher: Publisher
+  viewCount: View Count
+  contentSummary: Content Summary
+
+  # 搜索字段
+  publicityIdPlaceholder: Please enter publicity ID
+  publicityTitlePlaceholder: Please enter publicity title
+  publishTimeRange: Publish Time Range
+
+  # 操作按钮（使用通用按钮，此处仅保留业务特定按钮）
+  batchPublish: Batch Publish
+  batchDelete: Batch Delete
+  view: View
+  publish: Publish
+  unpublish: Unpublish
+  clearSelection: Clear Selection
+
+  # 提示信息
+  selectedCount: Selected {count} items
+  noSelection: Please select data to operate first
+  noDraftData: No draft notices in the selected data
+
+  # 消息提示
+  loadFailed: Failed to load data, please try again later
+  deleteSuccess: Delete successful
+  deleteFailed: Delete failed, please try again later
+  publishSuccess: Publish successful
+  publishFailed: Publish failed, please try again later
+  unpublishSuccess: Unpublish successful
+  unpublishFailed: Unpublish failed, please try again later
+  operationSuccess: {operation} successful
+  operationFailed: {operation} failed, please try again later
+  saveSuccess: Save successful
+  saveFailed: Save failed, please try again later
+
+  # 确认对话框
+  batchDeleteConfirm: Are you sure you want to delete the selected {count} notices? This operation cannot be undone!
+  batchDeleteTitle: Batch Delete Confirmation
+  batchPublishConfirm: Are you sure you want to publish the selected {count} draft notices?
+  batchPublishTitle: Batch Publish Confirmation
+  deleteConfirm: Are you sure you want to delete notice "{title}"? This operation cannot be undone!
+  deleteTitle: Delete Confirmation
+  publishConfirm: Are you sure you want to publish notice "{title}"?
+  publishTitle: Publish Confirmation
+  unpublishConfirm: Are you sure you want to unpublish notice "{title}"?
+  unpublishTitle: Unpublish Confirmation
+
+  # 表单字段
+  form:
+    title: Publicity Title
+    titlePlaceholder: Please enter publicity title
+    type: Publicity Type
+    typePlaceholder: Please select publicity type
+    validityStart: Validity Start
+    validityStartPlaceholder: Please select start date
+    validityEnd: Validity End
+    validityEndPlaceholder: Please select end date
+    status: Publicity Status
+    statusPlaceholder: Please select publicity status
+    contentSummary: Content Summary
+    contentSummaryPlaceholder: Please enter content summary, will be displayed in the list
+
+    # 表单验证
+    titleRequired: Please enter publicity title
+    titleLength: Title length should be between {min}-{max} characters
+    typeRequired: Please select publicity type
+    validityStartRequired: Please select start date
+    validityEndRequired: Please select end date
+    statusRequired: Please select publicity status
+    contentSummaryRequired: Please enter content summary
+    contentSummaryLength: Summary length should be between {min}-{max} characters
+    endBeforeStart: End date cannot be earlier than start date
+
+    # 表单提示
+    titleTip: Title will be used as the main identification of the notice
+    summaryTip: Content summary will be displayed in the notice list, it is recommended to be concise
+    titleCharCount: Title characters:
+    summaryCharCount: Summary characters:
+    previewEffect: Preview Effect
+    backToEdit: Back to Edit
+
+    # 预览模式
+    preview:
+      titlePreview: Publicity Title Preview
+      type: Type
+      status: Status
+      contentSummary: Content Summary:
+      noSummary: No content summary
+      validityPeriod: Validity Period:
+      startDate: Start Date
+      endDate: End Date
+      publisher: Publisher:
+      systemAdmin: System Administrator
+
+  # 状态值
+  statusOptions:
+    draft: Draft
+    published: Published
+    expired: Expired
+
+  # 类型值
+  typeOptions:
+    notice: Notice
+    announcement: Announcement
+    reminder: Reminder
+    activity: Activity
+    maintenance: Maintenance
+    security: Security
