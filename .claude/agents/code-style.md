@@ -133,6 +133,36 @@ color: green
 
 你不应该增加冗余的配置。就应该保留唯一的 type 属性。其余诸如 size 和 link 这样的属性，都不应该配置。
 
+### 按钮组件不允许配置任何形式的 icon 图标
+
+1. 不允许配置任何形式的 icon，不希望看到各种按钮都有自己的一套 icon。
+2. 不允许使用 icon 插槽来配置 icon。比如以下例子：
+
+错误例子：
+
+```html
+<template>
+	<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+		<template #icon>
+			<IconifyIcon icon="ep:plus" />
+		</template>
+		{{ transformI18n($t("common.buttons.add")) }}
+	</ElButton>
+</template>
+```
+
+正确例子：
+
+不应该使用 icon 插槽来配置任何形式的按钮。
+
+```html
+<template>
+	<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+		{{ transformI18n($t("common.buttons.add")) }}
+	</ElButton>
+</template>
+```
+
 ## 组件的 icon 使用
 
 <!-- TODO: 暂不要求 -->
