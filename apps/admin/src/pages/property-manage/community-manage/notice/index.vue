@@ -40,11 +40,6 @@ const hasSelection = computed(() => selectedRows.value.length > 0);
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		type: "selection",
-		width: 55,
-		reserveSelection: true,
-	},
-	{
 		label: "头部照片",
 		prop: "头部照片",
 		width: 100,
@@ -516,7 +511,6 @@ onMounted(async () => {
 
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
-					v-loading="loading"
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
@@ -532,13 +526,13 @@ onMounted(async () => {
 					<!-- 操作按钮 -->
 					<template #operation="{ row }">
 						<div>
-							<ElButton type="primary" size="small" link @click="gotoNoticeDetailPage(row)">
+							<ElButton type="primary" size="small" @click="gotoNoticeDetailPage(row)">
 								{{ transformI18n($t("propertyManage_communityManage.notice.view")) }}
 							</ElButton>
-							<ElButton type="warning" size="small" link @click="openDialog({ mode: 'edit', row })">
+							<ElButton type="warning" size="small" @click="openDialog({ mode: 'edit', row })">
 								{{ transformI18n($t("common.buttons.edit")) }}
 							</ElButton>
-							<ElButton type="danger" size="small" link @click="handleDelete(row)">
+							<ElButton type="danger" size="small" @click="handleDelete(row)">
 								{{ transformI18n($t("common.buttons.del")) }}
 							</ElButton>
 						</div>
