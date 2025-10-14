@@ -204,6 +204,33 @@ const columns = ref<TableColumnList>([
 1. 这是一个全局配置。你直接使用即可。不需要你手动导入该变量。
 2. 首列已经默认配置了 fixed 固定列配置。如果你看到第二列的配置包含了 fixed 配置。请务必移除掉该配置，避免冗余配置。
 
+### `表格列配置` 不允许使用其他的配置
+
+如下错误例子所示，`表格列配置` 能允许配置的项很严格，不允许配置其他类型的表格列。
+
+```ts
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	// 不应该增加其他类型的表格列！ 这会导致表格渲染出现严重的故障！
+	{
+		type: "selection",
+		width: 55,
+		reserveSelection: true,
+	},
+	{
+		label: "报表编号",
+		prop: "报表编号",
+		width: 120,
+	},
+	{
+		label: "报表组",
+		prop: "报表组",
+		width: 150,
+	},
+]);
+```
+
 ### 在 `表格列配置` 内使用 i18n 函数的规范
 
 如果你打算使用 i18n 函数来获取文本，请你使用以下写法来调用 i18n ：
