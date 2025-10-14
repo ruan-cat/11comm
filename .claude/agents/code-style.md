@@ -107,6 +107,30 @@ color: green
 </template>
 ```
 
+### 按钮不允许增加额外的字段
+
+按钮组件不允许增加多余的配置属性。在没有得到明确的指令时，默认执行本子代理时，不应该为按钮组件增加多余的属性配置。
+
+错误写法：
+
+```html
+<template>
+	<ElButton type="primary" size="small" link @click="handleDelete(row)">
+		{{ transformI18n($t("common.buttons.add")) }}
+	</ElButton>
+</template>
+```
+
+正确写法：
+
+```html
+<template>
+	<ElButton type="primary" @click="handleDelete(row)"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+</template>
+```
+
+你不应该增加冗余的配置。就应该保留唯一的 type 属性。其余诸如 size 和 link 这样的属性，都不应该配置。
+
 ## 组件的 icon 使用
 
 <!-- TODO: 暂不要求 -->
