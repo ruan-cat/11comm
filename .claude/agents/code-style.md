@@ -66,37 +66,45 @@ color: green
 
 新增按钮用 primary 类型。
 
-```vue
-<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+```html
+<template>
+	<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+</template>
 ```
 
 ### 修改
 
 修改按钮用 warning 类型。
 
-```vue
-<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
+```html
+<template>
+	<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
+</template>
 ```
 
 ### 删除
 
 删除按钮用 danger 类型。
 
-```vue
-<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+```html
+<template>
+	<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+</template>
 ```
 
 ### 其他业务性质的按钮
 
 如果需要写实现具体业务的按钮，就使用 info 类型。
 
-```vue
-<ElButton type="info">
-	{{ transformI18n($t("propertyManage_communityManage.house-decoration.decorationOk")) }}
-</ElButton>
-<ElButton type="info" @click="gotoHouseDecorationPage(row)">
-	{{ transformI18n($t("propertyManage_communityManage.house-decoration.trackingRecord")) }}
-</ElButton>
+```html
+<template>
+	<ElButton type="info">
+		{{ transformI18n($t("propertyManage_communityManage.house-decoration.decorationOk")) }}
+	</ElButton>
+	<ElButton type="info" @click="gotoHouseDecorationPage(row)">
+		{{ transformI18n($t("propertyManage_communityManage.house-decoration.trackingRecord")) }}
+	</ElButton>
+</template>
 ```
 
 ## 组件的 icon 使用
