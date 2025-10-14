@@ -305,9 +305,46 @@ const columns = ref<TableColumnList>([
 <!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 ```
 
+### 使用 `<PureTable>` 表格组件
+
+在列表页内使用 `<PureTable>` 组件时，一定是在 `<PureTableBar>` 组件的插槽内使用的。例子如下：
+
+```html
+<template>
+	<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<template #buttons>
+			<!-- 某些按钮... -->
+		</template>
+
+		<template #default="{ size, dynamicColumns }">
+			<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+			<PureTable
+				:="pureTableProps"
+				:columns="dynamicColumns"
+				:size="size"
+				@page-size-change="handlePageSizeChange"
+				@page-current-change="handleCurrentPageChange"
+			>
+				<template #operation="{ row }">
+					<!-- 某些按钮... -->
+				</template>
+			</PureTable>
+		</template>
+	</PureTableBar>
+</template>
+```
+
+必须满足以下的格式要求：
+
+1. `<PureTable>` 组件必须在 `<PureTableBar>` 组件的 default 默认插槽内使用。
+2. `<PureTable>` 组件必须使用 `<PureTableBar>` 组件 default 默认插槽所暴露出的 size 和 dynamicColumns 这两个变量。必须分别用到 size 和 columns 属性上。
+3. 必须使用 `@page-size-change` 和 `@page-current-change` 这两个分页事件，且不允许使用别的分页事件了。
+4. 分页事件的函数名必须为统一的 `handlePageSizeChange` 和 `handleCurrentPageChange` ，哪怕预留一个空的异步函数，也必须预留好这两个固定名称的空函数。
+5. 不允许在 `<PureTable>` 组件上直接使用 `v-loading` 指令。该组件的加载等待效果交给别的手段实现。
+
 ## 基于 `<PureTableBar>` 的表格拓展栏
 
-每一个表格页都必须包含 PureTableBar 组件。你需要实现以下功能：
+每一个列表页都必须包含 `<PureTableBar>` 组件。你需要实现以下功能：
 
 - 不管是否有操作按钮。都应该提前预留好按钮插槽。
 
