@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "业主缴费明细",
-		icon: "f7:menu",
+		icon: "mdi:account-cash",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.ownerPaymentDetails"),
 	},

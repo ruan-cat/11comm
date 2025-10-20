@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "报表配置",
-		icon: "f7:menu",
+		icon: "mdi:chart-box",
 		rank: getRouteRank("operationTeam.reportConfiguration"),
 	},
 });

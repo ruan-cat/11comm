@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "报修设置",
-		icon: "f7:menu",
+		icon: "mdi:cog-wrench",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.repairsSetting"),
 	},

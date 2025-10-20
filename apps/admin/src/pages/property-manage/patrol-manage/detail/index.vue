@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "巡检明细",
-		icon: "f7:menu",
+		icon: "mdi:clipboard-text",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage.detail"),
 	},

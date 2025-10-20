@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "楼栋结构图",
-		icon: "f7:menu",
+		icon: "mdi:domain",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.buildingSpaceStructureDiagram"),
 	},

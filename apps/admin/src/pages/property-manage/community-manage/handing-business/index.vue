@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "业务受理",
-		icon: "f7:menu",
+		icon: "mdi:briefcase",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.handingBusiness"),
 	},

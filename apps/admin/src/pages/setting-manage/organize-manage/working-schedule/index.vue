@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "排班表",
-		icon: "f7:menu",
+		icon: "mdi:table-week",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.workingSchedule"),
 	},

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "费用提醒",
-		icon: "f7:menu",
+		icon: "mdi:bell-alert",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.feeReminder"),
 	},

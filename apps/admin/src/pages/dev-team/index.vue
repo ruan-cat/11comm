@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "开发团队",
-		icon: "f7:menu",
+		icon: "mdi:code",
 		rank: getRouteRank("devTeam"),
 	},
 });

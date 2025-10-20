@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "配置中心",
-		icon: "f7:menu",
+		icon: "mdi:cog",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.center"),
 	},

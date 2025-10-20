@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "缓存管理",
-		icon: "f7:menu",
+		icon: "mdi:database",
 		rank: getRouteRank("devTeam.cacheManage"),
 	},
 });

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "系统管理",
-		icon: "f7:menu",
+		icon: "mdi:cog-box",
 		rank: getRouteRank("settingManage.systemManage"),
 	},
 });

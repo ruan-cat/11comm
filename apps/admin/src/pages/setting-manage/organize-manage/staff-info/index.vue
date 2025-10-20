@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "员工信息",
-		icon: "f7:menu",
+		icon: "mdi:account-multiple",
 		roles: ["物业团队", "运营团队"],
 		rank: getRouteRank("settingManage.organizeManage.staffInfo"),
 	},

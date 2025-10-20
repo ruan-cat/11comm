@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "合同管理",
-		icon: "f7:menu",
+		icon: "mdi:file-sign",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.contractManage"),
 	},

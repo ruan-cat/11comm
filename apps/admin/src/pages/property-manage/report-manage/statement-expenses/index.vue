@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "费用明细表",
-		icon: "f7:menu",
+		icon: "mdi:receipt",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.statementExpenses"),
 	},

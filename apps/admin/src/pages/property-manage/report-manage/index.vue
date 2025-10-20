@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "报表管理",
-		icon: "f7:menu",
+		icon: "mdi:chart-box",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage"),
 	},

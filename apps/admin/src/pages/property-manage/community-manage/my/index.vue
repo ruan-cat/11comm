@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "我的小区",
-		icon: "f7:menu",
+		icon: "mdi:home-account",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.my"),
 	},

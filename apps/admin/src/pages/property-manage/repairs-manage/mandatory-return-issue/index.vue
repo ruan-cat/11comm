@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "强制回单",
-		icon: "f7:menu",
+		icon: "mdi:clipboard-alert",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.mandatoryReturnIssue"),
 	},

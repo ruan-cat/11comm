@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "业主车辆",
-		icon: "f7:menu",
+		icon: "mdi:car",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.parkingManage.ownerVehicle"),
 	},

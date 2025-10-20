@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "小区信息",
-		icon: "f7:menu",
+		icon: "mdi:home-city",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.dataManage.communityInformation"),
 	},

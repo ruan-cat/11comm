@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "菜单管理",
-		icon: "f7:menu",
+		icon: "mdi:menu",
 		rank: getRouteRank("devTeam.menuManage"),
 	},
 });

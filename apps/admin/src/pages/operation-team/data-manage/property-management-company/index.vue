@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "物业公司",
-		icon: "f7:menu",
+		icon: "mdi:office-building",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.dataManage.propertyManagementCompany"),
 	},

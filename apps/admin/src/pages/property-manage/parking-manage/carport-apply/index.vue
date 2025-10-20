@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "车位申请",
-		icon: "f7:menu",
+		icon: "mdi:clipboard-text-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.parkingManage.carportApply"),
 	},

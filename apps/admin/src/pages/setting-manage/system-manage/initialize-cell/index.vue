@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "初始化小区",
-		icon: "f7:menu",
+		icon: "mdi:home-import-outline",
 		roles: ["开发团队"],
 		rank: getRouteRank("settingManage.systemManage.initializeCell"),
 	},

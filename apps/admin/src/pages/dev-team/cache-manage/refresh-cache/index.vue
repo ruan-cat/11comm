@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "刷新缓存",
-		icon: "f7:menu",
+		icon: "mdi:refresh",
 		showParent: true,
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.cacheManage.refreshCache"),

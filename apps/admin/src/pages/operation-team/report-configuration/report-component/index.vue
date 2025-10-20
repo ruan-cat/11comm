@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "报表组件",
-		icon: "f7:menu",
+		icon: "mdi:chart-pie",
 		roles: ["开发团队"],
 		rank: getRouteRank("operationTeam.reportConfiguration.reportComponent"),
 	},

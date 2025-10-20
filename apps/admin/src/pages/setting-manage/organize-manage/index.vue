@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "组织管理",
-		icon: "f7:menu",
+		icon: "mdi:account-group",
 		rank: getRouteRank("settingManage.organizeManage"),
 	},
 });

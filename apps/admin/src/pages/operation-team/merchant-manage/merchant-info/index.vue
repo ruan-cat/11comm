@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "商户信息",
-		icon: "f7:menu",
+		icon: "mdi:storefront",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.merchantManage.merchantInfo"),
 	},

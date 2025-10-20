@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "系统配置",
-		icon: "f7:menu",
+		icon: "mdi:application-cog",
 		roles: ["开发团队"],
 		rank: getRouteRank("settingManage.systemManage.systemConfig"),
 	},

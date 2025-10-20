@@ -3,7 +3,7 @@ import { ref } from "vue";
 definePage({
 	meta: {
 		title: "报修报表",
-		icon: "f7:menu",
+		icon: "mdi:tools",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.repairReportForm"),
 	},

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "未收费房屋",
-		icon: "f7:menu",
+		icon: "mdi:home-alert",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.noChargeHouse"),
 	},

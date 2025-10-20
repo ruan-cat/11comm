@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "设置",
-		icon: "f7:menu",
+		icon: "mdi:settings",
 		rank: getRouteRank("settingManage"),
 	},
 });

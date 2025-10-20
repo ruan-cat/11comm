@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "数据权限",
-		icon: "f7:menu",
+		icon: "mdi:shield-account",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.dataPermission"),
 	},

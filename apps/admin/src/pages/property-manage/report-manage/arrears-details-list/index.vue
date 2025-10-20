@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "欠费明细表",
-		icon: "f7:menu",
+		icon: "mdi:currency-cny-off",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.arrearsDetailsList"),
 	},

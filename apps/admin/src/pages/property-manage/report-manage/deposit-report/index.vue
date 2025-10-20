@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "押金报表",
-		icon: "f7:menu",
+		icon: "mdi:bank",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.depositReport"),
 	},

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "运营团队",
-		icon: "f7:menu",
+		icon: "mdi:chart-line",
 		rank: getRouteRank("operationTeam"),
 	},
 });

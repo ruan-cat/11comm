@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "菜单项",
-		icon: "f7:menu",
+		icon: "mdi:format-list-text",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.menuManage.item"),
 	},

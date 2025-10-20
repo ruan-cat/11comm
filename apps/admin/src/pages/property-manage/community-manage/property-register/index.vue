@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "产权登记",
-		icon: "f7:menu",
+		icon: "mdi:file-document",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.propertyRegister"),
 	},

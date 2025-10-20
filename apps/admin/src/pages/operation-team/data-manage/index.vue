@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "数据管理",
-		icon: "f7:menu",
+		icon: "mdi:database-edit",
 		rank: getRouteRank("operationTeam.dataManage"),
 	},
 });

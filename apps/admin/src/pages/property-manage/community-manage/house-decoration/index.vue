@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "房屋装修",
-		icon: "f7:menu",
+		icon: "mdi:hammer",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.houseDecoration"),
 	},

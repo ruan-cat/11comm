@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "车位结构图",
-		icon: "f7:menu",
+		icon: "mdi:garage",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.parkingSpaceStructureDiagram"),
 	},

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "电话报修",
-		icon: "f7:menu",
+		icon: "mdi:phone-settings",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.phoneReportRepairs"),
 	},

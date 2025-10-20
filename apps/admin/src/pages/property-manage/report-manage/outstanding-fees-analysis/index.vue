@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "欠费分析",
-		icon: "f7:menu",
+		icon: "mdi:chart-line",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.outstandingFeesAnalysis"),
 	},

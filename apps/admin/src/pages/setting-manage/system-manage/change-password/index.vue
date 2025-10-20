@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "修改密码",
-		icon: "f7:menu",
+		icon: "mdi:key",
 		rank: getRouteRank("settingManage.systemManage.changePassword"),
 	},
 });

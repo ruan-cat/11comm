@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "班次设置",
-		icon: "f7:menu",
+		icon: "mdi:clock-time-eight",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.shiftSetting"),
 	},

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "报修汇总表",
-		icon: "f7:menu",
+		icon: "mdi:table-merge-cells",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.repairReportsSummaryTable"),
 	},

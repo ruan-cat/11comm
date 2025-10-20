@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "停车场管理",
-		icon: "f7:menu",
+		icon: "mdi:parking",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.parkingManage.parkingLot"),
 	},

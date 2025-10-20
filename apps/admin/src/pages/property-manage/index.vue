@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "物业菜单",
-		icon: "f7:menu",
+		icon: "mdi:home",
 		rank: getRouteRank("propertyManage"),
 	},
 });

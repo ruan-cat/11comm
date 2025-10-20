@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "报修待办",
-		icon: "f7:menu",
+		icon: "mdi:clipboard-clock",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.repairsTodo"),
 	},
