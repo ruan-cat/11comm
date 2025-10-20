@@ -30,3 +30,20 @@
    - 没有默认图标时，就提供默认图标。
    - 只需要处理 meta.icon 。其他配置**绝对不做处理**。
 5. 特殊页面处理： 不考虑什么平衡图标的表现力和简洁性。我不考虑这个方向，我考虑的是至少提供**有差异性的**，**实心风格**的图标。
+
+## 02 更替其他可用的 icon 标签
+
+以下页面的 index.vue 文件，其 meta.icon 标签无法渲染。是因为这些 icon 不存在，请你换成存在的图标。
+
+- /property-manage/report-manage/arrears-details-list
+- /property-manage/patrol-manage/path
+- /property-manage/repairs-manage/repairs-setting
+- /setting-manage/organize-manage/org-info
+- /setting-manage/organize-manage/working-schedule
+- /setting-manage/system-manage/register-protocol
+- /setting-manage/system-manage/community-configuration
+- /dev-team/config-manage/item
+
+- apps\admin\src\pages\property-manage\expense-manage 全部**费用管理**的页面都被你遗漏了，请补全设置 icon
+- apps\admin\src\pages\property-manage\contract-manage 全部**合同管理**的页面都被你遗漏了，请补全设置 icon
+- apps\admin\src\pages\property-manage\house-property-manage 有部分**房产管理**的页面都被你遗漏了，请补全设置 icon
