@@ -8,17 +8,30 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 
-import { type PropertyRegisterFormProps } from "./components/form";
+/** 模拟异步函数 */
+async function testAsync() {
+	return new Promise((resolve) => setTimeout(resolve, 1000));
+}
+
+import type { PropertyRegisterFormProps } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
-import { tableData, 审核状态Options, 楼栋Options, 单元Options, defaultForm, type 产权登记_列表数据, type 产权登记_列表查询_VO } from "./test-data";
+import {
+	tableData as mockTableData,
+	审核状态Options,
+	楼栋Options,
+	单元Options,
+	defaultForm,
+	type 产权登记_列表数据,
+	type 产权登记_列表查询_VO,
+} from "./test-data";
 
 const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<产权登记_列表数据[]>(tableData);
+const tableData = ref<产权登记_列表数据[]>(mockTableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -223,7 +236,7 @@ interface OpenDialogParams {
 	row?: 产权登记_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
@@ -286,7 +299,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = PropertyRegisterFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -295,7 +308,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
+				btnClick: ({ dialog: { options, index } }) => {
 					PropertyRegisterFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -321,8 +334,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 <template>
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>

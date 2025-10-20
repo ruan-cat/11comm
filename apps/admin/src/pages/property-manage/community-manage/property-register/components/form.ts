@@ -1,6 +1,6 @@
-/** 导出类型和默认值供其他文件使用 */
-export type { 产权登记表单_VO } from "../test-data";
-export { defaultForm } from "../test-data";
+/** 导入类型和默认值供其他文件使用 */
+import type { 产权登记表单_VO } from "../test-data";
+import { defaultForm } from "../test-data";
 
 /**
  * 产权登记表单 props
@@ -13,3 +13,7 @@ export interface PropertyRegisterFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 产权登记表单_VO;
 }
+
+/** 导出类型和默认值供其他文件使用 */
+export type { 产权登记表单_VO } from "../test-data";
+export { defaultForm } from "../test-data";
