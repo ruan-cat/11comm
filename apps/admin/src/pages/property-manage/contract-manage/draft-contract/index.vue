@@ -208,8 +208,8 @@ async function loadTableData() {
 		if (plusSearchModel.value.合同编号) {
 			filteredData = filteredData.filter((item) => item.合同编号.includes(plusSearchModel.value.合同编号!));
 		}
-		if (plusSearchModel.value.选择合同类型) {
-			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.选择合同类型);
+		if (plusSearchModel.value.合同类型) {
+			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.合同类型);
 		}
 
 		// 更新总数
