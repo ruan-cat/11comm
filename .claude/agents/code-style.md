@@ -163,9 +163,9 @@ color: green
 </template>
 ```
 
-## 组件的 icon 使用
+## 组件使用 icon 规范
 
-<!-- TODO: 暂不要求 -->
+不允许私自使用 icon 装饰。
 
 ## 导入模块
 
