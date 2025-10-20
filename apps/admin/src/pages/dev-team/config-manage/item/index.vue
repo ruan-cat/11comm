@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "配置项",
-		icon: "mdi:format-list-checkbox",
+		icon: "tabler:settings-2",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.item"),
 	},

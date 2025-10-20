@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "字典类型",
-		icon: "mdi:format-list-checkbox",
+		icon: "lucide:book-open",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.type"),
 	},
