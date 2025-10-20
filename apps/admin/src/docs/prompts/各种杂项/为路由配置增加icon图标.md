@@ -47,3 +47,11 @@
 - apps\admin\src\pages\property-manage\expense-manage 全部**费用管理**的页面都被你遗漏了，请补全设置 icon
 - apps\admin\src\pages\property-manage\contract-manage 全部**合同管理**的页面都被你遗漏了，请补全设置 icon
 - apps\admin\src\pages\property-manage\house-property-manage 有部分**房产管理**的页面都被你遗漏了，请补全设置 icon
+
+## 03 更替其他可用的 icon 标签
+
+以下页面的 index.vue 文件，其 meta.icon 标签无法渲染。是因为这些 icon 不存在，请你换成存在的图标。
+
+- /property-manage/expense-manage/water-and-electricity-meter-reading
+- /property-manage/house-property-manage/invoice-title
+- /property-manage/contract-manage/type
