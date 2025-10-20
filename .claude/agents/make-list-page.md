@@ -4,7 +4,7 @@ description: 这是一个按照特定代码模板，并模仿代码模板的编�
 color: yellow
 ---
 
-# 生成标准的列表页
+# 生成标准列表页
 
 请深度思考。
 
@@ -83,7 +83,7 @@ color: yellow
 import { type OptionsType } from "plus-pro-components";
 ```
 
-## 制作 `假分页请求` 函数
+## 制作并使用 `假分页请求` 函数
 
 需要你制作出假的请求接口函数，在列表页内模拟接口请求。要求模拟：
 
@@ -91,7 +91,7 @@ import { type OptionsType } from "plus-pro-components";
 2. 分页查询。
 3. 函数名必须是 `loadTableData` 函数。
 
-loadTableData 函数的写法例子如下：
+`loadTableData` 函数的写法例子如下：
 
 ```ts
 /** 加载表格数据 */
@@ -145,7 +145,9 @@ onMounted(async () => {
 });
 ```
 
-1. onMounted 的回调函数必须写成 async 异步函数。
+1. 每个列表页必须提供 onMounted 生命周期函数。如果没有，就补全。
+2. onMounted 必须写在整个脚本的最下面。
+3. onMounted 的回调函数必须写成 async 异步函数。
 
 ### 不需要增加任何加载等待效果
 
