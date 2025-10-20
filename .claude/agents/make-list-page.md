@@ -22,8 +22,19 @@ color: yellow
 
 你的参考上下文为：
 
-- apps\admin\src\pages\property-manage\community-manage\house-decoration\index.vue
-- apps\admin\src\pages\operation-team\data-manage\property-management-company\index.vue
+1. 房屋装修 标准模板
+   - 列表页 apps\admin\src\pages\property-manage\community-manage\house-decoration\index.vue
+2. 物业公司 标准模板
+   - 列表页 apps\admin\src\pages\operation-team\data-manage\property-management-company\index.vue
+   - 假数据 apps\admin\src\pages\operation-team\data-manage\property-management-company\test-data.ts
+   - 表单组件 apps\admin\src\pages\operation-team\data-manage\property-management-company\components\form.vue
+   - 表单类型 apps\admin\src\pages\operation-team\data-manage\property-management-company\components\form.ts
+3. 小区公示 标准模板
+   - 文件夹目录 apps\admin\src\pages\property-manage\community-manage\notice
+   - 列表页 index.vue
+   - 假数据 test-data.ts
+   - 表单组件 components\form.vue
+   - 表单类型 components\form.ts
 
 请你**务必阅读**上述文件，以该 vue 组件的代码为模板，模仿制作页面。
 
@@ -38,7 +49,7 @@ color: yellow
 
 ## 组件命名风格
 
-请阅读文件 `.claude\agents\code-style.md` ，或者是自己调用子代理 `code-style`。
+请阅读文件 `.claude\agents\code-style.md` ，或者是自己调用 `code-style` 代码风格子代理。
 
 ## 术语说明
 
