@@ -34,7 +34,8 @@
 		"git:push": "git push --follow-tags",
 		"git:fetch": "git fetch -p",
 		"commit": "git-cz",
-		"build:admin": "pnpm -F=@01s-11comm/admin build",
+		"build:cloudflare:admin": "pnpm -F=@01s-11comm/admin build",
+		"build:cloudflare:docs": "pnpm -F=@01s-11comm/admin build:docs",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
 		"ci": "pnpm run build"
 	},
