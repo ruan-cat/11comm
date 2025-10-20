@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "起草合同",
-		icon: "f7:menu",
+		icon: "mdi:file-edit",
 		roles: ["物业团队"],
 	},
 });

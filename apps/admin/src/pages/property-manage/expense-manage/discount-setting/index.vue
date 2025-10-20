@@ -3,7 +3,7 @@
 definePage({
 	meta: {
 		title: "折扣设置",
-		icon: "f7:menu",
+		icon: "mdi:label-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.discountSetting"),
 	},

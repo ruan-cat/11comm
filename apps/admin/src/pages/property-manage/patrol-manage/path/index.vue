@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "巡检路线",
-		icon: "mdi:route",
+		icon: "mdi:map-marker-path",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage.path"),
 	},

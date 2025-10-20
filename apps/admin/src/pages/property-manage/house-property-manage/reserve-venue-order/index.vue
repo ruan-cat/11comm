@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "场地预约订单",
-		icon: "f7:menu",
+		icon: "mdi:calendar-clock",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.reserveVenueOrder"),
 	},

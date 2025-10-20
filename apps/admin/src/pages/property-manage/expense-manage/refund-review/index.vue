@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "退费审核",
-		icon: "f7:menu",
+		icon: "mdi:cash-refund",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.refundReview"),
 	},

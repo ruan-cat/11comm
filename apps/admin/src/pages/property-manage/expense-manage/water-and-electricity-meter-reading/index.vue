@@ -3,7 +3,7 @@
 definePage({
 	meta: {
 		title: "水电抄表",
-		icon: "f7:menu",
+		icon: "mdi:water-pump-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.waterAndElectricityMeterReading"),
 	},

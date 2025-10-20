@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "费用项设置",
-		icon: "f7:menu",
+		icon: "mdi:cog-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.expenseItemSetting"),
 	},

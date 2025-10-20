@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "注册协议",
-		icon: "f7:menu",
+		icon: "mdi:file-document",
 		roles: ["开发团队"],
 		rank: getRouteRank("settingManage.systemManage.registerProtocol"),
 	},

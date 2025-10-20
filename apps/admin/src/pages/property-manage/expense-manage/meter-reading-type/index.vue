@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "抄表类型",
-		icon: "f7:menu",
+		icon: "mdi:gauge",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.meterReadingType"),
 	},

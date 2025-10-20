@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "合同甲方",
-		icon: "f7:menu",
+		icon: "mdi:account-group",
 		roles: ["物业团队"],
 	},
 });

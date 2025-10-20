@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "组织信息",
-		icon: "mdi:organization",
+		icon: "mdi:domain",
 		roles: ["物业团队", "运营团队"],
 		rank: getRouteRank("settingManage.organizeManage.orgInfo"),
 	},

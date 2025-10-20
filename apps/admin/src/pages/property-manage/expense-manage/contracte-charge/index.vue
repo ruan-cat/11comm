@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "合同收费",
-		icon: "f7:menu",
+		icon: "mdi:file-document-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.contracteCharge"),
 	},

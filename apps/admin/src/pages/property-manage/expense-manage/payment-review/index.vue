@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "缴费审核",
-		icon: "f7:menu",
+		icon: "mdi:check-circle-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.paymentReview"),
 	},

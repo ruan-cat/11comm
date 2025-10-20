@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "欠费催缴",
-		icon: "f7:menu",
+		icon: "mdi:bell-alert-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.reminderForOverduePayments"),
 	},

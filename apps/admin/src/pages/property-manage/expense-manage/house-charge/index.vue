@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "房屋收费",
-		icon: "f7:menu",
+		icon: "mdi:home-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.houseCharge"),
 	},

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "到期合同",
-		icon: "f7:menu",
+		icon: "mdi:calendar-alert",
 		roles: ["物业团队"],
 	},
 });

@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "补打收据",
-		icon: "f7:menu",
+		icon: "mdi:receipt-text-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.reprintVoucher"),
 	},

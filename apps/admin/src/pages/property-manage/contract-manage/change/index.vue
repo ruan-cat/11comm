@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "合同变更",
-		icon: "f7:menu",
+		icon: "mdi:swap-horizontal",
 		roles: ["物业团队"],
 	},
 });

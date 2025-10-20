@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "发票",
-		icon: "f7:menu",
+		icon: "mdi:receipt",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.invoice"),
 	},

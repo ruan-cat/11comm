@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "取消费用",
-		icon: "f7:menu",
+		icon: "mdi:close-circle-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.cancelFee"),
 	},

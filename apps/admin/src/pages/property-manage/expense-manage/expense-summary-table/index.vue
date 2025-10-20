@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "费用汇总表",
-		icon: "f7:menu",
+		icon: "mdi:table-large",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.expenseSummaryTable"),
 	},
