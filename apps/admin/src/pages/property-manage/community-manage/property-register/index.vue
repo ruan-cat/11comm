@@ -11,39 +11,14 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 
-import { type PropertyRegisterFormProps, defaultForm } from "./components/form";
+import { type PropertyRegisterFormProps } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
+import { tableData, 审核状态Options, 楼栋Options, 单元Options, defaultForm, type 产权登记_列表数据, type 产权登记_列表查询_VO } from "./test-data";
 
 const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
 
-interface 产权登记_列表数据 {
-	房屋产权ID: string;
-	房屋ID: string;
-	房屋编号: string;
-	姓名: string;
-	联系方式: string;
-	身份证号: string;
-	地址: string;
-	状态: string;
-}
-
-const tableDataItem: 产权登记_列表数据 = {
-	房屋产权ID: "房屋产权ID",
-	房屋ID: "房屋ID",
-	房屋编号: "房屋编号",
-	姓名: "姓名",
-	联系方式: "联系方式",
-	身份证号: "身份证号",
-	地址: "地址",
-	状态: "状态",
-};
-
 /** 表格数据 */
-const tableData = ref<产权登记_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<产权登记_列表数据[]>(tableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -130,18 +105,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 产权登记_列表查询_VO {
-	房屋ID?: string;
-	房屋编号?: string;
-	姓名?: string;
-	联系方式?: string;
-	身份证号?: string;
-	地址?: string;
-	审核状态?: string;
-	楼栋?: string;
-	单元?: string;
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -217,20 +180,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_communityManage.property-register.auditStatus")),
 		prop: "审核状态",
 		valueType: "select",
-		options: [
-			{
-				label: "未审核",
-				value: "未审核",
-			},
-			{
-				label: "审核通过",
-				value: "审核通过",
-			},
-			{
-				label: "审核不通过",
-				value: "审核不通过",
-			},
-		],
+		options: 审核状态Options,
 	},
 
 	// 楼栋
@@ -238,20 +188,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_communityManage.property-register.building")),
 		prop: "楼栋",
 		valueType: "select",
-		options: [
-			{
-				label: "一楼",
-				value: "一楼",
-			},
-			{
-				label: "二楼",
-				value: "二楼",
-			},
-			{
-				label: "三楼",
-				value: "三楼",
-			},
-		],
+		options: 楼栋Options,
 	},
 
 	// 单元
@@ -259,20 +196,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_communityManage.property-register.unit")),
 		prop: "单元",
 		valueType: "select",
-		options: [
-			{
-				label: "一单元",
-				value: "一单元",
-			},
-			{
-				label: "二单元",
-				value: "二单元",
-			},
-			{
-				label: "三单元",
-				value: "三单元",
-			},
-		],
+		options: 单元Options,
 	},
 ]);
 

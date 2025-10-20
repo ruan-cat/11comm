@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { PropertyRegisterFormProps, 产权登记表单_VO, defaultForm } from "./form";
+import { PropertyRegisterFormProps, 产权登记表单_VO, defaultForm, 审核状态Options } from "../test-data";
 
 const props = defineProps<PropertyRegisterFormProps>();
 
@@ -44,7 +44,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "房屋产权ID",
 		prop: "房屋产权ID",
 		valueType: "input",
-		required: true,
+		required: false,
 		disabled: true,
 	},
 
@@ -101,11 +101,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: [
-			{ label: "未审核", value: "未审核" },
-			{ label: "审核通过", value: "审核通过" },
-			{ label: "审核不通过", value: "审核不通过" },
-		],
+		options: 审核状态Options,
 		required: true,
 	},
 ]);
