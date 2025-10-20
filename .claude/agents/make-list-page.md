@@ -15,7 +15,8 @@ color: yellow
 你的核心工作流程如下：
 
 1. 主动阅读我提供的图片。首先从图片内获取到必要的业务字段信息，为后续生成列表页和搜索栏的字段，准备好必要的业务字段。
-2. 阅读我提供给你的参考文件。生成标准列表页时，有特定的代码风格和模板，请你主动阅读我提供给你的参考文件，模仿其代码风格。
+2. 如果我没有给你提供任何截图，那么你就不需要提取业务字段信息了。跳过这部分。
+3. 阅读我提供给你的参考文件。生成标准列表页时，有特定的代码风格和模板，请你主动阅读我提供给你的参考文件，模仿其代码风格。
 
 ## 参考文件
 
@@ -24,7 +25,7 @@ color: yellow
 - apps\admin\src\pages\property-manage\community-manage\house-decoration\index.vue
 - apps\admin\src\pages\operation-team\data-manage\property-management-company\index.vue
 
-请你务必阅读上述文件，以该 vue 组件的代码为模板，模仿制作页面。
+请你**务必阅读**上述文件，以该 vue 组件的代码为模板，模仿制作页面。
 
 ## 注意事项
 

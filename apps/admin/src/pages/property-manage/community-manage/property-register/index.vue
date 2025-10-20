@@ -11,6 +11,11 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 
+import { type PropertyRegisterFormProps, defaultForm } from "./components/form";
+import PropertyRegisterForm from "./components/form.vue";
+
+const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
+
 interface 产权登记_列表数据 {
 	房屋产权ID: string;
 	房屋ID: string;
@@ -287,6 +292,106 @@ async function handleReSearch() {
 async function handleSearch() {
 	console.log("搜索");
 }
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: 产权登记_列表数据;
+}
+
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 打开弹框 */
+function openDialog({ mode, row }: OpenDialogParams) {
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}产权登记`;
+
+	/** 表单组件需要的props */
+	const formProps: PropertyRegisterFormProps = {
+		form: cloneDeep(defaultForm),
+		defaultValues: cloneDeep(defaultForm),
+	};
+
+	// 模拟情况：从外部获得值
+	const testEditProps: PropertyRegisterFormProps = {
+		form: {
+			...defaultForm,
+			房屋产权ID: "FR001",
+			房屋ID: "H001",
+			房屋编号: "1-101",
+			姓名: "张三",
+			联系方式: "13800138000",
+			身份证号: "320101199001011234",
+			地址: "江苏省南京市某某街道某某号",
+			状态: "审核通过",
+		},
+		// @ts-ignore
+		defaultValues: cloneDeep(row),
+	};
+
+	/** 弹框组件所需的变量 */
+	const props = isAdd.value
+		? formProps
+		: {
+				form: isEdit.value ? testEditProps.form : cloneDeep(row),
+				defaultValues: cloneDeep(row),
+			};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+
+		contentRenderer: () =>
+			h(PropertyRegisterForm, {
+				ref: PropertyRegisterFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = PropertyRegisterFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = PropertyRegisterFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					PropertyRegisterFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await PropertyRegisterFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
 </script>
 
 <template>
@@ -297,7 +402,9 @@ async function handleSearch() {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -310,9 +417,15 @@ async function handleSearch() {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
