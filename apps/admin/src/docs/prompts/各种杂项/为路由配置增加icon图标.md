@@ -55,3 +55,13 @@
 - /property-manage/expense-manage/water-and-electricity-meter-reading
 - /property-manage/house-property-manage/invoice-title
 - /property-manage/contract-manage/type
+
+## 04 使用其他图标集，避免重复使用 `mdi:format-list-checkbox` icon
+
+`mdi:format-list-checkbox` 图标重复了很多次了，请你认真阅读 meta.title 标题，试着用其他的图标集，换一个语义化更强的 icon。
+
+以下几个页面需要更换图标：
+
+- apps\admin\src\pages\property-manage\contract-manage\type\index.vue
+- apps\admin\src\pages\dev-team\config-manage\item\index.vue
+- apps\admin\src\pages\dev-team\config-manage\type\index.vue
