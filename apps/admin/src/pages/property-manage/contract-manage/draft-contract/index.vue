@@ -4,97 +4,90 @@ definePage({
 		title: "起草合同",
 		icon: "mdi:file-edit",
 		roles: ["物业团队"],
+		rank: getRouteRank("propertyManage.contractManage.draftContract"),
 	},
 });
 
-import { ref, computed, watch, h } from "vue";
+import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import AddForm from "./components/addForm.vue";
 import { 合同草稿表单_VO, type AddFormProps, defaultForm } from "./components/addForm";
+import {
+	tableData as mockTableData,
+	contractTypeOptionsData,
+	contractStatusOptionsData,
+	type 合同草稿_列表数据,
+	type 合同类型_列表查询_VO,
+} from "./test-data";
 
 const AddFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
 
-interface 业务受理_列表数据 {
-	合同名称: string;
-	合同编号: string;
-	父合同编号: string;
-	合同类型: string;
-	经办人: string;
-	合同金额: string;
-	开始时间: string;
-	结束时间: string;
-	状态: string;
+/** 模式控制 */
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 测试异步函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-const tableDataItem: 业务受理_列表数据 = {
-	合同名称: "合同名称",
-	合同编号: "合同编号",
-	父合同编号: "父合同编号",
-	合同类型: "合同类型",
-	经办人: "经办人",
-	合同金额: "合同金额",
-	开始时间: "开始时间",
-	结束时间: "结束时间",
-	状态: "状态",
-};
-
 /** 表格数据 */
-const tableData = ref<业务受理_列表数据[]>(
-	Array(10)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<合同草稿_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "合同名称",
 		prop: "合同名称",
-		width: 90,
-		fixed: true,
+		width: 150,
 	},
 	{
 		label: "合同编号",
 		prop: "合同编号",
-		width: 90,
+		width: 120,
 	},
 	{
 		label: "父合同编号",
 		prop: "父合同编号",
-		width: 100,
+		width: 120,
 	},
 	{
 		label: "合同类型",
 		prop: "合同类型",
-		width: 90,
+		width: 100,
 	},
 	{
 		label: "经办人",
 		prop: "经办人",
-		width: 70,
+		width: 80,
 	},
 	{
 		label: "合同金额",
 		prop: "合同金额",
-		width: 90,
+		width: 100,
 		align: "right",
 	},
 	{
 		label: "开始时间",
 		prop: "开始时间",
-		width: 90,
+		width: 100,
 	},
 	{
 		label: "结束时间",
 		prop: "结束时间",
-		width: 90,
+		width: 100,
 	},
 	{
 		label: "状态",
 		prop: "状态",
-		width: 65,
-		formatter: (row: 业务受理_列表数据) => {
+		width: 80,
+		formatter: (row: 合同草稿_列表数据) => {
 			const statusMap = {
 				草稿: '<span class="text-gray-500">草稿</span>',
 				审批中: '<span class="text-blue-500">审批中</span>',
@@ -105,12 +98,41 @@ const columns = ref<TableColumnList>([
 		},
 	},
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 230,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
+
+/** 分页配置 */
+const pagination = ref<PaginationProps>({
+	...defaultPagination,
+	pageSize: 10,
+	currentPage: 1,
+	total: 0,
+});
+
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
+
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+/** 表格组件 配置 */
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
+});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -119,25 +141,14 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 /**
- * 表格搜索栏数据模型
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-interface 合同类型_列表查询_VO {
-	合同名称?: string;
-	输入合同编号?: string;
-	选择合同类型?: string;
-}
-
-/**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & 合同类型_列表查询_VO = {
 	合同名称: "",
-	输入合同编号: "",
-	选择合同类型: "",
+	合同编号: "",
+	合同类型: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -151,65 +162,28 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 巡检人
+	// 合同名称
 	{
 		label: "合同名称",
 		prop: "合同名称",
 		valueType: "input",
 	},
 
+	// 合同编号
 	{
-		label: "输入合同编号",
-		prop: "输入合同编号",
+		label: "合同编号",
+		prop: "合同编号",
 		valueType: "input",
 	},
 
+	// 合同类型
 	{
-		label: transformI18n($t("property-manage_contract-manage.contract-type.addpeopleplaceholder")),
-		prop: "审核类型",
+		label: "合同类型",
+		prop: "合同类型",
 		valueType: "select",
-		options: [
-			{
-				label: "类型1",
-				value: "类型1",
-			},
-			{
-				label: "类型2",
-				value: "类型2",
-			},
-		],
+		options: contractTypeOptionsData,
 	},
 ]);
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 1000,
-});
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	border: true,
-	stripe: true,
-	adaptive: true,
-	highlightCurrentRow: true,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
-}
 
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
@@ -220,69 +194,86 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-function handleReSearch() {
-	console.log("重新搜索");
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = mockTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.合同名称) {
+			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
+		}
+		if (plusSearchModel.value.合同编号) {
+			filteredData = filteredData.filter((item) => item.合同编号.includes(plusSearchModel.value.合同编号!));
+		}
+		if (plusSearchModel.value.选择合同类型) {
+			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.选择合同类型);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
-// 表单数据
-const formData = ref<合同草稿表单_VO>(cloneDeep(defaultForm));
-
-// 对话框索引，用于关闭对话框
-let dialogIndex = -1;
-
-// 处理表单提交
-function handleFormSubmit() {
-	console.log("提交表单数据:", formData.value);
-	// 这里可以添加表单提交的逻辑
-	// 提交成功后关闭对话框
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: 合同草稿_列表数据;
 }
 
-// 处理表单重置
-function handleFormReset() {
-	console.log("重置表单数据");
-	// 这里可以添加表单重置的额外逻辑
-}
+/** 打开弹框 */
+function openDialog({ mode, row }: OpenDialogParams) {
+	setMode(mode);
 
-// 处理表单关闭
-function handleFormClose() {}
-
-// 编辑合同
-function handleEdit(row: 业务受理_列表数据) {
-	// 这里应该根据 row 的数据获取完整的合同信息
-	// 为了演示，这里使用默认表单并修改部分字段
-	formData.value = {
-		...cloneDeep(defaultForm),
-		合同名称: row.合同名称,
-		合同编号: row.合同编号,
-		合同类型: row.合同类型,
-		经办人: row.经办人,
-		合同金额: row.合同金额,
-		开始时间: row.开始时间,
-		结束时间: row.结束时间, // 保留默认的合同附件数组
-		合同附件: cloneDeep(defaultForm.合同附件),
-	};
-}
-
-function addPeopeleClick() {
-	addDialog({
-		title: "基础用法",
-		contentRenderer: () => h("p", "添加审核人员"),
-	});
-}
-
-function onBaseClick() {
 	/** 弹框标题 */
-	const title = "起草合同";
+	const title = `${modeText.value}起草合同`;
 
-	/** 表单组件需要的props */
-	const formProps: AddFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
+	/** 根据模式设置表单数据 */
+	const formProps: AddFormProps = isAdd.value
+		? {
+				form: cloneDeep(defaultForm),
+				defaultValues: cloneDeep(defaultForm),
+			}
+		: {
+				form: {
+					...cloneDeep(defaultForm),
+					合同名称: row?.合同名称 || "",
+					合同编号: row?.合同编号 || "",
+					合同类型: row?.合同类型 || "",
+					经办人: row?.经办人 || "",
+					合同金额: row?.合同金额 || "",
+					开始时间: row?.开始时间 || "",
+					结束时间: row?.结束时间 || "",
+					// TODO: 补全字段， 修复类型错误
+					// 保留默认的合同附件数组
+					合同附件: cloneDeep(defaultForm.合同附件),
+				},
+				defaultValues: cloneDeep(row) || cloneDeep(defaultForm),
+			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
@@ -330,27 +321,47 @@ function onBaseClick() {
 					const res = await AddFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
-						// 模拟异步操作
-						await sleep(1300);
+						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await loadTableData(); // 重新加载数据
 					}
 				},
 			},
 		],
 	});
 }
+
+// 处理打印操作
+function handlePrint(row: 合同草稿_列表数据) {
+	consola.log("打印合同:", row.合同名称);
+	// TODO: 实现打印功能
+}
+
+// 处理删除操作
+function handleDelete(row: 合同草稿_列表数据) {
+	consola.log("删除合同:", row.合同名称);
+	// TODO: 实现删除功能
+}
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="onBaseClick">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("property-manage_contract-manage.draft-contract.add")) }}
 				</ElButton>
 			</template>
@@ -365,11 +376,15 @@ function onBaseClick() {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="onBaseClick"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="tag">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="handlePrint(row)">
 							{{ transformI18n($t("property-manage_contract-manage.draft-contract.print")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
@@ -379,12 +394,5 @@ function onBaseClick() {
 
 <style lang="scss" scoped>
 .index-root {
-}
-
-.dialog-footer {
-	display: flex;
-	justify-content: flex-end;
-	gap: 10px;
-	margin-top: 20px;
 }
 </style>

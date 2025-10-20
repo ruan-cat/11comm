@@ -3,10 +3,11 @@
   用于新增、修改合同草稿
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef, reactive } from "vue";
 
 import { AddFormProps, 合同类型, 合同草稿表单_VO, defaultForm } from "./addForm";
 
+/** 表单组件 props */
 const props = defineProps<AddFormProps>();
 
 /** 默认的表单重置变量 */
@@ -37,40 +38,12 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-// 定义事件
-const emit = defineEmits<{
-	(e: "submit"): void;
-	(e: "reset"): void;
-	(e: "close"): void;
-}>();
-
-// 提交表单
-const handleSubmit = async () => {
-	const formInstance = plusFormInstance.value;
-	if (!formInstance) return;
-
-	// await formInstance.validate();
-	emit("submit");
-};
-
-// 重置表单
-const handleReset = () => {
-	const formInstance = plusFormInstance.value;
-	if (!formInstance) return;
-
-	// formInstance.resetFields();
-	emit("reset");
-};
-
-// 关闭表单
-const handleClose = () => {
-	emit("close");
-};
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
 	// 合同基本信息
 	{
+		/** @description 合同名称 */
 		label: "合同名称",
 		prop: "合同名称",
 		valueType: "input",
@@ -81,6 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 合同编号 */
 		label: "合同编号",
 		prop: "合同编号",
 		valueType: "input",
@@ -91,6 +65,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 合同类型 */
 		label: "合同类型",
 		prop: "合同类型",
 		valueType: "select",
@@ -109,6 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 甲方信息
 	{
+		/** @description 甲方 */
 		label: "甲方",
 		prop: "甲方",
 		valueType: "input",
@@ -119,6 +95,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 甲方联系人 */
 		label: "甲方联系人",
 		prop: "甲方联系人",
 		valueType: "input",
@@ -129,6 +106,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 甲方联系电话 */
 		label: "甲方联系电话",
 		prop: "甲方联系电话",
 		valueType: "input",
@@ -141,6 +119,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 乙方信息
 	{
+		/** @description 乙方 */
 		label: "乙方",
 		prop: "乙方",
 		valueType: "input",
@@ -151,6 +130,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 乙方联系人 */
 		label: "乙方联系人",
 		prop: "乙方联系人",
 		valueType: "input",
@@ -161,6 +141,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 乙方联系电话 */
 		label: "乙方联系电话",
 		prop: "乙方联系电话",
 		valueType: "input",
@@ -173,6 +154,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 经办信息
 	{
+		/** @description 经办人 */
 		label: "经办人",
 		prop: "经办人",
 		valueType: "input",
@@ -183,6 +165,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 经办电话 */
 		label: "经办电话",
 		prop: "经办电话",
 		valueType: "input",
@@ -193,45 +176,57 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
+		/** @description 合同金额 */
 		label: "合同金额",
 		prop: "合同金额",
-		valueType: "input",
-		required: true,
+		valueType: "input-number",
+		required: false,
 		span: 8,
 		fieldProps: {
 			placeholder: "选填，请填写合同金额",
+			precision: 2,
+			min: 0,
 		},
 	},
 
 	// 时间信息
 	{
+		/** @description 开始时间 */
 		label: "开始时间",
 		prop: "开始时间",
+		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			placeholder: "必填，请选择开始时间",
 		},
 		required: true,
 		span: 8,
 	},
 	{
+		/** @description 结束时间 */
 		label: "结束时间",
 		prop: "结束时间",
+		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			placeholder: "必填，请选择结束时间",
 		},
 		required: true,
 		span: 8,
 	},
 	{
+		/** @description 签订时间 */
 		label: "签订时间",
 		prop: "签订时间",
+		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			placeholder: "必填，请选择签订时间",
 		},
 		required: true,
@@ -240,6 +235,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 说明
 	{
+		/** @description 说明 */
 		label: "说明",
 		prop: "说明",
 		valueType: "textarea",
@@ -252,8 +248,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 合同附件
 	{
+		/** @description 合同附件 */
 		label: "合同附件",
 		prop: "合同附件",
+		valueType: "upload",
 		fieldProps: {
 			action: "/api/upload",
 			multiple: true,
@@ -269,8 +267,38 @@ const plusFormColumns = ref<PlusColumn[]>([
 /** 表单项配置 动态计算 只读 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验 */
-const plusFormRules = {};
+/** 表单校验规则 */
+const plusFormRules = reactive({
+	合同名称: [
+		{ required: true, message: "请填写合同名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "合同名称长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	合同编号: [
+		{ required: true, message: "请填写合同编号", trigger: "blur" },
+		{ min: 2, max: 30, message: "合同编号长度在 2 到 30 个字符", trigger: "blur" },
+	],
+	合同类型: [{ required: true, message: "请选择合同类型", trigger: "change" }],
+	甲方: [{ required: true, message: "请填写甲方", trigger: "blur" }],
+	甲方联系人: [{ required: true, message: "请填写甲方联系人", trigger: "blur" }],
+	甲方联系电话: [
+		{ required: true, message: "请填写甲方联系电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	乙方: [{ required: true, message: "请填写乙方", trigger: "blur" }],
+	乙方联系人: [{ required: true, message: "请填写乙方联系人", trigger: "blur" }],
+	乙方联系电话: [
+		{ required: true, message: "请填写乙方联系电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	经办人: [{ required: true, message: "请填写经办人", trigger: "blur" }],
+	经办电话: [
+		{ required: true, message: "请填写经办电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	签订时间: [{ required: true, message: "请选择签订时间", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,
@@ -279,45 +307,22 @@ defineExpose({
 </script>
 
 <template>
-	<div class="form-container">
+	<section class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
-			class="form-root"
 			:has-footer="false"
 			:default-values="defaultValues"
 			:columns="plusFormColumnsComputed"
 			:rules="plusFormRules"
 			:grid="{ cols: 24 }"
 		/>
-
-		<div class="form-footer">
-			<ElButton @click="handleClose">关闭</ElButton>
-			<ElButton @click="handleReset">重置</ElButton>
-			<ElButton type="primary" @click="handleSubmit">提交</ElButton>
-		</div>
-	</div>
+	</section>
 </template>
 
 <style lang="scss" scoped>
-.form-container {
+.form-root {
 	height: 100%;
 	width: 100%;
-	display: flex;
-	flex-direction: column;
-}
-
-.form-root {
-	flex: 1;
-	overflow-y: auto;
-}
-
-.form-footer {
-	display: flex;
-	justify-content: flex-end;
-	padding: 16px 0;
-	gap: 12px;
-	border-top: 1px solid #eee;
-	margin-top: 16px;
 }
 </style>
