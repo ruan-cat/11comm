@@ -35,7 +35,8 @@
 		"git:fetch": "git fetch -p",
 		"commit": "git-cz",
 		"build:admin": "pnpm -F=@01s-11comm/admin build",
-		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore"
+		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
+		"ci": "pnpm run build"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^5.4.1",
