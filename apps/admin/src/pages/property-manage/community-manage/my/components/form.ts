@@ -79,6 +79,8 @@ export interface CommunityManageFormProps {
 	form: CommunityManageFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: CommunityManageFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
 
 /** 导出选项数据供组件使用 */

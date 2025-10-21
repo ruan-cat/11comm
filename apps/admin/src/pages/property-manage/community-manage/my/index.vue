@@ -8,7 +8,8 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
+import { ElTag, ElMessage, ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import {
 	type 我的小区_列表数据,
@@ -17,7 +18,6 @@ import {
 	状态选项,
 	tableData as allTableData,
 } from "./test-data";
-
 import { CommunityManageFormProps, defaultForm, type CommunityManageFormVO } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
 
@@ -313,7 +313,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			endTime: row?.结束时间 || "",
 			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
 		},
-		defaultValues: cloneDeep(row) as CommunityManageFormVO || cloneDeep(defaultForm),
+		defaultValues: {
+			...defaultForm,
+			province: row?.省份 || "",
+			city: row?.市州 || "",
+			district: row?.区县 || "",
+			name: row?.小区名称 || "",
+			code: row?.小区编码 || "",
+			servicePhone: row?.客服电话 || "",
+			area: row?.面积 || "",
+			startTime: row?.开始时间 || "",
+			endTime: row?.结束时间 || "",
+			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
+		},
 	};
 
 	/** 弹框组件所需的变量 */
@@ -353,7 +365,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					{
 						label: transformI18n($t("common.buttons.close")),
 						type: "info",
-						btnClick: async ({ dialog: { options, index }, button }) => {
+						btnClick: ({ dialog: { options, index } }) => {
 							options.destroy();
 						},
 					},
@@ -381,7 +393,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 							button.loading = true;
 							try {
 								const formData = communityManageFormInstance.value.formComputed;
-								// TODO: 替换为真实的API调用
 								await testAsync();
 								ElMessage.success(`${modeText.value}成功`);
 								options.destroy();
@@ -415,7 +426,6 @@ function handleDelete(row: 我的小区_列表数据) {
 		type: "warning",
 	}).then(async () => {
 		try {
-			// TODO: 替换为真实的API调用
 			await testAsync();
 			ElMessage.success("删除成功");
 			// 刷新列表

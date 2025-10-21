@@ -8,12 +8,7 @@ import { ref, computed, useTemplateRef } from "vue";
 import { CommunityManageFormProps, CommunityManageFormVO, communityOptions } from "./form";
 import type { Mode } from "@/composables/use-mode";
 
-interface FormProps extends CommunityManageFormProps {
-	/** 表单模式 */
-	mode?: Mode;
-}
-
-const props = withDefaults(defineProps<FormProps>(), {
+const props = withDefaults(defineProps<CommunityManageFormProps>(), {
 	mode: "add",
 });
 
@@ -134,14 +129,15 @@ const plusFormColumns = ref<PlusColumn[]>([
 		options: communityOptions.statuses,
 		required: true,
 	},
-	]);
+]);
 
 /** 表单项配置 动态计算 只读 */
 const plusFormColumnsComputed = computed(() =>
-	plusFormColumns.value.map(column => ({
+	// @ts-expect-error 类型故障 类型实例化过于深入
+	plusFormColumns.value.map((column) => ({
 		...column,
 		disabled: props.mode === "info",
-	}))
+	})),
 );
 
 /** 表单校验规则 */
