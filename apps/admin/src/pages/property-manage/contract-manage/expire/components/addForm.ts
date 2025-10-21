@@ -1,9 +1,10 @@
+/** 到期处理类型常量 */
 const _到期处理类型 = ["续签", "终止"] as const;
 
-// 警告 这里仅为了演示 实际上的业务类型为 string
+/** 到期处理类型 */
 export type 到期处理类型 = (typeof _到期处理类型)[number];
 
-// 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
+/** 合同到期表单接口 */
 export interface 合同到期表单_VO {
 	合同名称: string;
 	合同编号: string;
@@ -26,7 +27,7 @@ export interface 合同到期表单_VO {
 	合同附件?: any[];
 }
 
-/** 默认表单 @description 对外导出用于其他场景使用 */
+/** 默认表单数据 */
 export const defaultForm: 合同到期表单_VO = {
 	合同名称: "",
 	合同编号: "",
@@ -49,11 +50,7 @@ export const defaultForm: 合同到期表单_VO = {
 	合同附件: [],
 };
 
-/**
- * 合同到期表单 props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
- */
+/** 合同到期表单组件属性接口 */
 export interface AddFormProps {
 	/** 表单数据 */
 	form: 合同到期表单_VO;

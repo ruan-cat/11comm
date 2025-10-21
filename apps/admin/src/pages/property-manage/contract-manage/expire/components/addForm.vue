@@ -3,7 +3,7 @@
   用于处理合同到期的续签或终止
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
 import { AddFormProps, 到期处理类型, 合同到期表单_VO, defaultForm } from "./addForm";
 
@@ -26,11 +26,7 @@ usePlusFormReset(plusFormInstance);
  */
 const toRefForm = cloneDeep(props.form) as FieldValues & 合同到期表单_VO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
+/** 表单对象 */
 const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
@@ -150,7 +146,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择开始时间",
 		},
 		required: true,
 		span: 8,
@@ -161,7 +156,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择结束时间",
 		},
 		required: true,
 		span: 8,
@@ -172,7 +166,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择签订时间",
 		},
 		required: true,
 		span: 8,
@@ -205,24 +198,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
-			placeholder: "请输入处理说明信息",
 		},
 		required: true,
-		span: 24,
-	},
-
-	// 合同附件
-	{
-		label: "合同附件",
-		prop: "合同附件",
-		fieldProps: {
-			action: "/api/upload",
-			multiple: true,
-			limit: 5,
-			fileList: [],
-			accept: ".pdf,.doc,.docx,.xls,.xlsx",
-			tip: "支持上传PDF、Word、Excel文件,最多5个文件",
-		},
 		span: 24,
 	},
 ]);
