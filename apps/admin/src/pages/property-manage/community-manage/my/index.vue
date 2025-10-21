@@ -146,11 +146,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
 		let filteredData = allTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.省份) {
 			filteredData = filteredData.filter((item) => item.省份.includes(plusSearchModel.value.省份!));
 		}
@@ -170,19 +170,19 @@ async function loadTableData() {
 			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
 		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
+		/** TODO: 显示错误提示 */
 	}
 }
 
@@ -211,7 +211,7 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 省份
+	/** 省份 */
 	{
 		label: "省份",
 		prop: "省份",
@@ -219,35 +219,35 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		options: 省份选项,
 	},
 
-	// 市州
+	/** 市州 */
 	{
 		label: "市州",
 		prop: "市州",
 		valueType: "input",
 	},
 
-	// 区县
+	/** 区县 */
 	{
 		label: "区县",
 		prop: "区县",
 		valueType: "input",
 	},
 
-	// 小区名称
+	/** 小区名称 */
 	{
 		label: "小区名称",
 		prop: "小区名称",
 		valueType: "input",
 	},
 
-	// 小区编码
+	/** 小区编码 */
 	{
 		label: "小区编码",
 		prop: "小区编码",
 		valueType: "input",
 	},
 
-	// 状态
+	/** 状态 */
 	{
 		label: "状态",
 		prop: "状态",
@@ -415,7 +415,7 @@ function handleDelete(row: 我的小区_列表数据) {
 		try {
 			await testAsync();
 			ElMessage.success("删除成功");
-			// 刷新列表
+			/** 刷新列表 */
 			loadTableData();
 		} catch (error) {
 			ElMessage.error("删除失败");
@@ -440,9 +440,9 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<el-button type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
-				</el-button>
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -455,13 +455,15 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<el-button type="info" @click="handleView(row)"> 详情 </el-button>
-						<el-button type="warning" @click="handleEdit(row)">
+						<ElButton type="info" @click="handleView(row)">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
-						</el-button>
-						<el-button type="danger" @click="handleDelete(row)">
+						</ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
-						</el-button>
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
