@@ -392,13 +392,13 @@ const columns = ref<TableColumnList>([
 
 每一个表格页都必须包含一个表格搜索栏。
 
-### plusSearchColumns 表格搜索栏组件的表单配置必须是 computed
+### `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
 
-plusSearchColumns 必须设计成 computed ，用于实现动态切换的 i18n 文本
+`plusSearchColumns` 必须设计成 `computed` ，用于实现动态切换的 `i18n` 文本
 
-### plusSearchColumns 的 jsdoc 注释必须提供额外的说明注释
+### `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
 
-plusSearchColumns 需要提供明确的 issue 链接，告诉其他人为什么要写成 computed 的形式。其 jsdoc 格式如下例子：
+`plusSearchColumns` 需要提供明确的 `issue` 链接，告诉其他人为什么要写成 `computed` 的形式。其 `jsdoc` 格式如下例子：
 
 错误例子：
 
@@ -417,7 +417,7 @@ plusSearchColumns 需要提供明确的 issue 链接，告诉其他人为什么�
 
 你有且只能写固定的 `@see https://github.com/plus-pro-components/plus-pro-components/issues/184` 注释。不能胡编乱造，照抄即可。
 
-### 数值类型的搜索栏字段
+### 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
 
 **不需要**你为了数值类型的搜索栏而实现专门的配置。请参考以下例子：
 
@@ -443,7 +443,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 正确的例子：
 
-不需要在 fieldProps 内配置任何 type 。
+不需要在 `fieldProps` 内配置任何 `type` 。
 
 ```ts
 /**
@@ -460,7 +460,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 ```
 
-### 不需要配置 fieldProps.placeholder 占位符文本
+### 不需要配置 `fieldProps.placeholder` 占位符文本
 
 在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。比如以下例子：
 
