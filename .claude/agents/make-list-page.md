@@ -392,11 +392,11 @@ const columns = ref<TableColumnList>([
 
 每一个表格页都必须包含一个表格搜索栏。
 
-### `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
+### 1. `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
 
 `plusSearchColumns` 必须设计成 `computed` ，用于实现动态切换的 `i18n` 文本
 
-### `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
+### 2. `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
 
 `plusSearchColumns` 需要提供明确的 `issue` 链接，告诉其他人为什么要写成 `computed` 的形式。其 `jsdoc` 格式如下例子：
 
@@ -417,7 +417,7 @@ const columns = ref<TableColumnList>([
 
 你有且只能写固定的 `@see https://github.com/plus-pro-components/plus-pro-components/issues/184` 注释。不能胡编乱造，照抄即可。
 
-### 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
+### 3. 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
 
 **不需要**你为了数值类型的搜索栏而实现专门的配置。请参考以下例子：
 
@@ -460,7 +460,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 ```
 
-### 不需要配置 `fieldProps.placeholder` 占位符文本
+### 4. 不需要配置 `fieldProps.placeholder` 占位符文本
 
 在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。比如以下例子：
 
@@ -498,3 +498,29 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{ label: "商户名称", prop: "商户名称", valueType: "input" },
 ]);
 ```
+
+### 5. `<PlusSearch>` 表格搜索栏的组件写法
+
+必须按照以下方式来编写 `<PlusSearch>` 组件，必须提供以下内容：
+
+```vue
+<template>
+	<PlusSearch
+		v-model="plusSearchModel"
+		:="plusSearchProps"
+		:columns="plusSearchColumns"
+		@search="handleSearch"
+		@reset="handleReSearch"
+	/>
+</template>
+```
+
+其中，`<PlusSearch>` 表格搜索栏组件相关的变量与函数如下：
+
+- plusSearchModel
+- plusSearchProps
+- plusSearchColumns
+- handleSearch
+- handleReSearch
+
+请你自主学习模仿上述写法。
