@@ -268,11 +268,41 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					合同金额: row?.合同金额 || "",
 					开始时间: row?.开始时间 || "",
 					结束时间: row?.结束时间 || "",
-					// TODO: 补全字段， 修复类型错误
+					// 保留其他表单字段的默认值
+					甲方: defaultForm.甲方,
+					甲方联系人: defaultForm.甲方联系人,
+					甲方联系电话: defaultForm.甲方联系电话,
+					乙方: defaultForm.乙方,
+					乙方联系人: defaultForm.乙方联系人,
+					乙方联系电话: defaultForm.乙方联系电话,
+					经办电话: defaultForm.经办电话,
+					签订时间: defaultForm.签订时间,
+					说明: defaultForm.说明,
 					// 保留默认的合同附件数组
 					合同附件: cloneDeep(defaultForm.合同附件),
 				},
-				defaultValues: cloneDeep(row) || cloneDeep(defaultForm),
+				defaultValues: {
+					...cloneDeep(defaultForm),
+					合同名称: row?.合同名称 || "",
+					合同编号: row?.合同编号 || "",
+					合同类型: row?.合同类型 || "",
+					经办人: row?.经办人 || "",
+					合同金额: row?.合同金额 || "",
+					开始时间: row?.开始时间 || "",
+					结束时间: row?.结束时间 || "",
+					// 保留其他表单字段的默认值
+					甲方: defaultForm.甲方,
+					甲方联系人: defaultForm.甲方联系人,
+					甲方联系电话: defaultForm.甲方联系电话,
+					乙方: defaultForm.乙方,
+					乙方联系人: defaultForm.乙方联系人,
+					乙方联系电话: defaultForm.乙方联系电话,
+					经办电话: defaultForm.经办电话,
+					签订时间: defaultForm.签订时间,
+					说明: defaultForm.说明,
+					// 保留默认的合同附件数组
+					合同附件: cloneDeep(defaultForm.合同附件),
+				},
 			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
