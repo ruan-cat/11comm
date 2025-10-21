@@ -79,7 +79,7 @@ color: yellow
 import { type OptionsType } from "plus-pro-components";
 ```
 
-## 制作并使用 `假分页请求` 函数
+## 制作并使用 loadTableData `假分页请求` 函数
 
 需要你制作出假的请求接口函数，在列表页内模拟接口请求。要求模拟以下行为：
 
@@ -148,6 +148,35 @@ onMounted(async () => {
 ### 不需要增加任何加载等待效果
 
 不需要你增加任何 loading 加载效果。直接在 `假分页请求` 内拆分数据。
+
+## 列表页必须提供的变量和函数
+
+这里将整个列表页一定会提供的变量和函数，都列举出来，你在生成列表页时，请直接照搬照抄这些代码即可：
+
+### 1. `handleReSearch`
+
+```ts
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+```
+
+### 2. `handleSearch`
+
+```ts
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+```
+
+### 3. `loadTableData`
+
+参考 [制作并使用 loadTableData `假分页请求` 函数](#制作并使用-loadtabledata-假分页请求-函数) 部分。
 
 ## 分批次生成表格
 
