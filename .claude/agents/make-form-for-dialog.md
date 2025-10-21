@@ -6,7 +6,7 @@ color: blue
 
 # 生成用于命令式弹框的表单组件
 
-## 参考文件
+## 1. 参考文件
 
 你的参考上下文为：
 
@@ -18,11 +18,11 @@ color: blue
 - PlusProComponents 的 form 表单组件： @https://plus-pro-components.com/components/form.html
 - 组件类型配置： @https://plus-pro-components.com/components/config.html
 
-## 与命令式弹框业务高耦合
+## 2. 与命令式弹框业务高耦合
 
 根据我提供给你的截图，来生成表单组件。注意，表单组件和命令式弹框，是高度耦合的。在你生成表单组件时，也应当做好生成命令式弹框的准备。
 
-## 表单组件的目录结构
+## 3. 表单组件的目录结构
 
 在制作表单组件时，请遵循以下的目录结构：
 
@@ -33,17 +33,17 @@ color: blue
         form.vue
 ```
 
-## 表单组件的文件必须在 components 目录内
+## 4. 表单组件的文件必须在 components 目录内
 
 在你新建表单时，应该都新建在 components 目录内。
 
 列表页引用表单时，请使用**相对路径**来应用，不要从根路径内用路径别名来引用文件。
 
-## 业务类型文件 form.ts
+## 5. 业务类型文件 form.ts
 
 form.ts，该文件时用来给表单组件准备必要的业务类型和常量的。
 
-### 对外导出 form.vue 使用的 props 类型
+### 5.1 对外导出 form.vue 使用的 props 类型
 
 表单组件的 props 类型，遵守以下规范：
 
@@ -81,13 +81,13 @@ export interface PropertyManagementCompanyFormProps {
 
 其中 PropertyManagementCompanyFormProps 是表单组件所需要的 props 类型。
 
-### 不要给业务类型增加额外的索引字段
+### 5.2 不要给业务类型增加额外的索引字段
 
 你**不应该**添加索引签名 `[key: string]: any` 满足 `FieldValues` 要求。
 
 在 form.vue 组件内，会使用强制类型转换的方式，满足 `FieldValues` 的类型要求。
 
-## 基于 `<PlusForm>` 表单组件实现的 form.vue
+## 6. 基于 `<PlusForm>` 表单组件实现的 form.vue
 
 在你生成表单的代码时，请你务必遵守以下规范和要求：
 
@@ -97,7 +97,7 @@ export interface PropertyManagementCompanyFormProps {
 
 请你务必认真阅读代码实现。
 
-### 表单组件的 props 对象
+### 6.1 表单组件的 props 对象
 
 form.vue 组件必须准备好 props 变量，如下例子所示：
 
@@ -112,7 +112,7 @@ const props = defineProps<ExpenseItemSettingFormProps>();
 
 必须使用 form.ts 导出的 props 类型。
 
-### 默认的表单重置变量 defaultValues
+### 6.2 默认的表单重置变量 defaultValues
 
 form.vue 组件必须准备好 defaultValues 变量，如下例子所示：
 
@@ -125,7 +125,7 @@ const defaultValues = props.defaultValues as FieldValues & 费用项设置表单
 - 必须做强制类型转换约束。该变量必须被约束为 `FieldValues & 某某业务类型` 的格式。
 - FieldValues 是全局导入的类型。请直接使用，不需要你手动导入。
 
-### 获取表单组件实例 plusFormInstance
+### 6.3 获取表单组件实例 plusFormInstance
 
 form.vue 组件必须准备好 plusFormInstance 变量，如下例子所示：
 
@@ -139,7 +139,7 @@ const plusFormInstance = useTemplateRef("plusFormRef");
 - ref 组件引用名称必须为 plusFormRef 。
 - 组件实例的变量名称必须为 plusFormInstance 。
 
-### 表单重设 usePlusFormReset
+### 6.4 表单重设 usePlusFormReset
 
 表单重设的默认逻辑，一定要用 usePlusFormReset 组合式 api 实现。必须在获取到表单实例后，就开始使用该函数实现表单重设。
 
@@ -157,7 +157,7 @@ usePlusFormReset(plusFormInstance);
 
 获取到表单实例后，就直接使用 usePlusFormReset 函数即可。不要试图从这个组合式 api 函数内结构出任何工具，请严格按照该要求实现表单组件的生成。
 
-### 动态计算的表单对象 formComputed
+### 6.5 动态计算的表单对象 formComputed
 
 表单组件的 form 表单对象，遵循以下的要求，如下代码所示：
 
@@ -187,7 +187,7 @@ const formComputed = computed(() => {
 - form 必须来自于 toRefForm 对象。该对象将传递给 vue 组件。
 - formComputed 必须动态返回 form 对象。
 
-### 表单项配置 plusFormColumns
+### 6.6 表单项配置 plusFormColumns
 
 如下代码例子所示：
 
@@ -201,7 +201,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 - 必须使用 PlusColumn 类型做字段约束。
 - PlusColumn 类型是全局导入的类型，不需要你手动导入。请直接使用。
 
-### 默认对外导出函数
+### 6.7 默认对外导出函数
 
 表单组件必须默认导出：
 
@@ -210,7 +210,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 列表页的`命令式弹框`函数，需要使用表单组件对外导出的内容来实现业务。
 
-### 在模板内使用 `<PlusForm>` 组件
+### 6.8 在模板内使用 `<PlusForm>` 组件
 
 如以下例子所示：
 
@@ -233,11 +233,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 - 必须增加 class 样式，且选择器名称为 form-root 。
 - 属性 `has-footer` 必须为 false 。
 
-### 根标签应该为唯一的 section 标签
+### 6.9 根标签应该为唯一的 section 标签
 
 实现表单组件时，应该提供一个 section 标签，便于页面提供额外的内容。
 
-### 必须设置宽高的固定样式
+### 6.10 必须设置宽高的固定样式
 
 必须为表单组件设置默认的宽高演示，仅使用以下的选择器写法：
 

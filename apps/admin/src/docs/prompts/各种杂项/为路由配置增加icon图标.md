@@ -8,13 +8,17 @@
 
 :::
 
+## 1. 任务要求
+
 我需要你帮我替换掉默认的 `f7:menu` 图标。
 
-- 处理的文件范围： `apps/admin/src/pages/**/index.vue` 全部名称为 `index.vue` 的文件，仅仅处理页面文件。
+### 1.1 处理范围
+- 文件范围： `apps/admin/src/pages/**/index.vue` 全部名称为 `index.vue` 的文件，仅仅处理页面文件。
 - icon 图标来源： iconify
 - icon 图标格式： `图标集:图标名` ，**必须满足**该格式。
 - 可参考的数据集合： `@iconify/json` 数据包。
 
+### 1.2 实施步骤
 我需要你遍历需要处理的页面文件，你仅仅只需要阅读每一个 `index.vue` 的 definePage 路由配置对象即可。按照以下步骤来实现默认 icon 替换：
 
 1. 阅读每一个 `index.vue` 的 definePage 路由配置对象。
@@ -22,7 +26,9 @@
 3. 根据每一个页面的标题，自己去寻找语义化强的，最满足标题的 icon。
 4. 替换掉默认的 meta.icon 图标。
 
-## 01 回答 AI 问题
+## 2. 设计要求
+
+### 2.1 图标偏好设置
 
 1. 图标集偏好： 我没有明显的偏好。你看情况来即可。你喜欢什么就用什么吧。
 2. 图标风格一致性： 优先弄**实心风格**的图标，本身无颜色的图标。
@@ -34,37 +40,41 @@
    - 只需要处理 meta.icon 。其他配置**绝对不做处理**。
 5. 特殊页面处理： 不考虑什么平衡图标的表现力和简洁性。我不考虑这个方向，我考虑的是至少提供**有差异性的**，**实心风格**的图标。
 
-## 02 更替其他可用的 icon 标签
+## 3. 具体任务
+
+### 3.1 任务 02：更替其他可用的 icon 标签
 
 以下页面的 index.vue 文件，其 meta.icon 标签无法渲染。是因为这些 icon 不存在，请你换成存在的图标。
 
-- /property-manage/report-manage/arrears-details-list
-- /property-manage/patrol-manage/path
-- /property-manage/repairs-manage/repairs-setting
-- /setting-manage/organize-manage/org-info
-- /setting-manage/organize-manage/working-schedule
-- /setting-manage/system-manage/register-protocol
-- /setting-manage/system-manage/community-configuration
-- /dev-team/config-manage/item
+1. `/property-manage/report-manage/arrears-details-list`
+2. `/property-manage/patrol-manage/path`
+3. `/property-manage/repairs-manage/repairs-setting`
+4. `/setting-manage/organize-manage/org-info`
+5. `/setting-manage/organize-manage/working-schedule`
+6. `/setting-manage/system-manage/register-protocol`
+7. `/setting-manage/system-manage/community-configuration`
+8. `/dev-team/config-manage/item`
 
-- apps\admin\src\pages\property-manage\expense-manage 全部**费用管理**的页面都被你遗漏了，请补全设置 icon
-- apps\admin\src\pages\property-manage\contract-manage 全部**合同管理**的页面都被你遗漏了，请补全设置 icon
-- apps\admin\src\pages\property-manage\house-property-manage 有部分**房产管理**的页面都被你遗漏了，请补全设置 icon
+#### 3.1.1 补全遗漏的页面图标
 
-## 03 更替其他可用的 icon 标签
+- `apps\admin\src\pages\property-manage\expense-manage` 全部**费用管理**的页面都被你遗漏了，请补全设置 icon
+- `apps\admin\src\pages\property-manage\contract-manage` 全部**合同管理**的页面都被你遗漏了，请补全设置 icon
+- `apps\admin\src\pages\property-manage\house-property-manage` 有部分**房产管理**的页面都被你遗漏了，请补全设置 icon
+
+### 3.2 任务 03：更替其他可用的 icon 标签
 
 以下页面的 index.vue 文件，其 meta.icon 标签无法渲染。是因为这些 icon 不存在，请你换成存在的图标。
 
-- /property-manage/expense-manage/water-and-electricity-meter-reading
-- /property-manage/house-property-manage/invoice-title
-- /property-manage/contract-manage/type
+1. `/property-manage/expense-manage/water-and-electricity-meter-reading`
+2. `/property-manage/house-property-manage/invoice-title`
+3. `/property-manage/contract-manage/type`
 
-## 04 使用其他图标集，避免重复使用 `mdi:format-list-checkbox` icon
+### 3.3 任务 04：使用其他图标集，避免重复使用 `mdi:format-list-checkbox` icon
 
 `mdi:format-list-checkbox` 图标重复了很多次了，请你认真阅读 meta.title 标题，试着用其他的图标集，换一个语义化更强的 icon。
 
 以下几个页面需要更换图标：
 
-- apps\admin\src\pages\property-manage\contract-manage\type\index.vue
-- apps\admin\src\pages\dev-team\config-manage\item\index.vue
-- apps\admin\src\pages\dev-team\config-manage\type\index.vue
+1. `apps\admin\src\pages\property-manage\contract-manage\type\index.vue`
+2. `apps\admin\src\pages\dev-team\config-manage\item\index.vue`
+3. `apps\admin\src\pages\dev-team\config-manage\type\index.vue`

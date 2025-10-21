@@ -8,7 +8,7 @@ color: blue
 
 我们通常在列表页内实现弹框。
 
-## 参考文件
+## 1. 参考文件
 
 你的参考上下文为：
 
@@ -22,15 +22,15 @@ color: blue
 
 请务必阅读上述文件。
 
-## 与生成表单组件高耦合
+## 2. 与生成表单组件高耦合
 
 根据我提供给你的截图，来生成表单组件。注意，表单组件和命令式弹框，是高度耦合的。在你生成命令式弹框时，也应该同时开始生成表单组件。
 
-## 主动为新增或编辑按钮增加打开弹框函数
+## 3. 主动为新增或编辑按钮增加打开弹框函数
 
 在你生成命令式弹框的函数时，你也应该主动的将打开弹框的函数，应用到按钮上。比如新增按钮和编辑按钮。
 
-## 使用 useMode 组合式 api 实现模式控制
+## 4. 使用 useMode 组合式 api 实现模式控制
 
 每一个弹框表单，都需要实现模式控制。根据模式来做出不同的行为。典型的是根据`新增`或`编辑`模式，动态更新弹框`标题`或`调用不同的接口`。
 
@@ -42,12 +42,13 @@ const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 - useMode 是全局导入的函数，请直接使用。不需要你手动导入。
 
-## 固定编写一段测试的异步函数
+## 5. 固定编写一段测试的异步函数
 
 在生成命令式弹框的前面，你固定地使用以下代码段，实现一个模拟的异步操作。
 
 ```ts
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -59,7 +60,7 @@ async function testAsync() {
 
 - useToggle 是全局导入的组合式 api 函数，不需要你手动导入，请直接使用。
 
-## 弹框组件实例
+## 6. 弹框组件实例
 
 比如以下例子：
 
@@ -74,11 +75,11 @@ const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettin
 - 在导入完表单后，随即新建弹框组件的实例。
 - 实例必须预备好实例的类型，使用 typescript 的工具类型 `InstanceType` 来获得到实例类型。
 
-## 严格的 addDialog 打开弹框函数传参
+## 7. 严格的 addDialog 打开弹框函数传参
 
 实现命令式弹框，最重要的就是二次封装 addDialog 函数。该函数有一系列严格的传参，请阅读以下内容。
 
-## 默认弹框属性 defaultAddDialogParams
+### 7.1 默认弹框属性 defaultAddDialogParams
 
 每一个弹框都包含有这些默认属性，请直接使用以下的方式实现解构赋值。
 
@@ -92,7 +93,7 @@ addDialog({
 2. 必须写在第一行：该变量包含了很多预设的变量，故需要以解构赋值的方式，写在第一行。便于其他可能的覆盖。
 3. 不需要重复定义：该变量是全局导入的，请不要再重复定义一次。
 
-## 弹框标题 title
+### 7.2 弹框标题 title
 
 弹框标题往往是动态变化的，请你使用组合式 api useMode 函数来实现标题动态变化。其中，useMode 是全局自动导入的函数，不需要你手动导入。
 
@@ -126,7 +127,7 @@ function openDialog() {
 }
 ```
 
-## 弹框属性 props
+### 7.3 弹框属性 props
 
 即被渲染组件的 props。一般是表单组件的 props。
 
@@ -156,7 +157,7 @@ function openDialog() {
 }
 ```
 
-## 弹框渲染函数 contentRenderer
+### 7.4 弹框渲染函数 contentRenderer
 
 命令式弹框渲染组件，使用的是 vue 的渲染函数语法。
 
@@ -176,7 +177,7 @@ addDialog({
 });
 ```
 
-## 关闭回调函数 doBeforeClose
+### 7.5 关闭回调函数 doBeforeClose
 
 弹框关闭时，必须提供通用的关闭回调函数，写法几乎是固定的。
 
@@ -211,7 +212,7 @@ function openDialog() {
 
 useDoBeforeClose 函数是全局导入的函数，不需要你手动导入。
 
-## 弹框底部按钮栏 footerButtons
+### 7.6 弹框底部按钮栏 footerButtons
 
 请严格按照我提供给你的模板。编排按钮的位置、样式、和其他固定的交互函数。
 
@@ -257,7 +258,7 @@ const config = {
 };
 ```
 
-### 严格的按钮排布顺序
+#### 7.6.1 严格的按钮排布顺序
 
 1. 取消按钮
 2. 重置按钮
@@ -265,7 +266,7 @@ const config = {
 
 该顺序不能错乱。
 
-### 取消按钮
+#### 7.6.2 取消按钮
 
 取消按钮的固定模板如下：
 
@@ -284,7 +285,7 @@ const footerButtons = [
 
 请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
 
-### 重置按钮
+#### 7.6.3 重置按钮
 
 重置按钮的固定模板如下：
 
@@ -302,7 +303,7 @@ const footerButtons = [
 
 请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
 
-### 提交按钮
+#### 7.6.4 提交按钮
 
 提交按钮的固定模板如下：
 

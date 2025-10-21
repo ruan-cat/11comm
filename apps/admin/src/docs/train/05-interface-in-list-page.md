@@ -1,5 +1,7 @@
 # 在列表页内对接接口
 
+## 1. 说明
+
 ::: tip
 
 TODO: 需要被迁移改写成具体的提示词 但是现在 apifox 的接口返回的 mock 配置很不合适，故不做处理。
@@ -8,7 +10,12 @@ TODO: 需要被迁移改写成具体的提示词 但是现在 apifox 的接口�
 
 :::
 
+## 2. 代码示例
+
 ```ts
+/**
+ * 查询报表组列表
+ */
 const {
 	execute: queryReportGroupListExecute,
 	data: queryReportGroupListData,
@@ -22,6 +29,9 @@ const {
 	},
 });
 
+/**
+ * 执行查询报表组列表
+ */
 async function doQueryReportGroupListExecute() {
 	const params: ReportGroupQueryParams = {
 		pageIndex: pagination.value.currentPage,

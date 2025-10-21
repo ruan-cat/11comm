@@ -10,11 +10,11 @@
 
 :::
 
-## git 多人协作实践教学视频
+## 1. git 多人协作实践教学视频
 
 - [和傻子一起写代码](https://www.bilibili.com/video/BV1udEuzrEa7/)
 
-## lodash
+## 2. lodash
 
 lodash 是基础性质库。是 javascript 层面上的工具库。
 
@@ -30,7 +30,7 @@ lodash 是基础性质库。是 javascript 层面上的工具库。
 
 :::
 
-## vue3
+## 3. vue3
 
 本次前端项目使用的渲染框架。
 
@@ -41,27 +41,27 @@ lodash 是基础性质库。是 javascript 层面上的工具库。
 - [watch](https://cn.vuejs.org/api/reactivity-core.html#watch)
 - [useTemplateRef](https://cn.vuejs.org/api/composition-api-helpers.html#usetemplateref)
 
-## vueuse
+## 4. vueuse
 
 组合式 api 的工具。本次项目重点使用的是 useAxios 。
 
 - [useAxios](https://vueuse.org/integrations/useAxios/)
 - [useToggle](https://vueuse.org/shared/useToggle/)
 
-## @ruan-cat/utils
+## 5. @ruan-cat/utils
 
 阮喵喵自己封装的工具包。重点学会使用接口请求工具。
 
 - [useAxiosWrapper](https://utils.ruan-cat.com/vueuse/useAxios/)
 
-## monorepo
+## 6. monorepo
 
 monorepo 是前端项目的一种组织方式，是一种架构。
 
 - [如何发布一个 monorepo 的 npm 包？](https://www.bilibili.com/video/BV1Aj411h7F2/)
 - https://turborepo.com/docs/crafting-your-repository
 
-## pnpm
+## 7. pnpm
 
 一种包管理器。
 
@@ -73,7 +73,7 @@ monorepo 是前端项目的一种组织方式，是一种架构。
 - [dlx](https://pnpm.io/zh/cli/dlx)
 - [setup](https://pnpm.io/zh/cli/setup)
 
-## turbo
+## 8. turbo
 
 monorepo 下的 node 命令调度器。
 
@@ -85,7 +85,7 @@ monorepo 下的 node 命令调度器。
 
 :::
 
-## element-plus
+## 9. element-plus
 
 组件库。
 
@@ -96,7 +96,7 @@ monorepo 下的 node 命令调度器。
 - [Message](https://element-plus.org/zh-CN/component/message.html)
 - [Tree](https://element-plus.org/zh-CN/component/tree.html)
 
-## unplugin-vue-router
+## 10. unplugin-vue-router
 
 基于文件的路由生成插件。
 
