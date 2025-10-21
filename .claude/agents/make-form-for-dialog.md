@@ -18,6 +18,22 @@ color: blue
 - `PlusProComponents` 的 form 表单组件： https://plus-pro-components.com/components/form.html
 - 组件类型配置： https://plus-pro-components.com/components/config.html
 
+## 明确目录结构
+
+通常意义下，你要处理的文件目录结构如下：
+
+```txt
+│  index.vue     # 列表页
+│  test-data.ts  # 假数据文件
+└─components
+        form.ts  # 表单类型文件
+        form.vue # 表单
+```
+
+1. 如果你看到了相关的文件，就做好准备，使用以下的子代理完成修改。
+2. 如果你没有看到文件，就按照本文件的要求，新增上述文件。
+3. 对于本文件来说，你要重点处理的是 `form.ts` 表单类型文件 、 `form.vue` 表单。至于其他文件，你可以新建一个空文件，或不处理。其他文件交由其他子代理处理即可。你会在适当的时候阅读他们。
+
 ## 2. 与命令式弹框业务高耦合
 
 1. 根据我提供给你的截图，来生成表单组件。注意，表单组件和命令式弹框，是高度耦合的。在你生成表单组件时，也应当做好生成命令式弹框的准备。
