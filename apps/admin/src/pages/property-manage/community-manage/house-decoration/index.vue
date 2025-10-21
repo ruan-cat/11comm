@@ -8,50 +8,22 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-
-interface 房屋装修_列表数据 {
-	房屋: string;
-	联系人: string;
-	联系电话: string;
-	装修时间: string;
-	申请时间: string;
-	装修单位: string;
-	负责人电话: string;
-	状态: string;
-	是否延期: string;
-	延期时间: string;
-	是否违规: string;
-	违规说明: string;
-	备注: string;
-}
-
-const tableDataItem: 房屋装修_列表数据 = {
-	房屋: "房屋",
-	联系人: "联系人",
-	联系电话: "联系电话",
-	装修时间: "装修时间",
-	申请时间: "申请时间",
-	装修单位: "装修单位",
-	负责人电话: "负责人电话",
-	状态: "状态",
-	是否延期: "是否延期",
-	延期时间: "延期时间",
-	是否违规: "是否违规",
-	违规说明: "违规说明",
-	备注: "备注",
-};
+import {
+	type 房屋装修_列表数据,
+	type 房屋装修_列表查询_VO,
+	房屋状态选项,
+	延期状态选项,
+	tableData as allTableData,
+} from "./test-data";
 
 /** 表格数据 */
-const tableData = ref<房屋装修_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<房屋装修_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "房屋",
 		prop: "房屋",
@@ -117,7 +89,7 @@ const columns = ref<TableColumnList>([
 		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -128,18 +100,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
@@ -156,16 +128,21 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 房屋装修_列表查询_VO {
-	房屋编号?: string;
-	联系人?: string;
-	联系电话?: string;
-	房屋状态?: string;
-	延期状态?: string;
-	装修时间?: string;
-	装修申请开始时间?: string;
-	装修申请结束时间?: string;
-	装修时间范围?: [string, string];
+/** 加载表格数据 */
+async function loadTableData() {
+	// 模拟异步请求
+	await new Promise(resolve => setTimeout(resolve, 300));
+
+	const { currentPage, pageSize } = pagination.value;
+	const startIndex = (currentPage - 1) * pageSize;
+	const endIndex = startIndex + pageSize;
+
+	// 过滤数据（这里可以加上搜索条件）
+	let filteredData = [...allTableData];
+
+	// 分页数据
+	tableData.value = filteredData.slice(startIndex, endIndex);
+	pagination.value.total = filteredData.length;
 }
 
 /**
@@ -222,32 +199,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseState")),
 		prop: "房屋状态",
 		valueType: "select",
-		options: [
-			{
-				label: "待审核",
-				value: "待审核",
-			},
-			{
-				label: "审核不通过",
-				value: "审核不通过",
-			},
-			{
-				label: "装修中",
-				value: "装修中",
-			},
-			{
-				label: "待验收",
-				value: "待验收",
-			},
-			{
-				label: "验收成功",
-				value: "验收成功",
-			},
-			{
-				label: "验收失败",
-				value: "验收失败",
-			},
-		],
+		options: 房屋状态选项,
 	},
 
 	// 延期状态
@@ -255,16 +207,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.deferredStatus")),
 		prop: "延期状态",
 		valueType: "select",
-		options: [
-			{
-				label: "是",
-				value: "是",
-			},
-			{
-				label: "否",
-				value: "否",
-			},
-		],
+		options: 延期状态选项,
 	},
 
 	// 装修时间
@@ -309,11 +252,13 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 async function handleReSearch() {
-	console.log("重新搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();
@@ -328,13 +273,16 @@ function gotoHouseDecorationPage(row: 房屋装修_列表数据) {
 		},
 	});
 }
+
+/** 组件挂载时加载数据 */
+onMounted(() => {
+	loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
