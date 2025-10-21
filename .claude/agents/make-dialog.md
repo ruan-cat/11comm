@@ -12,19 +12,20 @@ color: blue
 
 你的参考上下文为：
 
-- 命令式弹框源码： @apps\admin\src\views\components\dialog\index.vue
-- 弹框案例： @https://pure-admin.github.io/vue-pure-admin/#/components/dialog
+- 命令式弹框源码： `apps\admin\src\views\components\dialog\index.vue`
+- 弹框案例： https://pure-admin.github.io/vue-pure-admin/#/components/dialog
 
 使用命令式弹框的组件：
 
-- @apps\admin\src\pages\property-manage\expense-manage\expense-item-setting\index.vue
-- @apps\admin\src\pages\operation-team\data-manage\property-management-company\index.vue
+- `apps\admin\src\pages\property-manage\expense-manage\expense-item-setting\index.vue`
+- `apps\admin\src\pages\operation-team\data-manage\property-management-company\index.vue`
 
 请务必阅读上述文件。
 
 ## 2. 与生成表单组件高耦合
 
-根据我提供给你的截图，来生成表单组件。注意，表单组件和命令式弹框，是高度耦合的。在你生成命令式弹框时，也应该同时开始生成表单组件。
+1. 根据我提供给你的截图，来生成表单组件。注意，表单组件和命令式弹框，是高度耦合的。在你生成命令式弹框时，也应该同时开始生成表单组件。
+2. 如果我没有给你提供截图，请忽略。
 
 ## 3. 主动为新增或编辑按钮增加打开弹框函数
 
@@ -71,15 +72,17 @@ import ExpenseItemSettingForm from "./components/form.vue";
 const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
 ```
 
-- 使用相对路径的方式，导入表单组件。该组件将作为弹框组件的实例。
-- 在导入完表单后，随即新建弹框组件的实例。
-- 实例必须预备好实例的类型，使用 typescript 的工具类型 `InstanceType` 来获得到实例类型。
+在使用弹框的组件内，请按照以下要求来编写弹框组件：
 
-## 7. 严格的 addDialog 打开弹框函数传参
+1. 使用相对路径的方式，导入表单组件。该组件将作为弹框组件的实例。
+2. 在导入完表单后，随即新建弹框组件的实例。
+3. 实例必须预备好实例的类型，使用 typescript 的工具类型 `InstanceType` 来获得到实例类型。
 
-实现命令式弹框，最重要的就是二次封装 addDialog 函数。该函数有一系列严格的传参，请阅读以下内容。
+## 7. 严格的 `addDialog` 打开弹框函数传参
 
-### 7.1 默认弹框属性 defaultAddDialogParams
+实现命令式弹框，最重要的就是二次封装 `addDialog` 函数。该函数有一系列严格的传参，请阅读以下内容。
+
+### 7.1 默认弹框属性 `defaultAddDialogParams`
 
 每一个弹框都包含有这些默认属性，请直接使用以下的方式实现解构赋值。
 
@@ -89,13 +92,13 @@ addDialog({
 });
 ```
 
-1. 全局导入：该变量 defaultAddDialogParams 是全局导入的，你不需要考虑如何导入该对象。
-2. 必须写在第一行：该变量包含了很多预设的变量，故需要以解构赋值的方式，写在第一行。便于其他可能的覆盖。
-3. 不需要重复定义：该变量是全局导入的，请不要再重复定义一次。
+1. **全局导入** ： 该变量 defaultAddDialogParams 是全局导入的，你不需要考虑如何导入该对象。
+2. **必须写在第一行** ： 该变量包含了很多预设的变量，故需要以解构赋值的方式，写在第一行。便于其他可能的覆盖。
+3. **不需要重复定义** ： 该变量是全局导入的，请不要再重复定义一次。
 
 ### 7.2 弹框标题 title
 
-弹框标题往往是动态变化的，请你使用组合式 api useMode 函数来实现标题动态变化。其中，useMode 是全局自动导入的函数，不需要你手动导入。
+弹框标题往往是动态变化的，请你使用 `组合式api` `useMode` 函数来实现标题动态变化。其中，`useMode` 是全局自动导入的函数，不需要你手动导入。
 
 如以下模板所示：
 
@@ -113,7 +116,7 @@ function openDialog() {
 }
 ```
 
-如果标题不是动态变化的，是固定的，也请定义单独的 title 常量。
+如果标题不是动态变化的，是固定的，也请定义单独的 `title` 常量。
 
 ```ts
 /** 打开弹框 */
@@ -127,7 +130,7 @@ function openDialog() {
 }
 ```
 
-### 7.3 弹框属性 props
+### 7.3 弹框属性 `props`
 
 即被渲染组件的 props。一般是表单组件的 props。
 
@@ -283,7 +286,9 @@ const footerButtons = [
 ];
 ```
 
-请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
+1. 请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
+2. 取消按钮的按钮类型必须是 `info` 类型。
+3. 关闭的回调函数必须使用 `await useDoBeforeClose({ defaultValues, formComputed, index, options })` 的方式实现弹框关闭。
 
 #### 7.6.3 重置按钮
 
@@ -301,7 +306,9 @@ const footerButtons = [
 ];
 ```
 
-请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
+1. 请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
+2. 重置按钮的类型必须是 `warning` 类型。
+3. 重置函数必须使用表单组件实例，本身暴露出来的 `plusFormInstance.handleReset()` 函数。
 
 #### 7.6.4 提交按钮
 
@@ -326,4 +333,7 @@ const footerButtons = [
 ```
 
 1. 请注意将 expenseItemSettingFormInstance 替换成实际的表单组件实例。
-2. 请注意，务必先生成好固定的，测试的异步函数。测试用的异步函数在此处使用。
+2. 提交按钮的类型必须是 `success` 类型。
+3. 请注意，务必先生成好固定的，测试的异步函数。测试用的异步函数在此处使用。
+4. 提交函数必须使用表单组件实例提供的 `plusFormInstance.handleSubmit()` 函数。
+5. 按钮的加载等待效果，必须使用 `button.btn.loading` 的形式。
