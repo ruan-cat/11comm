@@ -25,6 +25,7 @@ color: yellow
 
 1. 房屋装修 标准模板
    - 列表页 apps\admin\src\pages\property-manage\community-manage\house-decoration\index.vue
+   - 假数据 apps\admin\src\pages\property-manage\community-manage\house-decoration\test-data.ts
 2. 物业公司 标准模板
    - 列表页 apps\admin\src\pages\operation-team\data-manage\property-management-company\index.vue
    - 假数据 apps\admin\src\pages\operation-team\data-manage\property-management-company\test-data.ts
