@@ -55,3 +55,13 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 请帮我深度研究相关依赖，从 vite-plugin-fake-server 方向入手，研究一下在什么情况下，vite 构建时会直接保留并使用 require 函数？
 请帮我深度研究一下，为什么构建的时候，会突兀地突然 require 这个 apps/admin/src/utils/message.ts 模块呢？
 最后将你深度研究的报告输出到项目根目录内，便于我阅读。
+
+## 005 优化整理 md 文档的格式
+
+请你阅读以下文档：
+
+- .claude\agents 文件夹下面的全部 markdown 文档
+- apps\admin\src\docs 文件夹下面的全部 markdown 文档
+- CLAUDE.md
+
+请你按照 `CLAUDE.md` 的格式要求，批量修改上述文档的格式。
