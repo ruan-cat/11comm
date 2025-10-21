@@ -130,19 +130,53 @@ const pureTableBarProps = ref<PureTableBarProps>({
 
 /** 加载表格数据 */
 async function loadTableData() {
-	// 模拟异步请求
-	await new Promise(resolve => setTimeout(resolve, 300));
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
 
-	const { currentPage, pageSize } = pagination.value;
-	const startIndex = (currentPage - 1) * pageSize;
-	const endIndex = startIndex + pageSize;
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.房屋编号) {
+			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋编号!));
+		}
+		if (plusSearchModel.value.联系人) {
+			filteredData = filteredData.filter((item) => item.联系人.includes(plusSearchModel.value.联系人!));
+		}
+		if (plusSearchModel.value.联系电话) {
+			filteredData = filteredData.filter((item) => item.联系电话.includes(plusSearchModel.value.联系电话!));
+		}
+		if (plusSearchModel.value.房屋状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.房屋状态);
+		}
+		if (plusSearchModel.value.延期状态) {
+			filteredData = filteredData.filter((item) => item.是否延期 === plusSearchModel.value.延期状态);
+		}
+		if (plusSearchModel.value.装修时间) {
+			filteredData = filteredData.filter((item) => item.装修时间.includes(plusSearchModel.value.装修时间!));
+		}
+		if (plusSearchModel.value.装修申请开始时间 && plusSearchModel.value.装修申请结束时间) {
+			filteredData = filteredData.filter((item) => {
+				const applyTime = new Date(item.申请时间).getTime();
+				const startTime = new Date(plusSearchModel.value.装修申请开始时间!).getTime();
+				const endTime = new Date(plusSearchModel.value.装修申请结束时间!).getTime();
+				return applyTime >= startTime && applyTime <= endTime;
+			});
+		}
 
-	// 过滤数据（这里可以加上搜索条件）
-	let filteredData = [...allTableData];
+		// 更新总数
+		pagination.value.total = filteredData.length;
 
-	// 分页数据
-	tableData.value = filteredData.slice(startIndex, endIndex);
-	pagination.value.total = filteredData.length;
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
 }
 
 /**
@@ -251,11 +285,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
 	pagination.value.currentPage = 1;
 	await loadTableData();
@@ -274,9 +311,8 @@ function gotoHouseDecorationPage(row: 房屋装修_列表数据) {
 	});
 }
 
-/** 组件挂载时加载数据 */
-onMounted(() => {
-	loadTableData();
+onMounted(async () => {
+	await loadTableData();
 });
 </script>
 
