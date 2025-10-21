@@ -8,69 +8,57 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 我的小区_列表数据,
+	type 我的小区_列表查询_VO,
+	省份选项,
+	状态选项,
+	tableData as allTableData,
+} from "./test-data";
 
-import { type ExpenseItemSettingFormProps, defaultForm } from "./components/form";
-import ExpenseItemSettingForm from "./components/form.vue";
+import { CommunityManageFormProps, defaultForm, type CommunityManageFormVO } from "./components/form";
+import CommunityManageForm from "./components/form.vue";
 
-const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
+/** 表单组件实例 */
+const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
 
-interface 我的小区_列表数据 {
-	省份: string;
-	市州: string;
-	区县: string;
-	小区名称: string;
-	小区编码: string;
-	客服电话: string;
-	面积: string;
-	开始时间: string;
-	结束时间: string;
-	状态: string;
+/** 模拟异步请求 */
+async function testAsync() {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve(true);
+		}, 1000);
+	});
 }
 
-const tableDataItem: 我的小区_列表数据 = {
-	省份: "省份",
-	市州: "市州",
-	区县: "区县",
-	小区名称: "小区名称",
-	小区编码: "小区编码",
-	客服电话: "客服电话",
-	面积: "面积",
-	开始时间: "开始时间",
-	结束时间: "结束时间",
-	状态: "状态",
-};
-
 /** 表格数据 */
-const tableData = ref<我的小区_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<我的小区_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "省份",
 		prop: "省份",
-		width: 120,
+		width: 100,
 		fixed: true,
 	},
 	{
 		label: "市州",
 		prop: "市州",
-		width: 120,
+		width: 100,
 	},
 	{
 		label: "区县",
 		prop: "区县",
-		width: 120,
+		width: 100,
 	},
 	{
 		label: "小区名称",
 		prop: "小区名称",
-		width: 120,
+		width: 160,
 	},
 	{
 		label: "小区编码",
@@ -80,12 +68,12 @@ const columns = ref<TableColumnList>([
 	{
 		label: "客服电话",
 		prop: "客服电话",
-		width: 120,
+		width: 130,
 	},
 	{
 		label: "面积",
 		prop: "面积",
-		width: 120,
+		width: 100,
 	},
 	{
 		label: "开始时间",
@@ -100,21 +88,53 @@ const columns = ref<TableColumnList>([
 	{
 		label: "状态",
 		prop: "状态",
-		width: 120,
+		width: 100,
+		cellRenderer: ({ row }) => {
+			const statusMap = {
+				正常运营: { type: "success", text: "正常运营" },
+				筹备中: { type: "warning", text: "筹备中" },
+				维护中: { type: "info", text: "维护中" },
+				已停用: { type: "danger", text: "已停用" },
+			};
+			const statusInfo = statusMap[row.状态] || { type: "info", text: row.状态 };
+			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
+		},
 	},
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
+
+/** 分页配置 */
+const pagination = ref<PaginationProps>({
+	...defaultPagination,
+	pageSize: 10,
+	currentPage: 1,
+	total: 0,
+});
+
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
+
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
+	pagination: pagination.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -123,131 +143,328 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.省份) {
+			filteredData = filteredData.filter((item) => item.省份.includes(plusSearchModel.value.省份!));
+		}
+		if (plusSearchModel.value.市州) {
+			filteredData = filteredData.filter((item) => item.市州.includes(plusSearchModel.value.市州!));
+		}
+		if (plusSearchModel.value.区县) {
+			filteredData = filteredData.filter((item) => item.区县.includes(plusSearchModel.value.区县!));
+		}
+		if (plusSearchModel.value.小区名称) {
+			filteredData = filteredData.filter((item) => item.小区名称.includes(plusSearchModel.value.小区名称!));
+		}
+		if (plusSearchModel.value.小区编码) {
+			filteredData = filteredData.filter((item) => item.小区编码.includes(plusSearchModel.value.小区编码!));
+		}
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 我的小区_列表查询_VO = {
+	省份: "",
+	市州: "",
+	区县: "",
+	小区名称: "",
+	小区编码: "",
+	状态: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 省份
+	{
+		label: "省份",
+		prop: "省份",
+		valueType: "select",
+		options: 省份选项,
+	},
+
+	// 市州
+	{
+		label: "市州",
+		prop: "市州",
+		valueType: "input",
+	},
+
+	// 区县
+	{
+		label: "区县",
+		prop: "区县",
+		valueType: "input",
+	},
+
+	// 小区名称
+	{
+		label: "小区名称",
+		prop: "小区名称",
+		valueType: "input",
+	},
+
+	// 小区编码
+	{
+		label: "小区编码",
+		prop: "小区编码",
+		valueType: "input",
+	},
+
+	// 状态
+	{
+		label: "状态",
+		prop: "状态",
+		valueType: "select",
+		options: 状态选项,
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
-/** 打开弹框 参数 */
+/** 打开弹框参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: 我的小区_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd, isEdit, isInfo } = useMode();
 
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}修改小区`;
+	const title = `${modeText.value}小区`;
 
 	/** 表单组件需要的props */
-	const formProps: ExpenseItemSettingFormProps = {
+	const formProps: CommunityManageFormProps = {
 		form: cloneDeep(defaultForm),
 		defaultValues: cloneDeep(defaultForm),
 	};
 
-	const testEditProps: ExpenseItemSettingFormProps = {
+	const editProps: CommunityManageFormProps = {
 		form: {
 			...defaultForm,
-			// 费用类型: "水费",
-			// 收费项目: "水费历史欠费",
-			// 费用标识: "周期性费用",
-			// 付费类型: "预付费",
-			// 计费单价: "230.1",
-			// 账户抵扣: "是",
-			// 状态: "启用",
+			province: row?.省份 || "",
+			city: row?.市州 || "",
+			district: row?.区县 || "",
+			name: row?.小区名称 || "",
+			code: row?.小区编码 || "",
+			servicePhone: row?.客服电话 || "",
+			area: row?.面积 || "",
+			startTime: row?.开始时间 || "",
+			endTime: row?.结束时间 || "",
+			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
 		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
+		defaultValues: cloneDeep(row) as CommunityManageFormVO || cloneDeep(defaultForm),
 	};
 
-	/** 弹框组件所需的变量 自己根据业务判断*/
+	/** 弹框组件所需的变量 */
 	const props = isAdd.value
 		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+		: isEdit.value
+			? editProps
+			: isInfo.value
+				? editProps
+				: {
+						form: cloneDeep(row),
+						defaultValues: cloneDeep(row),
+					};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
+	/** 根据不同模式下变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
+
 	addDialog({
 		...defaultAddDialogParams,
 		title,
 		props,
 
 		contentRenderer: () =>
-			h(ExpenseItemSettingForm, {
-				ref: expenseItemSettingFormInstance,
-				...formProps,
+			h(CommunityManageForm, {
+				ref: communityManageFormInstance,
+				...props,
+				mode: mode.value,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = expenseItemSettingFormInstance.value.formComputed;
+			const formComputed = communityManageFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
-		footerButtons: [
-			{
-				label: transformI18n($t("common.buttons.cancel")),
-				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = expenseItemSettingFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					expenseItemSettingFormInstance.value.plusFormInstance.handleReset();
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.submit")),
-				type: "success",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await expenseItemSettingFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						// await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-					}
-				},
-			},
-		],
+		footerButtons: isInfo.value
+			? [
+					{
+						label: transformI18n($t("common.buttons.close")),
+						type: "info",
+						btnClick: async ({ dialog: { options, index }, button }) => {
+							options.destroy();
+						},
+					},
+				]
+			: [
+					{
+						label: transformI18n($t("common.buttons.cancel")),
+						type: "info",
+						btnClick: async ({ dialog: { options, index }, button }) => {
+							const formComputed = communityManageFormInstance.value.formComputed;
+							await useDoBeforeClose({ defaultValues, formComputed, index, options });
+						},
+					},
+					{
+						label: transformI18n($t("common.buttons.reset")),
+						type: "warning",
+						btnClick: ({ dialog: { options, index }, button }) => {
+							communityManageFormInstance.value.plusFormInstance.handleReset();
+						},
+					},
+					{
+						label: transformI18n($t("common.buttons.save")),
+						type: "success",
+						btnClick: async ({ dialog: { options, index }, button }) => {
+							button.loading = true;
+							try {
+								const formData = communityManageFormInstance.value.formComputed;
+								// TODO: 替换为真实的API调用
+								await testAsync();
+								ElMessage.success(`${modeText.value}成功`);
+								options.destroy();
+								loadTableData();
+							} catch (error) {
+								ElMessage.error(`${modeText.value}失败`);
+							} finally {
+								button.loading = false;
+							}
+						},
+					},
+				],
 	});
 }
+
+/** 处理操作 */
+function handleEdit(row: 我的小区_列表数据) {
+	openDialog({ mode: "edit", row });
+}
+
+/** 处理查看操作 */
+function handleView(row: 我的小区_列表数据) {
+	openDialog({ mode: "info", row });
+}
+
+/** 处理删除操作 */
+function handleDelete(row: 我的小区_列表数据) {
+	ElMessageBox.confirm("确认删除该小区信息吗？", "提示", {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		type: "warning",
+	}).then(async () => {
+		try {
+			// TODO: 替换为真实的API调用
+			await testAsync();
+			ElMessage.success("删除成功");
+			// 刷新列表
+			loadTableData();
+		} catch (error) {
+			ElMessage.error("删除失败");
+		}
+	});
+}
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<el-button type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
-				</ElButton>
+				</el-button>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-				<PureTable :="pureTableProps" :columns="dynamicColumns" :size="size">
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				>
 					<template #operation="{ row }">
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<el-button type="info" @click="handleView(row)"> 详情 </el-button>
+						<el-button type="warning" @click="handleEdit(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</el-button>
+						<el-button type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</el-button>
 					</template>
 				</PureTable>
 			</template>
