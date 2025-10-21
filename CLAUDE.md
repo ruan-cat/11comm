@@ -101,7 +101,7 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 
 ### 4. markdown 的多级标题要主动提供序号
 
-对于每一份 markdown 文件的三级标题，你都应该要：
+对于每一份 markdown 文件的`二级标题`和`三级标题`，你都应该要：
 
 1. 主动添加**数字**序号，便于我阅读文档。
 2. 主动**维护正确的数字序号顺序**。如果你处理的 markdown 文档，其手动添加的序号顺序不对，请你及时的更新序号顺序。

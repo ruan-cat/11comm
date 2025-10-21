@@ -244,7 +244,7 @@ const config = {
 			label: transformI18n($t("common.buttons.cancel")),
 			type: "info",
 			btnClick: async ({ dialog: { options, index }, button }) => {
-				// console.log(options, index, button);
+				/** console.log(options, index, button); */
 				const formComputed = expenseItemSettingFormInstance.value.formComputed;
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			},
@@ -254,7 +254,7 @@ const config = {
 			label: transformI18n($t("common.buttons.reset")),
 			type: "warning",
 			btnClick: ({ dialog: { options, index }, button }) => {
-				// 手动重置表单
+				/** 手动重置表单 */
 				expenseItemSettingFormInstance.value.plusFormInstance.handleReset();
 			},
 		},
@@ -263,7 +263,7 @@ const config = {
 			label: transformI18n($t("common.buttons.submit")),
 			type: "success",
 			btnClick: async ({ dialog: { options, index }, button }) => {
-				// 提交表单时 校验
+				/** 提交表单时 校验 */
 				const res = await expenseItemSettingFormInstance.value.plusFormInstance.handleSubmit();
 				if (res) {
 					button.btn.loading = true;

@@ -49,7 +49,7 @@ color: yellow
 3. **不增加额外的业务字段** ： 不要随意地给业务代码增加字段，不要增加额外的字段。
 4. **保留中文字段名** ： 不要更改掉字段的命名。如果字段本身的名称就是中文名，那就`保留中文名`。除非你收到明确的指令要求你更换掉中文命名的字段名，否则你就原样`保留中文字段名`。
 
-## 5. 术语说明
+## 4. 术语说明
 
 本文使用的术语如下：
 
@@ -58,7 +58,7 @@ color: yellow
 - **假数据文件**： 即 `列表页` 旁边的 `test-data.ts` 文件。用于存放各种在前端层面写死的假数据。
 - **表格列配置**： 即表格组件渲染的关键配置。该配置实现表格的表头、操作栏配置等。
 
-## 明确目录结构
+## 5. 明确目录结构
 
 通常意义下，你要处理的文件目录结构如下：
 
@@ -74,23 +74,23 @@ color: yellow
 2. 如果你没有看到文件，就按照本文件的要求，新增上述文件。
 3. 对于本文件来说，你要重点处理的是 `index.vue` 列表页文件 和 `test-data.ts` 假数据文件。至于其他文件，你可以新建一个空文件，或不处理。其他文件交由其他子代理处理即可。你会在适当的时候阅读他们。
 
-## 4. 组件命名风格
+## 6. 组件命名风格
 
 请阅读文件 `.claude\agents\code-style.md` ，或者是自己调用 `code-style` 代码风格子代理。
 
-## 6. 用 `假数据文件` `test-data.ts` 来存储业务类型与假数据
+## 7. 用 `假数据文件` `test-data.ts` 来存储业务类型与假数据
 
 1. 请你在我给定的页面内，在对应的 `index.vue` 文件旁边，新建一个 `test-data.ts` 文件。并在此处存储业务类型，和假数据。不要把用于填充的占位数据，放到组件内。
 2. 给表格组件准备假数据时，请你准备好 35 条假数据。
 
-### 6.1 存储表格组件的假数据
+### 7.1 存储表格组件的假数据
 
 在 `假数据文件` 存储表格数据时。需要满足以下要求：
 
 1. 定义业务类型用中文来定义。
 2. 对外返回名为 `tableData` 的业务类型数组。该数据包含了表格组件需要使用的假数据。
 
-### 6.2 存储下拉列表使用的假数据
+### 7.2 存储下拉列表使用的假数据
 
 1. 如果 `plusSearchColumns` 表格搜索栏组件 的 下拉列表有选项，请你将下拉列表的数据也一并存储在 `假数据文件` 内。
 2. 在对下拉列表数据做类型约束时，请使用 `plus-pro-components` 包提供的 `OptionsType` 类型来约束下拉列表数组。
@@ -120,7 +120,7 @@ export const 查询方式Options: OptionsType = [
 
 4. 下拉列表数组的变量名命名规则为： `*Options` ，比如 `查询方式Options` 、 `组件类型Options` 这样的。
 
-## 7. 制作并使用 loadTableData `假分页请求` 函数
+## 8. 制作并使用 loadTableData `假分页请求` 函数
 
 需要你制作出假的请求接口函数，在列表页内模拟接口请求。要求模拟以下行为：
 
@@ -134,11 +134,11 @@ export const 查询方式Options: OptionsType = [
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
 		let filteredData = mockTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.小区ID) {
 			filteredData = filteredData.filter((item) => item.小区ID.includes(plusSearchModel.value.小区ID!));
 		}
@@ -155,24 +155,24 @@ async function loadTableData() {
 			filteredData = filteredData.filter((item) => item.区县 === plusSearchModel.value.区县);
 		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
+		/** TODO: 显示错误提示 */
 	}
 }
 ```
 
-### 7.1 在 onMounted 回调内调用 `假分页请求`
+### 8.1 在 onMounted 回调内调用 `假分页请求`
 
 在 onMounted 回调内，必须按照以下格式调用 `假分页请求` ：
 
@@ -186,18 +186,18 @@ onMounted(async () => {
 2. onMounted 必须写在整个脚本的最下面。
 3. onMounted 的回调函数必须写成 async 异步函数。
 
-### 7.2 不需要增加任何加载等待效果
+### 8.2 不需要增加任何加载等待效果
 
 不需要你增加任何 loading 加载效果。直接在 `假分页请求` 内拆分数据。
 
-## 8. 列表页必须提供的变量和函数
+## 9. 列表页必须提供的变量和函数
 
 这里将整个列表页一定会提供的变量和函数，都列举出来。
 
 1. 你在生成列表页时，请直接照搬照抄这些代码即可。
 2. 在你处理列表页时，列表页本身就可能有了以下函数或变量，请你按照各自的要求，做替换或者是更改。
 
-### 8.1 `handleReSearch`
+### 9.1 `handleReSearch`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -210,7 +210,7 @@ async function handleReSearch() {
 }
 ```
 
-### 8.2 `handleSearch`
+### 9.2 `handleSearch`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -222,22 +222,22 @@ async function handleSearch() {
 }
 ```
 
-### 8.3 `loadTableData`
+### 9.3 `loadTableData`
 
 参考 [制作并使用 loadTableData `假分页请求` 函数](#7-制作并使用-loadtabledata-假分页请求-函数) 部分。
 
-## 9. 分批次生成表格
+## 10. 分批次生成表格
 
 1. 在对话时，我会给你一张截图，请根据截图来生成列表页。
 2. 请你根据图片识别，读取出一个`表格`所需要的字段、和`搜索栏`所需要的字段。
 3. 如果我没有提供给你截图，请跳过此部分。
 
-## 10. 没有要求就不要生成左侧可能的单选按钮栏
+## 11. 没有要求就不要生成左侧可能的单选按钮栏
 
 1. 我所给你的页面，其左侧可能会多出一条`按钮栏`，这些`按钮栏`是可以交互的，通常点击左侧`按钮栏`，就能触发右侧`表格`数据的接口重新请求，重新加载数据。
 2. 但是没有我的要求下，请你不要去主动生成这一条`按钮栏`。
 
-## 11. 不要准备任何样式，不要编写任何样式
+## 12. 不要准备任何样式，不要编写任何样式
 
 在你生成列表页时，请你不要编写任何样式。样式这一块就保留这样的写法即可。留空。
 
@@ -250,11 +250,11 @@ async function handleSearch() {
 </style>
 ```
 
-## 12. 表格列配置 `columns`
+## 13. 表格列配置 `columns`
 
 在表格组件中，`columns` 用来配置表格列的表头、操作栏等关键表格信息。
 
-### 12.1 `表格列配置` 的首列必须是 序号列配置
+### 13.1 `表格列配置` 的首列必须是 序号列配置
 
 例子如下：
 
@@ -296,7 +296,7 @@ const columns = ref<TableColumnList>([
 2. 这是一个全局配置。你直接使用即可。**不需要**你手动导入该变量。
 3. 首列已经默认配置了 fixed 固定列配置。如果你看到第二列的配置包含了 fixed 配置。请务必移除掉该配置，避免冗余配置。
 
-### 12.2 `表格列配置` 不允许使用其他的配置
+### 13.2 `表格列配置` 不允许使用其他的配置
 
 如下错误例子所示，`表格列配置` 能允许配置的项很严格，不允许配置其他类型的表格列。
 
@@ -304,7 +304,7 @@ const columns = ref<TableColumnList>([
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
-	// 不应该增加其他类型的表格列！ 这会导致表格渲染出现严重的故障！
+	/** 不应该增加其他类型的表格列！ 这会导致表格渲染出现严重的故障！ */
 	{
 		type: "selection",
 		width: 55,
@@ -323,7 +323,7 @@ const columns = ref<TableColumnList>([
 ]);
 ```
 
-### 12.3 在 `表格列配置` 内使用 i18n 函数的规范
+### 13.3 在 `表格列配置` 内使用 i18n 函数的规范
 
 如果你打算使用 i18n 函数来获取文本，请你使用以下写法来调用 i18n ：
 
@@ -340,7 +340,7 @@ const columns = ref<TableColumnList>([
 		width: 120,
 		fixed: true,
 	},
-	// 更多表列配置……
+	/** 更多表列配置…… */
 ]);
 ```
 
@@ -357,11 +357,11 @@ const columns = ref<TableColumnList>([
 		width: 120,
 		fixed: true,
 	},
-	// 更多表列配置……
+	/** 更多表列配置…… */
 ]);
 ```
 
-### 12.4 不需要总是去准备表格表头的 i18n 文本
+### 13.4 不需要总是去准备表格表头的 i18n 文本
 
 直接准备好平时常用的中文文本即可，并不需要每一个表头都要应用 i18n 文本。比如以下例子就是可以接受的：
 
@@ -374,22 +374,22 @@ const columns = ref<TableColumnList>([
 		width: 120,
 		fixed: true,
 	},
-	// 更多表列配置……
+	/** 更多表列配置…… */
 ]);
 ```
 
-### 12.5 优先使用中文
+### 13.5 优先使用中文
 
 如果 `表格列配置` 的 label 项本来就准备好了中文，那么你就不需要主动增加 i18n 翻译。
 
-### 12.6 表格操作栏的标题必须用 i18n 函数
+### 13.6 表格操作栏的标题必须用 i18n 函数
 
 表格操作栏，其标题**必须使用固定的 i18n 函数写法**。如下例子：
 
 ```ts
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
-	// ... 其他配置
+	/** ... 其他配置 */
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
@@ -403,7 +403,7 @@ const columns = ref<TableColumnList>([
 1. 必须使用 i18n 函数来渲染表头。
 2. 宽度**必须是** width 。不允许使用 minWidth 。
 
-## 13. 基于 `<PureTable>` 表格组件的列表页
+## 14. 基于 `<PureTable>` 表格组件的列表页
 
 请你模仿我提供给你的上下文代码，生成表格页。
 
@@ -414,7 +414,7 @@ const columns = ref<TableColumnList>([
 - 底部的分页栏
 - 右侧的固定首行
 
-### 13.1 忽略类型报错
+### 14.1 忽略类型报错
 
 你在生成 `<PureTable>` 表格组件时，请你忽略类型报错。你**必须**使用以下写法来忽略掉类型报错。
 
@@ -422,7 +422,7 @@ const columns = ref<TableColumnList>([
 <!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 ```
 
-### 13.2 使用 `<PureTable>` 表格组件
+### 14.2 使用 `<PureTable>` 表格组件
 
 在列表页内使用 `<PureTable>` 组件时，一定是在 `<PureTableBar>` 组件的插槽内使用的。例子如下：
 
@@ -459,21 +459,21 @@ const columns = ref<TableColumnList>([
 4. 分页事件的函数名必须为统一的 `handlePageSizeChange` 和 `handleCurrentPageChange` ，哪怕预留一个空的异步函数，也必须预留好这两个固定名称的空函数。
 5. 不允许在 `<PureTable>` 组件上直接使用 `v-loading` 指令。该组件的加载等待效果交给别的手段实现。
 
-## 14. 基于 `<PureTableBar>` 的表格拓展栏
+## 15. 基于 `<PureTableBar>` 的表格拓展栏
 
 每一个列表页都必须包含 `<PureTableBar>` 组件。你需要实现以下功能：
 
 - 不管是否有操作按钮。都应该提前预留好按钮插槽。
 
-## 15. 基于 `<PlusSearch>` 的表格搜索栏
+## 16. 基于 `<PlusSearch>` 的表格搜索栏
 
 每一个表格页都必须包含一个表格搜索栏。
 
-### 15.1 `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
+### 16.1 `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
 
 `plusSearchColumns` 必须设计成 `computed` ，用于实现动态切换的 `i18n` 文本
 
-### 15.2 `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
+### 16.2 `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
 
 `plusSearchColumns` 需要提供明确的 `issue` 链接，告诉其他人为什么要写成 `computed` 的形式。其 `jsdoc` 格式如下例子：
 
@@ -494,7 +494,7 @@ const columns = ref<TableColumnList>([
 
 你有且只能写固定的 `@see https://github.com/plus-pro-components/plus-pro-components/issues/184` 注释。不能胡编乱造，照抄即可。
 
-### 15.3 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
+### 16.3 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
 
 **不需要**你为了数值类型的搜索栏而实现专门的配置。请参考以下例子：
 
@@ -506,7 +506,7 @@ const columns = ref<TableColumnList>([
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 物业电话
+	/** 物业电话 */
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
 		prop: "物业电话",
@@ -528,7 +528,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 物业电话
+	/** 物业电话 */
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
 		prop: "物业电话",
@@ -537,7 +537,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 ```
 
-### 15.4 不需要配置 `fieldProps.placeholder` 占位符文本
+### 16.4 不需要配置 `fieldProps.placeholder` 占位符文本
 
 在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。比如以下例子：
 
@@ -549,7 +549,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 商户名称
+	/** 商户名称 */
 	{
 		label: "商户名称",
 		prop: "商户名称",
@@ -571,12 +571,12 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 商户名称
+	/** 商户名称 */
 	{ label: "商户名称", prop: "商户名称", valueType: "input" },
 ]);
 ```
 
-### 15.5 `<PlusSearch>` 表格搜索栏的组件写法
+### 16.5 `<PlusSearch>` 表格搜索栏的组件写法
 
 必须按照以下方式来编写 `<PlusSearch>` 组件，必须提供以下内容：
 
@@ -602,6 +602,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 请你自主学习模仿上述写法。
 
-## 16. 其他杂项要求
+## 17. 其他杂项要求
 
 1. 检查列表页代码是否已经存在 `<!-- {{ plusSearchModel }} -->` 注释，如果存在就删除。

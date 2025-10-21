@@ -48,7 +48,7 @@ color: green
 </el-button>
 ```
 
-### 正确的代码例子
+### 4.2 正确的代码例子
 
 ```vue
 <ElButton type="warning" @click="handleEdit(row)">

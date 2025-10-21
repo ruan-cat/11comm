@@ -209,7 +209,7 @@ const formComputed = computed(() => {
 ```ts
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 此处省略 具体细节请阅读文件 apps\admin\src\pages\property-manage\expense-manage\expense-item-setting\components\form.vue
+	/** 此处省略 具体细节请阅读文件 apps\admin\src\pages\property-manage\expense-manage\expense-item-setting\components\form.vue */
 ]);
 ```
 
