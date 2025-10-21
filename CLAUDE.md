@@ -10,7 +10,7 @@
 
 我会与你共同补充细化实现细节。我们先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
 
-## 术语说明
+## 对话沟通术语表
 
 在我和你沟通时，我会使用以下术语，便于你理解。
 
@@ -22,6 +22,82 @@
 - `make-list-page` ： `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
 - `make-dialog` ： `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
 - `make-form-for-dialog` ： `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
+
+## 代码/编码格式要求
+
+### 1. markdown 文档的 table 编写格式
+
+每当你在 markdown 文档内编写表格时，表格的格式一定是**居中对齐**的，必须满足**居中对齐**的格式要求。
+
+### 2. markdown 文档的 vue 组件代码片段编写格式
+
+错误写法：
+
+1. 代码块语言用 vue，且不带有 `<template>` 标签来包裹。
+
+```vue
+<wd-popup v-model="showModal">
+  <wd-cell-group>
+    <!-- 内容 -->
+  </wd-cell-group>
+</wd-popup>
+```
+
+2. 代码块语言用 html。
+
+```html
+<wd-popup v-model="showModal">
+	<wd-cell-group>
+		<!-- 内容 -->
+	</wd-cell-group>
+</wd-popup>
+```
+
+正确写法：代码块语言用 vue ，且带有 `<template>` 标签来包裹。
+
+```vue
+<template>
+	<wd-popup v-model="showModal">
+		<wd-cell-group>
+			<!-- 内容 -->
+		</wd-cell-group>
+	</wd-popup>
+</template>
+```
+
+### 3. javascript / typescript 的代码注释写法
+
+代码注释写法应该写成 jsdoc 格式。而不是单纯的双斜杠注释。比如：
+
+不合适的双斜线注释写法如下：
+
+```ts
+// 模拟成功响应
+export function successResponse<T>(data: T, message: string = "操作成功") {
+	return {
+		success: true,
+		code: ResultEnum.Success,
+		message,
+		data,
+		timestamp: Date.now(),
+	};
+}
+```
+
+合适的，满足期望的 jsdoc 注释写法如下：
+
+```ts
+/** 模拟成功响应 */
+export function successResponse<T>(data: T, message: string = "操作成功") {
+	return {
+		success: true,
+		code: ResultEnum.Success,
+		message,
+		data,
+		timestamp: Date.now(),
+	};
+}
+```
 
 ## 注意事项
 
