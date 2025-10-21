@@ -8,62 +8,33 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
-import { getContractList } from "../../../../api/contract";
-import { onMounted } from "vue";
 import { defaultAddDialogParams } from "@/config/constant";
 import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import {
+	type 合同类型_列表数据,
+	type 合同类型_列表查询_VO,
+	审核类型Options,
+	tableData as mockTableData,
+} from "./test-data";
 
 import { type AddFormProps, defaultForm } from "./components/addForm";
 import AddForm from "./components/addForm.vue";
 
 const AddFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
 
-interface 合同类型_列表数据 {
-	类型名称: string;
-	是否审核: string;
-	描述: string;
-	创建时间: string;
-	操作: string;
-}
-
-const tableDataItem: 合同类型_列表数据 = {
-	类型名称: "类型名称",
-	是否审核: "是否审核",
-	描述: "描述",
-	创建时间: "创建时间",
-	操作: "操作",
-};
-
 /** 表格数据 */
-const tableData = ref<合同类型_列表数据[]>(
-	Array(10)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
-
-/* 获取合同类型列表数据 */
-const getContractListApi = async () => {
-	const query = {
-		audit: null,
-		pageIndex: 1,
-		pageSize: 10,
-		typeName: null,
-	};
-	const res = await getContractList(query);
-	// 获取表格类型
-	tableData.value = res.data.list;
-};
+const tableData = ref<合同类型_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "类型名称",
 		prop: "类型名称",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "是否审核",
@@ -73,16 +44,17 @@ const columns = ref<TableColumnList>([
 	{
 		label: "描述",
 		prop: "描述",
-		width: 120,
+		minWidth: 200,
 	},
 	{
 		label: "创建时间",
 		prop: "创建时间",
-		width: 120,
+		width: 180,
 	},
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -93,16 +65,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "合同类型",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏数据模型
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-interface 合同类型_列表查询_VO {
-	合同类型名称?: string;
-	审核类型?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -125,26 +87,18 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 巡检人
+	/** 合同类型名称 */
 	{
-		label: transformI18n($t("property-manage_contract-manage.contract-type.contracttypename")),
+		label: "合同类型名称",
 		prop: "合同类型名称",
 		valueType: "input",
 	},
+	/** 审核类型 */
 	{
-		label: transformI18n($t("property-manage_contract-manage.contract-type.addpeopleplaceholder")),
+		label: "审核类型",
 		prop: "审核类型",
 		valueType: "select",
-		options: [
-			{
-				label: "类型1",
-				value: "类型1",
-			},
-			{
-				label: "类型2",
-				value: "类型2",
-			},
-		],
+		options: 审核类型Options,
 	},
 ]);
 
@@ -168,17 +122,60 @@ const pureTableProps = ref<PureTableProps>({
 	pagination: pagination.value,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.合同类型名称) {
+			filteredData = filteredData.filter((item) => item.类型名称.includes(plusSearchModel.value.合同类型名称!));
+		}
+		if (plusSearchModel.value.审核类型) {
+			filteredData = filteredData.filter((item) => item.是否审核 === plusSearchModel.value.审核类型);
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
-	console.log("页数变化:", pageSize);
+	await loadTableData();
 }
 
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格搜索栏组件 配置  */
@@ -190,18 +187,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-// 重新搜索
-function handleReSearch() {
-	console.log("重新搜索");
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-// 搜索模块
-async function handleSearch() {
-	console.log("搜索");
-}
-
-// 添加合同类型
-function onBaseClick() {
+/** 打开弹框 */
+function openDialog() {
 	/** 弹框标题 */
 	const title = "添加合同类型";
 
@@ -244,7 +241,7 @@ function onBaseClick() {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
+					/** 手动重置表单 */
 					AddFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -253,12 +250,11 @@ function onBaseClick() {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
+					/** 提交表单时 校验 */
 					const res = await AddFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
-						// 模拟异步操作
-						await sleep(1300);
+						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
 					}
@@ -268,33 +264,119 @@ function onBaseClick() {
 	});
 }
 
-// 添加审核人员
-function addPeopeleClick() {
+/** 编辑合同类型 */
+function handleEdit(row: 合同类型_列表数据) {
+	/** 弹框标题 */
+	const title = "编辑合同类型";
+
+	/** 表单组件需要的props */
+	const formProps: AddFormProps = {
+		form: cloneDeep({
+			类型名称: row.类型名称,
+			是否审核: row.是否审核 === "是" ? "是" : "否",
+			描述: row.描述,
+		}),
+		defaultValues: cloneDeep(defaultForm),
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
+
 	addDialog({
-		title: "基础用法",
-		contentRenderer: () => h(AddForm),
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+
+		contentRenderer: () =>
+			h(AddForm, {
+				ref: AddFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = AddFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = AddFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					/** 手动重置表单 */
+					AddFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					/** 提交表单时 校验 */
+					const res = await AddFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
 	});
 }
 
-// 挂载完后进行初始化
-onMounted(() => {
-	// 获取合同类型列表数据
-	getContractListApi();
+/** 删除合同类型 */
+function handleDelete(row: 合同类型_列表数据) {
+	consola.log("删除合同类型:", row.类型名称);
+}
+
+/** 查看合同模板 */
+function handleViewTemplate(row: 合同类型_列表数据) {
+	consola.log("查看合同模板:", row.类型名称);
+}
+
+/** 扩展功能 */
+function handleExtend(row: 合同类型_列表数据) {
+	consola.log("扩展功能:", row.类型名称);
+}
+
+/** 添加审核人员 */
+function addAuditPeople() {
+	consola.log("添加审核人员");
+}
+
+/** 挂载完后进行初始化 */
+onMounted(async () => {
+	await loadTableData();
 });
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="onBaseClick"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
-				<ElButton type="primary" @click="addPeopeleClick">
-					{{ transformI18n($t("property-manage_contract-manage.contract-type.addpeople")) }}
+				<ElButton type="primary" @click="openDialog">
+					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
+				<ElButton type="primary" @click="addAuditPeople"> 添加审核人员 </ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -307,16 +389,18 @@ onMounted(() => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info">
+						<ElButton type="info" @click="handleExtend(row)">
 							{{ transformI18n($t("property-manage_contract-manage.contract-type.button.extent")) }}
 						</ElButton>
-						<ElButton type="info">
+						<ElButton type="info" @click="handleViewTemplate(row)">
 							{{ transformI18n($t("property-manage_contract-manage.contract-type.button.template")) }}
 						</ElButton>
-						<ElButton type="warning" @click="addPeopeleClick">
+						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>

@@ -1,11 +1,7 @@
-<!--
-  合同类型表单
-  用于新增 修改合同类型
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, 是否审核, 合同类型表单_VO, defaultForm } from "./addForm";
+import { AddFormProps, 合同类型表单_VO, defaultForm } from "./addForm";
 
 const props = defineProps<AddFormProps>();
 
@@ -39,7 +35,7 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 类型名称
+	/** 类型名称 */
 	{
 		label: "类型名称",
 		prop: "类型名称",
@@ -47,7 +43,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		required: true,
 	},
 
-	// 是否审核
+	/** 是否审核 */
 	{
 		label: "是否审核",
 		prop: "是否审核",
@@ -59,14 +55,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 		required: true,
 	},
 
-	// 描述
+	/** 描述 */
 	{
 		label: "描述",
 		prop: "描述",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
-			placeholder: "请输入描述信息",
 		},
 	},
 ]);
@@ -84,15 +79,16 @@ defineExpose({
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-	/>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+		/>
+	</section>
 </template>
 
 <style lang="scss" scoped>
