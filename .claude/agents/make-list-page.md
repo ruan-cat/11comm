@@ -61,19 +61,19 @@ color: yellow
 - **假数据文件**： 即 `列表页` 旁边的 `test-data.ts` 文件。用于存放各种在前端层面写死的假数据。
 - **表格列配置**： 即表格组件渲染的关键配置。该配置实现表格的表头、操作栏配置等。
 
-## 业务类型与假数据存储
+## 用 `假数据文件` `test-data.ts` 来存储业务类型与假数据
 
 1. 请你在我给定的页面内，在对应的 `index.vue` 文件旁边，新建一个 `test-data.ts` 文件。并在此处存储业务类型，和假数据。不要把用于填充的占位数据，放到组件内。
 2. 给表格组件准备假数据时，请你准备好 35 条假数据。
 
-### 存储表格组件的假数据
+### 1. 存储表格组件的假数据
 
 在 `假数据文件` 存储表格数据时。需要满足以下要求：
 
 1. 定义业务类型用中文来定义。
 2. 对外返回名为 `tableData` 的业务类型数组。该数据包含了表格组件需要使用的假数据。
 
-### 存储下拉列表使用的假数据
+### 2. 存储下拉列表使用的假数据
 
 1. 如果 `plusSearchColumns` 表格搜索栏组件 的 下拉列表有选项，请你将下拉列表的数据也一并存储在 `假数据文件` 内。
 2. 在对下拉列表数据做类型约束时，请使用 `plus-pro-components` 包提供的 `OptionsType` 类型来约束下拉列表数组。
@@ -81,6 +81,27 @@ color: yellow
 ```ts
 import { type OptionsType } from "plus-pro-components";
 ```
+
+3. 使用 `OptionsType` 类型约束的下拉列表数组，例子如下：
+
+```ts
+/** 组件类型选项 */
+export const 组件类型Options: OptionsType = [
+	{ label: "表格", value: "表格" },
+	{ label: "饼状图", value: "饼状图" },
+	{ label: "柱状图", value: "柱状图" },
+	{ label: "折线图", value: "折线图" },
+	{ label: "数据卡片", value: "数据卡片" },
+];
+
+/** 查询方式选项 */
+export const 查询方式Options: OptionsType = [
+	{ label: "SQL", value: "sql" },
+	{ label: "JAVA", value: "java" },
+];
+```
+
+4. 下拉列表数组的变量名命名规则为： `*Options` ，比如 `查询方式Options` 、 `组件类型Options` 这样的。
 
 ## 制作并使用 loadTableData `假分页请求` 函数
 
