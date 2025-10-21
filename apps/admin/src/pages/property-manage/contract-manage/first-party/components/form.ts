@@ -24,7 +24,7 @@ export const defaultForm: 合同甲方表单_VO = {
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export interface AddFormProps {
+export interface FirstPartyFormProps {
 	/** 表单数据 */
 	form: 合同甲方表单_VO;
 	/** 表单组件重置时默认使用的对象 */

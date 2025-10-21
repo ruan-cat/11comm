@@ -3,11 +3,11 @@
   用于新增、修改合同甲方
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, 合同甲方表单_VO, defaultForm } from "./addForm";
+import { FirstPartyFormProps, 合同甲方表单_VO, defaultForm } from "./form";
 
-const props = defineProps<AddFormProps>();
+const props = defineProps<FirstPartyFormProps>();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & 合同甲方表单_VO;
@@ -45,9 +45,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "甲方",
 		valueType: "input",
 		required: true,
-		fieldProps: {
-			placeholder: "请输入甲方名称",
-		},
 	},
 
 	// 甲方联系人
@@ -56,9 +53,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "甲方联系人",
 		valueType: "input",
 		required: true,
-		fieldProps: {
-			placeholder: "请输入甲方联系人",
-		},
 	},
 
 	// 联系电话
@@ -67,9 +61,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "联系电话",
 		valueType: "input",
 		required: true,
-		fieldProps: {
-			placeholder: "请输入联系电话",
-		},
 	},
 ]);
 
@@ -93,15 +84,16 @@ defineExpose({
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-	/>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+		/>
+	</section>
 </template>
 
 <style lang="scss" scoped>
