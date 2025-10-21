@@ -18,10 +18,10 @@
 
 在任何沟通下，这些术语都生效。
 
-- `code-style` ： `代码风格子代理` ，用于说明代码编写规范的子代理。
-- `make-list-page` ： `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
-- `make-dialog` ： `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
-- `make-form-for-dialog` ： `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
+- `code-style` ： `.claude\agents\code-style.md` `代码风格子代理` ，用于说明代码编写规范的子代理。
+- `make-list-page` ：`.claude\agents\make-list-page.md` `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
+- `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
+- `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
 
 ## 代码/编码格式要求
 
