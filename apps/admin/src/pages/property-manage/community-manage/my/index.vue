@@ -284,7 +284,7 @@ interface OpenDialogParams {
 	row?: 我的小区_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit, isInfo } = useMode();
+const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
 
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
@@ -295,13 +295,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 表单组件需要的props */
 	const formProps: CommunityManageFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-
-	const editProps: CommunityManageFormProps = {
 		form: {
-			...defaultForm,
+			...cloneDeep(defaultForm),
 			province: row?.省份 || "",
 			city: row?.市州 || "",
 			district: row?.区县 || "",
@@ -314,7 +309,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
 		},
 		defaultValues: {
-			...defaultForm,
+			...cloneDeep(defaultForm),
 			province: row?.省份 || "",
 			city: row?.市州 || "",
 			district: row?.区县 || "",
@@ -326,19 +321,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			endTime: row?.结束时间 || "",
 			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
 		},
+		mode,
 	};
 
 	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: isEdit.value
-			? editProps
-			: isInfo.value
-				? editProps
-				: {
-						form: cloneDeep(row),
-						defaultValues: cloneDeep(row),
-					};
+	const props = formProps;
 
 	/** 根据不同模式下变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -351,8 +338,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(CommunityManageForm, {
 				ref: communityManageFormInstance,
-				...props,
-				mode: mode.value,
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -363,10 +349,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		footerButtons: isInfo.value
 			? [
 					{
-						label: transformI18n($t("common.buttons.close")),
+						label: transformI18n($t("common.buttons.cancel")),
 						type: "info",
-						btnClick: ({ dialog: { options, index } }) => {
-							options.destroy();
+						btnClick: async ({ dialog: { options, index }, button }) => {
+							const formComputed = communityManageFormInstance.value.formComputed;
+							await useDoBeforeClose({ defaultValues, formComputed, index, options });
 						},
 					},
 				]
@@ -390,17 +377,17 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						label: transformI18n($t("common.buttons.save")),
 						type: "success",
 						btnClick: async ({ dialog: { options, index }, button }) => {
-							button.loading = true;
+							button.btn.loading = true;
 							try {
 								const formData = communityManageFormInstance.value.formComputed;
 								await testAsync();
 								ElMessage.success(`${modeText.value}成功`);
-								options.destroy();
 								loadTableData();
+								closeDialog(options, index);
 							} catch (error) {
 								ElMessage.error(`${modeText.value}失败`);
 							} finally {
-								button.loading = false;
+								button.btn.loading = false;
 							}
 						},
 					},

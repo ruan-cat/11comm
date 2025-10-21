@@ -1,4 +1,5 @@
 import { type OptionsType } from "plus-pro-components";
+import type { Mode } from "@/composables/use-mode";
 
 /** 小区状态选项 */
 export const communityStatuses = ["正常运营", "筹备中", "维护中", "已停用"] as const;
