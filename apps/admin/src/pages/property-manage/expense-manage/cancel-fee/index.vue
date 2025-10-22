@@ -258,7 +258,15 @@ function openAuditDialog(row: 取消费用_列表数据) {
 			审核状态: row.审核状态,
 			审核意见: row.审核意见,
 		}),
-		defaultValues: cloneDeep(defaultForm),
+		defaultValues: cloneDeep({
+			...defaultForm,
+			批次号: row.批次号,
+			员工: row.员工,
+			时间: row.时间,
+			取消原因: row.取消原因,
+			审核状态: row.审核状态,
+			审核意见: row.审核意见,
+		}),
 	};
 
 	/** 弹框组件所需的变量 */
