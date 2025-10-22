@@ -605,3 +605,4 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ## 17. 其他杂项要求
 
 1. 检查列表页代码是否已经存在 `<!-- {{ plusSearchModel }} -->` 注释，如果存在就删除。
+2. 检查列表页代码是否已经存在 `<h2>XXXX</h2>` 的标题，如果模板内存在，就删除。列表页代码不需要占位符。
