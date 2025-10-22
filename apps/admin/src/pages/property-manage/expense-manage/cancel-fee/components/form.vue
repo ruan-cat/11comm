@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useTemplateRef } from "vue";
 import { CancelFeeFormProps, defaultForm, type 取消费用表单_VO } from "./form";
 import { 审核状态Options } from "../test-data";
@@ -12,6 +12,17 @@ const defaultValues = props.defaultValues as FieldValues & 取消费用表单_VO
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
+
+// /** 表单对象 */
+// const form = ref<FieldValues & 取消费用表单_VO>(props.form);
+// /** 监听 props.form 的变化并更新本地 form */
+// watch(
+// 	() => props.form,
+// 	(newForm) => {
+// 		form.value = newForm;
+// 	},
+// 	{ immediate: true, deep: true },
+// );
 
 /**
  * 本表单组件 实际使用的表单对象
