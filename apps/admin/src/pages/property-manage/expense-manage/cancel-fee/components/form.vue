@@ -39,32 +39,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "批次号",
 		prop: "批次号",
 		valueType: "input",
-		fieldProps: {
-			readonly: true,
-		},
 	},
 	{
 		label: "员工",
 		prop: "员工",
 		valueType: "input",
-		fieldProps: {
-			readonly: true,
-		},
 	},
 	{
 		label: "时间",
 		prop: "时间",
 		valueType: "input",
-		fieldProps: {
-			readonly: true,
-		},
 	},
 	{
 		label: "取消原因",
 		prop: "取消原因",
 		valueType: "textarea",
 		fieldProps: {
-			readonly: true,
 			rows: 3,
 		},
 	},
