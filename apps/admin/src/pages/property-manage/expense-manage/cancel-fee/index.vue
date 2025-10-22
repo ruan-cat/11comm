@@ -8,94 +8,345 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 取消费用_列表数据,
+	type 取消费用_列表查询_VO,
+	审核状态Options,
+	tableData as allTableData,
+} from "./test-data";
+import { type CancelFeeFormProps, defaultForm } from "./components/form";
+import CancelFeeForm from "./components/form.vue";
 
-interface 取消费用_列表数据 {
-	批次号: string;
-	员工: string;
-	时间: string;
-	取消原因: string;
-	审核状态: string;
-	审核意见: string;
-	操作: string;
-}
-const tableDataItem: 取消费用_列表数据 = {
-	批次号: "批次号",
-	员工: "员工",
-	时间: "时间",
-	取消原因: "取消原因",
-	审核状态: "审核状态",
-	审核意见: "审核意见",
-	操作: "操作",
-};
 /** 表格数据 */
-const tableData = ref<取消费用_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
-/** 表格配置 */
+const tableData = ref<取消费用_列表数据[]>([]);
+
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "批次号",
+		prop: "批次号",
+		width: 140,
+		fixed: true,
+	},
+	{
+		label: "员工",
+		prop: "员工",
+		width: 120,
+	},
+	{
+		label: "时间",
+		prop: "时间",
+		width: 160,
+	},
+	{
+		label: "取消原因",
+		prop: "取消原因",
+		minWidth: 200,
+	},
+	{
+		label: "审核状态",
+		prop: "审核状态",
+		width: 120,
+	},
+	{
+		label: "审核意见",
+		prop: "审核意见",
+		minWidth: 180,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 240,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+/** 分页配置 */
+const pagination = ref<PaginationProps>({
+	...defaultPagination,
+	pageSize: 10,
+	currentPage: 1,
+	total: 0,
+});
+
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+/** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
-	columns: [
-		{
-			prop: "批次号",
-			label: "批次号",
-			width: 120,
+	columns: [],
+	pagination: pagination.value,
+});
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "取消费用",
+	columns: columns.value,
+});
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.批次号) {
+			filteredData = filteredData.filter((item) => item.批次号.includes(plusSearchModel.value.批次号!));
+		}
+		if (plusSearchModel.value.员工) {
+			filteredData = filteredData.filter((item) => item.员工.includes(plusSearchModel.value.员工!));
+		}
+		if (plusSearchModel.value.时间) {
+			filteredData = filteredData.filter((item) => item.时间.includes(plusSearchModel.value.时间!));
+		}
+		if (plusSearchModel.value.取消原因) {
+			filteredData = filteredData.filter((item) => item.取消原因.includes(plusSearchModel.value.取消原因!));
+		}
+		if (plusSearchModel.value.审核状态) {
+			filteredData = filteredData.filter((item) => item.审核状态 === plusSearchModel.value.审核状态);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 取消费用_列表查询_VO = {
+	批次号: "",
+	员工: "",
+	时间: "",
+	取消原因: "",
+	审核状态: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 批次号
+	{
+		label: "批次号",
+		prop: "批次号",
+		valueType: "input",
+	},
+
+	// 员工
+	{
+		label: "员工",
+		prop: "员工",
+		valueType: "input",
+	},
+
+	// 时间
+	{
+		label: "时间",
+		prop: "时间",
+		valueType: "date-picker",
+		fieldProps: {
+			type: "datetime",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			format: "YYYY-MM-DD HH:mm:ss",
 		},
-		{
-			prop: "员工",
-			label: "员工",
-			width: 120,
+	},
+
+	// 取消原因
+	{
+		label: "取消原因",
+		prop: "取消原因",
+		valueType: "input",
+	},
+
+	// 审核状态
+	{
+		label: "审核状态",
+		prop: "审核状态",
+		valueType: "select",
+		options: 审核状态Options,
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+// 弹框相关功能
+const cancelFeeFormInstance = ref<InstanceType<typeof CancelFeeForm> | null>(null);
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开审核弹框 */
+function openAuditDialog(row: 取消费用_列表数据) {
+	setMode("edit");
+
+	/** 弹框标题 */
+	const title = `${modeText.value}取消费用审核`;
+
+	/** 表单组件需要的props */
+	const formProps: CancelFeeFormProps = {
+		form: cloneDeep({
+			...defaultForm,
+			批次号: row.批次号,
+			员工: row.员工,
+			时间: row.时间,
+			取消原因: row.取消原因,
+			审核状态: row.审核状态,
+			审核意见: row.审核意见,
+		}),
+		defaultValues: cloneDeep(defaultForm),
+	};
+
+	/** 弹框组件所需的变量 */
+	const props = formProps;
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+		contentRenderer: () =>
+			h(CancelFeeForm, {
+				ref: cancelFeeFormInstance,
+				...formProps,
+			}),
+		async doBeforeClose({ options, index }) {
+			const formComputed = cancelFeeFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-		{
-			prop: "时间",
-			label: "时间",
-			width: 120,
-		},
-		{
-			prop: "取消原因",
-			label: "取消原因",
-			width: 120,
-		},
-		{
-			prop: "审核状态",
-			label: "审核状态",
-			width: 120,
-		},
-		{
-			prop: "审核意见",
-			label: "审核意见",
-			width: 120,
-		},
-		{
-			prop: "操作",
-			label: "操作",
-			width: 120,
-		},
-		{
-			label: transformI18n($t("common.table.operation")),
-			minWidth: 240,
-			fixed: "right",
-			slot: "operation",
-		},
-	],
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					/** console.log(options, index, button); */
+					const formComputed = cancelFeeFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					/** 手动重置表单 */
+					cancelFeeFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					/** 提交表单时 校验 */
+					const res = await cancelFeeFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
+
+onMounted(async () => {
+	await loadTableData();
 });
 </script>
 
 <template>
 	<section class="index-root">
-		<h2>取消费用</h2>
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-		<PureTable :="pureTableProps">
-			<template #operation="{ row }">
-				<ElButton type="default">{{ transformI18n($t("欠费缴费")) }}</ElButton>
-				<ElButton type="info">{{ transformI18n($t("common.buttons.info")) }}</ElButton>
-				<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
+
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				>
+					<template #operation="{ row }">
+						<ElButton type="default"> 欠费缴费 </ElButton>
+						<ElButton type="warning" @click="openAuditDialog(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="default"> 查看费用 </ElButton>
+					</template>
+				</PureTable>
 			</template>
-		</PureTable>
+		</PureTableBar>
 	</section>
 </template>
 
