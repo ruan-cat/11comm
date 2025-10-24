@@ -197,7 +197,7 @@ onMounted(async () => {
 1. 你在生成列表页时，请直接照搬照抄这些代码即可。
 2. 在你处理列表页时，列表页本身就可能有了以下函数或变量，请你按照各自的要求，做替换或者是更改。
 
-### 9.1 `handleReSearch`
+### 9.1 重置搜索条件并重新加载数据 `handleReSearch`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -210,7 +210,7 @@ async function handleReSearch() {
 }
 ```
 
-### 9.2 `handleSearch`
+### 9.2 执行搜索 `handleSearch`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -222,9 +222,47 @@ async function handleSearch() {
 }
 ```
 
-### 9.3 `loadTableData`
+### 9.3 假分页请求 `loadTableData`
 
 参考 [制作并使用 loadTableData `假分页请求` 函数](#8-制作并使用-loadtabledata-假分页请求-函数) 部分。
+
+### 9.4 分页配置 `pagination`
+
+直接照搬替换即可，以本文档的代码写法为主。
+
+```ts
+/** 分页配置 */
+const pagination = ref<PaginationProps>({
+	...defaultPagination,
+	pageSize: 10,
+	currentPage: 1,
+	total: 0,
+});
+```
+
+### 9.4 处理页数变化 `handlePageSizeChange`
+
+直接照搬替换即可，以本文档的代码写法为主。
+
+```ts
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
+```
+
+### 9.4 处理页码变化 `handleCurrentPageChange`
+
+直接照搬替换即可，以本文档的代码写法为主。
+
+```ts
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+```
 
 ## 10. 分批次生成表格
 
