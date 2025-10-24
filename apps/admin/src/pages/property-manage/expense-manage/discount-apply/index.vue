@@ -8,56 +8,28 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type DiscountApplyFormProps, defaultForm } from "./components/form";
+import {
+	type 优惠申请_列表数据,
+	type 优惠申请_列表查询_VO,
+	申请类型Options,
+	使用状态Options,
+	tableData as allTableData,
+} from "./test-data";
+import { type DiscountApplyFormProps, defaultForm, type 优惠申请表单_VO } from "./components/form";
 import DiscountApplyForm from "./components/form.vue";
 
-const DiscountApplyFormInstance = ref<InstanceType<typeof DiscountApplyForm> | null>(null);
-
-interface 优惠申请_列表数据 {
-	"房屋(楼栋-单元-房屋)": string;
-	折扣ID: string;
-	折扣名称: string;
-	申请类型: string;
-	申请人: string;
-	申请电话: string;
-	开始时间: string;
-	结束时间: string;
-	状态: string;
-	创建时间: string;
-	使用状态: string;
-	返还类型: string;
-	返还金额: string;
-}
-
-const tableDataItem: 优惠申请_列表数据 = {
-	"房屋(楼栋-单元-房屋)": "房屋(楼栋-单元-房屋)",
-	折扣ID: "折扣ID",
-	折扣名称: "折扣名称",
-	申请类型: "申请类型",
-	申请人: "申请人",
-	申请电话: "申请电话",
-	开始时间: "开始时间",
-	结束时间: "结束时间",
-	状态: "状态",
-	创建时间: "创建时间",
-	使用状态: "使用状态",
-	返还类型: "返还类型",
-	返还金额: "返还金额",
-};
 /** 表格数据 */
-const tableData = ref<优惠申请_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
-/** 表格配置 */
+const tableData = ref<优惠申请_列表数据[]>([]);
+/** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
-		prop: "房屋(楼栋-单元-房屋)",
-		label: "房屋(楼栋-单元-房屋)",
+		prop: "房屋",
+		label: "房屋",
 		width: 200,
 		fixed: true,
 	},
@@ -122,10 +94,9 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		// label: transformI18n($t("table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -136,46 +107,41 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
-// 表格组件配置
+/** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
 });
+
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "优惠申请",
 	columns: columns.value,
 });
 
-/** 表格搜索栏组件 配置  */
-interface 优惠申请_列表查询_VO {
-	"房屋(楼栋-单元-房屋)"?: string;
-	申请类型?: string;
-	使用状态?: string;
-}
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & 优惠申请_列表查询_VO = {
-	"房屋(楼栋-单元-房屋)": "",
+	房屋: "",
 	申请类型: "",
 	使用状态: "",
 };
@@ -185,67 +151,98 @@ const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 房屋(楼栋-单元-房屋)
+	// 房屋
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-apply.houseInfo")),
-		prop: "房屋(楼栋-单元-房屋)",
+		label: "房屋",
+		prop: "房屋",
 		valueType: "input",
 	},
 	// 申请类型
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-apply.applyType")),
+		label: "申请类型",
 		prop: "申请类型",
 		valueType: "select",
-		options: [
-			{ label: "123", value: "123" },
-			{ label: "空置房", value: "类型1" },
-		],
+		options: 申请类型Options,
 	},
 	// 使用状态
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-apply.useStatus")),
+		label: "使用状态",
 		prop: "使用状态",
 		valueType: "select",
-		options: [
-			{ label: "申请验房", value: "申请验房" },
-			{ label: "验房通过", value: "验房通过" },
-			{ label: "验房不通过", value: "验房不通过" },
-			{ label: "审批通过", value: "审批通过" },
-			{ label: "审批不通过", value: "审批不通过" },
-		],
+		options: 使用状态Options,
 	},
 ]);
-/** 表格搜索栏 表单配置 */
+
+/** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
-	labelWidth: 220,
+	labelWidth: 140,
 	labelPosition: "right",
 	showNumber: 3,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = allTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.房屋) {
+			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋!));
+		}
+		if (plusSearchModel.value.申请类型) {
+			filteredData = filteredData.filter((item) => item.申请类型 === plusSearchModel.value.申请类型);
+		}
+		if (plusSearchModel.value.使用状态) {
+			filteredData = filteredData.filter((item) => item.使用状态 === plusSearchModel.value.使用状态);
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
+
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 优惠申请_列表数据;
-}
-
+// 弹框相关功能
+const DiscountApplyFormInstance = ref<InstanceType<typeof DiscountApplyForm> | null>(null);
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -255,42 +252,39 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 优惠申请_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}优惠申请`;
 
+	/** 业务对象 */
+	const 业务对象: 优惠申请表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					房屋: row?.房屋 || "",
+					申请类型: row?.申请类型 || "空置房",
+					费用项目: row?.折扣名称 || "",
+					申请人: row?.申请人 || "",
+					申请电话: row?.申请电话 || "",
+					开始时间: row?.开始时间 || "",
+					结束时间: row?.结束时间 || "",
+					申请名说明: row?.折扣名称 || "",
+					图片材料: "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: DiscountApplyFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-
-	const testEditProps: DiscountApplyFormProps = {
-		form: {
-			...defaultForm,
-			房屋: "楼栋-单元-房屋",
-			申请类型: "空置房",
-			费用项目: "费用项目",
-			申请人: "张三",
-			申请电话: "13712345678",
-			开始时间: "2025-05-01",
-			结束时间: "2025-05-31",
-			申请名说明: "折扣名称",
-			图片材料: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
+		form: 业务对象,
+		defaultValues: 业务对象,
 	};
 
 	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	const props = formProps;
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -299,24 +293,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		...defaultAddDialogParams,
 		title,
 		props,
-
 		contentRenderer: () =>
 			h(DiscountApplyForm, {
 				ref: DiscountApplyFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = DiscountApplyFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
+					/** console.log(options, index, button); */
 					const formComputed = DiscountApplyFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -326,7 +317,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
+					/** 手动重置表单 */
 					DiscountApplyFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -335,7 +326,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
+					/** 提交表单时 校验 */
 					const res = await DiscountApplyFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -348,41 +339,54 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<!-- 表格搜索栏组件 -->
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-		<!-- {{ plusSearchModel }} -->
-		<!-- 表格操作栏和表格组件 -->
-		<PureTableBar v-bind="pureTableBarProps">
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.discountType")) }}
 				</ElButton>
-				<ElButton type="success" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.phoneApply")) }}
 				</ElButton>
-				<ElButton type="primary">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.export")) }}
 				</ElButton>
 			</template>
+
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
-					v-bind="pureTableProps"
+					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">{{
-							transformI18n($t("common.buttons.edit"))
-						}}</ElButton>
-						<ElButton type="info">{{ transformI18n($t("common.buttons.info")) }}</ElButton>
-						<ElButton type="danger">{{ transformI18n($t("common.buttons.del")) }}</ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>

@@ -1,9 +1,5 @@
-<!--
-  优惠申请表单
-  用于新增 修改优惠申请
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
 import { DiscountApplyFormProps, 优惠申请表单_VO, defaultForm } from "./form";
 
@@ -54,7 +50,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		options: [
 			{ label: "空置房", value: "空置房" },
-			{ label: "123", value: "123" },
+			{ label: "困难家庭", value: "困难家庭" },
+			{ label: "长期住户", value: "长期住户" },
+			{ label: "特殊贡献", value: "特殊贡献" },
 		],
 		required: true,
 	},
@@ -63,11 +61,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "费用项目",
 		prop: "费用项目",
-		valueType: "select",
-		options: [
-			{ label: "费用项目1", value: "费用项目1" },
-			{ label: "费用项目2", value: "费用项目2" },
-		],
+		valueType: "input",
 		required: true,
 	},
 
@@ -109,10 +103,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		required: true,
 	},
-	// 申请说明
+	// 申请名说明
 	{
-		label: "申请说明",
-		prop: "申请说明",
+		label: "申请名说明",
+		prop: "申请名说明",
 		valueType: "textarea",
 		required: true,
 	},
@@ -124,9 +118,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		required: true,
 	},
 ]);
-
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验 */
 const plusFormRules = {};
@@ -144,7 +135,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
