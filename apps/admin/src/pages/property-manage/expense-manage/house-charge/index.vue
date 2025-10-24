@@ -8,50 +8,35 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 房屋收费_列表数据,
+	type 房屋收费_列表查询_VO,
+	tableData as allTableData,
+} from "./test-data";
 
-import { type HouseChargeFormProps, defaultForm } from "./components/form";
+import {
+	type HouseChargeFormProps,
+	defaultForm,
+	type 房屋收费_VO,
+	type 费用类型,
+} from "./components/form";
 import HouseChargeForm from "./components/form.vue";
 
-const HouseChargeFormInstance = ref<InstanceType<typeof HouseChargeForm> | null>(null);
-
-interface 房屋收费_列表数据 {
-	费用项目: string;
-	费用标识: string;
-	费用类型: string;
-	应收金额: String;
-	建账时间: string;
-	应收时间段: string;
-	说明: string;
-	状态: string;
-}
-
-const tableDataItem: 房屋收费_列表数据 = {
-	费用项目: "物业费",
-	费用标识: "周期性费用",
-	费用类型: "物业费",
-	应收金额: "0.1",
-	建账时间: "2025-05-22 00:00:00",
-	应收时间段: "2026-05-28~",
-	说明: "单价：0.0  附加费：500.0",
-	状态: "有效",
-};
+/** 表单组件实例 */
+const houseChargeFormInstance = ref<InstanceType<typeof HouseChargeForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<房屋收费_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<房屋收费_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "费用项目",
 		prop: "费用项目",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "费用标识",
@@ -71,29 +56,27 @@ const columns = ref<TableColumnList>([
 	{
 		label: "建账时间",
 		prop: "建账时间",
-		width: 120,
+		width: 180,
 	},
 	{
 		label: "应收时间段",
 		prop: "应收时间段",
-		width: 120,
+		width: 180,
 	},
 	{
 		label: "说明",
 		prop: "说明",
-		width: 120,
+		width: 200,
 	},
 	{
 		label: "状态",
 		prop: "状态",
-		width: 120,
+		width: 100,
 	},
-
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -104,18 +87,19 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
+
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
@@ -131,9 +115,39 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 房屋收费_列表查询_VO {
-	房屋编号?: string;
-	业主名称?: string;
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.房屋编号) {
+			filteredData = filteredData.filter((item) =>
+				item.费用项目.includes(plusSearchModel.value.房屋编号!)
+			);
+		}
+		if (plusSearchModel.value.业主名称) {
+			filteredData = filteredData.filter((item) =>
+				item.费用项目.includes(plusSearchModel.value.业主名称!)
+			);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
 }
 
 /**
@@ -205,12 +219,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 2,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -220,7 +239,10 @@ interface OpenDialogParams {
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
+/** 测试异步函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -236,51 +258,51 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}房屋收费`;
 
+	/** 业务对象 */
+	const 房屋收费表单_VO: 房屋收费_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? {
+					...defaultForm,
+					费用类型: (row?.费用项目 as 费用类型) || "物业费",
+					收费项目: row?.费用项目 || "",
+					费用标识: (row?.费用标识 as "周期性费用" | "一次性费用") || "周期性费用",
+					付费类型: "预付费",
+					"缴费周期(单位:月)": "1",
+					"预付期(单位:天)": "30",
+					单位: "元/平方米·月",
+					账户抵扣: "是",
+					手机缴费: "是",
+					进位方式: "四舍五入",
+					保留小数位: "2位",
+					状态: "启用",
+					计算公式: "",
+					计费单价: row?.应收金额 || "",
+					固定费用: "",
+				}
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: HouseChargeFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 房屋收费表单_VO,
+		defaultValues: 房屋收费表单_VO,
 	};
-
-	const testEditProps: HouseChargeFormProps = {
-		form: {
-			...defaultForm,
-			费用类型: "水费",
-			收费项目: "水费历史欠费",
-			费用标识: "周期性费用",
-			付费类型: "预付费",
-			计费单价: "230.1",
-			账户抵扣: "是",
-			状态: "启用",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
 
 		contentRenderer: () =>
 			h(HouseChargeForm, {
-				ref: HouseChargeFormInstance,
+				ref: houseChargeFormInstance,
 				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = HouseChargeFormInstance.value.formComputed;
+			const formComputed = houseChargeFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -289,8 +311,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = HouseChargeFormInstance.value.formComputed;
+					const formComputed = houseChargeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -299,8 +320,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					HouseChargeFormInstance.value.plusFormInstance.handleReset();
+					houseChargeFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -308,8 +328,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await HouseChargeFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await houseChargeFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -321,13 +340,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -349,8 +376,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
@@ -360,5 +391,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 <style lang="scss" scoped>
 .index-root {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 </style>

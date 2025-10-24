@@ -5,7 +5,19 @@
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
 
-import { HouseChargeFormProps, 费用类型, 房屋收费_VO, defaultForm } from "./form";
+import {
+	HouseChargeFormProps,
+	费用类型,
+	房屋收费_VO,
+	defaultForm,
+	费用标识类型,
+	付费类型,
+	账户抵扣类型,
+	手机缴费类型,
+	进位方式类型,
+	保留小数位类型,
+	状态类型,
+} from "./form";
 
 const props = defineProps<HouseChargeFormProps>();
 
@@ -43,6 +55,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "费用类型",
 		prop: "费用类型",
+		valueType: "select",
+		options: [
+			{ label: "物业费", value: "物业费" },
+			{ label: "押金", value: "押金" },
+			{ label: "停车费", value: "停车费" },
+			{ label: "煤气费", value: "煤气费" },
+			{ label: "取暖费", value: "取暖费" },
+			{ label: "维修费", value: "维修费" },
+			{ label: "服务费", value: "服务费" },
+			{ label: "其他", value: "其他" },
+			{ label: "水费", value: "水费" },
+			{ label: "电费", value: "电费" },
+			{ label: "租金", value: "租金" },
+			{ label: "公摊费", value: "公摊费" },
+		],
+		required: true,
 	},
 
 	// 收费项目
