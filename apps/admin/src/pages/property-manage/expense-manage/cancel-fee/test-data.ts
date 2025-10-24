@@ -2,9 +2,7 @@ import { type OptionsType } from "plus-pro-components";
 
 // ==================== 类型定义 ====================
 
-/**
- * 取消费用列表数据类型
- */
+/** 取消费用列表数据类型 */
 export interface 取消费用_列表数据 {
 	/** 批次号 */
 	批次号: string;
@@ -20,9 +18,7 @@ export interface 取消费用_列表数据 {
 	审核意见: string;
 }
 
-/**
- * 取消费用列表查询参数类型
- */
+/** 取消费用列表查询参数类型 */
 export interface 取消费用_列表查询_VO {
 	/** 批次号 */
 	批次号?: string;
@@ -38,9 +34,7 @@ export interface 取消费用_列表查询_VO {
 
 // ==================== 常量定义 ====================
 
-/**
- * 审核状态下拉选项
- */
+/** 审核状态下拉选项 */
 export const 审核状态Options: OptionsType = [
 	{
 		label: "待审核",
@@ -58,9 +52,7 @@ export const 审核状态Options: OptionsType = [
 
 // ==================== 表格假数据 ====================
 
-/**
- * 表格假数据
- */
+/** 表格假数据 */
 export const tableData: 取消费用_列表数据[] = [
 	{
 		批次号: "P20240101001",

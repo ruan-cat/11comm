@@ -13,16 +13,6 @@ const defaultValues = props.defaultValues as FieldValues & 取消费用表单_VO
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-// /** 表单对象 */
-// const form = ref<FieldValues & 取消费用表单_VO>(props.form);
-// /** 监听 props.form 的变化并更新本地 form */
-// watch(
-// 	() => props.form,
-// 	(newForm) => {
-// 		form.value = newForm;
-// 	},
-// 	{ immediate: true, deep: true },
-// );
 
 /**
  * 本表单组件 实际使用的表单对象

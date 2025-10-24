@@ -10,13 +10,14 @@ definePage({
 
 import { ref, computed, onMounted, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type 取消费用_列表数据,
 	type 取消费用_列表查询_VO,
 	审核状态Options,
 	tableData as allTableData,
 } from "./test-data";
-import { type CancelFeeFormProps, defaultForm } from "./components/form";
+import { type CancelFeeFormProps, defaultForm, type 取消费用表单_VO } from "./components/form";
 import CancelFeeForm from "./components/form.vue";
 
 /** 表格数据 */
@@ -228,9 +229,11 @@ async function handleSearch() {
 
 // 弹框相关功能
 const cancelFeeFormInstance = ref<InstanceType<typeof CancelFeeForm> | null>(null);
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
@@ -240,37 +243,34 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-/** 打开审核弹框 */
-function openAuditDialog(row: 取消费用_列表数据) {
-	setMode("edit");
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 取消费用_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}取消费用审核`;
 
-	/** 表单组件需要的props */
-	const formProps: CancelFeeFormProps = {
-		form: cloneDeep({
-			...defaultForm,
-			批次号: row.批次号,
-			员工: row.员工,
-			时间: row.时间,
-			取消原因: row.取消原因,
-			审核状态: row.审核状态,
-			审核意见: row.审核意见,
-		}),
-		defaultValues: cloneDeep({
-			...defaultForm,
-			批次号: row.批次号,
-			员工: row.员工,
-			时间: row.时间,
-			取消原因: row.取消原因,
-			审核状态: row.审核状态,
-			审核意见: row.审核意见,
-		}),
-	};
+	/** 业务对象 */
+	const 业务对象: 取消费用表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					批次号: row?.批次号 || "",
+					员工: row?.员工 || "",
+					时间: row?.时间 || "",
+					取消原因: row?.取消原因 || "",
+					审核状态: row?.审核状态 || "",
+					审核意见: row?.审核意见 || "",
+				})
+			: cloneDeep(defaultForm);
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
+	/** 表单组件需要的props */
+	const props: CancelFeeFormProps = {
+		form: 业务对象,
+		defaultValues: 业务对象,
+	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -282,7 +282,7 @@ function openAuditDialog(row: 取消费用_列表数据) {
 		contentRenderer: () =>
 			h(CancelFeeForm, {
 				ref: cancelFeeFormInstance,
-				...formProps,
+				...props,
 			}),
 		async doBeforeClose({ options, index }) {
 			const formComputed = cancelFeeFormInstance.value.formComputed;
@@ -352,11 +352,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="default"> 欠费缴费 </ElButton>
-						<ElButton type="warning" @click="openAuditDialog(row)">
+						<ElButton type="info"> 欠费缴费 </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="default"> 查看费用 </ElButton>
+						<ElButton type="info"> 查看费用 </ElButton>
 					</template>
 				</PureTable>
 			</template>
