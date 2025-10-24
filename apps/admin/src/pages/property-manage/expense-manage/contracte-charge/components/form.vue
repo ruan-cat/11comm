@@ -1,9 +1,5 @@
-<!--
-  合同收费表单
-  用于新增 修改合同收费
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
 import { ContracteChargeFormProps, 费用类型, 合同收费表单_VO, defaultForm } from "./form";
 
@@ -43,6 +39,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "费用类型",
 		prop: "费用类型",
+		valueType: "select",
+		options: [
+			{ label: "物业费", value: "物业费" },
+			{ label: "押金", value: "押金" },
+			{ label: "煤气费", value: "煤气费" },
+			{ label: "取暖费", value: "取暖费" },
+			{ label: "维修费", value: "维修费" },
+			{ label: "服务费", value: "服务费" },
+			{ label: "其他", value: "其他" },
+			{ label: "系统费用", value: "系统费用" },
+			{ label: "租金", value: "租金" },
+		],
 	},
 
 	// 收费项目
@@ -91,9 +99,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验 */
 const plusFormRules = {};
 
@@ -110,7 +115,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>

@@ -8,48 +8,28 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type ContracteChargeFormProps, defaultForm } from "./components/form";
+import {
+	type 合同收费_列表数据,
+	type 合同收费_列表查询_VO,
+	合同类型Options,
+	tableData as allTableData,
+} from "./test-data";
+import { type ContracteChargeFormProps, defaultForm, type 合同收费表单_VO } from "./components/form";
 import ContracteChargeForm from "./components/form.vue";
 
-const ContracteChargeFormInstance = ref<InstanceType<typeof ContracteChargeForm> | null>(null);
-
-interface 合同收费_列表数据 {
-	合同编号: string;
-	父合同编号: string;
-	合同名称: string;
-	合同类型: string;
-	乙方: string;
-	合同金额: string;
-	开始时间: string;
-	结束时间: string;
-}
-
-const tableDataItem: 合同收费_列表数据 = {
-	合同编号: "1234567890",
-	父合同编号: "1234567890",
-	合同名称: "物业服务合同",
-	合同类型: "物业费合同",
-	乙方: "某物业公司",
-	合同金额: "10000.00",
-	开始时间: "2025-01-01",
-	结束时间: "2025-12-31",
-};
 /** 表格数据 */
-const tableData = ref<合同收费_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<合同收费_列表数据[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "合同编号",
 		prop: "合同编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "父合同编号",
@@ -87,10 +67,9 @@ const columns = ref<TableColumnList>([
 		width: 200,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 290,
+		width: 290,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -101,38 +80,33 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps, // 基础配置
-	data: tableData.value, // 表格数据
-	columns: [], // 动态列配置
-	pagination: pagination.value, // 分页配置
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
 });
+
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "合同收费",
 	columns: columns.value,
 });
-/** 表格搜索栏组件 配置  */
-interface 合同收费_列表查询_VO {
-	合同编号?: string;
-	合同名称?: string;
-	合同类型?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -144,10 +118,13 @@ const plusSearchModelRef: FieldValues & 合同收费_列表查询_VO = {
 	合同名称: "",
 	合同类型: "",
 };
+
 /** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
@@ -170,9 +147,11 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_expensesManage.contracte-charge.contractType")),
 		prop: "合同类型",
-		valueType: "input",
+		valueType: "select",
+		options: 合同类型Options,
 	},
 ]);
+
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
@@ -182,23 +161,61 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = allTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.合同编号) {
+			filteredData = filteredData.filter((item) => item.合同编号.includes(plusSearchModel.value.合同编号!));
+		}
+		if (plusSearchModel.value.合同名称) {
+			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
+		}
+		if (plusSearchModel.value.合同类型) {
+			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.合同类型);
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
+
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 合同收费_列表数据;
-}
-
+// 弹框相关功能
+const contracteChargeFormInstance = ref<InstanceType<typeof ContracteChargeForm> | null>(null);
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -208,38 +225,35 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 合同收费_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}合同收费`;
 
+	/** 业务对象 */
+	const 业务对象: 合同收费表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					费用类型: "物业费",
+					收费项目: row?.合同名称 || "",
+					合同状态: "待审核",
+					计费起始时间: row?.开始时间 || "",
+					计费结束时间: row?.结束时间 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: ContracteChargeFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-
-	const testEditProps: ContracteChargeFormProps = {
-		form: {
-			...defaultForm,
-			费用类型: "物业费",
-			收费项目: "水费历史欠费",
-			合同状态: "待审核",
-			计费起始时间: "2023-01-01",
-			计费结束时间: "2023-12-31",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
+		form: 业务对象,
+		defaultValues: 业务对象,
 	};
 
 	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	const props = formProps;
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -248,25 +262,22 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		...defaultAddDialogParams,
 		title,
 		props,
-
 		contentRenderer: () =>
 			h(ContracteChargeForm, {
-				ref: ContracteChargeFormInstance,
+				ref: contracteChargeFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = ContracteChargeFormInstance.value.formComputed;
+			const formComputed = contracteChargeFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = ContracteChargeFormInstance.value.formComputed;
+					/** console.log(options, index, button); */
+					const formComputed = contracteChargeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -275,8 +286,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					ContracteChargeFormInstance.value.plusFormInstance.handleReset();
+					/** 手动重置表单 */
+					contracteChargeFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -284,8 +295,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await ContracteChargeFormInstance.value.plusFormInstance.handleSubmit();
+					/** 提交表单时 校验 */
+					const res = await contracteChargeFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -297,23 +308,29 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<!-- 表格搜索栏组件 -->
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
-			<!-- 表格操作栏组件 -->
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
 
-			<!-- 表格组件 -->
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
@@ -324,13 +341,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning">{{
-							transformI18n($t("propertyManage_expensesManage.contracte-charge.payFee"))
-						}}</ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("propertyManage_expensesManage.contracte-charge.viewFee")) }}
+						<ElButton type="info"> 缴费 </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
+						<ElButton type="info"> 查看费用 </ElButton>
 					</template>
 				</PureTable>
 			</template>
