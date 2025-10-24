@@ -20,9 +20,10 @@ import {
 	自定义费用Options,
 } from "./test-data";
 
-import { type ExpenseItemSettingFormProps, defaultForm } from "./components/form";
+import { type ExpenseItemSettingFormProps, defaultForm, type 费用项设置表单_VO } from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
 
+/** 表单组件实例 */
 const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
 
 /** 表格数据 */
@@ -72,9 +73,9 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		label: "附加/固定费用(单位:元",
-		prop: "附加/固定费用(单位:元",
-		width: 120,
+		label: "附加/固定费用(单位:元)",
+		prop: "附加固定费用",
+		width: 140,
 	},
 	{
 		label: "账户抵扣",
@@ -109,6 +110,7 @@ async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
 	await loadTableData();
 }
+
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
@@ -174,8 +176,7 @@ async function loadTableData() {
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ * @description 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & 费用项设置_列表查询_VO = {
 	费用项ID: "",
@@ -272,7 +273,10 @@ interface OpenDialogParams {
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
+/** 测试异步函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -288,37 +292,38 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}费用项设置`;
 
+	/** 业务对象 */
+	const 费用项设置表单_VO: 费用项设置表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? {
+					...defaultForm,
+					费用类型: row?.费用类型 || "物业费",
+					收费项目: row?.收费项目 || "",
+					费用标识: row?.费用标识 === "一次性费用" ? "一次性费用" : "周期性费用",
+					付费类型: row?.付费类型 === "后付费" ? "后付费" : "预付费",
+					"缴费周期(单位:月)": row?.缴费周期 || "1",
+					"预付期(单位:天)": row?.预付期 || "30",
+					单位: row?.单位 || "元/平方米·月",
+					账户抵扣: row?.账户抵扣 === "是" ? "是" : "否",
+					手机缴费: row?.手机缴费 === "是" ? "是" : "否",
+					进位方式: row?.进位方式 || "四舍五入",
+					保留小数位: row?.保留小数位 || "2位",
+					状态: row?.状态 || "启用",
+					计算公式: row?.公式 || "",
+					计费单价: row?.计费单价 || "",
+					固定费用: row?.附加固定费用 || "",
+				}
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: ExpenseItemSettingFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 费用项设置表单_VO,
+		defaultValues: 费用项设置表单_VO,
 	};
-
-	const testEditProps: ExpenseItemSettingFormProps = {
-		form: {
-			...defaultForm,
-			费用类型: "水费",
-			收费项目: "水费历史欠费",
-			费用标识: "周期性费用",
-			付费类型: "预付费",
-			计费单价: "230.1",
-			账户抵扣: "是",
-			状态: "启用",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
