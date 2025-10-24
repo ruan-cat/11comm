@@ -210,13 +210,7 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 物业公司_列表数据;
-}
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -228,40 +222,34 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}物业公司`;
 
-	/** 表单组件需要的props */
-	const formProps: PropertyManagementCompanyFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-	// 模拟情况：从外部获得值
-	const testEditProps: PropertyManagementCompanyFormProps = {
-		form: {
-			...defaultForm,
-			名称: row?.名称 || "0011物业",
-			地址: row?.地址 || "01星球",
-			电话: row?.电话 || "12345667890",
-			公司法人: row?.公司法人 || "东东哥",
-			成立日期: row?.成立日期 || "2024-6-01",
-			地标: row?.地标 || "C++大楼",
-			开通小区: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
+	/** 业务对象 */
+	const 物业公司_列表数据: 物业公司_列表数据 = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					名称: row?.名称 || "0011物业",
+					地址: row?.地址 || "01星球",
+					电话: row?.电话 || "12345667890",
+					公司法人: row?.公司法人 || "东东哥",
+					成立日期: row?.成立日期 || "2024-6-01",
+					地标: row?.地标 || "C++大楼",
+					开通小区: "",
+				})
+			: cloneDeep(defaultForm);
 
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value //不要照抄，根据业务情况具体分析
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	/** 表单组件需要的props */
+	const props: PropertyManagementCompanyFormProps = {
+		form: 物业公司_列表数据,
+		defaultValues: 物业公司_列表数据,
+	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -274,8 +262,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(PropertyManagementCompanyForm, {
 				ref: PropertyManagementCompanyFormInstance,
-				...formProps, //不生效：避免类型报错
-				mode: mode, // 传入当前模式
+				...props, //不生效：避免类型报错
+				mode, // 传入当前模式
 			}),
 
 		async doBeforeClose({ options, index }) {
