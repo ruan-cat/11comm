@@ -224,7 +224,7 @@ async function handleSearch() {
 
 ### 9.3 `loadTableData`
 
-参考 [制作并使用 loadTableData `假分页请求` 函数](#7-制作并使用-loadtabledata-假分页请求-函数) 部分。
+参考 [制作并使用 loadTableData `假分页请求` 函数](#8-制作并使用-loadtabledata-假分页请求-函数) 部分。
 
 ## 10. 分批次生成表格
 
