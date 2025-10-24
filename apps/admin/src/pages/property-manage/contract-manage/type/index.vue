@@ -201,90 +201,28 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog() {
-	/** 设置为新增模式 */
-	setMode("add");
+function openDialog(row?: 合同类型_列表数据) {
+	/** 根据是否有数据判断模式 */
+	if (row) {
+		/** 编辑模式 */
+		setMode("edit");
+	} else {
+		/** 新增模式 */
+		setMode("add");
+	}
 
 	/** 弹框标题 */
 	const title = `${modeText.value}合同类型`;
 
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = formProps.defaultValues;
-
-	addDialog({
-		...defaultAddDialogParams,
-		title,
-		props: formProps,
-
-		contentRenderer: () =>
-			h(AddForm, {
-				ref: addFormInstance,
-				...formProps,
-			}),
-
-		async doBeforeClose({ options, index }) {
-			const formComputed = addFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
-		},
-
-		footerButtons: [
-			{
-				label: transformI18n($t("common.buttons.cancel")),
-				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = addFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					addFormInstance.value.plusFormInstance.handleReset();
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.submit")),
-				type: "success",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await addFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-					}
-				},
-			},
-		],
-	});
-}
-
-/** 编辑合同类型 */
-function handleEdit(row: 合同类型_列表数据) {
-	/** 设置为编辑模式 */
-	setMode("edit");
-
-	/** 弹框标题 */
-	const title = `${modeText.value}合同类型`;
-
-	/** 表单组件需要的props */
-	const formProps: AddFormProps = {
-		form: cloneDeep({
-			类型名称: row.类型名称,
-			是否审核: row.是否审核 === "是" ? "是" : "否",
-			描述: row.描述,
-		}),
+		form: isEdit.value
+			? cloneDeep({
+					类型名称: row.类型名称,
+					是否审核: row.是否审核 === "是" ? "是" : "否",
+					描述: row.描述,
+				})
+			: cloneDeep(defaultForm),
 		defaultValues: cloneDeep(defaultForm),
 	};
 
@@ -404,7 +342,7 @@ onMounted(async () => {
 						<ElButton type="info" @click="handleViewTemplate(row)">
 							{{ transformI18n($t("property-manage_contract-manage.contract-type.button.template")) }}
 						</ElButton>
-						<ElButton type="warning" @click="handleEdit(row)">
+						<ElButton type="warning" @click="openDialog(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
