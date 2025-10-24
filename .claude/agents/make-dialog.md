@@ -368,6 +368,27 @@ const footerButtons = [
 
 1. contentRenderer 会要求我们传递弹框组件的组件实例，在不同的打开模式下，比如新增、编辑、或查看模式时，如果打开的都是同一个弹框组件，就只新建唯一一个 `openDialog` 函数。
 
+### `openDialog` 函数必须要手动传递模式 `mode`
+
+如下例子所示：
+
+```ts
+import { useMode, type Mode } from "@/composables/use-mode";
+import { type 合同类型表单_VO } from "./components/form";
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+}
+```
+
+1. `openDialog` 函数的形参约束，必须是传递一个对象。
+2. 必须要全局导入 `use-mode` 模块的 `Mode` 类型。用 `Mode` 类型来约束形参 mode 的取值。
+3. 形参 mode 的设计必须是必填项，必须要求外部传递有效的 mode 值。
+4. 形参 row 必须设计成可选项。因为在表格操作栏内肯定会提供表格列数据，但是在单独的新增按钮内，却不一定提供 row 数据，所以必须设计成可选项。
+5. `openDialog` 函数内部的模式判断逻辑，不能用形参 row 来决定，要统一用 mode 形参来决定。
+6. 如果你处理的目标文件，本身的代码逻辑并不满足该要求，请你修改至本要求。
+
 ### 根据业务模式，给弹框组件 `formProps` 组装并传递正确的参数
 
 1. 按照子代理 [make-form-for-dialog](./make-form-for-dialog.md) 的要求，弹框组件必须提供必填项 **form** 和 **defaultValues**。在你封装 `openDialog` 函数时，你传递给弹框组件的变量通常是 `formProps` ，且满足必填项 **form** 和 **defaultValues** 。
@@ -421,4 +442,40 @@ const formProps: AddFormProps = {
 
 #### 推荐的写法
 
-上述的正确写法，很容易导致你写比较冗长的代码，你应该主动的用以下形式的写法，来完成组件的 formProps 赋初值逻辑：
+上述的正确写法，很容易导致你写比较冗长的代码，你应该主动的用以下形式的写法，来完成组件的 `formProps` 赋初值逻辑：
+
+1. 一定要导入表单的业务类型，和弹框组件的 props 类型。这里导入的业务类型是 `合同类型表单_VO` ，请你根据情况自行导入。
+2. 定义 `业务对象` ，然后根据模式，去动态赋值业务对象。
+3. 业务对象在新增模式下，必须深克隆一个全新的 `defaultForm` 对象，即 `cloneDeep(defaultForm)` 写法。
+4. 业务对象在编辑模式下，必须整合好来自形参传递的 row 数据。
+5. 在处理业务对象 和 row 数据之间的类型差异时，不允许你使用 typescript 的强制类型转换写法来处理，缺少的字段请你手动补全，就像下面的写法一样。
+6. 使用业务对象的字段做赋值时，必须用可选链的方式做判断，做好保险的取值赋值写法。如 `row?.描述 || ""` 写法。
+7. 在 `formProps` 内使用准备好数据的 `业务对象`。
+
+```ts
+import { type AddFormProps, defaultForm, type 合同类型表单_VO } from "./components/form";
+import { useMode, type Mode } from "@/composables/use-mode";
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+	/** 业务对象 */
+	const 合同类型表单_VO: 合同类型表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					类型名称: row?.类型名称 || "",
+					是否审核: row?.是否审核 === "是" ? "是" : "否",
+					描述: row?.描述 || "",
+				})
+			: cloneDeep(defaultForm);
+	/** 表单组件需要的props */
+	const formProps: AddFormProps = {
+		form: 合同类型表单_VO,
+		defaultValues: 合同类型表单_VO,
+	};
+}
+```
