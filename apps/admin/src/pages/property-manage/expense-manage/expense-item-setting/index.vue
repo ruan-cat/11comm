@@ -8,56 +8,33 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 费用项设置_列表数据,
+	type 费用项设置_列表查询_VO,
+	tableData as allTableData,
+	费用标识Options,
+	付费类型Options,
+	账户抵扣Options,
+	自定义费用Options,
+} from "./test-data";
 
 import { type ExpenseItemSettingFormProps, defaultForm } from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
 
 const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
 
-interface 费用项设置_列表数据 {
-	编号: string;
-	费用类型: string;
-	收费项目: string;
-	费用标识: string;
-	付费类型: string;
-	缴费周期: string;
-	公式: string;
-	计费单价: string;
-	附加固定费用: string;
-	账户抵扣: string;
-	状态: string;
-}
-
-const tableDataItem: 费用项设置_列表数据 = {
-	编号: "922025052375641554",
-	费用类型: "物业费",
-	收费项目: "物业费历史欠费",
-	费用标识: "一次性费用",
-	付费类型: "预付费",
-	缴费周期: "1",
-	公式: "建筑面积*单价+附加费",
-	计费单价: "250",
-	附加固定费用: "0.0",
-	账户抵扣: "是",
-	状态: "启用",
-};
-
 /** 表格数据 */
-const tableData = ref<费用项设置_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<费用项设置_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "费用类型",
@@ -113,7 +90,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -124,18 +101,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
@@ -152,13 +129,47 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 费用项设置_列表查询_VO {
-	费用项ID?: string;
-	收费项目?: string;
-	费用标识?: string;
-	付费类型?: string;
-	账户抵扣?: string;
-	自定义费用?: string;
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.费用项ID) {
+			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.费用项ID!));
+		}
+		if (plusSearchModel.value.收费项目) {
+			filteredData = filteredData.filter((item) => item.收费项目.includes(plusSearchModel.value.收费项目!));
+		}
+		if (plusSearchModel.value.费用标识) {
+			filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.费用标识);
+		}
+		if (plusSearchModel.value.付费类型) {
+			filteredData = filteredData.filter((item) => item.付费类型 === plusSearchModel.value.付费类型);
+		}
+		if (plusSearchModel.value.账户抵扣) {
+			filteredData = filteredData.filter((item) => item.账户抵扣 === plusSearchModel.value.账户抵扣);
+		}
+		if (plusSearchModel.value.自定义费用) {
+			filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.自定义费用);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
 }
 
 /**
@@ -205,16 +216,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesUnit")),
 		prop: "费用标识",
 		valueType: "select",
-		options: [
-			{
-				label: "周期性付费",
-				value: "周期性付费",
-			},
-			{
-				label: "一次性付费",
-				value: "一次性付费",
-			},
-		],
+		options: 费用标识Options,
 	},
 
 	// 付费类型
@@ -222,48 +224,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesType")),
 		prop: "付费类型",
 		valueType: "select",
-		options: [
-			{
-				label: "预付费",
-				value: "预付费",
-			},
-			{
-				label: "后付费",
-				value: "后付费",
-			},
-		],
+		options: 付费类型Options,
 	},
 	//账户抵扣
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesAmount")),
 		prop: "账户抵扣",
 		valueType: "select",
-		options: [
-			{
-				label: "是",
-				value: "是",
-			},
-			{
-				label: "否",
-				value: "否",
-			},
-		],
+		options: 账户抵扣Options,
 	},
 	//自定义费用
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesAmountType")),
 		prop: "自定义费用",
 		valueType: "select",
-		options: [
-			{
-				label: "默认费用",
-				value: "默认费用",
-			},
-			{
-				label: "自定义付费",
-				value: "自定义付费",
-			},
-		],
+		options: 自定义费用Options,
 	},
 ]);
 
@@ -276,12 +251,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /** 打开弹框 参数 */
@@ -393,11 +373,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
