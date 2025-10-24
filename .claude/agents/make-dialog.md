@@ -4,7 +4,7 @@ description: 生成基于 addDialog 函数的命令式弹框。每当需要生�
 color: blue
 ---
 
-# 生成基于 addDialog 函数的命令式弹框
+# 生成基于 `addDialog` 函数的命令式弹框
 
 我们通常在列表页内实现弹框。
 
@@ -112,7 +112,7 @@ addDialog({
 2. **必须写在第一行** ： 该变量包含了很多预设的变量，故需要以解构赋值的方式，写在第一行。便于其他可能的覆盖。
 3. **不需要重复定义** ： 该变量是全局导入的，请不要再重复定义一次。
 
-### 7.2 弹框标题 title
+### 7.2 弹框标题 `title`
 
 弹框标题往往是动态变化的，请你使用 `组合式api` `useMode` 函数来实现标题动态变化。其中，`useMode` 是全局自动导入的函数，不需要你手动导入。
 
@@ -154,7 +154,7 @@ function openDialog() {
 
 - 以相对路径的方式，获取到表单组件的 props 属性类型。
 - 获取弹框组件的默认表单对象 defaultForm。
-- 组装 formProps 时，务必对传入的值做一次深克隆 cloneDeep。其中，cloneDeep 是全局自动导入的函数，不需要你手动导入。
+- 组装 `formProps` 时，务必对传入的值做一次深克隆 cloneDeep。其中，cloneDeep 是全局自动导入的函数，不需要你手动导入。
 - 在 addDialog 函数中传入 props 对象。
 
 ```ts
@@ -176,7 +176,7 @@ function openDialog() {
 }
 ```
 
-### 7.4 弹框渲染函数 contentRenderer
+### 7.4 弹框渲染函数 `contentRenderer`
 
 命令式弹框渲染组件，使用的是 vue 的渲染函数语法。
 
@@ -196,7 +196,7 @@ addDialog({
 });
 ```
 
-### 7.5 关闭回调函数 doBeforeClose
+### 7.5 关闭回调函数 `doBeforeClose`
 
 弹框关闭时，必须提供通用的关闭回调函数，写法几乎是固定的。
 
@@ -231,7 +231,7 @@ function openDialog() {
 
 useDoBeforeClose 函数是全局导入的函数，不需要你手动导入。
 
-### 7.6 弹框底部按钮栏 footerButtons
+### 7.6 弹框底部按钮栏 `footerButtons`
 
 请严格按照我提供给你的模板。编排按钮的位置、样式、和其他固定的交互函数。
 
@@ -353,3 +353,72 @@ const footerButtons = [
 3. 请注意，务必先生成好固定的，测试的异步函数。测试用的异步函数在此处使用。
 4. 提交函数必须使用表单组件实例提供的 `plusFormInstance.handleSubmit()` 函数。
 5. 按钮的加载等待效果，必须使用 `button.btn.loading` 的形式。
+
+## 严格的 `addDialog` 二次封装要求
+
+在你封装 `addDialog` 函数时，需要满足以下严格的要求：
+
+### 二次封装的函数名称必须为 `openDialog`
+
+1. 为了增强语义性，便于统一管控查询，你二次封装 `addDialog` 函数时，其函数必须名为 `openDialog` 。
+2. 如果你检查到目标 vue 组件，本身存在了了二次封装 `addDialog` 函数的函数，但是命名风格不合适，请你统一改成 `openDialog` 。
+3. 如果你有更改名称，请在最后的修改报告内提及你更改函数名称的修改项。
+
+### 同一个弹框组件实例，只新建唯一一个 `openDialog` 函数
+
+1. contentRenderer 会要求我们传递弹框组件的组件实例，在不同的打开模式下，比如新增、编辑、或查看模式时，如果打开的都是同一个弹框组件，就只新建唯一一个 `openDialog` 函数。
+
+### 根据业务模式，给弹框组件 `formProps` 组装并传递正确的参数
+
+1. 按照子代理 [make-form-for-dialog](./make-form-for-dialog.md) 的要求，弹框组件必须提供必填项 **form** 和 **defaultValues**。在你封装 `openDialog` 函数时，你传递给弹框组件的变量通常是 `formProps` ，且满足必填项 **form** 和 **defaultValues** 。
+2. 你需要根据不同的打开模式，来动态组装出合适的，正确的必填项 `form` 和 `defaultValues` 。
+
+#### 错误组装 `formProps` 的例子
+
+注意 defaultValues 的赋值逻辑，该例子是错误的赋值逻辑。这里在不经过任何逻辑判断的情况下，就无条件的赋值为 `cloneDeep(defaultForm)` ，这是不对的。这会导致严重的 bug。这会导致编辑模式和查看模式下，打开弹框后，表单项都是全空的，因为默认的 defaultForm 就是一个全空的业务对象。
+
+应该做逻辑判断。
+
+```ts
+/** 表单组件需要的props */
+const formProps: AddFormProps = {
+	form: isEdit.value
+		? cloneDeep({
+				类型名称: row.类型名称,
+				是否审核: row.是否审核 === "是" ? "是" : "否",
+				描述: row.描述,
+			})
+		: cloneDeep(defaultForm),
+	defaultValues: cloneDeep(defaultForm),
+};
+```
+
+#### 正确组装 `formProps` 的例子
+
+按照上述要做逻辑判断的要求，具体应该写成如下代码：
+
+```ts
+/** 表单组件需要的props */
+const formProps: AddFormProps = {
+	form: isEdit.value
+		? cloneDeep({
+				类型名称: row.类型名称,
+				是否审核: row.是否审核 === "是" ? "是" : "否",
+				描述: row.描述,
+			})
+		: cloneDeep(defaultForm),
+	defaultValues: isEdit.value
+		? cloneDeep({
+				类型名称: row.类型名称,
+				是否审核: row.是否审核 === "是" ? "是" : "否",
+				描述: row.描述,
+			})
+		: cloneDeep(defaultForm),
+};
+```
+
+`defaultValues` 的取值也应该做逻辑判断，根据编辑模式来传递已经赋值后的业务字段。
+
+#### 推荐的写法
+
+上述的正确写法，很容易导致你写比较冗长的代码，你应该主动的用以下形式的写法，来完成组件的 formProps 赋初值逻辑：
