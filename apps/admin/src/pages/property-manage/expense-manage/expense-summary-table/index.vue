@@ -8,60 +8,61 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 费用汇总表_列表数据,
+	type 费用汇总表_列表查询_VO,
+	tableData as allTableData,
+	费用项名称Options,
+} from "./test-data";
 
-interface 费用汇总表_列表数据 {
-	时间: string;
-	费用项ID: string;
-	费用项名称: string;
-	应收金额: string;
-	实收金额: string;
-}
-const tableDataItem: 费用汇总表_列表数据 = {
-	时间: "时间",
-	费用项ID: "费用项ID",
-	费用项名称: "费用项名称",
-	应收金额: "应收金额",
-	实收金额: "实收金额",
-};
+import {
+	type ExpenseSummaryTableFormProps,
+	defaultForm,
+	type 费用汇总表表单_VO,
+	type 费用项名称类型,
+} from "./components/form";
+import ExpenseSummaryTableForm from "./components/form.vue";
+
+/** 表单组件实例 */
+const expenseSummaryTableFormInstance = ref<InstanceType<typeof ExpenseSummaryTableForm> | null>(null);
+
 /** 表格数据 */
-const tableData = ref<费用汇总表_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<费用汇总表_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
-		prop: "时间",
 		label: "时间",
+		prop: "时间",
 		width: 120,
 	},
 	{
-		prop: "费用项ID",
 		label: "费用项ID",
+		prop: "费用项ID",
 		width: 120,
 	},
 	{
-		prop: "费用项名称",
 		label: "费用项名称",
+		prop: "费用项名称",
 		width: 120,
 	},
 	{
-		prop: "应收金额",
 		label: "应收金额",
+		prop: "应收金额",
 		width: 120,
 	},
 	{
-		prop: "实收金额",
 		label: "实收金额",
+		prop: "实收金额",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -72,18 +73,21 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
+
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
+
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
+
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
@@ -91,28 +95,266 @@ const pureTableProps = ref<PureTableProps>({
 	columns: [],
 	pagination: pagination.value,
 });
+
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "费用汇总表",
 	columns: columns.value,
 });
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.时间) {
+			filteredData = filteredData.filter((item) => item.时间.includes(plusSearchModel.value.时间!));
+		}
+		if (plusSearchModel.value.费用项ID) {
+			filteredData = filteredData.filter((item) => item.费用项ID.includes(plusSearchModel.value.费用项ID!));
+		}
+		if (plusSearchModel.value.费用项名称) {
+			filteredData = filteredData.filter((item) => item.费用项名称 === plusSearchModel.value.费用项名称);
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
+}
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 费用汇总表_列表查询_VO = {
+	时间: "",
+	费用项ID: "",
+	费用项名称: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 时间
+	{
+		label: "时间",
+		prop: "时间",
+		valueType: "input",
+	},
+
+	// 费用项ID
+	{
+		label: "费用项ID",
+		prop: "费用项ID",
+		valueType: "input",
+	},
+
+	// 费用项名称
+	{
+		label: "费用项名称",
+		prop: "费用项名称",
+		valueType: "select",
+		options: 费用项名称Options,
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: 费用汇总表_列表数据;
+}
+
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 测试异步函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog({ mode, row }: OpenDialogParams) {
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}费用汇总表`;
+
+	/** 业务对象 */
+	const 费用汇总表表单_VO: 费用汇总表表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? {
+					...defaultForm,
+					时间: row?.时间 || "",
+					费用项ID: row?.费用项ID || "",
+					费用项名称: (row?.费用项名称 as 费用项名称类型) || "物业费",
+					应收金额: row?.应收金额 || "",
+					实收金额: row?.实收金额 || "",
+				}
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: ExpenseSummaryTableFormProps = {
+		form: 费用汇总表表单_VO,
+		defaultValues: 费用汇总表表单_VO,
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+
+		contentRenderer: () =>
+			h(ExpenseSummaryTableForm, {
+				ref: expenseSummaryTableFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = expenseSummaryTableFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = expenseSummaryTableFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					expenseSummaryTableFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await expenseSummaryTableFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<h2>缴费汇总表</h2>
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-		<PureTable :="pureTableProps">
-			<template #operation="{ row }">
-				<ElButton type="default">{{ transformI18n($t("欠费缴费")) }}</ElButton>
-				<ElButton type="info">{{ transformI18n($t("common.buttons.info")) }}</ElButton>
-				<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
-		</PureTable>
+
+			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				>
+					<template #operation="{ row }">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("欠费缴费")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
+						<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+					</template>
+				</PureTable>
+			</template>
+		</PureTableBar>
 	</section>
 </template>
 
 <style lang="scss" scoped>
 .index-root {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 </style>
