@@ -13,6 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
 import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -201,15 +202,9 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(row?: 合同类型_列表数据) {
-	/** 根据是否有数据判断模式 */
-	if (row) {
-		/** 编辑模式 */
-		setMode("edit");
-	} else {
-		/** 新增模式 */
-		setMode("add");
-	}
+function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}合同类型`;
@@ -326,7 +321,7 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="openDialog">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 				<ElButton type="primary" @click="addAuditPeople"> 添加审核人员 </ElButton>
@@ -348,7 +343,7 @@ onMounted(async () => {
 						<ElButton type="info" @click="handleViewTemplate(row)">
 							{{ transformI18n($t("property-manage_contract-manage.contract-type.button.template")) }}
 						</ElButton>
-						<ElButton type="warning" @click="openDialog(row)">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
