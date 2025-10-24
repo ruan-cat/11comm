@@ -23,8 +23,8 @@ import {
 	tableData as mockTableData,
 } from "./test-data";
 
-import { type AddFormProps, defaultForm } from "./components/addForm";
-import AddForm from "./components/addForm.vue";
+import { type AddFormProps, defaultForm, type 合同类型表单_VO } from "./components/form";
+import AddForm from "./components/form.vue";
 
 const addFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
 
@@ -214,16 +214,22 @@ function openDialog(row?: 合同类型_列表数据) {
 	/** 弹框标题 */
 	const title = `${modeText.value}合同类型`;
 
+	/** 业务对象 */
+	const 合同类型表单_VO: 合同类型表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					类型名称: row?.类型名称 || "",
+					是否审核: row?.是否审核 === "是" ? "是" : "否",
+					描述: row?.描述 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
-		form: isEdit.value
-			? cloneDeep({
-					类型名称: row.类型名称,
-					是否审核: row.是否审核 === "是" ? "是" : "否",
-					描述: row.描述,
-				})
-			: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 合同类型表单_VO,
+		defaultValues: 合同类型表单_VO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

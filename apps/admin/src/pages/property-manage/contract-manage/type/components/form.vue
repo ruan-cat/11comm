@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, 合同类型表单_VO, defaultForm } from "./addForm";
+import { AddFormProps, 合同类型表单_VO, defaultForm } from "./form";
 
 const props = defineProps<AddFormProps>();
 
