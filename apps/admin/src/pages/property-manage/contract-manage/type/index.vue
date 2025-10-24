@@ -13,6 +13,9 @@ import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
 import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
+/** 模式控制 */
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 import {
 	type 合同类型_列表数据,
 	type 合同类型_列表查询_VO,
@@ -23,7 +26,7 @@ import {
 import { type AddFormProps, defaultForm } from "./components/addForm";
 import AddForm from "./components/addForm.vue";
 
-const AddFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
+const addFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<合同类型_列表数据[]>([]);
@@ -199,8 +202,11 @@ async function testAsync() {
 
 /** 打开弹框 */
 function openDialog() {
+	/** 设置为新增模式 */
+	setMode("add");
+
 	/** 弹框标题 */
-	const title = "添加合同类型";
+	const title = `${modeText.value}合同类型`;
 
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
@@ -218,12 +224,12 @@ function openDialog() {
 
 		contentRenderer: () =>
 			h(AddForm, {
-				ref: AddFormInstance,
+				ref: addFormInstance,
 				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = AddFormInstance.value.formComputed;
+			const formComputed = addFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -232,7 +238,7 @@ function openDialog() {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = AddFormInstance.value.formComputed;
+					const formComputed = addFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -242,7 +248,7 @@ function openDialog() {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					AddFormInstance.value.plusFormInstance.handleReset();
+					addFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -251,7 +257,7 @@ function openDialog() {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await AddFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await addFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -266,8 +272,11 @@ function openDialog() {
 
 /** 编辑合同类型 */
 function handleEdit(row: 合同类型_列表数据) {
+	/** 设置为编辑模式 */
+	setMode("edit");
+
 	/** 弹框标题 */
-	const title = "编辑合同类型";
+	const title = `${modeText.value}合同类型`;
 
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
@@ -289,12 +298,12 @@ function handleEdit(row: 合同类型_列表数据) {
 
 		contentRenderer: () =>
 			h(AddForm, {
-				ref: AddFormInstance,
+				ref: addFormInstance,
 				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = AddFormInstance.value.formComputed;
+			const formComputed = addFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -303,7 +312,7 @@ function handleEdit(row: 合同类型_列表数据) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = AddFormInstance.value.formComputed;
+					const formComputed = addFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -313,7 +322,7 @@ function handleEdit(row: 合同类型_列表数据) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					AddFormInstance.value.plusFormInstance.handleReset();
+					addFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -322,7 +331,7 @@ function handleEdit(row: 合同类型_列表数据) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await AddFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await addFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
