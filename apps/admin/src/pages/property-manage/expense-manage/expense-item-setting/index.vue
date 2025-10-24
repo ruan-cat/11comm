@@ -300,13 +300,13 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					...defaultForm,
 					费用类型: row?.费用类型 || "物业费",
 					收费项目: row?.收费项目 || "",
-					费用标识: row?.费用标识 === "一次性费用" ? "一次性费用" : "周期性费用",
-					付费类型: row?.付费类型 === "后付费" ? "后付费" : "预付费",
+					费用标识: row?.费用标识 || "周期性费用",
+					付费类型: row?.付费类型 || "预付费",
 					"缴费周期(单位:月)": row?.缴费周期 || "1",
 					"预付期(单位:天)": row?.预付期 || "30",
 					单位: row?.单位 || "元/平方米·月",
-					账户抵扣: row?.账户抵扣 === "是" ? "是" : "否",
-					手机缴费: row?.手机缴费 === "是" ? "是" : "否",
+					账户抵扣: row?.账户抵扣 || "是",
+					手机缴费: row?.手机缴费 || "是",
 					进位方式: row?.进位方式 || "四舍五入",
 					保留小数位: row?.保留小数位 || "2位",
 					状态: row?.状态 || "启用",
@@ -317,13 +317,13 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
-	const formProps: ExpenseItemSettingFormProps = {
+	const props: ExpenseItemSettingFormProps = {
 		form: 费用项设置表单_VO,
 		defaultValues: 费用项设置表单_VO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = formProps.defaultValues;
+	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -333,7 +333,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(ExpenseItemSettingForm, {
 				ref: expenseItemSettingFormInstance,
-				...formProps,
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
