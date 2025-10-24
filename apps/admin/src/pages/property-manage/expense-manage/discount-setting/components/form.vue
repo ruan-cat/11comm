@@ -1,9 +1,5 @@
-<!--
-  折扣设置表单
-  用于新增 修改折扣设置
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
 import { DiscountSettingFormProps, 折扣设置表单_VO, defaultForm } from "./form";
 
@@ -80,8 +76,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验 */
 const plusFormRules = {};
@@ -99,7 +93,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>

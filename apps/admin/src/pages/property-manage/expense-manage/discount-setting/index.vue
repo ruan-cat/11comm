@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/valid-v-slot -->
 <script lang="ts" setup>
 definePage({
 	meta: {
@@ -9,41 +8,26 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type DiscountSettingFormProps, defaultForm } from "./components/form";
+import {
+	type 折扣设置_列表数据,
+	type 折扣设置_列表查询_VO,
+	折扣类型Options,
+	规则Options,
+	tableData as allTableData,
+} from "./test-data";
+import { type DiscountSettingFormProps, defaultForm, type 折扣设置表单_VO } from "./components/form";
 import DiscountSettingForm from "./components/form.vue";
 
-const DiscountSettingFormInstance = ref<InstanceType<typeof DiscountSettingForm> | null>(null);
-
-interface 折扣设置_列表数据 {
-	折扣ID: string;
-	折扣名称: string;
-	折扣类型: string;
-	规则名称: string;
-	规则: string;
-	创建时间: string;
-}
-
-const tableDataItem: 折扣设置_列表数据 = {
-	折扣ID: "折扣ID",
-	折扣名称: "折扣名称",
-	折扣类型: "折扣类型",
-	规则名称: "规则名称",
-	规则: "规则",
-	创建时间: "创建时间",
-};
-
 /** 表格数据 */
-const tableData = ref<折扣设置_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<折扣设置_列表数据[]>([]);
 
-/** 表格配置 */
+/** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		prop: "折扣ID",
 		label: "折扣ID",
@@ -78,7 +62,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 120,
+		width: 120,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -89,40 +73,34 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps, // 默认配置
-	data: tableData.value, // 表格数据
-	columns: [], // 列配置
-	pagination: pagination.value, // 分页配置
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
 });
+
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "折扣设置",
 	columns: columns.value,
 });
 
-/** 表格搜索栏组件 表单配置 */
-interface 折扣设置_列表查询_VO {
-	折扣ID?: string;
-	折扣名称?: string;
-	折扣类型?: string;
-	规则名称?: string;
-}
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -148,34 +126,31 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 折扣ID
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-setting.discountID")),
+		label: "折扣ID",
 		prop: "折扣ID",
 		valueType: "input",
 	},
 	// 折扣名称
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-setting.discountName")),
+		label: "折扣名称",
 		prop: "折扣名称",
 		valueType: "input",
 	},
 	// 折扣类型
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-setting.discountType")),
+		label: "折扣类型",
 		prop: "折扣类型",
 		valueType: "select",
-		options: [
-			{ label: "优惠", value: "优惠" },
-			{ label: "违约", value: "违约" },
-			{ label: "优惠（需要申请）", value: "优惠（需要申请）" },
-		],
+		options: 折扣类型Options,
 	},
 	// 规则名称
 	{
-		label: transformI18n($t("propertyManage_expensesManage.discount-setting.ruleName")),
+		label: "规则名称",
 		prop: "规则名称",
 		valueType: "input",
 	},
 ]);
+
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
@@ -185,23 +160,64 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 4,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = allTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.折扣ID) {
+			filteredData = filteredData.filter((item) => item.折扣ID.includes(plusSearchModel.value.折扣ID!));
+		}
+		if (plusSearchModel.value.折扣名称) {
+			filteredData = filteredData.filter((item) => item.折扣名称.includes(plusSearchModel.value.折扣名称!));
+		}
+		if (plusSearchModel.value.折扣类型) {
+			filteredData = filteredData.filter((item) => item.折扣类型 === plusSearchModel.value.折扣类型);
+		}
+		if (plusSearchModel.value.规则名称) {
+			filteredData = filteredData.filter((item) => item.规则名称.includes(plusSearchModel.value.规则名称!));
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
+
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 折扣设置_列表数据;
-}
-
+// 弹框相关功能
+const DiscountSettingFormInstance = ref<InstanceType<typeof DiscountSettingForm> | null>(null);
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -211,37 +227,34 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 折扣设置_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}折扣设置`;
 
+	/** 业务对象 */
+	const 业务对象: 折扣设置表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					折扣名称: row?.折扣名称 || "",
+					折扣类型: row?.折扣类型 || "优惠",
+					规则: row?.规则名称 || "",
+					描述: row?.规则 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: DiscountSettingFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-
-	const testEditProps: DiscountSettingFormProps = {
-		form: {
-			...defaultForm,
-			折扣名称: "折扣名称",
-			折扣类型: "优惠",
-			规则: "规则名称",
-			描述: "描述",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
+		form: 业务对象,
+		defaultValues: 业务对象,
 	};
 
 	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	const props = formProps;
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -250,24 +263,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		...defaultAddDialogParams,
 		title,
 		props,
-
 		contentRenderer: () =>
 			h(DiscountSettingForm, {
 				ref: DiscountSettingFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = DiscountSettingFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
+					/** console.log(options, index, button); */
 					const formComputed = DiscountSettingFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -277,7 +287,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
+					/** 手动重置表单 */
 					DiscountSettingFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -286,7 +296,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
+					/** 提交表单时 校验 */
 					const res = await DiscountSettingFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -299,13 +309,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -327,7 +345,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
