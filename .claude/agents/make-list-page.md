@@ -264,8 +264,6 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 ```
 
-<!-- TODO: 搜索栏字段 搜索栏配置字段 PlusColumn类型 -->
-
 ### 9.5 表格搜索栏组件配置 `plusSearchProps`
 
 直接照搬替换即可，以本文档的代码写法为主。
@@ -285,6 +283,40 @@ const plusSearchProps = ref<PlusSearchProps>({
 	labelPosition: "right",
 	showNumber: 3,
 });
+```
+
+<!-- TODO: 搜索栏配置字段 PlusColumn类型 -->
+
+### 9.6 表格搜索栏重置功能用的默认数据 `plusSearchDefaultValues` 和其他相关的变量
+
+以下面的写法为参考例子，请不要无条件的照搬照抄，请注意根据业务场景做修改：
+
+1. 必须按照以下例子所示，使用**固定的** jsdoc 注释文本。
+2. 必须按照要求，在列表页内定义以下这几个变量：
+   - plusSearchModelRef
+   - plusSearchDefaultValues
+   - plusSearchModel
+3. 这几个变量是高度耦合的，定义时请不要拆分到各处，必须都写在一起。统一代码写法，便于阅读。
+4. 必须定义 `plusSearchModelRef` 变量。其中类型约束必须是 `FieldValues & 具体的业务类型` 的形式。这个变量不允许被响应式包装。
+5. `FieldValues` 类型是全局类型，请你直接使用即可，无需考虑如何导入。
+6. `plusSearchDefaultValues` 将作为搜索栏要默认重置的数据，初始化的时候必须经过一次深克隆，确保数据绝对纯净。
+7. plusSearchModel 是双向绑定的变量，用 plusSearchModelRef 加上 vue 的 ref 做二次封装。
+
+```ts
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 物业公司_列表查询_VO = {
+	物业编号: "",
+	物业名称: "",
+	物业电话: "",
+};
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
 ```
 
 ## 10. 分批次生成表格
