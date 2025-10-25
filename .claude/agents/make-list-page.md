@@ -264,6 +264,29 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 ```
 
+<!-- TODO: 搜索栏字段 搜索栏配置字段 PlusColumn类型 -->
+
+### 9.5 表格搜索栏组件配置 `plusSearchProps`
+
+直接照搬替换即可，以本文档的代码写法为主。
+
+1. `defaultValues` 必须要使用 `plusSearchDefaultValues` 变量。
+2. columns 表单配置，**必须留空**。此部分配置交由其他变量专门配置。
+3. labelWidth 默认为 140
+4. labelPosition 默认为 right
+5. showNumber 固定为 3
+
+```ts
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+```
+
 ## 10. 分批次生成表格
 
 1. 在对话时，我会给你一张截图，请根据截图来生成列表页。
