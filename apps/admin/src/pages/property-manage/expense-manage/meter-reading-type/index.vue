@@ -8,58 +8,91 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { type 抄表类型_列表数据, type 抄表类型_列表查询_VO, tableData as mockTableData } from "./test-data";
 
 import { type MeterTypeFormProps, defaultForm } from "./components/form";
 import MeterTypeForm from "./components/form.vue";
 
 const meterTypeFormInstance = ref<InstanceType<typeof MeterTypeForm> | null>(null);
 
-interface 抄表类型_列表数据 {
-	名称: string;
-	说明: string;
-	创建时间: string;
-	备注: string;
-}
+/** 表格搜索栏模型 */
+const plusSearchModel = ref<抄表类型_列表查询_VO>({});
 
-const tableDataItem: 抄表类型_列表数据 = {
-	名称: "名称",
-	说明: "说明",
-	创建时间: "创建时间",
-	备注: "备注",
-};
+/** 表格搜索栏默认值 */
+const plusSearchDefaultValues: 抄表类型_列表查询_VO = {};
 
 /** 表格数据 */
-const tableData = ref<抄表类型_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<抄表类型_列表数据[]>([]);
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.名称) {
+			filteredData = filteredData.filter((item) => item.名称.includes(plusSearchModel.value.名称!));
+		}
+		if (plusSearchModel.value.说明) {
+			filteredData = filteredData.filter((item) => item.说明.includes(plusSearchModel.value.说明!));
+		}
+		if (plusSearchModel.value.创建时间范围) {
+			const [startTime, endTime] = plusSearchModel.value.创建时间范围;
+			filteredData = filteredData.filter((item) => {
+				const createTime = new Date(item.创建时间).getTime();
+				const start = new Date(startTime).getTime();
+				const end = new Date(endTime).getTime();
+				return createTime >= start && createTime <= end;
+			});
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "名称",
 		prop: "名称",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "说明",
 		prop: "说明",
-		width: 120,
+		width: 200,
 	},
 	{
 		label: "创建时间",
 		prop: "创建时间",
-		width: 120,
+		width: 180,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
+		label: "备注",
+		prop: "备注",
+		width: 200,
+	},
+	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -70,19 +103,64 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
+
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	/** 名称 */
+	{
+		label: "名称",
+		prop: "名称",
+		valueType: "input",
+	},
+	/** 说明 */
+	{
+		label: "说明",
+		prop: "说明",
+		valueType: "input",
+	},
+	/** 创建时间范围 */
+	{
+		label: "创建时间范围",
+		prop: "创建时间范围",
+		valueType: "date-picker",
+	},
+]);
+
+/** 表格搜索栏组件 配置 */
+const plusSearchProps = ref<PlusSearchProps>({
+	labelWidth: "100px",
+	labelPosition: "right",
+});
 
 /** 表格配置 */
 const pureTableProps = ref<PureTableProps>({
@@ -97,10 +175,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "抄表类型",
 	columns: columns.value,
 });
-
-function handleReSearch() {
-	console.log("重新搜索");
-}
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -206,10 +280,22 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
