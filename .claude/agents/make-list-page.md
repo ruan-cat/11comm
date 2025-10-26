@@ -240,7 +240,7 @@ const pagination = ref<PaginationProps>({
 });
 ```
 
-### 9.4 处理页数变化 `handlePageSizeChange`
+### 9.5 处理页数变化 `handlePageSizeChange`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -252,7 +252,7 @@ async function handlePageSizeChange(pageSize: number) {
 }
 ```
 
-### 9.4 处理页码变化 `handleCurrentPageChange`
+### 9.6 处理页码变化 `handleCurrentPageChange`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -264,7 +264,7 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 ```
 
-### 9.5 表格搜索栏组件配置 `plusSearchProps`
+### 9.7 表格搜索栏组件配置 `plusSearchProps`
 
 直接照搬替换即可，以本文档的代码写法为主。
 
@@ -285,7 +285,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 ```
 
-### 9.6 表格搜索栏重置功能用的默认数据 `plusSearchDefaultValues` 和其他相关的变量
+### 9.8 表格搜索栏重置功能用的默认数据 `plusSearchDefaultValues` 和其他相关的变量
 
 以下面的写法为参考例子，请不要无条件的照搬照抄，请注意根据业务场景做修改：
 
@@ -570,11 +570,11 @@ const columns = ref<TableColumnList>([
 
 - https://github.com/plus-pro-components/plus-pro-components/blob/dev/docs/components/type.md#formitemvaluetype
 
-### 16.1 `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
+### 16.2 `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
 
 1. `plusSearchColumns` 必须设计成 `computed` ，用于实现动态切换的 `i18n` 文本
 
-### 16.2 `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
+### 16.3 `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
 
 `plusSearchColumns` 需要提供明确的 `issue` 链接，告诉其他人为什么要写成 `computed` 的形式。其 `jsdoc` 格式如下例子：
 
@@ -595,7 +595,7 @@ const columns = ref<TableColumnList>([
 
 你有且只能写固定的 `@see https://github.com/plus-pro-components/plus-pro-components/issues/184` 注释。不能胡编乱造，照抄即可。
 
-### 16.3 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
+### 16.4 搜索栏字段不需要在 `fieldProps` 内配置任何 `type`
 
 **不需要**你为了数值类型的搜索栏而实现专门的配置。请参考以下例子：
 
@@ -638,7 +638,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 ```
 
-### 16.4 不需要配置 `fieldProps.placeholder` 占位符文本
+### 16.5 不需要配置 `fieldProps.placeholder` 占位符文本
 
 在你生成表格搜索栏的配置时，不需要你生成 placeholder 提示文本。比如以下例子：
 
@@ -677,7 +677,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 ```
 
-### 16.5 `<PlusSearch>` 表格搜索栏的组件写法
+### 16.6 `<PlusSearch>` 表格搜索栏的组件写法
 
 必须按照以下方式来编写 `<PlusSearch>` 组件，必须提供以下内容：
 
