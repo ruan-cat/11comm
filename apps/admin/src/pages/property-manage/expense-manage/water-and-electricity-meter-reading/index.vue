@@ -223,13 +223,13 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}水电抄表`;
 
 	/** 业务对象 */
-	const 水电抄表表单_VO: 水电抄表表单_VO = isAdd.value
+	const formData: 水电抄表表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
 					费用类型: row?.表类型 === "水表" ? "水费" : row?.表类型 === "电表" ? "电费" : "水费",
-					收费项目: row?.表类型 || "水表",
+					收费项目: (row?.表类型 === "水表" || row?.表类型 === "电表") ? row?.表类型 : "水表",
 					抄表类型: row?.表类型 || "水表",
 					收费对象: row?.对象名称 || "",
 					上期度数: row?.上期度数 || "",
@@ -242,8 +242,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 表单组件需要的props */
 	const formProps: WaterAndElectricityMeterReadingFormProps = {
-		form: 水电抄表表单_VO,
-		defaultValues: 水电抄表表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
