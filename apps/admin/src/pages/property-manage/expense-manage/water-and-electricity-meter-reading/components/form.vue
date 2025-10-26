@@ -1,9 +1,5 @@
-<!--
-  水电抄表表单
-  用于新增 修改水电抄表
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
 import { WaterAndElectricityMeterReadingFormProps, 费用类型, 水电抄表表单_VO, defaultForm } from "./form";
 
@@ -43,6 +39,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "费用类型",
 		prop: "费用类型",
+		valueType: "select",
+		options: [
+			{ label: "水费", value: "水费" },
+			{ label: "电费", value: "电费" },
+			{ label: "煤气费", value: "煤气费" },
+		],
 		required: true,
 	},
 
@@ -50,7 +52,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "收费项目",
 		prop: "收费项目",
-		valueType: "input",
+		valueType: "select",
+		options: [
+			{ label: "动态水表", value: "动态水表" },
+			{ label: "水表", value: "水表" },
+			{ label: "电表", value: "电表" },
+			{ label: "抄表", value: "抄表" },
+		],
 		required: true,
 	},
 	// 抄表类型
@@ -59,8 +67,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "抄表类型",
 		valueType: "select",
 		options: [
-			{ label: "水费", value: "水费" },
-			{ label: "电费", value: "电费" },
+			{ label: "水表", value: "水表" },
+			{ label: "电表", value: "电表" },
 		],
 		required: true,
 	},
@@ -68,7 +76,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "收费对象",
 		prop: "收费对象",
-		hide: true,
 		valueType: "input",
 		required: true,
 	},

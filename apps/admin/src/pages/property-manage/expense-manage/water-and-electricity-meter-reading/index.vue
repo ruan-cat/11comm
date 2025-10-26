@@ -1,4 +1,3 @@
-<!-- eslint-disable prettier/prettier -->
 <script lang="ts" setup>
 definePage({
 	meta: {
@@ -9,44 +8,22 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-
-import { type WaterAndElectricityMeterReadingFormProps, defaultForm } from "./components/form";
+import { tableData as mockTableData, type 水电抄表_列表数据, type 水电抄表_列表查询_VO, 表类型Options } from "./test-data";
+import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type 水电抄表表单_VO } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
 
 const WaterAndElectricityMeterReadingFormInstance = ref<InstanceType<
 	typeof WaterAndElectricityMeterReadingForm
 > | null>(null);
 
-interface 水电抄表_列表数据 {
-	表ID: string;
-	表类型: string;
-	对象名称: string;
-	上期度数: string;
-	本期度数: string;
-	上期读表时间: string;
-	本期读表时间: string;
-	创建时间: string;
-}
-const tableDataItem: 水电抄表_列表数据 = {
-	表ID: "表ID",
-	表类型: "表类型",
-	对象名称: "对象名称",
-	上期度数: "上期度数",
-	本期度数: "本期度数",
-	上期读表时间: "上期读表时间",
-	本期读表时间: "本期读表时间",
-	创建时间: "创建时间",
-};
 /** 表格数据 */
-const tableData = ref<水电抄表_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
-/** 表格配置 */
+const tableData = ref<水电抄表_列表数据[]>([]);
+
+/** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		prop: "表ID",
 		label: "表ID",
@@ -89,8 +66,9 @@ const columns = ref<TableColumnList>([
 		width: 200,
 	},
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 200,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 200,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -101,39 +79,9 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps, // 默认配置
-	data: tableData.value, // 表格数据
-	columns: [], // 列配置
-	pagination: pagination.value, // 分页配置
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "水电抄表",
-	columns: columns.value,
-});
-
-/** 表格搜索栏组件 表单配置 */
-interface 水电抄表_列表查询_VO {
-	表类型?: string;
-	表ID?: string;
-}
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -160,11 +108,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.tableType")),
 		prop: "表类型",
 		valueType: "select",
-		options: [
-			{ label: "水表", value: "水表" },
-			{ label: "电表", value: "电表" },
-			{ label: "抄表", value: "抄表" },
-		],
+		options: 表类型Options,
 	},
 	// 表ID
 	{
@@ -173,6 +117,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 	},
 ]);
+
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
@@ -182,12 +127,74 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-async function handleReSearch() {
-	console.log("重新搜索");
+/** 表格组件 配置 */
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps, // 默认配置
+	data: tableData.value, // 表格数据
+	columns: [], // 列配置
+	pagination: pagination.value, // 分页配置
+});
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "水电抄表",
+	columns: columns.value,
+});
+
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
 }
 
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.表类型) {
+			filteredData = filteredData.filter((item) => item.表类型.includes(plusSearchModel.value.表类型!));
+		}
+		if (plusSearchModel.value.表ID) {
+			filteredData = filteredData.filter((item) => item.表ID.includes(plusSearchModel.value.表ID!));
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
 }
 
 /** 打开弹框 参数 */
@@ -199,6 +206,7 @@ interface OpenDialogParams {
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -214,44 +222,37 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}水电抄表`;
 
+	/** 业务对象 */
+	const 水电抄表表单_VO: 水电抄表表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					费用类型: row?.表类型 === "水表" ? "水费" : row?.表类型 === "电表" ? "电费" : "水费",
+					收费项目: row?.表类型 || "水表",
+					抄表类型: row?.表类型 || "水表",
+					收费对象: row?.对象名称 || "",
+					上期度数: row?.上期度数 || "",
+					本期度数: row?.本期度数 || "",
+					上期读表时间: row?.上期读表时间 || "",
+					本期读表时间: row?.本期读表时间 || "",
+					备注: "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: WaterAndElectricityMeterReadingFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 水电抄表表单_VO,
+		defaultValues: 水电抄表表单_VO,
 	};
-
-	const testEditProps: WaterAndElectricityMeterReadingFormProps = {
-		form: {
-			...defaultForm,
-			费用类型: "水费",
-			收费项目: "动态水表",
-			抄表类型: "水表",
-			收费对象: "111-1-12",
-			上期度数: "119",
-			本期度数: "",
-			上期读表时间: "2025-01-01 00:00:00",
-			本期读表时间: "",
-			备注: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(WaterAndElectricityMeterReadingForm, {
@@ -269,7 +270,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = WaterAndElectricityMeterReadingFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -279,7 +279,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					WaterAndElectricityMeterReadingFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -288,7 +287,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await WaterAndElectricityMeterReadingFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -301,13 +299,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>

@@ -1,9 +1,9 @@
 const _费用类型 = ["水费", "电费", "煤气费"] as const;
 
-// 警告 这里仅为了演示 实际上的业务类型为 string
+/** 费用类型 */
 export type 费用类型 = (typeof _费用类型)[number];
 
-// 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
+/** 水电抄表表单_VO */
 export interface 水电抄表表单_VO {
 	费用类型: 费用类型;
 	收费项目: "动态水表" | "水表" | "电表" | "抄表";
@@ -17,7 +17,6 @@ export interface 水电抄表表单_VO {
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-// 添加抄表的弹窗表单显示默认值
 export const defaultForm: 水电抄表表单_VO = {
 	费用类型: "水费",
 	收费项目: "动态水表",
