@@ -3,6 +3,20 @@ const _费用类型 = ["押金", "停车费", "维修费", "服务费", "其他"
 // 警告 这里仅为了演示 实际上的业务类型为 string
 export type 费用类型 = (typeof _费用类型)[number];
 
+/** 费用类型选项 */
+export const 费用类型Options = [
+	{ label: "押金", value: "押金" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
+	{ label: "服务费", value: "服务费" },
+	{ label: "其他", value: "其他" },
+	{ label: "水费", value: "水费" },
+	{ label: "电费", value: "电费" },
+	{ label: "公摊费", value: "公摊费" },
+	{ label: "系统费用", value: "系统费用" },
+	{ label: "租金", value: "租金" },
+];
+
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
 export interface 车辆收费表单_VO {
 	收费范围: "小区" | "停车场";

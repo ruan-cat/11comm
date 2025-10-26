@@ -3,9 +3,9 @@
   用于新增 修改车辆收费
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { VehicleChargeFormProps, 费用类型, 车辆收费表单_VO, defaultForm } from "./form";
+import { VehicleChargeFormProps, 费用类型, 车辆收费表单_VO, defaultForm, 费用类型Options } from "./form";
 
 const props = defineProps<VehicleChargeFormProps>();
 
@@ -54,6 +54,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "费用类型",
 		prop: "费用类型",
+		valueType: "select",
+		options: 费用类型Options,
 		required: true,
 	},
 	// 收费项目
