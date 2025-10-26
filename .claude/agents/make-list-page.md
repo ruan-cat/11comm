@@ -285,8 +285,6 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 ```
 
-<!-- TODO: 搜索栏配置字段 PlusColumn类型 -->
-
 ### 9.6 表格搜索栏重置功能用的默认数据 `plusSearchDefaultValues` 和其他相关的变量
 
 以下面的写法为参考例子，请不要无条件的照搬照抄，请注意根据业务场景做修改：
@@ -562,9 +560,19 @@ const columns = ref<TableColumnList>([
 
 每一个表格页都必须包含一个表格搜索栏。
 
+### 16.1 `PlusColumn` 类型与搜索栏配置字段
+
+在你给搜索栏配置字段时，你会使用到全局类型 `PlusColumn` ，该类型是全局导入的类型，不需要你手动导入。
+
+配置字段时，你需要配置正确的 `valueType` ，请你使用合适的工具，主动阅读以下网站地址，读懂该字段应该如何配置。
+
+字段 `valueType` 使用的是 `plus-pro-components` 的 `FormItemValueType` 类型。
+
+- https://github.com/plus-pro-components/plus-pro-components/blob/dev/docs/components/type.md#formitemvaluetype
+
 ### 16.1 `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
 
-`plusSearchColumns` 必须设计成 `computed` ，用于实现动态切换的 `i18n` 文本
+1. `plusSearchColumns` 必须设计成 `computed` ，用于实现动态切换的 `i18n` 文本
 
 ### 16.2 `plusSearchColumns` 的 `jsdoc` 注释必须提供额外的说明注释
 
