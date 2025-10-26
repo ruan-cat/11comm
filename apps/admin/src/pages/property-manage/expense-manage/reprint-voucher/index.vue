@@ -8,95 +8,139 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 补打收据_列表数据,
+	type 补打收据_列表查询_VO,
+	费用类型Options,
+	tableData as mockTableData,
+} from "./test-data";
+import { type ReprintVoucherFormProps, defaultForm } from "./components/form";
+import ReprintVoucherForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
 
-interface 补打收据_列表数据 {
-	收据ID: string;
-	收据编号: string;
-	费用类型: string;
-	费用项: string;
-	房屋: string;
-	业主: string;
-	车位: string;
-	总金额: string;
-	缴费时间: string;
-	操作: string;
-}
-const tableDataItem: 补打收据_列表数据 = {
-	收据ID: "收据ID",
-	收据编号: "收据编号",
-	费用类型: "费用类型",
-	费用项: "费用项",
-	房屋: "房屋",
-	业主: "业主",
-	车位: "车位",
-	总金额: "总金额",
-	缴费时间: "缴费时间",
-	操作: "操作",
-};
 /** 表格数据 */
-const tableData = ref<补打收据_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<补打收据_列表数据[]>([]);
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 表单组件实例 */
+const reprintVoucherFormInstance = ref<InstanceType<typeof ReprintVoucherForm> | null>(null);
+
+/** 模拟异步操作函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 补打收据_列表查询_VO = {
+	收据编号: "",
+	费用类型: "",
+	房屋: "",
+	业主: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		let filteredData = mockTableData;
+
+		if (plusSearchModel.value.收据编号) {
+			filteredData = filteredData.filter((item) => item.收据编号.includes(plusSearchModel.value.收据编号!));
+		}
+		if (plusSearchModel.value.费用类型) {
+			filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
+		}
+		if (plusSearchModel.value.房屋) {
+			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋!));
+		}
+		if (plusSearchModel.value.业主) {
+			filteredData = filteredData.filter((item) => item.业主.includes(plusSearchModel.value.业主!));
+		}
+
+		pagination.value.total = filteredData.length;
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+	}
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
-		prop: "收据ID",
-		label: "收据ID",
-		width: 120,
-	},
-	{
-		prop: "收据编号",
 		label: "收据编号",
+		prop: "收据编号",
 		width: 120,
 	},
 	{
-		prop: "费用类型",
 		label: "费用类型",
-		width: 120,
+		prop: "费用类型",
+		width: 100,
 	},
 	{
-		prop: "费用项",
 		label: "费用项",
-		width: 120,
+		prop: "费用项",
+		width: 150,
 	},
 	{
-		prop: "房屋",
 		label: "房屋",
-		width: 120,
+		prop: "房屋",
+		width: 100,
 	},
 	{
-		prop: "业主",
 		label: "业主",
-		width: 120,
+		prop: "业主",
+		width: 100,
 	},
 	{
-		prop: "车位",
 		label: "车位",
-		width: 120,
+		prop: "车位",
+		width: 100,
 	},
 	{
-		prop: "总金额",
 		label: "总金额",
-		width: 120,
+		prop: "总金额",
+		width: 100,
 	},
 	{
-		prop: "缴费时间",
 		label: "缴费时间",
-		width: 120,
+		prop: "缴费时间",
+		width: 180,
 	},
 	{
-		prop: "操作",
-		label: "操作",
-		width: 120,
-	},
-	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 280,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -107,21 +151,64 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
-/** 表格组件 配置 */
+/** 处理页码变化 */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	{
+		label: "收据编号",
+		prop: "收据编号",
+		valueType: "input",
+	},
+	{
+		label: "费用类型",
+		prop: "费用类型",
+		valueType: "select",
+		options: 费用类型Options,
+	},
+	{
+		label: "房屋",
+		prop: "房屋",
+		valueType: "input",
+	},
+	{
+		label: "业主",
+		prop: "业主",
+		valueType: "input",
+	},
+]);
+
+
+/** 表格配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
@@ -129,107 +216,140 @@ const pureTableProps = ref<PureTableProps>({
 	pagination: pagination.value,
 });
 
-/** 表格操作栏组件 配置  */
+/** 表格操作栏组件 配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "补打收据",
 	columns: columns.value,
 });
 
-interface 补打收据_列表查询_VO {
-	收据编号?: string;
-	费用类型?: string;
-	费用项?: string;
-	房屋?: string;
-	业主?: string;
-	车位?: string;
-	缴费时间范围?: [string, string];
-}
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 补打收据_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+	/** 业务对象 */
+	const 补打收据表单_VO: 补打收据表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					收据ID: row?.收据ID || "",
+					收据编号: row?.收据编号 || "",
+					费用类型: row?.费用类型 || "",
+					费用项: row?.费用项 || "",
+					房屋: row?.房屋 || "",
+					业主: row?.业主 || "",
+					车位: row?.车位 || "",
+					总金额: row?.总金额 || "",
+					缴费时间: row?.缴费时间 || "",
+					打印份数: 1,
+					打印备注: "",
+				})
+			: cloneDeep(defaultForm);
 
-// TODO: 重写你的代码 不要无脑的复制粘贴 把类型补全
-const plusSearchModelRef: FieldValues & 房屋装修_列表查询_VO = {
-	收据编号: "",
-	费用类型: "",
-	费用项: "",
-	房屋: "",
-	业主: "",
-	车位: "",
-	缴费时间范围: ["", ""],
-};
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+	/** 表单组件需要的props */
+	const formProps: ReprintVoucherFormProps = {
+		form: 补打收据表单_VO,
+		defaultValues: 补打收据表单_VO,
+	};
 
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
+	/** 弹框组件所需的变量 */
+	const props = formProps;
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	//请输入收据ID
-	{
-		label: "收据ID",
-		prop: "收据ID",
-		valueType: "input",
-	},
-	//请输入房屋或车位信息，格式为楼栋-单元-房屋1-1-1
-	{
-		label: "房屋或车位",
-		prop: "房屋",
-		valueType: "input",
-	},
-	//请选择收费类型
-	{
-		label: "收费类型",
-		prop: "费用类型",
-		valueType: "select",
-		options: [
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	/** 弹框标题 */
+	const title = `${modeText.value}补打收据`;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+		contentRenderer: () =>
+			h(ReprintVoucherForm, {
+				ref: reprintVoucherFormInstance,
+				...formProps,
+			}),
+		async doBeforeClose({ options, index }) {
+			const formComputed = reprintVoucherFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+		footerButtons: [
 			{
-				label: "房屋费",
-				value: "房屋费",
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = reprintVoucherFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
 			},
 			{
-				label: "车位费",
-				value: "车位费",
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					reprintVoucherFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await reprintVoucherFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
 			},
 		],
-	},
-]);
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+	});
+}
+
+onMounted(async () => {
+	await loadTableData();
 });
-
-async function handleReSearch() {
-	console.log("重新搜索");
-}
-
-async function handleSearch() {
-	console.log("搜索");
-}
 </script>
 
 <template>
 	<section class="index-root">
-		<h2>补打收据</h2>
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-		<PureTable :="pureTableProps">
-			<template #operation="{ row }">
-				<ElButton type="default">{{ transformI18n($t("欠费缴费")) }}</ElButton>
-				<ElButton type="info">{{ transformI18n($t("common.buttons.info")) }}</ElButton>
-				<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="primary">
+					{{ transformI18n($t("common.buttons.batchReprint")) }}
+				</ElButton>
 			</template>
-		</PureTable>
+
+			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				>
+					<template #operation="{ row }">
+						<ElButton type="primary" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.reprint")) }}
+						</ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'view', row })">
+							{{ transformI18n($t("common.buttons.viewDetails")) }}
+						</ElButton>
+					</template>
+				</PureTable>
+			</template>
+		</PureTableBar>
 	</section>
 </template>
 
