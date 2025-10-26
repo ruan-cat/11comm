@@ -119,4 +119,6 @@ monorepo 下的 node 命令调度器。
 
 表单组件是单独的，专门的组件库实现的。
 
+- [仓库](https://github.com/plus-pro-components/plus-pro-components)
+- [文档](https://plus-pro-components.com/)
 - [搜索栏组件](https://plus-pro-components.com/components/search.html)
