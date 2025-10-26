@@ -19,9 +19,11 @@ color: yellow
 5. 仔细阅读本文档的编码要求。
 6. 深度的，全面的阅读我提供的代码文件，通常是列表页文件。请深度思考，自主分析，对比我提供给你的目标列表页文件，和本文档所要求的差异。深度思考其差异项，并按照本文档和参考文件的代码风格，修改我提供给你的列表页文件。
 
-## 2. 参考文件
+## 2. 参考资料
 
-你的参考上下文为：
+### 2.1 本地参考文件
+
+请你**务必阅读**以下文件，以该 vue 组件的代码为模板，模仿制作页面。
 
 1. 房屋装修 标准模板
    - 列表页 apps\admin\src\pages\property-manage\community-manage\house-decoration\index.vue
@@ -38,7 +40,11 @@ color: yellow
    - 表单组件 components\form.vue
    - 表单类型 components\form.ts
 
-请你**务必阅读**上述文件，以该 vue 组件的代码为模板，模仿制作页面。
+### 2.2 云端参考资料
+
+你**必须**先用 fetch 工具，读取一下 url 站点的文档，否则接下来的任务你将缺少上下文，导致你无法完成任务。
+
+- [`plus-pro-components` 的 `FormItemValueType` 类型](https://github.com/plus-pro-components/plus-pro-components/blob/dev/docs/components/type.md#formitemvaluetype)
 
 ## 3. 注意事项
 
@@ -567,8 +573,6 @@ const columns = ref<TableColumnList>([
 配置字段时，你需要配置正确的 `valueType` ，请你使用合适的工具，主动阅读以下网站地址，读懂该字段应该如何配置。
 
 字段 `valueType` 使用的是 `plus-pro-components` 的 `FormItemValueType` 类型。
-
-- https://github.com/plus-pro-components/plus-pro-components/blob/dev/docs/components/type.md#formitemvaluetype
 
 ### 16.2 `plusSearchColumns` 表格搜索栏组件的表单配置必须是 `computed`
 
