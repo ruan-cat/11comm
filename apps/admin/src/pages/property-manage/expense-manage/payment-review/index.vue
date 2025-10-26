@@ -215,7 +215,12 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "缴费时间范围",
 		prop: "缴费时间范围",
-		valueType: "datetimerange",
+		valueType: "date-picker",
+		fieldProps: {
+			type: "daterange",
+			valueFormat: "YYYY-MM-DD",
+			format: "YYYY-MM-DD",
+		},
 	},
 ]);
 
@@ -358,7 +363,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 function handleOperationClick(operation: string, row: 缴费审核_列表数据) {
 	switch (operation) {
 		case "查看详情":
-			openDialog({ mode: "view", row });
+			openDialog({ mode: "info", row });
 			break;
 		case "审核通过":
 			openDialog({ mode: "edit", row });
