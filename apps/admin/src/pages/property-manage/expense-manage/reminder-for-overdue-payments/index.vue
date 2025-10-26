@@ -8,102 +8,120 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import {
+	type 欠费催缴_列表数据,
+	type 欠费催缴_列表查询_VO,
+	催缴方式Options,
+	催缴状态Options,
+	tableData as mockTableData,
+} from "./test-data";
 
-interface 欠费催缴_列表数据 {
-	编号: string;
-	业主名称: string;
-	付费对象: string;
-	费用名称: string;
-	催缴金额: string;
-	欠费时间段: string;
-	催缴方式: string;
-	状态: string;
-	说明: string;
-	创建时间: string;
-	操作: string;
-}
-const tableDataItem: 欠费催缴_列表数据 = {
-	编号: "编号",
-	业主名称: "业主名称",
-	付费对象: "付费对象",
-	费用名称: "费用名称",
-	催缴金额: "催缴金额",
-	欠费时间段: "欠费时间段",
-	催缴方式: "催缴方式",
-	状态: "状态",
-	说明: "说明",
-	创建时间: "创建时间",
-	操作: "操作",
+import { type ReminderForOverduePaymentsFormProps, type 欠费催缴表单_VO, defaultForm } from "./components/form";
+import ReminderForOverduePaymentsForm from "./components/form.vue";
+
+const reminderForOverduePaymentsFormInstance = ref<InstanceType<typeof ReminderForOverduePaymentsForm> | null>(null);
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 欠费催缴_列表查询_VO = {
+	业主名称: "",
+	催缴方式: "",
+	状态: "",
 };
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
 /** 表格数据 */
-const tableData = ref<欠费催缴_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<欠费催缴_列表数据[]>([]);
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		let filteredData = mockTableData;
+
+		if (plusSearchModel.value.业主名称) {
+			filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
+		}
+		if (plusSearchModel.value.催缴方式) {
+			filteredData = filteredData.filter((item) => item.催缴方式 === plusSearchModel.value.催缴方式);
+		}
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
+		}
+
+		pagination.value.total = filteredData.length;
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+	}
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
-		prop: "编号",
-		label: "编号",
-		width: 120,
-	},
-	{
-		prop: "业主名称",
 		label: "业主名称",
-		width: 120,
+		prop: "业主名称",
+		width: 100,
 	},
 	{
-		prop: "付费对象",
 		label: "付费对象",
-		width: 120,
+		prop: "付费对象",
+		width: 100,
 	},
 	{
-		prop: "费用名称",
 		label: "费用名称",
-		width: 120,
+		prop: "费用名称",
+		width: 100,
 	},
 	{
-		prop: "催缴金额",
 		label: "催缴金额",
-		width: 120,
+		prop: "催缴金额",
+		width: 100,
 	},
 	{
-		prop: "欠费时间段",
-		label: "欠费时间段",
-		width: 120,
-	},
-	{
-		prop: "催缴方式",
 		label: "催缴方式",
-		width: 120,
+		prop: "催缴方式",
+		width: 100,
 	},
 	{
-		prop: "状态",
 		label: "状态",
-		width: 120,
+		prop: "状态",
+		width: 100,
 	},
 	{
-		prop: "说明",
-		label: "说明",
-		width: 120,
-	},
-	{
-		prop: "创建时间",
 		label: "创建时间",
-		width: 120,
+		prop: "创建时间",
+		width: 180,
 	},
 	{
-		prop: "操作",
-		label: "操作",
-		width: 120,
-	},
-	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 280,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -114,118 +132,59 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
-/** 处理页码变化 即后端的 pageIndex */
+
+/** 处理页码变化 */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "欠费催缴",
-	columns: columns.value,
-});
-interface 欠费催缴_列表查询_VO {
-	业主名称?: string;
-	付费对象?: string;
-	费用名称?: string;
-	催缴金额?: string;
-	欠费时间段?: string;
-	催缴方式?: string;
-	状态?: string;
-	说明?: string;
-	创建时间?: string;
-}
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & 欠费催缴_列表查询_VO = {
-	业主名称: "",
-	付费对象: "",
-	费用名称: "",
-	催缴金额: "",
-	欠费时间段: "",
-	催缴方式: "",
-	状态: "",
-	说明: "",
-	创建时间: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	//填写业主名称
 	{
-		prop: "业主名称",
 		label: "业主名称",
-		type: "input",
-		placeholder: "请输入业主名称",
+		prop: "业主名称",
+		valueType: "input",
 	},
-	//填写付费名称
 	{
-		prop: "费用名称",
-		label: "费用名称",
-		type: "input",
-		placeholder: "请输入费用名称",
-	},
-	// 选择催缴方式
-	{
-		prop: "催缴方式",
 		label: "催缴方式",
-		type: "select",
-		options: [
-			{ label: "微信模块消息", value: "微信模块消息" },
-			{ label: "短信", value: "短信" },
-			{ label: "上门催缴", value: "上门催缴" },
-		],
+		prop: "催缴方式",
+		valueType: "select",
+		options: 催缴方式Options,
 	},
-	//填写催缴人
 	{
-		prop: "催缴人",
-		label: "催缴人",
-		type: "input",
-		placeholder: "请输入催缴人",
-	},
-	//选择状态
-	{
-		prop: "状态",
 		label: "状态",
-		type: "select",
-		options: [
-			{ label: "待催缴", value: "待催缴" },
-			{ label: "催缴完成", value: "催缴完成" },
-			{ label: "催缴失败", value: "催缴失败" },
-			{ label: "催缴中", value: "催缴中" },
-		],
+		prop: "状态",
+		valueType: "select",
+		options: 催缴状态Options,
 	},
 ]);
-/** 表格搜索栏组件 配置  */
+
+/** 表格搜索栏组件 配置 */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
@@ -234,26 +193,151 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-async function handleReSearch() {
-	console.log("重新搜索");
+/** 表格配置 */
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
+});
+
+/** 表格操作栏组件 配置 */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "欠费催缴",
+	columns: columns.value,
+});
+
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 欠费催缴_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}欠费催缴`;
+
+	/** 业务对象 */
+	const 欠费催缴表单_VO: 欠费催缴表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					业主名称: row?.业主名称 || "",
+					付费对象: row?.付费对象 || "",
+					费用名称: row?.费用名称 || "",
+					催缴金额: row?.催缴金额 || "",
+					欠费时间段: row?.欠费时间段 || "",
+					催缴方式: row?.催缴方式 || "",
+					状态: row?.状态 || "",
+					说明: row?.说明 || "",
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: ReminderForOverduePaymentsFormProps = {
+		form: 欠费催缴表单_VO,
+		defaultValues: 欠费催缴表单_VO,
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+
+		contentRenderer: () =>
+			h(ReminderForOverduePaymentsForm, {
+				ref: reminderForOverduePaymentsFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
 }
 
-async function handleSearch() {
-	console.log("搜索");
-}
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<h2>欠费催缴</h2>
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-		<PureTable :="pureTableProps">
-			<template #operation="{ row }">
-				<ElButton type="default">{{ transformI18n($t("欠费缴费")) }}</ElButton>
-				<ElButton type="info">{{ transformI18n($t("common.buttons.info")) }}</ElButton>
-				<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
-		</PureTable>
+
+			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				>
+					<template #operation="{ row }">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info"> 立即催缴 </ElButton>
+						<ElButton type="info"> 查看详情 </ElButton>
+						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+					</template>
+				</PureTable>
+			</template>
+		</PureTableBar>
 	</section>
 </template>
 
