@@ -13,6 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type 补打收据_列表数据,
 	type 补打收据_列表查询_VO,
+	type 补打收据表单_VO,
 	费用类型Options,
 	tableData as mockTableData,
 } from "./test-data";
@@ -207,7 +208,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-
 /** 表格配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
@@ -341,11 +341,10 @@ onMounted(async () => {
 				>
 					<template #operation="{ row }">
 						<ElButton type="primary" @click="openDialog({ mode: 'edit', row })">
-							{{ transformI18n($t("common.buttons.reprint")) }}
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="warning" @click="openDialog({ mode: 'view', row })">
-							{{ transformI18n($t("common.buttons.viewDetails")) }}
-						</ElButton>
+						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
+						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>
