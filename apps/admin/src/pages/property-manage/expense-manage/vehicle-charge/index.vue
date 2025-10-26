@@ -10,8 +10,9 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { type Mode } from "@/composables/use-mode";
 
-import { type VehicleChargeFormProps, defaultForm } from "./components/form";
+import { type VehicleChargeFormProps, defaultForm, type 车辆收费表单_VO } from "./components/form";
 import VehicleChargeForm from "./components/form.vue";
 import { tableData as mockTableData, type 车辆收费_列表数据, 车位状态Options } from "./test-data";
 
@@ -209,21 +210,22 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 车辆收费_列表数据;
-}
-
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: 车辆收费_列表数据;
 }
 
 /** 打开弹框 */
@@ -233,41 +235,34 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}车辆收费`;
 
+	/** 业务对象 */
+	const 车辆收费表单_VO: 车辆收费表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					收费范围: "小区",
+					费用类型: "停车费",
+					收费项目: row?.车牌号 || "",
+					车位状态: "已出售",
+					计费起始时间: "2025-01-01",
+					计费结束时间: "2025-12-31",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: VehicleChargeFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 车辆收费表单_VO,
+		defaultValues: 车辆收费表单_VO,
 	};
-
-	const testEditProps: VehicleChargeFormProps = {
-		form: {
-			...defaultForm,
-			收费范围: "小区",
-			费用类型: "水费",
-			收费项目: "收费项目",
-			车位状态: "已出售",
-			计费起始时间: "2025-01-01",
-			计费结束时间: "2025-12-31",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(VehicleChargeForm, {
@@ -285,7 +280,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = VehicleChargeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -295,7 +289,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					VehicleChargeFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -304,7 +297,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await VehicleChargeFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -331,16 +323,16 @@ onMounted(async () => {
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<!-- 表格操作栏组件 -->
 			<template #buttons>
-				<ElButton type="primary">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.customTemplate")) }}
 				</ElButton>
-				<ElButton type="primary">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.customCreate")) }}
 				</ElButton>
-				<ElButton type="success" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.batchCreate")) }}
 				</ElButton>
-				<ElButton type="success">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.monthlyCardPurchase")) }}
 				</ElButton>
 			</template>
@@ -355,7 +347,7 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning">
+						<ElButton type="info">
 							{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.viewFee")) }}
 						</ElButton>
 					</template>
