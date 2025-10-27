@@ -1,3 +1,5 @@
+import type { 业主信息表单_VO } from "../test-data";
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 业主信息表单_VO = {
 	人员类型: "个人",
@@ -13,7 +15,7 @@ export const defaultForm: 业主信息表单_VO = {
 };
 
 /**
- * 费用项设置表单 props
+ * 业主信息表单 props
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */

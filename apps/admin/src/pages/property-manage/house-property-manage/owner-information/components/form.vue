@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
 
-import { OwnerInformationFormProps, 业主信息表单_VO, defaultForm } from "./form";
+import { OwnerInformationFormProps, defaultForm } from "./form";
+import type { 业主信息表单_VO, 性别Options, 人员类型Options, 人员角色Options } from "../test-data";
 
 const props = defineProps<OwnerInformationFormProps>();
 
@@ -44,10 +45,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "人员类型",
 		prop: "人员类型",
 		valueType: "select",
-		options: [
-			{ label: "个人", value: "个人" },
-			{ label: "企业", value: "企业" },
-		],
+		options: 人员类型Options,
 		required: true,
 	},
 
@@ -56,10 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "人员角色",
 		prop: "人员角色",
 		valueType: "select",
-		options: [
-			{ label: "业主", value: "业主" },
-			{ label: "租客", value: "租客" },
-		],
+		options: 人员角色Options,
 		required: true,
 	},
 
@@ -84,10 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "性别",
 		prop: "性别",
 		valueType: "select",
-		options: [
-			{ label: "男", value: "男" },
-			{ label: "女", value: "女" },
-		],
+		options: 性别Options,
 		required: true,
 	},
 
