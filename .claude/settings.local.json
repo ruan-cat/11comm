@@ -19,7 +19,7 @@
 	"hooks": {
 		"Stop": [
 			{
-				"matcher": "os == 'windows'",
+				"matcher": "",
 				"hooks": [
 					{
 						"type": "command",
@@ -30,7 +30,7 @@
 		],
 		"SessionStart": [
 			{
-				"matcher": "os == 'windows'",
+				"matcher": "'",
 				"hooks": [
 					{
 						"type": "command",
@@ -41,7 +41,7 @@
 		],
 		"SessionEnd": [
 			{
-				"matcher": "os == 'windows'",
+				"matcher": "'",
 				"hooks": [
 					{
 						"type": "command",
