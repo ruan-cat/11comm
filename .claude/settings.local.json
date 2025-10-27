@@ -12,6 +12,43 @@
 			"mcp__fetch-mcp__fetch_markdown"
 		],
 		"deny": [],
-		"additionalDirectories": ["F:\\store\\PixPin"]
+		"additionalDirectories": [
+			"F:\\store\\PixPin"
+		]
+	},
+	"hooks": {
+		"Stop": [
+			{
+				"matcher": "os == 'windows'",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "npx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
+					}
+				]
+			}
+		],
+		"SessionStart": [
+			{
+				"matcher": "os == 'windows'",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "npx @ruan-cat/claude-notifier@latest long-task --task-description \"Claude 会话\" &"
+					}
+				]
+			}
+		],
+		"SessionEnd": [
+			{
+				"matcher": "os == 'windows'",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "npx @ruan-cat/claude-notifier@latest long-task --stop"
+					}
+				]
+			}
+		]
 	}
 }
