@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed } from "vue";
+import { useTemplateRef } from "vue";
+import { type OwnerAccountFormProps, 账户类型选项, 支付方式选项 } from "./form";
+import { type 业主账户表单_VO } from "../test-data";
 
-import { OwnerAccountFormProps, 业主账户表单_VO, defaultForm } from "./form";
-
+/** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();
 
 /** 默认的表单重置变量 */
@@ -10,7 +12,6 @@ const defaultValues = props.defaultValues as FieldValues & 业主账户表单_VO
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
 /**
@@ -35,74 +36,102 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 账户类型
 	{
 		label: "账户类型",
 		prop: "账户类型",
 		valueType: "select",
-		options: [
-			{ label: "通用账户", value: "通用账户" },
-			{ label: "物业费扣款账户", value: "物业费扣款账户" },
-			{ label: "水电费扣款账户", value: "水电费扣款账户" },
-		],
-		required: true,
+		options: 账户类型选项,
+		fieldProps: {
+			placeholder: "请选择账户类型",
+		},
 	},
-
-	// 业主手机
 	{
 		label: "业主手机",
 		prop: "业主手机",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			placeholder: "请输入业主手机号",
+		},
 	},
-
-	// 业主名称
 	{
 		label: "业主名称",
 		prop: "业主名称",
-		valueType: "select",
-		options: [
-			{ label: "1", value: "1" },
-			{ label: "2", value: "2" },
-		],
-		required: true,
+		valueType: "input",
+		fieldProps: {
+			placeholder: "请输入业主名称",
+		},
 	},
-	// 预存金额
 	{
 		label: "预存金额",
 		prop: "预存金额",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			placeholder: "请输入预存金额",
+		},
 	},
-	// 支付方式
 	{
 		label: "支付方式",
 		prop: "支付方式",
 		valueType: "select",
-		options: [
-			{ label: "现金", value: "现金" },
-			{ label: "POS刷卡", value: "POS刷卡" },
-			{ label: "微信二维码", value: "微信二维码" },
-			{ label: "支付宝二维码", value: "支付宝二维码" },
-			{ label: "转账", value: "转账" },
-			{ label: "押金退款到账户", value: "押金退款到账户" },
-		],
+		options: 支付方式选项,
+		fieldProps: {
+			placeholder: "请选择支付方式",
+		},
 	},
-	// 备注
 	{
 		label: "备注",
 		prop: "备注",
 		valueType: "textarea",
-		required: false,
+		fieldProps: {
+			placeholder: "请输入备注信息",
+			rows: 3,
+		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
+/** 表单验证规则 */
+const plusFormRules = {
+	账户类型: [
+		{
+			required: true,
+			message: "请选择账户类型",
+			trigger: "change",
+		},
+	],
+	业主手机: [
+		{
+			required: true,
+			message: "请输入业主手机号",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	业主名称: [
+		{
+			required: true,
+			message: "请输入业主名称",
+			trigger: "blur",
+		},
+	],
+	预存金额: [
+		{
+			required: true,
+			message: "请输入预存金额",
+			trigger: "blur",
+		},
+		{
+			pattern: /^\d+(\.\d{1,2})?$/,
+			message: "请输入正确的金额格式",
+			trigger: "blur",
+		},
+	],
+};
 
-/** 表单校验 */
-const plusFormRules = {};
-
+// 默认导出表单实例和计算属性
 defineExpose({
 	plusFormInstance,
 	formComputed,

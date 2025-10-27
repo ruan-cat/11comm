@@ -8,47 +8,24 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-
+import {
+	type 业主账户_列表数据,
+	type 业主账户_列表查询_VO,
+	tableData as allTableData,
+	type 业主账户表单_VO,
+} from "./test-data";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { type OwnerAccountFormProps, defaultForm } from "./components/form";
 import OwnerAccountForm from "./components/form.vue";
 
-const ownerAccountFormInstance = ref<InstanceType<typeof OwnerAccountForm> | null>(null);
-
-interface 业主账户_列表数据 {
-	账户编号: string;
-	账户名称: string;
-	身份证号: string;
-	手机号: string;
-	账户类型: string;
-	账户金额: string;
-	扣款房号: string;
-	创建时间: string;
-	备注: string;
-}
-
-const tableDataItem: 业主账户_列表数据 = {
-	账户编号: "账户编号",
-	账户名称: "账户名称",
-	身份证号: "身份证号",
-	手机号: "手机号",
-	账户类型: "账户类型",
-	账户金额: "账户金额",
-	扣款房号: "扣款房号",
-	创建时间: "创建时间",
-	备注: "备注",
-};
-
 /** 表格数据 */
-const tableData = ref<业主账户_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<业主账户_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "账户编号",
 		prop: "账户编号",
@@ -63,7 +40,7 @@ const columns = ref<TableColumnList>([
 	{
 		label: "身份证号",
 		prop: "身份证号",
-		width: 120,
+		width: 160,
 	},
 	{
 		label: "手机号",
@@ -73,7 +50,7 @@ const columns = ref<TableColumnList>([
 	{
 		label: "账户类型",
 		prop: "账户类型",
-		width: 120,
+		width: 150,
 	},
 	{
 		label: "账户金额",
@@ -88,13 +65,17 @@ const columns = ref<TableColumnList>([
 	{
 		label: "创建时间",
 		prop: "创建时间",
-		width: 120,
+		width: 160,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
+		label: "备注",
+		prop: "备注",
+		width: 150,
+	},
+	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -105,21 +86,22 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
+
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
-/** 表格配置 */
+/** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
@@ -133,10 +115,38 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 业主账户_列表查询_VO {
-	账户名称?: string;
-	身份证号?: string;
-	联系方式?: string;
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		// TODO: 替换为真实的API调用
+		// 当前使用模拟数据和本地搜索过滤
+		let filteredData = allTableData;
+
+		// 根据搜索条件过滤数据
+		if (plusSearchModel.value.账户名称) {
+			filteredData = filteredData.filter((item) => item.账户名称.includes(plusSearchModel.value.账户名称!));
+		}
+		if (plusSearchModel.value.身份证号) {
+			filteredData = filteredData.filter((item) => item.身份证号.includes(plusSearchModel.value.身份证号!));
+		}
+		if (plusSearchModel.value.联系方式) {
+			filteredData = filteredData.filter((item) => item.手机号.includes(plusSearchModel.value.联系方式!));
+		}
+
+		// 更新总数
+		pagination.value.total = filteredData.length;
+
+		// 分页处理
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		// 更新表格配置
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		// TODO: 显示错误提示
+	}
 }
 
 /**
@@ -161,23 +171,18 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 账户名称
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.houses.accountName")),
+		label: "账户名称",
 		prop: "账户名称",
 		valueType: "input",
 	},
-
-	// 身份证号
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.houses.idCard")),
+		label: "身份证号",
 		prop: "身份证号",
 		valueType: "input",
 	},
-
-	// 联系方式
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.houses.phone")),
+		label: "联系方式",
 		prop: "联系方式",
 		valueType: "input",
 	},
@@ -192,12 +197,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /** 打开弹框 参数 */
@@ -206,7 +216,10 @@ interface OpenDialogParams {
 	row?: 业主账户_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const ownerAccountFormInstance = ref<InstanceType<typeof OwnerAccountForm> | null>(null);
+
+// 模式控制
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -218,65 +231,55 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}业主账户`;
 
+	/** 业务对象 */
+	const 业主账户表单_VO: 业主账户表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					账户类型: row?.账户类型 || "通用账户",
+					业主手机: row?.手机号 || "",
+					业主名称: row?.账户名称 || "",
+					预存金额: row?.账户金额?.replace(/,/g, "") || "",
+					支付方式: "现金",
+					备注: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: OwnerAccountFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 业主账户表单_VO,
+		defaultValues: 业主账户表单_VO,
 	};
-
-	const testEditProps: OwnerAccountFormProps = {
-		form: {
-			...defaultForm,
-			账户类型: "通用账户",
-			业主手机: "",
-			业主名称: "1",
-			预存金额: "",
-			支付方式: "现金",
-			备注: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
-
+		props: formProps,
 		contentRenderer: () =>
 			h(OwnerAccountForm, {
 				ref: ownerAccountFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = ownerAccountFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = ownerAccountFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -286,7 +289,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					ownerAccountFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -295,19 +297,23 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await ownerAccountFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await loadTableData();
 					}
 				},
 			},
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 
 const { gotoDetailPage } = useGotoDetailsPage();
 
@@ -325,7 +331,13 @@ function gotoOwnerAccountPage(row: 业主账户_列表数据) {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -344,7 +356,10 @@ function gotoOwnerAccountPage(row: 业主账户_列表数据) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="default" @click="gotoOwnerAccountPage(row)">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="gotoOwnerAccountPage(row)">
 							{{ transformI18n($t("propertyManage_housePropertyManage.houses.account")) }}
 						</ElButton>
 						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
