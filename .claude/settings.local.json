@@ -19,7 +19,6 @@
 	"hooks": {
 		"Stop": [
 			{
-				"matcher": "",
 				"hooks": [
 					{
 						"type": "command",
@@ -30,7 +29,6 @@
 		],
 		"SessionStart": [
 			{
-				"matcher": "'",
 				"hooks": [
 					{
 						"type": "command",
@@ -41,7 +39,6 @@
 		],
 		"SessionEnd": [
 			{
-				"matcher": "'",
 				"hooks": [
 					{
 						"type": "command",
