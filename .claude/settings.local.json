@@ -23,7 +23,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "npx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
+						"command": "cmd /c npx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
 					}
 				]
 			}
@@ -34,7 +34,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "npx @ruan-cat/claude-notifier@latest long-task --task-description \"Claude 会话\" &"
+						"command": "cmd /c npx @ruan-cat/claude-notifier@latest long-task --task-description \"Claude 会话\" &"
 					}
 				]
 			}
@@ -45,7 +45,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "npx @ruan-cat/claude-notifier@latest long-task --stop"
+						"command": "cmd /c npx @ruan-cat/claude-notifier@latest long-task --stop"
 					}
 				]
 			}
