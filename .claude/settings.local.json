@@ -27,6 +27,16 @@
 				]
 			}
 		],
+		"PostToolUse": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message 完成工具使用"
+					}
+				]
+			}
+		],
 		"PreCompact": [
 			{
 				"hooks": [
@@ -42,7 +52,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c pnpm dlx @ruan-cat/claude-notifier@latest long-task --task-description \"Claude 会话\" &"
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest long-task --task-description \"Claude 会话\""
 					}
 				]
 			}
@@ -52,7 +62,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c pnpm dlx @ruan-cat/claude-notifier@latest long-task --stop"
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest long-task --stop"
 					}
 				]
 			}
