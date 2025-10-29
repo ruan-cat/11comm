@@ -1,22 +1,18 @@
 <!--
-  费用项设置表单
-  用于新增 修改费用项设置
+  场地预约表单
+  用于新增 修改场地预约
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
 
-import { ReserveVenueOrderFormProps, 费用类型, 场地预约订单_VO, defaultForm } from "./form";
+import { type ReserveVenueFormProps } from "./form";
+import { 场地类型Options, 预约状态Options, type 场地预约_VO } from "../test-data";
+import { defaultForm } from "./form";
 
-const props = defineProps<ReserveVenueOrderFormProps>();
-
-/** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 场地预约订单_VO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
+const props = defineProps<ReserveVenueFormProps>();
+const defaultValues = props.defaultValues as FieldValues & 场地预约_VO;
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
-
 /**
  * 本表单组件 实际使用的表单对象
  * @description
@@ -24,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 场地预约订单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & 场地预约_VO;
 
 /**
  * 表单对象
@@ -39,145 +35,90 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 费用类型
+	// 预约人
 	{
-		label: "费用类型",
-		prop: "费用类型",
-	},
-
-	// 收费项目
-	{
-		label: "收费项目",
-		prop: "收费项目",
+		label: "预约人",
+		prop: "预约人",
 		valueType: "input",
 		required: true,
 	},
 
-	// 费用标识
+	// 联系电话
 	{
-		label: "费用标识",
-		prop: "费用标识",
-		valueType: "select",
-		options: [
-			{ label: "周期性费用", value: "周期性费用" },
-			{ label: "一次性费用", value: "一次性费用" },
-		],
+		label: "联系电话",
+		prop: "联系电话",
+		valueType: "input",
 		required: true,
 	},
 
-	// 付费类型
+	// 预约时间
 	{
-		label: "付费类型",
-		prop: "付费类型",
+		label: "预约时间",
+		prop: "预约时间",
+		valueType: "date-picker",
+		fieldProps: {
+			type: "date",
+			valueFormat: "YYYY-MM-DD",
+			format: "YYYY-MM-DD",
+		},
+		required: true,
+	},
+
+	// 开始时间
+	{
+		label: "开始时间",
+		prop: "开始时间",
+		valueType: "time-picker",
+		fieldProps: {
+			format: "HH:mm",
+			valueFormat: "HH:mm",
+		},
+		required: true,
+	},
+
+	// 结束时间
+	{
+		label: "结束时间",
+		prop: "结束时间",
+		valueType: "time-picker",
+		fieldProps: {
+			format: "HH:mm",
+			valueFormat: "HH:mm",
+		},
+		required: true,
+	},
+
+	// 场地类型
+	{
+		label: "场地类型",
+		prop: "场地类型",
 		valueType: "select",
-		options: [
-			{ label: "预付费", value: "预付费" },
-			{ label: "后付费", value: "后付费" },
-		],
+		options: 场地类型Options.map((item) => ({ label: item.label, value: item.value })),
 		required: true,
 	},
-	// 缴费周期
+
+	// 预约状态
 	{
-		label: "缴费周期(单位:月)",
-		prop: "缴费周期(单位:月)",
-		valueType: "input",
-		required: true,
-		hidden: (form) => form.费用类型 === "押金",
-	},
-	// 预付期
-	{
-		label: "预付期(单位:天)",
-		prop: "预付期(单位:天)",
-		valueType: "input",
-		required: true,
-		hidden: (form) => form.费用类型 === "煤气费",
-	},
-	// 单位
-	{
-		label: "单位",
-		prop: "单位",
-		valueType: "input",
-		required: true,
-	},
-	// 账户抵扣
-	{
-		label: "账户抵扣",
-		prop: "账户抵扣",
+		label: "预约状态",
+		prop: "预约状态",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: 预约状态Options.map((item) => ({ label: item.label, value: item.value })),
 		required: true,
 	},
-	// 手机缴费
+
+	// 使用人数
 	{
-		label: "手机缴费",
-		prop: "手机缴费",
-		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		label: "使用人数",
+		prop: "使用人数",
+		valueType: "input-number",
 		required: true,
 	},
-	// 进位方式
+
+	// 备注
 	{
-		label: "进位方式",
-		prop: "进位方式",
-		valueType: "select",
-		options: [
-			{ label: "四舍五入", value: "四舍五入" },
-			{ label: "向上取整", value: "向上取整" },
-			{ label: "向下取整", value: "向下取整" },
-		],
-		required: true,
-	},
-	// 保留小数位
-	{
-		label: "保留小数位",
-		prop: "保留小数位",
-		valueType: "select",
-		options: [
-			{ label: "取整", value: "取整" },
-			{ label: "1位", value: "1位" },
-			{ label: "2位", value: "2位" },
-			{ label: "3位", value: "3位" },
-			{ label: "4位", value: "4位" },
-		],
-		required: true,
-	},
-	// 状态
-	{
-		label: "状态",
-		prop: "状态",
-		valueType: "select",
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
-		],
-		required: true,
-	},
-	// 计算公式
-	{
-		label: "计算公式",
-		prop: "计算公式",
-		valueType: "input",
-		required: true,
-	},
-	// 计费单价
-	{
-		label: "计费单价",
-		prop: "计费单价",
-		valueType: "input",
-		required: true,
-	},
-	// 固定费用
-	{
-		label: "固定费用",
-		prop: "固定费用",
-		valueType: "input",
-		required: true,
+		label: "备注",
+		prop: "备注",
+		valueType: "textarea",
 	},
 ]);
 
