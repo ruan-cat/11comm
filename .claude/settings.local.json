@@ -22,7 +22,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
 					}
 				]
 			}
@@ -32,7 +32,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message 完成工具使用"
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"完成工具使用\""
 					}
 				]
 			}
@@ -42,7 +42,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message 上下文压缩完成"
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"上下文压缩完成\""
 					}
 				]
 			}
