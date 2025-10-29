@@ -1,12 +1,8 @@
-<!--
-  费用项设置表单
-  用于新增 修改费用项设置
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { OwnersCommitteeProps, 业委会表单_VO, defaultForm } from "./form";
-import { useDisabled, useFormDisabled } from "element-plus";
+import { OwnersCommitteeProps, defaultForm } from "./form";
+import { 性别选项, 状态选项, type 业委会表单_VO } from "../test-data";
 
 const props = defineProps<OwnersCommitteeProps>();
 
@@ -53,10 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "性别",
 		prop: "性别",
 		valueType: "select",
-		options: [
-			{ label: "男", value: "男" },
-			{ label: "女", value: "女" },
-		],
+		options: 性别选项,
 		required: true,
 	},
 
@@ -121,10 +114,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: [
-			{ label: "在职", value: "在职" },
-			{ label: "离职", value: "离职" },
-		],
+		options: 状态选项,
 		required: true,
 	},
 	// 备注

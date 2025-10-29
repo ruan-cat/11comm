@@ -8,102 +8,91 @@ definePage({
 	},
 });
 
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type OwnersCommitteeProps, defaultForm } from "./components/form";
-import OwnersCommittee from "./components/form.vue"; //？
-const OwnersCommitteeInstance = ref<InstanceType<typeof OwnersCommittee> | null>(null);
+import OwnersCommittee from "./components/form.vue";
+import { type Mode } from "@/composables/use-mode";
+import {
+	type 业委会_列表数据,
+	type 业委会_列表查询_VO,
+	tableData as mockTableData,
+	状态选项,
+	type 业委会表单_VO,
+} from "./test-data";
 
-const {
-	execute: queryCommitteeListExecute,
-	data: queryCommitteeListData,
-	isLoading: queryCommitteeListIsLoading,
-} = queryCommitteeList({
-	onSuccess(data) {
-		tableData.value = data.data.rows;
-	},
-	onError(error) {},
-});
+/** 表单组件实例 */
+const ownersCommitteeFormInstance = ref<InstanceType<typeof OwnersCommittee> | null>(null);
 
-/** 获取业委会列表 */
-async function doQueryCommitteeListExecute() {
-	await queryCommitteeListExecute({
-		params: {
-			name: plusSearchModel.value.name,
-			link: plusSearchModel.value.link,
-			state: plusSearchModel.value.state,
-			pageIndex: pagination.value.currentPage,
-			pageSize: pagination.value.pageSize,
-		},
-	});
-}
+/** 模式控制 */
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 表格数据 */
-const tableData = ref<CommitteeMemberListItem[]>([]);
+const tableData = ref<业委会_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "编号",
-		prop: "ocId",
+		prop: "编号",
 		width: 120,
 		fixed: true,
 	},
 	{
 		label: "姓名",
-		prop: "name",
+		prop: "姓名",
 		width: 120,
 	},
 	{
 		label: "性别",
-		prop: "sex",
-		width: 120,
+		prop: "性别",
+		width: 80,
 	},
 	{
 		label: "电话",
-		prop: "link",
-		width: 120,
+		prop: "电话",
+		width: 150,
 	},
 	{
 		label: "身份证",
-		prop: "idCard",
-		width: 120,
+		prop: "身份证",
+		width: 180,
 	},
 	{
 		label: "住址",
-		prop: "address",
-		width: 120,
+		prop: "住址",
+		minWidth: 200,
 	},
 	{
 		label: "职位",
-		prop: "position",
-		width: 120,
+		prop: "职位",
+		width: 100,
 	},
 	{
 		label: "岗位",
-		prop: "post",
+		prop: "岗位",
 		width: 120,
 	},
 	{
 		label: "届期",
-		prop: "appointTime",
-		width: 120,
+		prop: "届期",
+		width: 80,
 	},
 	{
 		label: "任期",
-		prop: "curTime",
+		prop: "任期",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "state",
-		width: 120,
+		prop: "状态",
+		width: 80,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -114,19 +103,19 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	await doQueryCommitteeListExecute();
+	await loadTableData();
 }
 
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	await doQueryCommitteeListExecute();
+	await loadTableData();
 }
 
 /** 表格配置 */
@@ -135,7 +124,6 @@ const pureTableProps = computed<PureTableProps>(() => {
 		...defaultPureTableProps,
 		data: tableData.value,
 		columns: [],
-		loading: queryCommitteeListIsLoading.value,
 		pagination: pagination.value,
 	};
 });
@@ -146,22 +134,15 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 业委会_列表查询_VO {
-	姓名?: string;
-	电话?: string;
-	状态?: string;
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<QueryCommitteeListParams> = {
-	name: "",
-	link: "",
-	// TODO: 必填字段
-	state: "",
+const plusSearchModelRef: FieldValues & 业委会_列表查询_VO = {
+	姓名: "",
+	电话: "",
+	状态: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -178,33 +159,23 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 姓名
 	{
 		label: transformI18n($t("propertyManage_housePropertyManage.owners-committee.name")),
-		prop: "name",
+		prop: "姓名",
 		valueType: "input",
 	},
 
 	// 电话
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
-		prop: "link",
+		prop: "电话",
 		valueType: "input",
 	},
 
 	// 状态
 	{
 		label: transformI18n($t("propertyManage_housePropertyManage.owners-committee.status")),
-		prop: "state",
+		prop: "状态",
 		valueType: "select",
-		// TODO: 未来对接 数据字典全局对象 获取下拉列表
-		options: [
-			{
-				label: "在职",
-				value: "在职",
-			},
-			{
-				label: "离职",
-				value: "离职",
-			},
-		],
+		options: 状态选项,
 	},
 ]);
 
@@ -217,20 +188,66 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.姓名) {
+			filteredData = filteredData.filter((item) => item.姓名.includes(plusSearchModel.value.姓名!));
+		}
+		if (plusSearchModel.value.电话) {
+			filteredData = filteredData.filter((item) => item.电话.includes(plusSearchModel.value.电话!));
+		}
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+	}
+}
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: CommitteeMemberListItem;
+	row?: 业委会_列表数据;
 }
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
@@ -239,39 +256,35 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}业委会`;
 
+	/** 业务对象 */
+	const 业务对象: 业委会表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					姓名: row?.姓名 || "",
+					性别: row?.性别 || "",
+					电话: row?.电话 || "",
+					身份证号码: row?.身份证 || "",
+					住址: row?.住址 || "",
+					职位: row?.职位 || "",
+					岗位: row?.岗位 || "",
+					岗位描述: row?.岗位描述 || "",
+					届期: row?.届期 || "",
+					任期: row?.任期 || "",
+					状态: row?.状态 || "",
+					备注: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: OwnersCommitteeProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-	// 模拟情况：从外部获得值
-	const testEditProps: OwnersCommitteeProps = {
-		form: {
-			...defaultForm,
-			姓名: "test_",
-			性别: "男",
-			电话: "12334567654",
-			身份证号码: "350427199004256701",
-			住址: "福建省福州市福州大学",
-			职位: "666",
-			岗位: "666",
-			岗位描述: "666",
-			届期: "6",
-			任期: "6",
-			状态: "在职",
-			备注: "测试",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
+		form: 业务对象,
+		defaultValues: 业务对象,
 	};
 
 	/** 弹框组件所需的变量 */
-	const props = isAdd.value //不要照抄，根据业务情况具体分析
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	const props = formProps;
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -283,12 +296,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		contentRenderer: () =>
 			h(OwnersCommittee, {
-				ref: OwnersCommitteeInstance,
-				...formProps, //不生效：避免类型报错
+				ref: ownersCommitteeFormInstance,
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = OwnersCommitteeInstance.value.formComputed;
+			const formComputed = ownersCommitteeFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -297,8 +310,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = OwnersCommitteeInstance.value.formComputed;
+					const formComputed = ownersCommitteeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -307,8 +319,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					OwnersCommitteeInstance.value.plusFormInstance.handleReset();
+					ownersCommitteeFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -316,12 +327,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await OwnersCommitteeInstance.value.plusFormInstance.handleSubmit();
+					const res = await ownersCommitteeFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
-						button.btn.loading = true; //加载
-						await testAsync(); //异步函数
-						button.btn.loading = false; //不加载
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
 						closeDialog(options, index);
 					}
 				},
@@ -331,16 +341,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	// 组件挂载后查询业委会列表
-	await doQueryCommitteeListExecute();
+	await loadTableData();
 });
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -362,7 +375,9 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 						<ElButton type="info">
 							{{ transformI18n($t("propertyManage_housePropertyManage.owners-committee.detail")) }}
 						</ElButton>
