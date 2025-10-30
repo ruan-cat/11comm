@@ -8,60 +8,32 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 
 import { type ReserveVenueOrderFormProps, defaultForm } from "./components/form";
 import ReserveVenueOrderForm from "./components/form.vue";
+import {
+	type 场地预约订单_列表数据,
+	type 场地预约订单_列表查询_VO,
+	tableData as mockTableData,
+	预约状态Options,
+	预约场地Options,
+	type 场地预约订单_VO,
+} from "./test-data";
 
 const reserveVenueOrderFormInstance = ref<InstanceType<typeof ReserveVenueOrderForm> | null>(null);
 
-interface 场地预约订单_列表数据 {
-	订单编号: string;
-	场馆: string;
-	场地: string;
-	预约人: string;
-	预约电话: string;
-	预约日期: string;
-	预约时间: string;
-	应收金额: string;
-	实收金额: string;
-	支付方式: string;
-	状态: string;
-	创建时间: string;
-	备注: string;
-}
-
-const tableDataItem: 场地预约订单_列表数据 = {
-	订单编号: "102025052255590204	",
-	场馆: "室内体育馆",
-	场地: "羽毛球馆",
-	预约人: "张三",
-	预约电话: "18909711234",
-	预约日期: "2025-05-22",
-	预约时间: "11,13,",
-	应收金额: "360.00",
-	实收金额: "360.00",
-	支付方式: "微信",
-	状态: "预约成功",
-	创建时间: "2025-05-22 00:10:27	",
-	备注: "54",
-};
-
 /** 表格数据 */
-const tableData = ref<场地预约订单_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<场地预约订单_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "订单编号",
 		prop: "订单编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "场馆",
@@ -124,10 +96,9 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -138,17 +109,17 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
@@ -164,14 +135,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "场地预约订单",
 	columns: columns.value,
 });
-
-interface 场地预约订单_列表查询_VO {
-	预约时间?: string;
-	预约人?: string;
-	预约电话?: string;
-	选择状态?: string;
-	预约场地?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -228,24 +191,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_housePropertyManage.field-order.orderState")),
 		prop: "选择状态",
 		valueType: "select",
-		options: [
-			{
-				label: "预约成功",
-				value: "预约成功",
-			},
-			{
-				label: "预约失败",
-				value: "预约失败",
-			},
-			{
-				label: "待审核",
-				value: "待审核",
-			},
-			{
-				label: "待支付",
-				value: "待支付",
-			},
-		],
+		options: 预约状态Options,
 	},
 
 	// 预约场地
@@ -253,45 +199,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_housePropertyManage.field-order.fieldType")),
 		prop: "预约场地",
 		valueType: "select",
-		options: [
-			{
-				label: "健身房",
-				value: "健身房",
-			},
-
-			{
-				label: "第三会议室",
-				value: "第三会议室",
-			},
-
-			{
-				label: "高新健身房",
-				value: "高新健身房",
-			},
-
-			{
-				label: "会议室",
-				value: "会议室",
-			},
-
-			{
-				label: "篮球馆",
-				value: "篮球馆",
-			},
-
-			{
-				label: "羽毛球馆",
-				value: "羽毛球馆",
-			},
-			{
-				label: "棒球馆",
-				value: "棒球馆",
-			},
-			{
-				label: "乒乓球馆",
-				value: "乒乓球馆",
-			},
-		],
+		options: 预约场地Options,
 	},
 
 	// 装修申请开始时间
@@ -325,15 +233,60 @@ const plusSearchProps = ref<PlusSearchProps>({
 	columns: [],
 	labelWidth: 140,
 	labelPosition: "right",
-	showNumber: 5,
+	showNumber: 3,
 });
 
-async function handleReSearch() {
-	console.log("重新搜索");
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.预约时间) {
+			filteredData = filteredData.filter((item) => item.预约日期.includes(plusSearchModel.value.预约时间!));
+		}
+		if (plusSearchModel.value.预约人) {
+			filteredData = filteredData.filter((item) => item.预约人.includes(plusSearchModel.value.预约人!));
+		}
+		if (plusSearchModel.value.预约电话) {
+			filteredData = filteredData.filter((item) => item.预约电话.includes(plusSearchModel.value.预约电话!));
+		}
+		if (plusSearchModel.value.选择状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.选择状态);
+		}
+		if (plusSearchModel.value.预约场地) {
+			filteredData = filteredData.filter((item) => item.场地 === plusSearchModel.value.预约场地);
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
 }
 
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -359,34 +312,33 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}场地预约订单`;
 
+	/** 业务对象 */
+	const 场地预约订单表单_VO: 场地预约订单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					订单编号: row?.订单编号 || "",
+					场馆: row?.场馆 || "",
+					场地: row?.场地 || "",
+					预约人: row?.预约人 || "",
+					预约电话: row?.预约电话 || "",
+					预约日期: row?.预约日期 || "",
+					预约时间: row?.预约时间 || "",
+					应收金额: row?.应收金额 || "",
+					实收金额: row?.实收金额 || "",
+					支付方式: row?.支付方式 || "",
+					状态: row?.状态 || "",
+					创建时间: row?.创建时间 || "",
+					备注: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
-	const formProps: ReserveVenueOrderFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+	const props: ReserveVenueOrderFormProps = {
+		form: 场地预约订单表单_VO,
+		defaultValues: 场地预约订单表单_VO,
 	};
-
-	const testEditProps: ReserveVenueOrderFormProps = {
-		form: {
-			...defaultForm,
-			费用类型: "水费",
-			收费项目: "水费历史欠费",
-			费用标识: "周期性费用",
-			付费类型: "预付费",
-			计费单价: "230.1",
-			账户抵扣: "是",
-			状态: "启用",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -399,7 +351,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(ReserveVenueOrderForm, {
 				ref: reserveVenueOrderFormInstance,
-				...formProps,
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -444,13 +396,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
