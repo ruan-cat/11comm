@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { cloneDeep } from "@ruan-cat/utils";
 import { 停车场Options, 车位状态Options, 车位类型Options, type 车位信息_表单_VO } from "../test-data";
 import { CarportInfoFormProps } from "./form";
 
