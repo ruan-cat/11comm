@@ -37,26 +37,6 @@
 				]
 			}
 		],
-		"PostToolUse": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"完成工具使用\""
-					}
-				]
-			}
-		],
-		"PreCompact": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"上下文压缩完成\""
-					}
-				]
-			}
-		],
 		"SessionStart": [
 			{
 				"hooks": [
