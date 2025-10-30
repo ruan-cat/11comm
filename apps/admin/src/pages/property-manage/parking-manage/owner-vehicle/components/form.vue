@@ -1,17 +1,17 @@
 <!--
   业主车辆表单
-  用于 修改业主车辆
+  用于新增和修改业主车辆
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { OwnerVehicleFormProps, 业主车辆修改表单_VO, defaultForm } from "./editForm";
-import { useDisabled, useFormDisabled } from "element-plus";
+import { type OwnerVehicleFormProps, defaultForm } from "./form";
+import type { 业主车辆表单_VO } from "../test-data";
 
 const props = defineProps<OwnerVehicleFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 业主车辆修改表单_VO;
+const defaultValues = props.defaultValues as FieldValues & 业主车辆表单_VO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -25,7 +25,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 业主车辆修改表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & 业主车辆表单_VO;
 
 /**
  * 表单对象
@@ -50,8 +50,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 汽车品牌
 	{
-		label: "车品牌",
-		prop: "车品牌",
+		label: "汽车品牌",
+		prop: "汽车品牌",
 		valueType: "input",
 	},
 
@@ -92,18 +92,48 @@ const plusFormColumns = ref<PlusColumn[]>([
 		required: true,
 	},
 
+	// 业主
+	{
+		label: "业主",
+		prop: "业主",
+		valueType: "input",
+		required: true,
+		disabled: true, //不可输入（这里disabled无用）且有一个【按钮】和一个【添加链接】
+	},
+
+	// 车位
+	{
+		label: "车位",
+		prop: "车位",
+		valueType: "input",
+		required: true,
+		disabled: true, //不可输入（这里disabled无用）且有一个【按钮】和一个【添加链接】
+	},
+
+	// 业主车辆
+	{
+		label: "业主车辆",
+		prop: "业主车辆",
+		valueType: "select",
+		options: [
+			{ label: "是", value: "是" },
+			{ label: "否", value: "否" },
+		],
+		required: true,
+	},
+
 	// 开始时间
 	{
-		label: "起租时间",
-		prop: "起租时间",
+		label: "开始时间",
+		prop: "开始时间",
 		valueType: "date-picker",
 		required: true,
 	},
 
 	// 结束时间
 	{
-		label: "结租时间",
-		prop: "结租时间",
+		label: "结束时间",
+		prop: "结束时间",
 		valueType: "date-picker",
 		required: true,
 	},
@@ -129,16 +159,17 @@ defineExpose({
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-		:label-width="100"
-	/>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+			:label-width="100"
+		/>
+	</section>
 </template>
 
 <style lang="scss" scoped>

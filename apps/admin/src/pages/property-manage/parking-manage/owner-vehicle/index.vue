@@ -8,116 +8,124 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type OwnerVehicleFormProps, defaultForm } from "./components/editForm";
-import OwnerVehicleForm from "./components/editForm.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
+import OwnerVehicleForm from "./components/form.vue";
+import { tableData as mockTableData, 车牌类型Options, 车位状态Options } from "./test-data";
+import type { 业主车辆_列表数据, 业主车辆_列表查询_VO, 业主车辆表单_VO } from "./test-data";
+
 const OwnerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
-//配置请求和回调
-const {
-	execute: queryOwnerVehicleExecute,
-	data: queryOwnerVehicleData,
-	isLoading: queryOwnerVehicleIsLoading,
-} = getCarList({
-	onSuccess(data) {
-		//成功回调写数据
-		tableData.value = data.data.rows;
-		// console.log(tableData.value);
-	},
-	onError(error) {},
-});
+/** 模式控制 */
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-/** 获取业主车辆列表 */
-async function doQueryOwnerVehicleExecute() {
-	await queryOwnerVehicleExecute({
-		params: {
-			//给后端的参数：后端请求很多参数
-			pageIndex: pagination.value.currentPage,
-			pageSize: pagination.value.pageSize,
-			carNum: plusSearchModel.value.carNum, //车牌号
-			communityId: plusSearchModel.value.communityId, //社区id
-			leaseType: plusSearchModel.value.leaseType, //车牌类型
-			link: plusSearchModel.value.link, //联系方式
-			memberCarNum: plusSearchModel.value.memberCarNum, //成员车牌号
-			name: plusSearchModel.value.name, //业主名称
-			// num: pagination.value.num, //车位编号
-			// valid: pagination.value.valid, //车位状态
-		},
-	});
-}
-
-// 试图实现行根据状态是否到期显示不同颜色
-/** @see https://pure-admin.github.io/vue-pure-admin/#/table/index?username=sso */
-// const tableRowClassName = ({ 状态 }: 业主车辆_列表数据) => {
-// 	if (状态 === "到期") {
-// 		return "pure-warning-row";
-// 	} else return "";
-// };
-
-const buttons = [
-	{ text: "全部车辆" },
-	{ text: "月租车" }, //leaseType=H
-	{ text: "出售车" }, //leaseType=S
-	{ text: "内部车" }, //leaseType=I
-	{ text: "免费车" }, //leaseType=NM
-	// { text: "预约车" },//leaseType=?
-	{ text: "到期车辆" }, //valid=3
-] as const;
-
-const activeIndex = ref(0); // 默认第一个激活
-
-function handleButtonClick(index: number) {
-	activeIndex.value = index;
+/** 模拟异步操作函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
 /** 表格数据 */
-//使用真实的数据，默认为一个空数组，等待后端赋值
-//类型全局导入，直接根据PageDTO<?>更换即可
-const tableData = ref<GetCarListViewModel[]>([]);
+const tableData = ref<业主车辆_列表数据[]>([]);
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.车牌号) {
+			filteredData = filteredData.filter((item) => item.车牌号.includes(plusSearchModel.value.车牌号!));
+		}
+		if (plusSearchModel.value.车位编号) {
+			filteredData = filteredData.filter((item) => item.车位.includes(plusSearchModel.value.车位编号!));
+		}
+		if (plusSearchModel.value.车位状态) {
+			filteredData = filteredData.filter(
+				(item) =>
+					item.状态 ===
+					(plusSearchModel.value.车位状态 === "1"
+						? "正常"
+						: plusSearchModel.value.车位状态 === "3"
+							? "到期"
+							: "无车位"),
+			);
+		}
+		if (plusSearchModel.value.业主名称) {
+			filteredData = filteredData.filter((item) => item.业主.includes(plusSearchModel.value.业主名称!));
+		}
+		if (plusSearchModel.value.联系方式) {
+			filteredData = filteredData.filter((item) => item.备注.includes(plusSearchModel.value.联系方式!));
+		}
+		if (plusSearchModel.value.成员车牌号) {
+			filteredData = filteredData.filter((item) => item.成员车辆.includes(plusSearchModel.value.成员车牌号!));
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
 
 /** 表格列配置 */
-//使用真实的业务字段 需要有效期，再看原型！！！
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "车牌号",
-		prop: "carNum",
+		prop: "车牌号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "成员车辆",
-		prop: "memberCarNum",
+		prop: "成员车辆",
 		width: 120,
 	},
 	{
 		label: "房屋号",
-		prop: "unitId",
+		prop: "房屋号",
 		width: 120,
 	},
 	{
 		label: "车牌类型",
-		prop: "leaseType",
+		prop: "车牌类型",
 		width: 120,
 	},
 	{
 		label: "车辆类型",
-		prop: "carType",
+		prop: "车辆类型",
 		width: 120,
 	},
 	{
 		label: "颜色",
-		prop: "carColor",
+		prop: "颜色",
 		width: 120,
 	},
 	{
 		label: "业主",
-		prop: "name",
+		prop: "业主",
 		width: 120,
 	},
 	{
 		label: "车位",
-		prop: "areaNum",
+		prop: "车位",
 		width: 120,
 	},
 	{
@@ -127,19 +135,18 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		label: "状态",
-		prop: "state",
+		prop: "状态",
 		width: 120,
 	},
 	{
 		label: "备注",
-		prop: "remark",
+		prop: "备注",
 		width: 120,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 320,
+		width: 320,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -150,30 +157,26 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
-	await doQueryOwnerVehicleExecute();
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
-	await doQueryOwnerVehicleExecute();
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
-//增加loading，修改成computed动态变化
 const pureTableProps = computed<PureTableProps>(() => {
 	return {
 		...defaultPureTableProps,
 		data: tableData.value,
 		columns: columns.value,
-		loading: queryOwnerVehicleIsLoading.value,
 		pagination: pagination.value,
 	};
 });
@@ -208,60 +211,46 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-//使用真实的业务字段
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 车牌号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.plateNumber")),
-		prop: "carNum",
+		prop: "车牌号",
 		valueType: "input",
 	},
 
 	// 车位编号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceNumber")),
-		prop: "num",
+		prop: "车位编号",
 		valueType: "input",
 	},
 
 	// 车位状态
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceStatus")),
-		prop: "valid",
+		prop: "车位状态",
 		valueType: "select",
-		options: [
-			{
-				label: "正常",
-				value: "1",
-			},
-			{
-				label: "到期",
-				value: "3",
-			},
-			{
-				label: "无车位",
-				value: "2",
-			},
-		],
+		options: 车位状态Options,
 	},
 
 	// 业主名称
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.ownerName")),
-		prop: "name",
+		prop: "业主名称",
 		valueType: "input",
 	},
 
 	// 联系方式
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.phone")),
-		prop: "link",
+		prop: "联系方式",
 		valueType: "input",
 	},
 	// 成员车牌号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.memberPlateNumber")),
-		prop: "memberCarNum",
+		prop: "成员车牌号",
 		valueType: "input",
 	},
 ]);
@@ -275,70 +264,65 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
-
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 业主车辆_列表数据;
-}
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}业主车辆`;
 
+	/** 业务对象 */
+	const 业主车辆表单_VO: 业主车辆表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					车牌号: row?.车牌号 || "",
+					汽车品牌: row?.车辆类型 || "",
+					车类型: row?.车辆类型 || "",
+					颜色: row?.颜色 || "",
+					车牌类型: row?.车牌类型 || "",
+					开始时间: row?.有效期 || "",
+					结束时间: row?.有效期 || "",
+					业主: row?.业主 || "",
+					车位: row?.车位 || "",
+					业主车辆: "是",
+					备注: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: OwnerVehicleFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 业主车辆表单_VO,
+		defaultValues: 业主车辆表单_VO,
 	};
-	// 模拟情况：从外部获得值
-	const testEditProps: OwnerVehicleFormProps = {
-		form: {
-			...defaultForm,
-			车牌号: "沪A88888",
-			汽车品牌: "小米SU7",
-			车类型: "家用小汽车",
-			颜色: "白色",
-			车牌类型: "内部车",
-			起租时间: "2025-06-01",
-			结租时间: "2025-06-03",
-			备注: "测试",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value //不要照抄，根据业务情况具体分析
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(OwnerVehicleForm, {
 				ref: OwnerVehicleFormInstance,
-				...formProps, //不生效：避免类型报错
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -351,7 +335,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = OwnerVehicleFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -361,7 +344,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					OwnerVehicleFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -370,12 +352,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await OwnerVehicleFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
-						button.btn.loading = true; //加载
-						await testAsync(); //异步函数
-						button.btn.loading = false; //不加载
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
 						closeDialog(options, index);
 					}
 				},
@@ -384,120 +365,68 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-//onMounted生命周期主动做接口请求
 onMounted(async () => {
-	await doQueryOwnerVehicleExecute();
+	await loadTableData();
 });
 </script>
 
 <template>
 	<section class="index-root">
-		<el-aside width="120px">
-			<el-button
-				v-for="(button, idx) in buttons"
-				:key="button.text"
-				class="leaseType"
-				:class="{ active: activeIndex === idx }"
-				type="default"
-				@click="handleButtonClick(idx)"
-			>
-				{{ button.text }}
-			</el-button>
-		</el-aside>
-		<el-main>
-			<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
-			<!-- {{ plusSearchModel }} -->
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
+				<ElButton type="primary">
+					{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.carImport")) }}
+				</ElButton>
+				<ElButton type="primary">
+					{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.output")) }}
+				</ElButton>
+			</template>
 
-			<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
-				<template #buttons>
-					<ElButton type="primary">
-						{{ transformI18n($t("common.buttons.add")) }}
-					</ElButton>
-					<ElButton type="primary">
-						{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.carImport")) }}
-					</ElButton>
-					<ElButton type="primary">
-						{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.output")) }}
-					</ElButton>
-				</template>
-
-				<template #default="{ size, dynamicColumns }">
-					<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-					<PureTable
-						:="pureTableProps"
-						:columns="dynamicColumns"
-						:size="size"
-						@page-size-change="handlePageSizeChange"
-						@page-current-change="handleCurrentPageChange"
-					>
-						<template #operation="{ row }">
-							<!-- 根据状态续租或释放 -->
-							<ElButton v-if="row.状态 === '正常'" type="info">
-								{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.release")) }}
-							</ElButton>
-							<ElButton v-else-if="row.状态 === '到期'" type="info">
-								{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.renewLease")) }}
-							</ElButton>
-							<ElButton v-else="row.状态 == '无车位'" type="info"> ? </ElButton>
-							<ElButton type="info">
-								{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.buyMonthlyCard")) }}
-							</ElButton>
-							<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
-								{{ transformI18n($t("common.buttons.edit")) }}
-							</ElButton>
-							<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
-						</template>
-					</PureTable>
-				</template>
-			</PureTableBar>
-		</el-main>
+			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				>
+					<template #operation="{ row }">
+						<ElButton v-if="row.状态 === '正常'" type="info">
+							{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.release")) }}
+						</ElButton>
+						<ElButton v-else-if="row.状态 === '到期'" type="info">
+							{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.renewLease")) }}
+						</ElButton>
+						<ElButton v-else type="info"> ? </ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.buyMonthlyCard")) }}
+						</ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
+					</template>
+				</PureTable>
+			</template>
+		</PureTableBar>
 	</section>
 </template>
 
 <style lang="scss" scoped>
 .index-root {
-	display: flex;
-	height: calc(
-		100vh - 29px - 82px - 24px - 24px
-	); //直接减尾部高度和头部高度（获取元素高度分别是29px和82px，以及内边距24px）
-	padding: 0;
-}
-.leaseType {
-	margin: 0;
-	width: 100%;
-	height: 60px;
-	border-radius: 0;
-	background: #fff;
-	color: var(--el-text-color-regular);
-	border: none;
-	transition:
-		background 0.2s,
-		color 0.2s,
-		border-color 0.2s;
-
-	// 暗黑模式下未激活
-	.dark & {
-		background: var(--el-menu-bg-color, #141414);
-		color: var(--el-text-color-regular);
-		border: 1px solid var(--el-border-color-light, #333);
-	}
-
-	// 普通模式下也加边框
-	border: 1px solid #e4e7ed;
-
-	// 悬浮态
-	&:hover {
-		border-color: var(--el-color-primary);
-		background: var(--el-color-primary-light-9, #f0f6ff);
-		color: var(--el-color-primary);
-	}
-
-	// 激活状态
-	&.active {
-		background: var(--el-color-primary);
-		color: #fff;
-		border-color: var(--el-color-primary);
-	}
 }
 </style>
