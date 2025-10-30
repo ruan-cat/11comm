@@ -32,7 +32,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
+						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 子代理任务已完成\""
 					}
 				]
 			}
