@@ -36,6 +36,9 @@ const userConfig = setUserConfig({
 				link: "https://github.com/ruan-cat/11comm",
 			},
 		],
+		editLink: {
+			pattern: "https://github.com/ruan-cat/11comm/tree/dev/apps/admin/src/:path",
+		},
 	},
 });
 // @ts-ignore
