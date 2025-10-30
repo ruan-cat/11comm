@@ -24,13 +24,6 @@ copyClaudeFiles({
 addChangelog2doc({
 	// 设置changelog的目标文件夹
 	target: "./src",
-	// 设置changelog顶部的yaml数据。通常是排序
-	data: {
-		order: 1000,
-		dir: {
-			order: 1000,
-		},
-	},
 });
 
 const userConfig = setUserConfig({
