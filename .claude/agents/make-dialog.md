@@ -167,11 +167,8 @@ function openDialog() {
 		defaultValues: cloneDeep(defaultForm),
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
 	addDialog({
-		props,
+		props: formProps,
 	});
 }
 ```
@@ -480,5 +477,9 @@ function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
 		form: 合同类型表单_VO,
 		defaultValues: 合同类型表单_VO,
 	};
+	addDialog({
+		// 在addDialog内使用formProps时，注意赋值给props。
+		props: formProps,
+	});
 }
 ```
