@@ -1,11 +1,11 @@
 <!--
-  费用项设置表单
-  用于新增 修改费用项设置
+  场地管理表单
+  用于新增 修改场地管理
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { SiteManagementFormProps, 费用类型, 场地管理_VO, defaultForm } from "./form";
+import { SiteManagementFormProps, 场地管理_VO, defaultForm } from "./form";
 
 const props = defineProps<SiteManagementFormProps>();
 
@@ -39,10 +39,43 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
+	// 编号
+	{
+		label: "编号",
+		prop: "编号",
+		valueType: "input",
+		required: true,
+	},
+
 	// 名称
 	{
 		label: "名称",
 		prop: "名称",
+		valueType: "input",
+		required: true,
+	},
+
+	// 开场时间
+	{
+		label: "开场时间",
+		prop: "开场时间",
+		valueType: "time-picker",
+		fieldProps: {
+			format: "HH:mm",
+			valueFormat: "HH:mm",
+		},
+		required: true,
+	},
+
+	// 关场时间
+	{
+		label: "关场时间",
+		prop: "关场时间",
+		valueType: "time-picker",
+		fieldProps: {
+			format: "HH:mm",
+			valueFormat: "HH:mm",
+		},
 		required: true,
 	},
 
@@ -58,6 +91,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "管理员",
 		prop: "管理员",
+		valueType: "input",
 		required: true,
 	},
 
@@ -65,8 +99,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "管理员电话",
 		prop: "管理员电话",
+		valueType: "input",
 		required: true,
 	},
+
 	// 状态
 	{
 		label: "状态",
@@ -75,6 +111,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		options: [
 			{ label: "可预约", value: "可预约" },
 			{ label: "不可预约", value: "不可预约" },
+			{ label: "维护中", value: "维护中" },
+			{ label: "已关闭", value: "已关闭" },
 		],
 		required: true,
 	},

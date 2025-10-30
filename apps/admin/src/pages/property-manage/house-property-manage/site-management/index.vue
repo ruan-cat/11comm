@@ -8,50 +8,32 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 
 import { type SiteManagementFormProps, defaultForm } from "./components/form";
 import SiteManagementForm from "./components/form.vue";
+import {
+	type 场地管理_列表数据,
+	type 场地管理_列表查询_VO,
+	type 场地管理_VO,
+	tableData as mockTableData,
+	场地状态Options,
+	场地类型Options,
+} from "./test-data";
 
 const SiteManagementFormInstance = ref<InstanceType<typeof SiteManagementForm> | null>(null);
 
-interface 场地管理_列表数据 {
-	编号: string;
-	名称: string;
-	开场时间: string;
-	关场时间: string;
-	每小时费用: string;
-	管理员: string;
-	管理员电话: string;
-	状态: string;
-}
-
-const tableDataItem: 场地管理_列表数据 = {
-	编号: "102025051289880227",
-	名称: "篮球馆",
-	开场时间: "00:00",
-	关场时间: "23:59",
-	每小时费用: "23:59",
-	管理员: "张三",
-	管理员电话: "13232323232",
-	状态: "可预约",
-};
-
 /** 表格数据 */
-const tableData = ref<场地管理_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<场地管理_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "名称",
@@ -90,10 +72,9 @@ const columns = ref<TableColumnList>([
 	},
 
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -104,18 +85,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格组件 配置 */
@@ -132,23 +113,15 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 场地管理_列表查询_VO {
-	房屋编号?: string;
-	状态?: string;
-	房屋类型?: string;
-	当前楼栋单元?: string;
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & 场地管理_列表查询_VO = {
-	房屋编号: "",
-	状态: "",
-	房屋类型: "",
-	当前楼栋单元: "",
+	场地编号: "",
+	场地类型: "",
+	场地状态: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -164,33 +137,25 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 场地编号
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-management.fieldNumber")),
+		label: "场地编号",
 		prop: "场地编号",
 		valueType: "input",
 	},
 
-	// 请选择名称
+	// 场地类型
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-management.fieldType")),
-		prop: "请选择名称",
-		valueType: "input",
+		label: "场地类型",
+		prop: "场地类型",
+		valueType: "select",
+		options: 场地类型Options,
 	},
 
-	// 状态
+	// 场地状态
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-management.fieldState")),
+		label: "场地状态",
 		prop: "场地状态",
 		valueType: "select",
-		options: [
-			{
-				label: "可预约",
-				value: "可预约",
-			},
-			{
-				label: "不可预约",
-				value: "不可预约",
-			},
-		],
+		options: 场地状态Options,
 	},
 
 	// 装修申请开始时间
@@ -227,12 +192,51 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-async function handleReSearch() {
-	console.log("重新搜索");
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.场地编号) {
+			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.场地编号!));
+		}
+		if (plusSearchModel.value.场地类型) {
+			filteredData = filteredData.filter((item) => item.名称 === plusSearchModel.value.场地类型);
+		}
+		if (plusSearchModel.value.场地状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.场地状态);
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
 }
 
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /** 打开弹框 参数 */
@@ -259,34 +263,28 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}场地管理`;
 
+	/** 业务对象 */
+	const 场地管理表单_VO: 场地管理_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					编号: row?.编号 || "",
+					名称: row?.名称 || "",
+					开场时间: row?.开场时间 || "",
+					关场时间: row?.关场时间 || "",
+					每小时费用: row?.每小时费用 || "",
+					管理员: row?.管理员 || "",
+					管理员电话: row?.管理员电话 || "",
+					状态: row?.状态 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
-	const formProps: SiteManagementFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+	const props: SiteManagementFormProps = {
+		form: 场地管理表单_VO,
+		defaultValues: 场地管理表单_VO,
 	};
-
-	const testEditProps: SiteManagementFormProps = {
-		form: {
-			...defaultForm,
-			费用类型: "水费",
-			收费项目: "水费历史欠费",
-			费用标识: "周期性费用",
-			付费类型: "预付费",
-			计费单价: "230.1",
-			账户抵扣: "是",
-			状态: "启用",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -299,7 +297,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(SiteManagementForm, {
 				ref: SiteManagementFormInstance,
-				...formProps,
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -344,13 +342,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
