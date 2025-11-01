@@ -1,5 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
 
 // ==================== 预缴费用提醒列表 ====================
 

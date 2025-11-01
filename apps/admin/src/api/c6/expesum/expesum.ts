@@ -1,7 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
-import type { JsonVO } from "@/composables/use-request/useRequestIn01s/types/JsonVO";
 
 /** 费用汇总表查询参数 */
 export interface ExpeSumQueryParams {
@@ -113,25 +110,25 @@ export interface ExpesumExportQueryParams {
 /**
  * 查询费用汇总表接口
  */
-export function expesumQuery<T = JsonVO<ExpeSumDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, ExpeSumQueryParams>({
+export function expesumQuery<T = ExpeSumDTO>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ExpeSumQueryParams>({
 		url: "/c6-repomanage/expesum/expesumQuery",
-		httpParamWay: "query",
+		options,
+		httpParamWay: "body",
 		config: {
-			method: "GET",
-			params: {},
+			method: "POST",
 			data: {},
 		},
-		options,
 	});
 }
 
 /**
  * 楼栋收费率查询接口
  */
-export function expesumQueryBuildingRates<T = JsonVO<BuildingRatePageDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function expesumQueryBuildingRates<T = BuildingRatePageDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, BuildingRateQueryParams>({
 		url: "/c6-repomanage/expesum/buildingRates",
+		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -139,21 +136,17 @@ export function expesumQueryBuildingRates<T = JsonVO<BuildingRatePageDTO>>(optio
 				pageIndex: 1,
 				pageSize: 10,
 			},
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-			},
 		},
-		options,
 	});
 }
 
 /**
  * 费用项目费率查询接口
  */
-export function expesumQueryFeeItemRates<T = JsonVO<FeeItemRatePageDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function expesumQueryFeeItemRates<T = FeeItemRatePageDTO>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, FeeItemRateQueryParams>({
 		url: "/c6-repomanage/expesum/feeItemRates",
+		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
@@ -161,28 +154,22 @@ export function expesumQueryFeeItemRates<T = JsonVO<FeeItemRatePageDTO>>(options
 				pageIndex: 1,
 				pageSize: 10,
 			},
-			data: {
-				pageIndex: 1,
-				pageSize: 10,
-			},
 		},
-		options,
 	});
 }
 
 /**
  * 导出费用汇总表接口
  */
-export function expesumExport<T = void>(options?: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, ExpesumExportQueryParams>({
+export function expesumExport<T = void>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsBodyKey, T, ExpesumExportQueryParams>({
 		url: "/c6-repomanage/expesum/expesumExport",
-		httpParamWay: "query",
+		options,
+		httpParamWay: "body",
 		config: {
-			method: "GET",
-			params: {},
+			method: "POST",
 			data: {},
 			responseType: "blob",
 		},
-		options,
 	});
 }

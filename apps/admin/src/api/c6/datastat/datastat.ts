@@ -1,8 +1,6 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
-import type { PageDTO } from "@/composables/use-request/useRequestIn01s/types/PageDTO";
-import type { JsonVO } from "@/composables/use-request/useRequestIn01s/types/JsonVO";
+
+// ==================== 类型定义 ====================
 
 /**
  * 出入类统计数据
@@ -58,11 +56,13 @@ export interface AccessStatQueryParams {
 	communityName?: string;
 }
 
+// ==================== 接口函数 ====================
+
 /**
  * 出入类统计查询接口
  * @description 根据查询条件获取出入类统计数据，支持分页查询
  */
-export function datastatQueryAccess<T = PageDTO<AccessStatDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryAccess<T = PageDTO<AccessStatDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, AccessStatQueryParams>({
 		url: "/c6-repomanage/datastat/accessQuery",
 		httpParamWay: "query",
@@ -116,7 +116,7 @@ export interface ExpenseStatDTO {
  * 费用统计查询接口
  * @description 根据查询条件获取费用统计数据，支持分页查询
  */
-export function datastatQueryExpense<T = PageDTO<ExpenseStatDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryExpense<T = PageDTO<ExpenseStatDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, ExpenseStatQueryParams>({
 		url: "/c6-repomanage/datastat/expenseQuery",
 		httpParamWay: "query",
@@ -172,7 +172,7 @@ export interface WorkOrderStatDTO {
  * 工单统计查询接口
  * @description 根据查询条件获取工单统计数据，支持分页查询
  */
-export function datastatQueryWorkOrder<T = PageDTO<WorkOrderStatDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryWorkOrder<T = PageDTO<WorkOrderStatDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, WorkOrderStatQueryParams>({
 		url: "/c6-repomanage/datastat/workOrderQuery",
 		httpParamWay: "query",
@@ -224,7 +224,7 @@ export interface OtherStatDTO {
  * 其他统计查询接口
  * @description 根据查询条件获取其他统计数据，支持分页查询
  */
-export function datastatQueryOther<T = PageDTO<OtherStatDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryOther<T = PageDTO<OtherStatDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, OtherStatQueryParams>({
 		url: "/c6-repomanage/datastat/otherQuery",
 		httpParamWay: "query",
@@ -288,7 +288,7 @@ export interface ReceiptsDTO {
  * 收据查询接口
  * @description 根据查询条件获取收据数据，支持分页查询
  */
-export function datastatQueryReceipts<T = PageDTO<ReceiptsDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryReceipts<T = PageDTO<ReceiptsDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, ReceiptsQueryParams>({
 		url: "/c6-repomanage/datastat/receiptsQuery",
 		httpParamWay: "query",
@@ -356,7 +356,7 @@ export interface ReceiptsDetailDTO {
  * 收据明细查询接口
  * @description 根据查询条件获取收据明细数据，支持分页查询
  */
-export function datastatQueryReceiptsDetail<T = PageDTO<ReceiptsDetailDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryReceiptsDetail<T = PageDTO<ReceiptsDetailDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, ReceiptsDetailQueryParams>({
 		url: "/c6-repomanage/datastat/receiptsDetailQuery",
 		httpParamWay: "query",
@@ -426,7 +426,7 @@ export interface WorkOrderDTO {
  * 工单查询接口
  * @description 根据查询条件获取工单数据，支持分页查询
  */
-export function datastatQueryWorkOrderDetail<T = PageDTO<WorkOrderDTO>>(options?: UseAxiosOptionsJsonVO<T>) {
+export function datastatQueryWorkOrderDetail<T = PageDTO<WorkOrderDTO>>(options: UseAxiosOptionsJsonVO<T>) {
 	return useRequest<ParamsQueryKey, T, WorkOrderQueryParams>({
 		url: "/c6-repomanage/datastat/workOrderQuery",
 		httpParamWay: "query",

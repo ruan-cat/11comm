@@ -1,5 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
 
 /** 导出到期费用提醒参数 */
 export interface OverExperemExportParams {

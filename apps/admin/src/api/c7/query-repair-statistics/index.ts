@@ -1,6 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
-import type { JsonVO } from "@/composables/use-request/useRequestIn01s/types/JsonVO";
 
 /**
  * 报修统计数据项

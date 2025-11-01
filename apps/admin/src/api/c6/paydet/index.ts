@@ -1,5 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
 
 /**
  * 缴费明细数据项
@@ -72,40 +71,56 @@ export interface PayDetQueryParams {
 /**
  * 缴费明细查询接口
  * @description 查询缴费明细数据，支持多条件筛选和分页
- * @param params 查询参数
  * @param options useRequest 配置项
  * @returns useRequest 实例，data.value 为接口返回数据
  *
  * @example
  * // 查询所有缴费明细
  * const { execute, data } = queryPayDet({
- * 	pageIndex: 1,
- * 	pageSize: 10
+ * 	onSuccess(data) {
+ * 		console.log("缴费明细数据", data);
+ * 	}
+ * });
+ * await execute({
+ * 	params: {
+ * 		pageIndex: 1,
+ * 		pageSize: 10
+ * 	}
  * });
  *
  * // 查询指定条件的缴费明细
  * const { execute, data } = queryPayDet({
- * 	pageIndex: 1,
- * 	pageSize: 10,
- * 	paymentStartTime: "2024-01-01",
- * 	paymentEndTime: "2024-01-31",
- * 	paymentMethod: "微信支付",
- * 	expenseStatus: "已缴费",
- * 	houseOrPlateNumber: "1001",
- * 	expenseType: "物业费",
- * 	chargeItem: "月度物业费",
- * 	chargeStartTime: "2024-01-01",
- * 	chargeEndTime: "2024-01-31"
+ * 	onSuccess(data) {
+ * 		console.log("缴费明细数据", data);
+ * 	}
+ * });
+ * await execute({
+ * 	params: {
+ * 		pageIndex: 1,
+ * 		pageSize: 10,
+ * 		paymentStartTime: "2024-01-01",
+ * 		paymentEndTime: "2024-01-31",
+ * 		paymentMethod: "微信支付",
+ * 		expenseStatus: "已缴费",
+ * 		houseOrPlateNumber: "1001",
+ * 		expenseType: "物业费",
+ * 		chargeItem: "月度物业费",
+ * 		chargeStartTime: "2024-01-01",
+ * 		chargeEndTime: "2024-01-31"
+ * 	}
  * });
  */
-export function queryPayDet(params: PayDetQueryParams, options?: UseAxiosOptionsJsonVO<PayDetDTO[]>) {
-	return useRequest<"params", PayDetDTO[], PayDetQueryParams>({
+export function queryPayDet<T = PayDetDTO[]>(options: UseAxiosOptionsJsonVO<T>) {
+	return useRequest<ParamsQueryKey, T, PayDetQueryParams>({
 		url: "/c6-repomanage/paydet/paydetQuery",
+		options,
 		httpParamWay: "query",
 		config: {
 			method: "GET",
-			params,
+			params: {
+				pageIndex: 1,
+				pageSize: 10,
+			},
 		},
-		options,
 	});
 }

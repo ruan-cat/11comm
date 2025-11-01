@@ -1,6 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
-import type { UseAxiosOptionsJsonVO } from "@/composables/use-request/useRequestIn01s/tools";
 
 /** 业主费用明细导出参数 */
 export interface OwnerFeeDetaileExportParams {

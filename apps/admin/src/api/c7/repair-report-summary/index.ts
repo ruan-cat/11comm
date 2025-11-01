@@ -1,5 +1,4 @@
 import { useRequest } from "@/composables/use-request";
-import type { ParamsQueryKey } from "@/composables/use-request/useRequestIn01s/main";
 
 /** 报修汇总列表查询参数 */
 export interface RepairReportSummaryQueryParams {
