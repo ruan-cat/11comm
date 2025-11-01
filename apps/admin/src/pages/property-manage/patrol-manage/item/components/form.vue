@@ -1,0 +1,101 @@
+<!--
+  巡检项目表单
+  用于新增 修改巡检项目
+-->
+<script lang="ts" setup>
+import { ref, computed, useTemplateRef } from "vue";
+
+import { PatrolItemFormProps, 巡检项目表单_VO, defaultForm } from "./form";
+
+const props = defineProps<PatrolItemFormProps>();
+
+/** 默认的表单重置变量 */
+const defaultValues = props.defaultValues as FieldValues & 巡检项目表单_VO;
+
+/** 表单组件实例 要求对外直接导出本表单实例 */
+const plusFormInstance = useTemplateRef("plusFormRef");
+
+usePlusFormReset(plusFormInstance);
+
+/**
+ * 本表单组件 实际使用的表单对象
+ * @description
+ * 用强制类型转换 确保表单对象满足表单组件的类型要求
+ *
+ * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
+ */
+const toRefForm = cloneDeep(props.form) as FieldValues & 巡检项目表单_VO;
+
+/**
+ * 表单对象
+ * @description
+ * 本表单对象都来自于外部传递
+ */
+const form = ref(toRefForm);
+/** 只读的表单对象 用于外部做判断 */
+const formComputed = computed(() => {
+	return form.value;
+});
+
+/** 表单项配置 */
+const plusFormColumns = ref<PlusColumn[]>([
+	{
+		label: "编号",
+		prop: "编号",
+		valueType: "input",
+		required: true,
+	},
+	{
+		label: "巡检项目",
+		prop: "巡检项目",
+		valueType: "input",
+		required: true,
+	},
+	{
+		label: "创建时间",
+		prop: "创建时间",
+		valueType: "date-picker",
+		required: true,
+	},
+	{
+		label: "备注",
+		prop: "备注",
+		valueType: "input",
+	},
+]);
+
+/** 表单验证规则 */
+const plusFormRules = computed(() => {
+	return {
+		编号: [{ required: true, message: "请输入编号", trigger: "blur" }],
+		巡检项目: [{ required: true, message: "请输入巡检项目", trigger: "blur" }],
+		创建时间: [{ required: true, message: "请选择创建时间", trigger: "change" }],
+	};
+});
+
+/** 对外导出 */
+defineExpose({
+	plusFormInstance,
+	formComputed,
+});
+</script>
+
+<template>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumns"
+			:rules="plusFormRules"
+		/>
+	</section>
+</template>
+
+<style lang="scss" scoped>
+.form-root {
+	height: 100%;
+	width: 100%;
+}
+</style>

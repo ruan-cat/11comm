@@ -8,34 +8,25 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-
-interface 巡检项目_列表数据 {
-	编号: string;
-	巡检项目: string;
-	创建时间: string;
-	备注: string;
-	操作: string;
-}
-
-const tableDataItem: 巡检项目_列表数据 = {
-	编号: "编号",
-	巡检项目: "巡检项目",
-	创建时间: "创建时间	",
-	备注: "备注",
-	操作: "操作",
-};
+import { useMode, type Mode } from "@/composables/use-mode";
+import { h } from "vue";
+import { type PatrolItemFormProps, defaultForm } from "./components/form";
+import PatrolItemForm from "./components/form.vue";
+import {
+	type 巡检项目_列表数据,
+	type 巡检项目_列表查询_VO,
+	tableData as mockTableData,
+	type 巡检项目表单_VO,
+} from "./test-data";
 
 /** 表格数据 */
-const tableData = ref<巡检项目_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<巡检项目_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "编号",
 		prop: "编号",
@@ -57,10 +48,10 @@ const columns = ref<TableColumnList>([
 		prop: "备注",
 		width: 120,
 	},
-
 	{
-		label: transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -70,19 +61,8 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
-}
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
@@ -97,11 +77,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "巡检项目",
 	columns: columns.value,
 });
-
-interface 巡检项目_列表查询_VO {
-	项目编号?: string;
-	巡检项目?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -145,24 +120,179 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-function handleReSearch() {
-	console.log("重新搜索");
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.项目编号) {
+			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.项目编号!));
+		}
+		if (plusSearchModel.value.巡检项目) {
+			filteredData = filteredData.filter((item) => item.巡检项目.includes(plusSearchModel.value.巡检项目!));
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
+
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
+
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 表单组件实例 */
+const patrolItemFormInstance = ref<InstanceType<typeof PatrolItemForm> | null>(null);
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}巡检项目`;
+
+	/** 业务对象 */
+	const 巡检项目表单_VO: 巡检项目表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					编号: row?.编号 || "",
+					巡检项目: row?.巡检项目 || "",
+					创建时间: row?.创建时间 || "",
+					备注: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: PatrolItemFormProps = {
+		form: 巡检项目表单_VO,
+		defaultValues: 巡检项目表单_VO,
+	};
+
+	/** 弹框组件所需的变量 */
+	const props = formProps;
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+		contentRenderer: () =>
+			h(PatrolItemForm, {
+				ref: patrolItemFormInstance,
+				...formProps,
+			}),
+		async doBeforeClose({ options, index }) {
+			const formComputed = patrolItemFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = patrolItemFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					patrolItemFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await patrolItemFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						await loadTableData();
+					}
+				},
+			},
+		],
+	});
+}
+
+/** 生命周期 */
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -175,9 +305,15 @@ async function handleSearch() {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
