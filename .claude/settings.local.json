@@ -15,47 +15,5 @@
 		"additionalDirectories": [
 			"F:\\store\\PixPin"
 		]
-	},
-	"hooks": {
-		"Stop": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 任务已完成\""
-					}
-				]
-			}
-		],
-		"SubagentStop": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest task-complete --message \"Claude Code 子代理任务已完成\""
-					}
-				]
-			}
-		],
-		"SessionStart": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest long-task --task-description \"Claude 会话\""
-					}
-				]
-			}
-		],
-		"SessionEnd": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm dlx @ruan-cat/claude-notifier@latest long-task --stop"
-					}
-				]
-			}
-		]
 	}
 }
