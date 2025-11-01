@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { 停车场表单Props, 停车场表单_VO, defaultForm, 停车场类型Options, 车位类型Options } from "./form";
+import { 停车场表单Props, 停车场表单_VO, defaultForm } from "./form";
+import { 停车场类型Options, 车位类型Options } from "../test-data";
 
 const props = defineProps<停车场表单Props & { mode: Mode }>();
 

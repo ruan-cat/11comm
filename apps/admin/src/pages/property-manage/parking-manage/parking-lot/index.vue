@@ -10,13 +10,9 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 车位信息_列表数据,
-	type 车位信息_列表查询_VO,
-	tableData as mockTableData,
-} from "./test-data";
+import { type 车位信息_列表数据, type 车位信息_列表查询_VO, tableData as mockTableData } from "./test-data";
 
-import { type 停车场表单Props, defaultForm } from "./components/form";
+import { type 停车场表单Props, defaultForm, type 停车场表单_VO } from "./components/form";
 import 停车场表单 from "./components/form.vue";
 const 停车场表单Instance = ref<InstanceType<typeof 停车场表单> | null>(null);
 
@@ -243,7 +239,7 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 	const title = `${modeText.value}停车场管理`;
 
 	/** 业务对象 */
-	const 车位信息_列表数据: 车位信息_列表数据 = isAdd.value
+	const 车位信息_列表数据: 停车场表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
@@ -253,6 +249,8 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 					车位类型: row?.车位类型 || "标准车位",
 					外部编码: row?.外部编码 || "",
 					备注: row?.备注 || "",
+					停车场ID: row?.停车场ID || "",
+					创建时间: row?.创建时间 || "",
 				})
 			: cloneDeep(defaultForm);
 
