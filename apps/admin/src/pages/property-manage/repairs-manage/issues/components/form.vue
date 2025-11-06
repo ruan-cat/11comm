@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
-
-import { IssuesSettingFormProps, 工单池表单_VO, defaultForm } from "./form";
+import { computed, ref } from "vue";
+import { useTemplateRef } from "vue";
+import { IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./form";
+import { 报修类型Options, 维修类型Options, 工单状态Options } from "../test-data";
 
 const props = defineProps<IssuesSettingFormProps>();
 
@@ -10,7 +11,6 @@ const defaultValues = props.defaultValues as FieldValues & 工单池表单_VO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
 /**
@@ -35,55 +35,129 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 报修类型
+	{
+		label: "工单编码",
+		prop: "工单编码",
+		valueType: "input",
+		fieldProps: {
+			disabled: true,
+		},
+	},
+	{
+		label: "位置",
+		prop: "位置",
+		valueType: "input",
+	},
 	{
 		label: "报修类型",
 		prop: "报修类型",
 		valueType: "select",
-		options: [
-			{ label: "1", value: "1" },
-			{ label: "2", value: "2" },
-		],
-		required: true,
+		options: 报修类型Options,
 	},
-
-	// 报修人
+	{
+		label: "维修类型",
+		prop: "维修类型",
+		valueType: "select",
+		options: 维修类型Options,
+	},
 	{
 		label: "报修人",
 		prop: "报修人",
 		valueType: "input",
-		required: true,
 	},
-
-	// 联系方式
 	{
 		label: "联系方式",
 		prop: "联系方式",
 		valueType: "input",
-		required: true,
 	},
-	// 预约时间
 	{
-		label: "预约时间",
-		prop: "预约时间",
-		valueType: "date-picker",
-		required: true,
+		label: "预约开始结束时间",
+		prop: "预约开始结束时间",
+		valueType: "input",
 	},
-	// 报修内容
 	{
-		label: "报修内容",
-		prop: "报修内容",
+		label: "提交时间",
+		prop: "提交时间",
+		valueType: "input",
+	},
+	{
+		label: "提单时长",
+		prop: "提单时长",
+		valueType: "input",
+	},
+	{
+		label: "完成时间",
+		prop: "完成时间",
+		valueType: "input",
+	},
+	{
+		label: "状态",
+		prop: "状态",
+		valueType: "select",
+		options: 工单状态Options,
+	},
+	{
+		label: "违规说明",
+		prop: "违规说明",
 		valueType: "textarea",
-		required: true,
+	},
+	{
+		label: "备注",
+		prop: "备注",
+		valueType: "textarea",
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
+/** 表单验证规则 */
+const plusFormRules = {
+	位置: [
+		{
+			required: true,
+			message: "请输入位置",
+			trigger: "blur",
+		},
+	],
+	报修类型: [
+		{
+			required: true,
+			message: "请选择报修类型",
+			trigger: "change",
+		},
+	],
+	维修类型: [
+		{
+			required: true,
+			message: "请选择维修类型",
+			trigger: "change",
+		},
+	],
+	报修人: [
+		{
+			required: true,
+			message: "请输入报修人",
+			trigger: "blur",
+		},
+	],
+	联系方式: [
+		{
+			required: true,
+			message: "请输入联系方式",
+			trigger: "blur",
+		},
+	],
+	状态: [
+		{
+			required: true,
+			message: "请选择状态",
+			trigger: "change",
+		},
+	],
+};
+
+/** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验 */
-const plusFormRules = {};
-
+/** 对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,

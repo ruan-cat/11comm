@@ -1,19 +1,37 @@
-// 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
+import type { 工单池_列表数据 } from "../test-data";
+
+/** 工单池表单_VO */
 export interface 工单池表单_VO {
-	报修类型: "1" | "2";
+	工单编码: string;
+	位置: string;
+	报修类型: string;
+	维修类型: string;
 	报修人: string;
 	联系方式: string;
-	预约时间: string;
-	报修内容: string;
+	预约开始结束时间: string;
+	提交时间: string;
+	提单时长: string;
+	完成时间: string;
+	状态: string;
+	违规说明: string;
+	备注: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 工单池表单_VO = {
-	报修类型: "1",
+	工单编码: "",
+	位置: "",
+	报修类型: "",
+	维修类型: "",
 	报修人: "",
 	联系方式: "",
-	预约时间: "",
-	报修内容: "",
+	预约开始结束时间: "",
+	提交时间: "",
+	提单时长: "",
+	完成时间: "",
+	状态: "",
+	违规说明: "",
+	备注: "",
 };
 
 /**
