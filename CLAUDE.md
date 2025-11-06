@@ -22,6 +22,7 @@
 - `make-list-page` ：`.claude\agents\make-list-page.md` `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
 - `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
 - `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
+- `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
 
 ## 代码/编码格式要求
 
