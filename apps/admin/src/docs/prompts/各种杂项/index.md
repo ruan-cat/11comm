@@ -65,3 +65,11 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 - CLAUDE.md
 
 请你按照 `CLAUDE.md` 的格式要求，批量修改上述文档的格式。
+
+## 06 初始化任务大师，设定一揽子长效运行的列表页迁移任务
+
+<!-- TODO: -->
+
+我打算用 `taskmaster-ai` 这款 MCP，针对 `apps\admin\src\pages` 内全部列表页，即全部满足 `.claude\commands\make-std-list-page-and-formlike-dialog.md` 文档的页面，做列表页的改造。我需要你帮我使用这款 `taskmaster-ai` MCP，初始化改造任务，制作任务清单。并告诉我以后如何基于 `taskmaster-ai` MCP 来完成一些列列表页改造任务。
+
+列表页改造的具体要求明细，全都在 `.claude\commands\make-std-list-page-and-formlike-dialog.md` 文档内。
