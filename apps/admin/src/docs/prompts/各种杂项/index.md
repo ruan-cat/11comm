@@ -75,3 +75,18 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 刚才我使用其他工具设置了一系列配置，但是我不确定是否完成配置了。请你阅读被修改的文件，检查 `taskmaster-ai` 是否完成了配置？
 
 检查 `taskmaster-ai` 是否是直接使用来自 claude code 的模型？
+
+## 07 为 taskmaster-ai 初始化全部的任务
+
+<!-- TODO: 使用 kimi 来完成生成全部任务 -->
+
+针对 `apps\admin\src\pages` 内全部列表页，即全部满足 `.claude\commands\make-std-list-page-and-formlike-dialog.md` 文档的页面，做列表页的改造。我需要你帮我使用这款 `taskmaster-ai` MCP，初始化改造任务，制作任务清单。并告诉我以后如何基于 `taskmaster-ai` MCP 来完成一些列列表页改造任务。
+
+最核心的是，我需要你帮我初始化一份完整的 `.taskmaster\tasks\tasks.json` 配置文件，覆盖掉全部满足要求的列表页页面。
+
+### 列表页特征
+
+在你初始化 `.taskmaster\tasks\tasks.json` 任务文件时，请你先搞清楚什么是需要被处理的列表页：
+
+1. 凡是在 `-detail-page` 目录内的 index.vue 文件都不是列表页。
+2. 路由深度到 3 级的页面才是列表页。请阅读 `apps\admin\src\router\rank\rank-route-keys.ts` 文件，根据 3 级路由的页面，来制定任务。
