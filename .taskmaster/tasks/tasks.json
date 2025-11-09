@@ -1,0 +1,73 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "改造 dev-team/cache-manage 页面：添加测试数据、重构为标准化列表页和创建表单组件",
+        "description": "将 dev-team/cache-manage 页面重构为标准列表页模板，包含添加 35 条假数据的 test-data.ts 文件以及创建用于表单功能的 components/form.ts 和 components/form.vue 文件。",
+        "details": "实施变更包括：1) 在页面的 test-data.ts 文件中生成 35 条具有适当字段（如 id、name、description、status、createdAt）的测试缓存数据。2) 修改 index.vue 页面，改用标准列表页模板，实现增强的表格组件，新增\"编辑缓存\"、\"查看详情\"、\"删除缓存\"和\"测试连接\"等操作按钮。3) 创建专门的 components/form.ts 文件，封装表单验证规则和逻辑。4) 创建响应式的 form.vue 组件，处理缓存配置提交，并使用 ReDialog 实现模态表单展示。5) 在所有文件（.ts 和 .vue）中使用 JSDoc 格式编写适当的内联文档。6) 确保所有列表功能（搜索、过滤、分页）都能与模拟数据无缝协作。",
+        "testStrategy": "验证列表模板在 index.vue 中的集成情况：加载时表格应显示全部 35 条测试记录，搜索和过滤控件功能正常，分页准确显示数据子集。测试表单提交：点击\"添加缓存\"应打开包含新建 form.vue 组件的对话框，表单回填时需正确填充数据，使用有效的测试数据提交表单时，应触发模拟的 API 响应。确认 JSDoc 注释已正确应用于所有函数和组件，提升代码可维护性。",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "在 dev-team/config-manage/cache-manage 创建 test-data.ts 文件并重构为标准化列表页",
+        "description": "在 apps/admin/src/pages/dev-team/config-manage/cache-manage 目录下创建 test-data.ts 文件，并参照现有 refresh-cache 页面的数据结构和标准列表页模板重构 index.vue 页面。",
+        "details": "基于现有 dev-team/cache-manage/refresh-cache/test-data.ts 文件的数据结构（35 条缓存数据，字段包含：缓存ID、缓存编码、名称），在 apps/admin/src/pages/dev-team/config-manage/cache-manage/ 目录下创建新的 test-data.ts 文件。\n\n重构内容：\n1. 创建 test-data.ts，包含 35 条缓存配置数据，字段包括：缓存ID(如 CACHE_001)、缓存编码(如 REDIS_001)、缓存名称、缓存类型(Redis/Memcached)、连接状态(在线/离线)、缓存大小、创建时间、描述信息等\n2. 重构 index.vue 使用标准列表页模板，包括：\n   - 顶部搜索区域（缓存编码、缓存名称、缓存类型筛选）\n   - 工具栏（新增、编辑、删除、测试连接按钮）\n   - 表格区域（使用 PlusProComponents 表格组件，带分页）\n   - 操作列按钮（编辑、查看详情、删除、测试连接）\n3. 参照已有页面（如 cache-manage/refresh-cache）的命名规范和数据结构\n4. 使用 JSDoc 格式为所有 TypeScript 接口和函数添加注释\n5. 确保遵循项目代码风格：组件使用 Re* 前缀（如 ReDialog），表格使用 PlusProComponents\n\n技术栈：Vue 3 + TypeScript + Element Plus + Plus Pro Components + Pinia",
+        "testStrategy": "1. 验证 test-data.ts 文件创建成功并导出正确的接口类型和表格数据\n2. 启动开发服务器：pnpm -F @01s-11comm/admin dev，访问 /dev-team/config-manage/cache-manage 页面，确认：\n   - 页面加载正常，无报错\n   - 表格显示 35 条测试数据\n   - 搜索功能（缓存编码、缓存名称）工作正常\n   - 类型筛选功能正常\n   - 分页功能正常显示数据子集\n   - 各操作按钮（新增、编辑、删除、测试连接）能正常触发对应事件\n3. 检查代码质量：运行 pnpm -F @01s-11comm/admin typecheck 确保无类型错误\n4. 验证代码风格：运行 pnpm -F @01s-11comm/admin lint 检查代码规范\n5. 确认 JSDoc 注释完整，接口定义清晰，符合项目规范",
+        "status": "pending",
+        "dependencies": [
+          1
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "改造 dev-team/index.vue 页面：创建测试数据、重构为标准列表页",
+        "description": "在 dev-team/index.vue 页面创建包含35条数据的 test-data.ts 文件，并创建 components/form.ts 和 components/form.vue 表单组件，将页面重构为标准化列表页结构",
+        "details": "分析现有 dev-team 相关页面的代码结构和组件模式（参考 cache-manage/refresh-cache/index.vue 的标准化列表页实现），对 dev-team/index.vue 进行如下重构改造：\n\n1. 创建 test-data.ts 测试数据文件\n   - 在 apps/admin/src/pages/dev-team/ 目录下创建 test-data.ts\n   - 定义35条开发团队成员的测试数据，包含字段：成员ID、成员编码、姓名、职位、邮箱、部门、加入时间、状态（在线/离线）、技能标签等\n   - 导出接口类型和表格数据，遵循项目的命名规范（如 开发成员_列表数据、开发成员_列表查询_VO）\n\n2. 创建 components/form.ts 表单逻辑文件\n   - 在 apps/admin/src/pages/dev-team/components/ 目录下创建 form.ts\n   - 使用 JSDoc 格式编写注释\n   - 定义表单验证规则（使用 Element Plus 表单验证）\n   - 包含表单数据类型定义和初始化函数\n\n3. 创建 components/form.vue 表单组件\n   - 在 apps/admin/src/pages/dev-team/components/ 目录下创建 form.vue\n   - 使用 ReDialog 组件实现命令式弹框\n   - 使用 Plus Pro Components 表单组件\n   - 实现新增和编辑两种模式\n   - 包含表单验证和提交逻辑\n\n4. 重构 index.vue 为标准化列表页\n   - 参照 refresh-cache/index.vue 的标准化模板结构\n   - 实现顶部搜索区域（成员ID、成员编码、姓名、状态筛选）\n   - 添加工具栏按钮（新增、编辑、删除、导出）\n   - 使用 PureTable 组件展示数据，配置操作列（编辑、查看详情、删除）\n   - 实现分页功能（每页10条数据）\n   - 使用 PlusSearch 组件实现搜索表单\n   - 所有组件配置使用响应式 ref 和 computed\n   - 实现搜索过滤和分页逻辑\n\n代码风格要求：\n- 所有 TypeScript 和 Vue 文件使用 JSDoc 格式注释\n- 组件命名使用 Re* 前缀\n- 使用 Element Plus 组件库\n- 使用 Plus Pro Components 表单组件\n- 遵循项目中已有的代码规范和命名约定",
+        "testStrategy": "1. 验证 test-data.ts 文件创建：\n   - 检查文件路径和导出内容\n   - 验证包含35条测试数据\n   - 检查接口定义和字段完整性\n\n2. 验证组件创建：\n   - 确认 components/form.ts 文件存在且包含表单验证逻辑\n   - 确认 components/form.vue 文件存在且使用 ReDialog 组件\n\n3. 启动开发服务器测试：\n   - 运行命令：pnpm -F @01s-11comm/admin dev\n   - 访问 /dev-team 页面，验证：\n     * 页面无加载错误\n     * 表格正确显示35条测试数据\n     * 搜索功能（成员ID、成员编码、姓名、状态）正常工作\n     * 分页正确显示数据子集\n     * 工具栏按钮（新增、编辑、删除）可点击\n     * 操作列按钮（编辑、查看详情、删除）功能正常\n\n4. 代码质量检查：\n   - 运行类型检查：pnpm -F @01s-11comm/admin typecheck\n   - 运行 ESLint：pnpm -F @01s-11comm/admin lint:eslint\n   - 确认无类型错误和代码风格问题\n\n5. 功能测试：\n   - 点击\"新增\"按钮，验证 form.vue 弹框打开\n   - 点击编辑按钮，验证表单回填数据正确\n   - 测试表单验证规则是否生效\n   - 验证删除功能正常工作\n   - 测试搜索过滤功能准确性",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "改造 dev-team/config-manage/index.vue 页面：创建 test-data.ts、components/目录和表单文件",
+        "description": "对 dev-team/config-manage/index.vue 页面进行标准化重构，创建包含35条配置管理测试数据的 test-data.ts 文件，建立 components/ 目录结构，并实现 form.ts 和 form.vue 表单组件",
+        "details": "实施步骤：\n\n1. **创建 test-data.ts 测试数据文件**\n   - 在 apps/admin/src/pages/dev-team/config-manage/ 目录下创建 test-data.ts\n   - 生成35条配置管理测试数据，字段包含：配置ID、配置编码、配置名称、配置类型(系统配置/业务配置/环境变量)、所属模块、配置值、状态(启用/禁用)、创建时间、最后修改时间、描述等\n   - 导出接口类型：配置管理_列表_VO、配置管理_列表查询_VO\n   - 导出表格数据：配置管理_列表示例数据\n   - 使用 JSDoc 格式编写注释\n\n2. **创建 components/ 目录结构**\n   - 在 apps/admin/src/pages/dev-team/config-manage/ 目录下创建 components/ 子目录\n   - 目录结构遵循项目规范，与 cache-manage 等其他模块保持一致\n\n3. **创建 components/form.ts 表单逻辑文件**\n   - 在 components/ 目录下创建 form.ts\n   - 使用 Element Plus 表单验证规则：required、min、max、pattern 等\n   - 定义配置表单数据接口：配置管理_表单_VO\n   - 实现表单初始化函数：初始化_配置管理_表单数据()\n   - 实现表单验证规则配置：配置管理_表单验证规则\n   - 所有函数和接口使用 JSDoc 格式注释\n\n4. **创建 components/form.vue 表单组件**\n   - 使用 Vue 3 Composition API 和 TypeScript 编写\n   - 使用 ReDialog 组件实现模态对话框（参考 cache-manage/components/form.vue 的实现方式）\n   - 表单字段包含：配置编码、配置名称、配置类型(下拉选择)、所属模块、配置值、状态(开关)、描述(文本域)\n   - 实现表单验证和提交逻辑\n   - 支持新增和编辑两种模式（通过 props 传入）\n   - 使用 PlusProComponents 的 PlusForm 组件封装表单\n\n5. **重构 index.vue 为标准列表页**\n   - 参考 cache-manage/refresh-cache/index.vue 的标准化列表页模板\n   - 实现顶部搜索区域：配置编码、配置名称输入框，配置类型、所属模块、状态筛选下拉框\n   - 实现工具栏：新增、批量删除、导出、刷新按钮\n   - 表格列包含：配置编码、配置名称、配置类型、所属模块、状态、创建时间、操作列\n   - 操作列按钮：编辑、查看详情、删除、启用/禁用切换\n   - 实现分页功能，每页显示10条数据\n   - 集成 test-data.ts 的测试数据\n\n6. **代码规范和风格**\n   - 所有 .ts 和 .vue 文件使用 JSDoc 格式编写注释\n   - 遵循项目代码风格，参考 cache-manage 目录的现有实现\n   - 使用 ReButton、ReTable 等自定义组件\n   - 保持与周边模块一致的命名规范和文件结构",
+        "testStrategy": "1. **文件创建验证**：\n   - 检查 test-data.ts 是否成功创建，包含35条测试数据\n   - 验证接口类型定义正确，字段完整\n   - 确认 components/ 目录及 form.ts、form.vue 文件创建成功\n\n2. **开发服务器测试**：\n   - 运行命令：pnpm -F @01s-11comm/admin dev\n   - 访问 /dev-team/config-manage 页面验证：\n     * 页面加载正常，无 JavaScript 错误\n     * 表格正确显示35条测试数据\n     * 搜索功能（配置编码、配置名称）正常工作\n     * 筛选功能（配置类型、所属模块、状态）正常工作\n     * 分页功能正常，每页显示10条数据\n\n3. **表单功能测试**：\n   - 点击\"新增配置\"按钮，验证 ReDialog 弹框正常显示\n   - 测试表单验证规则（必填项、长度限制等）\n   - 提交表单验证数据正确性和模拟响应\n   - 点击\"编辑\"按钮测试表单回填功能\n   - 验证查看详情功能的正确性\n\n4. **操作功能测试**：\n   - 测试单个删除和批量删除功能\n   - 测试启用/禁用切换功能\n   - 验证导出功能正常触发\n   - 测试刷新按钮功能\n\n5. **代码质量检查**：\n   - 运行类型检查：pnpm -F @01s-11comm/admin typecheck\n   - 运行 ESLint 检查：pnpm -F @01s-11comm/admin lint:eslint\n   - 确保无类型错误和代码规范问题\n   - 验证 JSDoc 注释格式正确，所有导出内容都有文档说明\n\n6. **功能完整性验证**：\n   - 确认所有35条测试数据都能在表格中正确展示\n   - 验证排序功能（点击表头）正常工作\n   - 检查响应式布局在不同屏幕尺寸下的表现\n   - 确认所有按钮和操作都有适当的用户反馈（loading、提示消息等）",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "改造 operation-team/index.vue 页面：创建 test-data.ts、components/目录和表单文件",
+        "description": "将 operation-team/index.vue 页面重构为标准化列表页模板，创建包含35条测试数据的 test-data.ts 文件，components/目录结构，以及实现表单功能的 form.ts 和 form.vue 组件",
+        "details": "实施步骤：\n\n1. **创建 test-data.ts 测试数据文件**\n   - 在 apps/admin/src/pages/operation-team/ 目录下创建 test-data.ts\n   - 生成35条运营团队管理测试数据，字段包含：运营ID、运营编码、运营名称、运营类型(内容运营/用户运营/活动运营/数据运营)、所属部门、联系方式、角色权限、状态(在职/离职/休假)、入职时间、负责项目数、绩效评分、擅长领域等\n   - 导出接口类型：运营团队_列表_VO、运营团队_列表查询_VO\n   - 导出表格数据：运营团队_列表示例数据\n   - 使用 JSDoc 格式编写注释\n\n2. **创建 components/ 目录结构**\n   - 在 apps/admin/src/pages/operation-team/ 目录下创建 components/ 子目录\n   - 遵循项目规范，与 cache-manage 等其他模块保持一致的目录结构\n\n3. **创建 components/form.ts 表单逻辑文件**\n   - 在 components/ 目录下创建 form.ts\n   - 使用 JSDoc 格式编写注释，导出表单类型和验证规则\n   - 定义表单数据类型：运营团队_表单_VO\n   - 实现表单字段验证规则（使用 Element Plus 表单验证）\n   - 包含表单初始化函数和重置逻辑\n\n4. **创建 components/form.vue 表单组件**\n   - 在 components/ 目录下创建 form.vue\n   - 使用 ReDialog 组件实现命令式弹框\n   - 模板部分使用 Element Plus 表单组件（el-form、el-form-item、el-input、el-select等）\n   - 实现表单的双向数据绑定\n   - 集成表单验证规则并显示错误提示\n   - 提供确定/取消按钮，处理表单提交事件\n\n5. **重构 index.vue 为标准列表页**\n   - 参考 dev-team 和 cache-manage 页面的标准列表页模板\n   - 顶部搜索区域：运营编码、运营名称、运营类型、状态筛选\n   - 工具栏：新增、批量删除、导出数据等操作按钮\n   - 表格区域：使用 PlusProComponents 表格组件，展示运营团队数据\n   - 操作列：编辑、查看详情、删除、权限配置等操作按钮\n   - 实现分页功能，每页显示条数可配置\n   - 集成 ReDialog 弹框，通过 addDialog 函数调用表单组件\n\n6. **代码规范**\n   - 所有 TypeScript 文件使用 JSDoc 注释格式\n   - 遵循项目命名规范（中文接口命名）\n   - 使用 Element Plus 官方文档推荐的组件用法\n   - 表单组件遵循 make-form-for-dialog 子代理规范",
+        "testStrategy": "1. **文件创建验证**：\n   - 检查 test-data.ts 文件创建成功，包含35条测试数据\n   - 验证接口类型定义完整，字段符合业务需求\n   - 确认 components/ 目录及 form.ts、form.vue 文件创建成功\n\n2. **类型检查**：\n   - 运行命令：pnpm -F @01s-11comm/admin typecheck\n   - 确保所有 TypeScript 类型定义正确，无类型错误\n\n3. **开发服务器测试**：\n   - 运行命令：pnpm -F @01s-11comm/admin dev\n   - 访问 /operation-team 页面验证：\n     * 页面加载正常，无 JavaScript 错误\n     * 表格正确显示35条测试数据\n     * 搜索功能（运营编码、运营名称）正常工作\n     * 运营类型和状态筛选功能正常\n     * 分页功能正常显示数据子集\n     * 工具栏按钮（新增、批量删除、导出）可点击\n     * 操作列按钮（编辑、查看详情、删除、权限配置）可点击\n\n4. **表单功能测试**：\n   - 点击\"新增\"按钮打开 ReDialog 弹框\n   - 验证 form.vue 表单组件正确渲染\n   - 测试表单验证规则（必填字段、格式验证）\n   - 测试表单提交功能（确定和取消按钮）\n   - 测试表单回填功能（编辑操作）\n\n5. **代码质量检查**：\n   - 运行 lint 命令：pnpm -F @01s-11comm/admin lint\n   - 检查代码风格符合项目规范",
+        "status": "pending",
+        "dependencies": [
+          4
+        ],
+        "priority": "medium",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "version": "1.0",
+      "description": "列表页改造任务",
+      "created": "2025-11-09",
+      "updated": "2025-11-09T14:06:27.352Z"
+    }
+  }
+}

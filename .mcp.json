@@ -2,8 +2,8 @@
   "mcpServers": {
     "taskmaster-ai": {
       "type": "stdio",
-      "command": "task-master-ai",
-      "args": [],
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "task-master-ai"],
       "env": {}
     }
   }
