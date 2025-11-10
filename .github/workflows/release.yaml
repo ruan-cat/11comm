@@ -12,12 +12,35 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: 设置javascript环境
-        uses: sxzz/workflows/setup-js@v1
+      # 该工作流要求我们必传 pnpm-lock.yaml 否则初始化失败
+      # - name: 设置javascript环境
+      #   uses: sxzz/workflows/setup-js@v1
+      #   with:
+      #     fetch-all: false
+      #     package-manager: pnpm
+      #     auto-install: true
+
+      - name: 检出分支
+        uses: actions/checkout@v4
         with:
-          fetch-all: false
-          package-manager: pnpm
-          auto-install: true
+          fetch-depth: 0
+
+      - name: 安装pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: |
+            - recursive: true
+            - args: [--global, "npm"]
+
+      - name: 安装node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: corepack手动再安装一次pnpm
+        run: corepack enable && corepack install
 
       # 目前对于该项目来说 是不需要构建发布东西的
       # - name: Build
