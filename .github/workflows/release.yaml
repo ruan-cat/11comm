@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "@*/v*" # 支持 @scope/package@v1.0.0 格式
+
+permissions: write-all
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 设置javascript环境
+        uses: sxzz/workflows/setup-js@v1
+        with:
+          fetch-all: false
+          package-manager: pnpm
+          auto-install: true
+
+      # 目前对于该项目来说 是不需要构建发布东西的
+      # - name: Build
+      #   run: pnpm run build
+
+      - name: 生成github release发布日志
+        run: pnpm dlx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
