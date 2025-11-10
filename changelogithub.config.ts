@@ -9,6 +9,8 @@ export default defineConfig({
 	// 尝试让工作流自己生成文件
 	// output: "CHANGELOG.md",
 
+	// TODO: 调研思考 如何在使用 changelogithub 时， 生成 CHANGELOG.md 文件？
+
 	/** @see https://github.com/viapip/ozon-tracker/blob/master/changelogen.config.json */
 	types: Object.fromEntries(
 		commitTypes.map((commitType) => {
