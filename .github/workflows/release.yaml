@@ -2,6 +2,8 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*"
       - "@*/v*" # 支持 @scope/package@v1.0.0 格式
@@ -48,6 +50,12 @@ jobs:
 
       - name: 生成github release发布日志
         run: pnpm dlx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 生成 CHANGELOG 日志
+        run: pnpm dlx changelogithub --output CHANGELOG.md
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
