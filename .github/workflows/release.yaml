@@ -1,6 +1,13 @@
 name: Release
 
 on:
+  workflow_call:
+    inputs:
+      tool-name:
+        required: false
+        type: string
+        default: "changelogithub"
+        # default: "changelogen"
   push:
     branches:
       - main
@@ -49,38 +56,15 @@ jobs:
       #   run: pnpm run build
 
       - name: 用 changelogithub 生成 github release 发行版日志
+        if: inputs.tool-name == "changelogithub"
         run: pnpm dlx changelogithub
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 用 changelogithub 生成 CHANGELOG 文件日志
+        if: inputs.tool-name == "changelogithub"
         run: pnpm dlx changelogithub --output "CHANGELOG.md"
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 提交 CHANGELOG 日志
-        run: |
-          git config --global user.email "1219043956@qq.com"
-          git config --global user.name "ruan-cat"
-
-          # 获取当前分支名，如果是 detached HEAD 则找到所属的分支
-          CURRENT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
-
-          if [ -z "$CURRENT_BRANCH" ]; then
-            # detached HEAD 状态，找到包含当前 commit 的分支
-            echo "检测到 detached HEAD 状态，查找所属分支..."
-            CURRENT_BRANCH=$(git branch -r --contains HEAD | grep -v HEAD | head -n1 | sed 's|origin/||' | xargs)
-            echo "找到分支: $CURRENT_BRANCH"
-            git checkout $CURRENT_BRANCH
-          fi
-
-          echo "当前分支: $CURRENT_BRANCH"
-
-          git add .
-          # 如果没有变更则不提交
-          git diff --staged --quiet || git commit -m 'chore: 编写更新日志'
-          # 推送到当前分支
-          git push origin HEAD:$CURRENT_BRANCH --follow-tags
-        continue-on-error: true
