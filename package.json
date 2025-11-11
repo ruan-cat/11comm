@@ -1,7 +1,7 @@
 {
 	"name": "@01s-11comm/root",
 	"private": true,
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"author": "01s",
 	"license": "ISC",
 	"description": "01s-11comm智慧社区 monorepo根目录",
