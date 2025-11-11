@@ -7,9 +7,8 @@ import { commitTypes } from "@ruan-cat/commitlint-config/src/commit-types.ts";
  */
 export default defineConfig({
 	// 尝试让工作流自己生成文件
+	// 不应该考虑让 changelogithub 来生成 CHANGELOG.md 文件 ， 因为生成日志很难看 不美观
 	// output: "CHANGELOG.md",
-
-	// TODO: 调研思考 如何在使用 changelogithub 时， 生成 CHANGELOG.md 文件？
 
 	// 是否将每条提交信息首字母大写
 	capitalize: false,
