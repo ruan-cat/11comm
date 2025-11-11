@@ -6,8 +6,8 @@ import { commitTypes } from "@ruan-cat/commitlint-config/src/commit-types.ts";
  * @see https://github.com/unjs/changelogen
  */
 export default {
-	// 尝试让工作流自己生成文件
-	// output: "CHANGELOG.md",
+	// 提供明显的文件名
+	output: "CHANGELOG.md",
 
 	/** @see https://github.com/viapip/ozon-tracker/blob/master/changelogen.config.json */
 	types: Object.fromEntries(
