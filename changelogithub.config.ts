@@ -11,6 +11,9 @@ export default defineConfig({
 
 	// TODO: 调研思考 如何在使用 changelogithub 时， 生成 CHANGELOG.md 文件？
 
+	// 是否将每条提交信息首字母大写
+	capitalize: false,
+
 	/** @see https://github.com/viapip/ozon-tracker/blob/master/changelogen.config.json */
 	types: Object.fromEntries(
 		commitTypes.map((commitType) => {
@@ -23,4 +26,8 @@ export default defineConfig({
 			];
 		}),
 	),
+
+	templates: {
+		commitMessage: "📢 publish: release package v{{newVersion}}",
+	},
 });
