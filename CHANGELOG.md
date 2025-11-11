@@ -1,4 +1,16 @@
 
+## v0.0.11
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.0.10...v0.0.11)
+
+### 🐎 持续集成
+
+- **package.json:** 本地运行升级版本和生成日志时，不会自动打开github页面。 ([5ba4fc8](https://github.com/ruan-cat/11comm/commit/5ba4fc8))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.0.10
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.0.9...v0.0.10)
