@@ -59,3 +59,10 @@ jobs:
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 提交 CHANGELOG 日志
+        run: |
+          git add .
+          git commit -m 'chore: 编写更新日志'
+          git push --follow-tags
+        continue-on-error: true
