@@ -54,15 +54,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 用 changelogen 生成 CHANGELOG 文件日志
-        run: pnpm dlx changelogen --output "CHANGELOG.md"
+      - name: 用 changelogithub 生成 CHANGELOG 文件日志
+        run: pnpm dlx changelogithub --output "CHANGELOG.md"
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 提交 CHANGELOG 日志
         run: |
-          git config --global user.email "1234567890@qq.com"
+          git config --global user.email "1219043956@qq.com"
           git config --global user.name "ruan-cat"
           git add .
           git commit -m 'chore: 编写更新日志'
