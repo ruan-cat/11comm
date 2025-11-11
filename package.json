@@ -13,7 +13,7 @@
 	},
 	"scripts": {
 		"build": "turbo build",
-		"release": "bumpp --no-commit --push false --commit false",
+		"release": "bumpp --no-commit",
 		"up-taze": "pnpm -w up @ruan-cat/taze-config -L && npx taze -r",
 		"git:dev-2-main": "git rebase dev main && pnpm run git:push",
 		"git:main-2-dev": "git rebase main dev",
