@@ -10,5 +10,5 @@ export default defineConfig({
 	// commit: "📢 publish: release package v%s",
 	tag: "v%s",
 	// 不推送到远程仓库
-	// push: false,
+	push: false,
 });
