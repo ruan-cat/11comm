@@ -1,7 +1,7 @@
 {
 	"name": "@01s-11comm/root",
 	"private": true,
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"author": "01s",
 	"license": "ISC",
 	"description": "01s-11comm智慧社区 monorepo根目录",
@@ -13,7 +13,7 @@
 	},
 	"scripts": {
 		"build": "turbo build",
-		"release": "bumpp",
+		"release": "bumpp --config ./bump.config.ts",
 		"up-taze": "pnpm -w up @ruan-cat/taze-config -L && npx taze -r",
 		"git:dev-2-main": "git rebase dev main && pnpm run git:push",
 		"git:main-2-dev": "git rebase main dev",
