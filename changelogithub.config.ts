@@ -22,6 +22,7 @@ export default defineConfig({
 				type,
 				{
 					title: `${emoji} ${description}`,
+					semver: type === "feat" ? "minor" : "patch",
 				},
 			];
 		}),

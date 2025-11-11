@@ -1,4 +1,4 @@
-import { type ChangelogConfig } from "changelogen";
+import type { ChangelogConfig } from "changelogen";
 
 import { commitTypes } from "@ruan-cat/commitlint-config/src/commit-types.ts";
 
@@ -17,6 +17,7 @@ export default {
 				type,
 				{
 					title: `${emoji} ${description}`,
+					semver: type === "feat" ? "minor" : "patch",
 				},
 			];
 		}),
