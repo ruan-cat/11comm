@@ -64,7 +64,23 @@ jobs:
         run: |
           git config --global user.email "1219043956@qq.com"
           git config --global user.name "ruan-cat"
+
+          # 获取当前分支名，如果是 detached HEAD 则找到所属的分支
+          CURRENT_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+          if [ -z "$CURRENT_BRANCH" ]; then
+            # detached HEAD 状态，找到包含当前 commit 的分支
+            echo "检测到 detached HEAD 状态，查找所属分支..."
+            CURRENT_BRANCH=$(git branch -r --contains HEAD | grep -v HEAD | head -n1 | sed 's|origin/||' | xargs)
+            echo "找到分支: $CURRENT_BRANCH"
+            git checkout $CURRENT_BRANCH
+          fi
+
+          echo "当前分支: $CURRENT_BRANCH"
+
           git add .
-          git commit -m 'chore: 编写更新日志'
-          git push --follow-tags
+          # 如果没有变更则不提交
+          git diff --staged --quiet || git commit -m 'chore: 编写更新日志'
+          # 推送到当前分支
+          git push origin HEAD:$CURRENT_BRANCH --follow-tags
         continue-on-error: true
