@@ -1,4 +1,20 @@
 
+## v0.1.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.0.11...v0.1.0)
+
+### 🐎 持续集成
+
+- **package.json:** ⚠️  不直接push提交了。避免误触，错误发包。 ([c8840cc](https://github.com/ruan-cat/11comm/commit/c8840cc))
+
+#### ⚠️ Breaking Changes
+
+- **package.json:** ⚠️  不直接push提交了。避免误触，错误发包。 ([c8840cc](https://github.com/ruan-cat/11comm/commit/c8840cc))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.0.11
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.0.10...v0.0.11)
