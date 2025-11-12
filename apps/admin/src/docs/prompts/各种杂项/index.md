@@ -78,8 +78,6 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 
 ## 07 为 taskmaster-ai 初始化全部的任务
 
-<!-- TODO: 使用 kimi 来完成生成全部任务 -->
-
 针对 `apps\admin\src\pages` 内全部列表页，即全部满足 `.claude\commands\make-std-list-page-and-formlike-dialog.md` 文档的页面，做列表页的改造。我需要你帮我使用这款 `taskmaster-ai` MCP，初始化改造任务，制作任务清单。并告诉我以后如何基于 `taskmaster-ai` MCP 来完成一些列列表页改造任务。
 
 最核心的是，我需要你帮我初始化一份完整的 `.taskmaster\tasks\tasks.json` 配置文件，覆盖掉全部满足要求的列表页页面。
