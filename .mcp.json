@@ -1,10 +1,8 @@
 {
-  "mcpServers": {
-    "taskmaster-ai": {
-      "type": "stdio",
-      "command": "cmd",
-      "args": ["/c", "npx", "-y", "task-master-ai"],
-      "env": {}
-    }
-  }
+	"mcpServers": {
+		"taskmaster-ai": {
+			"type": "stdio",
+			"command": "task-master-ai"
+		}
+	}
 }
