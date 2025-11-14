@@ -26,12 +26,12 @@ color: blue
 
 **必须阅读**以下调研报告和官方使用方案，了解 pure-admin icon 方案的完整实现原理：
 
-- 文件路径：`apps\admin\src\docs\reports\2025-11-14-pure-admin-icon-solution-research.md`
+- 报告路径：`https://01s-11comm-doc.ruan-cat.com/docs/reports/2025-11-14-pure-admin-icon-solution-research.md`
 - `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.%E6%8C%87%E5%8D%97/02.%E8%BF%9B%E9%98%B6/01.%E5%9B%BE%E6%A0%87.md`
 
 ### 2.2 参考项目代码
 
-**必须参考**以下 https://github.com/pure-admin/vue-pure-admin 项目的代码：
+**必须参考** https://github.com/pure-admin/vue-pure-admin 项目的代码：
 
 - 组件目录：`https://github.com/pure-admin/vue-pure-admin/tree/main/src/components/ReIcon`
   - `index.ts` - 组件导出
@@ -163,7 +163,7 @@ src/components/ReIcon/
 
 #### 4.4.2 复制核心组件文件
 
-从参考项目 `apps\admin\src\components\ReIcon\` 复制以下**核心文件**：
+从参考项目 `https://github.com/pure-admin/vue-pure-admin/tree/main/src/components/ReIcon` 内复制以下**核心文件**：
 
 **必需文件：**
 
@@ -547,7 +547,7 @@ const routes = [
 
 ## 10. 参考链接
 
-- [Pure-Admin Icon 方案调研报告](../../apps/admin/src/docs/reports/2025-11-14-pure-admin-icon-solution-research.md)
+- [Pure-Admin Icon 方案调研报告](https://01s-11comm-doc.ruan-cat.com/docs/reports/2025-11-14-pure-admin-icon-solution-research.md)
 - [Iconify 官方文档](https://iconify.design/)
 - [unplugin-icons GitHub](https://github.com/unplugin/unplugin-icons)
 - [图标搜索工具](https://icon-sets.iconify.design/)
