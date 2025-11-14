@@ -24,15 +24,16 @@ color: blue
 
 ### 2.1 调研报告
 
-**必须阅读**以下调研报告，了解 pure-admin icon 方案的完整实现原理：
+**必须阅读**以下调研报告和官方使用方案，了解 pure-admin icon 方案的完整实现原理：
 
 - 文件路径：`apps\admin\src\docs\reports\2025-11-14-pure-admin-icon-solution-research.md`
+- `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.%E6%8C%87%E5%8D%97/02.%E8%BF%9B%E9%98%B6/01.%E5%9B%BE%E6%A0%87.md`
 
 ### 2.2 参考项目代码
 
-**必须参考**以下 apps/admin 项目的代码：
+**必须参考**以下 https://github.com/pure-admin/vue-pure-admin 项目的代码：
 
-- 组件目录：`apps\admin\src\components\ReIcon\`
+- 组件目录：`https://github.com/pure-admin/vue-pure-admin/tree/main/src/components/ReIcon`
   - `index.ts` - 组件导出
   - `src/iconifyIconOffline.ts` - 离线图标组件
   - `src/iconifyIconOnline.ts` - 在线图标组件
@@ -40,8 +41,8 @@ color: blue
   - `src/hooks.ts` - useRenderIcon Hook
   - `src/offlineIcon.ts` - 图标预加载
   - `src/types.ts` - 类型定义
-- Vite 配置：`apps\admin\build\plugins\index.ts`
-- 全局注册：`apps\admin\src\main.ts`
+- Vite 配置：`build\plugins\index.ts`
+- 全局注册：`src\main.ts`
 
 ### 2.3 官方文档
 
