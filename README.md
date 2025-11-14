@@ -7,4 +7,4 @@
 <!-- TODO: -->
 
 - [前端技术文档](https://01s-10wms-frontend-docs.ruancat6312.top/)
-- [admin 框架文档](./src/index.md)
+- [本项目技术文档](./apps/admin/src/docs/technical-doc.md)
