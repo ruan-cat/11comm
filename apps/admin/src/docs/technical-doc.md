@@ -107,6 +107,10 @@ monorepo 下的 node 命令调度器。
 
 本次项目用的模板。由阮喵喵决定套用并改造该模板：
 
+- [pure-admin 仓库](https://github.com/pure-admin/vue-pure-admin)
+- [pure-admin 在线预览界面](https://pure-admin.github.io/vue-pure-admin/#/login)
+- [pure-admin 文档](https://pure-admin.cn/)
+
 - [表格固定列](https://vscode.dev/github.com/pure-admin/vue-pure-admin/blob/main/src/views/table/base/fixColumn.vue)
 - [表单](https://pure-admin.github.io/vue-pure-admin/#/form/index)
 - 树形菜单：
