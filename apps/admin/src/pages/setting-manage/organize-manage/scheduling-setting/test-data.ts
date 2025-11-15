@@ -1,3 +1,5 @@
+import { type OptionsType } from "plus-pro-components";
+
 /** 排班设置列表数据 */
 export interface 排班设置_列表数据 {
 	班次名称: string;
@@ -14,6 +16,12 @@ export interface 排班设置_列表查询_VO {
 	排班名称?: string;
 	状态?: string;
 }
+
+/** 状态选项 */
+export const 状态Options: OptionsType = [
+	{ label: "启用", value: "启用" },
+	{ label: "停用", value: "停用" },
+];
 
 /** 排班设置列表测试数据 */
 export const schedulingSettingTableData: 排班设置_列表数据[] = [
