@@ -8,22 +8,28 @@ definePage({
 	},
 });
 
-// TODO: 生成组织信息的接口，并对接此处的接口。
+import { ref, computed, onMounted, nextTick } from "vue";
+import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 
-import { ref, computed, reactive, onMounted, nextTick } from "vue";
-import { transformI18n } from "plugins/i18n.ts";
-import { useRenderIcon } from "components/ReIcon/src/hooks.ts";
+import { cloneDeep } from "lodash-es";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+
 import { ReTreeLineIcon } from "components/ReTreeLineIcon";
 import { useReTreeLineIcon } from "components/ReTreeLineIcon/src/use-re-tree-line-icon.ts";
 import type { TreeNodeWithIcon, TreeSelectEvent, ReTreeLineIconInstance } from "components/ReTreeLineIcon/src/types.ts";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import {
 	mockOrganizationTreeData,
-	mockEmployeeData,
+	tableData as mockTableData,
 	getEmployeesByOrgId,
 	type OrganizationTreeNode,
 	type Employee,
 } from "./test-data.ts";
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 组织树数据已经兼容TreeNodeWithIcon接口，直接使用
 const organizationTreeData = ref<OrganizationTreeNode[]>(mockOrganizationTreeData);
@@ -52,15 +58,16 @@ const {
 // 树组件加载状态
 const treeLoading = ref(false);
 
-const employeeData = ref<Employee[]>(mockEmployeeData);
+// 表格数据
+const tableData = ref<Employee[]>(mockTableData);
 
-// 表格相关配置
+/** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "姓名",
 		prop: "name",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "手机号",
@@ -88,8 +95,9 @@ const columns = ref<TableColumnList>([
 		width: 80,
 	},
 	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 200,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -100,13 +108,13 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 29,
+	total: 0,
 });
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
-	data: employeeData.value,
+	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
 });
@@ -139,16 +147,13 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 员工名称
 	{
 		label: "员工名称",
 		prop: "employeeName",
 		valueType: "input",
-		fieldProps: {
-			placeholder: "请填写员工名称",
-		},
 	},
 ]);
 
@@ -156,9 +161,9 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
-	labelWidth: 100,
+	labelWidth: 140,
 	labelPosition: "right",
-	hasUnfold: false, // 隐藏展开收缩按钮
+	showNumber: 3,
 });
 
 // 树组件搜索配置
@@ -177,6 +182,17 @@ const treeExpansionOptions = {
 
 // 本地选中状态（可写）
 const localSelectedOrg = ref<OrganizationTreeNode | null>(null);
+
+// 测试异步函数
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
 
 // 示例：如何使用组合式API获取树的状态
 function demonstrateTreeAPI() {
@@ -208,26 +224,57 @@ function loadEmployeesByOrg(org: OrganizationTreeNode) {
 	console.log("加载组织员工:", getSelectedNode()?.name);
 }
 
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = tableData.value;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.employeeName) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.employeeName!));
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		const paginatedData = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = paginatedData;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
+}
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
-}
-
-// 搜索员工
-function handleSearch() {
-	console.log("搜索员工:", plusSearchModel.value);
-}
-
-// 重新搜索
-async function handleReSearch() {
-	console.log("重新搜索");
+	await loadTableData();
 }
 
 // 组织操作
@@ -269,13 +316,16 @@ function handleDeleteEmployee(row: Employee) {
 }
 
 // ========== 生命周期 ==========
-onMounted(() => {
+onMounted(async () => {
 	// 初始化树组件API
 	nextTick(() => {
 		onTreeMounted();
 		// 演示API使用
 		demonstrateTreeAPI();
 	});
+
+	// 加载表格数据
+	await loadTableData();
 });
 </script>
 
@@ -293,15 +343,15 @@ onMounted(() => {
 
 					<!-- 组织操作按钮 -->
 					<div class="mb-4">
-						<el-button type="primary" :icon="useRenderIcon('ep:plus')" @click="handleAddOrg">
+						<ElButton type="primary" @click="handleAddOrg">
 							{{ transformI18n($t("common.buttons.add")) }}
-						</el-button>
-						<el-button type="warning" :icon="useRenderIcon('ep:edit')" @click="handleEditOrg">
+						</ElButton>
+						<ElButton type="warning" @click="handleEditOrg">
 							{{ transformI18n($t("common.buttons.edit")) }}
-						</el-button>
-						<el-button type="danger" :icon="useRenderIcon('ep:delete')" @click="handleDeleteOrg">
+						</ElButton>
+						<ElButton type="danger" @click="handleDeleteOrg">
 							{{ transformI18n($t("common.buttons.del")) }}
-						</el-button>
+						</ElButton>
 					</div>
 
 					<!-- 使用新的树组件 -->
@@ -323,19 +373,25 @@ onMounted(() => {
 			<!-- 右侧员工管理 -->
 			<el-col :span="18" class="right-content">
 				<!-- PlusSearch 搜索栏 -->
-				<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+				<PlusSearch
+					v-model="plusSearchModel"
+					:="plusSearchProps"
+					:columns="plusSearchColumns"
+					@search="handleSearch"
+					@reset="handleReSearch"
+				/>
 
 				<!-- 员工表格区域 -->
 				<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 					<template #buttons>
-						<el-button type="info" :icon="useRenderIcon('ep:document')" @click="handleExportDoc"> 文档 </el-button>
-						<el-button type="primary" :icon="useRenderIcon('ep:plus')" @click="handleAddEmployee">
+						<ElButton type="info" @click="handleExportDoc"> 文档 </ElButton>
+						<ElButton type="primary" @click="handleAddEmployee">
 							{{ transformI18n($t("common.buttons.add")) }}
-						</el-button>
+						</ElButton>
 					</template>
 
 					<template #default="{ size, dynamicColumns }">
-						<!-- @vue-ignore -->
+						<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 						<PureTable
 							:="pureTableProps"
 							:columns="dynamicColumns"
@@ -344,12 +400,12 @@ onMounted(() => {
 							@page-current-change="handleCurrentPageChange"
 						>
 							<template #operation="{ row }">
-								<el-button type="warning" :icon="useRenderIcon('ep:edit')" @click="handleEditEmployee(row)">
+								<ElButton type="warning" @click="handleEditEmployee(row)">
 									{{ transformI18n($t("common.buttons.edit")) }}
-								</el-button>
-								<el-button type="danger" :icon="useRenderIcon('ep:delete')" @click="handleDeleteEmployee(row)">
+								</ElButton>
+								<ElButton type="danger" @click="handleDeleteEmployee(row)">
 									{{ transformI18n($t("common.buttons.del")) }}
-								</el-button>
+								</ElButton>
 							</template>
 						</PureTable>
 					</template>
