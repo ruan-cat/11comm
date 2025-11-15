@@ -125,6 +125,18 @@ export function usePlusFormReset(plusFormInstance: any) {
 }
 ```
 
+### 2.5 错误的模块导入
+
+```typescript
+// ❌ 错误 从不存在的 `vue-macro` 模块内导入模块
+import { cloneDeep, sleep, useToggle } from "vue-macro";
+
+// ✅ 正确 在正确的模块内导入工具
+import { cloneDeep } from "@pureadmin/utils";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
