@@ -1,3 +1,5 @@
+import { type OptionsType } from "plus-pro-components";
+
 /** 班次设置列表数据 */
 export interface 班次设置_列表数据 {
 	编号: string;
@@ -12,6 +14,12 @@ export interface 班次设置_列表数据 {
 export interface 班次设置_列表查询_VO {
 	班次名称?: string;
 }
+
+/** 状态选项 */
+export const 状态选项: OptionsType = [
+	{ label: "启用", value: "启用" },
+	{ label: "停止", value: "停止" },
+];
 
 /** 班次设置列表测试数据 */
 export const shiftSettingTableData: 班次设置_列表数据[] = [
