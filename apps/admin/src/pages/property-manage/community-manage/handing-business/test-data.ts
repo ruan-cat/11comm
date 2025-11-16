@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 业务受理-列表数据 */
 export interface 业务受理_列表数据 {

@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 商户管理员列表数据类型 */
 export interface 商户管理员_列表数据 {

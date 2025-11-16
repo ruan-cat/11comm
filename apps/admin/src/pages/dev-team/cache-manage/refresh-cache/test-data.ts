@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 刷新缓存 列表数据 */
 export interface 刷新缓存_列表数据 {

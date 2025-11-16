@@ -14,7 +14,7 @@ export interface 小区公示_列表查询_VO {
 }
 
 /** 下拉选项类型 */
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 公示类型选项 */
 export const 公示类型选项: OptionsType = [

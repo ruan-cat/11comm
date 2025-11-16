@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 巡检路线列表数据 */
 export interface 巡检路线_列表数据 {

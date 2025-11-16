@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 import { type 欠费催缴表单_VO, 催缴方式Options, 催缴状态Options } from "./components/form";
 
 export { 催缴方式Options, 催缴状态Options };

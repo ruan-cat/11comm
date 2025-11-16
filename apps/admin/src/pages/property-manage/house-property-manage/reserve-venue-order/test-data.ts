@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 场地预约订单 表格数据类型 */
 export interface 场地预约订单_列表数据 {
@@ -47,56 +47,56 @@ export interface 场地预约订单_列表查询_VO {
 export const 预约状态Options: OptionsType = [
 	{
 		label: "预约成功",
-		value: "预约成功"
+		value: "预约成功",
 	},
 	{
 		label: "预约失败",
-		value: "预约失败"
+		value: "预约失败",
 	},
 	{
 		label: "待审核",
-		value: "待审核"
+		value: "待审核",
 	},
 	{
 		label: "待支付",
-		value: "待支付"
-	}
+		value: "待支付",
+	},
 ];
 
 /** 预约场地选项 */
 export const 预约场地Options: OptionsType = [
 	{
 		label: "健身房",
-		value: "健身房"
+		value: "健身房",
 	},
 	{
 		label: "第三会议室",
-		value: "第三会议室"
+		value: "第三会议室",
 	},
 	{
 		label: "高新健身房",
-		value: "高新健身房"
+		value: "高新健身房",
 	},
 	{
 		label: "会议室",
-		value: "会议室"
+		value: "会议室",
 	},
 	{
 		label: "篮球馆",
-		value: "篮球馆"
+		value: "篮球馆",
 	},
 	{
 		label: "羽毛球馆",
-		value: "羽毛球馆"
+		value: "羽毛球馆",
 	},
 	{
 		label: "棒球馆",
-		value: "棒球馆"
+		value: "棒球馆",
 	},
 	{
 		label: "乒乓球馆",
-		value: "乒乓球馆"
-	}
+		value: "乒乓球馆",
+	},
 ];
 
 /** 单个表格数据项 */
@@ -113,7 +113,7 @@ const tableDataItem: 场地预约订单_列表数据 = {
 	支付方式: "微信",
 	状态: "预约成功",
 	创建时间: "2025-05-22 00:10:27",
-	备注: "54"
+	备注: "54",
 };
 
 /** 表格组件假数据 */
@@ -126,5 +126,5 @@ export const tableData: 场地预约订单_列表数据[] = Array(35)
 		预约电话: `1890971${String(1000 + index).padStart(4, "0")}`,
 		预约日期: `2025-05-${String(20 + (index % 10)).padStart(2, "0")}`,
 		状态: ["预约成功", "预约失败", "待审核", "待支付"][index % 4] as string,
-		场地: ["羽毛球馆", "篮球馆", "乒乓球馆", "健身房", "会议室"][index % 5] as string
+		场地: ["羽毛球馆", "篮球馆", "乒乓球馆", "健身房", "会议室"][index % 5] as string,
 	}));

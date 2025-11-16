@@ -411,10 +411,10 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="primary" v-if="row.审核状态 === '待审核'" @click="handleOperationClick('审核通过', row)">
+						<ElButton v-if="row.审核状态 === '待审核'" type="primary" @click="handleOperationClick('审核通过', row)">
 							审核通过
 						</ElButton>
-						<ElButton type="primary" v-if="row.审核状态 === '待审核'" @click="handleOperationClick('审核拒绝', row)">
+						<ElButton v-if="row.审核状态 === '待审核'" type="primary" @click="handleOperationClick('审核拒绝', row)">
 							审核拒绝
 						</ElButton>
 						<ElButton type="info" @click="handleOperationClick('查看详情', row)"> 查看详情 </ElButton>

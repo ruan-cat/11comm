@@ -212,9 +212,10 @@ async function loadTableData() {
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.patrolPerson) {
-			filteredData = filteredData.filter((item) =>
-				item.planPatrolPerson.includes(plusSearchModel.value.patrolPerson!) ||
-				item.actualPatrolPerson.includes(plusSearchModel.value.patrolPerson!)
+			filteredData = filteredData.filter(
+				(item) =>
+					item.planPatrolPerson.includes(plusSearchModel.value.patrolPerson!) ||
+					item.actualPatrolPerson.includes(plusSearchModel.value.patrolPerson!),
 			);
 		}
 		if (plusSearchModel.value.patrolStartTime) {
@@ -392,7 +393,13 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -409,9 +416,13 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
 						<ElButton type="info" @click="handleView(row)"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger" @click="handleDelete(row)"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
@@ -419,5 +430,4 @@ onMounted(async () => {
 	</section>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

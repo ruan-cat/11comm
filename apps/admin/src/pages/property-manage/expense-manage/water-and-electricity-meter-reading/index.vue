@@ -10,7 +10,12 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { tableData as mockTableData, type 水电抄表_列表数据, type 水电抄表_列表查询_VO, 表类型Options } from "./test-data";
+import {
+	tableData as mockTableData,
+	type 水电抄表_列表数据,
+	type 水电抄表_列表查询_VO,
+	表类型Options,
+} from "./test-data";
 import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type 水电抄表表单_VO } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
 
@@ -229,7 +234,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			? cloneDeep({
 					...defaultForm,
 					费用类型: row?.表类型 === "水表" ? "水费" : row?.表类型 === "电表" ? "电费" : "水费",
-					收费项目: (row?.表类型 === "水表" || row?.表类型 === "电表") ? row?.表类型 : "水表",
+					收费项目: row?.表类型 === "水表" || row?.表类型 === "电表" ? row?.表类型 : "水表",
 					抄表类型: row?.表类型 || "水表",
 					收费对象: row?.对象名称 || "",
 					上期度数: row?.上期度数 || "",

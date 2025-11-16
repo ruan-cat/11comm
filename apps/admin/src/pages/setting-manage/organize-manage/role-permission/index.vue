@@ -17,11 +17,7 @@ import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
 import { h } from "vue";
 
-import {
-	tableData as mockTableData,
-	type 角色权限,
-	type 角色权限_列表查询_VO,
-} from "./test-data";
+import { tableData as mockTableData, type 角色权限, type 角色权限_列表查询_VO } from "./test-data";
 
 import { type RolePermissionFormProps, defaultForm, type 角色权限表单_VO } from "./components/form";
 import RolePermissionForm from "./components/form.vue";
@@ -253,9 +249,7 @@ async function loadTableData() {
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.角色名称) {
-			filteredData = filteredData.filter((item) =>
-				item.角色名称.includes(plusSearchModel.value.角色名称!)
-			);
+			filteredData = filteredData.filter((item) => item.角色名称.includes(plusSearchModel.value.角色名称!));
 		}
 		if (plusSearchModel.value.状态) {
 			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
@@ -355,9 +349,7 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="handleViewPermissions(row)">
-							权限配置
-						</ElButton>
+						<ElButton type="info" @click="handleViewPermissions(row)"> 权限配置 </ElButton>
 						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>

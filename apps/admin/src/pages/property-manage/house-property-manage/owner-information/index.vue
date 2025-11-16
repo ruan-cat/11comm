@@ -240,7 +240,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					性别: row?.性别 || "男",
 					备用手机: row?.备用手机 || "",
 					地址: row?.地址 || "",
-				门禁钥匙: row?.门禁钥匙 || "",
+					门禁钥匙: row?.门禁钥匙 || "",
 					身份证: row?.证件号 || "",
 					备注: "",
 				})
@@ -318,7 +318,13 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>

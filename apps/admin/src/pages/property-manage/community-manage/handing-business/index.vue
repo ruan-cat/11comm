@@ -10,7 +10,13 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 业务受理_列表数据, type 业务受理_列表查询_VO, tableData as mockTableData, 费用类型Options, 状态Options } from "./test-data";
+import {
+	type 业务受理_列表数据,
+	type 业务受理_列表查询_VO,
+	tableData as mockTableData,
+	费用类型Options,
+	状态Options,
+} from "./test-data";
 
 /** 表格数据 */
 const tableData = ref<业务受理_列表数据[]>([]);

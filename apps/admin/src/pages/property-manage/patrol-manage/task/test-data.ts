@@ -54,14 +54,14 @@ export const 巡检状态Options: OptionItem[] = [
 
 /** 生成单个巡检任务数据 */
 function generateRandomPatrolTask(index: number): 巡检任务_列表数据 {
-	const 巡检状态Values = 巡检状态Options.map(option => option.value);
+	const 巡检状态Values = 巡检状态Options.map((option) => option.value);
 	const randomStatus = 巡检状态Values[Math.floor(Math.random() * 巡检状态Values.length)];
 
 	return {
 		任务编码: `T${String(index).padStart(6, "0")}`,
 		巡检计划: `巡检计划${index}`,
-		"巡检人开始/结束时间": `2024-10-${String(index % 28 + 1).padStart(2, "0")} 09:00:00`,
-		实际巡检时间: `2024-10-${String(index % 28 + 1).padStart(2, "0")} 10:30:00`,
+		"巡检人开始/结束时间": `2024-10-${String((index % 28) + 1).padStart(2, "0")} 09:00:00`,
+		实际巡检时间: `2024-10-${String((index % 28) + 1).padStart(2, "0")} 10:30:00`,
 		计划巡检人: `张三${index}`,
 		当前巡检人: `李四${index}`,
 		转移描述: `转移描述${index}`,
@@ -72,4 +72,6 @@ function generateRandomPatrolTask(index: number): 巡检任务_列表数据 {
 }
 
 /** 表格假数据 */
-export const tableData: 巡检任务_列表数据[] = Array.from({ length: 35 }, (_, index) => generateRandomPatrolTask(index + 1));
+export const tableData: 巡检任务_列表数据[] = Array.from({ length: 35 }, (_, index) =>
+	generateRandomPatrolTask(index + 1),
+);

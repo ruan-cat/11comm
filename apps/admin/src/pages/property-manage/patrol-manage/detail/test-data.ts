@@ -1,5 +1,5 @@
-import { type OptionsType } from "plus-pro-components";
-import { type 巡检方式 } from "./components/form";
+import type { OptionsType } from "plus-pro-components";
+import type { 巡检方式 } from "./components/form";
 
 // ==================== 类型定义 ====================
 

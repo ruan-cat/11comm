@@ -12,7 +12,12 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type MandatoryReturnIssueFormProps, defaultForm, type 强制回单表单_VO } from "./components/form";
-import { type 强制回单_列表数据, tableData as mockTableData, 报修类型Options, type 强制回单_列表查询_VO } from "./test-data";
+import {
+	type 强制回单_列表数据,
+	tableData as mockTableData,
+	报修类型Options,
+	type 强制回单_列表查询_VO,
+} from "./test-data";
 import MandatoryReturnIssueForm from "./components/form.vue";
 
 /** 模式控制 */
@@ -346,7 +351,13 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">

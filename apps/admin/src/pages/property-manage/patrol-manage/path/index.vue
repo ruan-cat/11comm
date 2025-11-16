@@ -12,7 +12,12 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPathFormProps, defaultForm } from "./components/form";
-import { type 巡检路线_列表数据, type 巡检路线_列表查询_VO, type 巡检路线_表单数据, tableData as mockTableData } from "./test-data";
+import {
+	type 巡检路线_列表数据,
+	type 巡检路线_列表查询_VO,
+	type 巡检路线_表单数据,
+	tableData as mockTableData,
+} from "./test-data";
 import PatrolPathForm from "./components/form.vue";
 
 /** 表格数据 */
@@ -132,9 +137,7 @@ async function loadTableData() {
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.巡检路线) {
-			filteredData = filteredData.filter((item) =>
-				item.巡检点名称.includes(plusSearchModel.value.巡检路线!)
-			);
+			filteredData = filteredData.filter((item) => item.巡检点名称.includes(plusSearchModel.value.巡检路线!));
 		}
 
 		/** 更新总数 */
@@ -201,7 +204,7 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 	/** 业务对象 */
 	const 巡检路线表单VO: 巡检路线_表单数据 = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value || mode === 'info'
+		: isEdit.value || mode === "info"
 			? cloneDeep({
 					...defaultForm,
 					巡检点ID: row?.巡检点ID || "",

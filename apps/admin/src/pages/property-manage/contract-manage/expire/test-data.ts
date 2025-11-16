@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 业务受理_列表数据 */
 export interface 业务受理_列表数据 {
@@ -49,7 +49,15 @@ export const tableData: 业务受理_列表数据[] = Array(35)
 		乙方: ["XX信息技术服务公司", "XX系统集成有限公司", "XX数据服务中心", "XX云端科技有限公司"][index % 4],
 		变更类型: ["合同金额", "服务期限", "服务内容", "付款方式", "合同主体"][index % 5],
 		变更人: ["张三", "李四", "王五", "赵六", "钱七", "孙八", "周九"][index % 7],
-		申请时间: `2024-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 28) + 1).padStart(2, "0")} ${String((index % 24)).padStart(2, "0")}:${String((index % 60)).padStart(2, "0")}`,
-		说明: ["因业务调整，修改服务内容", "更新付款周期", "调整服务期限", "新增功能模块", "修改验收标准", "优化合作条款", "补充技术附件"][index % 7],
+		申请时间: `2024-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 28) + 1).padStart(2, "0")} ${String(index % 24).padStart(2, "0")}:${String(index % 60).padStart(2, "0")}`,
+		说明: [
+			"因业务调整，修改服务内容",
+			"更新付款周期",
+			"调整服务期限",
+			"新增功能模块",
+			"修改验收标准",
+			"优化合作条款",
+			"补充技术附件",
+		][index % 7],
 		状态: 审核类型Options[index % 审核类型Options.length].value,
 	}));

@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 班次设置列表数据 */
 export interface 班次设置_列表数据 {

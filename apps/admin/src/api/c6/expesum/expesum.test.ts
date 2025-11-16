@@ -1,11 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	expesumQuery,
-	expesumQueryBuildingRates,
-	expesumQueryFeeItemRates,
-	expesumExport,
-} from "./expesum";
+import { expesumQuery, expesumQueryBuildingRates, expesumQueryFeeItemRates, expesumExport } from "./expesum";
 
 describe("费用汇总模块", () => {
 	describe("expesumQuery", () => {

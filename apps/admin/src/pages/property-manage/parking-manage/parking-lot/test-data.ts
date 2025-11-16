@@ -1,6 +1,6 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
-import { type 停车场类型, type 车位类型 } from "./components/form";
+import type { 停车场类型, 车位类型 } from "./components/form";
 
 // ==================== 类型定义 ====================
 

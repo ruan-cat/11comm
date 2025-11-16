@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 // ==================== 类型定义 ====================
 
@@ -130,10 +130,10 @@ export const tableData: 业主信息_列表数据[] = Array(35)
 		证件号: `${320000000000000000 + index}`,
 		联系手机: `138${String(index).padStart(8, "0")}`,
 		备用手机: `139${String(index + 100).padStart(8, "0")}`,
-	地址: `江苏省连云港市地址${index + 1}`,
-		房屋数: `${index % 5 + 1}`,
-		业主成员: `${index % 4 + 1}`,
-		车辆数: `${index % 3 + 1}`,
+		地址: `江苏省连云港市地址${index + 1}`,
+		房屋数: `${(index % 5) + 1}`,
+		业主成员: `${(index % 4) + 1}`,
+		车辆数: `${(index % 3) + 1}`,
 		欠费: index % 5 === 0 ? "是" : "否",
 		门禁钥匙: index % 3 === 0 ? "有" : "无",
 	}));

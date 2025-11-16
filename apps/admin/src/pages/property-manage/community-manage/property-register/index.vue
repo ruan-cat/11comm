@@ -14,12 +14,7 @@ import { type 产权登记_列表数据, type 产权登记_列表查询_VO, tabl
 
 import type { PropertyRegisterFormProps } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
-import {
-	审核状态Options,
-	楼栋Options,
-	单元Options,
-	defaultForm,
-} from "./test-data";
+import { 审核状态Options, 楼栋Options, 单元Options, defaultForm } from "./test-data";
 
 const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
 

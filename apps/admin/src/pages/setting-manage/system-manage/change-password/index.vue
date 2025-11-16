@@ -144,7 +144,11 @@ async function loadTableData() {
 		if (plusSearchModel.value.状态) {
 			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
 		}
-		if (plusSearchModel.value.修改时间范围 && plusSearchModel.value.修改时间范围[0] && plusSearchModel.value.修改时间范围[1]) {
+		if (
+			plusSearchModel.value.修改时间范围 &&
+			plusSearchModel.value.修改时间范围[0] &&
+			plusSearchModel.value.修改时间范围[1]
+		) {
 			filteredData = filteredData.filter((item) => {
 				const modifyTime = new Date(item.修改时间).getTime();
 				const startTime = new Date(plusSearchModel.value.修改时间范围![0]).getTime();

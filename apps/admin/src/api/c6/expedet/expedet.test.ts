@@ -1,11 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	queryOwnerDetail,
-	queryBuildingDetail,
-	queryContractDetail,
-	queryCarDetail,
-} from "./expedet";
+import { queryOwnerDetail, queryBuildingDetail, queryContractDetail, queryCarDetail } from "./expedet";
 
 describe("费用明细查询模块", () => {
 	// ==================== 业主明细查询测试 ====================

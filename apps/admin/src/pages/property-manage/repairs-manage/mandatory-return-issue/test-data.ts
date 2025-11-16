@@ -76,8 +76,8 @@ export const 状态Options: OptionsType = [
 
 /** 生成单个强制回单数据 */
 function generateRandomIssue(index: number): 强制回单_列表数据 {
-	const 报修类型Values = (报修类型Options as OptionItem[]).map(option => option.value);
-	const 状态Values = (状态Options as OptionItem[]).map(option => option.value);
+	const 报修类型Values = (报修类型Options as OptionItem[]).map((option) => option.value);
+	const 状态Values = (状态Options as OptionItem[]).map((option) => option.value);
 
 	const random报修类型 = 报修类型Values[Math.floor(Math.random() * 报修类型Values.length)];
 	const random状态 = 状态Values[Math.floor(Math.random() * 状态Values.length)];
@@ -91,8 +91,8 @@ function generateRandomIssue(index: number): 强制回单_列表数据 {
 		报修类型: random报修类型,
 		报修人: `张${index}先生`,
 		联系方式: `138${String(Math.floor(Math.random() * 100000000)).padStart(8, "0")}`,
-		预约时间: appointmentDate.toISOString().split('T')[0],
-		提交时间: startDate.toISOString().replace('T', ' ').slice(0, 19),
+		预约时间: appointmentDate.toISOString().split("T")[0],
+		提交时间: startDate.toISOString().replace("T", " ").slice(0, 19),
 		状态: random状态,
 		备注: `备注信息${index}`,
 	};

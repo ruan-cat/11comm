@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 巡检计划 签到方式 */
 export type 签到方式 = "二维码" | "NFC" | "蓝牙" | "WiFi";

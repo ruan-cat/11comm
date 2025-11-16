@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 import type {
 	费用类型,
 	费用标识类型,
@@ -6,7 +6,7 @@ import type {
 	账户抵扣类型,
 	手机缴费类型,
 	进位方式类型,
-	保留小数位类型
+	保留小数位类型,
 } from "./components/form";
 
 // ==================== 类型定义 ====================

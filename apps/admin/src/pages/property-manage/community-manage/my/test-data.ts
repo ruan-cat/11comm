@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 // ==================== 类型定义 ====================
 
@@ -534,4 +534,4 @@ export const tableData: 我的小区_列表数据[] = [
 		结束时间: "2050-04-12",
 		状态: "正常运营",
 	},
-	];
+];

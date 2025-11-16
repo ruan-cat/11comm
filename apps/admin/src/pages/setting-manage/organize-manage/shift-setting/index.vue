@@ -11,11 +11,7 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 班次设置_列表数据,
-	type 班次设置_列表查询_VO,
-	shiftSettingTableData as mockTableData
-} from "./test-data";
+import { type 班次设置_列表数据, type 班次设置_列表查询_VO, shiftSettingTableData as mockTableData } from "./test-data";
 import { type ShiftSettingFormProps, defaultForm, type 班次设置表单_VO } from "./components/form";
 import ShiftSettingForm from "./components/form.vue";
 
@@ -253,9 +249,7 @@ async function loadTableData() {
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.班次名称) {
-			filteredData = filteredData.filter((item) =>
-				item.班次名称.includes(plusSearchModel.value.班次名称!)
-			);
+			filteredData = filteredData.filter((item) => item.班次名称.includes(plusSearchModel.value.班次名称!));
 		}
 
 		/** 更新总数 */
@@ -390,9 +384,7 @@ onMounted(async () => {
 						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="handleView(row)">
-							查看
-						</ElButton>
+						<ElButton type="info" @click="handleView(row)"> 查看 </ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>

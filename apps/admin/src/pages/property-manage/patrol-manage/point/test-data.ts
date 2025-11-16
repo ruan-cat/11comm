@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 巡检点列表数据 */
 export interface PatrolPointListData {
@@ -127,18 +127,18 @@ export const tableData: PatrolPointListData[] = Array(35)
 			patrolPointName,
 			patrolPlanName,
 			patrolRouteName,
-			patrolPersonTime: `2024-01-${String(index % 28 + 1).padStart(2, "0")} 08:00:00 - 18:00:00`,
-			patrolPointTime: `2024-01-${String(index % 28 + 1).padStart(2, "0")} ${String(8 + (index % 8)).padStart(2, "0")}:00:00 - ${String(9 + (index % 8)).padStart(2, "0")}:00:00`,
-			actualPatrolTime: `2024-01-${String(index % 28 + 1).padStart(2, "0")} ${String(8 + (index % 8)).padStart(2, "0")}:15:00`,
+			patrolPersonTime: `2024-01-${String((index % 28) + 1).padStart(2, "0")} 08:00:00 - 18:00:00`,
+			patrolPointTime: `2024-01-${String((index % 28) + 1).padStart(2, "0")} ${String(8 + (index % 8)).padStart(2, "0")}:00:00 - ${String(9 + (index % 8)).padStart(2, "0")}:00:00`,
+			actualPatrolTime: `2024-01-${String((index % 28) + 1).padStart(2, "0")} ${String(8 + (index % 8)).padStart(2, "0")}:15:00`,
 			actualCheckInStatus: statusOptions[index % statusOptions.length],
-			planPatrolPerson: `张${index % 3 + 1}工`,
-			actualPatrolPerson: `李${index % 4 + 1}师傅`,
+			planPatrolPerson: `张${(index % 3) + 1}工`,
+			actualPatrolPerson: `李${(index % 4) + 1}师傅`,
 			patrolMethod: methodOptions[index % methodOptions.length],
 			taskStatus: taskOptions[index % taskOptions.length],
 			patrolPointStatus: pointStatusOptions[index % pointStatusOptions.length],
 			patrolSituation: situationOptions[index % situationOptions.length],
 			patrolPhotos: `${index + 1}张照片`,
-			createTime: `2024-01-${String(index % 28 + 1).padStart(2, "0")} ${String(Math.floor(Math.random() * 24)).padStart(2, "0")}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}`,
+			createTime: `2024-01-${String((index % 28) + 1).padStart(2, "0")} ${String(Math.floor(Math.random() * 24)).padStart(2, "0")}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}`,
 			locationInfo: `经度116.404${String(index).padStart(4, "0")}, 纬度39.915${String(index).padStart(4, "0")}`,
 		};
 	});

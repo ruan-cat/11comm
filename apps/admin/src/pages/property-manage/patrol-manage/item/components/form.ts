@@ -1,4 +1,4 @@
-import { 巡检项目表单_VO } from "../test-data";
+import type { 巡检项目表单_VO } from "../test-data";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 巡检项目表单_VO = {

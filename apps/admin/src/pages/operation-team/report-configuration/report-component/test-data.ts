@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 报表组件列表数据类型 */
 export interface 报表组件_列表数据 {

@@ -1,4 +1,4 @@
-import { type 小区公示_列表数据 } from "../../test-data";
+import type { 小区公示_列表数据 } from "../../test-data";
 
 /** 公示类型 */
 const _公示类型 = ["通知", "公告", "提醒", "活动", "维修", "安全"] as const;

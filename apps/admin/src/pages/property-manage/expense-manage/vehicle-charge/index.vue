@@ -168,7 +168,7 @@ async function loadTableData() {
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value["停车场-车位"]) {
 			filteredData = filteredData.filter((item) =>
-				`${item["停车场(单位:号)"]}-${item["车位(单位:号)"]}`.includes(plusSearchModel.value["停车场-车位"]!)
+				`${item["停车场(单位:号)"]}-${item["车位(单位:号)"]}`.includes(plusSearchModel.value["停车场-车位"]!),
 			);
 		}
 		if (plusSearchModel.value.车牌号) {
@@ -318,7 +318,13 @@ onMounted(async () => {
 <template>
 	<section class="index-root">
 		<!-- 表格搜索栏组件 -->
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<!-- 表格操作栏组件 -->

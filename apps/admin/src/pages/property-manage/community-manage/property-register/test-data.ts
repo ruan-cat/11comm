@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 产权登记-列表数据 */
 export interface 产权登记_列表数据 {
@@ -120,9 +120,10 @@ export const tableData: 产权登记_列表数据[] = Array(35)
 		房屋产权ID: `FR2024${String(index + 1).padStart(3, "0")}`,
 		房屋ID: `H${String(Math.floor(index / 20) + 1).padStart(3, "0")}`,
 		房屋编号: `${String(Math.floor(index / 4) + 1)}-${String((index % 4) + 1).padStart(2, "0")}${String(Math.floor(index / 8) + 1)}`,
-		姓名: ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"][index % 8] +
-					(["", "小", "大", "老"][index % 4]) +
-					(["伟", "芳", "强", "丽", "华", "明", "红", "军"][index % 8]),
+		姓名:
+			["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"][index % 8] +
+			["", "小", "大", "老"][index % 4] +
+			["伟", "芳", "强", "丽", "华", "明", "红", "军"][index % 8],
 		联系方式: `1${3 + Math.floor(Math.random() * 7)}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}`,
 		身份证号: `${3 + Math.floor(Math.random() * 2)}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}`,
 		地址: `江苏省${["南京市", "苏州市", "无锡市", "常州市", "南通市", "连云港市", "淮安市", "盐城市"][index % 8]}某某街道某某号${String(Math.floor(index / 4) + 1)}-${String((index % 4) + 1).padStart(2, "0")}${String(Math.floor(index / 8) + 1)}`,

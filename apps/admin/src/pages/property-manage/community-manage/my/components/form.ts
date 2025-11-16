@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 import type { Mode } from "@/composables/use-mode";
 
 /** 小区状态选项 */

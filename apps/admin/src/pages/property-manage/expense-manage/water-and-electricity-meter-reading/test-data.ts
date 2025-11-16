@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 水电抄表 列表数据 */
 export interface 水电抄表_列表数据 {

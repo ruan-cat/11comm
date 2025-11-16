@@ -10,18 +10,9 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 房屋收费_列表数据,
-	type 房屋收费_列表查询_VO,
-	tableData as allTableData,
-} from "./test-data";
+import { type 房屋收费_列表数据, type 房屋收费_列表查询_VO, tableData as allTableData } from "./test-data";
 
-import {
-	type HouseChargeFormProps,
-	defaultForm,
-	type 房屋收费_VO,
-	type 费用类型,
-} from "./components/form";
+import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO, type 费用类型 } from "./components/form";
 import HouseChargeForm from "./components/form.vue";
 
 /** 表单组件实例 */
@@ -124,14 +115,10 @@ async function loadTableData() {
 
 		// 根据搜索条件过滤数据
 		if (plusSearchModel.value.房屋编号) {
-			filteredData = filteredData.filter((item) =>
-				item.费用项目.includes(plusSearchModel.value.房屋编号!)
-			);
+			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.房屋编号!));
 		}
 		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) =>
-				item.费用项目.includes(plusSearchModel.value.业主名称!)
-			);
+			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.业主名称!));
 		}
 
 		// 更新总数

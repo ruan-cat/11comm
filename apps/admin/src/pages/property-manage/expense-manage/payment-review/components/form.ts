@@ -1,4 +1,4 @@
-import { type 缴费审核_列表数据 } from "../test-data";
+import type { 缴费审核_列表数据 } from "../test-data";
 
 /**
  * 缴费审核表单数据类型

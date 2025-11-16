@@ -112,9 +112,9 @@ export const 工单状态Options: OptionItem[] = [
 
 /** 生成单个工单池数据 */
 function generateRandomIssue(index: number): 工单池_列表数据 {
-	const 报修类型Values = 报修类型Options.map(option => option.value);
-	const 维修类型Values = 维修类型Options.map(option => option.value);
-	const 状态Values = 工单状态Options.map(option => option.value);
+	const 报修类型Values = 报修类型Options.map((option) => option.value);
+	const 维修类型Values = 维修类型Options.map((option) => option.value);
+	const 状态Values = 工单状态Options.map((option) => option.value);
 
 	const random报修类型 = 报修类型Values[Math.floor(Math.random() * 报修类型Values.length)];
 	const random维修类型 = 维修类型Values[Math.floor(Math.random() * 维修类型Values.length)];
@@ -130,10 +130,10 @@ function generateRandomIssue(index: number): 工单池_列表数据 {
 		维修类型: random维修类型,
 		报修人: `张${index}先生`,
 		联系方式: `138${String(Math.floor(Math.random() * 100000000)).padStart(8, "0")}`,
-		预约开始结束时间: `${startDate.toISOString().split('T')[0]} 至 ${endDate.toISOString().split('T')[0]}`,
-		提交时间: startDate.toISOString().replace('T', ' ').slice(0, 19),
+		预约开始结束时间: `${startDate.toISOString().split("T")[0]} 至 ${endDate.toISOString().split("T")[0]}`,
+		提交时间: startDate.toISOString().replace("T", " ").slice(0, 19),
 		提单时长: `${Math.floor(Math.random() * 48) + 1}小时`,
-		完成时间: random状态 === "已完成" ? endDate.toISOString().replace('T', ' ').slice(0, 19) : "",
+		完成时间: random状态 === "已完成" ? endDate.toISOString().replace("T", " ").slice(0, 19) : "",
 		状态: random状态,
 		违规说明: random状态 === "已取消" ? "用户取消" : "",
 		备注: `备注信息${index}`,

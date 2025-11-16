@@ -10,7 +10,12 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 排班设置_列表数据, type 排班设置_列表查询_VO, schedulingSettingTableData, 状态Options } from "./test-data";
+import {
+	type 排班设置_列表数据,
+	type 排班设置_列表查询_VO,
+	schedulingSettingTableData,
+	状态Options,
+} from "./test-data";
 import { type SchedulingSettingFormProps, defaultForm, type 排班设置表单_VO } from "./components/form";
 import SchedulingSettingForm from "./components/form.vue";
 

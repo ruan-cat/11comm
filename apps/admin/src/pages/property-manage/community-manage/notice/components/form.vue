@@ -7,13 +7,7 @@ import { ref, computed, watch, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 
-import {
-	CommunityNoticeFormProps,
-	小区公示表单_VO,
-	defaultForm,
-	公示类型选项,
-	公示状态选项
-} from "./form";
+import { CommunityNoticeFormProps, 小区公示表单_VO, defaultForm, 公示类型选项, 公示状态选项 } from "./form";
 
 const props = defineProps<CommunityNoticeFormProps>();
 
@@ -62,31 +56,28 @@ function 切换预览模式() {
 }
 
 /** 监听日期变化，自动更新状态 */
-watch(
-	[() => form.value.有效期开始, () => form.value.有效期结束],
-	([开始时间, 结束时间]) => {
-		if (!开始时间 || !结束时间) return;
+watch([() => form.value.有效期开始, () => form.value.有效期结束], ([开始时间, 结束时间]) => {
+	if (!开始时间 || !结束时间) return;
 
-		const 今天 = new Date();
-		const 开始 = new Date(开始时间);
-		const 结束 = new Date(结束时间);
+	const 今天 = new Date();
+	const 开始 = new Date(开始时间);
+	const 结束 = new Date(结束时间);
 
-		if (今天 < 开始) {
-			// 还未到发布时间
-			if (form.value.状态 === "已发布") {
-				form.value.状态 = "草稿";
-			}
-		} else if (今天 > 结束) {
-			// 已过期
-			form.value.状态 = "已过期";
-		} else {
-			// 在有效期内
-			if (form.value.状态 === "草稿") {
-				form.value.状态 = "已发布";
-			}
+	if (今天 < 开始) {
+		// 还未到发布时间
+		if (form.value.状态 === "已发布") {
+			form.value.状态 = "草稿";
+		}
+	} else if (今天 > 结束) {
+		// 已过期
+		form.value.状态 = "已过期";
+	} else {
+		// 在有效期内
+		if (form.value.状态 === "草稿") {
+			form.value.状态 = "已发布";
 		}
 	}
-);
+});
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
@@ -187,17 +178,40 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 /** 表单校验规则 */
 const plusFormRules = computed(() => ({
 	标题: [
-		{ required: true, message: transformI18n($t("propertyManage_communityManage.notice.form.titleRequired")), trigger: "blur" },
-		{ min: 2, max: MAX_TITLE_LENGTH, message: transformI18n($t("propertyManage_communityManage.notice.form.titleLength", { min: 2, max: MAX_TITLE_LENGTH })), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.notice.form.titleRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: MAX_TITLE_LENGTH,
+			message: transformI18n(
+				$t("propertyManage_communityManage.notice.form.titleLength", { min: 2, max: MAX_TITLE_LENGTH }),
+			),
+			trigger: "blur",
+		},
 	],
 	类型: [
-		{ required: true, message: transformI18n($t("propertyManage_communityManage.notice.form.typeRequired")), trigger: "change" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.notice.form.typeRequired")),
+			trigger: "change",
+		},
 	],
 	有效期开始: [
-		{ required: true, message: transformI18n($t("propertyManage_communityManage.notice.form.validityStartRequired")), trigger: "change" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.notice.form.validityStartRequired")),
+			trigger: "change",
+		},
 	],
 	有效期结束: [
-		{ required: true, message: transformI18n($t("propertyManage_communityManage.notice.form.validityEndRequired")), trigger: "change" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.notice.form.validityEndRequired")),
+			trigger: "change",
+		},
 		{
 			validator: (rule: any, value: string, callback: any) => {
 				if (!form.value.有效期开始 || !value) {
@@ -216,11 +230,26 @@ const plusFormRules = computed(() => ({
 		},
 	],
 	状态: [
-		{ required: true, message: transformI18n($t("propertyManage_communityManage.notice.form.statusRequired")), trigger: "change" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.notice.form.statusRequired")),
+			trigger: "change",
+		},
 	],
 	内容摘要: [
-		{ required: true, message: transformI18n($t("propertyManage_communityManage.notice.form.contentSummaryRequired")), trigger: "blur" },
-		{ min: 10, max: MAX_SUMMARY_LENGTH, message: transformI18n($t("propertyManage_communityManage.notice.form.contentSummaryLength", { min: 10, max: MAX_SUMMARY_LENGTH })), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.notice.form.contentSummaryRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 10,
+			max: MAX_SUMMARY_LENGTH,
+			message: transformI18n(
+				$t("propertyManage_communityManage.notice.form.contentSummaryLength", { min: 10, max: MAX_SUMMARY_LENGTH }),
+			),
+			trigger: "blur",
+		},
 	],
 }));
 
@@ -260,14 +289,12 @@ defineExpose({
 	<section class="form-root">
 		<!-- 预览/编辑切换按钮 -->
 		<div class="操作栏">
-			<ElButton
-				type="primary"
-				plain
-				size="small"
-				@click="切换预览模式"
-				:icon="显示预览 ? 'Edit' : 'View'"
-			>
-				{{ 显示预览 ? transformI18n($t("propertyManage_communityManage.notice.form.backToEdit")) : transformI18n($t("propertyManage_communityManage.notice.form.previewEffect")) }}
+			<ElButton type="primary" plain size="small" :icon="显示预览 ? 'Edit' : 'View'" @click="切换预览模式">
+				{{
+					显示预览
+						? transformI18n($t("propertyManage_communityManage.notice.form.backToEdit"))
+						: transformI18n($t("propertyManage_communityManage.notice.form.previewEffect"))
+				}}
 			</ElButton>
 		</div>
 
@@ -285,14 +312,18 @@ defineExpose({
 			<!-- 字数统计显示 -->
 			<div class="字数统计区域">
 				<div class="统计项">
-					<span class="统计标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.titleCharCount")) }}</span>
-					<span class="统计数字" :class="{ '字数警告': 标题字数统计 > MAX_TITLE_LENGTH * 0.9 }">
+					<span class="统计标签">{{
+						transformI18n($t("propertyManage_communityManage.notice.form.titleCharCount"))
+					}}</span>
+					<span class="统计数字" :class="{ 字数警告: 标题字数统计 > MAX_TITLE_LENGTH * 0.9 }">
 						{{ 标题字数统计 }} / {{ MAX_TITLE_LENGTH }}
 					</span>
 				</div>
 				<div class="统计项">
-					<span class="统计标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.summaryCharCount")) }}</span>
-					<span class="统计数字" :class="{ '字数警告': 摘要字数统计 > MAX_SUMMARY_LENGTH * 0.9 }">
+					<span class="统计标签">{{
+						transformI18n($t("propertyManage_communityManage.notice.form.summaryCharCount"))
+					}}</span>
+					<span class="统计数字" :class="{ 字数警告: 摘要字数统计 > MAX_SUMMARY_LENGTH * 0.9 }">
 						{{ 摘要字数统计 }} / {{ MAX_SUMMARY_LENGTH }}
 					</span>
 				</div>
@@ -308,15 +339,25 @@ defineExpose({
 							{{ form.标题 || transformI18n($t("propertyManage_communityManage.notice.form.preview.titlePreview")) }}
 						</h3>
 						<div class="公示元信息">
-							<ElTag :type="form.类型 === '通知' ? 'primary' :
-										form.类型 === '公告' ? 'success' :
-										form.类型 === '提醒' ? 'warning' :
-										form.类型 === '活动' ? 'info' :
-										form.类型 === '维修' ? 'danger' : 'primary'" size="small">
+							<ElTag
+								:type="
+									form.类型 === '通知'
+										? 'primary'
+										: form.类型 === '公告'
+											? 'success'
+											: form.类型 === '提醒'
+												? 'warning'
+												: form.类型 === '活动'
+													? 'info'
+													: form.类型 === '维修'
+														? 'danger'
+														: 'primary'
+								"
+								size="small"
+							>
 								{{ form.类型 || transformI18n($t("propertyManage_communityManage.notice.form.preview.type")) }}
 							</ElTag>
-							<ElTag :type="form.状态 === '已发布' ? 'success' :
-										form.状态 === '草稿' ? 'info' : 'danger'" size="small">
+							<ElTag :type="form.状态 === '已发布' ? 'success' : form.状态 === '草稿' ? 'info' : 'danger'" size="small">
 								{{ form.状态 || transformI18n($t("propertyManage_communityManage.notice.form.preview.status")) }}
 							</ElTag>
 						</div>
@@ -326,19 +367,31 @@ defineExpose({
 				<div class="公示内容">
 					<div class="公示摘要">
 						<h4>{{ transformI18n($t("propertyManage_communityManage.notice.form.preview.contentSummary")) }}</h4>
-						<p>{{ form.内容摘要 || transformI18n($t("propertyManage_communityManage.notice.form.preview.noSummary")) }}</p>
+						<p>
+							{{ form.内容摘要 || transformI18n($t("propertyManage_communityManage.notice.form.preview.noSummary")) }}
+						</p>
 					</div>
 
 					<div class="公示时间信息">
 						<div class="时间项">
-							<span class="时间标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.preview.validityPeriod")) }}</span>
+							<span class="时间标签">{{
+								transformI18n($t("propertyManage_communityManage.notice.form.preview.validityPeriod"))
+							}}</span>
 							<span class="时间值">
-								{{ form.有效期开始 || transformI18n($t("propertyManage_communityManage.notice.form.preview.startDate")) }} ~ {{ form.有效期结束 || transformI18n($t("propertyManage_communityManage.notice.form.preview.endDate")) }}
+								{{
+									form.有效期开始 || transformI18n($t("propertyManage_communityManage.notice.form.preview.startDate"))
+								}}
+								~
+								{{ form.有效期结束 || transformI18n($t("propertyManage_communityManage.notice.form.preview.endDate")) }}
 							</span>
 						</div>
 						<div class="时间项">
-							<span class="时间标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.preview.publisher")) }}</span>
-							<span class="时间值">{{ form.发布人 || transformI18n($t("propertyManage_communityManage.notice.form.preview.systemAdmin")) }}</span>
+							<span class="时间标签">{{
+								transformI18n($t("propertyManage_communityManage.notice.form.preview.publisher"))
+							}}</span>
+							<span class="时间值">{{
+								form.发布人 || transformI18n($t("propertyManage_communityManage.notice.form.preview.systemAdmin"))
+							}}</span>
 						</div>
 					</div>
 				</div>

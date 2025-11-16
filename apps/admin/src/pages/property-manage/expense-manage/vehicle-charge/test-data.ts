@@ -1,4 +1,4 @@
-import { type OptionsType } from "plus-pro-components";
+import type { OptionsType } from "plus-pro-components";
 
 /** 车辆收费表格数据类型 */
 export interface 车辆收费_列表数据 {
