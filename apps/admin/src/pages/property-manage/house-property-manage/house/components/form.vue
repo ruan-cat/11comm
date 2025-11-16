@@ -157,7 +157,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "change",
 		},
 	],
-};
+});
 
 defineExpose({
 	plusFormInstance,

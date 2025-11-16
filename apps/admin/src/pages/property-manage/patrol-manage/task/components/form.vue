@@ -126,7 +126,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "change",
 		},
 	],
-};
+});
 
 /** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
