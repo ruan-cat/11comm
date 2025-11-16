@@ -76,7 +76,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
 	班次名称: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
 	排班类型: [{ required: true, message: "请选择排班类型", trigger: "change" }],

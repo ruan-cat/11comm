@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = computed(() => {
 	return {
 		编号: [{ required: true, message: "请输入编号", trigger: "blur" }],

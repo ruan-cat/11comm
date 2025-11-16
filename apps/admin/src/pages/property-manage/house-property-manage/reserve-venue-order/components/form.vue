@@ -168,7 +168,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 /** 表单项配置 动态计算 只读 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验 */
+/** 表单校验规则 */
 const plusFormRules = {};
 
 defineExpose({

@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 /** 表单项配置 动态计算 只读 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验 */
+/** 表单校验规则 */
 const plusFormRules = {
 	甲方: [{ required: true, message: "请输入甲方名称", trigger: "blur" }],
 	甲方联系人: [{ required: true, message: "请输入甲方联系人", trigger: "blur" }],

@@ -130,7 +130,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = computed(() => ({
 	patrolPointName: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
 	patrolPlanName: [{ required: true, message: "请输入巡检计划名称", trigger: "blur" }],

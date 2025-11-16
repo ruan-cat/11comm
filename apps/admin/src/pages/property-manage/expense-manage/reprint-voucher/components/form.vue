@@ -120,7 +120,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = ref({
 	打印份数: [
 		{

@@ -81,7 +81,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = {
 	巡检点名称: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
 	巡检点类型: [{ required: true, message: "请选择巡检点类型", trigger: "change" }],

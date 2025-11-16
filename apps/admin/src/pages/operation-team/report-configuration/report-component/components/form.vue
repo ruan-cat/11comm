@@ -83,7 +83,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表单校验 */
+/** 表单校验规则 */
 const plusFormRules = {};
 
 defineExpose({

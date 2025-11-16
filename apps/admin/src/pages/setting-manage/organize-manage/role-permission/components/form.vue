@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
 	角色名称: [
 		{ required: true, message: "请输入角色名称", trigger: "blur" },

@@ -142,7 +142,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = computed(() => ({
 	停车场: [{ required: true, message: "请选择停车场", trigger: "change" }],
 	车位: [{ required: true, message: "请输入车位编号", trigger: "blur" }],

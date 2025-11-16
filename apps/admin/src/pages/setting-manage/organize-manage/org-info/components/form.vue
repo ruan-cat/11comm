@@ -75,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
 	组织名称: [{ required: true, message: "请输入组织名称", trigger: "blur" }],
 	组织类型: [{ required: true, message: "请选择组织类型", trigger: "change" }],

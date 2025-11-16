@@ -103,7 +103,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单验证规则 */
+/** 表单校验规则 */
 const plusFormRules = {
 	计划名称: [{ required: true, message: "请输入计划名称", trigger: "blur" }],
 	计划路线: [{ required: true, message: "请输入计划路线", trigger: "blur" }],

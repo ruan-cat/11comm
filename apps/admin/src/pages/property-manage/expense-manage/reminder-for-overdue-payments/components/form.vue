@@ -10,7 +10,7 @@ import {
 	欠费催缴表单_VO,
 	defaultForm,
 	催缴方式Options,
-	催缴状态Options
+	催缴状态Options,
 } from "./form";
 
 const props = defineProps<ReminderForOverduePaymentsFormProps>();
@@ -115,7 +115,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 /** 表单项配置 动态计算 只读 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验 */
+/** 表单校验规则 */
 const plusFormRules = {};
 
 defineExpose({
