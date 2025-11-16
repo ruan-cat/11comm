@@ -90,7 +90,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-};
+});
 
 // 暴露给父组件使用的变量和方法
 defineExpose({
