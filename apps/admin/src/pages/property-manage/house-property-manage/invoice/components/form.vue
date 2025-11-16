@@ -108,7 +108,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = {
+const plusFormRules = ref<PlusFormRules>({
 	发票类型: [
 		{
 			required: true,
@@ -151,7 +151,7 @@ const plusFormRules = {
 			message: "请输入发票号",
 		},
 	],
-};
+});
 
 /** 对外导出表单实例和表单对象 */
 defineExpose({

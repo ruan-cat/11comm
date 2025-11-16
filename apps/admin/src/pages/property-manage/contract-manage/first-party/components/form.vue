@@ -68,14 +68,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = {
+const plusFormRules = ref<PlusFormRules>({
 	甲方: [{ required: true, message: "请输入甲方名称", trigger: "blur" }],
 	甲方联系人: [{ required: true, message: "请输入甲方联系人", trigger: "blur" }],
 	联系电话: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-};
+});
 
 defineExpose({
 	plusFormInstance,

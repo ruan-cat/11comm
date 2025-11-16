@@ -82,14 +82,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = {
+const plusFormRules = ref<PlusFormRules>({
 	巡检点名称: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
 	巡检点类型: [{ required: true, message: "请选择巡检点类型", trigger: "change" }],
 	巡检位置: [{ required: true, message: "请输入巡检位置", trigger: "blur" }],
 	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
 	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
 	排序: [{ required: true, message: "请输入排序", trigger: "blur" }],
-};
+});
 
 defineExpose({
 	plusFormInstance,

@@ -104,7 +104,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = {
+const plusFormRules = ref<PlusFormRules>({
 	计划名称: [{ required: true, message: "请输入计划名称", trigger: "blur" }],
 	计划路线: [{ required: true, message: "请输入计划路线", trigger: "blur" }],
 	计划周期: [{ required: true, message: "请选择计划周期", trigger: "change" }],
@@ -117,7 +117,7 @@ const plusFormRules = {
 	],
 	巡检人员: [{ required: true, message: "请输入巡检人员", trigger: "blur" }],
 	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
-};
+});
 
 defineExpose({
 	plusFormInstance,

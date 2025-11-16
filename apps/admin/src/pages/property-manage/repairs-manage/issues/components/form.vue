@@ -109,7 +109,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = {
+const plusFormRules = ref<PlusFormRules>({
 	位置: [
 		{
 			required: true,
@@ -152,7 +152,7 @@ const plusFormRules = {
 			trigger: "change",
 		},
 	],
-};
+});
 
 /** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);

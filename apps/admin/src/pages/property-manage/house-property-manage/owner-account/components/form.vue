@@ -90,7 +90,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = {
+const plusFormRules = ref<PlusFormRules>({
 	账户类型: [
 		{
 			required: true,
@@ -129,7 +129,7 @@ const plusFormRules = {
 			trigger: "blur",
 		},
 	],
-};
+});
 
 // 默认导出表单实例和计算属性
 defineExpose({
@@ -145,7 +145,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
