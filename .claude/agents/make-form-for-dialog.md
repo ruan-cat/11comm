@@ -214,9 +214,34 @@ const plusFormColumns = ref<PlusColumn[]>([
 ```
 
 1. 必须使用 `PlusColumn` 类型做字段约束。
-2. `PlusColumn` 类型是全局导入的类型，不需要你手动导入。请直接使用。
+2. `PlusColumn` 类型是全局导入的类型，**不需要**你手动导入。请直接使用。
 
-### 6.7 默认对外导出函数
+### 6.7 表单校验规则 `plusFormRules`
+
+如以下代码所示：
+
+```ts
+/** 表单校验规则 */
+const plusFormRules = ref<PlusFormRules>({
+	排班名称: [{ required: true, message: "请输入排班名称", trigger: "blur" }],
+	排班类型: [{ required: true, message: "请选择排班类型", trigger: "change" }],
+	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	星期几: [{ required: true, message: "请选择星期几", trigger: "change" }],
+	负责人姓名: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
+	联系电话: [
+		{ required: true, message: "请输入联系电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+});
+```
+
+1. 代码注释**必须是**严格的 `/** 表单校验规则 */` 。
+2. 必须使用 `PlusFormRules` 类型做字段约束。
+3. `PlusFormRules` 类型是全局导入的类型，**不需要**你手动导入。请直接使用。
+4. 必须使用 `ref` 来定义响应式变量，不允许使用 `reactive` 来定义。
+
+### 6.8 默认对外导出函数
 
 表单组件必须默认导出：
 
