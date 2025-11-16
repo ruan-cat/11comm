@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = {};
+const plusFormRules = ref<PlusFormRules>({});
 
 defineExpose({
 	plusFormInstance,

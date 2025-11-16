@@ -77,7 +77,7 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 /**
  * 表单校验
  */
-const plusFormRules = {};
+const plusFormRules = ref<PlusFormRules>({});
 
 defineExpose({
 	plusFormInstance,
