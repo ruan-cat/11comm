@@ -4,7 +4,6 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, reactive, useTemplateRef } from "vue";
-import type { FormItemRule } from "element-plus";
 
 import { ShiftSettingFormProps, 班次设置表单_VO } from "./form";
 
@@ -81,16 +80,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 ]);
 
 // 表单验证规则
-const plusFormRules = reactive({
-	班次名称: [
-		{ required: true, message: "请输入班次名称", trigger: "blur" } as FormItemRule,
-	],
-	时段: [
-		{ required: true, message: "请输入时段", trigger: "blur" } as FormItemRule,
-	],
-	状态: [
-		{ required: true, message: "请选择状态", trigger: "change" } as FormItemRule,
-	],
+const plusFormRules = ref<PlusFormRules>({
+	班次名称: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
+	时段: [{ required: true, message: "请输入时段", trigger: "blur" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 // 对外导出表单实例和表单对象

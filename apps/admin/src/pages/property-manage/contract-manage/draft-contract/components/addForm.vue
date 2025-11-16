@@ -38,7 +38,6 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
 	// 合同基本信息
@@ -268,7 +267,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = reactive({
+const plusFormRules = ref<PlusFormRules>({
 	合同名称: [
 		{ required: true, message: "请填写合同名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "合同名称长度在 2 到 50 个字符", trigger: "blur" },

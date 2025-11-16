@@ -3,7 +3,7 @@ import { computed, reactive, ref } from "vue";
 import { useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
 import type { PlusColumn } from "plus-pro-components";
-import type { FormItemRule } from "element-plus";
+
 import { RolePermissionFormProps, type 角色权限表单_VO } from "./form";
 
 /** 表单组件 props */
@@ -78,25 +78,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单验证规则 */
-const plusFormRules = reactive({
+const plusFormRules = ref<PlusFormRules>({
 	角色名称: [
-		{ required: true, message: "请输入角色名称", trigger: "blur" } as FormItemRule,
-		{ min: 2, max: 50, message: "角色名称长度在 2 到 50 个字符", trigger: "blur" } as FormItemRule,
+		{ required: true, message: "请输入角色名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "角色名称长度在 2 到 50 个字符", trigger: "blur" },
 	],
 	角色编码: [
-		{ required: true, message: "请输入角色编码", trigger: "blur" } as FormItemRule,
+		{ required: true, message: "请输入角色编码", trigger: "blur" },
 		{
 			pattern: /^[A-Z][A-Z0-9_]*$/,
 			message: "角色编码只能包含大写字母、数字和下划线，且以大写字母开头",
-			trigger: "blur"
-		} as FormItemRule,
+			trigger: "blur",
+		},
 	],
-	状态: [
-		{ required: true, message: "请选择角色状态", trigger: "change" } as FormItemRule,
-	],
-	描述: [
-		{ max: 200, message: "角色描述不能超过 200 个字符", trigger: "blur" } as FormItemRule,
-	],
+	状态: [{ required: true, message: "请选择角色状态", trigger: "change" }],
+	描述: [{ max: 200, message: "角色描述不能超过 200 个字符", trigger: "blur" }],
 });
 
 // 默认导出表单实例和表单对象，供外部使用

@@ -76,19 +76,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单验证规则 */
-const plusFormRules = reactive({
-	组织名称: [
-		{ required: true, message: "请输入组织名称", trigger: "blur" },
-	],
-	组织类型: [
-		{ required: true, message: "请选择组织类型", trigger: "change" },
-	],
-	组织编码: [
-		{ required: true, message: "请输入组织编码", trigger: "blur" },
-	],
-	负责人姓名: [
-		{ required: true, message: "请输入负责人姓名", trigger: "blur" },
-	],
+const plusFormRules = ref<PlusFormRules>({
+	组织名称: [{ required: true, message: "请输入组织名称", trigger: "blur" }],
+	组织类型: [{ required: true, message: "请选择组织类型", trigger: "change" }],
+	组织编码: [{ required: true, message: "请输入组织编码", trigger: "blur" }],
+	负责人姓名: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
 	联系电话: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },

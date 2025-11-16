@@ -190,27 +190,19 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单验证规则 */
-const plusFormRules = reactive({
+const plusFormRules = ref<PlusFormRules>({
 	用户名: [
-		{ required: true, message: "请输入用户名", trigger: "blur" } as FormItemRule,
-		{ min: 3, max: 20, message: "用户名长度应在3-20个字符之间", trigger: "blur" } as FormItemRule,
+		{ required: true, message: "请输入用户名", trigger: "blur" },
+		{ min: 3, max: 20, message: "用户名长度应在3-20个字符之间", trigger: "blur" },
 	],
 	真实姓名: [
-		{ required: true, message: "请输入真实姓名", trigger: "blur" } as FormItemRule,
-		{ min: 2, max: 10, message: "真实姓名长度应在2-10个字符之间", trigger: "blur" } as FormItemRule,
+		{ required: true, message: "请输入真实姓名", trigger: "blur" },
+		{ min: 2, max: 10, message: "真实姓名长度应在2-10个字符之间", trigger: "blur" },
 	],
-	所属部门: [
-		{ required: true, message: "请选择所属部门", trigger: "change" } as FormItemRule,
-	],
-	修改时间: [
-		{ required: true, message: "请选择修改时间", trigger: "change" } as FormItemRule,
-	],
-	修改类型: [
-		{ required: true, message: "请选择修改类型", trigger: "change" } as FormItemRule,
-	],
-	状态: [
-		{ required: true, message: "请选择状态", trigger: "change" } as FormItemRule,
-	],
+	所属部门: [{ required: true, message: "请选择所属部门", trigger: "change" }],
+	修改时间: [{ required: true, message: "请选择修改时间", trigger: "change" }],
+	修改类型: [{ required: true, message: "请选择修改类型", trigger: "change" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 /** 计算属性：表单列配置 */

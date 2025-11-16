@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useTemplateRef, computed, ref, reactive } from "vue";
-import type { FormItemRule } from "element-plus";
+
 import { 排班类型Options, 状态Options, type SchedulingSettingFormProps, type 排班设置表单_VO } from "./form";
 
 const props = defineProps<SchedulingSettingFormProps>();
@@ -77,23 +77,15 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单验证规则 */
-const plusFormRules = reactive({
-	班次名称: [
-		{ required: true, message: "请输入班次名称", trigger: "blur" } as FormItemRule,
-	],
-	排班类型: [
-		{ required: true, message: "请选择排班类型", trigger: "change" } as FormItemRule,
-	],
+const plusFormRules = ref<PlusFormRules>({
+	班次名称: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
+	排班类型: [{ required: true, message: "请选择排班类型", trigger: "change" }],
 	排班周期: [
-		{ required: true, message: "请输入排班周期", trigger: "blur" } as FormItemRule,
-		{ type: "number", min: 1, message: "排班周期必须大于0", trigger: "blur" } as FormItemRule,
+		{ required: true, message: "请输入排班周期", trigger: "blur" },
+		{ type: "number", min: 1, message: "排班周期必须大于0", trigger: "blur" },
 	],
-	生效时间: [
-		{ required: true, message: "请选择生效时间", trigger: "change" } as FormItemRule,
-	],
-	状态: [
-		{ required: true, message: "请选择状态", trigger: "change" } as FormItemRule,
-	],
+	生效时间: [{ required: true, message: "请选择生效时间", trigger: "change" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 /** 对外导出 */
