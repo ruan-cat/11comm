@@ -113,10 +113,6 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 1. 请阅读 `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.%E6%8C%87%E5%8D%97/02.%E8%BF%9B%E9%98%B6/01.%E5%9B%BE%E6%A0%87.md` 文档。
 2. 请你适当的阅读本项目的 `apps\admin` 目录，该目录的 vite 项目是基于 `pure-admin` 后台模板框架制作的。
 
-## `const plusFormRules = reactive(` 换写法
-
-`import type { FormItemRule } from "element-plus";`
-
 ## 11 代码写法更换
 
 1. 在 `apps\admin` 目录内，在全部的 `form.vue` 组件内，搜索字符串 `const plusFormRules = {` ，找到 plusFormRules 变量。
