@@ -1,4 +1,6 @@
 import type { DialogOptions } from "@/components/ReDialog/type";
+import type { Arrayable } from "element-plus/es/utils";
+import type { FormItemRule } from "element-plus";
 
 /**
  * 默认的 表格组件 配置
@@ -45,3 +47,12 @@ export const defaultAddDialogParams: DialogOptions = {
 	top: "10vh",
 	fullscreen: deviceDetection(),
 };
+
+/**
+ * 表单验证规则类型
+ * @description
+ * 用于定义表单验证规则
+ * 专用于给 `<PlusForm>` 表单组件使用
+ * 专用于给 plusFormRules 变量使用
+ */
+export type PlusFormRules = Partial<Record<string, Arrayable<FormItemRule>>>;
