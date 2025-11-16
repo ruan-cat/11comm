@@ -291,8 +291,6 @@ grep -r "type.*接口名" src/
 **解决方案：**
 
 ```typescript
-import type { FormItemRule } from "element-plus";
-
 // ❌ 错误的写法：类型推断失败
 const plusFormRules = reactive({
 	联系电话: [
@@ -300,21 +298,19 @@ const plusFormRules = reactive({
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
 });
+```
 
-// ✅ 正确的写法：明确类型注解
-const plusFormRules = reactive({
+```typescript
+// ✅ 正确的写法：
+// 1. 使用全局类型 `PlusFormRules` 来约束变量 plusFormRules 。
+// 2. 变量 plusFormRules 使用 ref 而不是 reactive 来定义。
+const plusFormRules = ref<PlusFormRules>({
 	联系电话: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" } as FormItemRule,
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" } as FormItemRule,
+		{ required: true, message: "请输入联系电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
 });
 ```
-
-**关键经验：**
-
-- 当 TypeScript 类型推断失败时，使用明确的类型断言
-- 导入相关的类型定义（如 `FormItemRule`）
-- 为复杂对象结构中的每个元素添加类型注解
 
 #### 6.2.3 问题三：未使用导入清理
 
