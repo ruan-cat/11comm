@@ -119,3 +119,7 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 2. 阅读 `.claude\agents\make-form-for-dialog.md` 文件。针对你查找出来的代码，这些 plusFormRules 变量写法不满足 `make-form-for-dialog` 子代理的要求，请修改。
 3. 你只修改 plusFormRules 变量的写法，其他的部分不作处理。
 4. 独立运行 `make-form-for-dialog` 子代理完成修改。
+
+## 12 修复类型故障
+
+运行 `apps\admin\package.json` 的 `typecheck` 命令，并修复类型错误。

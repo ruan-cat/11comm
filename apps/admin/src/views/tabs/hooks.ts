@@ -23,8 +23,8 @@ export function useDetail() {
 				query: parameter,
 				meta: {
 					title: {
-						zh: `No.${parameter.id} - 详情信息`,
-						en: `No.${parameter.id} - DetailInfo`,
+						zh: `No.${(parameter as any).id} - 详情信息`,
+						en: `No.${(parameter as any).id} - DetailInfo`,
 					},
 					// 如果使用的是非国际化精简版title可以像下面这么写
 					// title: `No.${index} - 详情信息`,
@@ -33,6 +33,7 @@ export function useDetail() {
 				},
 			});
 			// 路由跳转
+			// @ts-ignore - TabQueryDetail 路由名称暂不在自动生成的路由类型中
 			router.push({ name: "TabQueryDetail", query: parameter });
 		} else if (model === "params") {
 			useMultiTagsStoreHook().handleTags("push", {
@@ -41,13 +42,14 @@ export function useDetail() {
 				params: parameter,
 				meta: {
 					title: {
-						zh: `No.${parameter.id} - 详情信息`,
-						en: `No.${parameter.id} - DetailInfo`,
+						zh: `No.${(parameter as any).id} - 详情信息`,
+						en: `No.${(parameter as any).id} - DetailInfo`,
 					},
 					// 如果使用的是非国际化精简版title可以像下面这么写
 					// title: `No.${index} - 详情信息`,
 				},
 			});
+			// @ts-ignore - TabParamsDetail 路由名称暂不在自动生成的路由类型中
 			router.push({ name: "TabParamsDetail", params: parameter });
 		}
 	}

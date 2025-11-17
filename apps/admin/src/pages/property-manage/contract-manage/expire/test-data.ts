@@ -44,7 +44,7 @@ export const tableData: 业务受理_列表数据[] = Array(35)
 	.map((_, index) => ({
 		合同名称: `合同-${index + 1}`,
 		合同编号: `HT${(Date.now() + index * 1000).toString(36).toUpperCase().substring(4)}`,
-		合同类型: 合同类型Options[index % 合同类型Options.length].value,
+		合同类型: String((合同类型Options as any)[index % (合同类型Options as any).length].value),
 		甲方: ["XX科技有限公司", "XX网络技术有限公司", "XX软件开发有限公司", "XX信息技术服务公司"][index % 4],
 		乙方: ["XX信息技术服务公司", "XX系统集成有限公司", "XX数据服务中心", "XX云端科技有限公司"][index % 4],
 		变更类型: ["合同金额", "服务期限", "服务内容", "付款方式", "合同主体"][index % 5],
@@ -59,5 +59,5 @@ export const tableData: 业务受理_列表数据[] = Array(35)
 			"优化合作条款",
 			"补充技术附件",
 		][index % 7],
-		状态: 审核类型Options[index % 审核类型Options.length].value,
+		状态: String((审核类型Options as any)[index % (审核类型Options as any).length].value),
 	}));

@@ -12,7 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type 物业公司_列表数据, type 物业公司_列表查询_VO, tableData as mockTableData } from "./test-data";
 
-import { type PropertyManagementCompanyFormProps, defaultForm } from "./components/form";
+import { type PropertyManagementCompanyFormProps, defaultForm, type 物业公司表单_VO } from "./components/form";
 import PropertyManagementCompanyForm from "./components/form.vue";
 const PropertyManagementCompanyFormInstance = ref<InstanceType<typeof PropertyManagementCompanyForm> | null>(null);
 
@@ -230,7 +230,7 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 	const title = `${modeText.value}物业公司`;
 
 	/** 业务对象 */
-	const 物业公司_列表数据: 物业公司_列表数据 = isAdd.value
+	const 物业公司表单_VO: 物业公司表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
@@ -247,8 +247,8 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 
 	/** 表单组件需要的props */
 	const props: PropertyManagementCompanyFormProps = {
-		form: 物业公司_列表数据,
-		defaultValues: 物业公司_列表数据,
+		form: 物业公司表单_VO,
+		defaultValues: 物业公司表单_VO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

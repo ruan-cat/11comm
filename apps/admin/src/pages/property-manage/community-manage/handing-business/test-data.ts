@@ -36,7 +36,7 @@ const tableDataItem: 业务受理_列表数据 = {
 };
 
 /** 费用类型选项 */
-export const 费用类型Options: OptionsType[] = [
+export const 费用类型Options: OptionsType = [
 	{
 		label: "周期费用",
 		value: "周期费用",
@@ -56,7 +56,7 @@ export const 费用类型Options: OptionsType[] = [
 ];
 
 /** 状态选项 */
-export const 状态Options: OptionsType[] = [
+export const 状态Options: OptionsType = [
 	{
 		label: "待缴费",
 		value: "待缴费",

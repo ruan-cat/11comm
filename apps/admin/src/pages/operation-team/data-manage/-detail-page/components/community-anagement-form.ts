@@ -1,3 +1,11 @@
+/** 管理小区表单数据类型 */
+export interface 管理小区表单_VO {
+	/** 开通小区 */
+	开通小区: string;
+	/** 功能 */
+	功能: string | string[];
+}
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 管理小区表单_VO = {
 	开通小区: "",

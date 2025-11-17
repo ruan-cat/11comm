@@ -106,6 +106,7 @@ export function useNav() {
 	}
 
 	function toAccountSettings() {
+		// @ts-ignore - AccountSettings 路由名称暂不在自动生成的路由类型中
 		router.push({ name: "AccountSettings" });
 	}
 

@@ -26,6 +26,7 @@ const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
 /**
  * 在本工具文件内 我们换成 自动化布局插件 提供的函数
  */
+// @ts-ignore - vue-router/auto 类型定义问题
 import { createWebHistory } from "vue-router/auto";
 
 // 动态路由

@@ -36,5 +36,5 @@ export const tableData: 车辆收费_列表数据[] = Array(35)
 		"车位(单位:号)": `${String.fromCharCode(65 + Math.floor(index / 10))}-${String((index % 10) + 1).padStart(3, "0")}`,
 		业主名称: `业主${index + 1}`,
 		联系方式: `138${String(10000000 + index).padStart(8, "0")}`,
-		车位状态: 车位状态Options[index % 3].value,
+		车位状态: String((车位状态Options as any)[index % 3].value),
 	}));

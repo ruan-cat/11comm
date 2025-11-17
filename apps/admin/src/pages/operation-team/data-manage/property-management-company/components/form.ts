@@ -1,3 +1,21 @@
+/** 物业公司表单数据类型 */
+export interface 物业公司表单_VO {
+	/** 名称 */
+	名称: string;
+	/** 地址 */
+	地址: string;
+	/** 电话 */
+	电话: string;
+	/** 公司法人 */
+	公司法人: string;
+	/** 成立日期 */
+	成立日期: string;
+	/** 地标 */
+	地标: string;
+	/** 开通小区 */
+	开通小区: string;
+}
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 物业公司表单_VO = {
 	名称: "",

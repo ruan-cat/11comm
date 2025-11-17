@@ -50,7 +50,7 @@ const tableDataItem: 产权登记_列表数据 = {
 };
 
 /** 审核状态选项 */
-export const 审核状态Options: OptionsType[] = [
+export const 审核状态Options: OptionsType = [
 	{
 		label: "未审核",
 		value: "未审核",
@@ -66,7 +66,7 @@ export const 审核状态Options: OptionsType[] = [
 ];
 
 /** 楼栋选项 */
-export const 楼栋Options: OptionsType[] = [
+export const 楼栋Options: OptionsType = [
 	{
 		label: "一楼",
 		value: "一楼",
@@ -94,7 +94,7 @@ export const 楼栋Options: OptionsType[] = [
 ];
 
 /** 单元选项 */
-export const 单元Options: OptionsType[] = [
+export const 单元Options: OptionsType = [
 	{
 		label: "一单元",
 		value: "一单元",

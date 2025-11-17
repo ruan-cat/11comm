@@ -1,3 +1,5 @@
+import { useConfigurableVerifyCode } from "../index";
+
 // 参数类型定义
 interface BaseParams {
 	username: string;
@@ -10,6 +12,9 @@ interface CaptchaData {
 	smsCode?: string; // 短信验证码
 	phone?: string; // 手机号
 }
+
+// 使用组合式函数
+const { buildLoginParams } = useConfigurableVerifyCode();
 
 // 使用示例
 const loginParams = buildLoginParams(

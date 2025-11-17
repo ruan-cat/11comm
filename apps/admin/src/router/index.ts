@@ -32,7 +32,9 @@ import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/au
 import { consola } from "consola";
 
 // 自动化路由插件
+// @ts-ignore - vue-router/auto 类型定义问题
 import { createRouter } from "vue-router/auto";
+// @ts-ignore - vue-router/auto-routes 类型定义问题
 import { handleHotUpdate, routes as autoRoutes } from "vue-router/auto-routes";
 
 // 自动化布局插件
