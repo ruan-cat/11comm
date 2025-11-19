@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type 初始化小区_列表数据, type 初始化小区_列表查询_VO, tableData as mockTableData } from "./test-data";
 
@@ -18,14 +18,15 @@ import FormatForm from "./components/format-form.vue";
 const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<初始化小区_列表数据[]>(mockTableData);
+const tableData = ref<初始化小区_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "小区ID",
 		prop: "小区ID",
-		minWidth: 120,
+		width: 120,
 	},
 	{
 		label: "小区名称",
@@ -49,7 +50,7 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		label: transformI18n($t("common.table.operation")),
+		headerRenderer: () => transformI18n($t("common.table.operation")),
 		width: 120,
 		fixed: "right",
 		slot: "operation",
@@ -61,19 +62,50 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: tableData.value.length,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	/** 做异步接口请求 */
+	await loadTableData();
 }
 
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	/** 做异步接口请求 */
+	await loadTableData();
+}
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
+
+		/** 根据搜索条件过滤数据 */
+		if (plusSearchModel.value.小区ID) {
+			filteredData = filteredData.filter((item) => item.小区ID.includes(plusSearchModel.value.小区ID!));
+		}
+		if (plusSearchModel.value.小区名称) {
+			filteredData = filteredData.filter((item) => item.小区名称.includes(plusSearchModel.value.小区名称!));
+		}
+
+		/** 更新总数 */
+		pagination.value.total = filteredData.length;
+
+		/** 分页处理 */
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+
+		/** 更新表格配置 */
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+		/** TODO: 显示错误提示 */
+	}
 }
 
 /** 表格组件 配置 */
@@ -135,22 +167,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/**
- * 重新搜索
- */
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	/** 重置搜索条件并重新加载数据 */
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
-/**
- * 搜索
- */
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	/** 根据搜索条件过滤数据 */
 	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -243,13 +270,21 @@ function handleFormat(row: 初始化小区_列表数据) {
 	console.log("格式化操作", row);
 	openFormatDialog(row);
 }
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
