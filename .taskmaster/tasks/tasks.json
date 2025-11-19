@@ -200,7 +200,7 @@
 			"name": "改造 dev-team/menu-manage/group 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 dev-team/menu-manage/group/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -215,7 +215,7 @@
 			"name": "改造 dev-team/menu-manage/item 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 dev-team/menu-manage/item/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -230,7 +230,7 @@
 			"name": "改造 dev-team/cache-manage/refresh-cache 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 dev-team/cache-manage/refresh-cache/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -245,7 +245,7 @@
 			"name": "改造 dev-team/config-manage/type 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 dev-team/config-manage/type/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",

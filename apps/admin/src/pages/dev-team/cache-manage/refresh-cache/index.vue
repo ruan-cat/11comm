@@ -163,9 +163,9 @@ async function loadTableData() {
 	}
 }
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -190,7 +190,13 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
