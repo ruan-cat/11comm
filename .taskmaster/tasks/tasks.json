@@ -320,7 +320,7 @@
 			"name": "改造 operation-team/system-manage/system-config 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/system-manage/system-config/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
