@@ -10,11 +10,16 @@ definePage({
 
 import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 初始化小区_列表数据, type 初始化小区_列表查询_VO, tableData as mockTableData } from "./test-data";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { type 初始化小区_列表数据, type 初始化小区_列表查询_VO, type 初始化小区表单_VO, tableData as mockTableData } from "./test-data";
 
-import { type FormatFormProps, defaultForm } from "./components/format-form";
+import { type InitializeCellFormProps, defaultForm } from "./components/form";
+import InitializeCellForm from "./components/form.vue";
+
+import { type FormatFormProps, defaultForm as formatDefaultForm } from "./components/format-form";
 import FormatForm from "./components/format-form.vue";
 
+const initializeCellFormInstance = ref<InstanceType<typeof InitializeCellForm> | null>(null);
 const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
 
 /** 表格数据 */
@@ -196,6 +201,95 @@ async function testAsync() {
 }
 
 /**
+ * 打开弹框
+ */
+function openDialog(params: { mode: Mode; row?: 初始化小区_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+	/** 弹框标题 */
+	const title = `${modeText.value}初始化小区`;
+	/** 业务对象 */
+	const 初始化小区表单: 初始化小区表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					小区ID: row?.小区ID || "",
+					小区名称: row?.小区名称 || "",
+					附近地标: row?.附近地标 || "",
+					城市编码: row?.城市编码 || "",
+					状态: row?.状态 || "",
+				})
+			: cloneDeep({
+					...defaultForm,
+					小区ID: row?.小区ID || "",
+					小区名称: row?.小区名称 || "",
+					附近地标: row?.附近地标 || "",
+					城市编码: row?.城市编码 || "",
+					状态: row?.状态 || "",
+				});
+	/** 表单组件需要的props */
+	const formProps: InitializeCellFormProps = {
+		form: 初始化小区表单,
+		defaultValues: 初始化小区表单,
+	};
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+		width: "600px",
+
+		contentRenderer: () =>
+			h(InitializeCellForm, {
+				ref: initializeCellFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = initializeCellFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = initializeCellFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					initializeCellFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					/** 提交表单时 校验 */
+					const res = await initializeCellFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						await loadTableData();
+						consola.success("操作成功！");
+					}
+				},
+			},
+		],
+	});
+}
+
+/**
  * 打开格式化确认弹框
  */
 function openFormatDialog(row: 初始化小区_列表数据) {
@@ -204,8 +298,8 @@ function openFormatDialog(row: 初始化小区_列表数据) {
 
 	/** 表单组件需要的props */
 	const formProps: FormatFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: cloneDeep(formatDefaultForm),
+		defaultValues: cloneDeep(formatDefaultForm),
 		小区ID: row.小区ID,
 		小区名称: row.小区名称,
 	};
@@ -288,7 +382,9 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<!-- 预留按钮插槽 -->
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -301,6 +397,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							查看
+						</ElButton>
 						<ElButton type="info" @click="handleFormat(row)"> 格式化 </ElButton>
 					</template>
 				</PureTable>

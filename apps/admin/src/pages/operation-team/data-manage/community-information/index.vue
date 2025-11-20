@@ -16,6 +16,8 @@ import {
 	tableData as mockTableData,
 	searchOptions,
 } from "./test-data";
+import { type CommunityInformationFormProps, defaultForm, type 小区信息表单_VO } from "./components/form";
+import CommunityInformationForm from "./components/form.vue";
 
 /** 表格数据 */
 const tableData = ref<小区信息_列表数据[]>(mockTableData);
@@ -92,7 +94,7 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: tableData.value.length,
+	total: 0,
 });
 
 /** 处理页数变化 */
@@ -193,6 +195,108 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 表单组件实例 */
+const communityInformationFormInstance = ref<InstanceType<typeof CommunityInformationForm> | null>(null);
+
+/** 模拟异步操作函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 小区信息_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 业务对象 */
+	const 小区信息表单_VO: 小区信息表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					小区ID: row?.小区ID || "",
+					小区名称: row?.小区名称 || "",
+					物业公司: row?.物业公司 || "",
+					附近地标: row?.附近地标 || "",
+					城市编码: row?.城市编码 || "",
+					创建时间: row?.创建时间 || "",
+					社区编码: row?.社区编码 || "",
+					状态: row?.状态 || "正常运营",
+					省份: row?.省份 || "",
+					城市: row?.城市 || "",
+					区县: row?.区县 || "",
+					详细地址: row?.详细地址 || "",
+					联系电话: row?.联系电话 || "",
+					管理员: row?.管理员 || "",
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: CommunityInformationFormProps = {
+		form: 小区信息表单_VO,
+		defaultValues: 小区信息表单_VO,
+	};
+
+	/** 弹框标题 */
+	const title = `${modeText.value}小区信息`;
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+		contentRenderer: () =>
+			h(CommunityInformationForm, {
+				ref: communityInformationFormInstance,
+				...formProps,
+			}),
+		async doBeforeClose({ options, index }) {
+			const formComputed = communityInformationFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = communityInformationFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					communityInformationFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await communityInformationFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
+
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
@@ -255,11 +359,13 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -272,9 +378,15 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>

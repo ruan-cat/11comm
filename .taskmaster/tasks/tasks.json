@@ -350,7 +350,7 @@
 			"name": "改造 operation-team/system-manage/initialize-cell 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/system-manage/initialize-cell/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -365,7 +365,7 @@
 			"name": "改造 operation-team/system-manage/community-configuration 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/system-manage/community-configuration/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -380,7 +380,7 @@
 			"name": "改造 operation-team/data-manage/community-information 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/data-manage/community-information/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",

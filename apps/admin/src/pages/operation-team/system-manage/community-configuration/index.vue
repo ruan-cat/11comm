@@ -3,8 +3,8 @@ definePage({
 	meta: {
 		title: "小区配置",
 		icon: "mdi:cog",
-		roles: ["物业团队"],
-		rank: getRouteRank("settingManage.systemManage.communityConfiguration"),
+		roles: ["运营团队"],
+		rank: getRouteRank("operationTeam.systemManage.communityConfiguration"),
 	},
 });
 
