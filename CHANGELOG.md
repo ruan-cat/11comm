@@ -1,10 +1,8 @@
 ## <small>0.2.2 (2025-11-24)</small>
 
-* 🐎 ci(package.json)!: 更新 changelog 命令，换成常见的【conventional-changelog -p angular -i CHANGELOG.md -s】 ([f2bc9d7](https://github.com/ruan-cat/11comm/commit/f2bc9d7))
-* 🐳 chore(root): 直接用 conventional-changelog 生成本地更新日志，效果很不好看，很难绷。 ([f0c07d3](https://github.com/ruan-cat/11comm/commit/f0c07d3))
-* 🔧 config(config): 设置生成的更新日志，也同步提交。 ([febe552](https://github.com/ruan-cat/11comm/commit/febe552))
-
-
+- 🐎 ci(package.json)!: 更新 changelog 命令，换成常见的【conventional-changelog -p angular -i CHANGELOG.md -s】 ([f2bc9d7](https://github.com/ruan-cat/11comm/commit/f2bc9d7))
+- 🐳 chore(root): 直接用 conventional-changelog 生成本地更新日志，效果很不好看，很难绷。 ([f0c07d3](https://github.com/ruan-cat/11comm/commit/f0c07d3))
+- 🔧 config(config): 设置生成的更新日志，也同步提交。 ([febe552](https://github.com/ruan-cat/11comm/commit/febe552))
 
 ## <small>0.2.1 (2025-11-24)</small>
 
