@@ -13,4 +13,5 @@ export default defineConfig({
 	// tag: false,
 	// 不推送到远程仓库
 	// push: false,
+	execute: "pnpm run changelog",
 });

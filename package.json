@@ -15,7 +15,6 @@
 		"build": "turbo build",
 		"release:bumpp": "bumpp",
 		"release:changelogen": "changelogen --bump --release --push",
-		"changelog": "conventional-changelog -p angular",
 		"up-taze": "pnpm -w up @ruan-cat/taze-config -L && npx taze -r",
 		"git:dev-2-main": "git rebase dev main && pnpm run git:push",
 		"git:main-2-dev": "git rebase main dev",
@@ -39,6 +38,7 @@
 		"commit": "git-cz",
 		"build:cloudflare:admin": "pnpm -F=@01s-11comm/admin build",
 		"build:cloudflare:docs": "pnpm -F=@01s-11comm/admin docs:build",
+		"changelog": "conventional-changelog -p angular",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
 		"ci": "pnpm run build"
 	},
