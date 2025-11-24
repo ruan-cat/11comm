@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import type { OptionsType } from "plus-pro-components";
-import { type InitializeCellFormProps, type 初始化小区表单_VO } from "./form";
+import { type InitializeCellFormProps, type 初始化小区表单_VO, 状态Options } from "./form";
 
 const props = defineProps<InitializeCellFormProps>();
 
@@ -34,13 +33,6 @@ const form = ref(toRefForm);
 const formComputed = computed(() => {
 	return form.value;
 });
-
-/** 状态选项 */
-export const 状态Options: OptionsType = [
-	{ label: "待审核", value: "待审核" },
-	{ label: "审核完成", value: "审核完成" },
-	{ label: "审核失败", value: "审核失败" },
-];
 
 /**
  * 表单项配置

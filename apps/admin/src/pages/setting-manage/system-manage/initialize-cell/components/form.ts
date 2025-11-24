@@ -1,4 +1,12 @@
+import type { OptionsType } from "plus-pro-components";
 import { type 初始化小区表单_VO } from "../test-data";
+
+/** 状态选项 */
+export const 状态Options: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "审核完成", value: "审核完成" },
+	{ label: "审核失败", value: "审核失败" },
+];
 
 // 重新导出类型，供组件使用
 export type { 初始化小区表单_VO };
