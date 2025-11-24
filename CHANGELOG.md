@@ -1,3 +1,7 @@
+## [0.2.3](https://github.com/ruan-cat/11comm/compare/v0.2.2...v0.2.3) (2025-11-24)
+
+
+
 ## <small>0.2.2 (2025-11-24)</small>
 
 - 🐎 ci(package.json)!: 更新 changelog 命令，换成常见的【conventional-changelog -p angular -i CHANGELOG.md -s】 ([f2bc9d7](https://github.com/ruan-cat/11comm/commit/f2bc9d7))
