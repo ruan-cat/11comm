@@ -14,7 +14,7 @@ export default defineConfig({
 	// 不推送到远程仓库
 	// push: false,
 	// 在执行完 bumpp 后执行 changelog 命令
-	execute: "pnpm run changelog",
+	execute: "pnpm run changelog:conventional-changelog",
 	// 将暂存区的全部文件都提交
 	all: true,
 });
