@@ -1,3 +1,4 @@
+// FIXME: 无法导入 commitTypes 数组 运行 `commit-and-tag-version` 命令出现无法识别 require 的错误。
 const { commitTypes } = require("@ruan-cat/commitlint-config");
 
 /** @see https://juejin.cn/post/7145412114532794382 */
