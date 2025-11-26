@@ -41,6 +41,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "类型名称",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入合同类型名称",
+		},
 	},
 
 	/** 是否审核 */
@@ -53,6 +57,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "否", value: "否" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	/** 描述 */
@@ -62,6 +70,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
+			clearable: true,
+			placeholder: "请输入合同类型的详细描述",
 		},
 	},
 ]);
@@ -70,7 +80,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	类型名称: [
+		{ required: true, message: "请输入类型名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	是否审核: [
+		{ required: true, message: "请选择是否审核", trigger: "change" },
+	],
+	描述: [
+		{ max: 500, message: "描述长度不能超过500个字符", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,
