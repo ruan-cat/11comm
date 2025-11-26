@@ -112,7 +112,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	房屋ID: [{ required: true, message: "请输入房屋ID", trigger: "blur" }],
+	房屋编号: [{ required: true, message: "请输入房屋编号", trigger: "blur" }],
+	姓名: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+	联系方式: [
+		{ required: true, message: "请输入联系方式", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	身份证号: [
+		{ required: true, message: "请输入身份证号", trigger: "blur" },
+		{ pattern: /^\d{17}[\dX]$/, message: "请输入正确的身份证号", trigger: "blur" },
+	],
+	地址: [{ required: true, message: "请输入地址", trigger: "blur" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,
@@ -129,11 +143,6 @@ defineExpose({
 			:default-values="defaultValues"
 			:columns="plusFormColumnsComputed"
 			:rules="plusFormRules"
-			:row-props="{ gutter: 20 }"
-			:col-props="{
-				span: 12,
-			}"
-			:label-width="100"
 		/>
 	</section>
 </template>

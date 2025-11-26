@@ -9,12 +9,20 @@ definePage({
 });
 
 import { ref, computed, onMounted } from "vue";
+import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import { type 产权登记_列表数据, type 产权登记_列表查询_VO, tableData as mockTableData } from "./test-data";
+import {
+	type 产权登记_列表数据,
+	type 产权登记_列表查询_VO,
+	tableData as mockTableData,
+	审核状态Options,
+	楼栋Options,
+	单元Options,
+} from "./test-data";
 
-import type { PropertyRegisterFormProps } from "./components/form";
+import type { PropertyRegisterFormProps, 产权登记表单_VO } from "./components/form";
+import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
-import { 审核状态Options, 楼栋Options, 单元Options, defaultForm } from "./test-data";
 
 const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
 
@@ -135,67 +143,67 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 房屋ID
+	/** 房屋ID */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.houseID")),
+		label: "房屋ID",
 		prop: "房屋ID",
 		valueType: "input",
 	},
 
-	// 房屋编号
+	/** 房屋编号 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.houseNumber")),
+		label: "房屋编号",
 		prop: "房屋编号",
 		valueType: "input",
 	},
 
-	// 姓名
+	/** 姓名 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.name")),
+		label: "姓名",
 		prop: "姓名",
 		valueType: "input",
 	},
 
-	// 联系方式
+	/** 联系方式 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.contactWay")),
+		label: "联系方式",
 		prop: "联系方式",
 		valueType: "input",
 	},
 
-	// 身份证号
+	/** 身份证号 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.idNumber")),
+		label: "身份证号",
 		prop: "身份证号",
 		valueType: "input",
 	},
 
-	// 地址
+	/** 地址 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.address")),
+		label: "地址",
 		prop: "地址",
 		valueType: "input",
 	},
 
-	// 审核状态
+	/** 审核状态 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.auditStatus")),
+		label: "审核状态",
 		prop: "审核状态",
 		valueType: "select",
 		options: 审核状态Options,
 	},
 
-	// 楼栋
+	/** 楼栋 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.building")),
+		label: "楼栋",
 		prop: "楼栋",
 		valueType: "select",
 		options: 楼栋Options,
 	},
 
-	// 单元
+	/** 单元 */
 	{
-		label: transformI18n($t("propertyManage_communityManage.property-register.unit")),
+		label: "单元",
 		prop: "单元",
 		valueType: "select",
 		options: 单元Options,
@@ -257,16 +265,15 @@ async function loadTableData() {
 	}
 }
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -295,57 +302,46 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}产权登记`;
 
+	/** 业务对象 */
+	const 产权登记表单_VO: 产权登记表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					房屋产权ID: row?.房屋产权ID || "",
+					房屋ID: row?.房屋ID || "",
+					房屋编号: row?.房屋编号 || "",
+					姓名: row?.姓名 || "",
+					联系方式: row?.联系方式 || "",
+					身份证号: row?.身份证号 || "",
+					地址: row?.地址 || "",
+					状态: row?.状态 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: PropertyRegisterFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 产权登记表单_VO,
+		defaultValues: 产权登记表单_VO,
 	};
-
-	// 模拟情况：从外部获得值
-	const testEditProps: PropertyRegisterFormProps = {
-		form: {
-			...defaultForm,
-			房屋产权ID: row?.房屋产权ID || "FR001",
-			房屋ID: row?.房屋ID || "H001",
-			房屋编号: row?.房屋编号 || "1-101",
-			姓名: row?.姓名 || "张三",
-			联系方式: row?.联系方式 || "13800138000",
-			身份证号: row?.身份证号 || "320101199001011234",
-			地址: row?.地址 || "江苏省南京市某某街道某某号",
-			状态: row?.状态 || "审核通过",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(PropertyRegisterForm, {
 				ref: PropertyRegisterFormInstance,
 				...formProps,
-				mode: mode,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = PropertyRegisterFormInstance.value?.formComputed;
-			if (formComputed) {
-				await useDoBeforeClose({ defaultValues, formComputed, index, options });
-			}
+			const formComputed = PropertyRegisterFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
 		footerButtons: [
@@ -353,10 +349,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = PropertyRegisterFormInstance.value?.formComputed;
-					if (formComputed) {
-						await useDoBeforeClose({ defaultValues, formComputed, index, options });
-					}
+					const formComputed = PropertyRegisterFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
 
@@ -364,7 +358,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					PropertyRegisterFormInstance.value?.plusFormInstance?.handleReset();
+					PropertyRegisterFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -372,7 +366,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await PropertyRegisterFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await PropertyRegisterFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -383,6 +377,28 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 		],
 	});
+}
+
+/** 删除单个产权登记 */
+async function handleDelete(row: 产权登记_列表数据) {
+	try {
+		await ElMessageBox.confirm(`确认删除产权登记记录：${row.房屋编号} - ${row.姓名}？`, "删除确认", {
+			confirmButtonText: transformI18n($t("common.buttons.del")),
+			cancelButtonText: transformI18n($t("common.buttons.cancel")),
+			type: "warning",
+		});
+
+		// TODO: 调用删除API
+		// 模拟删除操作
+		await new Promise((resolve) => setTimeout(resolve, 300));
+
+		// 刷新表格数据
+		await loadTableData();
+	} catch (error) {
+		if (error !== "cancel") {
+			// TODO: 显示错误提示
+		}
+	}
 }
 
 onMounted(async () => {
@@ -417,7 +433,7 @@ onMounted(async () => {
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger">
+						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>

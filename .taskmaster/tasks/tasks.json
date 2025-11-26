@@ -521,7 +521,7 @@
 			"name": "改造 property-manage/community-manage/notice 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/community-manage/notice/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -529,14 +529,15 @@
 				"community-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/notice/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/notice"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/notice",
+			"completedAt": "2025-11-27T10:00:00Z"
 		},
 		{
 			"id": "task-036",
 			"name": "改造 property-manage/community-manage/property-register 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/community-manage/property-register/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -544,14 +545,15 @@
 				"community-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/property-register/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/property-register"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/property-register",
+			"completedAt": "2025-11-27T10:30:00Z"
 		},
 		{
 			"id": "task-037",
 			"name": "改造 property-manage/community-manage/handing-business 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/community-manage/handing-business/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -559,7 +561,8 @@
 				"community-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/handing-business/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/handing-business"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/handing-business",
+			"completedAt": "2025-11-27T11:00:00Z"
 		},
 		{
 			"id": "task-038",

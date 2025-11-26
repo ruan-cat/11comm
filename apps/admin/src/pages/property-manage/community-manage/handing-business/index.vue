@@ -9,14 +9,18 @@ definePage({
 });
 
 import { ref, computed, onMounted } from "vue";
+import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import {
 	type 业务受理_列表数据,
 	type 业务受理_列表查询_VO,
 	tableData as mockTableData,
-	费用类型Options,
-	状态Options,
 } from "./test-data";
+import type { HandingBusinessFormProps, 业务受理表单_VO } from "./components/form";
+import { defaultForm, 列表数据转表单数据, 费用类型Options, 状态Options } from "./components/form";
+import HandingBusinessForm from "./components/form.vue";
+
+const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<业务受理_列表数据[]>([]);
@@ -236,18 +240,136 @@ async function loadTableData() {
 	}
 }
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
 	pagination.value.currentPage = 1;
 	await loadTableData();
+}
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: 业务受理_列表数据;
+}
+
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog({ mode, row }: OpenDialogParams) {
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}业务受理`;
+
+	/** 业务对象 */
+	const 业务受理表单_VO: 业务受理表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value && row
+			? 列表数据转表单数据(row)
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: HandingBusinessFormProps = {
+		form: 业务受理表单_VO,
+		defaultValues: 业务受理表单_VO,
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+
+		contentRenderer: () =>
+			h(HandingBusinessForm, {
+				ref: handingBusinessFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = handingBusinessFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = handingBusinessFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					handingBusinessFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await handingBusinessFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						await loadTableData();
+					}
+				},
+			},
+		],
+	});
+}
+
+/** 删除单个业务受理 */
+async function handleDelete(row: 业务受理_列表数据) {
+	try {
+		await ElMessageBox.confirm(
+			`确认删除业务受理记录：${row.费用标识} - ${row.费用项目}？`,
+			"删除确认",
+			{
+				confirmButtonText: transformI18n($t("common.buttons.del")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
+
+		// TODO: 调用删除API
+		// 模拟删除操作
+		await new Promise((resolve) => setTimeout(resolve, 300));
+
+		// 刷新表格数据
+		await loadTableData();
+	} catch (error) {
+		if (error !== "cancel") {
+			// TODO: 显示错误提示
+		}
+	}
 }
 
 onMounted(async () => {
@@ -261,7 +383,9 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -274,9 +398,15 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.view")) }}
+						</ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
