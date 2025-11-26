@@ -441,7 +441,7 @@
 			"name": "改造 operation-team/report-configuration/report-group 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/report-configuration/report-group/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -449,14 +449,15 @@
 				"report-configuration"
 			],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-group/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-group"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-group",
+			"completedAt": "2025-11-26T12:00:00Z"
 		},
 		{
 			"id": "task-031",
 			"name": "改造 operation-team/report-configuration/report-info 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/report-configuration/report-info/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -464,14 +465,15 @@
 				"report-configuration"
 			],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-info/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-info"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-info",
+			"completedAt": "2025-11-26T12:15:00Z"
 		},
 		{
 			"id": "task-032",
 			"name": "改造 operation-team/report-configuration/report-component 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/report-configuration/report-component/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -479,7 +481,8 @@
 				"report-configuration"
 			],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-component/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-component"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-component",
+			"completedAt": "2025-11-26T12:30:00Z"
 		},
 		{
 			"id": "task-033",

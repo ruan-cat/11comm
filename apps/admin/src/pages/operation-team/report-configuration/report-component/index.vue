@@ -10,6 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type 报表组件_列表数据,
 	type 报表组件_列表查询_VO,
@@ -17,7 +18,7 @@ import {
 	组件类型Options,
 	查询方式Options,
 } from "./test-data";
-import { type ReportComponentFormProps, defaultForm } from "./components/form";
+import { type ReportComponentFormProps, defaultForm, type 报表组件表单_VO } from "./components/form";
 import ReportComponentForm from "./components/form.vue";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
@@ -195,6 +196,7 @@ async function loadTableData() {
 async function handleReSearch() {
 	console.log("重新搜索");
 	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -217,10 +219,10 @@ const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	console.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	console.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
 /** 打开弹框 */
@@ -228,17 +230,26 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 	const title = `${modeText.value}报表组件`;
 
-	const formProps: ReportComponentFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
+	/** 业务对象 */
+	const 报表组件表单_VO: 报表组件表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					组件名称: row?.组件名称 || "",
+					组件类型: row?.组件类型 || "数据卡片",
+					查询方式: row?.查询方式 || "sql",
+					sql: row?.sql || "",
+					java: row?.java || "",
+					描述: row?.描述 || "",
+				})
+			: cloneDeep(defaultForm);
 
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? { ...defaultForm } : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	/** 表单组件需要的props */
+	const props: ReportComponentFormProps = {
+		form: 报表组件表单_VO,
+		defaultValues: 报表组件表单_VO,
+	};
 
 	const defaultValues = props.defaultValues;
 
@@ -249,7 +260,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(ReportComponentForm, {
 				ref: reportComponentFormInstance,
-				...formProps,
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {

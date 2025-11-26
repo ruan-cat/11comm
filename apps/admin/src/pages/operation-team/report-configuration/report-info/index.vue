@@ -10,9 +10,10 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { type 报表信息_列表数据, type 报表信息_列表查询_VO, tableData as mockTableData } from "./test-data";
 
-import { type ExpenseItemSettingFormProps, defaultForm } from "./components/form";
+import { type ExpenseItemSettingFormProps, defaultForm, type 报表信息表单_VO } from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
 const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
 
@@ -173,6 +174,7 @@ async function loadTableData() {
 async function handleReSearch() {
 	console.log("重新搜索");
 	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -206,36 +208,29 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}报表`;
 
+	/** 业务对象 */
+	const 报表信息表单_VO: 报表信息表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					组编号: (row?.报表组 as "测试报表组" | "巡检报表" | "营业报表" | "报修报表") || "报修报表",
+					选项标题: row?.选项标题 || "",
+					排序: row?.排序 || "",
+					描述: row?.描述 || "",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
 	const formProps: ExpenseItemSettingFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 报表信息表单_VO,
+		defaultValues: 报表信息表单_VO,
 	};
-
-	const testEditProps: ExpenseItemSettingFormProps = {
-		//填在这里的目前是默认填充的值
-		form: {
-			...defaultForm,
-			选项标题: "默认填充选项标题",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(ExpenseItemSettingForm, {
@@ -245,24 +240,23 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		async doBeforeClose({ options, index }) {
 			const formComputed = expenseItemSettingFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
 		},
 
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = expenseItemSettingFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
 				},
 			},
 
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
+				btnClick: ({ dialog: { options, index } }) => {
 					// 手动重置表单
 					expenseItemSettingFormInstance.value.plusFormInstance.handleReset();
 				},
@@ -297,7 +291,9 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">

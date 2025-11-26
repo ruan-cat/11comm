@@ -1,3 +1,5 @@
+import type { 组件类型, 查询方式 } from "../test-data";
+
 const _报表组件类型 = ["组件名称", "组件类型", "查询方式", "sql", "java", "描述"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
@@ -6,8 +8,8 @@ export type 报表组件类型 = (typeof _报表组件类型)[number];
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
 export interface 报表组件表单_VO {
 	组件名称: string;
-	组件类型: "表格" | "饼状图";
-	查询方式: "sql" | "java";
+	组件类型: 组件类型;
+	查询方式: 查询方式;
 	sql?: string;
 	java?: string;
 	描述?: string;

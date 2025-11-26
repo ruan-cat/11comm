@@ -1,11 +1,14 @@
 import type { OptionsType } from "plus-pro-components";
 
+export type 查询方式 = "sql" | "java";
+export type 组件类型 = "表格" | "饼状图" | "柱状图" | "折线图" | "数据卡片";
+
 /** 报表组件列表数据类型 */
 export interface 报表组件_列表数据 {
 	组件ID: string;
 	组件名称: string;
-	组件类型: string;
-	查询方式: string;
+	组件类型: 组件类型;
+	查询方式: 查询方式;
 	sql: string;
 	java: string;
 	描述: string;

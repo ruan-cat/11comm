@@ -11,8 +11,9 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { tableData as mockTableData } from "./test-data";
-import { type ReportGroupFormProps, defaultForm } from "./components/form";
+import { type ReportGroupFormProps, defaultForm, type 报表组表单_VO } from "./components/form";
 import ReportGroupForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
 
@@ -173,6 +174,7 @@ async function loadTableData() {
 async function handleReSearch() {
 	console.log("重新搜索");
 	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -190,6 +192,7 @@ interface OpenDialogParams {
 	row?: ReportGroupInfo;
 }
 
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -206,24 +209,30 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 	const title = `${modeText.value}报表组`;
 
+	/** 业务对象 */
+	const 报表组表单_VO: 报表组表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					组名称: row?.name || "",
+					组url: row?.url || "",
+					描述: row?.remark || "",
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
 	const formProps: ReportGroupFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: 报表组表单_VO,
+		defaultValues: 报表组表单_VO,
 	};
 
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? { ...defaultForm } : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
-
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 		contentRenderer: () =>
 			h(ReportGroupForm, {
 				ref: reportGroupFormInstance,
