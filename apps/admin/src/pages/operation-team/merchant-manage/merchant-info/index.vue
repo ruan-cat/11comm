@@ -11,6 +11,8 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { useMode, type Mode } from "@/composables/use-mode";
+import type { PlusColumn } from "plus-pro-components";
 import {
 	type 商户信息_列表数据,
 	type 商户信息_列表查询_VO,
@@ -18,6 +20,15 @@ import {
 	商户类型选项,
 	经营状态选项,
 } from "./test-data";
+import {
+	type 商户信息_表单_VO,
+	type 商户类型,
+	type 经营状态,
+	type MerchantInfoFormProps,
+	defaultForm,
+} from "./components/form";
+import MerchantInfoForm from "./components/form.vue";
+const merchantInfoFormInstance = ref<InstanceType<typeof MerchantInfoForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<商户信息_列表数据[]>([]);
@@ -193,7 +204,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
-	labelWidth: 100,
+	labelWidth: 140,
 	labelPosition: "right",
 	showNumber: 3,
 });
@@ -201,11 +212,11 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
 		let filteredData = mockTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.商户名称) {
 			filteredData = filteredData.filter((item) => item.商户名称.includes(plusSearchModel.value.商户名称!));
 		}
@@ -222,66 +233,171 @@ async function loadTableData() {
 			filteredData = filteredData.filter((item) => item.所属小区.includes(plusSearchModel.value.所属小区!));
 		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		ElMessage.error("加载数据失败，请稍后重试");
+		/** TODO: 显示错误提示 */
 	}
 }
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
 	pagination.value.currentPage = 1;
 	await loadTableData();
+}
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}商户信息`;
+
+	/** 业务对象 */
+	const 商户信息_表单_VO: 商户信息_表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? ({
+					...defaultForm,
+					商户编号: row?.商户编号 || "",
+					商户名称: row?.商户名称 || "",
+					商户地址: row?.商户地址 || "",
+					联系电话: row?.联系电话 || "",
+					商户类型: (row?.商户类型 || "餐饮服务") as 商户类型,
+					企业法人: row?.企业法人 || "",
+					成立日期: row?.成立日期 || "",
+					经营状态: (row?.经营状态 || "正常营业") as 经营状态,
+					所属小区: row?.所属小区 || "",
+					营业时间: row?.营业时间 || "",
+					经营面积: row?.经营面积 || "",
+					营业执照号: row?.营业执照号 || "",
+					开户银行: row?.开户银行 || "",
+					银行账号: row?.银行账号 || "",
+					联系人手机: row?.联系人手机 || "",
+					备注: row?.备注 || "",
+				} as 商户信息_表单_VO)
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: MerchantInfoFormProps = {
+		form: 商户信息_表单_VO,
+		defaultValues: 商户信息_表单_VO,
+		mode,
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = formProps.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+
+		contentRenderer: () =>
+			h(MerchantInfoForm, {
+				ref: merchantInfoFormInstance,
+				...formProps,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = merchantInfoFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = merchantInfoFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options: _options, index: _index } }) => {
+					merchantInfoFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await merchantInfoFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
 }
 
 /** 处理新增商户 */
 function handleAdd() {
-	console.log("新增商户");
-	// TODO: 打开新增商户弹框
+	openDialog({ mode: "add" });
 }
 
 /** 处理编辑商户 */
 function handleEdit(row: 商户信息_列表数据) {
-	console.log("编辑商户", row);
-	// TODO: 打开编辑商户弹框
+	openDialog({ mode: "edit", row });
 }
 
 /** 处理查看详情 */
 function handleViewDetails(row: 商户信息_列表数据) {
-	console.log("查看商户详情", row);
-	// TODO: 跳转到商户详情页面或打开详情弹框
+	openDialog({ mode: "info", row });
 }
 
 /** 处理删除商户 */
 function handleDelete(row: 商户信息_列表数据) {
-	console.log("删除商户", row);
-	// TODO: 显示确认删除弹框
 	ElMessageBox.confirm(`确定要删除商户"${row.商户名称}"吗？此操作不可撤销。`, "删除确认", {
 		confirmButtonText: "确定",
 		cancelButtonText: "取消",
 		type: "warning",
 	})
 		.then(async () => {
-			// TODO: 调用删除API
-			console.log("执行删除操作");
+			/** TODO: 调用删除API */
 			ElMessage.success("删除成功");
 			await loadTableData();
 		})
@@ -297,15 +413,23 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleAdd"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="handleAdd">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
