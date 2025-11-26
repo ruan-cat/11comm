@@ -59,6 +59,7 @@
    - 错误： `openDialog({ mode: "view", row });`
    - 正确： `openDialog({ mode: "info", row });`
    - 请你务必在使用 `openDialog` 传递 `mode` 变量时，使用正确的，存在的字符串。不要使用不存在的 `view` ，而是正确的 `info` 。
+5. 不要生成 `*.ts.backup` 文件。你在生成 `test-data.ts` 假数据文件时，不要生成冗余的 `*.ts.backup` 文件！
 
 ## 6. 主动处理类型故障
 
