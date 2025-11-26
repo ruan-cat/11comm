@@ -15,8 +15,14 @@ import {
 	type 房屋装修_列表查询_VO,
 	房屋状态选项,
 	延期状态选项,
-	tableData as allTableData,
+	tableData as mockTableData,
 } from "./test-data";
+
+import { type HouseDecorationFormProps, defaultForm, type 房屋装修表单_VO, type 房屋装修状态类型, type 是否延期类型, type 是否违规类型 } from "./components/form";
+import HouseDecorationForm from "./components/form.vue";
+
+/** 表单组件实例 */
+const houseDecorationFormInstance = ref<InstanceType<typeof HouseDecorationForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<房屋装修_列表数据[]>([]);
@@ -28,7 +34,6 @@ const columns = ref<TableColumnList>([
 		label: "房屋",
 		prop: "房屋",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "联系人",
@@ -88,7 +93,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 360,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -130,11 +135,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.房屋编号) {
 			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋编号!));
 		}
@@ -162,19 +167,19 @@ async function loadTableData() {
 			});
 		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
+		/** TODO: 显示错误提示 */
 	}
 }
 
@@ -192,7 +197,6 @@ const plusSearchModelRef: FieldValues & 房屋装修_列表查询_VO = {
 	装修时间: "",
 	装修申请开始时间: "",
 	装修申请结束时间: "",
-	装修时间范围: ["", ""],
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -206,28 +210,28 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 房屋编号
+	/** 房屋编号 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
 		prop: "房屋编号",
 		valueType: "input",
 	},
 
-	// 联系人
+	/** 联系人 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.contacts")),
 		prop: "联系人",
 		valueType: "input",
 	},
 
-	// 联系电话
+	/** 联系电话 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.phone")),
 		prop: "联系电话",
 		valueType: "input",
 	},
 
-	// 房屋状态
+	/** 房屋状态 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseState")),
 		prop: "房屋状态",
@@ -235,7 +239,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		options: 房屋状态选项,
 	},
 
-	// 延期状态
+	/** 延期状态 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.deferredStatus")),
 		prop: "延期状态",
@@ -243,7 +247,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		options: 延期状态选项,
 	},
 
-	// 装修时间
+	/** 装修时间 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.renovationTime")),
 		prop: "装修时间",
@@ -255,9 +259,10 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 
+	/** 申请时间范围 */
 	{
-		label: "装修时间范围",
-		prop: "装修时间范围",
+		label: "申请时间范围",
+		prop: "装修申请开始时间",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "daterange",
@@ -299,6 +304,118 @@ async function handleSearch() {
 
 const { gotoDetailPage } = useGotoDetailsPage();
 
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: 房屋装修_列表数据;
+}
+
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 测试异步函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog({ mode, row }: OpenDialogParams) {
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}房屋装修`;
+
+	/** 业务对象 */
+	const 房屋装修表单_VO: 房屋装修表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? {
+					...defaultForm,
+					房屋: row?.房屋 || "",
+					联系人: row?.联系人 || "",
+					联系电话: row?.联系电话 || "",
+					装修时间: row?.装修时间 || "",
+					申请时间: row?.申请时间 || "",
+					装修单位: row?.装修单位 || "",
+					负责人电话: row?.负责人电话 || "",
+					状态: (row?.状态 as 房屋装修状态类型) || "待审核",
+					是否延期: (row?.是否延期 as 是否延期类型) || "否",
+					延期时间: row?.延期时间 || "",
+					是否违规: (row?.是否违规 as 是否违规类型) || "否",
+					违规说明: row?.违规说明 || "",
+					备注: row?.备注 || "",
+				}
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const props: HouseDecorationFormProps = {
+		form: 房屋装修表单_VO,
+		defaultValues: 房屋装修表单_VO,
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+
+		contentRenderer: () =>
+			h(HouseDecorationForm, {
+				ref: houseDecorationFormInstance,
+				...props,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = houseDecorationFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index } }) => {
+					// console.log(options, index);
+					const formComputed = houseDecorationFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: () => {
+					// 手动重置表单
+					houseDecorationFormInstance.value.plusFormInstance.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					// 提交表单时 校验
+					const res = await houseDecorationFormInstance.value.plusFormInstance.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
+
 /** 跳转到 装修跟踪页面 */
 function gotoHouseDecorationPage(row: 房屋装修_列表数据) {
 	console.log("row", row);
@@ -327,7 +444,9 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -346,7 +465,9 @@ onMounted(async () => {
 						<ElButton type="info" @click="gotoHouseDecorationPage(row)">
 							{{ transformI18n($t("propertyManage_communityManage.house-decoration.trackingRecord")) }}
 						</ElButton>
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
 						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
