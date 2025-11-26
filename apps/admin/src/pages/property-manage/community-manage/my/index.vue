@@ -11,30 +11,34 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { ElTag, ElMessage, ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
-	type 我的小区_列表数据,
+	type 我的小区_列表Data,
 	type 我的小区_列表查询_VO,
 	省份选项,
 	状态选项,
-	tableData as allTableData,
+	tableData as mockTableData,
 } from "./test-data";
-import { CommunityManageFormProps, defaultForm, type CommunityManageFormVO } from "./components/form";
+import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
 
 /** 表单组件实例 */
 const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
 
-/** 模拟异步请求 */
+/** 模拟异步操作函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve(true);
-		}, 1000);
-	});
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
 /** 表格数据 */
-const tableData = ref<我的小区_列表数据[]>([]);
+const tableData = ref<我的小区_列表Data[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -43,7 +47,6 @@ const columns = ref<TableColumnList>([
 		label: "省份",
 		prop: "省份",
 		width: 100,
-		fixed: true,
 	},
 	{
 		label: "市州",
@@ -148,7 +151,7 @@ async function loadTableData() {
 	try {
 		/** TODO: 替换为真实的API调用 */
 		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = allTableData;
+		let filteredData = mockTableData;
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.省份) {
@@ -281,7 +284,7 @@ async function handleSearch() {
 /** 打开弹框参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 我的小区_列表数据;
+	row?: 我的小区_列表Data;
 }
 
 const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
@@ -293,39 +296,31 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}小区`;
 
+	/** 业务对象 */
+	const CommunityManageMyFormVO: CommunityManageMyFormVO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					province: row?.省份 || "福建省",
+					city: row?.市州 || "",
+					district: row?.区县 || "",
+					name: row?.小区名称 || "",
+					code: row?.小区编码 || "",
+					servicePhone: row?.客服电话 || "",
+					area: row?.面积 || "",
+					startTime: row?.开始时间 || "",
+					endTime: row?.结束时间 || "",
+					status: (row?.状态 as CommunityManageMyFormVO["status"]) || "正常运营",
+				})
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
-	const formProps: CommunityManageFormProps = {
-		form: {
-			...cloneDeep(defaultForm),
-			province: row?.省份 || "",
-			city: row?.市州 || "",
-			district: row?.区县 || "",
-			name: row?.小区名称 || "",
-			code: row?.小区编码 || "",
-			servicePhone: row?.客服电话 || "",
-			area: row?.面积 || "",
-			startTime: row?.开始时间 || "",
-			endTime: row?.结束时间 || "",
-			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
-		},
-		defaultValues: {
-			...cloneDeep(defaultForm),
-			province: row?.省份 || "",
-			city: row?.市州 || "",
-			district: row?.区县 || "",
-			name: row?.小区名称 || "",
-			code: row?.小区编码 || "",
-			servicePhone: row?.客服电话 || "",
-			area: row?.面积 || "",
-			startTime: row?.开始时间 || "",
-			endTime: row?.结束时间 || "",
-			status: (row?.状态 as CommunityManageFormVO["status"]) || "正常运营",
-		},
+	const props: CommunityManageMyFormProps = {
+		form: CommunityManageMyFormVO,
+		defaultValues: CommunityManageMyFormVO,
 		mode,
 	};
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
 
 	/** 根据不同模式下变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
@@ -338,75 +333,67 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(CommunityManageForm, {
 				ref: communityManageFormInstance,
-				...formProps,
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = communityManageFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = communityManageFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
-		footerButtons: isInfo.value
-			? [
-					{
-						label: transformI18n($t("common.buttons.cancel")),
-						type: "info",
-						btnClick: async ({ dialog: { options, index }, button }) => {
-							const formComputed = communityManageFormInstance.value.formComputed;
-							await useDoBeforeClose({ defaultValues, formComputed, index, options });
-						},
-					},
-				]
-			: [
-					{
-						label: transformI18n($t("common.buttons.cancel")),
-						type: "info",
-						btnClick: async ({ dialog: { options, index }, button }) => {
-							const formComputed = communityManageFormInstance.value.formComputed;
-							await useDoBeforeClose({ defaultValues, formComputed, index, options });
-						},
-					},
-					{
-						label: transformI18n($t("common.buttons.reset")),
-						type: "warning",
-						btnClick: ({ dialog: { options, index }, button }) => {
-							communityManageFormInstance.value.plusFormInstance.handleReset();
-						},
-					},
-					{
-						label: transformI18n($t("common.buttons.save")),
-						type: "success",
-						btnClick: async ({ dialog: { options, index }, button }) => {
-							button.btn.loading = true;
-							try {
-								const formData = communityManageFormInstance.value.formComputed;
-								await testAsync();
-								ElMessage.success(`${modeText.value}成功`);
-								loadTableData();
-								closeDialog(options, index);
-							} catch (error) {
-								ElMessage.error(`${modeText.value}失败`);
-							} finally {
-								button.btn.loading = false;
-							}
-						},
-					},
-				],
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = communityManageFormInstance.value?.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			...(isInfo.value
+				? []
+				: [
+						{
+							label: transformI18n($t("common.buttons.reset")),
+							type: "warning",
+							btnClick: ({ dialog: { options, index }, button }) => {
+								communityManageFormInstance.value?.plusFormInstance?.handleReset();
+							},
+						} as any,
+
+						{
+							label: transformI18n($t("common.buttons.submit")),
+							type: "success",
+							btnClick: async ({ dialog: { options, index }, button }) => {
+								const res = await communityManageFormInstance.value?.plusFormInstance?.handleSubmit();
+								if (res) {
+									button.btn.loading = true;
+									await testAsync();
+									button.btn.loading = false;
+									closeDialog(options, index);
+								}
+							},
+						} as any,
+				  ] as any),
+		],
 	});
 }
 
 /** 处理操作 */
-function handleEdit(row: 我的小区_列表数据) {
+function handleEdit(row: 我的小区_列表Data) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 处理查看操作 */
-function handleView(row: 我的小区_列表数据) {
+function handleView(row: 我的小区_列表Data) {
 	openDialog({ mode: "info", row });
 }
 
 /** 处理删除操作 */
-function handleDelete(row: 我的小区_列表数据) {
+function handleDelete(row: 我的小区_列表Data) {
 	ElMessageBox.confirm("确认删除该小区信息吗？", "提示", {
 		confirmButtonText: "确定",
 		cancelButtonText: "取消",
