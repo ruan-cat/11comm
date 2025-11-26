@@ -585,7 +585,7 @@
 			"name": "改造 property-manage/community-manage/parking-space-structure-diagram 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/community-manage/parking-space-structure-diagram/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -593,7 +593,8 @@
 				"community-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram",
+			"completedAt": "2025-11-27T12:00:00Z"
 		},
 		{
 			"id": "task-040",
