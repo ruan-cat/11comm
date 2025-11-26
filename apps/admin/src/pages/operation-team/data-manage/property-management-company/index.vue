@@ -10,6 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { type 物业公司_列表数据, type 物业公司_列表查询_VO, tableData as mockTableData } from "./test-data";
 
 import { type PropertyManagementCompanyFormProps, defaultForm, type 物业公司表单_VO } from "./components/form";
@@ -63,6 +64,26 @@ const columns = ref<TableColumnList>([
 		width: 150,
 	},
 	{
+		label: "开通小区数量",
+		prop: "开通小区数量",
+		width: 120,
+	},
+	{
+		label: "公司类型",
+		prop: "公司类型",
+		width: 100,
+	},
+	{
+		label: "服务等级",
+		prop: "服务等级",
+		width: 100,
+	},
+	{
+		label: "运营状态",
+		prop: "运营状态",
+		width: 100,
+	},
+	{
 		label: "创建时间",
 		prop: "创建时间",
 		width: 160,
@@ -70,7 +91,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 530,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -131,21 +152,21 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 物业编号
+	/** 物业编号 */
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.propertyManagementNumber")),
 		prop: "物业编号",
 		valueType: "input",
 	},
 
-	// 物业名称
+	/** 物业名称 */
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.name")),
 		prop: "物业名称",
 		valueType: "input",
 	},
 
-	// 物业电话
+	/** 物业电话 */
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.phone")),
 		prop: "物业电话",
@@ -165,11 +186,11 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
 		let filteredData = mockTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.物业编号) {
 			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.物业编号!));
 		}
@@ -180,32 +201,31 @@ async function loadTableData() {
 			filteredData = filteredData.filter((item) => item.电话.includes(plusSearchModel.value.物业电话!));
 		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
+		/** TODO: 显示错误提示 */
 	}
 }
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -213,6 +233,8 @@ async function handleSearch() {
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -235,13 +257,19 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					名称: row?.名称 || "0011物业",
-					地址: row?.地址 || "01星球",
-					电话: row?.电话 || "12345667890",
-					公司法人: row?.公司法人 || "东东哥",
-					成立日期: row?.成立日期 || "2024-6-01",
-					地标: row?.地标 || "C++大楼",
-					开通小区: "",
+					编号: row?.编号 || "",
+					名称: row?.名称 || "",
+					地址: row?.地址 || "",
+					电话: row?.电话 || "",
+					管理员: row?.管理员 || "",
+					公司法人: row?.公司法人 || "",
+					成立日期: row?.成立日期 || "",
+					地标: row?.地标 || "",
+					开通小区数量: row?.开通小区数量 || 0,
+					公司类型: row?.公司类型 || "",
+					服务等级: row?.服务等级 || "",
+					运营状态: row?.运营状态 || "",
+					备注: row?.备注 || "",
 				})
 			: cloneDeep(defaultForm);
 
@@ -249,6 +277,7 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 	const props: PropertyManagementCompanyFormProps = {
 		form: 物业公司表单_VO,
 		defaultValues: 物业公司表单_VO,
+		mode,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -262,8 +291,7 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 		contentRenderer: () =>
 			h(PropertyManagementCompanyForm, {
 				ref: PropertyManagementCompanyFormInstance,
-				...props, //不生效：避免类型报错
-				mode, // 传入当前模式
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -277,8 +305,7 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = PropertyManagementCompanyFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
@@ -289,8 +316,7 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
+				btnClick: ({ dialog: { options: _options, index: _index } }) => {
 					PropertyManagementCompanyFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
@@ -299,12 +325,11 @@ function openDialog(params: { mode: Mode; row?: 物业公司_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await PropertyManagementCompanyFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
-						button.btn.loading = true; //加载
-						await testAsync(); //异步函数
-						button.btn.loading = false; //不加载
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
 						closeDialog(options, index);
 					}
 				},
@@ -332,7 +357,13 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -359,10 +390,10 @@ onMounted(async () => {
 							{{ transformI18n($t("operation-team_data-manage.property-management-company.manageCommunity")) }}
 						</ElButton>
 						<ElButton type="info"> {{ transformI18n($t("common.buttons.pureLogin")) }} </ElButton>
-						<ElButton type="warning">
+						<ElButton type="info">
 							{{ transformI18n($t("operation-team_data-manage.property-management-company.limitLogin")) }}
 						</ElButton>
-						<ElButton type="warning">
+						<ElButton type="info">
 							{{ transformI18n($t("operation-team_data-manage.property-management-company.resetPassword")) }}
 						</ElButton>
 					</template>

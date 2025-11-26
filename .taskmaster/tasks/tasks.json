@@ -395,7 +395,7 @@
 			"name": "改造 operation-team/data-manage/property-management-company 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/data-manage/property-management-company/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
