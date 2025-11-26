@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ContractExpireFormProps, 到期处理类型, 合同到期表单_VO, defaultForm } from "./form";
+import { ContractExpireFormProps, 到期处理类型, 合同类型, 合同到期表单_VO, defaultForm } from "./form";
 
 const props = defineProps<ContractExpireFormProps>();
 
@@ -48,6 +48,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入合同名称",
+		},
 	},
 	{
 		label: "合同编号",
@@ -55,6 +60,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入合同编号",
+		},
 	},
 	{
 		label: "合同类型",
@@ -65,9 +75,17 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "销售合同", value: "销售合同" },
 			{ label: "服务合同", value: "服务合同" },
 			{ label: "租赁合同", value: "租赁合同" },
+			{ label: "劳务合同", value: "劳务合同" },
+			{ label: "技术合同", value: "技术合同" },
 		],
 		required: true,
 		span: 8,
+		width: "180px",
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+			placeholder: "请选择合同类型",
+		},
 	},
 
 	// 甲方信息
@@ -77,6 +95,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入甲方名称",
+		},
 	},
 	{
 		label: "甲方联系人",
@@ -84,6 +107,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入甲方联系人",
+		},
 	},
 	{
 		label: "甲方联系电话",
@@ -91,6 +119,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入甲方联系电话",
+		},
 	},
 
 	// 乙方信息
@@ -100,6 +133,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入乙方名称",
+		},
 	},
 	{
 		label: "乙方联系人",
@@ -107,6 +145,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入乙方联系人",
+		},
 	},
 	{
 		label: "乙方联系电话",
@@ -114,6 +157,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入乙方联系电话",
+		},
 	},
 
 	// 经办信息
@@ -123,6 +171,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入经办人姓名",
+		},
 	},
 	{
 		label: "经办电话",
@@ -130,6 +183,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入经办电话",
+		},
 	},
 	{
 		label: "合同金额",
@@ -137,38 +195,58 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入合同金额",
+		},
 	},
 
 	// 时间信息
 	{
 		label: "开始时间",
 		prop: "开始时间",
+		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
+			placeholder: "请选择开始时间",
 		},
 		required: true,
 		span: 8,
+		width: "220px",
 	},
 	{
 		label: "结束时间",
 		prop: "结束时间",
+		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
+			placeholder: "请选择结束时间",
 		},
 		required: true,
 		span: 8,
+		width: "220px",
 	},
 	{
 		label: "签订时间",
 		prop: "签订时间",
+		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
+			placeholder: "请选择签订时间",
 		},
 		required: true,
 		span: 8,
+		width: "220px",
 	},
 
 	// 到期处理信息
@@ -182,6 +260,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		],
 		required: true,
 		span: 8,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请选择处理类型",
+		},
 	},
 	{
 		label: "处理人",
@@ -189,6 +272,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		required: true,
 		span: 16,
+		width: "150px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入处理人姓名",
+		},
 	},
 
 	// 说明
@@ -198,6 +286,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
+			placeholder: "请输入处理说明",
+			clearable: true,
 		},
 		required: true,
 		span: 24,
@@ -208,7 +298,65 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	合同名称: [
+		{ required: true, message: "请输入合同名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	合同编号: [
+		{ required: true, message: "请输入合同编号", trigger: "blur" },
+		{ min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" },
+	],
+	合同类型: [{ required: true, message: "请选择合同类型", trigger: "change" }],
+	甲方: [
+		{ required: true, message: "请输入甲方名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	甲方联系人: [
+		{ required: true, message: "请输入甲方联系人", trigger: "blur" },
+		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+	],
+	甲方联系电话: [
+		{ required: true, message: "请输入甲方联系电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	乙方: [
+		{ required: true, message: "请输入乙方名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	乙方联系人: [
+		{ required: true, message: "请输入乙方联系人", trigger: "blur" },
+		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+	],
+	乙方联系电话: [
+		{ required: true, message: "请输入乙方联系电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	经办人: [
+		{ required: true, message: "请输入经办人姓名", trigger: "blur" },
+		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+	],
+	经办电话: [
+		{ required: true, message: "请输入经办电话", trigger: "blur" },
+		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+	],
+	合同金额: [
+		{ required: true, message: "请输入合同金额", trigger: "blur" },
+		{ pattern: /^([1-9]\d{0,9}|0)(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+	],
+	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	签订时间: [{ required: true, message: "请选择签订时间", trigger: "change" }],
+	到期处理类型: [{ required: true, message: "请选择到期处理类型", trigger: "change" }],
+	处理人: [
+		{ required: true, message: "请输入处理人姓名", trigger: "blur" },
+		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+	],
+	说明: [
+		{ required: true, message: "请输入处理说明", trigger: "blur" },
+		{ min: 5, max: 500, message: "长度在 5 到 500 个字符", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,
@@ -217,16 +365,16 @@ defineExpose({
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
-		:rules="plusFormRules"
-		:grid="{ cols: 24 }"
-	/>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumnsComputed"
+			:rules="plusFormRules"
+		/>
+	</section>
 </template>
 
 <style lang="scss" scoped>

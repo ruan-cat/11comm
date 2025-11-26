@@ -11,12 +11,13 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type 到期合同_列表数据,
 	type 到期合同_列表查询_VO,
 	合同类型Options,
 	处理状态Options,
-	tableData as allTableData,
+	tableData as mockTableData,
 } from "./test-data";
 import { type ContractExpireFormProps, defaultForm, type 合同到期表单_VO } from "./components/form";
 import ContractExpireForm from "./components/form.vue";
@@ -115,9 +116,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  */
 const plusSearchModelRef: FieldValues & 到期合同_列表查询_VO = {
 	合同名称: "",
-	输入合同编号: "",
-	选择合同类型: "",
-	选择处理状态: "",
+	合同编号: "",
+	合同类型: "",
+	处理状态: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -138,18 +139,18 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 	{
 		label: "合同编号",
-		prop: "输入合同编号",
+		prop: "合同编号",
 		valueType: "input",
 	},
 	{
 		label: "合同类型",
-		prop: "选择合同类型",
+		prop: "合同类型",
 		valueType: "select",
 		options: 合同类型Options,
 	},
 	{
 		label: "处理状态",
-		prop: "选择处理状态",
+		prop: "处理状态",
 		valueType: "select",
 		options: 处理状态Options,
 	},
@@ -185,48 +186,39 @@ const pureTableProps = ref<PureTableProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.合同名称) {
 			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
 		}
-		if (plusSearchModel.value.输入合同编号) {
-			filteredData = filteredData.filter((item) => String(item.合同编号).includes(String(plusSearchModel.value.输入合同编号)));
+		if (plusSearchModel.value.合同编号) {
+			filteredData = filteredData.filter((item) => String(item.合同编号).includes(String(plusSearchModel.value.合同编号)));
 		}
-		if (plusSearchModel.value.选择合同类型) {
-			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.选择合同类型);
+		if (plusSearchModel.value.合同类型) {
+			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.合同类型);
 		}
-		if (plusSearchModel.value.选择处理状态) {
-			filteredData = filteredData.filter((item) => item.处理状态 === plusSearchModel.value.选择处理状态);
+		if (plusSearchModel.value.处理状态) {
+			filteredData = filteredData.filter((item) => item.处理状态 === plusSearchModel.value.处理状态);
 		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
+		/** TODO: 显示错误提示 */
 	}
 }
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
 
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
@@ -241,12 +233,22 @@ async function handleSearch() {
 	await loadTableData();
 }
 
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: 到期合同_列表数据;
 }
 
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -310,15 +312,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		contentRenderer: () =>
 			h(ContractExpireForm, {
 				ref: contractExpireFormInstance,
-				form: defaultForm,
-				defaultValues: defaultForm,
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = contractExpireFormInstance.value?.formComputed;
-			if (formComputed) {
-				await useDoBeforeClose({ defaultValues, formComputed, index, options });
-			}
+			const formComputed = contractExpireFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
 		footerButtons: [
@@ -326,10 +325,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = contractExpireFormInstance.value?.formComputed;
-					if (formComputed) {
-						await useDoBeforeClose({ defaultValues, formComputed, index, options });
-					}
+					const formComputed = contractExpireFormInstance.value.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
 
@@ -337,7 +334,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					contractExpireFormInstance.value?.plusFormInstance?.handleReset();
+					contractExpireFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -345,7 +342,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await contractExpireFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await contractExpireFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
