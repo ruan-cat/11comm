@@ -38,6 +38,9 @@ import consola from "consola";
 
 import vercel from "vite-plugin-vercel";
 
+// 将项目一下子变成nuxt全栈项目的插件
+import { nitro } from "nitro/vite";
+
 export function getPluginsList(
 	VITE_CDN: boolean,
 	VITE_COMPRESSION: ViteCompression,
@@ -214,5 +217,11 @@ export function getPluginsList(
 		tsAlias,
 
 		vercelPlugin,
+
+		/**
+		 * 将项目一下子变成nuxt全栈项目的插件
+		 * @see https://v3.nitro.build/docs/quick-start#add-to-a-vite-project
+		 */
+		nitro(),
 	];
 }
