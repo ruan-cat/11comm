@@ -297,3 +297,33 @@ operationSuccess: {operation} successful
 ```yaml
 operationSuccess: "{operation} successful"
 ```
+
+### 7.8 常见的 i18n 文本
+
+你应该使用正确的 i18n key。
+
+错误例子：
+
+```vue
+<template>
+	<ElButton>
+		{{ transformI18n($t("common.buttons.view")) }}
+	</ElButton>
+</template>
+```
+
+我们是不存在错误的 `common.buttons.view` key 的，请不要识别错误。
+
+---
+
+正确例子：
+
+```vue
+<template>
+	<ElButton>
+		{{ transformI18n($t("common.buttons.info")) }}
+	</ElButton>
+</template>
+```
+
+正确的 key 是 `common.buttons.info` 。这是你**常见的错误**，请不要使用错误的 key 。
