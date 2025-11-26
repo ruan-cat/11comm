@@ -10,13 +10,17 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { ElMessage } from "element-plus";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type 商户管理员_列表数据,
 	type 商户管理员_列表查询_VO,
 	tableData as mockTableData,
 	状态选项,
 } from "./test-data";
+
+import { type MerchantAdminFormProps, defaultForm, type 商户管理员表单_VO } from "./components/form";
+import MerchantAdminForm from "./components/form.vue";
+const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<商户管理员_列表数据[]>([]);
@@ -25,9 +29,9 @@ const tableData = ref<商户管理员_列表数据[]>([]);
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "物业名称",
+		label: "物业公司",
 		prop: "物业名称",
-		minWidth: 150,
+		minWidth: 200,
 	},
 	{
 		label: "管理员",
@@ -37,7 +41,7 @@ const columns = ref<TableColumnList>([
 	{
 		label: "管理员电话",
 		prop: "管理员电话",
-		width: 120,
+		width: 130,
 	},
 	{
 		label: "管理员ID",
@@ -50,14 +54,29 @@ const columns = ref<TableColumnList>([
 		width: 100,
 	},
 	{
+		label: "隶属小区数量",
+		prop: "隶属小区数量",
+		width: 120,
+	},
+	{
+		label: "登录次数",
+		prop: "登录次数",
+		width: 100,
+	},
+	{
+		label: "最后登录时间",
+		prop: "最后登录时间",
+		width: 160,
+	},
+	{
 		label: "创建时间",
 		prop: "创建时间",
-		minWidth: 150,
+		width: 160,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 430,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -153,7 +172,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
-	labelWidth: 100,
+	labelWidth: 140,
 	labelPosition: "right",
 	showNumber: 3,
 });
@@ -191,22 +210,126 @@ async function loadTableData() {
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		ElMessage.error("加载数据失败，请稍后重试");
+		/** TODO: 显示错误提示 */
 	}
 }
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
 	pagination.value.currentPage = 1;
 	await loadTableData();
+}
+
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 商户管理员_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}商户管理员`;
+
+	/** 业务对象 */
+	const 商户管理员表单_VO: 商户管理员表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					物业公司: row?.物业名称 || "",
+					管理员姓名: row?.管理员 || "",
+					管理员电话: row?.管理员电话 || "",
+					管理员邮箱: "",
+					身份证号码: "",
+					账户状态: row?.状态 || "正常",
+					登录密码: "",
+					确认密码: "",
+					联系地址: "",
+					备注: "",
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const props: MerchantAdminFormProps = {
+		form: 商户管理员表单_VO,
+		defaultValues: 商户管理员表单_VO,
+		mode,
+	};
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+
+		contentRenderer: () =>
+			h(MerchantAdminForm, {
+				ref: MerchantAdminFormInstance,
+				...props,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = MerchantAdminFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = MerchantAdminFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options: _options, index: _index } }) => {
+					MerchantAdminFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await MerchantAdminFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
 }
 
 onMounted(async () => {
@@ -216,15 +339,23 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -233,7 +364,7 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info">隶属小区</ElButton>

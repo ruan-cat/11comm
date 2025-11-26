@@ -425,7 +425,7 @@
 			"name": "改造 operation-team/merchant-manage/merchant-admin 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 operation-team/merchant-manage/merchant-admin/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -433,7 +433,8 @@
 				"merchant-manage"
 			],
 			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/merchant-manage/merchant-admin"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/merchant-manage/merchant-admin",
+			"completedAt": "2025-11-26T10:30:00Z"
 		},
 		{
 			"id": "task-030",
