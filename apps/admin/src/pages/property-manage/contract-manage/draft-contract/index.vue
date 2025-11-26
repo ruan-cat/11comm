@@ -11,8 +11,8 @@ definePage({
 import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
-import AddForm from "./components/addForm.vue";
-import { 合同草稿表单_VO, type AddFormProps, defaultForm } from "./components/addForm";
+import ContractDraftForm from "./components/form.vue";
+import { 合同草稿表单_VO, type ContractDraftFormProps, defaultForm } from "./components/form";
 import {
 	tableData as mockTableData,
 	contractTypeOptionsData,
@@ -21,7 +21,7 @@ import {
 	type 合同类型_列表查询_VO,
 } from "./test-data";
 
-const AddFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
+const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -252,15 +252,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}起草合同`;
 
-	/** 根据模式设置表单数据 */
-	const formProps: AddFormProps = isAdd.value
-		? {
-				form: cloneDeep(defaultForm),
-				defaultValues: cloneDeep(defaultForm),
-			}
-		: {
-				form: {
-					...cloneDeep(defaultForm),
+	/** 业务对象 */
+	const contractDraftFormVO: 合同草稿表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
 					合同名称: row?.合同名称 || "",
 					合同编号: row?.合同编号 || "",
 					合同类型: row?.合同类型 || "",
@@ -280,30 +277,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					说明: defaultForm.说明,
 					// 保留默认的合同附件数组
 					合同附件: cloneDeep(defaultForm.合同附件),
-				},
-				defaultValues: {
-					...cloneDeep(defaultForm),
-					合同名称: row?.合同名称 || "",
-					合同编号: row?.合同编号 || "",
-					合同类型: row?.合同类型 || "",
-					经办人: row?.经办人 || "",
-					合同金额: row?.合同金额 || "",
-					开始时间: row?.开始时间 || "",
-					结束时间: row?.结束时间 || "",
-					// 保留其他表单字段的默认值
-					甲方: defaultForm.甲方,
-					甲方联系人: defaultForm.甲方联系人,
-					甲方联系电话: defaultForm.甲方联系电话,
-					乙方: defaultForm.乙方,
-					乙方联系人: defaultForm.乙方联系人,
-					乙方联系电话: defaultForm.乙方联系电话,
-					经办电话: defaultForm.经办电话,
-					签订时间: defaultForm.签订时间,
-					说明: defaultForm.说明,
-					// 保留默认的合同附件数组
-					合同附件: cloneDeep(defaultForm.合同附件),
-				},
-			};
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: ContractDraftFormProps = {
+		form: contractDraftFormVO,
+		defaultValues: contractDraftFormVO,
+	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
@@ -314,13 +295,13 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		props: formProps,
 
 		contentRenderer: () =>
-			h(AddForm, {
-				ref: AddFormInstance,
+			h(ContractDraftForm, {
+				ref: contractDraftFormInstance,
 				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = AddFormInstance.value.formComputed;
+			const formComputed = contractDraftFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -329,7 +310,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = AddFormInstance.value.formComputed;
+					const formComputed = contractDraftFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -339,7 +320,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
-					AddFormInstance.value.plusFormInstance.handleReset();
+					contractDraftFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -348,7 +329,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
-					const res = await AddFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await contractDraftFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();

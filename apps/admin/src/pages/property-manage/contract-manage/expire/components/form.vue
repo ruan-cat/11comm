@@ -1,16 +1,16 @@
 <!--
-  合同变更表单
-  用于新增 修改合同变更
+  合同到期表单
+  用于处理合同到期的续签或终止
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, 变更类型, 合同变更表单_VO, defaultForm } from "./addForm";
+import { ContractExpireFormProps, 到期处理类型, 合同到期表单_VO, defaultForm } from "./form";
 
-const props = defineProps<AddFormProps>();
+const props = defineProps<ContractExpireFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 合同变更表单_VO;
+const defaultValues = props.defaultValues as FieldValues & 合同到期表单_VO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,13 +24,9 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 合同变更表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & 合同到期表单_VO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
+/** 表单对象 */
 const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
@@ -39,10 +35,10 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 合同变更信息分组标题
+	// 合同到期信息分组标题
 	{
-		label: "合同变更",
-		prop: "合同变更标题",
+		label: "合同到期处理",
+		prop: "合同到期标题",
 		span: 24,
 	},
 	// 合同基本信息
@@ -150,7 +146,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择开始时间",
 		},
 		required: true,
 		span: 8,
@@ -161,7 +156,6 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择结束时间",
 		},
 		required: true,
 		span: 8,
@@ -172,64 +166,29 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择签订时间",
 		},
 		required: true,
 		span: 8,
 	},
 
-	// 变更信息
+	// 到期处理信息
 	{
-		label: "变更类型",
-		prop: "变更类型",
+		label: "到期处理类型",
+		prop: "到期处理类型",
 		valueType: "select",
 		options: [
-			{ label: "合同金额", value: "合同金额" },
-			{ label: "服务期限", value: "服务期限" },
-			{ label: "服务内容", value: "服务内容" },
-			{ label: "付款方式", value: "付款方式" },
-			{ label: "合同主体", value: "合同主体" },
+			{ label: "续签", value: "续签" },
+			{ label: "终止", value: "终止" },
 		],
 		required: true,
 		span: 8,
 	},
 	{
-		label: "变更人",
-		prop: "变更人",
+		label: "处理人",
+		prop: "处理人",
 		valueType: "input",
 		required: true,
 		span: 16,
-	},
-
-	// 变更前后内容
-	{
-		label: "变更前",
-		prop: "变更前",
-		valueType: "textarea",
-		fieldProps: {
-			rows: 3,
-			placeholder: "请输入变更前的内容",
-		},
-		required: true,
-		span: 24,
-	},
-	{
-		label: "变更后",
-		prop: "变更后",
-		valueType: "textarea",
-		fieldProps: {
-			rows: 3,
-			placeholder: "请输入变更后的内容",
-		},
-		required: true,
-		span: 24,
-	},
-
-	// 资产情况分组标题
-	{
-		label: "合同变更（资产情况）",
-		prop: "资产情况标题",
-		span: 24,
 	},
 
 	// 说明
@@ -239,24 +198,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
-			placeholder: "请输入变更说明信息",
 		},
 		required: true,
-		span: 24,
-	},
-
-	// 合同附件
-	{
-		label: "合同附件",
-		prop: "合同附件",
-		fieldProps: {
-			action: "/api/upload",
-			multiple: true,
-			limit: 5,
-			fileList: [],
-			accept: ".pdf,.doc,.docx,.xls,.xlsx",
-			tip: "支持上传PDF、Word、Excel文件,最多5个文件",
-		},
 		span: 24,
 	},
 ]);

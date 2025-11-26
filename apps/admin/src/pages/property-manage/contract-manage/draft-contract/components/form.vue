@@ -3,12 +3,11 @@
   用于新增、修改合同草稿
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef, reactive } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, 合同类型, 合同草稿表单_VO, defaultForm } from "./addForm";
+import { ContractDraftFormProps, 合同草稿表单_VO, defaultForm } from "./form";
 
-/** 表单组件 props */
-const props = defineProps<AddFormProps>();
+const props = defineProps<ContractDraftFormProps>();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & 合同草稿表单_VO;
@@ -250,7 +249,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		/** @description 合同附件 */
 		label: "合同附件",
 		prop: "合同附件",
-		valueType: "upload",
+		valueType: "text",
 		fieldProps: {
 			action: "/api/upload",
 			multiple: true,

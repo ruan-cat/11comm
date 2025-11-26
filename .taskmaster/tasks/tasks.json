@@ -601,7 +601,7 @@
 			"name": "改造 property-manage/contract-manage/change 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/contract-manage/change/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -609,14 +609,15 @@
 				"contract-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/change/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/change"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/change",
+			"completedAt": "2025-11-27T13:00:00Z"
 		},
 		{
 			"id": "task-041",
 			"name": "改造 property-manage/contract-manage/draft-contract 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/contract-manage/draft-contract/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -624,7 +625,8 @@
 				"contract-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/draft-contract/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/draft-contract"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/draft-contract",
+			"completedAt": "2025-11-27T13:30:00Z"
 		},
 		{
 			"id": "task-042",

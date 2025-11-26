@@ -18,12 +18,12 @@ import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 
-import { type 业务受理_列表数据, type 合同类型_列表查询_VO, tableData as mockTableData } from "./test-data";
-import { type AddFormProps, defaultForm } from "./components/addForm";
-import AddForm from "./components/addForm.vue";
+import { type 业务受理_列表数据, type 合同类型_列表查询_VO, tableData as mockTableData, 合同类型Options } from "./test-data";
+import { type ContractChangeFormProps, defaultForm, type 合同变更表单_VO } from "./components/form";
+import ContractChangeForm from "./components/form.vue";
 
 /** 表单组件实例引用 */
-const AddFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
+const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<业务受理_列表数据[]>([]);
@@ -134,25 +134,16 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 
 	{
-		label: "输入合同编号",
+		label: "合同编号",
 		prop: "输入合同编号",
 		valueType: "input",
 	},
 
 	{
-		label: transformI18n($t("property-manage_contract-manage.contract-type.addpeopleplaceholder")),
-		prop: "审核类型",
+		label: "合同类型",
+		prop: "选择合同类型",
 		valueType: "select",
-		options: [
-			{
-				label: "类型1",
-				value: "类型1",
-			},
-			{
-				label: "类型2",
-				value: "类型2",
-			},
-		],
+		options: 合同类型Options,
 	},
 ]);
 
@@ -261,7 +252,7 @@ const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 /** 异步操作加载状态 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 
-/** 测试异步函数 */
+/** 模拟异步函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -277,10 +268,39 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}合同变更`;
 
+	/** 业务对象 */
+	const 合同变更表单业务对象 = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					合同名称: row?.合同名称 || "",
+					合同编号: row?.合同编号 || "",
+					合同类型: row?.合同类型 || "",
+					甲方: row?.甲方 || "",
+					甲方联系人: "",
+					甲方联系电话: "",
+					乙方: row?.乙方 || "",
+					乙方联系人: "",
+					乙方联系电话: "",
+					经办人: "",
+					经办电话: "",
+					合同金额: "",
+					开始时间: "",
+					结束时间: "",
+					签订时间: "",
+					变更类型: row?.变更类型 || "合同金额",
+					变更人: row?.变更人 || "",
+					说明: row?.说明 || "",
+					变更前: "",
+					变更后: "",
+					合同附件: [],
+				} as 合同变更表单_VO)
+			: cloneDeep(defaultForm);
+
 	/** 表单组件需要的props */
-	const formProps: AddFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+	const formProps: ContractChangeFormProps = {
+		form: 合同变更表单业务对象 as 合同变更表单_VO,
+		defaultValues: 合同变更表单业务对象 as 合同变更表单_VO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -295,14 +315,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		props,
 
 		contentRenderer: () =>
-			h(AddForm, {
-				ref: AddFormInstance,
+			h(ContractChangeForm, {
+				ref: ContractChangeFormInstance,
 				...formProps,
 				mode: mode,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = AddFormInstance.value?.formComputed;
+			const formComputed = ContractChangeFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
@@ -313,7 +333,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = AddFormInstance.value?.formComputed;
+					const formComputed = ContractChangeFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
@@ -325,7 +345,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					AddFormInstance.value?.plusFormInstance?.handleReset();
+					ContractChangeFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -334,7 +354,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await AddFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await ContractChangeFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();

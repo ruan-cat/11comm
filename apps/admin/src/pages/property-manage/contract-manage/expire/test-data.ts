@@ -1,5 +1,46 @@
 import type { OptionsType } from "plus-pro-components";
 
+/** 到期合同_列表数据 */
+export interface 到期合同_列表数据 {
+	合同名称: string;
+	合同编号: string;
+	合同类型: string;
+	甲方: string;
+	甲方联系人: string;
+	甲方联系电话: string;
+	乙方: string;
+	乙方联系人: string;
+	乙方联系电话: string;
+	经办人: string;
+	经办电话: string;
+	合同金额: string;
+	开始时间: string;
+	结束时间: string;
+	签订时间: string;
+	到期时间: string;
+	状态: string;
+	处理状态?: string;
+	到期处理类型?: string;
+	处理人?: string;
+	说明?: string;
+}
+
+/** 到期合同_列表查询_VO */
+export interface 到期合同_列表查询_VO {
+	合同名称?: string;
+	合同编号?: string;
+	选择合同类型?: string;
+	处理状态?: string;
+}
+
+/** 处理状态选项 */
+export const 处理状态Options: OptionsType = [
+	{ label: "未处理", value: "未处理" },
+	{ label: "处理中", value: "处理中" },
+	{ label: "已处理", value: "已处理" },
+	{ label: "已延期", value: "已延期" },
+];
+
 /** 业务受理_列表数据 */
 export interface 业务受理_列表数据 {
 	合同名称: string;
@@ -38,8 +79,35 @@ export const 审核类型Options: OptionsType = [
 	{ label: "已撤回", value: "已撤回" },
 ];
 
-/** 生成35条假数据 */
-export const tableData: 业务受理_列表数据[] = Array(35)
+/** 生成35条到期合同假数据 */
+export const tableData: 到期合同_列表数据[] = Array(35)
+	.fill(null)
+	.map((_, index) => ({
+		合同名称: `合同-${index + 1}`,
+		合同编号: `HT${(Date.now() + index * 1000).toString(36).toUpperCase().substring(4)}`,
+		合同类型: String((合同类型Options as any)[index % (合同类型Options as any).length].value),
+		甲方: ["XX科技有限公司", "XX网络技术有限公司", "XX软件开发有限公司", "XX信息技术服务公司"][index % 4],
+		甲方联系人: `联系人${index + 1}`,
+		甲方联系电话: `138${String(index).padStart(8, "0")}`,
+		乙方: ["XX信息技术服务公司", "XX系统集成有限公司", "XX数据服务中心", "XX云端科技有限公司"][index % 4],
+		乙方联系人: `联系人${index + 2}`,
+		乙方联系电话: `139${String(index + 1).padStart(8, "0")}`,
+		经办人: ["张三", "李四", "王五", "赵六", "钱七"][index % 5],
+		经办电话: `137${String(index + 2).padStart(8, "0")}`,
+		合同金额: `${(index + 1) * 10000}`,
+		开始时间: `2023-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 28) + 1).padStart(2, "0")}`,
+		结束时间: `2024-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 28) + 1).padStart(2, "0")}`,
+		签订时间: `2023-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 28) + 1).padStart(2, "0")}`,
+		到期时间: `2024-${String((index % 12) + 1).padStart(2, "0")}-${String((index % 28) + 1).padStart(2, "0")}`,
+		状态: ["即将到期", "已到期", "已延期"][index % 3],
+		处理状态: String((处理状态Options as any)[index % (处理状态Options as any).length].value),
+		到期处理类型: ["续签", "终止"][index % 2],
+		处理人: ["张三", "李四", "王五", "赵六"][index % 4],
+		说明: `说明信息${index + 1}`,
+	}));
+
+/** 生成35条业务受理假数据 */
+export const allTableData: 业务受理_列表数据[] = Array(35)
 	.fill(null)
 	.map((_, index) => ({
 		合同名称: `合同-${index + 1}`,

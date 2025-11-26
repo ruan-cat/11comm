@@ -12,18 +12,18 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import {
-	type 业务受理_列表数据,
-	type 合同类型_列表查询_VO,
+	type 到期合同_列表数据,
+	type 到期合同_列表查询_VO,
 	合同类型Options,
-	审核类型Options,
+	处理状态Options,
 	tableData as allTableData,
 } from "./test-data";
-import { type AddFormProps, defaultForm } from "./components/addForm";
-import AddForm from "./components/addForm.vue";
-const addFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
+import { type ContractExpireFormProps, defaultForm, type 合同到期表单_VO } from "./components/form";
+import ContractExpireForm from "./components/form.vue";
+const contractExpireFormInstance = ref<InstanceType<typeof ContractExpireForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<业务受理_列表数据[]>([]);
+const tableData = ref<到期合同_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -54,39 +54,44 @@ const columns = ref<TableColumnList>([
 		width: 140,
 	},
 	{
-		label: "变更类型",
-		prop: "变更类型",
+		label: "合同金额",
+		prop: "合同金额",
 		width: 120,
 	},
 	{
-		label: "变更人",
-		prop: "变更人",
-		width: 100,
-	},
-	{
-		label: "申请时间",
-		prop: "申请时间",
+		label: "到期时间",
+		prop: "到期时间",
 		width: 160,
 	},
 	{
-		label: "说明",
-		prop: "说明",
-		width: 200,
+		label: "处理状态",
+		prop: "处理状态",
+		width: 100,
+		formatter: (row: 到期合同_列表数据) => {
+			const statusMap = {
+				未处理: "未处理",
+				处理中: "处理中",
+				已续签: "已续签",
+				已终止: "已终止",
+				已延期: "已延期",
+			};
+			return statusMap[row.处理状态] || row.处理状态;
+		},
 	},
 	{
-		label: "状态",
-		prop: "状态",
+		label: "处理人",
+		prop: "处理人",
 		width: 100,
-		formatter: (row: 业务受理_列表数据) => {
-			const statusMap = {
-				待审核: "待审核",
-				审核中: "审核中",
-				已通过: "已通过",
-				已拒绝: "已拒绝",
-				已撤回: "已撤回",
-			};
-			return statusMap[row.状态] || row.状态;
-		},
+	},
+	{
+		label: "处理时间",
+		prop: "处理时间",
+		width: 160,
+	},
+	{
+		label: "备注",
+		prop: "备注",
+		width: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -108,10 +113,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 合同类型_列表查询_VO = {
+const plusSearchModelRef: FieldValues & 到期合同_列表查询_VO = {
 	合同名称: "",
 	输入合同编号: "",
 	选择合同类型: "",
+	选择处理状态: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -140,6 +146,12 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "选择合同类型",
 		valueType: "select",
 		options: 合同类型Options,
+	},
+	{
+		label: "处理状态",
+		prop: "选择处理状态",
+		valueType: "select",
+		options: 处理状态Options,
 	},
 ]);
 
@@ -182,10 +194,13 @@ async function loadTableData() {
 			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
 		}
 		if (plusSearchModel.value.输入合同编号) {
-			filteredData = filteredData.filter((item) => item.合同编号.includes(plusSearchModel.value.输入合同编号!));
+			filteredData = filteredData.filter((item) => String(item.合同编号).includes(String(plusSearchModel.value.输入合同编号)));
 		}
 		if (plusSearchModel.value.选择合同类型) {
 			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.选择合同类型);
+		}
+		if (plusSearchModel.value.选择处理状态) {
+			filteredData = filteredData.filter((item) => item.处理状态 === plusSearchModel.value.选择处理状态);
 		}
 
 		// 更新总数
@@ -229,7 +244,7 @@ async function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 业务受理_列表数据;
+	row?: 到期合同_列表数据;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -251,53 +266,56 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}合同到期处理`;
 
-	/** 表单组件需要的props */
-	const formProps: AddFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-	// 模拟情况：从外部获得值
-	const testEditProps: AddFormProps = {
-		form: {
-			...defaultForm,
-			合同名称: row?.合同名称 || "测试合同",
-			合同编号: row?.合同编号 || "HT001",
-			合同类型: row?.合同类型 || "服务合同",
-			甲方: row?.甲方 || "XX科技有限公司",
-			乙方: row?.乙方 || "XX信息技术服务公司",
-			到期处理类型: "续签",
-			处理人: "张三",
-			说明: "合同到期需要续签处理",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
+	/** 业务对象 */
+	const 合同到期表单 = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					合同名称: row?.合同名称 || "",
+					合同编号: row?.合同编号 || "",
+					合同类型: row?.合同类型 || "",
+					甲方: row?.甲方 || "",
+					乙方: row?.乙方 || "",
+					甲方联系人: row?.甲方联系人 || "",
+					甲方联系电话: row?.甲方联系电话 || "",
+					乙方联系人: row?.乙方联系人 || "",
+					乙方联系电话: row?.乙方联系电话 || "",
+					经办人: row?.经办人 || "",
+					经办电话: row?.经办电话 || "",
+					合同金额: row?.合同金额 || "",
+					开始时间: row?.开始时间 || "",
+					结束时间: row?.结束时间 || "",
+					签订时间: row?.签订时间 || "",
+					到期处理类型: row?.到期处理类型 || "续签",
+					处理人: row?.处理人 || "",
+					说明: row?.说明 || "",
+				})
+			: cloneDeep(defaultForm);
 
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value //不要照抄，根据业务情况具体分析
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
+	/** 表单组件需要的props */
+	const formProps: ContractExpireFormProps = {
+		form: 合同到期表单 as 合同到期表单_VO,
+		defaultValues: 合同到期表单 as 合同到期表单_VO,
+	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
-			h(AddForm, {
-				ref: addFormInstance,
-				...formProps, //不生效：避免类型报错
-				mode: mode, // 传入当前模式
+			h(ContractExpireForm, {
+				ref: contractExpireFormInstance,
+				form: defaultForm,
+				defaultValues: defaultForm,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = addFormInstance.value?.formComputed;
+			const formComputed = contractExpireFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
@@ -308,8 +326,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = addFormInstance.value?.formComputed;
+					const formComputed = contractExpireFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
@@ -320,8 +337,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					addFormInstance.value?.plusFormInstance?.handleReset();
+					contractExpireFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -329,12 +345,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await addFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await contractExpireFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
-						button.btn.loading = true; //加载
-						await testAsync(); //异步函数
-						button.btn.loading = false; //不加载
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
 						closeDialog(options, index);
 					}
 				},
@@ -379,10 +394,10 @@ onMounted(async () => {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info" @click="openDialog({ mode: 'add', row })">
-							{{ transformI18n($t("property-manage_contract-manage.expired-contract.renewal")) }}
+							续签处理
 						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("property-manage_contract-manage.expired-contract.termination")) }}
+						<ElButton type="danger" @click="openDialog({ mode: 'add', row })">
+							终止处理
 						</ElButton>
 					</template>
 				</PureTable>

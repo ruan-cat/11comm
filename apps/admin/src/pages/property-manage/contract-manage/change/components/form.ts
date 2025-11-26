@@ -1,9 +1,10 @@
+/** 变更类型选项 */
 const _变更类型 = ["合同金额", "服务期限", "服务内容", "付款方式", "合同主体"] as const;
 
-// 警告 这里仅为了演示 实际上的业务类型为 string
+/** 变更类型 */
 export type 变更类型 = (typeof _变更类型)[number];
 
-// 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
+/** 合同变更表单业务类型 */
 export interface 合同变更表单_VO {
 	合同名称: string;
 	合同编号: string;
@@ -58,7 +59,7 @@ export const defaultForm: 合同变更表单_VO = {
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export interface AddFormProps {
+export interface ContractChangeFormProps {
 	/** 表单数据 */
 	form: 合同变更表单_VO;
 	/** 表单组件重置时默认使用的对象 */
