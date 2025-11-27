@@ -681,7 +681,7 @@
 			"name": "改造 property-manage/expense-manage/water-and-electricity-meter-reading 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/water-and-electricity-meter-reading/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -689,14 +689,15 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading",
+			"completedAt": "2025-11-27T16:30:00Z"
 		},
 		{
 			"id": "task-046",
 			"name": "改造 property-manage/expense-manage/vehicle-charge 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/vehicle-charge/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -704,14 +705,15 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/vehicle-charge/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/vehicle-charge"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/vehicle-charge",
+			"completedAt": "2025-11-27T17:00:00Z"
 		},
 		{
 			"id": "task-047",
 			"name": "改造 property-manage/expense-manage/reminder-for-overdue-payments 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/reminder-for-overdue-payments/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -719,14 +721,15 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments",
+			"completedAt": "2025-11-27T19:00:00Z"
 		},
 		{
 			"id": "task-048",
 			"name": "改造 property-manage/expense-manage/reprint-voucher 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/reprint-voucher/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -734,7 +737,8 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reprint-voucher/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/reprint-voucher"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/reprint-voucher",
+			"completedAt": "2025-11-27T18:00:00Z"
 		},
 		{
 			"id": "task-049",
@@ -756,7 +760,7 @@
 			"name": "改造 property-manage/expense-manage/payment-review 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/payment-review/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -764,7 +768,8 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/payment-review/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/payment-review"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/payment-review",
+			"completedAt": "2025-11-27T20:00:00Z"
 		},
 		{
 			"id": "task-051",

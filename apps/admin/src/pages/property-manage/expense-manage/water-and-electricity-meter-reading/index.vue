@@ -30,50 +30,49 @@ const tableData = ref<水电抄表_列表数据[]>([]);
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		prop: "表ID",
 		label: "表ID",
-		width: 200,
-		fixed: true,
+		prop: "表ID",
+		width: 150,
 	},
 	{
-		prop: "表类型",
 		label: "表类型",
-		width: 120,
+		prop: "表类型",
+		width: 100,
 	},
 	{
-		prop: "对象名称",
 		label: "对象名称",
-		width: 120,
+		prop: "对象名称",
+		width: 140,
 	},
 	{
-		prop: "上期度数",
 		label: "上期度数",
-		width: 120,
+		prop: "上期度数",
+		width: 100,
 	},
 	{
-		prop: "本期度数",
 		label: "本期度数",
-		width: 120,
+		prop: "本期度数",
+		width: 100,
 	},
 	{
-		prop: "上期读表时间",
 		label: "上期读表时间",
-		width: 200,
+		prop: "上期读表时间",
+		width: 180,
 	},
 	{
-		prop: "本期读表时间",
 		label: "本期读表时间",
-		width: 200,
+		prop: "本期读表时间",
+		width: 180,
 	},
 	{
-		prop: "创建时间",
 		label: "创建时间",
-		width: 200,
+		prop: "创建时间",
+		width: 180,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 200,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -325,13 +324,13 @@ onMounted(async () => {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.meterReading")) }}
 				</ElButton>
-				<ElButton type="success">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.meterReadingType")) }}
 				</ElButton>
-				<ElButton type="default">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.readingImport1")) }}
 				</ElButton>
-				<ElButton type="default">
+				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.readingImport2")) }}
 				</ElButton>
 			</template>
@@ -346,6 +345,9 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>

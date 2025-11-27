@@ -45,70 +45,97 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 业主名称
 	{
 		label: "业主名称",
 		prop: "业主名称",
 		valueType: "input",
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入业主名称",
+		},
 		required: true,
 	},
-
-	// 付费对象
 	{
 		label: "付费对象",
 		prop: "付费对象",
 		valueType: "input",
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入付费对象",
+		},
 		required: true,
 	},
-
-	// 费用名称
 	{
 		label: "费用名称",
 		prop: "费用名称",
 		valueType: "input",
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入费用名称",
+		},
 		required: true,
 	},
-
-	// 催缴金额
 	{
 		label: "催缴金额",
 		prop: "催缴金额",
 		valueType: "input",
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入催缴金额",
+		},
 		required: true,
 	},
-
-	// 欠费时间段
 	{
 		label: "欠费时间段",
 		prop: "欠费时间段",
 		valueType: "input",
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入欠费时间段",
+		},
 		required: true,
 	},
-
-	// 催缴方式
 	{
 		label: "催缴方式",
 		prop: "催缴方式",
 		valueType: "select",
+		width: "200px",
 		options: 催缴方式Options,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+			placeholder: "请选择催缴方式",
+		},
 		required: true,
 	},
-
-	// 状态
 	{
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
+		width: "200px",
 		options: 催缴状态Options,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+			placeholder: "请选择状态",
+		},
 		required: true,
 	},
-
-	// 说明
 	{
 		label: "说明",
 		prop: "说明",
 		valueType: "textarea",
-		required: false,
+		width: "300px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入说明",
+			rows: 3,
+		},
 	},
 ]);
 
@@ -116,7 +143,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	业主名称: [{ required: true, message: "请输入业主名称", trigger: "blur" }],
+	付费对象: [{ required: true, message: "请输入付费对象", trigger: "blur" }],
+	费用名称: [{ required: true, message: "请输入费用名称", trigger: "blur" }],
+	催缴金额: [
+		{ required: true, message: "请输入催缴金额", trigger: "blur" },
+		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+	],
+	欠费时间段: [{ required: true, message: "请输入欠费时间段", trigger: "blur" }],
+	催缴方式: [{ required: true, message: "请选择催缴方式", trigger: "change" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,

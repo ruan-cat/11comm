@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { WaterAndElectricityMeterReadingFormProps, 费用类型, 水电抄表表单_VO, defaultForm } from "./form";
+import { WaterAndElectricityMeterReadingFormProps, type 水电抄表表单_VO } from "./form";
 
 const props = defineProps<WaterAndElectricityMeterReadingFormProps>();
 
@@ -43,23 +43,27 @@ const plusFormColumns = ref<PlusColumn[]>([
 		options: [
 			{ label: "水费", value: "水费" },
 			{ label: "电费", value: "电费" },
-			{ label: "煤气费", value: "煤气费" },
 		],
-		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
+		width: "200px",
 	},
-
 	// 收费项目
 	{
 		label: "收费项目",
 		prop: "收费项目",
 		valueType: "select",
 		options: [
-			{ label: "动态水表", value: "动态水表" },
 			{ label: "水表", value: "水表" },
 			{ label: "电表", value: "电表" },
-			{ label: "抄表", value: "抄表" },
 		],
-		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
+		width: "200px",
 	},
 	// 抄表类型
 	{
@@ -70,28 +74,44 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "水表", value: "水表" },
 			{ label: "电表", value: "电表" },
 		],
-		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
+		width: "200px",
 	},
 	// 收费对象
 	{
 		label: "收费对象",
 		prop: "收费对象",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入收费对象",
+		},
+		width: "200px",
 	},
 	// 上期度数
 	{
 		label: "上期度数",
 		prop: "上期度数",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入上期度数",
+		},
+		width: "200px",
 	},
 	// 本期度数
 	{
 		label: "本期度数",
 		prop: "本期度数",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入本期度数",
+		},
+		width: "200px",
 	},
 	// 上期读表时间
 	{
@@ -102,8 +122,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
 		},
-		required: true,
+		width: "220px",
 	},
 	// 本期读表时间
 	{
@@ -114,14 +135,20 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
 		},
-		required: true,
+		width: "220px",
 	},
 	// 备注
 	{
 		label: "备注",
 		prop: "备注",
 		valueType: "input",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入备注信息",
+		},
+		width: "300px",
 	},
 ]);
 
@@ -129,7 +156,25 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	收费项目: [{ required: true, message: "请选择收费项目", trigger: "change" }],
+	抄表类型: [{ required: true, message: "请选择抄表类型", trigger: "change" }],
+	收费对象: [
+		{ required: true, message: "请输入收费对象", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	上期度数: [
+		{ required: true, message: "请输入上期度数", trigger: "blur" },
+		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" },
+	],
+	本期度数: [
+		{ required: true, message: "请输入本期度数", trigger: "blur" },
+		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" },
+	],
+	上期读表时间: [{ required: true, message: "请选择上期读表时间", trigger: "change" }],
+	本期读表时间: [{ required: true, message: "请选择本期读表时间", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,

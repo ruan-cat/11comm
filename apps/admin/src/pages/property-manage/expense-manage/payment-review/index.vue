@@ -247,12 +247,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 缴费审核_列表数据;
-}
-
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
@@ -268,7 +263,8 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 缴费审核_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
@@ -297,23 +293,23 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
-	const props: 缴费审核FormProps = {
+	const formProps: 缴费审核FormProps = {
 		form: 缴费审核表单_VO,
 		defaultValues: 缴费审核表单_VO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(缴费审核Form, {
 				ref: 缴费审核FormInstance,
-				...props,
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -326,7 +322,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = 缴费审核FormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -336,7 +331,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					缴费审核FormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -345,7 +339,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await 缴费审核FormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -370,6 +363,13 @@ function handleOperationClick(operation: string, row: 缴费审核_列表数据)
 			break;
 		case "审核拒绝":
 			openDialog({ mode: "edit", row });
+			break;
+		case "批量审核":
+			openDialog({ mode: "add" });
+			break;
+		case "导出审核记录":
+			// 导出功能，暂时不处理
+			console.log(`${operation} 操作`, row);
 			break;
 		default:
 			console.log(`${operation} 操作`, row);

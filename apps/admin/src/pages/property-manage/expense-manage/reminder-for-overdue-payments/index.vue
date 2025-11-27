@@ -86,32 +86,42 @@ const columns = ref<TableColumnList>([
 	{
 		label: "业主名称",
 		prop: "业主名称",
-		width: 100,
+		width: 120,
 	},
 	{
 		label: "付费对象",
 		prop: "付费对象",
-		width: 100,
+		width: 120,
 	},
 	{
 		label: "费用名称",
 		prop: "费用名称",
-		width: 100,
+		width: 120,
 	},
 	{
 		label: "催缴金额",
 		prop: "催缴金额",
-		width: 100,
+		width: 120,
+	},
+	{
+		label: "欠费时间段",
+		prop: "欠费时间段",
+		width: 120,
 	},
 	{
 		label: "催缴方式",
 		prop: "催缴方式",
-		width: 100,
+		width: 120,
 	},
 	{
 		label: "状态",
 		prop: "状态",
-		width: 100,
+		width: 120,
+	},
+	{
+		label: "说明",
+		prop: "说明",
+		minWidth: 200,
 	},
 	{
 		label: "创建时间",
@@ -121,7 +131,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 280,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -165,17 +175,20 @@ async function handleCurrentPageChange(currentPage: number) {
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
+	/** 业主名称 */
 	{
 		label: "业主名称",
 		prop: "业主名称",
 		valueType: "input",
 	},
+	/** 催缴方式 */
 	{
 		label: "催缴方式",
 		prop: "催缴方式",
 		valueType: "select",
 		options: 催缴方式Options,
 	},
+	/** 状态 */
 	{
 		label: "状态",
 		prop: "状态",
@@ -331,9 +344,9 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> 立即催缴 </ElButton>
-						<ElButton type="info"> 查看详情 </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="info">立即催缴</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">查看详情</ElButton>
+						<ElButton type="danger">{{ transformI18n($t("common.buttons.del")) }}</ElButton>
 					</template>
 				</PureTable>
 			</template>

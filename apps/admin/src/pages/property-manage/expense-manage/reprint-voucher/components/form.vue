@@ -42,6 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -51,6 +52,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		options: 费用类型Options,
 		fieldProps: {
 			disabled: true,
+			clearable: true,
+			filterable: true,
 		},
 	},
 	{
@@ -59,6 +62,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -67,6 +71,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -75,6 +80,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -83,6 +89,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -91,6 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -99,6 +107,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
+			clearable: true,
 		},
 	},
 	{
@@ -116,6 +125,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
+			clearable: true,
 		},
 	},
 ]);
@@ -133,6 +143,13 @@ const plusFormRules = ref({
 			min: 1,
 			max: 10,
 			message: "打印份数必须在1-10之间",
+			trigger: "blur",
+		},
+	],
+	打印备注: [
+		{
+			max: 200,
+			message: "打印备注不能超过200个字符",
 			trigger: "blur",
 		},
 	],

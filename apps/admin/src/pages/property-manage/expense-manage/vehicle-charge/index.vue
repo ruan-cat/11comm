@@ -14,12 +14,13 @@ import { type Mode } from "@/composables/use-mode";
 
 import { type VehicleChargeFormProps, defaultForm, type 车辆收费表单_VO } from "./components/form";
 import VehicleChargeForm from "./components/form.vue";
-import { tableData as mockTableData, type 车辆收费_列表数据, 车位状态Options } from "./test-data";
+import { tableData as mockTableData, type 车辆收费_列表数据, type 车辆收费_列表查询_VO, 车位状态Options } from "./test-data";
 
 const VehicleChargeFormInstance = ref<InstanceType<typeof VehicleChargeForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<车辆收费_列表数据[]>([]);
+
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
@@ -76,6 +77,7 @@ async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
 	await loadTableData();
 }
+
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
@@ -84,23 +86,17 @@ async function handleCurrentPageChange(currentPage: number) {
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps, // 默认配置
-	data: tableData.value, // 表格数据
-	columns: [], // 列配置
-	pagination: pagination.value, // 分页配置
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
 });
+
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "车辆收费",
 	columns: columns.value,
 });
-/** 表格搜索栏组件 配置  */
-interface 车辆收费_列表查询_VO {
-	"停车场-车位"?: string;
-	车牌号?: string;
-	业主名称?: string;
-	车位状态?: string;
-}
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -210,9 +206,11 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
+/** 测试异步函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
@@ -279,7 +277,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = VehicleChargeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -288,7 +286,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
+				btnClick: () => {
 					VehicleChargeFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -327,22 +325,12 @@ onMounted(async () => {
 		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
-			<!-- 表格操作栏组件 -->
 			<template #buttons>
-				<ElButton type="info">
-					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.customTemplate")) }}
-				</ElButton>
-				<ElButton type="info">
-					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.customCreate")) }}
-				</ElButton>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
-					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.batchCreate")) }}
-				</ElButton>
-				<ElButton type="info">
-					{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.monthlyCardPurchase")) }}
+					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
-			<!-- 表格组件 -->
+
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
@@ -353,8 +341,14 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("propertyManage_expensesManage.vehicle-charge.viewFee")) }}
+						</ElButton>
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
 				</PureTable>

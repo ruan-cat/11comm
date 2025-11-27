@@ -86,6 +86,7 @@ export interface 补打收据表单_VO {
 
 /**
  * 表格假数据
+ * @description 生成35条贴近真实业务场景的补打收据数据
  */
 export const tableData: 补打收据_列表数据[] = [
 	{

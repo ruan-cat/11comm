@@ -49,6 +49,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "停车场", value: "停车场" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请选择收费范围",
+		},
 	},
 	// 费用类型
 	{
@@ -57,12 +61,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		options: 费用类型Options,
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+			placeholder: "请选择费用类型",
+		},
 	},
 	// 收费项目
 	{
 		label: "收费项目",
 		prop: "收费项目",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入收费项目（如车牌号）",
+		},
 	},
 	//车位状态
 	{
@@ -73,6 +86,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "已出售", value: "已出售" },
 			{ label: "已出租", value: "已出租" },
 		],
+		fieldProps: {
+			clearable: true,
+			placeholder: "请选择车位状态",
+		},
 	},
 	//计费起始时间
 	{
@@ -83,6 +100,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
+			placeholder: "请选择计费起始时间",
 		},
 		required: true,
 	},
@@ -95,6 +114,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
+			placeholder: "请选择计费结束时间",
 		},
 		required: true,
 	},
@@ -104,7 +125,28 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	收费范围: [{ required: true, message: "请选择收费范围", trigger: "change" }],
+	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	收费项目: [
+		{ required: true, message: "请输入收费项目", trigger: "blur" },
+		{ min: 1, max: 50, message: "长度在 1 到 50 个字符", trigger: "blur" },
+	],
+	计费起始时间: [{ required: true, message: "请选择计费起始时间", trigger: "change" }],
+	计费结束时间: [
+		{ required: true, message: "请选择计费结束时间", trigger: "change" },
+		{
+			validator: (rule, value, callback) => {
+				if (value && form.value.计费起始时间 && value < form.value.计费起始时间) {
+					callback(new Error("计费结束时间不能早于计费起始时间"));
+				} else {
+					callback();
+				}
+			},
+			trigger: "change",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,

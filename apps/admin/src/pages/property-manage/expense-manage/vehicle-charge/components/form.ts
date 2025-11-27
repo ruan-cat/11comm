@@ -30,7 +30,7 @@ export interface 车辆收费表单_VO {
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 车辆收费表单_VO = {
 	收费范围: "小区",
-	费用类型: "押金",
+	费用类型: "停车费",
 	收费项目: "",
 	车位状态: "已出售",
 	计费起始时间: "",

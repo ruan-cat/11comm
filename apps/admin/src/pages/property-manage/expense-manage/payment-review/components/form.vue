@@ -59,6 +59,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "暖气费", value: "暖气费" },
 			{ label: "其他费用", value: "其他费用" },
 		],
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	// 付费周期
@@ -120,6 +124,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "审核通过", value: "审核通过" },
 			{ label: "审核拒绝", value: "审核拒绝" },
 		],
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	// 审核说明
@@ -148,7 +156,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	房屋: [{ required: true, message: "请填写房屋", trigger: "blur" }],
+	费用项目: [{ required: true, message: "请选择费用项目", trigger: "change" }],
+	付费周期: [{ required: true, message: "请填写付费周期", trigger: "blur" }],
+	缴费起始时间: [{ required: true, message: "请选择缴费起始时间", trigger: "change" }],
+	缴费结束时间: [{ required: true, message: "请选择缴费结束时间", trigger: "change" }],
+	应付金额: [{ required: true, message: "请填写应付金额", trigger: "blur" }],
+	实付金额: [{ required: true, message: "请填写实付金额", trigger: "blur" }],
+	操作员工: [{ required: true, message: "请填写操作员工", trigger: "blur" }],
+	缴费时间: [{ required: true, message: "请选择缴费时间", trigger: "change" }],
+	审核状态: [{ required: true, message: "请选择审核状态", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,
