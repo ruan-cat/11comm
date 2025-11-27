@@ -162,15 +162,15 @@ const plusFormRules = ref<PlusFormRules>({
 	抄表类型: [{ required: true, message: "请选择抄表类型", trigger: "change" }],
 	收费对象: [
 		{ required: true, message: "请输入收费对象", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" } as any,
 	],
 	上期度数: [
 		{ required: true, message: "请输入上期度数", trigger: "blur" },
-		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" },
+		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" } as any,
 	],
 	本期度数: [
 		{ required: true, message: "请输入本期度数", trigger: "blur" },
-		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" },
+		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" } as any,
 	],
 	上期读表时间: [{ required: true, message: "请选择上期读表时间", trigger: "change" }],
 	本期读表时间: [{ required: true, message: "请选择本期读表时间", trigger: "change" }],

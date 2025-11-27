@@ -209,6 +209,14 @@ interface OpenDialogParams {
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
+/** 删除水电抄表记录 */
+async function handleDelete(row: 水电抄表_列表数据) {
+	/** TODO: 替换为真实的API调用 */
+	consola.log("删除水电抄表记录:", row);
+	/** 当前使用模拟删除 */
+	await loadTableData();
+}
+
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
 async function testAsync() {
@@ -233,8 +241,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			? cloneDeep({
 					...defaultForm,
 					费用类型: row?.表类型 === "水表" ? "水费" : row?.表类型 === "电表" ? "电费" : "水费",
-					收费项目: row?.表类型 === "水表" || row?.表类型 === "电表" ? row?.表类型 : "水表",
-					抄表类型: row?.表类型 || "水表",
+					收费项目: row?.表类型 === "水表" || row?.表类型 === "电表" ? row?.表类型 as "水表" | "电表" : "水表",
+					抄表类型: (row?.表类型 || "水表") as "水表" | "电表",
 					收费对象: row?.对象名称 || "",
 					上期度数: row?.上期度数 || "",
 					本期度数: row?.本期度数 || "",
@@ -351,7 +359,9 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger">{{ transformI18n($t("common.buttons.del")) }}</ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
