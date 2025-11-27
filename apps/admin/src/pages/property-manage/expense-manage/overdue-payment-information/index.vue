@@ -28,6 +28,7 @@ const overduePaymentInformationFormInstance = ref<InstanceType<typeof OverduePay
 
 /** 模拟异步操作函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -400,11 +401,11 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="info">
-					{{ transformI18n($t("欠费缴费")) }}
-				</ElButton>
 				<ElButton type="primary">
-					{{ transformI18n($t("导出欠费清单")) }}
+					欠费缴费
+				</ElButton>
+				<ElButton type="info">
+					导出欠费清单
 				</ElButton>
 			</template>
 
@@ -418,14 +419,14 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="primary" @click="handleOperationClick('欠费缴费', row)">
-							{{ transformI18n($t("欠费缴费")) }}
+						<ElButton type="warning" @click="handleOperationClick('欠费缴费', row)">
+							欠费缴费
 						</ElButton>
-						<ElButton type="warning" @click="handleOperationClick('查看详情', row)">
-							{{ transformI18n($t("common.buttons.info")) }}
+						<ElButton type="info" @click="handleOperationClick('查看详情', row)">
+							查看详情
 						</ElButton>
-						<ElButton type="info" @click="handleOperationClick('查看费用', row)">
-							{{ transformI18n($t("查看费用")) }}
+						<ElButton type="primary" @click="handleOperationClick('查看费用', row)">
+							查看费用
 						</ElButton>
 					</template>
 				</PureTable>
