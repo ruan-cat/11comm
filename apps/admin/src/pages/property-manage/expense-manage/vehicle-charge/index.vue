@@ -14,7 +14,12 @@ import { type Mode } from "@/composables/use-mode";
 
 import { type VehicleChargeFormProps, defaultForm, type 车辆收费表单_VO } from "./components/form";
 import VehicleChargeForm from "./components/form.vue";
-import { tableData as mockTableData, type 车辆收费_列表数据, type 车辆收费_列表查询_VO, 车位状态Options } from "./test-data";
+import {
+	tableData as mockTableData,
+	type 车辆收费_列表数据,
+	type 车辆收费_列表查询_VO,
+	车位状态Options,
+} from "./test-data";
 
 const VehicleChargeFormInstance = ref<InstanceType<typeof VehicleChargeForm> | null>(null);
 
@@ -55,10 +60,9 @@ const columns = ref<TableColumnList>([
 		width: 200,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
