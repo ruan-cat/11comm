@@ -353,11 +353,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="default">{{ transformI18n($t("欠费缴费")) }}</ElButton>
+						<ElButton type="info">{{ transformI18n($t("欠费缴费")) }}</ElButton>
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+						<ElButton type="info">{{ transformI18n($t("查看费用")) }}</ElButton>
 					</template>
 				</PureTable>
 			</template>
