@@ -2,7 +2,7 @@
 definePage({
 	meta: {
 		title: "初始化单元格",
-		icon: "mdi:table-cell",
+		icon: "mdi:home-import-outline",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.systemManage.initializeCell"),
 	},
