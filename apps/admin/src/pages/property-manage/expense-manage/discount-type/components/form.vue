@@ -1,7 +1,12 @@
+<!--
+  优惠类型表单
+  用于新增 修改优惠类型
+-->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { DiscountTypeFormProps, 优惠类型表单_VO, defaultForm } from "./form";
+import { DiscountTypeFormProps, 优惠类型表单_VO } from "./form";
+import { 折扣类型Options } from "../test-data";
 
 const props = defineProps<DiscountTypeFormProps>();
 
@@ -35,46 +40,72 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 折扣名称
+	/** 折扣名称 */
 	{
 		label: "折扣名称",
 		prop: "折扣名称",
 		valueType: "input",
-		required: true, //是否必填
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			disabled: props.disabled,
+			placeholder: "请输入折扣名称",
+		},
 	},
-
-	// 折扣类型
+	/** 折扣类型 */
 	{
 		label: "折扣类型",
 		prop: "折扣类型",
 		valueType: "select",
-		options: [
-			{ label: "节日优惠", value: "节日优惠" },
-			{ label: "日常优惠", value: "日常优惠" },
-			{ label: "特殊优惠", value: "特殊优惠" },
-			{ label: "会员优惠", value: "会员优惠" },
-		],
-		required: true,
+		width: "200px",
+		options: 折扣类型Options,
+		fieldProps: {
+			clearable: true,
+			disabled: props.disabled,
+			placeholder: "请选择折扣类型",
+		},
 	},
-
-	// 规则名称
+	/** 规则名称 */
 	{
 		label: "规则名称",
 		prop: "规则名称",
 		valueType: "input",
-		required: true,
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			disabled: props.disabled,
+			placeholder: "请输入规则名称",
+		},
 	},
-
-	// 规则
+	/** 规则 */
 	{
 		label: "规则",
 		prop: "规则",
 		valueType: "textarea",
+		fieldProps: {
+			clearable: true,
+			disabled: props.disabled,
+			placeholder: "请输入折扣规则说明",
+			rows: 4,
+		},
 	},
 ]);
 
+/** 表单项配置 动态计算 只读 */
+const plusFormColumnsComputed = computed(() => plusFormColumns.value);
+
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	折扣名称: [
+		{ required: !props.disabled, message: "请输入折扣名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	折扣类型: [{ required: !props.disabled, message: "请选择折扣类型", trigger: "change" }],
+	规则名称: [
+		{ required: !props.disabled, message: "请输入规则名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,
@@ -89,7 +120,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumns"
+			:columns="plusFormColumnsComputed"
 			:rules="plusFormRules"
 		/>
 	</section>

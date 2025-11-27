@@ -11,6 +11,7 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 import {
 	type 优惠类型_列表数据,
@@ -18,7 +19,7 @@ import {
 	折扣类型Options,
 	tableData as allTableData,
 } from "./test-data";
-import { type DiscountTypeFormProps, defaultForm, type 优惠类型表单_VO } from "./components/form";
+import { type DiscountTypeFormProps, defaultForm, type 优惠类型表单_VO, type 折扣类型 } from "./components/form";
 import DiscountTypeForm from "./components/form.vue";
 
 /** 表格数据 */
@@ -61,7 +62,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 120,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -121,26 +122,26 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 折扣ID
+	/** 折扣ID */
 	{
 		label: "折扣ID",
 		prop: "折扣ID",
 		valueType: "input",
 	},
-	// 折扣名称
+	/** 折扣名称 */
 	{
 		label: "折扣名称",
 		prop: "折扣名称",
 		valueType: "input",
 	},
-	// 折扣类型
+	/** 折扣类型 */
 	{
 		label: "折扣类型",
 		prop: "折扣类型",
 		valueType: "select",
 		options: 折扣类型Options,
 	},
-	// 规则名称
+	/** 规则名称 */
 	{
 		label: "规则名称",
 		prop: "规则名称",
@@ -154,7 +155,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 	columns: [],
 	labelWidth: 140,
 	labelPosition: "right",
-	showNumber: 4,
+	showNumber: 3,
 });
 
 /** 加载表格数据 */
@@ -207,10 +208,40 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-// 弹框相关功能
+/** 删除优惠类型 */
+async function handleDelete(row: 优惠类型_列表数据) {
+	try {
+		await ElMessageBox.confirm(
+			`确认删除优惠类型"${row.折扣名称}"吗？`,
+			"删除确认",
+			{
+				confirmButtonText: "确认",
+				cancelButtonText: "取消",
+				type: "warning",
+			}
+		);
+
+		/** TODO: 替换为真实的API调用 */
+		/** 模拟删除操作 */
+		console.log("删除优惠类型:", row.折扣ID);
+
+		/** 显示成功提示 */
+		ElMessage.success("删除成功");
+
+		/** 重新加载数据 */
+		await loadTableData();
+	} catch (error) {
+		if (error !== "cancel") {
+			console.error("删除失败:", error);
+			ElMessage.error("删除失败");
+		}
+	}
+}
+
+/** 弹框相关功能 */
 const DiscountTypeFormInstance = ref<InstanceType<typeof DiscountTypeForm> | null>(null);
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd, isEdit, isInfo } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 
@@ -225,8 +256,8 @@ async function testAsync() {
 
 /** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
-	const { mode, row } = params;
-	setMode(mode);
+	const { row } = params;
+	setMode(params.mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}优惠类型`;
@@ -234,11 +265,11 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 	/** 业务对象 */
 	const 业务对象: 优惠类型表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
+		: (isEdit.value || isInfo.value)
 			? cloneDeep({
 					...defaultForm,
 					折扣名称: row?.折扣名称 || "",
-					折扣类型: row?.折扣类型 || "日常优惠",
+					折扣类型: (row?.折扣类型 || "日常优惠") as 折扣类型,
 					规则名称: row?.规则名称 || "",
 					规则: row?.规则 || "",
 				})
@@ -248,6 +279,7 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 	const formProps: DiscountTypeFormProps = {
 		form: 业务对象,
 		defaultValues: 业务对象,
+		disabled: isInfo.value,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -255,6 +287,47 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
+
+	/** 构建底部按钮 */
+	const footerButtons = [];
+
+	/** 取消按钮 - 所有模式都有 */
+	footerButtons.push({
+		label: transformI18n($t("common.buttons.cancel")),
+		type: "info",
+		btnClick: async ({ dialog: { options, index } }) => {
+			const formComputed = DiscountTypeFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+	});
+
+	/** 重置按钮 - 非查看模式有 */
+	if (!isInfo.value) {
+		footerButtons.push({
+			label: transformI18n($t("common.buttons.reset")),
+			type: "warning",
+			btnClick: () => {
+				DiscountTypeFormInstance.value.plusFormInstance.handleReset();
+			},
+		});
+	}
+
+	/** 提交按钮 - 非查看模式有 */
+	if (!isInfo.value) {
+		footerButtons.push({
+			label: transformI18n($t("common.buttons.submit")),
+			type: "success",
+			btnClick: async ({ dialog: { options, index }, button }) => {
+				const res = await DiscountTypeFormInstance.value.plusFormInstance.handleSubmit();
+				if (res) {
+					button.btn.loading = true;
+					await testAsync();
+					button.btn.loading = false;
+					closeDialog(options, index);
+				}
+			},
+		});
+	}
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -266,44 +339,14 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = DiscountTypeFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			if (!isInfo.value) {
+				const formComputed = DiscountTypeFormInstance.value.formComputed;
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			} else {
+				closeDialog(options, index);
+			}
 		},
-		footerButtons: [
-			{
-				label: transformI18n($t("common.buttons.cancel")),
-				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** console.log(options, index, button); */
-					const formComputed = DiscountTypeFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					DiscountTypeFormInstance.value.plusFormInstance.handleReset();
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.submit")),
-				type: "success",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await DiscountTypeFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-					}
-				},
-			},
-		],
+		footerButtons,
 	});
 }
 
@@ -339,10 +382,13 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.view")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger">
+						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
@@ -354,5 +400,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .index-root {
+	/* 样式预留 */
 }
 </style>
