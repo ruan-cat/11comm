@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { useTemplateRef, ref, computed } from "vue";
 
-import { MeterTypeFormProps, 抄表类型_VO, defaultForm } from "./form";
+import { MeterTypeFormProps } from "./form";
+import { 抄表类型_VO } from "../test-data";
 
 const props = defineProps<MeterTypeFormProps>();
 
@@ -28,6 +29,7 @@ const toRefForm = cloneDeep(props.form) as FieldValues & 抄表类型_VO;
  * 本表单对象都来自于外部传递
  */
 const form = ref(toRefForm);
+
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
@@ -35,20 +37,26 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 名称
 	{
 		label: "名称",
 		prop: "名称",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入抄表类型名称",
+		},
 	},
-
-	// 说明
 	{
 		label: "说明",
 		prop: "说明",
-		valueType: "input",
+		valueType: "textarea",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入抄表类型说明",
+			rows: 3,
+		},
 	},
 ]);
 
@@ -56,7 +64,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	名称: [
+		{ required: true, message: "请输入抄表类型名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	说明: [
+		{ required: true, message: "请输入抄表类型说明", trigger: "blur" },
+		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,

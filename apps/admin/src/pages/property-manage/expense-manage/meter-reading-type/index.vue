@@ -11,17 +11,28 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type 抄表类型_列表数据, type 抄表类型_列表查询_VO, tableData as mockTableData } from "./test-data";
+import { 抄表类型_VO } from "./test-data";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type MeterTypeFormProps, defaultForm } from "./components/form";
 import MeterTypeForm from "./components/form.vue";
 
 const meterTypeFormInstance = ref<InstanceType<typeof MeterTypeForm> | null>(null);
 
-/** 表格搜索栏模型 */
-const plusSearchModel = ref<抄表类型_列表查询_VO>({});
-
-/** 表格搜索栏默认值 */
-const plusSearchDefaultValues: 抄表类型_列表查询_VO = {};
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 抄表类型_列表查询_VO = {
+	名称: "",
+	说明: "",
+	状态: "",
+};
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
 
 /** 表格数据 */
 const tableData = ref<抄表类型_列表数据[]>([]);
@@ -39,6 +50,9 @@ async function loadTableData() {
 		}
 		if (plusSearchModel.value.说明) {
 			filteredData = filteredData.filter((item) => item.说明.includes(plusSearchModel.value.说明!));
+		}
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
 		}
 		if (plusSearchModel.value.创建时间范围) {
 			const [startTime, endTime] = plusSearchModel.value.创建时间范围;
@@ -72,12 +86,17 @@ const columns = ref<TableColumnList>([
 	{
 		label: "名称",
 		prop: "名称",
-		width: 120,
+		width: 180,
 	},
 	{
 		label: "说明",
 		prop: "说明",
-		width: 200,
+		width: 300,
+	},
+	{
+		label: "状态",
+		prop: "状态",
+		width: 100,
 	},
 	{
 		label: "创建时间",
@@ -148,6 +167,17 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "说明",
 		valueType: "input",
 	},
+	/** 状态 */
+	{
+		label: "状态",
+		prop: "状态",
+		valueType: "select",
+		options: [
+			{ label: "全部", value: "" },
+			{ label: "启用", value: "启用" },
+			{ label: "停用", value: "停用" },
+		],
+	},
 	/** 创建时间范围 */
 	{
 		label: "创建时间范围",
@@ -156,10 +186,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置 */
+/** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
-	labelWidth: "100px",
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
 	labelPosition: "right",
+	showNumber: 3,
 });
 
 /** 表格配置 */
@@ -176,15 +209,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 抄表类型_列表数据;
-}
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -194,43 +223,37 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: 抄表类型_列表数据 }) {
+	const { mode, row } = params;
 	setMode(mode);
+
+	/** 业务对象 */
+	const 业务对象: 抄表类型_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					名称: row?.名称 || "",
+					说明: row?.说明 || "",
+				})
+			: cloneDeep(defaultForm);
+
+	/** 表单组件需要的props */
+	const formProps: MeterTypeFormProps = {
+		form: 业务对象,
+		defaultValues: 业务对象,
+	};
 
 	/** 弹框标题 */
 	const title = `${modeText.value}抄表类型`;
 
-	/** 表单组件需要的props */
-	const formProps: MeterTypeFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
-	};
-
-	const testEditProps: MeterTypeFormProps = {
-		form: {
-			...defaultForm,
-			名称: "",
-			说明: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
-
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(MeterTypeForm, {
@@ -248,7 +271,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = meterTypeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
@@ -258,7 +280,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					meterTypeFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
@@ -267,7 +288,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await meterTypeFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
