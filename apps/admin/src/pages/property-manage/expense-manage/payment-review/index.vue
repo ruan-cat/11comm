@@ -24,22 +24,6 @@ import 缴费审核Form from "./components/form.vue";
 /** 表单组件实例 */
 const 缴费审核FormInstance = ref<InstanceType<typeof 缴费审核Form> | null>(null);
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & 缴费审核_列表查询_VO = {
-	房屋: "",
-	费用项目: "",
-	审核状态: "",
-	缴费时间范围: ["", ""],
-};
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
 /** 表格数据 */
 const tableData = ref<缴费审核_列表数据[]>([]);
 
@@ -161,19 +145,6 @@ const pagination = ref<PaginationProps>({
 	total: 0,
 });
 
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
@@ -185,6 +156,22 @@ async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
 	await loadTableData();
 }
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 缴费审核_列表查询_VO = {
+	房屋: "",
+	费用项目: "",
+	审核状态: "",
+	缴费时间范围: ["", ""],
+};
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -246,6 +233,19 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "缴费审核",
 	columns: columns.value,
 });
+
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
 
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
