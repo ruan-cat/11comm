@@ -31,7 +31,6 @@ const columns = ref<TableColumnList>([
 		prop: "房屋",
 		label: "房屋",
 		width: 200,
-		fixed: true,
 	},
 	{
 		prop: "折扣ID",
@@ -96,7 +95,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -381,7 +380,7 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="danger">

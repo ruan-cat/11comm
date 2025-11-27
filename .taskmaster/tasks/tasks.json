@@ -857,7 +857,7 @@
 			"name": "改造 property-manage/expense-manage/discount-apply 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/discount-apply/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -865,7 +865,8 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-apply/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/discount-apply"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/discount-apply",
+			"completedAt": "2025-11-28T15:30:00Z"
 		},
 		{
 			"id": "task-057",

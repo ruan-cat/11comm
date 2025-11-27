@@ -41,6 +41,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "房屋",
 		valueType: "input",
 		required: true, //是否必填
+		fieldProps: {
+			clearable: true,
+		},
 	},
 
 	// 申请类型
@@ -55,6 +58,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "特殊贡献", value: "特殊贡献" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	// 费用项目
@@ -63,6 +70,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "费用项目",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 
 	// 申请人
@@ -71,6 +81,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "申请人",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 	// 申请电话
 	{
@@ -78,6 +91,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "申请电话",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 	// 开始时间
 	{
@@ -114,8 +130,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "图片材料",
 		prop: "图片材料",
-		valueType: "upload",
+		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 ]);
 
