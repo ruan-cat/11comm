@@ -16,6 +16,25 @@ import {
 	收费对象Options,
 	tableData as mockTableData,
 } from "./test-data";
+import { type OverduePaymentInformationFormProps, defaultForm, type 欠费信息表单_VO } from "./components/form";
+import OverduePaymentInformationForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 表单组件实例 */
+const overduePaymentInformationFormInstance = ref<InstanceType<typeof OverduePaymentInformationForm> | null>(null);
+
+/** 模拟异步操作函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -216,6 +235,17 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			},
 		},
 	},
+	// 更新时间范围
+	{
+		label: "更新时间范围",
+		prop: "更新时间范围",
+		valueType: "date-picker",
+		fieldProps: {
+			type: "daterange",
+			valueFormat: "YYYY-MM-DD",
+			format: "YYYY-MM-DD",
+		},
+	},
 ]);
 
 /** 表格搜索栏组件 配置 */
@@ -241,9 +271,116 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 欠费信息_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}欠费信息`;
+
+	/** 业务对象 */
+	const 欠费信息表单数据: 欠费信息表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					收费对象: row?.收费对象 || "",
+					业主名称: row?.业主名称 || "",
+					手机号: row?.手机号 || "",
+					欠费时间范围: [row?.开始时间 || "", row?.结束时间 || ""],
+					欠费金额: row?.合计 || "",
+					缴费状态: "未缴费",
+					联系地址: "",
+					欠费说明: "",
+				})
+			: cloneDeep({
+					...defaultForm,
+					收费对象: row?.收费对象 || "",
+					业主名称: row?.业主名称 || "",
+					手机号: row?.手机号 || "",
+					欠费时间范围: [row?.开始时间 || "", row?.结束时间 || ""],
+					欠费金额: row?.合计 || "",
+					缴费状态: "未缴费",
+					联系地址: "",
+					欠费说明: "",
+				});
+
+	/** 表单组件需要的props */
+	const formProps: OverduePaymentInformationFormProps = {
+		form: 欠费信息表单数据,
+		defaultValues: 欠费信息表单数据,
+	};
+
+	/** 弹框组件所需的变量 */
+	const props = formProps;
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+		contentRenderer: () =>
+			h(OverduePaymentInformationForm, {
+				ref: overduePaymentInformationFormInstance,
+				...formProps,
+			}),
+		async doBeforeClose({ options, index }) {
+			const formComputed = overduePaymentInformationFormInstance.value?.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = overduePaymentInformationFormInstance.value?.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button: _button }) => {
+					overduePaymentInformationFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await overduePaymentInformationFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
+
 /** 操作按钮点击处理 */
 function handleOperationClick(operation: string, row: 欠费信息_列表数据) {
-	console.log(`${operation} 操作`, row);
+	switch (operation) {
+		case "欠费缴费":
+			// 可以添加缴费相关的逻辑
+			console.log("欠费缴费操作", row);
+			break;
+		case "查看详情":
+			openDialog({ mode: "info", row });
+			break;
+		case "查看费用":
+			// 可以添加查看费用明细的逻辑
+			console.log("查看费用操作", row);
+			break;
+		default:
+			console.log(`${operation} 操作`, row);
+	}
 }
 
 onMounted(async () => {

@@ -92,11 +92,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "欠费时间段",
 		prop: "欠费时间段",
-		valueType: "input",
-		width: "200px",
+		valueType: "datetimerange",
+		width: "360px",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请输入欠费时间段",
+			startPlaceholder: "开始时间",
+			endPlaceholder: "结束时间",
+			format: "YYYY-MM-DD HH:mm:ss",
+			valueFormat: "YYYY-MM-DD HH:mm:ss",
 		},
 		required: true,
 	},
@@ -149,9 +151,42 @@ const plusFormRules = ref<PlusFormRules>({
 	费用名称: [{ required: true, message: "请输入费用名称", trigger: "blur" }],
 	催缴金额: [
 		{ required: true, message: "请输入催缴金额", trigger: "blur" },
-		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+		{
+			validator: (rule, value, callback) => {
+				if (!value) {
+					callback(new Error("请输入催缴金额"));
+				} else if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+					callback(new Error("请输入正确的金额格式"));
+				} else if (parseFloat(value) <= 0) {
+					callback(new Error("催缴金额必须大于0"));
+				} else {
+					callback();
+				}
+			},
+			trigger: "blur"
+		},
 	],
-	欠费时间段: [{ required: true, message: "请输入欠费时间段", trigger: "blur" }],
+	欠费时间段: [
+		{
+			validator: (rule, value, callback) => {
+				if (!value) {
+					callback(new Error("请选择欠费时间段"));
+				} else if (Array.isArray(value) && value.length === 2) {
+					const [start, end] = value;
+					if (new Date(start) >= new Date(end)) {
+						callback(new Error("开始时间必须早于结束时间"));
+					} else {
+						callback();
+					}
+				} else if (typeof value === 'string') {
+					callback();
+				} else {
+					callback(new Error("请选择有效的欠费时间段"));
+				}
+			},
+			trigger: "change"
+		},
+	],
 	催缴方式: [{ required: true, message: "请选择催缴方式", trigger: "change" }],
 	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
 });

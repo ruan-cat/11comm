@@ -55,28 +55,49 @@ async function testAsync() {
 /** 表格数据 */
 const tableData = ref<欠费催缴_列表数据[]>([]);
 
-/** 加载表格数据 */
+/**
+ * 加载表格数据
+ * @description 根据搜索条件过滤数据并进行分页处理
+ */
 async function loadTableData() {
 	try {
-		let filteredData = mockTableData;
+		let filteredData = [...mockTableData];
 
-		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
+		// 根据业主名称过滤
+		if (plusSearchModel.value.业主名称?.trim()) {
+			filteredData = filteredData.filter((item) =>
+				item.业主名称.includes(plusSearchModel.value.业主名称!.trim())
+			);
 		}
+
+		// 根据催缴方式过滤
 		if (plusSearchModel.value.催缴方式) {
-			filteredData = filteredData.filter((item) => item.催缴方式 === plusSearchModel.value.催缴方式);
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
+			filteredData = filteredData.filter((item) =>
+				item.催缴方式 === plusSearchModel.value.催缴方式
+			);
 		}
 
+		// 根据状态过滤
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) =>
+				item.状态 === plusSearchModel.value.状态
+			);
+		}
+
+		// 更新分页信息
 		pagination.value.total = filteredData.length;
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
+
+		// 分页数据
 		tableData.value = filteredData.slice(startIndex, endIndex);
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
+		// 重置数据状态
+		tableData.value = [];
+		pagination.value.total = 0;
+		pureTableProps.value.data = [];
 	}
 }
 
@@ -145,29 +166,68 @@ const pagination = ref<PaginationProps>({
 	total: 0,
 });
 
-/** 重置搜索条件并重新加载数据 */
+/**
+ * 重置搜索条件并重新加载数据
+ * @description 将搜索条件重置为默认值并重新加载表格数据
+ */
 async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	try {
+		plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+		pagination.value.currentPage = 1;
+		await loadTableData();
+	} catch (error) {
+		console.error("重置搜索失败:", error);
+	}
 }
 
-/** 执行搜索 */
+/**
+ * 执行搜索
+ * @description 根据当前搜索条件执行搜索操作
+ */
 async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	try {
+		pagination.value.currentPage = 1;
+		await loadTableData();
+	} catch (error) {
+		console.error("执行搜索失败:", error);
+	}
 }
 
-/** 处理页数变化 */
+/**
+ * 处理页数变化
+ * @param pageSize 新的每页显示数量
+ * @description 当用户修改每页显示数量时重新加载数据
+ */
 async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+	try {
+		if (pageSize <= 0) {
+			console.warn("页数设置无效:", pageSize);
+			return;
+		}
+		pagination.value.pageSize = pageSize;
+		pagination.value.currentPage = 1; // 重置到第一页
+		await loadTableData();
+	} catch (error) {
+		console.error("处理页数变化失败:", error);
+	}
 }
 
-/** 处理页码变化 */
+/**
+ * 处理页码变化
+ * @param currentPage 新的页码
+ * @description 当用户切换页码时重新加载数据
+ */
 async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+	try {
+		if (currentPage <= 0) {
+			console.warn("页码设置无效:", currentPage);
+			return;
+		}
+		pagination.value.currentPage = currentPage;
+		await loadTableData();
+	} catch (error) {
+		console.error("处理页码变化失败:", error);
+	}
 }
 
 /**
@@ -220,39 +280,63 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 打开弹框 */
+/**
+ * 打开弹框
+ * @param params 弹框参数，包含模式和行数据
+ * @param params.mode 弹框模式：新增、编辑、查看详情
+ * @param params.row 当前的行数据（编辑和查看详情时需要）
+ * @description 根据不同模式打开相应的弹框，支持新增、编辑和查看详情功能
+ */
 function openDialog(params: { mode: Mode; row?: 欠费催缴_列表数据 }) {
-	const { mode, row } = params;
-	setMode(mode);
+	try {
+		const { mode, row } = params;
 
-	/** 弹框标题 */
-	const title = `${modeText.value}欠费催缴`;
+		// 验证模式参数
+		if (!['add', 'edit', 'info'].includes(mode)) {
+			console.error("无效的弹框模式:", mode);
+			return;
+		}
 
-	/** 业务对象 */
-	const 欠费催缴表单_VO: 欠费催缴表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					业主名称: row?.业主名称 || "",
-					付费对象: row?.付费对象 || "",
-					费用名称: row?.费用名称 || "",
-					催缴金额: row?.催缴金额 || "",
-					欠费时间段: row?.欠费时间段 || "",
-					催缴方式: row?.催缴方式 || "",
-					状态: row?.状态 || "",
-					说明: row?.说明 || "",
-				})
-			: cloneDeep(defaultForm);
+		setMode(mode);
 
-	/** 表单组件需要的props */
-	const formProps: ReminderForOverduePaymentsFormProps = {
-		form: 欠费催缴表单_VO,
-		defaultValues: 欠费催缴表单_VO,
-	};
+		/** 弹框标题 */
+		const title = `${modeText.value}欠费催缴`;
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = formProps.defaultValues;
+		/** 业务对象 */
+		const 欠费催缴表单_VO: 欠费催缴表单_VO = isAdd.value
+			? cloneDeep(defaultForm)
+			: isEdit.value
+				? cloneDeep({
+						...defaultForm,
+						业主名称: row?.业主名称 || "",
+						付费对象: row?.付费对象 || "",
+						费用名称: row?.费用名称 || "",
+						催缴金额: row?.催缴金额 || "",
+						欠费时间段: row?.欠费时间段 || "",
+						催缴方式: row?.催缴方式 || "",
+						状态: row?.状态 || "",
+						说明: row?.说明 || "",
+					})
+				: cloneDeep({
+						...defaultForm,
+						业主名称: row?.业主名称 || "",
+						付费对象: row?.付费对象 || "",
+						费用名称: row?.费用名称 || "",
+						催缴金额: row?.催缴金额 || "",
+						欠费时间段: row?.欠费时间段 || "",
+						催缴方式: row?.催缴方式 || "",
+						状态: row?.状态 || "",
+						说明: row?.说明 || "",
+					});
+
+		/** 表单组件需要的props */
+		const formProps: ReminderForOverduePaymentsFormProps = {
+			form: 欠费催缴表单_VO,
+			defaultValues: 欠费催缴表单_VO,
+		};
+
+		/** 根据不同模式下 变化的表单默认重置对象 */
+		const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -307,10 +391,21 @@ function openDialog(params: { mode: Mode; row?: 欠费催缴_列表数据 }) {
 			},
 		],
 	});
+	} catch (error) {
+		console.error("打开弹框失败:", error);
+	}
 }
 
+/**
+ * 组件挂载时的生命周期钩子
+ * @description 组件挂载时自动加载表格数据
+ */
 onMounted(async () => {
-	await loadTableData();
+	try {
+		await loadTableData();
+	} catch (error) {
+		console.error("组件初始化失败:", error);
+	}
 });
 </script>
 

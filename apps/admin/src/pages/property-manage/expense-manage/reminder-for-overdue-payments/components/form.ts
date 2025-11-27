@@ -15,7 +15,7 @@ export interface 欠费催缴表单_VO {
 	/** 催缴金额 */
 	催缴金额: string;
 	/** 欠费时间段 */
-	欠费时间段: string;
+	欠费时间段: [string, string] | string;
 	/** 催缴方式 */
 	催缴方式: string;
 	/** 状态 */
