@@ -12,6 +12,10 @@
 			"env": {
 				"TASK_MASTER_TOOLS": "core"
 			}
+		},
+		"gitmcp__plus-pro-components__plus-pro-components": {
+			"type": "http",
+			"url": "https://gitmcp.io/plus-pro-components/plus-pro-components"
 		}
 	}
 }
