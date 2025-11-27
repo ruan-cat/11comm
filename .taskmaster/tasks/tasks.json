@@ -793,7 +793,7 @@
 			"name": "改造 property-manage/expense-manage/house-charge 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/house-charge/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -801,7 +801,8 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/house-charge/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/house-charge"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/house-charge",
+			"completedAt": "2025-11-27T23:00:00Z"
 		},
 		{
 			"id": "task-053",

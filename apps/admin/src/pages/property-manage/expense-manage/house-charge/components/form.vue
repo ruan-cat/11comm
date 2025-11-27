@@ -51,8 +51,8 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 费用类型
 	{
+		/** 费用类型 */
 		label: "费用类型",
 		prop: "费用类型",
 		valueType: "select",
@@ -71,18 +71,23 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "公摊费", value: "公摊费" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
-
-	// 收费项目
 	{
+		/** 收费项目 */
 		label: "收费项目",
 		prop: "收费项目",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-
-	// 费用标识
 	{
+		/** 费用标识 */
 		label: "费用标识",
 		prop: "费用标识",
 		valueType: "select",
@@ -91,10 +96,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "一次性费用", value: "一次性费用" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-
-	// 付费类型
 	{
+		/** 付费类型 */
 		label: "付费类型",
 		prop: "付费类型",
 		valueType: "select",
@@ -103,32 +110,44 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "后付费", value: "后付费" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 缴费周期
 	{
+		/** 缴费周期 */
 		label: "缴费周期(单位:月)",
 		prop: "缴费周期(单位:月)",
 		valueType: "input",
 		required: true,
 		hidden: (form) => form.费用类型 === "押金",
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 预付期
 	{
+		/** 预付期 */
 		label: "预付期(单位:天)",
 		prop: "预付期(单位:天)",
 		valueType: "input",
 		required: true,
 		hidden: (form) => form.费用类型 === "煤气费",
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 单位
 	{
+		/** 单位 */
 		label: "单位",
 		prop: "单位",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 账户抵扣
 	{
+		/** 账户抵扣 */
 		label: "账户抵扣",
 		prop: "账户抵扣",
 		valueType: "select",
@@ -137,9 +156,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "否", value: "否" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 手机缴费
 	{
+		/** 手机缴费 */
 		label: "手机缴费",
 		prop: "手机缴费",
 		valueType: "select",
@@ -148,9 +170,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "否", value: "否" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 进位方式
 	{
+		/** 进位方式 */
 		label: "进位方式",
 		prop: "进位方式",
 		valueType: "select",
@@ -160,9 +185,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "向下取整", value: "向下取整" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 保留小数位
 	{
+		/** 保留小数位 */
 		label: "保留小数位",
 		prop: "保留小数位",
 		valueType: "select",
@@ -174,9 +202,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "4位", value: "4位" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 状态
 	{
+		/** 状态 */
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
@@ -185,27 +216,39 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "禁用", value: "禁用" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 计算公式
 	{
+		/** 计算公式 */
 		label: "计算公式",
 		prop: "计算公式",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 计费单价
 	{
+		/** 计费单价 */
 		label: "计费单价",
 		prop: "计费单价",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
-	// 固定费用
 	{
+		/** 固定费用 */
 		label: "固定费用",
 		prop: "固定费用",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 ]);
 
@@ -213,7 +256,41 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	收费项目: [
+		{ required: true, message: "请输入收费项目", trigger: "blur" },
+		{ min: 2, max: 50, message: "收费项目长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	费用标识: [{ required: true, message: "请选择费用标识", trigger: "change" }],
+	付费类型: [{ required: true, message: "请选择付费类型", trigger: "change" }],
+	"缴费周期(单位:月)": [
+		{ required: true, message: "请输入缴费周期", trigger: "blur" },
+		{ pattern: /^[1-9]\d*$/, message: "缴费周期必须为正整数", trigger: "blur" },
+	],
+	"预付期(单位:天)": [
+		{ required: true, message: "请输入预付期", trigger: "blur" },
+		{ pattern: /^[1-9]\d*$/, message: "预付期必须为正整数", trigger: "blur" },
+	],
+	单位: [
+		{ required: true, message: "请输入单位", trigger: "blur" },
+		{ min: 1, max: 20, message: "单位长度在 1 到 20 个字符", trigger: "blur" },
+	],
+	账户抵扣: [{ required: true, message: "请选择账户抵扣", trigger: "change" }],
+	手机缴费: [{ required: true, message: "请选择手机缴费", trigger: "change" }],
+	进位方式: [{ required: true, message: "请选择进位方式", trigger: "change" }],
+	保留小数位: [{ required: true, message: "请选择保留小数位", trigger: "change" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	计算公式: [{ required: true, message: "请输入计算公式", trigger: "blur" }],
+	计费单价: [
+		{ required: true, message: "请输入计费单价", trigger: "blur" },
+		{ pattern: /^[0-9]+(\.[0-9]{1,4})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+	],
+	固定费用: [
+		{ required: true, message: "请输入固定费用", trigger: "blur" },
+		{ pattern: /^[0-9]+(\.[0-9]{1,4})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,

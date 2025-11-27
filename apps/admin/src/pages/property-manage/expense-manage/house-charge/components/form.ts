@@ -75,7 +75,7 @@ export interface 房屋收费_VO {
 	/** 计费单价 */
 	计费单价: string;
 	/** 固定费用 */
-	固定费用: string | `${number}` | number;
+	固定费用: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
