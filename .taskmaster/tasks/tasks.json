@@ -841,7 +841,7 @@
 			"name": "改造 property-manage/expense-manage/expense-summary-table 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/expense-summary-table/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -849,7 +849,8 @@
 				"expense-manage"
 			],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-summary-table/index.vue",
-			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/expense-summary-table"
+			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/expense-summary-table",
+			"completedAt": "2025-11-28T12:00:00Z"
 		},
 		{
 			"id": "task-056",
@@ -1533,6 +1534,6 @@
 		"created": "2025-11-12",
 		"updated": "2025-11-12T12:00:00.000Z",
 		"totalTasks": 82,
-		"completedTasks": 0
+		"completedTasks": 55
 	}
 }

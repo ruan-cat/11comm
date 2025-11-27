@@ -45,6 +45,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "时间",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入时间",
+		},
 	},
 
 	// 费用项ID
@@ -53,6 +57,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "费用项ID",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入费用项ID",
+		},
 	},
 
 	// 费用项名称
@@ -73,6 +81,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "维修基金", value: "维修基金" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+			placeholder: "请选择费用项名称",
+		},
 	},
 
 	// 应收金额
@@ -81,6 +94,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "应收金额",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入应收金额",
+		},
 	},
 
 	// 实收金额
@@ -89,6 +106,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "实收金额",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入实收金额",
+		},
 	},
 ]);
 
@@ -96,7 +117,19 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	时间: [{ required: true, message: "请输入时间", trigger: "blur" }],
+	费用项ID: [{ required: true, message: "请输入费用项ID", trigger: "blur" }],
+	费用项名称: [{ required: true, message: "请选择费用项名称", trigger: "change" }],
+	应收金额: [
+		{ required: true, message: "请输入应收金额", trigger: "blur" },
+		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+	],
+	实收金额: [
+		{ required: true, message: "请输入实收金额", trigger: "blur" },
+		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,

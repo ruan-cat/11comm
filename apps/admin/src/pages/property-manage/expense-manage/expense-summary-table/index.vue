@@ -177,6 +177,10 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "费用项名称",
 		valueType: "select",
 		options: 费用项名称Options,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 ]);
 
@@ -338,12 +342,12 @@ onMounted(async () => {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info">
-							{{ transformI18n($t("欠费缴费")) }}
+							欠费缴费
 						</ElButton>
 						<ElButton type="danger">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
-						<ElButton type="default">{{ transformI18n($t("查看费用")) }}</ElButton>
+						<ElButton type="info">查看费用</ElButton>
 					</template>
 				</PureTable>
 			</template>
