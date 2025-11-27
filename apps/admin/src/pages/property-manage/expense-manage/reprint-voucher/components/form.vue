@@ -131,7 +131,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref({
+const plusFormRules = ref<PlusFormRules>({
 	打印份数: [
 		{
 			required: true,
