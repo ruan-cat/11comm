@@ -10,7 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 房屋收费_列表数据, type 房屋收费_列表查询_VO, tableData as allTableData } from "./test-data";
+import { type 房屋收费_列表数据, type 房屋收费_列表查询_VO, tableData as mockTableData, 费用标识Options, 费用类型Options, 状态Options } from "./test-data";
 
 import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO, type 费用类型 } from "./components/form";
 import HouseChargeForm from "./components/form.vue";
@@ -57,7 +57,7 @@ const columns = ref<TableColumnList>([
 	{
 		label: "说明",
 		prop: "说明",
-		width: 200,
+		minWidth: 200,
 	},
 	{
 		label: "状态",
@@ -67,7 +67,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -92,6 +92,7 @@ async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
 	await loadTableData();
 }
+
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
@@ -109,31 +110,40 @@ const pureTableBarProps = ref<PureTableBarProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
+		/** TODO: 替换为真实的API调用 */
+		/** 当前使用模拟数据和本地搜索过滤 */
+		let filteredData = mockTableData;
 
-		// 根据搜索条件过滤数据
+		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.房屋编号) {
 			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.房屋编号!));
 		}
 		if (plusSearchModel.value.业主名称) {
 			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.业主名称!));
 		}
+		if (plusSearchModel.value.费用标识) {
+			filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.费用标识);
+		}
+		if (plusSearchModel.value.费用类型) {
+			filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
+		}
+		if (plusSearchModel.value.状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
+		}
 
-		// 更新总数
+		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
+		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
+		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
+		/** TODO: 显示错误提示 */
 	}
 }
 
@@ -145,6 +155,9 @@ async function loadTableData() {
 const plusSearchModelRef: FieldValues & 房屋收费_列表查询_VO = {
 	房屋编号: "",
 	业主名称: "",
+	费用标识: "",
+	费用类型: "",
+	状态: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -158,43 +171,43 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 房屋编号
+	/** 房屋编号 */
 	{
-		label: transformI18n($t("propertyManage_expensesManage.house-charges.houseNumber")),
+		label: "房屋编号",
 		prop: "房屋编号",
 		valueType: "input",
 	},
 
-	// 业主名称
+	/** 业主名称 */
 	{
-		label: transformI18n($t("propertyManage_expensesManage.house-charges.ownerName")),
+		label: "业主名称",
 		prop: "业主名称",
 		valueType: "input",
 	},
 
-	// 装修申请开始时间
-	// {
-	// 	label: transformI18n($t("propertyManage_communityManage.house-decoration.startTimeForDecorationApplication")),
-	// 	prop: "装修申请开始时间",
-	// 	valueType: "date-picker",
-	// 	fieldProps: {
-	// 		type: "date",
-	// 		valueFormat: "YYYY-MM-DD",
-	// 		format: "YYYY-MM-DD",
-	// 	},
-	// },
+	/** 费用标识 */
+	{
+		label: "费用标识",
+		prop: "费用标识",
+		valueType: "select",
+		options: 费用标识Options,
+	},
 
-	// 装修申请结束时间
-	// {
-	// 	label: transformI18n($t("propertyManage_communityManage.house-decoration.endTimeForDecorationApplication")),
-	// 	prop: "装修申请结束时间",
-	// 	valueType: "date-picker",
-	// 	fieldProps: {
-	// 		type: "date",
-	// 		valueFormat: "YYYY-MM-DD",
-	// 		format: "YYYY-MM-DD",
-	// 	},
-	// },
+	/** 费用类型 */
+	{
+		label: "费用类型",
+		prop: "费用类型",
+		valueType: "select",
+		options: 费用类型Options,
+	},
+
+	/** 状态 */
+	{
+		label: "状态",
+		prop: "状态",
+		valueType: "select",
+		options: 状态Options,
+	},
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -203,7 +216,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 	columns: [],
 	labelWidth: 140,
 	labelPosition: "right",
-	showNumber: 2,
+	showNumber: 3,
 });
 
 /** 重置搜索条件并重新加载数据 */
@@ -378,8 +391,5 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .index-root {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
 }
 </style>
