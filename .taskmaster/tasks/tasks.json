@@ -905,7 +905,7 @@
 			"name": "改造 property-manage/expense-manage/expense-item-setting 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/expense-manage/expense-item-setting/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
