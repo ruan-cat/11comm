@@ -51,6 +51,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "系统费用", value: "系统费用" },
 			{ label: "租金", value: "租金" },
 		],
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	// 收费项目
@@ -59,6 +63,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "收费项目",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入收费项目",
+		},
 	},
 
 	// 合同状态
@@ -72,6 +80,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			{ label: "审核完成", value: "审核完成" },
 		],
 		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 
 	// 计费起始时间
@@ -83,6 +94,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
 		},
 	},
 
@@ -95,12 +107,19 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			clearable: true,
 		},
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	收费项目: [{ required: true, message: "请输入收费项目", trigger: "blur" }],
+	合同状态: [{ required: true, message: "请选择合同状态", trigger: "change" }],
+	计费起始时间: [{ required: true, message: "请选择计费起始时间", trigger: "change" }],
+	计费结束时间: [{ required: true, message: "请选择计费结束时间", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,

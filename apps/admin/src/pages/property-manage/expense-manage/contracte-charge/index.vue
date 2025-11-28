@@ -12,12 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import {
-	type 合同收费_列表数据,
-	type 合同收费_列表查询_VO,
-	合同类型Options,
-	tableData as allTableData,
-} from "./test-data";
+import { tableData as allTableData, 合同类型Options, type 合同收费_列表数据 } from "./test-data";
 import { type ContracteChargeFormProps, defaultForm, type 合同收费表单_VO } from "./components/form";
 import ContracteChargeForm from "./components/form.vue";
 
@@ -108,6 +103,13 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
+/** 业务类型定义 */
+type 合同收费_列表查询_VO = {
+	合同编号?: string;
+	合同名称?: string;
+	合同类型?: string;
+};
+
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -132,20 +134,20 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 合同编号
 	{
-		label: transformI18n($t("propertyManage_expensesManage.contracte-charge.contractNumber")),
+		label: "合同编号",
 		prop: "合同编号",
 		valueType: "input",
 	},
 
 	// 合同名称
 	{
-		label: transformI18n($t("propertyManage_expensesManage.contracte-charge.contractName")),
+		label: "合同名称",
 		prop: "合同名称",
 		valueType: "input",
 	},
 	// 合同类型
 	{
-		label: transformI18n($t("propertyManage_expensesManage.contracte-charge.contractType")),
+		label: "合同类型",
 		prop: "合同类型",
 		valueType: "select",
 		options: 合同类型Options,
