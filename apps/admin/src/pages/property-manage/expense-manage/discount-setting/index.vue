@@ -62,7 +62,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 120,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -157,7 +157,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 	columns: [],
 	labelWidth: 140,
 	labelPosition: "right",
-	showNumber: 4,
+	showNumber: 3,
 });
 
 /** 加载表格数据 */
@@ -245,7 +245,13 @@ function openDialog(params: { mode: Mode; row?: 折扣设置_列表数据 }) {
 					规则: row?.规则名称 || "",
 					描述: row?.规则 || "",
 				})
-			: cloneDeep(defaultForm);
+			: cloneDeep({
+					...defaultForm,
+					折扣名称: row?.折扣名称 || "",
+					折扣类型: row?.折扣类型 || "优惠",
+					规则: row?.规则名称 || "",
+					描述: row?.规则 || "",
+				});
 
 	/** 表单组件需要的props */
 	const formProps: DiscountSettingFormProps = {
@@ -342,6 +348,9 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>

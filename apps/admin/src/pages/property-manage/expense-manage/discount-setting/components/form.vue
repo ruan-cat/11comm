@@ -2,6 +2,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { DiscountSettingFormProps, 折扣设置表单_VO, defaultForm } from "./form";
+import { 折扣类型Options, 规则Options } from "../test-data";
 
 const props = defineProps<DiscountSettingFormProps>();
 
@@ -40,7 +41,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "折扣名称",
 		prop: "折扣名称",
 		valueType: "input",
-		required: true, //是否必填
+		required: true,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 
 	// 折扣类型
@@ -48,12 +52,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "折扣类型",
 		prop: "折扣类型",
 		valueType: "select",
-		options: [
-			{ label: "优惠", value: "优惠" },
-			{ label: "违约", value: "违约" },
-			{ label: "优惠（需要申请）", value: "优惠（需要申请）" },
-		],
+		options: 折扣类型Options,
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	// 规则
@@ -61,11 +65,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "规则",
 		prop: "规则",
 		valueType: "select",
-		options: [
-			{ label: "规则1", value: "规则1" },
-			{ label: "规则2", value: "规则2" },
-		],
+		options: 规则Options,
 		required: true,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 
 	// 描述
@@ -73,11 +78,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "描述",
 		prop: "描述",
 		valueType: "textarea",
+		fieldProps: {
+			clearable: true,
+		},
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	折扣名称: [
+		{ required: true, message: "请输入折扣名称", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+	],
+	折扣类型: [{ required: true, message: "请选择折扣类型", trigger: "change" }],
+	规则: [{ required: true, message: "请选择规则", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,
