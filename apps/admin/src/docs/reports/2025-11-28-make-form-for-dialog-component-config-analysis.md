@@ -494,7 +494,7 @@ const setTransferSelected = (values: string[]) => {
 
 #### 5.2.1 当前结构优化
 
-建议将当前第 8 章 "基于 <PlusForm> 表单组件实现的 form.vue" 拆分为：
+建议将当前第 8 章 "基于 `<PlusForm>` 表单组件实现的 form.vue" 拆分为：
 
 - 8. 基础表单配置
 - 9. 高级功能配置
