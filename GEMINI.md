@@ -1,91 +1,277 @@
-# GEMINI 项目上下文：11comm 智慧社区前端
+# CLAUDE.md
 
-本文档为 AI 助手提供关于 `11comm` 项目的指导性上下文。
+此文件为 Claude Code (claude.ai/code) 在此代码仓库中工作时提供指导。
 
-## 项目概览
+## 主动问询实施细节
 
-这是 "11comm 智慧社区" 项目的前端 monorepo 仓库。它使用现代 JavaScript/TypeScript 技术栈构建，通过 `pnpm` 工作区进行管理，并由 `Turborepo` 进行编排。
+在我与你沟通并要求你具体实施更改时，难免会遇到很多模糊不清的事情。
 
-主要应用程序是 `apps/admin`，这是一个功能丰富的管理后台，基于流行的 `vue-pure-admin` 模板开发。
+请你深度思考这些`遗漏点`，`缺漏点`，和`冲突相悖点`，**并主动的向我问询这些你不清楚的实施细节**。
 
-### 核心技术
+我会与你共同补充细化实现细节。我们先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
 
-- **Monorepo:** pnpm Workspaces + Turborepo
-- **框架:** Vue.js 3
-- **UI 框架:** Element Plus
-- **样式:** Tailwind CSS, Sass/SCSS
-- **状态管理:** Pinia
-- **路由:** Vue Router
-- **构建工具:** Vite
-- **测试:** Vitest
-- **文档:** VitePress
+## 对话沟通术语表
 
-### 架构
+在我和你沟通时，我会使用以下术语，便于你理解。
 
-该仓库采用 monorepo 结构：
+### 全局术语
 
-- `apps/`: 包含主要的应用程序包。
-  - `apps/admin`: 主要的 Vue.js 管理后台应用。
-- `examples/`: 包含示例代码，这些代码被排除在主工作区和构建流程之外。
-- `scripts/`: 包含仓库的操作脚本（例如，部署脚本）。
-- `package.json`: 定义共享依赖和整个 monorepo 范围脚本的根配置文件。
-- `pnpm-workspace.yaml`: 定义 pnpm 工作区的结构，仅包含 `apps/*` 目录。
-- `turbo.json`: 配置构建系统，定义任务依赖和缓存策略。
+在任何沟通下，这些术语都生效。
 
-## 构建与运行
+- `code-style` ： `.claude\agents\code-style.md` `代码风格子代理` ，用于说明代码编写规范的子代理。
+- `make-list-page` ：`.claude\agents\make-list-page.md` `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
+- `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
+- `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
+- `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
 
-### 关键命令
+## 代码/编码格式要求
 
-所有命令都应在仓库的根目录运行。
+### 1. markdown 文档的 table 编写格式
 
-- **安装依赖:**
+每当你在 markdown 文档内编写表格时，表格的格式一定是**居中对齐**的，必须满足**居中对齐**的格式要求。
 
-  ```bash
-  pnpm install
-  ```
+### 2. markdown 文档的 vue 组件代码片段编写格式
 
-- **运行开发服务器:**
-  要在开发模式下启动 `admin` 应用并开启热重载：
+错误写法：
 
-  ```bash
-  pnpm dev
-  ```
+1. 代码块语言用 vue，且不带有 `<template>` 标签来包裹。
 
-  这是 `pnpm -F=@01s-11comm/admin dev` 的别名。
+```vue
+<wd-popup v-model="showModal">
+  <wd-cell-group>
+    <!-- 内容 -->
+  </wd-cell-group>
+</wd-popup>
+```
 
-- **生产环境构建:**
-  要为 `admin` 应用创建生产环境的构建包：
+2. 代码块语言用 html。
 
-  ```bash
-  pnpm build
-  ```
+```html
+<wd-popup v-model="showModal">
+	<wd-cell-group>
+		<!-- 内容 -->
+	</wd-cell-group>
+</wd-popup>
+```
 
-  此命令使用 Turborepo 高效地构建必要的包。输出目录位于 `apps/admin/dist`。
+正确写法：代码块语言用 vue ，且带有 `<template>` 标签来包裹。
 
-- **运行测试:**
-  要使用 Vitest 运行单元测试和组件测试：
+```vue
+<template>
+	<wd-popup v-model="showModal">
+		<wd-cell-group>
+			<!-- 内容 -->
+		</wd-cell-group>
+	</wd-popup>
+</template>
+```
 
-  ```bash
-  pnpm test
-  ```
+### 3. javascript / typescript 的代码注释写法
 
-- **部署:**
-  项目包含一个自定义的部署脚本。
+代码注释写法应该写成 jsdoc 格式。而不是单纯的双斜杠注释。比如：
 
-  ```bash
-  pnpm deploy
-  ```
+不合适的双斜线注释写法如下：
 
-- **文档:**
-  项目使用 VitePress 生成文档。
-  - 在本地运行文档服务器: `pnpm -F=@01s-11comm/admin docs:dev`
-  - 构建静态文档网站: `pnpm -F=@01s-11comm/admin docs:build`
+```ts
+// 模拟成功响应
+export function successResponse<T>(data: T, message: string = "操作成功") {
+	return {
+		success: true,
+		code: ResultEnum.Success,
+		message,
+		data,
+		timestamp: Date.now(),
+	};
+}
+```
 
-## 开发规范
+合适的，满足期望的 jsdoc 注释写法如下：
 
-- **代码风格:** 项目使用 `Prettier` 进行代码格式化，使用 `ESLint` 进行代码检查。运行 `pnpm format` 可以格式化整个代码库。
-- **提交:** 项目可能遵循“约定式提交”规范，因为项目中存在 `commitlint` 和 `cz-git`。使用 `pnpm commit` 来创建一个合规的提交信息。
-- **变更集 (Changesets):** 项目使用 `changeset` 来进行版本管理和生成变更日志。要添加一个新的变更集，请运行 `pnpm changeset:add`。
+```ts
+/** 模拟成功响应 */
+export function successResponse<T>(data: T, message: string = "操作成功") {
+	return {
+		success: true,
+		code: ResultEnum.Success,
+		message,
+		data,
+		timestamp: Date.now(),
+	};
+}
+```
+
+### 4. markdown 的多级标题要主动提供序号
+
+对于每一份 markdown 文件的`二级标题`和`三级标题`，你都应该要：
+
+1. 主动添加**数字**序号，便于我阅读文档。
+2. 主动**维护正确的数字序号顺序**。如果你处理的 markdown 文档，其手动添加的序号顺序不对，请你及时的更新序号顺序。
+
+## 报告编写规范
+
+在大多数情况下，你的更改是**不需要**编写任何说明报告的。但是每当你需要编写报告时，请你首先遵循以下要求：
+
+- 报告地址： 默认在 `apps\admin\src\docs\reports` 文件夹内编写报告。
+- 报告文件格式： `*.md` 通常是 markdown 文件格式。
+- 报告文件名称命名要求：
+  1. 前缀以日期命名。包括年月日。日期格式 `YYYY-MM-DD` 。
+  2. 用小写英文加短横杠的方式命名。
+- 报告语言： 默认用简体中文。
+
+## 注意事项
+
+1. 每次你完成更改时，都要主动运行类型检查命令。我们项目需要你去运行类型检查命令。需要你主动解决类型报错。
+
+## 常用开发命令
+
+这是一个用于 11comm 智慧社区 (Smart Community) 项目的 pnpm + Turbo monorepo。
+
+### 构建命令
+
+```bash
+# 构建所有项目
+pnpm build
+
+# 专门构建管理应用
+pnpm build:admin
+# 或者从根目录运行
+pnpm -F @01s-11comm/admin build
+
+# 以staging模式构建
+pnpm -F @01s-11comm/admin build:staging
+
+# 构建文档
+pnpm -F @01s-11comm/admin docs:build
+```
+
+### 开发命令
+
+```bash
+# 以开发模式运行管理应用
+pnpm -F @01s-11comm/admin dev
+# 或者切换到apps/admin目录并运行
+cd apps/admin && pnpm dev
+```
+
+### 测试命令
+
+```bash
+# 使用UI运行测试
+pnpm test
+# 管理应用特定的测试
+pnpm -F @01s-11comm/admin test
+```
+
+### 代码检查和格式化
+
+```bash
+# 检查和格式化管理应用
+pnpm -F @01s-11comm/admin lint
+
+# 单独的检查命令
+pnpm -F @01s-11comm/admin lint:eslint
+pnpm -F @01s-11comm/admin lint:prettier
+pnpm -F @01s-11comm/admin lint:stylelint
+
+# 格式化代码
+pnpm format
+```
+
+### 类型检查
+
+```bash
+# 对管理应用进行类型检查
+pnpm -F @01s-11comm/admin typecheck
+```
+
+## 项目架构
+
+### Monorepo 结构
+
+- `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
+- `apps/vue-pure-admin/` - Pure admin 模板（参考用）
+- `examples/` - 示例应用（01s-origin, 10wms）
+- 根级别管理 monorepo 依赖和共享配置
+
+### 管理应用架构 (`apps/admin/`)
+
+**技术栈：**
+
+- Vue 3 + TypeScript + Vite
+- Element Plus (UI 组件)
+- Plus Pro Components (表单组件)
+- Pinia (状态管理)
+- Vue Router with unplugin-vue-router (基于文件的路由)
+- Tailwind CSS + SCSS
+- Axios + @ruan-cat/utils 用于 API 请求
+
+**关键目录：**
+
+- `src/api/` - 按模块组织的 API 接口定义 (c1-c7, j1-j8)
+- `src/views/` - 基于文件的路由页面
+- `src/components/` - 可复用组件（自定义组件使用 Re\*前缀）
+- `src/store/` - Pinia 状态管理存储
+- `src/utils/` - 工具函数和 HTTP 配置
+- `src/router/` - 路由配置和模块
+- `src/composables/` - Vue 组合式函数的共享逻辑
+
+**组件命名：**
+
+- 自定义组件使用"Re"前缀（ReDialog, ReDrawer 等）
+- 组件按功能组织在专用文件夹中
+
+**API 组织：**
+
+- API 按业务模块组织（c1-c7 用于不同区域，j1-j8 用于不同功能）
+- 使用@ruan-cat/utils 增强 axios 功能
+- 测试文件与 API 模块共同定位（.test.ts 文件）
+
+**路由：**
+
+- 使用 unplugin-vue-router 的基于文件的路由
+- 菜单排序的路由等级系统（`src/router/rank/`）
+- 从文件结构动态生成路由
+
+**状态管理：**
+
+- `src/store/modules/`中的模块化 Pinia 存储
+- 包括用户、应用、权限、多标签和自定义存储
+
+**国际化：**
+
+- Vue i18n，在`locales/`中使用 YAML 区域设置文件
+- 支持中文（zh-CN）和英文（en）
+
+### 关键技术和库
+
+**必需学习（根据 technical-doc.md）：**
+
+- lodash-es 用于工具函数
+- Vue 3 composition API（ref, computed, watch, slots, props）
+- VueUse 用于组合式函数（特别是 useAxios）
+- @ruan-cat/utils 用于增强 axios 包装器
+- Element Plus 组件（Form, Table, Dialog, Tree 等）
+- Plus Pro Components 用于高级表单
+- unplugin-vue-router 用于基于文件的路由
+
+**架构模式：**
+
+- 使用 pnpm 工作空间和 Turbo 的 Monorepo
+- 使用 definePage 进行路由配置的基于文件的路由
+- 共享逻辑的组合式驱动开发
+- 基于模块的 API 组织
+- 组件驱动的 UI 开发
+
+## 开发工作流
+
+1. 使用 pnpm 进行包管理
+2. Turbo 处理构建编排
+3. 基于文件的路由 - 在 src/views/中创建.vue 文件用于新页面
+4. 使用 definePage()宏进行路由配置
+5. API 接口按业务模块组织
+6. 遵循现有组件模式（自定义组件使用 Re\*前缀）
+7. 使用组合式函数处理共享逻辑
+8. 测试文件与实现文件共同定位
 
 ## 生成接口时的代码风格
 
