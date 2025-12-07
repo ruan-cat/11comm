@@ -31,7 +31,7 @@ const tableData = ref<业主信息_列表数据[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
-	{ label: "人脸", prop: "人脸", width: 120, fixed: true },
+	{ label: "人脸", prop: "人脸", width: 120 },
 	{ label: "客户名称", prop: "客户名称", width: 120 },
 	{ label: "人员类型", prop: "人员类型", width: 120 },
 	{ label: "人员角色", prop: "人员角色", width: 120 },
@@ -48,7 +48,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 180,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -212,7 +212,7 @@ async function loadTableData() {
 }
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd } = useMode();
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -230,21 +230,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 业务对象 */
 	const 业主信息表单对象: 业主信息表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					人员类型: row?.人员类型 || "个人",
-					人员角色: row?.人员角色 || "业主",
-					客户名称: row?.客户名称 || "",
-					联系手机: row?.联系手机 || "",
-					性别: row?.性别 || "男",
-					备用手机: row?.备用手机 || "",
-					地址: row?.地址 || "",
-					门禁钥匙: row?.门禁钥匙 || "",
-					身份证: row?.证件号 || "",
-					备注: "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				人员类型: row?.人员类型 || "个人",
+				人员角色: row?.人员角色 || "业主",
+				客户名称: row?.客户名称 || "",
+				联系手机: row?.联系手机 || "",
+				性别: row?.性别 || "男",
+				备用手机: row?.备用手机 || "",
+				地址: row?.地址 || "",
+				门禁钥匙: row?.门禁钥匙 || "",
+				身份证: row?.证件号 || "",
+				备注: "",
+			});
 
 	/** 表单组件需要的props */
 	const formProps: OwnerInformationFormProps = {
@@ -267,7 +265,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = OwnerInformationFormInstance.value.formComputed;
+			const formComputed = OwnerInformationFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -276,7 +274,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = OwnerInformationFormInstance.value.formComputed;
+					const formComputed = OwnerInformationFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -285,7 +283,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					OwnerInformationFormInstance.value.plusFormInstance.handleReset();
+					OwnerInformationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -293,7 +291,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await OwnerInformationFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await OwnerInformationFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -343,14 +341,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>

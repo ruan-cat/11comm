@@ -123,7 +123,55 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	人员类型: [
+		{
+			required: true,
+			message: "请选择人员类型",
+			trigger: "change",
+		},
+	],
+	人员角色: [
+		{
+			required: true,
+			message: "请选择人员角色",
+			trigger: "change",
+		},
+	],
+	客户名称: [
+		{
+			required: true,
+			message: "请输入客户名称",
+			trigger: "blur",
+		},
+	],
+	联系手机: [
+		{
+			required: true,
+			message: "请输入联系手机",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	性别: [
+		{
+			required: true,
+			message: "请选择性别",
+			trigger: "change",
+		},
+	],
+	身份证: [
+		{
+			required: true,
+			message: "请输入身份证",
+			trigger: "blur",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,
