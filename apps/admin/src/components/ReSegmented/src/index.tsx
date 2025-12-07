@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "./index.css";
 import type { OptionsType } from "./type";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";

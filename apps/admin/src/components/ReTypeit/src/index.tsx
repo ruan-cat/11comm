@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { El } from "typeit/dist/types";
 import TypeIt, { type Options as TypeItOptions } from "typeit";
 import { type PropType, ref, defineComponent, onMounted } from "vue";

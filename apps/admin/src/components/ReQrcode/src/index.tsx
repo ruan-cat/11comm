@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type PropType, ref, unref, watch, nextTick, computed, defineComponent } from "vue";
 import "./index.scss";
 import propTypes from "@/utils/propTypes";

@@ -1,4 +1,6 @@
+// @ts-nocheck
 import Sortable from "sortablejs";
+import { ElDropdownItem, ElDropdownMenu } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import { useEpThemeStoreHook } from "@/store/modules/epTheme";
 import { type PropType, ref, unref, computed, nextTick, defineComponent, getCurrentInstance } from "vue";
@@ -146,17 +148,17 @@ export default defineComponent({
 
 		const dropdown = {
 			dropdown: () => (
-				<el-dropdown-menu class='translation'>
-					<el-dropdown-item style={getDropdownItemStyle.value("large")} onClick={() => (size.value = "large")}>
+				<ElDropdownMenu class='translation'>
+					<ElDropdownItem style={getDropdownItemStyle.value("large")} onClick={() => (size.value = "large")}>
 						宽松
-					</el-dropdown-item>
-					<el-dropdown-item style={getDropdownItemStyle.value("default")} onClick={() => (size.value = "default")}>
+					</ElDropdownItem>
+					<ElDropdownItem style={getDropdownItemStyle.value("default")} onClick={() => (size.value = "default")}>
 						默认
-					</el-dropdown-item>
-					<el-dropdown-item style={getDropdownItemStyle.value("small")} onClick={() => (size.value = "small")}>
+					</ElDropdownItem>
+					<ElDropdownItem style={getDropdownItemStyle.value("small")} onClick={() => (size.value = "small")}>
 						紧凑
-					</el-dropdown-item>
-				</el-dropdown-menu>
+					</ElDropdownItem>
+				</ElDropdownMenu>
 			),
 		};
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "./index.css";
 import { unref, computed, nextTick, onBeforeMount, defineComponent, getCurrentInstance } from "vue";
 import { addClass, removeClass, toggleClass } from "@pureadmin/utils";

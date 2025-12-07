@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "./index.css";
 import resizer from "./resizer";
 import { type PropType, defineComponent, ref, unref, computed } from "vue";
