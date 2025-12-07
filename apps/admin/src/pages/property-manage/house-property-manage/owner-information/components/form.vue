@@ -6,7 +6,7 @@
 import { ref, computed, watch, useTemplateRef } from "vue";
 
 import { OwnerInformationFormProps, defaultForm } from "./form";
-import type { 业主信息表单_VO, 性别Options, 人员类型Options, 人员角色Options } from "../test-data";
+import { type 业主信息表单_VO, 性别Options, 人员类型Options, 人员角色Options } from "../test-data";
 
 const props = defineProps<OwnerInformationFormProps>();
 

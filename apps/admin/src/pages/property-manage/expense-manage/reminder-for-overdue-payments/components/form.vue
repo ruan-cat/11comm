@@ -92,9 +92,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "欠费时间段",
 		prop: "欠费时间段",
-		valueType: "datetimerange",
+		valueType: "date-picker",
 		width: "360px",
 		fieldProps: {
+			type: "datetimerange",
 			startPlaceholder: "开始时间",
 			endPlaceholder: "结束时间",
 			format: "YYYY-MM-DD HH:mm:ss",

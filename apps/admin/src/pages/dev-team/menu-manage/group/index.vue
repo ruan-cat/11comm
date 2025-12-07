@@ -10,11 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 菜单组_列表数据,
-	type 菜单组_列表查询_VO,
-	tableData as allTableData,
-} from "./test-data";
+import { type 菜单组_列表数据, type 菜单组_列表查询_VO, 状态选项, tableData as allTableData } from "./test-data";
 
 /** 表格数据 */
 const tableData = ref<菜单组_列表数据[]>([]);
@@ -26,7 +22,6 @@ const columns = ref<TableColumnList>([
 		label: "组编号",
 		prop: "组编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "组名称",

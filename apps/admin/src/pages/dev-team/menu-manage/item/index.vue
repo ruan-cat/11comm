@@ -13,6 +13,9 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type 菜单项_列表数据,
 	type 菜单项_列表查询_VO,
+	菜单类型选项,
+	状态选项,
+	是否选项,
 	tableData as allTableData,
 } from "./test-data";
 
@@ -26,7 +29,6 @@ const columns = ref<TableColumnList>([
 		label: "菜单编号",
 		prop: "菜单编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "菜单名称",

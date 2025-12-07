@@ -456,7 +456,7 @@ const { gotoDetailPage } = useGotoDetailsPage();
 /** 跳转到 公示详情页面 */
 function gotoNoticeDetailPage(row: 小区公示_列表数据) {
 	gotoDetailPage({
-		name: "property-manage-community-manage--detail-page-notice-[id]",
+		name: "property-manage-community-manage--detail-page",
 		params: {
 			id: row.头部照片, // 使用头部照片作为ID，或者可以考虑其他唯一标识
 		},

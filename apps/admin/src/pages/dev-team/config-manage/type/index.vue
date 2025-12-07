@@ -10,11 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 字典类型_列表数据,
-	type 字典类型_列表查询_VO,
-	tableData as allTableData,
-} from "./test-data";
+import { type 字典类型_列表数据, type 字典类型_列表查询_VO, 状态选项, tableData as allTableData } from "./test-data";
 
 /** 表格数据 */
 const tableData = ref<字典类型_列表数据[]>([]);
@@ -26,7 +22,6 @@ const columns = ref<TableColumnList>([
 		label: "字典编号",
 		prop: "字典编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "字典名称",

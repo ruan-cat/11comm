@@ -9,9 +9,8 @@ defineOptions({
 const { currentRoute, replace } = useRouter();
 
 const { params, query } = unref(currentRoute);
-const { path } = params;
-
-const _path = Array.isArray(path) ? path.join("/") : path;
+const pathParam = (params as { path?: string | string[] })?.path ?? "";
+const _path = Array.isArray(pathParam) ? pathParam.join("/") : pathParam;
 
 replace({
 	path: "/" + _path,

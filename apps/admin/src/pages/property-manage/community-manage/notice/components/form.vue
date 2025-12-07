@@ -187,7 +187,7 @@ const plusFormRules = computed(() => ({
 			min: 2,
 			max: MAX_TITLE_LENGTH,
 			message: transformI18n(
-				$t("propertyManage_communityManage.notice.form.titleLength", { min: 2, max: MAX_TITLE_LENGTH }),
+				$t("propertyManage_communityManage.notice.form.titleLength", { min: 2, max: MAX_TITLE_LENGTH }) as string,
 			),
 			trigger: "blur",
 		},
@@ -246,7 +246,10 @@ const plusFormRules = computed(() => ({
 			min: 10,
 			max: MAX_SUMMARY_LENGTH,
 			message: transformI18n(
-				$t("propertyManage_communityManage.notice.form.contentSummaryLength", { min: 10, max: MAX_SUMMARY_LENGTH }),
+				$t("propertyManage_communityManage.notice.form.contentSummaryLength", {
+					min: 10,
+					max: MAX_SUMMARY_LENGTH,
+				}) as string,
 			),
 			trigger: "blur",
 		},
