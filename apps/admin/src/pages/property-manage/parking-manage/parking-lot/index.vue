@@ -8,8 +8,11 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { type 车位信息_列表数据, type 车位信息_列表查询_VO, tableData as mockTableData } from "./test-data";
 
 import { type 停车场表单Props, defaultForm, type 停车场表单_VO } from "./components/form";
@@ -55,7 +58,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -218,7 +221,7 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -231,33 +234,26 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
-	const { mode, row } = params;
+function openDialog({ mode, row }: { mode: Mode; row?: 车位信息_列表数据 }) {
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}停车场管理`;
 
 	/** 业务对象 */
-	const 车位信息_列表数据: 停车场表单_VO = isAdd.value
+	const 停车场表单对象: 停车场表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					停车场编号: row?.停车场编号 || "",
-					停车场类型: row?.停车场类型 || "地下停车场",
-					车位类型: row?.车位类型 || "标准车位",
-					外部编码: row?.外部编码 || "",
-					备注: row?.备注 || "",
-					停车场ID: row?.停车场ID || "",
-					创建时间: row?.创建时间 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+				停车场类型: row?.停车场类型 || defaultForm.停车场类型,
+				车位类型: row?.车位类型 || defaultForm.车位类型,
+			});
 
 	/** 表单组件需要的props */
 	const props: 停车场表单Props = {
-		form: 车位信息_列表数据,
-		defaultValues: 车位信息_列表数据,
+		form: 停车场表单对象,
+		defaultValues: 停车场表单对象,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -277,9 +273,7 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 
 		async doBeforeClose({ options, index }) {
 			const formComputed = 停车场表单Instance.value?.formComputed;
-			if (formComputed) {
-				await useDoBeforeClose({ defaultValues, formComputed, index, options });
-			}
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
 		footerButtons: [
@@ -288,9 +282,7 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = 停车场表单Instance.value?.formComputed;
-					if (formComputed) {
-						await useDoBeforeClose({ defaultValues, formComputed, index, options });
-					}
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
 
@@ -351,10 +343,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>

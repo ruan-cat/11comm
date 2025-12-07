@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { 停车场表单Props, 停车场表单_VO, defaultForm } from "./form";
+import { 停车场表单Props, 停车场表单_VO } from "./form";
 import { 停车场类型Options, 车位类型Options } from "../test-data";
 
 const props = defineProps<停车场表单Props & { mode: Mode }>();
@@ -82,7 +82,36 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	停车场编号: [
+		{
+			required: true,
+			message: "请输入停车场编号",
+			trigger: "blur",
+		},
+	],
+	停车场类型: [
+		{
+			required: true,
+			message: "请选择停车场类型",
+			trigger: "change",
+		},
+	],
+	车位类型: [
+		{
+			required: true,
+			message: "请选择车位类型",
+			trigger: "change",
+		},
+	],
+	外部编码: [
+		{
+			required: true,
+			message: "请输入外部编码",
+			trigger: "blur",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,
