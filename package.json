@@ -29,7 +29,7 @@
 		"corepack:pnpm": "corepack enable && corepack install",
 		"clear": "pnpm run clear:deps && pnpm run clear:cache",
 		"clear:deps": "rimraf -g '**/{node_modules,package-lock.json,pnpm-lock.yaml}'",
-		"clear:cache": "rimraf -g '**/{dist,.turbo,.vercel,.cache,.temp}'",
+		"clear:cache": "rimraf -g '**/{dist,.turbo,.vercel,.output,.cache,.temp}'",
 		"changeset:init": "changeset init",
 		"changeset:publish": "changeset publish",
 		"turbo:publish": "turbo do-publish",
