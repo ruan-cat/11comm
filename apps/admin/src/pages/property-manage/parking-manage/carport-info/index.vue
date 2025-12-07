@@ -8,7 +8,9 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import {
 	tableData as mockTableData,
@@ -18,6 +20,7 @@ import {
 	type 车位信息_列表数据,
 	type 车位信息_表单_VO,
 } from "./test-data";
+import type { 车位信息_列表查询_VO } from "./test-data";
 import { type CarportInfoFormProps, defaultForm } from "./components/form";
 import CarportInfoForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -130,16 +133,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "车位信息",
 	columns: columns.value,
 });
-
-interface 车位信息_列表查询_VO {
-	停车场?: string;
-	车位?: string;
-	车位状态?: string;
-	车位类型?: string;
-	业主姓名?: string;
-	联系电话?: string;
-	车辆号码?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -276,7 +269,7 @@ async function handleSearch() {
 }
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -292,30 +285,19 @@ async function testAsync() {
 const carportInfoFormInstance = ref<InstanceType<typeof CarportInfoForm> | null>(null);
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
-	const { mode, row } = params;
+function openDialog({ mode, row }: { mode: Mode; row?: 车位信息_列表数据 }) {
 	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}车位信息`;
 
 	/** 业务对象 */
 	const 车位信息表单_VO: 车位信息_表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					停车场: row?.停车场 || "",
-					车位: row?.车位 || "",
-					车位状态: row?.车位状态 || "",
-					车位类型: row?.车位类型 || "",
-					面积: row?.面积 || "",
-					业主姓名: row?.业主姓名 || "",
-					联系电话: row?.联系电话 || "",
-					车辆号码: row?.车辆号码 || "",
-					购买日期: row?.购买日期 || "",
-					到期日期: row?.到期日期 || "",
-					月租费用: row?.月租费用 || 0,
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: CarportInfoFormProps = {
@@ -323,14 +305,8 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 		defaultValues: 车位信息表单_VO,
 	};
 
-	/** 弹框标题 */
-	const title = `${modeText.value}车位信息`;
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -342,7 +318,7 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = carportInfoFormInstance.value.formComputed;
+			const formComputed = carportInfoFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -350,7 +326,7 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = carportInfoFormInstance.value.formComputed;
+					const formComputed = carportInfoFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -358,14 +334,14 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					carportInfoFormInstance.value.plusFormInstance.handleReset();
+					carportInfoFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await carportInfoFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await carportInfoFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -377,27 +353,6 @@ function openDialog(params: { mode: Mode; row?: 车位信息_列表数据 }) {
 			},
 		],
 	});
-}
-
-/** 新增车位信息 */
-function handleAdd() {
-	openDialog({ mode: "add" });
-}
-
-/** 编辑车位信息 */
-function handleEdit(row: 车位信息_列表数据) {
-	openDialog({ mode: "edit", row });
-}
-
-/** 查看车位信息 */
-function handleView(row: 车位信息_列表数据) {
-	openDialog({ mode: "info", row });
-}
-
-/** 删除车位信息 */
-async function handleDelete(row: 车位信息_列表数据) {
-	// TODO: 实现删除功能
-	consola.log("删除车位信息:", row);
 }
 
 /** 生命周期钩子 */
@@ -418,7 +373,7 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleAdd">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
@@ -433,14 +388,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info" @click="handleView(row)">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger" @click="handleDelete(row)">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>

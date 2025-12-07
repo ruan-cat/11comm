@@ -33,6 +33,17 @@ export interface 车位信息_表单_VO {
 	备注: string;
 }
 
+/** 车位信息 列表查询类型 */
+export interface 车位信息_列表查询_VO {
+	停车场?: string;
+	车位?: string;
+	车位状态?: string;
+	车位类型?: string;
+	业主姓名?: string;
+	联系电话?: string;
+	车辆号码?: string;
+}
+
 /** 车位状态选项 */
 export const 车位状态Options: OptionsType = [
 	{ label: "已售", value: "已售" },

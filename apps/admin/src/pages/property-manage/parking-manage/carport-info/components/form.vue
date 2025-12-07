@@ -143,13 +143,58 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = computed(() => ({
-	停车场: [{ required: true, message: "请选择停车场", trigger: "change" }],
-	车位: [{ required: true, message: "请输入车位编号", trigger: "blur" }],
-	车位状态: [{ required: true, message: "请选择车位状态", trigger: "change" }],
-	车位类型: [{ required: true, message: "请选择车位类型", trigger: "change" }],
-	面积: [{ required: true, message: "请输入车位面积", trigger: "blur" }],
-}));
+const plusFormRules = ref<PlusFormRules>({
+	停车场: [
+		{
+			required: true,
+			message: "请选择停车场",
+			trigger: "change",
+		},
+	],
+	车位: [
+		{
+			required: true,
+			message: "请输入车位编号",
+			trigger: "blur",
+		},
+	],
+	车位状态: [
+		{
+			required: true,
+			message: "请选择车位状态",
+			trigger: "change",
+		},
+	],
+	车位类型: [
+		{
+			required: true,
+			message: "请选择车位类型",
+			trigger: "change",
+		},
+	],
+	面积: [
+		{
+			required: true,
+			message: "请输入车位面积",
+			trigger: "blur",
+		},
+	],
+	联系电话: [
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	月租费用: [
+		{
+			type: "number",
+			min: 0,
+			message: "月租费用需大于等于0",
+			trigger: "blur",
+		},
+	],
+});
 
 /** 默认对外导出 */
 defineExpose({
