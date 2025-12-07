@@ -186,9 +186,8 @@ const plusFormRules = computed(() => ({
 		{
 			min: 2,
 			max: MAX_TITLE_LENGTH,
-			message: transformI18n(
-				$t("propertyManage_communityManage.notice.form.titleLength", { min: 2, max: MAX_TITLE_LENGTH }) as string,
-			),
+			// @ts-ignore vue-i18n 类型声明较窄
+			message: transformI18n($t("propertyManage_communityManage.notice.form.titleLength", { min: 2, max: MAX_TITLE_LENGTH })),
 			trigger: "blur",
 		},
 	],
@@ -245,11 +244,9 @@ const plusFormRules = computed(() => ({
 		{
 			min: 10,
 			max: MAX_SUMMARY_LENGTH,
+			// @ts-ignore vue-i18n 类型声明较窄
 			message: transformI18n(
-				$t("propertyManage_communityManage.notice.form.contentSummaryLength", {
-					min: 10,
-					max: MAX_SUMMARY_LENGTH,
-				}) as string,
+				$t("propertyManage_communityManage.notice.form.contentSummaryLength", { min: 10, max: MAX_SUMMARY_LENGTH }),
 			),
 			trigger: "blur",
 		},

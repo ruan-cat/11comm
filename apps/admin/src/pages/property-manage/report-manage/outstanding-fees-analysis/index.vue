@@ -11,7 +11,6 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import type { PlusColumn } from "plus-pro-components";
-import type { TableColumns } from "plus-pro-components";
 //表格数据
 interface 欠费分析_未收情况表 {
 	one: string; //楼栋号
@@ -371,7 +370,10 @@ const handleClick = (type: string) => {
 			<button @click="handleClick('two')">未收明细表</button>
 			<button @click="handleClick('three')">当月收费情况表</button>
 		</div>
-		<PureTable :="pureTableProps">
+		<PureTable
+			:="pureTableProps"
+			:tree-props="{ hasChildren: 'hasChildren', children: 'children', checkStrictly: false }"
+		>
 			<template #operation="{ row }">
 				<!-- <ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
 				<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>

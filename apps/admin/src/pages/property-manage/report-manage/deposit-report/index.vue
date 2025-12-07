@@ -355,7 +355,7 @@ const uncharged = ref({
 	<section class="index-root">
 		<h2>押金报表</h2>
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch">
-			<template #plus-field-楼栋="{ model }">
+			<template #plus-field-楼栋="{ model, column }">
 				<div class="flex items-center">
 					<!-- TODO: 这里楼栋插槽选择、搜索框需要api，没写，先挂这儿 -->
 					<!--  <el-select v-model="model.value" style="width: 200px"> -->

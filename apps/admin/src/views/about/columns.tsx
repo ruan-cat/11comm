@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function useColumns() {
 	const { pkg, lastBuildTime } = __APP_INFO__;
 	const { version, engines } = pkg;

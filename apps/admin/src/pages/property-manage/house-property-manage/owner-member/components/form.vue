@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { OwnerMemberFormProps, 业主成员表单_VO, defaultForm } from "./form";
+import { OwnerMemberFormProps, type 业主成员表单_VO, defaultForm } from "./form";
 import { 性别选项, 成员类型选项 } from "../test-data";
 
 const props = defineProps<OwnerMemberFormProps & { mode: Mode }>();
@@ -40,11 +40,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "成员人脸",
 		prop: "成员人脸",
-		valueType: "upload",
-		fieldProps: {
-			accept: ".jpg,.jpeg,.png",
-			limit: 1,
-		},
+		valueType: "input",
 	},
 
 	// 名称
