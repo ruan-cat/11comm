@@ -8,52 +8,44 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted, h } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { type RepairsHaveDoneFormProps, defaultForm, type 报修已办表单_VO } from "./components/form";
+import {
+	type 报修已办_列表数据,
+	type 报修已办_列表查询_VO,
+	tableData as mockTableData,
+	报修类型Options,
+	维修类型Options,
+	报修状态Options,
+} from "./test-data";
+import RepairsHaveDoneForm from "./components/form.vue";
 
-interface 报修已办_列表数据 {
-	工单编号: string;
-	位置: string;
-	报修类型: string;
-	维修类型: string;
-	报修人: string;
-	联系方式: string;
-	预约时间: string;
-	状态: string;
-	备注: string;
-}
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
-const tableDataItem: 报修已办_列表数据 = {
-	工单编号: "工单编号",
-	位置: "位置",
-	报修类型: "报修类型",
-	维修类型: "维修类型",
-	报修人: "报修人",
-	联系方式: "联系方式",
-	预约时间: "预约时间",
-	状态: "状态",
-	备注: "备注",
-};
+/** 表单组件实例 */
+const repairsHaveDoneFormInstance = ref<InstanceType<typeof RepairsHaveDoneForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<报修已办_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<报修已办_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "工单编号",
 		prop: "工单编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "位置",
 		prop: "位置",
-		width: 120,
+		width: 140,
 	},
 	{
 		label: "报修类型",
@@ -73,12 +65,12 @@ const columns = ref<TableColumnList>([
 	{
 		label: "联系方式",
 		prop: "联系方式",
-		width: 120,
+		width: 140,
 	},
 	{
 		label: "预约时间",
 		prop: "预约时间",
-		width: 120,
+		width: 150,
 	},
 	{
 		label: "状态",
@@ -86,10 +78,9 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -100,18 +91,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格配置 */
@@ -127,15 +118,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "报修已办",
 	columns: columns.value,
 });
-
-interface 报修已办_列表查询_VO {
-	维修类型?: string;
-	报修人?: string;
-	报修电话?: string;
-	报修类型?: string;
-	报修状态?: string;
-	工单编号?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -167,24 +149,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.maintenanceType")),
 		prop: "维修类型",
 		valueType: "select",
-		options: [
-			{
-				label: "有偿服务",
-				value: "有偿服务",
-			},
-			{
-				label: "无偿服务",
-				value: "无偿服务",
-			},
-			{
-				label: "需要用料",
-				value: "无需用料",
-			},
-			{
-				label: "无需用料",
-				value: "维修单",
-			},
-		],
+		options: 维修类型Options,
 	},
 	// 报修人
 	{
@@ -204,16 +169,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
 		prop: "报修类型",
 		valueType: "select",
-		options: [
-			{
-				label: "类型1",
-				value: "类型1",
-			},
-			{
-				label: "类型2",
-				value: "类型2",
-			},
-		],
+		options: 报修类型Options,
 	},
 
 	// 报修状态
@@ -221,16 +177,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
 		prop: "报修状态",
 		valueType: "select",
-		options: [
-			{
-				label: "状态1",
-				value: "状态1",
-			},
-			{
-				label: "状态2",
-				value: "状态2",
-			},
-		],
+		options: 报修状态Options,
 	},
 
 	// 工单编号
@@ -250,22 +197,188 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		let filteredData = mockTableData;
+
+		if (plusSearchModel.value.维修类型) {
+			filteredData = filteredData.filter((item) => item.维修类型 === plusSearchModel.value.维修类型);
+		}
+		if (plusSearchModel.value.报修人) {
+			filteredData = filteredData.filter((item) => item.报修人.includes(plusSearchModel.value.报修人!));
+		}
+		if (plusSearchModel.value.报修电话) {
+			filteredData = filteredData.filter((item) => item.联系方式.includes(plusSearchModel.value.报修电话!));
+		}
+		if (plusSearchModel.value.报修类型) {
+			filteredData = filteredData.filter((item) => item.报修类型 === plusSearchModel.value.报修类型);
+		}
+		if (plusSearchModel.value.报修状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.报修状态);
+		}
+		if (plusSearchModel.value.工单编号) {
+			filteredData = filteredData.filter((item) => item.工单编号.includes(plusSearchModel.value.工单编号!));
+		}
+
+		pagination.value.total = filteredData.length;
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+	}
+}
+
+/** 测试异步操作函数 */
+const [isLoadingT, setIsLoadingT] = useToggle(false);
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+}
+
+/** 打开弹框 */
+function openDialog(params: { mode: Mode; row?: 报修已办_列表数据 }) {
+	const { mode, row } = params;
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}报修已办`;
+
+	/** 业务对象 */
+	const formValue: 报修已办表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					工单编号: row?.工单编号 || "",
+					位置: row?.位置 || "",
+					报修类型: row?.报修类型 || "",
+					维修类型: row?.维修类型 || "",
+					报修人: row?.报修人 || "",
+					联系方式: row?.联系方式 || "",
+					预约时间: row?.预约时间 || "",
+					状态: row?.状态 || "",
+					备注: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(formValue);
+
+	/** 表单组件需要的props */
+	const formProps: RepairsHaveDoneFormProps = {
+		form: formValue,
+		defaultValues,
+	};
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props: formProps,
+		contentRenderer: () =>
+			h(RepairsHaveDoneForm, {
+				ref: repairsHaveDoneFormInstance,
+				...formProps,
+			}),
+		async doBeforeClose({ options, index }) {
+			const formComputed = repairsHaveDoneFormInstance.value?.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = repairsHaveDoneFormInstance.value?.formComputed;
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: () => {
+					repairsHaveDoneFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const res = await repairsHaveDoneFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						await loadTableData();
+					}
+				},
+			},
+		],
+	});
+}
+
+/** 新增按钮点击事件 */
+function handleAdd() {
+	openDialog({ mode: "add" });
+}
+
+/** 编辑按钮点击事件 */
+function handleEdit(row: 报修已办_列表数据) {
+	openDialog({ mode: "edit", row });
+}
+
+/** 查看按钮点击事件 */
+function handleView(row: 报修已办_列表数据) {
+	openDialog({ mode: "info", row });
+}
+
+/** 删除按钮点击事件 */
+async function handleDelete(row: 报修已办_列表数据) {
+	consola.log("删除", row);
+	await loadTableData();
+}
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="primary" @click="handleAdd">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
+			</template>
+
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
@@ -276,15 +389,18 @@ async function handleSearch() {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
+						<ElButton type="info" @click="handleView(row)">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
 		</PureTableBar>
 	</section>
 </template>
-
-<style lang="scss" scoped>
-.index-root {
-}
-</style>
