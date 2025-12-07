@@ -132,3 +132,8 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 4. nitro 的 github 仓库： https://github.com/nitrojs/nitro
 5. 请你处理这一些列打包故障，确保项目可以通过 `nitro/vite` 插件直接变成 nuxt 格式的全栈项目。
 6. 由于该 vite 插件相当新潮，请你主动的阅读项目文档和源码。
+
+## 14 配置 nitro 部署到 cloudflare worker 内
+
+1. 阅读文档 https://v3.nitro.build/deploy/providers/cloudflare#cloudflare-workers 。
+2. 按照文档要求，配置项目部署目标为 cloudflare worker 。

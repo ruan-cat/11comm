@@ -14,4 +14,10 @@ export default defineConfig({
 		components: pathResolve("./src/components", import.meta.url),
 		composables: pathResolve("./src/composables", import.meta.url),
 	},
+	compatibilityDate: "2024-09-19",
+	preset: "cloudflare_module",
+	cloudflare: {
+		deployConfig: true,
+		nodeCompat: true,
+	},
 });
