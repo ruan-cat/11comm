@@ -14,6 +14,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	defaultForm,
 	type 发票_列表数据,
+	type 发票_列表查询_VO,
 	tableData as mockTableData,
 	发票类型Options,
 	审核状态Options,
@@ -40,7 +41,6 @@ const columns = ref<TableColumnList>([
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "发票类型",
@@ -90,7 +90,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -101,6 +101,7 @@ const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
+	pagination: pagination.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -110,7 +111,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const invoiceFormInstance = ref<InstanceType<typeof InvoiceForm> | null>(null);
@@ -137,21 +138,19 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 	/** 业务对象 */
 	const 发票表单_VO: 发票表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					编号: row?.编号 || "",
-					发票类型: row?.发票类型 || "",
-					业主名称: row?.业主名称 || "",
-					申请人: row?.申请人 || "",
-					发票名头: row?.发票名头 || "",
-					纳税人识别号: row?.纳税人识别号 || "",
-					申请金额: row?.申请金额 || "",
-					发票号: row?.发票号 || "",
-					发审核状态: row?.发审核状态 || "",
-					申请时间: row?.申请时间 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				编号: row?.编号 || "",
+				发票类型: row?.发票类型 || "",
+				业主名称: row?.业主名称 || "",
+				申请人: row?.申请人 || "",
+				发票名头: row?.发票名头 || "",
+				纳税人识别号: row?.纳税人识别号 || "",
+				申请金额: row?.申请金额 || "",
+				发票号: row?.发票号 || "",
+				发审核状态: row?.发审核状态 || "",
+				申请时间: row?.申请时间 || "",
+			});
 
 	/** 表单组件需要的props */
 	const formProps: InvoiceFormProps = {
@@ -218,17 +217,12 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 发票_列表数据 = {
+const plusSearchModelRef: FieldValues & 发票_列表查询_VO = {
 	编号: "",
 	发票类型: "",
 	业主名称: "",
 	申请人: "",
-	发票名头: "",
-	纳税人识别号: "",
-	申请金额: "",
-	发票号: "",
 	发审核状态: "",
-	申请时间: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -375,14 +369,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>

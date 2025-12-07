@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
-import { InvoiceFormProps, type 发票表单_VO } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { InvoiceFormProps } from "./form";
+import { type 发票表单_VO, 发票类型Options, 审核状态Options } from "../test-data";
 
 /** 表单组件的 props */
 const props = defineProps<InvoiceFormProps>();
@@ -49,11 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "发票类型",
 		prop: "发票类型",
 		valueType: "select",
-		options: [
-			{ label: "增值税普通发票", value: "增值税普通发票" },
-			{ label: "增值税专用发票", value: "增值税专用发票" },
-			{ label: "电子发票", value: "电子发票" },
-		],
+		options: 发票类型Options,
 	},
 	{
 		label: "业主名称",
@@ -89,11 +85,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "发审核状态",
 		prop: "发审核状态",
 		valueType: "select",
-		options: [
-			{ label: "待审核", value: "待审核" },
-			{ label: "已通过", value: "已通过" },
-			{ label: "已驳回", value: "已驳回" },
-		],
+		options: 审核状态Options,
 	},
 	{
 		label: "申请时间",
@@ -113,42 +105,49 @@ const plusFormRules = ref<PlusFormRules>({
 		{
 			required: true,
 			message: "请选择发票类型",
+			trigger: "change",
 		},
 	],
 	业主名称: [
 		{
 			required: true,
 			message: "请输入业主名称",
+			trigger: "blur",
 		},
 	],
 	申请人: [
 		{
 			required: true,
 			message: "请输入申请人",
+			trigger: "blur",
 		},
 	],
 	发票名头: [
 		{
 			required: true,
 			message: "请输入发票名头",
+			trigger: "blur",
 		},
 	],
 	纳税人识别号: [
 		{
 			required: true,
 			message: "请输入纳税人识别号",
+			trigger: "blur",
 		},
 	],
 	申请金额: [
 		{
 			required: true,
 			message: "请输入申请金额",
+			trigger: "blur",
 		},
 	],
 	发票号: [
 		{
 			required: true,
 			message: "请输入发票号",
+			trigger: "blur",
 		},
 	],
 });

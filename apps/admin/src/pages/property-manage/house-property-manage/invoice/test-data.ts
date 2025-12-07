@@ -14,6 +14,15 @@ export interface 发票_列表数据 {
 	申请时间: string;
 }
 
+/** 发票列表查询参数 */
+export interface 发票_列表查询_VO {
+	编号?: string;
+	发票类型?: string;
+	业主名称?: string;
+	申请人?: string;
+	发审核状态?: string;
+}
+
 /** 发票表单数据 */
 export interface 发票表单_VO {
 	编号: string;
