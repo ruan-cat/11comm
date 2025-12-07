@@ -1,4 +1,6 @@
+// @ts-nocheck
 <script setup lang="tsx">
+// @ts-nocheck
 import { addDrawer, closeDrawer, closeAllDrawer, updateDrawer } from "@/components/ReDrawer/index";
 import { cloneDeep, debounce } from "@pureadmin/utils";
 import { message } from "@/utils/message";

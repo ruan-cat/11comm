@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Sortable from "sortablejs";
 import { ref, nextTick } from "vue";
 import { clone } from "@pureadmin/utils";

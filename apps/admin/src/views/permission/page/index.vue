@@ -31,7 +31,7 @@ const options = [
 
 function onChange() {
 	useUserStoreHook()
-		.loginByUsername({ username: username.value, password: "admin123" })
+		.loginByUsername({ username: username.value, password: "admin123", code: "0000", uuid: "demo" })
 		.then((res) => {
 			if (res.success) {
 				storageLocal().removeItem("async-routes");

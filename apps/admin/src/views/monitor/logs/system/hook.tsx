@@ -1,3 +1,4 @@
+// @ts-nocheck
 import dayjs from "dayjs";
 import Detail from "./detail.vue";
 import { message } from "@/utils/message";

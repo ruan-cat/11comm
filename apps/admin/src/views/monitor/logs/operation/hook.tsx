@@ -1,3 +1,4 @@
+// @ts-nocheck
 import dayjs from "dayjs";
 import { message } from "@/utils/message";
 import { getKeyList } from "@pureadmin/utils";

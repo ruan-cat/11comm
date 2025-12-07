@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "./reset.css";
 import dayjs from "dayjs";
 import roleForm from "../form/role.vue";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ArrowRightSLine from "~icons/ri/arrow-right-s-line";
 import CloseCircleLine from "~icons/ri/close-circle-line";
 

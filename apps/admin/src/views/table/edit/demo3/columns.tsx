@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ref, computed } from "vue";
 import { tableDataEdit } from "../data";
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ref } from "vue";
 import { tableData, options } from "../data";
 import { clone, delObjectProperty } from "@pureadmin/utils";

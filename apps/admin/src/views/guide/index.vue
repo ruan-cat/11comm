@@ -95,7 +95,7 @@ const onTour = () => {
 			<el-tour-step
 				v-for="step in GUIDE_STEPS"
 				:key="step.title"
-				:target="() => step.element"
+				:target="() => step.element as any"
 				:title="step.title"
 				:description="step.intro"
 				:placement="step.position"

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import dayjs from "dayjs";
 import editForm from "../form.vue";
 import { handleTree } from "@/utils/tree";

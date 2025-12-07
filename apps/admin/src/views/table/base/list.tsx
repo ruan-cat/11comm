@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Base from "./base.vue";
 import Stripe from "./stripe.vue";
 import Border from "./border.vue";

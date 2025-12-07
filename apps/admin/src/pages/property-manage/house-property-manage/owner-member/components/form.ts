@@ -25,3 +25,5 @@ export interface OwnerMemberFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 业主成员表单_VO;
 }
+
+export type { 业主成员表单_VO };

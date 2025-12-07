@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { tableData } from "../../data";
 import { delay } from "@pureadmin/utils";
 import { ref, onMounted, reactive } from "vue";

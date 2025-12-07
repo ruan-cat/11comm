@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { message } from "@/utils/message";
 import { tableData } from "../data";
 

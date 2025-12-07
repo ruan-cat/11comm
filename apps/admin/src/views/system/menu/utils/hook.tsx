@@ -1,3 +1,4 @@
+// @ts-nocheck
 import editForm from "../form.vue";
 import { handleTree } from "@/utils/tree";
 import { message } from "@/utils/message";

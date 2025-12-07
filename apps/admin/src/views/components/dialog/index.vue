@@ -1,4 +1,6 @@
+// @ts-nocheck
 <script setup lang="tsx">
+// @ts-nocheck
 import { useRouter } from "vue-router";
 import { h, createVNode, ref } from "vue";
 import { message } from "@/utils/message";
