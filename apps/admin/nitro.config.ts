@@ -19,5 +19,9 @@ export default defineConfig({
 	cloudflare: {
 		deployConfig: true,
 		nodeCompat: true,
+    wrangler: {
+      // 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
+      name: "01s-11comm-admin-nitro",
+    },
 	},
 });
