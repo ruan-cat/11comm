@@ -1,7 +1,7 @@
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
 export interface 电话报修表单_VO {
-	报修范围: "1" | "2";
-	报修类型: "1" | "2";
+	报修范围: string;
+	报修类型: string;
 	报修人: string;
 	联系方式: string;
 	预约时间: string;
@@ -10,8 +10,8 @@ export interface 电话报修表单_VO {
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 电话报修表单_VO = {
-	报修范围: "1",
-	报修类型: "1",
+	报修范围: "小区公区",
+	报修类型: "水管维修",
 	报修人: "",
 	联系方式: "",
 	预约时间: "",

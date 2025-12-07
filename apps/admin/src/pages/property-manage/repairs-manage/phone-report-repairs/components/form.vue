@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
-
-import { PhoneRepairsFormProps, 电话报修表单_VO, defaultForm } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "lodash-es";
+import { PhoneRepairsFormProps, type 电话报修表单_VO } from "./form";
+import { 报修类型Options } from "../test-data";
 
 const props = defineProps<PhoneRepairsFormProps>();
 
@@ -41,8 +42,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "报修范围",
 		valueType: "select",
 		options: [
-			{ label: "1", value: "1" },
-			{ label: "2", value: "2" },
+			{ label: "小区公区", value: "小区公区" },
+			{ label: "业主自用", value: "业主自用" },
 		],
 		required: true,
 	},
@@ -52,10 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "报修类型",
 		prop: "报修类型",
 		valueType: "select",
-		options: [
-			{ label: "1", value: "1" },
-			{ label: "2", value: "2" },
-		],
+		options: 报修类型Options,
 		required: true,
 	},
 
@@ -93,7 +91,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	报修范围: [{ required: true, message: "请选择报修范围", trigger: "change" }],
+	报修类型: [{ required: true, message: "请选择报修类型", trigger: "change" }],
+	报修人: [{ required: true, message: "请输入报修人", trigger: "blur" }],
+	联系方式: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
+	预约时间: [{ required: true, message: "请选择预约时间", trigger: "change" }],
+	报修内容: [{ required: true, message: "请输入报修内容", trigger: "blur" }],
+});
 
 defineExpose({
 	plusFormInstance,

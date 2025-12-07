@@ -8,54 +8,34 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted, h } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
-
+import { useMode, type Mode } from "@/composables/use-mode";
 import { type PhoneRepairsFormProps, defaultForm } from "./components/form";
 import PhoneRepairsForm from "./components/form.vue";
+import {
+	type 电话报修_列表数据,
+	type 电话报修_列表查询_VO,
+	tableData as mockTableData,
+	报修类型Options,
+	报修状态Options,
+} from "./test-data";
 
 const phoneRepairsFormInstance = ref<InstanceType<typeof PhoneRepairsForm> | null>(null);
 
-interface 电话报修_列表数据 {
-	工单编号: string;
-	位置: string;
-	报修类型: string;
-	报修人: string;
-	联系方式: string;
-	预约时间: string;
-	超时时间: string;
-	提交时间: string;
-	状态: string;
-	备注: string;
-}
-
-const tableDataItem: 电话报修_列表数据 = {
-	工单编号: "工单编号",
-	位置: "位置",
-	报修类型: "报修类型",
-	报修人: "报修人",
-	联系方式: "联系方式",
-	预约时间: "预约时间",
-	超时时间: "超时时间",
-	提交时间: "提交时间",
-	状态: "状态",
-	备注: "备注",
-};
-
 /** 表格数据 */
-const tableData = ref<电话报修_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<电话报修_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "工单编号",
 		prop: "工单编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "位置",
@@ -98,10 +78,9 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -112,18 +91,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格配置 */
@@ -139,14 +118,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "电话报修",
 	columns: columns.value,
 });
-
-interface 电话报修_列表查询_VO {
-	工单编号?: string;
-	报修人?: string;
-	报修电话?: string;
-	报修类型?: string;
-	报修状态?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -198,16 +169,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
 		prop: "报修类型",
 		valueType: "select",
-		options: [
-			{
-				label: "类型1",
-				value: "类型1",
-			},
-			{
-				label: "类型2",
-				value: "类型2",
-			},
-		],
+		options: 报修类型Options,
 	},
 
 	// 报修状态
@@ -215,16 +177,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
 		prop: "报修状态",
 		valueType: "select",
-		options: [
-			{
-				label: "状态1",
-				value: "状态1",
-			},
-			{
-				label: "状态2",
-				value: "状态2",
-			},
-		],
+		options: 报修状态Options,
 	},
 ]);
 
@@ -238,11 +191,46 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		let filteredData = mockTableData;
+
+		if (plusSearchModel.value.工单编号) {
+			filteredData = filteredData.filter((item) => item.工单编号.includes(plusSearchModel.value.工单编号!));
+		}
+		if (plusSearchModel.value.报修人) {
+			filteredData = filteredData.filter((item) => item.报修人.includes(plusSearchModel.value.报修人!));
+		}
+		if (plusSearchModel.value.报修电话) {
+			filteredData = filteredData.filter((item) => item.联系方式.includes(plusSearchModel.value.报修电话!));
+		}
+		if (plusSearchModel.value.报修类型) {
+			filteredData = filteredData.filter((item) => item.报修类型 === plusSearchModel.value.报修类型);
+		}
+		if (plusSearchModel.value.报修状态) {
+			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.报修状态);
+		}
+
+		pagination.value.total = filteredData.length;
+
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+	}
 }
 
 /** 打开弹框 参数 */
@@ -251,7 +239,7 @@ interface OpenDialogParams {
 	row?: 电话报修_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -269,41 +257,31 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 弹框标题 */
 	const title = `${modeText.value}电话报修`;
 
+	/** 业务对象 */
+	const formValue = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					报修类型: row?.报修类型 || defaultForm.报修类型,
+					报修人: row?.报修人 || "",
+					联系方式: row?.联系方式 || "",
+					预约时间: row?.预约时间 || "",
+					报修内容: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(formValue);
+
 	/** 表单组件需要的props */
 	const formProps: PhoneRepairsFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: formValue,
+		defaultValues,
 	};
-
-	const testEditProps: PhoneRepairsFormProps = {
-		form: {
-			...defaultForm,
-			报修范围: "1",
-			报修类型: "1",
-			报修人: "",
-			联系方式: "",
-			预约时间: "",
-			报修内容: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(PhoneRepairsForm, {
@@ -312,7 +290,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = phoneRepairsFormInstance.value.formComputed;
+			const formComputed = phoneRepairsFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -322,7 +300,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// console.log(options, index, button);
-					const formComputed = phoneRepairsFormInstance.value.formComputed;
+					const formComputed = phoneRepairsFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -332,7 +310,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
-					phoneRepairsFormInstance.value.plusFormInstance.handleReset();
+					phoneRepairsFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -341,7 +319,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
-					const res = await phoneRepairsFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await phoneRepairsFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -353,16 +331,46 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
+
+/** 新增按钮点击事件 */
+function handleAdd() {
+	openDialog({ mode: "add" });
+}
+
+/** 编辑按钮点击事件 */
+function handleEdit(row: 电话报修_列表数据) {
+	openDialog({ mode: "edit", row });
+}
+
+/** 查看按钮点击事件 */
+function handleView(row: 电话报修_列表数据) {
+	openDialog({ mode: "info", row });
+}
+
+/** 删除按钮点击事件 */
+async function handleDelete(row: 电话报修_列表数据) {
+	consola.log("删除", row);
+	await loadTableData();
+}
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
-		<!-- {{ plusSearchModel }} -->
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("propertyManage_repairsManage.repairs.registration")) }}
 				</ElButton>
 			</template>
@@ -377,10 +385,15 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+						<ElButton type="info" @click="handleView(row)">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
