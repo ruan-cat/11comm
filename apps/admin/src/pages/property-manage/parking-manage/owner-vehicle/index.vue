@@ -8,18 +8,26 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
 import OwnerVehicleForm from "./components/form.vue";
-import { tableData as mockTableData, 车牌类型Options, 车位状态Options } from "./test-data";
-import type { 业主车辆_列表数据, 业主车辆_列表查询_VO, 业主车辆表单_VO } from "./test-data";
+import {
+	tableData as mockTableData,
+	车牌类型Options,
+	车位状态Options,
+	type 业主车辆_列表数据,
+	type 业主车辆_列表查询_VO,
+	type 业主车辆表单_VO,
+} from "./test-data";
 
 const OwnerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd } = useMode();
 
 /** 模拟异步操作函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -146,7 +154,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 320,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -172,13 +180,11 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => {
-	return {
-		...defaultPureTableProps,
-		data: tableData.value,
-		columns: columns.value,
-		pagination: pagination.value,
-	};
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -278,8 +284,7 @@ async function handleSearch() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
-	const { mode, row } = params;
+function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据 }) {
 	setMode(mode);
 
 	/** 弹框标题 */
@@ -288,22 +293,10 @@ function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
 	/** 业务对象 */
 	const 业主车辆表单_VO: 业主车辆表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					车牌号: row?.车牌号 || "",
-					汽车品牌: row?.车辆类型 || "",
-					车类型: row?.车辆类型 || "",
-					颜色: row?.颜色 || "",
-					车牌类型: row?.车牌类型 || "",
-					开始时间: row?.有效期 || "",
-					结束时间: row?.有效期 || "",
-					业主: row?.业主 || "",
-					车位: row?.车位 || "",
-					业主车辆: "是",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: OwnerVehicleFormProps = {
@@ -326,7 +319,7 @@ function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = OwnerVehicleFormInstance.value.formComputed;
+			const formComputed = OwnerVehicleFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -335,7 +328,7 @@ function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = OwnerVehicleFormInstance.value.formComputed;
+					const formComputed = OwnerVehicleFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -344,7 +337,7 @@ function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					OwnerVehicleFormInstance.value.plusFormInstance.handleReset();
+					OwnerVehicleFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -352,7 +345,7 @@ function openDialog(params: { mode: Mode; row?: 业主车辆_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await OwnerVehicleFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await OwnerVehicleFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -385,12 +378,6 @@ onMounted(async () => {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
-				<ElButton type="primary">
-					{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.carImport")) }}
-				</ElButton>
-				<ElButton type="primary">
-					{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.output")) }}
-				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -403,21 +390,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton v-if="row.状态 === '正常'" type="info">
-							{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.release")) }}
-						</ElButton>
-						<ElButton v-else-if="row.状态 === '到期'" type="info">
-							{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.renewLease")) }}
-						</ElButton>
-						<ElButton v-else type="info"> ? </ElButton>
-						<ElButton type="info">
-							{{ transformI18n($t("property-manage_parking-manage.owner-vehicle.buyMonthlyCard")) }}
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
 				</PureTable>

@@ -5,8 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { type OwnerVehicleFormProps, defaultForm } from "./form";
-import type { 业主车辆表单_VO } from "../test-data";
+import { type OwnerVehicleFormProps } from "./form";
+import { 车辆类型Options, 车牌类型Options, 业主车辆Options, type 业主车辆表单_VO } from "../test-data";
 
 const props = defineProps<OwnerVehicleFormProps>();
 
@@ -60,14 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "车类型",
 		prop: "车类型",
 		valueType: "select",
-		options: [
-			{ label: "家用小汽车", value: "家用小汽车" },
-			{ label: "客车", value: "客车" },
-			{ label: "货车", value: "货车" },
-			{ label: "电动车", value: "电动车" },
-			{ label: "三轮车", value: "三轮车" },
-			{ label: "信用期车辆(1个月)", value: "信用期车辆(1个月)" },
-		],
+		options: 车辆类型Options,
 		required: true,
 	},
 
@@ -83,12 +76,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "车牌类型",
 		prop: "车牌类型",
 		valueType: "select",
-		options: [
-			{ label: "月租车", value: "月租车" },
-			{ label: "出售车辆", value: "出售车辆" },
-			{ label: "内部车", value: "内部车" },
-			{ label: "免费车", value: "免费车" },
-		],
+		options: 车牌类型Options,
 		required: true,
 	},
 
@@ -115,10 +103,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "业主车辆",
 		prop: "业主车辆",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: 业主车辆Options,
 		required: true,
 	},
 
@@ -150,7 +135,64 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	车牌号: [
+		{
+			required: true,
+			message: "请输入车牌号",
+			trigger: "blur",
+		},
+	],
+	车类型: [
+		{
+			required: true,
+			message: "请选择车类型",
+			trigger: "change",
+		},
+	],
+	车牌类型: [
+		{
+			required: true,
+			message: "请选择车牌类型",
+			trigger: "change",
+		},
+	],
+	业主: [
+		{
+			required: true,
+			message: "请输入业主",
+			trigger: "blur",
+		},
+	],
+	车位: [
+		{
+			required: true,
+			message: "请输入车位",
+			trigger: "blur",
+		},
+	],
+	业主车辆: [
+		{
+			required: true,
+			message: "请选择是否业主车辆",
+			trigger: "change",
+		},
+	],
+	开始时间: [
+		{
+			required: true,
+			message: "请选择开始时间",
+			trigger: "change",
+		},
+	],
+	结束时间: [
+		{
+			required: true,
+			message: "请选择结束时间",
+			trigger: "change",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,
