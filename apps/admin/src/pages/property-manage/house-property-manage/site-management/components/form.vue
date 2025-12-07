@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { SiteManagementFormProps, 场地管理_VO, defaultForm } from "./form";
+import { SiteManagementFormProps, 场地管理_VO } from "./form";
+import { 场地状态Options } from "../test-data";
 
 const props = defineProps<SiteManagementFormProps>();
 
@@ -108,12 +109,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: [
-			{ label: "可预约", value: "可预约" },
-			{ label: "不可预约", value: "不可预约" },
-			{ label: "维护中", value: "维护中" },
-			{ label: "已关闭", value: "已关闭" },
-		],
+		options: 场地状态Options,
 		required: true,
 	},
 ]);
@@ -122,7 +118,69 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	编号: [
+		{
+			required: true,
+			message: "请输入编号",
+			trigger: "blur",
+		},
+	],
+	名称: [
+		{
+			required: true,
+			message: "请输入名称",
+			trigger: "blur",
+		},
+	],
+	开场时间: [
+		{
+			required: true,
+			message: "请选择开场时间",
+			trigger: "change",
+		},
+	],
+	关场时间: [
+		{
+			required: true,
+			message: "请选择关场时间",
+			trigger: "change",
+		},
+	],
+	每小时费用: [
+		{
+			required: true,
+			message: "请输入每小时费用",
+			trigger: "blur",
+		},
+	],
+	管理员: [
+		{
+			required: true,
+			message: "请输入管理员",
+			trigger: "blur",
+		},
+	],
+	管理员电话: [
+		{
+			required: true,
+			message: "请输入管理员电话",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	状态: [
+		{
+			required: true,
+			message: "请选择状态",
+			trigger: "change",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,

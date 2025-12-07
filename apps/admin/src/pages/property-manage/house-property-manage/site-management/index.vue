@@ -8,8 +8,11 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type SiteManagementFormProps, defaultForm } from "./components/form";
 import SiteManagementForm from "./components/form.vue";
@@ -22,7 +25,7 @@ import {
 	场地类型Options,
 } from "./test-data";
 
-const SiteManagementFormInstance = ref<InstanceType<typeof SiteManagementForm> | null>(null);
+const siteManagementFormInstance = ref<InstanceType<typeof SiteManagementForm> | null>(null);
 
 /** 表格数据 */
 const tableData = ref<场地管理_列表数据[]>([]);
@@ -74,7 +77,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -245,7 +248,7 @@ interface OpenDialogParams {
 	row?: 场地管理_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -266,19 +269,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 业务对象 */
 	const 场地管理表单_VO: 场地管理_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					编号: row?.编号 || "",
-					名称: row?.名称 || "",
-					开场时间: row?.开场时间 || "",
-					关场时间: row?.关场时间 || "",
-					每小时费用: row?.每小时费用 || "",
-					管理员: row?.管理员 || "",
-					管理员电话: row?.管理员电话 || "",
-					状态: row?.状态 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const props: SiteManagementFormProps = {
@@ -296,12 +290,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		contentRenderer: () =>
 			h(SiteManagementForm, {
-				ref: SiteManagementFormInstance,
+				ref: siteManagementFormInstance,
 				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = SiteManagementFormInstance.value.formComputed;
+			const formComputed = siteManagementFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -310,8 +304,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = SiteManagementFormInstance.value.formComputed;
+					const formComputed = siteManagementFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -321,7 +314,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
-					SiteManagementFormInstance.value.plusFormInstance.handleReset();
+					siteManagementFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -330,7 +323,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
-					const res = await SiteManagementFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await siteManagementFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -375,11 +368,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>
