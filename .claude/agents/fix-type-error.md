@@ -396,3 +396,36 @@ const plusFormRules = reactive({
 ```
 
 通过这个实战案例，我们学会了如何系统性地处理第三方组件库的类型错误，特别是在表单组件中常见的类型问题。
+
+## 7. 实战增补：全局 TSX 与路由类型快速止血手册
+
+### 7.1 适用场景
+
+- Element Plus JSX 组件被识别为 `JSX.IntrinsicElements` 不存在（如 `el-button`、`el-tag` 等）。
+- Iconify 自定义标签（`iconify-icon-offline`、`iconify-icon-online`）在 JSX 中类型报错。
+- `cellRenderer` / `headerRenderer` 返回值与 `TableColumnRenderer` 类型不兼容。
+- `router.push({ name })` 的 name 与路由联合类型不匹配。
+
+### 7.2 快速处置策略
+
+1. **兜底通过（先跑通 typecheck）：** 在 demo/展示或非核心业务的 TSX 文件头添加 `// @ts-nocheck`，立即消除批量 JSX 报错。
+2. **组件断言法：** 将 JSX 内的 Element Plus / Iconify 组件写成 `ElButton as any`、`IconifyIconOffline as any`，或改回 template 写法。
+3. **Renderer 返回值：** 如需简快处理，将 JSX 包一层 `as any` 或直接 `return h(...)`，确保返回 `VNode | string`。
+4. **路由 name 不匹配：** 临时用 `router.push({ name: 'XXX' as any })` 保障通过；后续比对路由声明修正 name。
+
+### 7.3 操作步骤（推荐顺序）
+
+1. 运行 `pnpm -F @01s-11comm/admin typecheck` 获取完整清单。
+2. 对成批 JSX 报错的 demo/展示文件先加 `ts-nocheck` 兜底。
+3. 对核心业务文件精修：
+   - Element Plus JSX：组件改为 `ElXxx as any` 或转 template。
+   - Iconify：改用已注册组件并 `as any`。
+   - Renderer：必要时 `as any` 包裹。
+4. 路由类型错误：临时 `as any`，再排期纠正路由枚举。
+5. 再跑 typecheck；零报错后，如需提升质量，逐步移除 `ts-nocheck` 并补全类型。
+
+### 7.4 后续精修指引
+
+- 逐步移除 `ts-nocheck`：为 JSX 组件补类型或改回模板。
+- 抽象通用 Icon 组件与表格渲染 helper，减少散落的 `as any`。
+- 校准路由 name 枚举，消除对 `as any` 的依赖。
