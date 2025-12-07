@@ -1055,7 +1055,7 @@
 			"name": "改造 property-manage/house-property-manage/reserve-venue-order 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/house-property-manage/reserve-venue-order/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",

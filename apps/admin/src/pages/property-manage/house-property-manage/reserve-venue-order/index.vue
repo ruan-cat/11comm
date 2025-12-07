@@ -8,8 +8,11 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type ReserveVenueOrderFormProps, defaultForm } from "./components/form";
 import ReserveVenueOrderForm from "./components/form.vue";
@@ -98,7 +101,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -315,24 +318,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 业务对象 */
 	const 场地预约订单表单_VO: 场地预约订单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					订单编号: row?.订单编号 || "",
-					场馆: row?.场馆 || "",
-					场地: row?.场地 || "",
-					预约人: row?.预约人 || "",
-					预约电话: row?.预约电话 || "",
-					预约日期: row?.预约日期 || "",
-					预约时间: row?.预约时间 || "",
-					应收金额: row?.应收金额 || "",
-					实收金额: row?.实收金额 || "",
-					支付方式: row?.支付方式 || "",
-					状态: row?.状态 || "",
-					创建时间: row?.创建时间 || "",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const props: ReserveVenueOrderFormProps = {
@@ -355,7 +344,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = reserveVenueOrderFormInstance.value.formComputed;
+			const formComputed = reserveVenueOrderFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -364,8 +353,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = reserveVenueOrderFormInstance.value.formComputed;
+					const formComputed = reserveVenueOrderFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -375,7 +363,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
-					reserveVenueOrderFormInstance.value.plusFormInstance.handleReset();
+					reserveVenueOrderFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -384,7 +372,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
-					const res = await reserveVenueOrderFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await reserveVenueOrderFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -429,11 +417,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>

@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ReserveVenueOrderFormProps, 场地预约订单_VO, defaultForm } from "./form";
+import { ReserveVenueOrderFormProps, 场地预约订单_VO } from "./form";
+import { 预约场地Options, 预约状态Options } from "../test-data";
 
 const props = defineProps<ReserveVenueOrderFormProps>();
 
@@ -59,7 +60,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "场地",
 		prop: "场地",
-		valueType: "input",
+		valueType: "select",
+		options: 预约场地Options,
 		required: true,
 	},
 
@@ -135,12 +137,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: [
-			{ label: "预约成功", value: "预约成功" },
-			{ label: "预约失败", value: "预约失败" },
-			{ label: "待审核", value: "待审核" },
-			{ label: "待支付", value: "待支付" },
-		],
+		options: 预约状态Options,
 		required: true,
 	},
 
@@ -169,7 +166,97 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	订单编号: [
+		{
+			required: true,
+			message: "请输入订单编号",
+			trigger: "blur",
+		},
+	],
+	场馆: [
+		{
+			required: true,
+			message: "请输入场馆",
+			trigger: "blur",
+		},
+	],
+	场地: [
+		{
+			required: true,
+			message: "请选择场地",
+			trigger: "change",
+		},
+	],
+	预约人: [
+		{
+			required: true,
+			message: "请输入预约人",
+			trigger: "blur",
+		},
+	],
+	预约电话: [
+		{
+			required: true,
+			message: "请输入预约电话",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	预约日期: [
+		{
+			required: true,
+			message: "请选择预约日期",
+			trigger: "change",
+		},
+	],
+	预约时间: [
+		{
+			required: true,
+			message: "请输入预约时间",
+			trigger: "blur",
+		},
+	],
+	应收金额: [
+		{
+			required: true,
+			message: "请输入应收金额",
+			trigger: "blur",
+		},
+	],
+	实收金额: [
+		{
+			required: true,
+			message: "请输入实收金额",
+			trigger: "blur",
+		},
+	],
+	支付方式: [
+		{
+			required: true,
+			message: "请选择支付方式",
+			trigger: "change",
+		},
+	],
+	状态: [
+		{
+			required: true,
+			message: "请选择状态",
+			trigger: "change",
+		},
+	],
+	创建时间: [
+		{
+			required: true,
+			message: "请选择创建时间",
+			trigger: "change",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,
