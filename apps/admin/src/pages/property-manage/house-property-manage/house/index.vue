@@ -10,6 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type 房屋管理_列表数据,
 	type 房屋管理_列表查询_VO,
@@ -34,7 +35,6 @@ const columns = ref<TableColumnList>([
 		label: "房屋",
 		prop: "房屋",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "楼层",
@@ -114,7 +114,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 360,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -267,7 +267,7 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -290,19 +290,17 @@ function openDialog(params: { mode: Mode; row?: 房屋管理_列表数据 }) {
 	/** 业务对象 */
 	const 房屋管理表单_VO: 房屋管理表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					房屋: row?.房屋 || "",
-					楼层: row?.楼层 || "",
-					业主: row?.业主 || "",
-					类型: row?.类型 || "",
-					房屋面积: row?.房屋面积 || "",
-					租金: row?.租金 || "",
-					房屋状态: row?.房屋状态 || "",
-					有效期: row?.有效期 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				房屋: row?.房屋 || "",
+				楼层: row?.楼层 || "",
+				业主: row?.业主 || "",
+				类型: row?.类型 || "",
+				房屋面积: row?.房屋面积 || "",
+				租金: row?.租金 || "",
+				房屋状态: row?.房屋状态 || "",
+				有效期: row?.有效期 || "",
+			});
 
 	/** 表单组件需要的props */
 	const props: HouseManageFormProps = {
@@ -321,8 +319,7 @@ function openDialog(params: { mode: Mode; row?: 房屋管理_列表数据 }) {
 		contentRenderer: () =>
 			h(HouseManageForm, {
 				ref: houseManageFormInstance,
-				...props, //不生效：避免类型报错
-				mode, // 传入当前模式
+				...props,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -404,14 +401,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>

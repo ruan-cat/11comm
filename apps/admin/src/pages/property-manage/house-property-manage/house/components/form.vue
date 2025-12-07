@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import { type 房屋管理表单_VO, 房屋状态选项, 房屋类型选项 } from "../test-data";
 import { type HouseManageFormProps } from "./form";
 
