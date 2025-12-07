@@ -15,6 +15,7 @@ import {
 	type 业主成员_列表数据,
 	type 业主成员_列表查询_VO,
 	type 业主成员表单_VO,
+	成员类型选项,
 	tableData as allTableData,
 } from "./test-data";
 import { type OwnerMemberFormProps, defaultForm } from "./components/form";
@@ -79,7 +80,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 180,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -121,6 +122,9 @@ async function loadTableData() {
 		if (plusSearchModel.value.身份证) {
 			filteredData = filteredData.filter((item) => item.身份证.includes(plusSearchModel.value.身份证!));
 		}
+	if (plusSearchModel.value.类型) {
+		filteredData = filteredData.filter((item) => item.类型 === plusSearchModel.value.类型);
+	}
 
 		// 更新总数
 		pagination.value.total = filteredData.length;
@@ -161,6 +165,7 @@ const plusSearchModelRef: FieldValues & 业主成员_列表查询_VO = {
 	成员名称: "",
 	联系方式: "",
 	身份证: "",
+	类型: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -194,6 +199,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "身份证",
 		valueType: "input",
 	},
+	// 成员类型
+	{
+		label: "成员类型",
+		prop: "类型",
+		valueType: "select",
+		options: 成员类型选项,
+	},
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -219,7 +231,7 @@ async function handleSearch() {
 }
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const ownerMemberFormInstance = ref<InstanceType<typeof OwnerMemberForm> | null>(null);
@@ -241,21 +253,19 @@ function openDialog(params: { mode: Mode; row?: 业主成员_列表数据 }) {
 	/** 业务对象 */
 	const 业务对象: 业主成员表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					成员人脸: row?.成员人脸 || "",
-					名称: row?.名称 || "",
-					性别: row?.性别 || "",
-					类型: row?.类型 || "",
-					身份证: row?.身份证 || "",
-					联系方式: row?.联系方式 || "",
-					家庭住址: row?.家庭住址 || "",
-					创建人: row?.创建人 || "",
-					备注: row?.备注 || "",
-					门禁钥匙: row?.门禁钥匙 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				成员人脸: row?.成员人脸 || "",
+				名称: row?.名称 || "",
+				性别: row?.性别 || "",
+				类型: row?.类型 || "",
+				身份证: row?.身份证 || "",
+				联系方式: row?.联系方式 || "",
+				家庭住址: row?.家庭住址 || "",
+				创建人: row?.创建人 || "",
+				备注: row?.备注 || "",
+				门禁钥匙: row?.门禁钥匙 || "",
+			});
 	/** 表单组件需要的props */
 	const formProps: OwnerMemberFormProps = {
 		form: 业务对象,
@@ -275,11 +285,10 @@ function openDialog(params: { mode: Mode; row?: 业主成员_列表数据 }) {
 		contentRenderer: () =>
 			h(OwnerMemberForm, {
 				ref: ownerMemberFormInstance,
-				mode,
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = ownerMemberFormInstance.value.formComputed;
+			const formComputed = ownerMemberFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -287,7 +296,7 @@ function openDialog(params: { mode: Mode; row?: 业主成员_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = ownerMemberFormInstance.value.formComputed;
+					const formComputed = ownerMemberFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -295,14 +304,14 @@ function openDialog(params: { mode: Mode; row?: 业主成员_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					ownerMemberFormInstance.value.plusFormInstance.handleReset();
+					ownerMemberFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await ownerMemberFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await ownerMemberFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -347,10 +356,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>

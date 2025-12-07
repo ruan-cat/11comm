@@ -4,7 +4,7 @@ import { ref, computed, useTemplateRef } from "vue";
 import { OwnerMemberFormProps, type 业主成员表单_VO, defaultForm } from "./form";
 import { 性别选项, 成员类型选项 } from "../test-data";
 
-const props = defineProps<OwnerMemberFormProps & { mode: Mode }>();
+const props = defineProps<OwnerMemberFormProps>();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & 业主成员表单_VO;
@@ -126,7 +126,55 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	名称: [
+		{
+			required: true,
+			message: "请输入名称",
+			trigger: "blur",
+		},
+	],
+	性别: [
+		{
+			required: true,
+			message: "请选择性别",
+			trigger: "change",
+		},
+	],
+	类型: [
+		{
+			required: true,
+			message: "请选择类型",
+			trigger: "change",
+		},
+	],
+	身份证: [
+		{
+			required: true,
+			message: "请输入身份证",
+			trigger: "blur",
+		},
+	],
+	联系方式: [
+		{
+			required: true,
+			message: "请输入联系方式",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	家庭住址: [
+		{
+			required: true,
+			message: "请输入家庭住址",
+			trigger: "blur",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,

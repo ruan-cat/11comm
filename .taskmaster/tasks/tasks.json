@@ -1010,7 +1010,7 @@
 			"name": "改造 property-manage/house-property-manage/owner-member 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/house-property-manage/owner-member/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
