@@ -131,13 +131,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = computed(() => ({
+const plusFormRules = ref<PlusFormRules>({
 	patrolPointName: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
 	patrolPlanName: [{ required: true, message: "请输入巡检计划名称", trigger: "blur" }],
 	patrolRouteName: [{ required: true, message: "请输入巡检路线名称", trigger: "blur" }],
 	planPatrolPerson: [{ required: true, message: "请输入计划巡检人", trigger: "blur" }],
 	patrolMethod: [{ required: true, message: "请选择巡检方式", trigger: "change" }],
-}));
+});
 
 // 对外导出表单实例和表单对象
 defineExpose({

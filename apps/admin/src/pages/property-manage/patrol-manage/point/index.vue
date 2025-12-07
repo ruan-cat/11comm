@@ -8,7 +8,9 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -17,7 +19,7 @@ import PatrolPointForm from "./components/form.vue";
 import { tableData as mockTableData, type PatrolPointListData, type PatrolPointListQueryVO } from "./test-data";
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 表格数据 */
 const tableData = ref<PatrolPointListData[]>([]);
@@ -29,7 +31,6 @@ const columns = ref<TableColumnList>([
 		label: "任务详情ID",
 		prop: "taskDetailId",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "巡检点名称",
@@ -114,7 +115,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -284,21 +285,10 @@ function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
 	/** 业务对象 */
 	const patrolPointFormData: PatrolPointFormVO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					patrolPointName: row?.patrolPointName || "",
-					patrolPlanName: row?.patrolPlanName || "",
-					patrolRouteName: row?.patrolRouteName || "",
-					planPatrolPerson: row?.planPatrolPerson || "",
-					patrolMethod: row?.patrolMethod || "",
-					actualCheckInStatus: row?.actualCheckInStatus || "",
-					taskStatus: row?.taskStatus || "",
-					patrolPointStatus: row?.patrolPointStatus || "",
-					patrolSituation: row?.patrolSituation || "",
-					locationInfo: row?.locationInfo || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: PatrolPointFormProps = {
@@ -325,7 +315,7 @@ function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = patrolPointFormInstance.value.formComputed;
+			const formComputed = patrolPointFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -333,8 +323,7 @@ function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					/** console.log(options, index); */
-					const formComputed = patrolPointFormInstance.value.formComputed;
+					const formComputed = patrolPointFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -342,16 +331,14 @@ function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
-					/** 手动重置表单 */
-					patrolPointFormInstance.value.plusFormInstance.handleReset();
+					patrolPointFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await patrolPointFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await patrolPointFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -363,27 +350,6 @@ function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
 			},
 		],
 	});
-}
-
-/** 处理新增 */
-function handleAdd() {
-	openDialog({ mode: "add" });
-}
-
-/** 处理编辑 */
-function handleEdit(row: PatrolPointListData) {
-	openDialog({ mode: "edit", row });
-}
-
-/** 处理查看 */
-function handleView(row: PatrolPointListData) {
-	openDialog({ mode: "info", row });
-}
-
-/** 处理删除 */
-async function handleDelete(row: PatrolPointListData) {
-	// TODO: 实现删除逻辑
-	console.log("删除:", row);
 }
 
 onMounted(async () => {
@@ -403,7 +369,9 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleAdd"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -416,12 +384,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)">
-							{{ transformI18n($t("common.buttons.edit")) }}
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="info" @click="handleView(row)"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger" @click="handleDelete(row)">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>
