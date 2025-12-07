@@ -8,134 +8,134 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
-import { title } from "process";
-import build from "./components/build.vue";
-import payment from "./components/payment.vue";
+import BuildChart from "./components/build.vue";
+import PaymentChart from "./components/payment.vue";
+import {
+	tableData as mockTableData,
+	type 费用汇总表_搜索_VO,
+	type 费用汇总表_表格数据,
+	费用项Options,
+	小区Options,
+} from "./test-data";
 
-interface 报表管理_费用汇总表 {
-	总户数: string;
-	收费户: string;
-	欠费户: string;
-	欠费: string;
-	实缴: string;
-	当期应收: string;
-	当前实收: string;
-	户收费率: string;
-	收费率: string;
-	清缴率: string;
-}
-
-const tableDataItem: 报表管理_费用汇总表 = {
-	总户数: "1",
-	收费户: "1",
-	欠费户: "1",
-	欠费: "1",
-	实缴: "4",
-	当期应收: "19528.3",
-	当前实收: "114514",
-	户收费率: "23.73%",
-	收费率: "29.84%",
-	清缴率: "0.00%",
-};
+/** 分页配置 */
+const pagination = ref<PaginationProps>({
+	...defaultPagination,
+	pageSize: 10,
+	currentPage: 1,
+	total: mockTableData.length,
+});
 
 /** 表格数据 */
-const tableData = ref<报表管理_费用汇总表[]>(
-	Array(1)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
-// 表格列配置
+const tableData = ref<费用汇总表_表格数据[]>([]);
+
+/** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "小区",
+		prop: "小区",
+		minWidth: 140,
+	},
+	{
+		label: "房屋编号/合同名称",
+		prop: "房屋编号合同名称",
+		minWidth: 200,
+	},
+	{
+		label: "业主名称",
+		prop: "业主名称",
+		minWidth: 160,
+	},
+	{
+		label: "业主手机号",
+		prop: "业主手机号",
+		minWidth: 160,
+	},
+	{
+		label: "费用项",
+		prop: "费用项",
+		minWidth: 140,
+	},
 	{
 		label: "总户数",
 		prop: "总户数",
-		width: 160,
-		fixed: true,
+		minWidth: 120,
 	},
 	{
 		label: "收费户",
 		prop: "收费户",
-		width: 160,
+		minWidth: 120,
 	},
 	{
 		label: "欠费户",
 		prop: "欠费户",
-		width: 160,
+		minWidth: 120,
 	},
 	{
-		label: "历史欠费+当期欠费=欠费",
+		label: "欠费",
 		prop: "欠费",
-		width: 160,
+		minWidth: 140,
 	},
 	{
-		label: "欠费追回+当期部分+预交=实缴",
+		label: "实缴",
 		prop: "实缴",
-		width: 160,
+		minWidth: 140,
 	},
 	{
-		label: "当前应收",
-		prop: "当前应收",
-		width: 160,
+		label: "当期应收",
+		prop: "当期应收",
+		minWidth: 140,
 	},
 	{
 		label: "当前实收",
 		prop: "当前实收",
-		width: 160,
+		minWidth: 140,
 	},
 	{
-		label: "已交户/收费户=户收费率",
+		label: "户收费率",
 		prop: "户收费率",
-		width: 160,
+		minWidth: 140,
 	},
 	{
-		label: "当期实收/当期应收=收费率",
+		label: "收费率",
 		prop: "收费率",
-		width: 160,
+		minWidth: 140,
 	},
 	{
-		label: "欠费追回/(欠费追回+历史欠费)=清缴率",
+		label: "清缴率",
 		prop: "清缴率",
-		width: 160,
+		minWidth: 140,
 	},
-	// {
-	// 	label: transformI18n($t("table.operation")),
-	// 	minWidth: 160,
-	// 	fixed: "right",
-	// 	slot: "operation",
-	// },
+	{
+		label: "统计时间",
+		prop: "统计时间",
+		minWidth: 180,
+	},
 ]);
 
 /** 表格配置 */
 const pureTableProps = ref<PureTableProps>({
-	border: true,
-	stripe: true,
-	adaptive: false,
-	highlightCurrentRow: true,
+	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
+	pagination: pagination.value,
 });
 
-// 表格操作栏组件配置
+/** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "费用提醒",
+	title: "费用汇总表",
 	columns: columns.value,
 });
 
-interface 报表管理_费用汇总表_VO {
-	房屋编号合同名称?: string;
-	业主名称?: string;
-	业主手机号?: string;
-	费用项?: string;
-	小区?: string;
-}
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报表管理_费用汇总表_VO = {
+const plusSearchModelRef: FieldValues & 费用汇总表_搜索_VO = {
 	房屋编号合同名称: "",
 	业主名称: "",
 	业主手机号: "",
@@ -153,97 +153,33 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	//房屋编号/合同名称
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.employerName")),
+		label: "房屋编号/合同名称",
 		prop: "房屋编号合同名称",
 		valueType: "input",
 	},
-	//业主名称
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.employerName")),
+		label: "业主名称",
 		prop: "业主名称",
 		valueType: "input",
 	},
-	//房屋手机号
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.employerPhone")),
+		label: "业主手机号",
 		prop: "业主手机号",
 		valueType: "input",
 	},
-	//费用项
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.paymentItem")),
+		label: "费用项",
 		prop: "费用项",
 		valueType: "select",
-		options: [
-			{
-				label: "物业费",
-				value: "物业费",
-			},
-			{
-				label: "押金",
-				value: "押金",
-			},
-			{
-				label: "停车费",
-				value: "停车费",
-			},
-			{
-				label: "煤气费",
-				value: "煤气费",
-			},
-			{
-				label: "服务费",
-				value: "服务费",
-			},
-			{
-				label: "其他",
-				value: "其他",
-			},
-			{
-				label: "水费",
-				value: "水费",
-			},
-			{
-				label: "电费",
-				value: "电费",
-			},
-			{
-				label: "公摊费",
-				value: "公摊费",
-			},
-			{
-				label: "系统费用",
-				value: "系统费用",
-			},
-			{
-				label: "租金",
-				value: "租金",
-			},
-		],
+		options: 费用项Options,
 	},
-	//小区
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.cell")),
+		label: "小区",
 		prop: "小区",
 		valueType: "select",
-		options: [
-			{
-				label: "小区1",
-				value: "小区1",
-			},
-			{
-				label: "小区2",
-				value: "小区2",
-			},
-			{
-				label: "小区3",
-				value: "小区3",
-			},
-		],
+		options: 小区Options,
 	},
 ]);
 
@@ -256,33 +192,109 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 加载表格数据 */
+async function loadTableData() {
+	let filteredData = mockTableData;
+
+	if (plusSearchModel.value.房屋编号合同名称) {
+		filteredData = filteredData.filter((item) =>
+			item.房屋编号合同名称.includes(plusSearchModel.value.房屋编号合同名称!),
+		);
+	}
+
+	if (plusSearchModel.value.业主名称) {
+		filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
+	}
+
+	if (plusSearchModel.value.业主手机号) {
+		filteredData = filteredData.filter((item) => item.业主手机号.includes(plusSearchModel.value.业主手机号!));
+	}
+
+	if (plusSearchModel.value.费用项) {
+		filteredData = filteredData.filter((item) => item.费用项 === plusSearchModel.value.费用项);
+	}
+
+	if (plusSearchModel.value.小区) {
+		filteredData = filteredData.filter((item) => item.小区 === plusSearchModel.value.小区);
+	}
+
+	pagination.value.total = filteredData.length;
+
+	const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+	const endIndex = startIndex + pagination.value.pageSize;
+	tableData.value = filteredData.slice(startIndex, endIndex);
+
+	pureTableProps.value.data = tableData.value;
+	pureTableProps.value.pagination = pagination.value;
+}
+
+/** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+/** 执行搜索 */
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
+
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
+
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+onMounted(async () => {
+	await loadTableData();
+});
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
-
-		<!-- {{ plusSearchModel }} -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("propertyManage_reportManage.report.derived")) }} </ElButton>
+				<ElButton type="info" @click="handleReSearch">
+					{{ transformI18n($t("common.buttons.pureReload")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-				<PureTable :="pureTableProps" :columns="dynamicColumns" :size="size" />
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				/>
 			</template>
 		</PureTableBar>
 
-		<div>楼栋收费率统计柱状图<build /></div>
-		<div>费用项收费率统计柱状图<payment /></div>
+		<div>
+			楼栋收费率统计柱状图
+			<BuildChart />
+		</div>
+		<div>
+			费用项收费率统计柱状图
+			<PaymentChart />
+		</div>
 	</section>
 </template>
 
