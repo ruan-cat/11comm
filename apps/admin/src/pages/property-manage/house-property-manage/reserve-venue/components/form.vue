@@ -126,7 +126,69 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	预约人: [
+		{
+			required: true,
+			message: "请输入预约人",
+			trigger: "blur",
+		},
+	],
+	联系电话: [
+		{
+			required: true,
+			message: "请输入联系电话",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	预约时间: [
+		{
+			required: true,
+			message: "请选择预约时间",
+			trigger: "change",
+		},
+	],
+	开始时间: [
+		{
+			required: true,
+			message: "请选择开始时间",
+			trigger: "change",
+		},
+	],
+	结束时间: [
+		{
+			required: true,
+			message: "请选择结束时间",
+			trigger: "change",
+		},
+	],
+	场地类型: [
+		{
+			required: true,
+			message: "请选择场地类型",
+			trigger: "change",
+		},
+	],
+	预约状态: [
+		{
+			required: true,
+			message: "请选择预约状态",
+			trigger: "change",
+		},
+	],
+	使用人数: [
+		{
+			required: true,
+			message: "请输入使用人数",
+			trigger: "blur",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,
