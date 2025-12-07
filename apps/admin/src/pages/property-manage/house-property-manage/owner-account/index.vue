@@ -13,6 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type 业主账户_列表数据,
 	type 业主账户_列表查询_VO,
+	账户类型选项,
 	tableData as allTableData,
 	type 业主账户表单_VO,
 } from "./test-data";
@@ -30,7 +31,6 @@ const columns = ref<TableColumnList>([
 		label: "账户编号",
 		prop: "账户编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "账户名称",
@@ -75,7 +75,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -132,6 +132,9 @@ async function loadTableData() {
 		if (plusSearchModel.value.联系方式) {
 			filteredData = filteredData.filter((item) => item.手机号.includes(plusSearchModel.value.联系方式!));
 		}
+		if (plusSearchModel.value.账户类型) {
+			filteredData = filteredData.filter((item) => item.账户类型 === plusSearchModel.value.账户类型);
+		}
 
 		// 更新总数
 		pagination.value.total = filteredData.length;
@@ -158,6 +161,7 @@ const plusSearchModelRef: FieldValues & 业主账户_列表查询_VO = {
 	账户名称: "",
 	身份证号: "",
 	联系方式: "",
+	账户类型: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -186,6 +190,12 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "联系方式",
 		valueType: "input",
 	},
+	{
+		label: "账户类型",
+		prop: "账户类型",
+		valueType: "select",
+		options: 账户类型选项,
+	},
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -210,16 +220,10 @@ async function handleSearch() {
 	await loadTableData();
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 业主账户_列表数据;
-}
-
 const ownerAccountFormInstance = ref<InstanceType<typeof OwnerAccountForm> | null>(null);
 
 // 模式控制
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -241,17 +245,15 @@ function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
 	/** 业务对象 */
 	const 业主账户表单_VO: 业主账户表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					账户类型: row?.账户类型 || "通用账户",
-					业主手机: row?.手机号 || "",
-					业主名称: row?.账户名称 || "",
-					预存金额: row?.账户金额?.replace(/,/g, "") || "",
-					支付方式: "现金",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				账户类型: row?.账户类型 || "通用账户",
+				业主手机: row?.手机号 || "",
+				业主名称: row?.账户名称 || "",
+				预存金额: row?.账户金额?.replace(/,/g, "") || "",
+				支付方式: "现金",
+				备注: row?.备注 || "",
+			});
 
 	/** 表单组件需要的props */
 	const formProps: OwnerAccountFormProps = {
@@ -272,7 +274,7 @@ function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = ownerAccountFormInstance.value.formComputed;
+			const formComputed = ownerAccountFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -280,7 +282,7 @@ function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = ownerAccountFormInstance.value.formComputed;
+					const formComputed = ownerAccountFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -289,7 +291,7 @@ function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					ownerAccountFormInstance.value.plusFormInstance.handleReset();
+					ownerAccountFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -297,7 +299,7 @@ function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await ownerAccountFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await ownerAccountFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -314,19 +316,6 @@ function openDialog(params: { mode: Mode; row?: 业主账户_列表数据 }) {
 onMounted(async () => {
 	await loadTableData();
 });
-
-const { gotoDetailPage } = useGotoDetailsPage();
-
-/** 跳转到 装修跟踪页面 */
-function gotoOwnerAccountPage(row: 业主账户_列表数据) {
-	console.log("row", row);
-	gotoDetailPage({
-		name: "property-manage-house-property-manage--detail-page-owner-account-[id]",
-		params: {
-			id: row.账户编号,
-		},
-	});
-}
 </script>
 
 <template>
@@ -356,13 +345,12 @@ function gotoOwnerAccountPage(row: 业主账户_列表数据) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="gotoOwnerAccountPage(row)">
-							{{ transformI18n($t("propertyManage_housePropertyManage.houses.account")) }}
-						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>
