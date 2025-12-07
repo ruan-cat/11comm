@@ -123,3 +123,12 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 ## 12 修复类型故障
 
 运行 `apps\admin\package.json` 的 `typecheck` 命令，并修复类型错误。
+
+## 13 处理 `nitro/vite` 插件导致的故障
+
+1. 运行 `apps\admin\package.json` 的 `build` 命令，会出现一些列故障。
+2. 我是用了 `import { nitro } from "nitro/vite";` 插件，在 `apps\admin\build\plugins\index.ts` 插件配置内使用。
+3. nitro 的文档： https://v3.nitro.build/docs/quick-start#add-to-a-vite-project
+4. nitro 的 github 仓库： https://github.com/nitrojs/nitro
+5. 请你处理这一些列打包故障，确保项目可以通过 `nitro/vite` 插件直接变成 nuxt 格式的全栈项目。
+6. 由于该 vite 插件相当新潮，请你主动的阅读项目文档和源码。
