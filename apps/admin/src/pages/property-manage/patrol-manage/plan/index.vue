@@ -8,10 +8,11 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { useToggle } from "@vueuse/core";
 import {
 	tableData as mockTableData,
 	状态Options,
@@ -86,7 +87,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -230,7 +231,7 @@ async function handleSearch() {
 }
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const patrolPlanFormInstance = ref<InstanceType<typeof PatrolPlanForm> | null>(null);
@@ -256,22 +257,10 @@ function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
 	/** 业务对象 */
 	const 巡检计划表单_VO: 巡检计划表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value && row
-			? cloneDeep({
-					...defaultForm,
-					计划名称: row?.计划名称 || "",
-					计划路线: row?.计划路线 || "",
-					计划周期: row?.计划周期 || "",
-					签到方式: row?.签到方式 || "二维码",
-					日期范围: row?.日期范围 || "",
-					时间范围: row?.时间范围 || { 开始时间: "", 结束时间: "" },
-					"任务提前(分钟)": row?.["任务提前(分钟)"] || "",
-					制定人: row?.制定人 || "",
-					制定时间: row?.制定时间 || "",
-					状态: row?.状态 || "启用",
-					巡检人员: row?.巡检人员 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: PatrolPlanFormProps = {
@@ -295,7 +284,7 @@ function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = patrolPlanFormInstance.value!.formComputed;
+			const formComputed = patrolPlanFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -303,7 +292,7 @@ function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = patrolPlanFormInstance.value!.formComputed;
+					const formComputed = patrolPlanFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -311,14 +300,14 @@ function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index } }) => {
-					patrolPlanFormInstance.value!.plusFormInstance.handleReset();
+					patrolPlanFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await patrolPlanFormInstance.value!.plusFormInstance.handleSubmit();
+					const res = await patrolPlanFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -363,11 +352,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>
