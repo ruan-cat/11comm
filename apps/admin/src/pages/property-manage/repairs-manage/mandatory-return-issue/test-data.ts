@@ -1,11 +1,5 @@
 import type { OptionsType } from "plus-pro-components";
 
-/** 选项项类型 */
-interface OptionItem {
-	label: string;
-	value: string;
-}
-
 /** 强制回单 列表数据 */
 export interface 强制回单_列表数据 {
 	工单编号: string;
@@ -76,8 +70,8 @@ export const 状态Options: OptionsType = [
 
 /** 生成单个强制回单数据 */
 function generateRandomIssue(index: number): 强制回单_列表数据 {
-	const 报修类型Values = (报修类型Options as OptionItem[]).map((option) => option.value);
-	const 状态Values = (状态Options as OptionItem[]).map((option) => option.value);
+	const 报修类型Values = (Array.isArray(报修类型Options) ? 报修类型Options : []).map((option) => String(option.value));
+	const 状态Values = (Array.isArray(状态Options) ? 状态Options : []).map((option) => String(option.value));
 
 	const random报修类型 = 报修类型Values[Math.floor(Math.random() * 报修类型Values.length)];
 	const random状态 = 状态Values[Math.floor(Math.random() * 状态Values.length)];

@@ -8,7 +8,10 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type MandatoryReturnIssueFormProps, defaultForm, type 强制回单表单_VO } from "./components/form";
@@ -232,43 +235,25 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 	/** 业务对象 */
 	const 业务对象: 强制回单表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					工单编号: row?.工单编号 || "",
-					位置: row?.位置 || "",
-					报修类型: row?.报修类型 || "",
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约时间: row?.预约时间 || "",
-					提交时间: row?.提交时间 || "",
-					状态: row?.状态 || "",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep({
-					...defaultForm,
-					工单编号: row?.工单编号 || "",
-					位置: row?.位置 || "",
-					报修类型: row?.报修类型 || "",
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约时间: row?.预约时间 || "",
-					提交时间: row?.提交时间 || "",
-					状态: row?.状态 || "",
-					备注: row?.备注 || "",
-				});
+		: cloneDeep({
+				...defaultForm,
+				工单编号: row?.工单编号 || "",
+				位置: row?.位置 || "",
+				报修类型: row?.报修类型 || "",
+				报修人: row?.报修人 || "",
+				联系方式: row?.联系方式 || "",
+				预约时间: row?.预约时间 || "",
+				提交时间: row?.提交时间 || "",
+				状态: row?.状态 || "",
+				备注: row?.备注 || "",
+			});
+	const defaultValues = cloneDeep(业务对象);
 
 	/** 表单组件需要的props */
 	const formProps: MandatoryReturnIssueFormProps = {
 		form: 业务对象,
-		defaultValues: 业务对象,
+		defaultValues,
 	};
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -280,7 +265,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = mandatoryReturnIssueFormInstance.value.formComputed;
+			const formComputed = mandatoryReturnIssueFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -288,7 +273,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = mandatoryReturnIssueFormInstance.value.formComputed;
+					const formComputed = mandatoryReturnIssueFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -297,7 +282,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					mandatoryReturnIssueFormInstance.value.plusFormInstance.handleReset();
+					mandatoryReturnIssueFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -305,7 +290,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await mandatoryReturnIssueFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await mandatoryReturnIssueFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -377,14 +362,14 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
 						<ElButton type="info" @click="handleView(row)">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger" @click="handleMandatoryReturn(row)">
+						<ElButton type="warning" @click="handleMandatoryReturn(row)">
 							{{ transformI18n($t("propertyManage_repairsManage.repairs.return")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
@@ -395,8 +380,3 @@ onMounted(async () => {
 		</PureTableBar>
 	</section>
 </template>
-
-<style lang="scss" scoped>
-.index-root {
-}
-</style>
