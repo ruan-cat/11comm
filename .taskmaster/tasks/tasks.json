@@ -1325,7 +1325,7 @@
 			"name": "改造 property-manage/repairs-manage/return-visit 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/repairs-manage/return-visit/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
@@ -1340,7 +1340,7 @@
 			"name": "改造 property-manage/report-manage/arrears-details-list 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/report-manage/arrears-details-list/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",
