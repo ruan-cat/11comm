@@ -8,7 +8,9 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPathFormProps, defaultForm } from "./components/form";
@@ -64,7 +66,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -182,7 +184,7 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -204,18 +206,10 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 	/** 业务对象 */
 	const 巡检路线表单VO: 巡检路线_表单数据 = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value || mode === "info"
-			? cloneDeep({
-					...defaultForm,
-					巡检点ID: row?.巡检点ID || "",
-					巡检点名称: row?.巡检点名称 || "",
-					巡检点类型: row?.巡检点类型 || "",
-					巡检位置: row?.巡检位置 || "",
-					开始时间: row?.开始时间 || "",
-					结束时间: row?.结束时间 || "",
-					排序: row?.排序 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: PatrolPathFormProps = {
@@ -239,7 +233,7 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = patrolPathFormInstance.value.formComputed;
+			const formComputed = patrolPathFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -247,7 +241,7 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = patrolPathFormInstance.value.formComputed;
+					const formComputed = patrolPathFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -256,7 +250,7 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
-					patrolPathFormInstance.value.plusFormInstance.handleReset();
+					patrolPathFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -264,7 +258,7 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await patrolPathFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await patrolPathFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -276,13 +270,6 @@ function openDialog(params: { mode: Mode; row?: 巡检路线_列表数据 }) {
 			},
 		],
 	});
-}
-
-/** 删除数据 */
-async function handleDelete(row: 巡检路线_列表数据) {
-	console.log("删除数据:", row);
-	// TODO: 实现删除逻辑
-	await loadTableData();
 }
 
 onMounted(async () => {
@@ -316,14 +303,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger" @click="handleDelete(row)">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>
