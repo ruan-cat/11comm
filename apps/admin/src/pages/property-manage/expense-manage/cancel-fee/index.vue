@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
@@ -30,7 +30,6 @@ const columns = ref<TableColumnList>([
 		label: "批次号",
 		prop: "批次号",
 		width: 140,
-		fixed: true,
 	},
 	{
 		label: "员工",
@@ -60,7 +59,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 290,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -181,12 +180,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "时间",
 		prop: "时间",
-		valueType: "date-picker",
-		fieldProps: {
-			type: "datetime",
-			valueFormat: "YYYY-MM-DD HH:mm:ss",
-			format: "YYYY-MM-DD HH:mm:ss",
-		},
+		valueType: "input",
 	},
 
 	// 取消原因
@@ -254,17 +248,15 @@ function openDialog(params: { mode: Mode; row?: 取消费用_列表数据 }) {
 	/** 业务对象 */
 	const 业务对象: 取消费用表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					批次号: row?.批次号 || "",
-					员工: row?.员工 || "",
-					时间: row?.时间 || "",
-					取消原因: row?.取消原因 || "",
-					审核状态: row?.审核状态 || "",
-					审核意见: row?.审核意见 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				批次号: row?.批次号 || "",
+				员工: row?.员工 || "",
+				时间: row?.时间 || "",
+				取消原因: row?.取消原因 || "",
+				审核状态: row?.审核状态 || "",
+				审核意见: row?.审核意见 || "",
+			});
 
 	/** 表单组件需要的props */
 	const props: CancelFeeFormProps = {
@@ -342,6 +334,12 @@ onMounted(async () => {
 		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
+			</template>
+
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
@@ -352,11 +350,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info"> 欠费缴费 </ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> 查看费用 </ElButton>
 					</template>
 				</PureTable>
 			</template>
