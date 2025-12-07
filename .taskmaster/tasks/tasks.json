@@ -1415,7 +1415,7 @@
 			"name": "改造 property-manage/report-manage/no-charge-house 列表页",
 			"description": "使用 make-std-list-page-and-formlike-dialog 命令改造 property-manage/report-manage/no-charge-house/index.vue 列表页",
 			"priority": "medium",
-			"status": "pending",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"list-page",

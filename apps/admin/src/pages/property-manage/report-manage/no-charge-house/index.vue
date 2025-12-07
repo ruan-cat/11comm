@@ -8,223 +8,243 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import type { PlusColumn } from "plus-pro-components";
+import {
+	tableData as mockTableData,
+	type 未收费房屋_搜索_VO,
+	type 未收费房屋_表格数据,
+	小区Options,
+	楼栋Options,
+	单元Options,
+} from "./test-data";
 
-interface 报表管理_未收费房屋 {
-	序号: string;
-	楼栋: string;
-	单元: string;
-	房屋: string;
-	业主名称: string;
-	联系电话: string;
+/** 分页配置 */
+const pagination = ref<PaginationProps>({
+	...defaultPagination,
+	pageSize: 10,
+	currentPage: 1,
+	total: mockTableData.length,
+});
+
+/** 表格数据 */
+const tableData = ref<未收费房屋_表格数据[]>([]);
+
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "小区",
+		prop: "小区",
+		minWidth: 140,
+	},
+	{
+		label: "楼栋",
+		prop: "楼栋",
+		minWidth: 120,
+	},
+	{
+		label: "单元",
+		prop: "单元",
+		minWidth: 120,
+	},
+	{
+		label: "房屋编号/合同名称",
+		prop: "房屋编号合同名称",
+		minWidth: 180,
+	},
+	{
+		label: "业主名称",
+		prop: "业主名称",
+		minWidth: 160,
+	},
+	{
+		label: "业主手机号",
+		prop: "业主手机号",
+		minWidth: 160,
+	},
+]);
+
+/** 表格组件 配置 */
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
+});
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "未收费房屋",
+	columns: columns.value,
+});
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & 未收费房屋_搜索_VO = {
+	房屋编号合同名称: "",
+	业主名称: "",
+	业主手机号: "",
+	小区: "",
+	楼栋: "",
+	单元: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	{
+		label: "房屋编号/合同名称",
+		prop: "房屋编号合同名称",
+		valueType: "input",
+	},
+	{
+		label: "业主名称",
+		prop: "业主名称",
+		valueType: "input",
+	},
+	{
+		label: "业主手机号",
+		prop: "业主手机号",
+		valueType: "input",
+	},
+	{
+		label: "小区",
+		prop: "小区",
+		valueType: "select",
+		options: 小区Options,
+	},
+	{
+		label: "楼栋",
+		prop: "楼栋",
+		valueType: "select",
+		options: 楼栋Options,
+	},
+	{
+		label: "单元",
+		prop: "单元",
+		valueType: "select",
+		options: 单元Options,
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 加载表格数据 */
+async function loadTableData() {
+	let filteredData = mockTableData;
+
+	if (plusSearchModel.value.房屋编号合同名称) {
+		filteredData = filteredData.filter((item) =>
+			item.房屋编号合同名称.includes(plusSearchModel.value.房屋编号合同名称!),
+		);
+	}
+
+	if (plusSearchModel.value.业主名称) {
+		filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
+	}
+
+	if (plusSearchModel.value.业主手机号) {
+		filteredData = filteredData.filter((item) => item.业主手机号.includes(plusSearchModel.value.业主手机号!));
+	}
+
+	if (plusSearchModel.value.小区) {
+		filteredData = filteredData.filter((item) => item.小区 === plusSearchModel.value.小区);
+	}
+
+	if (plusSearchModel.value.楼栋) {
+		filteredData = filteredData.filter((item) => item.楼栋 === plusSearchModel.value.楼栋);
+	}
+
+	if (plusSearchModel.value.单元) {
+		filteredData = filteredData.filter((item) => item.单元 === plusSearchModel.value.单元);
+	}
+
+	pagination.value.total = filteredData.length;
+
+	const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+	const endIndex = startIndex + pagination.value.pageSize;
+	tableData.value = filteredData.slice(startIndex, endIndex);
+
+	pureTableProps.value.data = tableData.value;
+	pureTableProps.value.pagination = pagination.value;
 }
 
-const tableDataItem: 报表管理_未收费房屋 = {
-	序号: "1",
-	楼栋: "1栋",
-	单元: "1单元",
-	房屋: "101",
-	业主名称: "张三",
-	联系电话: "13800138000",
-};
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
 
-const tableData = ref<报表管理_未收费房屋[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+/** 执行搜索 */
+async function handleSearch() {
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
 
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	border: true,
-	stripe: true,
-	adaptive: true,
-	highlightCurrentRow: true,
-	data: tableData.value,
+/** 处理页数变化 */
+async function handlePageSizeChange(pageSize: number) {
+	pagination.value.pageSize = pageSize;
+	await loadTableData();
+}
 
-	columns: [
-		{
-			label: "序号",
-			prop: "序号",
-			minWidth: 120,
-			fixed: true,
-		},
-		{
-			label: "楼栋",
-			prop: "楼栋",
-			minWidth: 120,
-		},
-		{
-			label: "单元",
-			prop: "单元",
-			minWidth: 120,
-		},
-		{
-			label: "房屋",
-			prop: "房屋",
-			minWidth: 120,
-		},
-		{
-			label: "业主名称",
-			prop: "业主名称",
-			minWidth: 120,
-		},
-		{
-			label: "联系电话",
-			prop: "联系电话",
-			minWidth: 120,
-		},
-		// {
-		// 	label: transformI18n($t("common.table.operation")),
-		// 	minWidth: 240,
-		// 	fixed: "right",
-		// 	slot: "operation",
-		// },
-	],
+/** 处理页码变化 即后端的 pageIndex */
+async function handleCurrentPageChange(currentPage: number) {
+	pagination.value.currentPage = currentPage;
+	await loadTableData();
+}
+
+onMounted(async () => {
+	await loadTableData();
 });
-
-// 表單配置
-const state = ref({
-	status: "0",
-	time: new Date().toString(),
-});
-
-const columns: PlusColumn[] = [
-	{
-		label: "名称",
-		prop: "name",
-		valueType: "copy",
-		tooltip: "名称最多显示6个字符",
-	},
-	{
-		label: "状态",
-		prop: "status",
-		valueType: "select",
-		options: [
-			{
-				label: "未解决",
-				value: "0",
-				color: "red",
-			},
-			{
-				label: "已解决",
-				value: "1",
-				color: "blue",
-			},
-			{
-				label: "解决中",
-				value: "2",
-				color: "yellow",
-			},
-			{
-				label: "失败",
-				value: "3",
-				color: "red",
-			},
-		],
-	},
-	{
-		label: "时间",
-		prop: "time",
-		valueType: "date-picker",
-	},
-	{
-		label: "数量",
-		prop: "number",
-		valueType: "input-number",
-		fieldProps: { precision: 2, step: 2 },
-	},
-	{
-		label: "城市",
-		prop: "city",
-		valueType: "cascader",
-		options: [
-			{
-				value: "0",
-				label: "陕西",
-				children: [
-					{
-						value: "0-0",
-						label: "西安",
-						children: [
-							{
-								value: "0-0-0",
-								label: "新城区",
-							},
-							{
-								value: "0-0-1",
-								label: "高新区",
-							},
-							{
-								value: "0-0-2",
-								label: "灞桥区",
-							},
-						],
-					},
-				],
-			},
-			{
-				value: "1",
-				label: "山西",
-				children: [
-					{
-						value: "1-0",
-						label: "太原",
-						children: [
-							{
-								value: "1-0-0",
-								label: "小店区",
-							},
-							{
-								value: "1-0-1",
-								label: "古交市",
-							},
-							{
-								value: "1-0-2",
-								label: "万柏林区",
-							},
-						],
-					},
-				],
-			},
-		],
-	},
-];
-
-const handleChange = (values: any) => {
-	console.log(values, "change");
-};
-const handleSearch = (values: any) => {
-	console.log(values, "search");
-};
-const handleReset = () => {
-	console.log("handleReset");
-};
 </script>
 
 <template>
 	<section class="index-root">
-		<h2>未收费房屋</h2>
-		<el-card>
-			<PlusSearch
-				v-model="state"
-				:columns="columns"
-				:show-number="2"
-				@change="handleChange"
-				@search="handleSearch"
-				@reset="handleReset"
-			/>
-		</el-card>
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-		<PureTable :="pureTableProps">
-			<template #operation="{ row }">
-				<!-- <ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-				<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-				<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton> -->
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
+
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+			<template #buttons>
+				<ElButton type="info" @click="handleReSearch">
+					{{ transformI18n($t("common.buttons.pureReload")) }}
+				</ElButton>
 			</template>
-		</PureTable>
+
+			<template #default="{ size, dynamicColumns }">
+				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<PureTable
+					:="pureTableProps"
+					:columns="dynamicColumns"
+					:size="size"
+					@page-size-change="handlePageSizeChange"
+					@page-current-change="handleCurrentPageChange"
+				/>
+			</template>
+		</PureTableBar>
 	</section>
 </template>
 
