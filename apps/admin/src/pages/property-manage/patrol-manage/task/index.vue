@@ -8,7 +8,10 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolTaskFormProps, defaultForm, type 巡检任务表单_VO } from "./components/form";
@@ -21,7 +24,7 @@ import {
 import PatrolTaskForm from "./components/form.vue";
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const patrolTaskFormInstance = ref<InstanceType<typeof PatrolTaskForm> | null>(null);
@@ -80,7 +83,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -264,32 +267,17 @@ function openDialog(params: { mode: Mode; row?: 巡检任务_列表数据 }) {
 	/** 业务对象 */
 	const 巡检任务表单VO: 巡检任务表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					任务编码: row?.任务编码 || "",
-					巡检计划: row?.巡检计划 || "",
-					"巡检人开始/结束时间": row?.["巡检人开始/结束时间"] || "",
-					实际巡检时间: row?.实际巡检时间 || "",
-					计划巡检人: row?.计划巡检人 || "",
-					当前巡检人: row?.当前巡检人 || "",
-					转移描述: row?.转移描述 || "",
-					巡检方式: row?.巡检方式 || "",
-					巡检状态: row?.巡检状态 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
+	const defaultValues = cloneDeep(巡检任务表单VO);
 
 	/** 表单组件需要的props */
 	const formProps: PatrolTaskFormProps = {
 		form: 巡检任务表单VO,
-		defaultValues: 巡检任务表单VO,
+		defaultValues,
 	};
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -301,16 +289,15 @@ function openDialog(params: { mode: Mode; row?: 巡检任务_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = patrolTaskFormInstance.value.formComputed;
+			const formComputed = patrolTaskFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** console.log(options, index, button); */
-					const formComputed = patrolTaskFormInstance.value.formComputed;
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = patrolTaskFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -318,9 +305,8 @@ function openDialog(params: { mode: Mode; row?: 巡检任务_列表数据 }) {
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					patrolTaskFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					patrolTaskFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -328,8 +314,7 @@ function openDialog(params: { mode: Mode; row?: 巡检任务_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await patrolTaskFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await patrolTaskFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -341,28 +326,6 @@ function openDialog(params: { mode: Mode; row?: 巡检任务_列表数据 }) {
 			},
 		],
 	});
-}
-
-/** 新增按钮点击事件 */
-function handleAdd() {
-	openDialog({ mode: "add" });
-}
-
-/** 编辑按钮点击事件 */
-function handleEdit(row: 巡检任务_列表数据) {
-	openDialog({ mode: "edit", row });
-}
-
-/** 查看按钮点击事件 */
-function handleView(row: 巡检任务_列表数据) {
-	openDialog({ mode: "info", row });
-}
-
-/** 删除按钮点击事件 */
-async function handleDelete(row: 巡检任务_列表数据) {
-	// TODO: 实现删除逻辑
-	consola.log("删除", row);
-	await loadTableData();
 }
 
 onMounted(async () => {
@@ -379,9 +342,9 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar v-bind="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleAdd">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
@@ -389,21 +352,18 @@ onMounted(async () => {
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
-					:="pureTableProps"
+					v-bind="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info" @click="handleView(row)">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger" @click="handleDelete(row)">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>
@@ -411,8 +371,3 @@ onMounted(async () => {
 		</PureTableBar>
 	</section>
 </template>
-
-<style lang="scss" scoped>
-.index-root {
-}
-</style>

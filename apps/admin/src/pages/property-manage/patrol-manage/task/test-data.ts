@@ -1,11 +1,5 @@
 import type { OptionsType } from "plus-pro-components";
 
-/** 选项项类型 */
-interface OptionItem {
-	label: string;
-	value: string;
-}
-
 /** 巡检任务 列表数据 */
 export interface 巡检任务_列表数据 {
 	任务编码: string;
@@ -29,7 +23,7 @@ export interface 巡检任务_列表查询_VO {
 }
 
 /** 巡检状态选项 */
-export const 巡检状态Options: OptionItem[] = [
+export const 巡检状态Options: OptionsType = [
 	{
 		label: "未开始",
 		value: "未开始",
@@ -54,7 +48,8 @@ export const 巡检状态Options: OptionItem[] = [
 
 /** 生成单个巡检任务数据 */
 function generateRandomPatrolTask(index: number): 巡检任务_列表数据 {
-	const 巡检状态Values = 巡检状态Options.map((option) => option.value);
+	const options = Array.isArray(巡检状态Options) ? 巡检状态Options : [];
+	const 巡检状态Values = options.map((option) => String(option.value));
 	const randomStatus = 巡检状态Values[Math.floor(Math.random() * 巡检状态Values.length)];
 
 	return {
