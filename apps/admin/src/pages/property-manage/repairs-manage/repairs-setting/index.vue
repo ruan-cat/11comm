@@ -8,54 +8,49 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted, h } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
-
-import { type RepairsSettingFormProps, defaultForm } from "./components/form";
+import { useMode, type Mode } from "@/composables/use-mode";
+import {
+	type RepairsSettingFormProps,
+	defaultForm,
+	type 报修设置表单_VO,
+	type 报修设置类型,
+	type 派单方式类型,
+	type 区域类型,
+	type 业主端展示类型,
+	type 通知方式类型,
+	type 回访设置类型,
+} from "./components/form";
+import {
+	type 报修设置_列表数据,
+	tableData as mockTableData,
+	报修设置类型Options,
+	派单方式Options,
+	区域Options,
+	回访设置Options,
+} from "./test-data";
 import RepairsSettingForm from "./components/form.vue";
 
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
+
+/** 表单组件实例 */
 const repairsSettingFormInstance = ref<InstanceType<typeof RepairsSettingForm> | null>(null);
 
-interface 报修设置_列表数据 {
-	类型名称: string;
-	报修设置类型: string;
-	派单方式: string;
-	区域: string;
-	业主端展示: string;
-	通知方式: string;
-	是否回访: string;
-	创建时间: string;
-	状态: string;
-	备注: string;
-}
-
-const tableDataItem: 报修设置_列表数据 = {
-	类型名称: "类型名称",
-	报修设置类型: "报修设置类型",
-	派单方式: "派单方式",
-	区域: "区域",
-	业主端展示: "业主端展示",
-	通知方式: "通知方式",
-	是否回访: "是否回访",
-	创建时间: "创建时间",
-	状态: "状态",
-	备注: "备注",
-};
-
 /** 表格数据 */
-const tableData = ref<报修设置_列表数据[]>(
-	Array(35)
-		.fill(null)
-		.map(() => ({ ...tableDataItem })),
-);
+const tableData = ref<报修设置_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
 	{
 		label: "类型名称",
 		prop: "类型名称",
-		width: 120,
-		fixed: true,
+		width: 140,
 	},
 	{
 		label: "报修设置类型",
@@ -93,10 +88,9 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		// label: transformI18n($t("common.table.operation")),
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		minWidth: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -107,18 +101,18 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: 1000,
+	total: 0,
 });
 
 /** 处理页数变化 */
 async function handlePageSizeChange(pageSize: number) {
 	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+	await loadTableData();
 }
 /** 处理页码变化 即后端的 pageIndex */
 async function handleCurrentPageChange(currentPage: number) {
 	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+	await loadTableData();
 }
 
 /** 表格配置 */
@@ -148,11 +142,11 @@ interface 报修设置_列表查询_VO {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报修设置_列表查询_VO = {
+const plusSearchModelRef = {
 	类型名称: "",
 	派单方式: "",
 	报修设置类型: "",
-	区域选择: "",
+	区域: "",
 	是否回访: "",
 };
 
@@ -179,30 +173,23 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.orderMethod")),
 		prop: "派单方式",
 		valueType: "select",
-		options: [
-			{
-				label: "是",
-				value: "是",
-			},
-			{
-				label: "否",
-				value: "否",
-			},
-		],
+		options: 派单方式Options,
 	},
 
 	// 报修设置类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairReportingSettingType")),
 		prop: "报修设置类型",
-		valueType: "input",
+		valueType: "select",
+		options: 报修设置类型Options,
 	},
 
-	// 区域选择
+	// 区域
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.regionalSelection")),
-		prop: "区域选择",
-		valueType: "input",
+		prop: "区域",
+		valueType: "select",
+		options: 区域Options,
 	},
 
 	// 是否回访
@@ -210,32 +197,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.whetherToMakeAReturnVisit")),
 		prop: "是否回访",
 		valueType: "select",
-		options: [
-			{
-				label: "待审核",
-				value: "待审核",
-			},
-			{
-				label: "审核不通过",
-				value: "审核不通过",
-			},
-			{
-				label: "装修中",
-				value: "装修中",
-			},
-			{
-				label: "待验收",
-				value: "待验收",
-			},
-			{
-				label: "验收成功",
-				value: "验收成功",
-			},
-			{
-				label: "验收失败",
-				value: "验收失败",
-			},
-		],
+		options: 回访设置Options,
 	},
 ]);
 
@@ -249,11 +211,45 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 async function handleReSearch() {
-	console.log("重新搜索");
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 async function handleSearch() {
-	console.log("搜索");
+	pagination.value.currentPage = 1;
+	await loadTableData();
+}
+
+/** 加载表格数据 */
+async function loadTableData() {
+	try {
+		let filteredData = mockTableData;
+
+		if (plusSearchModel.value.类型名称) {
+			filteredData = filteredData.filter((item) => item.类型名称.includes(plusSearchModel.value.类型名称!));
+		}
+		if (plusSearchModel.value.派单方式) {
+			filteredData = filteredData.filter((item) => item.派单方式 === plusSearchModel.value.派单方式);
+		}
+		if (plusSearchModel.value.报修设置类型) {
+			filteredData = filteredData.filter((item) => item.报修设置类型 === plusSearchModel.value.报修设置类型);
+		}
+		if (plusSearchModel.value.区域) {
+			filteredData = filteredData.filter((item) => item.区域 === plusSearchModel.value.区域);
+		}
+		if (plusSearchModel.value.是否回访) {
+			filteredData = filteredData.filter((item) => item.是否回访 === plusSearchModel.value.是否回访);
+		}
+
+		pagination.value.total = filteredData.length;
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		tableData.value = filteredData.slice(startIndex, endIndex);
+		pureTableProps.value.data = tableData.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
+	}
 }
 
 /** 打开弹框 参数 */
@@ -261,8 +257,6 @@ interface OpenDialogParams {
 	mode: Mode;
 	row?: 报修设置_列表数据;
 }
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -273,50 +267,62 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
+/** 新增按钮点击事件 */
+function handleAdd() {
+	openDialog({ mode: "add" });
+}
+
+/** 编辑按钮点击事件 */
+function handleEdit(row: 报修设置_列表数据) {
+	openDialog({ mode: "edit", row });
+}
+
+/** 查看按钮点击事件 */
+function handleView(row: 报修设置_列表数据) {
+	openDialog({ mode: "info", row });
+}
+
+/** 删除按钮点击事件 */
+async function handleDelete(row: 报修设置_列表数据) {
+	consola.log("删除", row);
+	await loadTableData();
+}
+
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}费用项设置`;
+	const title = `${modeText.value}报修设置`;
+
+	/** 业务对象 */
+	const formValue: 报修设置表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					类型名称: row?.类型名称 || "",
+					设置类型: (row?.报修设置类型 as 报修设置类型 | undefined) || defaultForm.设置类型,
+					派单方式: (row?.派单方式 as 派单方式类型 | undefined) || defaultForm.派单方式,
+					公共区域: (row?.区域 as 区域类型 | undefined) || defaultForm.公共区域,
+					业主端展示: (row?.业主端展示 as 业主端展示类型 | undefined) || defaultForm.业主端展示,
+					通知方式: (row?.通知方式 as 通知方式类型 | undefined) || defaultForm.通知方式,
+					回访设置: (row?.是否回访 as 回访设置类型 | undefined) || defaultForm.回访设置,
+					说明: row?.备注 || "",
+				})
+			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(formValue);
 
 	/** 表单组件需要的props */
 	const formProps: RepairsSettingFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: formValue,
+		defaultValues,
 	};
-
-	const testEditProps: RepairsSettingFormProps = {
-		form: {
-			...defaultForm,
-			类型名称: "45",
-			设置类型: "维修单",
-			派单方式: "指派",
-			公共区域: "房屋",
-			业主端展示: "是",
-			通知方式: "微信",
-			回访设置: "回访",
-			说明: "",
-		},
-		// @ts-ignore
-		defaultValues: cloneDeep(row),
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value
-		? formProps
-		: {
-				form: isEdit.value ? testEditProps.form : cloneDeep(row),
-				defaultValues: cloneDeep(row),
-			};
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(RepairsSettingForm, {
@@ -325,7 +331,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = repairsSettingFormInstance.value.formComputed;
+			const formComputed = repairsSettingFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -334,8 +340,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = repairsSettingFormInstance.value.formComputed;
+					const formComputed = repairsSettingFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -344,8 +349,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					repairsSettingFormInstance.value.plusFormInstance.handleReset();
+					repairsSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -353,8 +357,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await repairsSettingFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await repairsSettingFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -374,8 +377,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="default"> {{ transformI18n($t("propertyManage_repairsManage.repairs.doc")) }} </ElButton>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("propertyManage_repairsManage.repairs.add")) }}
 				</ElButton>
 			</template>
@@ -390,13 +392,15 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+						<ElButton type="info" @click="handleView(row)">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="default">
-							{{ transformI18n($t("propertyManage_repairsManage.repairs.binding")) }}
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>

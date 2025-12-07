@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
-
-import { RepairsSettingFormProps, 报修设置表单_VO, defaultForm } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "lodash-es";
+import { RepairsSettingFormProps, type 报修设置表单_VO } from "./form";
+import { 报修设置类型Options, 派单方式Options, 区域Options, 回访设置Options } from "../test-data";
 
 const props = defineProps<RepairsSettingFormProps>();
 
@@ -48,10 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "设置类型",
 		prop: "设置类型",
 		valueType: "select",
-		options: [
-			{ label: "保洁单", value: "保洁单" },
-			{ label: "维修单", value: "维修单" },
-		],
+		options: 报修设置类型Options,
 		required: true,
 	},
 	// 派单方式
@@ -59,11 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "派单方式",
 		prop: "派单方式",
 		valueType: "select",
-		options: [
-			{ label: "抢单", value: "抢单" },
-			{ label: "指派", value: "指派" },
-			{ label: "轮训", value: "轮训" },
-		],
+		options: 派单方式Options,
 		required: true,
 	},
 	// 公共区域
@@ -71,10 +65,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "公共区域",
 		prop: "公共区域",
 		valueType: "select",
-		options: [
-			{ label: "非房屋", value: "非房屋" },
-			{ label: "房屋", value: "房屋" },
-		],
+		options: 区域Options,
 		required: true,
 	},
 	// 业主端展示
@@ -107,11 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "回访设置",
 		prop: "回访设置",
 		valueType: "select",
-		options: [
-			{ label: "不回访", value: "不回访" },
-			{ label: "已评价不回访", value: "已评价不回访" },
-			{ label: "回访", value: "回访" },
-		],
+		options: 回访设置Options,
 		required: true,
 	},
 
@@ -128,7 +115,15 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	类型名称: [{ required: true, message: "请输入类型名称", trigger: "blur" }],
+	设置类型: [{ required: true, message: "请选择设置类型", trigger: "change" }],
+	派单方式: [{ required: true, message: "请选择派单方式", trigger: "change" }],
+	公共区域: [{ required: true, message: "请选择公共区域", trigger: "change" }],
+	业主端展示: [{ required: true, message: "请选择业主端展示", trigger: "change" }],
+	通知方式: [{ required: true, message: "请选择通知方式", trigger: "change" }],
+	回访设置: [{ required: true, message: "请选择回访设置", trigger: "change" }],
+});
 
 defineExpose({
 	plusFormInstance,
