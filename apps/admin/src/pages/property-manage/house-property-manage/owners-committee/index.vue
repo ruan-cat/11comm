@@ -12,7 +12,7 @@ import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type OwnersCommitteeProps, defaultForm } from "./components/form";
 import OwnersCommittee from "./components/form.vue";
-import { type Mode } from "@/composables/use-mode";
+import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type 业委会_列表数据,
 	type 业委会_列表查询_VO,
@@ -25,7 +25,7 @@ import {
 const ownersCommitteeFormInstance = ref<InstanceType<typeof OwnersCommittee> | null>(null);
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd } = useMode();
 
 /** 表格数据 */
 const tableData = ref<业委会_列表数据[]>([]);
@@ -37,7 +37,6 @@ const columns = ref<TableColumnList>([
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "姓名",
@@ -92,7 +91,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -257,30 +256,28 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}业委会`;
 
 	/** 业务对象 */
-	const 业务对象: 业委会表单_VO = isAdd.value
+	const 业委会表单对象: 业委会表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					姓名: row?.姓名 || "",
-					性别: row?.性别 || "",
-					电话: row?.电话 || "",
-					身份证号码: row?.身份证 || "",
-					住址: row?.住址 || "",
-					职位: row?.职位 || "",
-					岗位: row?.岗位 || "",
-					岗位描述: row?.岗位描述 || "",
-					届期: row?.届期 || "",
-					任期: row?.任期 || "",
-					状态: row?.状态 || "",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				姓名: row?.姓名 || "",
+				性别: row?.性别 || "",
+				电话: row?.电话 || "",
+				身份证号码: row?.身份证 || "",
+				住址: row?.住址 || "",
+				职位: row?.职位 || "",
+				岗位: row?.岗位 || "",
+				岗位描述: row?.岗位描述 || "",
+				届期: row?.届期 || "",
+				任期: row?.任期 || "",
+				状态: row?.状态 || "",
+				备注: row?.备注 || "",
+			});
 
 	/** 表单组件需要的props */
 	const formProps: OwnersCommitteeProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: 业委会表单对象,
+		defaultValues: 业委会表单对象,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -301,7 +298,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = ownersCommitteeFormInstance.value.formComputed;
+			const formComputed = ownersCommitteeFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -310,7 +307,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = ownersCommitteeFormInstance.value.formComputed;
+					const formComputed = ownersCommitteeFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -319,7 +316,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					ownersCommitteeFormInstance.value.plusFormInstance.handleReset();
+					ownersCommitteeFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -327,7 +324,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await ownersCommitteeFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await ownersCommitteeFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -372,14 +369,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
-						</ElButton>
-						<ElButton type="info">
-							{{ transformI18n($t("propertyManage_housePropertyManage.owners-committee.detail")) }}
 						</ElButton>
 					</template>
 				</PureTable>

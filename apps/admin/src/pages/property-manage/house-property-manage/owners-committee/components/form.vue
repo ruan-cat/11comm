@@ -129,7 +129,88 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	姓名: [
+		{
+			required: true,
+			message: "请输入姓名",
+			trigger: "blur",
+		},
+	],
+	性别: [
+		{
+			required: true,
+			message: "请选择性别",
+			trigger: "change",
+		},
+	],
+	电话: [
+		{
+			required: true,
+			message: "请输入电话",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	身份证号码: [
+		{
+			required: true,
+			message: "请输入身份证号码",
+			trigger: "blur",
+		},
+		{
+			pattern: /^\d{17}[\dXx]$/,
+			message: "请输入正确的身份证号码",
+			trigger: "blur",
+		},
+	],
+	住址: [
+		{
+			required: true,
+			message: "请输入住址",
+			trigger: "blur",
+		},
+	],
+	职位: [
+		{
+			required: true,
+			message: "请输入职位",
+			trigger: "blur",
+		},
+	],
+	岗位: [
+		{
+			required: true,
+			message: "请输入岗位",
+			trigger: "blur",
+		},
+	],
+	届期: [
+		{
+			required: true,
+			message: "请输入届期",
+			trigger: "blur",
+		},
+	],
+	任期: [
+		{
+			required: true,
+			message: "请输入任期",
+			trigger: "blur",
+		},
+	],
+	状态: [
+		{
+			required: true,
+			message: "请选择状态",
+			trigger: "change",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,
