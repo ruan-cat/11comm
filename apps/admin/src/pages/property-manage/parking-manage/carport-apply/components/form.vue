@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { CarportApplyFormProps, 车位申请_VO, defaultForm } from "./form";
+import { CarportApplyFormProps, 车位申请_VO } from "./form";
 import { 审核结果Options, 车辆类型Options, 汽车品牌Options, 车辆颜色Options } from "../test-data";
 
 const props = defineProps<CarportApplyFormProps>();
@@ -139,7 +139,83 @@ const plusFormColumns = ref<PlusColumn[]>([
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	车牌号: [
+		{
+			required: true,
+			message: "请输入车牌号",
+			trigger: "blur",
+		},
+	],
+	停车位: [
+		{
+			required: true,
+			message: "请输入停车位",
+			trigger: "blur",
+		},
+	],
+	汽车品牌: [
+		{
+			required: true,
+			message: "请选择汽车品牌",
+			trigger: "change",
+		},
+	],
+	车辆类型: [
+		{
+			required: true,
+			message: "请选择车辆类型",
+			trigger: "change",
+		},
+	],
+	颜色: [
+		{
+			required: true,
+			message: "请选择颜色",
+			trigger: "change",
+		},
+	],
+	起租时间: [
+		{
+			required: true,
+			message: "请选择起租时间",
+			trigger: "change",
+		},
+	],
+	结租时间: [
+		{
+			required: true,
+			message: "请选择结租时间",
+			trigger: "change",
+		},
+	],
+	申请人: [
+		{
+			required: true,
+			message: "请输入申请人",
+			trigger: "blur",
+		},
+	],
+	手机号: [
+		{
+			required: true,
+			message: "请输入手机号",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: "请输入正确的手机号格式",
+			trigger: "blur",
+		},
+	],
+	审核结果: [
+		{
+			required: true,
+			message: "请选择审核结果",
+			trigger: "change",
+		},
+	],
+});
 
 defineExpose({
 	plusFormInstance,

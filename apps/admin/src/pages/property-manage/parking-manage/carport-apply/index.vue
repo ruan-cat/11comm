@@ -8,7 +8,10 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { transformI18n } from "@/plugins/i18n";
 
 import { type CarportApplyFormProps, defaultForm } from "./components/form";
@@ -90,7 +93,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -121,6 +124,7 @@ const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
+	pagination: pagination.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -246,7 +250,7 @@ interface OpenDialogParams {
 	row?: 车位申请_列表数据;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { mode, modeText, setMode, isAdd } = useMode();
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -268,22 +272,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 业务对象 */
 	const 车位申请表单_VO: 车位申请_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					申请ID: row?.申请ID || "",
-					车牌号: row?.车牌号 || "",
-					停车位: row?.停车位 || "",
-					汽车品牌: row?.汽车品牌 || "",
-					车辆类型: row?.车辆类型 || "",
-					颜色: row?.颜色 || "",
-					起租时间: row?.起租时间 || "",
-					结租时间: row?.结租时间 || "",
-					申请人: row?.申请人 || "",
-					手机号: row?.手机号 || "",
-					审核结果: row?.审核结果 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: CarportApplyFormProps = {
@@ -306,7 +298,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = carportApplyFormInstance.value.formComputed;
+			const formComputed = carportApplyFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -315,7 +307,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = carportApplyFormInstance.value.formComputed;
+					const formComputed = carportApplyFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -324,7 +316,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					carportApplyFormInstance.value.plusFormInstance.handleReset();
+					carportApplyFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -376,14 +368,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+					<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+						{{ transformI18n($t("common.buttons.info")) }}
+					</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info">
-							{{ transformI18n($t("common.buttons.info")) }}
-						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
 				</PureTable>
