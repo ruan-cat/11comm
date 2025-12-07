@@ -33,6 +33,8 @@ const pathResolve = (dir = ".", metaUrl = import.meta.url) => {
 const alias: Record<string, string> = {
 	"@": pathResolve("../src"),
 	"@build": pathResolve(),
+	components: pathResolve("../src/components"),
+	composables: pathResolve("../src/composables"),
 };
 
 /** 平台的名称、版本、运行所需的`node`和`pnpm`版本、依赖、最后构建时间的类型提示 */

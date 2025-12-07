@@ -6,6 +6,12 @@ export default defineConfig({
 	// serverDir: "apps/admin",
 	serverDir: false,
 	alias: {
-		"@": pathResolve("./src"),
+		/**
+		 * Nitro 构建需要显式传入当前文件的 import.meta.url，
+		 * 否则默认会以 build/utils.ts 的路径为基准，导致解析到 build/src。
+		 */
+		"@": pathResolve("./src", import.meta.url),
+		components: pathResolve("./src/components", import.meta.url),
+		composables: pathResolve("./src/composables", import.meta.url),
 	},
 });
