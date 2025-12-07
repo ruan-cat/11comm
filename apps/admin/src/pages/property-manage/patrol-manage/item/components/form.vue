@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { PatrolItemFormProps, 巡检项目表单_VO, defaultForm } from "./form";
+import { PatrolItemFormProps, 巡检项目表单_VO } from "./form";
 
 const props = defineProps<PatrolItemFormProps>();
 
@@ -65,12 +65,28 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = computed(() => {
-	return {
-		编号: [{ required: true, message: "请输入编号", trigger: "blur" }],
-		巡检项目: [{ required: true, message: "请输入巡检项目", trigger: "blur" }],
-		创建时间: [{ required: true, message: "请选择创建时间", trigger: "change" }],
-	};
+const plusFormRules = ref<PlusFormRules>({
+	编号: [
+		{
+			required: true,
+			message: "请输入编号",
+			trigger: "blur",
+		},
+	],
+	巡检项目: [
+		{
+			required: true,
+			message: "请输入巡检项目",
+			trigger: "blur",
+		},
+	],
+	创建时间: [
+		{
+			required: true,
+			message: "请选择创建时间",
+			trigger: "change",
+		},
+	],
 });
 
 /** 对外导出 */

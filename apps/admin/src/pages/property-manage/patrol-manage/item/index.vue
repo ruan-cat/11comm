@@ -8,10 +8,11 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, h, onMounted } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { h } from "vue";
 import { type PatrolItemFormProps, defaultForm } from "./components/form";
 import PatrolItemForm from "./components/form.vue";
 import {
@@ -31,7 +32,6 @@ const columns = ref<TableColumnList>([
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "巡检项目",
@@ -177,7 +177,7 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const patrolItemFormInstance = ref<InstanceType<typeof PatrolItemForm> | null>(null);
@@ -203,15 +203,10 @@ function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
 	/** 业务对象 */
 	const 巡检项目表单_VO: 巡检项目表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					编号: row?.编号 || "",
-					巡检项目: row?.巡检项目 || "",
-					创建时间: row?.创建时间 || "",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				...row,
+			});
 
 	/** 表单组件需要的props */
 	const formProps: PatrolItemFormProps = {
@@ -235,7 +230,7 @@ function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = patrolItemFormInstance.value.formComputed;
+			const formComputed = patrolItemFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -243,7 +238,7 @@ function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = patrolItemFormInstance.value.formComputed;
+					const formComputed = patrolItemFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -251,14 +246,14 @@ function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					patrolItemFormInstance.value.plusFormInstance.handleReset();
+					patrolItemFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await patrolItemFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await patrolItemFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -305,14 +300,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 					</template>
 				</PureTable>
