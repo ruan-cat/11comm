@@ -14,6 +14,7 @@ import {
 	type 发票_列表数据,
 	type 发票_列表查询_VO,
 	type 发票抬头表单_VO,
+	发票类型选项,
 	tableData as allTableData,
 } from "./test-data";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -28,7 +29,6 @@ const columns = ref<TableColumnList>([
 		label: "编号",
 		prop: "编号",
 		width: 120,
-		fixed: true,
 	},
 	{
 		label: "业主名称",
@@ -73,7 +73,7 @@ const columns = ref<TableColumnList>([
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -179,11 +179,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "发票类型",
 		prop: "发票类型",
 		valueType: "select",
-		options: [
-			{ label: "增值税专用发票", value: "增值税专用发票" },
-			{ label: "增值税普通发票", value: "增值税普通发票" },
-			{ label: "电子发票", value: "电子发票" },
-		],
+		options: 发票类型选项,
 	},
 
 	{
@@ -245,19 +241,17 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 	/** 业务对象 */
 	const 发票抬头表单_VO: 发票抬头表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					业主名称: row?.业主名称 || "",
-					发票类型: row?.发票类型 || "",
-					发票名头: row?.发票名头 || "",
-					纳税人识别号: row?.纳税人识别号 || "",
-					地址: row?.地址 || "",
-					电话: row?.电话 || "",
-					开户行及账号: row?.开户行及账号 || "",
-					备注: row?.备注 || "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				业主名称: row?.业主名称 || "",
+				发票类型: row?.发票类型 || "",
+				发票名头: row?.发票名头 || "",
+				纳税人识别号: row?.纳税人识别号 || "",
+				地址: row?.地址 || "",
+				电话: row?.电话 || "",
+				开户行及账号: row?.开户行及账号 || "",
+				备注: row?.备注 || "",
+			});
 
 	/** 表单组件需要的props */
 	const formProps: InvoiceTitleFormProps = {
@@ -278,7 +272,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = invoiceTitleFormInstance.value.formComputed;
+			const formComputed = invoiceTitleFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -286,7 +280,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = invoiceTitleFormInstance.value.formComputed;
+					const formComputed = invoiceTitleFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -295,7 +289,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					invoiceTitleFormInstance.value.plusFormInstance.handleReset();
+					invoiceTitleFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -303,7 +297,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await invoiceTitleFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await invoiceTitleFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -349,11 +343,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>
