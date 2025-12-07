@@ -8,12 +8,16 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
+import consola from "consola";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./components/form";
 import {
 	type 工单池_列表数据,
+	type 工单池_列表查询_VO,
 	tableData as mockTableData,
 	报修类型Options,
 	报修设置类型Options,
@@ -130,18 +134,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "工单池",
 	columns: columns.value,
 });
-
-interface 工单池_列表查询_VO {
-	工单编号?: string;
-	报修人?: string;
-	报修电话?: string;
-	报修类型?: string;
-	报修设置类型?: string;
-	报修位置?: string;
-	维修类型?: string;
-	开始时间?: string;
-	结束时间?: string;
-}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -359,18 +351,13 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 					备注: row?.备注 || "",
 				})
 			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(工单池表单VO);
 
 	/** 表单组件需要的props */
 	const formProps: IssuesSettingFormProps = {
 		form: 工单池表单VO,
-		defaultValues: 工单池表单VO,
+		defaultValues,
 	};
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -382,7 +369,7 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = issuesSettingFormInstance.value.formComputed;
+			const formComputed = issuesSettingFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -391,7 +378,7 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** console.log(options, index, button); */
-					const formComputed = issuesSettingFormInstance.value.formComputed;
+					const formComputed = issuesSettingFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -401,7 +388,7 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					issuesSettingFormInstance.value.plusFormInstance.handleReset();
+					issuesSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -410,7 +397,7 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await issuesSettingFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await issuesSettingFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -478,11 +465,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)">
-							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
 						<ElButton type="info" @click="handleView(row)">
 							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleEdit(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
@@ -494,7 +481,3 @@ onMounted(async () => {
 	</section>
 </template>
 
-<style lang="scss" scoped>
-.index-root {
-}
-</style>

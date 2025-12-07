@@ -1,8 +1,4 @@
-/** 选项项类型 */
-interface OptionItem {
-	label: string;
-	value: string;
-}
+import type { OptionsType } from "plus-pro-components";
 
 /** 工单池 列表数据 */
 export interface 工单池_列表数据 {
@@ -35,7 +31,7 @@ export interface 工单池_列表查询_VO {
 }
 
 /** 报修类型选项 */
-export const 报修类型Options: OptionItem[] = [
+export const 报修类型Options: OptionsType = [
 	{
 		label: "水管维修",
 		value: "水管维修",
@@ -59,7 +55,7 @@ export const 报修类型Options: OptionItem[] = [
 ];
 
 /** 报修设置类型选项 */
-export const 报修设置类型Options: OptionItem[] = [
+export const 报修设置类型Options: OptionsType = [
 	{
 		label: "保洁单",
 		value: "保洁单",
@@ -71,7 +67,7 @@ export const 报修设置类型Options: OptionItem[] = [
 ];
 
 /** 维修类型选项 */
-export const 维修类型Options: OptionItem[] = [
+export const 维修类型Options: OptionsType = [
 	{
 		label: "有偿服务",
 		value: "有偿服务",
@@ -91,7 +87,7 @@ export const 维修类型Options: OptionItem[] = [
 ];
 
 /** 工单状态选项 */
-export const 工单状态Options: OptionItem[] = [
+export const 工单状态Options: OptionsType = [
 	{
 		label: "待处理",
 		value: "待处理",
@@ -112,9 +108,12 @@ export const 工单状态Options: OptionItem[] = [
 
 /** 生成单个工单池数据 */
 function generateRandomIssue(index: number): 工单池_列表数据 {
-	const 报修类型Values = 报修类型Options.map((option) => option.value);
-	const 维修类型Values = 维修类型Options.map((option) => option.value);
-	const 状态Values = 工单状态Options.map((option) => option.value);
+	const repairTypeOptions = Array.isArray(报修类型Options) ? 报修类型Options : [];
+	const maintainTypeOptions = Array.isArray(维修类型Options) ? 维修类型Options : [];
+	const statusOptions = Array.isArray(工单状态Options) ? 工单状态Options : [];
+	const 报修类型Values = repairTypeOptions.map((option) => String(option.value));
+	const 维修类型Values = maintainTypeOptions.map((option) => String(option.value));
+	const 状态Values = statusOptions.map((option) => String(option.value));
 
 	const random报修类型 = 报修类型Values[Math.floor(Math.random() * 报修类型Values.length)];
 	const random维修类型 = 维修类型Values[Math.floor(Math.random() * 维修类型Values.length)];
