@@ -18,13 +18,13 @@ color: blue
 
 按照以下步骤，逐步的完成任务。
 
-1. 全面阅读 `"status": "pending",` 任务状态为 pending 的任务。
+1. 全面阅读 `"status": "todo",` 任务状态为 todo 的任务。
 2. 从最开头，开始依次逐步完成任务。
 3. 完成任务就标记该任务为 `"status": "done",` 。
 
-## 完整的使用 `生成本地数据较为美观的列表页` 命令所要求的全部内容
+## 阅读足够的上下文
 
-1. 请务必全面的，完整的阅读该文件 `.claude\commands\make-std-list-page-and-formlike-dialog.md` 。
+1. 请务必全面的，完整的阅读该文件 `.claude\agents\make-list-page.md` 。
 2. 按照要求，当你实现生成代码时，请你务必主动执行子代理。以运行子代理的形式，来完成任务。
 
 ## 执行任务的要求
