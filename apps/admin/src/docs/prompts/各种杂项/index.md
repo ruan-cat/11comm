@@ -137,3 +137,56 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 
 1. 阅读文档 https://v3.nitro.build/deploy/providers/cloudflare#cloudflare-workers 。
 2. 按照文档要求，配置项目部署目标为 cloudflare worker 。
+
+## 015 处理故障
+
+<!-- TODO: -->
+
+在 github workflow 内，运行 `apps\admin\package.json` 的 build 命令，出现以下报错。
+
+这很奇怪，在 cloudflare worker 的流水线都没有出现这些故障，为什么 github workflow 就出现这些错误呢？
+
+阅读以下错误日志，并修复错误。
+
+```log
+✗ Build failed in 35.34s
+error during build:
+../../node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs (1:9): "createRequire" is not exported by "__vite-browser-external", imported by "../../node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs".
+file: /home/runner/work/11comm/11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs:1:9
+
+1: import { createRequire } from "module";
+            ^
+2: import { basename, dirname, normalize, relative, resolve, sep } from "path";
+3: import * as nativeFs from "fs";
+
+    at getRollupError (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16956:16)
+    at Module.traceVariable (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:17412:29)
+    at ModuleScope.findVariable (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:15076:39)
+    at Identifier.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:5423:40)
+    at CallExpression.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
+    at CallExpression.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:12123:15)
+    at VariableDeclarator.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
+    at VariableDeclaration.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
+    at Program.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
+    at Module.bindReferences (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16935:18)
+    at Graph.sortModules (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22746:20)
+    at Graph.build (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22644:14)
+    at async file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:23335:13
+    at async catchUnfinishedHookActions (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22805:16)
+    at async rollupInternal (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:23330:5)
+    at async buildEnvironment (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.1_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.94.2_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33540:12)
+    at async Object.build (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.1_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.94.2_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33899:19)
+    at async buildEnvironments (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/nitro@3.0.1-alpha.1_@vercel+blob@1.0.2_chokidar@4.0.3_lru-cache@11.2.4_rollup@4.53.3_vi_afd42200af83b2ac141dcec1c8d3b54c/node_modules/nitro/dist/_build/vite.plugin.mjs:156:3)
+    at async Object.buildApp (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.1_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.94.2_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33893:5)
+    at async CAC.<anonymous> (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.1_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.94.2_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/cli.js:629:3)
+ ELIFECYCLE  Command failed with exit code 1.
+Error:  command finished with error: command (/home/runner/work/11comm/11comm/apps/admin) /home/runner/setup-pnpm/node_modules/.bin/pnpm run vite:build:prod exited (1)
+Error: @01s-11comm/admin#vite:build:prod: command (/home/runner/work/11comm/11comm/apps/admin) /home/runner/setup-pnpm/node_modules/.bin/pnpm run vite:build:prod exited (1)
+
+ Tasks:    0 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    1m13.364s
+Failed:    @01s-11comm/admin#vite:build:prod
+```
