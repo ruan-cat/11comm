@@ -222,7 +222,6 @@ export function getPluginsList(
 		 * 将项目一下子变成nuxt全栈项目的插件
 		 * @see https://v3.nitro.build/docs/quick-start#add-to-a-vite-project
 		 */
-		// FIXME: 目前没有办法实现 nitro 打包 整个项目时无法运行的 ， 出现 SSR 渲染问题。无法正确识别项目中的路径别名。
 		nitro(),
 	];
 }

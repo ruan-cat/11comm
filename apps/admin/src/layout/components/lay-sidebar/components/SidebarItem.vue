@@ -15,9 +15,6 @@ import EpArrowDown from "~icons/ep/arrow-down-bold";
 import ArrowLeft from "~icons/ep/arrow-left-bold";
 import ArrowRight from "~icons/ep/arrow-right-bold";
 
-/**
- * FIXME: 这里被迫改成手动导入 因为有部分同事反馈称 无法运行项目 无法找到这个全局导入的函数
- */
 import { watchImmediate } from "@vueuse/core";
 
 const attrs = useAttrs();
