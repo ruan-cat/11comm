@@ -1,0 +1,1286 @@
+{
+	"tasks": [
+		{
+			"id": "td-001",
+			"name": "重构 test-data.ts dev-team/cache-manage/refresh-cache",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-002",
+			"name": "重构 test-data.ts dev-team/config-manage/center",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/config-manage/center/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-003",
+			"name": "重构 test-data.ts dev-team/config-manage/dictionary",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-004",
+			"name": "重构 test-data.ts dev-team/config-manage/item",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/config-manage/item/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-005",
+			"name": "重构 test-data.ts dev-team/config-manage/type",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/config-manage/type/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-006",
+			"name": "重构 test-data.ts dev-team/menu-manage/catalog",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-007",
+			"name": "重构 test-data.ts dev-team/menu-manage/group",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-008",
+			"name": "重构 test-data.ts dev-team/menu-manage/item",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-009",
+			"name": "重构 test-data.ts operation-team/data-manage/community-information",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-010",
+			"name": "重构 test-data.ts operation-team/data-manage/property-management-company",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-011",
+			"name": "重构 test-data.ts operation-team/merchant-manage/merchant-admin",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-012",
+			"name": "重构 test-data.ts operation-team/merchant-manage/merchant-info",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-013",
+			"name": "重构 test-data.ts operation-team/report-configuration/report-component",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-014",
+			"name": "重构 test-data.ts operation-team/report-configuration/report-group",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-015",
+			"name": "重构 test-data.ts operation-team/report-configuration/report-info",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-016",
+			"name": "重构 test-data.ts operation-team/system-manage/change-password",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-017",
+			"name": "重构 test-data.ts operation-team/system-manage/community-configuration",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-018",
+			"name": "重构 test-data.ts operation-team/system-manage/initialize-cell",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-019",
+			"name": "重构 test-data.ts operation-team/system-manage/register-protocol",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-020",
+			"name": "重构 test-data.ts operation-team/system-manage/system-config",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-021",
+			"name": "重构 test-data.ts property-manage/community-manage/building-space-structure-diagram",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-022",
+			"name": "重构 test-data.ts property-manage/community-manage/handing-business",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/handing-business/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-023",
+			"name": "重构 test-data.ts property-manage/community-manage/house-decoration",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/house-decoration/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-024",
+			"name": "重构 test-data.ts property-manage/community-manage/my",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/my/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-025",
+			"name": "重构 test-data.ts property-manage/community-manage/notice",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/notice/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-026",
+			"name": "重构 test-data.ts property-manage/community-manage/parking-space-structure-diagram",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-027",
+			"name": "重构 test-data.ts property-manage/community-manage/property-register",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/community-manage/property-register/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-028",
+			"name": "重构 test-data.ts property-manage/contract-manage/change",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/contract-manage/change/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-029",
+			"name": "重构 test-data.ts property-manage/contract-manage/draft-contract",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/contract-manage/draft-contract/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-030",
+			"name": "重构 test-data.ts property-manage/contract-manage/expire",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/contract-manage/expire/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-031",
+			"name": "重构 test-data.ts property-manage/contract-manage/first-party",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/contract-manage/first-party/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-032",
+			"name": "重构 test-data.ts property-manage/contract-manage/type",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/contract-manage/type/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-033",
+			"name": "重构 test-data.ts property-manage/expense-manage/cancel-fee",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/cancel-fee/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-034",
+			"name": "重构 test-data.ts property-manage/expense-manage/contracte-charge",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/contracte-charge/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-035",
+			"name": "重构 test-data.ts property-manage/expense-manage/discount-apply",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-apply/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-036",
+			"name": "重构 test-data.ts property-manage/expense-manage/discount-setting",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-setting/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-037",
+			"name": "重构 test-data.ts property-manage/expense-manage/discount-type",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-type/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-038",
+			"name": "重构 test-data.ts property-manage/expense-manage/expense-item-setting",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-item-setting/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-039",
+			"name": "重构 test-data.ts property-manage/expense-manage/expense-summary-table",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-summary-table/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-040",
+			"name": "重构 test-data.ts property-manage/expense-manage/house-charge",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/house-charge/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-041",
+			"name": "重构 test-data.ts property-manage/expense-manage/meter-reading-type",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/meter-reading-type/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-042",
+			"name": "重构 test-data.ts property-manage/expense-manage/overdue-payment-information",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/overdue-payment-information/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-043",
+			"name": "重构 test-data.ts property-manage/expense-manage/payment-review",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/payment-review/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-044",
+			"name": "重构 test-data.ts property-manage/expense-manage/refund-review",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/refund-review/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-045",
+			"name": "重构 test-data.ts property-manage/expense-manage/reminder-for-overdue-payments",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-046",
+			"name": "重构 test-data.ts property-manage/expense-manage/reprint-voucher",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reprint-voucher/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-047",
+			"name": "重构 test-data.ts property-manage/expense-manage/vehicle-charge",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/vehicle-charge/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-048",
+			"name": "重构 test-data.ts property-manage/expense-manage/water-and-electricity-meter-reading",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-049",
+			"name": "重构 test-data.ts property-manage/house-property-manage/house",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/house/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-050",
+			"name": "重构 test-data.ts property-manage/house-property-manage/invoice-title",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/invoice-title/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-051",
+			"name": "重构 test-data.ts property-manage/house-property-manage/invoice",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/invoice/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-052",
+			"name": "重构 test-data.ts property-manage/house-property-manage/owner-account",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-account/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-053",
+			"name": "重构 test-data.ts property-manage/house-property-manage/owner-information",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-information/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-054",
+			"name": "重构 test-data.ts property-manage/house-property-manage/owner-member",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-member/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-055",
+			"name": "重构 test-data.ts property-manage/house-property-manage/owners-committee",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owners-committee/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-056",
+			"name": "重构 test-data.ts property-manage/house-property-manage/reserve-venue-order",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-057",
+			"name": "重构 test-data.ts property-manage/house-property-manage/reserve-venue",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-058",
+			"name": "重构 test-data.ts property-manage/house-property-manage/site-management",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/site-management/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-059",
+			"name": "重构 test-data.ts property-manage/parking-manage/carport-apply",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/parking-manage/carport-apply/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-060",
+			"name": "重构 test-data.ts property-manage/parking-manage/carport-info",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/parking-manage/carport-info/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-061",
+			"name": "重构 test-data.ts property-manage/parking-manage/owner-vehicle",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-062",
+			"name": "重构 test-data.ts property-manage/parking-manage/parking-lot",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/parking-manage/parking-lot/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-063",
+			"name": "重构 test-data.ts property-manage/patrol-manage/detail",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/detail/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-064",
+			"name": "重构 test-data.ts property-manage/patrol-manage/item",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/item/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-065",
+			"name": "重构 test-data.ts property-manage/patrol-manage/path",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/path/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-066",
+			"name": "重构 test-data.ts property-manage/patrol-manage/plan",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/plan/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-067",
+			"name": "重构 test-data.ts property-manage/patrol-manage/point",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/point/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-068",
+			"name": "重构 test-data.ts property-manage/patrol-manage/task",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/task/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-069",
+			"name": "重构 test-data.ts property-manage/repairs-manage/issues",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/issues/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-070",
+			"name": "重构 test-data.ts property-manage/repairs-manage/mandatory-return-issue",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/mandatory-return-issue/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-071",
+			"name": "重构 test-data.ts property-manage/repairs-manage/phone-report-repairs",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/phone-report-repairs/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-072",
+			"name": "重构 test-data.ts property-manage/repairs-manage/repairs-have-done",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-have-done/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-073",
+			"name": "重构 test-data.ts property-manage/repairs-manage/repairs-setting",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-setting/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-074",
+			"name": "重构 test-data.ts property-manage/repairs-manage/repairs-todo",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-todo/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-075",
+			"name": "重构 test-data.ts property-manage/repairs-manage/return-visit",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/return-visit/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-076",
+			"name": "重构 test-data.ts property-manage/report-manage/arrears-details-list",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/arrears-details-list/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-077",
+			"name": "重构 test-data.ts property-manage/report-manage/data-statistics",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/data-statistics/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-078",
+			"name": "重构 test-data.ts property-manage/report-manage/deposit-report",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/deposit-report/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-079",
+			"name": "重构 test-data.ts property-manage/report-manage/expense-summary-table",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/expense-summary-table/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-080",
+			"name": "重构 test-data.ts property-manage/report-manage/fee-reminder",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/fee-reminder/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-081",
+			"name": "重构 test-data.ts property-manage/report-manage/no-charge-house",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/no-charge-house/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-082",
+			"name": "重构 test-data.ts property-manage/report-manage/outstanding-fees-analysis",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/outstanding-fees-analysis/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-083",
+			"name": "重构 test-data.ts property-manage/report-manage/owner-payment-details",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/owner-payment-details/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-084",
+			"name": "重构 test-data.ts property-manage/report-manage/patrol-report",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/patrol-report/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-085",
+			"name": "重构 test-data.ts property-manage/report-manage/payment-details-form",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/payment-details-form/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-086",
+			"name": "重构 test-data.ts property-manage/report-manage/repair-report-form",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/repair-report-form/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-087",
+			"name": "重构 test-data.ts property-manage/report-manage/repair-reports-summary-table",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/repair-reports-summary-table/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-088",
+			"name": "重构 test-data.ts property-manage/report-manage/statement-expenses",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/property-manage/report-manage/statement-expenses/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-089",
+			"name": "重构 test-data.ts setting-manage/organize-manage/data-permission",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-090",
+			"name": "重构 test-data.ts setting-manage/organize-manage/org-info",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-091",
+			"name": "重构 test-data.ts setting-manage/organize-manage/role-permission",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-092",
+			"name": "重构 test-data.ts setting-manage/organize-manage/scheduling-setting",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-093",
+			"name": "重构 test-data.ts setting-manage/organize-manage/shift-setting",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-094",
+			"name": "重构 test-data.ts setting-manage/organize-manage/staff-info",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-095",
+			"name": "重构 test-data.ts setting-manage/organize-manage/working-schedule",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-096",
+			"name": "重构 test-data.ts setting-manage/system-manage/change-password",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/system-manage/change-password/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-097",
+			"name": "重构 test-data.ts setting-manage/system-manage/community-configuration",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/system-manage/community-configuration/test-data.ts",
+			"command": ""
+		},
+		{
+			"id": "td-098",
+			"name": "重构 test-data.ts setting-manage/system-manage/initialize-cell",
+			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
+			"priority": "medium",
+			"status": "todo",
+			"dependencies": [],
+			"tags": [
+				"test-data"
+			],
+			"filePath": "apps/admin/src/pages/setting-manage/system-manage/initialize-cell/test-data.ts",
+			"command": ""
+		}
+	],
+	"metadata": {
+		"version": "1.1",
+		"description": "test-data.ts 格式重构任务（tableData 字面量数组，遵循 make-list-page 规范）",
+		"created": "2025-12-08",
+		"updated": "2025-12-08T00:00:00.000Z",
+		"totalTasks": 98,
+		"completedTasks": 0
+	}
+}
