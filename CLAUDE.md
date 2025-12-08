@@ -273,12 +273,10 @@ pnpm -F @01s-11comm/admin typecheck
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 生成接口时的代码风格
+## 获取技术栈对应的上下文
 
-以下文件的代码风格，可供你学习。在接下来的接口生成中，请使用这些代码风格：
+### taskmaster-ai
 
-- `apps\admin\src\api\c5\payment-audit\index.ts`
-- `apps\admin\src\api\c5\payment-audit\index.test.ts`
+- [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
-- `apps\admin\src\api\c5\arrears\index.ts`
-- `apps\admin\src\api\c5\arrears\index.test.ts`
+我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
