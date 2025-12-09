@@ -138,3 +138,13 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 1. 阅读文档 https://v3.nitro.build/deploy/providers/cloudflare#cloudflare-workers 。
 2. 按照文档要求，配置项目部署目标为 cloudflare worker 。
 
+## 15 修复 cz 无法运行并交互的错误
+
+我在运行 cz 命令时，会出现错误，请帮我修复该错误：
+
+```log
+PS D:\code\github-desktop-store\01s-11comm> cz
+cz-cli@4.3.1, cz-git@1.12.0
+
+Unexpected token '*', "[*.{js,jsx,"... is not valid JSON
+```
