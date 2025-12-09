@@ -5,9 +5,7 @@
 
 # 处理 nitro 插件在 github workflow 出现的故障
 
-在 github workflow 内，运行 `apps\admin\package.json` 的 build 命令，出现以下报错。
-
-这很奇怪，在 cloudflare worker 的流水线都没有出现这些故障，为什么 github workflow 就出现这些错误呢？
+在 github workflow 和 cloudflare worker 流水线，运行 `apps\admin\package.json` 的 build 命令，出现以下报错。
 
 阅读以下错误日志，并修复错误。
 
@@ -76,7 +74,6 @@ Exit status 1
  ELIFECYCLE  Command failed with exit code 1.
 Error: Process completed with exit code 1.
 ```
-
 
 ## 01 回答问题
 
