@@ -14,6 +14,11 @@ packages:
 overrides:
   "css-select@^5.2.1": "5.2.0"
 
+catalog:
+  vuepress: "2.0.0-rc.18"
+  search-insights: "^2.9.0"
+  stylelint-order: "^7.0.0"
+
 allowedDeprecatedVersions:
   "are-we-there-yet": "*"
   "sourcemap-codec": "*"
