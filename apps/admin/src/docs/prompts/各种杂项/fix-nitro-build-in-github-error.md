@@ -1,3 +1,8 @@
+<!-- 
+  一次性提示词
+  未完成
+ -->
+
 # 处理 nitro 插件在 github workflow 出现的故障
 
 在 github workflow 内，运行 `apps\admin\package.json` 的 build 命令，出现以下报错。
