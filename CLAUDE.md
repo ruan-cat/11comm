@@ -280,3 +280,10 @@ pnpm -F @01s-11comm/admin typecheck
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
+
+### nitro
+
+- https://github.com/unjs/nitro
+- https://v3.nitro.build/
+
+这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。
