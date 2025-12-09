@@ -140,8 +140,6 @@ const { message: Mzt } = require("/home/runner/work/11comm/11comm/apps/admin/src
 
 ## 015 处理故障
 
-<!-- TODO: -->
-
 在 github workflow 内，运行 `apps\admin\package.json` 的 build 命令，出现以下报错。
 
 这很奇怪，在 cloudflare worker 的流水线都没有出现这些故障，为什么 github workflow 就出现这些错误呢？
@@ -190,3 +188,22 @@ Cached:    0 cached, 1 total
   Time:    1m13.364s
 Failed:    @01s-11comm/admin#vite:build:prod
 ```
+
+### 01 回答问题
+
+当前错误：fdir/dist/index.mjs 里 import { createRequire } from "module"，Vite/rollup 将 module 替成 \_\_vite-browser-external（不导出 createRequire）导致构建失败。错误只在 GitHub Workflow 跑 pnpm run build（即 turbo → @01s-11comm/admin#vite:build:prod）时出现。
+工程现状：apps/admin Vite 配置启用了 nitro() 插件，nitro.config.ts 设为 preset: "cloudflare_module" 且 nodeCompat: true。仓库内没有 pnpm-lock.yaml，rg 没找到任何对 fdir 的源码引用，说明它来自某个未锁定的三方依赖。
+CI 流程：.github/workflows/ci.yaml 在 Ubuntu 上用 Node 22.14.0、全量递归安装，再跑 pnpm run ci → pnpm run build → turbo。Cloudflare worker 流水线的具体安装/构建命令暂未知。
+为避免瞎改，我需要确认几件事：
+
+1. 允许你在本地装依赖并运行 pnpm why fdir、pnpm -F @01s-11comm/admin vite:build:prod 复现/定位。
+2. Cloudflare worker 流水线用的确切命令是 `vite:build:prod` 。
+3. 不新增 pnpm-lock.yaml 来锁定依赖版本。
+4. nitro 全栈构建必须在每次 CI 的 web 前端构建里运行。
+5. 不强制要求保留 nodeCompat: true / cloudflare_module 这一 preset？（关系到是否可以通过 external/stub 方式规避 fdir 依赖）
+
+确认后我会按需执行：定位 fdir 的引入链 → 给出最小改动（如锁版本、external/stub、或按环境开关 nitro）→ 调整配置并跑 pnpm -F @01s-11comm/admin typecheck。
+
+另外，我需要你制作可以在命令行内传递 nitro preset 的命令。制作两个命令，一个是传递 `cloudflare_module` 的，另一个是传递默认预设的。
+
+具体可以参考文档 https://v3.nitro.build/ 。
