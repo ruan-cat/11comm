@@ -22,7 +22,7 @@
     "vite:dev": "NODE_OPTIONS=--max-old-space-size=4096 vite --mode development --configLoader runner",
     "vite:build:prod": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
     "vite:build:prod:cloudflare": "NITRO_PRESET=cloudflare_module NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
-    "vite:build:prod:default": "NITRO_PRESET=node-server NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
+    "vite:build:prod:github": "NITRO_PRESET=github_pages NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
     "vite:build:staging": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode staging --configLoader runner",
     "vite:preview": "vite preview --configLoader runner",
     "typecheck": "tsc --noEmit && vue-tsc --noEmit --skipLibCheck",
@@ -35,7 +35,7 @@
     "preinstall": "npx only-allow pnpm",
     "rm:types": "tsx ./scripts/del-types.ts",
     "format": "pnpm lint:prettier",
-    "build:github": "pnpm vite:build:prod:default"
+    "build:github": "pnpm vite:build:prod:github"
   },
   "keywords": [
     "vue-pure-admin",
