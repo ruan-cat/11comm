@@ -34,7 +34,8 @@
     "lint": "pnpm lint:eslint && pnpm lint:prettier && pnpm lint:stylelint",
     "preinstall": "npx only-allow pnpm",
     "rm:types": "tsx ./scripts/del-types.ts",
-    "format": "pnpm lint:prettier"
+    "format": "pnpm lint:prettier",
+    "build:github": "pnpm vite:build:prod:default"
   },
   "keywords": [
     "vue-pure-admin",

@@ -41,7 +41,8 @@
 		"changelog:conventional-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"changelog:commit-and-tag-version": "commit-and-tag-version",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
-		"ci": "pnpm run build"
+		"ci": "pnpm run build",
+		"ci:github": "pnpm -F=@01s-11comm/admin build:github"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^5.4.1",
@@ -54,7 +55,6 @@
 		"@ruan-cat/domains": "^1.7.0",
 		"@ruan-cat/generate-code-workspace": "^0.6.0",
 		"@ruan-cat/taze-config": "^0.3.0",
-		"@ruan-cat/utils": "^4.16.0",
 		"@ruan-cat/vercel-deploy-tool": "^0.12.0",
 		"@shixinde/apifox-swagger": "^4.3.1",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
