@@ -6,13 +6,6 @@
 
 在运行 `cz` (commitizen) 命令时，系统抛出 JSON 解析错误，导致无法正常进行 git 提交交互：
 
-```log
-PS D:\code\github-desktop-store\01s-11comm> cz
-cz-cli@4.3.1, cz-git@1.12.0
-
-Unexpected token '*', "[*.{js,jsx,"... is not valid JSON
-```
-
 ### 1.2 影响范围
 
 - **影响的命令：** `cz`、`git-cz`、`commit`
@@ -59,29 +52,7 @@ overrides:
    cz
    ```
 
-3. 观察错误输出：
-
-   ```log
-   cz-cli@4.3.1, cz-git@1.12.0
-
-   Unexpected token '*', "[*.{js,jsx,"... is not valid JSON
-   ```
-
 ### 2.3 完整错误堆栈
-
-```log
-<anonymous_script>:1
-[*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,css,scss,sass,less,styl}]
- ^
-
-SyntaxError: Unexpected token '*', "[*.{js,jsx,"... is not valid JSON
-    at JSON.parse (<anonymous>)
-    at D:\code\github-desktop-store\01s-11comm\node_modules\.pnpm\@ruan-cat+commitlint-config_4638246320b95a8d9776e00d79ee1bac\node_modules\@ruan-cat\commitlint-config\dist\index.cjs:396:28
-    at Array.map (<anonymous>)
-    at getPackagesNameAndDescription (D:\code\github-desktop-store\01s-11comm\node_modules\.pnpm\@ruan-cat+commitlint-config_4638246320b95a8d9776e00d79ee1bac\node_modules\@ruan-cat\commitlint-config\dist\index.cjs:394:36)
-    at getScopes (D:\code\github-desktop-store\01s-11comm\node_modules\.pnpm\@ruan-cat+commitlint-config_4638246320b95a8d9776e00d79ee1bac\node_modules\@ruan-cat\commitlint-config\dist\index.cjs:456:10)
-    at Object.<anonymous> (D:\code\github-desktop-store\01s-11comm\node_modules\.pnpm\@ruan-cat+commitlint-config_4638246320b95a8d9776e00d79ee1bac\node_modules\@ruan-cat\commitlint-config\dist\index.cjs:582:33)
-```
 
 **关键信息：** 错误发生在 `index.cjs:396` 行的 `JSON.parse()` 调用处。
 
@@ -108,35 +79,43 @@ packages:
 
 #### 3.3.1 正常流程（预期行为）
 
+::: v-pre
+
 ```mermaid
 graph TD
     A[读取 pnpm-workspace.yaml] --> B[获取 packages 数组]
     B --> C[过滤出有效的包路径模式]
-    C --> D[仅处理: 'apps/*']
+    C --> D[仅处理: apps/*]
     D --> E[使用 tinyglobby 匹配 package.json]
     E --> F[读取并解析 JSON 文件]
     F --> G[成功获取包信息]
 ```
 
+:::
+
 #### 3.3.2 实际流程（错误行为）
+
+::: v-pre
 
 ```mermaid
 graph TD
     A[读取 pnpm-workspace.yaml] --> B[获取 packages 数组]
-    B --> C{未过滤 negation patterns}
-    C --> D[处理: 'apps/*' ✓]
-    C --> E[处理: '!examples/*' ✗]
-    C --> F[处理: '!.vercel/**' ✗]
+    B --> C[未过滤 negation patterns]
+    C --> D[处理 apps/* ✓]
+    C --> E[处理 !examples/* ✗]
+    C --> F[处理 !.vercel/** ✗]
     E --> G[构造错误的 glob 模式]
-    G --> H["D:/path/!examples/*/package.json"]
+    G --> H[D:/path/!examples/*/package.json]
     H --> I[tinyglobby 匹配所有文件]
     I --> J[匹配到 .editorconfig]
     I --> K[匹配到 .env]
     I --> L[匹配到 .gitignore]
     I --> M[匹配到其他非 JSON 文件]
     J --> N[尝试 JSON.parse 解析 .editorconfig]
-    N --> O[抛出错误: Unexpected token '*']
+    N --> O[抛出错误 Unexpected token *]
 ```
+
+:::
 
 ### 3.4 关键代码段分析
 
@@ -175,7 +154,7 @@ export function getPackagesNameAndDescription() {
 
 1. **字符串拼接结果：**
 
-   ```plain
+   ```log
    join(process.cwd(), "!examples/*", "package.json")
    = "D:/code/github-desktop-store/01s-11comm/!examples/*/package.json"
    ```
@@ -187,7 +166,7 @@ export function getPackagesNameAndDescription() {
 
 3. **匹配到的文件列表（部分）：**
 
-   ```plain
+   ```log
    examples/01s-origin/.editorconfig       ← 内容: [*.{js,jsx,...}]
    examples/01s-origin/.env
    examples/01s-origin/.gitignore
@@ -204,45 +183,6 @@ export function getPackagesNameAndDescription() {
 ---
 
 ## 4. 解决方案
-
-### 4.1 临时解决方案（已实施）
-
-创建补丁文件 `fix-commitlint-patch.cjs`，在 `pnpm install` 后运行该脚本：
-
-```javascript
-/**
- * 临时补丁文件，用于修复 @ruan-cat/commitlint-config 包的 negation pattern 处理问题
- */
-const fs = require('fs');
-const path = require('path');
-
-const targetFile = path.join(
-  __dirname,
-  'node_modules/.pnpm/@ruan-cat+commitlint-config_4638246320b95a8d9776e00d79ee1bac/node_modules/@ruan-cat/commitlint-config/dist/index.cjs'
-);
-
-let content = fs.readFileSync(targetFile, 'utf-8');
-
-const searchPattern = '  pkgPatterns.map((pkgPattern) => {';
-const replacement = `  // 过滤掉以 ! 开头的 negation patterns\n  const filteredPkgPatterns = pkgPatterns.filter(pattern => !pattern.startsWith('!'));\n  filteredPkgPatterns.map((pkgPattern) => {`;
-
-if (content.includes(searchPattern)) {
-  content = content.replace(searchPattern, replacement);
-  fs.writeFileSync(targetFile, content, 'utf-8');
-  console.log('✅ 修复成功！已过滤 negation patterns。');
-}
-```
-
-**使用方法：**
-
-```bash
-node fix-commitlint-patch.cjs
-```
-
-**限制：**
-
-- ⚠️ 每次运行 `pnpm install` 后需要重新应用补丁
-- ⚠️ 仅针对特定版本的包路径
 
 ### 4.2 长期解决方案（推荐）
 
