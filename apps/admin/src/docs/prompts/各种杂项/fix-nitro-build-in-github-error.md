@@ -134,4 +134,4 @@ CI 流程：.github/workflows/ci.yaml 在 Ubuntu 上用 Node 22.14.0、全量递
 1. 根据报告 `apps\admin\src\docs\reports\2025-12-09-nitro-build-ruan-cat-utils-version-fix.md` 所述，既然是 `@ruan-cat/utils` 的故障，我现在已经修复了 `@ruan-cat/utils` 的故障，并且刚才更新了依赖，请你帮我改成不使用 overrides 的方案。
 2. 在 `pnpm-workspace.yaml` 内，不对特定依赖做覆盖。
 3. 升级这些被覆盖依赖的版本，升级到最新版本。
-4. 运行 `apps\admin\package.json` 的 `vite:build:prod:cloudflare` 和 `vite:build:prod:github` 命令，检查是否还会出现以上问题。
+4. 运行 `apps\admin\package.json` 的 `vite:build:prod:cloudflare` 和 `vite:build:prod:github` 命令，检查是否还会出现 `apps\admin\src\docs\prompts\各种杂项\fix-nitro-build-in-github-error.md` 报告第一段落所述的问题。
