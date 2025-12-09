@@ -116,6 +116,9 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 - 报告文件名称命名要求：
   1. 前缀以日期命名。包括年月日。日期格式 `YYYY-MM-DD` 。
   2. 用小写英文加短横杠的方式命名。
+- 报告的一级标题： 必须是日期`YYYY-MM-DD`+报告名的格式。
+  - 好的例子： `2025-12-09 修复 @ruan-cat/commitlint-config 包的 negation pattern 处理错误` 。前缀包含有 `YYYY-MM-DD` 日期。
+  - 糟糕的例子： `构建与 fdir/Vite 事件复盘报告` 。前缀缺少 `YYYY-MM-DD` 日期。
 - 报告语言： 默认用简体中文。
 
 ## 注意事项
