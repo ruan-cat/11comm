@@ -69,7 +69,7 @@ overrides:
 
 ### 2.3 完整错误堆栈
 
-```plain
+```log
 <anonymous_script>:1
 [*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,css,scss,sass,less,styl}]
  ^
