@@ -14,14 +14,14 @@ export default defineConfig({
 		composables: pathResolve("./src/composables", import.meta.url),
 	},
 	compatibilityDate: "2024-09-19",
-  // 不提供任何写死的预设了 需要在运行命令的环境变量 NITRO_PRESET 内传入
+	// 不提供任何写死的预设了 需要在运行命令的环境变量 NITRO_PRESET 内传入
 	// preset: "cloudflare_module",
 	cloudflare: {
 		deployConfig: true,
 		nodeCompat: true,
-    wrangler: {
-      // 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
-      name: "01s-11comm-admin-nitro",
-    },
+		wrangler: {
+			// 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
+			name: "01s-11comm-admin-nitro",
+		},
 	},
 });

@@ -1,17 +1,17 @@
-<!-- 
+<!--
   一次性提示词
   未完成
  -->
 
 # 处理 nitro 插件在 github workflow 出现的故障
 
-在 github workflow 和 cloudflare worker 流水线，运行 `apps\admin\package.json` 的 build 命令，出现以下报错。
+在本地、 github workflow 和 cloudflare worker 流水线这三个环境内，运行 `apps\admin\package.json` 的 `build` 、`vite:build:prod:cloudflare` 和 `vite:build:prod:github` 命令，都会出现以下报错。
 
 阅读以下错误日志，并修复错误。
 
 ```log
-[start] [nitro] Building [Client]
-vite v7.2.7 building client environment for production...
+◐ Building [Client]                                                            nitro 13:42:44
+vite v7.1.12 building for production...
 ╭─────────────────────────────────────────────╮
 │ 您好! 欢迎使用 pure-admin 开源项目          │
 │ 我们为您精心准备了下面两个贴心的保姆级文档  │
@@ -23,57 +23,73 @@ vite v7.2.7 building client environment for production...
 ╰────────────────────────────────────────────────────────────╯
 mk ./types/components-in-components-path.d.ts success
 
-transforming...
-[plugin vite:resolve] Module "path" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_async-validator@4.2.5_change-case@5.4.4_focus-trap@7.6.6_js-yaml_7739e684ebfe00a34e975a4d6c3fb936/node_modules/@ruan-cat/utils/dist/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_async-validator@4.2.5_change-case@5.4.4_focus-trap@7.6.6_js-yaml_7739e684ebfe00a34e975a4d6c3fb936/node_modules/@ruan-cat/utils/dist/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/tinyglobby@0.2.15/node_modules/tinyglobby/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "path" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/tinyglobby@0.2.15/node_modules/tinyglobby/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "url" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/tinyglobby@0.2.15/node_modules/tinyglobby/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_async-validator@4.2.5_change-case@5.4.4_focus-trap@7.6.6_js-yaml_7739e684ebfe00a34e975a4d6c3fb936/node_modules/@ruan-cat/utils/src/monorepo.ts". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_async-validator@4.2.5_change-case@5.4.4_focus-trap@7.6.6_js-yaml_7739e684ebfe00a34e975a4d6c3fb936/node_modules/@ruan-cat/utils/src/monorepo.ts". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "module" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "path" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "/home/runner/work/11comm/11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_asyn_eb8b6534a56ee78f33261f5b71752370/node_modules/@ruan-cat/utils/dist/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_asyn_eb8b6534a56ee78f33261f5b71752370/node_modules/@ruan-cat/utils/dist/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_asyn_eb8b6534a56ee78f33261f5b71752370/node_modules/@ruan-cat/utils/src/monorepo.ts". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/@ruan-cat+utils@4.18.0_asyn_eb8b6534a56ee78f33261f5b71752370/node_modules/@ruan-cat/utils/src/monorepo.ts". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/tinyglobby@0.2.15/node_modules/tinyglobby/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/tinyglobby@0.2.15/node_modules/tinyglobby/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:url" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/tinyglobby@0.2.15/node_modules/tinyglobby/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:module" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:path" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:fs" has been externalized for browser compatibility, imported by "D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
 ✓ 6656 modules transformed.
-✗ Build failed in 38.25s
+✗ Build failed in 33.87s
 error during build:
 ../../node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs (1:9): "createRequire" is not exported by "__vite-browser-external", imported by "../../node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs".
-file: /home/runner/work/11comm/11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs:1:9
+file: D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.3/node_modules/fdir/dist/index.mjs:1:9
 
 1: import { createRequire } from "module";
             ^
 2: import { basename, dirname, normalize, relative, resolve, sep } from "path";
 3: import * as nativeFs from "fs";
 
-    at getRollupError (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
-    at error (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
-    at Module.error (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16956:16)
-    at Module.traceVariable (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:17412:29)
-    at ModuleScope.findVariable (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:15076:39)
-    at Identifier.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:5423:40)
-    at CallExpression.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
-    at CallExpression.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:12123:15)
-    at VariableDeclarator.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
-    at VariableDeclaration.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
-    at Program.bind (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
-    at Module.bindReferences (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16935:18)
-    at Graph.sortModules (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22746:20)
-    at Graph.build (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22644:14)
-    at async file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:23335:13
-    at async catchUnfinishedHookActions (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22805:16)
-    at async rollupInternal (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:23330:5)
-    at async buildEnvironment (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.2_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.95.0_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33540:12)
-    at async Object.build (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.2_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.95.0_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33899:19)
-    at async buildEnvironments (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/nitro@3.0.1-alpha.1_@vercel+blob@1.0.2_chokidar@4.0.3_lru-cache@11.2.4_rollup@4.53.3_vi_311daca585b35d37a43cbdb6d1c970bf/node_modules/nitro/dist/_build/vite.plugin.mjs:156:3)
-    at async Object.buildApp (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.2_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.95.0_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:33893:5)
-    at async CAC.<anonymous> (file:///home/runner/work/11comm/11comm/node_modules/.pnpm/vite@7.2.7_@types+node@24.10.2_jiti@2.6.1_less@4.4.2_lightningcss@1.30.2_sass@1.95.0_tsx@4.21.0_yaml@2.8.2/node_modules/vite/dist/node/cli.js:629:3)
+    at getRollupError (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16956:16)
+    at Module.traceVariable (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:17412:29)
+    at ModuleScope.findVariable (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:15076:39)
+    at Identifier.bind (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:5423:40)
+    at CallExpression.bind (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
+    at CallExpression.bind (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:12123:15)
+    at VariableDeclarator.bind (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2813:23)
+    at VariableDeclaration.bind (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
+    at Program.bind (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:2809:28)
+    at Module.bindReferences (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:16935:18)
+    at Graph.sortModules (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22746:20)
+    at Graph.build (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22644:14)
+    at async file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:23335:13
+    at async catchUnfinishedHookActions (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:22805:16)
+    at async rollupInternal (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/rollup@4.53.3/node_modules/rollup/dist/es/shared/node-entry.js:23330:5)
+    at async buildEnvironment (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._3fdb25a548868c1edd81e3462ec52546/node_modules/vite/dist/node/chunks/config.js:33771:12)
+    at async Object.build (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._3fdb25a548868c1edd81e3462ec52546/node_modules/vite/dist/node/chunks/config.js:34129:19)
+    at async buildEnvironments (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/nitro@3.0.1-alpha.1_@vercel_b41fba7e78e056adfc11b8630bfbe598/node_modules/nitro/dist/_build/vite.plugin.mjs:156:3)
+    at async Object.buildApp (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._3fdb25a548868c1edd81e3462ec52546/node_modules/vite/dist/node/chunks/config.js:34123:5)
+    at async CAC.<anonymous> (file:///D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._3fdb25a548868c1edd81e3462ec52546/node_modules/vite/dist/node/cli.js:629:3)
  ELIFECYCLE  Command failed with exit code 1.
-/home/runner/work/11comm/11comm/apps/admin:
- ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @01s-11comm/admin@6.0.0 build:github: `pnpm vite:build:prod:github`
-Exit status 1
- ELIFECYCLE  Command failed with exit code 1.
-Error: Process completed with exit code 1.
 ```
+
+1. 请你对比当前的 git 提交信息，重点对比阅读 `🔧 config(prompt,config,admin)!: 配置 nitro 部署到 cloudflare worker 内` ，即 `Commit: 2c41183cb68d9a6ca393fc82d6d4b4dfd290d1ec` 的提交。对比现在的内容个和 main 分支内容的差异。仔细研究一下，为什么 main 分支的构建行为是成功的？
+
+## 05 解决方案
+
+**问题根源**：`@ruan-cat/utils` 版本 `4.18.0` 引入了 Node.js 特定的代码（使用了 `node:path`、`node:fs` 等模块），这些代码在 Nitro 进行客户端构建时被错误地包含，导致 Vite 将这些模块外部化为 `__vite-browser-external`，从而引发 `createRequire is not exported` 错误。
+
+**修复方法**：将 `@ruan-cat/utils` 版本从 `^4.16.0`（实际安装了 `4.18.0`）锁定到 `4.16.0`。
+
+**具体步骤**：
+
+1. 在 `apps/admin/package.json` 中，将 `"@ruan-cat/utils": "^4.16.0"` 修改为 `"@ruan-cat/utils": "4.16.0"`
+2. 运行 `pnpm install` 重新安装依赖
+3. 运行 `pnpm vite:build:prod` 验证构建成功
+
+**关键发现**：
+
+- main 分支和 dev 分支都受到此问题影响，说明这是一个系统性问题
+- 问题不在于 Vite、Nitro 或 pnpm-workspace.yaml 的 overrides 配置
+- 问题出在依赖版本漂移：`^4.16.0` 允许安装 `4.18.0`，而 `4.18.0` 包含了不兼容的代码
+
+**预防措施**：对于包含 Node.js 特定代码的核心依赖，应该使用精确版本号而不是语义化版本范围。
 
 ## 01 回答问题
 

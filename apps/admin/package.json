@@ -72,7 +72,7 @@
     "@pureadmin/descriptions": "^1.2.1",
     "@pureadmin/table": "^3.3.0",
     "@pureadmin/utils": "^2.6.3",
-    "@ruan-cat/utils": "^4.16.0",
+    "@ruan-cat/utils": "4.16.0",
     "@vue-flow/background": "^1.3.2",
     "@vue-flow/core": "^1.48.0",
     "@vue/shared": "^3.5.25",
