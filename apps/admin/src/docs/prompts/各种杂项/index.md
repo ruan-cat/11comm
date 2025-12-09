@@ -207,3 +207,7 @@ CI 流程：.github/workflows/ci.yaml 在 Ubuntu 上用 Node 22.14.0、全量递
 另外，我需要你制作可以在命令行内传递 nitro preset 的命令。制作两个命令，一个是传递 `cloudflare_module` 的，另一个是传递默认预设的。
 
 具体可以参考文档 https://v3.nitro.build/ 。
+
+### 02 升级依赖
+
+请问我是否可以通过升级 vite tinyglobby fdir 等依赖，升级到最新版，以便解决该故障？我不太喜欢这种依赖包 overrides 的处理方案。
