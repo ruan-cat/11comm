@@ -13,6 +13,9 @@ packages:
 
 overrides:
   "css-select@^5.2.1": "5.2.0"
+  vite: 7.1.12
+  tinyglobby: 0.2.15
+  fdir: 6.5.0
 
 allowedDeprecatedVersions:
   "are-we-there-yet": "*"
