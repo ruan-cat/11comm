@@ -147,4 +147,14 @@ PS D:\code\github-desktop-store\01s-11comm> cz
 cz-cli@4.3.1, cz-git@1.12.0
 
 Unexpected token '*', "[*.{js,jsx,"... is not valid JSON
+
+```
+
+请你帮我检查一下，是不是配置了 overrides 才导致的依赖版本对不上的故障，导致了我的 `@ruan-cat/commitlint-config` 使用失败？
+
+```yaml
+overrides:
+  vite: 7.1.12
+  tinyglobby: 0.2.15
+  fdir: 6.5.0
 ```
