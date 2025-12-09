@@ -85,5 +85,5 @@ vite.config.ts.*.mjs
 # 忽略turbo任务调度产生的缓存目录
 .turbo
 
-
-.vercel
+# 忽略wrangler部署配置文件
+.wrangler
