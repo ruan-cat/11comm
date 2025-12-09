@@ -211,3 +211,12 @@ CI 流程：.github/workflows/ci.yaml 在 Ubuntu 上用 Node 22.14.0、全量递
 ### 02 升级依赖
 
 请问我是否可以通过升级 vite tinyglobby fdir 等依赖，升级到最新版，以便解决该故障？我不太喜欢这种依赖包 overrides 的处理方案。
+
+### 03 工作收尾
+
+很好。
+
+1. 请你暂存 git 工作区，生成一个中文说明的 git commit，说明清楚你的改动。
+2. 将分支合并到 dev 分支内。
+3. 删除掉你刚才新创建的本地验证分支 `chore/vite-upgrade-validation` 。
+4. 将你的修改方式，和验证方式，总结成可以复用的经验。编写成报告供我复盘总结。
