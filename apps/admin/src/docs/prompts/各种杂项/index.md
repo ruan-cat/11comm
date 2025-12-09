@@ -220,3 +220,9 @@ CI 流程：.github/workflows/ci.yaml 在 Ubuntu 上用 Node 22.14.0、全量递
 2. 将分支合并到 dev 分支内。
 3. 删除掉你刚才新创建的本地验证分支 `chore/vite-upgrade-validation` 。
 4. 将你的修改方式，和验证方式，总结成可以复用的经验。编写成报告供我复盘总结。
+
+### 04 消除 peer warning
+
+1. 请你帮我消除 peer warning 信息。
+2. 去 pnpm-workspace.yaml 内补全对等 peer 依赖清单。
+3. 安装依赖，并检查日志是否出现对等依赖缺失的信息。
