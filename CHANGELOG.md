@@ -1,3 +1,44 @@
+## v0.4.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.3.0...v0.4.0)
+
+### 🐞 修复缺陷
+
+- **config:** ⚠️  处理配置故障，只要满足一个配置，就生成。 ([be55b23](https://github.com/ruan-cat/11comm/commit/be55b23))
+
+### 🦄 代码重构
+
+- **config,package.json:** ⚠️  按照 vercel-deploy-tool 的新版本要求，重构配置文件。 ([b676cf4](https://github.com/ruan-cat/11comm/commit/b676cf4))
+
+### 📃 文档更新
+
+- **claude:** ⚠️  增加规范，不允许使用函数的形式批量生成。 ([57972c6](https://github.com/ruan-cat/11comm/commit/57972c6))
+
+### 🐳 其他修改
+
+- **prompt,admin:** ⚠️  设计任务【根据 `.taskmaster\tasks\tasks.json` ，初始化 openspec 规格的任务】 ([7a2d2d2](https://github.com/ruan-cat/11comm/commit/7a2d2d2))
+
+### 📦 依赖更新
+
+- **package.json:** 根包安装工具包项目，便于复用配置。 ([715e425](https://github.com/ruan-cat/11comm/commit/715e425))
+
+### 🔧 更新配置
+
+- **config:** ⚠️  更新发版工具的版本号生成配置。 ([49c77a1](https://github.com/ruan-cat/11comm/commit/49c77a1))
+- **config:** 调整生成标题的逻辑 ([bd6b8f0](https://github.com/ruan-cat/11comm/commit/bd6b8f0))
+
+#### ⚠️ Breaking Changes
+
+- **config:** ⚠️  处理配置故障，只要满足一个配置，就生成。 ([be55b23](https://github.com/ruan-cat/11comm/commit/be55b23))
+- **config,package.json:** ⚠️  按照 vercel-deploy-tool 的新版本要求，重构配置文件。 ([b676cf4](https://github.com/ruan-cat/11comm/commit/b676cf4))
+- **claude:** ⚠️  增加规范，不允许使用函数的形式批量生成。 ([57972c6](https://github.com/ruan-cat/11comm/commit/57972c6))
+- **prompt,admin:** ⚠️  设计任务【根据 `.taskmaster\tasks\tasks.json` ，初始化 openspec 规格的任务】 ([7a2d2d2](https://github.com/ruan-cat/11comm/commit/7a2d2d2))
+- **config:** ⚠️  更新发版工具的版本号生成配置。 ([49c77a1](https://github.com/ruan-cat/11comm/commit/49c77a1))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.3.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.2.3...v0.3.0)
