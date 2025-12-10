@@ -11,15 +11,15 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type 系统配置_列表数据, type 系统配置_列表查询_VO, tableData as mockTableData } from "./test-data";
 import {
-	type SystemConfigFormProps,
-	defaultForm,
-	type 系统配置表单_VO,
+	type 系统配置_列表数据,
+	type 系统配置_列表查询_VO,
+	tableData as mockTableData,
 	配置类型Options,
 	配置分组Options,
 	状态Options,
-} from "./components/form";
+} from "./test-data";
+import { type SystemConfigFormProps, defaultForm, type 系统配置表单_VO } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);

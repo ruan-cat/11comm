@@ -1,5 +1,5 @@
 import type { OptionsType } from "plus-pro-components";
-import { 单元格类型Options, 状态Options } from "../test-data";
+export { 单元格类型Options, 状态Options } from "../test-data";
 
 // ==================== 联合类型定义 ====================
 

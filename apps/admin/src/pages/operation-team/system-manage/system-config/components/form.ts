@@ -35,33 +35,7 @@ export interface 系统配置表单_VO {
 
 // ==================== 常量定义 ====================
 
-/** 配置类型下拉选项 */
-export const 配置类型Options: OptionsType = [
-	{ label: "文本", value: "文本" },
-	{ label: "数字", value: "数字" },
-	{ label: "布尔值", value: "布尔值" },
-	{ label: "JSON", value: "JSON" },
-	{ label: "日期时间", value: "日期时间" },
-	{ label: "文件路径", value: "文件路径" },
-	{ label: "URL", value: "URL" },
-];
-
-/** 配置分组下拉选项 */
-export const 配置分组Options: OptionsType = [
-	{ label: "系统基础", value: "系统基础" },
-	{ label: "业务配置", value: "业务配置" },
-	{ label: "第三方服务", value: "第三方服务" },
-	{ label: "安全设置", value: "安全设置" },
-	{ label: "通知设置", value: "通知设置" },
-	{ label: "日志配置", value: "日志配置" },
-	{ label: "缓存配置", value: "缓存配置" },
-];
-
-/** 状态下拉选项 */
-export const 状态Options: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];
+export { 配置类型Options, 配置分组Options, 状态Options } from "../test-data";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 系统配置表单_VO = {
