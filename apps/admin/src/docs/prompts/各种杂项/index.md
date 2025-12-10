@@ -158,3 +158,9 @@ overrides:
   tinyglobby: 0.2.15
   fdir: 6.5.0
 ```
+
+## 16 根据 `.taskmaster\tasks\tasks.json` ，初始化 openspec 规格的任务
+
+1. 请你全量阅读 `.taskmaster\tasks\tasks.json` 文件格式。
+2. 阅读 `.claude\agents\make-list-page.md` 关于【用 `假数据文件` `test-data.ts` 来存储业务类型与假数据】章节，了解清楚数据格式的处理要求。
+3. 请你将这个文件，转换成可以被 openspec 识别的一揽子任务。
