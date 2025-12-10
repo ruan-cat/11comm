@@ -81,70 +81,70 @@
 ### 3.6 property-manage/house-property-manage
 
 - [x] td-049 重构 test-data.ts `property-manage/house-property-manage/house`
-- [ ] td-050 重构 test-data.ts `property-manage/house-property-manage/invoice-title`
-- [ ] td-051 重构 test-data.ts `property-manage/house-property-manage/invoice`
-- [ ] td-052 重构 test-data.ts `property-manage/house-property-manage/owner-account`
-- [ ] td-053 重构 test-data.ts `property-manage/house-property-manage/owner-information`
-- [ ] td-054 重构 test-data.ts `property-manage/house-property-manage/owner-member`
-- [ ] td-055 重构 test-data.ts `property-manage/house-property-manage/owners-committee`
-- [ ] td-056 重构 test-data.ts `property-manage/house-property-manage/reserve-venue-order`
-- [ ] td-057 重构 test-data.ts `property-manage/house-property-manage/reserve-venue`
-- [ ] td-058 重构 test-data.ts `property-manage/house-property-manage/site-management`
+- [x] td-050 重构 test-data.ts `property-manage/house-property-manage/invoice-title`
+- [x] td-051 重构 test-data.ts `property-manage/house-property-manage/invoice`
+- [x] td-052 重构 test-data.ts `property-manage/house-property-manage/owner-account`
+- [x] td-053 重构 test-data.ts `property-manage/house-property-manage/owner-information`
+- [x] td-054 重构 test-data.ts `property-manage/house-property-manage/owner-member`
+- [x] td-055 重构 test-data.ts `property-manage/house-property-manage/owners-committee`
+- [x] td-056 重构 test-data.ts `property-manage/house-property-manage/reserve-venue-order`
+- [x] td-057 重构 test-data.ts `property-manage/house-property-manage/reserve-venue`
+- [x] td-058 重构 test-data.ts `property-manage/house-property-manage/site-management`
 
 ### 3.7 property-manage/parking-manage
 
-- [ ] td-059 重构 test-data.ts `property-manage/parking-manage/carport-apply`
-- [ ] td-060 重构 test-data.ts `property-manage/parking-manage/carport-info`
-- [ ] td-061 重构 test-data.ts `property-manage/parking-manage/owner-vehicle`
-- [ ] td-062 重构 test-data.ts `property-manage/parking-manage/parking-lot`
+- [x] td-059 重构 test-data.ts `property-manage/parking-manage/carport-apply`
+- [x] td-060 重构 test-data.ts `property-manage/parking-manage/carport-info`
+- [x] td-061 重构 test-data.ts `property-manage/parking-manage/owner-vehicle`
+- [x] td-062 重构 test-data.ts `property-manage/parking-manage/parking-lot`
 
 ### 3.8 property-manage/patrol-manage
 
-- [ ] td-063 重构 test-data.ts `property-manage/patrol-manage/detail`
-- [ ] td-064 重构 test-data.ts `property-manage/patrol-manage/item`
-- [ ] td-065 重构 test-data.ts `property-manage/patrol-manage/path`
-- [ ] td-066 重构 test-data.ts `property-manage/patrol-manage/plan`
-- [ ] td-067 重构 test-data.ts `property-manage/patrol-manage/point`
-- [ ] td-068 重构 test-data.ts `property-manage/patrol-manage/task`
+- [x] td-063 重构 test-data.ts `property-manage/patrol-manage/detail`
+- [x] td-064 重构 test-data.ts `property-manage/patrol-manage/item`
+- [x] td-065 重构 test-data.ts `property-manage/patrol-manage/path`
+- [x] td-066 重构 test-data.ts `property-manage/patrol-manage/plan`
+- [x] td-067 重构 test-data.ts `property-manage/patrol-manage/point`
+- [x] td-068 重构 test-data.ts `property-manage/patrol-manage/task`
 
 ### 3.9 property-manage/repairs-manage
 
-- [ ] td-069 重构 test-data.ts `property-manage/repairs-manage/issues`
-- [ ] td-070 重构 test-data.ts `property-manage/repairs-manage/mandatory-return-issue`
-- [ ] td-071 重构 test-data.ts `property-manage/repairs-manage/phone-report-repairs`
-- [ ] td-072 重构 test-data.ts `property-manage/repairs-manage/repairs-have-done`
-- [ ] td-073 重构 test-data.ts `property-manage/repairs-manage/repairs-setting`
-- [ ] td-074 重构 test-data.ts `property-manage/repairs-manage/repairs-todo`
-- [ ] td-075 重构 test-data.ts `property-manage/repairs-manage/return-visit`
+- [x] td-069 重构 test-data.ts `property-manage/repairs-manage/issues`
+- [x] td-070 重构 test-data.ts `property-manage/repairs-manage/mandatory-return-issue`
+- [x] td-071 重构 test-data.ts `property-manage/repairs-manage/phone-report-repairs`
+- [x] td-072 重构 test-data.ts `property-manage/repairs-manage/repairs-have-done`
+- [x] td-073 重构 test-data.ts `property-manage/repairs-manage/repairs-setting`
+- [x] td-074 重构 test-data.ts `property-manage/repairs-manage/repairs-todo`
+- [x] td-075 重构 test-data.ts `property-manage/repairs-manage/return-visit`
 
 ### 3.10 property-manage/report-manage
 
-- [ ] td-076 重构 test-data.ts `property-manage/report-manage/arrears-details-list`
-- [ ] td-077 重构 test-data.ts `property-manage/report-manage/data-statistics`
-- [ ] td-078 重构 test-data.ts `property-manage/report-manage/deposit-report`
-- [ ] td-079 重构 test-data.ts `property-manage/report-manage/expense-summary-table`
-- [ ] td-080 重构 test-data.ts `property-manage/report-manage/fee-reminder`
-- [ ] td-081 重构 test-data.ts `property-manage/report-manage/no-charge-house`
-- [ ] td-082 重构 test-data.ts `property-manage/report-manage/outstanding-fees-analysis`
-- [ ] td-083 重构 test-data.ts `property-manage/report-manage/owner-payment-details`
-- [ ] td-084 重构 test-data.ts `property-manage/report-manage/patrol-report`
-- [ ] td-085 重构 test-data.ts `property-manage/report-manage/payment-details-form`
-- [ ] td-086 重构 test-data.ts `property-manage/report-manage/repair-report-form`
-- [ ] td-087 重构 test-data.ts `property-manage/report-manage/repair-reports-summary-table`
-- [ ] td-088 重构 test-data.ts `property-manage/report-manage/statement-expenses`
+- [x] td-076 重构 test-data.ts `property-manage/report-manage/arrears-details-list`
+- [x] td-077 重构 test-data.ts `property-manage/report-manage/data-statistics`
+- [x] td-078 重构 test-data.ts `property-manage/report-manage/deposit-report`
+- [x] td-079 重构 test-data.ts `property-manage/report-manage/expense-summary-table`
+- [x] td-080 重构 test-data.ts `property-manage/report-manage/fee-reminder`
+- [x] td-081 重构 test-data.ts `property-manage/report-manage/no-charge-house`
+- [x] td-082 重构 test-data.ts `property-manage/report-manage/outstanding-fees-analysis`
+- [x] td-083 重构 test-data.ts `property-manage/report-manage/owner-payment-details`
+- [x] td-084 重构 test-data.ts `property-manage/report-manage/patrol-report`
+- [x] td-085 重构 test-data.ts `property-manage/report-manage/payment-details-form`
+- [x] td-086 重构 test-data.ts `property-manage/report-manage/repair-report-form`
+- [x] td-087 重构 test-data.ts `property-manage/report-manage/repair-reports-summary-table`
+- [x] td-088 重构 test-data.ts `property-manage/report-manage/statement-expenses`
 
 ### 3.11 setting-manage/organize-manage
 
-- [ ] td-089 重构 test-data.ts `setting-manage/organize-manage/data-permission`
-- [ ] td-090 重构 test-data.ts `setting-manage/organize-manage/org-info`
-- [ ] td-091 重构 test-data.ts `setting-manage/organize-manage/role-permission`
-- [ ] td-092 重构 test-data.ts `setting-manage/organize-manage/scheduling-setting`
-- [ ] td-093 重构 test-data.ts `setting-manage/organize-manage/shift-setting`
-- [ ] td-094 重构 test-data.ts `setting-manage/organize-manage/staff-info`
-- [ ] td-095 重构 test-data.ts `setting-manage/organize-manage/working-schedule`
+- [x] td-089 重构 test-data.ts `setting-manage/organize-manage/data-permission`
+- [x] td-090 重构 test-data.ts `setting-manage/organize-manage/org-info`
+- [x] td-091 重构 test-data.ts `setting-manage/organize-manage/role-permission`
+- [x] td-092 重构 test-data.ts `setting-manage/organize-manage/scheduling-setting`
+- [x] td-093 重构 test-data.ts `setting-manage/organize-manage/shift-setting`
+- [x] td-094 重构 test-data.ts `setting-manage/organize-manage/staff-info`
+- [x] td-095 重构 test-data.ts `setting-manage/organize-manage/working-schedule`
 
 ### 3.12 setting-manage/system-manage
 
-- [ ] td-096 重构 test-data.ts `setting-manage/system-manage/change-password`
-- [ ] td-097 重构 test-data.ts `setting-manage/system-manage/community-configuration`
-- [ ] td-098 重构 test-data.ts `setting-manage/system-manage/initialize-cell`
+- [x] td-096 重构 test-data.ts `setting-manage/system-manage/change-password`
+- [x] td-097 重构 test-data.ts `setting-manage/system-manage/community-configuration`
+- [x] td-098 重构 test-data.ts `setting-manage/system-manage/initialize-cell`
