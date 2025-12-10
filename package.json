@@ -55,6 +55,7 @@
 		"@ruan-cat/domains": "^1.7.0",
 		"@ruan-cat/generate-code-workspace": "^0.7.1",
 		"@ruan-cat/taze-config": "^1.0.1",
+		"@ruan-cat/utils": "4.19.0",
 		"@ruan-cat/vercel-deploy-tool": "^1.2.2",
 		"@shixinde/apifox-swagger": "^4.3.1",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
