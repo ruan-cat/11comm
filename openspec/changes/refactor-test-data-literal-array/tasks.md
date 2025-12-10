@@ -26,8 +26,8 @@
 - [x] td-011 重构 test-data.ts `operation-team/merchant-manage/merchant-admin`
 - [x] td-012 重构 test-data.ts `operation-team/merchant-manage/merchant-info`
 - [x] td-013 重构 test-data.ts `operation-team/report-configuration/report-component`
-- [ ] td-014 重构 test-data.ts `operation-team/report-configuration/report-group`
-- [ ] td-015 重构 test-data.ts `operation-team/report-configuration/report-info`
+- [x] td-014 重构 test-data.ts `operation-team/report-configuration/report-group`
+- [x] td-015 重构 test-data.ts `operation-team/report-configuration/report-info`
 - [ ] td-016 重构 test-data.ts `operation-team/system-manage/change-password`
 - [ ] td-017 重构 test-data.ts `operation-team/system-manage/community-configuration`
 - [ ] td-018 重构 test-data.ts `operation-team/system-manage/initialize-cell`

@@ -174,7 +174,7 @@
 			"name": "重构 test-data.ts operation-team/report-configuration/report-group",
 			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
 			"priority": "medium",
-			"status": "todo",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"test-data"
@@ -187,7 +187,7 @@
 			"name": "重构 test-data.ts operation-team/report-configuration/report-info",
 			"description": "按 .claude/agents/make-list-page.md 规范重构 test-data.ts，tableData 必须为字面量数组，不得用函数生成；校验字段与 index.vue 一致。",
 			"priority": "medium",
-			"status": "todo",
+			"status": "done",
 			"dependencies": [],
 			"tags": [
 				"test-data"

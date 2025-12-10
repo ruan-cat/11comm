@@ -10,7 +10,7 @@ export interface 报表信息_列表数据 {
 /** 报表信息列表查询参数类型 */
 export interface 报表信息_列表查询_VO {
 	报表编号?: string;
-	组编号?: string;
+	报表组?: string;
 	选项标题?: string;
 }
 

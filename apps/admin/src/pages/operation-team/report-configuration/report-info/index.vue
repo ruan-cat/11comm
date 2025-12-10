@@ -92,7 +92,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  */
 const plusSearchModelRef: FieldValues & 报表信息_列表查询_VO = {
 	报表编号: "",
-	组编号: "",
+	报表组: "",
 	选项标题: "",
 };
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -113,10 +113,10 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 	},
 
-	// 组编号
+	// 报表组
 	{
-		label: "组编号",
-		prop: "组编号",
+		label: "报表组",
+		prop: "报表组",
 		valueType: "input",
 	},
 
@@ -148,8 +148,8 @@ async function loadTableData() {
 		if (plusSearchModel.value.报表编号) {
 			filteredData = filteredData.filter((item) => item.报表编号.includes(plusSearchModel.value.报表编号!));
 		}
-		if (plusSearchModel.value.组编号) {
-			filteredData = filteredData.filter((item) => item.报表组.includes(plusSearchModel.value.组编号!));
+	if (plusSearchModel.value.报表组) {
+		filteredData = filteredData.filter((item) => item.报表组.includes(plusSearchModel.value.报表组!));
 		}
 		if (plusSearchModel.value.选项标题) {
 			filteredData = filteredData.filter((item) => item.选项标题.includes(plusSearchModel.value.选项标题!));
@@ -214,7 +214,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					组编号: (row?.报表组 as "测试报表组" | "巡检报表" | "营业报表" | "报修报表") || "报修报表",
+					报表组: row?.报表组 || "",
 					选项标题: row?.选项标题 || "",
 					排序: row?.排序 || "",
 					描述: row?.描述 || "",

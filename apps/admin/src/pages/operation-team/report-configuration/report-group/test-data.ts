@@ -1,5 +1,22 @@
+/** 报表组列表数据类型 */
+export interface 报表组_列表数据 {
+	groupId: string;
+	name: string;
+	url: string;
+	remark: string;
+}
+
+/** 报表组列表查询参数类型 */
+export interface 报表组_列表查询_VO {
+	pageIndex?: number;
+	pageSize?: number;
+	groupId?: string;
+	name?: string;
+	url?: string;
+}
+
 /** 表格数据 */
-export const tableData: ReportGroupInfo[] = [
+export const tableData: 报表组_列表数据[] = [
 	{
 		groupId: "RG001",
 		name: "基础数据报表组",
