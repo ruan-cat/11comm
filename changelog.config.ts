@@ -12,21 +12,20 @@ export default {
 
 	/** @see https://github.com/viapip/ozon-tracker/blob/master/changelogen.config.json */
 	types: Object.fromEntries(
-		commitTypes.map((commitType) => {
-			const { type, description, emoji } = commitType;
-			return [
-				type,
-				{
-					title: `${emoji} ${description}`,
-					hidden: !isConditionsSome([
-						() => type === "feat",
-						() => type === "fix",
-						() => type === "refactor",
-						() => type === "build",
-					]),
-				},
-			];
-		}),
+		commitTypes
+			.map((commitType) => {
+				const { type, description, emoji } = commitType;
+				return [type, { title: `${emoji} ${description}` }];
+			})
+			.filter(([type]) =>
+				isConditionsSome([
+					() => type === "feat",
+					() => type === "fix",
+					() => type === "refactor",
+					() => type === "build",
+					() => type === "config",
+				]),
+			),
 	),
 
 	templates: {
