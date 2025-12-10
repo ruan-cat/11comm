@@ -41,8 +41,7 @@
 		"changelog:conventional-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"changelog:commit-and-tag-version": "commit-and-tag-version",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
-		"ci": "pnpm run build",
-		"ci:github": "pnpm -F=@01s-11comm/admin build:github"
+		"ci": "pnpm run build"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^5.4.1",
