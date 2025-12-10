@@ -51,7 +51,33 @@ export interface 初始化单元格_列表查询_VO {
 }
 
 // ==================== 常量定义 ====================
-// 选项常量已移至 components/form.ts 中，避免重复定义
+
+/**
+ * 单元格类型选项
+ */
+export const 单元格类型Options: OptionsType = [
+	{ label: "住宅单元", value: "住宅单元" },
+	{ label: "商业单元", value: "商业单元" },
+	{ label: "车库单元", value: "车库单元" },
+	{ label: "办公单元", value: "办公单元" },
+	{ label: "会所单元", value: "会所单元" },
+	{ label: "物业单元", value: "物业单元" },
+	{ label: "运动单元", value: "运动单元" },
+	{ label: "教育单元", value: "教育单元" },
+	{ label: "医疗单元", value: "医疗单元" },
+	{ label: "仓储单元", value: "仓储单元" },
+	{ label: "文化单元", value: "文化单元" },
+];
+
+/**
+ * 状态选项
+ */
+export const 状态Options: OptionsType = [
+	{ label: "已初始化", value: "已初始化" },
+	{ label: "未初始化", value: "未初始化" },
+	{ label: "初始化中", value: "初始化中" },
+	{ label: "初始化失败", value: "初始化失败" },
+];
 
 // ==================== 表格假数据 ====================
 

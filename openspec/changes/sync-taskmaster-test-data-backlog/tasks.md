@@ -9,9 +9,9 @@
 
 ## 2. 转换与校验
 
-- [ ] 2.1 按域分组导入 98 条任务（ID、路径、状态保持一致）。
-- [ ] 2.2 校验任务总数=98、已完成=15，并与 `.taskmaster/tasks/tasks.json` 元数据一致。
-- [ ] 2.3 运行 `openspec validate sync-taskmaster-test-data-backlog --strict` 无错误。
+- [x] 2.1 按域分组导入 98 条任务（ID、路径、状态保持一致）。
+- [x] 2.2 校验任务总数=98、已完成=15，并与 `.taskmaster/tasks/tasks.json` 元数据一致。
+- [x] 2.3 运行 `openspec validate sync-taskmaster-test-data-backlog --strict` 无错误。
 
 ## 3. 具体任务清单
 
@@ -35,9 +35,9 @@
 - [x] td-013 重构 test-data.ts `operation-team/report-configuration/report-component`
 - [x] td-014 重构 test-data.ts `operation-team/report-configuration/report-group`
 - [x] td-015 重构 test-data.ts `operation-team/report-configuration/report-info`
-- [ ] td-016 重构 test-data.ts `operation-team/system-manage/change-password`
-- [ ] td-017 重构 test-data.ts `operation-team/system-manage/community-configuration`
-- [ ] td-018 重构 test-data.ts `operation-team/system-manage/initialize-cell`
+- [x] td-016 重构 test-data.ts `operation-team/system-manage/change-password`
+- [x] td-017 重构 test-data.ts `operation-team/system-manage/community-configuration`
+- [x] td-018 重构 test-data.ts `operation-team/system-manage/initialize-cell`
 - [ ] td-019 重构 test-data.ts `operation-team/system-manage/register-protocol`
 - [ ] td-020 重构 test-data.ts `operation-team/system-manage/system-config`
 
