@@ -37,18 +37,6 @@ export interface 产权登记表单_VO {
 	状态: string;
 }
 
-/** 单条表格数据 */
-const tableDataItem: 产权登记_列表数据 = {
-	房屋产权ID: "FR2024001",
-	房屋ID: "H001",
-	房屋编号: "1-101",
-	姓名: "张三",
-	联系方式: "13800138000",
-	身份证号: "320101199001011234",
-	地址: "江苏省南京市某某街道某某号1-101",
-	状态: "审核通过",
-};
-
 /** 审核状态选项 */
 export const 审核状态Options: OptionsType = [
 	{
@@ -114,21 +102,108 @@ export const 单元Options: OptionsType = [
 ];
 
 /** 表格数据 */
-export const tableData: 产权登记_列表数据[] = Array(35)
-	.fill(null)
-	.map((_, index) => ({
-		房屋产权ID: `FR2024${String(index + 1).padStart(3, "0")}`,
-		房屋ID: `H${String(Math.floor(index / 20) + 1).padStart(3, "0")}`,
-		房屋编号: `${String(Math.floor(index / 4) + 1)}-${String((index % 4) + 1).padStart(2, "0")}${String(Math.floor(index / 8) + 1)}`,
-		姓名:
-			["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"][index % 8] +
-			["", "小", "大", "老"][index % 4] +
-			["伟", "芳", "强", "丽", "华", "明", "红", "军"][index % 8],
-		联系方式: `1${3 + Math.floor(Math.random() * 7)}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}`,
-		身份证号: `${3 + Math.floor(Math.random() * 2)}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}${String(Math.floor(Math.random() * 10))}`,
-		地址: `江苏省${["南京市", "苏州市", "无锡市", "常州市", "南通市", "连云港市", "淮安市", "盐城市"][index % 8]}某某街道某某号${String(Math.floor(index / 4) + 1)}-${String((index % 4) + 1).padStart(2, "0")}${String(Math.floor(index / 8) + 1)}`,
-		状态: ["未审核", "审核通过", "审核不通过"][index % 3],
-	}));
+export const tableData: 产权登记_列表数据[] = [
+	{
+		房屋产权ID: "FR2024001",
+		房屋ID: "H001",
+		房屋编号: "1-101",
+		姓名: "张三",
+		联系方式: "13800138001",
+		身份证号: "320101199001011234",
+		地址: "江苏省南京市某某街道某某号1-101",
+		状态: "未审核",
+	},
+	{
+		房屋产权ID: "FR2024002",
+		房屋ID: "H001",
+		房屋编号: "1-102",
+		姓名: "李四",
+		联系方式: "13800138002",
+		身份证号: "320101199001011235",
+		地址: "江苏省南京市某某街道某某号1-102",
+		状态: "审核通过",
+	},
+	{
+		房屋产权ID: "FR2024003",
+		房屋ID: "H001",
+		房屋编号: "1-103",
+		姓名: "王五",
+		联系方式: "13800138003",
+		身份证号: "320101199001011236",
+		地址: "江苏省南京市某某街道某某号1-103",
+		状态: "审核不通过",
+	},
+	{
+		房屋产权ID: "FR2024004",
+		房屋ID: "H001",
+		房屋编号: "1-104",
+		姓名: "赵六",
+		联系方式: "13800138004",
+		身份证号: "320101199001011237",
+		地址: "江苏省南京市某某街道某某号1-104",
+		状态: "未审核",
+	},
+	{
+		房屋产权ID: "FR2024005",
+		房屋ID: "H001",
+		房屋编号: "2-201",
+		姓名: "孙七",
+		联系方式: "13800138005",
+		身份证号: "320101199001011238",
+		地址: "江苏省南京市某某街道某某号2-201",
+		状态: "审核通过",
+	},
+	{
+		房屋产权ID: "FR2024006",
+		房屋ID: "H001",
+		房屋编号: "2-202",
+		姓名: "周八",
+		联系方式: "13800138006",
+		身份证号: "320101199001011239",
+		地址: "江苏省南京市某某街道某某号2-202",
+		状态: "审核不通过",
+	},
+	{
+		房屋产权ID: "FR2024007",
+		房屋ID: "H001",
+		房屋编号: "2-203",
+		姓名: "吴九",
+		联系方式: "13800138007",
+		身份证号: "320101199001011240",
+		地址: "江苏省南京市某某街道某某号2-203",
+		状态: "未审核",
+	},
+	{
+		房屋产权ID: "FR2024008",
+		房屋ID: "H001",
+		房屋编号: "2-204",
+		姓名: "郑十",
+		联系方式: "13800138008",
+		身份证号: "320101199001011241",
+		地址: "江苏省南京市某某街道某某号2-204",
+		状态: "审核通过",
+	},
+	{
+		房屋产权ID: "FR2024009",
+		房屋ID: "H001",
+		房屋编号: "3-301",
+		姓名: "陈一",
+		联系方式: "13800138009",
+		身份证号: "320101199001011242",
+		地址: "江苏省南京市某某街道某某号3-301",
+		状态: "审核不通过",
+	},
+	{
+		房屋产权ID: "FR2024010",
+		房屋ID: "H001",
+		房屋编号: "3-302",
+		姓名: "林二",
+		联系方式: "13800138010",
+		身份证号: "320101199001011243",
+		地址: "江苏省南京市某某街道某某号3-302",
+		状态: "未审核",
+	},
+];
 
 /** 默认表单数据 */
 export const defaultForm: 产权登记表单_VO = {
