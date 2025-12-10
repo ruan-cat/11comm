@@ -38,31 +38,31 @@
 - [x] td-016 重构 test-data.ts `operation-team/system-manage/change-password`
 - [x] td-017 重构 test-data.ts `operation-team/system-manage/community-configuration`
 - [x] td-018 重构 test-data.ts `operation-team/system-manage/initialize-cell`
-- [ ] td-019 重构 test-data.ts `operation-team/system-manage/register-protocol`
-- [ ] td-020 重构 test-data.ts `operation-team/system-manage/system-config`
+- [x] td-019 重构 test-data.ts `operation-team/system-manage/register-protocol`
+- [x] td-020 重构 test-data.ts `operation-team/system-manage/system-config`
 
 ### 3.3 property-manage/community-manage
 
-- [ ] td-021 重构 test-data.ts `property-manage/community-manage/building-space-structure-diagram`
-- [ ] td-022 重构 test-data.ts `property-manage/community-manage/handing-business`
-- [ ] td-023 重构 test-data.ts `property-manage/community-manage/house-decoration`
-- [ ] td-024 重构 test-data.ts `property-manage/community-manage/my`
-- [ ] td-025 重构 test-data.ts `property-manage/community-manage/notice`
-- [ ] td-026 重构 test-data.ts `property-manage/community-manage/parking-space-structure-diagram`
-- [ ] td-027 重构 test-data.ts `property-manage/community-manage/property-register`
+- [x] td-021 重构 test-data.ts `property-manage/community-manage/building-space-structure-diagram`
+- [x] td-022 重构 test-data.ts `property-manage/community-manage/handing-business`
+- [x] td-023 重构 test-data.ts `property-manage/community-manage/house-decoration`
+- [x] td-024 重构 test-data.ts `property-manage/community-manage/my`
+- [x] td-025 重构 test-data.ts `property-manage/community-manage/notice`
+- [x] td-026 重构 test-data.ts `property-manage/community-manage/parking-space-structure-diagram`
+- [x] td-027 重构 test-data.ts `property-manage/community-manage/property-register`
 
 ### 3.4 property-manage/contract-manage
 
-- [ ] td-028 重构 test-data.ts `property-manage/contract-manage/change`
-- [ ] td-029 重构 test-data.ts `property-manage/contract-manage/draft-contract`
-- [ ] td-030 重构 test-data.ts `property-manage/contract-manage/expire`
-- [ ] td-031 重构 test-data.ts `property-manage/contract-manage/first-party`
-- [ ] td-032 重构 test-data.ts `property-manage/contract-manage/type`
+- [x] td-028 重构 test-data.ts `property-manage/contract-manage/change`
+- [x] td-029 重构 test-data.ts `property-manage/contract-manage/draft-contract`
+- [x] td-030 重构 test-data.ts `property-manage/contract-manage/expire`
+- [x] td-031 重构 test-data.ts `property-manage/contract-manage/first-party`
+- [x] td-032 重构 test-data.ts `property-manage/contract-manage/type`
 
 ### 3.5 property-manage/expense-manage
 
-- [ ] td-033 重构 test-data.ts `property-manage/expense-manage/cancel-fee`
-- [ ] td-034 重构 test-data.ts `property-manage/expense-manage/contracte-charge`
+- [x] td-033 重构 test-data.ts `property-manage/expense-manage/cancel-fee`
+- [x] td-034 重构 test-data.ts `property-manage/expense-manage/contracte-charge`
 - [ ] td-035 重构 test-data.ts `property-manage/expense-manage/discount-apply`
 - [ ] td-036 重构 test-data.ts `property-manage/expense-manage/discount-setting`
 - [ ] td-037 重构 test-data.ts `property-manage/expense-manage/discount-type`

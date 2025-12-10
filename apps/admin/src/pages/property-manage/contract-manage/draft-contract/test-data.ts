@@ -47,74 +47,116 @@ export type OptionsType = {
 export const contractTypeOptionsData: OptionsType[] = contractTypeOptions;
 export const contractStatusOptionsData: OptionsType[] = contractStatusOptions;
 
-/** 生成模拟数据的辅助函数 */
-function generateMockData(index: number): 合同草稿_列表数据 {
-	const contractTypes = contractTypeOptions.map((item) => item.value);
-	const statuses = contractStatusOptionsData.map((item) => item.value);
-
-	const getRandomElement = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
-	const getRandomDate = (start: Date, end: Date) => {
-		return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString().split("T")[0];
-	};
-
-	const startDate = new Date("2024-01-01");
-	const endDate = new Date("2025-12-31");
-
-	const contractNames = [
-		"物业管理系统采购合同",
-		"园区安保服务合同",
-		"电梯维护保养合同",
-		"停车场管理合同",
-		"清洁服务外包合同",
-		"绿化养护合同",
-		"消防设备维护合同",
-		"智能化系统集成合同",
-		"物业管理服务合同",
-		"设备采购合同",
-		"维修服务合同",
-		"装修工程合同",
-		"安防监控合同",
-		"供水系统维护合同",
-		"供电系统维护合同",
-		"垃圾清运合同",
-	];
-
-	const contractManagers = [
-		"王经理",
-		"李主管",
-		"张主任",
-		"赵科长",
-		"陈助理",
-		"刘专员",
-		"孙总监",
-		"周秘书",
-		"吴顾问",
-		"郑代表",
-	];
-
-	const companyNames = [
-		"万科物业有限公司",
-		"碧桂园物业",
-		"恒大物业集团",
-		"保利物业",
-		"绿城服务",
-		"金地物业",
-		"中海物业",
-		"龙湖智慧服务",
-	];
-
-	return {
-		合同名称: `${companyNames[index % companyNames.length]}${contractNames[index % contractNames.length]}${index.toString().padStart(3, "0")}`,
-		合同编号: `HT${new Date().getFullYear()}${(index + 100).toString().padStart(4, "0")}`,
-		父合同编号: index % 4 === 0 ? `FHT${new Date().getFullYear() - 1}${(index + 50).toString().padStart(4, "0")}` : "",
-		合同类型: getRandomElement(contractTypes),
-		经办人: contractManagers[index % contractManagers.length],
-		合同金额: `¥${(Math.random() * 500000 + 50000).toFixed(2)}`,
-		开始时间: getRandomDate(startDate, endDate),
-		结束时间: getRandomDate(new Date("2025-01-01"), new Date("2027-12-31")),
-		状态: getRandomElement(statuses),
-	};
-}
-
-/** 生成35条模拟数据 */
-export const tableData: 合同草稿_列表数据[] = Array.from({ length: 35 }, (_, index) => generateMockData(index + 1));
+/** 表格数据 */
+export const tableData: 合同草稿_列表数据[] = [
+	{
+		合同名称: "万科物业有限公司物业管理系统采购合同001",
+		合同编号: "HT20240101",
+		父合同编号: "",
+		合同类型: "采购合同",
+		经办人: "王经理",
+		合同金额: "¥150000.00",
+		开始时间: "2024-01-10",
+		结束时间: "2026-01-09",
+		状态: "草稿",
+	},
+	{
+		合同名称: "碧桂园物业园区安保服务合同002",
+		合同编号: "HT20240102",
+		父合同编号: "FHT20230050",
+		合同类型: "服务合同",
+		经办人: "李主管",
+		合同金额: "¥280000.00",
+		开始时间: "2024-02-01",
+		结束时间: "2025-01-31",
+		状态: "审批中",
+	},
+	{
+		合同名称: "恒大物业集团电梯维护保养合同003",
+		合同编号: "HT20240103",
+		父合同编号: "",
+		合同类型: "维护合同",
+		经办人: "张主任",
+		合同金额: "¥85000.00",
+		开始时间: "2024-03-15",
+		结束时间: "2027-03-14",
+		状态: "已生效",
+	},
+	{
+		合同名称: "保利物业停车场管理合同004",
+		合同编号: "HT20240104",
+		父合同编号: "",
+		合同类型: "服务合同",
+		经办人: "赵科长",
+		合同金额: "¥120000.00",
+		开始时间: "2024-04-01",
+		结束时间: "2026-03-31",
+		状态: "已终止",
+	},
+	{
+		合同名称: "绿城服务清洁服务外包合同005",
+		合同编号: "HT20240105",
+		父合同编号: "FHT20230051",
+		合同类型: "服务合同",
+		经办人: "陈助理",
+		合同金额: "¥320000.00",
+		开始时间: "2024-05-01",
+		结束时间: "2025-04-30",
+		状态: "已过期",
+	},
+	{
+		合同名称: "金地物业绿化养护合同006",
+		合同编号: "HT20240106",
+		父合同编号: "",
+		合同类型: "服务合同",
+		经办人: "刘专员",
+		合同金额: "¥180000.00",
+		开始时间: "2024-06-01",
+		结束时间: "2027-05-31",
+		状态: "草稿",
+	},
+	{
+		合同名称: "中海物业消防设备维护合同007",
+		合同编号: "HT20240107",
+		父合同编号: "",
+		合同类型: "维护合同",
+		经办人: "孙总监",
+		合同金额: "¥95000.00",
+		开始时间: "2024-07-01",
+		结束时间: "2026-06-30",
+		状态: "审批中",
+	},
+	{
+		合同名称: "龙湖智慧服务智能化系统集成合同008",
+		合同编号: "HT20240108",
+		父合同编号: "FHT20230052",
+		合同类型: "采购合同",
+		经办人: "周秘书",
+		合同金额: "¥450000.00",
+		开始时间: "2024-08-01",
+		结束时间: "2025-07-31",
+		状态: "已生效",
+	},
+	{
+		合同名称: "万科物业有限公司物业管理服务合同009",
+		合同编号: "HT20240109",
+		父合同编号: "",
+		合同类型: "服务合同",
+		经办人: "吴顾问",
+		合同金额: "¥550000.00",
+		开始时间: "2024-09-01",
+		结束时间: "2027-08-31",
+		状态: "已终止",
+	},
+	{
+		合同名称: "碧桂园物业设备采购合同010",
+		合同编号: "HT20240110",
+		父合同编号: "",
+		合同类型: "采购合同",
+		经办人: "郑代表",
+		合同金额: "¥220000.00",
+		开始时间: "2024-10-01",
+		结束时间: "2025-09-30",
+		状态: "已过期",
+	},
+];
