@@ -1,17 +1,32 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"tasks": {
-		"@01s-11comm/admin#build": {
+		"build": {
 			"cache": true,
-			"outputs": ["apps/admin/dist/**"]
+			"outputs": [
+				"**/dist/**",
+				"**/.output/**"
+			],
+			"dependsOn": [
+				"^build"
+			]
 		},
-		"@01s-11comm/admin#docs:build": {
+		"docs:build": {
 			"cache": true,
-			"outputs": ["**/.vitepress/dist/**", "apps/admin/src/.vitepress/dist/**"]
+			"outputs": [
+				"**/.vitepress/dist/**",
+				"**/.vuepress/dist/**"
+			],
+			"dependsOn": [
+				"^build"
+			]
 		},
 		"//#deploy": {
 			"cache": false,
-			"dependsOn": ["@01s-11comm/admin#build", "@01s-11comm/admin#docs:build"]
+			"dependsOn": [
+				"^build",
+				"^docs:build"
+			]
 		}
 	}
 }
