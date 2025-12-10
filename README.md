@@ -8,3 +8,7 @@
 
 - [前端技术文档](https://01s-10wms-frontend-docs.ruancat6312.top/)
 - [本项目技术文档](./apps/admin/src/docs/technical-doc.md)
+
+## 部署项目
+
+请阅读 [admin 项目的文档](./apps/admin/README.md)。

@@ -9,3 +9,7 @@
 - [pure-admin 仓库](https://github.com/pure-admin/vue-pure-admin)
 - [pure-admin 在线预览界面](https://pure-admin.github.io/vue-pure-admin/#/login)
 - [pure-admin 文档](https://pure-admin.cn/)
+
+## 项目部署
+
+点此[阅读文档](./src/docs/deploy/index.md)。
