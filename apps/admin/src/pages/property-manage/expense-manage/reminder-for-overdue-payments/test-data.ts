@@ -1,16 +1,29 @@
 import type { OptionsType } from "plus-pro-components";
-import { type 欠费催缴表单_VO, 催缴方式Options, 催缴状态Options } from "./components/form";
-
-export { 催缴方式Options, 催缴状态Options };
 
 // ==================== 类型定义 ====================
 
 /**
  * 欠费催缴列表数据类型
  */
-export interface 欠费催缴_列表数据 extends 欠费催缴表单_VO {
+export interface 欠费催缴_列表数据 {
 	/** 编号 */
 	编号: string;
+	/** 业主名称 */
+	业主名称: string;
+	/** 付费对象 */
+	付费对象: string;
+	/** 费用名称 */
+	费用名称: string;
+	/** 催缴金额 */
+	催缴金额: string;
+	/** 欠费时间段 */
+	欠费时间段: string;
+	/** 催缴方式 */
+	催缴方式: string;
+	/** 状态 */
+	状态: string;
+	/** 说明 */
+	说明: string;
 	/** 创建时间 */
 	创建时间: string;
 }
@@ -28,7 +41,26 @@ export interface 欠费催缴_列表查询_VO {
 }
 
 // ==================== 常量定义 ====================
-// 催缴方式选项和催缴状态选项已从 ./components/form 导入
+
+/**
+ * 催缴方式选项
+ */
+export const 催缴方式Options: OptionsType = [
+	{ label: "电话", value: "电话" },
+	{ label: "短信", value: "短信" },
+	{ label: "上门", value: "上门" },
+	{ label: "邮件", value: "邮件" },
+];
+
+/**
+ * 催缴状态选项
+ */
+export const 催缴状态Options: OptionsType = [
+	{ label: "待催缴", value: "待催缴" },
+	{ label: "催缴中", value: "催缴中" },
+	{ label: "已缴费", value: "已缴费" },
+	{ label: "催缴失败", value: "催缴失败" },
+];
 
 // ==================== 表格假数据 ====================
 

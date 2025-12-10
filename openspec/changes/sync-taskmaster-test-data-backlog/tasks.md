@@ -68,14 +68,14 @@
 - [x] td-037 重构 test-data.ts `property-manage/expense-manage/discount-type`
 - [x] td-038 重构 test-data.ts `property-manage/expense-manage/expense-item-setting`
 - [x] td-039 重构 test-data.ts `property-manage/expense-manage/expense-summary-table`
-- [ ] td-040 重构 test-data.ts `property-manage/expense-manage/house-charge`
-- [ ] td-041 重构 test-data.ts `property-manage/expense-manage/meter-reading-type`
-- [ ] td-042 重构 test-data.ts `property-manage/expense-manage/overdue-payment-information`
-- [ ] td-043 重构 test-data.ts `property-manage/expense-manage/payment-review`
-- [ ] td-044 重构 test-data.ts `property-manage/expense-manage/refund-review`
-- [ ] td-045 重构 test-data.ts `property-manage/expense-manage/reminder-for-overdue-payments`
-- [ ] td-046 重构 test-data.ts `property-manage/expense-manage/reprint-voucher`
-- [ ] td-047 重构 test-data.ts `property-manage/expense-manage/vehicle-charge`
+- [x] td-040 重构 test-data.ts `property-manage/expense-manage/house-charge`
+- [x] td-041 重构 test-data.ts `property-manage/expense-manage/meter-reading-type`
+- [x] td-042 重构 test-data.ts `property-manage/expense-manage/overdue-payment-information`
+- [x] td-043 重构 test-data.ts `property-manage/expense-manage/payment-review`
+- [x] td-044 重构 test-data.ts `property-manage/expense-manage/refund-review`
+- [x] td-045 重构 test-data.ts `property-manage/expense-manage/reminder-for-overdue-payments`
+- [x] td-046 重构 test-data.ts `property-manage/expense-manage/reprint-voucher`
+- [x] td-047 重构 test-data.ts `property-manage/expense-manage/vehicle-charge`
 - [ ] td-048 重构 test-data.ts `property-manage/expense-manage/water-and-electricity-meter-reading`
 
 ### 3.6 property-manage/house-property-manage

@@ -60,9 +60,9 @@ export const 状态Options: OptionsType = [
 	{ label: "停用", value: "停用" },
 ];
 
-/**
- * 表格假数据
- */
+// ==================== 表格假数据 ====================
+
+/** 表格假数据 */
 export const tableData: 抄表类型_列表数据[] = [
 	{
 		id: 1,
