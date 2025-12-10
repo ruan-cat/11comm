@@ -63,11 +63,11 @@
 
 - [x] td-033 重构 test-data.ts `property-manage/expense-manage/cancel-fee`
 - [x] td-034 重构 test-data.ts `property-manage/expense-manage/contracte-charge`
-- [ ] td-035 重构 test-data.ts `property-manage/expense-manage/discount-apply`
-- [ ] td-036 重构 test-data.ts `property-manage/expense-manage/discount-setting`
-- [ ] td-037 重构 test-data.ts `property-manage/expense-manage/discount-type`
-- [ ] td-038 重构 test-data.ts `property-manage/expense-manage/expense-item-setting`
-- [ ] td-039 重构 test-data.ts `property-manage/expense-manage/expense-summary-table`
+- [x] td-035 重构 test-data.ts `property-manage/expense-manage/discount-apply`
+- [x] td-036 重构 test-data.ts `property-manage/expense-manage/discount-setting`
+- [x] td-037 重构 test-data.ts `property-manage/expense-manage/discount-type`
+- [x] td-038 重构 test-data.ts `property-manage/expense-manage/expense-item-setting`
+- [x] td-039 重构 test-data.ts `property-manage/expense-manage/expense-summary-table`
 - [ ] td-040 重构 test-data.ts `property-manage/expense-manage/house-charge`
 - [ ] td-041 重构 test-data.ts `property-manage/expense-manage/meter-reading-type`
 - [ ] td-042 重构 test-data.ts `property-manage/expense-manage/overdue-payment-information`
