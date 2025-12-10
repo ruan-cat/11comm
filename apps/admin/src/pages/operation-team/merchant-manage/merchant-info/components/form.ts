@@ -1,5 +1,5 @@
 import { type Mode } from "@/composables/use-mode";
-import type { OptionsType } from "plus-pro-components";
+export { 商户类型选项, 经营状态选项 } from "../test-data";
 
 // ==================== 联合类型定义 ====================
 
@@ -46,27 +46,6 @@ export interface 商户信息_表单_VO {
 	/** 商户备注信息 */
 	备注: string;
 }
-
-// ==================== 枚举选项 ====================
-
-/** 商户类型下拉选项 */
-export const 商户类型选项: OptionsType = [
-	{ label: "餐饮服务", value: "餐饮服务" },
-	{ label: "零售商店", value: "零售商店" },
-	{ label: "生活服务", value: "生活服务" },
-	{ label: "休闲娱乐", value: "休闲娱乐" },
-	{ label: "教育培训", value: "教育培训" },
-	{ label: "医疗健康", value: "医疗健康" },
-	{ label: "其他", value: "其他" },
-];
-
-/** 经营状态下拉选项 */
-export const 经营状态选项: OptionsType = [
-	{ label: "正常营业", value: "正常营业" },
-	{ label: "暂停营业", value: "暂停营业" },
-	{ label: "准备开业", value: "准备开业" },
-	{ label: "已停业", value: "已停业" },
-];
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 商户信息_表单_VO = {

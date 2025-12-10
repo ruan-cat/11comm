@@ -1,4 +1,4 @@
-import { 商户类型选项, 经营状态选项 } from "./components/form";
+import type { OptionsType } from "plus-pro-components";
 
 /** 商户信息列表数据类型 */
 export interface 商户信息_列表数据 {
@@ -31,10 +31,23 @@ export interface 商户信息_列表查询_VO {
 }
 
 /** 商户类型下拉选项 */
-export { 商户类型选项 } from "./components/form";
+export const 商户类型选项: OptionsType = [
+	{ label: "餐饮服务", value: "餐饮服务" },
+	{ label: "零售商店", value: "零售商店" },
+	{ label: "生活服务", value: "生活服务" },
+	{ label: "休闲娱乐", value: "休闲娱乐" },
+	{ label: "教育培训", value: "教育培训" },
+	{ label: "医疗健康", value: "医疗健康" },
+	{ label: "其他", value: "其他" },
+];
 
 /** 经营状态下拉选项 */
-export { 经营状态选项 } from "./components/form";
+export const 经营状态选项: OptionsType = [
+	{ label: "正常营业", value: "正常营业" },
+	{ label: "暂停营业", value: "暂停营业" },
+	{ label: "准备开业", value: "准备开业" },
+	{ label: "已停业", value: "已停业" },
+];
 
 /** 表格假数据 */
 export const tableData: 商户信息_列表数据[] = [
