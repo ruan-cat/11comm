@@ -1,3 +1,19 @@
+## v0.5.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.4.0...v0.5.0)
+
+### 🔧 更新配置
+
+- **config:** ⚠️  更新配置，使用过滤语法筛选出需要的类型。 ([64ae5ba](https://github.com/ruan-cat/11comm/commit/64ae5ba))
+
+#### ⚠️ Breaking Changes
+
+- **config:** ⚠️  更新配置，使用过滤语法筛选出需要的类型。 ([64ae5ba](https://github.com/ruan-cat/11comm/commit/64ae5ba))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.4.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.3.0...v0.4.0)
