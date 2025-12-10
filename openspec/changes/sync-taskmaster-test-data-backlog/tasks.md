@@ -5,6 +5,7 @@
 - 来源：`.taskmaster/tasks/tasks.json` v1.1（2025-12-08），共 98 条 `test-data.ts` 重构任务。
 - 约束：`tableData` 使用字面量数组（禁止函数生成），字段与列表/搜索配置一致；下拉选项集中在 `test-data.ts` 并使用 `OptionsType`。
 - 状态：td-001~td-015 已完成，其余待办；需保持与 taskmaster 状态一致。
+- 与 `refactor-test-data-literal-array` 变更内容合并，统一在本变更下追踪。
 
 ## 2. 转换与校验
 

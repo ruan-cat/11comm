@@ -4,6 +4,7 @@
 
 - `.taskmaster/tasks/tasks.json` v1.1（2025-12-08）收敛了 98 条围绕 `test-data.ts` 的重构任务，要求 `tableData` 为字面量数组、字段与列表/搜索配置对齐、下拉选项集中在 `test-data.ts` 并使用 `OptionsType` 约束。
 - 现有 OpenSpec 仅有单一变更 `refactor-test-data-literal-array`，但需要一个独立、可校验的变更来映射 taskmaster 清单，便于后续迭代和状态同步。
+- `refactor-test-data-literal-array` 的提案/任务/规范内容已在此变更中并入，避免重复维护。
 - 需要在 OpenSpec 侧补全提案、任务清单与规范增量，确保列表页假数据改造按照 `.claude/agents/make-list-page.md` 的约束执行。
 
 ## 2. 目标
@@ -23,4 +24,3 @@
 - `tasks.md` 罗列 98 条任务，状态与 `.taskmaster/tasks/tasks.json` v1.1 保持一致，分组按域归类。
 - `specs/test-data-backlog/spec.md` 增加 backlog 对齐与 `test-data.ts` 生成约束的需求与场景。
 - `openspec validate sync-taskmaster-test-data-backlog --strict` 通过且无格式/解析错误。
-
