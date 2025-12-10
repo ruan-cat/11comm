@@ -99,5 +99,8 @@
 		"vue": "^3.5.25",
 		"vue-tsc": "^3.1.8",
 		"vuepress": "2.0.0-rc.18"
+	},
+	"dependencies": {
+		"@01s-11comm/admin": "workspace:^"
 	}
 }
