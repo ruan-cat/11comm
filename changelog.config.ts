@@ -14,17 +14,18 @@ export default {
 	types: Object.fromEntries(
 		commitTypes.map((commitType) => {
 			const { type, description, emoji } = commitType;
-
-			if (
-				isConditionsSome([
-					() => type === "feat",
-					() => type === "fix",
-					() => type === "refactor",
-					() => type === "build",
-				])
-			) {
-				return [type, { title: `${emoji} ${description}` }];
-			}
+			return [
+				type,
+				{
+					title: `${emoji} ${description}`,
+					hidden: !isConditionsSome([
+						() => type === "feat",
+						() => type === "fix",
+						() => type === "refactor",
+						() => type === "build",
+					]),
+				},
+			];
 		}),
 	),
 
