@@ -76,11 +76,11 @@
 - [x] td-045 重构 test-data.ts `property-manage/expense-manage/reminder-for-overdue-payments`
 - [x] td-046 重构 test-data.ts `property-manage/expense-manage/reprint-voucher`
 - [x] td-047 重构 test-data.ts `property-manage/expense-manage/vehicle-charge`
-- [ ] td-048 重构 test-data.ts `property-manage/expense-manage/water-and-electricity-meter-reading`
+- [x] td-048 重构 test-data.ts `property-manage/expense-manage/water-and-electricity-meter-reading`
 
 ### 3.6 property-manage/house-property-manage
 
-- [ ] td-049 重构 test-data.ts `property-manage/house-property-manage/house`
+- [x] td-049 重构 test-data.ts `property-manage/house-property-manage/house`
 - [ ] td-050 重构 test-data.ts `property-manage/house-property-manage/invoice-title`
 - [ ] td-051 重构 test-data.ts `property-manage/house-property-manage/invoice`
 - [ ] td-052 重构 test-data.ts `property-manage/house-property-manage/owner-account`
