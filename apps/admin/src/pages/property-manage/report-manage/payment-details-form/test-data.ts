@@ -125,7 +125,7 @@ export const tableData: 缴费明细表_表格数据[] = Array.from({ length: 35
 	const deduct = (index % 2) * 10;
 	const discount = (index % 3) * 5;
 	const gift = (index % 4) * 3;
-	const lateFee = (index % 3 === 0 ? 8 : 0);
+	const lateFee = index % 3 === 0 ? 8 : 0;
 
 	return {
 		订单号: `PAY${20250400 + index}`,
@@ -149,4 +149,3 @@ export const tableData: 缴费明细表_表格数据[] = Array.from({ length: 35
 		说明: index % 3 === 0 ? "提前缴费享受折扣" : "",
 	};
 });
-

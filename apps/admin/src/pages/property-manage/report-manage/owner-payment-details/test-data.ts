@@ -138,4 +138,3 @@ export const tableData: 业主缴费明细_表格数据[] = Array.from({ length:
 		预收: advance.toFixed(2),
 	};
 });
-

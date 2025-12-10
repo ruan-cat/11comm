@@ -94,7 +94,9 @@ export const tableData: 费用汇总表_表格数据[] = Array.from({ length: 35
 	const chargeRate = received / receivable;
 	const clearRate = paid / (paid + arrears);
 
-	const now = dayjs("2025-01-10 09:00:00").add(index, "day").add(index % 5, "hour");
+	const now = dayjs("2025-01-10 09:00:00")
+		.add(index, "day")
+		.add(index % 5, "hour");
 
 	return {
 		小区: community,
@@ -115,4 +117,3 @@ export const tableData: 费用汇总表_表格数据[] = Array.from({ length: 35
 		统计时间: now.format("YYYY-MM-DD HH:mm:ss"),
 	};
 });
-

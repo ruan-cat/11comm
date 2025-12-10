@@ -13,7 +13,7 @@ export default defineComponent({
 	setup(props, { slots }) {
 		return () => {
 			if (!slots) return null;
-			return hasAuth(props.value) ? slots.default?.() ?? null : null;
+			return hasAuth(props.value) ? (slots.default?.() ?? null) : null;
 		};
 	},
 });

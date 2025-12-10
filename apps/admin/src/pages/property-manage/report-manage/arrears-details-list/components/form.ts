@@ -37,4 +37,3 @@ export interface ArrearsDetailsFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 欠费明细表单_VO;
 }
-

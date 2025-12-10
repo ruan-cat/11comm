@@ -12,7 +12,7 @@ merchant-info:
   businessHours: 营业时间
   businessArea: 经营面积
   createTime: 创建时间
-  
+
   # 商户类型选项
   merchantTypeOptions:
     cateringService: 餐饮服务
@@ -22,14 +22,14 @@ merchant-info:
     educationTraining: 教育培训
     medicalHealth: 医疗健康
     other: 其他
-    
+
   # 经营状态选项
   operatingStatusOptions:
     normalOperation: 正常营业
     suspendedOperation: 暂停营业
     preparingToOpen: 准备开业
     closed: 已停业
-    
+
   # 操作按钮
   viewDetails: 查看详情
   merchantManagement: 商户管理

@@ -11,10 +11,9 @@ import type { FunctionalComponent } from "vue";
  * 一律以 `layout文件夹下面的文件名` 为准
  */
 type LayoutEnums = // 默认布局
-
-		| "index"
-		// 简单布局
-		| "simple";
+	| "index"
+	// 简单布局
+	| "simple";
 
 const userRoles = ["开发团队", "物业团队", "运营团队", "组织员工"] as const;
 type UserRoles = (typeof userRoles)[number];

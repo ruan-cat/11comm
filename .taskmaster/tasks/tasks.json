@@ -7,9 +7,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts",
 			"command": ""
 		},
@@ -20,9 +18,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/center/test-data.ts",
 			"command": ""
 		},
@@ -33,9 +29,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts",
 			"command": ""
 		},
@@ -46,9 +40,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/item/test-data.ts",
 			"command": ""
 		},
@@ -59,9 +51,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/type/test-data.ts",
 			"command": ""
 		},
@@ -72,9 +62,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts",
 			"command": ""
 		},
@@ -85,9 +73,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts",
 			"command": ""
 		},
@@ -98,9 +84,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts",
 			"command": ""
 		},
@@ -111,9 +95,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts",
 			"command": ""
 		},
@@ -124,9 +106,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts",
 			"command": ""
 		},
@@ -137,9 +117,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts",
 			"command": ""
 		},
@@ -150,9 +128,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts",
 			"command": ""
 		},
@@ -163,9 +139,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts",
 			"command": ""
 		},
@@ -176,9 +150,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts",
 			"command": ""
 		},
@@ -189,9 +161,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts",
 			"command": ""
 		},
@@ -202,9 +172,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts",
 			"command": ""
 		},
@@ -215,9 +183,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts",
 			"command": ""
 		},
@@ -228,9 +194,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts",
 			"command": ""
 		},
@@ -241,9 +205,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts",
 			"command": ""
 		},
@@ -254,9 +216,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts",
 			"command": ""
 		},
@@ -267,9 +227,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram/test-data.ts",
 			"command": ""
 		},
@@ -280,9 +238,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/handing-business/test-data.ts",
 			"command": ""
 		},
@@ -293,9 +249,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/house-decoration/test-data.ts",
 			"command": ""
 		},
@@ -306,9 +260,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/my/test-data.ts",
 			"command": ""
 		},
@@ -319,9 +271,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/notice/test-data.ts",
 			"command": ""
 		},
@@ -332,9 +282,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/test-data.ts",
 			"command": ""
 		},
@@ -345,9 +293,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/property-register/test-data.ts",
 			"command": ""
 		},
@@ -358,9 +304,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/change/test-data.ts",
 			"command": ""
 		},
@@ -371,9 +315,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/draft-contract/test-data.ts",
 			"command": ""
 		},
@@ -384,9 +326,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/expire/test-data.ts",
 			"command": ""
 		},
@@ -397,9 +337,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/first-party/test-data.ts",
 			"command": ""
 		},
@@ -410,9 +348,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/type/test-data.ts",
 			"command": ""
 		},
@@ -423,9 +359,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/cancel-fee/test-data.ts",
 			"command": ""
 		},
@@ -436,9 +370,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/contracte-charge/test-data.ts",
 			"command": ""
 		},
@@ -449,9 +381,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-apply/test-data.ts",
 			"command": ""
 		},
@@ -462,9 +392,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-setting/test-data.ts",
 			"command": ""
 		},
@@ -475,9 +403,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-type/test-data.ts",
 			"command": ""
 		},
@@ -488,9 +414,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-item-setting/test-data.ts",
 			"command": ""
 		},
@@ -501,9 +425,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-summary-table/test-data.ts",
 			"command": ""
 		},
@@ -514,9 +436,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/house-charge/test-data.ts",
 			"command": ""
 		},
@@ -527,9 +447,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/meter-reading-type/test-data.ts",
 			"command": ""
 		},
@@ -540,9 +458,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/overdue-payment-information/test-data.ts",
 			"command": ""
 		},
@@ -553,9 +469,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/payment-review/test-data.ts",
 			"command": ""
 		},
@@ -566,9 +480,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/refund-review/test-data.ts",
 			"command": ""
 		},
@@ -579,9 +491,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments/test-data.ts",
 			"command": ""
 		},
@@ -592,9 +502,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reprint-voucher/test-data.ts",
 			"command": ""
 		},
@@ -605,9 +513,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/vehicle-charge/test-data.ts",
 			"command": ""
 		},
@@ -618,9 +524,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading/test-data.ts",
 			"command": ""
 		},
@@ -631,9 +535,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/house/test-data.ts",
 			"command": ""
 		},
@@ -644,9 +546,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/invoice-title/test-data.ts",
 			"command": ""
 		},
@@ -657,9 +557,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/invoice/test-data.ts",
 			"command": ""
 		},
@@ -670,9 +568,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-account/test-data.ts",
 			"command": ""
 		},
@@ -683,9 +579,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-information/test-data.ts",
 			"command": ""
 		},
@@ -696,9 +590,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-member/test-data.ts",
 			"command": ""
 		},
@@ -709,9 +601,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owners-committee/test-data.ts",
 			"command": ""
 		},
@@ -722,9 +612,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/test-data.ts",
 			"command": ""
 		},
@@ -735,9 +623,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/test-data.ts",
 			"command": ""
 		},
@@ -748,9 +634,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/site-management/test-data.ts",
 			"command": ""
 		},
@@ -761,9 +645,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/carport-apply/test-data.ts",
 			"command": ""
 		},
@@ -774,9 +656,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/carport-info/test-data.ts",
 			"command": ""
 		},
@@ -787,9 +667,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/test-data.ts",
 			"command": ""
 		},
@@ -800,9 +678,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/parking-lot/test-data.ts",
 			"command": ""
 		},
@@ -813,9 +689,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/detail/test-data.ts",
 			"command": ""
 		},
@@ -826,9 +700,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/item/test-data.ts",
 			"command": ""
 		},
@@ -839,9 +711,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/path/test-data.ts",
 			"command": ""
 		},
@@ -852,9 +722,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/plan/test-data.ts",
 			"command": ""
 		},
@@ -865,9 +733,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/point/test-data.ts",
 			"command": ""
 		},
@@ -878,9 +744,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/task/test-data.ts",
 			"command": ""
 		},
@@ -891,9 +755,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/issues/test-data.ts",
 			"command": ""
 		},
@@ -904,9 +766,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/mandatory-return-issue/test-data.ts",
 			"command": ""
 		},
@@ -917,9 +777,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/phone-report-repairs/test-data.ts",
 			"command": ""
 		},
@@ -930,9 +788,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-have-done/test-data.ts",
 			"command": ""
 		},
@@ -943,9 +799,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-setting/test-data.ts",
 			"command": ""
 		},
@@ -956,9 +810,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-todo/test-data.ts",
 			"command": ""
 		},
@@ -969,9 +821,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/return-visit/test-data.ts",
 			"command": ""
 		},
@@ -982,9 +832,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/arrears-details-list/test-data.ts",
 			"command": ""
 		},
@@ -995,9 +843,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/data-statistics/test-data.ts",
 			"command": ""
 		},
@@ -1008,9 +854,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/deposit-report/test-data.ts",
 			"command": ""
 		},
@@ -1021,9 +865,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/expense-summary-table/test-data.ts",
 			"command": ""
 		},
@@ -1034,9 +876,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/fee-reminder/test-data.ts",
 			"command": ""
 		},
@@ -1047,9 +887,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/no-charge-house/test-data.ts",
 			"command": ""
 		},
@@ -1060,9 +898,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/outstanding-fees-analysis/test-data.ts",
 			"command": ""
 		},
@@ -1073,9 +909,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/owner-payment-details/test-data.ts",
 			"command": ""
 		},
@@ -1086,9 +920,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/patrol-report/test-data.ts",
 			"command": ""
 		},
@@ -1099,9 +931,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/payment-details-form/test-data.ts",
 			"command": ""
 		},
@@ -1112,9 +942,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/repair-report-form/test-data.ts",
 			"command": ""
 		},
@@ -1125,9 +953,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/repair-reports-summary-table/test-data.ts",
 			"command": ""
 		},
@@ -1138,9 +964,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/statement-expenses/test-data.ts",
 			"command": ""
 		},
@@ -1151,9 +975,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts",
 			"command": ""
 		},
@@ -1164,9 +986,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts",
 			"command": ""
 		},
@@ -1177,9 +997,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts",
 			"command": ""
 		},
@@ -1190,9 +1008,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts",
 			"command": ""
 		},
@@ -1203,9 +1019,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts",
 			"command": ""
 		},
@@ -1216,9 +1030,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts",
 			"command": ""
 		},
@@ -1229,9 +1041,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts",
 			"command": ""
 		},
@@ -1242,9 +1052,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/change-password/test-data.ts",
 			"command": ""
 		},
@@ -1255,9 +1063,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/community-configuration/test-data.ts",
 			"command": ""
 		},
@@ -1268,9 +1074,7 @@
 			"priority": "medium",
 			"status": "todo",
 			"dependencies": [],
-			"tags": [
-				"test-data"
-			],
+			"tags": ["test-data"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/initialize-cell/test-data.ts",
 			"command": ""
 		}

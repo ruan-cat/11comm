@@ -61,5 +61,6 @@ function generateRandomReturnVisit(index: number): 报修回访_列表数据 {
 }
 
 /** 表格假数据 */
-export const tableData: 报修回访_列表数据[] = Array.from({ length: 35 }, (_, index) => generateRandomReturnVisit(index + 1));
-
+export const tableData: 报修回访_列表数据[] = Array.from({ length: 35 }, (_, index) =>
+	generateRandomReturnVisit(index + 1),
+);

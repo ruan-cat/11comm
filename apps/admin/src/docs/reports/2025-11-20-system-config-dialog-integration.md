@@ -23,7 +23,14 @@
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type 系统配置_列表数据, type 系统配置_列表查询_VO, tableData as mockTableData, 配置类型Options, 配置分组Options, 状态Options } from "./test-data";
+import {
+	type 系统配置_列表数据,
+	type 系统配置_列表查询_VO,
+	tableData as mockTableData,
+	配置类型Options,
+	配置分组Options,
+	状态Options,
+} from "./test-data";
 import { type SystemConfigFormProps, defaultForm } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
 ```
@@ -143,12 +150,12 @@ function openDialog(params: { mode: Mode; row?: 系统配置_列表数据 }) {
 
 ### 4.2 表单验证
 
-1. ✅ 配置名称：必填，2-50字符
-2. ✅ 配置值：必填，1-1000字符
+1. ✅ 配置名称：必填，2-50 字符
+2. ✅ 配置值：必填，1-1000 字符
 3. ✅ 配置类型：必选
 4. ✅ 配置分组：必选
 5. ✅ 状态：必选
-6. ✅ 描述：选填，最多200字符
+6. ✅ 描述：选填，最多 200 字符
 
 ### 4.3 交互特性
 
@@ -156,7 +163,7 @@ function openDialog(params: { mode: Mode; row?: 系统配置_列表数据 }) {
 2. ✅ 表单验证和提交
 3. ✅ 按钮加载状态
 4. ✅ 弹框关闭时的数据检查
-5. ✅ 模拟异步操作（1.3秒延迟）
+5. ✅ 模拟异步操作（1.3 秒延迟）
 
 ## 5. 文件修改清单
 

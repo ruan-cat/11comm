@@ -76,7 +76,7 @@ function generateRandomDate(startDaysAgo: number, endDaysAgo: number = 0): strin
 	const end = new Date(now.getTime() - endDaysAgo * 24 * 60 * 60 * 1000);
 	const randomTime = start.getTime() + Math.random() * (end.getTime() - start.getTime());
 	const date = new Date(randomTime);
-	return date.toISOString().replace('T', ' ').substring(0, 19);
+	return date.toISOString().replace("T", " ").substring(0, 19);
 }
 
 // 缓存数据生成

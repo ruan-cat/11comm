@@ -90,14 +90,16 @@ export const tableData: 押金报表_表格数据[] = Array.from({ length: 35 })
 	const payType = 收费对象类型Options[index % 收费对象类型Options.length].value as string;
 	const feeType = 费用类型列表[index % 费用类型列表.length];
 	const feeItem = 费用项目名称Options[index % 费用项目名称Options.length].value as string;
-	const now = dayjs("2025-01-05 09:00:00").add(index, "day").add(index % 6, "hour");
+	const now = dayjs("2025-01-05 09:00:00")
+		.add(index, "day")
+		.add(index % 6, "hour");
 	const start = now.subtract(10, "day");
 	const end = now.add(20, "day");
 
 	return {
 		楼栋: building,
 		单元: unit,
-		房号: `${building}-${unit}-${(index % 18 + 1).toString().padStart(2, "0")}01`,
+		房号: `${building}-${unit}-${((index % 18) + 1).toString().padStart(2, "0")}01`,
 		费用ID: `FEE${20250100 + index}`,
 		业主: `${owner} 1${(3600000000 + index).toString().slice(1)}`,
 		费用类型: feeType,
@@ -112,4 +114,3 @@ export const tableData: 押金报表_表格数据[] = Array.from({ length: 35 })
 		退费状态: 退费列表[index % 退费列表.length],
 	};
 });
-

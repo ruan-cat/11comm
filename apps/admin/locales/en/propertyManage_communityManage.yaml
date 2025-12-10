@@ -73,11 +73,11 @@ notice:
   batchDeleteTitle: Batch Delete Confirmation
   batchPublishConfirm: "Are you sure you want to publish the selected {count} draft notices?"
   batchPublishTitle: Batch Publish Confirmation
-  deleteConfirm: "Are you sure you want to delete notice \"{title}\"? This operation cannot be undone!"
+  deleteConfirm: 'Are you sure you want to delete notice "{title}"? This operation cannot be undone!'
   deleteTitle: Delete Confirmation
-  publishConfirm: "Are you sure you want to publish notice \"{title}\"?"
+  publishConfirm: 'Are you sure you want to publish notice "{title}"?'
   publishTitle: Publish Confirmation
-  unpublishConfirm: "Are you sure you want to unpublish notice \"{title}\"?"
+  unpublishConfirm: 'Are you sure you want to unpublish notice "{title}"?'
   unpublishTitle: Unpublish Confirmation
 
   # 表单字段

@@ -15,7 +15,7 @@
 - 导入了模式控制类型：`Mode`
 - 创建了表单组件实例：`merchantInfoFormInstance`
 
-### 2.2 实现标准的 useMode 组合式API控制 ✅
+### 2.2 实现标准的 useMode 组合式 API 控制 ✅
 
 ```ts
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -47,6 +47,7 @@ async function testAsync() {
 ### 2.4 实现标准的 openDialog 函数 ✅
 
 **函数签名严格按照要求：**
+
 ```ts
 function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
 	const { mode, row } = params;
@@ -56,6 +57,7 @@ function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
 ```
 
 **关键特性：**
+
 - 函数名称为 `openDialog`（符合规范）
 - 必须传递 `mode` 参数（必填）
 - `row` 参数为可选（支持新增和编辑场景）
@@ -63,6 +65,7 @@ function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
 - 动态弹框标题：`${modeText.value}商户信息`
 
 **正确的表单数据组装：**
+
 - 新增模式：使用 `cloneDeep(defaultForm)` 创建全新对象
 - 编辑模式：整合 row 数据，使用可选链操作符确保安全访问
 - 所有字段都正确映射，包括可选字段的处理
@@ -72,6 +75,7 @@ function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
 按照严格的按钮排布顺序和固定模板实现：
 
 1. **取消按钮（info 类型）**
+
    ```ts
    {
      label: transformI18n($t("common.buttons.cancel")),
@@ -86,6 +90,7 @@ function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
    ```
 
 2. **重置按钮（warning 类型）**
+
    ```ts
    {
      label: transformI18n($t("common.buttons.reset")),
@@ -116,38 +121,40 @@ function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
 ### 2.6 正确传递表单参数和处理数据回填 ✅
 
 **编辑模式下的数据回填：**
+
 ```ts
 const 商户信息_表单_VO: 商户信息_表单_VO = isAdd.value
-  ? cloneDeep(defaultForm)
-  : isEdit.value
-    ? cloneDeep({
-        ...defaultForm,
-        商户编号: row?.商户编号 || "",
-        商户名称: row?.商户名称 || "",
-        商户地址: row?.商户地址 || "",
-        联系电话: row?.联系电话 || "",
-        商户类型: row?.商户类型 || "餐饮服务",
-        企业法人: row?.企业法人 || "",
-        成立日期: row?.成立日期 || "",
-        经营状态: row?.经营状态 || "正常营业",
-        所属小区: row?.所属小区 || "",
-        营业时间: row?.营业时间 || "",
-        经营面积: row?.经营面积 || "",
-        营业执照号: row?.营业执照号 || "",
-        开户银行: row?.开户银行 || "",
-        银行账号: row?.银行账号 || "",
-        联系人手机: row?.联系人手机 || "",
-        备注: row?.备注 || "",
-      })
-    : cloneDeep(defaultForm);
+	? cloneDeep(defaultForm)
+	: isEdit.value
+		? cloneDeep({
+				...defaultForm,
+				商户编号: row?.商户编号 || "",
+				商户名称: row?.商户名称 || "",
+				商户地址: row?.商户地址 || "",
+				联系电话: row?.联系电话 || "",
+				商户类型: row?.商户类型 || "餐饮服务",
+				企业法人: row?.企业法人 || "",
+				成立日期: row?.成立日期 || "",
+				经营状态: row?.经营状态 || "正常营业",
+				所属小区: row?.所属小区 || "",
+				营业时间: row?.营业时间 || "",
+				经营面积: row?.经营面积 || "",
+				营业执照号: row?.营业执照号 || "",
+				开户银行: row?.开户银行 || "",
+				银行账号: row?.银行账号 || "",
+				联系人手机: row?.联系人手机 || "",
+				备注: row?.备注 || "",
+			})
+		: cloneDeep(defaultForm);
 ```
 
 **表单 Props 正确组装：**
+
 ```ts
 const formProps: MerchantInfoFormProps = {
-  form: 商户信息_表单_VO,
-  defaultValues: 商户信息_表单_VO,
-  mode,
+	form: 商户信息_表单_VO,
+	defaultValues: 商户信息_表单_VO,
+	mode,
 };
 ```
 
@@ -161,32 +168,37 @@ const formProps: MerchantInfoFormProps = {
 ### 2.8 更新增和编辑按钮集成弹框调用 ✅
 
 **新增按钮：**
+
 ```ts
 function handleAdd() {
-  openDialog({ mode: "add" });
+	openDialog({ mode: "add" });
 }
 ```
 
 **编辑按钮：**
+
 ```ts
 function handleEdit(row: 商户信息_列表数据) {
-  openDialog({ mode: "edit", row });
+	openDialog({ mode: "edit", row });
 }
 ```
 
 ## 3. 代码质量特性
 
 ### 3.1 严格的类型约束
+
 - 使用 TypeScript 强类型约束函数参数
 - 正确使用可选链操作符避免空值错误
 - 组件实例使用正确的类型定义
 
 ### 3.2 错误处理
+
 - 所有表单实例调用都使用可选链操作符
 - 提交前正确校验表单数据
 - 关闭弹框前处理未保存的更改
 
 ### 3.3 用户体验
+
 - 按钮加载状态正确显示
 - 弹框标题根据模式动态变化
 - 表单数据在编辑模式下正确回填

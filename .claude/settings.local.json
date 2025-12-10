@@ -12,8 +12,6 @@
 			"mcp__fetch-mcp__fetch_markdown"
 		],
 		"deny": [],
-		"additionalDirectories": [
-			"F:\\store\\PixPin"
-		]
+		"additionalDirectories": ["F:\\store\\PixPin"]
 	}
 }

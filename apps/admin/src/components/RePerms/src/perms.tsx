@@ -12,7 +12,7 @@ export default defineComponent({
 	setup(props, { slots }) {
 		return () => {
 			if (!slots) return null;
-			return hasPerms(props.value) ? slots.default?.() ?? null : null;
+			return hasPerms(props.value) ? (slots.default?.() ?? null) : null;
 		};
 	},
 });

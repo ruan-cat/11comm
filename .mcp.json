@@ -3,12 +3,7 @@
 		"taskmaster-ai": {
 			"type": "stdio",
 			"command": "cmd",
-			"args": [
-				"/c",
-				"npx",
-				"-y",
-				"task-master-ai@latest"
-			],
+			"args": ["/c", "npx", "-y", "task-master-ai@latest"],
 			"env": {
 				"TASK_MASTER_TOOLS": "core"
 			}

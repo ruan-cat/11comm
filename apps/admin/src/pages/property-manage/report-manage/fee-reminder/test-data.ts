@@ -80,7 +80,9 @@ export const tableData: 费用提醒_表格数据[] = Array.from({ length: 35 })
 	const feeItem = 费用项Options[index % 费用项Options.length].value as string;
 	const community = 小区Options[index % 小区Options.length].value as string;
 	const remindType = 提醒类型Options[index % 提醒类型Options.length].value as string;
-	const due = dayjs("2025-02-01 09:00:00").add(index, "day").add(index % 6, "hour");
+	const due = dayjs("2025-02-01 09:00:00")
+		.add(index, "day")
+		.add(index % 6, "hour");
 	const amount = 150 + (index % 8) * 30 + (index % 3) * 12;
 
 	return {
@@ -95,4 +97,3 @@ export const tableData: 费用提醒_表格数据[] = Array.from({ length: 35 })
 		状态: 状态列表[index % 状态列表.length],
 	};
 });
-

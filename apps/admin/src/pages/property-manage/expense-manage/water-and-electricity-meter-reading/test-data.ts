@@ -27,14 +27,36 @@ export const 表类型Options: OptionsType = [
 
 /** 业主姓名列表 */
 const 业主姓名列表 = [
-	"张三", "李四", "王五", "赵六", "陈七", "刘八", "周九", "吴十",
-	"郑先生", "孙女士", "杨先生", "何女士", "朱先生", "秦女士", "许先生", "林女士"
+	"张三",
+	"李四",
+	"王五",
+	"赵六",
+	"陈七",
+	"刘八",
+	"周九",
+	"吴十",
+	"郑先生",
+	"孙女士",
+	"杨先生",
+	"何女士",
+	"朱先生",
+	"秦女士",
+	"许先生",
+	"林女士",
 ];
 
 /** 小区名称列表 */
 const 小区名称列表 = [
-	"万科城市花园", "恒大名都", "碧桂园凤凰城", "保利香槟国际", "华润置地橡树湾",
-	"龙湖滟澜山", "中海国际社区", "金地格林春岸", "招商雍景湾", "绿城百合花园"
+	"万科城市花园",
+	"恒大名都",
+	"碧桂园凤凰城",
+	"保利香槟国际",
+	"华润置地橡树湾",
+	"龙湖滟澜山",
+	"中海国际社区",
+	"金地格林春岸",
+	"招商雍景湾",
+	"绿城百合花园",
 ];
 
 /** 生成随机日期 */
@@ -42,7 +64,7 @@ function generateRandomDate(start: string, end: string): string {
 	const startDate = new Date(start);
 	const endDate = new Date(end);
 	const randomTime = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime());
-	return new Date(randomTime).toISOString().replace('T', ' ').substring(0, 19);
+	return new Date(randomTime).toISOString().replace("T", " ").substring(0, 19);
 }
 
 /** 生成真实的水表度数 */
@@ -80,7 +102,7 @@ function generateMockItem(): 水电抄表_列表数据 {
 
 	const now = new Date();
 	const 本年一月 = new Date(now.getFullYear(), 0, 1);
-	const 上期读表时间 = generateRandomDate('2024-01-01', '2024-12-31');
+	const 上期读表时间 = generateRandomDate("2024-01-01", "2024-12-31");
 	const 本期读表时间 = generateRandomDate(本年一月.toISOString().substring(0, 10), now.toISOString().substring(0, 10));
 
 	return {
@@ -91,7 +113,7 @@ function generateMockItem(): 水电抄表_列表数据 {
 		本期度数: String(本期度数),
 		上期读表时间: 上期读表时间,
 		本期读表时间: 本期读表时间,
-		创建时间: generateRandomDate('2025-01-01', now.toISOString().substring(0, 10)),
+		创建时间: generateRandomDate("2025-01-01", now.toISOString().substring(0, 10)),
 	};
 }
 

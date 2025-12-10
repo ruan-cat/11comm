@@ -12,7 +12,7 @@ merchant-info:
   businessHours: Business Hours
   businessArea: Business Area
   createTime: Create Time
-  
+
   # Merchant Type Options
   merchantTypeOptions:
     cateringService: Catering Service
@@ -22,14 +22,14 @@ merchant-info:
     educationTraining: Education Training
     medicalHealth: Medical Health
     other: Other
-    
+
   # Operating Status Options
   operatingStatusOptions:
     normalOperation: Normal Operation
     suspendedOperation: Suspended Operation
     preparingToOpen: Preparing to Open
     closed: Closed
-    
+
   # Operation Buttons
   viewDetails: View Details
   merchantManagement: Merchant Management

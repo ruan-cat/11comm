@@ -70,4 +70,3 @@ function generateRandomPhoneRepair(index: number): 电话报修_列表数据 {
 export const tableData: 电话报修_列表数据[] = Array.from({ length: 35 }, (_, index) =>
 	generateRandomPhoneRepair(index + 1),
 );
-

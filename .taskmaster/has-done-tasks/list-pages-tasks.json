@@ -7,11 +7,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/staff-info/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/staff-info"
 		},
@@ -22,11 +18,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/org-info/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/org-info"
 		},
@@ -37,11 +29,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/working-schedule/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/working-schedule"
 		},
@@ -52,11 +40,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting"
 		},
@@ -67,11 +51,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/shift-setting/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/shift-setting"
 		},
@@ -82,11 +62,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/role-permission/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/role-permission"
 		},
@@ -97,11 +73,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"organize-manage"
-			],
+			"tags": ["list-page", "setting-manage", "organize-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/organize-manage/data-permission/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/organize-manage/data-permission"
 		},
@@ -112,11 +84,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"system-manage"
-			],
+			"tags": ["list-page", "setting-manage", "system-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/change-password/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/system-manage/change-password"
 		},
@@ -127,11 +95,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"system-manage"
-			],
+			"tags": ["list-page", "setting-manage", "system-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/system-config/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/system-manage/system-config"
 		},
@@ -142,11 +106,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"system-manage"
-			],
+			"tags": ["list-page", "setting-manage", "system-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/register-protocol/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/system-manage/register-protocol"
 		},
@@ -157,11 +117,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"system-manage"
-			],
+			"tags": ["list-page", "setting-manage", "system-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/initialize-cell/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/system-manage/initialize-cell"
 		},
@@ -172,11 +128,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"setting-manage",
-				"system-manage"
-			],
+			"tags": ["list-page", "setting-manage", "system-manage"],
 			"filePath": "apps/admin/src/pages/setting-manage/system-manage/community-configuration/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/setting-manage/system-manage/community-configuration"
 		},
@@ -187,11 +139,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"menu-manage"
-			],
+			"tags": ["list-page", "dev-team", "menu-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/menu-manage/catalog/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/menu-manage/catalog"
 		},
@@ -202,11 +150,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"menu-manage"
-			],
+			"tags": ["list-page", "dev-team", "menu-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/menu-manage/group/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/menu-manage/group"
 		},
@@ -217,11 +161,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"menu-manage"
-			],
+			"tags": ["list-page", "dev-team", "menu-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/menu-manage/item/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/menu-manage/item"
 		},
@@ -232,11 +172,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"cache-manage"
-			],
+			"tags": ["list-page", "dev-team", "cache-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/cache-manage/refresh-cache/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/cache-manage/refresh-cache"
 		},
@@ -247,11 +183,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"config-manage"
-			],
+			"tags": ["list-page", "dev-team", "config-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/type/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/config-manage/type"
 		},
@@ -262,11 +194,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"config-manage"
-			],
+			"tags": ["list-page", "dev-team", "config-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/item/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/config-manage/item"
 		},
@@ -277,11 +205,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"config-manage"
-			],
+			"tags": ["list-page", "dev-team", "config-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/dictionary/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/config-manage/dictionary"
 		},
@@ -292,11 +216,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"dev-team",
-				"config-manage"
-			],
+			"tags": ["list-page", "dev-team", "config-manage"],
 			"filePath": "apps/admin/src/pages/dev-team/config-manage/center/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/dev-team/config-manage/center"
 		},
@@ -307,11 +227,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"system-manage"
-			],
+			"tags": ["list-page", "operation-team", "system-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/change-password/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/system-manage/change-password"
 		},
@@ -322,11 +238,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"system-manage"
-			],
+			"tags": ["list-page", "operation-team", "system-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/system-config/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/system-manage/system-config"
 		},
@@ -337,11 +249,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"system-manage"
-			],
+			"tags": ["list-page", "operation-team", "system-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/register-protocol/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/system-manage/register-protocol"
 		},
@@ -352,11 +260,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"system-manage"
-			],
+			"tags": ["list-page", "operation-team", "system-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/initialize-cell/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/system-manage/initialize-cell"
 		},
@@ -367,11 +271,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"system-manage"
-			],
+			"tags": ["list-page", "operation-team", "system-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/system-manage/community-configuration/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/system-manage/community-configuration"
 		},
@@ -382,11 +282,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"data-manage"
-			],
+			"tags": ["list-page", "operation-team", "data-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/data-manage/community-information/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/data-manage/community-information"
 		},
@@ -397,11 +293,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"data-manage"
-			],
+			"tags": ["list-page", "operation-team", "data-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/data-manage/property-management-company/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/data-manage/property-management-company"
 		},
@@ -412,11 +304,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"merchant-manage"
-			],
+			"tags": ["list-page", "operation-team", "merchant-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-info/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/merchant-manage/merchant-info"
 		},
@@ -427,11 +315,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"merchant-manage"
-			],
+			"tags": ["list-page", "operation-team", "merchant-manage"],
 			"filePath": "apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/merchant-manage/merchant-admin",
 			"completedAt": "2025-11-26T10:30:00Z"
@@ -443,11 +327,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"report-configuration"
-			],
+			"tags": ["list-page", "operation-team", "report-configuration"],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-group/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-group",
 			"completedAt": "2025-11-26T12:00:00Z"
@@ -459,11 +339,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"report-configuration"
-			],
+			"tags": ["list-page", "operation-team", "report-configuration"],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-info/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-info",
 			"completedAt": "2025-11-26T12:15:00Z"
@@ -475,11 +351,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"operation-team",
-				"report-configuration"
-			],
+			"tags": ["list-page", "operation-team", "report-configuration"],
 			"filePath": "apps/admin/src/pages/operation-team/report-configuration/report-component/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/operation-team/report-configuration/report-component",
 			"completedAt": "2025-11-26T12:30:00Z"
@@ -491,11 +363,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/house-decoration/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/house-decoration",
 			"completedAt": "2025-11-26T09:35:00Z"
@@ -507,11 +375,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram",
 			"completedAt": "2025-11-27T10:45:00Z"
@@ -523,11 +387,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/notice/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/notice",
 			"completedAt": "2025-11-27T10:00:00Z"
@@ -539,11 +399,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/property-register/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/property-register",
 			"completedAt": "2025-11-27T10:30:00Z"
@@ -555,11 +411,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/handing-business/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/handing-business",
 			"completedAt": "2025-11-27T11:00:00Z"
@@ -571,11 +423,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/my/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/my",
 			"completedAt": "2025-11-27T11:30:00Z"
@@ -587,11 +435,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"community-manage"
-			],
+			"tags": ["list-page", "property-manage", "community-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram",
 			"completedAt": "2025-11-27T12:00:00Z"
@@ -603,11 +447,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"contract-manage"
-			],
+			"tags": ["list-page", "property-manage", "contract-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/change/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/change",
 			"completedAt": "2025-11-27T13:00:00Z"
@@ -619,11 +459,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"contract-manage"
-			],
+			"tags": ["list-page", "property-manage", "contract-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/draft-contract/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/draft-contract",
 			"completedAt": "2025-11-27T13:30:00Z"
@@ -635,11 +471,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"contract-manage"
-			],
+			"tags": ["list-page", "property-manage", "contract-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/expire/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/expire",
 			"completedAt": "2025-11-27T14:00:00Z"
@@ -651,11 +483,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"contract-manage"
-			],
+			"tags": ["list-page", "property-manage", "contract-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/first-party/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/first-party",
 			"completedAt": "2025-11-27T15:30:00Z"
@@ -667,11 +495,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"contract-manage"
-			],
+			"tags": ["list-page", "property-manage", "contract-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/contract-manage/type/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/contract-manage/type",
 			"completedAt": "2025-11-27T16:00:00Z"
@@ -683,11 +507,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/water-and-electricity-meter-reading",
 			"completedAt": "2025-11-27T20:30:00Z"
@@ -699,11 +519,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/vehicle-charge/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/vehicle-charge",
 			"completedAt": "2025-11-27T17:00:00Z"
@@ -715,11 +531,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/reminder-for-overdue-payments",
 			"completedAt": "2025-11-27T22:00:00Z"
@@ -731,11 +543,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/reprint-voucher/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/reprint-voucher",
 			"completedAt": "2025-11-27T23:59:59Z"
@@ -747,11 +555,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/overdue-payment-information/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/overdue-payment-information",
 			"completedAt": "2025-11-27T23:30:00Z"
@@ -763,11 +567,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/payment-review/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/payment-review",
 			"completedAt": "2025-11-27T23:59:59Z"
@@ -779,11 +579,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/refund-review/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/refund-review",
 			"completedAt": "2025-11-27T23:59:59Z"
@@ -795,11 +591,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/house-charge/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/house-charge",
 			"completedAt": "2025-11-27T23:00:00Z"
@@ -811,11 +603,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/meter-reading-type/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/meter-reading-type",
 			"completedAt": "2025-11-27T12:00:00Z"
@@ -827,11 +615,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-type/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/discount-type",
 			"completedAt": "2025-11-27T23:59:59Z"
@@ -843,11 +627,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-summary-table/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/expense-summary-table",
 			"completedAt": "2025-11-28T12:00:00Z"
@@ -859,11 +639,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-apply/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/discount-apply",
 			"completedAt": "2025-11-28T15:30:00Z"
@@ -875,11 +651,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/discount-setting/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/discount-setting",
 			"completedAt": "2025-11-28T16:30:00Z"
@@ -891,11 +663,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/contracte-charge/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/contracte-charge",
 			"completedAt": "2025-11-28T17:30:00Z"
@@ -907,11 +675,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/expense-item-setting/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/expense-item-setting"
 		},
@@ -922,11 +686,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"expense-manage"
-			],
+			"tags": ["list-page", "property-manage", "expense-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/expense-manage/cancel-fee/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/expense-manage/cancel-fee"
 		},
@@ -937,11 +697,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/house/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/house"
 		},
@@ -952,11 +708,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/invoice/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/invoice"
 		},
@@ -967,11 +719,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/invoice-title/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/invoice-title"
 		},
@@ -982,11 +730,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-account/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/owner-account"
 		},
@@ -997,11 +741,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-information/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/owner-information"
 		},
@@ -1012,11 +752,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owner-member/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/owner-member"
 		},
@@ -1027,11 +763,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/owners-committee/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/owners-committee"
 		},
@@ -1042,11 +774,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/reserve-venue"
 		},
@@ -1057,11 +785,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order"
 		},
@@ -1072,11 +796,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"house-property-manage"
-			],
+			"tags": ["list-page", "property-manage", "house-property-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/house-property-manage/site-management/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/house-property-manage/site-management"
 		},
@@ -1087,11 +807,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"parking-manage"
-			],
+			"tags": ["list-page", "property-manage", "parking-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/carport-apply/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/parking-manage/carport-apply"
 		},
@@ -1102,11 +818,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"parking-manage"
-			],
+			"tags": ["list-page", "property-manage", "parking-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/carport-info/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/parking-manage/carport-info"
 		},
@@ -1117,11 +829,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"parking-manage"
-			],
+			"tags": ["list-page", "property-manage", "parking-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/parking-manage/owner-vehicle"
 		},
@@ -1132,11 +840,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"parking-manage"
-			],
+			"tags": ["list-page", "property-manage", "parking-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/parking-manage/parking-lot/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/parking-manage/parking-lot"
 		},
@@ -1147,11 +851,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"patrol-manage"
-			],
+			"tags": ["list-page", "property-manage", "patrol-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/detail/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/patrol-manage/detail"
 		},
@@ -1162,11 +862,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"patrol-manage"
-			],
+			"tags": ["list-page", "property-manage", "patrol-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/item/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/patrol-manage/item"
 		},
@@ -1177,11 +873,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"patrol-manage"
-			],
+			"tags": ["list-page", "property-manage", "patrol-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/path/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/patrol-manage/path"
 		},
@@ -1192,11 +884,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"patrol-manage"
-			],
+			"tags": ["list-page", "property-manage", "patrol-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/plan/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/patrol-manage/plan"
 		},
@@ -1207,11 +895,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"patrol-manage"
-			],
+			"tags": ["list-page", "property-manage", "patrol-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/point/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/patrol-manage/point"
 		},
@@ -1222,11 +906,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"patrol-manage"
-			],
+			"tags": ["list-page", "property-manage", "patrol-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/patrol-manage/task/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/patrol-manage/task"
 		},
@@ -1237,11 +917,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/issues/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/issues"
 		},
@@ -1252,11 +928,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/mandatory-return-issue/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/mandatory-return-issue"
 		},
@@ -1267,11 +939,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/phone-report-repairs/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/phone-report-repairs"
 		},
@@ -1282,11 +950,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-have-done/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/repairs-have-done"
 		},
@@ -1297,11 +961,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-setting/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/repairs-setting"
 		},
@@ -1312,11 +972,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/repairs-todo/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/repairs-todo"
 		},
@@ -1327,11 +983,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"repairs-manage"
-			],
+			"tags": ["list-page", "property-manage", "repairs-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/repairs-manage/return-visit/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/repairs-manage/return-visit"
 		},
@@ -1342,11 +994,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/arrears-details-list/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/arrears-details-list"
 		},
@@ -1357,11 +1005,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/data-statistics/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/data-statistics"
 		},
@@ -1372,11 +1016,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/deposit-report/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/deposit-report"
 		},
@@ -1387,11 +1027,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/expense-summary-table/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/expense-summary-table"
 		},
@@ -1402,11 +1038,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/fee-reminder/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/fee-reminder"
 		},
@@ -1417,11 +1049,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/no-charge-house/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/no-charge-house"
 		},
@@ -1432,11 +1060,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/outstanding-fees-analysis/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/outstanding-fees-analysis"
 		},
@@ -1447,11 +1071,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/owner-payment-details/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/owner-payment-details"
 		},
@@ -1462,11 +1082,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/patrol-report/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/patrol-report"
 		},
@@ -1477,11 +1093,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/payment-details-form/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/payment-details-form"
 		},
@@ -1492,11 +1104,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/repair-report-form/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/repair-report-form"
 		},
@@ -1507,11 +1115,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/repair-reports-summary-table/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/repair-reports-summary-table"
 		},
@@ -1522,11 +1126,7 @@
 			"priority": "medium",
 			"status": "done",
 			"dependencies": [],
-			"tags": [
-				"list-page",
-				"property-manage",
-				"report-manage"
-			],
+			"tags": ["list-page", "property-manage", "report-manage"],
 			"filePath": "apps/admin/src/pages/property-manage/report-manage/statement-expenses/index.vue",
 			"command": "/make-std-list-page-and-formlike-dialog apps/admin/src/pages/property-manage/report-manage/statement-expenses"
 		}

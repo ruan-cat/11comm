@@ -94,7 +94,7 @@ export const tableData: 到期合同_列表数据[] = Array(35)
 		return {
 			合同名称: `${合同名称前缀[index % 合同名称前缀.length]}${index + 1}期`,
 			合同编号: `HT${String(2024000 + index + 1)}${String.fromCharCode(65 + (index % 26))}`,
-			合同类型: (合同类型Options[index % 合同类型Options.length].value) as 合同类型,
+			合同类型: 合同类型Options[index % 合同类型Options.length].value as 合同类型,
 			甲方: 公司名称[index % 公司名称.length],
 			甲方联系人: ["李经理", "王总监", "张主任", "陈主管", "赵部长"][index % 5],
 			甲方联系电话: `1${3 + Math.floor(Math.random() * 7)}${String(Math.floor(Math.random() * 100000000)).padStart(8, "0")}`,
@@ -104,16 +104,25 @@ export const tableData: 到期合同_列表数据[] = Array(35)
 			经办人: ["张明", "李华", "王强", "刘洋", "陈红", "杨军", "赵丽", "黄伟"][index % 8],
 			经办电话: `1${3 + Math.floor(Math.random() * 7)}${String(Math.floor(Math.random() * 100000000)).padStart(8, "0")}`,
 			合同金额: `${(Math.floor(Math.random() * 100) + 1) * 10000}.${String(Math.floor(Math.random() * 100)).padStart(2, "0")}`,
-			开始时间: 开始日期.toISOString().split('T')[0] + ' 09:00:00',
-			结束时间: 结束日期.toISOString().split('T')[0] + ' 18:00:00',
-			签订时间: 签订日期.toISOString().split('T')[0] + ' 14:30:00',
-			到期时间: 结束日期.toISOString().split('T')[0] + ' 23:59:59',
+			开始时间: 开始日期.toISOString().split("T")[0] + " 09:00:00",
+			结束时间: 结束日期.toISOString().split("T")[0] + " 18:00:00",
+			签订时间: 签订日期.toISOString().split("T")[0] + " 14:30:00",
+			到期时间: 结束日期.toISOString().split("T")[0] + " 23:59:59",
 			状态: ["即将到期", "已到期", "已延期"][index % 3],
-			处理状态: (处理状态Options[index % 处理状态Options.length].value) as string,
-			到期处理类型: index % 5 === 0 ? undefined : (index % 2 === 0 ? "续签" : "终止") as 到期处理类型,
+			处理状态: 处理状态Options[index % 处理状态Options.length].value as string,
+			到期处理类型: index % 5 === 0 ? undefined : ((index % 2 === 0 ? "续签" : "终止") as 到期处理类型),
 			处理人: index % 3 === 0 ? undefined : ["张明", "李华", "王强", "刘洋", "陈红"][index % 5],
-			说明: index % 4 === 0 ? undefined : `${["经双方协商一致", "根据合同条款", "按实际履行情况", "综合考虑业务需求"][index % 4]}，${["建议续签", "需要终止", "重新谈判", "延期处理"][index % 4]}相关合同条款。`,
-			处理时间: index % 3 === 0 ? undefined : new Date(基准时间 + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] + ' 16:00:00',
-			备注: index % 6 === 0 ? undefined : `合同编号${index + 1}的补充说明信息，包含${["付款方式", "交付要求", "质量标准", "违约责任"][index % 4]}等详细条款。`,
+			说明:
+				index % 4 === 0
+					? undefined
+					: `${["经双方协商一致", "根据合同条款", "按实际履行情况", "综合考虑业务需求"][index % 4]}，${["建议续签", "需要终止", "重新谈判", "延期处理"][index % 4]}相关合同条款。`,
+			处理时间:
+				index % 3 === 0
+					? undefined
+					: new Date(基准时间 + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] + " 16:00:00",
+			备注:
+				index % 6 === 0
+					? undefined
+					: `合同编号${index + 1}的补充说明信息，包含${["付款方式", "交付要求", "质量标准", "违约责任"][index % 4]}等详细条款。`,
 		};
 	});

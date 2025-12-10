@@ -144,14 +144,16 @@ export const protocolTemplates: Record<string, string> = {
 <h3>第五条 法律免责</h3>
 <p>5.1 如因不可抗力导致无法履行义务，我们不承担责任。</p>
 <p>5.2 我们对因用户违法行为导致的后果不承担责任。</p>
-<p>5.3 本免责声明的解释权归本平台所有。</p>`
+<p>5.3 本免责声明的解释权归本平台所有。</p>`,
 };
 
 /** 协议内容模板数组 */
-export const protocolTemplateArray: ProtocolTemplate[] = Object.entries(protocolTemplates).map(([protocolType, content]) => ({
-	protocolType,
-	content
-}));
+export const protocolTemplateArray: ProtocolTemplate[] = Object.entries(protocolTemplates).map(
+	([protocolType, content]) => ({
+		protocolType,
+		content,
+	}),
+);
 
 /** 默认导出协议模板 */
 export default protocolTemplates;

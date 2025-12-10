@@ -89,7 +89,9 @@ export const tableData: 报修报表_表格数据[] = Array.from({ length: 35 })
 	const acceptor = 受理人列表[index % 受理人列表.length];
 	const handler = 处理人列表[index % 处理人列表.length];
 	const feeStatus = 收费状态Options[index % 收费状态Options.length].value as string;
-	const time = dayjs("2025-03-15 08:00:00").add(index, "day").add(index % 6, "hour");
+	const time = dayjs("2025-03-15 08:00:00")
+		.add(index, "day")
+		.add(index % 6, "hour");
 	const abnormal = index % 5 === 0 ? 2 : index % 3;
 
 	return {
@@ -108,4 +110,3 @@ export const tableData: 报修报表_表格数据[] = Array.from({ length: 35 })
 		异常数: abnormal,
 	};
 });
-

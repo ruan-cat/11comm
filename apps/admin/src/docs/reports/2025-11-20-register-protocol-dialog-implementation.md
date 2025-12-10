@@ -2,7 +2,7 @@
 
 **日期**: 2025-11-20
 **模块**: operation-team/system-manage/register-protocol
-**功能**: 基于addDialog的命令式弹框实现
+**功能**: 基于 addDialog 的命令式弹框实现
 
 ## 1. 任务完成情况
 
@@ -18,12 +18,12 @@
    - 创建了 `registerProtocolFormInstance` 表单实例
    - 使用 TypeScript 的 `InstanceType` 确保类型安全
 
-3. **添加测试异步函数和useMode组合式API**
+3. **添加测试异步函数和 useMode 组合式 API**
    - 实现了 `testAsync` 测试异步函数，包含加载状态
-   - 集成了 `useMode` 组合式API，支持多种模式控制
+   - 集成了 `useMode` 组合式 API，支持多种模式控制
    - 添加了 `isLoadingT` 状态管理
 
-4. **实现openDialog函数**
+4. **实现 openDialog 函数**
    - 支持 `add`（新增）、`edit`（编辑）、`info`（查看）三种模式
    - 动态标题根据模式变化："新增注册协议"、"编辑注册协议"、"查看注册协议"
    - 正确的表单参数传递和数据初始化
@@ -50,7 +50,7 @@
    - 新增模式：使用深克隆的默认表单数据
    - 编辑模式：正确传递和转换行数据到表单
    - 查看模式：只读表单展示
-   - 安全的数据传递，避免直接修改props
+   - 安全的数据传递，避免直接修改 props
 
 3. **用户体验优化**
    - 表单重置功能完整实现
@@ -90,69 +90,75 @@
 
 ```typescript
 function openDialog({ mode, row }: OpenDialogParams) {
-  // 设置模式并获取模式文本
-  setMode(mode);
-  const title = `${modeText.value}注册协议`;
+	// 设置模式并获取模式文本
+	setMode(mode);
+	const title = `${modeText.value}注册协议`;
 
-  // 根据模式初始化表单数据
-  const 注册协议表单_VO: 注册协议表单_VO = isAdd.value
-    ? cloneDeep(defaultForm)
-    : isEdit.value || isInfo.value
-      ? { /* 基于row数据构造表单 */ }
-      : cloneDeep(defaultForm);
+	// 根据模式初始化表单数据
+	const 注册协议表单_VO: 注册协议表单_VO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value || isInfo.value
+			? {
+					/* 基于row数据构造表单 */
+				}
+			: cloneDeep(defaultForm);
 
-  // 配置弹框参数
-  addDialog({
-    ...defaultAddDialogParams,
-    title,
-    width: "80%",
-    top: "10vh",
-    props: { form: 注册协议表单_VO, defaultValues: 注册协议表单_VO },
+	// 配置弹框参数
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		width: "80%",
+		top: "10vh",
+		props: { form: 注册协议表单_VO, defaultValues: 注册协议表单_VO },
 
-    contentRenderer: () => h(RegisterProtocolForm, {
-      ref: registerProtocolFormInstance,
-      ...props,
-    }),
+		contentRenderer: () =>
+			h(RegisterProtocolForm, {
+				ref: registerProtocolFormInstance,
+				...props,
+			}),
 
-    // 关闭回调处理
-    async doBeforeClose({ options, index }) {
-      const formComputed = registerProtocolFormInstance.value.formComputed;
-      await useDoBeforeClose({ defaultValues, formComputed, index, options });
-    },
+		// 关闭回调处理
+		async doBeforeClose({ options, index }) {
+			const formComputed = registerProtocolFormInstance.value.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
 
-    // 底部按钮配置
-    footerButtons: [
-      // 取消按钮
-      // 重置按钮
-      // 提交/关闭按钮（根据模式动态调整）
-    ],
-  });
+		// 底部按钮配置
+		footerButtons: [
+			// 取消按钮
+			// 重置按钮
+			// 提交/关闭按钮（根据模式动态调整）
+		],
+	});
 }
 ```
 
 ### 表单验证
 
-- 协议名称：必填，2-100字符
+- 协议名称：必填，2-100 字符
 - 协议类型：必填，下拉选择
 - 协议版本：必填，版本号格式验证（如 v1.0.0）
 - 状态：必填，下拉选择
 - 是否强制同意：必填，下拉选择
 - 生效日期：必填，日期选择器
-- 协议内容：必填，最少100字符，最多50000字符
+- 协议内容：必填，最少 100 字符，最多 50000 字符
 
 ## 4. 业务逻辑支持
 
 ### 新增模式
+
 - 自动填充默认值
 - 生效日期默认为当前日期
 - 状态默认为"草稿"
 
 ### 编辑模式
+
 - 正确传递现有数据到表单
 - 保持数据完整性
 - 支持所有字段编辑
 
 ### 查看模式
+
 - 所有字段设为只读
 - 提交按钮变为关闭按钮
 - 保持数据展示格式

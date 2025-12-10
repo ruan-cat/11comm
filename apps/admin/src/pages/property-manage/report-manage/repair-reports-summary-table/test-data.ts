@@ -79,7 +79,9 @@ export const tableData: 报修汇总表_表格数据[] = Array.from({ length: 35
 	const urgent = 3 + (index % 4);
 	const status = 状态列表[index % 状态列表.length];
 	const level = 紧急程度Options[index % 紧急程度Options.length].value as string;
-	const statTime = dayjs("2025-04-01 09:00:00").add(index, "day").add(index % 5, "hour");
+	const statTime = dayjs("2025-04-01 09:00:00")
+		.add(index, "day")
+		.add(index % 5, "hour");
 
 	return {
 		报修类型: repairType,
@@ -96,4 +98,3 @@ export const tableData: 报修汇总表_表格数据[] = Array.from({ length: 35
 		紧急程度标签: level,
 	};
 });
-

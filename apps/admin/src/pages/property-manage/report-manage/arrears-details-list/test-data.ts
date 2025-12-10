@@ -68,5 +68,6 @@ function generateRandomArrears(index: number): 欠费明细_列表数据 {
 }
 
 /** 表格假数据 */
-export const tableData: 欠费明细_列表数据[] = Array.from({ length: 35 }, (_, index) => generateRandomArrears(index + 1));
-
+export const tableData: 欠费明细_列表数据[] = Array.from({ length: 35 }, (_, index) =>
+	generateRandomArrears(index + 1),
+);

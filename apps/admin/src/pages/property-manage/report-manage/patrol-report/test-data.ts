@@ -70,8 +70,10 @@ export const tableData: 巡检报表_表格数据[] = Array.from({ length: 35 })
 	const leader = 负责人列表[index % 负责人列表.length];
 	const community = 小区Options[index % 小区Options.length].value as string;
 	const status = 状态Options[index % 状态Options.length].value as string;
-	const patrolTime = dayjs("2025-03-01 08:00:00").add(index, "day").add(index % 5, "hour");
-	const abnormal = (index % 4 === 0 ? 2 : index % 3);
+	const patrolTime = dayjs("2025-03-01 08:00:00")
+		.add(index, "day")
+		.add(index % 5, "hour");
+	const abnormal = index % 4 === 0 ? 2 : index % 3;
 
 	return {
 		巡检编号: `XJ${20250000 + index}`,
@@ -85,4 +87,3 @@ export const tableData: 巡检报表_表格数据[] = Array.from({ length: 35 })
 		异常数: abnormal,
 	};
 });
-

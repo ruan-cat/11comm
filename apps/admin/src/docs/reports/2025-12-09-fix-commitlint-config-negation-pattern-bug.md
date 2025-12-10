@@ -125,26 +125,27 @@ graph TD
 
 ```typescript
 export function getPackagesNameAndDescription() {
-  // ...
-  const pkgPatterns = workspaceConfig.packages;
+	// ...
+	const pkgPatterns = workspaceConfig.packages;
 
-  let pkgPaths = [];
-  pkgPatterns.map((pkgPattern) => {  // ❌ 直接使用所有 patterns，包括 negation patterns
-    const matchedPath = pathChange(join(process.cwd(), pkgPattern, "package.json"));
-    const matchedPaths = globSync(matchedPath, {
-      ignore: ["**/node_modules/**"]
-    });
-    pkgPaths = pkgPaths.concat(...matchedPaths);
-    return matchedPaths;
-  });
+	let pkgPaths = [];
+	pkgPatterns.map((pkgPattern) => {
+		// ❌ 直接使用所有 patterns，包括 negation patterns
+		const matchedPath = pathChange(join(process.cwd(), pkgPattern, "package.json"));
+		const matchedPaths = globSync(matchedPath, {
+			ignore: ["**/node_modules/**"],
+		});
+		pkgPaths = pkgPaths.concat(...matchedPaths);
+		return matchedPaths;
+	});
 
-  const czGitScopesType = pkgPaths.map(function(pkgJsonPath) {
-    if (fs.existsSync(pkgJsonPath)) {
-      const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));  // ❌ 第 396 行：尝试解析非 JSON 文件
-      // ...
-    }
-  });
-  // ...
+	const czGitScopesType = pkgPaths.map(function (pkgJsonPath) {
+		if (fs.existsSync(pkgJsonPath)) {
+			const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8")); // ❌ 第 396 行：尝试解析非 JSON 文件
+			// ...
+		}
+	});
+	// ...
 }
 ```
 
@@ -198,46 +199,47 @@ export function getPackagesNameAndDescription() {
 
 ```typescript
 export function getPackagesNameAndDescription(): CzGitScopesType[] {
-  // 如果不是 monorepo 项目，返回默认 scopes
-  if (!isMonorepoProject()) {
-    return defScopes;
-  }
+	// 如果不是 monorepo 项目，返回默认 scopes
+	if (!isMonorepoProject()) {
+		return defScopes;
+	}
 
-  const workspaceConfigPath = join(process.cwd(), "pnpm-workspace.yaml");
-  const workspaceFile = fs.readFileSync(workspaceConfigPath, "utf8");
-  const workspaceConfig = load(workspaceFile) as WorkspaceConfig;
+	const workspaceConfigPath = join(process.cwd(), "pnpm-workspace.yaml");
+	const workspaceFile = fs.readFileSync(workspaceConfigPath, "utf8");
+	const workspaceConfig = load(workspaceFile) as WorkspaceConfig;
 
-  const pkgPatterns = workspaceConfig.packages;
+	const pkgPatterns = workspaceConfig.packages;
 
-  // ✅ 修复：过滤掉以 ! 开头的 negation patterns
-  const filteredPkgPatterns = pkgPatterns.filter(pattern => !pattern.startsWith('!'));
+	// ✅ 修复：过滤掉以 ! 开头的 negation patterns
+	const filteredPkgPatterns = pkgPatterns.filter((pattern) => !pattern.startsWith("!"));
 
-  let pkgPaths: string[] = [];
-  filteredPkgPatterns.map((pkgPattern) => {  // ✅ 使用过滤后的 patterns
-    const matchedPath = pathChange(join(process.cwd(), pkgPattern, "package.json"));
-    const matchedPaths = globSync(matchedPath, {
-      ignore: ["**/node_modules/**"]
-    });
-    pkgPaths = pkgPaths.concat(...matchedPaths);
-    return matchedPaths;
-  });
+	let pkgPaths: string[] = [];
+	filteredPkgPatterns.map((pkgPattern) => {
+		// ✅ 使用过滤后的 patterns
+		const matchedPath = pathChange(join(process.cwd(), pkgPattern, "package.json"));
+		const matchedPaths = globSync(matchedPath, {
+			ignore: ["**/node_modules/**"],
+		});
+		pkgPaths = pkgPaths.concat(...matchedPaths);
+		return matchedPaths;
+	});
 
-  const czGitScopesType = pkgPaths.map(function(pkgJsonPath): CzGitScopesType {
-    if (fs.existsSync(pkgJsonPath)) {
-      const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8")) as PackageJson;
-      return {
-        name: createLabelName(pkgJson),
-        value: createPackagescopes(pkgJson)
-      };
-    }
+	const czGitScopesType = pkgPaths.map(function (pkgJsonPath): CzGitScopesType {
+		if (fs.existsSync(pkgJsonPath)) {
+			const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8")) as PackageJson;
+			return {
+				name: createLabelName(pkgJson),
+				value: createPackagescopes(pkgJson),
+			};
+		}
 
-    return {
-      name: "警告，没找到包名，请查看这个包路径是不是故障了：",
-      value: "pkgJsonPath"
-    };
-  });
+		return {
+			name: "警告，没找到包名，请查看这个包路径是不是故障了：",
+			value: "pkgJsonPath",
+		};
+	});
 
-  return czGitScopesType;
+	return czGitScopesType;
 }
 ```
 
@@ -247,7 +249,7 @@ export function getPackagesNameAndDescription(): CzGitScopesType[] {
 
 ```typescript
 // ✅ 在处理 patterns 之前添加此行
-const filteredPkgPatterns = pkgPatterns.filter(pattern => !pattern.startsWith('!'));
+const filteredPkgPatterns = pkgPatterns.filter((pattern) => !pattern.startsWith("!"));
 ```
 
 **为什么这样修复？**
@@ -274,42 +276,41 @@ const filteredPkgPatterns = pkgPatterns.filter(pattern => !pattern.startsWith('!
 
 ```typescript
 function getPackagePathToScopeMapping(): Map<string, string> {
-  const mapping = new Map<string, string>();
+	const mapping = new Map<string, string>();
 
-  if (!isMonorepoProject()) {
-    return mapping;
-  }
+	if (!isMonorepoProject()) {
+		return mapping;
+	}
 
-  const workspaceConfigPath = join(process.cwd(), "pnpm-workspace.yaml");
-  const workspaceFile = fs.readFileSync(workspaceConfigPath, "utf8");
-  const workspaceConfig = load(workspaceFile) as WorkspaceConfig;
+	const workspaceConfigPath = join(process.cwd(), "pnpm-workspace.yaml");
+	const workspaceFile = fs.readFileSync(workspaceConfigPath, "utf8");
+	const workspaceConfig = load(workspaceFile) as WorkspaceConfig;
 
-  const pkgPatterns = workspaceConfig.packages;
+	const pkgPatterns = workspaceConfig.packages;
 
-  // ✅ 修复：过滤掉以 ! 开头的 negation patterns
-  const filteredPkgPatterns = pkgPatterns.filter(pattern => !pattern.startsWith('!'));
+	// ✅ 修复：过滤掉以 ! 开头的 negation patterns
+	const filteredPkgPatterns = pkgPatterns.filter((pattern) => !pattern.startsWith("!"));
 
-  filteredPkgPatterns.forEach((pkgPattern) => {  // ✅ 使用过滤后的 patterns
-    const globPattern = `${pkgPattern}/package.json`;
-    const matchedPaths = globSync(globPattern, {
-      cwd: process.cwd(),
-      ignore: ["**/node_modules/**"]
-    });
+	filteredPkgPatterns.forEach((pkgPattern) => {
+		// ✅ 使用过滤后的 patterns
+		const globPattern = `${pkgPattern}/package.json`;
+		const matchedPaths = globSync(globPattern, {
+			cwd: process.cwd(),
+			ignore: ["**/node_modules/**"],
+		});
 
-    matchedPaths.forEach((relativePkgPath) => {
-      const fullPkgJsonPath = join(process.cwd(), relativePkgPath);
-      if (fs.existsSync(fullPkgJsonPath)) {
-        const pkgJson = JSON.parse(fs.readFileSync(fullPkgJsonPath, "utf-8")) as PackageJson;
-        const scope = createPackagescopes(pkgJson);
-        const packageRelativePath = relativePkgPath
-          .replace(/[/\\]package\.json$/, "")
-          .replace(/\\/g, "/");
-        mapping.set(packageRelativePath, scope);
-      }
-    });
-  });
+		matchedPaths.forEach((relativePkgPath) => {
+			const fullPkgJsonPath = join(process.cwd(), relativePkgPath);
+			if (fs.existsSync(fullPkgJsonPath)) {
+				const pkgJson = JSON.parse(fs.readFileSync(fullPkgJsonPath, "utf-8")) as PackageJson;
+				const scope = createPackagescopes(pkgJson);
+				const packageRelativePath = relativePkgPath.replace(/[/\\]package\.json$/, "").replace(/\\/g, "/");
+				mapping.set(packageRelativePath, scope);
+			}
+		});
+	});
 
-  return mapping;
+	return mapping;
 }
 ```
 
@@ -319,80 +320,80 @@ function getPackagePathToScopeMapping(): Map<string, string> {
 
 ```typescript
 export function getPackagesNameAndDescription(): CzGitScopesType[] {
-  if (!isMonorepoProject()) {
-    return defScopes;
-  }
+	if (!isMonorepoProject()) {
+		return defScopes;
+	}
 
-  const workspaceConfigPath = join(process.cwd(), "pnpm-workspace.yaml");
-  const workspaceFile = fs.readFileSync(workspaceConfigPath, "utf8");
-  const workspaceConfig = load(workspaceFile) as WorkspaceConfig;
+	const workspaceConfigPath = join(process.cwd(), "pnpm-workspace.yaml");
+	const workspaceFile = fs.readFileSync(workspaceConfigPath, "utf8");
+	const workspaceConfig = load(workspaceFile) as WorkspaceConfig;
 
-  const pkgPatterns = workspaceConfig.packages;
+	const pkgPatterns = workspaceConfig.packages;
 
-  // ✅ 1. 过滤掉 negation patterns
-  const filteredPkgPatterns = pkgPatterns.filter(pattern => {
-    // 排除以 ! 开头的 patterns
-    if (pattern.startsWith('!')) {
-      return false;
-    }
-    // ✅ 2. 排除空字符串
-    if (pattern.trim() === '') {
-      return false;
-    }
-    return true;
-  });
+	// ✅ 1. 过滤掉 negation patterns
+	const filteredPkgPatterns = pkgPatterns.filter((pattern) => {
+		// 排除以 ! 开头的 patterns
+		if (pattern.startsWith("!")) {
+			return false;
+		}
+		// ✅ 2. 排除空字符串
+		if (pattern.trim() === "") {
+			return false;
+		}
+		return true;
+	});
 
-  let pkgPaths: string[] = [];
-  filteredPkgPatterns.forEach((pkgPattern) => {
-    const matchedPath = pathChange(join(process.cwd(), pkgPattern, "package.json"));
+	let pkgPaths: string[] = [];
+	filteredPkgPatterns.forEach((pkgPattern) => {
+		const matchedPath = pathChange(join(process.cwd(), pkgPattern, "package.json"));
 
-    try {
-      const matchedPaths = globSync(matchedPath, {
-        ignore: ["**/node_modules/**"]
-      });
+		try {
+			const matchedPaths = globSync(matchedPath, {
+				ignore: ["**/node_modules/**"],
+			});
 
-      // ✅ 3. 只添加真实存在的 package.json 文件
-      const validPaths = matchedPaths.filter(p => {
-        return fs.existsSync(p) && p.endsWith('package.json');
-      });
+			// ✅ 3. 只添加真实存在的 package.json 文件
+			const validPaths = matchedPaths.filter((p) => {
+				return fs.existsSync(p) && p.endsWith("package.json");
+			});
 
-      pkgPaths = pkgPaths.concat(validPaths);
-    } catch (error) {
-      consola.warn(`处理 pattern "${pkgPattern}" 时出错:`, error);
-    }
-  });
+			pkgPaths = pkgPaths.concat(validPaths);
+		} catch (error) {
+			consola.warn(`处理 pattern "${pkgPattern}" 时出错:`, error);
+		}
+	});
 
-  const czGitScopesType = pkgPaths.map(function(pkgJsonPath): CzGitScopesType {
-    try {
-      if (fs.existsSync(pkgJsonPath)) {
-        const content = fs.readFileSync(pkgJsonPath, "utf-8");
+	const czGitScopesType = pkgPaths.map(function (pkgJsonPath): CzGitScopesType {
+		try {
+			if (fs.existsSync(pkgJsonPath)) {
+				const content = fs.readFileSync(pkgJsonPath, "utf-8");
 
-        // ✅ 4. 验证内容是否为有效 JSON
-        if (!content.trim().startsWith('{')) {
-          consola.warn(`文件不是有效的 JSON: ${pkgJsonPath}`);
-          return {
-            name: "⚠️ 无效的 package.json 文件",
-            value: "invalid"
-          };
-        }
+				// ✅ 4. 验证内容是否为有效 JSON
+				if (!content.trim().startsWith("{")) {
+					consola.warn(`文件不是有效的 JSON: ${pkgJsonPath}`);
+					return {
+						name: "⚠️ 无效的 package.json 文件",
+						value: "invalid",
+					};
+				}
 
-        const pkgJson = JSON.parse(content) as PackageJson;
-        return {
-          name: createLabelName(pkgJson),
-          value: createPackagescopes(pkgJson)
-        };
-      }
-    } catch (error) {
-      consola.error(`解析 ${pkgJsonPath} 时出错:`, error);
-    }
+				const pkgJson = JSON.parse(content) as PackageJson;
+				return {
+					name: createLabelName(pkgJson),
+					value: createPackagescopes(pkgJson),
+				};
+			}
+		} catch (error) {
+			consola.error(`解析 ${pkgJsonPath} 时出错:`, error);
+		}
 
-    return {
-      name: "⚠️ 解析失败",
-      value: "error"
-    };
-  });
+		return {
+			name: "⚠️ 解析失败",
+			value: "error",
+		};
+	});
 
-  return czGitScopesType;
+	return czGitScopesType;
 }
 ```
 
@@ -411,98 +412,83 @@ export function getPackagesNameAndDescription(): CzGitScopesType[] {
 
 ```typescript
 // tests/utils.test.ts
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import fs from 'fs';
-import path from 'path';
-import { getPackagesNameAndDescription } from '../src/utils';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import fs from "fs";
+import path from "path";
+import { getPackagesNameAndDescription } from "../src/utils";
 
-describe('getPackagesNameAndDescription', () => {
-  const testDir = path.join(__dirname, 'fixtures');
+describe("getPackagesNameAndDescription", () => {
+	const testDir = path.join(__dirname, "fixtures");
 
-  beforeEach(() => {
-    // 创建测试环境
-    fs.mkdirSync(testDir, { recursive: true });
-  });
+	beforeEach(() => {
+		// 创建测试环境
+		fs.mkdirSync(testDir, { recursive: true });
+	});
 
-  afterEach(() => {
-    // 清理测试环境
-    fs.rmSync(testDir, { recursive: true, force: true });
-  });
+	afterEach(() => {
+		// 清理测试环境
+		fs.rmSync(testDir, { recursive: true, force: true });
+	});
 
-  it('应该正确处理包含 negation patterns 的 workspace 配置', () => {
-    // 创建测试用的 pnpm-workspace.yaml
-    const workspaceConfig = `
+	it("应该正确处理包含 negation patterns 的 workspace 配置", () => {
+		// 创建测试用的 pnpm-workspace.yaml
+		const workspaceConfig = `
 packages:
   - "packages/*"
   - "!packages/excluded/*"
   - "!.vercel/**"
 `;
-    fs.writeFileSync(
-      path.join(testDir, 'pnpm-workspace.yaml'),
-      workspaceConfig
-    );
+		fs.writeFileSync(path.join(testDir, "pnpm-workspace.yaml"), workspaceConfig);
 
-    // 创建测试包
-    const packageDir = path.join(testDir, 'packages/test-package');
-    fs.mkdirSync(packageDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(packageDir, 'package.json'),
-      JSON.stringify({ name: 'test-package', description: 'Test' })
-    );
+		// 创建测试包
+		const packageDir = path.join(testDir, "packages/test-package");
+		fs.mkdirSync(packageDir, { recursive: true });
+		fs.writeFileSync(
+			path.join(packageDir, "package.json"),
+			JSON.stringify({ name: "test-package", description: "Test" }),
+		);
 
-    // 创建被排除的目录（不应该被处理）
-    const excludedDir = path.join(testDir, 'packages/excluded/bad-package');
-    fs.mkdirSync(excludedDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(excludedDir, 'package.json'),
-      'invalid json content'
-    );
+		// 创建被排除的目录（不应该被处理）
+		const excludedDir = path.join(testDir, "packages/excluded/bad-package");
+		fs.mkdirSync(excludedDir, { recursive: true });
+		fs.writeFileSync(path.join(excludedDir, "package.json"), "invalid json content");
 
-    // 执行测试
-    const result = getPackagesNameAndDescription();
+		// 执行测试
+		const result = getPackagesNameAndDescription();
 
-    // 验证结果
-    expect(result).toBeDefined();
-    expect(result.length).toBeGreaterThan(0);
-    expect(result.some(r => r.value === 'test-package')).toBe(true);
-    expect(result.some(r => r.value === 'bad-package')).toBe(false);
-  });
+		// 验证结果
+		expect(result).toBeDefined();
+		expect(result.length).toBeGreaterThan(0);
+		expect(result.some((r) => r.value === "test-package")).toBe(true);
+		expect(result.some((r) => r.value === "bad-package")).toBe(false);
+	});
 
-  it('应该忽略非 JSON 文件', () => {
-    // 创建包含非 JSON 文件的目录
-    const packageDir = path.join(testDir, 'packages/mixed');
-    fs.mkdirSync(packageDir, { recursive: true });
+	it("应该忽略非 JSON 文件", () => {
+		// 创建包含非 JSON 文件的目录
+		const packageDir = path.join(testDir, "packages/mixed");
+		fs.mkdirSync(packageDir, { recursive: true });
 
-    // 创建有效的 package.json
-    fs.writeFileSync(
-      path.join(packageDir, 'package.json'),
-      JSON.stringify({ name: 'mixed-package' })
-    );
+		// 创建有效的 package.json
+		fs.writeFileSync(path.join(packageDir, "package.json"), JSON.stringify({ name: "mixed-package" }));
 
-    // 创建其他文件（不应该被处理）
-    fs.writeFileSync(
-      path.join(packageDir, '.editorconfig'),
-      '[*.{js,ts}]\nindent_size = 2'
-    );
+		// 创建其他文件（不应该被处理）
+		fs.writeFileSync(path.join(packageDir, ".editorconfig"), "[*.{js,ts}]\nindent_size = 2");
 
-    const result = getPackagesNameAndDescription();
+		const result = getPackagesNameAndDescription();
 
-    // 不应该因为 .editorconfig 而报错
-    expect(() => result).not.toThrow();
-  });
+		// 不应该因为 .editorconfig 而报错
+		expect(() => result).not.toThrow();
+	});
 
-  it('应该正确处理空的 packages 数组', () => {
-    const workspaceConfig = `packages: []`;
-    fs.writeFileSync(
-      path.join(testDir, 'pnpm-workspace.yaml'),
-      workspaceConfig
-    );
+	it("应该正确处理空的 packages 数组", () => {
+		const workspaceConfig = `packages: []`;
+		fs.writeFileSync(path.join(testDir, "pnpm-workspace.yaml"), workspaceConfig);
 
-    const result = getPackagesNameAndDescription();
+		const result = getPackagesNameAndDescription();
 
-    expect(result).toBeDefined();
-    expect(Array.isArray(result)).toBe(true);
-  });
+		expect(result).toBeDefined();
+		expect(Array.isArray(result)).toBe(true);
+	});
 });
 ```
 
@@ -603,7 +589,7 @@ packages:
 
 ```typescript
 // 错误的路径拼接
-join(process.cwd(), "!examples/*", "package.json")
+join(process.cwd(), "!examples/*", "package.json");
 // 结果：D:/path/!examples/*/package.json
 
 // tinyglobby 的解释
@@ -757,10 +743,10 @@ grep -n "filteredPkgPatterns" node_modules/.pnpm/@ruan-cat+commitlint-config_*/n
 
    ```typescript
    function validateWorkspaceConfig(config: WorkspaceConfig) {
-     if (!Array.isArray(config.packages)) {
-       throw new Error('pnpm-workspace.yaml 的 packages 字段必须是数组');
-     }
-     // 更多验证...
+   	if (!Array.isArray(config.packages)) {
+   		throw new Error("pnpm-workspace.yaml 的 packages 字段必须是数组");
+   	}
+   	// 更多验证...
    }
    ```
 
