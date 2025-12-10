@@ -4,6 +4,8 @@ description: 在不直接使用 task-master-ai MCP工具的前提下，直接使
 color: blue
 ---
 
+<!-- 已经被 openspec 的任务完成了 -->
+
 # 直接执行 `.taskmaster\tasks\tasks.json` 任务大师配置文件内的任务
 
 由于 `task-master-ai` 有故障，无法直接使用，所以要求你直接阅读任务信息，根据任务信息来完成任务。
