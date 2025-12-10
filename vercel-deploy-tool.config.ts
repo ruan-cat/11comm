@@ -1,5 +1,5 @@
-import type { Config } from "@ruan-cat/vercel-deploy-tool/src/config.ts";
-import { domains } from "@ruan-cat/domains";
+import { defineConfig } from "@ruan-cat/vercel-deploy-tool";
+import { getDomains } from "@ruan-cat/domains";
 
 const VITE_IS_REVERSE_PROXY = process.env.VITE_IS_REVERSE_PROXY;
 function IS_REVERSE_PROXY() {
@@ -18,9 +18,9 @@ const isNeedVercelBuild = !IS_REVERSE_PROXY();
 const targetCWD = isNeedVercelBuild ? "./apps/admin/dist" : "./apps/admin";
 
 // 这里使用的是阮喵喵的vercel账号
-export default <Config>{
+export default defineConfig({
 	// 01星球专门的vercel部署项目
-	vercelProjetName: "01s-vercel",
+	vercelProjectName: "01s-vercel",
 	vercelOrgId: "team_cUeGw4TtOCLp0bbuH8kA7BYH",
 	vercelProjectId: "prj_0dbaKzhoqP9C3A7C4QDkzjSprN2L",
 	vercelToken: "",
@@ -32,25 +32,18 @@ export default <Config>{
 
 	deployTargets: [
 		// 11comm智慧社区 主项目
-		{
-			type: "static",
-			isNeedVercelBuild,
-			targetCWD,
-			url: domains["11comm"] as unknown as string[],
-		},
 		// {
-		// 	type: "userCommands",
-		// 	targetCWD: "./apps/admin",
-		// 	outputDirectory: "dist",
-		// 	userCommands: ["pnpm -C=./apps/admin build"],
-		// 	url: domains["11comm"] as unknown as string[],
+		// 	type: "static",
+		// 	isNeedVercelBuild,
+		// 	targetCWD,
+		// 	url: getDomains("11comm"),
 		// },
 
 		// 11comm智慧社区 前端技术文档
 		{
 			type: "static",
 			targetCWD: "./apps/admin/src/.vitepress/dist",
-			url: domains["11comm-doc"] as unknown as string[],
+			url: getDomains("11comm-doc"),
 		},
 	],
-};
+});

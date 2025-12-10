@@ -24,7 +24,7 @@
 		"test": "vitest --ui --watch --api.port=4000",
 		"format": "prettier --experimental-cli --write '**/*.{js,jsx,ts,tsx,mts,json,css,scss,md,yml,yaml,html}'",
 		"deploy:turbo": "turbo deploy",
-		"deploy": "dotenvx run -f apps/admin/.env.production -f .env -- tsx ./scripts/deploy.ts",
+		"deploy": "dotenvx run -f apps/admin/.env.production -f .env -- vdt deploy",
 		"not-use-in-cloudflare-worker-preinstall": "npm run corepack:pnpm && npx only-allow pnpm",
 		"corepack:pnpm": "corepack enable && corepack install",
 		"clear": "pnpm run clear:deps && pnpm run clear:cache",
