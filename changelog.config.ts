@@ -1,7 +1,7 @@
 import type { ChangelogConfig } from "changelogen";
 
 import { commitTypes } from "@ruan-cat/commitlint-config/src/commit-types.ts";
-import { isConditionsEvery } from "@ruan-cat/utils";
+import { isConditionsSome } from "@ruan-cat/utils";
 
 /**
  * @see https://github.com/unjs/changelogen
@@ -16,7 +16,7 @@ export default {
 			const { type, description, emoji } = commitType;
 
 			if (
-				isConditionsEvery([
+				isConditionsSome([
 					() => type === "feat",
 					() => type === "fix",
 					() => type === "refactor",
