@@ -26,16 +26,16 @@ apps/admin MUST 安装并初始化 @tanstack/vue-query：
 import { VueQueryPlugin } from "@tanstack/vue-query";
 
 app.use(VueQueryPlugin, {
-  queryClientConfig: {
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000, // 5分钟
-        gcTime: 10 * 60 * 1000, // 10分钟
-        retry: 1,
-        refetchOnWindowFocus: false,
-      },
-    },
-  },
+	queryClientConfig: {
+		defaultOptions: {
+			queries: {
+				staleTime: 5 * 60 * 1000, // 5分钟
+				gcTime: 10 * 60 * 1000, // 10分钟
+				retry: 1,
+				refetchOnWindowFocus: false,
+			},
+		},
+	},
 });
 ```
 
@@ -66,25 +66,23 @@ apps/admin MUST 提供通用列表查询模板：
 
 ```typescript
 export interface BaseListQueryParams {
-  pageIndex: number;
-  pageSize: number;
-  [key: string]: any;
+	pageIndex: number;
+	pageSize: number;
+	[key: string]: any;
 }
 
 export interface UseListQueryOptions<T, P extends BaseListQueryParams> {
-  /** 接口路径 */
-  apiUrl: string;
-  /** 查询 key 前缀 */
-  queryKeyPrefix: string[];
-  /** 查询参数 */
-  params: MaybeRef<P>;
-  /** 是否启用查询 */
-  enabled?: MaybeRef<boolean>;
+	/** 接口路径 */
+	apiUrl: string;
+	/** 查询 key 前缀 */
+	queryKeyPrefix: string[];
+	/** 查询参数 */
+	params: MaybeRef<P>;
+	/** 是否启用查询 */
+	enabled?: MaybeRef<boolean>;
 }
 
-export function useListQuery<T, P extends BaseListQueryParams>(
-  options: UseListQueryOptions<T, P>
-)
+export function useListQuery<T, P extends BaseListQueryParams>(options: UseListQueryOptions<T, P>);
 ```
 
 #### Scenario: useQuery 封装
@@ -95,15 +93,15 @@ export function useListQuery<T, P extends BaseListQueryParams>(
 
 ```typescript
 return useQuery({
-  queryKey: [...queryKeyPrefix, params] as const,
-  queryFn: async () => {
-    const paramsValue = unref(params);
-    const response = await http.post<JsonVO<PageDTO<T>>>(apiUrl, {
-      data: paramsValue,
-    });
-    return response.data;
-  },
-  enabled: computed(() => unref(enabled) && unref(params).pageIndex > 0),
+	queryKey: [...queryKeyPrefix, params] as const,
+	queryFn: async () => {
+		const paramsValue = unref(params);
+		const response = await http.post<JsonVO<PageDTO<T>>>(apiUrl, {
+			data: paramsValue,
+		});
+		return response.data;
+	},
+	enabled: computed(() => unref(enabled) && unref(params).pageIndex > 0),
 });
 ```
 
@@ -146,17 +144,14 @@ return useQuery({
 
 ```typescript
 import { useListQuery } from "@/composables/useListQuery";
-import type {
-  HouseChargeListItem,
-  HouseChargeQueryParams,
-} from "@01s-11comm/type";
+import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 
 export function useHouseChargeListQuery(params: Ref<HouseChargeQueryParams>) {
-  return useListQuery<HouseChargeListItem, HouseChargeQueryParams>({
-    apiUrl: "/api/property-manage/expense-manage/house-charge/list",
-    queryKeyPrefix: ["houseCharge", "list"],
-    params,
-  });
+	return useListQuery<HouseChargeListItem, HouseChargeQueryParams>({
+		apiUrl: "/api/property-manage/expense-manage/house-charge/list",
+		queryKeyPrefix: ["houseCharge", "list"],
+		params,
+	});
 }
 ```
 
@@ -185,12 +180,12 @@ useListQuery 和业务 Hook MUST 返回完整的查询状态：
 - **GIVEN** 调用 const result = useHouseChargeListQuery(params)
 - **WHEN** 检查返回对象
 - **THEN** result 包含以下属性：
-  - data: Ref\<JsonVO\<PageDTO\<HouseChargeListItem\>\> | undefined\>
-  - isLoading: Ref\<boolean\>
-  - isError: Ref\<boolean\>
-  - error: Ref\<Error | null\>
-  - refetch: () => Promise\<void\>
-  - isFetching: Ref\<boolean\>
+  - `data: Ref<JsonVO<PageDTO<HouseChargeListItem>> | undefined>`
+  - `isLoading: Ref<boolean>`
+  - `isError: Ref<boolean>`
+  - `error: Ref<Error | null>`
+  - `refetch: () => Promise<void>`
+  - `isFetching: Ref<boolean>`
 
 #### Scenario: data 数据结构
 
@@ -255,15 +250,15 @@ useListQuery 和业务 Hook MUST 返回完整的查询状态：
 
 TanStack Query MUST 实现智能缓存：
 
-- staleTime: 5分钟 - 数据新鲜时间
-- gcTime: 10分钟 - 垃圾回收时间
+- staleTime: 5 分钟 - 数据新鲜时间
+- gcTime: 10 分钟 - 垃圾回收时间
 - 相同 queryKey 共享缓存
 - 参数变化视为不同查询
 
 #### Scenario: 缓存命中
 
 - **GIVEN** 首次请求 pageIndex = 1, pageSize = 10
-- **WHEN** 5分钟内再次请求相同参数
+- **WHEN** 5 分钟内再次请求相同参数
 - **THEN** 直接返回缓存数据
 - **AND** 不发起网络请求
 - **AND** isLoading = false
@@ -340,10 +335,10 @@ TanStack Query MUST 实现智能缓存：
 
 ```typescript
 async function loadTableData() {
-  let filteredData = [...allTableData];
-  // 筛选逻辑
-  tableData.value = filteredData.slice(startIndex, endIndex);
-  pagination.value.total = filteredData.length;
+	let filteredData = [...allTableData];
+	// 筛选逻辑
+	tableData.value = filteredData.slice(startIndex, endIndex);
+	pagination.value.total = filteredData.length;
 }
 ```
 
@@ -361,8 +356,8 @@ async function loadTableData() {
 import { useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
 
 const queryParams = ref<HouseChargeQueryParams>({
-  pageIndex: pagination.value.currentPage,
-  pageSize: pagination.value.pageSize,
+	pageIndex: pagination.value.currentPage,
+	pageSize: pagination.value.pageSize,
 });
 
 const { data, isLoading, refetch } = useHouseChargeListQuery(queryParams);
@@ -376,11 +371,11 @@ const { data, isLoading, refetch } = useHouseChargeListQuery(queryParams);
 
 ```typescript
 watch(data, (newData) => {
-  if (newData?.data) {
-    tableData.value = newData.data.list;
-    pagination.value.total = newData.data.total;
-    pureTableProps.value.data = tableData.value;
-  }
+	if (newData?.data) {
+		tableData.value = newData.data.list;
+		pagination.value.total = newData.data.total;
+		pureTableProps.value.data = tableData.value;
+	}
 });
 ```
 
@@ -405,11 +400,11 @@ watch(data, (newData) => {
 
 ```typescript
 async function handleSearch() {
-  queryParams.value = {
-    ...plusSearchModel.value,
-    pageIndex: 1,
-    pageSize: pagination.value.pageSize,
-  };
+	queryParams.value = {
+		...plusSearchModel.value,
+		pageIndex: 1,
+		pageSize: pagination.value.pageSize,
+	};
 }
 ```
 
@@ -444,7 +439,7 @@ async function handleSearch() {
 
 ```typescript
 async function handleCurrentPageChange(currentPage: number) {
-  queryParams.value.pageIndex = currentPage;
+	queryParams.value.pageIndex = currentPage;
 }
 ```
 
@@ -458,8 +453,8 @@ async function handleCurrentPageChange(currentPage: number) {
 
 ```typescript
 async function handlePageSizeChange(pageSize: number) {
-  queryParams.value.pageSize = pageSize;
-  queryParams.value.pageIndex = 1; // 重置到第一页
+	queryParams.value.pageSize = pageSize;
+	queryParams.value.pageIndex = 1; // 重置到第一页
 }
 ```
 
@@ -512,7 +507,7 @@ async function handlePageSizeChange(pageSize: number) {
 ```typescript
 let filteredData = [...allTableData];
 if (searchForm.expenseType) {
-  filteredData = filteredData.filter((item) => item.费用类型 === searchForm.expenseType);
+	filteredData = filteredData.filter((item) => item.费用类型 === searchForm.expenseType);
 }
 ```
 
