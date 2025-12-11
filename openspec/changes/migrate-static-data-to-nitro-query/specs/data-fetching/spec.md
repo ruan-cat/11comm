@@ -53,7 +53,7 @@ app.use(VueQueryPlugin, {
 apps/admin MUST 提供通用列表查询模板：
 
 - 文件位置：`src/composables/useListQuery.ts`
-- 接受泛型参数 \<T, P extends BaseListQueryParams\>
+- 接受泛型参数 `<T, P extends BaseListQueryParams>`
 - 封装 useQuery 的标准用法
 - 支持响应式参数（MaybeRef）
 - 自动处理 enabled 条件
@@ -168,7 +168,7 @@ export function useHouseChargeListQuery(params: Ref<HouseChargeQueryParams>) {
 
 useListQuery 和业务 Hook MUST 返回完整的查询状态：
 
-- data - 响应数据（JsonVO\<PageDTO\<T\>\>）
+- data - 响应数据（`JsonVO<PageDTO<T>>`）
 - isLoading - 加载状态
 - isError - 错误状态
 - error - 错误对象

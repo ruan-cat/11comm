@@ -58,10 +58,10 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 - success: boolean - 请求是否成功
 - code: number - 状态码（200 成功）
 - message: string - 提示信息
-- data: PageDTO\<T\> - 分页数据对象
+- `data: PageDTO<T>` - 分页数据对象
 - timestamp: number - 时间戳
 
-PageDTO\<T\> 包含：
+`PageDTO<T>` 包含：
 
 - list: T[] - 数据列表
 - total: number - 总记录数
@@ -263,7 +263,7 @@ PageDTO\<T\> 包含：
 3. 读取请求参数
 4. 数据筛选（遍历所有筛选字段）
 5. 分页处理（slice）
-6. 返回 JsonVO\<PageDTO\<T\>\> 格式
+6. 返回 J`sonVO<PageDTO<T>>` 格式
 
 #### Scenario: 接口代码结构
 
