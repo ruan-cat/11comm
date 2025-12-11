@@ -19,7 +19,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 #### Scenario: 接口热重载
 
 - **GIVEN** 开发服务器正在运行
-- **WHEN** 修改 server/api/\*/list.post.ts 文件
+- **WHEN** 修改 `server/api/*/list.post.ts` 文件
 - **THEN** Nitro 自动重新加载接口
 - **AND** 无需重启开发服务器
 
@@ -231,7 +231,7 @@ PageDTO\<T\> 包含：
 
 - **GIVEN** 筛选后有 47 条数据
 - **WHEN** 请求 `{ "pageIndex": 2, "pageSize": 10 }`
-- **THEN** startIndex = (2 - 1) \* 10 = 10
+- **THEN** startIndex = `(2 - 1) * 10 = 10`
 - **AND** endIndex = 10 + 10 = 20
 - **AND** 返回 data[10:20]（第 11-20 条）
 - **AND** total = 47
