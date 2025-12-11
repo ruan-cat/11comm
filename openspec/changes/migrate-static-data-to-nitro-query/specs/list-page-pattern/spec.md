@@ -602,9 +602,9 @@ const plusSearchColumns: PlusColumn[] = [
 
 ### Requirement: test-data.ts 文件存在
 
-**Reason**: 假数据迁移到 server/api/\*/mock-data.ts
+**Reason**: 假数据迁移到 `server/api/*/mock-data.ts`
 
-**Migration**: 删除所有 src/pages/\*/test-data.ts 文件
+**Migration**: 删除所有 `src/pages/*/test-data.ts` 文件
 
 #### Scenario: 文件删除
 
