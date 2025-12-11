@@ -299,6 +299,13 @@ export interface PageDTO<T> {
 1. 不允许出现任何形式的中文变量名。
 2. 用简单的 jsdoc 注释格式，为变量和类型增加补全说明注释。相当于把中文命名的变量名，迁移到 jsdoc 注释内。
 
+### 确定 openspec 精细化任务工作范围的方案
+
+按照上述的要求，你需要全量的阅读整个项目的代码。这对你来说是不可接受的，你没有足够大的上下文窗口阅读代码，我也没有那么多 token 供你这样使用。请你使用以下的方式来协助确定 openspec 的 tasks.md 任务工作范围，以及需要处理的代码目录：
+
+1. 阅读 `openspec\changes\archive\2025-12-10-sync-taskmaster-test-data-backlog\tasks.md` 文件的目录清单。
+2. 参考这一份任务清单，协助编写一个完整的 openspec 格式的 tasks.md 任务工作范围。
+
 ### openspec 的规格生成规范 spec
 
 1. 在使用 openspec 的工具将上述要求全部变成满足 openspec 规范文件时，务必要确保不要丢失掉任何具体的 spec 行为规范。我不希望出现转换格式后的规范文件反而缺少了必要的规范。
