@@ -165,7 +165,7 @@ overrides:
 2. 阅读 `.claude\agents\make-list-page.md` 关于【用 `假数据文件` `test-data.ts` 来存储业务类型与假数据】章节，了解清楚数据格式的处理要求。
 3. 请你将这个文件，转换成可以被 openspec 识别的一揽子任务。
 
-## 017 <!-- TODO: 完成下面的设计后 就开始初始化并执行 --> 初始化 `apps\type` 的专用类型库
+## 017 初始化 `apps\type` 的专用类型库
 
 我需要你在 `apps\type` 目录内，初始化一个专门存放业务类型的 node 包。
 
@@ -175,6 +175,10 @@ overrides:
 4. 这个包是私有包，避免发包。
 5. 这个包的 main 入口将直接导出 index.ts 文件。
 6. 其他包将直接从这里导入所需要的业务类型。
+
+### 01 <!-- TODO: 1 --> 更新 `migrate-static-data-to-nitro-query` 的 openspec 规范
+
+请根据上述内容，在 `migrate-static-data-to-nitro-query` 内，补充增加初始化 `apps\type` 的专用类型库的行为规范。
 
 ### 固定提供的接口业务类型
 
@@ -237,7 +241,7 @@ export interface PageDTO<T> {
 }
 ```
 
-## 018 <!-- TODO: --> 将本地静态写死的数据转换成真实的 nitro 接口，并在各个页面内使用基于 `@tanstack/vue-query` 的接口请求库
+## 018 将本地静态写死的数据转换成真实的 nitro 接口，并在各个页面内使用基于 `@tanstack/vue-query` 的接口请求库
 
 这是一个长期的，巨大的代码写法迁移任务。我们将告别前端本地写死的静态数据，不再使用中文名的字段名和变量名，全部换成英文变量名。
 
