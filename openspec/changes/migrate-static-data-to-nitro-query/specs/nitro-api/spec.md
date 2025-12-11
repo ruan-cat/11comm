@@ -19,7 +19,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 #### Scenario: 接口热重载
 
 - **GIVEN** 开发服务器正在运行
-- **WHEN** 修改 server/api/*/list.post.ts 文件
+- **WHEN** 修改 server/api/\*/list.post.ts 文件
 - **THEN** Nitro 自动重新加载接口
 - **AND** 无需重启开发服务器
 
@@ -156,10 +156,10 @@ PageDTO\<T\> 包含：
 
 ```json
 {
-  "expenseType": "物业费",
-  "status": "启用",
-  "pageIndex": 2,
-  "pageSize": 20
+	"expenseType": "物业费",
+	"status": "启用",
+	"pageIndex": 2,
+	"pageSize": 20
 }
 ```
 
@@ -277,37 +277,37 @@ import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/ty
 import { mockHouseChargeData } from "./mock-data";
 
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
-  // 1. 读取请求参数
-  const body = await readBody<HouseChargeQueryParams>(event);
-  const { pageIndex = 1, pageSize = 10, ...filters } = body;
+	// 1. 读取请求参数
+	const body = await readBody<HouseChargeQueryParams>(event);
+	const { pageIndex = 1, pageSize = 10, ...filters } = body;
 
-  // 2. 数据筛选
-  let filteredData = [...mockHouseChargeData];
-  if (filters.expenseType) {
-    filteredData = filteredData.filter(item => item.expenseType === filters.expenseType);
-  }
-  // ... 其他筛选条件
+	// 2. 数据筛选
+	let filteredData = [...mockHouseChargeData];
+	if (filters.expenseType) {
+		filteredData = filteredData.filter((item) => item.expenseType === filters.expenseType);
+	}
+	// ... 其他筛选条件
 
-  // 3. 分页处理
-  const total = filteredData.length;
-  const startIndex = (pageIndex - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const pageData = filteredData.slice(startIndex, endIndex);
+	// 3. 分页处理
+	const total = filteredData.length;
+	const startIndex = (pageIndex - 1) * pageSize;
+	const endIndex = startIndex + pageSize;
+	const pageData = filteredData.slice(startIndex, endIndex);
 
-  // 4. 返回标准格式
-  return {
-    success: true,
-    code: 200,
-    message: "查询成功",
-    data: {
-      list: pageData,
-      total,
-      pageIndex,
-      pageSize,
-      totalPages: Math.ceil(total / pageSize),
-    },
-    timestamp: Date.now(),
-  };
+	// 4. 返回标准格式
+	return {
+		success: true,
+		code: 200,
+		message: "查询成功",
+		data: {
+			list: pageData,
+			total,
+			pageIndex,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		},
+		timestamp: Date.now(),
+	};
 });
 ```
 

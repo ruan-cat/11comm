@@ -23,18 +23,15 @@
 ```vue
 <script setup lang="ts">
 import { useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
-import type {
-  HouseChargeListItem,
-  HouseChargeQueryParams,
-} from "@01s-11comm/type";
+import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 
 // 1. 分页配置
 const pagination = ref({ currentPage: 1, pageSize: 10, total: 0 });
 
 // 2. 查询参数
 const queryParams = ref<HouseChargeQueryParams>({
-  pageIndex: pagination.value.currentPage,
-  pageSize: pagination.value.pageSize,
+	pageIndex: pagination.value.currentPage,
+	pageSize: pagination.value.pageSize,
 });
 
 // 3. TanStack Query Hook
@@ -45,41 +42,41 @@ const tableData = ref<HouseChargeListItem[]>([]);
 
 // 5. 监听数据变化
 watch(data, (newData) => {
-  if (newData?.data) {
-    tableData.value = newData.data.list;
-    pagination.value.total = newData.data.total;
-    pureTableProps.value.data = tableData.value;
-  }
+	if (newData?.data) {
+		tableData.value = newData.data.list;
+		pagination.value.total = newData.data.total;
+		pureTableProps.value.data = tableData.value;
+	}
 });
 
 // 6. 搜索函数
 async function handleSearch() {
-  queryParams.value = {
-    ...plusSearchModel.value,
-    pageIndex: 1,
-    pageSize: pagination.value.pageSize,
-  };
+	queryParams.value = {
+		...plusSearchModel.value,
+		pageIndex: 1,
+		pageSize: pagination.value.pageSize,
+	};
 }
 
 // 7. 分页函数
 async function handleCurrentPageChange(currentPage: number) {
-  queryParams.value.pageIndex = currentPage;
+	queryParams.value.pageIndex = currentPage;
 }
 
 async function handlePageSizeChange(pageSize: number) {
-  queryParams.value.pageSize = pageSize;
-  queryParams.value.pageIndex = 1;
+	queryParams.value.pageSize = pageSize;
+	queryParams.value.pageIndex = 1;
 }
 
 // 8. 初始化
 onMounted(() => {
-  refetch();
+	refetch();
 });
 </script>
 
 <template>
-  <PlusSearch v-model="plusSearchModel" @search="handleSearch" @reset="handleReset" />
-  <PureTable :loading="isLoading" :data="tableData" :pagination="pagination" />
+	<PlusSearch v-model="plusSearchModel" @search="handleSearch" @reset="handleReset" />
+	<PureTable :loading="isLoading" :data="tableData" :pagination="pagination" />
 </template>
 ```
 
@@ -95,15 +92,15 @@ import { tableData as allTableData } from "./test-data";
 
 // ❌ 删除
 async function loadTableData() {
-  let filteredData = [...allTableData];
-  // 筛选逻辑...
-  tableData.value = filteredData.slice(startIndex, endIndex);
-  pagination.value.total = filteredData.length;
+	let filteredData = [...allTableData];
+	// 筛选逻辑...
+	tableData.value = filteredData.slice(startIndex, endIndex);
+	pagination.value.total = filteredData.length;
 }
 
 // ❌ 删除（onMounted 中调用 loadTableData）
 onMounted(async () => {
-  await loadTableData();
+	await loadTableData();
 });
 ```
 
@@ -129,12 +126,7 @@ onMounted(async () => {
 
 ```vue
 <template>
-  <PlusSearch
-    v-model="plusSearchModel"
-    :columns="plusSearchColumns"
-    @search="handleSearch"
-    @reset="handleReset"
-  />
+	<PlusSearch v-model="plusSearchModel" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReset" />
 </template>
 
 <script setup lang="ts">
@@ -144,18 +136,18 @@ import { expenseTypeOptions, statusOptions } from "@01s-11comm/type";
 const plusSearchModel = ref({});
 
 const plusSearchColumns: PlusColumn[] = [
-  {
-    label: "费用类型",
-    prop: "expenseType",
-    valueType: "select",
-    options: expenseTypeOptions,
-  },
-  {
-    label: "状态",
-    prop: "status",
-    valueType: "select",
-    options: statusOptions,
-  },
+	{
+		label: "费用类型",
+		prop: "expenseType",
+		valueType: "select",
+		options: expenseTypeOptions,
+	},
+	{
+		label: "状态",
+		prop: "status",
+		valueType: "select",
+		options: statusOptions,
+	},
 ];
 </script>
 ```
@@ -168,12 +160,12 @@ const plusSearchColumns: PlusColumn[] = [
 
 ```typescript
 async function handleSearch() {
-  queryParams.value = {
-    ...plusSearchModel.value, // 合并搜索条件
-    pageIndex: 1, // 重置到第一页
-    pageSize: pagination.value.pageSize,
-  };
-  // TanStack Query 自动触发请求
+	queryParams.value = {
+		...plusSearchModel.value, // 合并搜索条件
+		pageIndex: 1, // 重置到第一页
+		pageSize: pagination.value.pageSize,
+	};
+	// TanStack Query 自动触发请求
 }
 ```
 
@@ -185,12 +177,12 @@ async function handleSearch() {
 
 ```typescript
 async function handleReset() {
-  plusSearchModel.value = {}; // 清空搜索条件
-  queryParams.value = {
-    pageIndex: 1,
-    pageSize: pagination.value.pageSize,
-  };
-  // TanStack Query 自动触发请求
+	plusSearchModel.value = {}; // 清空搜索条件
+	queryParams.value = {
+		pageIndex: 1,
+		pageSize: pagination.value.pageSize,
+	};
+	// TanStack Query 自动触发请求
 }
 ```
 
@@ -216,23 +208,23 @@ async function handleReset() {
 
 ```vue
 <template>
-  <PureTable
-    :loading="isLoading"
-    :data="tableData"
-    :columns="columns"
-    :pagination="pagination"
-    @current-change="handleCurrentPageChange"
-    @size-change="handlePageSizeChange"
-  />
+	<PureTable
+		:loading="isLoading"
+		:data="tableData"
+		:columns="columns"
+		:pagination="pagination"
+		@current-change="handleCurrentPageChange"
+		@size-change="handlePageSizeChange"
+	/>
 </template>
 
 <script setup lang="ts">
 const pagination = ref({
-  currentPage: 1,
-  pageSize: 10,
-  total: 0,
-  pageSizes: [10, 20, 30, 50],
-  background: true,
+	currentPage: 1,
+	pageSize: 10,
+	total: 0,
+	pageSizes: [10, 20, 30, 50],
+	background: true,
 });
 </script>
 ```
@@ -245,15 +237,15 @@ const pagination = ref({
 
 ```typescript
 async function handleCurrentPageChange(currentPage: number) {
-  pagination.value.currentPage = currentPage;
-  queryParams.value.pageIndex = currentPage;
+	pagination.value.currentPage = currentPage;
+	queryParams.value.pageIndex = currentPage;
 }
 
 async function handlePageSizeChange(pageSize: number) {
-  pagination.value.pageSize = pageSize;
-  pagination.value.currentPage = 1; // 重置页码
-  queryParams.value.pageSize = pageSize;
-  queryParams.value.pageIndex = 1;
+	pagination.value.pageSize = pageSize;
+	pagination.value.currentPage = 1; // 重置页码
+	queryParams.value.pageSize = pageSize;
+	queryParams.value.pageIndex = 1;
 }
 ```
 
@@ -265,11 +257,11 @@ async function handlePageSizeChange(pageSize: number) {
 
 ```typescript
 watch(data, (newData) => {
-  if (newData?.data) {
-    tableData.value = newData.data.list;
-    pagination.value.total = newData.data.total; // 自动同步总数
-    pureTableProps.value.data = tableData.value;
-  }
+	if (newData?.data) {
+		tableData.value = newData.data.list;
+		pagination.value.total = newData.data.total; // 自动同步总数
+		pureTableProps.value.data = tableData.value;
+	}
 });
 ```
 
@@ -310,12 +302,12 @@ watch(data, (newData) => {
 const loading = ref(false);
 
 async function loadTableData() {
-  loading.value = true; // ❌ 删除
-  try {
-    // 数据加载逻辑
-  } finally {
-    loading.value = false; // ❌ 删除
-  }
+	loading.value = true; // ❌ 删除
+	try {
+		// 数据加载逻辑
+	} finally {
+		loading.value = false; // ❌ 删除
+	}
 }
 ```
 
@@ -340,12 +332,12 @@ async function loadTableData() {
 
 ```vue
 <template>
-  <div v-if="isError" class="error-message">
-    <p>数据加载失败：{{ error?.message }}</p>
-    <button @click="refetch">重试</button>
-  </div>
+	<div v-if="isError" class="error-message">
+		<p>数据加载失败：{{ error?.message }}</p>
+		<button @click="refetch">重试</button>
+	</div>
 
-  <PureTable v-else :loading="isLoading" :data="tableData" />
+	<PureTable v-else :loading="isLoading" :data="tableData" />
 </template>
 ```
 
@@ -374,7 +366,7 @@ async function loadTableData() {
 
 ```typescript
 onMounted(() => {
-  refetch(); // 手动触发首次查询
+	refetch(); // 手动触发首次查询
 });
 ```
 
@@ -383,8 +375,8 @@ onMounted(() => {
 ```typescript
 // queryParams 初始化时 pageIndex > 0，自动触发
 const queryParams = ref<HouseChargeQueryParams>({
-  pageIndex: 1, // 自动触发查询
-  pageSize: 10,
+	pageIndex: 1, // 自动触发查询
+	pageSize: 10,
 });
 ```
 
@@ -416,11 +408,11 @@ queryParams MUST 作为响应式对象管理：
 import type { HouseChargeQueryParams } from "@01s-11comm/type";
 
 const queryParams = ref<HouseChargeQueryParams>({
-  pageIndex: 1,
-  pageSize: 10,
-  // 搜索条件初始为空
-  expenseType: undefined,
-  status: undefined,
+	pageIndex: 1,
+	pageSize: 10,
+	// 搜索条件初始为空
+	expenseType: undefined,
+	status: undefined,
 });
 ```
 
@@ -432,11 +424,11 @@ const queryParams = ref<HouseChargeQueryParams>({
 
 ```typescript
 async function handleSearch() {
-  queryParams.value = {
-    ...queryParams.value, // 保留 pageSize
-    ...plusSearchModel.value, // 合并搜索条件
-    pageIndex: 1, // 重置页码
-  };
+	queryParams.value = {
+		...queryParams.value, // 保留 pageSize
+		...plusSearchModel.value, // 合并搜索条件
+		pageIndex: 1, // 重置页码
+	};
 }
 ```
 
@@ -515,13 +507,13 @@ onMounted(() => {
 ```typescript
 /** 查询参数 Query parameters */
 const queryParams = ref<HouseChargeQueryParams>({
-  pageIndex: 1,
-  pageSize: 10,
+	pageIndex: 1,
+	pageSize: 10,
 });
 
 /** 搜索函数 Search function */
 async function handleSearch() {
-  // ...
+	// ...
 }
 ```
 
@@ -544,10 +536,7 @@ async function handleSearch() {
 - **THEN** 代码为：
 
 ```typescript
-import type {
-  HouseChargeListItem,
-  HouseChargeQueryParams,
-} from "@01s-11comm/type";
+import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 ```
 
 #### Scenario: 类型约束
@@ -581,10 +570,7 @@ import type {
 - **THEN** 代码为：
 
 ```typescript
-import {
-  expenseTypeOptions,
-  statusOptions,
-} from "@01s-11comm/type";
+import { expenseTypeOptions, statusOptions } from "@01s-11comm/type";
 ```
 
 #### Scenario: PlusSearch 配置
@@ -595,18 +581,18 @@ import {
 
 ```typescript
 const plusSearchColumns: PlusColumn[] = [
-  {
-    label: "费用类型",
-    prop: "expenseType",
-    valueType: "select",
-    options: expenseTypeOptions, // 使用导入的 Options
-  },
-  {
-    label: "状态",
-    prop: "status",
-    valueType: "select",
-    options: statusOptions,
-  },
+	{
+		label: "费用类型",
+		prop: "expenseType",
+		valueType: "select",
+		options: expenseTypeOptions, // 使用导入的 Options
+	},
+	{
+		label: "状态",
+		prop: "status",
+		valueType: "select",
+		options: statusOptions,
+	},
 ];
 ```
 
@@ -616,9 +602,9 @@ const plusSearchColumns: PlusColumn[] = [
 
 ### Requirement: test-data.ts 文件存在
 
-**Reason**: 假数据迁移到 server/api/*/mock-data.ts
+**Reason**: 假数据迁移到 server/api/\*/mock-data.ts
 
-**Migration**: 删除所有 src/pages/*/test-data.ts 文件
+**Migration**: 删除所有 src/pages/\*/test-data.ts 文件
 
 #### Scenario: 文件删除
 

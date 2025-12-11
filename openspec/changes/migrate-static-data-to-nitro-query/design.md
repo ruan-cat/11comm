@@ -79,29 +79,29 @@
 ```json
 // apps/type/package.json
 {
-  "name": "@01s-11comm/type",
-  "version": "1.0.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./business/*": {
-      "import": "./dist/business/*.js",
-      "types": "./dist/business/*.d.ts"
-    }
-  }
+	"name": "@01s-11comm/type",
+	"version": "1.0.0",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./business/*": {
+			"import": "./dist/business/*.js",
+			"types": "./dist/business/*.d.ts"
+		}
+	}
 }
 ```
 
 ```json
 // apps/admin/package.json
 {
-  "dependencies": {
-    "@01s-11comm/type": "workspace:*"
-  }
+	"dependencies": {
+		"@01s-11comm/type": "workspace:*"
+	}
 }
 ```
 
@@ -126,8 +126,8 @@
 ```typescript
 // server/api/property-manage/expense-manage/house-charge/list.post.ts
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<T>>> => {
-  const body = await readBody<HouseChargeQueryParams>(event);
-  // ...
+	const body = await readBody<HouseChargeQueryParams>(event);
+	// ...
 });
 ```
 
@@ -156,16 +156,16 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<T>>> => 
 import { VueQueryPlugin } from "@tanstack/vue-query";
 
 app.use(VueQueryPlugin, {
-  queryClientConfig: {
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000, // 5分钟
-        gcTime: 10 * 60 * 1000, // 10分钟
-        retry: 1,
-        refetchOnWindowFocus: false,
-      },
-    },
-  },
+	queryClientConfig: {
+		defaultOptions: {
+			queries: {
+				staleTime: 5 * 60 * 1000, // 5分钟
+				gcTime: 10 * 60 * 1000, // 10分钟
+				retry: 1,
+				refetchOnWindowFocus: false,
+			},
+		},
+	},
 });
 ```
 
@@ -215,7 +215,7 @@ app.use(VueQueryPlugin, {
 
 ### 4.1 系统分层
 
-```
+```plain
 ┌─────────────────────────────────────────────────────────┐
 │                   Browser (Vue 3 App)                    │
 ├─────────────────────────────────────────────────────────┤
@@ -250,7 +250,7 @@ app.use(VueQueryPlugin, {
 
 ### 4.2 数据流
 
-```
+```plain
 1. 用户操作（点击搜索/分页）
    ↓
 2. 更新 queryParams (ref)
@@ -274,7 +274,7 @@ app.use(VueQueryPlugin, {
 
 ### 4.3 目录结构对应关系
 
-```
+```plain
 页面路径: src/pages/property-manage/expense-manage/house-charge/
          ↓
 类型定义: apps/type/src/business/property-manage/expense-manage/house-charge.ts
@@ -292,7 +292,7 @@ Nitro 接口: server/api/property-manage/expense-manage/house-charge/list.post.t
 
 ### 5.1 迁移顺序
 
-```
+```plain
 Phase 1: 基础设施（1周）
   ├─ 初始化 apps/type
   ├─ 安装 @tanstack/vue-query
@@ -320,7 +320,7 @@ Phase 6: 验证清理（1周）
 
 ### 5.2 单页面迁移步骤
 
-```
+```plain
 1. 类型迁移（30分钟）
    - 读取 test-data.ts
    - 转换字段名为英文
@@ -381,11 +381,11 @@ export type ExpenseIdentifier = "周期性费用" | "一次性费用";
  * House charge list item
  */
 export interface HouseChargeListItem {
-  /** 费用项目 Expense item */
-  expenseItem: string;
-  /** 费用标识 Expense identifier */
-  expenseIdentifier: ExpenseIdentifier;
-  // ...
+	/** 费用项目 Expense item */
+	expenseItem: string;
+	/** 费用标识 Expense identifier */
+	expenseIdentifier: ExpenseIdentifier;
+	// ...
 }
 
 // 3. 查询参数接口
@@ -394,19 +394,19 @@ export interface HouseChargeListItem {
  * House charge query parameters
  */
 export interface HouseChargeQueryParams {
-  /** 房屋编号 House number */
-  houseNumber?: string;
-  /** 当前页码 Current page (1-based) */
-  pageIndex: number;
-  /** 每页大小 Page size */
-  pageSize: number;
+	/** 房屋编号 House number */
+	houseNumber?: string;
+	/** 当前页码 Current page (1-based) */
+	pageIndex: number;
+	/** 每页大小 Page size */
+	pageSize: number;
 }
 
 // 4. 选项常量
 /** 费用标识选项 Expense identifier options */
 export const expenseIdentifierOptions: OptionsType = [
-  { label: "周期性费用", value: "周期性费用" },
-  { label: "一次性费用", value: "一次性费用" },
+	{ label: "周期性费用", value: "周期性费用" },
+	{ label: "一次性费用", value: "一次性费用" },
 ];
 ```
 
@@ -435,7 +435,7 @@ export const expenseIdentifierOptions: OptionsType = [
 
 ### 7.1 接口路径规范
 
-```
+```plain
 模式: /api/{module}/{sub-module}/{page}/list
 
 示例:
@@ -451,40 +451,38 @@ import type { JsonVO, PageDTO } from "@ruan-cat/utils";
 import type { XXXListItem, XXXQueryParams } from "@01s-11comm/type";
 import { mockXXXData } from "./mock-data";
 
-export default defineEventHandler(
-  async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
-    const body = await readBody<XXXQueryParams>(event);
-    const { pageIndex = 1, pageSize = 10, ...filters } = body;
+export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
+	const body = await readBody<XXXQueryParams>(event);
+	const { pageIndex = 1, pageSize = 10, ...filters } = body;
 
-    // 数据筛选
-    let filteredData = [...mockXXXData];
-    Object.keys(filters).forEach(key => {
-      if (filters[key]) {
-        filteredData = filteredData.filter(/* 筛选逻辑 */);
-      }
-    });
+	// 数据筛选
+	let filteredData = [...mockXXXData];
+	Object.keys(filters).forEach((key) => {
+		if (filters[key]) {
+			filteredData = filteredData.filter(/* 筛选逻辑 */);
+		}
+	});
 
-    // 分页处理
-    const total = filteredData.length;
-    const startIndex = (pageIndex - 1) * pageSize;
-    const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+	// 分页处理
+	const total = filteredData.length;
+	const startIndex = (pageIndex - 1) * pageSize;
+	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-    // 返回标准格式
-    return {
-      success: true,
-      code: 200,
-      message: "查询成功",
-      data: {
-        list: pageData,
-        total,
-        pageIndex,
-        pageSize,
-        totalPages: Math.ceil(total / pageSize),
-      },
-      timestamp: Date.now(),
-    };
-  }
-);
+	// 返回标准格式
+	return {
+		success: true,
+		code: 200,
+		message: "查询成功",
+		data: {
+			list: pageData,
+			total,
+			pageIndex,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		},
+		timestamp: Date.now(),
+	};
+});
 ```
 
 ---
@@ -493,12 +491,12 @@ export default defineEventHandler(
 
 ### 8.1 技术风险
 
-| 风险 | 概率 | 影响 | 缓解措施 |
-|:---:|:---:|:---:|:---:|
-| Nitro 与 Vite 开发服务器端口冲突 | 中 | 中 | 使用不同端口，配置代理 |
-| TanStack Query 学习曲线陡峭 | 低 | 低 | 提供详细文档和示例 |
-| 类型库构建失败影响主应用 | 低 | 高 | CI 中单独构建 apps/type |
-| 字段名转换错误导致数据不显示 | 高 | 高 | 使用映射表，编写验证脚本 |
+|               风险               | 概率 | 影响 |         缓解措施         |
+| :------------------------------: | :--: | :--: | :----------------------: |
+| Nitro 与 Vite 开发服务器端口冲突 |  中  |  中  |  使用不同端口，配置代理  |
+|   TanStack Query 学习曲线陡峭    |  低  |  低  |    提供详细文档和示例    |
+|     类型库构建失败影响主应用     |  低  |  高  | CI 中单独构建 apps/type  |
+|   字段名转换错误导致数据不显示   |  高  |  高  | 使用映射表，编写验证脚本 |
 
 ### 8.2 性能考虑
 
@@ -552,7 +550,7 @@ export default defineEventHandler(
 
 **构建顺序：**
 
-```
+```plain
 1. apps/type (独立构建)
    ↓
 2. apps/admin (依赖 apps/type)
