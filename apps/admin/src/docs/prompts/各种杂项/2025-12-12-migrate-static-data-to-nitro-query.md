@@ -197,7 +197,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
 
-### 04 <!-- TODO: --> 增加 nitro 编写接口的代码规范和代码写法检查任务
+### 04 增加 nitro 编写接口的代码规范和代码写法检查任务
 
 1. 请你阅读 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan.md` 的 `6.2 Nitro 接口模板` ，了解具体 nitro 的代码写法。
 2. 阅读 `apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query.md` 除开 `杂项跟进提示词` 的部分。了解清楚迁移时需要的具体细节。
