@@ -100,7 +100,7 @@
 | :-----------------: | :-----------: | :--------------------------: |
 |        nitro        | 3.0.1-alpha.1 |      现有（启用服务端）      |
 | @tanstack/vue-query |    ^5.62.8    |           **新增**           |
-|   @ruan-cat/utils   |    4.16.0     | 现有（提供 JsonVO, PageDTO） |
+|   @ruan-cat/utils   |    latest     | 现有（提供 JsonVO, PageDTO） |
 |  @01s-11comm/type   |     1.0.0     |    **新增**（本地类型库）    |
 
 ---
