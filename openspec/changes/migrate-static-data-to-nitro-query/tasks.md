@@ -40,64 +40,64 @@
 
 ### 2.1 config-manage/center
 
-- [ ] 2.1.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/center.ts`
-- [ ] 2.1.2 创建 `server/api/dev-team/config-manage/center/mock-data.ts`
-- [ ] 2.1.3 创建 `server/api/dev-team/config-manage/center/list.post.ts`
-- [ ] 2.1.4 创建 `src/api/dev-team/config-manage/center/index.ts`（TanStack Query hook）
+- [x] 2.1.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/center.ts`
+- [x] 2.1.2 创建 `server/api/dev-team/config-manage/center/mock-data.ts`
+- [x] 2.1.3 创建 `server/api/dev-team/config-manage/center/list.post.ts`
+- [x] 2.1.4 创建 `src/api/dev-team/config-manage/center/index.ts`（TanStack Query hook）
 - [ ] 2.1.5 更新 `src/pages/dev-team/config-manage/center/index.vue` 使用新接口
 
 ### 2.2 config-manage/dictionary
 
-- [ ] 2.2.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/dictionary.ts`
-- [ ] 2.2.2 创建 `server/api/dev-team/config-manage/dictionary/mock-data.ts`
-- [ ] 2.2.3 创建 `server/api/dev-team/config-manage/dictionary/list.post.ts`
-- [ ] 2.2.4 创建 `src/api/dev-team/config-manage/dictionary/index.ts`
+- [x] 2.2.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/dictionary.ts`
+- [x] 2.2.2 创建 `server/api/dev-team/config-manage/dictionary/mock-data.ts`
+- [x] 2.2.3 创建 `server/api/dev-team/config-manage/dictionary/list.post.ts`
+- [x] 2.2.4 创建 `src/api/dev-team/config-manage/dictionary/index.ts`
 - [ ] 2.2.5 更新 `src/pages/dev-team/config-manage/dictionary/index.vue`
 
 ### 2.3 config-manage/type
 
-- [ ] 2.3.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/type.ts`
-- [ ] 2.3.2 创建 `server/api/dev-team/config-manage/type/mock-data.ts`
-- [ ] 2.3.3 创建 `server/api/dev-team/config-manage/type/list.post.ts`
-- [ ] 2.3.4 创建 `src/api/dev-team/config-manage/type/index.ts`
+- [x] 2.3.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/type.ts`
+- [x] 2.3.2 创建 `server/api/dev-team/config-manage/type/mock-data.ts`
+- [x] 2.3.3 创建 `server/api/dev-team/config-manage/type/list.post.ts`
+- [x] 2.3.4 创建 `src/api/dev-team/config-manage/type/index.ts`
 - [ ] 2.3.5 更新 `src/pages/dev-team/config-manage/type/index.vue`
 
 ### 2.4 config-manage/item
 
-- [ ] 2.4.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/item.ts`
-- [ ] 2.4.2 创建 `server/api/dev-team/config-manage/item/mock-data.ts`
-- [ ] 2.4.3 创建 `server/api/dev-team/config-manage/item/list.post.ts`
-- [ ] 2.4.4 创建 `src/api/dev-team/config-manage/item/index.ts`
+- [x] 2.4.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/item.ts`
+- [x] 2.4.2 创建 `server/api/dev-team/config-manage/item/mock-data.ts`
+- [x] 2.4.3 创建 `server/api/dev-team/config-manage/item/list.post.ts`
+- [x] 2.4.4 创建 `src/api/dev-team/config-manage/item/index.ts`
 - [ ] 2.4.5 更新 `src/pages/dev-team/config-manage/item/index.vue`
 
 ### 2.5 menu-manage/catalog
 
-- [ ] 2.5.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/catalog.ts`
-- [ ] 2.5.2 创建 `server/api/dev-team/menu-manage/catalog/mock-data.ts`
-- [ ] 2.5.3 创建 `server/api/dev-team/menu-manage/catalog/list.post.ts`
+- [x] 2.5.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/catalog.ts`
+- [x] 2.5.2 创建 `server/api/dev-team/menu-manage/catalog/mock-data.ts`
+- [x] 2.5.3 创建 `server/api/dev-team/menu-manage/catalog/list.post.ts`
 - [ ] 2.5.4 创建 `src/api/dev-team/menu-manage/catalog/index.ts`
 - [ ] 2.5.5 更新 `src/pages/dev-team/menu-manage/catalog/index.vue`
 
 ### 2.6 menu-manage/group
 
-- [ ] 2.6.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/group.ts`
-- [ ] 2.6.2 创建 `server/api/dev-team/menu-manage/group/mock-data.ts`
-- [ ] 2.6.3 创建 `server/api/dev-team/menu-manage/group/list.post.ts`
+- [x] 2.6.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/group.ts`
+- [x] 2.6.2 创建 `server/api/dev-team/menu-manage/group/mock-data.ts`
+- [x] 2.6.3 创建 `server/api/dev-team/menu-manage/group/list.post.ts`
 - [ ] 2.6.4 创建 `src/api/dev-team/menu-manage/group/index.ts`
 - [ ] 2.6.5 更新 `src/pages/dev-team/menu-manage/group/index.vue`
 
 ### 2.7 menu-manage/item
 
-- [ ] 2.7.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/item.ts`
-- [ ] 2.7.2 创建 `server/api/dev-team/menu-manage/item/mock-data.ts`
-- [ ] 2.7.3 创建 `server/api/dev-team/menu-manage/item/list.post.ts`
+- [x] 2.7.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/item.ts`
+- [x] 2.7.2 创建 `server/api/dev-team/menu-manage/item/mock-data.ts`
+- [x] 2.7.3 创建 `server/api/dev-team/menu-manage/item/list.post.ts`
 - [ ] 2.7.4 创建 `src/api/dev-team/menu-manage/item/index.ts`
 - [ ] 2.7.5 更新 `src/pages/dev-team/menu-manage/item/index.vue`
 
 ### 2.8 cache-manage/refresh-cache
 
-- [ ] 2.8.1 迁移类型到 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
-- [ ] 2.8.2 创建 `server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
+- [x] 2.8.1 迁移类型到 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
+- [x] 2.8.2 创建 `server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
 - [ ] 2.8.3 创建 `server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
 - [ ] 2.8.4 创建 `src/api/dev-team/cache-manage/refresh-cache/index.ts`
 - [ ] 2.8.5 更新 `src/pages/dev-team/cache-manage/refresh-cache/index.vue`
