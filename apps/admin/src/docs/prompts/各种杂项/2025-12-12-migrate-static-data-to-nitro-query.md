@@ -194,3 +194,6 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 <!-- 触发部署 SKIP_DEPENDENCY_INSTALL = true -->
 <!-- 触发部署 NPM_CONFIG_PACKAGE_MANAGER = pnpm -->
+<!-- 触发部署 npm_config_user_agent = pnpm
+  https://github.com/cloudflare/workers-sdk/pull/1427
+-->
