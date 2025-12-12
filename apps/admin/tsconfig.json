@@ -10,6 +10,7 @@
     "strictFunctionTypes": false,
     "noImplicitThis": true,
     "noUnusedLocals": false,
+    "verbatimModuleSyntax": false,
     "jsx": "preserve",
     "importHelpers": true,
     "experimentalDecorators": true,
