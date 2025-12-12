@@ -10,79 +10,81 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 注册协议_列表数据, type 注册协议_列表查询_VO, tableData as mockTableData, 协议类型Options, 状态Options, 是否强制同意Options } from "./test-data";
-
+import { type RegisterProtocolListItem, type RegisterProtocolQueryParams, protocolTypeOptions, registerProtocolStatusOptions, isMandatoryOptions, type RegisterProtocolListItem as 注册协议_列表数据 } from "@01s-11comm/type";
+import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage/register-protocol";
 import { type RegisterProtocolFormProps, defaultForm, type 注册协议表单_VO, type 协议类型枚举, type 状态枚举, type 是否强制同意枚举 } from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 表单组件实例 */
 const registerProtocolFormInstance = ref<InstanceType<typeof RegisterProtocolForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<注册协议_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useRegisterProtocolListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "协议ID",
-		prop: "协议ID",
+		prop: "protocolId",
 		width: 120,
 		fixed: true,
 	},
 	{
 		label: "协议名称",
-		prop: "协议名称",
+		prop: "protocolName",
 		minWidth: 200,
 	},
 	{
 		label: "协议类型",
-		prop: "协议类型",
+		prop: "protocolType",
 		width: 150,
 	},
 	{
 		label: "协议版本",
-		prop: "协议版本",
+		prop: "protocolVersion",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
 		label: "是否强制同意",
-		prop: "是否强制同意",
+		prop: "isMandatory",
 		width: 120,
 	},
 	{
 		label: "协议摘要",
-		prop: "协议摘要",
+		prop: "summary",
 		minWidth: 250,
 	},
 	{
 		label: "生效日期",
-		prop: "生效日期",
+		prop: "effectiveDate",
 		width: 120,
 	},
 	{
 		label: "失效日期",
-		prop: "失效日期",
+		prop: "expirationDate",
 		width: 120,
 	},
 	{
 		label: "排序权重",
-		prop: "排序权重",
+		prop: "sortOrder",
 		width: 100,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 160,
 	},
 	{
 		label: "更新时间",
-		prop: "更新时间",
+		prop: "updateTime",
 		width: 160,
 	},
 	{
@@ -95,22 +97,20 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -119,6 +119,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -127,53 +128,16 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.协议名称) {
-			filteredData = filteredData.filter((item) => item.协议名称.includes(plusSearchModel.value.协议名称!));
-		}
-		if (plusSearchModel.value.协议类型) {
-			filteredData = filteredData.filter((item) => item.协议类型 === plusSearchModel.value.协议类型);
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-		if (plusSearchModel.value.是否强制同意) {
-			filteredData = filteredData.filter((item) => item.是否强制同意 === plusSearchModel.value.是否强制同意);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 注册协议_列表查询_VO = {
-	协议名称: "",
-	协议类型: "",
-	状态: "",
-	是否强制同意: "",
+const plusSearchModelRef: FieldValues & Partial<RegisterProtocolQueryParams> = {
+	protocolName: "",
+	protocolType: undefined,
+	status: undefined,
+	isMandatory: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -190,32 +154,32 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 协议名称
 	{
 		label: "协议名称",
-		prop: "协议名称",
+		prop: "protocolName",
 		valueType: "input",
 	},
 
 	// 协议类型
 	{
 		label: "协议类型",
-		prop: "协议类型",
+		prop: "protocolType",
 		valueType: "select",
-		options: 协议类型Options,
+		options: protocolTypeOptions,
 	},
 
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: registerProtocolStatusOptions,
 	},
 
 	// 是否强制同意
 	{
 		label: "是否强制同意",
-		prop: "是否强制同意",
+		prop: "isMandatory",
 		valueType: "select",
-		options: 是否强制同意Options,
+		options: isMandatoryOptions,
 	},
 ]);
 
@@ -229,22 +193,23 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<RegisterProtocolQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 注册协议_列表数据;
+	row?: RegisterProtocolListItem;
 }
 
 /** 模式控制 */
@@ -275,16 +240,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value || isInfo.value
 			? (cloneDeep({
 					...defaultForm,
-					协议名称: row?.协议名称 || "",
-					协议类型: (row?.协议类型 || "用户注册协议") as 协议类型枚举,
-					协议版本: row?.协议版本 || "v1.0.0",
-					状态: (row?.状态 || "草稿") as 状态枚举,
-					是否强制同意: (row?.是否强制同意 || "是") as 是否强制同意枚举,
-					协议摘要: row?.协议摘要 || "",
-					协议内容: row?.协议内容 || "",
-					生效日期: row?.生效日期 || "",
-					失效日期: row?.失效日期 || "",
-					排序权重: row?.排序权重 || 0,
+					协议名称: row?.protocolName || "",
+					协议类型: (row?.protocolType || "用户注册协议") as 协议类型枚举,
+					协议版本: row?.protocolVersion || "v1.0.0",
+					状态: (row?.status || "草稿") as 状态枚举,
+					是否强制同意: (row?.isMandatory || "是") as 是否强制同意枚举,
+					协议摘要: row?.summary || "",
+					协议内容: row?.content || "",
+					生效日期: row?.effectiveDate || "",
+					失效日期: row?.expirationDate || "",
+					排序权重: row?.sortOrder || 0,
 				}) as 注册协议表单_VO)
 			: cloneDeep(defaultForm);
 
@@ -359,7 +324,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData();
 });
 </script>
 
@@ -373,7 +338,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

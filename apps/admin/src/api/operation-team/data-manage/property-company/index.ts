@@ -1,13 +1,19 @@
+/**
+ * @file 物业公司查询 Hook
+ * @description 提供物业公司列表数据查询功能
+ */
+
 import { useListQuery } from "@/composables/use-list-query";
 import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type";
 
 /**
- * @description 物业公司列表查询 Hook
- * Property company list query hook
+ * 获取物业公司列表数据
+ * @param initialParams 初始查询参数
+ * @returns 查询结果
  */
 export function usePropertyCompanyListQuery(initialParams?: Partial<PropertyCompanyQueryParams>) {
 	return useListQuery<PropertyCompanyListItem, PropertyCompanyQueryParams>({
-		queryKeyPrefix: "property-company-list",
+		queryKeyPrefix: "operationTeam:dataManage:propertyCompany:list",
 		apiUrl: "/api/operation-team/data-manage/property-company/list",
 		initialParams,
 	});

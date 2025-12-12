@@ -11,66 +11,63 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 商户管理员_列表数据,
-	type 商户管理员_列表查询_VO,
-	tableData as mockTableData,
-	状态选项,
-} from "./test-data";
-
+import { type MerchantAdminListItem, type MerchantAdminQueryParams, merchantAdminStatusOptions } from "@01s-11comm/type";
+import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
 import { type MerchantAdminFormProps, defaultForm, type 商户管理员表单_VO } from "./components/form";
 import MerchantAdminForm from "./components/form.vue";
+
 const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<商户管理员_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useMerchantAdminListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "物业公司",
-		prop: "物业名称",
+		prop: "propertyName",
 		minWidth: 200,
 	},
 	{
 		label: "管理员",
-		prop: "管理员",
+		prop: "adminName",
 		width: 120,
 	},
 	{
 		label: "管理员电话",
-		prop: "管理员电话",
+		prop: "adminPhone",
 		width: 130,
 	},
 	{
 		label: "管理员ID",
-		prop: "管理员ID",
+		prop: "adminId",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
 		label: "隶属小区数量",
-		prop: "隶属小区数量",
+		prop: "affiliatedCommunityCount",
 		width: 120,
 	},
 	{
 		label: "登录次数",
-		prop: "登录次数",
+		prop: "loginCount",
 		width: 100,
 	},
 	{
 		label: "最后登录时间",
-		prop: "最后登录时间",
+		prop: "lastLoginTime",
 		width: 160,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 160,
 	},
 	{
@@ -83,22 +80,20 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -107,6 +102,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -120,11 +116,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 商户管理员_列表查询_VO = {
-	物业名称: "",
-	管理员: "",
-	联系电话: "",
-	状态: "",
+const plusSearchModelRef: FieldValues & Partial<MerchantAdminQueryParams> = {
+	propertyName: "",
+	adminName: "",
+	contactPhone: "",
+	status: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -141,30 +137,30 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 物业名称
 	{
 		label: "物业名称",
-		prop: "物业名称",
+		prop: "propertyName",
 		valueType: "input",
 	},
 
 	// 管理员
 	{
 		label: "管理员",
-		prop: "管理员",
+		prop: "adminName",
 		valueType: "input",
 	},
 
 	// 联系电话
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态选项,
+		options: merchantAdminStatusOptions,
 	},
 ]);
 
@@ -177,54 +173,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = mockTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.物业名称) {
-			filteredData = filteredData.filter((item) => item.物业名称.includes(plusSearchModel.value.物业名称!));
-		}
-		if (plusSearchModel.value.管理员) {
-			filteredData = filteredData.filter((item) => item.管理员.includes(plusSearchModel.value.管理员!));
-		}
-		if (plusSearchModel.value.联系电话) {
-			filteredData = filteredData.filter((item) => item.管理员电话.includes(plusSearchModel.value.联系电话!));
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<MerchantAdminQueryParams>);
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -241,7 +201,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 商户管理员_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -254,12 +214,12 @@ function openDialog(params: { mode: Mode; row?: 商户管理员_列表数据 }) 
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					物业公司: row?.物业名称 || "",
-					管理员姓名: row?.管理员 || "",
-					管理员电话: row?.管理员电话 || "",
+					物业公司: row?.propertyName || "",
+					管理员姓名: row?.adminName || "",
+					管理员电话: row?.adminPhone || "",
 					管理员邮箱: "",
 					身份证号码: "",
-					账户状态: row?.状态 || "正常",
+					账户状态: row?.status || "正常",
 					登录密码: "",
 					确认密码: "",
 					联系地址: "",
@@ -333,7 +293,7 @@ function openDialog(params: { mode: Mode; row?: 商户管理员_列表数据 }) 
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData(); // TanStack query handles this
 });
 </script>
 
@@ -347,7 +307,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

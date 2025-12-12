@@ -1,15 +1,20 @@
+/**
+ * @file 报表信息查询 Hook
+ * @description 提供报表信息列表数据查询功能
+ */
+
 import { useListQuery } from "@/composables/use-list-query";
 import type { ReportInfoListItem, ReportInfoQueryParams } from "@01s-11comm/type";
 
 /**
- * @description 报表信息列表查询 Hook
- * Report info list query hook
+ * 获取报表信息列表数据
+ * @param initialParams 初始查询参数
+ * @returns 查询结果
  */
 export function useReportInfoListQuery(initialParams?: Partial<ReportInfoQueryParams>) {
 	return useListQuery<ReportInfoListItem, ReportInfoQueryParams>({
-		queryKeyPrefix: "report-info-list",
+		queryKeyPrefix: "operationTeam:reportConfiguration:reportInfo:list",
 		apiUrl: "/api/operation-team/report-configuration/report-info/list",
 		initialParams,
 	});
 }
-

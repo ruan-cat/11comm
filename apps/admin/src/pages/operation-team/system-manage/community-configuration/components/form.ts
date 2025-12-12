@@ -1,4 +1,5 @@
 import { type 小区配置表单_VO } from "../test-data";
+export { type 小区配置表单_VO } from "../test-data";
 
 // ==================== 默认表单 ====================
 

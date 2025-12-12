@@ -1,15 +1,20 @@
+/**
+ * @file 社区信息查询 Hook
+ * @description 提供社区信息列表数据查询功能
+ */
+
 import { useListQuery } from "@/composables/use-list-query";
 import type { CommunityInfoListItem, CommunityInfoQueryParams } from "@01s-11comm/type";
 
 /**
- * @description 小区信息列表查询 Hook
- * Community information list query hook
+ * 获取社区信息列表数据
+ * @param initialParams 初始查询参数
+ * @returns 查询结果
  */
 export function useCommunityInfoListQuery(initialParams?: Partial<CommunityInfoQueryParams>) {
 	return useListQuery<CommunityInfoListItem, CommunityInfoQueryParams>({
-		queryKeyPrefix: "community-info-list",
+		queryKeyPrefix: "operationTeam:dataManage:communityInformation:list",
 		apiUrl: "/api/operation-team/data-manage/community-information/list",
 		initialParams,
 	});
 }
-

@@ -12,14 +12,8 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useMode, type Mode } from "@/composables/use-mode";
-import type { PlusColumn } from "plus-pro-components";
-import {
-	type 商户信息_列表数据,
-	type 商户信息_列表查询_VO,
-	tableData as mockTableData,
-	商户类型选项,
-	经营状态选项,
-} from "./test-data";
+import { type MerchantInfoListItem, type MerchantInfoQueryParams, merchantTypeOptions, businessStatusOptions } from "@01s-11comm/type";
+import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
 import {
 	type 商户信息_表单_VO,
 	type 商户类型,
@@ -30,70 +24,71 @@ import {
 import MerchantInfoForm from "./components/form.vue";
 const merchantInfoFormInstance = ref<InstanceType<typeof MerchantInfoForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<商户信息_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useMerchantInfoListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "商户编号",
-		prop: "商户编号",
+		prop: "merchantId",
 		width: 120,
 	},
 	{
 		label: "商户名称",
-		prop: "商户名称",
+		prop: "merchantName",
 		minWidth: 150,
 	},
 	{
 		label: "商户地址",
-		prop: "商户地址",
+		prop: "merchantAddress",
 		minWidth: 200,
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		width: 130,
 	},
 	{
 		label: "商户类型",
-		prop: "商户类型",
+		prop: "merchantType",
 		width: 100,
 	},
 	{
 		label: "企业法人",
-		prop: "企业法人",
+		prop: "legalRepresentative",
 		width: 100,
 	},
 	{
 		label: "成立日期",
-		prop: "成立日期",
+		prop: "establishmentDate",
 		width: 110,
 	},
 	{
 		label: "经营状态",
-		prop: "经营状态",
+		prop: "businessStatus",
 		width: 100,
 	},
 	{
 		label: "所属小区",
-		prop: "所属小区",
+		prop: "affiliatedCommunity",
 		width: 150,
 	},
 	{
 		label: "营业时间",
-		prop: "营业时间",
+		prop: "businessHours",
 		width: 120,
 	},
 	{
 		label: "经营面积(㎡)",
-		prop: "经营面积",
+		prop: "businessArea",
 		width: 120,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 160,
 	},
 	{
@@ -106,22 +101,20 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -130,6 +123,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -143,12 +137,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 商户信息_列表查询_VO = {
-	商户名称: "",
-	商户类型: "",
-	联系电话: "",
-	经营状态: "",
-	所属小区: "",
+const plusSearchModelRef: FieldValues & Partial<MerchantInfoQueryParams> = {
+	merchantName: "",
+	merchantType: undefined,
+	contactPhone: "",
+	businessStatus: undefined,
+	affiliatedCommunity: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -165,37 +159,37 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 商户名称
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantName")),
-		prop: "商户名称",
+		prop: "merchantName",
 		valueType: "input",
 	},
 
 	// 商户类型
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantType")),
-		prop: "商户类型",
+		prop: "merchantType",
 		valueType: "select",
-		options: 商户类型选项,
+		options: merchantTypeOptions,
 	},
 
 	// 联系电话
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.contactPhone")),
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	// 经营状态
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.operatingStatus")),
-		prop: "经营状态",
+		prop: "businessStatus",
 		valueType: "select",
-		options: 经营状态选项,
+		options: businessStatusOptions,
 	},
 
 	// 所属小区
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.belongCommunity")),
-		prop: "所属小区",
+		prop: "affiliatedCommunity",
 		valueType: "input",
 	},
 ]);
@@ -209,57 +203,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.商户名称) {
-			filteredData = filteredData.filter((item) => item.商户名称.includes(plusSearchModel.value.商户名称!));
-		}
-		if (plusSearchModel.value.商户类型) {
-			filteredData = filteredData.filter((item) => item.商户类型 === plusSearchModel.value.商户类型);
-		}
-		if (plusSearchModel.value.联系电话) {
-			filteredData = filteredData.filter((item) => item.联系电话.includes(plusSearchModel.value.联系电话!));
-		}
-		if (plusSearchModel.value.经营状态) {
-			filteredData = filteredData.filter((item) => item.经营状态 === plusSearchModel.value.经营状态);
-		}
-		if (plusSearchModel.value.所属小区) {
-			filteredData = filteredData.filter((item) => item.所属小区.includes(plusSearchModel.value.所属小区!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<MerchantInfoQueryParams>);
 }
 
 /** 模式控制 */
@@ -277,7 +232,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -290,22 +245,22 @@ function openDialog(params: { mode: Mode; row?: 商户信息_列表数据 }) {
 		: isEdit.value
 			? ({
 					...defaultForm,
-					商户编号: row?.商户编号 || "",
-					商户名称: row?.商户名称 || "",
-					商户地址: row?.商户地址 || "",
-					联系电话: row?.联系电话 || "",
-					商户类型: (row?.商户类型 || "餐饮服务") as 商户类型,
-					企业法人: row?.企业法人 || "",
-					成立日期: row?.成立日期 || "",
-					经营状态: (row?.经营状态 || "正常营业") as 经营状态,
-					所属小区: row?.所属小区 || "",
-					营业时间: row?.营业时间 || "",
-					经营面积: row?.经营面积 || "",
-					营业执照号: row?.营业执照号 || "",
-					开户银行: row?.开户银行 || "",
-					银行账号: row?.银行账号 || "",
-					联系人手机: row?.联系人手机 || "",
-					备注: row?.备注 || "",
+					商户编号: row?.merchantId || "",
+					商户名称: row?.merchantName || "",
+					商户地址: row?.merchantAddress || "",
+					联系电话: row?.contactPhone || "",
+					商户类型: (row?.merchantType || "餐饮服务") as 商户类型,
+					企业法人: row?.legalRepresentative || "",
+					成立日期: row?.establishmentDate || "",
+					经营状态: (row?.businessStatus || "正常营业") as 经营状态,
+					所属小区: row?.affiliatedCommunity || "",
+					营业时间: row?.businessHours || "",
+					经营面积: row?.businessArea || "",
+					营业执照号: row?.businessLicenseNo || "",
+					开户银行: row?.bankName || "",
+					银行账号: row?.bankAccount || "",
+					联系人手机: row?.contactMobile || "",
+					备注: row?.remarks || "",
 				} as 商户信息_表单_VO)
 			: cloneDeep(defaultForm);
 
@@ -380,18 +335,18 @@ function handleAdd() {
 }
 
 /** 处理编辑商户 */
-function handleEdit(row: 商户信息_列表数据) {
+function handleEdit(row: MerchantInfoListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 处理查看详情 */
-function handleViewDetails(row: 商户信息_列表数据) {
+function handleViewDetails(row: MerchantInfoListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 处理删除商户 */
-function handleDelete(row: 商户信息_列表数据) {
-	ElMessageBox.confirm(`确定要删除商户"${row.商户名称}"吗？此操作不可撤销。`, "删除确认", {
+function handleDelete(row: MerchantInfoListItem) {
+	ElMessageBox.confirm(`确定要删除商户"${row.merchantName}"吗？此操作不可撤销。`, "删除确认", {
 		confirmButtonText: "确定",
 		cancelButtonText: "取消",
 		type: "warning",
@@ -399,7 +354,7 @@ function handleDelete(row: 商户信息_列表数据) {
 		.then(async () => {
 			/** TODO: 调用删除API */
 			ElMessage.success("删除成功");
-			await loadTableData();
+			refetch();
 		})
 		.catch(() => {
 			ElMessage.info("已取消删除");
@@ -407,7 +362,7 @@ function handleDelete(row: 商户信息_列表数据) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData();
 });
 </script>
 
@@ -421,7 +376,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}

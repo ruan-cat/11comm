@@ -10,15 +10,17 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { tableData as mockTableData } from "./test-data";
+import { useReportGroupListQuery } from "@/api/operation-team/report-configuration/report-group";
 import { type ReportGroupFormProps, defaultForm, type 报表组表单_VO } from "./components/form";
 import ReportGroupForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
+import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<ReportGroupInfo[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useReportGroupListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -53,23 +55,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -78,6 +78,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -91,7 +92,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<ReportGroupQueryParams> = {
+const plusSearchModelRef: FieldValues & Partial<ReportGroupQueryParams> = {
 	groupId: "",
 	name: "",
 	url: "",
@@ -137,59 +138,24 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = mockTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.groupId) {
-			filteredData = filteredData.filter((item) => item.groupId.includes(plusSearchModel.value.groupId!));
-		}
-		if (plusSearchModel.value.name) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.name!));
-		}
-		if (plusSearchModel.value.url) {
-			filteredData = filteredData.filter((item) => item.url.includes(plusSearchModel.value.url!));
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
-async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
-async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
-	pagination.value.currentPage = 1;
-	await loadTableData();
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<ReportGroupQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: ReportGroupInfo;
+	row?: ReportGroupListItem;
 }
 
 /** 模式控制 */
@@ -279,7 +245,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData();
 });
 </script>
 
@@ -287,7 +253,7 @@ onMounted(async () => {
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

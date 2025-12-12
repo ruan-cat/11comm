@@ -4,4 +4,8 @@
  */
 
 export * from "./system-config";
+export * from "./change-password";
+export * from "./community-configuration";
+export * from "./initialize-cell";
+export * from "./register-protocol";
 

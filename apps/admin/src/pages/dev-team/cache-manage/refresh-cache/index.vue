@@ -1,79 +1,80 @@
 <script lang="ts" setup>
 definePage({
-	meta: {
-		title: "刷新缓存",
-		icon: "mdi:refresh",
-		showParent: true,
-		roles: ["开发团队"],
-		rank: getRouteRank("devTeam.cacheManage.refreshCache"),
-	},
+    meta: {
+        title: "刷新缓存",
+        icon: "mdi:refresh",
+        showParent: true,
+        roles: ["开发团队"],
+        rank: getRouteRank("devTeam.cacheManage.refreshCache"),
+    },
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 刷新缓存_列表数据, type 刷新缓存_列表查询_VO, tableData as mockTableData } from "./test-data";
+import { type RefreshCacheListItem, type RefreshCacheQueryParams } from "@01s-11comm/type";
+import { useRefreshCacheListQuery } from "@/api/dev-team/cache-manage/refresh-cache";
 
-/** 表格数据 */
-const tableData = ref<刷新缓存_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+    useRefreshCacheListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "缓存ID",
-		prop: "缓存ID",
-		minWidth: 120,
-	},
-	{
-		label: "缓存编码",
-		prop: "缓存编码",
-		minWidth: 150,
-	},
-	{
-		label: "名称",
-		prop: "名称",
-		minWidth: 150,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 120,
-		fixed: "right",
-		slot: "operation",
-	},
+    defaultPureTableIndexColumn,
+    {
+        label: "缓存ID",
+        prop: "cacheId",
+        minWidth: 120,
+    },
+    {
+        label: "缓存编码",
+        prop: "cacheCode",
+        minWidth: 150,
+    },
+    {
+        label: "名称",
+        prop: "cacheName",
+        minWidth: 150,
+    },
+    {
+        /** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+        headerRenderer: () => transformI18n($t("common.table.operation")),
+        width: 120,
+        fixed: "right",
+        slot: "operation",
+    },
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+const pagination = computed<PaginationProps>(() => ({
+    ...defaultPagination,
+    pageSize: pageSize.value,
+    currentPage: pageIndex.value,
+    total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+    pageSize.value = newPageSize;
 }
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+    pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
+    ...defaultPureTableProps,
+    data: tableData.value,
+    columns: [],
+    pagination: pagination.value,
+    loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "缓存信息",
-	columns: columns.value,
+    title: "缓存信息",
+    columns: columns.value,
 });
 
 /**
@@ -81,10 +82,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 刷新缓存_列表查询_VO = {
-	缓存ID: "",
-	缓存编码: "",
-	缓存名称: "",
+const plusSearchModelRef: FieldValues & Partial<RefreshCacheQueryParams> = {
+    cacheId: "",
+    cacheCode: "",
+    cacheName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -98,127 +99,89 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 缓存ID
-	{
-		label: "缓存ID",
-		prop: "缓存ID",
-		valueType: "input",
-	},
+    // 缓存ID
+    {
+        label: "缓存ID",
+        prop: "cacheId",
+        valueType: "input",
+    },
 
-	// 缓存编码
-	{
-		label: "缓存编码",
-		prop: "缓存编码",
-		valueType: "input",
-	},
+    // 缓存编码
+    {
+        label: "缓存编码",
+        prop: "cacheCode",
+        valueType: "input",
+    },
 
-	// 缓存名称
-	{
-		label: "缓存名称",
-		prop: "缓存名称",
-		valueType: "input",
-	},
+    // 缓存名称
+    {
+        label: "缓存名称",
+        prop: "cacheName",
+        valueType: "input",
+    },
 ]);
 
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+    defaultValues: plusSearchDefaultValues,
+    columns: [],
+    labelWidth: 140,
+    labelPosition: "right",
+    showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = mockTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.缓存ID) {
-			filteredData = filteredData.filter((item) => item.缓存ID.includes(plusSearchModel.value.缓存ID!));
-		}
-		if (plusSearchModel.value.缓存编码) {
-			filteredData = filteredData.filter((item) => item.缓存编码.includes(plusSearchModel.value.缓存编码!));
-		}
-		if (plusSearchModel.value.缓存名称) {
-			filteredData = filteredData.filter((item) => item.名称.includes(plusSearchModel.value.缓存名称!));
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+    plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+    resetParams();
 }
 
-async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
-	pagination.value.currentPage = 1;
-	await loadTableData();
+/** 执行搜索 */
+function handleSearch() {
+    updateParams({
+        ...plusSearchModel.value,
+        pageIndex: 1,
+    } as Partial<RefreshCacheQueryParams>);
 }
 
 /** 刷新缓存处理函数 */
-const handleClearCache = (row: 刷新缓存_列表数据) => {
-	// 实现刷新缓存的逻辑
-	console.log("刷新缓存:", row);
+const handleClearCache = (row: RefreshCacheListItem) => {
+    // 实现刷新缓存的逻辑
+    console.log("刷新缓存:", row);
 };
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
-	<section class="index-root">
-		<PlusSearch
-			v-model="plusSearchModel"
-			:="plusSearchProps"
-			:columns="plusSearchColumns"
-			@search="handleSearch"
-			@reset="handleReSearch"
-		/>
+    <section class="index-root">
+        <PlusSearch
+            v-model="plusSearchModel"
+            :="plusSearchProps"
+            :columns="plusSearchColumns"
+            @search="handleSearch"
+            @reset="handleReSearch"
+        />
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
-			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
-			</template>
+        <PureTableBar :="pureTableBarProps" @refresh="refetch">
+            <template #buttons>
+                <ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+            </template>
 
-			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-				<PureTable
-					:="pureTableProps"
-					:columns="dynamicColumns"
-					:size="size"
-					@page-size-change="handlePageSizeChange"
-					@page-current-change="handleCurrentPageChange"
-				>
-					<template #operation="{ row }">
-						<ElButton type="info" @click="handleClearCache(row)">刷新缓存</ElButton>
-					</template>
-				</PureTable>
-			</template>
-		</PureTableBar>
-	</section>
+            <template #default="{ size, dynamicColumns }">
+                <!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+                <PureTable
+                    :="pureTableProps"
+                    :columns="dynamicColumns"
+                    :size="size"
+                    @page-size-change="handlePageSizeChange"
+                    @page-current-change="handleCurrentPageChange"
+                >
+                    <template #operation="{ row }">
+                        <ElButton type="info" @click="handleClearCache(row)">刷新缓存</ElButton>
+                    </template>
+                </PureTable>
+            </template>
+        </PureTableBar>
+    </section>
 </template>
 
 <style lang="scss" scoped>

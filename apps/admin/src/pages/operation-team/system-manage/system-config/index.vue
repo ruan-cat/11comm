@@ -11,14 +11,8 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 系统配置_列表数据,
-	type 系统配置_列表查询_VO,
-	tableData as mockTableData,
-	配置类型Options,
-	配置分组Options,
-	状态Options,
-} from "./test-data";
+import { type SystemConfigListItem, type SystemConfigQueryParams, systemConfigTypeOptions, systemConfigGroupOptions, systemConfigStatusOptions } from "@01s-11comm/type";
+import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
 import { type SystemConfigFormProps, defaultForm, type 系统配置表单_VO } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
 
@@ -35,8 +29,9 @@ async function testAsync() {
 /** 弹框组件实例 */
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<系统配置_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useSystemConfigListQuery();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
@@ -46,47 +41,47 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "配置ID",
-		prop: "配置ID",
+		prop: "configId",
 		width: 120,
 	},
 	{
 		label: "配置名称",
-		prop: "配置名称",
+		prop: "configName",
 		minWidth: 200,
 	},
 	{
 		label: "配置值",
-		prop: "配置值",
+		prop: "configValue",
 		minWidth: 180,
 	},
 	{
 		label: "配置类型",
-		prop: "配置类型",
+		prop: "configType",
 		width: 100,
 	},
 	{
 		label: "配置分组",
-		prop: "配置分组",
+		prop: "configGroup",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 80,
 	},
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		minWidth: 200,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 160,
 	},
 	{
 		label: "更新时间",
-		prop: "更新时间",
+		prop: "updateTime",
 		width: 160,
 	},
 	{
@@ -99,23 +94,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -124,6 +117,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -137,11 +131,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 系统配置_列表查询_VO = {
-	配置名称: "",
-	配置类型: "",
-	配置分组: "",
-	状态: "",
+const plusSearchModelRef: FieldValues & Partial<SystemConfigQueryParams> = {
+	configName: "",
+	configType: undefined,
+	configGroup: undefined,
+	status: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -158,32 +152,32 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 配置名称 */
 	{
 		label: "配置名称",
-		prop: "配置名称",
+		prop: "configName",
 		valueType: "input",
 	},
 
 	/** 配置类型 */
 	{
 		label: "配置类型",
-		prop: "配置类型",
+		prop: "configType",
 		valueType: "select",
-		options: 配置类型Options,
+		options: systemConfigTypeOptions,
 	},
 
 	/** 配置分组 */
 	{
 		label: "配置分组",
-		prop: "配置分组",
+		prop: "configGroup",
 		valueType: "select",
-		options: 配置分组Options,
+		options: systemConfigGroupOptions,
 	},
 
 	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: systemConfigStatusOptions,
 	},
 ]);
 
@@ -197,7 +191,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 系统配置_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -207,10 +201,10 @@ function openDialog(params: { mode: Mode; row?: 系统配置_列表数据 }) {
 		: isEdit.value || isInfo.value
 			? cloneDeep({
 					...defaultForm,
-					配置名称: row?.配置名称 || "",
-					配置值: row?.配置值 || "",
-					配置类型: (row?.配置类型 || "文本") as "文本" | "数字" | "布尔值" | "JSON" | "日期时间" | "文件路径" | "URL",
-					配置分组: (row?.配置分组 || "系统基础") as
+					配置名称: row?.configName || "",
+					配置值: row?.configValue || "",
+					配置类型: (row?.configType || "文本") as "文本" | "数字" | "布尔值" | "JSON" | "日期时间" | "文件路径" | "URL",
+					配置分组: (row?.configGroup || "系统基础") as
 						| "系统基础"
 						| "业务配置"
 						| "第三方服务"
@@ -218,8 +212,8 @@ function openDialog(params: { mode: Mode; row?: 系统配置_列表数据 }) {
 						| "通知设置"
 						| "日志配置"
 						| "缓存配置",
-					状态: (row?.状态 || "启用") as "启用" | "禁用",
-					描述: row?.描述 || "",
+					状态: (row?.status || "启用") as "启用" | "禁用",
+					描述: row?.description || "",
 				})
 			: cloneDeep(defaultForm);
 
@@ -284,68 +278,32 @@ function openDialog(params: { mode: Mode; row?: 系统配置_列表数据 }) {
 	});
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.配置名称) {
-			filteredData = filteredData.filter((item) => item.配置名称.includes(plusSearchModel.value.配置名称!));
-		}
-		if (plusSearchModel.value.配置类型) {
-			filteredData = filteredData.filter((item) => item.配置类型 === plusSearchModel.value.配置类型);
-		}
-		if (plusSearchModel.value.配置分组) {
-			filteredData = filteredData.filter((item) => item.配置分组 === plusSearchModel.value.配置分组);
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<SystemConfigQueryParams>);
 }
 
 /** 删除系统配置 */
-async function handleDelete(row: 系统配置_列表数据) {
+async function handleDelete(row: SystemConfigListItem) {
 	try {
 		/** TODO: 替换为真实的API调用 */
 		/** 当前使用模拟删除操作 */
-		consola.log("删除系统配置:", row.配置ID);
+		consola.log("删除系统配置:", row.configId);
 
 		/** 模拟异步操作 */
 		await sleep(1000);
 
 		/** 重新加载数据 */
-		await loadTableData();
+		refetch();
 	} catch (error) {
 		console.error("删除失败:", error);
 		/** TODO: 显示错误提示 */
@@ -353,7 +311,7 @@ async function handleDelete(row: 系统配置_列表数据) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData();
 });
 </script>
 
@@ -367,7 +325,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

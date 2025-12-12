@@ -10,79 +10,75 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 楼栋结构图_列表数据,
-	type 楼栋结构图_列表查询_VO,
-	建筑结构选项,
-	楼栋状态选项,
-	tableData as mockTableData,
-} from "./test-data";
-
+import { type BuildingSpaceStructureDiagramListItem, type BuildingSpaceStructureDiagramQueryParams, buildingStructureOptions, buildingStatusOptions } from "@01s-11comm/type";
+import { useBuildingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/building-space-structure-diagram";
 import { type BuildingSpaceStructureDiagramFormProps, defaultForm, type 楼栋结构图表单_VO } from "./components/form";
 import BuildingSpaceStructureDiagramForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 表单组件实例 */
 const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<楼栋结构图_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useBuildingSpaceStructureDiagramListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "楼栋编号",
-		prop: "楼栋编号",
+		prop: "buildingId",
 		width: 120,
 	},
 	{
 		label: "楼栋名称",
-		prop: "楼栋名称",
+		prop: "buildingName",
 		width: 120,
 	},
 	{
 		label: "总楼层",
-		prop: "总楼层",
+		prop: "totalFloors",
 		width: 100,
 	},
 	{
 		label: "总户数",
-		prop: "总户数",
+		prop: "totalHouseholds",
 		width: 100,
 	},
 	{
 		label: "建筑面积",
-		prop: "建筑面积",
+		prop: "buildingArea",
 		width: 120,
 	},
 	{
 		label: "建筑结构",
-		prop: "建筑结构",
+		prop: "buildingStructure",
 		width: 140,
 	},
 	{
 		label: "建成年份",
-		prop: "建成年份",
+		prop: "constructionYear",
 		width: 100,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
 		label: "最后更新时间",
-		prop: "最后更新时间",
+		prop: "lastUpdateTime",
 		width: 160,
 	},
 	{
 		label: "负责人",
-		prop: "负责人",
+		prop: "personInCharge",
 		width: 120,
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		width: 120,
 	},
 	{
@@ -95,22 +91,20 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -119,6 +113,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -127,57 +122,17 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.楼栋编号) {
-			filteredData = filteredData.filter((item) => item.楼栋编号.includes(plusSearchModel.value.楼栋编号!));
-		}
-		if (plusSearchModel.value.楼栋名称) {
-			filteredData = filteredData.filter((item) => item.楼栋名称.includes(plusSearchModel.value.楼栋名称!));
-		}
-		if (plusSearchModel.value.建筑结构) {
-			filteredData = filteredData.filter((item) => item.建筑结构 === plusSearchModel.value.建筑结构);
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-		if (plusSearchModel.value.建成年份) {
-			filteredData = filteredData.filter((item) => item.建成年份.includes(plusSearchModel.value.建成年份!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 楼栋结构图_列表查询_VO = {
-	楼栋编号: "",
-	楼栋名称: "",
-	建筑结构: "",
-	状态: "",
-	建成年份: "",
+const plusSearchModelRef: FieldValues & Partial<BuildingSpaceStructureDiagramQueryParams> = {
+	buildingId: "",
+	buildingName: "",
+	buildingStructure: undefined,
+	status: undefined,
+	constructionYear: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -194,37 +149,37 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 楼栋编号 */
 	{
 		label: "楼栋编号",
-		prop: "楼栋编号",
+		prop: "buildingId",
 		valueType: "input",
 	},
 
 	/** 楼栋名称 */
 	{
 		label: "楼栋名称",
-		prop: "楼栋名称",
+		prop: "buildingName",
 		valueType: "input",
 	},
 
 	/** 建筑结构 */
 	{
 		label: "建筑结构",
-		prop: "建筑结构",
+		prop: "buildingStructure",
 		valueType: "select",
-		options: 建筑结构选项,
+		options: buildingStructureOptions,
 	},
 
 	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 楼栋状态选项,
+		options: buildingStatusOptions,
 	},
 
 	/** 建成年份 */
 	{
 		label: "建成年份",
-		prop: "建成年份",
+		prop: "constructionYear",
 		valueType: "input",
 	},
 ]);
@@ -239,16 +194,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<BuildingSpaceStructureDiagramQueryParams>);
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();
@@ -256,7 +212,7 @@ const { gotoDetailPage } = useGotoDetailsPage();
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 楼栋结构图_列表数据;
+	row?: BuildingSpaceStructureDiagramListItem;
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -286,18 +242,18 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? {
 					...defaultForm,
-					楼栋编号: row?.楼栋编号 || "",
-					楼栋名称: row?.楼栋名称 || "",
-					总楼层: row?.总楼层 || 0,
-					总户数: row?.总户数 || 0,
-					建筑面积: row?.建筑面积 || 0,
-					建筑结构: row?.建筑结构 || "",
-					建成年份: row?.建成年份 || "",
-					图纸路径: row?.图纸路径 || "",
-					状态: row?.状态 || "正常使用",
-					负责人: row?.负责人 || "",
-					联系电话: row?.联系电话 || "",
-					备注: row?.备注 || "",
+					楼栋编号: row?.buildingId || "",
+					楼栋名称: row?.buildingName || "",
+					总楼层: row?.totalFloors || 0,
+					总户数: row?.totalHouseholds || 0,
+					建筑面积: row?.buildingArea || 0,
+					建筑结构: row?.buildingStructure || "",
+					建成年份: row?.constructionYear || "",
+					图纸路径: row?.drawingPath || "",
+					状态: row?.status || "正常使用",
+					负责人: row?.personInCharge || "",
+					联系电话: row?.contactPhone || "",
+					备注: row?.remarks || "",
 				}
 			: cloneDeep(defaultForm);
 
@@ -365,19 +321,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 /** 查看图纸 */
-function viewDrawing(row: 楼栋结构图_列表数据) {
-	console.log("查看图纸:", row.图纸路径);
+function viewDrawing(row: BuildingSpaceStructureDiagramListItem) {
+	console.log("查看图纸:", row.drawingPath);
 	// TODO: 实现查看图纸的逻辑
 }
 
 /** 下载图纸 */
-function downloadDrawing(row: 楼栋结构图_列表数据) {
-	console.log("下载图纸:", row.图纸路径);
+function downloadDrawing(row: BuildingSpaceStructureDiagramListItem) {
+	console.log("下载图纸:", row.drawingPath);
 	// TODO: 实现下载图纸的逻辑
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData();
 });
 </script>
 
@@ -391,7 +347,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

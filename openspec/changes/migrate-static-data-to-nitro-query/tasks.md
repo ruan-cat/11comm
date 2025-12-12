@@ -92,15 +92,15 @@
 - [x] 2.7.2 创建 `server/api/dev-team/menu-manage/item/mock-data.ts`
 - [x] 2.7.3 创建 `server/api/dev-team/menu-manage/item/list.post.ts`
 - [x] 2.7.4 创建 `src/api/dev-team/menu-manage/item/index.ts`
-- [ ] 2.7.5 更新 `src/pages/dev-team/menu-manage/item/index.vue`
+- [x] 2.7.5 更新 `src/pages/dev-team/menu-manage/item/index.vue`
 
 ### 2.8 cache-manage/refresh-cache
 
 - [x] 2.8.1 迁移类型到 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
 - [x] 2.8.2 创建 `server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
 - [x] 2.8.3 创建 `server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
-- [ ] 2.8.4 创建 `src/api/dev-team/cache-manage/refresh-cache/index.ts`
-- [ ] 2.8.5 更新 `src/pages/dev-team/cache-manage/refresh-cache/index.vue`
+- [x] 2.8.4 创建 `src/api/dev-team/cache-manage/refresh-cache/index.ts`
+- [x] 2.8.5 更新 `src/pages/dev-team/cache-manage/refresh-cache/index.vue`
 
 ---
 
@@ -113,96 +113,96 @@
 - [x] 3.1.1 迁移类型到 `apps/type/src/business/operation-team/data-manage/community-information.ts`
 - [x] 3.1.2 创建 `server/api/operation-team/data-manage/community-information/mock-data.ts`
 - [x] 3.1.3 创建 `server/api/operation-team/data-manage/community-information/list.post.ts`
-- [ ] 3.1.4 创建 `src/api/operation-team/data-manage/community-information/index.ts`
-- [ ] 3.1.5 更新 `src/pages/operation-team/data-manage/community-information/index.vue`
+- [x] 3.1.4 创建 `src/api/operation-team/data-manage/community-information/index.ts`
+- [x] 3.1.5 更新 `src/pages/operation-team/data-manage/community-information/index.vue`
 
 ### 3.2 data-manage/property-management-company
 
 - [x] 3.2.1 迁移类型到 `apps/type/src/business/operation-team/data-manage/property-company.ts`
 - [x] 3.2.2 创建 `server/api/operation-team/data-manage/property-company/mock-data.ts`
 - [x] 3.2.3 创建 `server/api/operation-team/data-manage/property-company/list.post.ts`
-- [ ] 3.2.4 创建 `src/api/operation-team/data-manage/property-company/index.ts`
-- [ ] 3.2.5 更新 `src/pages/operation-team/data-manage/property-management-company/index.vue`
+- [x] 3.2.4 创建 `src/api/operation-team/data-manage/property-company/index.ts`
+- [x] 3.2.5 更新 `src/pages/operation-team/data-manage/property-management-company/index.vue`
 
 ### 3.3 merchant-manage/merchant-admin
 
 - [x] 3.3.1 迁移类型到 `apps/type/src/business/operation-team/merchant-manage/merchant-admin.ts`
 - [x] 3.3.2 创建 `server/api/operation-team/merchant-manage/merchant-admin/mock-data.ts`
 - [x] 3.3.3 创建 `server/api/operation-team/merchant-manage/merchant-admin/list.post.ts`
-- [ ] 3.3.4 创建 `src/api/operation-team/merchant-manage/merchant-admin/index.ts`
-- [ ] 3.3.5 更新 `src/pages/operation-team/merchant-manage/merchant-admin/index.vue`
+- [x] 3.3.4 创建 `src/api/operation-team/merchant-manage/merchant-admin/index.ts`
+- [x] 3.3.5 更新 `src/pages/operation-team/merchant-manage/merchant-admin/index.vue`
 
 ### 3.4 merchant-manage/merchant-info
 
 - [x] 3.4.1 迁移类型到 `apps/type/src/business/operation-team/merchant-manage/merchant-info.ts`
 - [x] 3.4.2 创建 `server/api/operation-team/merchant-manage/merchant-info/mock-data.ts`
 - [x] 3.4.3 创建 `server/api/operation-team/merchant-manage/merchant-info/list.post.ts`
-- [ ] 3.4.4 创建 `src/api/operation-team/merchant-manage/merchant-info/index.ts`
-- [ ] 3.4.5 更新 `src/pages/operation-team/merchant-manage/merchant-info/index.vue`
+- [x] 3.4.4 创建 `src/api/operation-team/merchant-manage/merchant-info/index.ts`
+- [x] 3.4.5 更新 `src/pages/operation-team/merchant-manage/merchant-info/index.vue`
 
 ### 3.5 report-configuration/report-component
 
 - [x] 3.5.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-component.ts`
 - [x] 3.5.2 创建 `server/api/operation-team/report-configuration/report-component/mock-data.ts`
 - [x] 3.5.3 创建 `server/api/operation-team/report-configuration/report-component/list.post.ts`
-- [ ] 3.5.4 创建 `src/api/operation-team/report-configuration/report-component/index.ts`
-- [ ] 3.5.5 更新 `src/pages/operation-team/report-configuration/report-component/index.vue`
+- [x] 3.5.4 创建 `src/api/operation-team/report-configuration/report-component/index.ts`
+- [x] 3.5.5 更新 `src/pages/operation-team/report-configuration/report-component/index.vue`
 
 ### 3.6 report-configuration/report-group
 
 - [x] 3.6.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-group.ts`
 - [x] 3.6.2 创建 `server/api/operation-team/report-configuration/report-group/mock-data.ts`
 - [x] 3.6.3 创建 `server/api/operation-team/report-configuration/report-group/list.post.ts`
-- [ ] 3.6.4 创建 `src/api/operation-team/report-configuration/report-group/index.ts`
-- [ ] 3.6.5 更新 `src/pages/operation-team/report-configuration/report-group/index.vue`
+- [x] 3.6.4 创建 `src/api/operation-team/report-configuration/report-group/index.ts`
+- [x] 3.6.5 更新 `src/pages/operation-team/report-configuration/report-group/index.vue`
 
 ### 3.7 report-configuration/report-info
 
 - [x] 3.7.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-info.ts`
 - [x] 3.7.2 创建 `server/api/operation-team/report-configuration/report-info/mock-data.ts`
 - [x] 3.7.3 创建 `server/api/operation-team/report-configuration/report-info/list.post.ts`
-- [ ] 3.7.4 创建 `src/api/operation-team/report-configuration/report-info/index.ts`
-- [ ] 3.7.5 更新 `src/pages/operation-team/report-configuration/report-info/index.vue`
+- [x] 3.7.4 创建 `src/api/operation-team/report-configuration/report-info/index.ts`
+- [x] 3.7.5 更新 `src/pages/operation-team/report-configuration/report-info/index.vue`
 
 ### 3.8 system-manage/change-password
 
-- [ ] 3.8.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/change-password.ts`
-- [ ] 3.8.2 创建 `server/api/operation-team/system-manage/change-password/mock-data.ts`
-- [ ] 3.8.3 创建 `server/api/operation-team/system-manage/change-password/list.post.ts`
-- [ ] 3.8.4 创建 `src/api/operation-team/system-manage/change-password/index.ts`
-- [ ] 3.8.5 更新 `src/pages/operation-team/system-manage/change-password/index.vue`
+- [x] 3.8.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/change-password.ts`
+- [x] 3.8.2 创建 `server/api/operation-team/system-manage/change-password/mock-data.ts`
+- [x] 3.8.3 创建 `server/api/operation-team/system-manage/change-password/list.post.ts`
+- [x] 3.8.4 创建 `src/api/operation-team/system-manage/change-password/index.ts`
+- [x] 3.8.5 更新 `src/pages/operation-team/system-manage/change-password/index.vue`
 
 ### 3.9 system-manage/community-configuration
 
-- [ ] 3.9.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/community-configuration.ts`
-- [ ] 3.9.2 创建 `server/api/operation-team/system-manage/community-configuration/mock-data.ts`
-- [ ] 3.9.3 创建 `server/api/operation-team/system-manage/community-configuration/list.post.ts`
-- [ ] 3.9.4 创建 `src/api/operation-team/system-manage/community-configuration/index.ts`
-- [ ] 3.9.5 更新 `src/pages/operation-team/system-manage/community-configuration/index.vue`
+- [x] 3.9.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/community-configuration.ts`
+- [x] 3.9.2 创建 `server/api/operation-team/system-manage/community-configuration/mock-data.ts`
+- [x] 3.9.3 创建 `server/api/operation-team/system-manage/community-configuration/list.post.ts`
+- [x] 3.9.4 创建 `src/api/operation-team/system-manage/community-configuration/index.ts`
+- [x] 3.9.5 更新 `src/pages/operation-team/system-manage/community-configuration/index.vue`
 
 ### 3.10 system-manage/initialize-cell
 
-- [ ] 3.10.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts`
-- [ ] 3.10.2 创建 `server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
-- [ ] 3.10.3 创建 `server/api/operation-team/system-manage/initialize-cell/list.post.ts`
-- [ ] 3.10.4 创建 `src/api/operation-team/system-manage/initialize-cell/index.ts`
-- [ ] 3.10.5 更新 `src/pages/operation-team/system-manage/initialize-cell/index.vue`
+- [x] 3.10.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts`
+- [x] 3.10.2 创建 `server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
+- [x] 3.10.3 创建 `server/api/operation-team/system-manage/initialize-cell/list.post.ts`
+- [x] 3.10.4 创建 `src/api/operation-team/system-manage/initialize-cell/index.ts`
+- [x] 3.10.5 更新 `src/pages/operation-team/system-manage/initialize-cell/index.vue`
 
 ### 3.11 system-manage/register-protocol
 
-- [ ] 3.11.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/register-protocol.ts`
-- [ ] 3.11.2 创建 `server/api/operation-team/system-manage/register-protocol/mock-data.ts`
-- [ ] 3.11.3 创建 `server/api/operation-team/system-manage/register-protocol/list.post.ts`
-- [ ] 3.11.4 创建 `src/api/operation-team/system-manage/register-protocol/index.ts`
-- [ ] 3.11.5 更新 `src/pages/operation-team/system-manage/register-protocol/index.vue`
+- [x] 3.11.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/register-protocol.ts`
+- [x] 3.11.2 创建 `server/api/operation-team/system-manage/register-protocol/mock-data.ts`
+- [x] 3.11.3 创建 `server/api/operation-team/system-manage/register-protocol/list.post.ts`
+- [x] 3.11.4 创建 `src/api/operation-team/system-manage/register-protocol/index.ts`
+- [x] 3.11.5 更新 `src/pages/operation-team/system-manage/register-protocol/index.vue`
 
 ### 3.12 system-manage/system-config
 
 - [x] 3.12.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/system-config.ts`
 - [x] 3.12.2 创建 `server/api/operation-team/system-manage/system-config/mock-data.ts`
 - [x] 3.12.3 创建 `server/api/operation-team/system-manage/system-config/list.post.ts`
-- [ ] 3.12.4 创建 `src/api/operation-team/system-manage/system-config/index.ts`
-- [ ] 3.12.5 更新 `src/pages/operation-team/system-manage/system-config/index.vue`
+- [x] 3.12.4 创建 `src/api/operation-team/system-manage/system-config/index.ts`
+- [x] 3.12.5 更新 `src/pages/operation-team/system-manage/system-config/index.vue`
 
 ---
 
@@ -217,8 +217,8 @@
 - [ ] 4.1.1.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/building-space-structure-diagram.ts`
 - [ ] 4.1.1.2 创建 `server/api/property-manage/community-manage/building-space-structure-diagram/mock-data.ts`
 - [ ] 4.1.1.3 创建 `server/api/property-manage/community-manage/building-space-structure-diagram/list.post.ts`
-- [ ] 4.1.1.4 创建 `src/api/property-manage/community-manage/building-space-structure-diagram/index.ts`
-- [ ] 4.1.1.5 更新 `src/pages/property-manage/community-manage/building-space-structure-diagram/index.vue`
+- [x] 4.1.1.4 创建 `src/api/property-manage/community-manage/building-space-structure-diagram/index.ts`
+- [x] 4.1.1.5 更新 `src/pages/property-manage/community-manage/building-space-structure-diagram/index.vue`
 
 #### 4.1.2 community-manage/handing-business
 
@@ -230,11 +230,11 @@
 
 #### 4.1.3 community-manage/house-decoration
 
-- [ ] 4.1.3.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/house-decoration.ts`
-- [ ] 4.1.3.2 创建 `server/api/property-manage/community-manage/house-decoration/mock-data.ts`
-- [ ] 4.1.3.3 创建 `server/api/property-manage/community-manage/house-decoration/list.post.ts`
-- [ ] 4.1.3.4 创建 `src/api/property-manage/community-manage/house-decoration/index.ts`
-- [ ] 4.1.3.5 更新 `src/pages/property-manage/community-manage/house-decoration/index.vue`
+- [x] 4.1.3.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/house-decoration.ts`
+- [x] 4.1.3.2 创建 `server/api/property-manage/community-manage/house-decoration/mock-data.ts`
+- [x] 4.1.3.3 创建 `server/api/property-manage/community-manage/house-decoration/list.post.ts`
+- [x] 4.1.3.4 创建 `src/api/property-manage/community-manage/house-decoration/index.ts`
+- [x] 4.1.3.5 更新 `src/pages/property-manage/community-manage/house-decoration/index.vue`
 
 #### 4.1.4 community-manage/my
 

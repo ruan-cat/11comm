@@ -5,4 +5,6 @@
 
 export * from "./handing-business";
 export * from "./notice";
+export * from "./building-space-structure-diagram";
+export * from "./house-decoration";
 

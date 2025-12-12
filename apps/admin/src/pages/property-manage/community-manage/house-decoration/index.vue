@@ -10,84 +10,80 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 房屋装修_列表数据,
-	type 房屋装修_列表查询_VO,
-	房屋状态选项,
-	延期状态选项,
-	tableData as mockTableData,
-} from "./test-data";
-
+import { type HouseDecorationListItem, type HouseDecorationQueryParams, decorationStatusOptions, delayStatusOptions } from "@01s-11comm/type";
+import { useHouseDecorationListQuery } from "@/api/property-manage/community-manage/house-decoration";
 import { type HouseDecorationFormProps, defaultForm, type 房屋装修表单_VO, type 房屋装修状态类型, type 是否延期类型, type 是否违规类型 } from "./components/form";
 import HouseDecorationForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 表单组件实例 */
 const houseDecorationFormInstance = ref<InstanceType<typeof HouseDecorationForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<房屋装修_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useHouseDecorationListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "houseNumber",
 		width: 120,
 	},
 	{
 		label: "联系人",
-		prop: "联系人",
+		prop: "contactName",
 		width: 120,
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		width: 120,
 	},
 	{
 		label: "装修时间",
-		prop: "装修时间",
+		prop: "decorationTime",
 		width: 120,
 	},
 	{
 		label: "申请时间",
-		prop: "申请时间",
+		prop: "applicationTime",
 		width: 120,
 	},
 	{
 		label: "装修单位",
-		prop: "装修单位",
+		prop: "decorationCompany",
 		width: 120,
 	},
 	{
 		label: "负责人电话",
-		prop: "负责人电话",
+		prop: "managerPhone",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
 		label: "是否延期",
-		prop: "是否延期",
+		prop: "isDelayed",
 		width: 120,
 	},
 	{
 		label: "延期时间",
-		prop: "延期时间",
+		prop: "delayTime",
 		width: 120,
 	},
 	{
 		label: "是否违规",
-		prop: "是否违规",
+		prop: "isViolated",
 		width: 120,
 	},
 	{
 		label: "违规说明",
-		prop: "违规说明",
+		prop: "violationDescription",
 		width: 120,
 	},
 	{
@@ -100,22 +96,20 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -124,6 +118,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -132,71 +127,20 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.房屋编号) {
-			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋编号!));
-		}
-		if (plusSearchModel.value.联系人) {
-			filteredData = filteredData.filter((item) => item.联系人.includes(plusSearchModel.value.联系人!));
-		}
-		if (plusSearchModel.value.联系电话) {
-			filteredData = filteredData.filter((item) => item.联系电话.includes(plusSearchModel.value.联系电话!));
-		}
-		if (plusSearchModel.value.房屋状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.房屋状态);
-		}
-		if (plusSearchModel.value.延期状态) {
-			filteredData = filteredData.filter((item) => item.是否延期 === plusSearchModel.value.延期状态);
-		}
-		if (plusSearchModel.value.装修时间) {
-			filteredData = filteredData.filter((item) => item.装修时间.includes(plusSearchModel.value.装修时间!));
-		}
-		if (plusSearchModel.value.装修申请开始时间 && plusSearchModel.value.装修申请结束时间) {
-			filteredData = filteredData.filter((item) => {
-				const applyTime = new Date(item.申请时间).getTime();
-				const startTime = new Date(plusSearchModel.value.装修申请开始时间!).getTime();
-				const endTime = new Date(plusSearchModel.value.装修申请结束时间!).getTime();
-				return applyTime >= startTime && applyTime <= endTime;
-			});
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 房屋装修_列表查询_VO = {
-	房屋编号: "",
-	联系人: "",
-	联系电话: "",
-	房屋状态: "",
-	延期状态: "",
-	装修时间: "",
-	装修申请开始时间: "",
-	装修申请结束时间: "",
+const plusSearchModelRef: FieldValues & Partial<HouseDecorationQueryParams> = {
+	houseNumber: "",
+	contactName: "",
+	contactPhone: "",
+	status: undefined,
+	isDelayed: undefined,
+	decorationTime: "",
+	applicationStartTime: "",
+	applicationEndTime: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -213,44 +157,44 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 房屋编号 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
-		prop: "房屋编号",
+		prop: "houseNumber",
 		valueType: "input",
 	},
 
 	/** 联系人 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.contacts")),
-		prop: "联系人",
+		prop: "contactName",
 		valueType: "input",
 	},
 
 	/** 联系电话 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.phone")),
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	/** 房屋状态 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseState")),
-		prop: "房屋状态",
+		prop: "status",
 		valueType: "select",
-		options: 房屋状态选项,
+		options: decorationStatusOptions,
 	},
 
 	/** 延期状态 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.deferredStatus")),
-		prop: "延期状态",
+		prop: "isDelayed",
 		valueType: "select",
-		options: 延期状态选项,
+		options: delayStatusOptions,
 	},
 
 	/** 装修时间 */
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.renovationTime")),
-		prop: "装修时间",
+		prop: "decorationTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -262,19 +206,19 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 申请时间范围 */
 	{
 		label: "申请时间范围",
-		prop: "装修申请开始时间",
+		prop: "applicationStartTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "daterange",
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
 			onChange(value: string[] | null) {
-				plusSearchModel.value.装修申请开始时间 = value?.[0] ?? "";
-				plusSearchModel.value.装修申请结束时间 = value?.[1] ?? "";
+				plusSearchModel.value.applicationStartTime = value?.[0] ?? "";
+				plusSearchModel.value.applicationEndTime = value?.[1] ?? "";
 			},
 			onClear() {
-				plusSearchModel.value.装修申请开始时间 = "";
-				plusSearchModel.value.装修申请结束时间 = "";
+				plusSearchModel.value.applicationStartTime = "";
+				plusSearchModel.value.applicationEndTime = "";
 			},
 		},
 	},
@@ -290,16 +234,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<HouseDecorationQueryParams>);
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();
@@ -307,7 +252,7 @@ const { gotoDetailPage } = useGotoDetailsPage();
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 房屋装修_列表数据;
+	row?: HouseDecorationListItem;
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -337,19 +282,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? {
 					...defaultForm,
-					房屋: row?.房屋 || "",
-					联系人: row?.联系人 || "",
-					联系电话: row?.联系电话 || "",
-					装修时间: row?.装修时间 || "",
-					申请时间: row?.申请时间 || "",
-					装修单位: row?.装修单位 || "",
-					负责人电话: row?.负责人电话 || "",
-					状态: (row?.状态 as 房屋装修状态类型) || "待审核",
-					是否延期: (row?.是否延期 as 是否延期类型) || "否",
-					延期时间: row?.延期时间 || "",
-					是否违规: (row?.是否违规 as 是否违规类型) || "否",
-					违规说明: row?.违规说明 || "",
-					备注: row?.备注 || "",
+					房屋: row?.houseNumber || "",
+					联系人: row?.contactName || "",
+					联系电话: row?.contactPhone || "",
+					装修时间: row?.decorationTime || "",
+					申请时间: row?.applicationTime || "",
+					装修单位: row?.decorationCompany || "",
+					负责人电话: row?.managerPhone || "",
+					状态: (row?.status as 房屋装修状态类型) || "待审核",
+					是否延期: (row?.isDelayed as 是否延期类型) || "否",
+					延期时间: row?.delayTime || "",
+					是否违规: (row?.isViolated as 是否违规类型) || "否",
+					违规说明: row?.violationDescription || "",
+					备注: row?.remarks || "",
 				}
 			: cloneDeep(defaultForm);
 
@@ -417,18 +362,18 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 /** 跳转到 装修跟踪页面 */
-function gotoHouseDecorationPage(row: 房屋装修_列表数据) {
+function gotoHouseDecorationPage(row: HouseDecorationListItem) {
 	console.log("row", row);
 	gotoDetailPage({
 		name: "property-manage-community-manage--detail-page-house-decoration-[id]",
 		params: {
-			id: row.房屋,
+			id: row.houseNumber,
 		},
 	});
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// await loadTableData();
 });
 </script>
 
@@ -442,7 +387,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
