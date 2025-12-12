@@ -11,19 +11,17 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 业务受理_列表数据,
-	type 业务受理_列表查询_VO,
-	tableData as mockTableData,
-} from "./test-data";
+import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
+import { useHandingBusinessListQuery } from "@/api/property-manage/community-manage/handing-business";
 import type { HandingBusinessFormProps, 业务受理表单_VO } from "./components/form";
 import { defaultForm, 列表数据转表单数据, 费用类型Options, 状态Options } from "./components/form";
 import HandingBusinessForm from "./components/form.vue";
 
 const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<业务受理_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useHandingBusinessListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -78,23 +76,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -103,6 +99,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -116,13 +113,13 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 业务受理_列表查询_VO = {
-	费用项目: "",
-	费用标识: "",
-	费用类型: "",
-	状态: "",
-	建账开始时间: "",
-	建账结束时间: "",
+const plusSearchModelRef: FieldValues & Partial<HandingBusinessQueryParams> = {
+	feeItem: "",
+	feeId: "",
+	feeType: undefined,
+	status: undefined,
+	accountCreationStartTime: "",
+	accountCreationEndTime: "",
 	建账时间范围: ["", ""],
 };
 
@@ -137,37 +134,37 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 费用项目
+	/** 费用项目 */
 	{
 		label: "费用项目",
-		prop: "费用项目",
+		prop: "feeItem",
 		valueType: "input",
 	},
 
-	// 费用标识
+	/** 费用标识 */
 	{
 		label: "费用标识",
-		prop: "费用标识",
+		prop: "feeId",
 		valueType: "input",
 	},
 
-	// 费用类型
+	/** 费用类型 */
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		valueType: "select",
 		options: 费用类型Options,
 	},
 
-	// 状态
+	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: 状态Options,
 	},
 
-	// 建账时间范围
+	/** 建账时间范围 */
 	{
 		label: "建账时间范围",
 		prop: "建账时间范围",
@@ -177,12 +174,12 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
 			onChange(value: string[] | null) {
-				plusSearchModel.value.建账开始时间 = value?.[0] ?? "";
-				plusSearchModel.value.建账结束时间 = value?.[1] ?? "";
+				plusSearchModel.value.accountCreationStartTime = value?.[0] ?? "";
+				plusSearchModel.value.accountCreationEndTime = value?.[1] ?? "";
 			},
 			onClear() {
-				plusSearchModel.value.建账开始时间 = "";
-				plusSearchModel.value.建账结束时间 = "";
+				plusSearchModel.value.accountCreationStartTime = "";
+				plusSearchModel.value.accountCreationEndTime = "";
 			},
 		},
 	},
@@ -197,71 +194,31 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = mockTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.费用项目) {
-			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.费用项目!));
-		}
-		if (plusSearchModel.value.费用标识) {
-			filteredData = filteredData.filter((item) => item.费用标识.includes(plusSearchModel.value.费用标识!));
-		}
-		if (plusSearchModel.value.费用类型) {
-			filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-		if (plusSearchModel.value.建账开始时间) {
-			filteredData = filteredData.filter((item) => item.建账时间 >= plusSearchModel.value.建账开始时间!);
-		}
-		if (plusSearchModel.value.建账结束时间) {
-			filteredData = filteredData.filter((item) => item.建账时间 <= plusSearchModel.value.建账结束时间!);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<HandingBusinessQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 业务受理_列表数据;
+	row?: HandingBusinessListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
+/** 测试异步函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
@@ -338,7 +295,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
+						await refetch();
 					}
 				},
 			},
@@ -347,7 +304,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 /** 删除单个业务受理 */
-async function handleDelete(row: 业务受理_列表数据) {
+async function handleDelete(row: HandingBusinessListItem) {
 	try {
 		await ElMessageBox.confirm(
 			`确认删除业务受理记录：${row.费用标识} - ${row.费用项目}？`,
@@ -364,7 +321,7 @@ async function handleDelete(row: 业务受理_列表数据) {
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		// 刷新表格数据
-		await loadTableData();
+		await refetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			// TODO: 显示错误提示
@@ -373,15 +330,21 @@ async function handleDelete(row: 业务受理_列表数据) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

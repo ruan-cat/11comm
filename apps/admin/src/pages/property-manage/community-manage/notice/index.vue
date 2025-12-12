@@ -8,30 +8,24 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 小区公示_列表数据,
-	type 小区公示_列表查询_VO,
-	tableData as mockTableData,
-	公示类型选项,
-} from "./test-data";
-import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据 } from "./components/form";
+import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
+import { useCommunityNoticeListQuery } from "@/api/property-manage/community-manage/notice";
+import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据, 公示类型选项 } from "./components/form";
 import CommunityNoticeForm from "./components/form.vue";
 
 const { t } = useI18n();
 const communityNoticeFormInstance = ref<InstanceType<typeof CommunityNoticeForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<小区公示_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useCommunityNoticeListQuery();
 
 /** 选中的表格数据 */
-const selectedRows = ref<小区公示_列表数据[]>([]);
-
-/** 加载状态 */
-const loading = ref(false);
+const selectedRows = ref<CommunityNoticeListItem[]>([]);
 
 /** 是否有选中的数据 */
 const hasSelection = computed(() => selectedRows.value.length > 0);
@@ -77,22 +71,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -103,6 +96,7 @@ const pureTableProps = ref<PureTableProps>({
 	pagination: pagination.value,
 	adaptive: true,
 	headerAlign: "center",
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -116,7 +110,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 小区公示_列表查询_VO = {
+const plusSearchModelRef: FieldValues & Partial<CommunityNoticeQueryParams> = {
 	公示标题: "",
 	公示类型: "",
 };
@@ -163,60 +157,22 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 2,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	loading.value = true;
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		await new Promise((resolve) => setTimeout(resolve, 300)); // 模拟网络延迟
-
-		let filteredData = [...mockTableData];
-
-		// 根据搜索条件过滤数据 - 使用性能优化的过滤方式
-		const { 公示标题, 公示类型 } = plusSearchModel.value;
-
-		if (公示标题) {
-			filteredData = filteredData.filter((item) => item.公示标题.includes(公示标题));
-		}
-		if (公示类型) {
-			filteredData = filteredData.filter((item) => item.公示类型 === 公示类型);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const { currentPage, pageSize } = pagination.value;
-		const startIndex = (currentPage - 1) * pageSize;
-		const endIndex = startIndex + pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		ElMessage.error(transformI18n($t("propertyManage_communityManage.notice.loadFailed")));
-	} finally {
-		loading.value = false;
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<CommunityNoticeQueryParams>);
 }
 
 /** 处理表格选择变化 */
-function handleSelectionChange(selection: 小区公示_列表数据[]) {
+function handleSelectionChange(selection: CommunityNoticeListItem[]) {
 	selectedRows.value = selection;
 }
 
@@ -248,7 +204,7 @@ async function handleBatchDelete() {
 			}),
 		);
 		selectedRows.value = [];
-		await loadTableData();
+		await refetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(
@@ -294,7 +250,7 @@ async function handleBatchPublish() {
 			}),
 		);
 		selectedRows.value = [];
-		await loadTableData();
+		await refetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(
@@ -307,7 +263,7 @@ async function handleBatchPublish() {
 }
 
 /** 删除单个公示 */
-async function handleDelete(row: 小区公示_列表数据) {
+async function handleDelete(row: CommunityNoticeListItem) {
 	try {
 		await ElMessageBox.confirm(
 			t("propertyManage_communityManage.notice.deleteConfirm", { title: row.公示标题 }),
@@ -324,7 +280,7 @@ async function handleDelete(row: 小区公示_列表数据) {
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		ElMessage.success(transformI18n($t("propertyManage_communityManage.notice.deleteSuccess")));
-		await loadTableData();
+		await refetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(transformI18n($t("propertyManage_communityManage.notice.deleteFailed")));
@@ -335,12 +291,15 @@ async function handleDelete(row: 小区公示_列表数据) {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 小区公示_列表数据;
+	row?: CommunityNoticeListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
+/** 测试异步函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
+
+/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
@@ -435,7 +394,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 							);
 							closeDialog(options, index);
 							// 刷新表格数据
-							await loadTableData();
+							await refetch();
 						} catch (error) {
 							ElMessage.error(
 								t("propertyManage_communityManage.notice.operationFailed", { operation: modeText.value }),
@@ -454,7 +413,7 @@ const { gotoDetailPage } = useGotoDetailsPage();
 
 // TODO: 需要先调研一下是否有公示页面
 /** 跳转到 公示详情页面 */
-function gotoNoticeDetailPage(row: 小区公示_列表数据) {
+function gotoNoticeDetailPage(row: CommunityNoticeListItem) {
 	gotoDetailPage({
 		name: "property-manage-community-manage--detail-page",
 		params: {
@@ -464,15 +423,21 @@ function gotoNoticeDetailPage(row: 小区公示_列表数据) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 
 <template>
 	<section>
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<div>
 					<ElButton type="primary" @click="openDialog({ mode: 'add' })">
