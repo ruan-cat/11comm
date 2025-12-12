@@ -15,7 +15,7 @@ import {
 	type ConfigCenterQueryParams,
 	configTypeOptions,
 	configStatusOptions,
-} from "@01s-11comm/type/src/business/dev-team/config-manage/center";
+} from "@01s-11comm/type";
 import { openDialog } from "./components/dialog";
 import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
 

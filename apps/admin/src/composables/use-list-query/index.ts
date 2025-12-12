@@ -5,27 +5,14 @@
 
 import { useQuery, type UseQueryReturnType } from "@tanstack/vue-query";
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, BaseListQueryParams } from "@01s-11comm/type";
 import { http } from "@/utils/http";
-
-/**
- * 基础列表查询参数
- * Base list query parameters
- */
-export interface BaseListQueryParams {
-	/** 当前页码（1开始） Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
-	/** 其他筛选参数 Additional filter params */
-	[key: string]: unknown;
-}
 
 /**
  * useListQuery 配置选项
  * useListQuery configuration options
  */
-export interface UseListQueryOptions<TItem, TParams extends BaseListQueryParams> {
+export interface UseListQueryOptions<TItem, TParams extends BaseListQueryParams = BaseListQueryParams> {
 	/** 查询键前缀 Query key prefix */
 	queryKeyPrefix: string;
 	/** API 接口路径 API endpoint path */
@@ -42,7 +29,7 @@ export interface UseListQueryOptions<TItem, TParams extends BaseListQueryParams>
  * useListQuery 返回值类型
  * useListQuery return type
  */
-export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams> {
+export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams = BaseListQueryParams> {
 	/** 表格数据列表 Table data list */
 	tableData: Ref<TItem[]>;
 	/** 数据总数 Total count */
@@ -132,23 +119,33 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	const query = useQuery({
 		queryKey: queryKey.value,
 		queryFn: async (): Promise<JsonVO<PageDTO<TItem>>> => {
-			const response = await http.post<JsonVO<PageDTO<TItem>>>(apiUrl, queryParams.value);
-			return response ?? { success: false, code: 500, message: "请求失败", data: { list: [], total: 0, pageIndex: 1, pageSize: 10, totalPages: 0 }, timestamp: Date.now() };
+			const response = await http.post<JsonVO<PageDTO<TItem>>, TParams>(apiUrl, { data: queryParams.value });
+			return (
+				response ?? {
+					code: 500,
+					message: "请求失败",
+					data: { list: [], total: 0, pageIndex: 1, pageSize: 10, totalPages: 0 },
+				}
+			);
 		},
 		enabled: typeof enabled === "boolean" ? enabled : enabled,
 		staleTime,
 	});
 
 	/** 监听参数变化时更新 queryKey */
-	watch(queryParams, () => {
-		query.refetch();
-	}, { deep: true });
+	watch(
+		queryParams,
+		() => {
+			query.refetch();
+		},
+		{ deep: true },
+	);
 
 	/** 监听数据变化，更新表格数据 */
 	watch(
 		() => query.data.value,
 		(newData) => {
-			if (newData?.success && newData.data) {
+			if (newData?.code === 200 && newData.data) {
 				tableData.value = newData.data.list || [];
 				total.value = newData.data.total || 0;
 			}
