@@ -171,3 +171,10 @@ openspec validate migrate-static-data-to-nitro-query --strict
 3. 修复错误时，请不要删改删减掉现有的规范。不要乱加或乱改规范性的指导内容。
 4. 继续运行上述命令，直到没有出现任何规范性报错。
 5. 生成一份事故报告，告诉我为什么会出现规范对不上的错误？以及以后该如何避免这一类的错误？
+
+### 02 更新补全 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务列表
+
+在你持续的执行 `migrate-static-data-to-nitro-query` 任务时，你没有及时的更新补全任务列表清单
+
+1. 请你模仿 tasks.md `阶段 2: dev-team 模块迁移 (40 任务，1 周)` 的任务写法，按照 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan.md` 和 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan-by-claude-plan-mode.md` 的要求，新建补全完整完善的，细粒度清晰的任务表。
+2. 更新任务表。你已经完成了一部分的 nitro 接口生成，请你更新你刚刚生成的任务表。
