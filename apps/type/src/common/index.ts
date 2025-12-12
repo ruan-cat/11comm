@@ -3,8 +3,33 @@
  * @description 导出项目中共享的通用类型，如分页、响应格式等
  */
 
-// JsonVO 需要从 vueuse 子路径导入
-export type { JsonVO } from "@ruan-cat/utils/vueuse";
+/**
+ * 前后端数据对接数据对象
+ * @description
+ * 后端 JsonVO 泛型类的前端翻译
+ *
+ * `01s` 项目统一的数据返回格式
+ *
+ * 这个类型是经过拓展后的类型 增加了 nitro 的字段
+ *
+ * - timestamp
+ */
+export interface JsonVO<T> {
+	/** 状态码 */
+	code: number;
+
+	/** 提示消息 */
+	message: string;
+
+	/** 数据对象 */
+	data: T;
+
+	/** 时间戳 */
+	timestamp?: number;
+
+	/** 请求是否成功 */
+	success?: boolean;
+}
 
 /**
  * 分页数据传输对象
