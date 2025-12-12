@@ -191,3 +191,5 @@ openspec validate migrate-static-data-to-nitro-query --strict
 ```bash
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
+
+<!-- 触发部署 SKIP_DEPENDENCY_INSTALL = 1 -->
