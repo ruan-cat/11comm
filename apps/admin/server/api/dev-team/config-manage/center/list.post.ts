@@ -3,12 +3,11 @@
  * @description Configuration center list API
  */
 
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { mockConfigCenterData } from "./mock-data";
-import { defineHandler, readBody } from "nitro/h3";
 
-// Promise<JsonVO<PageDTO<ConfigCenterListItem>>>
-export default defineHandler(async (event): Promise<PageDTO<ConfigCenterListItem>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {
 	const body = await readBody<ConfigCenterQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body ?? {};
 
@@ -34,25 +33,17 @@ export default defineHandler(async (event): Promise<PageDTO<ConfigCenterListItem
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	// JsonVO<PageDTO<ConfigCenterListItem>>
-	const response: PageDTO<ConfigCenterListItem> = {
-		list: pageData,
-		total,
-		pageIndex,
-		pageSize,
-		totalPages: Math.ceil(total / pageSize),
+	return {
+		success: true,
+		code: 200,
+		message: "查询成功",
+		data: {
+			list: pageData,
+			total,
+			pageIndex,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		},
+		timestamp: Date.now(),
 	};
-	// {
-	// 	code: 200,
-	// 	message: "查询成功",
-	// 	data: {
-	// 		list: pageData,
-	// 		total,
-	// 		pageIndex,
-	// 		pageSize,
-	// 		totalPages: Math.ceil(total / pageSize),
-	// 	},
-	// };
-
-	return response;
 });

@@ -3,7 +3,10 @@ import { pathResolve } from "./build/utils";
 
 export default defineConfig({
 	serverDir: "./server",
-	apiDir: "./server/api",
+	// routesDir: "./server/api",
+	devServer: {
+		watch: ["./server/**/*.ts"],
+	},
 	alias: {
 		/**
 		 * Nitro 构建需要显式传入当前文件的 import.meta.url，
@@ -20,6 +23,7 @@ export default defineConfig({
 		// typeCheck: true,
 		// generatedTypesDir: pathResolve("./src/types"),
 	},
+
 	cloudflare: {
 		deployConfig: true,
 		nodeCompat: true,
