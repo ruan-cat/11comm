@@ -84,14 +84,14 @@
 - [x] 2.6.2 创建 `server/api/dev-team/menu-manage/group/mock-data.ts`
 - [x] 2.6.3 创建 `server/api/dev-team/menu-manage/group/list.post.ts`
 - [x] 2.6.4 创建 `src/api/dev-team/menu-manage/group/index.ts`
-- [ ] 2.6.5 更新 `src/pages/dev-team/menu-manage/group/index.vue`
+- [x] 2.6.5 更新 `src/pages/dev-team/menu-manage/group/index.vue`
 
 ### 2.7 menu-manage/item
 
 - [x] 2.7.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/item.ts`
 - [x] 2.7.2 创建 `server/api/dev-team/menu-manage/item/mock-data.ts`
 - [x] 2.7.3 创建 `server/api/dev-team/menu-manage/item/list.post.ts`
-- [ ] 2.7.4 创建 `src/api/dev-team/menu-manage/item/index.ts`
+- [x] 2.7.4 创建 `src/api/dev-team/menu-manage/item/index.ts`
 - [ ] 2.7.5 更新 `src/pages/dev-team/menu-manage/item/index.vue`
 
 ### 2.8 cache-manage/refresh-cache
@@ -900,15 +900,15 @@
 
 ### 已完成任务
 
-|      模块       | 已完成 |  总数   | 完成率  |
-| :-------------: | :----: | :-----: | :-----: |
-|    基础设施     |   15   |   15    |  100%   |
-|    dev-team     |   27   |   40    |  67.5%  |
-| operation-team  |   24   |   60    |   40%   |
-| property-manage |   9    |   355   |  2.5%   |
-| setting-manage  |   0    |   35    |   0%    |
-|   验证和清理    |   0    |   30    |   0%    |
-|    **总计**     | **75** | **535** | **14%** |
+|      模块       | 已完成 |  总数   |  完成率   |
+| :-------------: | :----: | :-----: | :-------: |
+|    基础设施     |   15   |   15    |   100%    |
+|    dev-team     |   34   |   40    |   85.0%   |
+| operation-team  |   24   |   60    |    40%    |
+| property-manage |   9    |   355   |   2.5%    |
+| setting-manage  |   0    |   35    |    0%     |
+|   验证和清理    |   0    |   30    |    0%     |
+|    **总计**     | **82** | **535** | **15.3%** |
 
 ## 注意事项
 
