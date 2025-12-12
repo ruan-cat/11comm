@@ -192,4 +192,5 @@ openspec validate migrate-static-data-to-nitro-query --strict
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
 
-<!-- 触发部署 SKIP_DEPENDENCY_INSTALL = 1 -->
+<!-- 触发部署 SKIP_DEPENDENCY_INSTALL = true -->
+<!-- 触发部署 NPM_CONFIG_PACKAGE_MANAGER = pnpm -->
