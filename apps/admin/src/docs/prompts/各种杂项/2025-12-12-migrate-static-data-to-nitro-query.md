@@ -209,3 +209,5 @@ openspec validate migrate-static-data-to-nitro-query --strict
 ```bash
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
+
+<!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
