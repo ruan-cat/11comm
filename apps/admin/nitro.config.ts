@@ -21,6 +21,13 @@ export default defineConfig({
 		wrangler: {
 			// 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
 			name: "01s-11comm-admin-nitro",
+			vars: {
+				/** @see https://developers.cloudflare.com/workers/ci-cd/builds/build-image/ */
+				SKIP_DEPENDENCY_INSTALL: "true",
+				NPM_CONFIG_PACKAGE_MANAGER: "pnpm",
+				/** @see https://github.com/cloudflare/workers-sdk/pull/1427 */
+				npm_config_user_agent: "pnpm",
+			},
 		},
 	},
 });
