@@ -96,12 +96,11 @@
 
 ### 4.2 技术栈版本
 
-|        技术         |     版本      |          新增/现有           |
-| :-----------------: | :-----------: | :--------------------------: |
-|        nitro        | 3.0.1-alpha.1 |      现有（启用服务端）      |
-| @tanstack/vue-query |    ^5.62.8    |           **新增**           |
-|   @ruan-cat/utils   |    latest     | 现有（提供 JsonVO, PageDTO） |
-|  @01s-11comm/type   |     1.0.0     |    **新增**（本地类型库）    |
+|        技术         |     版本      |       新增/现有        |
+| :-----------------: | :-----------: | :--------------------: |
+|        nitro        | 3.0.1-alpha.1 |   现有（启用服务端）   |
+| @tanstack/vue-query |    ^5.62.8    |        **新增**        |
+|  @01s-11comm/type   |     1.0.0     | **新增**（本地类型库） |
 
 ---
 
@@ -176,9 +175,6 @@
 #### src/common/index.ts
 
 ```typescript
-/** 通用响应类型 */
-export type { JsonVO, PageDTO } from "@ruan-cat/utils";
-
 /** 下拉选项类型 */
 export type { OptionsType } from "plus-pro-components";
 ```
@@ -321,8 +317,7 @@ export const mockHouseChargeData: HouseChargeListItem[] = [
 ```typescript
 // 必须主动导入来自 `nitro/h3` 的 defineHandler 和 readBody ，在 nitro v3 版本内要按照该写法编写
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@ruan-cat/utils";
-import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { mockHouseChargeData } from "./mock-data";
 
 /**
@@ -384,7 +379,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 
 ```typescript
 import { useQuery } from "@tanstack/vue-query";
-import type { JsonVO, PageDTO } from "@ruan-cat/utils";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { http } from "@/utils/http";
 import type { MaybeRef } from "vue";
 

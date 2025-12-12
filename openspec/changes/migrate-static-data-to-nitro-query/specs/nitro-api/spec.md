@@ -61,6 +61,8 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 - `data: PageDTO<T>` - 分页数据对象
 - timestamp: number - 时间戳
 
+**重要**: `JsonVO` 和 `PageDTO` 类型 MUST 从 `@01s-11comm/type` 导入，而不是从 `@ruan-cat/utils`
+
 `PageDTO<T>` 包含：
 
 - list: T[] - 数据列表
@@ -274,8 +276,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 ```typescript
 // 必须主动导入来自 `nitro/h3` 的 defineHandler 和 readBody ，在 nitro v3 版本内要按照该写法编写
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@ruan-cat/utils";
-import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { mockHouseChargeData } from "./mock-data";
 
 /**
@@ -338,8 +339,10 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 
 ```typescript
 import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 ```
 
+- **AND** `JsonVO` 和 `PageDTO` 必须从 `@01s-11comm/type` 导入（不是 `@ruan-cat/utils`）
 - **AND** 不允许依赖自动导入
 - **AND** 不允许使用 `defineEventHandler`（Nitro v2 写法）
 

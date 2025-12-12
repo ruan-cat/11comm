@@ -94,12 +94,11 @@
 
 ### 3.2 技术栈版本
 
-|        技术         |     版本      |          新增/现有           |
-| :-----------------: | :-----------: | :--------------------------: |
-|        nitro        | 3.0.1-alpha.1 |      现有（启用服务端）      |
-| @tanstack/vue-query |    ^5.62.8    |           **新增**           |
-|   @ruan-cat/utils   |    4.16.0     | 现有（提供 JsonVO, PageDTO） |
-|  @01s-11comm/type   |     1.0.0     |    **新增**（本地类型库）    |
+|        技术         |     版本      |       新增/现有        |
+| :-----------------: | :-----------: | :--------------------: |
+|        nitro        | 3.0.1-alpha.1 |   现有（启用服务端）   |
+| @tanstack/vue-query |    ^5.62.8    |        **新增**        |
+|  @01s-11comm/type   |     1.0.0     | **新增**（本地类型库） |
 
 ---
 
@@ -174,9 +173,6 @@
 #### src/common/index.ts
 
 ```typescript
-/** 通用响应类型 */
-export type { JsonVO, PageDTO } from "@ruan-cat/utils";
-
 /** 下拉选项类型 */
 export type { OptionsType } from "plus-pro-components";
 ```
@@ -317,8 +313,7 @@ export const mockHouseChargeData: HouseChargeListItem[] = [
 #### server/api/property-manage/expense-manage/house-charge/list.post.ts
 
 ```typescript
-import type { JsonVO, PageDTO } from "@ruan-cat/utils";
-import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { mockHouseChargeData } from "./mock-data";
 
 /**
@@ -378,7 +373,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseCha
 
 ```typescript
 import { useQuery } from "@tanstack/vue-query";
-import type { JsonVO, PageDTO } from "@ruan-cat/utils";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { http } from "@/utils/http";
 import type { MaybeRef } from "vue";
 
@@ -775,7 +770,6 @@ apps/type 类型库 SHALL 满足以下约束：
 
 - 作为 monorepo 包发布，版本 1.0.0
 - 提供 TypeScript 类型定义（.d.ts 文件）
-- 从 @ruan-cat/utils 导出 JsonVO 和 PageDTO 类型
 - 业务类型按模块目录组织，路径与 pages/ 对应
 
 #### Scenario: 类型库构建成功
