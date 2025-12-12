@@ -23,7 +23,7 @@ export default defineConfig({
 			name: "01s-11comm-admin-nitro",
 			vars: {
 				/** @see https://developers.cloudflare.com/workers/ci-cd/builds/build-image/ */
-				SKIP_DEPENDENCY_INSTALL: "true",
+				SKIP_DEPENDENCY_INSTALL: 1,
 				NPM_CONFIG_PACKAGE_MANAGER: "pnpm",
 				/** @see https://github.com/cloudflare/workers-sdk/pull/1427 */
 				npm_config_user_agent: "pnpm",
