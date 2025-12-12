@@ -256,14 +256,14 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ### Requirement: 接口实现模板
 
-所有 list.post.ts 接口 SHOULD 遵循统一模板：
+所有 list.post.ts 接口 MUST 遵循统一模板：
 
 1. 导入类型和假数据
 2. 使用 defineEventHandler 定义接口
 3. 读取请求参数
 4. 数据筛选（遍历所有筛选字段）
 5. 分页处理（slice）
-6. 返回 J`sonVO<PageDTO<T>>` 格式
+6. 返回 JsonVO<PageDTO<T>> 格式
 
 #### Scenario: 接口代码结构
 

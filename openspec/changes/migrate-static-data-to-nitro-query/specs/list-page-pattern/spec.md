@@ -318,7 +318,7 @@ async function loadTableData() {
 
 ### Requirement: 错误状态处理
 
-列表页 SHOULD 提供错误状态提示：
+列表页 MUST 提供错误状态提示：
 
 - 使用 isError 和 error 显示错误信息
 - 提供重试按钮（调用 refetch）
@@ -436,7 +436,7 @@ async function handleSearch() {
 
 ### Requirement: 代码组织和注释
 
-列表页代码 SHOULD 遵循统一的组织结构：
+列表页代码 MUST 遵循统一的组织结构：
 
 1. 类型导入
 2. 搜索表单配置
@@ -557,7 +557,7 @@ import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/ty
 
 ### Requirement: Options 常量使用
 
-搜索表单 SHOULD 使用从类型库导出的 Options 常量：
+搜索表单 MUST 使用从类型库导出的 Options 常量：
 
 - 从 @01s-11comm/type 导入 Options
 - 配置到 PlusSearch columns

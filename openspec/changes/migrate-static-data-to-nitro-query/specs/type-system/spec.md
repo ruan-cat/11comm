@@ -1,5 +1,137 @@
 ## ADDED Requirements
 
+### Requirement: apps/type 包初始化
+
+系统 SHALL 在 apps/type 目录下初始化独立的 TypeScript 类型库包，满足以下配置要求：
+
+**目录结构：**
+
+- 创建 src 目录作为类型源码目录
+- 创建 src/index.ts 作为类型库入口文件
+- 未来各业务模块类型文件将放置在 src/business/ 下
+
+**package.json 配置：**
+
+- 包名必须为 `@01s-11comm/type`（遵循 monorepo 命名规范）
+- 必须设置 `"private": true"`（确保不会被发布到 npm）
+- `main` 字段必须指向 `./src/index.ts`
+- `types` 字段必须指向 `./src/index.ts`
+- 必须配置 `exports` 字段，明确导出入口：
+  ```json
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  }
+  ```
+- 必须包含 `typecheck` 脚本用于类型检查
+- `devDependencies` 中必须包含 `typescript`
+- `packageManager` 必须指定为 `pnpm@10.25.0`
+- `engines.node` 必须指定为 `>=22.14.0`
+- 版本号设置为 `1.0.0`
+
+**tsconfig.json 配置：**
+
+- `target` 和 `module` 必须设置为 `ESNext`
+- `moduleResolution` 必须设置为 `bundler`
+- 必须启用 `strict` 模式进行严格类型检查
+- 必须设置 `noEmit: true`（这是纯类型库，不需要编译输出）
+- 必须设置 `allowImportingTsExtensions: true`（允许导入 .ts 扩展名）
+- `include` 必须包含 `src/**/*.ts`
+- `exclude` 必须排除 `dist` 和 `node_modules`
+
+**入口文件 src/index.ts：**
+
+- 必须包含 JSDoc 文件说明注释
+- 说明本文件作为业务类型的统一导出入口
+- 提供注释示例，说明未来如何导出其他模块的类型
+- 初始状态下可以是空的导出，等待后续模块添加
+
+**其他包引用方式：**
+
+- 其他包（如 `@01s-11comm/admin`）必须以生产环境依赖的方式引用此类型库
+- 必须使用 pnpm 工作区协议安装，在 package.json 中配置为：`"@01s-11comm/type": "workspace:*"`
+- 导入类型时使用 `import type { XXX } from '@01s-11comm/type'` 格式
+
+#### Scenario: apps/type 包初始化成功
+
+- **GIVEN** apps/type 目录为空
+- **WHEN** 创建 package.json、tsconfig.json 和 src/index.ts
+- **THEN** 目录结构符合规范
+- **AND** pnpm install 可以正确识别此包
+- **AND** 运行 `pnpm -F @01s-11comm/type typecheck` 无报错
+
+#### Scenario: 其他包正确引用类型库
+
+- **GIVEN** apps/type 已初始化
+- **WHEN** 在 apps/admin/package.json 中添加 `"@01s-11comm/type": "workspace:*"`
+- **AND** 运行 pnpm install
+- **THEN** apps/admin 可以导入 @01s-11comm/type 的类型
+- **AND** TypeScript 编译器识别类型，无报错
+
+#### Scenario: 包配置验证通过
+
+- **GIVEN** apps/type/package.json 已创建
+- **WHEN** 检查配置项
+- **THEN** 包名为 @01s-11comm/type
+- **AND** private 字段为 true
+- **AND** main 和 types 字段指向 ./src/index.ts
+- **AND** exports 字段配置正确
+- **AND** 包含 typecheck 脚本
+
+---
+
+### Requirement: 类型库基础类型文件
+
+apps/type 类型库 SHALL 提供固定的基础类型文件：
+
+**JsonVO 类型：**
+
+- 必须在 src/json-vo.ts 文件中定义
+- 类型定义必须与后端 JsonVO 泛型类完全一致
+- 包含字段：code（状态码）、message（提示消息）、data（数据对象）
+
+**PageDTO 类型：**
+
+- 必须在 src/page-dto.ts 文件中定义
+- 类型定义必须与后端 PageDTO 类完全一致
+- 包含字段：pageIndex、pageSize、total、pages、rows
+
+**类型导出：**
+
+- src/index.ts 必须导出这两个基础类型
+- 其他包可以直接导入：`import type { JsonVO, PageDTO } from '@01s-11comm/type'`
+
+#### Scenario: JsonVO 类型定义正确
+
+- **GIVEN** 创建 src/json-vo.ts
+- **WHEN** 定义 JsonVO 接口
+- **THEN** 接口包含 code: number
+- **AND** 接口包含 message: string
+- **AND** 接口包含 data: T 泛型参数
+- **AND** 包含 JSDoc 注释说明
+
+#### Scenario: PageDTO 类型定义正确
+
+- **GIVEN** 创建 src/page-dto.ts
+- **WHEN** 定义 PageDTO 接口
+- **THEN** 接口包含 pageIndex: number
+- **AND** 接口包含 pageSize: number
+- **AND** 接口包含 total: number
+- **AND** 接口包含 pages: number
+- **AND** 接口包含 rows: T[] 泛型数组
+- **AND** 包含 JSDoc 注释说明
+
+#### Scenario: 基础类型可正常导入使用
+
+- **GIVEN** src/index.ts 导出 JsonVO 和 PageDTO
+- **WHEN** 在 apps/admin 中导入 `import type { JsonVO, PageDTO } from '@01s-11comm/type'`
+- **THEN** TypeScript 编译器识别类型
+- **AND** 可以使用嵌套泛型：`JsonVO<PageDTO<UserListItem>>`
+
+---
+
 ### Requirement: 类型库初始化
 
 apps/type 类型库 SHALL 满足以下约束：

@@ -13,9 +13,14 @@
 5. 这个包的 main 入口将直接导出 index.ts 文件。
 6. 其他包将直接从这里导入所需要的业务类型。
 
-### 01 <!-- TODO: 1 --> 更新 `migrate-static-data-to-nitro-query` 的 openspec 规范
+### 01 更新 `migrate-static-data-to-nitro-query` 的 openspec 规范
 
-请根据上述内容，在 `migrate-static-data-to-nitro-query` 内，补充增加初始化 `apps\type` 的专用类型库的行为规范。
+✅ 已完成：在 `openspec/changes/migrate-static-data-to-nitro-query/specs/type-system/spec.md` 中补充了初始化 `apps\type` 的专用类型库的行为规范。
+
+详细规范请查看：
+
+- `openspec/changes/migrate-static-data-to-nitro-query/specs/type-system/spec.md` - "Requirement: apps/type 包初始化"
+- `openspec/changes/migrate-static-data-to-nitro-query/specs/type-system/spec.md` - "Requirement: 类型库基础类型文件"
 
 ### 固定提供的接口业务类型
 
@@ -154,7 +159,7 @@ export interface PageDTO<T> {
 
 ## 杂项跟进提示词
 
-### 01 <!-- TODO: --> 确保文件满足规范
+### 01 确保文件满足规范
 
 1. 运行规范检查命令：
 
