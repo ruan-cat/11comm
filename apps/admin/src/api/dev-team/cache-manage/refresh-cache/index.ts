@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/type/business/dev-team/cache-manage/refresh-cache";
+import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 刷新缓存列表查询 Hook

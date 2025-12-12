@@ -5,8 +5,7 @@
 
 import { useQuery, type UseQueryReturnType } from "@tanstack/vue-query";
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
-import type { JsonVO } from "@ruan-cat/utils/vueuse";
-import type { PageDTO } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { http } from "@/utils/http";
 
 /**
@@ -127,18 +126,23 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	});
 
 	/** 查询键 */
-	const queryKey = computed(() => [queryKeyPrefix, queryParams.value]);
+	const queryKey = computed(() => [queryKeyPrefix, JSON.stringify(queryParams.value)] as const);
 
 	/** TanStack Query 查询 */
 	const query = useQuery({
-		queryKey: queryKey,
+		queryKey: queryKey.value,
 		queryFn: async (): Promise<JsonVO<PageDTO<TItem>>> => {
-			const response = await http.post<unknown, JsonVO<PageDTO<TItem>>>(apiUrl, queryParams.value);
-			return response;
+			const response = await http.post<JsonVO<PageDTO<TItem>>>(apiUrl, queryParams.value);
+			return response ?? { success: false, code: 500, message: "请求失败", data: { list: [], total: 0, pageIndex: 1, pageSize: 10, totalPages: 0 }, timestamp: Date.now() };
 		},
 		enabled: typeof enabled === "boolean" ? enabled : enabled,
 		staleTime,
 	});
+
+	/** 监听参数变化时更新 queryKey */
+	watch(queryParams, () => {
+		query.refetch();
+	}, { deep: true });
 
 	/** 监听数据变化，更新表格数据 */
 	watch(

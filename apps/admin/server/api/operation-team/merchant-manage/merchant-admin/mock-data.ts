@@ -1,4 +1,4 @@
-import type { MerchantAdminListItem } from "@01s-11comm/type/business/operation-team/merchant-manage/merchant-admin";
+import type { MerchantAdminListItem } from "@01s-11comm/type";
 
 /**
  * @description 商户管理员模拟数据

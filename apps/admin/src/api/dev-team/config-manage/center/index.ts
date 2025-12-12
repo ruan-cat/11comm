@@ -4,10 +4,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type {
-	ConfigCenterListItem,
-	ConfigCenterQueryParams,
-} from "@01s-11comm/type/src/business/dev-team/config-manage/center";
+import type { ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/dev-team/config-manage/center/list";

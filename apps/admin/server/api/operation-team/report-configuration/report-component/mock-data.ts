@@ -1,4 +1,4 @@
-import type { ReportComponentListItem } from "@01s-11comm/type/business/operation-team/report-configuration/report-component";
+import type { ReportComponentListItem } from "@01s-11comm/type";
 
 /**
  * @description 报表组件模拟数据

@@ -3,12 +3,7 @@
  * @description Configuration center list API
  */
 
-import type { JsonVO } from "@ruan-cat/utils/vueuse";
-import type { PageDTO } from "@01s-11comm/type";
-import type {
-	ConfigCenterListItem,
-	ConfigCenterQueryParams,
-} from "@01s-11comm/type/src/business/dev-team/config-manage/center";
+import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { mockConfigCenterData } from "./mock-data";
 
 export default defineEventHandler(

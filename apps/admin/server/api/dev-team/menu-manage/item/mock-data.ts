@@ -1,4 +1,4 @@
-import type { MenuItemListItem } from "@01s-11comm/type/business/dev-team/menu-manage/item";
+import type { MenuItemListItem } from "@01s-11comm/type";
 
 /**
  * @description 菜单项模拟数据

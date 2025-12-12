@@ -1,4 +1,4 @@
-import type { MenuGroupListItem } from "@01s-11comm/type/business/dev-team/menu-manage/group";
+import type { MenuGroupListItem } from "@01s-11comm/type";
 
 /**
  * @description 菜单组模拟数据

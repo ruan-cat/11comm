@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type/business/property-manage/community-manage/notice";
+import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { mockCommunityNoticeData } from "./mock-data";
 
 /**

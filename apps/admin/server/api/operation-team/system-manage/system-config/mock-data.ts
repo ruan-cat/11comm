@@ -1,4 +1,4 @@
-import type { SystemConfigListItem } from "@01s-11comm/type/business/operation-team/system-manage/system-config";
+import type { SystemConfigListItem } from "@01s-11comm/type";
 
 /**
  * @description 系统配置模拟数据

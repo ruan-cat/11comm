@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type/business/operation-team/data-manage/property-company";
+import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 物业公司列表查询 Hook
@@ -12,4 +12,3 @@ export function usePropertyCompanyListQuery(initialParams?: Partial<PropertyComp
 		initialParams,
 	});
 }
-

@@ -1,4 +1,4 @@
-import type { RefreshCacheListItem } from "@01s-11comm/type/business/dev-team/cache-manage/refresh-cache";
+import type { RefreshCacheListItem } from "@01s-11comm/type";
 
 /**
  * @description 刷新缓存模拟数据

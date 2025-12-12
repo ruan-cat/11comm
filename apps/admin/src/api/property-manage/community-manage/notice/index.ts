@@ -1,8 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type {
-	CommunityNoticeListItem,
-	CommunityNoticeQueryParams,
-} from "@01s-11comm/type/business/property-manage/community-manage/notice";
+import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 小区公示列表查询 Hook

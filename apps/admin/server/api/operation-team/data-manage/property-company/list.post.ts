@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type/business/operation-team/data-manage/property-company";
+import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type";
 import { mockPropertyCompanyData } from "./mock-data";
 
 /**

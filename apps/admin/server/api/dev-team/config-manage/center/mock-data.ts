@@ -3,7 +3,7 @@
  * @description Configuration center mock data
  */
 
-import type { ConfigCenterListItem } from "@01s-11comm/type/src/business/dev-team/config-manage/center";
+import type { ConfigCenterListItem } from "@01s-11comm/type";
 
 /**
  * 配置中心假数据

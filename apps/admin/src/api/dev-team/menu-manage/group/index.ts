@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { MenuGroupListItem, MenuGroupQueryParams } from "@01s-11comm/type/business/dev-team/menu-manage/group";
+import type { MenuGroupListItem, MenuGroupQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 菜单组列表查询 Hook

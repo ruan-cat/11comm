@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { MerchantInfoListItem, MerchantInfoQueryParams } from "@01s-11comm/type/business/operation-team/merchant-manage/merchant-info";
+import type { MerchantInfoListItem, MerchantInfoQueryParams } from "@01s-11comm/type";
 import { mockMerchantInfoData } from "./mock-data";
 
 /**

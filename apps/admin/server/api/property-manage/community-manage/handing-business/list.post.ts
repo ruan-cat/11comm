@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type/business/property-manage/community-manage/handing-business";
+import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
 import { mockHandingBusinessData } from "./mock-data";
 
 /**

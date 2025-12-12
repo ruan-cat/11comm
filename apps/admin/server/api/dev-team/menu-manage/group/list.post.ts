@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { MenuGroupListItem, MenuGroupQueryParams } from "@01s-11comm/type/business/dev-team/menu-manage/group";
+import type { MenuGroupListItem, MenuGroupQueryParams } from "@01s-11comm/type";
 import { mockMenuGroupData } from "./mock-data";
 
 /**

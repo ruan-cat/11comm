@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { SystemConfigListItem, SystemConfigQueryParams } from "@01s-11comm/type/business/operation-team/system-manage/system-config";
+import type { SystemConfigListItem, SystemConfigQueryParams } from "@01s-11comm/type";
 import { mockSystemConfigData } from "./mock-data";
 
 /**

@@ -1,4 +1,4 @@
-import type { MenuCatalogListItem } from "@01s-11comm/type/business/dev-team/menu-manage/catalog";
+import type { MenuCatalogListItem } from "@01s-11comm/type";
 
 /**
  * @description 菜单目录模拟数据

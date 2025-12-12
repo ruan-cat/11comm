@@ -1,4 +1,4 @@
-import type { PropertyCompanyListItem } from "@01s-11comm/type/business/operation-team/data-manage/property-company";
+import type { PropertyCompanyListItem } from "@01s-11comm/type";
 
 /**
  * @description 物业公司模拟数据

@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ReportComponentListItem, ReportComponentQueryParams } from "@01s-11comm/type/business/operation-team/report-configuration/report-component";
+import type { ReportComponentListItem, ReportComponentQueryParams } from "@01s-11comm/type";
 import { mockReportComponentData } from "./mock-data";
 
 /**

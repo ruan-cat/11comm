@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type/business/operation-team/report-configuration/report-group";
+import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";
 import { mockReportGroupData } from "./mock-data";
 
 /**

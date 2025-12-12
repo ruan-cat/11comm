@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { MerchantInfoListItem, MerchantInfoQueryParams } from "@01s-11comm/type/business/operation-team/merchant-manage/merchant-info";
+import type { MerchantInfoListItem, MerchantInfoQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 商户信息列表查询 Hook

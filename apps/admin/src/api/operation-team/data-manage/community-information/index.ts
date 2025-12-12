@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { CommunityInfoListItem, CommunityInfoQueryParams } from "@01s-11comm/type/business/operation-team/data-manage/community-information";
+import type { CommunityInfoListItem, CommunityInfoQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 小区信息列表查询 Hook

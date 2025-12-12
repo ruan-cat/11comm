@@ -1,4 +1,4 @@
-import type { CommunityNoticeListItem } from "@01s-11comm/type/business/property-manage/community-manage/notice";
+import type { CommunityNoticeListItem } from "@01s-11comm/type";
 
 /**
  * @description 小区公示模拟数据

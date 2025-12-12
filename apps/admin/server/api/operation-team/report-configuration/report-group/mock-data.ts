@@ -1,4 +1,4 @@
-import type { ReportGroupListItem } from "@01s-11comm/type/business/operation-team/report-configuration/report-group";
+import type { ReportGroupListItem } from "@01s-11comm/type";
 
 /**
  * @description 报表组模拟数据

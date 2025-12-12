@@ -1,4 +1,4 @@
-import type { HouseListItem } from "@01s-11comm/type/business/property-manage/house-property-manage/house";
+import type { HouseListItem } from "@01s-11comm/type";
 
 /**
  * @description 房屋管理模拟数据

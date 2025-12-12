@@ -1,4 +1,4 @@
-import type { HandingBusinessListItem } from "@01s-11comm/type/business/property-manage/community-manage/handing-business";
+import type { HandingBusinessListItem } from "@01s-11comm/type";
 
 /**
  * @description 业务受理模拟数据

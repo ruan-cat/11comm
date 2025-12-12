@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { MenuItemListItem, MenuItemQueryParams } from "@01s-11comm/type/business/dev-team/menu-manage/item";
+import type { MenuItemListItem, MenuItemQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 菜单项列表查询 Hook

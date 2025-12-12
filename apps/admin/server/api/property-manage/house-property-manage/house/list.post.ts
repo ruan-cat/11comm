@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type/business/property-manage/house-property-manage/house";
+import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type";
 import { mockHouseData } from "./mock-data";
 
 /**

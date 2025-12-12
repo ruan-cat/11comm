@@ -1,5 +1,5 @@
 import { useListQuery } from "@/composables/use-list-query";
-import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type/business/operation-team/report-configuration/report-group";
+import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";
 
 /**
  * @description 报表组列表查询 Hook

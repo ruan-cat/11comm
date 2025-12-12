@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/type/business/dev-team/cache-manage/refresh-cache";
+import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/type";
 import { mockRefreshCacheData } from "./mock-data";
 
 /**
