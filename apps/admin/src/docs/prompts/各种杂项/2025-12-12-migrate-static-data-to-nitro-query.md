@@ -178,3 +178,16 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 1. 请你模仿 tasks.md `阶段 2: dev-team 模块迁移 (40 任务，1 周)` 的任务写法，按照 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan.md` 和 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan-by-claude-plan-mode.md` 的要求，新建补全完整完善的，细粒度清晰的任务表。
 2. 更新任务表。你已经完成了一部分的 nitro 接口生成，请你更新你刚刚生成的任务表。
+
+### 03 <!-- TODO: --> 增加完成 nitro 接口生成后需要及时删除掉旧 `test-data.ts` 的行为规范
+
+1. 阅读 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan.md` 和 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan-by-claude-plan-mode.md` 文档，了解清楚 nitro 假数据迁移的任务需求。
+2. 阅读 `openspec\changes\migrate-static-data-to-nitro-query\specs` 的 openspec 任务规范，明确清楚任务规范的 markdown 格式。
+3. 在合适的位置，增加完成 nitro 接口生成后需要及时删除掉旧 `test-data.ts` 的行为规范。我希望在完成 nitro 接口迁移后，可以及时的删除掉旧的 `test-data.ts` 文件。
+4. 在 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务清单内，增加适当的删除掉旧 `test-data.ts` 假数据文件的子任务。
+5. 更新 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务清单的任务总数等信息。
+6. 运行以下规范检查命令，确保规范文件满足格式需求。
+
+```bash
+openspec validate migrate-static-data-to-nitro-query --strict
+```
