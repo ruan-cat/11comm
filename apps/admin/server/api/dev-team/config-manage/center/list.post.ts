@@ -14,18 +14,18 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 	/** 数据筛选 */
 	let filteredData = [...mockConfigCenterData];
 
-	// if (filters?.configName) {
-	// 	filteredData = filteredData.filter((item) => item.configName.includes(filters.configName!));
-	// }
-	// if (filters?.configType) {
-	// 	filteredData = filteredData.filter((item) => item.configType === filters.configType);
-	// }
-	// if (filters?.status) {
-	// 	filteredData = filteredData.filter((item) => item.status === filters.status);
-	// }
-	// if (filters?.configKey) {
-	// 	filteredData = filteredData.filter((item) => item.configKey.includes(filters.configKey!));
-	// }
+	if (filters?.configName) {
+		filteredData = filteredData.filter((item) => item.configName.includes(filters.configName!));
+	}
+	if (filters?.configType) {
+		filteredData = filteredData.filter((item) => item.configType === filters.configType);
+	}
+	if (filters?.status) {
+		filteredData = filteredData.filter((item) => item.status === filters.status);
+	}
+	if (filters?.configKey) {
+		filteredData = filteredData.filter((item) => item.configKey.includes(filters.configKey!));
+	}
 
 	/** 分页处理 */
 	const total = filteredData.length;
