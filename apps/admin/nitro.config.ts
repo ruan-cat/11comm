@@ -29,7 +29,7 @@ export default defineConfig({
 		nodeCompat: true,
 		wrangler: {
 			// 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
-			name: "01s-11comm-admin-nitro",
+			name: "01s-11comm-admin",
 			vars: {
 				// 将包锁文件上传 即可更改构建流为 pnpm 了 以下环境变量失效
 				/** @see https://developers.cloudflare.com/workers/ci-cd/builds/build-image/ */
