@@ -15,6 +15,10 @@ export default defineConfig({
 	compatibilityDate: "2024-09-19",
 	// 不提供任何写死的预设了 需要在运行命令的环境变量 NITRO_PRESET 内传入
 	// preset: "cloudflare_module",
+	typescript: {
+		// typeCheck: true,
+		// generatedTypesDir: pathResolve("./src/types"),
+	},
 	cloudflare: {
 		deployConfig: true,
 		nodeCompat: true,
