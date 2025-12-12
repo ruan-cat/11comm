@@ -46,7 +46,7 @@ export function useRenderIcon(icon: any, attrs?: iconType): Component {
 		return defineComponent({
 			name: "Icon",
 			render() {
-				if (!icon) return;
+				if (!icon) return null;
 				const IconifyIcon = icon.includes(":") ? IconifyIconOnline : IconifyIconOffline;
 				return h(IconifyIcon, {
 					icon,

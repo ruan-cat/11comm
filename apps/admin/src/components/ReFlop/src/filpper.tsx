@@ -43,6 +43,7 @@ export default defineComponent({
 				isFlipping.value = false;
 				frontTextFromData.value = back;
 			}, duration);
+      return true;
 		};
 
 		// 下翻牌

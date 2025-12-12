@@ -54,6 +54,7 @@ const iconItemStyle = computed((): ParameterCSSProperties => {
 				color: "var(--el-color-primary)",
 			};
 		}
+		return undefined;
 	};
 });
 

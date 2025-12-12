@@ -49,13 +49,13 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 					{
 						const tagVal = value as multiType;
 						// 不添加到标签页
-						if (tagVal?.meta?.hiddenTag) return;
+						if (tagVal?.meta?.hiddenTag) return value as T;
 						// 如果是外链无需添加信息到标签页
-						if (isUrl(tagVal?.name)) return;
+						if (isUrl(tagVal?.name)) return value as T;
 						// 如果title为空拒绝添加空信息到标签页
-						if (tagVal?.meta?.title.length === 0) return;
+						if (tagVal?.meta?.title.length === 0) return value as T;
 						// showLink:false 不添加到标签页
-						if (isBoolean(tagVal?.meta?.showLink) && !tagVal?.meta?.showLink) return;
+						if (isBoolean(tagVal?.meta?.showLink) && !tagVal?.meta?.showLink) return value as T;
 						const tagPath = tagVal.path;
 						// 判断tag是否已存在
 						const tagHasExits = this.multiTags.some((tag) => {
@@ -72,7 +72,7 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 							return isEqual(tag?.params, tagVal?.params);
 						});
 
-						if (tagHasExits && tagQueryHasExits && tagParamsHasExits) return;
+						if (tagHasExits && tagQueryHasExits && tagParamsHasExits) return value as T;
 
 						// 动态路由可打开的最大数量
 						const dynamicLevel = tagVal?.meta?.dynamicLevel ?? -1;
@@ -95,16 +95,17 @@ export const useMultiTagsStore = defineStore("pure-multiTags", {
 				case "splice":
 					if (!position) {
 						const index = this.multiTags.findIndex((v) => v.path === value);
-						if (index === -1) return;
+						if (index === -1) return value as T;
 						this.multiTags.splice(index, 1);
 					} else {
 						this.multiTags.splice(position?.startIndex, position?.length);
 					}
 					this.tagsCache(this.multiTags);
-					return this.multiTags;
+					return this.multiTags as T;
 				case "slice":
-					return this.multiTags.slice(-1);
+					return this.multiTags.slice(-1) as T;
 			}
+			return value as T;
 		},
 	},
 });

@@ -40,6 +40,8 @@ const Print = function (dom, options?: object): PrintFunction {
 	}
 	// @ts-expect-error
 	this.init();
+  // @ts-expect-error
+  return this;
 };
 
 Print.prototype = {

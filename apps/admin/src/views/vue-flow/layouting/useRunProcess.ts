@@ -16,7 +16,7 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
 
 	async function runNode(node, isStart = false) {
 		if (executedNodes.has(node.id)) {
-			return;
+			return Promise.resolve();
 		}
 
 		upcomingTasks.add(node.id);
@@ -28,7 +28,7 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
 		upcomingTasks.clear();
 
 		if (!isRunning.value) {
-			return;
+			return Promise.resolve();
 		}
 
 		executedNodes.add(node.id);

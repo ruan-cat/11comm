@@ -89,12 +89,11 @@ export default defineFakeRoute([
 						data: [2],
 					};
 				}
-			} else {
-				return {
-					success: false,
-					data: [],
-				};
 			}
+			return {
+				success: false,
+				data: [],
+			};
 		},
 	},
 	// 角色管理
@@ -358,6 +357,10 @@ export default defineFakeRoute([
 					data: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 404, 500, 501, 502, 503],
 				};
 			}
+			return {
+				success: false,
+				data: [],
+			};
 		},
 	},
 	// 菜单管理
@@ -1782,6 +1785,10 @@ export default defineFakeRoute([
 					requestTime: new Date(),
 				};
 			}
+			return {
+				success: false,
+				data: {},
+			};
 		},
 	},
 ]);

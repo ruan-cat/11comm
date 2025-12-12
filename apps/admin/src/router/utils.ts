@@ -293,7 +293,7 @@ function handleAliveRoute(
 
 /** 过滤后端传来的动态路由 重新生成规范路由 */
 function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
-	if (!arrRoutes || !arrRoutes.length) return;
+	if (!arrRoutes || !arrRoutes.length) return [];
 	const modulesRoutesKeys = Object.keys(modulesRoutes);
 	arrRoutes.forEach((v: RouteRecordRaw) => {
 		// 将backstage属性加入meta，标识此路由为后端返回路由
@@ -339,6 +339,7 @@ function getHistoryMode(routerHistory): RouterHistory {
 			return createWebHistory(rightMode);
 		}
 	}
+	return createWebHashHistory("");
 }
 
 /** 获取当前页面按钮级别的权限 */
