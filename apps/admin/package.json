@@ -63,7 +63,7 @@
     "url": "https://github.com/xiaoxian521"
   },
   "dependencies": {
-    "@01s-11comm/type": "workspace:*",
+    "@01s-11comm/type": "workspace:^",
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@antfu/utils": "^9.3.0",
     "@howdyjs/mouse-menu": "^2.1.7",
