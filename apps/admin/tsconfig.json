@@ -9,6 +9,7 @@
     "strict": false,
     "strictFunctionTypes": false,
     "noImplicitThis": true,
+    "noUnusedLocals": false,
     "jsx": "preserve",
     "importHelpers": true,
     "experimentalDecorators": true,
