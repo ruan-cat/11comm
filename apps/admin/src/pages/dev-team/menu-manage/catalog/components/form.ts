@@ -1,17 +1,17 @@
-import { type 菜单目录表单_VO } from "../test-data";
+import type { MenuCatalogFormData } from "@01s-11comm/type";
 
 // ==================== 默认表单 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 菜单目录表单_VO = {
+export const defaultForm: MenuCatalogFormData = {
 	gid: "",
 	icon: "",
 	name: "",
 	seq: 0,
 	description: "",
-	groupType: "",
+	groupType: "system",
 	label: "",
-	storeType: "",
+	storeType: "property",
 };
 
 // ==================== Props 类型 ====================
@@ -23,7 +23,7 @@ export const defaultForm: 菜单目录表单_VO = {
  */
 export interface CatalogFormProps {
 	/** 表单数据 */
-	form: 菜单目录表单_VO;
+	form: MenuCatalogFormData;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 菜单目录表单_VO;
+	defaultValues: MenuCatalogFormData;
 }

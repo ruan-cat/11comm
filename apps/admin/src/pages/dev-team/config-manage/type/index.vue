@@ -8,49 +8,53 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 字典类型_列表数据, type 字典类型_列表查询_VO, 状态选项, tableData as allTableData } from "./test-data";
+import { type DictionaryTypeListItem, type DictionaryTypeQueryParams, statusOptions } from "@01s-11comm/type";
+import { useDictionaryTypeListQuery } from "@/api/dev-team/config-manage/type";
 
-/** 表格数据 */
-const tableData = ref<字典类型_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useDictionaryTypeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "字典编号",
-		prop: "字典编号",
+		prop: "dictionaryNumber",
 		width: 120,
+		fixed: true,
 	},
 	{
 		label: "字典名称",
-		prop: "字典名称",
+		prop: "dictionaryName",
 		width: 150,
 	},
 	{
 		label: "字典类型",
-		prop: "字典类型",
+		prop: "dictionaryType",
 		width: 150,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		minWidth: 200,
+		showOverflowTooltip: true,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 160,
 	},
 	{
 		label: "更新时间",
-		prop: "更新时间",
+		prop: "updateTime",
 		width: 160,
 	},
 	{
@@ -63,31 +67,31 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-});
+	loading: isLoading.value,
+}));
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -95,53 +99,16 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.字典编号) {
-			filteredData = filteredData.filter((item) => item.字典编号.includes(plusSearchModel.value.字典编号!));
-		}
-		if (plusSearchModel.value.字典名称) {
-			filteredData = filteredData.filter((item) => item.字典名称.includes(plusSearchModel.value.字典名称!));
-		}
-		if (plusSearchModel.value.字典类型) {
-			filteredData = filteredData.filter((item) => item.字典类型.includes(plusSearchModel.value.字典类型!));
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 字典类型_列表查询_VO = {
-	字典编号: "",
-	字典名称: "",
-	字典类型: "",
-	状态: "",
+const plusSearchModelRef: FieldValues & Partial<DictionaryTypeQueryParams> = {
+	dictionaryNumber: "",
+	dictionaryName: "",
+	dictionaryType: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -158,30 +125,30 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 字典编号
 	{
 		label: "字典编号",
-		prop: "字典编号",
+		prop: "dictionaryNumber",
 		valueType: "input",
 	},
 
 	// 字典名称
 	{
 		label: "字典名称",
-		prop: "字典名称",
+		prop: "dictionaryName",
 		valueType: "input",
 	},
 
 	// 字典类型
 	{
 		label: "字典类型",
-		prop: "字典类型",
+		prop: "dictionaryType",
 		valueType: "input",
 	},
 
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态选项,
+		options: statusOptions,
 	},
 ]);
 
@@ -195,21 +162,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<DictionaryTypeQueryParams>);
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -222,7 +186,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="refetch">
 			<template #buttons>
 				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
 			</template>
