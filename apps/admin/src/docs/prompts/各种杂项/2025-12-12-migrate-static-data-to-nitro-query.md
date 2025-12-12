@@ -99,7 +99,7 @@ export interface PageDTO<T> {
 2. 明确清楚要重点改写接口请求方式写法的 vue 组件： 阅读每一个 `假数据文件` 对应附属的 `index.vue` 列表页文件。
 3. 迁移业务类型： 将 `假数据文件` 出现的业务类型，按照代码编写规范，改写并迁移到 `apps\type` 类型专用库内。迁移时需要满足按照对应 index.vue 业务文件目录的方式来迁移业务类型。
 4. 编写 nitro 接口： 将列表页的 loadTableData 函数，迁移改写成真实的分页请求接口。
-5. 使用 nitro 接口：
+5. 使用 nitro 接口。
 
 ### 需要你协助设计的东西
 
@@ -123,6 +123,11 @@ export interface PageDTO<T> {
 5. 每一个列表请求接口都应该实现对请求参数的筛选。
 6. 不需要考虑链接数据库： 目前阶段的数据全部都使用死数据，不需要使用来自数据库的数据。
 7. 每个分页请求的接口的返回值，直接使用固定的，写死的，来自于 `假数据文件` 的 `tableData` 数组。
+
+### nitro 编写接口的代码规范 spec
+
+1. 必须主动使用 `import { defineHandler, readBody } from "nitro/h3";` 写法。在 nitro v3 版本内，要主动的导入工具。没有自动导入功能了。
+2. 返回值必须用完整的类型约束。不要直接返回一个对象。
 
 ### 代码编写范围规范 spec
 
@@ -191,3 +196,12 @@ openspec validate migrate-static-data-to-nitro-query --strict
 ```bash
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
+
+### 04 <!-- TODO: --> 增加 nitro 编写接口的代码规范和代码写法检查任务
+
+1. 请你阅读 `apps\admin\src\docs\reports\2025-12-12-static-data-migration-to-nitro-query-plan.md` 的 `6.2 Nitro 接口模板` ，了解具体 nitro 的代码写法。
+2. 阅读 `apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query.md` 除开 `杂项跟进提示词` 的部分。了解清楚迁移时需要的具体细节。
+3. 按照 openspec 的要求，修改更新 `openspec\changes\migrate-static-data-to-nitro-query\specs` 目录内的规范文件。
+4. 在 `migrate-static-data-to-nitro-query` 任务内，有很多接口已经生成了，但是这些接口的代码写法不满足规范要求，请你在 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务清单内，增加 nitro 代码写法检查的任务。
+5. 更新 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务清单的任务总数等信息。
+6. 运行以下规范检查命令，确保规范文件满足格式需求。
