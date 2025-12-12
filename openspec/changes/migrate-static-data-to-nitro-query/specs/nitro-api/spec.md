@@ -259,7 +259,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 所有 list.post.ts 接口 MUST 遵循统一模板：
 
 1. 导入类型和假数据
-2. 使用 defineEventHandler 定义接口
+2. 使用 defineHandler 定义接口
 3. 读取请求参数
 4. 数据筛选（遍历所有筛选字段）
 5. 分页处理（slice）
@@ -272,11 +272,17 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 - **THEN** 代码结构按以下顺序：
 
 ```typescript
+// 必须主动导入来自 `nitro/h3` 的 defineHandler 和 readBody ，在 nitro v3 版本内要按照该写法编写
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@ruan-cat/utils";
 import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { mockHouseChargeData } from "./mock-data";
 
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
+/**
+ * 房屋收费列表查询接口
+ * POST /api/property-manage/expense-manage/house-charge/list
+ */
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
 	// 1. 读取请求参数
 	const body = await readBody<HouseChargeQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body;
@@ -294,8 +300,9 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseCha
 	const endIndex = startIndex + pageSize;
 	const pageData = filteredData.slice(startIndex, endIndex);
 
-	// 4. 返回标准格式
-	return {
+	// 4. 返回标准格式 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<HouseChargeListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -306,10 +313,122 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseCha
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
 ```
+
+---
+
+### Requirement: Nitro v3 代码写法规范
+
+所有 Nitro 接口 MUST 遵循 Nitro v3 的代码写法规范：
+
+- 必须主动导入 `defineHandler` 和 `readBody` 从 `nitro/h3`
+- 不允许使用自动导入，必须显式导入所有工具函数
+- 返回值必须用完整的类型约束，不允许直接返回对象字面量
+- 必须创建 `response` 变量并明确类型约束
+
+#### Scenario: 正确导入 Nitro v3 工具函数
+
+- **GIVEN** 创建新的 Nitro 接口文件
+- **WHEN** 编写导入语句
+- **THEN** 必须使用显式导入：
+
+```typescript
+import { defineHandler, readBody } from "nitro/h3";
+```
+
+- **AND** 不允许依赖自动导入
+- **AND** 不允许使用 `defineEventHandler`（Nitro v2 写法）
+
+#### Scenario: 返回值类型约束
+
+- **GIVEN** 接口函数准备返回数据
+- **WHEN** 编写返回逻辑
+- **THEN** 必须创建带类型约束的 response 变量：
+
+```typescript
+/** 返回标准格式 */
+const response: JsonVO<PageDTO<HouseChargeListItem>> = {
+	success: true,
+	code: 200,
+	message: "查询成功",
+	data: {
+		list: pageData,
+		total,
+		pageIndex,
+		pageSize,
+		totalPages: Math.ceil(total / pageSize),
+	},
+};
+
+return response;
+```
+
+- **AND** 不允许直接返回对象字面量：
+
+```typescript
+// ❌ 错误写法
+return {
+	success: true,
+	code: 200,
+	message: "查询成功",
+	data: { ... },
+};
+```
+
+#### Scenario: 添加 JSDoc 注释
+
+- **GIVEN** Nitro 接口文件
+- **WHEN** 定义接口函数
+- **THEN** 必须添加 JSDoc 注释说明接口用途和路径：
+
+```typescript
+/**
+ * 房屋收费列表查询接口
+ * POST /api/property-manage/expense-manage/house-charge/list
+ */
+export default defineHandler(async (event): Promise<...> => { ... });
+```
+
+- **AND** 必须注明接口的 HTTP 方法（POST）
+- **AND** 必须注明完整的接口路径
+
+---
+
+### Requirement: Nitro 代码写法检查
+
+已生成的 Nitro 接口 MUST 进行代码写法检查和修复：
+
+- 检查是否使用了正确的 Nitro v3 导入方式
+- 检查返回值是否有完整的类型约束
+- 检查是否添加了 JSDoc 注释
+- 修复不符合规范的代码
+
+#### Scenario: 检查现有接口的导入方式
+
+- **GIVEN** 已生成的 Nitro 接口文件
+- **WHEN** 检查导入语句
+- **THEN** 如果使用了 `defineEventHandler`，必须修改为 `defineHandler`
+- **AND** 如果缺少显式导入，必须添加 `import { defineHandler, readBody } from "nitro/h3";`
+
+#### Scenario: 检查返回值类型约束
+
+- **GIVEN** 已生成的 Nitro 接口文件
+- **WHEN** 检查返回逻辑
+- **THEN** 如果直接返回对象字面量，必须修改为创建 response 变量
+- **AND** response 变量必须有完整的类型约束 `JsonVO<PageDTO<T>>`
+
+#### Scenario: 批量检查和修复
+
+- **GIVEN** 已生成多个 Nitro 接口
+- **WHEN** 执行代码写法检查任务
+- **THEN** 按模块顺序检查所有接口（dev-team, operation-team, property-manage）
+- **AND** 记录需要修复的文件列表
+- **AND** 逐个修复不符合规范的文件
+- **AND** 修复后运行 typecheck 确保无报错
 
 ---
 

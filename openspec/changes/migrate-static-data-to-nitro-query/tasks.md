@@ -836,112 +836,153 @@
 
 ---
 
-## 阶段 6: 验证和清理 (30 任务，1 周)
+## 阶段 6: 验证和清理 (83 任务，1.5 周)
 
-### 6.1 类型检查
+### 6.1 Nitro 代码写法检查和修复 (27 任务)
 
-- [ ] 6.1.1 运行 `pnpm -F @01s-11comm/type typecheck`
-- [ ] 6.1.2 运行 `pnpm -F @01s-11comm/admin typecheck`
-- [ ] 6.1.3 修复所有类型错误
+#### 6.1.1 dev-team 模块代码检查 (10 任务)
 
-### 6.2 功能测试
+- [ ] 6.1.1.1 检查 `server/api/dev-team/config-manage/center/list.post.ts` 的代码写法
+- [ ] 6.1.1.2 检查 `server/api/dev-team/config-manage/dictionary/list.post.ts` 的代码写法
+- [ ] 6.1.1.3 检查 `server/api/dev-team/config-manage/type/list.post.ts` 的代码写法
+- [ ] 6.1.1.4 检查 `server/api/dev-team/config-manage/item/list.post.ts` 的代码写法
+- [ ] 6.1.1.5 检查 `server/api/dev-team/menu-manage/catalog/list.post.ts` 的代码写法
+- [ ] 6.1.1.6 检查 `server/api/dev-team/menu-manage/group/list.post.ts` 的代码写法
+- [ ] 6.1.1.7 检查 `server/api/dev-team/menu-manage/item/list.post.ts` 的代码写法
+- [ ] 6.1.1.8 检查 `server/api/dev-team/cache-manage/refresh-cache/list.post.ts` 的代码写法
+- [ ] 6.1.1.9 修复 dev-team 模块所有不符合规范的接口代码
+- [ ] 6.1.1.10 运行 `pnpm typecheck` 确认 dev-team 模块修复后无报错
 
-- [ ] 6.2.1 手动测试 dev-team 模块所有列表页（8 页面）
-- [ ] 6.2.2 手动测试 operation-team 模块所有列表页（12 页面）
-- [ ] 6.2.3 手动测试 property-manage 模块所有列表页（60+ 页面）
-- [ ] 6.2.4 手动测试 setting-manage 模块所有列表页（7 页面）
-- [ ] 6.2.5 验证所有搜索功能正常
-- [ ] 6.2.6 验证所有分页功能正常
-- [ ] 6.2.7 验证 loading 状态显示正确
-- [ ] 6.2.8 验证错误状态提示正确
+#### 6.1.2 operation-team 模块代码检查 (11 任务)
 
-### 6.3 代码清理（删除旧 test-data.ts 文件）
+- [ ] 6.1.2.1 检查 `server/api/operation-team/data-manage/community-information/list.post.ts` 的代码写法
+- [ ] 6.1.2.2 检查 `server/api/operation-team/data-manage/property-company/list.post.ts` 的代码写法
+- [ ] 6.1.2.3 检查 `server/api/operation-team/merchant-manage/merchant-admin/list.post.ts` 的代码写法
+- [ ] 6.1.2.4 检查 `server/api/operation-team/merchant-manage/merchant-info/list.post.ts` 的代码写法
+- [ ] 6.1.2.5 检查 `server/api/operation-team/report-configuration/report-component/list.post.ts` 的代码写法
+- [ ] 6.1.2.6 检查 `server/api/operation-team/report-configuration/report-group/list.post.ts` 的代码写法
+- [ ] 6.1.2.7 检查 `server/api/operation-team/report-configuration/report-info/list.post.ts` 的代码写法
+- [ ] 6.1.2.8 检查 `server/api/operation-team/system-manage/system-config/list.post.ts` 的代码写法
+- [ ] 6.1.2.9 检查其他 operation-team 接口的代码写法（如已生成）
+- [ ] 6.1.2.10 修复 operation-team 模块所有不符合规范的接口代码
+- [ ] 6.1.2.11 运行 `pnpm typecheck` 确认 operation-team 模块修复后无报错
 
-#### 6.3.1 dev-team 模块清理 (8 个文件)
+#### 6.1.3 property-manage 模块代码检查 (6 任务)
 
-- [ ] 6.3.1.1 删除 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
-- [ ] 6.3.1.2 删除 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
-- [ ] 6.3.1.3 删除 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
-- [ ] 6.3.1.4 删除 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
-- [ ] 6.3.1.5 删除 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
-- [ ] 6.3.1.6 删除 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
-- [ ] 6.3.1.7 删除 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
-- [ ] 6.3.1.8 删除 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
-- [ ] 6.3.1.9 运行 `pnpm typecheck` 确认 dev-team 模块无报错
+- [ ] 6.1.3.1 检查 `server/api/property-manage/house-property-manage/house/list.post.ts` 的代码写法
+- [ ] 6.1.3.2 检查 `server/api/property-manage/community-manage/handing-business/list.post.ts` 的代码写法
+- [ ] 6.1.3.3 检查 `server/api/property-manage/community-manage/notice/list.post.ts` 的代码写法
+- [ ] 6.1.3.4 检查其他已生成的 property-manage 接口的代码写法
+- [ ] 6.1.3.5 修复 property-manage 模块所有不符合规范的接口代码
+- [ ] 6.1.3.6 运行 `pnpm typecheck` 确认 property-manage 模块修复后无报错
 
-#### 6.3.2 operation-team 模块清理 (12 个文件)
+### 6.2 类型检查 (3 任务)
 
-- [ ] 6.3.2.1 删除 `apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts`
-- [ ] 6.3.2.2 删除 `apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts`
-- [ ] 6.3.2.3 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts`
-- [ ] 6.3.2.4 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts`
-- [ ] 6.3.2.5 删除 `apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts`
-- [ ] 6.3.2.6 删除 `apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts`
-- [ ] 6.3.2.7 删除 `apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts`
-- [ ] 6.3.2.8 删除 `apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts`
-- [ ] 6.3.2.9 删除 `apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts`
-- [ ] 6.3.2.10 删除 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts`
-- [ ] 6.3.2.11 删除 `apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts`
-- [ ] 6.3.2.12 删除 `apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts`
-- [ ] 6.3.2.13 运行 `pnpm typecheck` 确认 operation-team 模块无报错
+- [ ] 6.2.1 运行 `pnpm -F @01s-11comm/type typecheck`
+- [ ] 6.2.2 运行 `pnpm -F @01s-11comm/admin typecheck`
+- [ ] 6.2.3 修复所有类型错误
 
-#### 6.3.3 property-manage 模块清理 (60+ 个文件)
+### 6.3 功能测试 (8 任务)
 
-- [ ] 6.3.3.1 使用脚本批量删除 `apps/admin/src/pages/property-manage/**/test-data.ts`（所有子模块）
-- [ ] 6.3.3.2 手动验证关键页面的 test-data.ts 已删除（抽查 10 个页面）
-- [ ] 6.3.3.3 运行 `pnpm typecheck` 确认 property-manage 模块无报错
+- [ ] 6.3.1 手动测试 dev-team 模块所有列表页（8 页面）
+- [ ] 6.3.2 手动测试 operation-team 模块所有列表页（12 页面）
+- [ ] 6.3.3 手动测试 property-manage 模块所有列表页（60+ 页面）
+- [ ] 6.3.4 手动测试 setting-manage 模块所有列表页（7 页面）
+- [ ] 6.3.5 验证所有搜索功能正常
+- [ ] 6.3.6 验证所有分页功能正常
+- [ ] 6.3.7 验证 loading 状态显示正确
+- [ ] 6.3.8 验证错误状态提示正确
 
-#### 6.3.4 setting-manage 模块清理 (7 个文件)
+### 6.4 代码清理（删除旧 test-data.ts 文件）(35 任务)
 
-- [ ] 6.3.4.1 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
-- [ ] 6.3.4.2 删除 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
-- [ ] 6.3.4.3 删除 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts`
-- [ ] 6.3.4.4 删除 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts`
-- [ ] 6.3.4.5 删除 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts`
-- [ ] 6.3.4.6 删除 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
-- [ ] 6.3.4.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
-- [ ] 6.3.4.8 运行 `pnpm typecheck` 确认 setting-manage 模块无报错
+#### 6.4.1 dev-team 模块清理 (9 任务)
 
-#### 6.3.5 全局验证
+- [ ] 6.4.1.1 删除 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
+- [ ] 6.4.1.2 删除 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
+- [ ] 6.4.1.3 删除 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
+- [ ] 6.4.1.4 删除 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
+- [ ] 6.4.1.5 删除 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
+- [ ] 6.4.1.6 删除 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
+- [ ] 6.4.1.7 删除 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
+- [ ] 6.4.1.8 删除 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
+- [ ] 6.4.1.9 运行 `pnpm typecheck` 确认 dev-team 模块无报错
 
-- [ ] 6.3.5.1 全局搜索确认没有遗留的 test-data.ts 文件（`find apps/admin/src/pages -name "test-data.ts"`）
-- [ ] 6.3.5.2 运行 `pnpm -F @01s-11comm/admin typecheck` 确认整个项目无报错
-- [ ] 6.3.5.3 全局搜索确认没有代码仍然导入 test-data.ts（`grep -r "from.*test-data" apps/admin/src/pages`）
+#### 6.4.2 operation-team 模块清理 (13 任务)
 
-### 6.4 文档更新
+- [ ] 6.4.2.1 删除 `apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts`
+- [ ] 6.4.2.2 删除 `apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts`
+- [ ] 6.4.2.3 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts`
+- [ ] 6.4.2.4 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts`
+- [ ] 6.4.2.5 删除 `apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts`
+- [ ] 6.4.2.6 删除 `apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts`
+- [ ] 6.4.2.7 删除 `apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts`
+- [ ] 6.4.2.8 删除 `apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts`
+- [ ] 6.4.2.9 删除 `apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts`
+- [ ] 6.4.2.10 删除 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts`
+- [ ] 6.4.2.11 删除 `apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts`
+- [ ] 6.4.2.12 删除 `apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts`
+- [ ] 6.4.2.13 运行 `pnpm typecheck` 确认 operation-team 模块无报错
 
-- [ ] 6.4.1 更新 `.claude/agents/make-list-page.md`（反映新的数据获取方式）
-- [ ] 6.4.2 编写迁移总结报告到 `apps/admin/src/docs/reports/`
-- [ ] 6.4.3 更新 `CLAUDE.md` 项目说明
-- [ ] 6.4.4 更新相关 API 文档
+#### 6.4.3 property-manage 模块清理 (3 任务)
 
-### 6.5 OpenSpec 验证和归档准备
+- [ ] 6.4.3.1 使用脚本批量删除 `apps/admin/src/pages/property-manage/**/test-data.ts`（所有子模块）
+- [ ] 6.4.3.2 手动验证关键页面的 test-data.ts 已删除（抽查 10 个页面）
+- [ ] 6.4.3.3 运行 `pnpm typecheck` 确认 property-manage 模块无报错
 
-- [ ] 6.5.1 运行 `openspec validate migrate-static-data-to-nitro-query --strict`
-- [ ] 6.5.2 修复所有验证错误
-- [ ] 6.5.3 准备归档文档（等待部署后执行归档）
+#### 6.4.4 setting-manage 模块清理 (8 任务)
 
-### 6.6 CI/CD 配置
+- [ ] 6.4.4.1 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
+- [ ] 6.4.4.2 删除 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
+- [ ] 6.4.4.3 删除 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts`
+- [ ] 6.4.4.4 删除 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts`
+- [ ] 6.4.4.5 删除 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts`
+- [ ] 6.4.4.6 删除 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
+- [ ] 6.4.4.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
+- [ ] 6.4.4.8 运行 `pnpm typecheck` 确认 setting-manage 模块无报错
 
-- [ ] 6.6.1 确保 apps/type 在 CI 中正确构建
-- [ ] 6.6.2 添加类型检查到 CI 流程
-- [ ] 6.6.3 添加 Nitro 接口测试（可选）
+#### 6.4.5 全局验证 (3 任务)
+
+- [ ] 6.4.5.1 全局搜索确认没有遗留的 test-data.ts 文件（`find apps/admin/src/pages -name "test-data.ts"`）
+- [ ] 6.4.5.2 运行 `pnpm -F @01s-11comm/admin typecheck` 确认整个项目无报错
+- [ ] 6.4.5.3 全局搜索确认没有代码仍然导入 test-data.ts（`grep -r "from.*test-data" apps/admin/src/pages`）
+
+### 6.5 文档更新 (4 任务)
+
+- [ ] 6.5.1 更新 `.claude/agents/make-list-page.md`（反映新的数据获取方式）
+- [ ] 6.5.2 编写迁移总结报告到 `apps/admin/src/docs/reports/`
+- [ ] 6.5.3 更新 `CLAUDE.md` 项目说明
+- [ ] 6.5.4 更新相关 API 文档
+
+### 6.6 OpenSpec 验证和归档准备 (3 任务)
+
+- [ ] 6.6.1 运行 `openspec validate migrate-static-data-to-nitro-query --strict`
+- [ ] 6.6.2 修复所有验证错误
+- [ ] 6.6.3 准备归档文档（等待部署后执行归档）
+
+### 6.7 CI/CD 配置 (3 任务)
+
+- [ ] 6.7.1 确保 apps/type 在 CI 中正确构建
+- [ ] 6.7.2 添加类型检查到 CI 流程
+- [ ] 6.7.3 添加 Nitro 接口测试（可选）
 
 ---
 
 ## 任务统计
 
-|   阶段   |           名称           | 任务数  | 预计时间  |
-| :------: | :----------------------: | :-----: | :-------: |
-|    1     |       基础设施搭建       |   15    |   1 周    |
-|    2     |    dev-team 模块迁移     |   40    |   1 周    |
-|    3     | operation-team 模块迁移  |   60    |   2 周    |
-|    4     | property-manage 模块迁移 |   355   |   6 周    |
-|    5     | setting-manage 模块迁移  |   35    |   1 周    |
-|    6     |        验证和清理        |   61    |   1 周    |
-| **总计** |                          | **566** | **12 周** |
+|   阶段   |           名称           | 任务数  |  预计时间  |
+| :------: | :----------------------: | :-----: | :--------: |
+|    1     |       基础设施搭建       |   15    |    1 周    |
+|    2     |    dev-team 模块迁移     |   40    |    1 周    |
+|    3     | operation-team 模块迁移  |   60    |    2 周    |
+|    4     | property-manage 模块迁移 |   355   |    6 周    |
+|    5     | setting-manage 模块迁移  |   35    |    1 周    |
+|    6     |        验证和清理        |   83    |  1.5 周   |
+| **总计** |                          | **588** | **12.5 周** |
 
-**注：** 阶段 6 的任务数从 30 增加到 61，主要是将代码清理部分细化为更详细的子任务，确保所有旧 test-data.ts 文件都能被及时删除。
+**注：**
+- 阶段 6 的任务数从 30 增加到 83，主要增加了：
+  - Nitro 代码写法检查和修复（27 任务）：确保所有已生成的 Nitro 接口符合 v3 规范
+  - 代码清理部分细化（35 任务）：确保所有旧 test-data.ts 文件都能被及时删除
 
 ## 进度统计
 
@@ -954,8 +995,8 @@
 | operation-team  |   24   |   60    |    40%    |
 | property-manage |   9    |   355   |   2.5%    |
 | setting-manage  |   0    |   35    |    0%     |
-|   验证和清理    |   0    |   61    |    0%     |
-|    **总计**     | **82** | **566** | **14.5%** |
+|   验证和清理    |   0    |   83    |    0%     |
+|    **总计**     | **82** | **588** | **13.9%** |
 
 ## 注意事项
 
