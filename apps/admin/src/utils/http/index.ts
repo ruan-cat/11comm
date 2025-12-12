@@ -19,7 +19,8 @@ const baseURL = VITE_IS_REVERSE_PROXY === "true" ? VITE_PROXY_PREFIX : VITE_BASE
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
-	baseURL,
+	// 在 nitro 全栈项目内 不使用 baseURL 。
+	// baseURL,
 
 	/** 请求超时时间 */
 	timeout: 10000,
