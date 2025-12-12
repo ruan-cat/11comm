@@ -124,6 +124,14 @@ export interface AuthLoginResult {
 	tokenHead: string;
 }
 
+const VITE_IS_REVERSE_PROXY = import.meta.env?.VITE_IS_REVERSE_PROXY;
+const VITE_PROXY_PREFIX = import.meta.env.VITE_PROXY_PREFIX;
+const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
+/**
+ * 根据是否需要反向代理，配置请求地址
+ */
+const baseURL = VITE_IS_REVERSE_PROXY === "true" ? VITE_PROXY_PREFIX : VITE_BASE_URL;
+
 /** 登录 */
 export const getLogin = (authLoginParams?: AuthLoginParams) => {
 	/** 框架原版的登录函数 现在不使用 */
@@ -138,7 +146,14 @@ export const getLogin = (authLoginParams?: AuthLoginParams) => {
 	 * @description
 	 * 登录是query请求 故传参必须是 params
 	 */
-	return http.request<JsonVO<AuthLoginResult>>("post", "/login/auth-login", { params: authLoginParams });
+	return http.request<JsonVO<AuthLoginResult>>(
+		"post",
+		"/login/auth-login",
+		{ params: authLoginParams },
+		// TODO: 需要实现专门的 nitro 登录接口
+		// 登录接口需要使用 apifox 的base地址
+		{ baseURL },
+	);
 };
 
 /** 刷新`token` */
