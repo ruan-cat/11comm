@@ -41,7 +41,7 @@ lodash 是基础性质库。是 javascript 层面上的工具库。
 - [watch](https://cn.vuejs.org/api/reactivity-core.html#watch)
 - [useTemplateRef](https://cn.vuejs.org/api/composition-api-helpers.html#usetemplateref)
 
-## 4. vueuse
+## 4. vueuse （已废弃）
 
 组合式 api 的工具。本次项目重点使用的是 useAxios 。
 
@@ -103,7 +103,7 @@ monorepo 下的 node 命令调度器。
 - https://uvr.esm.is/guide/file-based-routing.html
 - https://uvr.esm.is/guide/extending-routes.html#definepage
 
-## pure-admin
+## 11. pure-admin
 
 本次项目用的模板。由阮喵喵决定套用并改造该模板：
 
@@ -117,7 +117,7 @@ monorepo 下的 node 命令调度器。
   - https://pure-admin.github.io/vue-pure-admin/#/system/user/index
   - https://vscode.dev/github.com/pure-admin/vue-pure-admin/blob/main/src/views/system/user/tree.vue
 
-## plus-pro-components
+## 12. plus-pro-components
 
 本次项目用的表单组件组件库。
 
@@ -126,3 +126,18 @@ monorepo 下的 node 命令调度器。
 - [仓库](https://github.com/plus-pro-components/plus-pro-components)
 - [文档](https://plus-pro-components.com/)
 - [搜索栏组件](https://plus-pro-components.com/components/search.html)
+
+## 13. nitro
+
+本次项目使用的全栈接口库。
+
+- [仓库](https://github.com/nitrojs/nitro)
+- [文档](https://v3.nitro.build/)
+
+## 14. @tanstack/vue-query
+
+本次项目使用的响应式接口请求库。
+
+- [仓库](https://github.com/TanStack/query/tree/main/packages/vue-query)
+- [文档：英文](https://tanstack.com/query/latest/docs/framework/vue/overview)
+- [文档：中文](https://tanstack.com.cn/query/latest/docs/framework/vue/quick-start)
