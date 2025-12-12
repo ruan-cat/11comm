@@ -9,6 +9,7 @@ import { createApp, type Directive } from "vue";
 import { useVxeTable } from "@/plugins/vxeTable";
 import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";
+import { VueQueryPlugin, type VueQueryPluginOptions } from "@tanstack/vue-query";
 
 import Table from "@pureadmin/table";
 import PureDescriptions from "@pureadmin/descriptions";
@@ -25,6 +26,24 @@ import "./assets/iconfont/iconfont.js";
 import "./assets/iconfont/iconfont.css";
 
 const app = createApp(App);
+
+/** TanStack Query 配置选项 */
+const vueQueryPluginOptions: VueQueryPluginOptions = {
+	queryClientConfig: {
+		defaultOptions: {
+			queries: {
+				/** 数据保持新鲜时间（5分钟） Stale time */
+				staleTime: 5 * 60 * 1000,
+				/** 垃圾回收时间（10分钟） Garbage collection time */
+				gcTime: 10 * 60 * 1000,
+				/** 失败重试次数 Retry attempts */
+				retry: 1,
+				/** 窗口重新聚焦时不自动刷新 Disable refetch on window focus */
+				refetchOnWindowFocus: false,
+			},
+		},
+	},
+};
 
 // 自定义指令
 import * as directives from "@/directives";
@@ -73,6 +92,8 @@ getPlatformConfig(app).then(async (config) => {
 		})
 		.use(useVxeTable)
 		.use(PureDescriptions)
-		.use(useEcharts);
+		.use(useEcharts)
+		/** TanStack Query 数据获取和缓存管理 */
+		.use(VueQueryPlugin, vueQueryPluginOptions);
 	app.mount("#app");
 });

@@ -1,0 +1,190 @@
+/**
+ * @file 列表查询通用 Hook
+ * @description 基于 TanStack Query 的列表数据获取 Hook，提供统一的分页、筛选、缓存功能
+ */
+
+import { useQuery, type UseQueryReturnType } from "@tanstack/vue-query";
+import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
+import type { JsonVO } from "@ruan-cat/utils/vueuse";
+import type { PageDTO } from "@01s-11comm/type";
+import { http } from "@/utils/http";
+
+/**
+ * 基础列表查询参数
+ * Base list query parameters
+ */
+export interface BaseListQueryParams {
+	/** 当前页码（1开始） Current page (1-based) */
+	pageIndex: number;
+	/** 每页大小 Page size */
+	pageSize: number;
+	/** 其他筛选参数 Additional filter params */
+	[key: string]: unknown;
+}
+
+/**
+ * useListQuery 配置选项
+ * useListQuery configuration options
+ */
+export interface UseListQueryOptions<TItem, TParams extends BaseListQueryParams> {
+	/** 查询键前缀 Query key prefix */
+	queryKeyPrefix: string;
+	/** API 接口路径 API endpoint path */
+	apiUrl: string;
+	/** 初始查询参数 Initial query parameters */
+	initialParams?: Partial<TParams>;
+	/** 是否立即执行查询 Enable query immediately */
+	enabled?: boolean | Ref<boolean>;
+	/** 数据保持新鲜时间（毫秒） Stale time in milliseconds */
+	staleTime?: number;
+}
+
+/**
+ * useListQuery 返回值类型
+ * useListQuery return type
+ */
+export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams> {
+	/** 表格数据列表 Table data list */
+	tableData: Ref<TItem[]>;
+	/** 数据总数 Total count */
+	total: Ref<number>;
+	/** 当前页码 Current page */
+	pageIndex: Ref<number>;
+	/** 每页大小 Page size */
+	pageSize: Ref<number>;
+	/** 总页数 Total pages */
+	totalPages: ComputedRef<number>;
+	/** 查询参数 Query parameters */
+	queryParams: Ref<TParams>;
+	/** 是否正在加载 Loading state */
+	isLoading: Ref<boolean>;
+	/** 是否正在获取数据 Fetching state */
+	isFetching: Ref<boolean>;
+	/** 错误信息 Error message */
+	error: Ref<Error | null>;
+	/** 刷新数据 Refresh data */
+	refetch: () => void;
+	/** 更新查询参数 Update query parameters */
+	updateParams: (params: Partial<TParams>) => void;
+	/** 重置查询参数 Reset query parameters */
+	resetParams: () => void;
+	/** 原始 Query 对象 Original query object */
+	query: UseQueryReturnType<JsonVO<PageDTO<TItem>>, Error>;
+}
+
+/** 默认每页大小 Default page size */
+const DEFAULT_PAGE_SIZE = 10;
+/** 默认页码 Default page index */
+const DEFAULT_PAGE_INDEX = 1;
+
+/**
+ * 列表查询通用 Hook
+ * @description 提供统一的列表数据获取、分页、筛选功能
+ * @param options 配置选项
+ * @returns 列表查询返回值
+ */
+export function useListQuery<TItem, TParams extends BaseListQueryParams>(
+	options: UseListQueryOptions<TItem, TParams>,
+): UseListQueryReturn<TItem, TParams> {
+	const { queryKeyPrefix, apiUrl, initialParams, enabled = true, staleTime = 5 * 60 * 1000 } = options;
+
+	/** 初始参数对象 */
+	const defaultParams: TParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+		...initialParams,
+	} as TParams;
+
+	/** 查询参数 */
+	const queryParams = ref<TParams>({ ...defaultParams }) as Ref<TParams>;
+
+	/** 表格数据 */
+	const tableData = ref<TItem[]>([]) as Ref<TItem[]>;
+
+	/** 数据总数 */
+	const total = ref<number>(0);
+
+	/** 当前页码 */
+	const pageIndex = computed({
+		get: () => queryParams.value.pageIndex,
+		set: (val) => {
+			queryParams.value.pageIndex = val;
+		},
+	});
+
+	/** 每页大小 */
+	const pageSize = computed({
+		get: () => queryParams.value.pageSize,
+		set: (val) => {
+			queryParams.value.pageSize = val;
+			queryParams.value.pageIndex = DEFAULT_PAGE_INDEX;
+		},
+	});
+
+	/** 总页数 */
+	const totalPages = computed(() => {
+		return Math.ceil(total.value / queryParams.value.pageSize);
+	});
+
+	/** 查询键 */
+	const queryKey = computed(() => [queryKeyPrefix, queryParams.value]);
+
+	/** TanStack Query 查询 */
+	const query = useQuery({
+		queryKey: queryKey,
+		queryFn: async (): Promise<JsonVO<PageDTO<TItem>>> => {
+			const response = await http.post<unknown, JsonVO<PageDTO<TItem>>>(apiUrl, queryParams.value);
+			return response;
+		},
+		enabled: typeof enabled === "boolean" ? enabled : enabled,
+		staleTime,
+	});
+
+	/** 监听数据变化，更新表格数据 */
+	watch(
+		() => query.data.value,
+		(newData) => {
+			if (newData?.success && newData.data) {
+				tableData.value = newData.data.list || [];
+				total.value = newData.data.total || 0;
+			}
+		},
+		{ immediate: true },
+	);
+
+	/** 更新查询参数 */
+	const updateParams = (params: Partial<TParams>) => {
+		queryParams.value = {
+			...queryParams.value,
+			...params,
+		};
+	};
+
+	/** 重置查询参数 */
+	const resetParams = () => {
+		queryParams.value = { ...defaultParams };
+	};
+
+	/** 刷新数据 */
+	const refetch = () => {
+		query.refetch();
+	};
+
+	return {
+		tableData,
+		total,
+		pageIndex: pageIndex as unknown as Ref<number>,
+		pageSize: pageSize as unknown as Ref<number>,
+		totalPages,
+		queryParams,
+		isLoading: query.isLoading,
+		isFetching: query.isFetching,
+		error: query.error,
+		refetch,
+		updateParams,
+		resetParams,
+		query,
+	};
+}
+
+export default useListQuery;

@@ -8,31 +8,31 @@
 
 ### 1.1 初始化 apps/type 类型库
 
-- [ ] 1.1.1 创建 `apps/type/package.json`（配置为 monorepo 包）
-- [ ] 1.1.2 创建 `apps/type/tsconfig.json`（TypeScript 配置）
-- [ ] 1.1.3 创建 `apps/type/src/common/index.ts`（导出 JsonVO, PageDTO, OptionsType）
-- [ ] 1.1.4 创建 `apps/type/src/business` 目录结构（dev-team, operation-team, property-manage, setting-manage）
-- [ ] 1.1.5 创建 `apps/type/index.ts` 统一导出文件
-- [ ] 1.1.6 运行 `pnpm install` 安装 apps/type 依赖
-- [ ] 1.1.7 运行 `pnpm -F @01s-11comm/type build` 测试构建
+- [x] 1.1.1 创建 `apps/type/package.json`（配置为 monorepo 包）
+- [x] 1.1.2 创建 `apps/type/tsconfig.json`（TypeScript 配置）
+- [x] 1.1.3 创建 `apps/type/src/common/index.ts`（导出 JsonVO, PageDTO, OptionsType）
+- [x] 1.1.4 创建 `apps/type/src/business` 目录结构（dev-team, operation-team, property-manage, setting-manage）
+- [x] 1.1.5 创建 `apps/type/index.ts` 统一导出文件
+- [x] 1.1.6 运行 `pnpm install` 安装 apps/type 依赖
+- [x] 1.1.7 运行 `pnpm -F @01s-11comm/type typecheck` 测试类型检查
 
 ### 1.2 配置 Nitro 服务端
 
-- [ ] 1.2.1 修改 `apps/admin/nitro.config.ts`（设置 `serverDir: "server"`）
-- [ ] 1.2.2 创建 `apps/admin/server/api` 目录
-- [ ] 1.2.3 添加 server 别名到 nitro.config.ts（可选）
+- [x] 1.2.1 修改 `apps/admin/nitro.config.ts`（设置 `serverDir: "server"`）
+- [x] 1.2.2 创建 `apps/admin/server/api` 目录
+- [x] 1.2.3 添加 server 别名到 nitro.config.ts（可选）
 
 ### 1.3 安装 @tanstack/vue-query
 
-- [ ] 1.3.1 运行 `pnpm add @tanstack/vue-query -F @01s-11comm/admin`
-- [ ] 1.3.2 修改 `apps/admin/src/main.ts` 初始化 VueQueryPlugin
-- [ ] 1.3.3 配置默认 query 选项（staleTime: 5min, gcTime: 10min）
+- [x] 1.3.1 运行 `pnpm add @tanstack/vue-query -F @01s-11comm/admin`
+- [x] 1.3.2 修改 `apps/admin/src/main.ts` 初始化 VueQueryPlugin
+- [x] 1.3.3 配置默认 query 选项（staleTime: 5min, gcTime: 10min）
 
 ### 1.4 创建通用工具
 
-- [ ] 1.4.1 创建 `apps/admin/src/composables/useListQuery.ts`
-- [ ] 1.4.2 编写 `BaseListQueryParams` 接口
-- [ ] 1.4.3 编写 `useListQuery` 函数实现
+- [x] 1.4.1 创建 `apps/admin/src/composables/use-list-query/index.ts`
+- [x] 1.4.2 编写 `BaseListQueryParams` 接口
+- [x] 1.4.3 编写 `useListQuery` 函数实现
 
 ---
 
