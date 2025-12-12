@@ -98,33 +98,111 @@
 
 - [x] 2.8.1 迁移类型到 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
 - [x] 2.8.2 创建 `server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
-- [ ] 2.8.3 创建 `server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
+- [x] 2.8.3 创建 `server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
 - [ ] 2.8.4 创建 `src/api/dev-team/cache-manage/refresh-cache/index.ts`
 - [ ] 2.8.5 更新 `src/pages/dev-team/cache-manage/refresh-cache/index.vue`
 
 ---
 
-## 阶段 3: operation-team 模块迁移 (70 任务，2 周)
+## 阶段 3: operation-team 模块迁移 (60 任务，2 周)
 
-> 注：operation-team 有 14 个页面，每个页面 5 个步骤，共 70 任务
+> 注：operation-team 有 12 个页面，每个页面 5 个步骤，共 60 任务
 
-### 3.1 data-manage 子模块
+### 3.1 data-manage/community-information
 
-- [ ] 3.1.1-3.1.5 迁移 `data-manage/property-management-company`
-- [ ] 3.2.1-3.2.5 迁移 `data-manage/*`（其他子页面，按实际结构补充）
+- [x] 3.1.1 迁移类型到 `apps/type/src/business/operation-team/data-manage/community-information.ts`
+- [x] 3.1.2 创建 `server/api/operation-team/data-manage/community-information/mock-data.ts`
+- [x] 3.1.3 创建 `server/api/operation-team/data-manage/community-information/list.post.ts`
+- [ ] 3.1.4 创建 `src/api/operation-team/data-manage/community-information/index.ts`
+- [ ] 3.1.5 更新 `src/pages/operation-team/data-manage/community-information/index.vue`
 
-### 3.2 merchant-manage 子模块
+### 3.2 data-manage/property-management-company
 
-- [ ] 3.3.1-3.3.5 迁移 `merchant-manage/*`
+- [x] 3.2.1 迁移类型到 `apps/type/src/business/operation-team/data-manage/property-company.ts`
+- [x] 3.2.2 创建 `server/api/operation-team/data-manage/property-company/mock-data.ts`
+- [x] 3.2.3 创建 `server/api/operation-team/data-manage/property-company/list.post.ts`
+- [ ] 3.2.4 创建 `src/api/operation-team/data-manage/property-company/index.ts`
+- [ ] 3.2.5 更新 `src/pages/operation-team/data-manage/property-management-company/index.vue`
 
-### 3.3 report-configuration 子模块
+### 3.3 merchant-manage/merchant-admin
 
-- [ ] 3.4.1-3.4.5 迁移 `report-configuration/*`
+- [x] 3.3.1 迁移类型到 `apps/type/src/business/operation-team/merchant-manage/merchant-admin.ts`
+- [x] 3.3.2 创建 `server/api/operation-team/merchant-manage/merchant-admin/mock-data.ts`
+- [x] 3.3.3 创建 `server/api/operation-team/merchant-manage/merchant-admin/list.post.ts`
+- [ ] 3.3.4 创建 `src/api/operation-team/merchant-manage/merchant-admin/index.ts`
+- [ ] 3.3.5 更新 `src/pages/operation-team/merchant-manage/merchant-admin/index.vue`
 
-### 3.4 system-manage 子模块
+### 3.4 merchant-manage/merchant-info
 
-- [ ] 3.5.1-3.5.5 迁移 `system-manage/change-password`
-- [ ] 3.6.1-3.6.5 迁移 `system-manage/*`（其他子页面）
+- [x] 3.4.1 迁移类型到 `apps/type/src/business/operation-team/merchant-manage/merchant-info.ts`
+- [x] 3.4.2 创建 `server/api/operation-team/merchant-manage/merchant-info/mock-data.ts`
+- [x] 3.4.3 创建 `server/api/operation-team/merchant-manage/merchant-info/list.post.ts`
+- [ ] 3.4.4 创建 `src/api/operation-team/merchant-manage/merchant-info/index.ts`
+- [ ] 3.4.5 更新 `src/pages/operation-team/merchant-manage/merchant-info/index.vue`
+
+### 3.5 report-configuration/report-component
+
+- [x] 3.5.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-component.ts`
+- [x] 3.5.2 创建 `server/api/operation-team/report-configuration/report-component/mock-data.ts`
+- [x] 3.5.3 创建 `server/api/operation-team/report-configuration/report-component/list.post.ts`
+- [ ] 3.5.4 创建 `src/api/operation-team/report-configuration/report-component/index.ts`
+- [ ] 3.5.5 更新 `src/pages/operation-team/report-configuration/report-component/index.vue`
+
+### 3.6 report-configuration/report-group
+
+- [x] 3.6.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-group.ts`
+- [x] 3.6.2 创建 `server/api/operation-team/report-configuration/report-group/mock-data.ts`
+- [x] 3.6.3 创建 `server/api/operation-team/report-configuration/report-group/list.post.ts`
+- [ ] 3.6.4 创建 `src/api/operation-team/report-configuration/report-group/index.ts`
+- [ ] 3.6.5 更新 `src/pages/operation-team/report-configuration/report-group/index.vue`
+
+### 3.7 report-configuration/report-info
+
+- [x] 3.7.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-info.ts`
+- [x] 3.7.2 创建 `server/api/operation-team/report-configuration/report-info/mock-data.ts`
+- [x] 3.7.3 创建 `server/api/operation-team/report-configuration/report-info/list.post.ts`
+- [ ] 3.7.4 创建 `src/api/operation-team/report-configuration/report-info/index.ts`
+- [ ] 3.7.5 更新 `src/pages/operation-team/report-configuration/report-info/index.vue`
+
+### 3.8 system-manage/change-password
+
+- [ ] 3.8.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/change-password.ts`
+- [ ] 3.8.2 创建 `server/api/operation-team/system-manage/change-password/mock-data.ts`
+- [ ] 3.8.3 创建 `server/api/operation-team/system-manage/change-password/list.post.ts`
+- [ ] 3.8.4 创建 `src/api/operation-team/system-manage/change-password/index.ts`
+- [ ] 3.8.5 更新 `src/pages/operation-team/system-manage/change-password/index.vue`
+
+### 3.9 system-manage/community-configuration
+
+- [ ] 3.9.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/community-configuration.ts`
+- [ ] 3.9.2 创建 `server/api/operation-team/system-manage/community-configuration/mock-data.ts`
+- [ ] 3.9.3 创建 `server/api/operation-team/system-manage/community-configuration/list.post.ts`
+- [ ] 3.9.4 创建 `src/api/operation-team/system-manage/community-configuration/index.ts`
+- [ ] 3.9.5 更新 `src/pages/operation-team/system-manage/community-configuration/index.vue`
+
+### 3.10 system-manage/initialize-cell
+
+- [ ] 3.10.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts`
+- [ ] 3.10.2 创建 `server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
+- [ ] 3.10.3 创建 `server/api/operation-team/system-manage/initialize-cell/list.post.ts`
+- [ ] 3.10.4 创建 `src/api/operation-team/system-manage/initialize-cell/index.ts`
+- [ ] 3.10.5 更新 `src/pages/operation-team/system-manage/initialize-cell/index.vue`
+
+### 3.11 system-manage/register-protocol
+
+- [ ] 3.11.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/register-protocol.ts`
+- [ ] 3.11.2 创建 `server/api/operation-team/system-manage/register-protocol/mock-data.ts`
+- [ ] 3.11.3 创建 `server/api/operation-team/system-manage/register-protocol/list.post.ts`
+- [ ] 3.11.4 创建 `src/api/operation-team/system-manage/register-protocol/index.ts`
+- [ ] 3.11.5 更新 `src/pages/operation-team/system-manage/register-protocol/index.vue`
+
+### 3.12 system-manage/system-config
+
+- [x] 3.12.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/system-config.ts`
+- [x] 3.12.2 创建 `server/api/operation-team/system-manage/system-config/mock-data.ts`
+- [x] 3.12.3 创建 `server/api/operation-team/system-manage/system-config/list.post.ts`
+- [ ] 3.12.4 创建 `src/api/operation-team/system-manage/system-config/index.ts`
+- [ ] 3.12.5 更新 `src/pages/operation-team/system-manage/system-config/index.vue`
 
 ---
 
@@ -132,36 +210,567 @@
 
 > 注：property-manage 有 60 个页面，每个页面 5 个步骤，共 300 任务
 
-### 4.1 expense-manage 子模块 (17 页面 = 85 任务)
+### 4.1 community-manage 子模块 (8 页面 = 40 任务)
 
-#### 4.1.1 house-charge
+#### 4.1.1 community-manage/building-space-structure-diagram
 
-- [ ] 4.1.1.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/house-charge.ts`
-- [ ] 4.1.1.2 创建 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
-- [ ] 4.1.1.3 创建 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
-- [ ] 4.1.1.4 创建 `src/api/property-manage/expense-manage/house-charge/index.ts`
-- [ ] 4.1.1.5 更新 `src/pages/property-manage/expense-manage/house-charge/index.vue`
+- [ ] 4.1.1.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/building-space-structure-diagram.ts`
+- [ ] 4.1.1.2 创建 `server/api/property-manage/community-manage/building-space-structure-diagram/mock-data.ts`
+- [ ] 4.1.1.3 创建 `server/api/property-manage/community-manage/building-space-structure-diagram/list.post.ts`
+- [ ] 4.1.1.4 创建 `src/api/property-manage/community-manage/building-space-structure-diagram/index.ts`
+- [ ] 4.1.1.5 更新 `src/pages/property-manage/community-manage/building-space-structure-diagram/index.vue`
 
-#### 4.1.2-4.1.17 其他 expense-manage 子页面
+#### 4.1.2 community-manage/handing-business
 
-- [ ] 4.1.2.1-4.1.2.5 迁移 `expense-manage/*`（第 2 个页面）
-- [ ] 4.1.3.1-4.1.3.5 迁移 `expense-manage/*`（第 3 个页面）
-- [ ] ... （依次类推，共 17 个页面）
+- [x] 4.1.2.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/handing-business.ts`
+- [x] 4.1.2.2 创建 `server/api/property-manage/community-manage/handing-business/mock-data.ts`
+- [x] 4.1.2.3 创建 `server/api/property-manage/community-manage/handing-business/list.post.ts`
+- [ ] 4.1.2.4 创建 `src/api/property-manage/community-manage/handing-business/index.ts`
+- [ ] 4.1.2.5 更新 `src/pages/property-manage/community-manage/handing-business/index.vue`
 
-### 4.2 house-property-manage 子模块 (10 页面 = 50 任务)
+#### 4.1.3 community-manage/house-decoration
 
-- [ ] 4.2.1.1-4.2.1.5 迁移第 1 个页面
-- [ ] 4.2.2.1-4.2.2.5 迁移第 2 个页面
-- [ ] ... （共 10 个页面）
+- [ ] 4.1.3.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/house-decoration.ts`
+- [ ] 4.1.3.2 创建 `server/api/property-manage/community-manage/house-decoration/mock-data.ts`
+- [ ] 4.1.3.3 创建 `server/api/property-manage/community-manage/house-decoration/list.post.ts`
+- [ ] 4.1.3.4 创建 `src/api/property-manage/community-manage/house-decoration/index.ts`
+- [ ] 4.1.3.5 更新 `src/pages/property-manage/community-manage/house-decoration/index.vue`
 
-### 4.3-4.8 其他 property-manage 子模块
+#### 4.1.4 community-manage/my
 
-- [ ] 4.3.1-4.3.X 迁移 `community-manage` 子模块
-- [ ] 4.4.1-4.4.X 迁移 `contract-manage` 子模块
-- [ ] 4.5.1-4.5.X 迁移 `parking-manage` 子模块
-- [ ] 4.6.1-4.6.X 迁移 `patrol-manage` 子模块
-- [ ] 4.7.1-4.7.X 迁移 `repairs-manage` 子模块
-- [ ] 4.8.1-4.8.X 迁移 `report-manage` 子模块
+- [ ] 4.1.4.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/my.ts`
+- [ ] 4.1.4.2 创建 `server/api/property-manage/community-manage/my/mock-data.ts`
+- [ ] 4.1.4.3 创建 `server/api/property-manage/community-manage/my/list.post.ts`
+- [ ] 4.1.4.4 创建 `src/api/property-manage/community-manage/my/index.ts`
+- [ ] 4.1.4.5 更新 `src/pages/property-manage/community-manage/my/index.vue`
+
+#### 4.1.5 community-manage/notice
+
+- [x] 4.1.5.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/notice.ts`
+- [x] 4.1.5.2 创建 `server/api/property-manage/community-manage/notice/mock-data.ts`
+- [x] 4.1.5.3 创建 `server/api/property-manage/community-manage/notice/list.post.ts`
+- [ ] 4.1.5.4 创建 `src/api/property-manage/community-manage/notice/index.ts`
+- [ ] 4.1.5.5 更新 `src/pages/property-manage/community-manage/notice/index.vue`
+
+#### 4.1.6 community-manage/parking-space-structure-diagram
+
+- [ ] 4.1.6.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/parking-space-structure-diagram.ts`
+- [ ] 4.1.6.2 创建 `server/api/property-manage/community-manage/parking-space-structure-diagram/mock-data.ts`
+- [ ] 4.1.6.3 创建 `server/api/property-manage/community-manage/parking-space-structure-diagram/list.post.ts`
+- [ ] 4.1.6.4 创建 `src/api/property-manage/community-manage/parking-space-structure-diagram/index.ts`
+- [ ] 4.1.6.5 更新 `src/pages/property-manage/community-manage/parking-space-structure-diagram/index.vue`
+
+#### 4.1.7 community-manage/property-register
+
+- [ ] 4.1.7.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/property-register.ts`
+- [ ] 4.1.7.2 创建 `server/api/property-manage/community-manage/property-register/mock-data.ts`
+- [ ] 4.1.7.3 创建 `server/api/property-manage/community-manage/property-register/list.post.ts`
+- [ ] 4.1.7.4 创建 `src/api/property-manage/community-manage/property-register/index.ts`
+- [ ] 4.1.7.5 更新 `src/pages/property-manage/community-manage/property-register/index.vue`
+
+### 4.2 contract-manage 子模块 (5 页面 = 25 任务)
+
+#### 4.2.1 contract-manage/change
+
+- [ ] 4.2.1.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/change.ts`
+- [ ] 4.2.1.2 创建 `server/api/property-manage/contract-manage/change/mock-data.ts`
+- [ ] 4.2.1.3 创建 `server/api/property-manage/contract-manage/change/list.post.ts`
+- [ ] 4.2.1.4 创建 `src/api/property-manage/contract-manage/change/index.ts`
+- [ ] 4.2.1.5 更新 `src/pages/property-manage/contract-manage/change/index.vue`
+
+#### 4.2.2 contract-manage/draft-contract
+
+- [ ] 4.2.2.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/draft-contract.ts`
+- [ ] 4.2.2.2 创建 `server/api/property-manage/contract-manage/draft-contract/mock-data.ts`
+- [ ] 4.2.2.3 创建 `server/api/property-manage/contract-manage/draft-contract/list.post.ts`
+- [ ] 4.2.2.4 创建 `src/api/property-manage/contract-manage/draft-contract/index.ts`
+- [ ] 4.2.2.5 更新 `src/pages/property-manage/contract-manage/draft-contract/index.vue`
+
+#### 4.2.3 contract-manage/expire
+
+- [ ] 4.2.3.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/expire.ts`
+- [ ] 4.2.3.2 创建 `server/api/property-manage/contract-manage/expire/mock-data.ts`
+- [ ] 4.2.3.3 创建 `server/api/property-manage/contract-manage/expire/list.post.ts`
+- [ ] 4.2.3.4 创建 `src/api/property-manage/contract-manage/expire/index.ts`
+- [ ] 4.2.3.5 更新 `src/pages/property-manage/contract-manage/expire/index.vue`
+
+#### 4.2.4 contract-manage/first-party
+
+- [ ] 4.2.4.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/first-party.ts`
+- [ ] 4.2.4.2 创建 `server/api/property-manage/contract-manage/first-party/mock-data.ts`
+- [ ] 4.2.4.3 创建 `server/api/property-manage/contract-manage/first-party/list.post.ts`
+- [ ] 4.2.4.4 创建 `src/api/property-manage/contract-manage/first-party/index.ts`
+- [ ] 4.2.4.5 更新 `src/pages/property-manage/contract-manage/first-party/index.vue`
+
+#### 4.2.5 contract-manage/type
+
+- [ ] 4.2.5.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/type.ts`
+- [ ] 4.2.5.2 创建 `server/api/property-manage/contract-manage/type/mock-data.ts`
+- [ ] 4.2.5.3 创建 `server/api/property-manage/contract-manage/type/list.post.ts`
+- [ ] 4.2.5.4 创建 `src/api/property-manage/contract-manage/type/index.ts`
+- [ ] 4.2.5.5 更新 `src/pages/property-manage/contract-manage/type/index.vue`
+
+### 4.3 expense-manage 子模块 (16 页面 = 80 任务)
+
+#### 4.3.1 expense-manage/cancel-fee
+
+- [ ] 4.3.1.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/cancel-fee.ts`
+- [ ] 4.3.1.2 创建 `server/api/property-manage/expense-manage/cancel-fee/mock-data.ts`
+- [ ] 4.3.1.3 创建 `server/api/property-manage/expense-manage/cancel-fee/list.post.ts`
+- [ ] 4.3.1.4 创建 `src/api/property-manage/expense-manage/cancel-fee/index.ts`
+- [ ] 4.3.1.5 更新 `src/pages/property-manage/expense-manage/cancel-fee/index.vue`
+
+#### 4.3.2 expense-manage/contracte-charge
+
+- [ ] 4.3.2.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/contracte-charge.ts`
+- [ ] 4.3.2.2 创建 `server/api/property-manage/expense-manage/contracte-charge/mock-data.ts`
+- [ ] 4.3.2.3 创建 `server/api/property-manage/expense-manage/contracte-charge/list.post.ts`
+- [ ] 4.3.2.4 创建 `src/api/property-manage/expense-manage/contracte-charge/index.ts`
+- [ ] 4.3.2.5 更新 `src/pages/property-manage/expense-manage/contracte-charge/index.vue`
+
+#### 4.3.3 expense-manage/discount-apply
+
+- [ ] 4.3.3.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/discount-apply.ts`
+- [ ] 4.3.3.2 创建 `server/api/property-manage/expense-manage/discount-apply/mock-data.ts`
+- [ ] 4.3.3.3 创建 `server/api/property-manage/expense-manage/discount-apply/list.post.ts`
+- [ ] 4.3.3.4 创建 `src/api/property-manage/expense-manage/discount-apply/index.ts`
+- [ ] 4.3.3.5 更新 `src/pages/property-manage/expense-manage/discount-apply/index.vue`
+
+#### 4.3.4 expense-manage/discount-setting
+
+- [ ] 4.3.4.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/discount-setting.ts`
+- [ ] 4.3.4.2 创建 `server/api/property-manage/expense-manage/discount-setting/mock-data.ts`
+- [ ] 4.3.4.3 创建 `server/api/property-manage/expense-manage/discount-setting/list.post.ts`
+- [ ] 4.3.4.4 创建 `src/api/property-manage/expense-manage/discount-setting/index.ts`
+- [ ] 4.3.4.5 更新 `src/pages/property-manage/expense-manage/discount-setting/index.vue`
+
+#### 4.3.5 expense-manage/discount-type
+
+- [ ] 4.3.5.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/discount-type.ts`
+- [ ] 4.3.5.2 创建 `server/api/property-manage/expense-manage/discount-type/mock-data.ts`
+- [ ] 4.3.5.3 创建 `server/api/property-manage/expense-manage/discount-type/list.post.ts`
+- [ ] 4.3.5.4 创建 `src/api/property-manage/expense-manage/discount-type/index.ts`
+- [ ] 4.3.5.5 更新 `src/pages/property-manage/expense-manage/discount-type/index.vue`
+
+#### 4.3.6 expense-manage/expense-item-setting
+
+- [ ] 4.3.6.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/expense-item-setting.ts`
+- [ ] 4.3.6.2 创建 `server/api/property-manage/expense-manage/expense-item-setting/mock-data.ts`
+- [ ] 4.3.6.3 创建 `server/api/property-manage/expense-manage/expense-item-setting/list.post.ts`
+- [ ] 4.3.6.4 创建 `src/api/property-manage/expense-manage/expense-item-setting/index.ts`
+- [ ] 4.3.6.5 更新 `src/pages/property-manage/expense-manage/expense-item-setting/index.vue`
+
+#### 4.3.7 expense-manage/expense-summary-table
+
+- [ ] 4.3.7.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/expense-summary-table.ts`
+- [ ] 4.3.7.2 创建 `server/api/property-manage/expense-manage/expense-summary-table/mock-data.ts`
+- [ ] 4.3.7.3 创建 `server/api/property-manage/expense-manage/expense-summary-table/list.post.ts`
+- [ ] 4.3.7.4 创建 `src/api/property-manage/expense-manage/expense-summary-table/index.ts`
+- [ ] 4.3.7.5 更新 `src/pages/property-manage/expense-manage/expense-summary-table/index.vue`
+
+#### 4.3.8 expense-manage/house-charge
+
+- [ ] 4.3.8.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/house-charge.ts`
+- [ ] 4.3.8.2 创建 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
+- [ ] 4.3.8.3 创建 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
+- [ ] 4.3.8.4 创建 `src/api/property-manage/expense-manage/house-charge/index.ts`
+- [ ] 4.3.8.5 更新 `src/pages/property-manage/expense-manage/house-charge/index.vue`
+
+#### 4.3.9 expense-manage/meter-reading-type
+
+- [ ] 4.3.9.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/meter-reading-type.ts`
+- [ ] 4.3.9.2 创建 `server/api/property-manage/expense-manage/meter-reading-type/mock-data.ts`
+- [ ] 4.3.9.3 创建 `server/api/property-manage/expense-manage/meter-reading-type/list.post.ts`
+- [ ] 4.3.9.4 创建 `src/api/property-manage/expense-manage/meter-reading-type/index.ts`
+- [ ] 4.3.9.5 更新 `src/pages/property-manage/expense-manage/meter-reading-type/index.vue`
+
+#### 4.3.10 expense-manage/overdue-payment-information
+
+- [ ] 4.3.10.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/overdue-payment-information.ts`
+- [ ] 4.3.10.2 创建 `server/api/property-manage/expense-manage/overdue-payment-information/mock-data.ts`
+- [ ] 4.3.10.3 创建 `server/api/property-manage/expense-manage/overdue-payment-information/list.post.ts`
+- [ ] 4.3.10.4 创建 `src/api/property-manage/expense-manage/overdue-payment-information/index.ts`
+- [ ] 4.3.10.5 更新 `src/pages/property-manage/expense-manage/overdue-payment-information/index.vue`
+
+#### 4.3.11 expense-manage/payment-review
+
+- [ ] 4.3.11.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/payment-review.ts`
+- [ ] 4.3.11.2 创建 `server/api/property-manage/expense-manage/payment-review/mock-data.ts`
+- [ ] 4.3.11.3 创建 `server/api/property-manage/expense-manage/payment-review/list.post.ts`
+- [ ] 4.3.11.4 创建 `src/api/property-manage/expense-manage/payment-review/index.ts`
+- [ ] 4.3.11.5 更新 `src/pages/property-manage/expense-manage/payment-review/index.vue`
+
+#### 4.3.12 expense-manage/refund-review
+
+- [ ] 4.3.12.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/refund-review.ts`
+- [ ] 4.3.12.2 创建 `server/api/property-manage/expense-manage/refund-review/mock-data.ts`
+- [ ] 4.3.12.3 创建 `server/api/property-manage/expense-manage/refund-review/list.post.ts`
+- [ ] 4.3.12.4 创建 `src/api/property-manage/expense-manage/refund-review/index.ts`
+- [ ] 4.3.12.5 更新 `src/pages/property-manage/expense-manage/refund-review/index.vue`
+
+#### 4.3.13 expense-manage/reminder-for-overdue-payments
+
+- [ ] 4.3.13.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/reminder-for-overdue-payments.ts`
+- [ ] 4.3.13.2 创建 `server/api/property-manage/expense-manage/reminder-for-overdue-payments/mock-data.ts`
+- [ ] 4.3.13.3 创建 `server/api/property-manage/expense-manage/reminder-for-overdue-payments/list.post.ts`
+- [ ] 4.3.13.4 创建 `src/api/property-manage/expense-manage/reminder-for-overdue-payments/index.ts`
+- [ ] 4.3.13.5 更新 `src/pages/property-manage/expense-manage/reminder-for-overdue-payments/index.vue`
+
+#### 4.3.14 expense-manage/reprint-voucher
+
+- [ ] 4.3.14.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/reprint-voucher.ts`
+- [ ] 4.3.14.2 创建 `server/api/property-manage/expense-manage/reprint-voucher/mock-data.ts`
+- [ ] 4.3.14.3 创建 `server/api/property-manage/expense-manage/reprint-voucher/list.post.ts`
+- [ ] 4.3.14.4 创建 `src/api/property-manage/expense-manage/reprint-voucher/index.ts`
+- [ ] 4.3.14.5 更新 `src/pages/property-manage/expense-manage/reprint-voucher/index.vue`
+
+#### 4.3.15 expense-manage/vehicle-charge
+
+- [ ] 4.3.15.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/vehicle-charge.ts`
+- [ ] 4.3.15.2 创建 `server/api/property-manage/expense-manage/vehicle-charge/mock-data.ts`
+- [ ] 4.3.15.3 创建 `server/api/property-manage/expense-manage/vehicle-charge/list.post.ts`
+- [ ] 4.3.15.4 创建 `src/api/property-manage/expense-manage/vehicle-charge/index.ts`
+- [ ] 4.3.15.5 更新 `src/pages/property-manage/expense-manage/vehicle-charge/index.vue`
+
+#### 4.3.16 expense-manage/water-and-electricity-meter-reading
+
+- [ ] 4.3.16.1 迁移类型到 `apps/type/src/business/property-manage/expense-manage/water-and-electricity-meter-reading.ts`
+- [ ] 4.3.16.2 创建 `server/api/property-manage/expense-manage/water-and-electricity-meter-reading/mock-data.ts`
+- [ ] 4.3.16.3 创建 `server/api/property-manage/expense-manage/water-and-electricity-meter-reading/list.post.ts`
+- [ ] 4.3.16.4 创建 `src/api/property-manage/expense-manage/water-and-electricity-meter-reading/index.ts`
+- [ ] 4.3.16.5 更新 `src/pages/property-manage/expense-manage/water-and-electricity-meter-reading/index.vue`
+
+### 4.4 house-property-manage 子模块 (11 页面 = 55 任务)
+
+#### 4.4.1 house-property-manage/house
+
+- [x] 4.4.1.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/house.ts`
+- [x] 4.4.1.2 创建 `server/api/property-manage/house-property-manage/house/mock-data.ts`
+- [x] 4.4.1.3 创建 `server/api/property-manage/house-property-manage/house/list.post.ts`
+- [ ] 4.4.1.4 创建 `src/api/property-manage/house-property-manage/house/index.ts`
+- [ ] 4.4.1.5 更新 `src/pages/property-manage/house-property-manage/house/index.vue`
+
+#### 4.4.2 house-property-manage/invoice
+
+- [ ] 4.4.2.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/invoice.ts`
+- [ ] 4.4.2.2 创建 `server/api/property-manage/house-property-manage/invoice/mock-data.ts`
+- [ ] 4.4.2.3 创建 `server/api/property-manage/house-property-manage/invoice/list.post.ts`
+- [ ] 4.4.2.4 创建 `src/api/property-manage/house-property-manage/invoice/index.ts`
+- [ ] 4.4.2.5 更新 `src/pages/property-manage/house-property-manage/invoice/index.vue`
+
+#### 4.4.3 house-property-manage/invoice-title
+
+- [ ] 4.4.3.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/invoice-title.ts`
+- [ ] 4.4.3.2 创建 `server/api/property-manage/house-property-manage/invoice-title/mock-data.ts`
+- [ ] 4.4.3.3 创建 `server/api/property-manage/house-property-manage/invoice-title/list.post.ts`
+- [ ] 4.4.3.4 创建 `src/api/property-manage/house-property-manage/invoice-title/index.ts`
+- [ ] 4.4.3.5 更新 `src/pages/property-manage/house-property-manage/invoice-title/index.vue`
+
+#### 4.4.4 house-property-manage/owner-account
+
+- [ ] 4.4.4.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/owner-account.ts`
+- [ ] 4.4.4.2 创建 `server/api/property-manage/house-property-manage/owner-account/mock-data.ts`
+- [ ] 4.4.4.3 创建 `server/api/property-manage/house-property-manage/owner-account/list.post.ts`
+- [ ] 4.4.4.4 创建 `src/api/property-manage/house-property-manage/owner-account/index.ts`
+- [ ] 4.4.4.5 更新 `src/pages/property-manage/house-property-manage/owner-account/index.vue`
+
+#### 4.4.5 house-property-manage/owner-information
+
+- [ ] 4.4.5.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/owner-information.ts`
+- [ ] 4.4.5.2 创建 `server/api/property-manage/house-property-manage/owner-information/mock-data.ts`
+- [ ] 4.4.5.3 创建 `server/api/property-manage/house-property-manage/owner-information/list.post.ts`
+- [ ] 4.4.5.4 创建 `src/api/property-manage/house-property-manage/owner-information/index.ts`
+- [ ] 4.4.5.5 更新 `src/pages/property-manage/house-property-manage/owner-information/index.vue`
+
+#### 4.4.6 house-property-manage/owner-member
+
+- [ ] 4.4.6.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/owner-member.ts`
+- [ ] 4.4.6.2 创建 `server/api/property-manage/house-property-manage/owner-member/mock-data.ts`
+- [ ] 4.4.6.3 创建 `server/api/property-manage/house-property-manage/owner-member/list.post.ts`
+- [ ] 4.4.6.4 创建 `src/api/property-manage/house-property-manage/owner-member/index.ts`
+- [ ] 4.4.6.5 更新 `src/pages/property-manage/house-property-manage/owner-member/index.vue`
+
+#### 4.4.7 house-property-manage/owners-committee
+
+- [ ] 4.4.7.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/owners-committee.ts`
+- [ ] 4.4.7.2 创建 `server/api/property-manage/house-property-manage/owners-committee/mock-data.ts`
+- [ ] 4.4.7.3 创建 `server/api/property-manage/house-property-manage/owners-committee/list.post.ts`
+- [ ] 4.4.7.4 创建 `src/api/property-manage/house-property-manage/owners-committee/index.ts`
+- [ ] 4.4.7.5 更新 `src/pages/property-manage/house-property-manage/owners-committee/index.vue`
+
+#### 4.4.8 house-property-manage/reserve-venue
+
+- [ ] 4.4.8.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/reserve-venue.ts`
+- [ ] 4.4.8.2 创建 `server/api/property-manage/house-property-manage/reserve-venue/mock-data.ts`
+- [ ] 4.4.8.3 创建 `server/api/property-manage/house-property-manage/reserve-venue/list.post.ts`
+- [ ] 4.4.8.4 创建 `src/api/property-manage/house-property-manage/reserve-venue/index.ts`
+- [ ] 4.4.8.5 更新 `src/pages/property-manage/house-property-manage/reserve-venue/index.vue`
+
+#### 4.4.9 house-property-manage/reserve-venue-order
+
+- [ ] 4.4.9.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/reserve-venue-order.ts`
+- [ ] 4.4.9.2 创建 `server/api/property-manage/house-property-manage/reserve-venue-order/mock-data.ts`
+- [ ] 4.4.9.3 创建 `server/api/property-manage/house-property-manage/reserve-venue-order/list.post.ts`
+- [ ] 4.4.9.4 创建 `src/api/property-manage/house-property-manage/reserve-venue-order/index.ts`
+- [ ] 4.4.9.5 更新 `src/pages/property-manage/house-property-manage/reserve-venue-order/index.vue`
+
+#### 4.4.10 house-property-manage/site-management
+
+- [ ] 4.4.10.1 迁移类型到 `apps/type/src/business/property-manage/house-property-manage/site-management.ts`
+- [ ] 4.4.10.2 创建 `server/api/property-manage/house-property-manage/site-management/mock-data.ts`
+- [ ] 4.4.10.3 创建 `server/api/property-manage/house-property-manage/site-management/list.post.ts`
+- [ ] 4.4.10.4 创建 `src/api/property-manage/house-property-manage/site-management/index.ts`
+- [ ] 4.4.10.5 更新 `src/pages/property-manage/house-property-manage/site-management/index.vue`
+
+### 4.5 parking-manage 子模块 (4 页面 = 20 任务)
+
+#### 4.5.1 parking-manage/carport-apply
+
+- [ ] 4.5.1.1 迁移类型到 `apps/type/src/business/property-manage/parking-manage/carport-apply.ts`
+- [ ] 4.5.1.2 创建 `server/api/property-manage/parking-manage/carport-apply/mock-data.ts`
+- [ ] 4.5.1.3 创建 `server/api/property-manage/parking-manage/carport-apply/list.post.ts`
+- [ ] 4.5.1.4 创建 `src/api/property-manage/parking-manage/carport-apply/index.ts`
+- [ ] 4.5.1.5 更新 `src/pages/property-manage/parking-manage/carport-apply/index.vue`
+
+#### 4.5.2 parking-manage/carport-info
+
+- [ ] 4.5.2.1 迁移类型到 `apps/type/src/business/property-manage/parking-manage/carport-info.ts`
+- [ ] 4.5.2.2 创建 `server/api/property-manage/parking-manage/carport-info/mock-data.ts`
+- [ ] 4.5.2.3 创建 `server/api/property-manage/parking-manage/carport-info/list.post.ts`
+- [ ] 4.5.2.4 创建 `src/api/property-manage/parking-manage/carport-info/index.ts`
+- [ ] 4.5.2.5 更新 `src/pages/property-manage/parking-manage/carport-info/index.vue`
+
+#### 4.5.3 parking-manage/owner-vehicle
+
+- [ ] 4.5.3.1 迁移类型到 `apps/type/src/business/property-manage/parking-manage/owner-vehicle.ts`
+- [ ] 4.5.3.2 创建 `server/api/property-manage/parking-manage/owner-vehicle/mock-data.ts`
+- [ ] 4.5.3.3 创建 `server/api/property-manage/parking-manage/owner-vehicle/list.post.ts`
+- [ ] 4.5.3.4 创建 `src/api/property-manage/parking-manage/owner-vehicle/index.ts`
+- [ ] 4.5.3.5 更新 `src/pages/property-manage/parking-manage/owner-vehicle/index.vue`
+
+#### 4.5.4 parking-manage/parking-lot
+
+- [ ] 4.5.4.1 迁移类型到 `apps/type/src/business/property-manage/parking-manage/parking-lot.ts`
+- [ ] 4.5.4.2 创建 `server/api/property-manage/parking-manage/parking-lot/mock-data.ts`
+- [ ] 4.5.4.3 创建 `server/api/property-manage/parking-manage/parking-lot/list.post.ts`
+- [ ] 4.5.4.4 创建 `src/api/property-manage/parking-manage/parking-lot/index.ts`
+- [ ] 4.5.4.5 更新 `src/pages/property-manage/parking-manage/parking-lot/index.vue`
+
+### 4.6 patrol-manage 子模块 (6 页面 = 30 任务)
+
+#### 4.6.1 patrol-manage/detail
+
+- [ ] 4.6.1.1 迁移类型到 `apps/type/src/business/property-manage/patrol-manage/detail.ts`
+- [ ] 4.6.1.2 创建 `server/api/property-manage/patrol-manage/detail/mock-data.ts`
+- [ ] 4.6.1.3 创建 `server/api/property-manage/patrol-manage/detail/list.post.ts`
+- [ ] 4.6.1.4 创建 `src/api/property-manage/patrol-manage/detail/index.ts`
+- [ ] 4.6.1.5 更新 `src/pages/property-manage/patrol-manage/detail/index.vue`
+
+#### 4.6.2 patrol-manage/item
+
+- [ ] 4.6.2.1 迁移类型到 `apps/type/src/business/property-manage/patrol-manage/item.ts`
+- [ ] 4.6.2.2 创建 `server/api/property-manage/patrol-manage/item/mock-data.ts`
+- [ ] 4.6.2.3 创建 `server/api/property-manage/patrol-manage/item/list.post.ts`
+- [ ] 4.6.2.4 创建 `src/api/property-manage/patrol-manage/item/index.ts`
+- [ ] 4.6.2.5 更新 `src/pages/property-manage/patrol-manage/item/index.vue`
+
+#### 4.6.3 patrol-manage/path
+
+- [ ] 4.6.3.1 迁移类型到 `apps/type/src/business/property-manage/patrol-manage/path.ts`
+- [ ] 4.6.3.2 创建 `server/api/property-manage/patrol-manage/path/mock-data.ts`
+- [ ] 4.6.3.3 创建 `server/api/property-manage/patrol-manage/path/list.post.ts`
+- [ ] 4.6.3.4 创建 `src/api/property-manage/patrol-manage/path/index.ts`
+- [ ] 4.6.3.5 更新 `src/pages/property-manage/patrol-manage/path/index.vue`
+
+#### 4.6.4 patrol-manage/plan
+
+- [ ] 4.6.4.1 迁移类型到 `apps/type/src/business/property-manage/patrol-manage/plan.ts`
+- [ ] 4.6.4.2 创建 `server/api/property-manage/patrol-manage/plan/mock-data.ts`
+- [ ] 4.6.4.3 创建 `server/api/property-manage/patrol-manage/plan/list.post.ts`
+- [ ] 4.6.4.4 创建 `src/api/property-manage/patrol-manage/plan/index.ts`
+- [ ] 4.6.4.5 更新 `src/pages/property-manage/patrol-manage/plan/index.vue`
+
+#### 4.6.5 patrol-manage/point
+
+- [ ] 4.6.5.1 迁移类型到 `apps/type/src/business/property-manage/patrol-manage/point.ts`
+- [ ] 4.6.5.2 创建 `server/api/property-manage/patrol-manage/point/mock-data.ts`
+- [ ] 4.6.5.3 创建 `server/api/property-manage/patrol-manage/point/list.post.ts`
+- [ ] 4.6.5.4 创建 `src/api/property-manage/patrol-manage/point/index.ts`
+- [ ] 4.6.5.5 更新 `src/pages/property-manage/patrol-manage/point/index.vue`
+
+#### 4.6.6 patrol-manage/task
+
+- [ ] 4.6.6.1 迁移类型到 `apps/type/src/business/property-manage/patrol-manage/task.ts`
+- [ ] 4.6.6.2 创建 `server/api/property-manage/patrol-manage/task/mock-data.ts`
+- [ ] 4.6.6.3 创建 `server/api/property-manage/patrol-manage/task/list.post.ts`
+- [ ] 4.6.6.4 创建 `src/api/property-manage/patrol-manage/task/index.ts`
+- [ ] 4.6.6.5 更新 `src/pages/property-manage/patrol-manage/task/index.vue`
+
+### 4.7 repairs-manage 子模块 (7 页面 = 35 任务)
+
+#### 4.7.1 repairs-manage/issues
+
+- [ ] 4.7.1.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/issues.ts`
+- [ ] 4.7.1.2 创建 `server/api/property-manage/repairs-manage/issues/mock-data.ts`
+- [ ] 4.7.1.3 创建 `server/api/property-manage/repairs-manage/issues/list.post.ts`
+- [ ] 4.7.1.4 创建 `src/api/property-manage/repairs-manage/issues/index.ts`
+- [ ] 4.7.1.5 更新 `src/pages/property-manage/repairs-manage/issues/index.vue`
+
+#### 4.7.2 repairs-manage/mandatory-return-issue
+
+- [ ] 4.7.2.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/mandatory-return-issue.ts`
+- [ ] 4.7.2.2 创建 `server/api/property-manage/repairs-manage/mandatory-return-issue/mock-data.ts`
+- [ ] 4.7.2.3 创建 `server/api/property-manage/repairs-manage/mandatory-return-issue/list.post.ts`
+- [ ] 4.7.2.4 创建 `src/api/property-manage/repairs-manage/mandatory-return-issue/index.ts`
+- [ ] 4.7.2.5 更新 `src/pages/property-manage/repairs-manage/mandatory-return-issue/index.vue`
+
+#### 4.7.3 repairs-manage/phone-report-repairs
+
+- [ ] 4.7.3.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/phone-report-repairs.ts`
+- [ ] 4.7.3.2 创建 `server/api/property-manage/repairs-manage/phone-report-repairs/mock-data.ts`
+- [ ] 4.7.3.3 创建 `server/api/property-manage/repairs-manage/phone-report-repairs/list.post.ts`
+- [ ] 4.7.3.4 创建 `src/api/property-manage/repairs-manage/phone-report-repairs/index.ts`
+- [ ] 4.7.3.5 更新 `src/pages/property-manage/repairs-manage/phone-report-repairs/index.vue`
+
+#### 4.7.4 repairs-manage/repairs-have-done
+
+- [ ] 4.7.4.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/repairs-have-done.ts`
+- [ ] 4.7.4.2 创建 `server/api/property-manage/repairs-manage/repairs-have-done/mock-data.ts`
+- [ ] 4.7.4.3 创建 `server/api/property-manage/repairs-manage/repairs-have-done/list.post.ts`
+- [ ] 4.7.4.4 创建 `src/api/property-manage/repairs-manage/repairs-have-done/index.ts`
+- [ ] 4.7.4.5 更新 `src/pages/property-manage/repairs-manage/repairs-have-done/index.vue`
+
+#### 4.7.5 repairs-manage/repairs-setting
+
+- [ ] 4.7.5.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/repairs-setting.ts`
+- [ ] 4.7.5.2 创建 `server/api/property-manage/repairs-manage/repairs-setting/mock-data.ts`
+- [ ] 4.7.5.3 创建 `server/api/property-manage/repairs-manage/repairs-setting/list.post.ts`
+- [ ] 4.7.5.4 创建 `src/api/property-manage/repairs-manage/repairs-setting/index.ts`
+- [ ] 4.7.5.5 更新 `src/pages/property-manage/repairs-manage/repairs-setting/index.vue`
+
+#### 4.7.6 repairs-manage/repairs-todo
+
+- [ ] 4.7.6.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/repairs-todo.ts`
+- [ ] 4.7.6.2 创建 `server/api/property-manage/repairs-manage/repairs-todo/mock-data.ts`
+- [ ] 4.7.6.3 创建 `server/api/property-manage/repairs-manage/repairs-todo/list.post.ts`
+- [ ] 4.7.6.4 创建 `src/api/property-manage/repairs-manage/repairs-todo/index.ts`
+- [ ] 4.7.6.5 更新 `src/pages/property-manage/repairs-manage/repairs-todo/index.vue`
+
+#### 4.7.7 repairs-manage/return-visit
+
+- [ ] 4.7.7.1 迁移类型到 `apps/type/src/business/property-manage/repairs-manage/return-visit.ts`
+- [ ] 4.7.7.2 创建 `server/api/property-manage/repairs-manage/return-visit/mock-data.ts`
+- [ ] 4.7.7.3 创建 `server/api/property-manage/repairs-manage/return-visit/list.post.ts`
+- [ ] 4.7.7.4 创建 `src/api/property-manage/repairs-manage/return-visit/index.ts`
+- [ ] 4.7.7.5 更新 `src/pages/property-manage/repairs-manage/return-visit/index.vue`
+
+### 4.8 report-manage 子模块 (14 页面 = 70 任务)
+
+> 注：report-manage 子模块包含较多统计报表页面
+
+#### 4.8.1 report-manage/arrears-details-list
+
+- [ ] 4.8.1.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/arrears-details-list.ts`
+- [ ] 4.8.1.2 创建 `server/api/property-manage/report-manage/arrears-details-list/mock-data.ts`
+- [ ] 4.8.1.3 创建 `server/api/property-manage/report-manage/arrears-details-list/list.post.ts`
+- [ ] 4.8.1.4 创建 `src/api/property-manage/report-manage/arrears-details-list/index.ts`
+- [ ] 4.8.1.5 更新 `src/pages/property-manage/report-manage/arrears-details-list/index.vue`
+
+#### 4.8.2 report-manage/data-statistics
+
+- [ ] 4.8.2.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/data-statistics.ts`
+- [ ] 4.8.2.2 创建 `server/api/property-manage/report-manage/data-statistics/mock-data.ts`
+- [ ] 4.8.2.3 创建 `server/api/property-manage/report-manage/data-statistics/list.post.ts`
+- [ ] 4.8.2.4 创建 `src/api/property-manage/report-manage/data-statistics/index.ts`
+- [ ] 4.8.2.5 更新 `src/pages/property-manage/report-manage/data-statistics/index.vue`
+
+#### 4.8.3 report-manage/deposit-report
+
+- [ ] 4.8.3.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/deposit-report.ts`
+- [ ] 4.8.3.2 创建 `server/api/property-manage/report-manage/deposit-report/mock-data.ts`
+- [ ] 4.8.3.3 创建 `server/api/property-manage/report-manage/deposit-report/list.post.ts`
+- [ ] 4.8.3.4 创建 `src/api/property-manage/report-manage/deposit-report/index.ts`
+- [ ] 4.8.3.5 更新 `src/pages/property-manage/report-manage/deposit-report/index.vue`
+
+#### 4.8.4 report-manage/expense-summary-table
+
+- [ ] 4.8.4.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/expense-summary-table.ts`
+- [ ] 4.8.4.2 创建 `server/api/property-manage/report-manage/expense-summary-table/mock-data.ts`
+- [ ] 4.8.4.3 创建 `server/api/property-manage/report-manage/expense-summary-table/list.post.ts`
+- [ ] 4.8.4.4 创建 `src/api/property-manage/report-manage/expense-summary-table/index.ts`
+- [ ] 4.8.4.5 更新 `src/pages/property-manage/report-manage/expense-summary-table/index.vue`
+
+#### 4.8.5 report-manage/fee-reminder
+
+- [ ] 4.8.5.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/fee-reminder.ts`
+- [ ] 4.8.5.2 创建 `server/api/property-manage/report-manage/fee-reminder/mock-data.ts`
+- [ ] 4.8.5.3 创建 `server/api/property-manage/report-manage/fee-reminder/list.post.ts`
+- [ ] 4.8.5.4 创建 `src/api/property-manage/report-manage/fee-reminder/index.ts`
+- [ ] 4.8.5.5 更新 `src/pages/property-manage/report-manage/fee-reminder/index.vue`
+
+#### 4.8.6 report-manage/no-charge-house
+
+- [ ] 4.8.6.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/no-charge-house.ts`
+- [ ] 4.8.6.2 创建 `server/api/property-manage/report-manage/no-charge-house/mock-data.ts`
+- [ ] 4.8.6.3 创建 `server/api/property-manage/report-manage/no-charge-house/list.post.ts`
+- [ ] 4.8.6.4 创建 `src/api/property-manage/report-manage/no-charge-house/index.ts`
+- [ ] 4.8.6.5 更新 `src/pages/property-manage/report-manage/no-charge-house/index.vue`
+
+#### 4.8.7 report-manage/outstanding-fees-analysis
+
+- [ ] 4.8.7.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/outstanding-fees-analysis.ts`
+- [ ] 4.8.7.2 创建 `server/api/property-manage/report-manage/outstanding-fees-analysis/mock-data.ts`
+- [ ] 4.8.7.3 创建 `server/api/property-manage/report-manage/outstanding-fees-analysis/list.post.ts`
+- [ ] 4.8.7.4 创建 `src/api/property-manage/report-manage/outstanding-fees-analysis/index.ts`
+- [ ] 4.8.7.5 更新 `src/pages/property-manage/report-manage/outstanding-fees-analysis/index.vue`
+
+#### 4.8.8 report-manage/owner-payment-details
+
+- [ ] 4.8.8.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/owner-payment-details.ts`
+- [ ] 4.8.8.2 创建 `server/api/property-manage/report-manage/owner-payment-details/mock-data.ts`
+- [ ] 4.8.8.3 创建 `server/api/property-manage/report-manage/owner-payment-details/list.post.ts`
+- [ ] 4.8.8.4 创建 `src/api/property-manage/report-manage/owner-payment-details/index.ts`
+- [ ] 4.8.8.5 更新 `src/pages/property-manage/report-manage/owner-payment-details/index.vue`
+
+#### 4.8.9 report-manage/patrol-report
+
+- [ ] 4.8.9.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/patrol-report.ts`
+- [ ] 4.8.9.2 创建 `server/api/property-manage/report-manage/patrol-report/mock-data.ts`
+- [ ] 4.8.9.3 创建 `server/api/property-manage/report-manage/patrol-report/list.post.ts`
+- [ ] 4.8.9.4 创建 `src/api/property-manage/report-manage/patrol-report/index.ts`
+- [ ] 4.8.9.5 更新 `src/pages/property-manage/report-manage/patrol-report/index.vue`
+
+#### 4.8.10 report-manage/payment-details-form
+
+- [ ] 4.8.10.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/payment-details-form.ts`
+- [ ] 4.8.10.2 创建 `server/api/property-manage/report-manage/payment-details-form/mock-data.ts`
+- [ ] 4.8.10.3 创建 `server/api/property-manage/report-manage/payment-details-form/list.post.ts`
+- [ ] 4.8.10.4 创建 `src/api/property-manage/report-manage/payment-details-form/index.ts`
+- [ ] 4.8.10.5 更新 `src/pages/property-manage/report-manage/payment-details-form/index.vue`
+
+#### 4.8.11 report-manage/repair-report-form
+
+- [ ] 4.8.11.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/repair-report-form.ts`
+- [ ] 4.8.11.2 创建 `server/api/property-manage/report-manage/repair-report-form/mock-data.ts`
+- [ ] 4.8.11.3 创建 `server/api/property-manage/report-manage/repair-report-form/list.post.ts`
+- [ ] 4.8.11.4 创建 `src/api/property-manage/report-manage/repair-report-form/index.ts`
+- [ ] 4.8.11.5 更新 `src/pages/property-manage/report-manage/repair-report-form/index.vue`
+
+#### 4.8.12 report-manage/repair-reports-summary-table
+
+- [ ] 4.8.12.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/repair-reports-summary-table.ts`
+- [ ] 4.8.12.2 创建 `server/api/property-manage/report-manage/repair-reports-summary-table/mock-data.ts`
+- [ ] 4.8.12.3 创建 `server/api/property-manage/report-manage/repair-reports-summary-table/list.post.ts`
+- [ ] 4.8.12.4 创建 `src/api/property-manage/report-manage/repair-reports-summary-table/index.ts`
+- [ ] 4.8.12.5 更新 `src/pages/property-manage/report-manage/repair-reports-summary-table/index.vue`
+
+#### 4.8.13 report-manage/statement-expenses
+
+- [ ] 4.8.13.1 迁移类型到 `apps/type/src/business/property-manage/report-manage/statement-expenses.ts`
+- [ ] 4.8.13.2 创建 `server/api/property-manage/report-manage/statement-expenses/mock-data.ts`
+- [ ] 4.8.13.3 创建 `server/api/property-manage/report-manage/statement-expenses/list.post.ts`
+- [ ] 4.8.13.4 创建 `src/api/property-manage/report-manage/statement-expenses/index.ts`
+- [ ] 4.8.13.5 更新 `src/pages/property-manage/report-manage/statement-expenses/index.vue`
 
 ---
 
@@ -169,15 +778,61 @@
 
 > 注：setting-manage 有 7 个页面，每个页面 5 个步骤，共 35 任务
 
-### 5.1 organize-manage 子模块
+### 5.1 organize-manage/data-permission
 
-- [ ] 5.1.1-5.1.5 迁移第 1 个页面
-- [ ] 5.2.1-5.2.5 迁移第 2 个页面
-- [ ] ... （依次类推）
+- [ ] 5.1.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/data-permission.ts`
+- [ ] 5.1.2 创建 `server/api/setting-manage/organize-manage/data-permission/mock-data.ts`
+- [ ] 5.1.3 创建 `server/api/setting-manage/organize-manage/data-permission/list.post.ts`
+- [ ] 5.1.4 创建 `src/api/setting-manage/organize-manage/data-permission/index.ts`
+- [ ] 5.1.5 更新 `src/pages/setting-manage/organize-manage/data-permission/index.vue`
 
-### 5.2 system-manage 子模块
+### 5.2 organize-manage/org-info
 
-- [ ] 5.X.1-5.X.5 迁移剩余页面
+- [ ] 5.2.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/org-info.ts`
+- [ ] 5.2.2 创建 `server/api/setting-manage/organize-manage/org-info/mock-data.ts`
+- [ ] 5.2.3 创建 `server/api/setting-manage/organize-manage/org-info/list.post.ts`
+- [ ] 5.2.4 创建 `src/api/setting-manage/organize-manage/org-info/index.ts`
+- [ ] 5.2.5 更新 `src/pages/setting-manage/organize-manage/org-info/index.vue`
+
+### 5.3 organize-manage/role-permission
+
+- [ ] 5.3.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/role-permission.ts`
+- [ ] 5.3.2 创建 `server/api/setting-manage/organize-manage/role-permission/mock-data.ts`
+- [ ] 5.3.3 创建 `server/api/setting-manage/organize-manage/role-permission/list.post.ts`
+- [ ] 5.3.4 创建 `src/api/setting-manage/organize-manage/role-permission/index.ts`
+- [ ] 5.3.5 更新 `src/pages/setting-manage/organize-manage/role-permission/index.vue`
+
+### 5.4 organize-manage/scheduling-setting
+
+- [ ] 5.4.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/scheduling-setting.ts`
+- [ ] 5.4.2 创建 `server/api/setting-manage/organize-manage/scheduling-setting/mock-data.ts`
+- [ ] 5.4.3 创建 `server/api/setting-manage/organize-manage/scheduling-setting/list.post.ts`
+- [ ] 5.4.4 创建 `src/api/setting-manage/organize-manage/scheduling-setting/index.ts`
+- [ ] 5.4.5 更新 `src/pages/setting-manage/organize-manage/scheduling-setting/index.vue`
+
+### 5.5 organize-manage/shift-setting
+
+- [ ] 5.5.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/shift-setting.ts`
+- [ ] 5.5.2 创建 `server/api/setting-manage/organize-manage/shift-setting/mock-data.ts`
+- [ ] 5.5.3 创建 `server/api/setting-manage/organize-manage/shift-setting/list.post.ts`
+- [ ] 5.5.4 创建 `src/api/setting-manage/organize-manage/shift-setting/index.ts`
+- [ ] 5.5.5 更新 `src/pages/setting-manage/organize-manage/shift-setting/index.vue`
+
+### 5.6 organize-manage/staff-info
+
+- [ ] 5.6.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts`
+- [ ] 5.6.2 创建 `server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
+- [ ] 5.6.3 创建 `server/api/setting-manage/organize-manage/staff-info/list.post.ts`
+- [ ] 5.6.4 创建 `src/api/setting-manage/organize-manage/staff-info/index.ts`
+- [ ] 5.6.5 更新 `src/pages/setting-manage/organize-manage/staff-info/index.vue`
+
+### 5.7 organize-manage/working-schedule
+
+- [ ] 5.7.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts`
+- [ ] 5.7.2 创建 `server/api/setting-manage/organize-manage/working-schedule/mock-data.ts`
+- [ ] 5.7.3 创建 `server/api/setting-manage/organize-manage/working-schedule/list.post.ts`
+- [ ] 5.7.4 创建 `src/api/setting-manage/organize-manage/working-schedule/index.ts`
+- [ ] 5.7.5 更新 `src/pages/setting-manage/organize-manage/working-schedule/index.vue`
 
 ---
 
@@ -192,8 +847,8 @@
 ### 6.2 功能测试
 
 - [ ] 6.2.1 手动测试 dev-team 模块所有列表页（8 页面）
-- [ ] 6.2.2 手动测试 operation-team 模块所有列表页（14 页面）
-- [ ] 6.2.3 手动测试 property-manage 模块所有列表页（60 页面）
+- [ ] 6.2.2 手动测试 operation-team 模块所有列表页（12 页面）
+- [ ] 6.2.3 手动测试 property-manage 模块所有列表页（60+ 页面）
 - [ ] 6.2.4 手动测试 setting-manage 模块所有列表页（7 页面）
 - [ ] 6.2.5 验证所有搜索功能正常
 - [ ] 6.2.6 验证所有分页功能正常
@@ -203,8 +858,8 @@
 ### 6.3 代码清理
 
 - [ ] 6.3.1 删除 `apps/admin/src/pages/dev-team/**/test-data.ts`（8 个文件）
-- [ ] 6.3.2 删除 `apps/admin/src/pages/operation-team/**/test-data.ts`（14 个文件）
-- [ ] 6.3.3 删除 `apps/admin/src/pages/property-manage/**/test-data.ts`（60 个文件）
+- [ ] 6.3.2 删除 `apps/admin/src/pages/operation-team/**/test-data.ts`（12 个文件）
+- [ ] 6.3.3 删除 `apps/admin/src/pages/property-manage/**/test-data.ts`（60+ 个文件）
 - [ ] 6.3.4 删除 `apps/admin/src/pages/setting-manage/**/test-data.ts`（7 个文件）
 - [ ] 6.3.5 运行 `pnpm typecheck` 确认无报错
 
@@ -235,11 +890,25 @@
 | :------: | :----------------------: | :-----: | :-------: |
 |    1     |       基础设施搭建       |   15    |   1 周    |
 |    2     |    dev-team 模块迁移     |   40    |   1 周    |
-|    3     | operation-team 模块迁移  |   70    |   2 周    |
-|    4     | property-manage 模块迁移 |   300   |   6 周    |
+|    3     | operation-team 模块迁移  |   60    |   2 周    |
+|    4     | property-manage 模块迁移 |   355   |   6 周    |
 |    5     | setting-manage 模块迁移  |   35    |   1 周    |
 |    6     |        验证和清理        |   30    |   1 周    |
-| **总计** |                          | **490** | **12 周** |
+| **总计** |                          | **535** | **12 周** |
+
+## 进度统计
+
+### 已完成任务
+
+|       模块        | 已完成 | 总数  | 完成率  |
+| :---------------: | :----: | :---: | :-----: |
+|     基础设施      |   15   |  15   |  100%   |
+|     dev-team      |   27   |  40   |  67.5%  |
+|  operation-team   |   24   |  60   |   40%   |
+|  property-manage  |   9    |  355  |  2.5%   |
+|  setting-manage   |   0    |  35   |   0%    |
+|    验证和清理     |   0    |  30   |   0%    |
+|     **总计**      | **75** | **535** | **14%** |
 
 ## 注意事项
 
@@ -251,8 +920,8 @@
 
 ## 关键里程碑
 
-- **Week 1**: 基础设施就绪，试点页面完成
-- **Week 2**: dev-team 模块完成，验证迁移流程
+- **Week 1**: 基础设施就绪，试点页面完成 ✅
+- **Week 2**: dev-team 模块完成，验证迁移流程（进行中）
 - **Week 4**: operation-team 模块完成
 - **Week 10**: property-manage 模块完成
 - **Week 11**: setting-manage 模块完成

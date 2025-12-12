@@ -91,6 +91,7 @@
 		"vuepress": "2.0.0-rc.18"
 	},
 	"dependencies": {
-		"@01s-11comm/admin": "workspace:^"
+		"@01s-11comm/admin": "workspace:^",
+		"@01s-11comm/type": "workspace:^"
 	}
 }
