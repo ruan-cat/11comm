@@ -22,11 +22,12 @@ export default defineConfig({
 			// 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
 			name: "01s-11comm-admin-nitro",
 			vars: {
+				// 将包锁文件上传 即可更改构建流为 pnpm 了 以下环境变量失效
 				/** @see https://developers.cloudflare.com/workers/ci-cd/builds/build-image/ */
-				SKIP_DEPENDENCY_INSTALL: 1,
-				NPM_CONFIG_PACKAGE_MANAGER: "pnpm",
+				// SKIP_DEPENDENCY_INSTALL: 1,
+				// NPM_CONFIG_PACKAGE_MANAGER: "pnpm",
 				/** @see https://github.com/cloudflare/workers-sdk/pull/1427 */
-				npm_config_user_agent: "pnpm",
+				// npm_config_user_agent: "pnpm",
 			},
 		},
 	},
