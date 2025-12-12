@@ -7,7 +7,8 @@ import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } f
 import { mockConfigCenterData } from "./mock-data";
 import { defineHandler, readBody } from "nitro/h3";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {
+// Promise<JsonVO<PageDTO<ConfigCenterListItem>>>
+export default defineHandler(async (event): Promise<PageDTO<ConfigCenterListItem>> => {
 	const body = await readBody<ConfigCenterQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body ?? {};
 
@@ -33,17 +34,25 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
+	// JsonVO<PageDTO<ConfigCenterListItem>>
+	const response: PageDTO<ConfigCenterListItem> = {
+		list: pageData,
+		total,
+		pageIndex,
+		pageSize,
+		totalPages: Math.ceil(total / pageSize),
 	};
+	// {
+	// 	code: 200,
+	// 	message: "查询成功",
+	// 	data: {
+	// 		list: pageData,
+	// 		total,
+	// 		pageIndex,
+	// 		pageSize,
+	// 		totalPages: Math.ceil(total / pageSize),
+	// 	},
+	// };
 
 	return response;
 });
