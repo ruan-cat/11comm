@@ -33,7 +33,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	return {
+	const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -44,6 +44,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
