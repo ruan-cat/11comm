@@ -46,7 +46,6 @@ components-*.ts
 *.code-workspace
 
 # 忽略自动生成的依赖锁文件 不提供包管理器的依赖锁文件
-pnpm-lock.yaml
 package-lock.json
 
 # 忽略自动生成vercel部署配置文件
