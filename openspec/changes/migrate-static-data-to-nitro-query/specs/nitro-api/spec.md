@@ -263,7 +263,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 3. 读取请求参数
 4. 数据筛选（遍历所有筛选字段）
 5. 分页处理（slice）
-6. 返回 JsonVO<PageDTO<T>> 格式
+6. 返回 `JsonVO<PageDTO<T>>` 格式
 
 #### Scenario: 接口代码结构
 
