@@ -33,6 +33,8 @@
     "lint:stylelint": "stylelint --cache --fix \"**/*.{html,vue,css,scss}\" --cache-location node_modules/.cache/stylelint/",
     "lint": "pnpm lint:eslint && pnpm lint:prettier && pnpm lint:stylelint",
     "preinstall": "npx only-allow pnpm",
+    "nitro:prepare": "nitro prepare",
+    "nitro:dev": "nitro dev",
     "rm:types": "tsx ./scripts/del-types.ts",
     "format": "pnpm lint:prettier",
     "build:github": "pnpm vite:build:prod:github"
