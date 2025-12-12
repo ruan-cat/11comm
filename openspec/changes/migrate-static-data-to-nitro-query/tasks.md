@@ -855,13 +855,58 @@
 - [ ] 6.2.7 验证 loading 状态显示正确
 - [ ] 6.2.8 验证错误状态提示正确
 
-### 6.3 代码清理
+### 6.3 代码清理（删除旧 test-data.ts 文件）
 
-- [ ] 6.3.1 删除 `apps/admin/src/pages/dev-team/**/test-data.ts`（8 个文件）
-- [ ] 6.3.2 删除 `apps/admin/src/pages/operation-team/**/test-data.ts`（12 个文件）
-- [ ] 6.3.3 删除 `apps/admin/src/pages/property-manage/**/test-data.ts`（60+ 个文件）
-- [ ] 6.3.4 删除 `apps/admin/src/pages/setting-manage/**/test-data.ts`（7 个文件）
-- [ ] 6.3.5 运行 `pnpm typecheck` 确认无报错
+#### 6.3.1 dev-team 模块清理 (8 个文件)
+
+- [ ] 6.3.1.1 删除 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
+- [ ] 6.3.1.2 删除 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
+- [ ] 6.3.1.3 删除 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
+- [ ] 6.3.1.4 删除 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
+- [ ] 6.3.1.5 删除 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
+- [ ] 6.3.1.6 删除 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
+- [ ] 6.3.1.7 删除 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
+- [ ] 6.3.1.8 删除 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
+- [ ] 6.3.1.9 运行 `pnpm typecheck` 确认 dev-team 模块无报错
+
+#### 6.3.2 operation-team 模块清理 (12 个文件)
+
+- [ ] 6.3.2.1 删除 `apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts`
+- [ ] 6.3.2.2 删除 `apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts`
+- [ ] 6.3.2.3 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts`
+- [ ] 6.3.2.4 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts`
+- [ ] 6.3.2.5 删除 `apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts`
+- [ ] 6.3.2.6 删除 `apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts`
+- [ ] 6.3.2.7 删除 `apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts`
+- [ ] 6.3.2.8 删除 `apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts`
+- [ ] 6.3.2.9 删除 `apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts`
+- [ ] 6.3.2.10 删除 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts`
+- [ ] 6.3.2.11 删除 `apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts`
+- [ ] 6.3.2.12 删除 `apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts`
+- [ ] 6.3.2.13 运行 `pnpm typecheck` 确认 operation-team 模块无报错
+
+#### 6.3.3 property-manage 模块清理 (60+ 个文件)
+
+- [ ] 6.3.3.1 使用脚本批量删除 `apps/admin/src/pages/property-manage/**/test-data.ts`（所有子模块）
+- [ ] 6.3.3.2 手动验证关键页面的 test-data.ts 已删除（抽查 10 个页面）
+- [ ] 6.3.3.3 运行 `pnpm typecheck` 确认 property-manage 模块无报错
+
+#### 6.3.4 setting-manage 模块清理 (7 个文件)
+
+- [ ] 6.3.4.1 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
+- [ ] 6.3.4.2 删除 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
+- [ ] 6.3.4.3 删除 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts`
+- [ ] 6.3.4.4 删除 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts`
+- [ ] 6.3.4.5 删除 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts`
+- [ ] 6.3.4.6 删除 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
+- [ ] 6.3.4.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
+- [ ] 6.3.4.8 运行 `pnpm typecheck` 确认 setting-manage 模块无报错
+
+#### 6.3.5 全局验证
+
+- [ ] 6.3.5.1 全局搜索确认没有遗留的 test-data.ts 文件（`find apps/admin/src/pages -name "test-data.ts"`）
+- [ ] 6.3.5.2 运行 `pnpm -F @01s-11comm/admin typecheck` 确认整个项目无报错
+- [ ] 6.3.5.3 全局搜索确认没有代码仍然导入 test-data.ts（`grep -r "from.*test-data" apps/admin/src/pages`）
 
 ### 6.4 文档更新
 
@@ -893,8 +938,10 @@
 |    3     | operation-team 模块迁移  |   60    |   2 周    |
 |    4     | property-manage 模块迁移 |   355   |   6 周    |
 |    5     | setting-manage 模块迁移  |   35    |   1 周    |
-|    6     |        验证和清理        |   30    |   1 周    |
-| **总计** |                          | **535** | **12 周** |
+|    6     |        验证和清理        |   61    |   1 周    |
+| **总计** |                          | **566** | **12 周** |
+
+**注：** 阶段 6 的任务数从 30 增加到 61，主要是将代码清理部分细化为更详细的子任务，确保所有旧 test-data.ts 文件都能被及时删除。
 
 ## 进度统计
 
@@ -907,8 +954,8 @@
 | operation-team  |   24   |   60    |    40%    |
 | property-manage |   9    |   355   |   2.5%    |
 | setting-manage  |   0    |   35    |    0%     |
-|   验证和清理    |   0    |   30    |    0%     |
-|    **总计**     | **82** | **535** | **15.3%** |
+|   验证和清理    |   0    |   61    |    0%     |
+|    **总计**     | **82** | **566** | **14.5%** |
 
 ## 注意事项
 
@@ -917,6 +964,10 @@
 3. **功能验证**：每迁移一个页面，手动测试搜索和分页功能
 4. **脚本自动化**：建议在阶段 2 完成后编写自动化脚本，减少阶段 3-5 的工作量
 5. **风险控制**：如果某个页面迁移失败，立即回滚并分析原因，不要继续迁移下一个
+6. **及时删除旧文件**：完成 Nitro 接口迁移后，必须在阶段 6 统一删除所有旧的 test-data.ts 文件，不允许新旧文件长期共存
+   - 删除前确保 mock-data.ts、list.post.ts、TanStack Query Hook 和页面更新都已完成
+   - 删除后立即运行 typecheck 确保无依赖引用错误
+   - 使用全局搜索工具验证没有遗留的 test-data.ts 文件
 
 ## 关键里程碑
 

@@ -345,3 +345,42 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseCha
 - **GIVEN** 原导出 `export const tableData: 房屋收费_列表数据[] = [...]`
 - **WHEN** 迁移到 mock-data.ts
 - **THEN** 新导出为 `export const mockHouseChargeData: HouseChargeListItem[] = [...]`
+
+---
+
+### Requirement: 及时删除旧 test-data.ts 文件
+
+完成 Nitro 接口生成后 MUST 及时删除旧的 test-data.ts 文件：
+
+- 在每个页面迁移的最后一步删除 test-data.ts
+- 删除前确保 Nitro 接口和 TanStack Query 集成已完成
+- 删除后运行 typecheck 确保无依赖引用错误
+- 不允许保留旧的 test-data.ts 文件与新接口共存
+
+#### Scenario: 迁移完成后立即删除
+
+- **GIVEN** 页面 `src/pages/property-manage/expense-manage/house-charge/index.vue` 已更新使用 TanStack Query
+- **AND** Nitro 接口 `server/api/property-manage/expense-manage/house-charge/list.post.ts` 已创建
+- **AND** 假数据已迁移到 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
+- **WHEN** 完成页面迁移的第 5 步
+- **THEN** 必须立即删除 `src/pages/property-manage/expense-manage/house-charge/test-data.ts`
+- **AND** 运行 `pnpm typecheck` 确保无报错
+
+#### Scenario: 删除前验证迁移完整性
+
+- **GIVEN** 准备删除旧 test-data.ts 文件
+- **WHEN** 执行删除操作前
+- **THEN** 必须确认以下条件全部满足：
+  - mock-data.ts 已创建并包含完整数据
+  - list.post.ts 接口已创建并正常工作
+  - TanStack Query Hook 已创建
+  - 页面 index.vue 已更新并移除对 test-data.ts 的导入
+  - 浏览器测试页面功能正常
+
+#### Scenario: 禁止新旧文件共存
+
+- **GIVEN** 某个页面迁移过程中
+- **WHEN** Nitro 接口和 mock-data.ts 已创建
+- **THEN** 不允许同时保留 `pages/{module}/{page}/test-data.ts` 和 `server/api/{module}/{page}/mock-data.ts`
+- **AND** 必须在完成页面更新后立即删除旧文件
+- **AND** 旧文件的保留时间不得超过单个页面迁移周期（约 2.5 小时）
