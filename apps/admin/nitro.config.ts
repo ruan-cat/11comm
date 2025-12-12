@@ -2,7 +2,8 @@ import { defineConfig } from "nitro";
 import { pathResolve } from "./build/utils";
 
 export default defineConfig({
-	serverDir: "server",
+	serverDir: "./server",
+	apiDir: "./server/api",
 	alias: {
 		/**
 		 * Nitro 构建需要显式传入当前文件的 import.meta.url，
