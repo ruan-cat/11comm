@@ -48,10 +48,26 @@ export const ownerVehicleStatusOptions: OptionsType = [
  * Owner vehicle form VO
  */
 export interface 业主车辆表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 车牌号 License plate */
+	车牌号: string;
+	/** 汽车品牌 Car brand */
+	汽车品牌: string;
+	/** 车类型 Car type */
+	车类型: string;
+	/** 颜色 Color */
+	颜色: string;
+	/** 车牌类型 License plate type */
+	车牌类型: string;
+	/** 开始时间 Start time */
+	开始时间: string;
+	/** 结束时间 End time */
+	结束时间: string;
+	/** 业主 Owner */
+	业主: string;
+	/** 车位 Parking space */
+	车位: string;
+	/** 业主车辆 Owner vehicle */
+	业主车辆: string;
 	/** 备注 Remark */
-	remark: string;
+	备注: string;
 }

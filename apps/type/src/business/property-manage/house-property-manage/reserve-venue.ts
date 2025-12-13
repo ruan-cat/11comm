@@ -47,11 +47,23 @@ export const reserveVenueStatusOptions: OptionsType = [
  * @description 场地预约表单VO
  * Reserve venue form VO
  */
-export interface 场地预约_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+export interface ReserveVenueFormVO {
+	/** 预约人 Reserver */
+	reserver: string;
+	/** 联系电话 Contact phone */
+	contactPhone: string;
+	/** 预约时间 Reservation time */
+	reservationTime: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 场地类型 Venue type */
+	venueType: string;
+	/** 预约状态 Reservation status */
+	reservationStatus: string;
+	/** 使用人数 Number of users */
+	numberOfUsers: number;
 	/** 备注 Remark */
 	remark: string;
 }

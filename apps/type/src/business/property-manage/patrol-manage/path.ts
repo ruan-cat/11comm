@@ -47,11 +47,19 @@ export const pathStatusOptions: OptionsType = [
  * @description 巡检路线表单数据
  * Patrol path form data
  */
-export interface 巡检路线_表单数据 {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
+export interface PatrolPathFormData {
+	/** 巡检点ID Patrol point ID */
+	patrolPointId: string;
+	/** 巡检点名称 Patrol point name */
+	patrolPointName: string;
+	/** 巡检点类型 Patrol point type */
+	patrolPointType: string;
+	/** 巡检位置 Patrol location */
+	patrolLocation: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 排序 Sort order */
+	sortOrder: string;
 }

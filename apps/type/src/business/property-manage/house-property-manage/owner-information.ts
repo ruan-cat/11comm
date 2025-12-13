@@ -47,11 +47,25 @@ export const ownerInformationStatusOptions: OptionsType = [
  * @description 业主信息表单VO
  * Owner information form VO
  */
-export interface 业主信息表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+export interface OwnerInformationFormVO {
+	/** 人员类型 Personnel type */
+	personnelType: string;
+	/** 人员角色 Personnel role */
+	personnelRole: string;
+	/** 客户名称 Customer name */
+	customerName: string;
+	/** 联系手机 Contact phone */
+	contactPhone: string;
+	/** 性别 Gender */
+	gender: string;
+	/** 备用手机 Backup phone */
+	backupPhone: string;
+	/** 地址 Address */
+	address: string;
+	/** 门禁钥匙 Access key */
+	accessKey: string;
+	/** 身份证 ID card */
+	idCard: string;
 	/** 备注 Remark */
 	remark: string;
 }

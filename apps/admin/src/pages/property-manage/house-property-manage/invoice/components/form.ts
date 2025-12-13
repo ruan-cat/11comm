@@ -1,3 +1,5 @@
+import type { 发票表单_VO } from "@01s-11comm/type";
+import { invoiceDefaultForm as defaultForm } from "@01s-11comm/type";
 
 /**
  * 发票表单 props

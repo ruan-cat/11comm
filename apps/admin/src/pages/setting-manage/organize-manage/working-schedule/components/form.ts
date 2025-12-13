@@ -1,3 +1,4 @@
+import type { ScheduleType } from "@01s-11comm/type";
 
 /** 排班表表单业务接口 */
 export interface 排班表表单_VO {

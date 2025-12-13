@@ -1,4 +1,5 @@
 import type { HandingBusinessListItem } from "@01s-11comm/type";
+import { 费用类型Options, 状态Options } from "@01s-11comm/type";
 
 /** 业务受理表单 VO */
 export interface 业务受理表单_VO {

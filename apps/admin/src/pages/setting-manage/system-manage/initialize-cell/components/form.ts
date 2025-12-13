@@ -1,4 +1,5 @@
 import type { OptionsType } from "plus-pro-components";
+import type { 初始化小区表单_VO } from "@01s-11comm/type";
 
 /** 状态选项 */
 export const 状态Options: OptionsType = [

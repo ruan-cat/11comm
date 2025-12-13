@@ -47,11 +47,13 @@ export const itemStatusOptions: OptionsType = [
  * @description 巡检项目表单VO
  * Patrol item form VO
  */
-export interface 巡检项目表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+export interface PatrolItemFormVO {
+	/** 编号 Code */
+	code: string;
+	/** 巡检项目 Patrol item */
+	patrolItem: string;
+	/** 创建时间 Create time */
+	createTime: string;
 	/** 备注 Remark */
 	remark: string;
 }

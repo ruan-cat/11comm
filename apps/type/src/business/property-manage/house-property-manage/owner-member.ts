@@ -47,11 +47,25 @@ export const ownerMemberStatusOptions: OptionsType = [
  * @description 业主成员表单VO
  * Owner member form VO
  */
-export interface 业主成员表单_VO {
+export interface OwnerMemberFormVO {
+	/** 成员人脸 Member face */
+	memberFace: string;
 	/** 名称 Name */
 	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 性别 Gender */
+	gender: string;
+	/** 类型 Type */
+	type: string;
+	/** 身份证 ID card */
+	idCard: string;
+	/** 联系方式 Contact */
+	contact: string;
+	/** 家庭住址 Home address */
+	homeAddress: string;
+	/** 创建人 Creator */
+	creator: string;
 	/** 备注 Remark */
 	remark: string;
+	/** 门禁钥匙 Access key */
+	accessKey: string;
 }

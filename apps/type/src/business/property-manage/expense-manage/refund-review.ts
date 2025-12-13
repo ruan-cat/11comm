@@ -20,19 +20,6 @@ export interface RefundReviewListItem {
 }
 
 /**
- * @description 退费审核表单VO
- * Refund review form VO
- */
-export interface 退费审核表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
-}
-
-/**
  * @description refund-review列表查询参数
  * RefundReview list query parameters
  */
@@ -55,3 +42,34 @@ export const refundReviewStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 退费审核表单VO
+ * Refund review form VO
+ */
+export interface RefundReviewFormVO {
+	/** 退费单号 Refund order number */
+	refundOrderNumber: string;
+	/** 缴费单号 Payment order number */
+	paymentOrderNumber: string;
+	/** 费用类型 Fee type */
+	feeType: string;
+	/** 付费对象 Payer */
+	payer: string;
+	/** 付费周期 Payment period */
+	paymentPeriod: string;
+	/** 应付金额实付金额 Amount */
+	payablePaidAmount: string;
+	/** 申请时间 Apply time */
+	applyTime: string;
+	/** 退费原因 Refund reason */
+	refundReason: string;
+	/** 申请人 Applicant */
+	applicant: string;
+	/** 审核状态 Audit status */
+	auditStatus: string;
+	/** 审核人 Auditor */
+	auditor: string;
+	/** 审核备注 Audit remark */
+	auditRemark: string;
+}

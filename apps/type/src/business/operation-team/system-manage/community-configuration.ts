@@ -75,13 +75,13 @@ export const communityConfigStatusOptions: OptionsType = [
  * @description 小区配置表单VO
  * Community configuration form VO
  */
-export interface 小区配置表单_VO {
+export interface CommunityConfigFormVO {
 	/** 主键ID Config ID */
 	csId: string;
 	/** 小区ID Community ID */
 	communityId: string;
 	/** 小区名称 Community name */
-	小区名称: string;
+	communityName: string;
 	/** 设置名称 Setting name */
 	settingName: string;
 	/** 设置值 Setting value */
@@ -90,8 +90,6 @@ export interface 小区配置表单_VO {
 	settingType: string;
 	/** 数据状态 Status code */
 	statusCd: string;
-	/** 状态文本 Status text */
-	statusText: string;
 	/** 备注信息 Remark */
 	remark: string;
 }

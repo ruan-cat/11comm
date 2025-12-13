@@ -47,11 +47,32 @@ export const planStatusOptions: OptionsType = [
  * @description 巡检计划表单VO
  * Patrol plan form VO
  */
-export interface 巡检计划表单_VO {
-	/** 名称 Name */
-	name: string;
+export interface PatrolPlanFormVO {
+	/** 计划名称 Plan name */
+	planName: string;
+	/** 计划路线 Plan route */
+	planRoute: string;
+	/** 计划周期 Plan cycle */
+	planCycle: string;
+	/** 签到方式 Check-in method */
+	checkInMethod: string;
+	/** 日期范围 Date range */
+	dateRange: string;
+	/** 时间范围 Time range */
+	timeRange: {
+		/** 开始时间 Start time */
+		startTime: string;
+		/** 结束时间 End time */
+		endTime: string;
+	};
+	/** 任务提前(分钟) Task advance (minutes) */
+	taskAdvanceMinutes: string;
+	/** 制定人 Planner */
+	planner: string;
+	/** 制定时间 Plan time */
+	planTime: string;
 	/** 状态 Status */
 	status: string;
-	/** 备注 Remark */
-	remark: string;
+	/** 巡检人员 Patrol staff */
+	patrolStaff: string;
 }

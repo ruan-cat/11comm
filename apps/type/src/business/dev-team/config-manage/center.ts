@@ -41,12 +41,6 @@ export interface ConfigCenterListItem {
 }
 
 /**
- * 配置中心列表数据中文别名
- * Chinese alias for ConfigCenterListItem
- */
-export type 配置中心_列表数据 = ConfigCenterListItem;
-
-/**
  * 配置中心查询参数
  * Configuration center query parameters
  */

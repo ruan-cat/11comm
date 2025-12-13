@@ -47,11 +47,27 @@ export const reprintVoucherStatusOptions: OptionsType = [
  * @description 补打收据表单VO
  * Reprint voucher form VO
  */
-export interface 补打收据表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
+export interface ReprintVoucherFormVO {
+	/** 收据ID Receipt ID */
+	receiptId: string;
+	/** 收据编号 Receipt number */
+	receiptNumber: string;
+	/** 费用类型 Fee type */
+	feeType: string;
+	/** 费用项 Fee item */
+	feeItem: string;
+	/** 房屋 House */
+	house: string;
+	/** 业主 Owner */
+	owner: string;
+	/** 车位 Parking space */
+	parkingSpace: string;
+	/** 总金额 Total amount */
+	totalAmount: string;
+	/** 缴费时间 Payment time */
+	paymentTime: string;
+	/** 打印份数 Print copies */
+	printCopies: number;
+	/** 打印备注 Print remark */
+	printRemark: string;
 }

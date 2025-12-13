@@ -1,3 +1,4 @@
+import type { 场地预约_VO } from "@01s-11comm/type";
 
 /**
  * 场地预约表单 props

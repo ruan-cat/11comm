@@ -47,9 +47,27 @@ export const ownersCommitteeStatusOptions: OptionsType = [
  * @description 业委会表单VO
  * Owners committee form VO
  */
-export interface 业委会表单_VO {
-	/** 名称 Name */
-	name: string;
+export interface OwnersCommitteeFormVO {
+	/** 姓名 Name */
+	fullName: string;
+	/** 性别 Gender */
+	gender: string;
+	/** 电话 Phone */
+	phone: string;
+	/** 身份证号码 ID number */
+	idNumber: string;
+	/** 住址 Address */
+	address: string;
+	/** 职位 Position */
+	position: string;
+	/** 岗位 Post */
+	post: string;
+	/** 岗位描述 Post description */
+	postDescription: string;
+	/** 届期 Term */
+	term: string;
+	/** 任期 Tenure */
+	tenure: string;
 	/** 状态 Status */
 	status: string;
 	/** 备注 Remark */

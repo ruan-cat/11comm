@@ -110,11 +110,21 @@ export const buildingUnitOptions: OptionsType = [
  * @description 房屋管理表单VO
  * House management form VO
  */
-export interface 房屋管理表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
+export interface HouseManagementFormVO {
+	/** 房屋 House */
+	house: string;
+	/** 楼层 Floor */
+	floor: string;
+	/** 业主 Owner */
+	owner: string;
+	/** 类型 Type */
+	type: string;
+	/** 房屋面积 House area */
+	houseArea: string;
+	/** 租金 Rent */
+	rent: string;
+	/** 房屋状态 House status */
+	houseStatus: string;
+	/** 有效期 Valid until */
+	validUntil: string;
 }
