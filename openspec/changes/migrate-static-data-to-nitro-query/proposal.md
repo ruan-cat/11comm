@@ -157,7 +157,6 @@
 ## Dependencies
 
 - 依赖 Nitro 3.0.1-alpha.1 已安装
-- 依赖 @ruan-cat/utils 4.16.0 提供 JsonVO、PageDTO 类型
 - 需要新增 @tanstack/vue-query ^5.62.8
 - 需要 pnpm workspace 支持本地类型库引用
 

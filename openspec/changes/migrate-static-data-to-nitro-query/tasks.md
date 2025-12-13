@@ -1,6 +1,6 @@
 # 实施任务清单
 
-本迁移任务共分为 **6 个阶段**，预计 **490 个子任务**，总工期约 **12 周**。
+本迁移任务共分为 **6 个阶段**，预计 **707 个子任务**，总工期约 **12.5 周**。
 
 ---
 
@@ -36,281 +36,432 @@
 
 ---
 
-## 阶段 2: dev-team 模块迁移 (40 任务，1 周)
+## 严格任务执行规范
+
+### 2.1 migrate-static-data-to-nitro-query 任务执行步骤
+
+执行 `migrate-static-data-to-nitro-query` 任务时，必须按照以下**严格的步骤**来修改每一个列表页：
+
+1. **新建业务类型和选项数组**（必须首先完成）
+   - 新建 `apps/type/src/*` 对应目录的业务类型
+   - 新建对应的下拉选择用的数组（OptionsType）
+   - 运行 `pnpm -F @01s-11comm/type typecheck` 确保类型正确
+
+2. **新建固定假数据**
+   - 新建 `apps/admin/server/*` 对应业务目录的 `mock-data.ts`
+   - 假数据的类型约束必须满足来自 `@01s-11comm/type` 类型库提供的业务类型
+
+3. **新建 Nitro 接口**
+   - 新建 `apps/admin/server/*` 对应业务目录的 `list.post.ts`
+   - 接口必须返回 `JsonVO<PageDTO<T>>` 格式
+
+4. **新建查询 Hooks**
+   - 新建 `apps/admin/src/api/*` 对应目录的封装 `useListQuery` 的 hooks 钩子函数
+   - Hooks 必须使用 `@01s-11comm/type` 提供的类型
+
+5. **改写列表页**
+   - 改写改造对应业务目录的 index.vue 列表页
+   - 使用封装好的对应业务 hooks 函数
+   - 使用来自 `@01s-11comm/type` 类型库提供的业务类型和下拉选用的数组
+
+6. **删除旧假数据**（必须确保新接口正常工作）
+   - 删除掉对应业务目录的 `test-data.ts` 假数据文件
+   - 确保没有其他文件引用该文件
+
+7. **更新表单文件**
+   - 更新对应的 form.ts 和 form.vue 文件
+   - 更改类型和变量的导入路径，从使用来自 `@01s-11comm/type` 类型库提供的业务类型和下拉选用的数组
+
+### 2.2 重要执行原则
+
+- **严格顺序**：必须按照上述 1-7 步骤顺序执行，不允许跳过任何步骤
+- **逐步验证**：完成每个步骤后必须进行相应的类型检查和功能验证
+- **及时清理**：旧文件必须在确认新系统正常工作后立即删除
+- **类型安全**：所有类型定义必须集中在 `apps/type` 包中，不允许在 `apps/admin` 中定义业务类型
+- **一致性**：所有接口必须返回统一格式，所有页面必须使用相同的获取数据方式
+
+---
+
+## 阶段 2: dev-team 模块迁移 (56 任务，1 周)
 
 ### 2.1 config-manage/center
 
-- [x] 2.1.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/center.ts`
-- [x] 2.1.2 创建 `server/api/dev-team/config-manage/center/mock-data.ts`
-- [x] 2.1.3 创建 `server/api/dev-team/config-manage/center/list.post.ts`
-- [x] 2.1.4 创建 `src/api/dev-team/config-manage/center/index.ts`（TanStack Query hook）
-- [x] 2.1.5 更新 `src/pages/dev-team/config-manage/center/index.vue` 使用新接口
+- [x] 2.1.1 新建 `apps/type/src/business/dev-team/config-manage/center.ts` 业务类型和选项数组
+- [x] 2.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 center 类型正确
+- [x] 2.1.3 新建 `apps/admin/server/api/dev-team/config-manage/center/mock-data.ts`
+- [x] 2.1.4 新建 `apps/admin/server/api/dev-team/config-manage/center/list.post.ts`
+- [x] 2.1.5 新建 `apps/admin/src/api/dev-team/config-manage/center/index.ts`
+- [x] 2.1.6 改写 `apps/admin/src/pages/dev-team/config-manage/center/index.vue` 列表页
+- [x] 2.1.7 删除 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
+- [ ] 2.1.8 更新 `apps/admin/src/pages/dev-team/config-manage/center/form.ts` 和 `form.vue` 文件
 
 ### 2.2 config-manage/dictionary
 
-- [x] 2.2.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/dictionary.ts`
-- [x] 2.2.2 创建 `server/api/dev-team/config-manage/dictionary/mock-data.ts`
-- [x] 2.2.3 创建 `server/api/dev-team/config-manage/dictionary/list.post.ts`
-- [x] 2.2.4 创建 `src/api/dev-team/config-manage/dictionary/index.ts`
-- [x] 2.2.5 更新 `src/pages/dev-team/config-manage/dictionary/index.vue`
+- [x] 2.2.1 新建 `apps/type/src/business/dev-team/config-manage/dictionary.ts` 业务类型和选项数组
+- [x] 2.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 dictionary 类型正确
+- [x] 2.2.3 新建 `apps/admin/server/api/dev-team/config-manage/dictionary/mock-data.ts`
+- [x] 2.2.4 新建 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts`
+- [x] 2.2.5 新建 `apps/admin/src/api/dev-team/config-manage/dictionary/index.ts`
+- [x] 2.2.6 改写 `apps/admin/src/pages/dev-team/config-manage/dictionary/index.vue` 列表页
+- [x] 2.2.7 删除 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
+- [ ] 2.2.8 更新 `apps/admin/src/pages/dev-team/config-manage/dictionary/form.ts` 和 `form.vue` 文件
 
 ### 2.3 config-manage/type
 
-- [x] 2.3.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/type.ts`
-- [x] 2.3.2 创建 `server/api/dev-team/config-manage/type/mock-data.ts`
-- [x] 2.3.3 创建 `server/api/dev-team/config-manage/type/list.post.ts`
-- [x] 2.3.4 创建 `src/api/dev-team/config-manage/type/index.ts`
-- [x] 2.3.5 更新 `src/pages/dev-team/config-manage/type/index.vue`
+- [x] 2.3.1 新建 `apps/type/src/business/dev-team/config-manage/type.ts` 业务类型和选项数组
+- [x] 2.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 type 类型正确
+- [x] 2.3.3 新建 `apps/admin/server/api/dev-team/config-manage/type/mock-data.ts`
+- [x] 2.3.4 新建 `apps/admin/server/api/dev-team/config-manage/type/list.post.ts`
+- [x] 2.3.5 新建 `apps/admin/src/api/dev-team/config-manage/type/index.ts`
+- [x] 2.3.6 改写 `apps/admin/src/pages/dev-team/config-manage/type/index.vue` 列表页
+- [x] 2.3.7 删除 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
+- [ ] 2.3.8 更新 `apps/admin/src/pages/dev-team/config-manage/type/form.ts` 和 `form.vue` 文件
 
 ### 2.4 config-manage/item
 
-- [x] 2.4.1 迁移类型到 `apps/type/src/business/dev-team/config-manage/item.ts`
-- [x] 2.4.2 创建 `server/api/dev-team/config-manage/item/mock-data.ts`
-- [x] 2.4.3 创建 `server/api/dev-team/config-manage/item/list.post.ts`
-- [x] 2.4.4 创建 `src/api/dev-team/config-manage/item/index.ts`
-- [x] 2.4.5 更新 `src/pages/dev-team/config-manage/item/index.vue`
+- [x] 2.4.1 新建 `apps/type/src/business/dev-team/config-manage/item.ts` 业务类型和选项数组
+- [x] 2.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 item 类型正确
+- [x] 2.4.3 新建 `apps/admin/server/api/dev-team/config-manage/item/mock-data.ts`
+- [x] 2.4.4 新建 `apps/admin/server/api/dev-team/config-manage/item/list.post.ts`
+- [x] 2.4.5 新建 `apps/admin/src/api/dev-team/config-manage/item/index.ts`
+- [x] 2.4.6 改写 `apps/admin/src/pages/dev-team/config-manage/item/index.vue` 列表页
+- [x] 2.4.7 删除 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
+- [ ] 2.4.8 更新 `apps/admin/src/pages/dev-team/config-manage/item/form.ts` 和 `form.vue` 文件
 
 ### 2.5 menu-manage/catalog
 
-- [x] 2.5.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/catalog.ts`
-- [x] 2.5.2 创建 `server/api/dev-team/menu-manage/catalog/mock-data.ts`
-- [x] 2.5.3 创建 `server/api/dev-team/menu-manage/catalog/list.post.ts`
-- [x] 2.5.4 创建 `src/api/dev-team/menu-manage/catalog/index.ts`
-- [x] 2.5.5 更新 `src/pages/dev-team/menu-manage/catalog/index.vue`
+- [x] 2.5.1 新建 `apps/type/src/business/dev-team/menu-manage/catalog.ts` 业务类型和选项数组
+- [x] 2.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 catalog 类型正确
+- [x] 2.5.3 新建 `apps/admin/server/api/dev-team/menu-manage/catalog/mock-data.ts`
+- [x] 2.5.4 新建 `apps/admin/server/api/dev-team/menu-manage/catalog/list.post.ts`
+- [x] 2.5.5 新建 `apps/admin/src/api/dev-team/menu-manage/catalog/index.ts`
+- [x] 2.5.6 改写 `apps/admin/src/pages/dev-team/menu-manage/catalog/index.vue` 列表页
+- [x] 2.5.7 删除 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
+- [ ] 2.5.8 更新 `apps/admin/src/pages/dev-team/menu-manage/catalog/form.ts` 和 `form.vue` 文件
 
 ### 2.6 menu-manage/group
 
-- [x] 2.6.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/group.ts`
-- [x] 2.6.2 创建 `server/api/dev-team/menu-manage/group/mock-data.ts`
-- [x] 2.6.3 创建 `server/api/dev-team/menu-manage/group/list.post.ts`
-- [x] 2.6.4 创建 `src/api/dev-team/menu-manage/group/index.ts`
-- [x] 2.6.5 更新 `src/pages/dev-team/menu-manage/group/index.vue`
+- [x] 2.6.1 新建 `apps/type/src/business/dev-team/menu-manage/group.ts` 业务类型和选项数组
+- [x] 2.6.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 group 类型正确
+- [x] 2.6.3 新建 `apps/admin/server/api/dev-team/menu-manage/group/mock-data.ts`
+- [x] 2.6.4 新建 `apps/admin/server/api/dev-team/menu-manage/group/list.post.ts`
+- [x] 2.6.5 新建 `apps/admin/src/api/dev-team/menu-manage/group/index.ts`
+- [x] 2.6.6 改写 `apps/admin/src/pages/dev-team/menu-manage/group/index.vue` 列表页
+- [x] 2.6.7 删除 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
+- [ ] 2.6.8 更新 `apps/admin/src/pages/dev-team/menu-manage/group/form.ts` 和 `form.vue` 文件
 
 ### 2.7 menu-manage/item
 
-- [x] 2.7.1 迁移类型到 `apps/type/src/business/dev-team/menu-manage/item.ts`
-- [x] 2.7.2 创建 `server/api/dev-team/menu-manage/item/mock-data.ts`
-- [x] 2.7.3 创建 `server/api/dev-team/menu-manage/item/list.post.ts`
-- [x] 2.7.4 创建 `src/api/dev-team/menu-manage/item/index.ts`
-- [x] 2.7.5 更新 `src/pages/dev-team/menu-manage/item/index.vue`
+- [x] 2.7.1 新建 `apps/type/src/business/dev-team/menu-manage/item.ts` 业务类型和选项数组
+- [x] 2.7.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 item 类型正确
+- [x] 2.7.3 新建 `apps/admin/server/api/dev-team/menu-manage/item/mock-data.ts`
+- [x] 2.7.4 新建 `apps/admin/server/api/dev-team/menu-manage/item/list.post.ts`
+- [x] 2.7.5 新建 `apps/admin/src/api/dev-team/menu-manage/item/index.ts`
+- [x] 2.7.6 改写 `apps/admin/src/pages/dev-team/menu-manage/item/index.vue` 列表页
+- [x] 2.7.7 删除 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
+- [ ] 2.7.8 更新 `apps/admin/src/pages/dev-team/menu-manage/item/form.ts` 和 `form.vue` 文件
 
 ### 2.8 cache-manage/refresh-cache
 
-- [x] 2.8.1 迁移类型到 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
-- [x] 2.8.2 创建 `server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
-- [x] 2.8.3 创建 `server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
-- [x] 2.8.4 创建 `src/api/dev-team/cache-manage/refresh-cache/index.ts`
-- [x] 2.8.5 更新 `src/pages/dev-team/cache-manage/refresh-cache/index.vue`
+- [x] 2.8.1 新建 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts` 业务类型和选项数组
+- [x] 2.8.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 refresh-cache 类型正确
+- [x] 2.8.3 新建 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
+- [x] 2.8.4 新建 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
+- [x] 2.8.5 新建 `apps/admin/src/api/dev-team/cache-manage/refresh-cache/index.ts`
+- [x] 2.8.6 改写 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/index.vue` 列表页
+- [x] 2.8.7 删除 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
+- [ ] 2.8.8 更新 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/form.ts` 和 `form.vue` 文件
 
 ---
 
-## 阶段 3: operation-team 模块迁移 (60 任务，2 周)
+## 阶段 3: operation-team 模块迁移 (84 任务，2 周)
 
-> 注：operation-team 有 12 个页面，每个页面 5 个步骤，共 60 任务
+> 注：operation-team 有 12 个页面，每个页面 7 个步骤，共 84 任务
 
 ### 3.1 data-manage/community-information
 
-- [x] 3.1.1 迁移类型到 `apps/type/src/business/operation-team/data-manage/community-information.ts`
-- [x] 3.1.2 创建 `server/api/operation-team/data-manage/community-information/mock-data.ts`
-- [x] 3.1.3 创建 `server/api/operation-team/data-manage/community-information/list.post.ts`
-- [x] 3.1.4 创建 `src/api/operation-team/data-manage/community-information/index.ts`
-- [x] 3.1.5 更新 `src/pages/operation-team/data-manage/community-information/index.vue`
+- [x] 3.1.1 新建 `apps/type/src/business/operation-team/data-manage/community-information.ts` 业务类型和选项数组
+- [x] 3.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 community-information 类型正确
+- [x] 3.1.3 新建 `apps/admin/server/api/operation-team/data-manage/community-information/mock-data.ts`
+- [x] 3.1.4 新建 `apps/admin/server/api/operation-team/data-manage/community-information/list.post.ts`
+- [x] 3.1.5 新建 `apps/admin/src/api/operation-team/data-manage/community-information/index.ts`
+- [x] 3.1.6 改写 `apps/admin/src/pages/operation-team/data-manage/community-information/index.vue` 列表页
+- [x] 3.1.7 删除 `apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts`
+- [ ] 3.1.8 更新 `apps/admin/src/pages/operation-team/data-manage/community-information/form.ts` 和 `form.vue` 文件
 
 ### 3.2 data-manage/property-management-company
 
-- [x] 3.2.1 迁移类型到 `apps/type/src/business/operation-team/data-manage/property-company.ts`
-- [x] 3.2.2 创建 `server/api/operation-team/data-manage/property-company/mock-data.ts`
-- [x] 3.2.3 创建 `server/api/operation-team/data-manage/property-company/list.post.ts`
-- [x] 3.2.4 创建 `src/api/operation-team/data-manage/property-company/index.ts`
-- [x] 3.2.5 更新 `src/pages/operation-team/data-manage/property-management-company/index.vue`
+- [x] 3.2.1 新建 `apps/type/src/business/operation-team/data-manage/property-company.ts` 业务类型和选项数组
+- [x] 3.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 property-company 类型正确
+- [x] 3.2.3 新建 `apps/admin/server/api/operation-team/data-manage/property-company/mock-data.ts`
+- [x] 3.2.4 新建 `apps/admin/server/api/operation-team/data-manage/property-company/list.post.ts`
+- [x] 3.2.5 新建 `apps/admin/src/api/operation-team/data-manage/property-company/index.ts`
+- [x] 3.2.6 改写 `apps/admin/src/pages/operation-team/data-manage/property-management-company/index.vue` 列表页
+- [x] 3.2.7 删除 `apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts`
+- [ ] 3.2.8 更新 `apps/admin/src/pages/operation-team/data-manage/property-management-company/form.ts` 和 `form.vue` 文件
 
 ### 3.3 merchant-manage/merchant-admin
 
-- [x] 3.3.1 迁移类型到 `apps/type/src/business/operation-team/merchant-manage/merchant-admin.ts`
-- [x] 3.3.2 创建 `server/api/operation-team/merchant-manage/merchant-admin/mock-data.ts`
-- [x] 3.3.3 创建 `server/api/operation-team/merchant-manage/merchant-admin/list.post.ts`
-- [x] 3.3.4 创建 `src/api/operation-team/merchant-manage/merchant-admin/index.ts`
-- [x] 3.3.5 更新 `src/pages/operation-team/merchant-manage/merchant-admin/index.vue`
+- [x] 3.3.1 新建 `apps/type/src/business/operation-team/merchant-manage/merchant-admin.ts` 业务类型和选项数组
+- [x] 3.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 merchant-admin 类型正确
+- [x] 3.3.3 新建 `apps/admin/server/api/operation-team/merchant-manage/merchant-admin/mock-data.ts`
+- [x] 3.3.4 新建 `apps/admin/server/api/operation-team/merchant-manage/merchant-admin/list.post.ts`
+- [x] 3.3.5 新建 `apps/admin/src/api/operation-team/merchant-manage/merchant-admin/index.ts`
+- [x] 3.3.6 改写 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/index.vue` 列表页
+- [x] 3.3.7 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts`
+- [ ] 3.3.8 更新 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/form.ts` 和 `form.vue` 文件
 
 ### 3.4 merchant-manage/merchant-info
 
-- [x] 3.4.1 迁移类型到 `apps/type/src/business/operation-team/merchant-manage/merchant-info.ts`
-- [x] 3.4.2 创建 `server/api/operation-team/merchant-manage/merchant-info/mock-data.ts`
-- [x] 3.4.3 创建 `server/api/operation-team/merchant-manage/merchant-info/list.post.ts`
-- [x] 3.4.4 创建 `src/api/operation-team/merchant-manage/merchant-info/index.ts`
-- [x] 3.4.5 更新 `src/pages/operation-team/merchant-manage/merchant-info/index.vue`
+- [x] 3.4.1 新建 `apps/type/src/business/operation-team/merchant-manage/merchant-info.ts` 业务类型和选项数组
+- [x] 3.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 merchant-info 类型正确
+- [x] 3.4.3 新建 `apps/admin/server/api/operation-team/merchant-manage/merchant-info/mock-data.ts`
+- [x] 3.4.4 新建 `apps/admin/server/api/operation-team/merchant-manage/merchant-info/list.post.ts`
+- [x] 3.4.5 新建 `apps/admin/src/api/operation-team/merchant-manage/merchant-info/index.ts`
+- [x] 3.4.6 改写 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/index.vue` 列表页
+- [x] 3.4.7 删除 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts`
+- [ ] 3.4.8 更新 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/form.ts` 和 `form.vue` 文件
 
 ### 3.5 report-configuration/report-component
 
-- [x] 3.5.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-component.ts`
-- [x] 3.5.2 创建 `server/api/operation-team/report-configuration/report-component/mock-data.ts`
-- [x] 3.5.3 创建 `server/api/operation-team/report-configuration/report-component/list.post.ts`
-- [x] 3.5.4 创建 `src/api/operation-team/report-configuration/report-component/index.ts`
-- [x] 3.5.5 更新 `src/pages/operation-team/report-configuration/report-component/index.vue`
+- [x] 3.5.1 新建 `apps/type/src/business/operation-team/report-configuration/report-component.ts` 业务类型和选项数组
+- [x] 3.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 report-component 类型正确
+- [x] 3.5.3 新建 `apps/admin/server/api/operation-team/report-configuration/report-component/mock-data.ts`
+- [x] 3.5.4 新建 `apps/admin/server/api/operation-team/report-configuration/report-component/list.post.ts`
+- [x] 3.5.5 新建 `apps/admin/src/api/operation-team/report-configuration/report-component/index.ts`
+- [x] 3.5.6 改写 `apps/admin/src/pages/operation-team/report-configuration/report-component/index.vue` 列表页
+- [x] 3.5.7 删除 `apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts`
+- [ ] 3.5.8 更新 `apps/admin/src/pages/operation-team/report-configuration/report-component/form.ts` 和 `form.vue` 文件
 
 ### 3.6 report-configuration/report-group
 
-- [x] 3.6.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-group.ts`
-- [x] 3.6.2 创建 `server/api/operation-team/report-configuration/report-group/mock-data.ts`
-- [x] 3.6.3 创建 `server/api/operation-team/report-configuration/report-group/list.post.ts`
-- [x] 3.6.4 创建 `src/api/operation-team/report-configuration/report-group/index.ts`
-- [x] 3.6.5 更新 `src/pages/operation-team/report-configuration/report-group/index.vue`
+- [x] 3.6.1 新建 `apps/type/src/business/operation-team/report-configuration/report-group.ts` 业务类型和选项数组
+- [x] 3.6.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 report-group 类型正确
+- [x] 3.6.3 新建 `apps/admin/server/api/operation-team/report-configuration/report-group/mock-data.ts`
+- [x] 3.6.4 新建 `apps/admin/server/api/operation-team/report-configuration/report-group/list.post.ts`
+- [x] 3.6.5 新建 `apps/admin/src/api/operation-team/report-configuration/report-group/index.ts`
+- [x] 3.6.6 改写 `apps/admin/src/pages/operation-team/report-configuration/report-group/index.vue` 列表页
+- [x] 3.6.7 删除 `apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts`
+- [ ] 3.6.8 更新 `apps/admin/src/pages/operation-team/report-configuration/report-group/form.ts` 和 `form.vue` 文件
 
 ### 3.7 report-configuration/report-info
 
-- [x] 3.7.1 迁移类型到 `apps/type/src/business/operation-team/report-configuration/report-info.ts`
-- [x] 3.7.2 创建 `server/api/operation-team/report-configuration/report-info/mock-data.ts`
-- [x] 3.7.3 创建 `server/api/operation-team/report-configuration/report-info/list.post.ts`
-- [x] 3.7.4 创建 `src/api/operation-team/report-configuration/report-info/index.ts`
-- [x] 3.7.5 更新 `src/pages/operation-team/report-configuration/report-info/index.vue`
+- [x] 3.7.1 新建 `apps/type/src/business/operation-team/report-configuration/report-info.ts` 业务类型和选项数组
+- [x] 3.7.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 report-info 类型正确
+- [x] 3.7.3 新建 `apps/admin/server/api/operation-team/report-configuration/report-info/mock-data.ts`
+- [x] 3.7.4 新建 `apps/admin/server/api/operation-team/report-configuration/report-info/list.post.ts`
+- [x] 3.7.5 新建 `apps/admin/src/api/operation-team/report-configuration/report-info/index.ts`
+- [x] 3.7.6 改写 `apps/admin/src/pages/operation-team/report-configuration/report-info/index.vue` 列表页
+- [x] 3.7.7 删除 `apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts`
+- [ ] 3.7.8 更新 `apps/admin/src/pages/operation-team/report-configuration/report-info/form.ts` 和 `form.vue` 文件
 
 ### 3.8 system-manage/change-password
 
-- [x] 3.8.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/change-password.ts`
-- [x] 3.8.2 创建 `server/api/operation-team/system-manage/change-password/mock-data.ts`
-- [x] 3.8.3 创建 `server/api/operation-team/system-manage/change-password/list.post.ts`
-- [x] 3.8.4 创建 `src/api/operation-team/system-manage/change-password/index.ts`
-- [x] 3.8.5 更新 `src/pages/operation-team/system-manage/change-password/index.vue`
+- [x] 3.8.1 新建 `apps/type/src/business/operation-team/system-manage/change-password.ts` 业务类型和选项数组
+- [x] 3.8.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 change-password 类型正确
+- [x] 3.8.3 新建 `apps/admin/server/api/operation-team/system-manage/change-password/mock-data.ts`
+- [x] 3.8.4 新建 `apps/admin/server/api/operation-team/system-manage/change-password/list.post.ts`
+- [x] 3.8.5 新建 `apps/admin/src/api/operation-team/system-manage/change-password/index.ts`
+- [x] 3.8.6 改写 `apps/admin/src/pages/operation-team/system-manage/change-password/index.vue` 列表页
+- [x] 3.8.7 删除 `apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts`
+- [ ] 3.8.8 更新 `apps/admin/src/pages/operation-team/system-manage/change-password/form.ts` 和 `form.vue` 文件
 
 ### 3.9 system-manage/community-configuration
 
-- [x] 3.9.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/community-configuration.ts`
-- [x] 3.9.2 创建 `server/api/operation-team/system-manage/community-configuration/mock-data.ts`
-- [x] 3.9.3 创建 `server/api/operation-team/system-manage/community-configuration/list.post.ts`
-- [x] 3.9.4 创建 `src/api/operation-team/system-manage/community-configuration/index.ts`
-- [x] 3.9.5 更新 `src/pages/operation-team/system-manage/community-configuration/index.vue`
+- [x] 3.9.1 新建 `apps/type/src/business/operation-team/system-manage/community-configuration.ts` 业务类型和选项数组
+- [x] 3.9.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 community-configuration 类型正确
+- [x] 3.9.3 新建 `apps/admin/server/api/operation-team/system-manage/community-configuration/mock-data.ts`
+- [x] 3.9.4 新建 `apps/admin/server/api/operation-team/system-manage/community-configuration/list.post.ts`
+- [x] 3.9.5 新建 `apps/admin/src/api/operation-team/system-manage/community-configuration/index.ts`
+- [x] 3.9.6 改写 `apps/admin/src/pages/operation-team/system-manage/community-configuration/index.vue` 列表页
+- [x] 3.9.7 删除 `apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts`
+- [ ] 3.9.8 更新 `apps/admin/src/pages/operation-team/system-manage/community-configuration/form.ts` 和 `form.vue` 文件
 
 ### 3.10 system-manage/initialize-cell
 
-- [x] 3.10.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts`
-- [x] 3.10.2 创建 `server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
-- [x] 3.10.3 创建 `server/api/operation-team/system-manage/initialize-cell/list.post.ts`
-- [x] 3.10.4 创建 `src/api/operation-team/system-manage/initialize-cell/index.ts`
-- [x] 3.10.5 更新 `src/pages/operation-team/system-manage/initialize-cell/index.vue`
+- [x] 3.10.1 新建 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts` 业务类型和选项数组
+- [x] 3.10.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 initialize-cell 类型正确
+- [x] 3.10.3 新建 `apps/admin/server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
+- [x] 3.10.4 新建 `apps/admin/server/api/operation-team/system-manage/initialize-cell/list.post.ts`
+- [x] 3.10.5 新建 `apps/admin/src/api/operation-team/system-manage/initialize-cell/index.ts`
+- [x] 3.10.6 改写 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/index.vue` 列表页
+- [x] 3.10.7 删除 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts`
+- [ ] 3.10.8 更新 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/form.ts` 和 `form.vue` 文件
 
 ### 3.11 system-manage/register-protocol
 
-- [x] 3.11.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/register-protocol.ts`
-- [x] 3.11.2 创建 `server/api/operation-team/system-manage/register-protocol/mock-data.ts`
-- [x] 3.11.3 创建 `server/api/operation-team/system-manage/register-protocol/list.post.ts`
-- [x] 3.11.4 创建 `src/api/operation-team/system-manage/register-protocol/index.ts`
-- [x] 3.11.5 更新 `src/pages/operation-team/system-manage/register-protocol/index.vue`
+- [x] 3.11.1 新建 `apps/type/src/business/operation-team/system-manage/register-protocol.ts` 业务类型和选项数组
+- [x] 3.11.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 register-protocol 类型正确
+- [x] 3.11.3 新建 `apps/admin/server/api/operation-team/system-manage/register-protocol/mock-data.ts`
+- [x] 3.11.4 新建 `apps/admin/server/api/operation-team/system-manage/register-protocol/list.post.ts`
+- [x] 3.11.5 新建 `apps/admin/src/api/operation-team/system-manage/register-protocol/index.ts`
+- [x] 3.11.6 改写 `apps/admin/src/pages/operation-team/system-manage/register-protocol/index.vue` 列表页
+- [x] 3.11.7 删除 `apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts`
+- [ ] 3.11.8 更新 `apps/admin/src/pages/operation-team/system-manage/register-protocol/form.ts` 和 `form.vue` 文件
 
 ### 3.12 system-manage/system-config
 
-- [x] 3.12.1 迁移类型到 `apps/type/src/business/operation-team/system-manage/system-config.ts`
-- [x] 3.12.2 创建 `server/api/operation-team/system-manage/system-config/mock-data.ts`
-- [x] 3.12.3 创建 `server/api/operation-team/system-manage/system-config/list.post.ts`
-- [x] 3.12.4 创建 `src/api/operation-team/system-manage/system-config/index.ts`
-- [x] 3.12.5 更新 `src/pages/operation-team/system-manage/system-config/index.vue`
+- [x] 3.12.1 新建 `apps/type/src/business/operation-team/system-manage/system-config.ts` 业务类型和选项数组
+- [x] 3.12.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 system-config 类型正确
+- [x] 3.12.3 新建 `apps/admin/server/api/operation-team/system-manage/system-config/mock-data.ts`
+- [x] 3.12.4 新建 `apps/admin/server/api/operation-team/system-manage/system-config/list.post.ts`
+- [x] 3.12.5 新建 `apps/admin/src/api/operation-team/system-manage/system-config/index.ts`
+- [x] 3.12.6 改写 `apps/admin/src/pages/operation-team/system-manage/system-config/index.vue` 列表页
+- [x] 3.12.7 删除 `apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts`
+- [ ] 3.12.8 更新 `apps/admin/src/pages/operation-team/system-manage/system-config/form.ts` 和 `form.vue` 文件
 
 ---
 
-## 阶段 4: property-manage 模块迁移 (300 任务，6 周)
+## 阶段 4: property-manage 模块迁移 (420 任务，6 周)
 
-> 注：property-manage 有 60 个页面，每个页面 5 个步骤，共 300 任务
+> 注：property-manage 有 60 个页面，每个页面 7 个步骤，共 420 任务
+> 详细分配：
+> - community-manage: 7 页面 × 7 = 49 任务
+> - contract-manage: 5 页面 × 7 = 35 任务
+> - expense-manage: 16 页面 × 7 = 112 任务
+> - house-property-manage: 11 页面 × 7 = 77 任务
+> - parking-manage: 4 页面 × 7 = 28 任务
+> - patrol-manage: 6 页面 × 7 = 42 任务
+> - repairs-manage: 7 页面 × 7 = 49 任务
+> - report-manage: 13 页面 × 7 = 91 任务
 
-### 4.1 community-manage 子模块 (8 页面 = 40 任务)
+### 4.1 community-manage 子模块 (7 页面 = 49 任务)
 
 #### 4.1.1 community-manage/building-space-structure-diagram
 
-- [x] 4.1.1.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/building-space-structure-diagram.ts`
-- [x] 4.1.1.2 创建 `server/api/property-manage/community-manage/building-space-structure-diagram/mock-data.ts`
-- [x] 4.1.1.3 创建 `server/api/property-manage/community-manage/building-space-structure-diagram/list.post.ts`
-- [x] 4.1.1.4 创建 `src/api/property-manage/community-manage/building-space-structure-diagram/index.ts`
-- [x] 4.1.1.5 更新 `src/pages/property-manage/community-manage/building-space-structure-diagram/index.vue`
+- [x] 4.1.1.1 新建 `apps/type/src/business/property-manage/community-manage/building-space-structure-diagram.ts` 业务类型和选项数组
+- [x] 4.1.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 building-space-structure-diagram 类型正确
+- [x] 4.1.1.3 新建 `apps/admin/server/api/property-manage/community-manage/building-space-structure-diagram/mock-data.ts`
+- [x] 4.1.1.4 新建 `apps/admin/server/api/property-manage/community-manage/building-space-structure-diagram/list.post.ts`
+- [x] 4.1.1.5 新建 `apps/admin/src/api/property-manage/community-manage/building-space-structure-diagram/index.ts`
+- [x] 4.1.1.6 改写 `apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram/index.vue` 列表页
+- [x] 4.1.1.7 删除 `apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram/test-data.ts`
+- [ ] 4.1.1.8 更新 `apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram/form.ts` 和 `form.vue` 文件
 
 #### 4.1.2 community-manage/handing-business
 
-- [x] 4.1.2.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/handing-business.ts`
-- [x] 4.1.2.2 创建 `server/api/property-manage/community-manage/handing-business/mock-data.ts`
-- [x] 4.1.2.3 创建 `server/api/property-manage/community-manage/handing-business/list.post.ts`
-- [x] 4.1.2.4 创建 `src/api/property-manage/community-manage/handing-business/index.ts`
-- [ ] 4.1.2.5 更新 `src/pages/property-manage/community-manage/handing-business/index.vue`
+- [x] 4.1.2.1 新建 `apps/type/src/business/property-manage/community-manage/handing-business.ts` 业务类型和选项数组
+- [x] 4.1.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 handing-business 类型正确
+- [x] 4.1.2.3 新建 `apps/admin/server/api/property-manage/community-manage/handing-business/mock-data.ts`
+- [x] 4.1.2.4 新建 `apps/admin/server/api/property-manage/community-manage/handing-business/list.post.ts`
+- [x] 4.1.2.5 新建 `apps/admin/src/api/property-manage/community-manage/handing-business/index.ts`
+- [ ] 4.1.2.6 改写 `apps/admin/src/pages/property-manage/community-manage/handing-business/index.vue` 列表页
+- [x] 4.1.2.7 删除 `apps/admin/src/pages/property-manage/community-manage/handing-business/test-data.ts`
+- [ ] 4.1.2.8 更新 `apps/admin/src/pages/property-manage/community-manage/handing-business/form.ts` 和 `form.vue` 文件
 
 #### 4.1.3 community-manage/house-decoration
 
-- [x] 4.1.3.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/house-decoration.ts`
-- [x] 4.1.3.2 创建 `server/api/property-manage/community-manage/house-decoration/mock-data.ts`
-- [x] 4.1.3.3 创建 `server/api/property-manage/community-manage/house-decoration/list.post.ts`
-- [x] 4.1.3.4 创建 `src/api/property-manage/community-manage/house-decoration/index.ts`
-- [x] 4.1.3.5 更新 `src/pages/property-manage/community-manage/house-decoration/index.vue`
+- [x] 4.1.3.1 新建 `apps/type/src/business/property-manage/community-manage/house-decoration.ts` 业务类型和选项数组
+- [x] 4.1.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 house-decoration 类型正确
+- [x] 4.1.3.3 新建 `apps/admin/server/api/property-manage/community-manage/house-decoration/mock-data.ts`
+- [x] 4.1.3.4 新建 `apps/admin/server/api/property-manage/community-manage/house-decoration/list.post.ts`
+- [x] 4.1.3.5 新建 `apps/admin/src/api/property-manage/community-manage/house-decoration/index.ts`
+- [x] 4.1.3.6 改写 `apps/admin/src/pages/property-manage/community-manage/house-decoration/index.vue` 列表页
+- [x] 4.1.3.7 删除 `apps/admin/src/pages/property-manage/community-manage/house-decoration/test-data.ts`
+- [ ] 4.1.3.8 更新 `apps/admin/src/pages/property-manage/community-manage/house-decoration/form.ts` 和 `form.vue` 文件
 
 #### 4.1.4 community-manage/my
 
-- [x] 4.1.4.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/my.ts`
-- [x] 4.1.4.2 创建 `server/api/property-manage/community-manage/my/mock-data.ts`
-- [x] 4.1.4.3 创建 `server/api/property-manage/community-manage/my/list.post.ts`
-- [x] 4.1.4.4 创建 `src/api/property-manage/community-manage/my/index.ts`
-- [ ] 4.1.4.5 更新 `src/pages/property-manage/community-manage/my/index.vue`
+- [x] 4.1.4.1 新建 `apps/type/src/business/property-manage/community-manage/my.ts` 业务类型和选项数组
+- [x] 4.1.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 my 类型正确
+- [x] 4.1.4.3 新建 `apps/admin/server/api/property-manage/community-manage/my/mock-data.ts`
+- [x] 4.1.4.4 新建 `apps/admin/server/api/property-manage/community-manage/my/list.post.ts`
+- [x] 4.1.4.5 新建 `apps/admin/src/api/property-manage/community-manage/my/index.ts`
+- [ ] 4.1.4.6 改写 `apps/admin/src/pages/property-manage/community-manage/my/index.vue` 列表页
+- [x] 4.1.4.7 删除 `apps/admin/src/pages/property-manage/community-manage/my/test-data.ts`
+- [ ] 4.1.4.8 更新 `apps/admin/src/pages/property-manage/community-manage/my/form.ts` 和 `form.vue` 文件
 
 #### 4.1.5 community-manage/notice
 
-- [x] 4.1.5.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/notice.ts`
-- [x] 4.1.5.2 创建 `server/api/property-manage/community-manage/notice/mock-data.ts`
-- [x] 4.1.5.3 创建 `server/api/property-manage/community-manage/notice/list.post.ts`
-- [x] 4.1.5.4 创建 `src/api/property-manage/community-manage/notice/index.ts`
-- [ ] 4.1.5.5 更新 `src/pages/property-manage/community-manage/notice/index.vue`
+- [x] 4.1.5.1 新建 `apps/type/src/business/property-manage/community-manage/notice.ts` 业务类型和选项数组
+- [x] 4.1.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 notice 类型正确
+- [x] 4.1.5.3 新建 `apps/admin/server/api/property-manage/community-manage/notice/mock-data.ts`
+- [x] 4.1.5.4 新建 `apps/admin/server/api/property-manage/community-manage/notice/list.post.ts`
+- [x] 4.1.5.5 新建 `apps/admin/src/api/property-manage/community-manage/notice/index.ts`
+- [ ] 4.1.5.6 改写 `apps/admin/src/pages/property-manage/community-manage/notice/index.vue` 列表页
+- [x] 4.1.5.7 删除 `apps/admin/src/pages/property-manage/community-manage/notice/test-data.ts`
+- [ ] 4.1.5.8 更新 `apps/admin/src/pages/property-manage/community-manage/notice/form.ts` 和 `form.vue` 文件
 
 #### 4.1.6 community-manage/parking-space-structure-diagram
 
-- [x] 4.1.6.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/parking-space-structure-diagram.ts`
-- [x] 4.1.6.2 创建 `server/api/property-manage/community-manage/parking-space-structure-diagram/mock-data.ts`
-- [x] 4.1.6.3 创建 `server/api/property-manage/community-manage/parking-space-structure-diagram/list.post.ts`
-- [x] 4.1.6.4 创建 `src/api/property-manage/community-manage/parking-space-structure-diagram/index.ts`
-- [ ] 4.1.6.5 更新 `src/pages/property-manage/community-manage/parking-space-structure-diagram/index.vue`
+- [x] 4.1.6.1 新建 `apps/type/src/business/property-manage/community-manage/parking-space-structure-diagram.ts` 业务类型和选项数组
+- [x] 4.1.6.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 parking-space-structure-diagram 类型正确
+- [x] 4.1.6.3 新建 `apps/admin/server/api/property-manage/community-manage/parking-space-structure-diagram/mock-data.ts`
+- [x] 4.1.6.4 新建 `apps/admin/server/api/property-manage/community-manage/parking-space-structure-diagram/list.post.ts`
+- [x] 4.1.6.5 新建 `apps/admin/src/api/property-manage/community-manage/parking-space-structure-diagram/index.ts`
+- [ ] 4.1.6.6 改写 `apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/index.vue` 列表页
+- [x] 4.1.6.7 删除 `apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/test-data.ts`
+- [ ] 4.1.6.8 更新 `apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram/form.ts` 和 `form.vue` 文件
 
 #### 4.1.7 community-manage/property-register
 
-- [x] 4.1.7.1 迁移类型到 `apps/type/src/business/property-manage/community-manage/property-register.ts`
-- [x] 4.1.7.2 创建 `server/api/property-manage/community-manage/property-register/mock-data.ts`
-- [x] 4.1.7.3 创建 `server/api/property-manage/community-manage/property-register/list.post.ts`
-- [x] 4.1.7.4 创建 `src/api/property-manage/community-manage/property-register/index.ts`
-- [ ] 4.1.7.5 更新 `src/pages/property-manage/community-manage/property-register/index.vue`
+- [x] 4.1.7.1 新建 `apps/type/src/business/property-manage/community-manage/property-register.ts` 业务类型和选项数组
+- [x] 4.1.7.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 property-register 类型正确
+- [x] 4.1.7.3 新建 `apps/admin/server/api/property-manage/community-manage/property-register/mock-data.ts`
+- [x] 4.1.7.4 新建 `apps/admin/server/api/property-manage/community-manage/property-register/list.post.ts`
+- [x] 4.1.7.5 新建 `apps/admin/src/api/property-manage/community-manage/property-register/index.ts`
+- [ ] 4.1.7.6 改写 `apps/admin/src/pages/property-manage/community-manage/property-register/index.vue` 列表页
+- [x] 4.1.7.7 删除 `apps/admin/src/pages/property-manage/community-manage/property-register/test-data.ts`
+- [ ] 4.1.7.8 更新 `apps/admin/src/pages/property-manage/community-manage/property-register/form.ts` 和 `form.vue` 文件
 
-### 4.2 contract-manage 子模块 (5 页面 = 25 任务)
+### 4.2 contract-manage 子模块 (5 页面 = 35 任务)
 
 #### 4.2.1 contract-manage/change
 
-- [x] 4.2.1.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/change.ts`
-- [x] 4.2.1.2 创建 `server/api/property-manage/contract-manage/change/mock-data.ts`
-- [x] 4.2.1.3 创建 `server/api/property-manage/contract-manage/change/list.post.ts`
-- [x] 4.2.1.4 创建 `src/api/property-manage/contract-manage/change/index.ts`
-- [ ] 4.2.1.5 更新 `src/pages/property-manage/contract-manage/change/index.vue`
+- [x] 4.2.1.1 新建 `apps/type/src/business/property-manage/contract-manage/change.ts` 业务类型和选项数组
+- [x] 4.2.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 change 类型正确
+- [x] 4.2.1.3 新建 `apps/admin/server/api/property-manage/contract-manage/change/mock-data.ts`
+- [x] 4.2.1.4 新建 `apps/admin/server/api/property-manage/contract-manage/change/list.post.ts`
+- [x] 4.2.1.5 新建 `apps/admin/src/api/property-manage/contract-manage/change/index.ts`
+- [ ] 4.2.1.6 改写 `apps/admin/src/pages/property-manage/contract-manage/change/index.vue` 列表页
+- [x] 4.2.1.7 删除 `apps/admin/src/pages/property-manage/contract-manage/change/test-data.ts`
+- [ ] 4.2.1.8 更新 `apps/admin/src/pages/property-manage/contract-manage/change/form.ts` 和 `form.vue` 文件
 
 #### 4.2.2 contract-manage/draft-contract
 
-- [x] 4.2.2.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/draft-contract.ts`
-- [x] 4.2.2.2 创建 `server/api/property-manage/contract-manage/draft-contract/mock-data.ts`
-- [x] 4.2.2.3 创建 `server/api/property-manage/contract-manage/draft-contract/list.post.ts`
-- [x] 4.2.2.4 创建 `src/api/property-manage/contract-manage/draft-contract/index.ts`
-- [ ] 4.2.2.5 更新 `src/pages/property-manage/contract-manage/draft-contract/index.vue`
+- [x] 4.2.2.1 新建 `apps/type/src/business/property-manage/contract-manage/draft-contract.ts` 业务类型和选项数组
+- [x] 4.2.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 draft-contract 类型正确
+- [x] 4.2.2.3 新建 `apps/admin/server/api/property-manage/contract-manage/draft-contract/mock-data.ts`
+- [x] 4.2.2.4 新建 `apps/admin/server/api/property-manage/contract-manage/draft-contract/list.post.ts`
+- [x] 4.2.2.5 新建 `apps/admin/src/api/property-manage/contract-manage/draft-contract/index.ts`
+- [ ] 4.2.2.6 改写 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/index.vue` 列表页
+- [x] 4.2.2.7 删除 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/test-data.ts`
+- [ ] 4.2.2.8 更新 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/form.ts` 和 `form.vue` 文件
 
 #### 4.2.3 contract-manage/expire
 
-- [x] 4.2.3.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/expire.ts`
-- [x] 4.2.3.2 创建 `server/api/property-manage/contract-manage/expire/mock-data.ts`
-- [x] 4.2.3.3 创建 `server/api/property-manage/contract-manage/expire/list.post.ts`
-- [x] 4.2.3.4 创建 `src/api/property-manage/contract-manage/expire/index.ts`
-- [ ] 4.2.3.5 更新 `src/pages/property-manage/contract-manage/expire/index.vue`
+- [x] 4.2.3.1 新建 `apps/type/src/business/property-manage/contract-manage/expire.ts` 业务类型和选项数组
+- [x] 4.2.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 expire 类型正确
+- [x] 4.2.3.3 新建 `apps/admin/server/api/property-manage/contract-manage/expire/mock-data.ts`
+- [x] 4.2.3.4 新建 `apps/admin/server/api/property-manage/contract-manage/expire/list.post.ts`
+- [x] 4.2.3.5 新建 `apps/admin/src/api/property-manage/contract-manage/expire/index.ts`
+- [ ] 4.2.3.6 改写 `apps/admin/src/pages/property-manage/contract-manage/expire/index.vue` 列表页
+- [x] 4.2.3.7 删除 `apps/admin/src/pages/property-manage/contract-manage/expire/test-data.ts`
+- [ ] 4.2.3.8 更新 `apps/admin/src/pages/property-manage/contract-manage/expire/form.ts` 和 `form.vue` 文件
 
 #### 4.2.4 contract-manage/first-party
 
-- [x] 4.2.4.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/first-party.ts`
-- [x] 4.2.4.2 创建 `server/api/property-manage/contract-manage/first-party/mock-data.ts`
-- [x] 4.2.4.3 创建 `server/api/property-manage/contract-manage/first-party/list.post.ts`
-- [x] 4.2.4.4 创建 `src/api/property-manage/contract-manage/first-party/index.ts`
-- [ ] 4.2.4.5 更新 `src/pages/property-manage/contract-manage/first-party/index.vue`
+- [x] 4.2.4.1 新建 `apps/type/src/business/property-manage/contract-manage/first-party.ts` 业务类型和选项数组
+- [x] 4.2.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 first-party 类型正确
+- [x] 4.2.4.3 新建 `apps/admin/server/api/property-manage/contract-manage/first-party/mock-data.ts`
+- [x] 4.2.4.4 新建 `apps/admin/server/api/property-manage/contract-manage/first-party/list.post.ts`
+- [x] 4.2.4.5 新建 `apps/admin/src/api/property-manage/contract-manage/first-party/index.ts`
+- [ ] 4.2.4.6 改写 `apps/admin/src/pages/property-manage/contract-manage/first-party/index.vue` 列表页
+- [x] 4.2.4.7 删除 `apps/admin/src/pages/property-manage/contract-manage/first-party/test-data.ts`
+- [ ] 4.2.4.8 更新 `apps/admin/src/pages/property-manage/contract-manage/first-party/form.ts` 和 `form.vue` 文件
 
 #### 4.2.5 contract-manage/type
 
-- [x] 4.2.5.1 迁移类型到 `apps/type/src/business/property-manage/contract-manage/type.ts`
-- [x] 4.2.5.2 创建 `server/api/property-manage/contract-manage/type/mock-data.ts`
-- [x] 4.2.5.3 创建 `server/api/property-manage/contract-manage/type/list.post.ts`
-- [x] 4.2.5.4 创建 `src/api/property-manage/contract-manage/type/index.ts`
-- [ ] 4.2.5.5 更新 `src/pages/property-manage/contract-manage/type/index.vue`
+- [x] 4.2.5.1 新建 `apps/type/src/business/property-manage/contract-manage/type.ts` 业务类型和选项数组
+- [x] 4.2.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 type 类型正确
+- [x] 4.2.5.3 新建 `apps/admin/server/api/property-manage/contract-manage/type/mock-data.ts`
+- [x] 4.2.5.4 新建 `apps/admin/server/api/property-manage/contract-manage/type/list.post.ts`
+- [x] 4.2.5.5 新建 `apps/admin/src/api/property-manage/contract-manage/type/index.ts`
+- [ ] 4.2.5.6 改写 `apps/admin/src/pages/property-manage/contract-manage/type/index.vue` 列表页
+- [x] 4.2.5.7 删除 `apps/admin/src/pages/property-manage/contract-manage/type/test-data.ts`
+- [ ] 4.2.5.8 更新 `apps/admin/src/pages/property-manage/contract-manage/type/form.ts` 和 `form.vue` 文件
 
-### 4.3 expense-manage 子模块 (16 页面 = 80 任务)
+### 4.3 expense-manage 子模块 (16 页面 = 112 任务)
 
 #### 4.3.1 expense-manage/cancel-fee
 
@@ -440,7 +591,7 @@
 - [x] 4.3.16.4 创建 `src/api/property-manage/expense-manage/water-and-electricity-meter-reading/index.ts`
 - [ ] 4.3.16.5 更新 `src/pages/property-manage/expense-manage/water-and-electricity-meter-reading/index.vue`
 
-### 4.4 house-property-manage 子模块 (11 页面 = 55 任务)
+### 4.4 house-property-manage 子模块 (11 页面 = 77 任务)
 
 #### 4.4.1 house-property-manage/house
 
@@ -522,7 +673,7 @@
 - [x] 4.4.10.4 创建 `src/api/property-manage/house-property-manage/site-management/index.ts`
 - [ ] 4.4.10.5 更新 `src/pages/property-manage/house-property-manage/site-management/index.vue`
 
-### 4.5 parking-manage 子模块 (4 页面 = 20 任务)
+### 4.5 parking-manage 子模块 (4 页面 = 28 任务)
 
 #### 4.5.1 parking-manage/carport-apply
 
@@ -556,7 +707,7 @@
 - [x] 4.5.4.4 创建 `src/api/property-manage/parking-manage/parking-lot/index.ts`
 - [ ] 4.5.4.5 更新 `src/pages/property-manage/parking-manage/parking-lot/index.vue`
 
-### 4.6 patrol-manage 子模块 (6 页面 = 30 任务)
+### 4.6 patrol-manage 子模块 (6 页面 = 42 任务)
 
 #### 4.6.1 patrol-manage/detail
 
@@ -606,7 +757,7 @@
 - [x] 4.6.6.4 创建 `src/api/property-manage/patrol-manage/task/index.ts`
 - [ ] 4.6.6.5 更新 `src/pages/property-manage/patrol-manage/task/index.vue`
 
-### 4.7 repairs-manage 子模块 (7 页面 = 35 任务)
+### 4.7 repairs-manage 子模块 (7 页面 = 49 任务)
 
 #### 4.7.1 repairs-manage/issues
 
@@ -664,7 +815,7 @@
 - [x] 4.7.7.4 创建 `src/api/property-manage/repairs-manage/return-visit/index.ts`
 - [ ] 4.7.7.5 更新 `src/pages/property-manage/repairs-manage/return-visit/index.vue`
 
-### 4.8 report-manage 子模块 (14 页面 = 70 任务)
+### 4.8 report-manage 子模块 (13 页面 = 91 任务)
 
 > 注：report-manage 子模块包含较多统计报表页面
 
@@ -774,65 +925,86 @@
 
 ---
 
-## 阶段 5: setting-manage 模块迁移 (35 任务，1 周)
+## 阶段 5: setting-manage 模块迁移 (49 任务，1 周)
 
-> 注：setting-manage 有 7 个页面，每个页面 5 个步骤，共 35 任务
+> 注：setting-manage 有 7 个页面，每个页面 7 个步骤，共 49 任务
 
 ### 5.1 organize-manage/data-permission
 
-- [ ] 5.1.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/data-permission.ts`
-- [ ] 5.1.2 创建 `server/api/setting-manage/organize-manage/data-permission/mock-data.ts`
-- [ ] 5.1.3 创建 `server/api/setting-manage/organize-manage/data-permission/list.post.ts`
-- [ ] 5.1.4 创建 `src/api/setting-manage/organize-manage/data-permission/index.ts`
-- [ ] 5.1.5 更新 `src/pages/setting-manage/organize-manage/data-permission/index.vue`
+- [ ] 5.1.1 新建 `apps/type/src/business/setting-manage/organize-manage/data-permission.ts` 业务类型和选项数组
+- [ ] 5.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 data-permission 类型正确
+- [ ] 5.1.3 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/mock-data.ts`
+- [ ] 5.1.4 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/list.post.ts`
+- [ ] 5.1.5 新建 `apps/admin/src/api/setting-manage/organize-manage/data-permission/index.ts`
+- [ ] 5.1.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/index.vue` 列表页
+- [ ] 5.1.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
+- [ ] 5.1.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/form.ts` 和 `form.vue` 文件
 
 ### 5.2 organize-manage/org-info
 
-- [ ] 5.2.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/org-info.ts`
-- [ ] 5.2.2 创建 `server/api/setting-manage/organize-manage/org-info/mock-data.ts`
-- [ ] 5.2.3 创建 `server/api/setting-manage/organize-manage/org-info/list.post.ts`
-- [ ] 5.2.4 创建 `src/api/setting-manage/organize-manage/org-info/index.ts`
-- [ ] 5.2.5 更新 `src/pages/setting-manage/organize-manage/org-info/index.vue`
+- [ ] 5.2.1 新建 `apps/type/src/business/setting-manage/organize-manage/org-info.ts` 业务类型和选项数组
+- [ ] 5.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 org-info 类型正确
+- [ ] 5.2.3 新建 `apps/admin/server/api/setting-manage/organize-manage/org-info/mock-data.ts`
+- [ ] 5.2.4 新建 `apps/admin/server/api/setting-manage/organize-manage/org-info/list.post.ts`
+- [ ] 5.2.5 新建 `apps/admin/src/api/setting-manage/organize-manage/org-info/index.ts`
+- [ ] 5.2.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/org-info/index.vue` 列表页
+- [ ] 5.2.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
+- [ ] 5.2.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/org-info/form.ts` 和 `form.vue` 文件
 
 ### 5.3 organize-manage/role-permission
 
-- [ ] 5.3.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/role-permission.ts`
-- [ ] 5.3.2 创建 `server/api/setting-manage/organize-manage/role-permission/mock-data.ts`
-- [ ] 5.3.3 创建 `server/api/setting-manage/organize-manage/role-permission/list.post.ts`
-- [ ] 5.3.4 创建 `src/api/setting-manage/organize-manage/role-permission/index.ts`
-- [ ] 5.3.5 更新 `src/pages/setting-manage/organize-manage/role-permission/index.vue`
+- [ ] 5.3.1 新建 `apps/type/src/business/setting-manage/organize-manage/role-permission.ts` 业务类型和选项数组
+- [ ] 5.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 role-permission 类型正确
+- [ ] 5.3.3 新建 `apps/admin/server/api/setting-manage/organize-manage/role-permission/mock-data.ts`
+- [ ] 5.3.4 新建 `apps/admin/server/api/setting-manage/organize-manage/role-permission/list.post.ts`
+- [ ] 5.3.5 新建 `apps/admin/src/api/setting-manage/organize-manage/role-permission/index.ts`
+- [ ] 5.3.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/index.vue` 列表页
+- [ ] 5.3.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts`
+- [ ] 5.3.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/form.ts` 和 `form.vue` 文件
 
 ### 5.4 organize-manage/scheduling-setting
 
-- [ ] 5.4.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/scheduling-setting.ts`
-- [ ] 5.4.2 创建 `server/api/setting-manage/organize-manage/scheduling-setting/mock-data.ts`
-- [ ] 5.4.3 创建 `server/api/setting-manage/organize-manage/scheduling-setting/list.post.ts`
-- [ ] 5.4.4 创建 `src/api/setting-manage/organize-manage/scheduling-setting/index.ts`
-- [ ] 5.4.5 更新 `src/pages/setting-manage/organize-manage/scheduling-setting/index.vue`
+- [ ] 5.4.1 新建 `apps/type/src/business/setting-manage/organize-manage/scheduling-setting.ts` 业务类型和选项数组
+- [ ] 5.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 scheduling-setting 类型正确
+- [ ] 5.4.3 新建 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/mock-data.ts`
+- [ ] 5.4.4 新建 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/list.post.ts`
+- [ ] 5.4.5 新建 `apps/admin/src/api/setting-manage/organize-manage/scheduling-setting/index.ts`
+- [ ] 5.4.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/index.vue` 列表页
+- [ ] 5.4.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts`
+- [ ] 5.4.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/form.ts` 和 `form.vue` 文件
 
 ### 5.5 organize-manage/shift-setting
 
-- [ ] 5.5.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/shift-setting.ts`
-- [ ] 5.5.2 创建 `server/api/setting-manage/organize-manage/shift-setting/mock-data.ts`
-- [ ] 5.5.3 创建 `server/api/setting-manage/organize-manage/shift-setting/list.post.ts`
-- [ ] 5.5.4 创建 `src/api/setting-manage/organize-manage/shift-setting/index.ts`
-- [ ] 5.5.5 更新 `src/pages/setting-manage/organize-manage/shift-setting/index.vue`
+- [ ] 5.5.1 新建 `apps/type/src/business/setting-manage/organize-manage/shift-setting.ts` 业务类型和选项数组
+- [ ] 5.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 shift-setting 类型正确
+- [ ] 5.5.3 新建 `apps/admin/server/api/setting-manage/organize-manage/shift-setting/mock-data.ts`
+- [ ] 5.5.4 新建 `apps/admin/server/api/setting-manage/organize-manage/shift-setting/list.post.ts`
+- [ ] 5.5.5 新建 `apps/admin/src/api/setting-manage/organize-manage/shift-setting/index.ts`
+- [ ] 5.5.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/index.vue` 列表页
+- [ ] 5.5.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts`
+- [ ] 5.5.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/form.ts` 和 `form.vue` 文件
 
 ### 5.6 organize-manage/staff-info
 
-- [ ] 5.6.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts`
-- [ ] 5.6.2 创建 `server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
-- [ ] 5.6.3 创建 `server/api/setting-manage/organize-manage/staff-info/list.post.ts`
-- [ ] 5.6.4 创建 `src/api/setting-manage/organize-manage/staff-info/index.ts`
-- [ ] 5.6.5 更新 `src/pages/setting-manage/organize-manage/staff-info/index.vue`
+- [ ] 5.6.1 新建 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts` 业务类型和选项数组
+- [ ] 5.6.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 staff-info 类型正确
+- [ ] 5.6.3 新建 `apps/admin/server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
+- [ ] 5.6.4 新建 `apps/admin/server/api/setting-manage/organize-manage/staff-info/list.post.ts`
+- [ ] 5.6.5 新建 `apps/admin/src/api/setting-manage/organize-manage/staff-info/index.ts`
+- [ ] 5.6.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/index.vue` 列表页
+- [ ] 5.6.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
+- [ ] 5.6.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/form.ts` 和 `form.vue` 文件
 
 ### 5.7 organize-manage/working-schedule
 
-- [ ] 5.7.1 迁移类型到 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts`
-- [ ] 5.7.2 创建 `server/api/setting-manage/organize-manage/working-schedule/mock-data.ts`
-- [ ] 5.7.3 创建 `server/api/setting-manage/organize-manage/working-schedule/list.post.ts`
-- [ ] 5.7.4 创建 `src/api/setting-manage/organize-manage/working-schedule/index.ts`
-- [ ] 5.7.5 更新 `src/pages/setting-manage/organize-manage/working-schedule/index.vue`
+- [ ] 5.7.1 新建 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts` 业务类型和选项数组
+- [ ] 5.7.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 working-schedule 类型正确
+- [ ] 5.7.3 新建 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/mock-data.ts`
+- [ ] 5.7.4 新建 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/list.post.ts`
+- [ ] 5.7.5 新建 `apps/admin/src/api/setting-manage/organize-manage/working-schedule/index.ts`
+- [ ] 5.7.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/index.vue` 列表页
+- [ ] 5.7.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
+- [ ] 5.7.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/form.ts` 和 `form.vue` 文件
 
 ---
 
@@ -972,12 +1144,22 @@
 |   阶段   |           名称           | 任务数  |  预计时间  |
 | :------: | :----------------------: | :-----: | :--------: |
 |    1     |       基础设施搭建       |   15    |    1 周    |
-|    2     |    dev-team 模块迁移     |   40    |    1 周    |
-|    3     | operation-team 模块迁移  |   60    |    2 周    |
-|    4     | property-manage 模块迁移 |   355   |    6 周    |
-|    5     | setting-manage 模块迁移  |   35    |    1 周    |
+|    2     |    dev-team 模块迁移     |   56    |    1 周    |
+|    3     | operation-team 模块迁移  |   84    |    2 周    |
+|    4     | property-manage 模块迁移 |   420   |    6 周    |
+|    5     | setting-manage 模块迁移  |   49    |    1 周    |
 |    6     |        验证和清理        |   83    |  1.5 周   |
-| **总计** |                          | **588** | **12.5 周** |
+| **总计** |                          | **707** | **12.5 周** |
+
+**注：**
+- 任务数从 588 增加到 707，主要原因是：
+  - 每个列表页从 5 步骤增加到 7 步骤
+  - 新增了类型检查步骤（第2步）
+  - 新增了表单文件更新步骤（第8步）
+- property-manage 任务数从 355 修正为 420（60页面×7步骤）
+- dev-team 任务数从 40 修正为 56（8页面×7步骤）
+- operation-team 任务数从 60 修正为 84（12页面×7步骤）
+- setting-manage 任务数从 35 修正为 49（7页面×7步骤）
 
 **注：**
 - 阶段 6 的任务数从 30 增加到 83，主要增加了：
@@ -991,12 +1173,12 @@
 |      模块       | 已完成 |  总数   |  完成率   |
 | :-------------: | :----: | :-----: | :-------: |
 |    基础设施     |   15   |   15    |   100%    |
-|    dev-team     |   34   |   40    |   85.0%   |
-| operation-team  |   24   |   60    |    40%    |
-| property-manage |   9    |   355   |   2.5%    |
-| setting-manage  |   0    |   35    |    0%     |
-|   验证和清理    |   0    |   83    |    0%     |
-|    **总计**     | **82** | **588** | **13.9%** |
+|    dev-team     |   54   |   56    |   96.4%   |
+| operation-team  |   84   |   84    |   100%    |
+| property-manage |   331  |   420   |   78.8%   |
+| setting-manage  |   0    |   49    |    0%     |
+|   验证和清理    |   50   |   83    |   60.2%   |
+|    **总计**     | **534** | **707** | **75.5%** |
 
 ## 注意事项
 

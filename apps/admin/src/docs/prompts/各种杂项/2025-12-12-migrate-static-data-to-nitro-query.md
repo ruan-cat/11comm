@@ -210,7 +210,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
 
-### 05 增加新的严格任务执行规范
+### 05 增加新的严格任务执行规范，并重构任务列表
 
 1. 我现在正在高强度的使用 openspec 生成的任务，但是 openspec 任务执行过程中，本身也存在了很多不规范。
 2. 完成任务时，应该按照严格的顺序来完成，不要跳过任务。
