@@ -210,4 +210,20 @@ openspec validate migrate-static-data-to-nitro-query --strict
 openspec validate migrate-static-data-to-nitro-query --strict
 ```
 
+### 05 增加新的严格任务执行规范
+
+1. 我现在正在高强度的使用 openspec 生成的任务，但是 openspec 任务执行过程中，本身也存在了很多不规范。
+2. 完成任务时，应该按照严格的顺序来完成，不要跳过任务。
+3. 完成 `migrate-static-data-to-nitro-query` 任务时，应该按照以下的严格步骤来修改每一个列表页：
+   - 新建 `apps\type\src\*` 对应目录的业务类型，和下拉选择用的数组。
+   - 新建 `apps\admin\server\*` 对应业务目录的 `mock-data.ts` 固定的假数据。其类型约束满足来自 `@01s-11comm/type` 类型库提供的业务类型。
+   - 新建 `apps\admin\server\*` 对应业务目录的 `list.post.ts` nitro 接口。
+   - 新建 `apps\admin\src\api\*` 对应目录的封装 `useListQuery` 的 hooks 钩子函数。
+   - 改写改造对应业务目录的 index.vue 列表页。使其使用封装好的对应业务 hooks 函数、使用来自 `@01s-11comm/type` 类型库提供的业务类型和下拉选用的数组。
+   - 删除掉对应业务目录的 `test-data.ts` 假数据文件。
+   - 对应的 form.ts 和 form.vue 文件，应该及时更改类型和变量的导入路径，从使用来自 `@01s-11comm/type` 类型库提供的业务类型和下拉选用的数组。
+4. 按照 openspec 的要求，修改更新 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的规范文件，务必确保以后执行`migrate-static-data-to-nitro-query` 任务时，能够满足上述的严格修改步骤。
+5. 请你阅读 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务文件，按照上述的严格要求，重构整个`任务列表文件`。
+6. 重新更新`任务列表文件`的任务总数，和已完成的任务数量。
+
 <!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
