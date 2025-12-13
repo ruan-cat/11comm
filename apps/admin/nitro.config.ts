@@ -8,22 +8,21 @@ export default defineConfig({
 		watch: ["./server/**/*.ts"],
 	},
 
-	imports: {
-		// autoImport: true,
-		imports: [
-			// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-			{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_INDEX" },
-			{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_SIZE" },
-
-			// import { defineHandler, readBody } from "nitro/h3";
-			{ from: "nitro/h3", name: "defineHandler" },
-			{ from: "nitro/h3", name: "readBody" },
-
-			// import type { JsonVO, PageDTO } from "@01s-11comm/type";
-			{ from: "@01s-11comm/type", name: "JsonVO", type: true },
-			{ from: "@01s-11comm/type", name: "PageDTO", type: true },
-		],
-	},
+	// FIXME: 无法实现全局类型导入
+	// imports: {
+	// 	autoImport: true,
+	// 	imports: [
+	// 		// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+	// 		{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_INDEX" },
+	// 		{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_SIZE" },
+	// 		// import { defineHandler, readBody } from "nitro/h3";
+	// 		{ from: "nitro/h3", name: "defineHandler" },
+	// 		{ from: "nitro/h3", name: "readBody" },
+	// 		// import type { JsonVO, PageDTO } from "@01s-11comm/type";
+	// 		{ from: "@01s-11comm/type", name: "JsonVO", type: true },
+	// 		{ from: "@01s-11comm/type", name: "PageDTO", type: true },
+	// 	],
+	// },
 
 	alias: {
 		/**
