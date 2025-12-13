@@ -226,4 +226,13 @@ openspec validate migrate-static-data-to-nitro-query --strict
 5. 请你阅读 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务文件，按照上述的严格要求，重构整个`任务列表文件`。
 6. 重新更新`任务列表文件`的任务总数，和已完成的任务数量。
 
+### 06 以当前暂存区文件为索引，按照任务要求，修改对应 vue 组件和类型文件
+
+1. 以当前暂存区文件为索引，指定一系列的任务，并按照要求更改。
+2. 请你严格按照 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的全部文件，来更改代码。
+3. 有很多类型文件，为了完成类型修复，而被错误的改写成中文。这是不对的，不符合 `migrate-static-data-to-nitro-query` 任务的要求的。在你修复类型报错的时候，请你在将中文命名的字段换成英文字段的前提下，对应的，及时的去修改 vue 组件内使用的中文命名。
+4. 以更新英文字段的 `类型项目` 为索引，对应的去修改 vue 组件内使用的中文命名。
+5. 先完成 `类型项目` 内代码的字段名换成英文，再开始去修改 vue 组件的中文字段命名。
+6. 不断地运行 `后台项目` 提供的类型报错检查命令，直到整个项目都不出现任何类型报错。
+
 <!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
