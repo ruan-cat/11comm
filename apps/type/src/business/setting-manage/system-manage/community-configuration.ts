@@ -1,14 +1,8 @@
 import type { OptionsType } from "../../../common";
 
 /**
- * @description 小区配置表单VO
- * Community configuration form VO
+ * @description 小区配置表单VO（重复定义，请使用operation-team中的定义）
+ * Community configuration form VO (duplicate definition, use the one in operation-team)
  */
-export interface 小区配置表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
-}
+// 注意：此类型已在 @01s-11comm/type/business/operation-team/system-manage/community-configuration.ts 中定义
+// 请从那里导入使用，避免重复定义

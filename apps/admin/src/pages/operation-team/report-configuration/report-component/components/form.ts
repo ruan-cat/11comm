@@ -1,4 +1,8 @@
 
+import { type Mode } from "@/composables/use-mode";
+// 从 @01s-11comm/type 导入缺失的类型
+import type { 组件类型, 查询方式 } from "@01s-11comm/type";
+
 const _报表组件类型 = ["组件名称", "组件类型", "查询方式", "sql", "java", "描述"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string

@@ -8,6 +8,8 @@ import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type ConfigCenterFormProps, defaultForm, type 配置中心表单_VO, type 配置类型, type 配置状态 } from "./form";
+// 从 @01s-11comm/type 导入缺失的类型
+import type { 配置中心_列表数据 } from "@01s-11comm/type";
 import ConfigCenterForm from "./form.vue";
 
 /** 表单组件实例 */
