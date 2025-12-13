@@ -1,5 +1,20 @@
 import type { HouseManagementFormVO } from "@01s-11comm/type";
 
+// ==================== 类型别名 ====================
+
+/** 房屋管理表单数据类型（中文别名） */
+export type HouseManagementFormVO_中文 = HouseManagementFormVO;
+
+// ==================== Options 导出 ====================
+
+import { 房屋类型选项, 房屋状态选项 } from "@01s-11comm/type";
+
+/** 房屋类型选项 */
+export { 房屋类型选项 };
+
+/** 房屋状态选项 */
+export { 房屋状态选项 };
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: HouseManagementFormVO = {
 	house: "",

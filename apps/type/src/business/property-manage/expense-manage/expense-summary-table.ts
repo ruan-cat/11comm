@@ -42,3 +42,14 @@ export const expenseSummaryTableStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 费用项名称选项
+ * Expense item name options
+ */
+export const 费用项名称Options: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水费", value: "水费" },
+	{ label: "电费", value: "电费" },
+	{ label: "燃气费", value: "燃气费" },
+];

@@ -8,6 +8,7 @@ export * from "./notice";
 export * from "./building-space-structure-diagram";
 export * from "./house-decoration";
 export * from "./my";
+export * from "./my-test-data";
 export * from "./parking-space-structure-diagram";
 export * from "./property-register";
 

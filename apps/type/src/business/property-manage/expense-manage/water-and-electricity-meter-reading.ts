@@ -42,3 +42,12 @@ export const waterAndElectricityMeterReadingStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 表类型选项
+ * Meter type options
+ */
+export const 表类型Options: OptionsType = [
+	{ label: "水表", value: "水表" },
+	{ label: "电表", value: "电表" },
+];

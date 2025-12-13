@@ -69,3 +69,11 @@ export const enableStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+// ==================== 中文名称导出 ====================
+
+/** 字典类型选项（中文名称） */
+export const 字典类型选项 = dictionaryTypeOptions;
+
+/** 是否启用选项（中文名称） */
+export const 是否启用选项 = enableStatusOptions;

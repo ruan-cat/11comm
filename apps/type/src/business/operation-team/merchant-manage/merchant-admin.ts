@@ -61,10 +61,10 @@ export const merchantAdminStatusOptions: OptionsType = [
 ];
 
 /**
- * @description 状态选项中文别名
+ * @description 商户管理员状态选项中文别名
  * Chinese alias for merchantAdminStatusOptions
  */
-export const 状态选项 = merchantAdminStatusOptions;
+export const 商户管理员状态选项 = merchantAdminStatusOptions;
 
 /**
  * @description 物业公司选项

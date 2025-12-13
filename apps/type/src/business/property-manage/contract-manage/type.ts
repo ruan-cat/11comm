@@ -42,3 +42,13 @@ export const typeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 审核类型选项
+ * Audit type options
+ */
+export const 审核类型Options: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+];

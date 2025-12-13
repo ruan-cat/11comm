@@ -42,3 +42,24 @@ export const paymentReviewStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 费用项目选项
+ * Expense item options
+ */
+export const 费用项目Options: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水费", value: "水费" },
+	{ label: "电费", value: "电费" },
+	{ label: "燃气费", value: "燃气费" },
+];
+
+/**
+ * @description 缴费审核状态选项
+ * Payment review status options
+ */
+export const 缴费审核状态Options: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+];

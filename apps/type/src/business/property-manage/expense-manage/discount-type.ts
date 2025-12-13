@@ -42,3 +42,13 @@ export const discountTypeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 折扣类型选项
+ * Discount type options
+ */
+export const 折扣类型Options: OptionsType = [
+	{ label: "百分比折扣", value: "百分比折扣" },
+	{ label: "固定金额折扣", value: "固定金额折扣" },
+	{ label: "阶梯折扣", value: "阶梯折扣" },
+];

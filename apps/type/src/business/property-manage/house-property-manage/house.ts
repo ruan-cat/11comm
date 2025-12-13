@@ -128,3 +128,11 @@ export interface HouseManagementFormVO {
 	/** 有效期 Valid until */
 	validUntil: string;
 }
+
+// ==================== 中文名称导出 ====================
+
+/** 房屋状态选项（中文名称） */
+export const 房屋状态选项 = houseStatusOptions;
+
+/** 房屋类型选项（中文名称） */
+export const 房屋类型选项 = houseTypeOptions;

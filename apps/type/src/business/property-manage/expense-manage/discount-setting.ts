@@ -42,3 +42,23 @@ export const discountSettingStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 折扣设置类型选项
+ * Discount setting type options
+ */
+export const 折扣设置类型Options: OptionsType = [
+	{ label: "百分比折扣", value: "百分比折扣" },
+	{ label: "固定金额折扣", value: "固定金额折扣" },
+	{ label: "阶梯折扣", value: "阶梯折扣" },
+];
+
+/**
+ * @description 折扣设置规则选项
+ * Discount setting rule options
+ */
+export const 折扣设置规则Options: OptionsType = [
+	{ label: "全部适用", value: "全部适用" },
+	{ label: "按时间限制", value: "按时间限制" },
+	{ label: "按金额限制", value: "按金额限制" },
+];

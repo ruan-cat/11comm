@@ -65,3 +65,29 @@ export const propertyRegisterStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+// ==================== 中文名称导出 ====================
+
+/** 产权登记审核状态选项（中文名称） */
+export const 产权登记审核状态Options = propertyRegisterStatusOptions;
+
+/**
+ * @description 楼栋选项
+ * Building options
+ */
+export const 楼栋Options: OptionsType = [
+	{ label: "A栋", value: "A栋" },
+	{ label: "B栋", value: "B栋" },
+	{ label: "C栋", value: "C栋" },
+	{ label: "D栋", value: "D栋" },
+];
+
+/**
+ * @description 单元选项
+ * Unit options
+ */
+export const 单元Options: OptionsType = [
+	{ label: "1单元", value: "1单元" },
+	{ label: "2单元", value: "2单元" },
+	{ label: "3单元", value: "3单元" },
+];

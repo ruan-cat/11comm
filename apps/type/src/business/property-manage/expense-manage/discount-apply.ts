@@ -42,3 +42,23 @@ export const discountApplyStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 申请类型选项
+ * Application type options
+ */
+export const 申请类型Options: OptionsType = [
+	{ label: "新申请", value: "新申请" },
+	{ label: "续期申请", value: "续期申请" },
+	{ label: "变更申请", value: "变更申请" },
+];
+
+/**
+ * @description 使用状态选项
+ * Usage status options
+ */
+export const 使用状态Options: OptionsType = [
+	{ label: "未使用", value: "未使用" },
+	{ label: "使用中", value: "使用中" },
+	{ label: "已使用", value: "已使用" },
+];

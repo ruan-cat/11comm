@@ -42,3 +42,23 @@ export const expireStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 到期合同处理状态选项
+ * Expire contract processing status options
+ */
+export const 到期合同处理状态Options: OptionsType = [
+	{ label: "未处理", value: "未处理" },
+	{ label: "处理中", value: "处理中" },
+	{ label: "已处理", value: "已处理" },
+];
+
+/**
+ * @description 到期合同类型选项
+ * Expire contract type options
+ */
+export const 到期合同类型Options: OptionsType = [
+	{ label: "物业服务合同", value: "物业服务合同" },
+	{ label: "租赁合同", value: "租赁合同" },
+	{ label: "维修合同", value: "维修合同" },
+];

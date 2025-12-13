@@ -35,10 +35,50 @@ export interface ParkingSpaceStructureDiagramQueryParams {
 }
 
 /**
- * @description 状态选项
- * Status options
+ * @description 车位类型选项
+ * Parking space type options
  */
-export const parkingSpaceStructureDiagramStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+export const 车位类型选项: OptionsType = [
+	{ label: "标准车位", value: "标准车位" },
+	{ label: "大型车位", value: "大型车位" },
+	{ label: "小型车位", value: "小型车位" },
+	{ label: "子母车位", value: "子母车位" },
 ];
+
+/**
+ * @description 车位状态选项
+ * Parking space status options
+ */
+export const 车位状态选项: OptionsType = [
+	{ label: "空闲", value: "空闲" },
+	{ label: "已售", value: "已售" },
+	{ label: "已租", value: "已租" },
+	{ label: "待售", value: "待售" },
+	{ label: "待租", value: "待租" },
+];
+
+/**
+ * @description 楼层区域选项
+ * Floor area options
+ */
+export const 楼层区域选项: OptionsType = [
+	{ label: "地下1层", value: "地下1层" },
+	{ label: "地下2层", value: "地下2层" },
+	{ label: "地下3层", value: "地下3层" },
+	{ label: "地面层", value: "地面层" },
+	{ label: "架空层", value: "架空层" },
+];
+
+/**
+ * @description 是否充电桩选项
+ * EV charging pile options
+ */
+export const 是否充电桩选项: OptionsType = [
+	{ label: "是", value: "是" },
+	{ label: "否", value: "否" },
+];
+
+// ==================== 中文名称导出 ====================
+
+/** 状态选项（中文名称） */
+export const 状态选项 = 车位状态选项;

@@ -93,3 +93,11 @@ export interface CommunityConfigFormVO {
 	/** 备注信息 Remark */
 	remark: string;
 }
+
+// ==================== 中文名称导出 ====================
+
+/** 设置类型选项（中文名称） */
+export const 设置类型选项 = settingTypeOptions;
+
+/** 数据状态选项（中文名称） */
+export const 数据状态选项 = communityConfigStatusOptions;

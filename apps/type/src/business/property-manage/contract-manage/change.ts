@@ -42,3 +42,13 @@ export const changeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 合同类型选项
+ * Contract type options
+ */
+export const 合同类型Options: OptionsType = [
+	{ label: "物业服务合同", value: "物业服务合同" },
+	{ label: "租赁合同", value: "租赁合同" },
+	{ label: "维修合同", value: "维修合同" },
+];

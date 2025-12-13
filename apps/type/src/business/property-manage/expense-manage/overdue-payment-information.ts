@@ -42,3 +42,12 @@ export const overduePaymentInformationStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 收费对象选项
+ * Charging object options
+ */
+export const 收费对象Options: OptionsType = [
+	{ label: "业主", value: "业主" },
+	{ label: "租户", value: "租户" },
+];

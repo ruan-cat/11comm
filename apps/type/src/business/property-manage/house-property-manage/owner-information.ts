@@ -69,3 +69,32 @@ export interface OwnerInformationFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
+
+/**
+ * @description 人员类型选项
+ * Personnel type options
+ */
+export const 人员类型Options: OptionsType = [
+	{ label: "业主", value: "业主" },
+	{ label: "租户", value: "租户" },
+	{ label: "家属", value: "家属" },
+];
+
+/**
+ * @description 人员角色选项
+ * Personnel role options
+ */
+export const 人员角色Options: OptionsType = [
+	{ label: "户主", value: "户主" },
+	{ label: "家庭成员", value: "家庭成员" },
+	{ label: "租客", value: "租客" },
+];
+
+/**
+ * @description 性别选项
+ * Gender options
+ */
+export const 性别Options: OptionsType = [
+	{ label: "男", value: "男" },
+	{ label: "女", value: "女" },
+];

@@ -42,3 +42,13 @@ export const vehicleChargeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 车位状态选项
+ * Parking space status options
+ */
+export const 车位状态Options: OptionsType = [
+	{ label: "空闲", value: "空闲" },
+	{ label: "已占用", value: "已占用" },
+	{ label: "维修中", value: "维修中" },
+];

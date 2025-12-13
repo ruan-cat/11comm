@@ -65,3 +65,23 @@ export const invoiceDefaultForm: 发票表单_VO = {
 	status: "启用",
 	remark: "",
 };
+
+/**
+ * @description 发票类型选项
+ * Invoice type options
+ */
+export const 发票类型Options: OptionsType = [
+	{ label: "普通发票", value: "普通发票" },
+	{ label: "专用发票", value: "专用发票" },
+	{ label: "电子发票", value: "电子发票" },
+];
+
+/**
+ * @description 发票审核状态选项
+ * Invoice audit status options
+ */
+export const 发票审核状态Options: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+];

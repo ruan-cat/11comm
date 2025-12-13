@@ -88,8 +88,8 @@ export const feeStatusOptions: OptionsType = [
 ];
 
 /**
- * @description 状态选项中文别名
- * Chinese alias for feeStatusOptions
+ * @description 业务受理状态选项
+ * Business handling status options
  */
-export const 状态Options = feeStatusOptions;
+export const 业务受理状态Options = feeStatusOptions;
 
