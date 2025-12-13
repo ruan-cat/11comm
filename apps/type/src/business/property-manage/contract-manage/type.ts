@@ -52,3 +52,17 @@ export const 审核类型Options: OptionsType = [
 	{ label: "已通过", value: "已通过" },
 	{ label: "已拒绝", value: "已拒绝" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 合同类型_列表数据 类型（兼容性）
+ * Contract type list data type (for compatibility)
+ */
+export type 合同类型_列表数据 = TypeListItem[];
+
+/**
+ * @description 合同类型_列表查询_VO 类型（兼容性）
+ * Contract type list query VO type (for compatibility)
+ */
+export type 合同类型_列表查询_VO = TypeQueryParams;

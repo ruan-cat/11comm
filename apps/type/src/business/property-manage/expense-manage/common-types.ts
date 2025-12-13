@@ -1,0 +1,222 @@
+import type { OptionsType, BaseListQueryParams } from "../../../common";
+
+// FIXME: 这些写法不对，不合适 应该写到各自的类型文件内 而且不应该使用中文命名方式
+
+// ==================== 通用选项定义 ====================
+
+/** 费用类型选项 */
+export const 费用类型Options: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水费", value: "水费" },
+	{ label: "电费", value: "电费" },
+	{ label: "燃气费", value: "燃气费" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
+	{ label: "垃圾费", value: "垃圾费" },
+	{ label: "其他费用", value: "其他费用" },
+];
+
+/** 审核状态选项 */
+export const 审核状态Options: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+];
+
+/** 费用标识选项 */
+export const 费用标识Options: OptionsType = [
+	{ label: "收入", value: "收入" },
+	{ label: "支出", value: "支出" },
+];
+
+/** 付费类型选项 */
+export const 付费类型Options: OptionsType = [
+	{ label: "预付费", value: "预付费" },
+	{ label: "后付费", value: "后付费" },
+];
+
+/** 账户抵扣选项 */
+export const 账户抵扣Options: OptionsType = [
+	{ label: "可抵扣", value: "可抵扣" },
+	{ label: "不可抵扣", value: "不可抵扣" },
+];
+
+/** 自定义费用选项 */
+export const 自定义费用Options: OptionsType = [
+	{ label: "固定费用", value: "固定费用" },
+	{ label: "计量费用", value: "计量费用" },
+	{ label: "比例费用", value: "比例费用" },
+];
+
+/** 状态选项 */
+export const 状态Options: OptionsType = [
+	{ label: "启用", value: "启用" },
+	{ label: "禁用", value: "禁用" },
+];
+
+/** 折扣类型选项 */
+export const 折扣类型Options: OptionsType = [
+	{ label: "比例折扣", value: "比例折扣" },
+	{ label: "固定折扣", value: "固定折扣" },
+	{ label: "满减折扣", value: "满减折扣" },
+];
+
+/** 规则选项 */
+export const 规则Options: OptionsType = [
+	{ label: "规则一", value: "规则一" },
+	{ label: "规则二", value: "规则二" },
+	{ label: "规则三", value: "规则三" },
+];
+
+/** 申请类型选项 */
+export const 申请类型Options: OptionsType = [
+	{ label: "个人申请", value: "个人申请" },
+	{ label: "企业申请", value: "企业申请" },
+	{ label: "特殊申请", value: "特殊申请" },
+];
+
+/** 使用状态选项 */
+export const 使用状态Options: OptionsType = [
+	{ label: "未使用", value: "未使用" },
+	{ label: "已使用", value: "已使用" },
+	{ label: "已过期", value: "已过期" },
+];
+
+/** 表类型选项 */
+export const 表类型Options: OptionsType = [
+	{ label: "水表", value: "水表" },
+	{ label: "电表", value: "电表" },
+	{ label: "燃气表", value: "燃气表" },
+];
+
+/** 收费对象选项 */
+export const 收费对象Options: OptionsType = [
+	{ label: "业主", value: "业主" },
+	{ label: "租户", value: "租户" },
+	{ label: "商户", value: "商户" },
+];
+
+/** 费用项目选项 */
+export const 费用项目Options: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水费", value: "水费" },
+	{ label: "电费", value: "电费" },
+	{ label: "停车费", value: "停车费" },
+];
+
+/** 退费原因选项 */
+export const 退费原因Options: OptionsType = [
+	{ label: "重复缴费", value: "重复缴费" },
+	{ label: "计算错误", value: "计算错误" },
+	{ label: "服务取消", value: "服务取消" },
+	{ label: "其他原因", value: "其他原因" },
+];
+
+/** 催缴方式选项 */
+export const 催缴方式Options: OptionsType = [
+	{ label: "短信", value: "短信" },
+	{ label: "电话", value: "电话" },
+	{ label: "邮件", value: "邮件" },
+	{ label: "上门", value: "上门" },
+];
+
+/** 催缴状态选项 */
+export const 催缴状态Options: OptionsType = [
+	{ label: "未催缴", value: "未催缴" },
+	{ label: "催缴中", value: "催缴中" },
+	{ label: "已催缴", value: "已催缴" },
+	{ label: "已缴费", value: "已缴费" },
+];
+
+/** 车位状态选项 */
+export const 车位状态Options: OptionsType = [
+	{ label: "空闲", value: "空闲" },
+	{ label: "已售", value: "已售" },
+	{ label: "已租", value: "已租" },
+	{ label: "预留", value: "预留" },
+];
+
+/** 费用项名称选项 */
+export const 费用项名称Options: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水电费", value: "水电费" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
+];
+
+/** 合同类型选项 */
+export const 合同类型Options: OptionsType = [
+	{ label: "物业服务合同", value: "物业服务合同" },
+	{ label: "租赁合同", value: "租赁合同" },
+	{ label: "维修合同", value: "维修合同" },
+];
+
+// ==================== 通用类型定义 ====================
+
+/** 退费审核表单 VO */
+export interface 退费审核表单_VO {
+	/** 退费金额 */
+	refundAmount: number;
+	/** 退费原因 */
+	refundReason: string;
+	/** 审核状态 */
+	auditStatus: string;
+	/** 审核意见 */
+	auditComment?: string;
+}
+
+/** 补打收据表单 VO */
+export interface 补打收据表单_VO {
+	/** 收据编号 */
+	receiptNumber: string;
+	/** 补打原因 */
+	reprintReason: string;
+	/** 申请人 */
+	applicant: string;
+	/** 申请时间 */
+	applicationTime: string;
+}
+
+/** 抄表类型 VO */
+export interface 抄表类型_VO {
+	/** 表类型名称 */
+	meterTypeName: string;
+	/** 表单位 */
+	meterUnit: string;
+	/** 计费方式 */
+	billingMethod: string;
+	/** 单价 */
+	unitPrice: number;
+	/** 状态 */
+	status: string;
+}
+
+// ==================== 通用列表数据类型 ====================
+
+/**
+ * 通用列表数据项接口
+ */
+export interface CommonListItem {
+	/** ID */
+	id: string;
+	/** 名称 */
+	name: string;
+	/** 状态 */
+	status: string;
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+	/** 备注 */
+	remark?: string;
+}
+
+/**
+ * 通用查询参数接口
+ */
+export interface CommonQueryParams extends BaseListQueryParams {
+	/** 名称 */
+	name?: string;
+	/** 状态 */
+	status?: string;
+}

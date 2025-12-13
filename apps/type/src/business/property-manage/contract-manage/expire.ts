@@ -62,3 +62,29 @@ export const 到期合同类型Options: OptionsType = [
 	{ label: "租赁合同", value: "租赁合同" },
 	{ label: "维修合同", value: "维修合同" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 到期合同_列表数据 类型（兼容性）
+ * Expire contract list data type (for compatibility)
+ */
+export type 到期合同_列表数据 = ExpireListItem[];
+
+/**
+ * @description 到期合同_列表查询_VO 类型（兼容性）
+ * Expire contract list query VO type (for compatibility)
+ */
+export type 到期合同_列表查询_VO = ExpireQueryParams;
+
+/**
+ * @description 合同类型选项（兼容性）
+ * Contract type options (for compatibility)
+ */
+export const 合同类型Options = 到期合同类型Options;
+
+/**
+ * @description 处理状态选项（兼容性）
+ * Processing status options (for compatibility)
+ */
+export const 处理状态Options = 到期合同处理状态Options;

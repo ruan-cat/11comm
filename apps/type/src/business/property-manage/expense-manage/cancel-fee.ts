@@ -42,3 +42,23 @@ export const cancelFeeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 取消费用_列表数据 类型（兼容性）
+ * Cancel fee list data type (for compatibility)
+ */
+export type 取消费用_列表数据 = CancelFeeListItem[];
+
+/**
+ * @description 取消费用_列表查询_VO 类型（兼容性）
+ * Cancel fee list query VO type (for compatibility)
+ */
+export type 取消费用_列表查询_VO = CancelFeeQueryParams;
+
+/**
+ * @description 审核状态选项（兼容性）
+ * Audit status options (for compatibility)
+ */
+export const 审核状态Options = cancelFeeStatusOptions;

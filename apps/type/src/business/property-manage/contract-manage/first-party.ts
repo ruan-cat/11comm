@@ -52,3 +52,11 @@ export const 合同甲方类型Options: OptionsType = [
 	{ label: "租赁合同", value: "租赁合同" },
 	{ label: "维修合同", value: "维修合同" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 合同甲方_列表数据 类型（兼容性）
+ * Contract first-party list data type (for compatibility)
+ */
+export type 合同甲方_列表数据 = FirstPartyListItem[];

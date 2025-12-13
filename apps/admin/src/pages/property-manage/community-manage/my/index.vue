@@ -22,6 +22,16 @@ import {
 	小区状态选项
 } from "@01s-11comm/type";
 
+// 定义表格数据类型
+interface MyCommunityTableRow {
+	省份: string;
+	市州: string;
+	区县: string;
+	小区名称: string;
+	小区编码: string;
+	状态: string;
+}
+
 /** 表单组件实例 */
 const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
 
@@ -38,7 +48,24 @@ async function testAsync() {
 }
 
 /** 表格数据 */
-const tableData = ref<我的小区_列表Data[]>([]);
+const tableData = ref<MyCommunityTableRow[]>([
+	{
+		省份: "广东省",
+		市州: "深圳市",
+		区县: "南山区",
+		小区名称: "测试小区1",
+		小区编码: "TEST001",
+		状态: "启用",
+	},
+	{
+		省份: "广东省",
+		市州: "广州市",
+		区县: "天河区",
+		小区名称: "测试小区2",
+		小区编码: "TEST002",
+		状态: "禁用",
+	},
+]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([

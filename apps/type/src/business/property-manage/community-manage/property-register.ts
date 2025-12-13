@@ -23,7 +23,7 @@ export interface PropertyRegisterListItem {
  * @description 产权登记表单VO
  * Property register form VO
  */
-export interface 产权登记表单_VO {
+export interface PropertyRegisterFormVO {
 	/** 名称 Name */
 	name: string;
 	/** 状态 Status */
@@ -36,7 +36,7 @@ export interface 产权登记表单_VO {
  * @description 产权登记表单默认值
  * Property register form default values
  */
-export const defaultForm: 产权登记表单_VO = {
+export const defaultForm: PropertyRegisterFormVO = {
 	name: "",
 	status: "启用",
 	remark: "",
@@ -71,6 +71,9 @@ export const propertyRegisterStatusOptions: OptionsType = [
 /** 产权登记审核状态选项（中文名称） */
 export const 产权登记审核状态Options = propertyRegisterStatusOptions;
 
+/** 审核状态选项（中文名称） */
+export const 审核状态Options = propertyRegisterStatusOptions;
+
 /**
  * @description 楼栋选项
  * Building options
@@ -91,3 +94,23 @@ export const 单元Options: OptionsType = [
 	{ label: "2单元", value: "2单元" },
 	{ label: "3单元", value: "3单元" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 产权登记_列表数据 类型（兼容性）
+ * Property register list data type (for compatibility)
+ */
+export type 产权登记_列表数据 = PropertyRegisterListItem[];
+
+/**
+ * @description 产权登记_列表查询_VO 类型（兼容性）
+ * Property register list query VO type (for compatibility)
+ */
+export type 产权登记_列表查询_VO = PropertyRegisterQueryParams;
+
+/**
+ * @description 产权登记表单_VO 类型（兼容性）
+ * Property register form VO type (for compatibility)
+ */
+export type 产权登记表单_VO = PropertyRegisterFormVO;

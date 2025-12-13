@@ -14,6 +14,15 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type ParkingSpaceStructureDiagramFormProps, defaultForm, type 车位结构图表单_VO } from "./components/form";
 import ParkingSpaceStructureDiagramForm from "./components/form.vue";
+import {
+	车位结构图_列表数据,
+	mockTableData,
+	车位结构图_列表查询_VO,
+	车位类型选项,
+	车位状态选项,
+	楼层区域选项,
+	是否充电桩选项
+} from "@01s-11comm/type";
 
 /** 表单组件实例 */
 const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(null);

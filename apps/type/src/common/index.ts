@@ -77,3 +77,6 @@ export interface BaseListQueryParams {
 	/** 每页大小 Page size */
 	pageSize: number;
 }
+
+// 导出测试数据
+export * from "./test-data";

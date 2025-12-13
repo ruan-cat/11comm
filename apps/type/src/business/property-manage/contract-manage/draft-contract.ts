@@ -67,3 +67,17 @@ export const 合同草稿状态Options: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 合同草稿_列表数据 类型（兼容性）
+ * Draft contract list data type (for compatibility)
+ */
+export type 合同草稿_列表数据 = DraftContractListItem[];
+
+/**
+ * @description 合同类型_列表查询_VO 类型（兼容性）
+ * Contract type list query VO type (for compatibility)
+ */
+export type 合同类型_列表查询_VO = DraftContractQueryParams;
