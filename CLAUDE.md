@@ -169,6 +169,9 @@ pnpm build:admin
 # 或者从根目录运行
 pnpm -F @01s-11comm/admin build
 
+# 专门构建类型库
+pnpm -F @01s-11comm/type build
+
 # 以staging模式构建
 pnpm -F @01s-11comm/admin build:staging
 
@@ -212,15 +215,37 @@ pnpm format
 ### 类型检查
 
 ```bash
+# 对整个项目进行类型检查
+pnpm typecheck
+
 # 对管理应用进行类型检查
 pnpm -F @01s-11comm/admin typecheck
+
+# 对类型库进行类型检查
+pnpm -F @01s-11comm/type typecheck
 ```
+
+**关于 @01s-11comm/type 包：**
+
+项目新增了 `@01s-11comm/type` 包，这是一个业务类型库，用于存放项目中共享的业务类型定义。
+
+- **位置**：`apps/type/`
+- **作用**：集中管理所有业务相关的 TypeScript 类型定义
+- **依赖**：依赖 `@ruan-cat/utils` 工具库
+- **使用**：管理应用和其他包可以通过 `workspace:^` 引用此类型库
+- **类型检查**：每个包都包含独立的 typecheck 命令，确保类型安全
+
+在开发过程中，请确保：
+1. 所有新的业务类型定义都添加到 `@01s-11comm/type` 包中
+2. 在提交前运行类型检查命令
+3. 保持类型定义的准确性和一致性
 
 ## 项目架构
 
 ### Monorepo 结构
 
 - `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
+- `apps/type/` - **新增**的业务类型库，集中管理所有共享类型定义
 - `apps/vue-pure-admin/` - Pure admin 模板（参考用）
 - `examples/` - 示例应用（01s-origin, 10wms）
 - 根级别管理 monorepo 依赖和共享配置

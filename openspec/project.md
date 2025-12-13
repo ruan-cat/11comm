@@ -12,6 +12,7 @@
 - 路由：unplugin-vue-router（基于文件的路由）
 - 状态：Pinia
 - 网络：Axios + @ruan-cat/utils（封装）
+- 类型管理：**@01s-11comm/type**（新增业务类型库）
 - 其它：Nitro（全栈构建/适配）、lodash-es、VueUse
 
 ## 3. 项目约定
@@ -23,19 +24,24 @@
 - API/接口分模块建子目录，不集中放单一 `index.ts`（参考 @/change/@/draft/@/expire）
 - JS/TS 注释使用 JSDoc 形式
 - 测试中辅助函数用全局导入，勿在测试文件内重复定义
+- **类型管理**：所有业务相关类型定义应统一存放在 `@01s-11comm/type` 包中，确保类型共享和一致性
 
 ### 3.2 架构模式
 
-- Monorepo（`apps/admin` 为主，`apps/vue-pure-admin` 为模板参考）
+- Monorepo（`apps/admin` 为主，`apps/type` 为新增类型库，`apps/vue-pure-admin` 为模板参考）
 - 组合式函数抽共享逻辑；定义路由用 `definePage` 宏
 - API 按业务模块 c1-c7、j1-j8 组织，增量规范用 OpenSpec 管理
+- **类型库**：所有共享业务类型统一存放在 `@01s-11comm/type` 包中，其他包通过 `workspace:^` 依赖
 - 默认单文件实现优先，<100 行新增为宜；需跨域/复杂才引入 `design.md`
 
 ### 3.3 测试策略
 
 - 单元/UI：`pnpm test` 或 `pnpm -F @01s-11comm/admin test`
 - Lint：`pnpm -F @01s-11comm/admin lint`（或 `lint:eslint` / `lint:prettier` / `lint:stylelint`）
-- 类型检查：`pnpm -F @01s-11comm/admin typecheck`（提交前必跑）
+- 类型检查：**`pnpm typecheck`**（提交前必跑，对整个项目进行类型检查）
+  - 管理应用：`pnpm -F @01s-11comm/admin typecheck`
+  - 类型库：`pnpm -F @01s-11comm/type typecheck`
+  - 单个包检查：`pnpm -F <package-name> typecheck`
 - 构建验证：`pnpm build` 或 `pnpm -F @01s-11comm/admin build`
 
 ### 3.4 Git 工作流
