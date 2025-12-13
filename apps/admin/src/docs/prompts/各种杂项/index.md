@@ -165,8 +165,10 @@ overrides:
 2. 阅读 `.claude\agents\make-list-page.md` 关于【用 `假数据文件` `test-data.ts` 来存储业务类型与假数据】章节，了解清楚数据格式的处理要求。
 3. 请你将这个文件，转换成可以被 openspec 识别的一揽子任务。
 
-## 017 <!-- TODO: --> 为新增的 `@01s-11comm/type` 包，更新 AI 指导文件
+## 017 为新增的 `@01s-11comm/type` 包，更新 AI 指导文件
 
 1. 现在整个项目增加了新的包，`@01s-11comm/type` 包。
 2. 请你阅读整个项目全部的 `package.json` 文件，分析文件依赖。
 3. 对于全部名称为的 `CLAUDE.md` 、`project.md` 和 `AGENTS.md` 文件，做出适当的拓展更新。说明清楚增加了新的库，以及如何做整个项目的 `typecheck` 类型检查。
+
+## 018
