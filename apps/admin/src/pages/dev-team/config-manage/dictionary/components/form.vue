@@ -6,6 +6,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { DictionaryFormProps, DictionaryFormVO } from "./form";
+import { 字典类型选项, 是否启用选项 } from "@01s-11comm/type";
 
 const props = defineProps<DictionaryFormProps>();
 

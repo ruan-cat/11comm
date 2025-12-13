@@ -5,6 +5,9 @@ import type { CommunityConfigFormVO } from "@01s-11comm/type";
 /** 小区配置表单数据类型（中文别名） */
 export type 小区配置表单_VO = CommunityConfigFormVO;
 
+/** 小区配置表单数据类型 */
+export { CommunityConfigFormVO };
+
 // ==================== Options 导出 ====================
 
 import { 设置类型选项, 数据状态选项 } from "@01s-11comm/type";

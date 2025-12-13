@@ -14,6 +14,13 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
+import {
+	我的小区_列表Data,
+	mockTableData,
+	我的小区_列表查询_VO,
+	省份选项,
+	小区状态选项
+} from "@01s-11comm/type";
 
 /** 表单组件实例 */
 const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
@@ -248,7 +255,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: 状态选项,
+		options: 小区状态选项,
 	},
 ]);
 

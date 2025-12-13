@@ -6,6 +6,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { ConfigItemFormProps, ConfigItemFormVO } from "./form";
+import { 配置项类型选项, 配置项是否启用选项 } from "@01s-11comm/type";
 
 const props = defineProps<ConfigItemFormProps>();
 
@@ -100,7 +101,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "是否启用",
 		prop: "isEnabled",
 		valueType: "select",
-		options: 是否启用选项,
+		options: 配置项是否启用选项,
 		fieldProps: {
 			clearable: true,
 		},
