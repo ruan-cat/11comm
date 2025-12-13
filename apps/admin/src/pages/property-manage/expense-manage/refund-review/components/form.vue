@@ -7,7 +7,7 @@ import { type RefundReviewFormProps, defaultForm } from "./form";
 const props = defineProps<RefundReviewFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 退费审核表单_VO;
+const defaultValues = props.defaultValues as FieldValues & RefundReviewFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 退费审核表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & RefundReviewFormVO;
 
 /**
  * 表单对象
@@ -36,24 +36,24 @@ const formComputed = computed(() => {
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
 	{
-		label: "退费单号",
-		prop: "退费单号",
+		label: "refundOrderNumber",
+		prop: "refundOrderNumber",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "缴费单号",
-		prop: "缴费单号",
+		label: "paymentOrderNumber",
+		prop: "paymentOrderNumber",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "费用类型",
-		prop: "费用类型",
+		label: "feeType",
+		prop: "feeType",
 		valueType: "select",
 		options: 费用类型Options,
 		fieldProps: {
@@ -61,16 +61,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "付费对象",
-		prop: "付费对象",
+		label: "payer",
+		prop: "payer",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "付费周期",
-		prop: "付费周期",
+		label: "paymentCycle",
+		prop: "paymentCycle",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -78,23 +78,23 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "退费金额",
-		prop: "应付金额实付金额",
+		prop: "amount",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "申请时间",
-		prop: "申请时间",
+		label: "applyTime",
+		prop: "applyTime",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "退费原因",
-		prop: "退费原因",
+		label: "refundReason",
+		prop: "refundReason",
 		valueType: "select",
 		options: 退费原因Options,
 		fieldProps: {
@@ -102,30 +102,30 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "申请人",
-		prop: "申请人",
+		label: "applicant",
+		prop: "applicant",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "审核状态",
-		prop: "审核状态",
+		label: "auditStatus",
+		prop: "auditStatus",
 		valueType: "select",
 		options: 审核状态Options,
 	},
 	{
-		label: "审核人",
-		prop: "审核人",
+		label: "auditor",
+		prop: "auditor",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},
 	},
 	{
-		label: "审核备注",
-		prop: "审核备注",
+		label: "auditRemark",
+		prop: "auditRemark",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,

@@ -1,12 +1,12 @@
-import type { 小区配置表单_VO } from "@01s-11comm/type";
+import type { CommunityConfigFormVO } from "@01s-11comm/type";
 
 // ==================== 默认表单 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 小区配置表单_VO = {
+export const defaultForm: CommunityConfigFormVO = {
 	csId: "",
 	communityId: "",
-	小区名称: "",
+	communityName: "",
 	settingName: "",
 	settingValue: "",
 	settingType: "",
@@ -23,7 +23,7 @@ export const defaultForm: 小区配置表单_VO = {
  */
 export interface CommunityConfigurationFormProps {
 	/** 表单数据 */
-	form: 小区配置表单_VO;
+	form: CommunityConfigFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 小区配置表单_VO;
+	defaultValues: CommunityConfigFormVO;
 }

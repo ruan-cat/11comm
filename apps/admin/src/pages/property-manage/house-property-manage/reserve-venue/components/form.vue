@@ -9,7 +9,7 @@ import { type ReserveVenueFormProps } from "./form";
 import { defaultForm } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
-const defaultValues = props.defaultValues as FieldValues & 场地预约_VO;
+const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 /**
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 场地预约_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ReserveVenueFormVO;
 
 /**
  * 表单对象

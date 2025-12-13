@@ -1,7 +1,7 @@
-import type { 巡检路线_表单数据 } from "@01s-11comm/type";
+import type { PatrolPathFormData } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 巡检路线_表单数据 = {
+export const defaultForm: PatrolPathFormData = {
 	巡检点ID: "",
 	巡检点名称: "",
 	巡检点类型: "",
@@ -18,7 +18,7 @@ export const defaultForm: 巡检路线_表单数据 = {
  */
 export interface PatrolPathFormProps {
 	/** 表单数据 */
-	form: 巡检路线_表单数据;
+	form: PatrolPathFormData;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 巡检路线_表单数据;
+	defaultValues: PatrolPathFormData;
 }

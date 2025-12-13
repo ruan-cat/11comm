@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { DictionaryFormProps, 字典表单_VO } from "./form";
+import { DictionaryFormProps, DictionaryFormVO } from "./form";
 
 const props = defineProps<DictionaryFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 字典表单_VO;
+const defaultValues = props.defaultValues as FieldValues & DictionaryFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 字典表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & DictionaryFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 字典名称
 	{
 		label: "字典名称",
-		prop: "字典名称",
+		prop: "dictionaryName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 字典编码
 	{
 		label: "字典编码",
-		prop: "字典编码",
+		prop: "dictionaryCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 字典类型
 	{
 		label: "字典类型",
-		prop: "字典类型",
+		prop: "dictionaryType",
 		valueType: "select",
 		options: 字典类型选项,
 		fieldProps: {
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 字典描述
 	{
 		label: "字典描述",
-		prop: "字典描述",
+		prop: "dictionaryDescription",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -87,7 +87,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 是否启用
 	{
 		label: "是否启用",
-		prop: "是否启用",
+		prop: "isEnabled",
 		valueType: "select",
 		options: 是否启用选项,
 		fieldProps: {
@@ -99,7 +99,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -112,19 +112,19 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	字典名称: [
+	dictionaryName: [
 		{ required: true, message: "请输入字典名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	字典编码: [
+	dictionaryCode: [
 		{ required: true, message: "请输入字典编码", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 		{ pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: "编码只能包含字母、数字、下划线，且不能以数字开头", trigger: "blur" },
 	],
-	字典类型: [
+	dictionaryType: [
 		{ required: true, message: "请选择字典类型", trigger: "change" },
 	],
-	是否启用: [
+	isEnabled: [
 		{ required: true, message: "请选择是否启用", trigger: "change" },
 	],
 });

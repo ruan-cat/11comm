@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ConfigItemFormProps, 配置项表单_VO } from "./form";
+import { ConfigItemFormProps, ConfigItemFormVO } from "./form";
 
 const props = defineProps<ConfigItemFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 配置项表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ConfigItemFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 配置项表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ConfigItemFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置项名称
 	{
 		label: "配置项名称",
-		prop: "配置项名称",
+		prop: "configItemName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置项编码
 	{
 		label: "配置项编码",
-		prop: "配置项编码",
+		prop: "configItemCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置项类型
 	{
 		label: "配置项类型",
-		prop: "配置项类型",
+		prop: "configItemType",
 		valueType: "select",
 		options: 配置项类型选项,
 		fieldProps: {
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置项值
 	{
 		label: "配置项值",
-		prop: "配置项值",
+		prop: "configItemValue",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置项描述
 	{
 		label: "配置项描述",
-		prop: "配置项描述",
+		prop: "configItemDescription",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -98,7 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 是否启用
 	{
 		label: "是否启用",
-		prop: "是否启用",
+		prop: "isEnabled",
 		valueType: "select",
 		options: 是否启用选项,
 		fieldProps: {
@@ -110,7 +110,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -123,23 +123,23 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	配置项名称: [
+	configItemName: [
 		{ required: true, message: "请输入配置项名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	配置项编码: [
+	configItemCode: [
 		{ required: true, message: "请输入配置项编码", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 		{ pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: "编码只能包含字母、数字、下划线，且不能以数字开头", trigger: "blur" },
 	],
-	配置项类型: [
+	configItemType: [
 		{ required: true, message: "请选择配置项类型", trigger: "change" },
 	],
-	配置项值: [
+	configItemValue: [
 		{ required: true, message: "请输入配置项值", trigger: "blur" },
 		{ min: 1, max: 500, message: "长度在 1 到 500 个字符", trigger: "blur" },
 	],
-	是否启用: [
+	isEnabled: [
 		{ required: true, message: "请选择是否启用", trigger: "change" },
 	],
 });

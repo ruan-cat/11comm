@@ -1,7 +1,7 @@
-import type { 巡检计划表单_VO } from "@01s-11comm/type";
+import type { PatrolPlanFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 巡检计划表单_VO = {
+export const defaultForm: PatrolPlanFormVO = {
 	计划名称: "",
 	计划路线: "",
 	计划周期: "",
@@ -25,7 +25,7 @@ export const defaultForm: 巡检计划表单_VO = {
  */
 export interface PatrolPlanFormProps {
 	/** 表单数据 */
-	form: 巡检计划表单_VO;
+	form: PatrolPlanFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 巡检计划表单_VO;
+	defaultValues: PatrolPlanFormVO;
 }

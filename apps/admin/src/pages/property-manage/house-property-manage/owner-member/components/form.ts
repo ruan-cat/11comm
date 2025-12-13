@@ -1,7 +1,7 @@
-import type { 业主成员表单_VO } from "@01s-11comm/type";
+import type { OwnerMemberFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 业主成员表单_VO = {
+export const defaultForm: OwnerMemberFormVO = {
 	成员人脸: "",
 	名称: "",
 	性别: "",
@@ -21,9 +21,9 @@ export const defaultForm: 业主成员表单_VO = {
  */
 export interface OwnerMemberFormProps {
 	/** 表单数据 */
-	form: 业主成员表单_VO;
+	form: OwnerMemberFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 业主成员表单_VO;
+	defaultValues: OwnerMemberFormVO;
 }
 
-export type { 业主成员表单_VO };
+export type { OwnerMemberFormVO };

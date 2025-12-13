@@ -1,7 +1,7 @@
-import type { 业委会表单_VO } from "@01s-11comm/type";
+import type { OwnersCommitteeFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 业委会表单_VO = {
+export const defaultForm: OwnersCommitteeFormVO = {
 	姓名: "",
 	性别: "",
 	电话: "",
@@ -23,7 +23,7 @@ export const defaultForm: 业委会表单_VO = {
  */
 export interface OwnersCommitteeProps {
 	/** 表单数据 */
-	form: 业委会表单_VO;
+	form: OwnersCommitteeFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 业委会表单_VO;
+	defaultValues: OwnersCommitteeFormVO;
 }

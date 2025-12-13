@@ -1,19 +1,19 @@
-import type { 退费审核表单_VO } from "@01s-11comm/type";
+import type { RefundReviewFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 退费审核表单_VO = {
-	退费单号: "",
-	缴费单号: "",
-	费用类型: "",
-	付费对象: "",
-	付费周期: "",
-	应付金额实付金额: "",
-	申请时间: "",
-	退费原因: "",
-	申请人: "",
-	审核状态: "",
-	审核人: "",
-	审核备注: "",
+export const defaultForm: RefundReviewFormVO = {
+	refundOrderNumber: "",
+	paymentOrderNumber: "",
+	feeType: "",
+	payer: "",
+	paymentPeriod: "",
+	payablePaidAmount: "",
+	applyTime: "",
+	refundReason: "",
+	applicant: "",
+	auditStatus: "",
+	auditor: "",
+	auditRemark: "",
 };
 
 /**
@@ -23,7 +23,7 @@ export const defaultForm: 退费审核表单_VO = {
  */
 export interface RefundReviewFormProps {
 	/** 表单数据 */
-	form: 退费审核表单_VO;
+	form: RefundReviewFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 退费审核表单_VO;
+	defaultValues: RefundReviewFormVO;
 }

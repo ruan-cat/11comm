@@ -1,5 +1,5 @@
 import type { OptionsType } from "plus-pro-components";
-import type { 初始化小区表单_VO } from "@01s-11comm/type";
+import type { InitializeCellFormVO } from "@01s-11comm/type";
 
 /** 状态选项 */
 export const 状态Options: OptionsType = [
@@ -9,13 +9,13 @@ export const 状态Options: OptionsType = [
 ];
 
 // 重新导出类型，供组件使用
-export type { 初始化小区表单_VO };
+export type { InitializeCellFormVO };
 
 /**
  * 默认表单
  * @description 对外导出用于其他场景使用
  */
-export const defaultForm: 初始化小区表单_VO = {
+export const defaultForm: InitializeCellFormVO = {
 	小区ID: "",
 	小区名称: "",
 	附近地标: "",
@@ -30,7 +30,7 @@ export const defaultForm: 初始化小区表单_VO = {
  */
 export interface InitializeCellFormProps {
 	/** 表单数据 */
-	form: 初始化小区表单_VO;
+	form: InitializeCellFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 初始化小区表单_VO;
+	defaultValues: InitializeCellFormVO;
 }

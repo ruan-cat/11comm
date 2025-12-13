@@ -1,18 +1,18 @@
-import type { 补打收据表单_VO } from "@01s-11comm/type";
+import type { ReprintVoucherFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 补打收据表单_VO = {
-	收据ID: "",
-	收据编号: "",
-	费用类型: "",
-	费用项: "",
-	房屋: "",
-	业主: "",
-	车位: "",
-	总金额: "",
-	缴费时间: "",
-	打印份数: 1,
-	打印备注: "",
+export const defaultForm: ReprintVoucherFormVO = {
+	receiptId: "",
+	receiptNumber: "",
+	feeType: "",
+	feeItem: "",
+	house: "",
+	owner: "",
+	parkingSpace: "",
+	totalAmount: "",
+	paymentTime: "",
+	printCopies: 1,
+	printRemark: "",
 };
 
 /**
@@ -22,7 +22,7 @@ export const defaultForm: 补打收据表单_VO = {
  */
 export interface ReprintVoucherFormProps {
 	/** 表单数据 */
-	form: 补打收据表单_VO;
+	form: ReprintVoucherFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 补打收据表单_VO;
+	defaultValues: ReprintVoucherFormVO;
 }

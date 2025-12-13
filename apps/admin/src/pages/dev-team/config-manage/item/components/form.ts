@@ -7,40 +7,40 @@
  */
 export interface ConfigItemFormProps {
 	/** 表单数据 */
-	form: 配置项表单_VO;
+	form: ConfigItemFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 配置项表单_VO;
+	defaultValues: ConfigItemFormVO;
 }
 
 /**
  * 配置项表单数据类型
  */
-export interface 配置项表单_VO {
+export interface ConfigItemFormVO {
 	/** 配置项名称 */
-	配置项名称: string;
+	configItemName: string;
 	/** 配置项编码 */
-	配置项编码: string;
+	configItemCode: string;
 	/** 配置项类型 */
-	配置项类型: string;
+	configItemType: string;
 	/** 配置项值 */
-	配置项值: string;
+	configItemValue: string;
 	/** 配置项描述 */
-	配置项描述: string;
+	configItemDescription: string;
 	/** 是否启用 */
-	是否启用: string;
+	isEnabled: string;
 	/** 备注 */
-	备注: string;
+	remark: string;
 }
 
 // ==================== 默认表单数据 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 配置项表单_VO = {
-	配置项名称: "",
-	配置项编码: "",
-	配置项类型: "",
-	配置项值: "",
-	配置项描述: "",
-	是否启用: "",
-	备注: "",
+export const defaultForm: ConfigItemFormVO = {
+	configItemName: "",
+	configItemCode: "",
+	configItemType: "",
+	configItemValue: "",
+	configItemDescription: "",
+	isEnabled: "",
+	remark: "",
 };

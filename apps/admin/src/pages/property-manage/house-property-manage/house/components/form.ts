@@ -1,7 +1,7 @@
-import type { 房屋管理表单_VO } from "@01s-11comm/type";
+import type { HouseManagementFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 房屋管理表单_VO = {
+export const defaultForm: HouseManagementFormVO = {
 	房屋: "",
 	楼层: "",
 	业主: "",
@@ -19,7 +19,7 @@ export const defaultForm: 房屋管理表单_VO = {
  */
 export interface HouseManageFormProps {
 	/** 表单数据 */
-	form: 房屋管理表单_VO;
+	form: HouseManagementFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 房屋管理表单_VO;
+	defaultValues: HouseManagementFormVO;
 }

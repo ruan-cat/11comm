@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { type InitializeCellFormProps, type 初始化小区表单_VO, 状态Options } from "./form";
+import { type InitializeCellFormProps, type InitializeCellFormVO, 状态Options } from "./form";
 
 const props = defineProps<InitializeCellFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 初始化小区表单_VO;
+const defaultValues = props.defaultValues as FieldValues & InitializeCellFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -18,7 +18,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 初始化小区表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & InitializeCellFormVO;
 
 /**
  * 表单对象
