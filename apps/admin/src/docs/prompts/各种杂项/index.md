@@ -178,7 +178,7 @@ overrides:
    - 各种缺失的类型和变量，应该首先去 `@01s-11comm/type` 内寻找。请你按照文件路径所体现的业务路径，在 `@01s-11comm/type` 内去索引正确的变量。
    - 需要找的变量通常是类型，和下拉选择数组。
 
-## 019 修复故障
+## 019 修复 nitro 接口的故障
 
 当我在使用 nitro 的 `/api/dev-team/config-manage/center/list` 接口时，出现服务端 500 错误，请你结合 nitro 的配置和相关细节，帮我分析一下，为什么运行接口会出现严重的类型检查错误的故障？
 
@@ -186,6 +186,41 @@ overrides:
 
 ```log
 {
+    "error": true,
+    "url": "http://localhost:8080/api/dev-team/config-manage/center/list",
+    "status": 500,
+    "message": "[vite] The requested module 'vue-router/auto-routes' does not provide an export named 'routes'",
+    "stack": [
+        "[vite] The requested module 'vue-router/auto-routes' does not provide an export named 'routes'",
+        "at analyzeImportedModDifference (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:456:36)",
+        "at ModuleRunner.processImport (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:1005:54)",
+        "at ModuleRunner.cachedRequest (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:1028:33)"
+    ]
+}
+```
 
+我不理解为什么服务端的接口，会识别这些客户端的导入模块呢？请为我分析清楚故障原因。
+
+### 01
+
+```log
+{
+    "error": true,
+    "url": "http://localhost:8080/api/dev-team/config-manage/center/list",
+    "status": 500,
+    "message": "location is not defined",
+    "stack": [
+        "location is not defined",
+        "at D:/code/github-desktop-store/01s-11comm/apps/admin/src/utils/sso.ts:15:29)",
+        "at D:/code/github-desktop-store/01s-11comm/apps/admin/src/utils/sso.ts:56:1)",
+        "at ESModulesEvaluator.runInlinedModule (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:905:3)",
+        "at ModuleRunner.directRequest (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:1112:59)",
+        "at ModuleRunner.cachedRequest (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:1030:73)",
+        "at D:/code/github-desktop-store/01s-11comm/apps/admin/src/router/index.ts:1:8)",
+        "at ESModulesEvaluator.runInlinedModule (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:905:3)",
+        "at ModuleRunner.directRequest (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:1112:59)",
+        "at ModuleRunner.cachedRequest (D:/code/github-desktop-store/01s-11comm/node_modules/.pnpm/vite@7.1.12_@types+node@24._b816c0354aec0f55b159422c9a542a15/node_modules/vite/dist/node/module-runner.js:1030:73)",
+        "at D:/code/github-desktop-store/01s-11comm/apps/admin/src/store/utils.ts:3:1)"
+    ]
 }
 ```
