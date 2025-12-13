@@ -1,4 +1,5 @@
 import { defineConfig } from "nitro";
+import { pathResolve } from "./build/utils";
 
 export default defineConfig({
 	serverDir: "./server",
@@ -13,6 +14,32 @@ export default defineConfig({
 
 	devServer: {
 		watch: ["./server/**/*.ts"],
+	},
+
+	// FIXME: 无法实现全局类型导入
+	// imports: {
+	// 	autoImport: true,
+	// 	imports: [
+	// 		// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+	// 		{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_INDEX" },
+	// 		{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_SIZE" },
+	// 		// import { defineHandler, readBody } from "nitro/h3";
+	// 		{ from: "nitro/h3", name: "defineHandler" },
+	// 		{ from: "nitro/h3", name: "readBody" },
+	// 		// import type { JsonVO, PageDTO } from "@01s-11comm/type";
+	// 		{ from: "@01s-11comm/type", name: "JsonVO", type: true },
+	// 		{ from: "@01s-11comm/type", name: "PageDTO", type: true },
+	// 	],
+	// },
+
+	alias: {
+		/**
+		 * Nitro 构建需要显式传入当前文件的 import.meta.url，
+		 * 否则默认会以 build/utils.ts 的路径为基准，导致解析到 build/src。
+		 */
+		"@": pathResolve("./src", import.meta.url),
+		components: pathResolve("./src/components", import.meta.url),
+		composables: pathResolve("./src/composables", import.meta.url),
 	},
 
 	compatibilityDate: "2024-09-19",
