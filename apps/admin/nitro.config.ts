@@ -7,6 +7,15 @@ export default defineConfig({
 	devServer: {
 		watch: ["./server/**/*.ts"],
 	},
+
+	imports: {
+		autoImport: true,
+		include: [
+			pathResolve("../type/src/constant/index.ts", import.meta.url),
+			pathResolve("../type/src/common/index.ts", import.meta.url),
+		],
+	},
+
 	alias: {
 		/**
 		 * Nitro 构建需要显式传入当前文件的 import.meta.url，
