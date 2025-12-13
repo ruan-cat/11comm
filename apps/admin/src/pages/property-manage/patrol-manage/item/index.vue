@@ -15,13 +15,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolItemFormProps, defaultForm } from "./components/form";
 import PatrolItemForm from "./components/form.vue";
-import {
-	type 巡检项目_列表数据,
-	type 巡检项目_列表查询_VO,
-	tableData as mockTableData,
-	type 巡检项目表单_VO,
-} from "./test-data";
-
 /** 表格数据 */
 const tableData = ref<巡检项目_列表数据[]>([]);
 

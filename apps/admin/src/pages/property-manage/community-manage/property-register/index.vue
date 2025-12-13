@@ -11,15 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 产权登记_列表数据,
-	type 产权登记_列表查询_VO,
-	tableData as mockTableData,
-	审核状态Options,
-	楼栋Options,
-	单元Options,
-} from "./test-data";
-
 import type { PropertyRegisterFormProps, 产权登记表单_VO } from "./components/form";
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";

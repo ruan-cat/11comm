@@ -1,6 +1,5 @@
-import { type 发票抬头表单_VO, defaultForm } from "../test-data";
 
-export { 发票类型选项 } from "../test-data";
+export { 发票类型选项, defaultForm } from "@01s-11comm/type";
 
 // ==================== 表单Props类型定义 ====================
 

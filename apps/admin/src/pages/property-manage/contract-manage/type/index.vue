@@ -17,13 +17,6 @@ import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-import {
-	type 合同类型_列表数据,
-	type 合同类型_列表查询_VO,
-	审核类型Options,
-	tableData as mockTableData,
-} from "./test-data";
-
 import { type AddFormProps, defaultForm, type 合同类型表单_VO } from "./components/form";
 import AddForm from "./components/form.vue";
 

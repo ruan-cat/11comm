@@ -12,15 +12,6 @@ import { ref, computed, h, onMounted } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	停车场Options,
-	车位状态Options,
-	车位类型Options,
-	type 车位信息_列表数据,
-	type 车位信息_表单_VO,
-} from "./test-data";
-import type { 车位信息_列表查询_VO } from "./test-data";
 import { type CarportInfoFormProps, defaultForm } from "./components/form";
 import CarportInfoForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";

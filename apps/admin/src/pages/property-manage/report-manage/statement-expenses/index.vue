@@ -10,17 +10,6 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	type 费用明细表_搜索_VO,
-	type 费用明细表_表格数据,
-	费用类型Options,
-	费用项Options,
-	小区Options,
-	费用状态Options,
-	支付方式Options,
-} from "./test-data";
-
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,

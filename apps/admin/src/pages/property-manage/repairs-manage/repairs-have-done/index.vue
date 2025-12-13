@@ -15,14 +15,6 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RepairsHaveDoneFormProps, defaultForm, type 报修已办表单_VO } from "./components/form";
-import {
-	type 报修已办_列表数据,
-	type 报修已办_列表查询_VO,
-	tableData as mockTableData,
-	报修类型Options,
-	维修类型Options,
-	报修状态Options,
-} from "./test-data";
 import RepairsHaveDoneForm from "./components/form.vue";
 
 /** 模式控制 */

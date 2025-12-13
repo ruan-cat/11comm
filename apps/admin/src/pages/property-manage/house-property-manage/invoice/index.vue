@@ -11,17 +11,8 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	defaultForm,
-	type 发票_列表数据,
-	type 发票_列表查询_VO,
-	tableData as mockTableData,
-	发票类型Options,
-	审核状态Options,
-} from "./test-data";
 import { type InvoiceFormProps } from "./components/form";
 import InvoiceForm from "./components/form.vue";
-import { type 发票表单_VO } from "./test-data";
 
 /** 表格数据 */
 const tableData = ref<发票_列表数据[]>([]);

@@ -16,7 +16,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPointFormProps, defaultForm, type PatrolPointFormVO } from "./components/form";
 import PatrolPointForm from "./components/form.vue";
-import { tableData as mockTableData, type PatrolPointListData, type PatrolPointListQueryVO } from "./test-data";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();

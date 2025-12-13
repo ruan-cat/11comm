@@ -1,4 +1,3 @@
-import { type 场地预约_VO, 场地类型, 预约状态, 场地类型Options, 预约状态Options } from "../test-data";
 
 /**
  * 场地预约表单 props

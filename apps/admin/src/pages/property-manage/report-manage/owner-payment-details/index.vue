@@ -9,16 +9,6 @@ definePage({
 });
 
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	type 业主缴费明细_搜索_VO,
-	type 业主缴费明细_表格数据,
-	费用项Options,
-	收费大类Options,
-	小区Options,
-	年度Options,
-} from "./test-data";
-
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,

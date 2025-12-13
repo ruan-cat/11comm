@@ -13,14 +13,6 @@ import { transformI18n } from "@/plugins/i18n";
 
 import { type ReserveVenueFormProps, defaultForm } from "./components/form";
 import ReserveVenueForm from "./components/form.vue";
-import {
-	tableData as mockTableData,
-	场地预约_列表查询_VO,
-	场地类型Options,
-	预约状态Options,
-	type 场地预约_列表数据,
-	type 场地预约_VO,
-} from "./test-data";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 const reserveVenueFormInstance = ref<InstanceType<typeof ReserveVenueForm> | null>(null);

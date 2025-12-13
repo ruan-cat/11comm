@@ -103,3 +103,22 @@ export const systemConfigStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
+/**
+ * @description 配置类型选项
+ * Config type options
+ */
+export const 配置类型Options: OptionsType = [
+	{ label: "系统配置", value: "系统配置" },
+	{ label: "业务配置", value: "业务配置" },
+	{ label: "接口配置", value: "接口配置" },
+];
+
+/**
+ * @description 配置分组选项
+ * Config group options
+ */
+export const 配置分组Options: OptionsType = [
+	{ label: "基础配置", value: "基础配置" },
+	{ label: "高级配置", value: "高级配置" },
+	{ label: "安全配置", value: "安全配置" },
+];

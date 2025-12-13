@@ -13,7 +13,6 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type 车位信息_列表数据, type 车位信息_列表查询_VO, tableData as mockTableData } from "./test-data";
 
 import { type 停车场表单Props, defaultForm, type 停车场表单_VO } from "./components/form";
 import 停车场表单 from "./components/form.vue";

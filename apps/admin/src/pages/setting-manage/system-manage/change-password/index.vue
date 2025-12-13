@@ -9,15 +9,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 密码修改记录_列表数据,
-	type 密码修改记录_列表查询_VO,
-	修改类型选项,
-	修改状态选项,
-	部门选项,
-	tableData as allTableData,
-} from "./test-data";
-
 /** 表格数据 */
 const tableData = ref<密码修改记录_列表数据[]>([]);
 

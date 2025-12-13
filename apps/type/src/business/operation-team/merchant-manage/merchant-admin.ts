@@ -61,6 +61,12 @@ export const merchantAdminStatusOptions: OptionsType = [
 ];
 
 /**
+ * @description 状态选项中文别名
+ * Chinese alias for merchantAdminStatusOptions
+ */
+export const 状态选项 = merchantAdminStatusOptions;
+
+/**
  * @description 物业公司选项
  * Property company options
  */
@@ -76,4 +82,10 @@ export const propertyCompanyOptions: OptionsType = [
 	{ label: "恒大金碧物业有限公司", value: "恒大金碧物业有限公司" },
 	{ label: "富力物业服务集团有限公司", value: "富力物业服务集团有限公司" },
 ];
+
+/**
+ * @description 物业公司选项中文别名
+ * Chinese alias for propertyCompanyOptions
+ */
+export const 物业公司选项 = propertyCompanyOptions;
 

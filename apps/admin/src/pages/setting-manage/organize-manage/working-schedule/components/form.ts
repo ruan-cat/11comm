@@ -1,4 +1,3 @@
-import type { ScheduleType } from "../test-data";
 
 /** 排班表表单业务接口 */
 export interface 排班表表单_VO {

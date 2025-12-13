@@ -6,13 +6,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { ParkingSpaceStructureDiagramFormProps, 车位结构图表单_VO } from "./form";
-import {
-	车位类型选项,
-	车位状态选项,
-	楼层区域选项,
-	是否充电桩选项
-} from "../test-data";
-
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
 
 /** 默认的表单重置变量 */

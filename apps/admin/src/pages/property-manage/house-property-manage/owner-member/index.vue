@@ -11,13 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 业主成员_列表数据,
-	type 业主成员_列表查询_VO,
-	type 业主成员表单_VO,
-	成员类型选项,
-	tableData as allTableData,
-} from "./test-data";
 import { type OwnerMemberFormProps, defaultForm } from "./components/form";
 import OwnerMemberForm from "./components/form.vue";
 

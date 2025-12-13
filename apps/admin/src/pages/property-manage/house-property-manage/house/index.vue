@@ -11,16 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 房屋管理_列表数据,
-	type 房屋管理_列表查询_VO,
-	type 房屋管理表单_VO,
-	房屋状态选项,
-	房屋类型选项,
-	楼栋单元选项,
-	tableData as allTableData,
-} from "./test-data";
-
 import { type HouseManageFormProps, defaultForm } from "./components/form";
 import HouseManageForm from "./components/form.vue";
 const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>(null);

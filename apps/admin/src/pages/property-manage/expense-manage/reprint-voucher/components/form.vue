@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { type ReprintVoucherFormProps, defaultForm } from "./form";
-import { type 补打收据表单_VO, 费用类型Options } from "../test-data";
 
 /** 表单组件的 props */
 const props = defineProps<ReprintVoucherFormProps>();

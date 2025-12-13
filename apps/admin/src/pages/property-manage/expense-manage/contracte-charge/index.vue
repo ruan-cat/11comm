@@ -12,7 +12,6 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { tableData as allTableData, 合同类型Options, type 合同收费_列表数据 } from "./test-data";
 import { type ContracteChargeFormProps, defaultForm, type 合同收费表单_VO } from "./components/form";
 import ContracteChargeForm from "./components/form.vue";
 

@@ -28,42 +28,42 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "费用项目",
-		prop: "费用项目",
+		prop: "feeItem",
 		width: 120,
 	},
 	{
 		label: "费用标识",
-		prop: "费用标识",
+		prop: "feeId",
 		width: 120,
 	},
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		width: 120,
 	},
 	{
 		label: "应收金额",
-		prop: "应收金额",
+		prop: "amountReceivable",
 		width: 120,
 	},
 	{
 		label: "建账时间",
-		prop: "建账时间",
+		prop: "accountCreationTime",
 		width: 160,
 	},
 	{
 		label: "应收时间段",
-		prop: "应收时间段",
+		prop: "receivablePeriod",
 		width: 180,
 	},
 	{
 		label: "说明",
-		prop: "说明",
+		prop: "description",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
@@ -307,7 +307,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 async function handleDelete(row: HandingBusinessListItem) {
 	try {
 		await ElMessageBox.confirm(
-			`确认删除业务受理记录：${row.费用标识} - ${row.费用项目}？`,
+			`确认删除业务受理记录：${row.feeId} - ${row.feeItem}？`,
 			"删除确认",
 			{
 				confirmButtonText: transformI18n($t("common.buttons.del")),

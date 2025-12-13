@@ -6,7 +6,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { CarportApplyFormProps, 车位申请_VO } from "./form";
-import { 审核结果Options, 车辆类型Options, 汽车品牌Options, 车辆颜色Options } from "../test-data";
 
 const props = defineProps<CarportApplyFormProps>();
 

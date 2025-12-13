@@ -13,14 +13,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import ContractDraftForm from "./components/form.vue";
 import { 合同草稿表单_VO, type ContractDraftFormProps, defaultForm } from "./components/form";
-import {
-	tableData as mockTableData,
-	contractTypeOptionsData,
-	contractStatusOptionsData,
-	type 合同草稿_列表数据,
-	type 合同类型_列表查询_VO,
-} from "./test-data";
-
 const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 
 /** 模式控制 */

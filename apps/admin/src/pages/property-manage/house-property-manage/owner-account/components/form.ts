@@ -1,5 +1,3 @@
-import { type 业主账户表单_VO, defaultForm } from "../test-data";
-import { 账户类型选项, 支付方式选项 } from "../test-data";
 
 // ==================== 表单Props类型定义 ====================
 

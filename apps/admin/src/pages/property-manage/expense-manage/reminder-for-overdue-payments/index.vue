@@ -10,14 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 欠费催缴_列表数据,
-	type 欠费催缴_列表查询_VO,
-	催缴方式Options,
-	催缴状态Options,
-	tableData as mockTableData,
-} from "./test-data";
-
 import { type ReminderForOverduePaymentsFormProps, type 欠费催缴表单_VO, defaultForm } from "./components/form";
 import ReminderForOverduePaymentsForm from "./components/form.vue";
 

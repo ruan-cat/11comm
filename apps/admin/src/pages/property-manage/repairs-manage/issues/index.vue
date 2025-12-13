@@ -15,14 +15,6 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./components/form";
-import {
-	type 工单池_列表数据,
-	type 工单池_列表查询_VO,
-	tableData as mockTableData,
-	报修类型Options,
-	报修设置类型Options,
-	维修类型Options,
-} from "./test-data";
 import IssuesSettingForm from "./components/form.vue";
 
 /** 模式控制 */

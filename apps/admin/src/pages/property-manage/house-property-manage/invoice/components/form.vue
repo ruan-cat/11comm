@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 import { InvoiceFormProps } from "./form";
-import { type 发票表单_VO, 发票类型Options, 审核状态Options } from "../test-data";
 
 /** 表单组件的 props */
 const props = defineProps<InvoiceFormProps>();

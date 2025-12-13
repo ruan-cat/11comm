@@ -12,15 +12,6 @@ import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import ExpirationReminders from "./components/Expiration-reminders.vue";
 import PrepaymentReminders from "./components/Prepayment-reminders.vue";
-import {
-	tableData as mockTableData,
-	type 费用提醒_搜索_VO,
-	type 费用提醒_表格数据,
-	费用项Options,
-	小区Options,
-	提醒类型Options,
-} from "./test-data";
-
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,

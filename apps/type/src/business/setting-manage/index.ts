@@ -4,11 +4,8 @@
  */
 
 // 组织管理模块
-// export * from './organize-manage/*';
+export * from "./organize-manage";
 
 // 系统管理模块
-// export * from './system-manage/*';
-
-/** 临时导出，确保模块有效 */
-export {};
+export * from "./system-manage";
 

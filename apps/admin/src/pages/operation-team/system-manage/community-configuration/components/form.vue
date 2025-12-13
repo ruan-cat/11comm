@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { CommunityConfigurationFormProps, defaultForm } from "./form";
-import { type 小区配置表单_VO, 设置类型选项, 数据状态选项 } from "../test-data";
 
 /** 表单组件的 props */
 const props = defineProps<CommunityConfigurationFormProps>();

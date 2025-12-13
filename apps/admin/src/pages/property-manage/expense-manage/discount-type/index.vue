@@ -13,12 +13,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-import {
-	type 优惠类型_列表数据,
-	type 优惠类型_列表查询_VO,
-	折扣类型Options,
-	tableData as allTableData,
-} from "./test-data";
 import { type DiscountTypeFormProps, defaultForm, type 优惠类型表单_VO, type 折扣类型 } from "./components/form";
 import DiscountTypeForm from "./components/form.vue";
 

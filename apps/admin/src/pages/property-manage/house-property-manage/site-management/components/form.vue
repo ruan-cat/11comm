@@ -6,7 +6,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { SiteManagementFormProps, 场地管理_VO } from "./form";
-import { 场地状态Options } from "../test-data";
 
 const props = defineProps<SiteManagementFormProps>();
 

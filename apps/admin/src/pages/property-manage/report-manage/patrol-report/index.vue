@@ -10,16 +10,6 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	type 巡检报表_搜索_VO,
-	type 巡检报表_表格数据,
-	巡检类型Options,
-	巡检级别Options,
-	小区Options,
-	状态Options,
-} from "./test-data";
-
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,

@@ -10,13 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 业主账户_列表数据,
-	type 业主账户_列表查询_VO,
-	账户类型选项,
-	tableData as allTableData,
-	type 业主账户表单_VO,
-} from "./test-data";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type OwnerAccountFormProps, defaultForm } from "./components/form";
 import OwnerAccountForm from "./components/form.vue";

@@ -10,13 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 发票_列表数据,
-	type 发票_列表查询_VO,
-	type 发票抬头表单_VO,
-	发票类型选项,
-	tableData as allTableData,
-} from "./test-data";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 表格数据 */

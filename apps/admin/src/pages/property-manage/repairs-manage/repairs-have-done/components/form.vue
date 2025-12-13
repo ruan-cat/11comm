@@ -2,7 +2,6 @@
 import { computed, ref, useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
 import { RepairsHaveDoneFormProps, type 报修已办表单_VO } from "./form";
-import { 报修类型Options, 维修类型Options, 报修状态Options } from "../test-data";
 
 const props = defineProps<RepairsHaveDoneFormProps>();
 

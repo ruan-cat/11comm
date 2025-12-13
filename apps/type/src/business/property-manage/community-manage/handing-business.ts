@@ -70,6 +70,12 @@ export const feeTypeOptions: OptionsType = [
 ];
 
 /**
+ * @description 费用类型选项中文别名
+ * Chinese alias for feeTypeOptions
+ */
+export const 费用类型Options = feeTypeOptions;
+
+/**
  * @description 费用状态选项
  * Fee status options
  */
@@ -80,4 +86,10 @@ export const feeStatusOptions: OptionsType = [
 	{ label: "已减免", value: "已减免" },
 	{ label: "已作废", value: "已作废" },
 ];
+
+/**
+ * @description 状态选项中文别名
+ * Chinese alias for feeStatusOptions
+ */
+export const 状态Options = feeStatusOptions;
 

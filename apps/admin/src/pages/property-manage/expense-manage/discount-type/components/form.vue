@@ -6,7 +6,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { DiscountTypeFormProps, 优惠类型表单_VO } from "./form";
-import { 折扣类型Options } from "../test-data";
 
 const props = defineProps<DiscountTypeFormProps>();
 

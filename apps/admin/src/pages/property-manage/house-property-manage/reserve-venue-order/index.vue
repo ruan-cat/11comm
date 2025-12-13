@@ -16,15 +16,6 @@ import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type ReserveVenueOrderFormProps, defaultForm } from "./components/form";
 import ReserveVenueOrderForm from "./components/form.vue";
-import {
-	type 场地预约订单_列表数据,
-	type 场地预约订单_列表查询_VO,
-	tableData as mockTableData,
-	预约状态Options,
-	预约场地Options,
-	type 场地预约订单_VO,
-} from "./test-data";
-
 const reserveVenueOrderFormInstance = ref<InstanceType<typeof ReserveVenueOrderForm> | null>(null);
 
 /** 表格数据 */

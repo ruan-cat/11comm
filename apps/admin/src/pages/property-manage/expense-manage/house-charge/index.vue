@@ -10,7 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 房屋收费_列表数据, type 房屋收费_列表查询_VO, tableData as mockTableData, 费用标识Options, 费用类型Options, 状态Options } from "./test-data";
 
 import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO, type 费用类型 } from "./components/form";
 import HouseChargeForm from "./components/form.vue";

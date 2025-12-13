@@ -1,5 +1,5 @@
 import { type Mode } from "@/composables/use-mode";
-export { 商户类型选项, 经营状态选项 } from "../test-data";
+export { 商户类型选项, 经营状态选项 } from "@01s-11comm/type";
 
 // ==================== 联合类型定义 ====================
 

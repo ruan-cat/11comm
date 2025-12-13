@@ -35,30 +35,30 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "头部照片",
-		prop: "头部照片",
+		prop: "headerImage",
 		width: 100,
 		slot: "headerImage",
 	},
 	{
 		label: "公示标题",
-		prop: "公示标题",
+		prop: "noticeTitle",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
 		label: "公示类型",
-		prop: "公示类型",
+		prop: "noticeType",
 		width: 100,
 	},
 	{
 		label: "公示时间",
-		prop: "公示时间",
+		prop: "noticeTime",
 		width: 160,
 		sortable: true,
 	},
 	{
 		label: "发布人",
-		prop: "发布人",
+		prop: "publisher",
 		width: 100,
 	},
 	{
@@ -111,8 +111,8 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<CommunityNoticeQueryParams> = {
-	公示标题: "",
-	公示类型: "",
+	noticeTitle: "",
+	noticeType: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -129,7 +129,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 公示标题
 	{
 		label: "公示标题",
-		prop: "公示标题",
+		prop: "noticeTitle",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入公示标题",
@@ -139,7 +139,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 公示类型
 	{
 		label: "公示类型",
-		prop: "公示类型",
+		prop: "noticeType",
 		valueType: "select",
 		options: 公示类型选项,
 		fieldProps: {
@@ -266,7 +266,7 @@ async function handleBatchPublish() {
 async function handleDelete(row: CommunityNoticeListItem) {
 	try {
 		await ElMessageBox.confirm(
-			t("propertyManage_communityManage.notice.deleteConfirm", { title: row.公示标题 }),
+			t("propertyManage_communityManage.notice.deleteConfirm", { title: row.noticeTitle }),
 			t("propertyManage_communityManage.notice.deleteTitle"),
 			{
 				confirmButtonText: transformI18n($t("common.buttons.del")),
@@ -417,7 +417,7 @@ function gotoNoticeDetailPage(row: CommunityNoticeListItem) {
 	gotoDetailPage({
 		name: "property-manage-community-manage--detail-page",
 		params: {
-			id: row.头部照片, // 使用头部照片作为ID，或者可以考虑其他唯一标识
+			id: row.headerImage, // 使用头部照片作为ID，或者可以考虑其他唯一标识
 		},
 	});
 }
@@ -485,7 +485,7 @@ onMounted(async () => {
 				>
 					<!-- 头部照片 -->
 					<template #headerImage="{ row }">
-						<el-image :src="row.头部照片" :preview-src-list="[row.头部照片]" :initial-index="0" fit="cover" />
+						<el-image :src="row.headerImage" :preview-src-list="[row.headerImage]" :initial-index="0" fit="cover" />
 					</template>
 
 					<!-- 操作按钮 -->

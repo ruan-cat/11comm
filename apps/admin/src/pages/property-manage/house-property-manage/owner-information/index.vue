@@ -14,14 +14,6 @@ import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type OwnerInformationFormProps, defaultForm } from "./components/form";
 import OwnerInformationForm from "./components/form.vue";
-import {
-	type 业主信息_列表数据,
-	type 业主信息_列表查询_VO,
-	type 业主信息表单_VO,
-	tableData as mockTableData,
-	人员类型Options,
-} from "./test-data";
-
 /** 表格组件实例 */
 const OwnerInformationFormInstance = ref<InstanceType<typeof OwnerInformationForm> | null>(null);
 

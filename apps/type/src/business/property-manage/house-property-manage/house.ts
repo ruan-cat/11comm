@@ -106,3 +106,15 @@ export const buildingUnitOptions: OptionsType = [
 	{ label: "全部楼栋单元", value: "全部楼栋单元" },
 ];
 
+/**
+ * @description 房屋管理表单VO
+ * House management form VO
+ */
+export interface 房屋管理表单_VO {
+	/** 名称 Name */
+	name: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark: string;
+}

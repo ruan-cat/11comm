@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 员工关联_列表数据, type 员工关联_列表查询_VO, staffRelationTableData } from "../../test-data";
-
 const tableRef = useTemplateRef("tableRef");
 
 /** 表格数据 */

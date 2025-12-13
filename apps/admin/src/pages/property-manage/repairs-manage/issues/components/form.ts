@@ -1,4 +1,3 @@
-import type { 工单池_列表数据 } from "../test-data";
 
 /** 工单池表单_VO */
 export interface 工单池表单_VO {

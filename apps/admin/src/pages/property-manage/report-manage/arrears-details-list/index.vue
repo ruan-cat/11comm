@@ -15,13 +15,6 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type ArrearsDetailsFormProps, defaultForm, type 欠费明细表单_VO } from "./components/form";
-import {
-	type 欠费明细_列表数据,
-	type 欠费明细_列表查询_VO,
-	tableData as mockTableData,
-	费用大类Options,
-	小区Options,
-} from "./test-data";
 import ArrearsDetailsForm from "./components/form.vue";
 
 const smallTotal = ref<number>(0);

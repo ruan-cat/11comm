@@ -82,3 +82,27 @@ export const initializeCellStatusOptions: OptionsType = [
 	{ label: "初始化中", value: "初始化中" },
 	{ label: "初始化失败", value: "初始化失败" },
 ];
+
+/**
+ * @description 初始化小区表单VO
+ * Initialize cell form VO
+ */
+export interface 初始化小区表单_VO {
+	/** 名称 Name */
+	name: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/**
+ * @description 单元格类型选项
+ * Cell type options
+ */
+export const 单元格类型Options: OptionsType = [
+	{ label: "文本", value: "文本" },
+	{ label: "数字", value: "数字" },
+	{ label: "日期", value: "日期" },
+	{ label: "下拉", value: "下拉" },
+];

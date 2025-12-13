@@ -193,10 +193,12 @@ function deleteDynamicTag(obj: any, current: any, tag?: string) {
 			if (item.path === obj.path) {
 				return item.query === obj.query;
 			}
+			return false;
 		} else if (item.params) {
 			if (item.path === obj.path) {
 				return item.params === obj.params;
 			}
+			return false;
 		} else {
 			return item.path === obj.path;
 		}

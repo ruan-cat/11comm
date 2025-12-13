@@ -16,16 +16,6 @@ import { transformI18n } from "@/plugins/i18n";
 
 import { type CarportApplyFormProps, defaultForm } from "./components/form";
 import CarportApplyForm from "./components/form.vue";
-import {
-	type 车位申请_列表数据,
-	type 车位申请_列表查询_VO,
-	type 车位申请_VO,
-	tableData as mockTableData,
-	审核结果Options,
-	车辆类型Options,
-	汽车品牌Options,
-} from "./test-data";
-
 /** 表单组件实例 */
 const carportApplyFormInstance = ref<InstanceType<typeof CarportApplyForm> | null>(null);
 

@@ -11,14 +11,6 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { cloneDeep } from "lodash-es";
-import {
-	type 巡检明细_列表数据,
-	type 巡检明细_列表查询_VO,
-	巡检方式Options,
-	任务状态Options,
-	巡检点状态Options,
-	tableData as mockTableData,
-} from "./test-data";
 import { type 巡查明细表单Props, defaultForm, type 巡查明细表单_VO } from "./components/form";
 import PatrolDetailForm from "./components/form.vue";
 

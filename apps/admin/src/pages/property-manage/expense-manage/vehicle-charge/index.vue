@@ -14,13 +14,6 @@ import { type Mode } from "@/composables/use-mode";
 
 import { type VehicleChargeFormProps, defaultForm, type 车辆收费表单_VO } from "./components/form";
 import VehicleChargeForm from "./components/form.vue";
-import {
-	tableData as mockTableData,
-	type 车辆收费_列表数据,
-	type 车辆收费_列表查询_VO,
-	车位状态Options,
-} from "./test-data";
-
 const VehicleChargeFormInstance = ref<InstanceType<typeof VehicleChargeForm> | null>(null);
 
 /** 表格数据 */

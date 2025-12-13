@@ -15,12 +15,6 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type MandatoryReturnIssueFormProps, defaultForm, type 强制回单表单_VO } from "./components/form";
-import {
-	type 强制回单_列表数据,
-	tableData as mockTableData,
-	报修类型Options,
-	type 强制回单_列表查询_VO,
-} from "./test-data";
 import MandatoryReturnIssueForm from "./components/form.vue";
 
 /** 模式控制 */

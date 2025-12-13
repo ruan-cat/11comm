@@ -1,5 +1,4 @@
-import type { 业务受理_列表数据 } from "../test-data";
-import { 费用类型Options, 状态Options } from "../test-data";
+import type { HandingBusinessListItem } from "@01s-11comm/type";
 
 /** 业务受理表单 VO */
 export interface 业务受理表单_VO {
@@ -38,16 +37,16 @@ export interface HandingBusinessFormProps {
 }
 
 /** 从列表数据转换为表单数据的辅助函数 */
-export function 列表数据转表单数据(列表数据: 业务受理_列表数据): 业务受理表单_VO {
+export function 列表数据转表单数据(列表数据: HandingBusinessListItem): 业务受理表单_VO {
 	return {
-		费用项目: 列表数据.费用项目,
-		费用标识: 列表数据.费用标识,
-		费用类型: 列表数据.费用类型,
-		应收金额: 列表数据.应收金额,
-		建账时间: 列表数据.建账时间,
-		应收时间段: 列表数据.应收时间段,
-		说明: 列表数据.说明,
-		状态: 列表数据.状态,
+		费用项目: 列表数据.feeItem,
+		费用标识: 列表数据.feeId,
+		费用类型: 列表数据.feeType,
+		应收金额: 列表数据.amountReceivable,
+		建账时间: 列表数据.accountCreationTime,
+		应收时间段: 列表数据.receivablePeriod,
+		说明: 列表数据.description,
+		状态: 列表数据.status,
 	};
 }
 

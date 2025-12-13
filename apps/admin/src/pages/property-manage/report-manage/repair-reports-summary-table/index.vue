@@ -10,16 +10,6 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	type 报修汇总表_搜索_VO,
-	type 报修汇总表_表格数据,
-	报修类型Options,
-	报修状态Options,
-	紧急程度Options,
-	小区Options,
-} from "./test-data";
-
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,

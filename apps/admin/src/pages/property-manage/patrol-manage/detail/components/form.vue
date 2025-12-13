@@ -2,7 +2,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { 巡查明细表单Props, 巡查明细表单_VO, defaultForm } from "./form";
-import { 巡检方式Options, 任务状态Options, 巡检点状态Options } from "../test-data";
 
 const props = defineProps<巡查明细表单Props & { mode: Mode }>();
 

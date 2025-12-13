@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { type InvoiceTitleFormProps, defaultForm, 发票类型选项 } from "./form";
-import { type 发票抬头表单_VO } from "../test-data";
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();

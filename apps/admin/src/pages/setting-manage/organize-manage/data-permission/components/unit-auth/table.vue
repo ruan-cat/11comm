@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 单元授权_列表数据, unitAuthTableData } from "../../test-data";
 import { type UnitAuthFormProps, defaultForm } from "./form";
 import UnitAuthForm from "./form.vue";
 

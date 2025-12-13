@@ -10,14 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 缴费审核_列表数据,
-	type 缴费审核_列表查询_VO,
-	审核状态Options,
-	费用项目Options,
-	tableData as mockTableData,
-} from "./test-data";
-
 import { type 缴费审核FormProps, defaultForm, type 缴费审核_表单数据 } from "./components/form";
 import 缴费审核Form from "./components/form.vue";
 

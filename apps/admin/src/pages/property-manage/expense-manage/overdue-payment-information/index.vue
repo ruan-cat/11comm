@@ -10,12 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 欠费信息_列表数据,
-	type 欠费信息_列表查询_VO,
-	收费对象Options,
-	tableData as mockTableData,
-} from "./test-data";
 import { type OverduePaymentInformationFormProps, defaultForm, type 欠费信息表单_VO } from "./components/form";
 import OverduePaymentInformationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";

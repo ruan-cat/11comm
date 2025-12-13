@@ -6,7 +6,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { ConfigItemFormProps, 配置项表单_VO } from "./form";
-import { 配置项类型选项, 是否启用选项 } from "../test-data";
 
 const props = defineProps<ConfigItemFormProps>();
 

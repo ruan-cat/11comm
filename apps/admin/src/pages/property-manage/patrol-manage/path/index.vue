@@ -14,12 +14,6 @@ import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPathFormProps, defaultForm } from "./components/form";
-import {
-	type 巡检路线_列表数据,
-	type 巡检路线_列表查询_VO,
-	type 巡检路线_表单数据,
-	tableData as mockTableData,
-} from "./test-data";
 import PatrolPathForm from "./components/form.vue";
 
 /** 表格数据 */

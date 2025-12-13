@@ -10,12 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	type 水电抄表_列表数据,
-	type 水电抄表_列表查询_VO,
-	表类型Options,
-} from "./test-data";
 import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type 水电抄表表单_VO } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
 

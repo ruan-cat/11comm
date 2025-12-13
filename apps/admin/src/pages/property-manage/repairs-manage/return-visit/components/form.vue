@@ -2,7 +2,6 @@
 import { computed, ref, useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
 import { ReturnVisitFormProps, type 报修回访表单_VO } from "./form";
-import { 报修类型Options, 回访状态Options } from "../test-data";
 
 const props = defineProps<ReturnVisitFormProps>();
 

@@ -16,14 +16,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PhoneRepairsFormProps, defaultForm } from "./components/form";
 import PhoneRepairsForm from "./components/form.vue";
-import {
-	type 电话报修_列表数据,
-	type 电话报修_列表查询_VO,
-	tableData as mockTableData,
-	报修类型Options,
-	报修状态Options,
-} from "./test-data";
-
 const phoneRepairsFormInstance = ref<InstanceType<typeof PhoneRepairsForm> | null>(null);
 
 /** 表格数据 */

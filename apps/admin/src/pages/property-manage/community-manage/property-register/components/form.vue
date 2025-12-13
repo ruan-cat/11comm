@@ -5,8 +5,6 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import type { 产权登记表单_VO } from "../test-data";
-import { 审核状态Options } from "../test-data";
 import type { PropertyRegisterFormProps } from "./form";
 
 const props = defineProps<PropertyRegisterFormProps>();

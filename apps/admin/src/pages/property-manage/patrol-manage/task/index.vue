@@ -15,12 +15,6 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolTaskFormProps, defaultForm, type 巡检任务表单_VO } from "./components/form";
-import {
-	type 巡检任务_列表数据,
-	type 巡检任务_列表查询_VO,
-	tableData as mockTableData,
-	巡检状态Options,
-} from "./test-data";
 import PatrolTaskForm from "./components/form.vue";
 
 /** 模式控制 */

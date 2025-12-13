@@ -1,5 +1,4 @@
 import { type Mode } from "@/composables/use-mode";
-import { 状态选项, 物业公司选项 } from "../test-data";
 
 /** 商户管理员表单数据类型 */
 export interface 商户管理员表单_VO {

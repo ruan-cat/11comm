@@ -1,4 +1,4 @@
-import type { 小区公示_列表数据 } from "../test-data";
+import type { CommunityNoticeListItem } from "@01s-11comm/type";
 
 /** 公示类型 */
 const _公示类型 = ["通知", "公告", "提醒", "活动", "维修", "安全"] as const;
@@ -72,15 +72,15 @@ export const 公示状态选项 = [
 ];
 
 /** 从列表数据转换为表单数据的辅助函数 */
-export function 列表数据转表单数据(列表数据: 小区公示_列表数据): 小区公示表单_VO {
+export function 列表数据转表单数据(列表数据: CommunityNoticeListItem): 小区公示表单_VO {
 	return {
-		标题: 列表数据.公示标题,
-		类型: 列表数据.公示类型 as 公示类型,
+		标题: 列表数据.noticeTitle,
+		类型: 列表数据.noticeType as 公示类型,
 		有效期开始: "",
 		有效期结束: "",
 		状态: "草稿",
 		内容摘要: "",
-		发布人: 列表数据.发布人,
-		发布时间: 列表数据.公示时间,
+		发布人: 列表数据.publisher,
+		发布时间: 列表数据.noticeTime,
 	};
 }

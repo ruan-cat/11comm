@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { type OwnerAccountFormProps, 账户类型选项, 支付方式选项 } from "./form";
-import { type 业主账户表单_VO } from "../test-data";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();

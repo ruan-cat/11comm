@@ -2,8 +2,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
 import { PatrolPlanFormProps } from "./form";
-import type { 巡检计划表单_VO } from "../test-data";
-import { 签到方式Options, 状态Options } from "../test-data";
 
 const props = defineProps<PatrolPlanFormProps>();
 

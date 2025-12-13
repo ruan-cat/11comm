@@ -313,6 +313,8 @@ export const mockHouseChargeData: HouseChargeListItem[] = [
 #### server/api/property-manage/expense-manage/house-charge/list.post.ts
 
 ```typescript
+// 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { mockHouseChargeData } from "./mock-data";
 
@@ -320,7 +322,7 @@ import { mockHouseChargeData } from "./mock-data";
  * 房屋收费列表查询接口
  * POST /api/property-manage/expense-manage/house-charge/list
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
 	// 1. 读取请求参数
 	const body = await readBody<HouseChargeQueryParams>(event);
 	const { houseNumber, ownerName, expenseIdentifier, expenseType, status, pageIndex = 1, pageSize = 10 } = body;

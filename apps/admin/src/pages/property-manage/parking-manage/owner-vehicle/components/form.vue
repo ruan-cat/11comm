@@ -6,7 +6,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { type OwnerVehicleFormProps } from "./form";
-import { 车辆类型Options, 车牌类型Options, 业主车辆Options, type 业主车辆表单_VO } from "../test-data";
 
 const props = defineProps<OwnerVehicleFormProps>();
 

@@ -2,7 +2,6 @@
 import { useTemplateRef, ref, computed } from "vue";
 
 import { MeterTypeFormProps } from "./form";
-import { 抄表类型_VO } from "../test-data";
 
 const props = defineProps<MeterTypeFormProps>();
 

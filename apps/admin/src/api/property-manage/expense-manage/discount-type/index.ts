@@ -1,0 +1,26 @@
+/**
+ * @file discount-type API Hook
+ * @description DiscountType API hooks using TanStack Query
+ */
+
+import { useListQuery } from "@/composables/use-list-query";
+import type { DiscountTypeListItem, DiscountTypeQueryParams } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/property-manage/expense-manage/discount-type/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "discountType";
+
+/**
+ * discount-type列表查询 Hook
+ * DiscountType list query hook
+ */
+export function useDiscountTypeListQuery() {
+	return useListQuery<DiscountTypeListItem, DiscountTypeQueryParams>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
+	});
+}
+
+export default useDiscountTypeListQuery;

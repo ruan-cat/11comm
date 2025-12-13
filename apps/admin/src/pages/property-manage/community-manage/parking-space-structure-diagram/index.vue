@@ -12,16 +12,6 @@ import { ref, computed, onMounted } from "vue";
 import { h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 车位结构图_列表数据,
-	type 车位结构图_列表查询_VO,
-	车位类型选项,
-	车位状态选项,
-	楼层区域选项,
-	是否充电桩选项,
-	tableData as mockTableData,
-} from "./test-data";
-
 import { type ParkingSpaceStructureDiagramFormProps, defaultForm, type 车位结构图表单_VO } from "./components/form";
 import ParkingSpaceStructureDiagramForm from "./components/form.vue";
 

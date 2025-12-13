@@ -12,13 +12,6 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import {
-	type 优惠申请_列表数据,
-	type 优惠申请_列表查询_VO,
-	申请类型Options,
-	使用状态Options,
-	tableData as allTableData,
-} from "./test-data";
 import { type DiscountApplyFormProps, defaultForm, type 优惠申请表单_VO } from "./components/form";
 import DiscountApplyForm from "./components/form.vue";
 

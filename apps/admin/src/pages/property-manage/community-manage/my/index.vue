@@ -12,13 +12,6 @@ import { ref, computed, onMounted, h } from "vue";
 import { ElTag, ElMessage, ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 我的小区_列表Data,
-	type 我的小区_列表查询_VO,
-	省份选项,
-	状态选项,
-	tableData as mockTableData,
-} from "./test-data";
 import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
 

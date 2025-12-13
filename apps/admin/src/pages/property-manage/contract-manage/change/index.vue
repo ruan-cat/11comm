@@ -18,7 +18,6 @@ import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 
-import { type 业务受理_列表数据, type 合同类型_列表查询_VO, tableData as mockTableData, 合同类型Options } from "./test-data";
 import { type ContractChangeFormProps, defaultForm, type 合同变更表单_VO } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
 

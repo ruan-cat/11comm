@@ -7,10 +7,22 @@ import type { OptionsType } from "../../../common";
 export type QueryMethod = "sql" | "java";
 
 /**
+ * @description 查询方式中文别名
+ * Chinese alias for QueryMethod
+ */
+export type 查询方式 = QueryMethod;
+
+/**
  * @description 组件类型
  * Component type
  */
 export type ComponentType = "表格" | "饼状图" | "柱状图" | "折线图" | "数据卡片";
+
+/**
+ * @description 组件类型中文别名
+ * Chinese alias for ComponentType
+ */
+export type 组件类型 = ComponentType;
 
 /**
  * @description 报表组件列表数据

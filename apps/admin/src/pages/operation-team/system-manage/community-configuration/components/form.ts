@@ -1,5 +1,4 @@
-import { type 小区配置表单_VO } from "../test-data";
-export { type 小区配置表单_VO } from "../test-data";
+export { type 小区配置表单_VO } from "@01s-11comm/type";
 
 // ==================== 默认表单 ====================
 

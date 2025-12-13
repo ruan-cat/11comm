@@ -11,10 +11,6 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 合同甲方_列表数据,
-	tableData as mockTableData,
-} from "./test-data";
 import { type FirstPartyFormProps, defaultForm, type 合同甲方表单_VO } from "./components/form";
 import FirstPartyForm from "./components/form.vue";
 

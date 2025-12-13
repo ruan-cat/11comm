@@ -13,14 +13,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { type OwnersCommitteeProps, defaultForm } from "./components/form";
 import OwnersCommittee from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 业委会_列表数据,
-	type 业委会_列表查询_VO,
-	tableData as mockTableData,
-	状态选项,
-	type 业委会表单_VO,
-} from "./test-data";
-
 /** 表单组件实例 */
 const ownersCommitteeFormInstance = ref<InstanceType<typeof OwnersCommittee> | null>(null);
 

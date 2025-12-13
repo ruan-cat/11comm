@@ -11,7 +11,6 @@ definePage({
 import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type 初始化小区_列表数据, type 初始化小区_列表查询_VO, type 初始化小区表单_VO, tableData as mockTableData } from "./test-data";
 
 import { type InitializeCellFormProps, defaultForm } from "./components/form";
 import InitializeCellForm from "./components/form.vue";

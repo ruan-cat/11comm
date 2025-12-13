@@ -10,16 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 费用项设置_列表数据,
-	type 费用项设置_列表查询_VO,
-	tableData as allTableData,
-	费用标识Options,
-	付费类型Options,
-	账户抵扣Options,
-	自定义费用Options,
-} from "./test-data";
-
 import { type ExpenseItemSettingFormProps, defaultForm, type 费用项设置表单_VO } from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
 

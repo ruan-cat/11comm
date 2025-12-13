@@ -2,7 +2,6 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { OwnerMemberFormProps, type 业主成员表单_VO, defaultForm } from "./form";
-import { 性别选项, 成员类型选项 } from "../test-data";
 
 const props = defineProps<OwnerMemberFormProps>();
 

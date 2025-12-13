@@ -11,13 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import {
-	type 费用汇总表_列表数据,
-	type 费用汇总表_列表查询_VO,
-	tableData as allTableData,
-	费用项名称Options,
-} from "./test-data";
-
-import {
 	type ExpenseSummaryTableFormProps,
 	defaultForm,
 	type 费用汇总表表单_VO,

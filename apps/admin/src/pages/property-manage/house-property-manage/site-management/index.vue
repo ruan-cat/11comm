@@ -16,15 +16,6 @@ import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type SiteManagementFormProps, defaultForm } from "./components/form";
 import SiteManagementForm from "./components/form.vue";
-import {
-	type 场地管理_列表数据,
-	type 场地管理_列表查询_VO,
-	type 场地管理_VO,
-	tableData as mockTableData,
-	场地状态Options,
-	场地类型Options,
-} from "./test-data";
-
 const siteManagementFormInstance = ref<InstanceType<typeof SiteManagementForm> | null>(null);
 
 /** 表格数据 */

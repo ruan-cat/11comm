@@ -1,4 +1,3 @@
-import type { 巡检路线_表单数据 } from "../test-data";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 巡检路线_表单数据 = {

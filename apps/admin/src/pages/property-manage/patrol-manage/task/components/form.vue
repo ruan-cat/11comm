@@ -2,7 +2,6 @@
 import { computed, ref, useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
 import { type PatrolTaskFormProps, type 巡检任务表单_VO } from "./form";
-import { 巡检状态Options } from "../test-data";
 
 const props = defineProps<PatrolTaskFormProps>();
 

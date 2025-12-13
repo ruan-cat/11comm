@@ -10,7 +10,6 @@ definePage({
 
 import { ref, computed, useTemplateRef } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 数据权限数据, dataPermissionListData } from "./test-data";
 import UnitAuthTable from "./components/unit-auth/table.vue";
 import StaffRelationTable from "./components/staff-relation/table.vue";
 

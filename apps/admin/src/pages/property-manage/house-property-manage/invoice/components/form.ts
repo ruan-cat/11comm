@@ -1,4 +1,3 @@
-import { type 发票表单_VO, defaultForm } from "../test-data";
 
 /**
  * 发票表单 props

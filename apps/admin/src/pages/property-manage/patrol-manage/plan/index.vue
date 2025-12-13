@@ -13,13 +13,6 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	tableData as mockTableData,
-	状态Options,
-	type 巡检计划_列表数据,
-	type 巡检计划_列表查询_VO,
-	type 巡检计划表单_VO,
-} from "./test-data";
 import { type PatrolPlanFormProps, defaultForm } from "./components/form";
 import PatrolPlanForm from "./components/form.vue";
 

@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { CatalogFormProps, defaultForm } from "./form";
-import { type 菜单目录表单_VO, 组类型选项, 归属商户选项 } from "../test-data";
 
 /** 表单组件的 props */
 const props = defineProps<CatalogFormProps>();

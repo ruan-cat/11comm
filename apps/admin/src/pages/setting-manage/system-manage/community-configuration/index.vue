@@ -12,14 +12,6 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
-	type 小区配置_列表数据,
-	type 小区配置表单_VO,
-	type 小区配置_列表查询_VO,
-	设置类型选项,
-	数据状态选项,
-	tableData as allTableData,
-} from "./test-data";
-import {
 	type CommunityConfigurationFormProps,
 	defaultForm,
 } from "./components/form";

@@ -35,7 +35,8 @@ export interface 系统配置表单_VO {
 
 // ==================== 常量定义 ====================
 
-export { 配置类型Options, 配置分组Options, 状态Options } from "../test-data";
+export { 配置类型Options, 配置分组Options } from "@01s-11comm/type";
+export { 状态Options } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: 系统配置表单_VO = {

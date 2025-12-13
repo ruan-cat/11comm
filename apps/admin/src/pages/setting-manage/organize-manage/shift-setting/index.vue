@@ -11,7 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import { type 班次设置_列表数据, type 班次设置_列表查询_VO, shiftSettingTableData as mockTableData } from "./test-data";
 import { type ShiftSettingFormProps, defaultForm, type 班次设置表单_VO } from "./components/form";
 import ShiftSettingForm from "./components/form.vue";
 

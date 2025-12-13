@@ -1,4 +1,3 @@
-import type { 组件类型, 查询方式 } from "../test-data";
 
 const _报表组件类型 = ["组件名称", "组件类型", "查询方式", "sql", "java", "描述"] as const;
 

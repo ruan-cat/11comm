@@ -7,4 +7,7 @@ export * from "./handing-business";
 export * from "./notice";
 export * from "./building-space-structure-diagram";
 export * from "./house-decoration";
+export * from "./my";
+export * from "./parking-space-structure-diagram";
+export * from "./property-register";
 

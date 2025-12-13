@@ -15,15 +15,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
 import OwnerVehicleForm from "./components/form.vue";
-import {
-	tableData as mockTableData,
-	车牌类型Options,
-	车位状态Options,
-	type 业主车辆_列表数据,
-	type 业主车辆_列表查询_VO,
-	type 业主车辆表单_VO,
-} from "./test-data";
-
 const OwnerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
 /** 模式控制 */

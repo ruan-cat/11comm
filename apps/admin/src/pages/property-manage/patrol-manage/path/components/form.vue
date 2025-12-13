@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import { type PatrolPathFormProps, defaultForm } from "./form";
-import { 巡检点类型Options, type 巡检路线_表单数据 } from "../test-data";
 
 const props = defineProps<PatrolPathFormProps>();
 

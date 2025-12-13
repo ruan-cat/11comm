@@ -25,14 +25,6 @@ import {
 	type 通知方式类型,
 	type 回访设置类型,
 } from "./components/form";
-import {
-	type 报修设置_列表数据,
-	tableData as mockTableData,
-	报修设置类型Options,
-	派单方式Options,
-	区域Options,
-	回访设置Options,
-} from "./test-data";
 import RepairsSettingForm from "./components/form.vue";
 
 /** 模式控制 */

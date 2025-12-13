@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { type RefundReviewFormProps, defaultForm } from "./form";
-import { type 退费审核表单_VO, 费用类型Options, 审核状态Options, 退费原因Options } from "../test-data";
 
 /** 表单组件的 props */
 const props = defineProps<RefundReviewFormProps>();

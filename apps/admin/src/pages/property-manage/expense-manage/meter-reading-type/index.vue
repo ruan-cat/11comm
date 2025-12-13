@@ -10,8 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 抄表类型_列表数据, type 抄表类型_列表查询_VO, tableData as mockTableData } from "./test-data";
-import { 抄表类型_VO } from "./test-data";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type MeterTypeFormProps, defaultForm } from "./components/form";

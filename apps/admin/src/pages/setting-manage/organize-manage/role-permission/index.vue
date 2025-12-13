@@ -17,7 +17,6 @@ import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
 import { h } from "vue";
 
-import { tableData as mockTableData, type 角色权限, type 角色权限_列表查询_VO } from "./test-data";
 
 import { type RolePermissionFormProps, defaultForm, type 角色权限表单_VO } from "./components/form";
 import RolePermissionForm from "./components/form.vue";

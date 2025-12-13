@@ -6,7 +6,6 @@
 import { ref, computed, watch, useTemplateRef } from "vue";
 
 import { type ReserveVenueFormProps } from "./form";
-import { 场地类型Options, 预约状态Options, type 场地预约_VO } from "../test-data";
 import { defaultForm } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();

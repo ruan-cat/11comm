@@ -10,13 +10,6 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type 补打收据_列表数据,
-	type 补打收据_列表查询_VO,
-	type 补打收据表单_VO,
-	费用类型Options,
-	tableData as mockTableData,
-} from "./test-data";
 import { type ReprintVoucherFormProps, defaultForm } from "./components/form";
 import ReprintVoucherForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";

@@ -12,13 +12,6 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 到期合同_列表数据,
-	type 到期合同_列表查询_VO,
-	合同类型Options,
-	处理状态Options,
-	tableData as mockTableData,
-} from "./test-data";
 import { type ContractExpireFormProps, defaultForm, type 合同到期表单_VO } from "./components/form";
 import ContractExpireForm from "./components/form.vue";
 const contractExpireFormInstance = ref<InstanceType<typeof ContractExpireForm> | null>(null);

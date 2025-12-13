@@ -11,12 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type 取消费用_列表数据,
-	type 取消费用_列表查询_VO,
-	审核状态Options,
-	tableData as allTableData,
-} from "./test-data";
 import { type CancelFeeFormProps, defaultForm, type 取消费用表单_VO } from "./components/form";
 import CancelFeeForm from "./components/form.vue";
 

@@ -124,8 +124,11 @@
 **实施细节：**
 
 ```typescript
+// 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
+import { defineHandler, readBody } from "nitro/h3";
+
 // server/api/property-manage/expense-manage/house-charge/list.post.ts
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<T>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<T>>> => {
 	const body = await readBody<HouseChargeQueryParams>(event);
 	// ...
 });
@@ -447,11 +450,12 @@ export const expenseIdentifierOptions: OptionsType = [
 ### 7.2 接口实现模板
 
 ```typescript
-import type { JsonVO, PageDTO } from "@ruan-cat/utils";
-import type { XXXListItem, XXXQueryParams } from "@01s-11comm/type";
+// 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, XXXListItem, XXXQueryParams } from "@01s-11comm/type";
 import { mockXXXData } from "./mock-data";
 
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
 	const body = await readBody<XXXQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body;
 
@@ -468,8 +472,9 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<XXXListI
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<HouseChargeListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -480,8 +485,9 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<XXXListI
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
 ```
 

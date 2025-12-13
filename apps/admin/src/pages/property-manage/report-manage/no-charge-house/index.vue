@@ -9,15 +9,6 @@ definePage({
 });
 
 import { transformI18n } from "@/plugins/i18n";
-import {
-	tableData as mockTableData,
-	type 未收费房屋_搜索_VO,
-	type 未收费房屋_表格数据,
-	小区Options,
-	楼栋Options,
-	单元Options,
-} from "./test-data";
-
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
