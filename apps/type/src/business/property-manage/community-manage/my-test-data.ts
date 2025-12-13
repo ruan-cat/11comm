@@ -100,20 +100,7 @@ export interface 产权登记_列表查询_VO {
 }
 
 // ==================== 测试用的表格数据 ====================
-
-/** 模拟表格数据 */
-export const mockTableData = [
-	{
-		id: "1",
-		name: "测试数据1",
-		status: "启用",
-	},
-	{
-		id: "2",
-		name: "测试数据2",
-		status: "禁用",
-	},
-];
+// 注意：mockTableData 已移动到 common/test-data.ts
 
 /** 全部表格数据 */
 export const allTableData = [

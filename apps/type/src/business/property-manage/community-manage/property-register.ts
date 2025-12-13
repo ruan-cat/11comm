@@ -74,6 +74,9 @@ export const 产权登记审核状态Options = propertyRegisterStatusOptions;
 /** 审核状态选项（中文名称） */
 export const 审核状态Options = propertyRegisterStatusOptions;
 
+/** 产权登记审核状态选项（中文名称）- 别名 */
+export const 产权登记审核状态选项 = propertyRegisterStatusOptions;
+
 /**
  * @description 楼栋选项
  * Building options
