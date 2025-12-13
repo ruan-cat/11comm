@@ -3,9 +3,9 @@
  * @description Configuration center list API
  */
 
-// import { defineHandler, readBody } from "nitro/h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
-// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { mockConfigCenterData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {
@@ -14,7 +14,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
-	const { pageIndex = 1, pageSize = 10, ...filters } = body ?? {};
+	const { pageIndex = defaultParams.pageIndex, pageSize = defaultParams.pageSize, ...filters } = body ?? defaultParams;
 
 	/** 数据筛选 */
 	let filteredData = [...mockConfigCenterData];
