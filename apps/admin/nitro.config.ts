@@ -1,38 +1,20 @@
 import { defineConfig } from "nitro";
-import { pathResolve } from "./build/utils";
 
 export default defineConfig({
 	serverDir: "./server",
-	// routesDir: "./server/api",
+
+	/**
+	 * 配置 Nitro 扫描目录
+	 * @description
+	 * 明确指定 Nitro 只扫描服务端目录，避免扫描客户端代码
+	 * @see https://nitro.unjs.io/config#scandirs
+	 */
+	scanDirs: ["./server"],
+
 	devServer: {
 		watch: ["./server/**/*.ts"],
 	},
 
-	// FIXME: 无法实现全局类型导入
-	// imports: {
-	// 	autoImport: true,
-	// 	imports: [
-	// 		// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-	// 		{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_INDEX" },
-	// 		{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_SIZE" },
-	// 		// import { defineHandler, readBody } from "nitro/h3";
-	// 		{ from: "nitro/h3", name: "defineHandler" },
-	// 		{ from: "nitro/h3", name: "readBody" },
-	// 		// import type { JsonVO, PageDTO } from "@01s-11comm/type";
-	// 		{ from: "@01s-11comm/type", name: "JsonVO", type: true },
-	// 		{ from: "@01s-11comm/type", name: "PageDTO", type: true },
-	// 	],
-	// },
-
-	alias: {
-		/**
-		 * Nitro 构建需要显式传入当前文件的 import.meta.url，
-		 * 否则默认会以 build/utils.ts 的路径为基准，导致解析到 build/src。
-		 */
-		"@": pathResolve("./src", import.meta.url),
-		components: pathResolve("./src/components", import.meta.url),
-		composables: pathResolve("./src/composables", import.meta.url),
-	},
 	compatibilityDate: "2024-09-19",
 	// 不提供任何写死的预设了 需要在运行命令的环境变量 NITRO_PRESET 内传入
 	// preset: "cloudflare_module",
