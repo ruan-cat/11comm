@@ -108,6 +108,29 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			__APP_INFO__: JSON.stringify(__APP_INFO__),
 		},
 
+		ssr: {
+			external: [
+				"vue",
+				"vue-router/auto-routes",
+				"virtual:meta-layouts",
+				"virtual:meta-layouts",
+				"pinia",
+				"element-plus",
+				"@vue/shared",
+				"@vue/runtime-core",
+				"@vue/runtime-dom",
+				"@vue/reactivity",
+				"vue-router/auto-routes",
+				"virtual:meta-layouts",
+				"pinia",
+				"element-plus",
+				"@vue/shared",
+				"@vue/runtime-core",
+				"@vue/runtime-dom",
+				"@vue/reactivity",
+			],
+		},
+
 		vercel,
 	};
 };
