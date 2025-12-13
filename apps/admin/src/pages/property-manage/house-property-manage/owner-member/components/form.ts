@@ -2,16 +2,16 @@ import type { OwnerMemberFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: OwnerMemberFormVO = {
-	成员人脸: "",
-	名称: "",
-	性别: "",
-	类型: "",
-	身份证: "",
-	联系方式: "",
-	家庭住址: "",
-	创建人: "",
-	备注: "",
-	门禁钥匙: "",
+	memberFace: "",
+	name: "",
+	gender: "",
+	type: "",
+	idCard: "",
+	contact: "",
+	homeAddress: "",
+	creator: "",
+	remark: "",
+	accessKey: "",
 };
 
 /**

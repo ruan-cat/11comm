@@ -6,7 +6,7 @@ import type { CommunityConfigFormVO } from "@01s-11comm/type";
 export const defaultForm: CommunityConfigFormVO = {
 	csId: "",
 	communityId: "",
-	小区名称: "",
+	communityName: "",
 	settingName: "",
 	settingValue: "",
 	settingType: "",
@@ -27,3 +27,5 @@ export interface CommunityConfigurationFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: CommunityConfigFormVO;
 }
+
+export type { CommunityConfigFormVO };

@@ -2,14 +2,14 @@ import type { HouseManagementFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: HouseManagementFormVO = {
-	房屋: "",
-	楼层: "",
-	业主: "",
-	类型: "",
-	房屋面积: "",
-	租金: "",
-	房屋状态: "",
-	有效期: "",
+	house: "",
+	floor: "",
+	owner: "",
+	type: "",
+	houseArea: "",
+	rent: "",
+	houseStatus: "",
+	validUntil: "",
 };
 
 /**
@@ -23,3 +23,5 @@ export interface HouseManageFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: HouseManagementFormVO;
 }
+
+export type { HouseManagementFormVO };

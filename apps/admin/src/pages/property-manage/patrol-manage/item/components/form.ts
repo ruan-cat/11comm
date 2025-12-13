@@ -2,10 +2,10 @@ import type { PatrolItemFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: PatrolItemFormVO = {
-	编号: "",
-	巡检项目: "",
-	创建时间: "",
-	备注: "",
+	code: "",
+	patrolItem: "",
+	createTime: "",
+	remark: "",
 };
 
 /**

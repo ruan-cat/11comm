@@ -16,11 +16,11 @@ export type { InitializeCellFormVO };
  * @description 对外导出用于其他场景使用
  */
 export const defaultForm: InitializeCellFormVO = {
-	小区ID: "",
-	小区名称: "",
-	附近地标: "",
-	城市编码: "",
-	状态: "",
+	communityId: "",
+	communityName: "",
+	nearbyLandmark: "",
+	cityCode: "",
+	status: "",
 };
 
 /**

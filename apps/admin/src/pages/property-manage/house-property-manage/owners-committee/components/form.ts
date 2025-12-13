@@ -2,18 +2,18 @@ import type { OwnersCommitteeFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: OwnersCommitteeFormVO = {
-	姓名: "",
-	性别: "",
-	电话: "",
-	身份证号码: "",
-	住址: "",
-	职位: "",
-	岗位: "",
-	岗位描述: "",
-	届期: "",
-	任期: "",
-	状态: "",
-	备注: "",
+	fullName: "",
+	gender: "",
+	phone: "",
+	idNumber: "",
+	address: "",
+	position: "",
+	post: "",
+	postDescription: "",
+	term: "",
+	tenure: "",
+	status: "",
+	remark: "",
 };
 
 /**
@@ -27,3 +27,5 @@ export interface OwnersCommitteeProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: OwnersCommitteeFormVO;
 }
+
+export type { OwnersCommitteeFormVO };

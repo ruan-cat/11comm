@@ -9,7 +9,7 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type ConfigCenterFormProps, defaultForm, type 配置中心表单_VO, type 配置类型, type 配置状态 } from "./form";
 // 从 @01s-11comm/type 导入缺失的类型
-import type { 配置中心_列表数据 } from "@01s-11comm/type";
+import type { ConfigCenterListItem } from "@01s-11comm/type";
 import ConfigCenterForm from "./form.vue";
 
 /** 表单组件实例 */
@@ -34,7 +34,7 @@ async function testAsync() {
  * 打开弹框
  * @param params 包含模式和行数据的参数对象
  */
-function openDialog(params: { mode: Mode; row?: 配置中心_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -47,15 +47,15 @@ function openDialog(params: { mode: Mode; row?: 配置中心_列表数据 }) {
 		: isEdit.value
 			? {
 					...defaultForm,
-					配置项名称: row?.配置项名称 || "",
-					配置类型: (row?.配置类型 as 配置类型) || "系统配置",
-					配置键名: row?.配置键名 || "",
-					配置值: row?.配置值 || "",
-					默认值: row?.默认值 || "",
-					配置描述: row?.配置描述 || "",
-					状态: (row?.状态 as 配置状态) || "启用",
-					排序号: row?.排序号 || 0,
-					备注: row?.备注 || "",
+					配置项名称: row?.configName || "",
+					配置类型: (row?.configType as 配置类型) || "系统配置",
+					配置键名: row?.configKey || "",
+					配置值: row?.configValue || "",
+					默认值: row?.defaultValue || "",
+					配置描述: row?.configDescription || "",
+					状态: (row?.status as 配置状态) || "启用",
+					排序号: row?.sortOrder || 0,
+					备注: row?.remark || "",
 				}
 			: cloneDeep(defaultForm);
 
