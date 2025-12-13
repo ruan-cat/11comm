@@ -3,8 +3,9 @@
  * @description Configuration center list API
  */
 
-import { defineHandler, readBody } from "nitro/h3";
+// import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
+// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { mockConfigCenterData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {

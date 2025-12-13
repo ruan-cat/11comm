@@ -9,10 +9,19 @@ export default defineConfig({
 	},
 
 	imports: {
-		autoImport: true,
-		include: [
-			pathResolve("../type/src/constant/index.ts", import.meta.url),
-			pathResolve("../type/src/common/index.ts", import.meta.url),
+		// autoImport: true,
+		imports: [
+			// import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+			{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_INDEX" },
+			{ from: "@01s-11comm/type", name: "DEFAULT_PAGE_SIZE" },
+
+			// import { defineHandler, readBody } from "nitro/h3";
+			{ from: "nitro/h3", name: "defineHandler" },
+			{ from: "nitro/h3", name: "readBody" },
+
+			// import type { JsonVO, PageDTO } from "@01s-11comm/type";
+			{ from: "@01s-11comm/type", name: "JsonVO", type: true },
+			{ from: "@01s-11comm/type", name: "PageDTO", type: true },
 		],
 	},
 
