@@ -1,14 +1,17 @@
 <!-- OPENSPEC:START -->
+
 # OpenSpec Instructions
 
 These instructions are for AI assistants working in this project.
 
 Always open `@/openspec/AGENTS.md` when the request:
+
 - Mentions planning or proposals (words like proposal, spec, change, plan)
 - Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
 - Sounds ambiguous and you need the authoritative spec before coding
 
 Use `@/openspec/AGENTS.md` to learn:
+
 - How to create and apply change proposals
 - Spec format and conventions
 - Project structure and guidelines
@@ -42,6 +45,9 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
 - `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
 - `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
+
+- 后台项目： 即 `apps\admin\package.json` 项目。
+- 类型项目： 即 `apps\type\package.json` 项目。
 
 ## 代码/编码格式要求
 
@@ -236,6 +242,7 @@ pnpm -F @01s-11comm/type typecheck
 - **类型检查**：每个包都包含独立的 typecheck 命令，确保类型安全
 
 在开发过程中，请确保：
+
 1. 所有新的业务类型定义都添加到 `@01s-11comm/type` 包中
 2. 在提交前运行类型检查命令
 3. 保持类型定义的准确性和一致性
