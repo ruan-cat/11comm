@@ -121,11 +121,12 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		queryFn: async (): Promise<JsonVO<PageDTO<TItem>>> => {
 			const response = await http.post<JsonVO<PageDTO<TItem>>, TParams>(apiUrl, { data: queryParams.value });
 			return (
-				response ?? {
+				response ??
+				({
 					code: 500,
 					message: "请求失败",
 					data: { list: [], total: 0, pageIndex: 1, pageSize: 10, totalPages: 0 },
-				}
+				} as JsonVO<PageDTO<TItem>>)
 			);
 		},
 		enabled: typeof enabled === "boolean" ? enabled : enabled,
@@ -154,22 +155,22 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	);
 
 	/** 更新查询参数 */
-	const updateParams = (params: Partial<TParams>) => {
+	function updateParams(params: Partial<TParams>) {
 		queryParams.value = {
 			...queryParams.value,
 			...params,
 		};
-	};
+	}
 
 	/** 重置查询参数 */
-	const resetParams = () => {
+	function resetParams() {
 		queryParams.value = { ...defaultParams };
-	};
+	}
 
 	/** 刷新数据 */
-	const refetch = () => {
+	function refetch() {
 		query.refetch();
-	};
+	}
 
 	return {
 		tableData,
