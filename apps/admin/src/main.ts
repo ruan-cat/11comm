@@ -5,7 +5,7 @@ import { useI18n, i18n } from "@/plugins/i18n";
 import { getPlatformConfig } from "./config";
 import { MotionPlugin } from "@vueuse/motion";
 import { useEcharts } from "@/plugins/echarts";
-import { createSSRApp, type Directive } from "vue";
+import { createSSRApp, createApp, type Directive } from "vue";
 import { useVxeTable } from "@/plugins/vxeTable";
 import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";
@@ -25,7 +25,9 @@ import "element-plus/dist/index.css";
 import "./assets/iconfont/iconfont.js";
 import "./assets/iconfont/iconfont.css";
 
-const app = createSSRApp(App);
+// 有疑惑 按照 nitro 的案例 应该设置 createSSRApp
+// 但是这样会导致开发环境的水和错误
+const app = createApp(App);
 
 /** TanStack Query 配置选项 */
 const vueQueryPluginOptions: VueQueryPluginOptions = {
