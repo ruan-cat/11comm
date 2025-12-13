@@ -1,7 +1,7 @@
 {
   "extends": [
     // 取消导入该类型配置预设 该预设过于严格
-    // "nitro/tsconfig"
+    "nitro/tsconfig"
   ],
   "compilerOptions": {
     "target": "ESNext",
