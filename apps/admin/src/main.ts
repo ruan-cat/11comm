@@ -5,7 +5,7 @@ import { useI18n, i18n } from "@/plugins/i18n";
 import { getPlatformConfig } from "./config";
 import { MotionPlugin } from "@vueuse/motion";
 import { useEcharts } from "@/plugins/echarts";
-import { createApp, type Directive } from "vue";
+import { createSSRApp, type Directive } from "vue";
 import { useVxeTable } from "@/plugins/vxeTable";
 import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";
@@ -25,7 +25,7 @@ import "element-plus/dist/index.css";
 import "./assets/iconfont/iconfont.js";
 import "./assets/iconfont/iconfont.css";
 
-const app = createApp(App);
+const app = createSSRApp(App);
 
 /** TanStack Query 配置选项 */
 const vueQueryPluginOptions: VueQueryPluginOptions = {
