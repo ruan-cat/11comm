@@ -8,3 +8,6 @@ export * from "./common";
 
 // 导出业务类型
 export * from "./business";
+
+// 导出常量
+export * from "./constant";

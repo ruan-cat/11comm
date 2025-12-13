@@ -9,6 +9,10 @@ import { mockConfigCenterData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {
 	const body = await readBody<ConfigCenterQueryParams>(event);
+	const defaultParams: ConfigCenterQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
 	const { pageIndex = 1, pageSize = 10, ...filters } = body ?? {};
 
 	/** 数据筛选 */
