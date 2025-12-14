@@ -3,6 +3,18 @@
  * @description 导出项目中共享的通用类型，如分页、响应格式等
  */
 
+// 导出测试数据
+export * from "./test-data";
+
+// 导出状态选项
+export * from "./status-options";
+
+// 导出选项类型
+export * from "./OptionsType";
+
+// 导出业务共同类型定义
+export * from "./business-options";
+
 /**
  * 前后端数据对接数据对象
  * @description
@@ -49,25 +61,6 @@ export interface PageDTO<T> {
 }
 
 /**
- * 选项类型，用于下拉框、单选框等组件
- * Option type for dropdowns, radio buttons, etc.
- */
-export interface OptionItem {
-	/** 选项显示文本 Label text */
-	label: string;
-	/** 选项值 Value */
-	value: string | number | boolean;
-	/** 是否禁用 Disabled */
-	disabled?: boolean;
-}
-
-/**
- * 选项数组类型
- * Options array type
- */
-export type OptionsType = OptionItem[];
-
-/**
  * 基础分页查询参数
  * Base pagination query parameters
  */
@@ -77,9 +70,3 @@ export interface BaseListQueryParams {
 	/** 每页大小 Page size */
 	pageSize: number;
 }
-
-// 导出测试数据
-export * from "./test-data";
-
-// 导出状态选项
-export * from "./status-options";

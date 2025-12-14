@@ -1,4 +1,4 @@
-import type { OptionsType } from "./index";
+import type { OptionsType } from "./OptionsType";
 
 /**
  * @file 通用状态选项
