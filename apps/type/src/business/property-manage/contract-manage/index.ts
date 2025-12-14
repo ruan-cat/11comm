@@ -13,7 +13,6 @@ export type {
 
 export {
 	changeStatusOptions,
-	合同类型Options,
 } from "./change";
 
 export type {

@@ -145,12 +145,6 @@ export const 费用项名称Options: OptionsType = [
 	{ label: "维修费", value: "维修费" },
 ];
 
-/**
- * @description 合同类型选项（从公共选项导出）
- * Contract type options (exported from common options)
- */
-export { 合同类型Options };
-
 // ==================== 通用类型定义 ====================
 
 /** 退费审核表单 VO */

@@ -67,12 +67,6 @@ export const changeStatusOptions: OptionsType = [
 	{ label: "已撤回", value: "已撤回" },
 ];
 
-/**
- * @description 合同类型选项（从公共选项导出）
- * Contract type options (exported from common options)
- */
-export { 合同类型Options };
-
 // ==================== 兼容旧类型定义 ====================
 
 /**

@@ -13,7 +13,7 @@ export * from "./status-options";
 export * from "./OptionsType";
 
 // 导出业务共同类型定义
-export * from "./business-options";
+export { 合同类型Options } from "./business-options";
 
 /**
  * 前后端数据对接数据对象

@@ -86,7 +86,6 @@ export type {
 
 export {
 	changeStatusOptions,
-	合同类型Options as ContractTypeOptionsFromChange,
 	draftContractStatusOptions,
 	合同草稿类型Options,
 	contractTypeOptionsData,

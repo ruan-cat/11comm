@@ -90,15 +90,3 @@ export type 折扣设置_列表数据 = DiscountSettingListItem[];
  * Discount setting list query VO type (for compatibility)
  */
 export type 折扣设置_列表查询_VO = DiscountSettingQueryParams;
-
-/**
- * @description 折扣类型选项（兼容性）
- * Discount type options (for compatibility)
- */
-export const 折扣类型Options = 折扣设置类型Options;
-
-/**
- * @description 规则选项（兼容性）
- * Rule options (for compatibility)
- */
-export const 规则Options = 折扣设置规则Options;
