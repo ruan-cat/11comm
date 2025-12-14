@@ -19,7 +19,7 @@ import {
 	type ParkingSpaceStructureDiagramListItem,
 	type ParkingSpaceStructureDiagramQueryParams,
 	parkingSpaceTypeOptions,
-	车位状态选项,
+	parkingSpaceStatusOptions,
 	floorAreaOptions,
 	isChargingPileOptions,
 } from "@01s-11comm/type";
@@ -195,7 +195,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "车位状态",
 		prop: "status",
 		valueType: "select",
-		options: 车位状态选项,
+		options: parkingSpaceStatusOptions,
 	},
 ]);
 
@@ -252,36 +252,36 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}车位结构图`;
 
 	/** 业务对象 */
-	const 车位结构图表单_VO: 车位结构图表单_VO = isAdd.value
+	const formData: 车位结构图表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
-					车位编号: row?.parkingSpaceNumber || "",
-					车位类型: row?.parkingSpaceType || "",
-					车位位置: row?.parkingSpaceLocation || "",
-					车位面积: row?.parkingSpaceArea || "",
-					车位状态: row?.parkingSpaceStatus || "",
-					业主姓名: row?.ownerName || "",
-					联系电话: row?.contactPhone || "",
-					车牌号码: row?.licensePlateNumber || "",
-					车辆品牌: row?.vehicleBrand || "",
-					购买时间: row?.purchaseTime || "",
-					到期时间: row?.expiryTime || "",
-					月租金: row?.monthlyRent || 0,
-					管理费: row?.managementFee || 0,
-					车位朝向: row?.parkingSpaceOrientation || "",
-					楼层区域: row?.floorArea || "",
-					是否充电桩: row?.hasEvChargingPile ? "是" : "否",
-					充电桩功率: row?.chargingPilePower || "",
-					备注信息: row?.remark || "",
+					parkingSpaceNumber: row?.parkingSpaceNumber || "",
+					parkingSpaceType: row?.parkingSpaceType || "",
+					parkingSpaceLocation: row?.parkingSpaceLocation || "",
+					parkingSpaceArea: row?.parkingSpaceArea || "",
+					parkingSpaceStatus: row?.parkingSpaceStatus || "",
+					ownerName: row?.ownerName || "",
+					contactPhone: row?.contactPhone || "",
+					licensePlateNumber: row?.licensePlateNumber || "",
+					vehicleBrand: row?.vehicleBrand || "",
+					purchaseTime: row?.purchaseTime || "",
+					expiryTime: row?.expiryTime || "",
+					monthlyRent: row?.monthlyRent || 0,
+					managementFee: row?.managementFee || 0,
+					parkingSpaceOrientation: row?.parkingSpaceOrientation || "",
+					floorArea: row?.floorArea || "",
+					hasEvChargingPile: row?.hasEvChargingPile ? "是" : "否",
+					chargingPilePower: row?.chargingPilePower || "",
+					remark: row?.remark || "",
 				}
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ParkingSpaceStructureDiagramFormProps = {
-		form: 车位结构图表单_VO,
-		defaultValues: 车位结构图表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

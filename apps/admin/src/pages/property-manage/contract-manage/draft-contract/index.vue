@@ -14,7 +14,7 @@ import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/componen
 import ContractDraftForm from "./components/form.vue";
 import { type ContractDraftFormVO, type ContractDraftFormProps, defaultForm } from "./components/form";
 import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
-import { type DraftContractListItem, type DraftContractQueryParams, contractTypeOptionsData } from "@01s-11comm/type";
+import { type DraftContractListItem, type DraftContractQueryParamsType, contractTypeOptionsData } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
@@ -146,7 +146,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParams> = {
+const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParamsType> = {
 	contractName: "",
 	contractNumber: "",
 	contractType: "",
@@ -206,7 +206,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<DraftContractQueryParams>);
+	} as Partial<DraftContractQueryParamsType>);
 }
 
 /** 打开弹框 参数 */

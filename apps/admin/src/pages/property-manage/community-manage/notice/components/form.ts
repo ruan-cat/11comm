@@ -49,6 +49,16 @@ export interface CommunityNoticeFormProps {
 	defaultValues: CommunityNoticeFormVO;
 }
 
+/** 公示类型选项 */
+export const noticeTypeOptions = [
+	{ label: "通知", value: "通知" },
+	{ label: "公告", value: "公告" },
+	{ label: "提醒", value: "提醒" },
+	{ label: "活动", value: "活动" },
+	{ label: "维修", value: "维修" },
+	{ label: "安全", value: "安全" },
+];
+
 /** 公示状态选项 */
 export const noticeStatusOptions = [
 	{ label: "草稿", value: "草稿" },

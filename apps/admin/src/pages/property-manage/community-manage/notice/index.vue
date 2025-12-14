@@ -14,8 +14,7 @@ import { useI18n } from "vue-i18n";
 import { transformI18n } from "@/plugins/i18n";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { useCommunityNoticeListQuery } from "@/api/property-manage/community-manage/notice";
-import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据 } from "./components/form";
-import { noticeTypeOptions } from "@01s-11comm/type";
+import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据, noticeTypeOptions } from "./components/form";
 import CommunityNoticeForm from "./components/form.vue";
 
 const { t } = useI18n();
@@ -378,12 +377,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 表单提交前验证
-					const 验证通过 = communityNoticeFormInstance.value.表单提交前验证();
-					if (!验证通过) {
-						return;
-					}
-
 					// 提交表单时 校验
 					const res = await communityNoticeFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {

@@ -68,7 +68,7 @@ export interface ParkingSpaceStructureDiagramQueryParams {
  * @description 车位类型选项
  * Parking space type options
  */
-export const 车位类型选项: OptionsType = [
+export const parkingSpaceTypeOptions: OptionsType = [
 	{ label: "标准车位", value: "标准车位" },
 	{ label: "大型车位", value: "大型车位" },
 	{ label: "小型车位", value: "小型车位" },
@@ -79,7 +79,7 @@ export const 车位类型选项: OptionsType = [
  * @description 车位状态选项
  * Parking space status options
  */
-export const 车位状态选项: OptionsType = [
+export const parkingSpaceStatusOptions: OptionsType = [
 	{ label: "空闲", value: "空闲" },
 	{ label: "已售", value: "已售" },
 	{ label: "已租", value: "已租" },
@@ -91,7 +91,7 @@ export const 车位状态选项: OptionsType = [
  * @description 楼层区域选项
  * Floor area options
  */
-export const 楼层区域选项: OptionsType = [
+export const floorAreaOptions: OptionsType = [
 	{ label: "地下1层", value: "地下1层" },
 	{ label: "地下2层", value: "地下2层" },
 	{ label: "地下3层", value: "地下3层" },
@@ -103,15 +103,10 @@ export const 楼层区域选项: OptionsType = [
  * @description 是否充电桩选项
  * EV charging pile options
  */
-export const 是否充电桩选项: OptionsType = [
+export const isChargingPileOptions: OptionsType = [
 	{ label: "是", value: "是" },
 	{ label: "否", value: "否" },
 ];
-
-// ==================== 中文名称导出 ====================
-
-/** 状态选项（中文名称） */
-export const 状态选项 = 车位状态选项;
 
 // ==================== 兼容旧类型定义 ====================
 

@@ -15,10 +15,10 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
 import { useMyListQuery } from "@/api/property-manage/community-manage/my";
+import { provinceOptions } from "./components/form";
 import {
 	type MyCommunityListItem,
 	type MyCommunityQueryParams,
-	provinceOptions,
 	myStatusOptions,
 } from "@01s-11comm/type";
 
