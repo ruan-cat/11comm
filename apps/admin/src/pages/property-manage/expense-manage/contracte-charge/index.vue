@@ -15,7 +15,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type ContracteChargeFormProps, defaultForm, type ContracteChargeFormVO } from "./components/form";
 import ContracteChargeForm from "./components/form.vue";
 import { useContracteChargeListQuery } from "@/api/property-manage/expense-manage/contracte-charge";
-import { type ContracteChargeListItem, type ContracteChargeQueryParams, 合同类型Options } from "@01s-11comm/type";
+import { type ContracteChargeListItem, type ContracteChargeQueryParams, contractTypeOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -153,7 +153,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: 合同类型Options,
+		options: contractTypeOptions,
 	},
 ]);
 

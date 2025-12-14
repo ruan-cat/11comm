@@ -1,5 +1,4 @@
 import type { CommunityNoticeListItem } from "@01s-11comm/type";
-import { noticeTypeOptions } from "@01s-11comm/type";
 
 /** 公示类型 */
 export type NoticeType = "通知" | "公告" | "提醒" | "活动" | "维修" | "安全";
@@ -71,4 +70,3 @@ export function 列表数据转表单数据(列表数据: CommunityNoticeListIte
 	};
 }
 
-export { noticeTypeOptions };

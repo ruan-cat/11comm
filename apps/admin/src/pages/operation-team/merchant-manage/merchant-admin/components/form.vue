@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { MerchantAdminFormProps, 商户管理员表单_VO, 物业公司选项, 状态选项 } from "./form";
+import { MerchantAdminFormProps, 商户管理员表单_VO, 物业公司选项, statusOptions } from "./form";
 
 const props = defineProps<MerchantAdminFormProps>();
 
@@ -95,7 +95,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "账户状态",
 		prop: "账户状态",
 		valueType: "select",
-		options: 状态选项,
+		options: statusOptions,
 		width: "150px",
 		fieldProps: {
 			clearable: true,

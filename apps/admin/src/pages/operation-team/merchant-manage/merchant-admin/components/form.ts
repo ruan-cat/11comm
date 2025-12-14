@@ -1,6 +1,6 @@
 import { type Mode } from "@/composables/use-mode";
 // 从 @01s-11comm/type 导入缺失的选项
-import { 物业公司选项, 状态选项 } from "@01s-11comm/type";
+import { 物业公司选项 } from "@01s-11comm/type";
 
 /** 商户管理员表单数据类型 */
 export interface 商户管理员表单_VO {
@@ -58,6 +58,3 @@ export interface MerchantAdminFormProps {
 
 /** 物业公司选项导出 */
 export { 物业公司选项 };
-
-/** 状态选项导出 */
-export { 状态选项 };

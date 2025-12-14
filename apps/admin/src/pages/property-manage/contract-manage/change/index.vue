@@ -21,7 +21,7 @@ import { consola } from "consola";
 import { type ContractChangeFormProps, defaultForm, type ContractChangeFormVO } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
 import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
-import { type ChangeListItem, type ChangeQueryParams, 合同类型Options } from "@01s-11comm/type";
+import { type ChangeListItem, type ChangeQueryParams, contractTypeOptions } from "@01s-11comm/type";
 
 /** 表单组件实例引用 */
 const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
@@ -145,7 +145,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: 合同类型Options,
+		options: contractTypeOptions,
 	},
 ]);
 

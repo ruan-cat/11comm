@@ -82,17 +82,6 @@ export const contractTypeOptionsData = draftContractTypeOptions;
 
 // ==================== 兼容旧中文名称 ====================
 
-/**
- * @description 合同草稿类型选项（兼容性）
- * Draft contract type options (for compatibility)
- */
-export const 合同草稿类型Options = draftContractTypeOptions;
-
-/**
- * @description 合同草稿状态选项（兼容性）
- * Draft contract status options (for compatibility)
- */
-export const 合同草稿状态Options = draftContractStatusOptions;
 
 // ==================== 兼容旧类型定义 ====================
 

@@ -17,7 +17,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type AddFormProps, defaultForm, type ContractTypeFormVO } from "./components/form";
 import AddForm from "./components/form.vue";
 import { useTypeListQuery } from "@/api/property-manage/contract-manage/type";
-import { type TypeListItem, type TypeQueryParams, 审核类型Options, type IsAuditType } from "@01s-11comm/type";
+import { type TypeListItem, type TypeQueryParams, auditTypeOptions, type IsAuditType } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -101,7 +101,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "审核类型",
 		prop: "isAudit",
 		valueType: "select",
-		options: 审核类型Options,
+		options: auditTypeOptions,
 	},
 ]);
 

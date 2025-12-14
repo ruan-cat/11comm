@@ -58,14 +58,6 @@ export const auditTypeOptions: OptionsType = [
 	{ label: "否", value: "否" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 审核类型选项（兼容性）
- * Audit type options (for compatibility)
- */
-export const 审核类型Options = auditTypeOptions;
-
 // ==================== 兼容旧类型定义 ====================
 
 /**

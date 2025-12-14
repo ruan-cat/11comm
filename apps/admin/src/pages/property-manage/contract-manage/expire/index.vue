@@ -15,7 +15,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type ContractExpireFormProps, defaultForm, type ContractExpireFormVO } from "./components/form";
 import ContractExpireForm from "./components/form.vue";
 import { useExpireListQuery } from "@/api/property-manage/contract-manage/expire";
-import { type ExpireListItem, type ExpireQueryParams, 合同类型Options, 处理状态Options } from "@01s-11comm/type";
+import { type ExpireListItem, type ExpireQueryParams, contractTypeOptions, handlingStatusOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -148,13 +148,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: 合同类型Options,
+		options: contractTypeOptions,
 	},
 	{
 		label: "处理状态",
 		prop: "processingStatus",
 		valueType: "select",
-		options: 处理状态Options,
+		options: handlingStatusOptions,
 	},
 ]);
 

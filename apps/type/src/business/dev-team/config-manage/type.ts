@@ -45,7 +45,7 @@ export interface DictionaryTypeQueryParams extends BaseListQueryParams {
  * 状态选项
  * Status options
  */
-export const statusOptions: OptionsType = [
+export const dictionaryTypeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];

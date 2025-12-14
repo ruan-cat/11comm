@@ -1,4 +1,4 @@
-import { 审核类型Options } from "@01s-11comm/type";
+import { auditTypeOptions } from "@01s-11comm/type";
 
 // ==================== 类型定义 ====================
 
@@ -42,4 +42,4 @@ export interface AddFormProps {
 	defaultValues: ContractTypeFormVO;
 }
 
-export { 审核类型Options };
+export { auditTypeOptions };

@@ -48,7 +48,7 @@ export const customExpenseOptions: OptionsType = [
 ];
 
 /** 状态选项 Status options */
-export const statusOptions: OptionsType = [
+export const expenseStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
@@ -162,9 +162,6 @@ export const 账户抵扣Options = accountDeductionOptions;
 
 /** 自定义费用选项（兼容性） */
 export const 自定义费用Options = customExpenseOptions;
-
-/** 状态选项（兼容性） */
-export const 状态Options = statusOptions;
 
 /** 规则选项（兼容性） */
 export const 规则Options = ruleOptions;

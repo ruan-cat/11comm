@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, ContractTypeFormVO, defaultForm, 审核类型Options } from "./form";
+import { AddFormProps, ContractTypeFormVO, defaultForm, auditTypeOptions } from "./form";
 
 const props = defineProps<AddFormProps>();
 
@@ -52,7 +52,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "是否审核",
 		prop: "isAudit",
 		valueType: "select",
-		options: 审核类型Options,
+		options: auditTypeOptions,
 		required: true,
 		fieldProps: {
 			clearable: true,

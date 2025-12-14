@@ -103,24 +103,6 @@ export type 到期合同_列表数据 = ExpireListItem[];
 export type 到期合同_列表查询_VO = ExpireQueryParams;
 
 /**
- * @description 处理状态选项（兼容性）
- * Processing status options (for compatibility)
- */
-export const 处理状态Options = expiredContractHandlingStatusOptions;
-
-/**
- * @description 到期合同处理状态选项（兼容性）
- * Expire contract handling status options (for compatibility)
- */
-export const 到期合同处理状态Options = expiredContractHandlingStatusOptions;
-
-/**
- * @description 到期合同类型选项（兼容性）
- * Expire contract type options (for compatibility)
- */
-export const 到期合同类型Options = expiredContractTypeOptions;
-
-/**
  * @description 到期合同处理状态选项别名
  * Handling status options alias
  */

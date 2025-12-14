@@ -36,7 +36,6 @@ export {
 	付费类型Options,
 	账户抵扣Options,
 	自定义费用Options,
-	状态Options,
 	规则Options,
 	申请类型Options,
 	使用状态Options,

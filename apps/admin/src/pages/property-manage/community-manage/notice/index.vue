@@ -14,7 +14,8 @@ import { useI18n } from "vue-i18n";
 import { transformI18n } from "@/plugins/i18n";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { useCommunityNoticeListQuery } from "@/api/property-manage/community-manage/notice";
-import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据, 公示类型选项 } from "./components/form";
+import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据 } from "./components/form";
+import { noticeTypeOptions } from "@01s-11comm/type";
 import CommunityNoticeForm from "./components/form.vue";
 
 const { t } = useI18n();
@@ -141,7 +142,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "公示类型",
 		prop: "noticeType",
 		valueType: "select",
-		options: 公示类型选项,
+		options: noticeTypeOptions,
 		fieldProps: {
 			placeholder: "请选择公示类型",
 		},

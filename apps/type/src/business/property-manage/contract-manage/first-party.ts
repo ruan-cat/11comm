@@ -70,14 +70,6 @@ export const firstPartyStatusOptions: OptionsType = [
  */
 export const contractFirstPartyTypeOptions = contractTypeOptions;
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 合同甲方类型选项（兼容性）
- * Contract first-party type options (for compatibility)
- */
-export const 合同甲方类型Options = contractFirstPartyTypeOptions;
-
 // ==================== 兼容旧类型定义 ====================
 
 /**
