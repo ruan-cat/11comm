@@ -250,4 +250,15 @@ openspec validate migrate-static-data-to-nitro-query --strict
 3. 在 `openspec\changes\migrate-static-data-to-nitro-query` 目录内，阅读现有的迁移规范。并且新增满足 openspec 的公共业务下拉选择数组迁移规范。
    > 统一的将这一种满足 `OptionsType` 类型的下拉选择数组，都迁移到 `apps\type\src\common\business-options.ts` 文件内，统一使用这里的下拉选择数组。
 
+### 08 <!-- TODO: --> 更新 `common-business-options` 规范，禁止类型项目使用含有中文的变量名
+
+1. 阅读该 openspec 规范文件 `openspec\changes\migrate-static-data-to-nitro-query\specs\common-business-options\spec.md`
+2. 这个规范文件，本身很不符合其他的规范文件约束。按照其他的 openspec 规范，是不应该在 type 类型项目和 admin 管理后天项目内，使用任何中文变量名的。
+3. 请你更新 `openspec\changes\migrate-static-data-to-nitro-query\specs\common-business-options\spec.md` 内的代码实例。避免使用错误的变量名写法。
+4. 请你也同步更新类型项目内，使用中文的变量名。
+5. 更新使用中文变量名的其他 admin 项目代码。确保变量和类型应用写法相统一。
+6. 不要考虑向后兼容的写法，这个改写过程本身就是破坏性变更。
+7. 不要主动增加含有中文变量名的写法，不需要兼容。而是 admin 项目代码的变量名，以 type 类型项目的变量名为准。
+8. 先更改 type 类型项目的代码，先保证其符合不包含中文变量名的规范；然后再去修改 admin 后台项目的代码。
+
 <!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
