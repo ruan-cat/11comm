@@ -1,5 +1,5 @@
 /**
- * @file property-register API Hook
+ * @file 产权登记 API Hook
  * @description PropertyRegister API hooks using TanStack Query
  */
 
@@ -10,10 +10,10 @@ import type { PropertyRegisterListItem, PropertyRegisterQueryParams } from "@01s
 const API_URL = "/api/property-manage/community-manage/property-register/list";
 
 /** 查询键前缀 */
-const QUERY_KEY_PREFIX = "propertyRegister";
+const QUERY_KEY_PREFIX = "property-register";
 
 /**
- * property-register列表查询 Hook
+ * 产权登记列表查询 Hook
  * PropertyRegister list query hook
  */
 export function usePropertyRegisterListQuery() {

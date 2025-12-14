@@ -10,7 +10,7 @@ import type { CancelFeeListItem, CancelFeeQueryParams } from "@01s-11comm/type";
 const API_URL = "/api/property-manage/expense-manage/cancel-fee/list";
 
 /** 查询键前缀 */
-const QUERY_KEY_PREFIX = "cancelFee";
+const QUERY_KEY_PREFIX = "cancel-fee";
 
 /**
  * cancel-fee列表查询 Hook
@@ -24,3 +24,4 @@ export function useCancelFeeListQuery() {
 }
 
 export default useCancelFeeListQuery;
+

@@ -2,50 +2,50 @@
 /**
  * 缴费审核表单数据类型
  */
-export interface 缴费审核_表单数据 {
+export interface PaymentReviewFormVO {
 	/** 房屋 */
-	房屋: string;
+	house: string;
 	/** 费用项目 */
-	费用项目: string;
+	expenseItem: string;
 	/** 付费周期 */
-	付费周期: string;
+	paymentPeriod: string;
 	/** 缴费起始时间 */
-	缴费起始时间: string;
+	paymentStartTime: string;
 	/** 缴费结束时间 */
-	缴费结束时间: string;
+	paymentEndTime: string;
 	/** 应付金额 */
-	应付金额: string;
+	payableAmount: string;
 	/** 实付金额 */
-	实付金额: string;
+	paidAmount: string;
 	/** 操作员工 */
-	操作员工: string;
+	operator: string;
 	/** 缴费时间 */
-	缴费时间: string;
+	paymentTime: string;
 	/** 审核状态 */
-	审核状态: string;
+	auditStatus: string;
 	/** 审核说明 */
-	审核说明: string;
+	auditDescription: string;
 	/** 缴费备注 */
-	缴费备注: string;
+	paymentRemark: string;
 	/** 详情 */
-	详情: string;
+	details: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 缴费审核_表单数据 = {
-	房屋: "",
-	费用项目: "",
-	付费周期: "",
-	缴费起始时间: "",
-	缴费结束时间: "",
-	应付金额: "",
-	实付金额: "",
-	操作员工: "",
-	缴费时间: "",
-	审核状态: "",
-	审核说明: "",
-	缴费备注: "",
-	详情: "",
+export const defaultForm: PaymentReviewFormVO = {
+	house: "",
+	expenseItem: "",
+	paymentPeriod: "",
+	paymentStartTime: "",
+	paymentEndTime: "",
+	payableAmount: "",
+	paidAmount: "",
+	operator: "",
+	paymentTime: "",
+	auditStatus: "",
+	auditDescription: "",
+	paymentRemark: "",
+	details: "",
 };
 
 /**
@@ -53,9 +53,9 @@ export const defaultForm: 缴费审核_表单数据 = {
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export interface 缴费审核FormProps {
+export interface PaymentReviewFormProps {
 	/** 表单数据 */
-	form: 缴费审核_表单数据;
+	form: PaymentReviewFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 缴费审核_表单数据;
+	defaultValues: PaymentReviewFormVO;
 }

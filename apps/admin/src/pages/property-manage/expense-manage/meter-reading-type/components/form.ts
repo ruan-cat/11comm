@@ -1,9 +1,18 @@
-import type { 抄表类型_VO } from "@01s-11comm/type";
+/**
+ * @description 抄表类型表单VO
+ * Meter reading type form VO
+ */
+export interface MeterReadingTypeFormVO {
+	/** 名称 Name */
+	name: string;
+	/** 说明 Description */
+	description: string;
+}
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 抄表类型_VO = {
-	名称: "",
-	说明: "",
+export const defaultForm: MeterReadingTypeFormVO = {
+	name: "",
+	description: "",
 };
 
 /**
@@ -13,7 +22,7 @@ export const defaultForm: 抄表类型_VO = {
  */
 export interface MeterTypeFormProps {
 	/** 表单数据 */
-	form: 抄表类型_VO;
+	form: MeterReadingTypeFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 抄表类型_VO;
+	defaultValues: MeterReadingTypeFormVO;
 }

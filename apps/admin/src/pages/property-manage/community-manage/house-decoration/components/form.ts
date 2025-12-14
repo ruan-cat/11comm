@@ -1,61 +1,61 @@
 import { type Mode } from "@/composables/use-mode";
+import { decorationStatusOptions, delayStatusOptions } from "@01s-11comm/type";
 
 // ==================== 联合类型定义 ====================
 
 /** 房屋装修状态联合类型 */
-export type 房屋装修状态类型 = "待审核" | "审核不通过" | "装修中" | "待验收" | "验收成功" | "验收失败";
+export type HouseDecorationStatusType = "待审核" | "审核不通过" | "装修中" | "待验收" | "验收成功" | "验收失败";
 
 /** 是否延期联合类型 */
-export type 是否延期类型 = "是" | "否";
+export type IsDelayedType = "是" | "否";
 
 /** 是否违规联合类型 */
-export type 是否违规类型 = "是" | "否";
+export type IsViolatedType = "是" | "否";
 
-// 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
-export interface 房屋装修表单_VO {
+export interface HouseDecorationFormVO {
 	/** 房屋编号 */
-	房屋: string;
+	houseNumber: string;
 	/** 联系人姓名 */
-	联系人: string;
+	contactName: string;
 	/** 联系电话 */
-	联系电话: string;
+	contactPhone: string;
 	/** 装修时间 */
-	装修时间: string;
+	decorationTime: string;
 	/** 申请时间 */
-	申请时间: string;
+	applicationTime: string;
 	/** 装修单位 */
-	装修单位: string;
+	decorationCompany: string;
 	/** 负责人电话 */
-	负责人电话: string;
+	managerPhone: string;
 	/** 当前状态 */
-	状态: 房屋装修状态类型;
+	status: HouseDecorationStatusType;
 	/** 是否延期 */
-	是否延期: 是否延期类型;
+	isDelayed: IsDelayedType;
 	/** 延期时间 */
-	延期时间: string;
+	delayTime: string;
 	/** 是否违规 */
-	是否违规: 是否违规类型;
+	isViolated: IsViolatedType;
 	/** 违规说明 */
-	违规说明: string;
+	violationDescription: string;
 	/** 备注信息 */
-	备注: string;
+	remarks: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 房屋装修表单_VO = {
-	房屋: "",
-	联系人: "",
-	联系电话: "",
-	装修时间: "",
-	申请时间: "",
-	装修单位: "",
-	负责人电话: "",
-	状态: "待审核",
-	是否延期: "否",
-	延期时间: "",
-	是否违规: "否",
-	违规说明: "",
-	备注: "",
+export const defaultForm: HouseDecorationFormVO = {
+	houseNumber: "",
+	contactName: "",
+	contactPhone: "",
+	decorationTime: "",
+	applicationTime: "",
+	decorationCompany: "",
+	managerPhone: "",
+	status: "待审核",
+	isDelayed: "否",
+	delayTime: "",
+	isViolated: "否",
+	violationDescription: "",
+	remarks: "",
 };
 
 /**
@@ -65,11 +65,13 @@ export const defaultForm: 房屋装修表单_VO = {
  */
 export interface HouseDecorationFormProps {
 	/** 表单数据 */
-	form: 房屋装修表单_VO;
+	form: HouseDecorationFormVO;
 
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 房屋装修表单_VO;
+	defaultValues: HouseDecorationFormVO;
 
 	/** 表单模式 */
 	mode?: Mode;
 }
+
+export { decorationStatusOptions, delayStatusOptions };

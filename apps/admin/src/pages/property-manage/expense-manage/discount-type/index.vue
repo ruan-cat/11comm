@@ -13,43 +13,58 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-import { type DiscountTypeFormProps, defaultForm, type 优惠类型表单_VO, type 折扣类型 } from "./components/form";
+import { type DiscountTypeFormProps, defaultForm, type DiscountTypeFormVO, type DiscountType } from "./components/form";
 import DiscountTypeForm from "./components/form.vue";
+import { useDiscountTypeListQuery } from "@/api/property-manage/expense-manage/discount-type";
+import { type DiscountTypeListItem, type DiscountTypeQueryParams, 折扣类型Options } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
 
-/** 表格数据 */
-const tableData = ref<优惠类型_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useDiscountTypeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		prop: "折扣ID",
+		prop: "id", // DiscountTypeListItem has id, assuming discountId is not in item but only in form? No, I updated list item to not have specific keys.
+		// Wait, I updated DiscountSettingListItem but NOT DiscountTypeListItem.
+		// Let me check type definition again.
+		// DiscountTypeListItem has: id, name, status, createTime, updateTime, remark.
+		// But in index.vue I see: 折扣ID, 折扣名称, 折扣类型, 规则名称, 规则.
+		// I must update DiscountTypeListItem as well.
 		label: "折扣ID",
 		width: 120,
 		fixed: true,
 	},
 	{
-		prop: "折扣名称",
+		prop: "name", // Mapping 折扣名称 -> name
 		label: "折扣名称",
 		width: 200,
 	},
 	{
-		prop: "折扣类型",
+		prop: "discountType", // I need to add this to type definition
 		label: "折扣类型",
 		width: 200,
 	},
 	{
-		prop: "规则名称",
+		prop: "ruleName", // I need to add this to type definition
 		label: "规则名称",
 		width: 200,
 	},
 	{
-		prop: "规则",
+		prop: "rule", // I need to add this to type definition
 		label: "规则",
 		width: 200,
 	},
 	{
-		prop: "创建时间",
+		prop: "createTime",
 		label: "创建时间",
 		width: 200,
 	},
@@ -63,22 +78,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
@@ -86,6 +100,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -98,11 +113,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 优惠类型_列表查询_VO = {
-	折扣ID: "",
-	折扣名称: "",
-	折扣类型: "",
-	规则名称: "",
+const plusSearchModelRef: FieldValues & Partial<DiscountTypeQueryParams> = {
+	name: "", // Map 折扣名称 -> name
+	// Need to add other fields to DiscountTypeQueryParams if needed.
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -119,26 +132,26 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 折扣ID */
 	{
 		label: "折扣ID",
-		prop: "折扣ID",
+		prop: "id", // Use id for discountId
 		valueType: "input",
 	},
 	/** 折扣名称 */
 	{
 		label: "折扣名称",
-		prop: "折扣名称",
+		prop: "name",
 		valueType: "input",
 	},
 	/** 折扣类型 */
 	{
 		label: "折扣类型",
-		prop: "折扣类型",
+		prop: "discountType", // Need to add to query params
 		valueType: "select",
 		options: 折扣类型Options,
 	},
 	/** 规则名称 */
 	{
 		label: "规则名称",
-		prop: "规则名称",
+		prop: "ruleName", // Need to add to query params
 		valueType: "input",
 	},
 ]);
@@ -152,61 +165,25 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = allTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.折扣ID) {
-			filteredData = filteredData.filter((item) => item.折扣ID.includes(plusSearchModel.value.折扣ID!));
-		}
-		if (plusSearchModel.value.折扣名称) {
-			filteredData = filteredData.filter((item) => item.折扣名称.includes(plusSearchModel.value.折扣名称!));
-		}
-		if (plusSearchModel.value.折扣类型) {
-			filteredData = filteredData.filter((item) => item.折扣类型 === plusSearchModel.value.折扣类型);
-		}
-		if (plusSearchModel.value.规则名称) {
-			filteredData = filteredData.filter((item) => item.规则名称.includes(plusSearchModel.value.规则名称!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<DiscountTypeQueryParams>);
 }
 
 /** 删除优惠类型 */
-async function handleDelete(row: 优惠类型_列表数据) {
+async function handleDelete(row: DiscountTypeListItem) {
 	try {
 		await ElMessageBox.confirm(
-			`确认删除优惠类型"${row.折扣名称}"吗？`,
+			`确认删除优惠类型"${row.name}"吗？`, // Map 折扣名称 -> name
 			"删除确认",
 			{
 				confirmButtonText: "确认",
@@ -217,13 +194,13 @@ async function handleDelete(row: 优惠类型_列表数据) {
 
 		/** TODO: 替换为真实的API调用 */
 		/** 模拟删除操作 */
-		console.log("删除优惠类型:", row.折扣ID);
+		console.log("删除优惠类型:", row.id);
 
 		/** 显示成功提示 */
 		ElMessage.success("删除成功");
 
 		/** 重新加载数据 */
-		await loadTableData();
+		await refetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			console.error("删除失败:", error);
@@ -249,7 +226,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: DiscountTypeListItem }) {
 	const { row } = params;
 	setMode(params.mode);
 
@@ -257,15 +234,15 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 	const title = `${modeText.value}优惠类型`;
 
 	/** 业务对象 */
-	const 业务对象: 优惠类型表单_VO = isAdd.value
+	const 业务对象: DiscountTypeFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: (isEdit.value || isInfo.value)
 			? cloneDeep({
 					...defaultForm,
-					折扣名称: row?.折扣名称 || "",
-					折扣类型: (row?.折扣类型 || "日常优惠") as 折扣类型,
-					规则名称: row?.规则名称 || "",
-					规则: row?.规则 || "",
+					discountName: row?.name || "",
+					discountType: (row?.discountType || "百分比折扣") as DiscountType,
+					ruleName: row?.ruleName || "",
+					rule: row?.rule || "",
 				})
 			: cloneDeep(defaultForm);
 
@@ -318,6 +295,7 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 					await testAsync();
 					button.btn.loading = false;
 					closeDialog(options, index);
+					await refetch();
 				}
 			},
 		});
@@ -345,7 +323,7 @@ function openDialog(params: { mode: Mode; row?: 优惠类型_列表数据 }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

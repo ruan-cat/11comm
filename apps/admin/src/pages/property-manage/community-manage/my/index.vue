@@ -14,26 +14,20 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
+import { useMyListQuery } from "@/api/property-manage/community-manage/my";
 import {
-	我的小区_列表Data,
-	mockTableData,
-	我的小区_列表查询_VO,
+	type MyCommunityListItem,
+	type MyCommunityQueryParams,
 	省份选项,
 	小区状态选项
 } from "@01s-11comm/type";
 
-// 定义表格数据类型
-interface MyCommunityTableRow {
-	省份: string;
-	市州: string;
-	区县: string;
-	小区名称: string;
-	小区编码: string;
-	状态: string;
-}
-
 /** 表单组件实例 */
 const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
+
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useMyListQuery();
 
 /** 模拟异步操作函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -47,77 +41,47 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-/** 表格数据 */
-const tableData = ref<MyCommunityTableRow[]>([
-	{
-		省份: "广东省",
-		市州: "深圳市",
-		区县: "南山区",
-		小区名称: "测试小区1",
-		小区编码: "TEST001",
-		状态: "启用",
-	},
-	{
-		省份: "广东省",
-		市州: "广州市",
-		区县: "天河区",
-		小区名称: "测试小区2",
-		小区编码: "TEST002",
-		状态: "禁用",
-	},
-]);
-
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "省份",
-		prop: "省份",
+		prop: "province",
 		width: 100,
 	},
 	{
 		label: "市州",
-		prop: "市州",
+		prop: "city",
 		width: 100,
 	},
 	{
 		label: "区县",
-		prop: "区县",
+		prop: "district",
 		width: 100,
 	},
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		width: 160,
 	},
 	{
 		label: "小区编码",
-		prop: "小区编码",
+		prop: "communityCode",
 		width: 120,
 	},
 	{
-		label: "客服电话",
-		prop: "客服电话",
-		width: 130,
+		label: "创建时间",
+		prop: "createTime",
+		width: 160,
 	},
 	{
-		label: "面积",
-		prop: "面积",
-		width: 100,
-	},
-	{
-		label: "开始时间",
-		prop: "开始时间",
-		width: 120,
-	},
-	{
-		label: "结束时间",
-		prop: "结束时间",
-		width: 120,
+		label: "更新时间",
+		prop: "updateTime",
+		width: 160,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => {
 			const statusMap = {
@@ -126,7 +90,7 @@ const columns = ref<TableColumnList>([
 				维护中: { type: "info", text: "维护中" },
 				已停用: { type: "danger", text: "已停用" },
 			};
-			const statusInfo = statusMap[row.状态] || { type: "info", text: row.状态 };
+			const statusInfo = statusMap[row.status] || { type: "info", text: row.status };
 			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
 		},
 	},
@@ -140,23 +104,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -165,6 +127,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -173,61 +136,18 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.省份) {
-			filteredData = filteredData.filter((item) => item.省份.includes(plusSearchModel.value.省份!));
-		}
-		if (plusSearchModel.value.市州) {
-			filteredData = filteredData.filter((item) => item.市州.includes(plusSearchModel.value.市州!));
-		}
-		if (plusSearchModel.value.区县) {
-			filteredData = filteredData.filter((item) => item.区县.includes(plusSearchModel.value.区县!));
-		}
-		if (plusSearchModel.value.小区名称) {
-			filteredData = filteredData.filter((item) => item.小区名称.includes(plusSearchModel.value.小区名称!));
-		}
-		if (plusSearchModel.value.小区编码) {
-			filteredData = filteredData.filter((item) => item.小区编码.includes(plusSearchModel.value.小区编码!));
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 我的小区_列表查询_VO = {
-	省份: "",
-	市州: "",
-	区县: "",
-	小区名称: "",
-	小区编码: "",
-	状态: "",
+const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
+	province: "",
+	city: "",
+	district: "",
+	communityName: "",
+	communityCode: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -244,7 +164,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 省份 */
 	{
 		label: "省份",
-		prop: "省份",
+		prop: "province",
 		valueType: "select",
 		options: 省份选项,
 	},
@@ -252,35 +172,35 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 市州 */
 	{
 		label: "市州",
-		prop: "市州",
+		prop: "city",
 		valueType: "input",
 	},
 
 	/** 区县 */
 	{
 		label: "区县",
-		prop: "区县",
+		prop: "district",
 		valueType: "input",
 	},
 
 	/** 小区名称 */
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		valueType: "input",
 	},
 
 	/** 小区编码 */
 	{
 		label: "小区编码",
-		prop: "小区编码",
+		prop: "communityCode",
 		valueType: "input",
 	},
 
 	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: 小区状态选项,
 	},
@@ -296,22 +216,23 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<MyCommunityQueryParams>);
 }
 
 /** 打开弹框参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 我的小区_列表Data;
+	row?: MyCommunityListItem;
 }
 
 const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
@@ -329,16 +250,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					province: row?.省份 || "福建省",
-					city: row?.市州 || "",
-					district: row?.区县 || "",
-					name: row?.小区名称 || "",
-					code: row?.小区编码 || "",
-					servicePhone: row?.客服电话 || "",
-					area: row?.面积 || "",
-					startTime: row?.开始时间 || "",
-					endTime: row?.结束时间 || "",
-					status: (row?.状态 as CommunityManageMyFormVO["status"]) || "正常运营",
+					province: (row?.province as CommunityManageMyFormVO["province"]) || "福建省",
+					city: row?.city || "",
+					district: row?.district || "",
+					name: row?.communityName || "",
+					code: row?.communityCode || "",
+					servicePhone: "", // MyCommunityListItem doesn't have phone? Check API
+					area: "", // MyCommunityListItem doesn't have area?
+					startTime: "", // MyCommunityListItem doesn't have startTime?
+					endTime: "", // MyCommunityListItem doesn't have endTime?
+					status: (row?.status as CommunityManageMyFormVO["status"]) || "正常运营",
 				})
 			: cloneDeep(defaultForm);
 
@@ -401,6 +322,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 									await testAsync();
 									button.btn.loading = false;
 									closeDialog(options, index);
+									await refetch();
 								}
 							},
 						} as any,
@@ -410,17 +332,17 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 /** 处理操作 */
-function handleEdit(row: 我的小区_列表Data) {
+function handleEdit(row: MyCommunityListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 处理查看操作 */
-function handleView(row: 我的小区_列表Data) {
+function handleView(row: MyCommunityListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 处理删除操作 */
-function handleDelete(row: 我的小区_列表Data) {
+function handleDelete(row: MyCommunityListItem) {
 	ElMessageBox.confirm("确认删除该小区信息吗？", "提示", {
 		confirmButtonText: "确定",
 		cancelButtonText: "取消",
@@ -430,7 +352,7 @@ function handleDelete(row: 我的小区_列表Data) {
 			await testAsync();
 			ElMessage.success("删除成功");
 			/** 刷新列表 */
-			loadTableData();
+			await refetch();
 		} catch (error) {
 			ElMessage.error("删除失败");
 		}
@@ -438,7 +360,7 @@ function handleDelete(row: 我的小区_列表Data) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

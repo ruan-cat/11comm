@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { DiscountApplyFormProps, 优惠申请表单_VO, defaultForm } from "./form";
+import { DiscountApplyFormProps, DiscountApplyFormVO, defaultForm } from "./form";
 
 const props = defineProps<DiscountApplyFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 优惠申请表单_VO;
+const defaultValues = props.defaultValues as FieldValues & DiscountApplyFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 优惠申请表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & DiscountApplyFormVO;
 
 /**
  * 表单对象
@@ -38,7 +38,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 房屋
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 		required: true, //是否必填
 		fieldProps: {
@@ -49,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 申请类型
 	{
 		label: "申请类型",
-		prop: "申请类型",
+		prop: "applicationType",
 		valueType: "select",
 		options: [
 			{ label: "空置房", value: "空置房" },
@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 费用项目
 	{
 		label: "费用项目",
-		prop: "费用项目",
+		prop: "expenseItem",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -78,7 +78,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 申请人
 	{
 		label: "申请人",
-		prop: "申请人",
+		prop: "applicant",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 申请电话
 	{
 		label: "申请电话",
-		prop: "申请电话",
+		prop: "applicantPhone",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -98,7 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 开始时间
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -110,7 +110,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 结束时间
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -122,14 +122,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 申请名说明
 	{
 		label: "申请名说明",
-		prop: "申请名说明",
+		prop: "description",
 		valueType: "textarea",
 		required: true,
 	},
 	// 图片材料
 	{
 		label: "图片材料",
-		prop: "图片材料",
+		prop: "material",
 		valueType: "input",
 		required: true,
 		fieldProps: {

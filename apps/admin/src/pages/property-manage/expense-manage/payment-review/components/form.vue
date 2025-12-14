@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { 缴费审核FormProps, 缴费审核_表单数据, defaultForm } from "./form";
+import { PaymentReviewFormProps, PaymentReviewFormVO, defaultForm } from "./form";
 
-const props = defineProps<缴费审核FormProps>();
+const props = defineProps<PaymentReviewFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 缴费审核_表单数据;
+const defaultValues = props.defaultValues as FieldValues & PaymentReviewFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 缴费审核_表单数据;
+const toRefForm = cloneDeep(props.form) as FieldValues & PaymentReviewFormVO;
 
 /**
  * 表单对象
@@ -41,7 +41,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
@@ -52,7 +52,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "费用项目",
-		prop: "费用项目",
+		prop: "expenseItem",
 		valueType: "select",
 		width: "140px",
 		options: [
@@ -72,7 +72,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "付费周期",
-		prop: "付费周期",
+		prop: "paymentPeriod",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -83,7 +83,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "缴费起始时间",
-		prop: "缴费起始时间",
+		prop: "paymentStartTime",
 		valueType: "date-picker",
 		width: "160px",
 		fieldProps: {
@@ -97,7 +97,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "缴费结束时间",
-		prop: "缴费结束时间",
+		prop: "paymentEndTime",
 		valueType: "date-picker",
 		width: "160px",
 		fieldProps: {
@@ -111,7 +111,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "应付金额",
-		prop: "应付金额",
+		prop: "payableAmount",
 		valueType: "input",
 		width: "140px",
 		fieldProps: {
@@ -122,7 +122,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "实付金额",
-		prop: "实付金额",
+		prop: "paidAmount",
 		valueType: "input",
 		width: "140px",
 		fieldProps: {
@@ -133,7 +133,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "操作员工",
-		prop: "操作员工",
+		prop: "operator",
 		valueType: "input",
 		width: "140px",
 		fieldProps: {
@@ -144,7 +144,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "缴费时间",
-		prop: "缴费时间",
+		prop: "paymentTime",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
@@ -158,7 +158,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		valueType: "select",
 		width: "140px",
 		options: [
@@ -175,7 +175,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "审核说明",
-		prop: "审核说明",
+		prop: "auditDescription",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -188,7 +188,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "缴费备注",
-		prop: "缴费备注",
+		prop: "paymentRemark",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -201,7 +201,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "详情",
-		prop: "详情",
+		prop: "details",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -219,48 +219,48 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	房屋: [
+	house: [
 		{ required: true, message: "请输入房屋编号", trigger: "blur" },
 		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
 	],
-	费用项目: [
+	expenseItem: [
 		{ required: true, message: "请选择费用项目", trigger: "change" },
 	],
-	付费周期: [
+	paymentPeriod: [
 		{ required: true, message: "请输入付费周期", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	缴费起始时间: [
+	paymentStartTime: [
 		{ required: true, message: "请选择缴费起始时间", trigger: "change" },
 	],
-	缴费结束时间: [
+	paymentEndTime: [
 		{ required: true, message: "请选择缴费结束时间", trigger: "change" },
 	],
-	应付金额: [
+	payableAmount: [
 		{ required: true, message: "请输入应付金额", trigger: "blur" },
 		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
 	],
-	实付金额: [
+	paidAmount: [
 		{ required: true, message: "请输入实付金额", trigger: "blur" },
 		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
 	],
-	操作员工: [
+	operator: [
 		{ required: true, message: "请输入操作员工姓名", trigger: "blur" },
 		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
 	],
-	缴费时间: [
+	paymentTime: [
 		{ required: true, message: "请选择缴费时间", trigger: "change" },
 	],
-	审核状态: [
+	auditStatus: [
 		{ required: true, message: "请选择审核状态", trigger: "change" },
 	],
-	审核说明: [
+	auditDescription: [
 		{ max: 500, message: "审核说明长度不能超过 500 个字符", trigger: "blur" },
 	],
-	缴费备注: [
+	paymentRemark: [
 		{ max: 500, message: "缴费备注长度不能超过 500 个字符", trigger: "blur" },
 	],
-	详情: [
+	details: [
 		{ max: 1000, message: "详情长度不能超过 1000 个字符", trigger: "blur" },
 	],
 });

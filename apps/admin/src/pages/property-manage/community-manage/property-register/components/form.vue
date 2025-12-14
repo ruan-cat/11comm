@@ -6,6 +6,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import type { PropertyRegisterFormProps } from "./form";
+import { 产权登记表单_VO, 审核状态Options } from "./form";
 
 const props = defineProps<PropertyRegisterFormProps>();
 
@@ -42,7 +43,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 房屋产权ID
 	{
 		label: "房屋产权ID",
-		prop: "房屋产权ID",
+		prop: "propertyRightId",
 		valueType: "input",
 		required: false,
 		disabled: true,
@@ -51,7 +52,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 房屋ID
 	{
 		label: "房屋ID",
-		prop: "房屋ID",
+		prop: "houseId",
 		valueType: "input",
 		required: true,
 	},
@@ -59,7 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 房屋编号
 	{
 		label: "房屋编号",
-		prop: "房屋编号",
+		prop: "houseNumber",
 		valueType: "input",
 		required: true,
 	},
@@ -67,7 +68,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 姓名
 	{
 		label: "姓名",
-		prop: "姓名",
+		prop: "ownerName",
 		valueType: "input",
 		required: true,
 	},
@@ -75,7 +76,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 联系方式
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		valueType: "input",
 		required: true,
 	},
@@ -83,7 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 身份证号
 	{
 		label: "身份证号",
-		prop: "身份证号",
+		prop: "idCardNumber",
 		valueType: "input",
 		required: true,
 	},
@@ -91,7 +92,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 地址
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		valueType: "input",
 		required: true,
 	},
@@ -99,7 +100,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: 审核状态Options,
 		required: true,
@@ -111,19 +112,19 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	房屋ID: [{ required: true, message: "请输入房屋ID", trigger: "blur" }],
-	房屋编号: [{ required: true, message: "请输入房屋编号", trigger: "blur" }],
-	姓名: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-	联系方式: [
+	houseId: [{ required: true, message: "请输入房屋ID", trigger: "blur" }],
+	houseNumber: [{ required: true, message: "请输入房屋编号", trigger: "blur" }],
+	ownerName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+	contactInfo: [
 		{ required: true, message: "请输入联系方式", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	身份证号: [
+	idCardNumber: [
 		{ required: true, message: "请输入身份证号", trigger: "blur" },
 		{ pattern: /^\d{17}[\dX]$/, message: "请输入正确的身份证号", trigger: "blur" },
 	],
-	地址: [{ required: true, message: "请输入地址", trigger: "blur" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	address: [{ required: true, message: "请输入地址", trigger: "blur" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 defineExpose({

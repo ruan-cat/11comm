@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import { CancelFeeFormProps, defaultForm, type 取消费用表单_VO } from "./form";
+import { CancelFeeFormProps, defaultForm, type CancelFeeFormVO, 审核状态Options } from "./form";
 
 const props = defineProps<CancelFeeFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 取消费用表单_VO;
+const defaultValues = props.defaultValues as FieldValues & CancelFeeFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -18,7 +18,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 取消费用表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & CancelFeeFormVO;
 
 /**
  * 表单对象
@@ -35,22 +35,22 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "批次号",
-		prop: "批次号",
+		prop: "batchNumber",
 		valueType: "input",
 	},
 	{
 		label: "员工",
-		prop: "员工",
+		prop: "employee",
 		valueType: "input",
 	},
 	{
 		label: "时间",
-		prop: "时间",
+		prop: "time",
 		valueType: "input",
 	},
 	{
 		label: "取消原因",
-		prop: "取消原因",
+		prop: "cancelReason",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
@@ -58,13 +58,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		valueType: "select",
 		options: 审核状态Options,
 	},
 	{
 		label: "审核意见",
-		prop: "审核意见",
+		prop: "auditOpinion",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
@@ -74,14 +74,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	审核状态: [
+	auditStatus: [
 		{
 			required: true,
 			message: "请选择审核状态",
 			trigger: "change",
 		},
 	],
-	审核意见: [
+	auditOpinion: [
 		{
 			required: true,
 			message: "请输入审核意见",

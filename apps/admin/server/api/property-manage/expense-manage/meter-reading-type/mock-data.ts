@@ -7,7 +7,8 @@ import type { MeterReadingTypeListItem } from "@01s-11comm/type";
 export const mockMeterReadingTypeData: MeterReadingTypeListItem[] = [
 	{
 		id: "1",
-		name: "示例项目1",
+		name: "水表",
+		description: "用于计量用水量",
 		status: "启用",
 		createTime: "2024-01-01 10:00:00",
 		updateTime: "2024-01-01 10:00:00",
@@ -15,7 +16,8 @@ export const mockMeterReadingTypeData: MeterReadingTypeListItem[] = [
 	},
 	{
 		id: "2",
-		name: "示例项目2",
+		name: "电表",
+		description: "用于计量用电量",
 		status: "启用",
 		createTime: "2024-01-02 11:00:00",
 		updateTime: "2024-01-02 11:00:00",
@@ -23,7 +25,8 @@ export const mockMeterReadingTypeData: MeterReadingTypeListItem[] = [
 	},
 	{
 		id: "3",
-		name: "示例项目3",
+		name: "燃气表",
+		description: "用于计量用气量",
 		status: "禁用",
 		createTime: "2024-01-03 12:00:00",
 		updateTime: "2024-01-03 12:00:00",
@@ -31,14 +34,16 @@ export const mockMeterReadingTypeData: MeterReadingTypeListItem[] = [
 	},
 	{
 		id: "4",
-		name: "示例项目4",
+		name: "暖气表",
+		description: "用于计量供暖量",
 		status: "启用",
 		createTime: "2024-01-04 13:00:00",
 		updateTime: "2024-01-04 13:00:00",
 	},
 	{
 		id: "5",
-		name: "示例项目5",
+		name: "热水表",
+		description: "用于计量热水用量",
 		status: "启用",
 		createTime: "2024-01-05 14:00:00",
 		updateTime: "2024-01-05 14:00:00",

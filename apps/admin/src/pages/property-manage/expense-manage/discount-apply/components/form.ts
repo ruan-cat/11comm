@@ -1,45 +1,45 @@
 // ==================== 类型定义 ====================
 
-const _申请类型 = ["空置房", "困难家庭", "长期住户", "特殊贡献"] as const;
+const _applicationType = ["空置房", "困难家庭", "长期住户", "特殊贡献"] as const;
 
 /** 警告 这里仅为了演示 实际上的业务类型为 string */
-export type 申请类型 = (typeof _申请类型)[number];
+export type ApplicationType = (typeof _applicationType)[number];
 
 /** 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内 */
-export interface 优惠申请表单_VO {
+export interface DiscountApplyFormVO {
 	/** 房屋 */
-	房屋: string;
+	house: string;
 	/** 申请类型 */
-	申请类型: 申请类型;
+	applicationType: ApplicationType;
 	/** 费用项目 */
-	费用项目: string;
+	expenseItem: string;
 	/** 申请人 */
-	申请人: string;
+	applicant: string;
 	/** 申请电话 */
-	申请电话: string;
+	applicantPhone: string;
 	/** 开始时间 */
-	开始时间: string;
+	startTime: string;
 	/** 结束时间 */
-	结束时间: string;
+	endTime: string;
 	/** 申请名说明 */
-	申请名说明: string;
+	description: string;
 	/** 图片材料 */
-	图片材料: string;
+	material: string;
 }
 
 // ==================== 常量定义 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 优惠申请表单_VO = {
-	房屋: "",
-	申请类型: "空置房",
-	费用项目: "",
-	申请人: "",
-	申请电话: "",
-	开始时间: "",
-	结束时间: "",
-	申请名说明: "",
-	图片材料: "",
+export const defaultForm: DiscountApplyFormVO = {
+	house: "",
+	applicationType: "空置房",
+	expenseItem: "",
+	applicant: "",
+	applicantPhone: "",
+	startTime: "",
+	endTime: "",
+	description: "",
+	material: "",
 };
 
 /**
@@ -49,7 +49,7 @@ export const defaultForm: 优惠申请表单_VO = {
  */
 export interface DiscountApplyFormProps {
 	/** 表单数据 */
-	form: 优惠申请表单_VO;
+	form: DiscountApplyFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 优惠申请表单_VO;
+	defaultValues: DiscountApplyFormVO;
 }

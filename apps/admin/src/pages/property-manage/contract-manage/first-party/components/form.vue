@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { type FirstPartyFormProps, type 合同甲方表单_VO, defaultForm } from "./form";
+import { type FirstPartyFormProps, type FirstPartyFormVO, defaultForm } from "./form";
 
 const props = defineProps<FirstPartyFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 合同甲方表单_VO;
+const defaultValues = props.defaultValues as FieldValues & FirstPartyFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 合同甲方表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & FirstPartyFormVO;
 
 /**
  * 表单对象
@@ -41,7 +41,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		valueType: "input",
 		required: true,
 		width: "200px",
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "甲方联系人",
-		prop: "甲方联系人",
+		prop: "contactPerson",
 		valueType: "input",
 		required: true,
 		width: "180px",
@@ -65,7 +65,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		required: true,
 		width: "180px",
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		valueType: "input",
 		width: "300px",
 		fieldProps: {
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "统一社会信用代码",
-		prop: "统一社会信用代码",
+		prop: "creditCode",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -99,7 +99,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "成立日期",
-		prop: "成立日期",
+		prop: "establishmentDate",
 		valueType: "date-picker",
 		required: true,
 		width: "180px",
@@ -114,7 +114,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "法定代表人",
-		prop: "法定代表人",
+		prop: "legalRepresentative",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -125,7 +125,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	{
 		label: "经营范围",
-		prop: "经营范围",
+		prop: "businessScope",
 		valueType: "textarea",
 		width: "400px",
 		fieldProps: {
@@ -141,31 +141,31 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	甲方: [
+	partyA: [
 		{ required: true, message: "请输入甲方名称", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 	],
-	甲方联系人: [
+	contactPerson: [
 		{ required: true, message: "请输入甲方联系人", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	联系电话: [
+	contactPhone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	地址: [
+	address: [
 		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
 	],
-	统一社会信用代码: [
+	creditCode: [
 		{ pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/, message: "请输入正确的统一社会信用代码", trigger: "blur" },
 	],
-	成立日期: [
+	establishmentDate: [
 		{ required: true, message: "请选择成立日期", trigger: "change" },
 	],
-	法定代表人: [
+	legalRepresentative: [
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	经营范围: [
+	businessScope: [
 		{ min: 5, max: 500, message: "长度在 5 到 500 个字符", trigger: "blur" },
 	],
 });

@@ -4,23 +4,24 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { DraftContractListItem, DraftContractQueryParamsType } from "@01s-11comm/type";
+import type { DraftContractListItem, DraftContractQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/property-manage/contract-manage/draft-contract/list";
 
 /** 查询键前缀 */
-const QUERY_KEY_PREFIX = "draftContract";
+const QUERY_KEY_PREFIX = "draft-contract";
 
 /**
  * draft-contract列表查询 Hook
  * DraftContract list query hook
  */
 export function useDraftContractListQuery() {
-	return useListQuery<DraftContractListItem, DraftContractQueryParamsType>({
+	return useListQuery<DraftContractListItem, DraftContractQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 	});
 }
 
 export default useDraftContractListQuery;
+

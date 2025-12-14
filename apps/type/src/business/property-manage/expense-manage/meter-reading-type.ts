@@ -9,6 +9,8 @@ export interface MeterReadingTypeListItem {
 	id: string;
 	/** 名称 Name */
 	name: string;
+	/** 说明 Description */
+	description: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -20,23 +22,14 @@ export interface MeterReadingTypeListItem {
 }
 
 /**
- * @description 抄表类型表单VO
- * Meter reading type form VO
- */
-export interface 抄表类型_VO {
-	/** 名称 Name */
-	名称: string;
-	/** 说明 Description */
-	说明: string;
-}
-
-/**
  * @description meter-reading-type列表查询参数
  * MeterReadingType list query parameters
  */
 export interface MeterReadingTypeQueryParams {
 	/** 名称 Name */
 	name?: string;
+	/** 说明 Description */
+	description?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */

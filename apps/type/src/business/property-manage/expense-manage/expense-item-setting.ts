@@ -7,8 +7,26 @@ import type { OptionsType } from "../../../common";
 export interface ExpenseItemSettingListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 编号 Code */
+	code: string;
+	/** 费用类型 Fee Type */
+	feeType: string;
+	/** 收费项目 Expense Item */
+	expenseItem: string;
+	/** 费用标识 Expense Identifier */
+	expenseIdentifier: string;
+	/** 付费类型 Payment Type */
+	paymentType: string;
+	/** 缴费周期 Payment Cycle */
+	paymentCycle: string;
+	/** 公式 Formula */
+	formula: string;
+	/** 计费单价 Billing Unit Price */
+	billingUnitPrice: string;
+	/** 附加/固定费用 Fixed Fee */
+	fixedFee: string;
+	/** 账户抵扣 Account Deduction */
+	accountDeduction: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +42,16 @@ export interface ExpenseItemSettingListItem {
  * ExpenseItemSetting list query parameters
  */
 export interface ExpenseItemSettingQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 编号 Code */
+	code?: string;
+	/** 收费项目 Expense Item */
+	expenseItem?: string;
+	/** 费用标识 Expense Identifier */
+	expenseIdentifier?: string;
+	/** 付费类型 Payment Type */
+	paymentType?: string;
+	/** 账户抵扣 Account Deduction */
+	accountDeduction?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */
@@ -48,10 +74,8 @@ export const expenseItemSettingStatusOptions: OptionsType = [
  * Expense item setting identifier options
  */
 export const 费用项设置标识Options: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水费", value: "水费" },
-	{ label: "电费", value: "电费" },
-	{ label: "燃气费", value: "燃气费" },
+	{ label: "周期性费用", value: "周期性费用" },
+	{ label: "一次性费用", value: "一次性费用" },
 ];
 
 /**
@@ -59,9 +83,8 @@ export const 费用项设置标识Options: OptionsType = [
  * Expense item setting payment type options
  */
 export const 费用项设置付费类型Options: OptionsType = [
-	{ label: "按月付费", value: "按月付费" },
-	{ label: "按年付费", value: "按年付费" },
-	{ label: "一次性付费", value: "一次性付费" },
+	{ label: "预付费", value: "预付费" },
+	{ label: "后付费", value: "后付费" },
 ];
 
 /**
@@ -69,8 +92,8 @@ export const 费用项设置付费类型Options: OptionsType = [
  * Expense item setting deduction options
  */
 export const 费用项设置抵扣Options: OptionsType = [
-	{ label: "支持", value: "支持" },
-	{ label: "不支持", value: "不支持" },
+	{ label: "是", value: "是" },
+	{ label: "否", value: "否" },
 ];
 
 /**

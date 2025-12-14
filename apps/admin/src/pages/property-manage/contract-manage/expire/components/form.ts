@@ -1,67 +1,67 @@
 // ==================== 联合类型定义 ====================
 
 /** 到期处理类型常量 */
-const _到期处理类型 = ["续签", "终止"] as const;
+const _processingType = ["续签", "终止"] as const;
 
 /** 合同类型常量 */
-const _合同类型 = ["采购合同", "销售合同", "服务合同", "租赁合同", "劳务合同", "技术合同"] as const;
+const _contractType = ["采购合同", "销售合同", "服务合同", "租赁合同", "劳务合同", "技术合同"] as const;
 
 /** 到期处理类型联合类型 */
-export type 到期处理类型 = (typeof _到期处理类型)[number];
+export type ProcessingType = (typeof _processingType)[number];
 
 /** 合同类型联合类型 */
-export type 合同类型 = (typeof _合同类型)[number];
+export type ContractType = (typeof _contractType)[number];
 
 /** 合同到期表单接口 */
-export interface 合同到期表单_VO {
-	合同名称: string;
-	合同编号: string;
-	合同类型: 合同类型;
-	甲方: string;
-	甲方联系人: string;
-	甲方联系电话: string;
-	乙方: string;
-	乙方联系人: string;
-	乙方联系电话: string;
-	经办人: string;
-	经办电话: string;
-	合同金额: string;
-	开始时间: string;
-	结束时间: string;
-	签订时间: string;
-	到期处理类型: 到期处理类型;
-	处理人: string;
-	说明: string;
-	合同附件?: any[];
+export interface ContractExpireFormVO {
+	contractName: string;
+	contractNumber: string;
+	contractType: ContractType;
+	partyA: string;
+	partyAContact: string;
+	partyAPhone: string;
+	partyB: string;
+	partyBContact: string;
+	partyBPhone: string;
+	handler: string;
+	handlerPhone: string;
+	contractAmount: string;
+	startTime: string;
+	endTime: string;
+	signingTime: string;
+	processingType: ProcessingType;
+	processor: string;
+	description: string;
+	attachments?: any[];
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 合同到期表单_VO = {
-	合同名称: "",
-	合同编号: "",
-	合同类型: "采购合同",
-	甲方: "",
-	甲方联系人: "",
-	甲方联系电话: "",
-	乙方: "",
-	乙方联系人: "",
-	乙方联系电话: "",
-	经办人: "",
-	经办电话: "",
-	合同金额: "",
-	开始时间: "",
-	结束时间: "",
-	签订时间: "",
-	到期处理类型: "续签",
-	处理人: "",
-	说明: "",
-	合同附件: [],
+export const defaultForm: ContractExpireFormVO = {
+	contractName: "",
+	contractNumber: "",
+	contractType: "采购合同",
+	partyA: "",
+	partyAContact: "",
+	partyAPhone: "",
+	partyB: "",
+	partyBContact: "",
+	partyBPhone: "",
+	handler: "",
+	handlerPhone: "",
+	contractAmount: "",
+	startTime: "",
+	endTime: "",
+	signingTime: "",
+	processingType: "续签",
+	processor: "",
+	description: "",
+	attachments: [],
 };
 
 /** 合同到期表单组件属性接口 */
 export interface ContractExpireFormProps {
 	/** 表单数据 */
-	form: 合同到期表单_VO;
+	form: ContractExpireFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 合同到期表单_VO;
+	defaultValues: ContractExpireFormVO;
 }

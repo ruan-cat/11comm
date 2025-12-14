@@ -9,13 +9,16 @@ import { mockTypeData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<TypeListItem>>> => {
 	const body = await readBody<TypeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, typeName, isAudit, status } = body;
 
 	let filteredData = [...mockTypeData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (typeName) {
+		filteredData = filteredData.filter((item) => item.typeName.includes(typeName));
+	}
+	if (isAudit) {
+		filteredData = filteredData.filter((item) => item.isAudit === isAudit);
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

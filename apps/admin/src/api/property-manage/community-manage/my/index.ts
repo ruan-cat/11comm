@@ -4,7 +4,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { MyListItem, MyQueryParams } from "@01s-11comm/type";
+import type { MyCommunityListItem, MyCommunityQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/property-manage/community-manage/my/list";
@@ -17,7 +17,7 @@ const QUERY_KEY_PREFIX = "my";
  * My list query hook
  */
 export function useMyListQuery() {
-	return useListQuery<MyListItem, MyQueryParams>({
+	return useListQuery<MyCommunityListItem, MyCommunityQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 	});

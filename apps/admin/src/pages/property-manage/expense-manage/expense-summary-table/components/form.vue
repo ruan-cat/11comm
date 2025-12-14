@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ExpenseSummaryTableFormProps, 费用汇总表表单_VO, defaultForm } from "./form";
+import { ExpenseSummaryTableFormProps, ExpenseSummaryTableFormVO, defaultForm } from "./form";
 
 const props = defineProps<ExpenseSummaryTableFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 费用汇总表表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ExpenseSummaryTableFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 费用汇总表表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ExpenseSummaryTableFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 时间
 	{
 		label: "时间",
-		prop: "时间",
+		prop: "time",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -54,7 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 费用项ID
 	{
 		label: "费用项ID",
-		prop: "费用项ID",
+		prop: "expenseItemId",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -66,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 费用项名称
 	{
 		label: "费用项名称",
-		prop: "费用项名称",
+		prop: "expenseItemName",
 		valueType: "select",
 		options: [
 			{ label: "物业费", value: "物业费" },
@@ -91,7 +91,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 应收金额
 	{
 		label: "应收金额",
-		prop: "应收金额",
+		prop: "receivableAmount",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -103,7 +103,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 实收金额
 	{
 		label: "实收金额",
-		prop: "实收金额",
+		prop: "actualAmount",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -118,14 +118,14 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	时间: [{ required: true, message: "请输入时间", trigger: "blur" }],
-	费用项ID: [{ required: true, message: "请输入费用项ID", trigger: "blur" }],
-	费用项名称: [{ required: true, message: "请选择费用项名称", trigger: "change" }],
-	应收金额: [
+	time: [{ required: true, message: "请输入时间", trigger: "blur" }],
+	expenseItemId: [{ required: true, message: "请输入费用项ID", trigger: "blur" }],
+	expenseItemName: [{ required: true, message: "请选择费用项名称", trigger: "change" }],
+	receivableAmount: [
 		{ required: true, message: "请输入应收金额", trigger: "blur" },
 		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
 	],
-	实收金额: [
+	actualAmount: [
 		{ required: true, message: "请输入实收金额", trigger: "blur" },
 		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
 	],

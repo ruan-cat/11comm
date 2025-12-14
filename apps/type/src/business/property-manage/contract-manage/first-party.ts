@@ -7,8 +7,22 @@ import type { OptionsType } from "../../../common";
 export interface FirstPartyListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 甲方 Party A */
+	partyA: string;
+	/** 甲方联系人 Contact Person */
+	contactPerson: string;
+	/** 联系电话 Contact Phone */
+	contactPhone: string;
+	/** 地址 Address */
+	address: string;
+	/** 统一社会信用代码 Unified Social Credit Code */
+	creditCode: string;
+	/** 成立日期 Establishment Date */
+	establishmentDate: string;
+	/** 法定代表人 Legal Representative */
+	legalRepresentative: string;
+	/** 经营范围 Business Scope */
+	businessScope: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +38,14 @@ export interface FirstPartyListItem {
  * FirstParty list query parameters
  */
 export interface FirstPartyQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 甲方 Party A */
+	partyA?: string;
+	/** 甲方联系人 Contact Person */
+	contactPerson?: string;
+	/** 联系电话 Contact Phone */
+	contactPhone?: string;
+	/** 法定代表人 Legal Representative */
+	legalRepresentative?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */

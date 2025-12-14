@@ -24,6 +24,8 @@ export type {
 	HandingBusinessQueryParams,
 	HouseDecorationListItem,
 	HouseDecorationQueryParams,
+	我的小区_列表Data,
+	我的小区_列表查询_VO,
 	车位结构图_列表数据,
 	车位结构图_列表查询_VO,
 	产权登记_列表数据,
@@ -51,6 +53,8 @@ export {
 	delayStatusOptions,
 	产权登记审核状态Options,
 	产权登记审核状态选项,
+	buildingStructureOptions,
+	buildingStatusOptions,
 	// 导出审核状态选项的别名以避免冲突
 	审核状态Options as CommunityAuditStatusOptions,
 } from "./community-manage";

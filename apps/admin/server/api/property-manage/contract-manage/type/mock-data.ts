@@ -7,7 +7,9 @@ import type { TypeListItem } from "@01s-11comm/type";
 export const mockTypeData: TypeListItem[] = [
 	{
 		id: "1",
-		name: "示例项目1",
+		typeName: "物业服务合同",
+		isAudit: "是",
+		description: "用于物业服务的标准合同",
 		status: "启用",
 		createTime: "2024-01-01 10:00:00",
 		updateTime: "2024-01-01 10:00:00",
@@ -15,7 +17,9 @@ export const mockTypeData: TypeListItem[] = [
 	},
 	{
 		id: "2",
-		name: "示例项目2",
+		typeName: "租赁合同",
+		isAudit: "是",
+		description: "用于房屋租赁的合同",
 		status: "启用",
 		createTime: "2024-01-02 11:00:00",
 		updateTime: "2024-01-02 11:00:00",
@@ -23,7 +27,9 @@ export const mockTypeData: TypeListItem[] = [
 	},
 	{
 		id: "3",
-		name: "示例项目3",
+		typeName: "维修合同",
+		isAudit: "否",
+		description: "用于设备维修的合同",
 		status: "禁用",
 		createTime: "2024-01-03 12:00:00",
 		updateTime: "2024-01-03 12:00:00",
@@ -31,14 +37,18 @@ export const mockTypeData: TypeListItem[] = [
 	},
 	{
 		id: "4",
-		name: "示例项目4",
+		typeName: "劳务合同",
+		isAudit: "是",
+		description: "用于劳务派遣的合同",
 		status: "启用",
 		createTime: "2024-01-04 13:00:00",
 		updateTime: "2024-01-04 13:00:00",
 	},
 	{
 		id: "5",
-		name: "示例项目5",
+		typeName: "技术合同",
+		isAudit: "否",
+		description: "用于技术开发的合同",
 		status: "启用",
 		createTime: "2024-01-05 14:00:00",
 		updateTime: "2024-01-05 14:00:00",

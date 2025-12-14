@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { DiscountTypeFormProps, 优惠类型表单_VO } from "./form";
+import { DiscountTypeFormProps, DiscountTypeFormVO, defaultForm, 折扣类型Options } from "./form";
 
 const props = defineProps<DiscountTypeFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 优惠类型表单_VO;
+const defaultValues = props.defaultValues as FieldValues & DiscountTypeFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 优惠类型表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & DiscountTypeFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 折扣名称 */
 	{
 		label: "折扣名称",
-		prop: "折扣名称",
+		prop: "discountName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -54,7 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 折扣类型 */
 	{
 		label: "折扣类型",
-		prop: "折扣类型",
+		prop: "discountType",
 		valueType: "select",
 		width: "200px",
 		options: 折扣类型Options,
@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 规则名称 */
 	{
 		label: "规则名称",
-		prop: "规则名称",
+		prop: "ruleName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -79,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 规则 */
 	{
 		label: "规则",
-		prop: "规则",
+		prop: "rule",
 		valueType: "textarea",
 		fieldProps: {
 			clearable: true,
@@ -95,12 +95,12 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	折扣名称: [
+	discountName: [
 		{ required: !props.disabled, message: "请输入折扣名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	折扣类型: [{ required: !props.disabled, message: "请选择折扣类型", trigger: "change" }],
-	规则名称: [
+	discountType: [{ required: !props.disabled, message: "请选择折扣类型", trigger: "change" }],
+	ruleName: [
 		{ required: !props.disabled, message: "请输入规则名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],

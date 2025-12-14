@@ -10,7 +10,7 @@ import type { FirstPartyListItem, FirstPartyQueryParams } from "@01s-11comm/type
 const API_URL = "/api/property-manage/contract-manage/first-party/list";
 
 /** 查询键前缀 */
-const QUERY_KEY_PREFIX = "firstParty";
+const QUERY_KEY_PREFIX = "first-party";
 
 /**
  * first-party列表查询 Hook
@@ -24,3 +24,4 @@ export function useFirstPartyListQuery() {
 }
 
 export default useFirstPartyListQuery;
+

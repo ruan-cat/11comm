@@ -18,68 +18,71 @@ import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 
-import { type ContractChangeFormProps, defaultForm, type 合同变更表单_VO } from "./components/form";
+import { type ContractChangeFormProps, defaultForm, type ContractChangeFormVO } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
+import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
+import { type ChangeListItem, type ChangeQueryParams, 合同类型Options } from "@01s-11comm/type";
 
 /** 表单组件实例引用 */
 const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<业务受理_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useChangeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		width: 160,
 	},
 	{
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		width: 140,
 	},
 	{
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		width: 120,
 	},
 	{
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		width: 140,
 	},
 	{
 		label: "乙方",
-		prop: "乙方",
+		prop: "partyB",
 		width: 140,
 	},
 	{
 		label: "变更类型",
-		prop: "变更类型",
+		prop: "changeType",
 		width: 120,
 	},
 	{
 		label: "变更人",
-		prop: "变更人",
+		prop: "changer",
 		width: 100,
 	},
 	{
 		label: "申请时间",
-		prop: "申请时间",
+		prop: "applyTime",
 		width: 160,
 	},
 	{
 		label: "说明",
-		prop: "说明",
+		prop: "description",
 		width: 200,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
-		formatter: (row: 业务受理_列表数据) => {
+		formatter: (row: ChangeListItem) => {
 			const statusMap = {
 				待审核: "待审核",
 				审核中: "审核中",
@@ -87,7 +90,7 @@ const columns = ref<TableColumnList>([
 				已拒绝: "已拒绝",
 				已撤回: "已撤回",
 			};
-			return statusMap[row.状态] || row.状态;
+			return statusMap[row.status] || row.status;
 		},
 	},
 	{
@@ -109,10 +112,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 表格搜索栏双向绑定的变量原始数据
  * @description 为了满足搜索栏组件的校验需求这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 合同类型_列表查询_VO = {
-	合同名称: "",
-	输入合同编号: "",
-	选择合同类型: "",
+const plusSearchModelRef: FieldValues & Partial<ChangeQueryParams> = {
+	contractName: "",
+	contractNumber: "",
+	contractType: "",
 };
 
 /** 表格搜索栏重置功能用的默认数据 */
@@ -128,31 +131,31 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		valueType: "input",
 	},
 
 	{
 		label: "合同编号",
-		prop: "输入合同编号",
+		prop: "contractNumber",
 		valueType: "input",
 	},
 
 	{
 		label: "合同类型",
-		prop: "选择合同类型",
+		prop: "contractType",
 		valueType: "select",
 		options: 合同类型Options,
 	},
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 表格组件配置 */
 const pureTableProps = ref<PureTableProps>({
@@ -164,52 +167,17 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化即后端的pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.合同名称) {
-			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
-		}
-		if (plusSearchModel.value.输入合同编号) {
-			filteredData = filteredData.filter((item) => item.合同编号.includes(plusSearchModel.value.输入合同编号!));
-		}
-		if (plusSearchModel.value.选择合同类型) {
-			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.选择合同类型);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格搜索栏组件配置 */
@@ -222,19 +190,19 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重新搜索处理函数 */
-async function handleReSearch() {
+function handleReSearch() {
 	console.log("重新搜索");
-	/** 重置搜索条件并重新加载数据 */
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 搜索处理函数 */
-async function handleSearch() {
+function handleSearch() {
 	console.log("搜索", plusSearchModel.value);
-	/** 根据搜索条件过滤数据 */
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<ChangeQueryParams>);
 }
 
 /** 打开弹框参数接口 */
@@ -242,7 +210,7 @@ interface OpenDialogParams {
 	/** 操作模式 */
 	mode: Mode;
 	/** 行数据 */
-	row?: 业务受理_列表数据;
+	row?: ChangeListItem;
 }
 
 /** 模式相关状态管理 */
@@ -272,34 +240,34 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
-					合同名称: row?.合同名称 || "",
-					合同编号: row?.合同编号 || "",
-					合同类型: row?.合同类型 || "",
-					甲方: row?.甲方 || "",
-					甲方联系人: "",
-					甲方联系电话: "",
-					乙方: row?.乙方 || "",
-					乙方联系人: "",
-					乙方联系电话: "",
-					经办人: "",
-					经办电话: "",
-					合同金额: "",
-					开始时间: "",
-					结束时间: "",
-					签订时间: "",
-					变更类型: row?.变更类型 || "合同金额",
-					变更人: row?.变更人 || "",
-					说明: row?.说明 || "",
-					变更前: "",
-					变更后: "",
-					合同附件: [],
-				} as 合同变更表单_VO)
+					contractName: row?.contractName || "",
+					contractNumber: row?.contractNumber || "",
+					contractType: row?.contractType || "",
+					partyA: row?.partyA || "",
+					partyAContact: "",
+					partyAPhone: "",
+					partyB: row?.partyB || "",
+					partyBContact: "",
+					partyBPhone: "",
+					handler: "",
+					handlerPhone: "",
+					contractAmount: "",
+					startTime: "",
+					endTime: "",
+					signingTime: "",
+					changeType: row?.changeType || "合同金额",
+					changer: row?.changer || "",
+					description: row?.description || "",
+					beforeChange: "",
+					afterChange: "",
+					attachments: [],
+				} as ContractChangeFormVO)
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractChangeFormProps = {
-		form: 合同变更表单业务对象 as 合同变更表单_VO,
-		defaultValues: 合同变更表单业务对象 as 合同变更表单_VO,
+		form: 合同变更表单业务对象 as ContractChangeFormVO,
+		defaultValues: 合同变更表单业务对象 as ContractChangeFormVO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -359,6 +327,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -367,7 +336,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

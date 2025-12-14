@@ -5,41 +5,41 @@
 
 export interface 车位结构图表单_VO {
 	/** 车位编号 */
-	车位编号: string;
+	parkingSpaceNumber: string;
 	/** 车位类型 */
-	车位类型: string;
+	parkingSpaceType: string;
 	/** 车位位置 */
-	车位位置: string;
+	parkingSpaceLocation: string;
 	/** 车位面积 */
-	车位面积: string;
+	parkingSpaceArea: string;
 	/** 车位状态 */
-	车位状态: string;
+	parkingSpaceStatus: string;
 	/** 业主姓名 */
-	业主姓名: string;
+	ownerName: string;
 	/** 联系电话 */
-	联系电话: string;
+	contactPhone: string;
 	/** 车牌号码 */
-	车牌号码: string;
+	licensePlateNumber: string;
 	/** 车辆品牌 */
-	车辆品牌: string;
+	vehicleBrand: string;
 	/** 购买时间 */
-	购买时间: string;
+	purchaseTime: string;
 	/** 到期时间 */
-	到期时间: string;
+	expiryTime: string;
 	/** 月租金 */
-	月租金: string;
+	monthlyRent: number;
 	/** 管理费 */
-	管理费: string;
+	managementFee: number;
 	/** 车位朝向 */
-	车位朝向: string;
+	parkingSpaceOrientation: string;
 	/** 楼层区域 */
-	楼层区域: string;
+	floorArea: string;
 	/** 是否充电桩 */
-	是否充电桩: string;
+	hasEvChargingPile: string;
 	/** 充电桩功率 */
-	充电桩功率: string;
+	chargingPilePower: string;
 	/** 备注信息 */
-	备注信息: string;
+	remark: string;
 }
 
 export interface ParkingSpaceStructureDiagramFormProps {
@@ -49,22 +49,22 @@ export interface ParkingSpaceStructureDiagramFormProps {
 }
 
 export const defaultForm: 车位结构图表单_VO = {
-	车位编号: "",
-	车位类型: "",
-	车位位置: "",
-	车位面积: "",
-	车位状态: "",
-	业主姓名: "",
-	联系电话: "",
-	车牌号码: "",
-	车辆品牌: "",
-	购买时间: "",
-	到期时间: "",
-	月租金: "",
-	管理费: "",
-	车位朝向: "",
-	楼层区域: "",
-	是否充电桩: "",
-	充电桩功率: "",
-	备注信息: "",
+	parkingSpaceNumber: "",
+	parkingSpaceType: "",
+	parkingSpaceLocation: "",
+	parkingSpaceArea: "",
+	parkingSpaceStatus: "",
+	ownerName: "",
+	contactPhone: "",
+	licensePlateNumber: "",
+	vehicleBrand: "",
+	purchaseTime: "",
+	expiryTime: "",
+	monthlyRent: 0,
+	managementFee: 0,
+	parkingSpaceOrientation: "",
+	floorArea: "",
+	hasEvChargingPile: "",
+	chargingPilePower: "",
+	remark: "",
 };

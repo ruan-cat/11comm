@@ -12,7 +12,16 @@ import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import ContractDraftForm from "./components/form.vue";
-import { 合同草稿表单_VO, type ContractDraftFormProps, defaultForm } from "./components/form";
+import { type ContractDraftFormVO, type ContractDraftFormProps, defaultForm } from "./components/form";
+import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
+import { type DraftContractListItem, type DraftContractQueryParams, contractTypeOptionsData } from "@01s-11comm/type";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 
 /** 模式控制 */
@@ -28,65 +37,66 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-/** 表格数据 */
-const tableData = ref<合同草稿_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useDraftContractListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		width: 150,
 	},
 	{
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		width: 120,
 	},
 	{
 		label: "父合同编号",
-		prop: "父合同编号",
+		prop: "parentContractNumber",
 		width: 120,
 	},
 	{
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		width: 100,
 	},
 	{
 		label: "经办人",
-		prop: "经办人",
+		prop: "handler",
 		width: 80,
 	},
 	{
 		label: "合同金额",
-		prop: "合同金额",
+		prop: "contractAmount",
 		width: 100,
 		align: "right",
 	},
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		width: 100,
 	},
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		width: 100,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 80,
-		formatter: (row: 合同草稿_列表数据) => {
+		formatter: (row: DraftContractListItem) => {
 			const statusMap = {
 				草稿: '<span class="text-gray-500">草稿</span>',
 				审批中: '<span class="text-blue-500">审批中</span>',
 				已生效: '<span class="text-green-500">已生效</span>',
 				已终止: '<span class="text-red-500">已终止</span>',
 			};
-			return statusMap[row.状态] || row.状态;
+			return statusMap[row.status] || row.status;
 		},
 	},
 	{
@@ -99,23 +109,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -124,6 +132,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -137,10 +146,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 合同类型_列表查询_VO = {
-	合同名称: "",
-	合同编号: "",
-	合同类型: "",
+const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParams> = {
+	contractName: "",
+	contractNumber: "",
+	contractType: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -157,21 +166,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 合同名称
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		valueType: "input",
 	},
 
 	// 合同编号
 	{
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		valueType: "input",
 	},
 
 	// 合同类型
 	{
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		valueType: "select",
 		options: contractTypeOptionsData,
 	},
@@ -186,55 +195,24 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = mockTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.合同名称) {
-			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
-		}
-		if (plusSearchModel.value.合同编号) {
-			filteredData = filteredData.filter((item) => item.合同编号.includes(plusSearchModel.value.合同编号!));
-		}
-		if (plusSearchModel.value.合同类型) {
-			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.合同类型);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
-async function handleReSearch() {
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<DraftContractQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 合同草稿_列表数据;
+	row?: DraftContractListItem;
 }
 
 /** 打开弹框 */
@@ -245,30 +223,30 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}起草合同`;
 
 	/** 业务对象 */
-	const contractDraftFormVO: 合同草稿表单_VO = isAdd.value
+	const contractDraftFormVO: ContractDraftFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					合同名称: row?.合同名称 || "",
-					合同编号: row?.合同编号 || "",
-					合同类型: row?.合同类型 || "",
-					经办人: row?.经办人 || "",
-					合同金额: row?.合同金额 || "",
-					开始时间: row?.开始时间 || "",
-					结束时间: row?.结束时间 || "",
+					contractName: row?.contractName || "",
+					contractNumber: row?.contractNumber || "",
+					contractType: row?.contractType || "",
+					handler: row?.handler || "",
+					contractAmount: row?.contractAmount || "",
+					startTime: row?.startTime || "",
+					endTime: row?.endTime || "",
 					// 保留其他表单字段的默认值
-					甲方: defaultForm.甲方,
-					甲方联系人: defaultForm.甲方联系人,
-					甲方联系电话: defaultForm.甲方联系电话,
-					乙方: defaultForm.乙方,
-					乙方联系人: defaultForm.乙方联系人,
-					乙方联系电话: defaultForm.乙方联系电话,
-					经办电话: defaultForm.经办电话,
-					签订时间: defaultForm.签订时间,
-					说明: defaultForm.说明,
+					partyA: row?.partyA || defaultForm.partyA,
+					partyAContact: defaultForm.partyAContact,
+					partyAPhone: defaultForm.partyAPhone,
+					partyB: row?.partyB || defaultForm.partyB,
+					partyBContact: defaultForm.partyBContact,
+					partyBPhone: defaultForm.partyBPhone,
+					handlerPhone: defaultForm.handlerPhone,
+					signingTime: defaultForm.signingTime,
+					description: defaultForm.description,
 					// 保留默认的合同附件数组
-					合同附件: cloneDeep(defaultForm.合同附件),
+					attachments: cloneDeep(defaultForm.attachments),
 				})
 			: cloneDeep(defaultForm);
 
@@ -327,7 +305,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData(); // 重新加载数据
+						await refetch(); // 重新加载数据
 					}
 				},
 			},
@@ -336,19 +314,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 // 处理打印操作
-function handlePrint(row: 合同草稿_列表数据) {
-	consola.log("打印合同:", row.合同名称);
+function handlePrint(row: DraftContractListItem) {
+	consola.log("打印合同:", row.contractName);
 	// TODO: 实现打印功能
 }
 
 // 处理删除操作
-function handleDelete(row: 合同草稿_列表数据) {
-	consola.log("删除合同:", row.合同名称);
+function handleDelete(row: DraftContractListItem) {
+	consola.log("删除合同:", row.contractName);
 	// TODO: 实现删除功能
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

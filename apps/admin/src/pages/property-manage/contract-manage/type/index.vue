@@ -14,38 +14,44 @@ import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/componen
 import { defaultAddDialogParams } from "@/config/constant";
 import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { type AddFormProps, defaultForm, type ContractTypeFormVO } from "./components/form";
+import AddForm from "./components/form.vue";
+import { useTypeListQuery } from "@/api/property-manage/contract-manage/type";
+import { type TypeListItem, type TypeQueryParams, 审核类型Options, type IsAuditType } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
 
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-import { type AddFormProps, defaultForm, type 合同类型表单_VO } from "./components/form";
-import AddForm from "./components/form.vue";
 
 const addFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<合同类型_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useTypeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "类型名称",
-		prop: "类型名称",
+		prop: "typeName",
 		width: 120,
 	},
 	{
 		label: "是否审核",
-		prop: "是否审核",
+		prop: "isAudit",
 		width: 120,
 	},
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		minWidth: 200,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 180,
 	},
 	{
@@ -68,9 +74,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 合同类型_列表查询_VO = {
-	合同类型名称: "",
-	审核类型: "",
+const plusSearchModelRef: FieldValues & Partial<TypeQueryParams> = {
+	typeName: "",
+	isAudit: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -87,25 +93,25 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 合同类型名称 */
 	{
 		label: "合同类型名称",
-		prop: "合同类型名称",
+		prop: "typeName",
 		valueType: "input",
 	},
 	/** 审核类型 */
 	{
 		label: "审核类型",
-		prop: "审核类型",
+		prop: "isAudit",
 		valueType: "select",
 		options: 审核类型Options,
 	},
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 1000,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
@@ -117,62 +123,31 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.合同类型名称) {
-			filteredData = filteredData.filter((item) => item.类型名称.includes(plusSearchModel.value.合同类型名称!));
-		}
-		if (plusSearchModel.value.审核类型) {
-			filteredData = filteredData.filter((item) => item.是否审核 === plusSearchModel.value.审核类型);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<TypeQueryParams>);
 }
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格搜索栏组件 配置  */
@@ -195,7 +170,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: TypeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -203,21 +178,21 @@ function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
 	const title = `${modeText.value}合同类型`;
 
 	/** 业务对象 */
-	const 合同类型表单_VO: 合同类型表单_VO = isAdd.value
+	const contractTypeFormVO: ContractTypeFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					类型名称: row?.类型名称 || "",
-					是否审核: row?.是否审核 === "是" ? "是" : "否",
-					描述: row?.描述 || "",
+					typeName: row?.typeName || "",
+					isAudit: (row?.isAudit === "是" ? "是" : "否") as IsAuditType,
+					description: row?.description || "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
-		form: 合同类型表单_VO,
-		defaultValues: 合同类型表单_VO,
+		form: contractTypeFormVO,
+		defaultValues: contractTypeFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -269,6 +244,7 @@ function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -277,18 +253,18 @@ function openDialog(params: { mode: Mode; row?: 合同类型_列表数据 }) {
 }
 
 /** 删除合同类型 */
-function handleDelete(row: 合同类型_列表数据) {
-	consola.log("删除合同类型:", row.类型名称);
+function handleDelete(row: TypeListItem) {
+	consola.log("删除合同类型:", row.typeName);
 }
 
 /** 查看合同模板 */
-function handleViewTemplate(row: 合同类型_列表数据) {
-	consola.log("查看合同模板:", row.类型名称);
+function handleViewTemplate(row: TypeListItem) {
+	consola.log("查看合同模板:", row.typeName);
 }
 
 /** 扩展功能 */
-function handleExtend(row: 合同类型_列表数据) {
-	consola.log("扩展功能:", row.类型名称);
+function handleExtend(row: TypeListItem) {
+	consola.log("扩展功能:", row.typeName);
 }
 
 /** 添加审核人员 */
@@ -298,7 +274,7 @@ function addAuditPeople() {
 
 /** 挂载完后进行初始化 */
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

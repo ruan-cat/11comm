@@ -9,13 +9,19 @@ import { mockChangeData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ChangeListItem>>> => {
 	const body = await readBody<ChangeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, contractName, contractNumber, contractType, status } = body;
 
 	let filteredData = [...mockChangeData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (contractName) {
+		filteredData = filteredData.filter((item) => item.contractName.includes(contractName));
+	}
+	if (contractNumber) {
+		filteredData = filteredData.filter((item) => item.contractNumber.includes(contractNumber));
+	}
+	if (contractType) {
+		filteredData = filteredData.filter((item) => item.contractType === contractType);
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

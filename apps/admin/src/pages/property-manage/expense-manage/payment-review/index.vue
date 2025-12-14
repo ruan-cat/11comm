@@ -10,114 +10,90 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 缴费审核FormProps, defaultForm, type 缴费审核_表单数据 } from "./components/form";
+import { type PaymentReviewFormProps, defaultForm, type PaymentReviewFormVO } from "./components/form";
 import 缴费审核Form from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { usePaymentReviewListQuery } from "@/api/property-manage/expense-manage/payment-review";
+import {
+	type PaymentReviewListItem,
+	type PaymentReviewQueryParams,
+	费用项目Options,
+	缴费审核状态Options,
+} from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const 缴费审核FormInstance = ref<InstanceType<typeof 缴费审核Form> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<缴费审核_列表数据[]>([]);
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.房屋) {
-			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋!));
-		}
-		if (plusSearchModel.value.费用项目) {
-			filteredData = filteredData.filter((item) => item.费用项目 === plusSearchModel.value.费用项目);
-		}
-		if (plusSearchModel.value.审核状态) {
-			filteredData = filteredData.filter((item) => item.审核状态 === plusSearchModel.value.审核状态);
-		}
-		if (plusSearchModel.value.缴费时间范围) {
-			const [startTime, endTime] = plusSearchModel.value.缴费时间范围;
-			filteredData = filteredData.filter((item) => {
-				const paymentTime = new Date(item.缴费时间).getTime();
-				const start = new Date(startTime).getTime();
-				const end = new Date(endTime).getTime();
-				return paymentTime >= start && paymentTime <= end;
-			});
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	usePaymentReviewListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		width: 100,
 	},
 	{
 		label: "费用项目",
-		prop: "费用项目",
+		prop: "expenseItem",
 		width: 100,
 	},
 	{
 		label: "付费周期",
-		prop: "付费周期",
+		prop: "paymentPeriod",
 		width: 120,
 	},
 	{
 		label: "应付金额",
-		prop: "应付金额",
+		prop: "payableAmount",
 		width: 100,
 	},
 	{
 		label: "实付金额",
-		prop: "实付金额",
+		prop: "paidAmount",
 		width: 100,
 	},
 	{
 		label: "操作员工",
-		prop: "操作员工",
+		prop: "operator",
 		width: 100,
 	},
 	{
 		label: "缴费时间",
-		prop: "缴费时间",
+		prop: "paymentTime",
 		width: 180,
 	},
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		width: 100,
 	},
 	{
 		label: "缴费备注",
-		prop: "缴费备注",
+		prop: "paymentRemark",
 		width: 150,
 	},
 	{
 		label: "审核说明",
-		prop: "审核说明",
+		prop: "auditDescription",
 		width: 150,
 	},
 	{
 		label: "详情",
-		prop: "详情",
+		prop: "details",
 		width: 150,
 	},
 	{
@@ -130,23 +106,35 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<PaymentReviewQueryParams>);
+}
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /**
@@ -154,10 +142,12 @@ async function handleCurrentPageChange(currentPage: number) {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 缴费审核_列表查询_VO = {
-	房屋: "",
-	费用项目: "",
-	审核状态: "",
+const plusSearchModelRef: FieldValues & Partial<PaymentReviewQueryParams> & { 缴费时间范围?: [string, string] } = {
+	house: "",
+	expenseItem: "",
+	auditStatus: "",
+	paymentStartTime: "",
+	paymentEndTime: "",
 	缴费时间范围: ["", ""],
 };
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -173,22 +163,22 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 房屋 */
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 	},
 	/** 费用项目 */
 	{
 		label: "费用项目",
-		prop: "费用项目",
+		prop: "expenseItem",
 		valueType: "select",
 		options: 费用项目Options,
 	},
 	/** 审核状态 */
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		valueType: "select",
-		options: 审核状态Options,
+		options: 缴费审核状态Options,
 	},
 	/** 缴费时间范围 */
 	{
@@ -199,6 +189,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			type: "daterange",
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
+			onChange(value: string[] | null) {
+				plusSearchModel.value.paymentStartTime = value?.[0] ?? "";
+				plusSearchModel.value.paymentEndTime = value?.[1] ?? "";
+			},
+			onClear() {
+				plusSearchModel.value.paymentStartTime = "";
+				plusSearchModel.value.paymentEndTime = "";
+			},
 		},
 	},
 ]);
@@ -218,6 +216,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -225,22 +224,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "缴费审核",
 	columns: columns.value,
 });
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -255,7 +238,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 缴费审核_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: PaymentReviewListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -263,31 +246,31 @@ function openDialog(params: { mode: Mode; row?: 缴费审核_列表数据 }) {
 	const title = `${modeText.value}缴费审核`;
 
 	/** 业务对象 */
-	const 缴费审核表单_VO: 缴费审核_表单数据 = isAdd.value
+	const paymentReviewFormVO: PaymentReviewFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
-					房屋: row?.房屋 || "",
-					费用项目: row?.费用项目 || "",
-					付费周期: row?.付费周期 || "",
-					缴费起始时间: row?.缴费起始时间 || "",
-					缴费结束时间: row?.缴费结束时间 || "",
-					应付金额: row?.应付金额 || "",
-					实付金额: row?.实付金额 || "",
-					操作员工: row?.操作员工 || "",
-					缴费时间: row?.缴费时间 || "",
-					审核状态: row?.审核状态 || "",
-					审核说明: row?.审核说明 || "",
-					缴费备注: row?.缴费备注 || "",
-					详情: row?.详情 || "",
+					house: row?.house || "",
+					expenseItem: row?.expenseItem || "",
+					paymentPeriod: row?.paymentPeriod || "",
+					paymentStartTime: row?.paymentStartTime || "",
+					paymentEndTime: row?.paymentEndTime || "",
+					payableAmount: row?.payableAmount || "",
+					paidAmount: row?.paidAmount || "",
+					operator: row?.operator || "",
+					paymentTime: row?.paymentTime || "",
+					auditStatus: row?.auditStatus || "",
+					auditDescription: row?.auditDescription || "",
+					paymentRemark: row?.paymentRemark || "",
+					details: row?.details || "",
 				}
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
-	const formProps: 缴费审核FormProps = {
-		form: 缴费审核表单_VO,
-		defaultValues: 缴费审核表单_VO,
+	const formProps: PaymentReviewFormProps = {
+		form: paymentReviewFormVO,
+		defaultValues: paymentReviewFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -337,6 +320,7 @@ function openDialog(params: { mode: Mode; row?: 缴费审核_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -345,7 +329,7 @@ function openDialog(params: { mode: Mode; row?: 缴费审核_列表数据 }) {
 }
 
 /** 操作按钮点击处理 */
-function handleOperationClick(operation: string, row: 缴费审核_列表数据) {
+function handleOperationClick(operation: string, row: PaymentReviewListItem) {
 	switch (operation) {
 		case "查看详情":
 			openDialog({ mode: "info", row });
@@ -369,10 +353,9 @@ function handleOperationClick(operation: string, row: 缴费审核_列表数据)
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
-
 <template>
 	<section class="index-root">
 		<PlusSearch

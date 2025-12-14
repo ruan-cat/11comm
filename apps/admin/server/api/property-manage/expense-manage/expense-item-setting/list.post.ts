@@ -9,13 +9,25 @@ import { mockExpenseItemSettingData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ExpenseItemSettingListItem>>> => {
 	const body = await readBody<ExpenseItemSettingQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, code, expenseItem, expenseIdentifier, paymentType, accountDeduction, status } = body;
 
 	let filteredData = [...mockExpenseItemSettingData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (code) {
+		filteredData = filteredData.filter((item) => item.code.includes(code));
+	}
+	if (expenseItem) {
+		filteredData = filteredData.filter((item) => item.expenseItem.includes(expenseItem));
+	}
+	if (expenseIdentifier) {
+		filteredData = filteredData.filter((item) => item.expenseIdentifier === expenseIdentifier);
+	}
+	if (paymentType) {
+		filteredData = filteredData.filter((item) => item.paymentType === paymentType);
+	}
+	if (accountDeduction) {
+		filteredData = filteredData.filter((item) => item.accountDeduction === accountDeduction);
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

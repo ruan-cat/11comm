@@ -5,12 +5,13 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ContractDraftFormProps, 合同草稿表单_VO, defaultForm } from "./form";
+import { ContractDraftFormProps, ContractDraftFormVO } from "./form";
+import { 合同草稿类型Options } from "@01s-11comm/type";
 
 const props = defineProps<ContractDraftFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 合同草稿表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ContractDraftFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +25,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 合同草稿表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ContractDraftFormVO;
 
 /**
  * 表单对象
@@ -43,7 +44,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 合同名称 */
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -54,7 +55,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 合同编号 */
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -65,14 +66,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 合同类型 */
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		valueType: "select",
-		options: [
-			{ label: "采购合同", value: "采购合同" },
-			{ label: "销售合同", value: "销售合同" },
-			{ label: "服务合同", value: "服务合同" },
-			{ label: "租赁合同", value: "租赁合同" },
-		],
+		options: 合同草稿类型Options,
 		required: true,
 		span: 8,
 		fieldProps: {
@@ -84,7 +80,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 甲方 */
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -95,7 +91,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 甲方联系人 */
 		label: "甲方联系人",
-		prop: "甲方联系人",
+		prop: "partyAContact",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -106,7 +102,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 甲方联系电话 */
 		label: "甲方联系电话",
-		prop: "甲方联系电话",
+		prop: "partyAPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -119,7 +115,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 乙方 */
 		label: "乙方",
-		prop: "乙方",
+		prop: "partyB",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -130,7 +126,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 乙方联系人 */
 		label: "乙方联系人",
-		prop: "乙方联系人",
+		prop: "partyBContact",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -141,7 +137,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 乙方联系电话 */
 		label: "乙方联系电话",
-		prop: "乙方联系电话",
+		prop: "partyBPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -154,7 +150,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 经办人 */
 		label: "经办人",
-		prop: "经办人",
+		prop: "handler",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -165,7 +161,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 经办电话 */
 		label: "经办电话",
-		prop: "经办电话",
+		prop: "handlerPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -176,7 +172,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 合同金额 */
 		label: "合同金额",
-		prop: "合同金额",
+		prop: "contractAmount",
 		valueType: "input-number",
 		required: false,
 		span: 8,
@@ -191,7 +187,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 开始时间 */
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -205,7 +201,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 结束时间 */
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -219,7 +215,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 签订时间 */
 		label: "签订时间",
-		prop: "签订时间",
+		prop: "signingTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -235,7 +231,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 说明 */
 		label: "说明",
-		prop: "说明",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
@@ -248,7 +244,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** @description 合同附件 */
 		label: "合同附件",
-		prop: "合同附件",
+		prop: "attachments",
 		valueType: "text",
 		fieldProps: {
 			action: "/api/upload",
@@ -267,35 +263,35 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	合同名称: [
+	contractName: [
 		{ required: true, message: "请填写合同名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "合同名称长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	合同编号: [
+	contractNumber: [
 		{ required: true, message: "请填写合同编号", trigger: "blur" },
 		{ min: 2, max: 30, message: "合同编号长度在 2 到 30 个字符", trigger: "blur" },
 	],
-	合同类型: [{ required: true, message: "请选择合同类型", trigger: "change" }],
-	甲方: [{ required: true, message: "请填写甲方", trigger: "blur" }],
-	甲方联系人: [{ required: true, message: "请填写甲方联系人", trigger: "blur" }],
-	甲方联系电话: [
+	contractType: [{ required: true, message: "请选择合同类型", trigger: "change" }],
+	partyA: [{ required: true, message: "请填写甲方", trigger: "blur" }],
+	partyAContact: [{ required: true, message: "请填写甲方联系人", trigger: "blur" }],
+	partyAPhone: [
 		{ required: true, message: "请填写甲方联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	乙方: [{ required: true, message: "请填写乙方", trigger: "blur" }],
-	乙方联系人: [{ required: true, message: "请填写乙方联系人", trigger: "blur" }],
-	乙方联系电话: [
+	partyB: [{ required: true, message: "请填写乙方", trigger: "blur" }],
+	partyBContact: [{ required: true, message: "请填写乙方联系人", trigger: "blur" }],
+	partyBPhone: [
 		{ required: true, message: "请填写乙方联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	经办人: [{ required: true, message: "请填写经办人", trigger: "blur" }],
-	经办电话: [
+	handler: [{ required: true, message: "请填写经办人", trigger: "blur" }],
+	handlerPhone: [
 		{ required: true, message: "请填写经办电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	签订时间: [{ required: true, message: "请选择签订时间", trigger: "change" }],
+	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	signingTime: [{ required: true, message: "请选择签订时间", trigger: "change" }],
 });
 
 defineExpose({

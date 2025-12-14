@@ -7,8 +7,16 @@ import type { OptionsType } from "../../../common";
 export interface ExpenseSummaryTableListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 时间 Time */
+	time: string;
+	/** 费用项ID Expense Item ID */
+	expenseItemId: string;
+	/** 费用项名称 Expense Item Name */
+	expenseItemName: string;
+	/** 应收金额 Receivable Amount */
+	receivableAmount: string;
+	/** 实收金额 Actual Amount */
+	actualAmount: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +32,12 @@ export interface ExpenseSummaryTableListItem {
  * ExpenseSummaryTable list query parameters
  */
 export interface ExpenseSummaryTableQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 时间 Time */
+	time?: string;
+	/** 费用项ID Expense Item ID */
+	expenseItemId?: string;
+	/** 费用项名称 Expense Item Name */
+	expenseItemName?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */

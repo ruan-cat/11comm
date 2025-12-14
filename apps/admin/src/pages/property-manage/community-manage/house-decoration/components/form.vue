@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { HouseDecorationFormProps, 房屋装修表单_VO, defaultForm, 房屋装修状态类型, 是否延期类型, 是否违规类型 } from "./form";
+import { HouseDecorationFormProps, HouseDecorationFormVO, decorationStatusOptions, delayStatusOptions } from "./form";
 
 const props = defineProps<HouseDecorationFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 房屋装修表单_VO;
+const defaultValues = props.defaultValues as FieldValues & HouseDecorationFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 房屋装修表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & HouseDecorationFormVO;
 
 /**
  * 表单对象
@@ -41,7 +41,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "房屋编号",
-		prop: "房屋",
+		prop: "houseNumber",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
@@ -52,7 +52,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系人",
-		prop: "联系人",
+		prop: "contactName",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
@@ -63,7 +63,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -74,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "申请时间",
-		prop: "申请时间",
+		prop: "applicationTime",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "装修时间",
-		prop: "装修时间",
+		prop: "decorationTime",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
@@ -102,7 +102,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "装修单位",
-		prop: "装修单位",
+		prop: "decorationCompany",
 		valueType: "input",
 		width: "280px",
 		fieldProps: {
@@ -113,7 +113,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "负责人电话",
-		prop: "负责人电话",
+		prop: "managerPhone",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -124,17 +124,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		width: "140px",
-		options: [
-			{ label: "待审核", value: "待审核" },
-			{ label: "审核不通过", value: "审核不通过" },
-			{ label: "装修中", value: "装修中" },
-			{ label: "待验收", value: "待验收" },
-			{ label: "验收成功", value: "验收成功" },
-			{ label: "验收失败", value: "验收失败" },
-		],
+		options: decorationStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择装修状态",
@@ -143,13 +136,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "是否延期",
-		prop: "是否延期",
+		prop: "isDelayed",
 		valueType: "select",
 		width: "120px",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: delayStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择",
@@ -158,7 +148,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "延期时间",
-		prop: "延期时间",
+		prop: "delayTime",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
@@ -168,11 +158,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 		},
-		hidden: (form) => form.是否延期 === "否",
+		hidden: (form: HouseDecorationFormVO) => form.isDelayed === "否",
 	},
 	{
 		label: "是否违规",
-		prop: "是否违规",
+		prop: "isViolated",
 		valueType: "select",
 		width: "120px",
 		options: [
@@ -187,7 +177,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "违规说明",
-		prop: "违规说明",
+		prop: "violationDescription",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -197,11 +187,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 			maxlength: 500,
 			showWordLimit: true,
 		},
-		hidden: (form) => form.是否违规 === "否",
+		hidden: (form: HouseDecorationFormVO) => form.isViolated === "否",
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remarks",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -219,48 +209,48 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	房屋: [
+	houseNumber: [
 		{ required: true, message: "请输入房屋编号", trigger: "blur" },
 		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
 	],
-	联系人: [
+	contactName: [
 		{ required: true, message: "请输入联系人姓名", trigger: "blur" },
 		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
 	],
-	联系电话: [
+	contactPhone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	申请时间: [
+	applicationTime: [
 		{ required: true, message: "请选择申请时间", trigger: "change" },
 	],
-	装修时间: [
+	decorationTime: [
 		{ required: true, message: "请选择装修时间", trigger: "change" },
 	],
-	装修单位: [
+	decorationCompany: [
 		{ required: true, message: "请输入装修单位", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	负责人电话: [
+	managerPhone: [
 		{ required: true, message: "请输入负责人电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	状态: [
+	status: [
 		{ required: true, message: "请选择装修状态", trigger: "change" },
 	],
-	是否延期: [
+	isDelayed: [
 		{ required: true, message: "请选择是否延期", trigger: "change" },
 	],
-	延期时间: [
+	delayTime: [
 		{ required: true, message: "请选择延期时间", trigger: "change" },
 	],
-	是否违规: [
+	isViolated: [
 		{ required: true, message: "请选择是否违规", trigger: "change" },
 	],
-	违规说明: [
+	violationDescription: [
 		{ max: 500, message: "违规说明长度不能超过 500 个字符", trigger: "blur" },
 	],
-	备注: [
+	remarks: [
 		{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" },
 	],
 });

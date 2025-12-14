@@ -14,10 +14,10 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type ParkingSpaceStructureDiagramFormProps, defaultForm, type 车位结构图表单_VO } from "./components/form";
 import ParkingSpaceStructureDiagramForm from "./components/form.vue";
+import { useParkingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/parking-space-structure-diagram";
 import {
-	车位结构图_列表数据,
-	mockTableData,
-	车位结构图_列表查询_VO,
+	type ParkingSpaceStructureDiagramListItem,
+	type ParkingSpaceStructureDiagramQueryParams,
 	车位类型选项,
 	车位状态选项,
 	楼层区域选项,
@@ -27,95 +27,97 @@ import {
 /** 表单组件实例 */
 const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<车位结构图_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useParkingSpaceStructureDiagramListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "车位编号",
-		prop: "车位编号",
+		prop: "parkingSpaceNumber",
 		width: 120,
 	},
 	{
 		label: "车位类型",
-		prop: "车位类型",
+		prop: "parkingSpaceType",
 		width: 100,
 	},
 	{
 		label: "车位位置",
-		prop: "车位位置",
+		prop: "parkingSpaceLocation",
 		width: 150,
 	},
 	{
 		label: "车位面积",
-		prop: "车位面积",
+		prop: "parkingSpaceArea",
 		width: 100,
 	},
 	{
 		label: "车位状态",
-		prop: "车位状态",
+		prop: "parkingSpaceStatus",
 		width: 100,
 	},
 	{
 		label: "业主姓名",
-		prop: "业主姓名",
+		prop: "ownerName",
 		width: 100,
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		width: 120,
 	},
 	{
 		label: "车牌号码",
-		prop: "车牌号码",
+		prop: "licensePlateNumber",
 		width: 120,
 	},
 	{
 		label: "车辆品牌",
-		prop: "车辆品牌",
+		prop: "vehicleBrand",
 		width: 120,
 	},
 	{
 		label: "购买时间",
-		prop: "购买时间",
+		prop: "purchaseTime",
 		width: 120,
 	},
 	{
 		label: "到期时间",
-		prop: "到期时间",
+		prop: "expiryTime",
 		width: 120,
 	},
 	{
 		label: "月租金",
-		prop: "月租金",
+		prop: "monthlyRent",
 		width: 100,
 	},
 	{
 		label: "管理费",
-		prop: "管理费",
+		prop: "managementFee",
 		width: 100,
 	},
 	{
 		label: "车位朝向",
-		prop: "车位朝向",
+		prop: "parkingSpaceOrientation",
 		width: 100,
 	},
 	{
 		label: "楼层区域",
-		prop: "楼层区域",
+		prop: "floorArea",
 		width: 100,
 	},
 	{
 		label: "是否充电桩",
-		prop: "是否充电桩",
+		prop: "hasEvChargingPile",
 		width: 120,
+		formatter: ({ hasEvChargingPile }) => (hasEvChargingPile ? "是" : "否"),
 	},
 	{
 		label: "充电桩功率",
-		prop: "充电桩功率",
+		prop: "chargingPilePower",
 		width: 120,
 	},
 	{
@@ -128,22 +130,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -152,6 +153,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -160,79 +162,14 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.车位编号) {
-			filteredData = filteredData.filter((item) => item.车位编号.includes(plusSearchModel.value.车位编号!));
-		}
-		if (plusSearchModel.value.车位类型) {
-			filteredData = filteredData.filter((item) => item.车位类型 === plusSearchModel.value.车位类型);
-		}
-		if (plusSearchModel.value.车位位置) {
-			filteredData = filteredData.filter((item) => item.车位位置.includes(plusSearchModel.value.车位位置!));
-		}
-		if (plusSearchModel.value.车位状态) {
-			filteredData = filteredData.filter((item) => item.车位状态 === plusSearchModel.value.车位状态);
-		}
-		if (plusSearchModel.value.业主姓名) {
-			filteredData = filteredData.filter((item) => item.业主姓名.includes(plusSearchModel.value.业主姓名!));
-		}
-		if (plusSearchModel.value.车牌号码) {
-			filteredData = filteredData.filter((item) => item.车牌号码.includes(plusSearchModel.value.车牌号码!));
-		}
-		if (plusSearchModel.value.楼层区域) {
-			filteredData = filteredData.filter((item) => item.楼层区域 === plusSearchModel.value.楼层区域);
-		}
-		if (plusSearchModel.value.是否充电桩) {
-			filteredData = filteredData.filter((item) => item.是否充电桩 === plusSearchModel.value.是否充电桩);
-		}
-		if (plusSearchModel.value.购买开始时间 && plusSearchModel.value.购买结束时间) {
-			filteredData = filteredData.filter((item) => {
-				const buyTime = new Date(item.购买时间).getTime();
-				const startTime = new Date(plusSearchModel.value.购买开始时间!).getTime();
-				const endTime = new Date(plusSearchModel.value.购买结束时间!).getTime();
-				return buyTime >= startTime && buyTime <= endTime;
-			});
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 车位结构图_列表查询_VO = {
-	车位编号: "",
-	车位类型: "",
-	车位位置: "",
-	车位状态: "",
-	业主姓名: "",
-	车牌号码: "",
-	楼层区域: "",
-	是否充电桩: "",
-	购买开始时间: "",
-	购买结束时间: "",
+const plusSearchModelRef: FieldValues & Partial<ParkingSpaceStructureDiagramQueryParams> = {
+	name: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -249,81 +186,16 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 车位编号 */
 	{
 		label: "车位编号",
-		prop: "车位编号",
-		valueType: "input",
-	},
-
-	/** 车位类型 */
-	{
-		label: "车位类型",
-		prop: "车位类型",
-		valueType: "select",
-		options: 车位类型选项,
-	},
-
-	/** 车位位置 */
-	{
-		label: "车位位置",
-		prop: "车位位置",
+		prop: "name",
 		valueType: "input",
 	},
 
 	/** 车位状态 */
 	{
 		label: "车位状态",
-		prop: "车位状态",
+		prop: "status",
 		valueType: "select",
 		options: 车位状态选项,
-	},
-
-	/** 业主姓名 */
-	{
-		label: "业主姓名",
-		prop: "业主姓名",
-		valueType: "input",
-	},
-
-	/** 车牌号码 */
-	{
-		label: "车牌号码",
-		prop: "车牌号码",
-		valueType: "input",
-	},
-
-	/** 楼层区域 */
-	{
-		label: "楼层区域",
-		prop: "楼层区域",
-		valueType: "select",
-		options: 楼层区域选项,
-	},
-
-	/** 是否充电桩 */
-	{
-		label: "是否充电桩",
-		prop: "是否充电桩",
-		valueType: "select",
-		options: 是否充电桩选项,
-	},
-
-	/** 购买时间范围 */
-	{
-		label: "购买时间范围",
-		prop: "购买开始时间",
-		valueType: "date-picker",
-		fieldProps: {
-			type: "daterange",
-			valueFormat: "YYYY-MM-DD",
-			format: "YYYY-MM-DD",
-			onChange(value: string[] | null) {
-				plusSearchModel.value.购买开始时间 = value?.[0] ?? "";
-				plusSearchModel.value.购买结束时间 = value?.[1] ?? "";
-			},
-			onClear() {
-				plusSearchModel.value.购买开始时间 = "";
-				plusSearchModel.value.购买结束时间 = "";
-			},
-		},
 	},
 ]);
 
@@ -337,16 +209,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<ParkingSpaceStructureDiagramQueryParams>);
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();
@@ -354,7 +227,7 @@ const { gotoDetailPage } = useGotoDetailsPage();
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 车位结构图_列表数据;
+	row?: ParkingSpaceStructureDiagramListItem;
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -384,24 +257,24 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? {
 					...defaultForm,
-					车位编号: row?.车位编号 || "",
-					车位类型: row?.车位类型 || "",
-					车位位置: row?.车位位置 || "",
-					车位面积: row?.车位面积 || "",
-					车位状态: row?.车位状态 || "",
-					业主姓名: row?.业主姓名 || "",
-					联系电话: row?.联系电话 || "",
-					车牌号码: row?.车牌号码 || "",
-					车辆品牌: row?.车辆品牌 || "",
-					购买时间: row?.购买时间 || "",
-					到期时间: row?.到期时间 || "",
-					月租金: row?.月租金 || "",
-					管理费: row?.管理费 || "",
-					车位朝向: row?.车位朝向 || "",
-					楼层区域: row?.楼层区域 || "",
-					是否充电桩: row?.是否充电桩 || "",
-					充电桩功率: row?.充电桩功率 || "",
-					备注信息: row?.备注信息 || "",
+					车位编号: row?.parkingSpaceNumber || "",
+					车位类型: row?.parkingSpaceType || "",
+					车位位置: row?.parkingSpaceLocation || "",
+					车位面积: row?.parkingSpaceArea || "",
+					车位状态: row?.parkingSpaceStatus || "",
+					业主姓名: row?.ownerName || "",
+					联系电话: row?.contactPhone || "",
+					车牌号码: row?.licensePlateNumber || "",
+					车辆品牌: row?.vehicleBrand || "",
+					购买时间: row?.purchaseTime || "",
+					到期时间: row?.expiryTime || "",
+					月租金: row?.monthlyRent || 0,
+					管理费: row?.managementFee || 0,
+					车位朝向: row?.parkingSpaceOrientation || "",
+					楼层区域: row?.floorArea || "",
+					是否充电桩: row?.hasEvChargingPile ? "是" : "否",
+					充电桩功率: row?.chargingPilePower || "",
+					备注信息: row?.remark || "",
 				}
 			: cloneDeep(defaultForm);
 
@@ -462,6 +335,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -470,12 +344,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 /** 跳转到 车位详情页面 */
-function gotoParkingSpaceDetailPage(row: 车位结构图_列表数据) {
+function gotoParkingSpaceDetailPage(row: ParkingSpaceStructureDiagramListItem) {
 	console.log("row", row);
 	gotoDetailPage({
 		name: "property-manage-community-manage--detail-page",
 		params: {
-			id: row.车位编号,
+			id: row.id,
 		},
 	});
 }
@@ -493,7 +367,7 @@ function refreshParkingSpaceStatus() {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

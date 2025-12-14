@@ -9,16 +9,22 @@ import { mockExpireData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ExpireListItem>>> => {
 	const body = await readBody<ExpireQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, contractName, contractNumber, contractType, processingStatus } = body;
 
 	let filteredData = [...mockExpireData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (contractName) {
+		filteredData = filteredData.filter((item) => item.contractName.includes(contractName));
 	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
+	if (contractNumber) {
+		filteredData = filteredData.filter((item) => item.contractNumber.includes(contractNumber));
+	}
+	if (contractType) {
+		filteredData = filteredData.filter((item) => item.contractType === contractType);
+	}
+	if (processingStatus) {
+		filteredData = filteredData.filter((item) => item.processingStatus === processingStatus);
 	}
 
 	// 分页处理

@@ -9,13 +9,22 @@ import { mockDiscountSettingData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<DiscountSettingListItem>>> => {
 	const body = await readBody<DiscountSettingQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, discountId, discountName, discountType, ruleName, status } = body;
 
 	let filteredData = [...mockDiscountSettingData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (discountId) {
+		filteredData = filteredData.filter((item) => item.discountId.includes(discountId));
+	}
+	if (discountName) {
+		filteredData = filteredData.filter((item) => item.discountName.includes(discountName));
+	}
+	if (discountType) {
+		filteredData = filteredData.filter((item) => item.discountType === discountType);
+	}
+	if (ruleName) {
+		filteredData = filteredData.filter((item) => item.ruleName.includes(ruleName));
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

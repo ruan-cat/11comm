@@ -9,16 +9,25 @@ import { mockCancelFeeData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<CancelFeeListItem>>> => {
 	const body = await readBody<CancelFeeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, batchNumber, employee, time, cancelReason, auditStatus } = body;
 
 	let filteredData = [...mockCancelFeeData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (batchNumber) {
+		filteredData = filteredData.filter((item) => item.batchNumber.includes(batchNumber));
 	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
+	if (employee) {
+		filteredData = filteredData.filter((item) => item.employee.includes(employee));
+	}
+	if (time) {
+		filteredData = filteredData.filter((item) => item.time.includes(time));
+	}
+	if (cancelReason) {
+		filteredData = filteredData.filter((item) => item.cancelReason.includes(cancelReason));
+	}
+	if (auditStatus) {
+		filteredData = filteredData.filter((item) => item.auditStatus === auditStatus);
 	}
 
 	// 分页处理

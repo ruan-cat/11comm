@@ -12,76 +12,87 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type DiscountApplyFormProps, defaultForm, type 优惠申请表单_VO } from "./components/form";
+import { type DiscountApplyFormProps, defaultForm, type DiscountApplyFormVO } from "./components/form";
 import DiscountApplyForm from "./components/form.vue";
+import { useDiscountApplyListQuery } from "@/api/property-manage/expense-manage/discount-apply";
+import { type DiscountApplyListItem, type DiscountApplyQueryParams, 申请类型Options, 使用状态Options } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
 
-/** 表格数据 */
-const tableData = ref<优惠申请_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useDiscountApplyListQuery();
+
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		prop: "房屋",
+		prop: "house",
 		label: "房屋",
 		width: 200,
 	},
 	{
-		prop: "折扣ID",
+		prop: "discountId",
 		label: "折扣ID",
 		width: 120,
 	},
 	{
-		prop: "折扣名称",
+		prop: "discountName",
 		label: "折扣名称",
 		width: 120,
 	},
 	{
-		prop: "申请类型",
+		prop: "applicationType",
 		label: "申请类型",
 		width: 120,
 	},
 	{
-		prop: "申请人",
+		prop: "applicant",
 		label: "申请人",
 		width: 120,
 	},
 	{
-		prop: "申请电话",
+		prop: "applicantPhone",
 		label: "申请电话",
 		width: 120,
 	},
 	{
-		prop: "开始时间",
+		prop: "startTime",
 		label: "开始时间",
 		width: 120,
 	},
 	{
-		prop: "结束时间",
+		prop: "endTime",
 		label: "结束时间",
 		width: 120,
 	},
 	{
-		prop: "状态",
+		prop: "status",
 		label: "状态",
 		width: 120,
 	},
 	{
-		prop: "创建时间",
+		prop: "createTime",
 		label: "创建时间",
 		width: 120,
 	},
 	{
-		prop: "使用状态",
+		prop: "usageStatus",
 		label: "使用状态",
 		width: 120,
 	},
 	{
-		prop: "返还类型",
+		prop: "returnType",
 		label: "返还类型",
 		width: 120,
 	},
 	{
-		prop: "返还金额",
+		prop: "returnAmount",
 		label: "返还金额",
 		width: 120,
 	},
@@ -95,22 +106,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -119,6 +129,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -132,10 +143,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 优惠申请_列表查询_VO = {
-	房屋: "",
-	申请类型: "",
-	使用状态: "",
+const plusSearchModelRef: FieldValues & Partial<DiscountApplyQueryParams> = {
+	house: "",
+	applicationType: "",
+	usageStatus: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -152,20 +163,20 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 房屋
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 	},
 	// 申请类型
 	{
 		label: "申请类型",
-		prop: "申请类型",
+		prop: "applicationType",
 		valueType: "select",
 		options: 申请类型Options,
 	},
 	// 使用状态
 	{
 		label: "使用状态",
-		prop: "使用状态",
+		prop: "usageStatus",
 		valueType: "select",
 		options: 使用状态Options,
 	},
@@ -180,51 +191,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = allTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.房屋) {
-			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋!));
-		}
-		if (plusSearchModel.value.申请类型) {
-			filteredData = filteredData.filter((item) => item.申请类型 === plusSearchModel.value.申请类型);
-		}
-		if (plusSearchModel.value.使用状态) {
-			filteredData = filteredData.filter((item) => item.使用状态 === plusSearchModel.value.使用状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<DiscountApplyQueryParams>);
 }
 
 // 弹框相关功能
@@ -244,7 +222,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 优惠申请_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -252,20 +230,20 @@ function openDialog(params: { mode: Mode; row?: 优惠申请_列表数据 }) {
 	const title = `${modeText.value}优惠申请`;
 
 	/** 业务对象 */
-	const 业务对象: 优惠申请表单_VO = isAdd.value
+	const 业务对象: DiscountApplyFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					房屋: row?.房屋 || "",
-					申请类型: row?.申请类型 || "空置房",
-					费用项目: row?.折扣名称 || "",
-					申请人: row?.申请人 || "",
-					申请电话: row?.申请电话 || "",
-					开始时间: row?.开始时间 || "",
-					结束时间: row?.结束时间 || "",
-					申请名说明: row?.折扣名称 || "",
-					图片材料: "",
+					house: row?.house || "",
+					applicationType: (row?.applicationType as DiscountApplyFormVO["applicationType"]) || "空置房",
+					expenseItem: row?.discountName || "",
+					applicant: row?.applicant || "",
+					applicantPhone: row?.applicantPhone || "",
+					startTime: row?.startTime || "",
+					endTime: row?.endTime || "",
+					description: row?.discountName || "",
+					material: "",
 				})
 			: cloneDeep(defaultForm);
 
@@ -325,6 +303,7 @@ function openDialog(params: { mode: Mode; row?: 优惠申请_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -333,7 +312,7 @@ function openDialog(params: { mode: Mode; row?: 优惠申请_列表数据 }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

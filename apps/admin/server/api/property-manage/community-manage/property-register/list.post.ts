@@ -9,13 +9,28 @@ import { mockPropertyRegisterData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PropertyRegisterListItem>>> => {
 	const body = await readBody<PropertyRegisterQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, houseId, houseNumber, ownerName, contactInfo, idCardNumber, address, status } = body;
 
 	let filteredData = [...mockPropertyRegisterData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (houseId) {
+		filteredData = filteredData.filter((item) => item.houseId.includes(houseId));
+	}
+	if (houseNumber) {
+		filteredData = filteredData.filter((item) => item.houseNumber.includes(houseNumber));
+	}
+	if (ownerName) {
+		filteredData = filteredData.filter((item) => item.ownerName.includes(ownerName));
+	}
+	if (contactInfo) {
+		filteredData = filteredData.filter((item) => item.contactInfo.includes(contactInfo));
+	}
+	if (idCardNumber) {
+		filteredData = filteredData.filter((item) => item.idCardNumber.includes(idCardNumber));
+	}
+	if (address) {
+		filteredData = filteredData.filter((item) => item.address.includes(address));
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

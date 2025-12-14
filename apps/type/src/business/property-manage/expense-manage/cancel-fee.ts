@@ -7,8 +7,18 @@ import type { OptionsType } from "../../../common";
 export interface CancelFeeListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 批次号 Batch Number */
+	batchNumber: string;
+	/** 员工 Employee */
+	employee: string;
+	/** 时间 Time */
+	time: string;
+	/** 取消原因 Cancel Reason */
+	cancelReason: string;
+	/** 审核状态 Audit Status */
+	auditStatus: string;
+	/** 审核意见 Audit Opinion */
+	auditOpinion: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,10 +34,16 @@ export interface CancelFeeListItem {
  * CancelFee list query parameters
  */
 export interface CancelFeeQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 批次号 Batch Number */
+	batchNumber?: string;
+	/** 员工 Employee */
+	employee?: string;
+	/** 时间 Time */
+	time?: string;
+	/** 取消原因 Cancel Reason */
+	cancelReason?: string;
+	/** 审核状态 Audit Status */
+	auditStatus?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */
@@ -43,6 +59,16 @@ export const cancelFeeStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
+/**
+ * @description 审核状态选项
+ * Audit status options
+ */
+export const 审核状态Options: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+];
+
 // ==================== 兼容旧类型定义 ====================
 
 /**
@@ -56,9 +82,3 @@ export type 取消费用_列表数据 = CancelFeeListItem[];
  * Cancel fee list query VO type (for compatibility)
  */
 export type 取消费用_列表查询_VO = CancelFeeQueryParams;
-
-/**
- * @description 审核状态选项（兼容性）
- * Audit status options (for compatibility)
- */
-export const 审核状态Options = cancelFeeStatusOptions;

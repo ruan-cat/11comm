@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
 
-import { MeterTypeFormProps } from "./form";
+import { MeterTypeFormProps, MeterReadingTypeFormVO } from "./form";
 
 const props = defineProps<MeterTypeFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 抄表类型_VO;
+const defaultValues = props.defaultValues as FieldValues & MeterReadingTypeFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 抄表类型_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & MeterReadingTypeFormVO;
 
 /**
  * 表单对象
@@ -38,7 +38,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -48,7 +48,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "说明",
-		prop: "说明",
+		prop: "description",
 		valueType: "textarea",
 		required: true,
 		fieldProps: {
@@ -64,11 +64,11 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	名称: [
+	name: [
 		{ required: true, message: "请输入抄表类型名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	说明: [
+	description: [
 		{ required: true, message: "请输入抄表类型说明", trigger: "blur" },
 		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
 	],

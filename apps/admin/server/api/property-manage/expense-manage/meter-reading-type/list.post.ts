@@ -9,13 +9,16 @@ import { mockMeterReadingTypeData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MeterReadingTypeListItem>>> => {
 	const body = await readBody<MeterReadingTypeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, name, description, status } = body;
 
 	let filteredData = [...mockMeterReadingTypeData];
 
 	// 数据筛选
 	if (name) {
 		filteredData = filteredData.filter((item) => item.name.includes(name));
+	}
+	if (description) {
+		filteredData = filteredData.filter((item) => item.description.includes(description));
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

@@ -7,8 +7,16 @@ import type { OptionsType } from "../../../common";
 export interface DiscountSettingListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 折扣ID Discount ID */
+	discountId: string;
+	/** 折扣名称 Discount Name */
+	discountName: string;
+	/** 折扣类型 Discount Type */
+	discountType: string;
+	/** 规则名称 Rule Name */
+	ruleName: string;
+	/** 规则 Rule */
+	rule: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +32,14 @@ export interface DiscountSettingListItem {
  * DiscountSetting list query parameters
  */
 export interface DiscountSettingQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 折扣ID Discount ID */
+	discountId?: string;
+	/** 折扣名称 Discount Name */
+	discountName?: string;
+	/** 折扣类型 Discount Type */
+	discountType?: string;
+	/** 规则名称 Rule Name */
+	ruleName?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */
@@ -62,3 +76,29 @@ export const 折扣设置规则Options: OptionsType = [
 	{ label: "按时间限制", value: "按时间限制" },
 	{ label: "按金额限制", value: "按金额限制" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 折扣设置_列表数据 类型（兼容性）
+ * Discount setting list data type (for compatibility)
+ */
+export type 折扣设置_列表数据 = DiscountSettingListItem[];
+
+/**
+ * @description 折扣设置_列表查询_VO 类型（兼容性）
+ * Discount setting list query VO type (for compatibility)
+ */
+export type 折扣设置_列表查询_VO = DiscountSettingQueryParams;
+
+/**
+ * @description 折扣类型选项（兼容性）
+ * Discount type options (for compatibility)
+ */
+export const 折扣类型Options = 折扣设置类型Options;
+
+/**
+ * @description 规则选项（兼容性）
+ * Rule options (for compatibility)
+ */
+export const 规则Options = 折扣设置规则Options;

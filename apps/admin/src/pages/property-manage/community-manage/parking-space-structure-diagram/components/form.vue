@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车位基础信息
 	{
 		label: "车位编号",
-		prop: "车位编号",
+		prop: "parkingSpaceNumber",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位类型",
-		prop: "车位类型",
+		prop: "parkingSpaceType",
 		valueType: "select",
 		width: "160px",
 		options: 车位类型选项,
@@ -65,7 +65,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位状态",
-		prop: "车位状态",
+		prop: "parkingSpaceStatus",
 		valueType: "select",
 		width: "140px",
 		options: 车位状态选项,
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位位置",
-		prop: "车位位置",
+		prop: "parkingSpaceLocation",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位面积",
-		prop: "车位面积",
+		prop: "parkingSpaceArea",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
@@ -101,7 +101,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位朝向",
-		prop: "车位朝向",
+		prop: "parkingSpaceOrientation",
 		valueType: "select",
 		width: "120px",
 		options: [
@@ -120,7 +120,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "楼层区域",
-		prop: "楼层区域",
+		prop: "floorArea",
 		valueType: "select",
 		width: "140px",
 		options: 楼层区域选项,
@@ -134,7 +134,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 业主信息
 	{
 		label: "业主姓名",
-		prop: "业主姓名",
+		prop: "ownerName",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
@@ -144,7 +144,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -156,7 +156,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车辆信息
 	{
 		label: "车牌号码",
-		prop: "车牌号码",
+		prop: "licensePlateNumber",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -166,7 +166,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车辆品牌",
-		prop: "车辆品牌",
+		prop: "vehicleBrand",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -178,7 +178,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 费用信息
 	{
 		label: "购买时间",
-		prop: "购买时间",
+		prop: "purchaseTime",
 		valueType: "date-picker",
 		width: "180px",
 		fieldProps: {
@@ -191,7 +191,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "到期时间",
-		prop: "到期时间",
+		prop: "expiryTime",
 		valueType: "date-picker",
 		width: "180px",
 		fieldProps: {
@@ -201,11 +201,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 		},
-		hidden: (form: 车位结构图表单_VO) => form.车位状态 !== "已租",
+		hidden: (form: 车位结构图表单_VO) => form.parkingSpaceStatus !== "已租",
 	},
 	{
 		label: "月租金",
-		prop: "月租金",
+		prop: "monthlyRent",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
@@ -214,11 +214,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 			step: 10,
 			controlsPosition: "right",
 		},
-		hidden: (form: 车位结构图表单_VO) => form.车位状态 !== "已租",
+		hidden: (form: 车位结构图表单_VO) => form.parkingSpaceStatus !== "已租",
 	},
 	{
 		label: "管理费",
-		prop: "管理费",
+		prop: "managementFee",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
@@ -233,7 +233,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 充电设施
 	{
 		label: "是否充电桩",
-		prop: "是否充电桩",
+		prop: "hasEvChargingPile",
 		valueType: "select",
 		width: "140px",
 		options: 是否充电桩选项,
@@ -245,7 +245,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "充电桩功率",
-		prop: "充电桩功率",
+		prop: "chargingPilePower",
 		valueType: "select",
 		width: "140px",
 		options: [
@@ -261,13 +261,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 			clearable: true,
 			placeholder: "请选择功率",
 		},
-		hidden: (form: 车位结构图表单_VO) => form.是否充电桩 !== "是",
+		hidden: (form: 车位结构图表单_VO) => form.hasEvChargingPile !== "是",
 	},
 
 	// 备注信息
 	{
 		label: "备注信息",
-		prop: "备注信息",
+		prop: "remark",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -285,57 +285,57 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	车位编号: [
+	parkingSpaceNumber: [
 		{ required: true, message: "请输入车位编号", trigger: "blur" },
 		{ min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
 	],
-	车位类型: [
+	parkingSpaceType: [
 		{ required: true, message: "请选择车位类型", trigger: "change" },
 	],
-	车位状态: [
+	parkingSpaceStatus: [
 		{ required: true, message: "请选择车位状态", trigger: "change" },
 	],
-	车位位置: [
+	parkingSpaceLocation: [
 		{ required: true, message: "请输入车位位置", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	车位面积: [
+	parkingSpaceArea: [
 		{ required: true, message: "请输入车位面积", trigger: "blur" },
 	],
-	车位朝向: [
+	parkingSpaceOrientation: [
 		{ required: true, message: "请选择车位朝向", trigger: "change" },
 	],
-	楼层区域: [
+	floorArea: [
 		{ required: true, message: "请选择楼层区域", trigger: "change" },
 	],
-	业主姓名: [
+	ownerName: [
 		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
 	],
-	联系电话: [
+	contactPhone: [
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	车牌号码: [
+	licensePlateNumber: [
 		{ pattern: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/, message: "请输入正确的车牌号码", trigger: "blur" },
 	],
-	车辆品牌: [
+	vehicleBrand: [
 		{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" },
 	],
-	到期时间: [
+	expiryTime: [
 		{ required: true, message: "请选择到期时间", trigger: "change" },
 	],
-	月租金: [
+	monthlyRent: [
 		{ required: true, message: "请输入月租金", trigger: "blur" },
 	],
-	管理费: [
+	managementFee: [
 		{ required: true, message: "请输入管理费", trigger: "blur" },
 	],
-	是否充电桩: [
+	hasEvChargingPile: [
 		{ required: true, message: "请选择是否配备充电桩", trigger: "change" },
 	],
-	充电桩功率: [
+	chargingPilePower: [
 		{ required: true, message: "请选择充电桩功率", trigger: "change" },
 	],
-	备注信息: [
+	remark: [
 		{ max: 500, message: "备注信息长度不能超过 500 个字符", trigger: "blur" },
 	],
 });

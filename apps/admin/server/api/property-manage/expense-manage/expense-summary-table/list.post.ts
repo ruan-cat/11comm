@@ -9,13 +9,19 @@ import { mockExpenseSummaryTableData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ExpenseSummaryTableListItem>>> => {
 	const body = await readBody<ExpenseSummaryTableQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, time, expenseItemId, expenseItemName, status } = body;
 
 	let filteredData = [...mockExpenseSummaryTableData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (time) {
+		filteredData = filteredData.filter((item) => item.time.includes(time));
+	}
+	if (expenseItemId) {
+		filteredData = filteredData.filter((item) => item.expenseItemId.includes(expenseItemId));
+	}
+	if (expenseItemName) {
+		filteredData = filteredData.filter((item) => item.expenseItemName === expenseItemName);
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

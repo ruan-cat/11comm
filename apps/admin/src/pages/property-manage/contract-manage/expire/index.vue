@@ -12,56 +12,65 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ContractExpireFormProps, defaultForm, type 合同到期表单_VO } from "./components/form";
+import { type ContractExpireFormProps, defaultForm, type ContractExpireFormVO } from "./components/form";
 import ContractExpireForm from "./components/form.vue";
+import { useExpireListQuery } from "@/api/property-manage/contract-manage/expire";
+import { type ExpireListItem, type ExpireQueryParams, 合同类型Options, 处理状态Options } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 const contractExpireFormInstance = ref<InstanceType<typeof ContractExpireForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<到期合同_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useExpireListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		width: 160,
 	},
 	{
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		width: 140,
 	},
 	{
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		width: 120,
 	},
 	{
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		width: 140,
 	},
 	{
 		label: "乙方",
-		prop: "乙方",
+		prop: "partyB",
 		width: 140,
 	},
 	{
 		label: "合同金额",
-		prop: "合同金额",
+		prop: "contractAmount",
 		width: 120,
 	},
 	{
 		label: "到期时间",
-		prop: "到期时间",
+		prop: "endTime",
 		width: 160,
 	},
 	{
 		label: "处理状态",
-		prop: "处理状态",
+		prop: "processingStatus",
 		width: 100,
-		formatter: (row: 到期合同_列表数据) => {
+		formatter: (row: ExpireListItem) => {
 			const statusMap = {
 				未处理: "未处理",
 				处理中: "处理中",
@@ -69,22 +78,22 @@ const columns = ref<TableColumnList>([
 				已终止: "已终止",
 				已延期: "已延期",
 			};
-			return statusMap[row.处理状态] || row.处理状态;
+			return statusMap[row.processingStatus] || row.processingStatus;
 		},
 	},
 	{
 		label: "处理人",
-		prop: "处理人",
+		prop: "processor",
 		width: 100,
 	},
 	{
 		label: "处理时间",
-		prop: "处理时间",
+		prop: "processTime",
 		width: 160,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		width: 200,
 	},
 	{
@@ -107,11 +116,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 到期合同_列表查询_VO = {
-	合同名称: "",
-	合同编号: "",
-	合同类型: "",
-	处理状态: "",
+const plusSearchModelRef: FieldValues & Partial<ExpireQueryParams> = {
+	contractName: "",
+	contractNumber: "",
+	contractType: "",
+	processingStatus: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -127,45 +136,44 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		valueType: "input",
 	},
 	{
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		valueType: "input",
 	},
 	{
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		valueType: "select",
 		options: 合同类型Options,
 	},
 	{
 		label: "处理状态",
-		prop: "处理状态",
+		prop: "processingStatus",
 		valueType: "select",
 		options: 处理状态Options,
 	},
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -174,56 +182,21 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.合同名称) {
-			filteredData = filteredData.filter((item) => item.合同名称.includes(plusSearchModel.value.合同名称!));
-		}
-		if (plusSearchModel.value.合同编号) {
-			filteredData = filteredData.filter((item) => String(item.合同编号).includes(String(plusSearchModel.value.合同编号)));
-		}
-		if (plusSearchModel.value.合同类型) {
-			filteredData = filteredData.filter((item) => item.合同类型 === plusSearchModel.value.合同类型);
-		}
-		if (plusSearchModel.value.处理状态) {
-			filteredData = filteredData.filter((item) => item.处理状态 === plusSearchModel.value.处理状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<ExpireQueryParams>);
 }
 
 /** 表格搜索栏组件 配置  */
@@ -238,7 +211,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 到期合同_列表数据;
+	row?: ExpireListItem;
 }
 
 /** 模式控制 */
@@ -262,36 +235,36 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}合同到期处理`;
 
 	/** 业务对象 */
-	const 合同到期表单 = isAdd.value
+	const contractExpireFormVO: ContractExpireFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					合同名称: row?.合同名称 || "",
-					合同编号: row?.合同编号 || "",
-					合同类型: row?.合同类型 || "",
-					甲方: row?.甲方 || "",
-					乙方: row?.乙方 || "",
-					甲方联系人: row?.甲方联系人 || "",
-					甲方联系电话: row?.甲方联系电话 || "",
-					乙方联系人: row?.乙方联系人 || "",
-					乙方联系电话: row?.乙方联系电话 || "",
-					经办人: row?.经办人 || "",
-					经办电话: row?.经办电话 || "",
-					合同金额: row?.合同金额 || "",
-					开始时间: row?.开始时间 || "",
-					结束时间: row?.结束时间 || "",
-					签订时间: row?.签订时间 || "",
-					到期处理类型: row?.到期处理类型 || "续签",
-					处理人: row?.处理人 || "",
-					说明: row?.说明 || "",
-				})
+					contractName: row?.contractName || "",
+					contractNumber: row?.contractNumber || "",
+					contractType: row?.contractType || "采购合同",
+					partyA: row?.partyA || "",
+					partyB: row?.partyB || "",
+					partyAContact: "", // Missing in list item, using default
+					partyAPhone: "", // Missing in list item, using default
+					partyBContact: "", // Missing in list item, using default
+					partyBPhone: "", // Missing in list item, using default
+					handler: row?.handler || "",
+					handlerPhone: "", // Missing in list item, using default
+					contractAmount: row?.contractAmount || "",
+					startTime: row?.startTime || "",
+					endTime: row?.endTime || "",
+					signingTime: row?.signingTime || "",
+					processingType: "续签", // Default or derived
+					processor: row?.processor || "",
+					description: "", // Missing in list item
+				} as ContractExpireFormVO)
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractExpireFormProps = {
-		form: 合同到期表单 as 合同到期表单_VO,
-		defaultValues: 合同到期表单 as 合同到期表单_VO,
+		form: contractExpireFormVO,
+		defaultValues: contractExpireFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -341,6 +314,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -349,7 +323,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

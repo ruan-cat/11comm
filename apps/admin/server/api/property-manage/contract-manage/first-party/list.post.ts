@@ -9,13 +9,22 @@ import { mockFirstPartyData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<FirstPartyListItem>>> => {
 	const body = await readBody<FirstPartyQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, partyA, contactPerson, contactPhone, legalRepresentative, status } = body;
 
 	let filteredData = [...mockFirstPartyData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (partyA) {
+		filteredData = filteredData.filter((item) => item.partyA.includes(partyA));
+	}
+	if (contactPerson) {
+		filteredData = filteredData.filter((item) => item.contactPerson.includes(contactPerson));
+	}
+	if (contactPhone) {
+		filteredData = filteredData.filter((item) => item.contactPhone.includes(contactPhone));
+	}
+	if (legalRepresentative) {
+		filteredData = filteredData.filter((item) => item.legalRepresentative.includes(legalRepresentative));
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

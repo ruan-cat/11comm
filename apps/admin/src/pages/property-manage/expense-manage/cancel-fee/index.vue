@@ -11,43 +11,53 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type CancelFeeFormProps, defaultForm, type 取消费用表单_VO } from "./components/form";
+import { type CancelFeeFormProps, defaultForm, type CancelFeeFormVO } from "./components/form";
 import CancelFeeForm from "./components/form.vue";
+import { useCancelFeeListQuery } from "@/api/property-manage/expense-manage/cancel-fee";
+import { type CancelFeeListItem, type CancelFeeQueryParams, 审核状态Options } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
 
-/** 表格数据 */
-const tableData = ref<取消费用_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useCancelFeeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "批次号",
-		prop: "批次号",
+		prop: "batchNumber",
 		width: 140,
 	},
 	{
 		label: "员工",
-		prop: "员工",
+		prop: "employee",
 		width: 120,
 	},
 	{
 		label: "时间",
-		prop: "时间",
+		prop: "time",
 		width: 160,
 	},
 	{
 		label: "取消原因",
-		prop: "取消原因",
+		prop: "cancelReason",
 		minWidth: 200,
 	},
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		width: 120,
 	},
 	{
 		label: "审核意见",
-		prop: "审核意见",
+		prop: "auditOpinion",
 		minWidth: 180,
 	},
 	{
@@ -60,22 +70,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
+
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -84,6 +93,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -92,57 +102,17 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.批次号) {
-			filteredData = filteredData.filter((item) => item.批次号.includes(plusSearchModel.value.批次号!));
-		}
-		if (plusSearchModel.value.员工) {
-			filteredData = filteredData.filter((item) => item.员工.includes(plusSearchModel.value.员工!));
-		}
-		if (plusSearchModel.value.时间) {
-			filteredData = filteredData.filter((item) => item.时间.includes(plusSearchModel.value.时间!));
-		}
-		if (plusSearchModel.value.取消原因) {
-			filteredData = filteredData.filter((item) => item.取消原因.includes(plusSearchModel.value.取消原因!));
-		}
-		if (plusSearchModel.value.审核状态) {
-			filteredData = filteredData.filter((item) => item.审核状态 === plusSearchModel.value.审核状态);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 取消费用_列表查询_VO = {
-	批次号: "",
-	员工: "",
-	时间: "",
-	取消原因: "",
-	审核状态: "",
+const plusSearchModelRef: FieldValues & Partial<CancelFeeQueryParams> = {
+	batchNumber: "",
+	employee: "",
+	time: "",
+	cancelReason: "",
+	auditStatus: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -159,35 +129,35 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 批次号
 	{
 		label: "批次号",
-		prop: "批次号",
+		prop: "batchNumber",
 		valueType: "input",
 	},
 
 	// 员工
 	{
 		label: "员工",
-		prop: "员工",
+		prop: "employee",
 		valueType: "input",
 	},
 
 	// 时间
 	{
 		label: "时间",
-		prop: "时间",
+		prop: "time",
 		valueType: "input",
 	},
 
 	// 取消原因
 	{
 		label: "取消原因",
-		prop: "取消原因",
+		prop: "cancelReason",
 		valueType: "input",
 	},
 
 	// 审核状态
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		valueType: "select",
 		options: 审核状态Options,
 	},
@@ -203,16 +173,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<CancelFeeQueryParams>);
 }
 
 // 弹框相关功能
@@ -232,7 +203,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 取消费用_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -240,16 +211,16 @@ function openDialog(params: { mode: Mode; row?: 取消费用_列表数据 }) {
 	const title = `${modeText.value}取消费用审核`;
 
 	/** 业务对象 */
-	const 业务对象: 取消费用表单_VO = isAdd.value
+	const 业务对象: CancelFeeFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: cloneDeep({
 				...defaultForm,
-				批次号: row?.批次号 || "",
-				员工: row?.员工 || "",
-				时间: row?.时间 || "",
-				取消原因: row?.取消原因 || "",
-				审核状态: row?.审核状态 || "",
-				审核意见: row?.审核意见 || "",
+				batchNumber: row?.batchNumber || "",
+				employee: row?.employee || "",
+				time: row?.time || "",
+				cancelReason: row?.cancelReason || "",
+				auditStatus: row?.auditStatus || "",
+				auditOpinion: row?.auditOpinion || "",
 			});
 
 	/** 表单组件需要的props */
@@ -305,6 +276,7 @@ function openDialog(params: { mode: Mode; row?: 取消费用_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -313,7 +285,7 @@ function openDialog(params: { mode: Mode; row?: 取消费用_列表数据 }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

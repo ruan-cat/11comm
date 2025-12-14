@@ -1,7 +1,7 @@
 // ==================== 联合类型定义 ====================
 
 /** 费用项名称联合类型 */
-export type 费用项名称类型 =
+export type ExpenseItemNameType =
 	| "物业费"
 	| "水费"
 	| "电费"
@@ -18,26 +18,26 @@ export type 费用项名称类型 =
 /**
  * 费用汇总表表单数据类型
  */
-export interface 费用汇总表表单_VO {
+export interface ExpenseSummaryTableFormVO {
 	/** 时间 */
-	时间: string;
+	time: string;
 	/** 费用项ID */
-	费用项ID: string;
+	expenseItemId: string;
 	/** 费用项名称 */
-	费用项名称: 费用项名称类型;
+	expenseItemName: ExpenseItemNameType;
 	/** 应收金额 */
-	应收金额: string;
+	receivableAmount: string;
 	/** 实收金额 */
-	实收金额: string;
+	actualAmount: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 费用汇总表表单_VO = {
-	时间: "",
-	费用项ID: "",
-	费用项名称: "物业费",
-	应收金额: "",
-	实收金额: "",
+export const defaultForm: ExpenseSummaryTableFormVO = {
+	time: "",
+	expenseItemId: "",
+	expenseItemName: "物业费",
+	receivableAmount: "",
+	actualAmount: "",
 };
 
 /**
@@ -47,7 +47,7 @@ export const defaultForm: 费用汇总表表单_VO = {
  */
 export interface ExpenseSummaryTableFormProps {
 	/** 表单数据 */
-	form: 费用汇总表表单_VO;
+	form: ExpenseSummaryTableFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 费用汇总表表单_VO;
+	defaultValues: ExpenseSummaryTableFormVO;
 }

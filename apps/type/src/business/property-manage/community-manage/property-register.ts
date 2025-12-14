@@ -7,8 +7,20 @@ import type { OptionsType } from "../../../common";
 export interface PropertyRegisterListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 房屋产权ID Property Right ID */
+	propertyRightId: string;
+	/** 房屋ID House ID */
+	houseId: string;
+	/** 房屋编号 House Number */
+	houseNumber: string;
+	/** 姓名 Owner Name */
+	ownerName: string;
+	/** 联系方式 Contact Info */
+	contactInfo: string;
+	/** 身份证号 ID Card Number */
+	idCardNumber: string;
+	/** 地址 Address */
+	address: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +36,20 @@ export interface PropertyRegisterListItem {
  * Property register form VO
  */
 export interface PropertyRegisterFormVO {
-	/** 名称 Name */
-	name: string;
+	/** 房屋产权ID Property Right ID */
+	propertyRightId: string;
+	/** 房屋ID House ID */
+	houseId: string;
+	/** 房屋编号 House Number */
+	houseNumber: string;
+	/** 姓名 Owner Name */
+	ownerName: string;
+	/** 联系方式 Contact Info */
+	contactInfo: string;
+	/** 身份证号 ID Card Number */
+	idCardNumber: string;
+	/** 地址 Address */
+	address: string;
 	/** 状态 Status */
 	status: string;
 	/** 备注 Remark */
@@ -37,7 +61,13 @@ export interface PropertyRegisterFormVO {
  * Property register form default values
  */
 export const defaultForm: PropertyRegisterFormVO = {
-	name: "",
+	propertyRightId: "",
+	houseId: "",
+	houseNumber: "",
+	ownerName: "",
+	contactInfo: "",
+	idCardNumber: "",
+	address: "",
 	status: "启用",
 	remark: "",
 };
@@ -47,10 +77,24 @@ export const defaultForm: PropertyRegisterFormVO = {
  * PropertyRegister list query parameters
  */
 export interface PropertyRegisterQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 房屋ID House ID */
+	houseId?: string;
+	/** 房屋编号 House Number */
+	houseNumber?: string;
+	/** 姓名 Owner Name */
+	ownerName?: string;
+	/** 联系方式 Contact Info */
+	contactInfo?: string;
+	/** 身份证号 ID Card Number */
+	idCardNumber?: string;
+	/** 地址 Address */
+	address?: string;
 	/** 状态 Status */
 	status?: string;
+	/** 楼栋 Building */
+	building?: string;
+	/** 单元 Unit */
+	unit?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */

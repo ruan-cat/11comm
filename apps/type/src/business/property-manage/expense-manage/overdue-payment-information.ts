@@ -7,8 +7,18 @@ import type { OptionsType } from "../../../common";
 export interface OverduePaymentInformationListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 收费对象 Charge Object */
+	chargeObject: string;
+	/** 业主名称 Owner Name */
+	ownerName: string;
+	/** 手机号 Phone Number */
+	phoneNumber: string;
+	/** 开始时间 Start Time */
+	startTime: string;
+	/** 结束时间 End Time */
+	endTime: string;
+	/** 合计金额 Total Amount */
+	totalAmount: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +34,16 @@ export interface OverduePaymentInformationListItem {
  * OverduePaymentInformation list query parameters
  */
 export interface OverduePaymentInformationQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 收费对象 Charge Object */
+	chargeObject?: string;
+	/** 业主名称 Owner Name */
+	ownerName?: string;
+	/** 手机号 Phone Number */
+	phoneNumber?: string;
+	/** 开始时间 Start Time */
+	startTime?: string;
+	/** 结束时间 End Time */
+	endTime?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */
@@ -48,6 +66,8 @@ export const overduePaymentInformationStatusOptions: OptionsType = [
  * Charging object options
  */
 export const 收费对象Options: OptionsType = [
-	{ label: "业主", value: "业主" },
-	{ label: "租户", value: "租户" },
+	{ label: "住宅", value: "住宅" },
+	{ label: "商铺", value: "商铺" },
+	{ label: "车库", value: "车库" },
+	{ label: "储物间", value: "储物间" },
 ];

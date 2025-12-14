@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ContracteChargeFormProps, 费用类型, 合同收费表单_VO, defaultForm } from "./form";
+import { ContracteChargeFormProps, type FeeType, ContracteChargeFormVO, defaultForm } from "./form";
 
 const props = defineProps<ContracteChargeFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 合同收费表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ContracteChargeFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 合同收费表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ContracteChargeFormVO;
 
 /**
  * 表单对象
@@ -38,7 +38,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 费用类型
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		valueType: "select",
 		options: [
 			{ label: "物业费", value: "物业费" },
@@ -60,7 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 收费项目
 	{
 		label: "收费项目",
-		prop: "收费项目",
+		prop: "chargeItem",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -72,7 +72,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 合同状态
 	{
 		label: "合同状态",
-		prop: "合同状态",
+		prop: "contractStatus",
 		valueType: "select",
 		options: [
 			{ label: "待审核", value: "待审核" },
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 计费起始时间
 	{
 		label: "计费起始时间",
-		prop: "计费起始时间",
+		prop: "billingStartTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -101,7 +101,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 计费结束时间
 	{
 		label: "计费结束时间",
-		prop: "计费结束时间",
+		prop: "billingEndTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -114,11 +114,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
-	收费项目: [{ required: true, message: "请输入收费项目", trigger: "blur" }],
-	合同状态: [{ required: true, message: "请选择合同状态", trigger: "change" }],
-	计费起始时间: [{ required: true, message: "请选择计费起始时间", trigger: "change" }],
-	计费结束时间: [{ required: true, message: "请选择计费结束时间", trigger: "change" }],
+	feeType: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	chargeItem: [{ required: true, message: "请输入收费项目", trigger: "blur" }],
+	contractStatus: [{ required: true, message: "请选择合同状态", trigger: "change" }],
+	billingStartTime: [{ required: true, message: "请选择计费起始时间", trigger: "change" }],
+	billingEndTime: [{ required: true, message: "请选择计费结束时间", trigger: "change" }],
 });
 
 defineExpose({

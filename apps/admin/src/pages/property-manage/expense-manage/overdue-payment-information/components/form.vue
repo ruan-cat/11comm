@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { useTemplateRef } from "vue";
-import { OverduePaymentInformationFormProps, 收费对象Options, 缴费状态Options, type 欠费信息表单_VO } from "./form";
+import { useTemplateRef, ref, computed } from "vue";
+import { OverduePaymentInformationFormProps, chargeObjectOptions, paymentStatusOptions, type OverduePaymentInformationFormVO } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<OverduePaymentInformationFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 欠费信息表单_VO;
+const defaultValues = props.defaultValues as FieldValues & OverduePaymentInformationFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 欠费信息表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & OverduePaymentInformationFormVO;
 
 /**
  * 表单对象
@@ -28,8 +28,8 @@ const toRefForm = cloneDeep(props.form) as FieldValues & 欠费信息表单_VO;
  */
 const form = ref({
 	...toRefForm,
-	欠费时间范围: toRefForm.开始时间 && toRefForm.结束时间
-		? [toRefForm.开始时间, toRefForm.结束时间]
+	overdueTimeRange: toRefForm.startTime && toRefForm.endTime
+		? [toRefForm.startTime, toRefForm.endTime]
 		: ["", ""],
 });
 
@@ -37,8 +37,8 @@ const form = ref({
 const formComputed = computed(() => {
 	return {
 		...form.value,
-		开始时间: form.value.欠费时间范围?.[0] || "",
-		结束时间: form.value.欠费时间范围?.[1] || "",
+		startTime: form.value.overdueTimeRange?.[0] || "",
+		endTime: form.value.overdueTimeRange?.[1] || "",
 	};
 });
 
@@ -46,9 +46,9 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "收费对象",
-		prop: "收费对象",
+		prop: "chargeObject",
 		valueType: "select",
-		options: 收费对象Options,
+		options: chargeObjectOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -57,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "手机号",
-		prop: "手机号",
+		prop: "phoneNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系地址",
-		prop: "联系地址",
+		prop: "contactAddress",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -87,7 +87,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "欠费时间范围",
-		prop: "欠费时间范围",
+		prop: "overdueTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "daterange",
@@ -100,7 +100,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "欠费金额",
-		prop: "欠费金额",
+		prop: "overdueAmount",
 		valueType: "input-number",
 		fieldProps: {
 			precision: 2,
@@ -111,9 +111,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "缴费状态",
-		prop: "缴费状态",
+		prop: "paymentStatus",
 		valueType: "select",
-		options: 缴费状态Options,
+		options: paymentStatusOptions,
 		fieldProps: {
 			clearable: true,
 		},
@@ -121,7 +121,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "欠费说明",
-		prop: "欠费说明",
+		prop: "overdueDescription",
 		valueType: "textarea",
 		fieldProps: {
 			placeholder: "请输入欠费说明",
@@ -135,18 +135,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	收费对象: [{ required: true, message: "请选择收费对象", trigger: "change" }],
-	业主名称: [
+	chargeObject: [{ required: true, message: "请选择收费对象", trigger: "change" }],
+	ownerName: [
 		{ required: true, message: "请输入业主名称", trigger: "blur" },
 		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
 	],
-	手机号: [
+	phoneNumber: [
 		{ required: true, message: "请输入手机号", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	欠费时间范围: [{ required: true, message: "请选择欠费时间范围", trigger: "change" }],
-	欠费金额: [{ required: true, message: "请输入欠费金额", trigger: "blur" }],
-	缴费状态: [{ required: true, message: "请选择缴费状态", trigger: "change" }],
+	overdueTimeRange: [{ required: true, message: "请选择欠费时间范围", trigger: "change" }],
+	overdueAmount: [{ required: true, message: "请输入欠费金额", trigger: "blur" }],
+	paymentStatus: [{ required: true, message: "请选择缴费状态", trigger: "change" }],
 });
 
 // 默认导出，供外部使用

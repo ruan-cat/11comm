@@ -12,98 +12,50 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type MeterTypeFormProps, defaultForm } from "./components/form";
+import { type MeterTypeFormProps, defaultForm, type MeterReadingTypeFormVO } from "./components/form";
 import MeterTypeForm from "./components/form.vue";
+import { useMeterReadingTypeListQuery } from "@/api/property-manage/expense-manage/meter-reading-type";
+import { type MeterReadingTypeListItem, type MeterReadingTypeQueryParams, meterReadingTypeStatusOptions } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
 
 const meterTypeFormInstance = ref<InstanceType<typeof MeterTypeForm> | null>(null);
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & 抄表类型_列表查询_VO = {
-	名称: "",
-	说明: "",
-	状态: "",
-};
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/** 表格数据 */
-const tableData = ref<抄表类型_列表数据[]>([]);
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.名称) {
-			filteredData = filteredData.filter((item) => item.名称.includes(plusSearchModel.value.名称!));
-		}
-		if (plusSearchModel.value.说明) {
-			filteredData = filteredData.filter((item) => item.说明.includes(plusSearchModel.value.说明!));
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-		if (plusSearchModel.value.创建时间范围) {
-			const [startTime, endTime] = plusSearchModel.value.创建时间范围;
-			filteredData = filteredData.filter((item) => {
-				const createTime = new Date(item.创建时间).getTime();
-				const start = new Date(startTime).getTime();
-				const end = new Date(endTime).getTime();
-				return createTime >= start && createTime <= end;
-			});
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useMeterReadingTypeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		width: 180,
 	},
 	{
 		label: "说明",
-		prop: "说明",
+		prop: "description",
 		width: 300,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 180,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		width: 200,
 	},
 	{
@@ -116,37 +68,51 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<MeterReadingTypeQueryParams>);
 }
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<MeterReadingTypeQueryParams> = {
+	name: "",
+	description: "",
+	status: "",
+};
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -156,32 +122,28 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 名称 */
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		valueType: "input",
 	},
 	/** 说明 */
 	{
 		label: "说明",
-		prop: "说明",
+		prop: "description",
 		valueType: "input",
 	},
 	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: [
-			{ label: "全部", value: "" },
-			{ label: "启用", value: "启用" },
-			{ label: "停用", value: "停用" },
-		],
+		options: meterReadingTypeStatusOptions,
 	},
-	/** 创建时间范围 */
-	{
-		label: "创建时间范围",
-		prop: "创建时间范围",
-		valueType: "date-picker",
-	},
+	// /** 创建时间范围 */
+	// {
+	// 	label: "创建时间范围",
+	// 	prop: "创建时间范围", // Removed as it's not in QueryParams yet, can add if needed
+	// 	valueType: "date-picker",
+	// },
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -199,6 +161,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -221,18 +184,18 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 抄表类型_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: MeterReadingTypeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
-	const 业务对象: 抄表类型_VO = isAdd.value
+	const 业务对象: MeterReadingTypeFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					名称: row?.名称 || "",
-					说明: row?.说明 || "",
+					name: row?.name || "",
+					description: row?.description || "",
 				})
 			: cloneDeep(defaultForm);
 
@@ -292,6 +255,7 @@ function openDialog(params: { mode: Mode; row?: 抄表类型_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -300,7 +264,7 @@ function openDialog(params: { mode: Mode; row?: 抄表类型_列表数据 }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

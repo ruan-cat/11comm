@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ContractChangeFormProps, 变更类型, 合同变更表单_VO, defaultForm } from "./form";
+import { ContractChangeFormProps, ContractChangeFormVO } from "./form";
 
 const props = defineProps<ContractChangeFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 合同变更表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ContractChangeFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 合同变更表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ContractChangeFormVO;
 
 /**
  * 表单对象
@@ -43,13 +43,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 合同变更信息分组标题
 	{
 		label: "合同变更信息",
-		prop: "合同变更标题",
+		prop: "contractChangeTitle",
 		span: 24,
 	},
 	// 合同基本信息
 	{
 		label: "合同名称",
-		prop: "合同名称",
+		prop: "contractName",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -60,7 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "合同编号",
-		prop: "合同编号",
+		prop: "contractNumber",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -71,7 +71,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "合同类型",
-		prop: "合同类型",
+		prop: "contractType",
 		valueType: "select",
 		options: [
 			{ label: "采购合同", value: "采购合同" },
@@ -90,7 +90,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 甲方信息
 	{
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -101,7 +101,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "甲方联系人",
-		prop: "甲方联系人",
+		prop: "partyAContact",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -112,7 +112,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "甲方联系电话",
-		prop: "甲方联系电话",
+		prop: "partyAPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -125,7 +125,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 乙方信息
 	{
 		label: "乙方",
-		prop: "乙方",
+		prop: "partyB",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -136,7 +136,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "乙方联系人",
-		prop: "乙方联系人",
+		prop: "partyBContact",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -147,7 +147,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "乙方联系电话",
-		prop: "乙方联系电话",
+		prop: "partyBPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -160,7 +160,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 经办信息
 	{
 		label: "经办人",
-		prop: "经办人",
+		prop: "handler",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -171,7 +171,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "经办电话",
-		prop: "经办电话",
+		prop: "handlerPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -182,7 +182,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "合同金额",
-		prop: "合同金额",
+		prop: "contractAmount",
 		valueType: "input",
 		required: true,
 		span: 8,
@@ -195,7 +195,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 时间信息
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -207,7 +207,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -219,7 +219,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "签订时间",
-		prop: "签订时间",
+		prop: "signingTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -233,7 +233,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 变更信息
 	{
 		label: "变更类型",
-		prop: "变更类型",
+		prop: "changeType",
 		valueType: "select",
 		options: [
 			{ label: "合同金额", value: "合同金额" },
@@ -251,7 +251,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "变更人",
-		prop: "变更人",
+		prop: "changer",
 		valueType: "input",
 		required: true,
 		span: 16,
@@ -264,7 +264,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 变更前后内容
 	{
 		label: "变更前",
-		prop: "变更前",
+		prop: "beforeChange",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
@@ -275,7 +275,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "变更后",
-		prop: "变更后",
+		prop: "afterChange",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
@@ -288,7 +288,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 说明
 	{
 		label: "变更说明",
-		prop: "说明",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
@@ -301,7 +301,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 合同附件
 	{
 		label: "合同附件",
-		prop: "合同附件",
+		prop: "attachments",
 		valueType: "text",
 		fieldProps: {
 			action: "/api/upload",
@@ -319,41 +319,41 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	合同名称: [
+	contractName: [
 		{ required: true, message: "请输入合同名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	合同编号: [
+	contractNumber: [
 		{ required: true, message: "请输入合同编号", trigger: "blur" },
 		{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" },
 	],
-	合同类型: [{ required: true, message: "请选择合同类型", trigger: "change" }],
-	甲方: [{ required: true, message: "请输入甲方名称", trigger: "blur" }],
-	甲方联系人: [{ required: true, message: "请输入甲方联系人", trigger: "blur" }],
-	甲方联系电话: [
+	contractType: [{ required: true, message: "请选择合同类型", trigger: "change" }],
+	partyA: [{ required: true, message: "请输入甲方名称", trigger: "blur" }],
+	partyAContact: [{ required: true, message: "请输入甲方联系人", trigger: "blur" }],
+	partyAPhone: [
 		{ required: true, message: "请输入甲方联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	乙方: [{ required: true, message: "请输入乙方名称", trigger: "blur" }],
-	乙方联系人: [{ required: true, message: "请输入乙方联系人", trigger: "blur" }],
-	乙方联系电话: [
+	partyB: [{ required: true, message: "请输入乙方名称", trigger: "blur" }],
+	partyBContact: [{ required: true, message: "请输入乙方联系人", trigger: "blur" }],
+	partyBPhone: [
 		{ required: true, message: "请输入乙方联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	经办人: [{ required: true, message: "请输入经办人姓名", trigger: "blur" }],
-	经办电话: [
+	handler: [{ required: true, message: "请输入经办人姓名", trigger: "blur" }],
+	handlerPhone: [
 		{ required: true, message: "请输入经办电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	合同金额: [{ required: true, message: "请输入合同金额", trigger: "blur" }],
-	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	签订时间: [{ required: true, message: "请选择签订时间", trigger: "change" }],
-	变更类型: [{ required: true, message: "请选择变更类型", trigger: "change" }],
-	变更人: [{ required: true, message: "请输入变更人姓名", trigger: "blur" }],
-	变更前: [{ required: true, message: "请输入变更前的内容", trigger: "blur" }],
-	变更后: [{ required: true, message: "请输入变更后的内容", trigger: "blur" }],
-	说明: [{ required: true, message: "请输入变更说明", trigger: "blur" }],
+	contractAmount: [{ required: true, message: "请输入合同金额", trigger: "blur" }],
+	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	signingTime: [{ required: true, message: "请选择签订时间", trigger: "change" }],
+	changeType: [{ required: true, message: "请选择变更类型", trigger: "change" }],
+	changer: [{ required: true, message: "请输入变更人姓名", trigger: "blur" }],
+	beforeChange: [{ required: true, message: "请输入变更前的内容", trigger: "blur" }],
+	afterChange: [{ required: true, message: "请输入变更后的内容", trigger: "blur" }],
+	description: [{ required: true, message: "请输入变更说明", trigger: "blur" }],
 });
 
 defineExpose({

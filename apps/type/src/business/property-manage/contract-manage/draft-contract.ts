@@ -7,8 +7,26 @@ import type { OptionsType } from "../../../common";
 export interface DraftContractListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 合同名称 Contract Name */
+	contractName: string;
+	/** 合同编号 Contract Number */
+	contractNumber: string;
+	/** 父合同编号 Parent Contract Number */
+	parentContractNumber?: string;
+	/** 合同类型 Contract Type */
+	contractType: string;
+	/** 甲方 Party A */
+	partyA: string;
+	/** 乙方 Party B */
+	partyB: string;
+	/** 经办人 Handler */
+	handler: string;
+	/** 合同金额 Contract Amount */
+	contractAmount: string;
+	/** 开始时间 Start Time */
+	startTime: string;
+	/** 结束时间 End Time */
+	endTime: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +42,12 @@ export interface DraftContractListItem {
  * DraftContract list query parameters
  */
 export interface DraftContractQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 合同名称 Contract Name */
+	contractName?: string;
+	/** 合同编号 Contract Number */
+	contractNumber?: string;
+	/** 合同类型 Contract Type */
+	contractType?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */
@@ -39,8 +61,10 @@ export interface DraftContractQueryParams {
  * Status options
  */
 export const draftContractStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "草稿", value: "草稿" },
+	{ label: "审批中", value: "审批中" },
+	{ label: "已生效", value: "已生效" },
+	{ label: "已终止", value: "已终止" },
 ];
 
 /**
@@ -63,10 +87,7 @@ export const contractTypeOptionsData = 合同草稿类型Options;
  * @description 合同草稿状态选项
  * Draft contract status options
  */
-export const 合同草稿状态Options: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];
+export const 合同草稿状态Options = draftContractStatusOptions;
 
 // ==================== 兼容旧类型定义 ====================
 

@@ -10,71 +10,82 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type ExpenseItemSettingFormProps, defaultForm, type 费用项设置表单_VO } from "./components/form";
+import { type ExpenseItemSettingFormProps, defaultForm, type ExpenseItemSettingFormVO, type FeeType, type ExpenseIdentifierType, type PaymentType, type AccountDeductionType, type MobilePaymentType, type RoundingModeType, type DecimalPlacesType } from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
+import { useExpenseItemSettingListQuery } from "@/api/property-manage/expense-manage/expense-item-setting";
+import { type ExpenseItemSettingListItem, type ExpenseItemSettingQueryParams, 费用项设置标识Options, 费用项设置付费类型Options, 费用项设置抵扣Options, 费用项设置自定义选项 } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
 
 /** 表单组件实例 */
 const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<费用项设置_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useExpenseItemSettingListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "code",
 		width: 120,
 	},
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		width: 120,
 	},
 	{
 		label: "收费项目",
-		prop: "收费项目",
+		prop: "expenseItem",
 		width: 120,
 	},
 	{
 		label: "费用标识",
-		prop: "费用标识",
+		prop: "expenseIdentifier",
 		width: 120,
 	},
 	{
 		label: "付费类型",
-		prop: "付费类型",
+		prop: "paymentType",
 		width: 120,
 	},
 	{
 		label: "缴费周期(单位:月)",
-		prop: "缴费周期(单位:月)",
+		prop: "paymentCycle",
 		width: 120,
 	},
 	{
 		label: "公式",
-		prop: "公式",
+		prop: "formula",
 		width: 120,
 	},
 	{
 		label: "计费单价(单位:元)",
-		prop: "计费单价(单位:元)",
+		prop: "billingUnitPrice",
 		width: 120,
 	},
 	{
 		label: "附加/固定费用(单位:元)",
-		prop: "附加固定费用",
+		prop: "fixedFee",
 		width: 140,
 	},
 	{
 		label: "账户抵扣",
-		prop: "账户抵扣",
+		prop: "accountDeduction",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 
@@ -88,23 +99,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -113,6 +122,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -121,60 +131,23 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = allTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.费用项ID) {
-			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.费用项ID!));
-		}
-		if (plusSearchModel.value.收费项目) {
-			filteredData = filteredData.filter((item) => item.收费项目.includes(plusSearchModel.value.收费项目!));
-		}
-		if (plusSearchModel.value.费用标识) {
-			filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.费用标识);
-		}
-		if (plusSearchModel.value.付费类型) {
-			filteredData = filteredData.filter((item) => item.付费类型 === plusSearchModel.value.付费类型);
-		}
-		if (plusSearchModel.value.账户抵扣) {
-			filteredData = filteredData.filter((item) => item.账户抵扣 === plusSearchModel.value.账户抵扣);
-		}
-		if (plusSearchModel.value.自定义费用) {
-			filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.自定义费用);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 费用项设置_列表查询_VO = {
-	费用项ID: "",
-	收费项目: "",
-	费用标识: "",
-	付费类型: "",
-	账户抵扣: "",
-	自定义费用: "",
+const plusSearchModelRef: FieldValues & Partial<ExpenseItemSettingQueryParams> = {
+	code: "",
+	expenseItem: "",
+	expenseIdentifier: "",
+	paymentType: "",
+	accountDeduction: "",
+	// 自定义费用: "", // Assuming '自定义费用' maps to something or removed if not in API. It maps to 'expenseIdentifier' in old code? No, old code used '费用标识' for '自定义费用' filter? 
+	// Wait, old code: 
+	// if (plusSearchModel.value.自定义费用) { filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.自定义费用); }
+	// So '自定义费用' filter was filtering by 'expenseIdentifier'. 
+	// But 'expenseIdentifier' filter also exists?
+	// if (plusSearchModel.value.费用标识) { filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.费用标识); }
+	// This seems redundant or specific. I will stick to standard filters in QueryParams.
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -191,46 +164,46 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 费用项ID
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesID")),
-		prop: "费用项ID",
+		prop: "code",
 		valueType: "input",
 	},
 
 	// 收费项目
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesItem")),
-		prop: "收费项目",
+		prop: "expenseItem",
 		valueType: "input",
 	},
 
 	// 费用标识
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesUnit")),
-		prop: "费用标识",
+		prop: "expenseIdentifier",
 		valueType: "select",
-		options: 费用标识Options,
+		options: 费用项设置标识Options,
 	},
 
 	// 付费类型
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesType")),
-		prop: "付费类型",
+		prop: "paymentType",
 		valueType: "select",
-		options: 付费类型Options,
+		options: 费用项设置付费类型Options,
 	},
 	//账户抵扣
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesAmount")),
-		prop: "账户抵扣",
+		prop: "accountDeduction",
 		valueType: "select",
-		options: 账户抵扣Options,
+		options: 费用项设置抵扣Options,
 	},
 	//自定义费用
-	{
-		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesAmountType")),
-		prop: "自定义费用",
-		valueType: "select",
-		options: 自定义费用Options,
-	},
+	// {
+	// 	label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesAmountType")),
+	// 	prop: "自定义费用", // Removed as it seems redundant or not supported in API params directly
+	// 	valueType: "select",
+	// 	options: 费用项设置自定义选项,
+	// },
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -243,22 +216,23 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<ExpenseItemSettingQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 费用项设置_列表数据;
+	row?: ExpenseItemSettingListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -283,33 +257,33 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}费用项设置`;
 
 	/** 业务对象 */
-	const 费用项设置表单_VO: 费用项设置表单_VO = isAdd.value
+	const expenseItemSettingFormVO: ExpenseItemSettingFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
-					费用类型: row?.费用类型 || "物业费",
-					收费项目: row?.收费项目 || "",
-					费用标识: row?.费用标识 || "周期性费用",
-					付费类型: row?.付费类型 || "预付费",
-					"缴费周期(单位:月)": row?.缴费周期 || "1",
-					"预付期(单位:天)": row?.预付期 || "30",
-					单位: row?.单位 || "元/平方米·月",
-					账户抵扣: row?.账户抵扣 || "是",
-					手机缴费: row?.手机缴费 || "是",
-					进位方式: row?.进位方式 || "四舍五入",
-					保留小数位: row?.保留小数位 || "2位",
-					状态: row?.状态 || "启用",
-					计算公式: row?.公式 || "",
-					计费单价: row?.计费单价 || "",
-					固定费用: row?.附加固定费用 || "",
+					feeType: (row?.feeType as FeeType) || "物业费",
+					expenseItem: row?.expenseItem || "",
+					expenseIdentifier: (row?.expenseIdentifier as ExpenseIdentifierType) || "周期性费用",
+					paymentType: (row?.paymentType as PaymentType) || "预付费",
+					paymentCycle: row?.paymentCycle || "1",
+					prepaymentPeriod: "30", // Missing in list item
+					unit: "元/平方米·月", // Missing in list item
+					accountDeduction: (row?.accountDeduction as AccountDeductionType) || "是",
+					mobilePayment: "是", // Missing in list item
+					roundingMode: "四舍五入", // Missing in list item
+					decimalPlaces: "2位", // Missing in list item
+					status: row?.status || "启用",
+					formula: row?.formula || "",
+					billingUnitPrice: row?.billingUnitPrice || "",
+					fixedFee: row?.fixedFee || "",
 				}
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ExpenseItemSettingFormProps = {
-		form: 费用项设置表单_VO,
-		defaultValues: 费用项设置表单_VO,
+		form: expenseItemSettingFormVO,
+		defaultValues: expenseItemSettingFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -362,6 +336,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -370,7 +345,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

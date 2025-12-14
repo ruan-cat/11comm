@@ -11,107 +11,59 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type FirstPartyFormProps, defaultForm, type 合同甲方表单_VO } from "./components/form";
+import { type FirstPartyFormProps, defaultForm, type FirstPartyFormVO } from "./components/form";
 import FirstPartyForm from "./components/form.vue";
+import { useFirstPartyListQuery } from "@/api/property-manage/contract-manage/first-party";
+import { type FirstPartyListItem, type FirstPartyQueryParams } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 /** 表单组件实例 */
 const firstPartyFormInstance = ref<InstanceType<typeof FirstPartyForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<合同甲方_列表数据[]>([]);
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.甲方) {
-			filteredData = filteredData.filter((item) => item.甲方.includes(plusSearchModel.value.甲方!));
-		}
-		if (plusSearchModel.value.甲方联系人) {
-			filteredData = filteredData.filter((item) => item.甲方联系人.includes(plusSearchModel.value.甲方联系人!));
-		}
-		if (plusSearchModel.value.联系电话) {
-			filteredData = filteredData.filter((item) => item.联系电话.includes(plusSearchModel.value.联系电话!));
-		}
-		if (plusSearchModel.value.法定代表人) {
-			filteredData = filteredData.filter((item) => item.法定代表人.includes(plusSearchModel.value.法定代表人!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useFirstPartyListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		width: 200,
 	},
 	{
 		label: "甲方联系人",
-		prop: "甲方联系人",
+		prop: "contactPerson",
 		width: 120,
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		width: 130,
 	},
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		minWidth: 250,
 	},
 	{
 		label: "统一社会信用代码",
-		prop: "统一社会信用代码",
+		prop: "creditCode",
 		width: 180,
 	},
 	{
 		label: "成立日期",
-		prop: "成立日期",
+		prop: "establishmentDate",
 		width: 120,
 	},
 	{
 		label: "法定代表人",
-		prop: "法定代表人",
+		prop: "legalRepresentative",
 		width: 120,
 	},
 	{
@@ -123,6 +75,24 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
+/** 分页配置 */
+const pagination = computed<PaginationProps>(() => ({
+	...defaultPagination,
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
+
+/** 处理页数变化 */
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
+}
+
+/** 处理页码变化 即后端的 pageIndex */
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
+}
+
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
@@ -133,6 +103,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -146,15 +117,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 合同甲方_列表数据 = {
-	甲方: "",
-	甲方联系人: "",
-	联系电话: "",
-	地址: "",
-	统一社会信用代码: "",
-	成立日期: "",
-	法定代表人: "",
-	经营范围: "",
+const plusSearchModelRef: FieldValues & Partial<FirstPartyQueryParams> = {
+	partyA: "",
+	contactPerson: "",
+	contactPhone: "",
+	legalRepresentative: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -170,25 +137,25 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "甲方",
-		prop: "甲方",
+		prop: "partyA",
 		valueType: "input",
 	},
 
 	{
 		label: "甲方联系人",
-		prop: "甲方联系人",
+		prop: "contactPerson",
 		valueType: "input",
 	},
 
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	{
 		label: "法定代表人",
-		prop: "法定代表人",
+		prop: "legalRepresentative",
 		valueType: "input",
 	},
 ]);
@@ -203,16 +170,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<FirstPartyQueryParams>);
 }
 
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -229,7 +197,7 @@ async function testAsync() {
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 合同甲方_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -237,26 +205,26 @@ function openDialog(params: { mode: Mode; row?: 合同甲方_列表数据 }) {
 	const title = `${modeText.value}合同甲方`;
 
 	/** 业务对象 */
-	const 合同甲方表单_VO: 合同甲方表单_VO = isAdd.value
+	const firstPartyFormVO: FirstPartyFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					甲方: row?.甲方 || "",
-					甲方联系人: row?.甲方联系人 || "",
-					联系电话: row?.联系电话 || "",
-					地址: row?.地址 || "",
-					统一社会信用代码: row?.统一社会信用代码 || "",
-					成立日期: row?.成立日期 || "",
-					法定代表人: row?.法定代表人 || "",
-					经营范围: row?.经营范围 || "",
+					partyA: row?.partyA || "",
+					contactPerson: row?.contactPerson || "",
+					contactPhone: row?.contactPhone || "",
+					address: row?.address || "",
+					creditCode: row?.creditCode || "",
+					establishmentDate: row?.establishmentDate || "",
+					legalRepresentative: row?.legalRepresentative || "",
+					businessScope: row?.businessScope || "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: FirstPartyFormProps = {
-		form: 合同甲方表单_VO,
-		defaultValues: 合同甲方表单_VO,
+		form: firstPartyFormVO,
+		defaultValues: firstPartyFormVO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -308,6 +276,7 @@ function openDialog(params: { mode: Mode; row?: 合同甲方_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -316,7 +285,7 @@ function openDialog(params: { mode: Mode; row?: 合同甲方_列表数据 }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

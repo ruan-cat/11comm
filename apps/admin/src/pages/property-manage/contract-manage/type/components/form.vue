@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { AddFormProps, 合同类型表单_VO, defaultForm } from "./form";
+import { AddFormProps, ContractTypeFormVO, defaultForm, 审核类型Options } from "./form";
 
 const props = defineProps<AddFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 合同类型表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ContractTypeFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 合同类型表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ContractTypeFormVO;
 
 /**
  * 表单对象
@@ -38,7 +38,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 类型名称 */
 	{
 		label: "类型名称",
-		prop: "类型名称",
+		prop: "typeName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -50,12 +50,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 是否审核 */
 	{
 		label: "是否审核",
-		prop: "是否审核",
+		prop: "isAudit",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: 审核类型Options,
 		required: true,
 		fieldProps: {
 			clearable: true,
@@ -66,7 +63,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	/** 描述 */
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
@@ -81,14 +78,14 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	类型名称: [
+	typeName: [
 		{ required: true, message: "请输入类型名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	是否审核: [
+	isAudit: [
 		{ required: true, message: "请选择是否审核", trigger: "change" },
 	],
-	描述: [
+	description: [
 		{ max: 500, message: "描述长度不能超过500个字符", trigger: "blur" },
 	],
 });

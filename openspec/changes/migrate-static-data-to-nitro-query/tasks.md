@@ -358,7 +358,7 @@
 - [x] 4.1.3.5 新建 `apps/admin/src/api/property-manage/community-manage/house-decoration/index.ts`
 - [x] 4.1.3.6 改写 `apps/admin/src/pages/property-manage/community-manage/house-decoration/index.vue` 列表页
 - [x] 4.1.3.7 删除 `apps/admin/src/pages/property-manage/community-manage/house-decoration/test-data.ts`
-- [ ] 4.1.3.8 更新 `apps/admin/src/pages/property-manage/community-manage/house-decoration/form.ts` 和 `form.vue` 文件
+- [x] 4.1.3.8 更新 `apps/admin/src/pages/property-manage/community-manage/house-decoration/form.ts` 和 `form.vue` 文件
 
 #### 4.1.4 community-manage/my
 
@@ -380,7 +380,7 @@
 - [x] 4.1.5.5 新建 `apps/admin/src/api/property-manage/community-manage/notice/index.ts`
 - [ ] 4.1.5.6 改写 `apps/admin/src/pages/property-manage/community-manage/notice/index.vue` 列表页
 - [x] 4.1.5.7 删除 `apps/admin/src/pages/property-manage/community-manage/notice/test-data.ts`
-- [ ] 4.1.5.8 更新 `apps/admin/src/pages/property-manage/community-manage/notice/form.ts` 和 `form.vue` 文件
+- [x] 4.1.5.8 更新 `apps/admin/src/pages/property-manage/community-manage/notice/form.ts` 和 `form.vue` 文件
 
 #### 4.1.6 community-manage/parking-space-structure-diagram
 
@@ -402,7 +402,7 @@
 - [x] 4.1.7.5 新建 `apps/admin/src/api/property-manage/community-manage/property-register/index.ts`
 - [ ] 4.1.7.6 改写 `apps/admin/src/pages/property-manage/community-manage/property-register/index.vue` 列表页
 - [x] 4.1.7.7 删除 `apps/admin/src/pages/property-manage/community-manage/property-register/test-data.ts`
-- [ ] 4.1.7.8 更新 `apps/admin/src/pages/property-manage/community-manage/property-register/form.ts` 和 `form.vue` 文件
+- [x] 4.1.7.8 更新 `apps/admin/src/pages/property-manage/community-manage/property-register/form.ts` 和 `form.vue` 文件
 
 ### 4.2 contract-manage 子模块 (5 页面 = 35 任务)
 
@@ -413,9 +413,9 @@
 - [x] 4.2.1.3 新建 `apps/admin/server/api/property-manage/contract-manage/change/mock-data.ts`
 - [x] 4.2.1.4 新建 `apps/admin/server/api/property-manage/contract-manage/change/list.post.ts`
 - [x] 4.2.1.5 新建 `apps/admin/src/api/property-manage/contract-manage/change/index.ts`
-- [ ] 4.2.1.6 改写 `apps/admin/src/pages/property-manage/contract-manage/change/index.vue` 列表页
+- [x] 4.2.1.6 改写 `apps/admin/src/pages/property-manage/contract-manage/change/index.vue` 列表页
 - [x] 4.2.1.7 删除 `apps/admin/src/pages/property-manage/contract-manage/change/test-data.ts`
-- [ ] 4.2.1.8 更新 `apps/admin/src/pages/property-manage/contract-manage/change/form.ts` 和 `form.vue` 文件
+- [x] 4.2.1.8 更新 `apps/admin/src/pages/property-manage/contract-manage/change/form.ts` 和 `form.vue` 文件
 
 #### 4.2.2 contract-manage/draft-contract
 
@@ -424,9 +424,9 @@
 - [x] 4.2.2.3 新建 `apps/admin/server/api/property-manage/contract-manage/draft-contract/mock-data.ts`
 - [x] 4.2.2.4 新建 `apps/admin/server/api/property-manage/contract-manage/draft-contract/list.post.ts`
 - [x] 4.2.2.5 新建 `apps/admin/src/api/property-manage/contract-manage/draft-contract/index.ts`
-- [ ] 4.2.2.6 改写 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/index.vue` 列表页
+- [x] 4.2.2.6 改写 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/index.vue` 列表页
 - [x] 4.2.2.7 删除 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/test-data.ts`
-- [ ] 4.2.2.8 更新 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/form.ts` 和 `form.vue` 文件
+- [x] 4.2.2.8 更新 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/form.ts` 和 `form.vue` 文件
 
 #### 4.2.3 contract-manage/expire
 
@@ -435,9 +435,9 @@
 - [x] 4.2.3.3 新建 `apps/admin/server/api/property-manage/contract-manage/expire/mock-data.ts`
 - [x] 4.2.3.4 新建 `apps/admin/server/api/property-manage/contract-manage/expire/list.post.ts`
 - [x] 4.2.3.5 新建 `apps/admin/src/api/property-manage/contract-manage/expire/index.ts`
-- [ ] 4.2.3.6 改写 `apps/admin/src/pages/property-manage/contract-manage/expire/index.vue` 列表页
+- [x] 4.2.3.6 改写 `apps/admin/src/pages/property-manage/contract-manage/expire/index.vue` 列表页
 - [x] 4.2.3.7 删除 `apps/admin/src/pages/property-manage/contract-manage/expire/test-data.ts`
-- [ ] 4.2.3.8 更新 `apps/admin/src/pages/property-manage/contract-manage/expire/form.ts` 和 `form.vue` 文件
+- [x] 4.2.3.8 更新 `apps/admin/src/pages/property-manage/contract-manage/expire/form.ts` 和 `form.vue` 文件
 
 #### 4.2.4 contract-manage/first-party
 
@@ -457,9 +457,9 @@
 - [x] 4.2.5.3 新建 `apps/admin/server/api/property-manage/contract-manage/type/mock-data.ts`
 - [x] 4.2.5.4 新建 `apps/admin/server/api/property-manage/contract-manage/type/list.post.ts`
 - [x] 4.2.5.5 新建 `apps/admin/src/api/property-manage/contract-manage/type/index.ts`
-- [ ] 4.2.5.6 改写 `apps/admin/src/pages/property-manage/contract-manage/type/index.vue` 列表页
+- [x] 4.2.5.6 改写 `apps/admin/src/pages/property-manage/contract-manage/type/index.vue` 列表页
 - [x] 4.2.5.7 删除 `apps/admin/src/pages/property-manage/contract-manage/type/test-data.ts`
-- [ ] 4.2.5.8 更新 `apps/admin/src/pages/property-manage/contract-manage/type/form.ts` 和 `form.vue` 文件
+- [x] 4.2.5.8 更新 `apps/admin/src/pages/property-manage/contract-manage/type/form.ts` 和 `form.vue` 文件
 
 ### 4.3 expense-manage 子模块 (16 页面 = 112 任务)
 
@@ -477,7 +477,7 @@
 - [x] 4.3.2.2 创建 `server/api/property-manage/expense-manage/contracte-charge/mock-data.ts`
 - [x] 4.3.2.3 创建 `server/api/property-manage/expense-manage/contracte-charge/list.post.ts`
 - [x] 4.3.2.4 创建 `src/api/property-manage/expense-manage/contracte-charge/index.ts`
-- [ ] 4.3.2.5 更新 `src/pages/property-manage/expense-manage/contracte-charge/index.vue`
+- [x] 4.3.2.5 更新 `src/pages/property-manage/expense-manage/contracte-charge/index.vue`
 
 #### 4.3.3 expense-manage/discount-apply
 
@@ -485,7 +485,7 @@
 - [x] 4.3.3.2 创建 `server/api/property-manage/expense-manage/discount-apply/mock-data.ts`
 - [x] 4.3.3.3 创建 `server/api/property-manage/expense-manage/discount-apply/list.post.ts`
 - [x] 4.3.3.4 创建 `src/api/property-manage/expense-manage/discount-apply/index.ts`
-- [ ] 4.3.3.5 更新 `src/pages/property-manage/expense-manage/discount-apply/index.vue`
+- [x] 4.3.3.5 更新 `src/pages/property-manage/expense-manage/discount-apply/index.vue`
 
 #### 4.3.4 expense-manage/discount-setting
 
@@ -493,7 +493,7 @@
 - [x] 4.3.4.2 创建 `server/api/property-manage/expense-manage/discount-setting/mock-data.ts`
 - [x] 4.3.4.3 创建 `server/api/property-manage/expense-manage/discount-setting/list.post.ts`
 - [x] 4.3.4.4 创建 `src/api/property-manage/expense-manage/discount-setting/index.ts`
-- [ ] 4.3.4.5 更新 `src/pages/property-manage/expense-manage/discount-setting/index.vue`
+- [x] 4.3.4.5 更新 `src/pages/property-manage/expense-manage/discount-setting/index.vue`
 
 #### 4.3.5 expense-manage/discount-type
 
@@ -501,7 +501,7 @@
 - [x] 4.3.5.2 创建 `server/api/property-manage/expense-manage/discount-type/mock-data.ts`
 - [x] 4.3.5.3 创建 `server/api/property-manage/expense-manage/discount-type/list.post.ts`
 - [x] 4.3.5.4 创建 `src/api/property-manage/expense-manage/discount-type/index.ts`
-- [ ] 4.3.5.5 更新 `src/pages/property-manage/expense-manage/discount-type/index.vue`
+- [x] 4.3.5.5 更新 `src/pages/property-manage/expense-manage/discount-type/index.vue`
 
 #### 4.3.6 expense-manage/expense-item-setting
 
@@ -509,7 +509,7 @@
 - [x] 4.3.6.2 创建 `server/api/property-manage/expense-manage/expense-item-setting/mock-data.ts`
 - [x] 4.3.6.3 创建 `server/api/property-manage/expense-manage/expense-item-setting/list.post.ts`
 - [x] 4.3.6.4 创建 `src/api/property-manage/expense-manage/expense-item-setting/index.ts`
-- [ ] 4.3.6.5 更新 `src/pages/property-manage/expense-manage/expense-item-setting/index.vue`
+- [x] 4.3.6.5 更新 `src/pages/property-manage/expense-manage/expense-item-setting/index.vue`
 
 #### 4.3.7 expense-manage/expense-summary-table
 
@@ -517,7 +517,7 @@
 - [x] 4.3.7.2 创建 `server/api/property-manage/expense-manage/expense-summary-table/mock-data.ts`
 - [x] 4.3.7.3 创建 `server/api/property-manage/expense-manage/expense-summary-table/list.post.ts`
 - [x] 4.3.7.4 创建 `src/api/property-manage/expense-manage/expense-summary-table/index.ts`
-- [ ] 4.3.7.5 更新 `src/pages/property-manage/expense-manage/expense-summary-table/index.vue`
+- [x] 4.3.7.5 更新 `src/pages/property-manage/expense-manage/expense-summary-table/index.vue`
 
 #### 4.3.8 expense-manage/house-charge
 
@@ -525,7 +525,7 @@
 - [x] 4.3.8.2 创建 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
 - [x] 4.3.8.3 创建 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
 - [x] 4.3.8.4 创建 `src/api/property-manage/expense-manage/house-charge/index.ts`
-- [ ] 4.3.8.5 更新 `src/pages/property-manage/expense-manage/house-charge/index.vue`
+- [x] 4.3.8.5 更新 `src/pages/property-manage/expense-manage/house-charge/index.vue`
 
 #### 4.3.9 expense-manage/meter-reading-type
 
@@ -533,7 +533,7 @@
 - [x] 4.3.9.2 创建 `server/api/property-manage/expense-manage/meter-reading-type/mock-data.ts`
 - [x] 4.3.9.3 创建 `server/api/property-manage/expense-manage/meter-reading-type/list.post.ts`
 - [x] 4.3.9.4 创建 `src/api/property-manage/expense-manage/meter-reading-type/index.ts`
-- [ ] 4.3.9.5 更新 `src/pages/property-manage/expense-manage/meter-reading-type/index.vue`
+- [x] 4.3.9.5 更新 `src/pages/property-manage/expense-manage/meter-reading-type/index.vue`
 
 #### 4.3.10 expense-manage/overdue-payment-information
 
@@ -541,7 +541,7 @@
 - [x] 4.3.10.2 创建 `server/api/property-manage/expense-manage/overdue-payment-information/mock-data.ts`
 - [x] 4.3.10.3 创建 `server/api/property-manage/expense-manage/overdue-payment-information/list.post.ts`
 - [x] 4.3.10.4 创建 `src/api/property-manage/expense-manage/overdue-payment-information/index.ts`
-- [ ] 4.3.10.5 更新 `src/pages/property-manage/expense-manage/overdue-payment-information/index.vue`
+- [x] 4.3.10.5 更新 `src/pages/property-manage/expense-manage/overdue-payment-information/index.vue`
 
 #### 4.3.11 expense-manage/payment-review
 
@@ -549,7 +549,7 @@
 - [x] 4.3.11.2 创建 `server/api/property-manage/expense-manage/payment-review/mock-data.ts`
 - [x] 4.3.11.3 创建 `server/api/property-manage/expense-manage/payment-review/list.post.ts`
 - [x] 4.3.11.4 创建 `src/api/property-manage/expense-manage/payment-review/index.ts`
-- [ ] 4.3.11.5 更新 `src/pages/property-manage/expense-manage/payment-review/index.vue`
+- [x] 4.3.11.5 更新 `src/pages/property-manage/expense-manage/payment-review/index.vue`
 
 #### 4.3.12 expense-manage/refund-review
 

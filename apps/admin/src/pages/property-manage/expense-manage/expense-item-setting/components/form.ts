@@ -1,4 +1,4 @@
-const _费用类型 = [
+const _feeType = [
 	"物业费",
 	"押金",
 	"停车费",
@@ -32,68 +32,68 @@ const _费用类型 = [
 // ==================== 联合类型定义 ====================
 
 /** 费用类型联合类型 */
-export type 费用类型 = (typeof _费用类型)[number];
+export type FeeType = (typeof _feeType)[number];
 
 /** 费用标识联合类型 */
-export type 费用标识类型 = "周期性费用" | "一次性费用";
+export type ExpenseIdentifierType = "周期性费用" | "一次性费用";
 
 /** 付费类型联合类型 */
-export type 付费类型 = "预付费" | "后付费";
+export type PaymentType = "预付费" | "后付费";
 
 /** 账户抵扣联合类型 */
-export type 账户抵扣类型 = "是" | "否";
+export type AccountDeductionType = "是" | "否";
 
 /** 手机缴费联合类型 */
-export type 手机缴费类型 = "是" | "否";
+export type MobilePaymentType = "是" | "否";
 
 /** 进位方式联合类型 */
-export type 进位方式类型 = "四舍五入" | "向上取整" | "向下取整";
+export type RoundingModeType = "四舍五入" | "向上取整" | "向下取整";
 
 /** 保留小数位联合类型 */
-export type 保留小数位类型 = "取整" | "1位" | "2位" | "3位" | "4位";
+export type DecimalPlacesType = "取整" | "1位" | "2位" | "3位" | "4位";
 
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
-export interface 费用项设置表单_VO {
-	费用类型: 费用类型;
-	收费项目: string;
-	费用标识: 费用标识类型;
-	付费类型: 付费类型;
+export interface ExpenseItemSettingFormVO {
+	feeType: FeeType;
+	expenseItem: string;
+	expenseIdentifier: ExpenseIdentifierType;
+	paymentType: PaymentType;
 	/**
 	 * 费用类型为 押金 时，该表单隐藏
 	 */
-	"缴费周期(单位:月)"?: string;
+	paymentCycle?: string;
 	/**
 	 * 费用类型为 煤气费 时，该表单隐藏
 	 */
-	"预付期(单位:天)"?: string;
-	单位: string;
-	账户抵扣: 账户抵扣类型;
-	手机缴费: 手机缴费类型;
-	进位方式: 进位方式类型;
-	保留小数位: 保留小数位类型;
-	状态: string;
-	计算公式: string;
-	计费单价: string;
-	固定费用: string | `${number}` | number;
+	prepaymentPeriod?: string;
+	unit: string;
+	accountDeduction: AccountDeductionType;
+	mobilePayment: MobilePaymentType;
+	roundingMode: RoundingModeType;
+	decimalPlaces: DecimalPlacesType;
+	status: string;
+	formula: string;
+	billingUnitPrice: string;
+	fixedFee: string | `${number}` | number;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 费用项设置表单_VO = {
-	费用类型: "物业费",
-	收费项目: "",
-	费用标识: "周期性费用",
-	付费类型: "预付费",
-	"缴费周期(单位:月)": "1",
-	"预付期(单位:天)": "30",
-	单位: "元/平方米·月",
-	账户抵扣: "是",
-	手机缴费: "是",
-	进位方式: "四舍五入",
-	保留小数位: "2位",
-	状态: "启用",
-	计算公式: "",
-	计费单价: "",
-	固定费用: "",
+export const defaultForm: ExpenseItemSettingFormVO = {
+	feeType: "物业费",
+	expenseItem: "",
+	expenseIdentifier: "周期性费用",
+	paymentType: "预付费",
+	paymentCycle: "1",
+	prepaymentPeriod: "30",
+	unit: "元/平方米·月",
+	accountDeduction: "是",
+	mobilePayment: "是",
+	roundingMode: "四舍五入",
+	decimalPlaces: "2位",
+	status: "启用",
+	formula: "",
+	billingUnitPrice: "",
+	fixedFee: "",
 };
 
 /**
@@ -103,7 +103,7 @@ export const defaultForm: 费用项设置表单_VO = {
  */
 export interface ExpenseItemSettingFormProps {
 	/** 表单数据 */
-	form: 费用项设置表单_VO;
+	form: ExpenseItemSettingFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 费用项设置表单_VO;
+	defaultValues: ExpenseItemSettingFormVO;
 }

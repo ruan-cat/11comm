@@ -7,10 +7,34 @@ import type { OptionsType } from "../../../common";
 export interface ExpireListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 合同名称 Contract Name */
+	contractName: string;
+	/** 合同编号 Contract Number */
+	contractNumber: string;
+	/** 合同类型 Contract Type */
+	contractType: string;
+	/** 甲方 Party A */
+	partyA: string;
+	/** 乙方 Party B */
+	partyB: string;
+	/** 经办人 Handler */
+	handler: string;
+	/** 合同金额 Contract Amount */
+	contractAmount: string;
+	/** 开始时间 Start Time */
+	startTime: string;
+	/** 结束时间 End Time */
+	endTime: string;
+	/** 签订时间 Signing Time */
+	signingTime: string;
 	/** 状态 Status */
 	status: string;
+	/** 处理状态 Processing Status */
+	processingStatus: string;
+	/** 处理人 Processor */
+	processor: string;
+	/** 处理时间 Process Time */
+	processTime: string;
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
@@ -24,10 +48,14 @@ export interface ExpireListItem {
  * Expire list query parameters
  */
 export interface ExpireQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 合同名称 Contract Name */
+	contractName?: string;
+	/** 合同编号 Contract Number */
+	contractNumber?: string;
+	/** 合同类型 Contract Type */
+	contractType?: string;
+	/** 处理状态 Processing Status */
+	processingStatus?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */

@@ -1,29 +1,31 @@
+import { 审核类型Options } from "@01s-11comm/type";
+
 // ==================== 类型定义 ====================
 
 /**
  * 是否审核类型
  */
-export type 是否审核 = "是" | "否";
+export type IsAuditType = "是" | "否";
 
 /**
  * 合同类型表单数据类型
  */
-export interface 合同类型表单_VO {
+export interface ContractTypeFormVO {
 	/** 类型名称 */
-	类型名称: string;
+	typeName: string;
 	/** 是否审核 */
-	是否审核: 是否审核;
+	isAudit: IsAuditType;
 	/** 描述 */
-	描述: string;
+	description: string;
 }
 
 // ==================== 常量定义 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 合同类型表单_VO = {
-	类型名称: "",
-	是否审核: "是",
-	描述: "",
+export const defaultForm: ContractTypeFormVO = {
+	typeName: "",
+	isAudit: "是",
+	description: "",
 };
 
 // ==================== Props 类型定义 ====================
@@ -35,7 +37,9 @@ export const defaultForm: 合同类型表单_VO = {
  */
 export interface AddFormProps {
 	/** 表单数据 */
-	form: 合同类型表单_VO;
+	form: ContractTypeFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 合同类型表单_VO;
+	defaultValues: ContractTypeFormVO;
 }
+
+export { 审核类型Options };

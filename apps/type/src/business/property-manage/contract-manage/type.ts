@@ -7,8 +7,12 @@ import type { OptionsType } from "../../../common";
 export interface TypeListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 类型名称 Type Name */
+	typeName: string;
+	/** 是否审核 Is Audit */
+	isAudit: string;
+	/** 描述 Description */
+	description: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +28,10 @@ export interface TypeListItem {
  * Type list query parameters
  */
 export interface TypeQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 类型名称 Type Name */
+	typeName?: string;
+	/** 是否审核 Is Audit */
+	isAudit?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */
@@ -48,10 +54,15 @@ export const typeStatusOptions: OptionsType = [
  * Audit type options
  */
 export const 审核类型Options: OptionsType = [
-	{ label: "待审核", value: "待审核" },
-	{ label: "已通过", value: "已通过" },
-	{ label: "已拒绝", value: "已拒绝" },
+	{ label: "是", value: "是" },
+	{ label: "否", value: "否" },
 ];
+
+/**
+ * @description 审核类型选项别名
+ * Audit type options alias
+ */
+export const auditTypeOptions = 审核类型Options;
 
 // ==================== 兼容旧类型定义 ====================
 

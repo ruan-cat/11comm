@@ -9,59 +9,78 @@ definePage({
 });
 
 import { ref, computed, onMounted } from "vue";
-import { ElMessageBox } from "element-plus";
+import { h } from "vue";
+import { ElMessageBox, ElTag } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import type { PropertyRegisterFormProps, 产权登记表单_VO } from "./components/form";
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
+import { usePropertyRegisterListQuery } from "@/api/property-manage/community-manage/property-register";
+import {
+	type PropertyRegisterListItem,
+	type PropertyRegisterQueryParams,
+	审核状态Options,
+	楼栋Options,
+	单元Options
+} from "@01s-11comm/type";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<产权登记_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	usePropertyRegisterListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "房屋产权ID",
-		prop: "房屋产权ID",
+		prop: "propertyRightId",
 		width: 120,
 	},
 	{
 		label: "房屋ID",
-		prop: "房屋ID",
+		prop: "houseId",
 		width: 120,
 	},
 	{
 		label: "房屋编号",
-		prop: "房屋编号",
+		prop: "houseNumber",
 		width: 120,
 	},
 	{
 		label: "姓名",
-		prop: "姓名",
+		prop: "ownerName",
 		width: 120,
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		width: 120,
 	},
 	{
 		label: "身份证号",
-		prop: "身份证号",
-		width: 120,
+		prop: "idCardNumber",
+		width: 180,
 	},
 	{
 		label: "地址",
-		prop: "地址",
-		width: 120,
+		prop: "address",
+		width: 200,
 	},
 	{
 		label: "状态",
-		prop: "状态",
-		width: 120,
+		prop: "status",
+		width: 100,
+		cellRenderer: ({ row }) => {
+			const statusMap = {
+				启用: { type: "success", text: "启用" },
+				禁用: { type: "danger", text: "禁用" },
+			};
+			const statusInfo = statusMap[row.status] || { type: "info", text: row.status };
+			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
+		},
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -73,23 +92,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -98,6 +115,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -111,16 +129,16 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 产权登记_列表查询_VO = {
-	房屋ID: "",
-	房屋编号: "",
-	姓名: "",
-	联系方式: "",
-	身份证号: "",
-	地址: "",
-	审核状态: "",
-	楼栋: "",
-	单元: "",
+const plusSearchModelRef: FieldValues & Partial<PropertyRegisterQueryParams> = {
+	houseId: "",
+	houseNumber: "",
+	ownerName: "",
+	contactInfo: "",
+	idCardNumber: "",
+	address: "",
+	status: "",
+	building: "",
+	unit: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -137,49 +155,49 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 房屋ID */
 	{
 		label: "房屋ID",
-		prop: "房屋ID",
+		prop: "houseId",
 		valueType: "input",
 	},
 
 	/** 房屋编号 */
 	{
 		label: "房屋编号",
-		prop: "房屋编号",
+		prop: "houseNumber",
 		valueType: "input",
 	},
 
 	/** 姓名 */
 	{
 		label: "姓名",
-		prop: "姓名",
+		prop: "ownerName",
 		valueType: "input",
 	},
 
 	/** 联系方式 */
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		valueType: "input",
 	},
 
 	/** 身份证号 */
 	{
 		label: "身份证号",
-		prop: "身份证号",
+		prop: "idCardNumber",
 		valueType: "input",
 	},
 
 	/** 地址 */
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		valueType: "input",
 	},
 
 	/** 审核状态 */
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "status",
 		valueType: "select",
 		options: 审核状态Options,
 	},
@@ -187,7 +205,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 楼栋 */
 	{
 		label: "楼栋",
-		prop: "楼栋",
+		prop: "building",
 		valueType: "select",
 		options: 楼栋Options,
 	},
@@ -195,7 +213,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 单元 */
 	{
 		label: "单元",
-		prop: "单元",
+		prop: "unit",
 		valueType: "select",
 		options: 单元Options,
 	},
@@ -210,69 +228,24 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = mockTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.房屋ID) {
-			filteredData = filteredData.filter((item) => item.房屋ID.includes(plusSearchModel.value.房屋ID!));
-		}
-		if (plusSearchModel.value.房屋编号) {
-			filteredData = filteredData.filter((item) => item.房屋编号.includes(plusSearchModel.value.房屋编号!));
-		}
-		if (plusSearchModel.value.姓名) {
-			filteredData = filteredData.filter((item) => item.姓名.includes(plusSearchModel.value.姓名!));
-		}
-		if (plusSearchModel.value.联系方式) {
-			filteredData = filteredData.filter((item) => item.联系方式.includes(plusSearchModel.value.联系方式!));
-		}
-		if (plusSearchModel.value.身份证号) {
-			filteredData = filteredData.filter((item) => item.身份证号.includes(plusSearchModel.value.身份证号!));
-		}
-		if (plusSearchModel.value.地址) {
-			filteredData = filteredData.filter((item) => item.地址.includes(plusSearchModel.value.地址!));
-		}
-		if (plusSearchModel.value.审核状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.审核状态);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<PropertyRegisterQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 产权登记_列表数据;
+	row?: PropertyRegisterListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -299,14 +272,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					房屋产权ID: row?.房屋产权ID || "",
-					房屋ID: row?.房屋ID || "",
-					房屋编号: row?.房屋编号 || "",
-					姓名: row?.姓名 || "",
-					联系方式: row?.联系方式 || "",
-					身份证号: row?.身份证号 || "",
-					地址: row?.地址 || "",
-					状态: row?.状态 || "",
+					propertyRightId: row?.propertyRightId || "",
+					houseId: row?.houseId || "",
+					houseNumber: row?.houseNumber || "",
+					ownerName: row?.ownerName || "",
+					contactInfo: row?.contactInfo || "",
+					idCardNumber: row?.idCardNumber || "",
+					address: row?.address || "",
+					status: row?.status || "",
 				})
 			: cloneDeep(defaultForm);
 
@@ -331,8 +304,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = PropertyRegisterFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = PropertyRegisterFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
@@ -340,7 +315,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = PropertyRegisterFormInstance.value.formComputed;
+					const formComputed = PropertyRegisterFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -349,7 +324,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					PropertyRegisterFormInstance.value.plusFormInstance.handleReset();
+					PropertyRegisterFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -357,12 +332,13 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await PropertyRegisterFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await PropertyRegisterFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -371,9 +347,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 /** 删除单个产权登记 */
-async function handleDelete(row: 产权登记_列表数据) {
+async function handleDelete(row: PropertyRegisterListItem) {
 	try {
-		await ElMessageBox.confirm(`确认删除产权登记记录：${row.房屋编号} - ${row.姓名}？`, "删除确认", {
+		await ElMessageBox.confirm(`确认删除产权登记记录：${row.houseNumber} - ${row.ownerName}？`, "删除确认", {
 			confirmButtonText: transformI18n($t("common.buttons.del")),
 			cancelButtonText: transformI18n($t("common.buttons.cancel")),
 			type: "warning",
@@ -384,7 +360,7 @@ async function handleDelete(row: 产权登记_列表数据) {
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		// 刷新表格数据
-		await loadTableData();
+		await refetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			// TODO: 显示错误提示
@@ -393,7 +369,7 @@ async function handleDelete(row: 产权登记_列表数据) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

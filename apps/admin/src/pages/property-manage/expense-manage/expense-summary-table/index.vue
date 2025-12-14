@@ -13,43 +13,54 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type ExpenseSummaryTableFormProps,
 	defaultForm,
-	type 费用汇总表表单_VO,
-	type 费用项名称类型,
+	type ExpenseSummaryTableFormVO,
+	type ExpenseItemNameType,
 } from "./components/form";
 import ExpenseSummaryTableForm from "./components/form.vue";
+import { useExpenseSummaryTableListQuery } from "@/api/property-manage/expense-manage/expense-summary-table";
+import { type ExpenseSummaryTableListItem, type ExpenseSummaryTableQueryParams, 费用项名称Options } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { cloneDeep } from "lodash-es";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { h } from "vue";
 
 /** 表单组件实例 */
 const expenseSummaryTableFormInstance = ref<InstanceType<typeof ExpenseSummaryTableForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<费用汇总表_列表数据[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
+	useExpenseSummaryTableListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "时间",
-		prop: "时间",
+		prop: "time",
 		width: 120,
 	},
 	{
 		label: "费用项ID",
-		prop: "费用项ID",
+		prop: "expenseItemId",
 		width: 120,
 	},
 	{
 		label: "费用项名称",
-		prop: "费用项名称",
+		prop: "expenseItemName",
 		width: 120,
 	},
 	{
 		label: "应收金额",
-		prop: "应收金额",
+		prop: "receivableAmount",
 		width: 120,
 	},
 	{
 		label: "实收金额",
-		prop: "实收金额",
+		prop: "actualAmount",
 		width: 120,
 	},
 	{
@@ -62,23 +73,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
 }
 
 /** 表格组件 配置 */
@@ -87,6 +96,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
+	loading: isLoading.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -95,48 +105,14 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.时间) {
-			filteredData = filteredData.filter((item) => item.时间.includes(plusSearchModel.value.时间!));
-		}
-		if (plusSearchModel.value.费用项ID) {
-			filteredData = filteredData.filter((item) => item.费用项ID.includes(plusSearchModel.value.费用项ID!));
-		}
-		if (plusSearchModel.value.费用项名称) {
-			filteredData = filteredData.filter((item) => item.费用项名称 === plusSearchModel.value.费用项名称);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 费用汇总表_列表查询_VO = {
-	时间: "",
-	费用项ID: "",
-	费用项名称: "",
+const plusSearchModelRef: FieldValues & Partial<ExpenseSummaryTableQueryParams> = {
+	time: "",
+	expenseItemId: "",
+	expenseItemName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -153,21 +129,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 时间
 	{
 		label: "时间",
-		prop: "时间",
+		prop: "time",
 		valueType: "input",
 	},
 
 	// 费用项ID
 	{
 		label: "费用项ID",
-		prop: "费用项ID",
+		prop: "expenseItemId",
 		valueType: "input",
 	},
 
 	// 费用项名称
 	{
 		label: "费用项名称",
-		prop: "费用项名称",
+		prop: "expenseItemName",
 		valueType: "select",
 		options: 费用项名称Options,
 		fieldProps: {
@@ -187,22 +163,23 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	} as Partial<ExpenseSummaryTableQueryParams>);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 费用汇总表_列表数据;
+	row?: ExpenseSummaryTableListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -227,23 +204,23 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}费用汇总表`;
 
 	/** 业务对象 */
-	const 费用汇总表表单_VO: 费用汇总表表单_VO = isAdd.value
+	const expenseSummaryTableFormVO: ExpenseSummaryTableFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
-					时间: row?.时间 || "",
-					费用项ID: row?.费用项ID || "",
-					费用项名称: (row?.费用项名称 as 费用项名称类型) || "物业费",
-					应收金额: row?.应收金额 || "",
-					实收金额: row?.实收金额 || "",
+					time: row?.time || "",
+					expenseItemId: row?.expenseItemId || "",
+					expenseItemName: (row?.expenseItemName as ExpenseItemNameType) || "物业费",
+					receivableAmount: row?.receivableAmount || "",
+					actualAmount: row?.actualAmount || "",
 				}
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ExpenseSummaryTableFormProps = {
-		form: 费用汇总表表单_VO,
-		defaultValues: 费用汇总表表单_VO,
+		form: expenseSummaryTableFormVO,
+		defaultValues: expenseSummaryTableFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -292,6 +269,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await refetch();
 					}
 				},
 			},
@@ -300,7 +278,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 

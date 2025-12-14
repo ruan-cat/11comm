@@ -7,8 +7,32 @@ import type { OptionsType } from "../../../common";
 export interface PaymentReviewListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 房屋 House */
+	house: string;
+	/** 费用项目 Expense Item */
+	expenseItem: string;
+	/** 付费周期 Payment Period */
+	paymentPeriod: string;
+	/** 缴费起始时间 Payment Start Time */
+	paymentStartTime: string;
+	/** 缴费结束时间 Payment End Time */
+	paymentEndTime: string;
+	/** 应付金额 Payable Amount */
+	payableAmount: string;
+	/** 实付金额 Paid Amount */
+	paidAmount: string;
+	/** 操作员工 Operator */
+	operator: string;
+	/** 缴费时间 Payment Time */
+	paymentTime: string;
+	/** 审核状态 Audit Status */
+	auditStatus: string;
+	/** 审核说明 Audit Description */
+	auditDescription: string;
+	/** 缴费备注 Payment Remark */
+	paymentRemark: string;
+	/** 详情 Details */
+	details: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +48,16 @@ export interface PaymentReviewListItem {
  * PaymentReview list query parameters
  */
 export interface PaymentReviewQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 房屋 House */
+	house?: string;
+	/** 费用项目 Expense Item */
+	expenseItem?: string;
+	/** 审核状态 Audit Status */
+	auditStatus?: string;
+	/** 缴费起始时间 Payment Start Time */
+	paymentStartTime?: string;
+	/** 缴费结束时间 Payment End Time */
+	paymentEndTime?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */

@@ -1,6 +1,6 @@
 /** 导入类型和默认值供其他文件使用 */
-import type { 产权登记表单_VO } from "@01s-11comm/type";
-import { defaultForm, 产权登记审核状态Options } from "@01s-11comm/type";
+import type { PropertyRegisterFormVO as 产权登记表单_VO } from "@01s-11comm/type";
+import { defaultForm, 产权登记审核状态Options as 审核状态Options } from "@01s-11comm/type";
 
 /**
  * 产权登记表单 props
@@ -17,4 +17,4 @@ export interface PropertyRegisterFormProps {
 /** 导出类型和默认值供其他文件使用 */
 export type { 产权登记表单_VO };
 export { defaultForm };
-export { 产权登记审核状态Options as 审核状态Options };
+export { 审核状态Options };

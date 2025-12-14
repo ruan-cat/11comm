@@ -9,13 +9,27 @@ import { mockPaymentReviewData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentReviewListItem>>> => {
 	const body = await readBody<PaymentReviewQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, house, expenseItem, auditStatus, paymentStartTime, paymentEndTime, status } = body;
 
 	let filteredData = [...mockPaymentReviewData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (house) {
+		filteredData = filteredData.filter((item) => item.house.includes(house));
+	}
+	if (expenseItem) {
+		filteredData = filteredData.filter((item) => item.expenseItem === expenseItem);
+	}
+	if (auditStatus) {
+		filteredData = filteredData.filter((item) => item.auditStatus === auditStatus);
+	}
+	if (paymentStartTime && paymentEndTime) {
+		filteredData = filteredData.filter((item) => {
+			const itemTime = new Date(item.paymentTime).getTime();
+			const start = new Date(paymentStartTime).getTime();
+			const end = new Date(paymentEndTime).getTime();
+			return itemTime >= start && itemTime <= end;
+		});
 	}
 	if (status) {
 		filteredData = filteredData.filter((item) => item.status === status);

@@ -7,8 +7,24 @@ import type { OptionsType } from "../../../common";
 export interface ChangeListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 合同名称 Contract Name */
+	contractName: string;
+	/** 合同编号 Contract Number */
+	contractNumber: string;
+	/** 合同类型 Contract Type */
+	contractType: string;
+	/** 甲方 Party A */
+	partyA: string;
+	/** 乙方 Party B */
+	partyB: string;
+	/** 变更类型 Change Type */
+	changeType: string;
+	/** 变更人 Changer */
+	changer: string;
+	/** 申请时间 Apply Time */
+	applyTime: string;
+	/** 说明 Description */
+	description: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -24,8 +40,12 @@ export interface ChangeListItem {
  * Change list query parameters
  */
 export interface ChangeQueryParams {
-	/** 名称 Name */
-	name?: string;
+	/** 合同名称 Contract Name */
+	contractName?: string;
+	/** 合同编号 Contract Number */
+	contractNumber?: string;
+	/** 合同类型 Contract Type */
+	contractType?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */
@@ -39,8 +59,11 @@ export interface ChangeQueryParams {
  * Status options
  */
 export const changeStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "待审核", value: "待审核" },
+	{ label: "审核中", value: "审核中" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+	{ label: "已撤回", value: "已撤回" },
 ];
 
 /**
