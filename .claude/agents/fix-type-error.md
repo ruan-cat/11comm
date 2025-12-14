@@ -15,6 +15,7 @@ color: blue
 ```bash
 # 完整类型检查
 pnpm -F @01s-11comm/admin typecheck
+pnpm -F @01s-11comm/type typecheck
 
 # 或分别运行 TypeScript 和 Vue TypeScript 检查
 npx tsc --noEmit --skipLibCheck
@@ -415,14 +416,15 @@ const plusFormRules = reactive({
 
 ### 7.3 操作步骤（推荐顺序）
 
-1. 运行 `pnpm -F @01s-11comm/admin typecheck` 获取完整清单。
-2. 对成批 JSX 报错的 demo/展示文件先加 `ts-nocheck` 兜底。
-3. 对核心业务文件精修：
+1. 主动使用来自`类型项目`提供的业务类型和公共类型。
+2. 运行 `pnpm -F @01s-11comm/admin typecheck` 获取完整清单。
+3. 对成批 JSX 报错的 demo/展示文件先加 `ts-nocheck` 兜底。
+4. 对核心业务文件精修：
    - Element Plus JSX：组件改为 `ElXxx as any` 或转 template。
    - Iconify：改用已注册组件并 `as any`。
    - Renderer：必要时 `as any` 包裹。
-4. 路由类型错误：临时 `as any`，再排期纠正路由枚举。
-5. 再跑 typecheck；零报错后，如需提升质量，逐步移除 `ts-nocheck` 并补全类型。
+5. 路由类型错误：临时 `as any`，再排期纠正路由枚举。
+6. 再跑 typecheck；零报错后，如需提升质量，逐步移除 `ts-nocheck` 并补全类型。
 
 ### 7.4 后续精修指引
 
