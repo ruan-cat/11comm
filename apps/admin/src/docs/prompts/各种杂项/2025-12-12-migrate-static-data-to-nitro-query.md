@@ -235,7 +235,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 5. 先完成 `类型项目` 内代码的字段名换成英文，再开始去修改 vue 组件的中文字段命名。
 6. 不断地运行 `后台项目` 提供的类型报错检查命令，直到整个项目都不出现任何类型报错。
 
-### 07 <!-- TODO:  --> 手动整理公共通用使用的业务类型，并设计新的公共下拉选择数组的新规范
+### 07 <!-- TODO: order 2 --> 手动整理公共通用使用的业务类型，并设计新的公共下拉选择数组的新规范
 
 对于类型项目，请你在 `./apps/type/src/business` 目录下面，搜索以下代码片段：
 
@@ -250,7 +250,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 3. 在 `openspec\changes\migrate-static-data-to-nitro-query` 目录内，阅读现有的迁移规范。并且新增满足 openspec 的公共业务下拉选择数组迁移规范。
    > 统一的将这一种满足 `OptionsType` 类型的下拉选择数组，都迁移到 `apps\type\src\common\business-options.ts` 文件内，统一使用这里的下拉选择数组。
 
-### 08 <!-- TODO: --> 更新 `common-business-options` 规范，禁止类型项目使用含有中文的变量名
+### 08 <!-- TODO:  order 1 --> 更新 `common-business-options` 规范，禁止类型项目使用含有中文的变量名
 
 1. 阅读该 openspec 规范文件 `openspec\changes\migrate-static-data-to-nitro-query\specs\common-business-options\spec.md`
 2. 这个规范文件，本身很不符合其他的规范文件约束。按照其他的 openspec 规范，是不应该在 type 类型项目和 admin 管理后天项目内，使用任何中文变量名的。
