@@ -9,6 +9,12 @@ export interface ContracteChargeListItem {
 	id: string;
 	/** 名称 Name */
 	name: string;
+	/** 合同名称 Contract Name */
+	contractName: string;
+	/** 开始时间 Start Time */
+	startTime: string;
+	/** 结束时间 End Time */
+	endTime: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */

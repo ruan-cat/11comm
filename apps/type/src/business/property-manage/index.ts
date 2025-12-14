@@ -29,8 +29,8 @@ export type {
 export {
 	myStatusOptions,
 	省份选项,
-	parkingSpaceTypeOptions,
-	parkingSpaceStatusOptions,
+	// parkingSpaceTypeOptions 已移至 business-options.ts
+	// parkingSpaceStatusOptions 已移至 business-options.ts
 	floorAreaOptions,
 	isChargingPileOptions,
 	propertyRegisterStatusOptions,

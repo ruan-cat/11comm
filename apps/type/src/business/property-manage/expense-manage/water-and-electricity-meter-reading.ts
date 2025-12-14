@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { meterTypeOptions } from "../../../common/business-options";
 
 /**
  * @description water-and-electricity-meter-reading列表数据
@@ -43,11 +44,4 @@ export const waterAndElectricityMeterReadingStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-/**
- * @description 表类型选项
- * Meter type options
- */
-export const meterTypeOptions: OptionsType = [
-	{ label: "水表", value: "水表" },
-	{ label: "电表", value: "电表" },
-];
+// 注意：meterTypeOptions 已从 "../../../common/business-options" 导入

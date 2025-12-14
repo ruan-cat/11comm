@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { parkingSpaceTypeOptions, parkingSpaceStatusOptions } from "../../../common/business-options";
 
 /**
  * @description 车位结构图列表数据项
@@ -64,28 +65,7 @@ export interface ParkingSpaceStructureDiagramQueryParams {
 	pageSize: number;
 }
 
-/**
- * @description 车位类型选项
- * Parking space type options
- */
-export const parkingSpaceTypeOptions: OptionsType = [
-	{ label: "标准车位", value: "标准车位" },
-	{ label: "大型车位", value: "大型车位" },
-	{ label: "小型车位", value: "小型车位" },
-	{ label: "子母车位", value: "子母车位" },
-];
-
-/**
- * @description 车位状态选项
- * Parking space status options
- */
-export const parkingSpaceStatusOptions: OptionsType = [
-	{ label: "空闲", value: "空闲" },
-	{ label: "已售", value: "已售" },
-	{ label: "已租", value: "已租" },
-	{ label: "待售", value: "待售" },
-	{ label: "待租", value: "待租" },
-];
+// 注意：parkingSpaceTypeOptions 和 parkingSpaceStatusOptions 已从 "../../../common/business-options" 导入
 
 /**
  * @description 楼层区域选项

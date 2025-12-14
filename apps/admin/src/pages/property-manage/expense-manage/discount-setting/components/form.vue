@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { discountTypeOptions, ruleOptions } from "@01s-11comm/type";
 
 import { DiscountSettingFormProps, 折扣设置表单_VO, defaultForm } from "./form";
 

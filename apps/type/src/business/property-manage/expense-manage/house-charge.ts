@@ -71,3 +71,17 @@ export const 状态Options: OptionsType = [
 	{ label: "已缴费", value: "已缴费" },
 	{ label: "逾期", value: "逾期" },
 ];
+
+// ==================== 兼容旧类型定义 ====================
+
+/**
+ * @description 房屋收费_列表数据 类型（兼容性）
+ * House charge list data type (for compatibility)
+ */
+export type 房屋收费_列表数据 = HouseChargeListItem[];
+
+/**
+ * @description 房屋收费_列表查询_VO 类型（兼容性）
+ * House charge list query VO type (for compatibility)
+ */
+export type 房屋收费_列表查询_VO = HouseChargeQueryParams;

@@ -9,6 +9,12 @@ export interface DiscountTypeListItem {
 	id: string;
 	/** 名称 Name */
 	name: string;
+	/** 折扣类型 Discount Type */
+	discountType: string;
+	/** 规则名称 Rule Name */
+	ruleName: string;
+	/** 规则 Rule */
+	rule: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */

@@ -15,6 +15,7 @@ import { transformI18n } from "@/plugins/i18n";
 import { type CarportInfoFormProps, defaultForm } from "./components/form";
 import CarportInfoForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { parkingSpaceStatusOptions } from "@01s-11comm/type";
 
 /** 表格数据 */
 const tableData = ref<车位信息_列表数据[]>([]);

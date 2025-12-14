@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { personTypeOptions, personRoleOptions, genderOptions } from "../../../common/business-options";
 
 /**
  * @description owner-information列表数据
@@ -70,34 +71,7 @@ export interface OwnerInformationFormVO {
 	remark: string;
 }
 
-/**
- * @description 人员类型选项
- * Personnel type options
- */
-export const personnelTypeOptions: OptionsType = [
-	{ label: "业主", value: "业主" },
-	{ label: "租户", value: "租户" },
-	{ label: "家属", value: "家属" },
-];
-
-/**
- * @description 人员角色选项
- * Personnel role options
- */
-export const personnelRoleOptions: OptionsType = [
-	{ label: "户主", value: "户主" },
-	{ label: "家庭成员", value: "家庭成员" },
-	{ label: "租客", value: "租客" },
-];
-
-/**
- * @description 性别选项
- * Gender options
- */
-export const genderOptions: OptionsType = [
-	{ label: "男", value: "男" },
-	{ label: "女", value: "女" },
-];
+// 人员类型选项、人员角色选项和性别选项已从 common/business-options 导入
 
 // ==================== 兼容旧中文名称 ====================
 
@@ -105,13 +79,13 @@ export const genderOptions: OptionsType = [
  * @description 人员类型选项（兼容性）
  * Personnel type options (for compatibility)
  */
-export const 人员类型Options = personnelTypeOptions;
+export const 人员类型Options = personTypeOptions;
 
 /**
  * @description 人员角色选项（兼容性）
  * Personnel role options (for compatibility)
  */
-export const 人员角色Options = personnelRoleOptions;
+export const 人员角色Options = personRoleOptions;
 
 /**
  * @description 性别选项（兼容性）

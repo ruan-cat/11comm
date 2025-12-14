@@ -50,6 +50,12 @@ export const typeStatusOptions: OptionsType = [
 ];
 
 /**
+ * @description 是否审核类型
+ * Is audit type
+ */
+export type IsAuditType = "是" | "否";
+
+/**
  * @description 审核类型选项
  * Audit type options
  */

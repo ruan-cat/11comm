@@ -10,10 +10,29 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type ExpenseItemSettingFormProps, defaultForm, type ExpenseItemSettingFormVO, type FeeType, type ExpenseIdentifierType, type PaymentType, type AccountDeductionType, type MobilePaymentType, type RoundingModeType, type DecimalPlacesType } from "./components/form";
+import {
+	type ExpenseItemSettingFormProps,
+	defaultForm,
+	type ExpenseItemSettingFormVO,
+	type FeeType,
+	type ExpenseIdentifierType,
+	type PaymentType,
+	type AccountDeductionType,
+	type MobilePaymentType,
+	type RoundingModeType,
+	type DecimalPlacesType,
+} from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
 import { useExpenseItemSettingListQuery } from "@/api/property-manage/expense-manage/expense-item-setting";
-import {type ExpenseItemSettingListItem, type ExpenseItemSettingQueryParams, 费用项设置标识Options, 费用项设置, paymentTypeOptions, 费用项设置抵扣Options, 费用项设置自定义选项} from "@01s-11comm/type";
+import {
+	type ExpenseItemSettingListItem,
+	type ExpenseItemSettingQueryParams,
+	费用项设置标识Options,
+	费用项设置付费类型Options,
+	费用项设置抵扣Options,
+	paymentTypeOptions,
+	accountDeductionOptions,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -141,10 +160,10 @@ const plusSearchModelRef: FieldValues & Partial<ExpenseItemSettingQueryParams> =
 	expenseIdentifier: "",
 	paymentType: "",
 	accountDeduction: "",
-	// 自定义费用: "", // Assuming '自定义费用' maps to something or removed if not in API. It maps to 'expenseIdentifier' in old code? No, old code used '费用标识' for '自定义费用' filter? 
-	// Wait, old code: 
+	// 自定义费用: "", // Assuming '自定义费用' maps to something or removed if not in API. It maps to 'expenseIdentifier' in old code? No, old code used '费用标识' for '自定义费用' filter?
+	// Wait, old code:
 	// if (plusSearchModel.value.自定义费用) { filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.自定义费用); }
-	// So '自定义费用' filter was filtering by 'expenseIdentifier'. 
+	// So '自定义费用' filter was filtering by 'expenseIdentifier'.
 	// But 'expenseIdentifier' filter also exists?
 	// if (plusSearchModel.value.费用标识) { filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.费用标识); }
 	// This seems redundant or specific. I will stick to standard filters in QueryParams.

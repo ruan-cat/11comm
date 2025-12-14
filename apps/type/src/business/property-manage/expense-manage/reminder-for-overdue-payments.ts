@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { reminderMethodOptions, reminderStatusOptions } from "../../../common/business-options";
 
 /**
  * @description reminder-for-overdue-payments列表数据
@@ -43,22 +44,4 @@ export const reminderForOverduePaymentsStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-/**
- * @description 催缴方式选项
- * Collection method options
- */
-export const reminderMethodOptions: OptionsType = [
-	{ label: "短信", value: "短信" },
-	{ label: "电话", value: "电话" },
-	{ label: "上门", value: "上门" },
-];
-
-/**
- * @description 催缴状态选项
- * Collection status options
- */
-export const reminderStatusOptions: OptionsType = [
-	{ label: "待催缴", value: "待催缴" },
-	{ label: "催缴中", value: "催缴中" },
-	{ label: "已完成", value: "已完成" },
-];
+// 注意：reminderMethodOptions 和 reminderStatusOptions 已从 "../../../common/business-options" 导入

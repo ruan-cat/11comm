@@ -45,6 +45,7 @@ export {
 export type {
 	TypeListItem,
 	TypeQueryParams,
+	IsAuditType,
 } from "./type";
 
 export {

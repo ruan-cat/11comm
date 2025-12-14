@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { invoiceTypeOptions, auditStatusOptions } from "../../../common/business-options";
 
 /**
  * @description invoice列表数据
@@ -66,15 +67,7 @@ export const invoiceDefaultForm: 发票表单_VO = {
 	remark: "",
 };
 
-/**
- * @description 发票类型选项
- * Invoice type options
- */
-export const invoiceTypeOptions: OptionsType = [
-	{ label: "普通发票", value: "普通发票" },
-	{ label: "专用发票", value: "专用发票" },
-	{ label: "电子发票", value: "电子发票" },
-];
+// 发票类型选项已从 common/business-options 导入
 
 /**
  * @description 发票审核状态选项

@@ -1,6 +1,7 @@
 import { auditTypeOptions } from "@01s-11comm/type";
 
-// ==================== 类型定义 ====================
+// TODO: 应该从 @01s-11comm/type 导入，但目前有模块解析问题
+// import type { IsAuditType } from "@01s-11comm/type";
 
 /**
  * 是否审核类型

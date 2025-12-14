@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { chargeObjectOptions } from "../../../common/business-options";
 
 /**
  * @description overdue-payment-information列表数据
@@ -61,13 +62,4 @@ export const overduePaymentInformationStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-/**
- * @description 收费对象选项
- * Charging object options
- */
-export const chargeObjectOptions: OptionsType = [
-	{ label: "住宅", value: "住宅" },
-	{ label: "商铺", value: "商铺" },
-	{ label: "车库", value: "车库" },
-	{ label: "储物间", value: "储物间" },
-];
+// 注意：chargeObjectOptions 已从 "../../../common/business-options" 导入

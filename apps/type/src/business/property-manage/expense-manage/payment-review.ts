@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { expenseItemOptions } from "../../../common/business-options";
 
 /**
  * @description payment-review列表数据
@@ -75,16 +76,7 @@ export const paymentReviewStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-/**
- * @description 费用项目选项
- * Expense item options
- */
-export const expenseItemOptions: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水费", value: "水费" },
-	{ label: "电费", value: "电费" },
-	{ label: "燃气费", value: "燃气费" },
-];
+// 注意：expenseItemOptions 已从 "../../../common/business-options" 导入
 
 /**
  * @description 缴费审核状态选项

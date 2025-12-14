@@ -6,14 +6,13 @@
 // 导出测试数据
 export * from "./test-data";
 
-// 导出状态选项
-export * from "./status-options";
+// 状态选项已移至 business-options.ts
 
 // 导出选项类型
 export * from "./OptionsType";
 
-// 导出业务共同类型定义
-export { contractTypeOptions } from "./business-options";
+// 导出业务共同类型定义 - 统一从 business-options 导出
+export * from "./business-options";
 
 /**
  * 前后端数据对接数据对象

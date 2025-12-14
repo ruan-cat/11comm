@@ -9,6 +9,20 @@ export interface DiscountApplyListItem {
 	id: string;
 	/** 名称 Name */
 	name: string;
+	/** 房屋 House */
+	house: string;
+	/** 申请类型 Application Type */
+	applicationType: string;
+	/** 折扣名称 Discount Name */
+	discountName: string;
+	/** 申请人 Applicant */
+	applicant: string;
+	/** 申请人电话 Applicant Phone */
+	applicantPhone: string;
+	/** 开始时间 Start Time */
+	startTime: string;
+	/** 结束时间 End Time */
+	endTime: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */

@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { parkingSpaceStatusOptions } from "../../../common/business-options";
 
 /**
  * @description vehicle-charge列表数据
@@ -43,12 +44,4 @@ export const vehicleChargeStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-/**
- * @description 车位状态选项
- * Parking space status options
- */
-export const parkingSpaceStatusOptions: OptionsType = [
-	{ label: "空闲", value: "空闲" },
-	{ label: "已占用", value: "已占用" },
-	{ label: "维修中", value: "维修中" },
-];
+// 注意：parkingSpaceStatusOptions 已从 "../../../common/business-options" 导入

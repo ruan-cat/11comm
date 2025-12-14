@@ -12,7 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type DiscountSettingFormProps, defaultForm, type DiscountSettingFormVO } from "./components/form";
+import { type DiscountSettingFormProps, defaultForm, type 折扣设置表单_VO } from "./components/form";
 import DiscountSettingForm from "./components/form.vue";
 import { useDiscountSettingListQuery } from "@/api/property-manage/expense-manage/discount-setting";
 import { type DiscountSettingListItem, type DiscountSettingQueryParams, 折扣设置类型Options } from "@01s-11comm/type";
@@ -202,7 +202,7 @@ function openDialog(params: { mode: Mode; row?: DiscountSettingListItem }) {
 	const title = `${modeText.value}折扣设置`;
 
 	/** 业务对象 */
-	const 业务对象: DiscountSettingFormVO = isAdd.value
+	const 业务对象: 折扣设置表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({

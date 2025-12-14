@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { houseTypeOptions, houseStatusOptions } from "../../../common/business-options";
 
 /**
  * @description 房屋状态
@@ -70,32 +71,7 @@ export interface HouseQueryParams {
 	pageSize: number;
 }
 
-/**
- * @description 房屋状态选项
- * House status options
- */
-export const houseStatusOptions: OptionsType = [
-	{ label: "未销售", value: "未销售" },
-	{ label: "已入住", value: "已入住" },
-	{ label: "已交房", value: "已交房" },
-	{ label: "已装修", value: "已装修" },
-	{ label: "未入住", value: "未入住" },
-	{ label: "已出租", value: "已出租" },
-	{ label: "已出售", value: "已出售" },
-	{ label: "空闲", value: "空闲" },
-	{ label: "装修中", value: "装修中" },
-];
-
-/**
- * @description 房屋类型选项
- * House type options
- */
-export const houseTypeOptions: OptionsType = [
-	{ label: "住宅", value: "住宅" },
-	{ label: "办公室", value: "办公室" },
-	{ label: "宿舍", value: "宿舍" },
-	{ label: "储物间", value: "储物间" },
-];
+// 房屋状态选项和房屋类型选项已从 common/business-options 导入
 
 /**
  * @description 楼栋单元选项
