@@ -57,7 +57,7 @@
 - 每个选项数组必须包含 JSDoc 注释，说明选项的用途
 - 注释格式：`/** @description {中文描述} {English description} */`
 - 使用 `export const` 导出选项数组
-- 选项数组变量名使用中文命名（保持与现有代码风格一致）
+- 选项数组变量名使用英文命名，禁止使用中文变量名
 - 类型标注为 `OptionsType`
 
 **示例：**
@@ -74,7 +74,7 @@ import type { OptionsType } from "./OptionsType";
  * @description 合同类型
  * Contract type options
  */
-export const 合同类型Options: OptionsType = [
+export const contractTypeOptions: OptionsType = [
 	{ label: "物业服务合同", value: "物业服务合同" },
 	{ label: "租赁合同", value: "租赁合同" },
 	{ label: "维修合同", value: "维修合同" },
@@ -84,7 +84,7 @@ export const 合同类型Options: OptionsType = [
  * @description 审核状态选项
  * Audit status options
  */
-export const 审核状态Options: OptionsType = [
+export const auditStatusOptions: OptionsType = [
 	{ label: "待审核", value: "待审核" },
 	{ label: "已通过", value: "已通过" },
 	{ label: "已拒绝", value: "已拒绝" },
@@ -110,7 +110,7 @@ export const 审核状态Options: OptionsType = [
 **导入公共选项：**
 
 - 必须从 `business-options.ts` 导入公共选项
-- 导入语句格式：`import { 合同类型Options } from "../../../common/business-options"`
+- 导入语句格式：`import { contractTypeOptions } from "../../../common/business-options"`
 - 路径层级根据文件位置调整，确保正确指向 `common/business-options.ts`
 
 **删除重复定义：**
@@ -121,58 +121,58 @@ export const 审核状态Options: OptionsType = [
 **提供模块特定别名：**
 
 - 如果模块需要使用特定名称的选项变量，可以创建别名
-- 别名通过直接赋值创建：`export const 合同甲方类型Options = 合同类型Options`
-- 或使用重导出语法：`export { 合同类型Options }`
+- 别名通过直接赋值创建：`export const contractFirstPartyTypeOptions = contractTypeOptions`
+- 或使用重导出语法：`export { contractTypeOptions }`
 - 必须保留 JSDoc 注释说明该别名指向公共选项
 
 **示例 1：创建别名**
 
 ```typescript
 import type { OptionsType } from "../../../common";
-import { 合同类型Options } from "../../../common/business-options";
+import { contractTypeOptions } from "../../../common/business-options";
 
 /**
  * @description 合同甲方类型选项
  * Contract first-party type options
  */
-export const 合同甲方类型Options = 合同类型Options;
+export const contractFirstPartyTypeOptions = contractTypeOptions;
 ```
 
 **示例 2：重导出**
 
 ```typescript
 import type { OptionsType } from "../../../common";
-import { 合同类型Options } from "../../../common/business-options";
+import { contractTypeOptions } from "../../../common/business-options";
 
 /**
  * @description 合同类型选项（从公共选项导出）
  * Contract type options (exported from common options)
  */
-export { 合同类型Options };
+export { contractTypeOptions };
 ```
 
 #### Scenario: 业务类型文件正确导入公共选项
 
 - **GIVEN** `first-party.ts` 文件需要使用合同类型选项
 - **WHEN** 重构文件以使用公共选项
-- **THEN** 文件顶部添加导入语句：`import { 合同类型Options } from "../../../common/business-options"`
+- **THEN** 文件顶部添加导入语句：`import { contractTypeOptions } from "../../../common/business-options"`
 - **AND** 删除本地定义的选项数组
-- **AND** 创建别名：`export const 合同甲方类型Options = 合同类型Options`
+- **AND** 创建别名：`export const contractFirstPartyTypeOptions = contractTypeOptions`
 - **AND** 保留 JSDoc 注释
 
 #### Scenario: 删除重复定义
 
-- **GIVEN** `expire.ts` 文件原本定义了 `到期合同类型Options`
+- **GIVEN** `expire.ts` 文件原本定义了 `expiredContractTypeOptions`
 - **WHEN** 迁移到使用公共选项
 - **THEN** 删除本地数组字面量定义
-- **AND** 改为从 `business-options` 导入 `合同类型Options`
-- **AND** 创建别名：`export const 到期合同类型Options = 合同类型Options`
+- **AND** 改为从 `business-options` 导入 `contractTypeOptions`
+- **AND** 创建别名：`export const expiredContractTypeOptions = contractTypeOptions`
 
 #### Scenario: 直接使用公共选项名称
 
-- **GIVEN** `change.ts` 文件原本就使用 `合同类型Options` 名称
+- **GIVEN** `change.ts` 文件原本就使用 `contractTypeOptions` 名称
 - **WHEN** 迁移到使用公共选项
-- **THEN** 导入公共选项后直接重导出：`export { 合同类型Options }`
+- **THEN** 导入公共选项后直接重导出：`export { contractTypeOptions }`
 - **AND** 不需要创建别名，因为名称已经一致
 
 ---
@@ -189,13 +189,13 @@ Admin 项目（`apps/admin`）SHALL 按以下规范使用公共业务选项：
 
 **更新导入语句：**
 
-- 将模块特定的选项名称（如 `合同草稿类型Options`）替换为公共选项名称（如 `合同类型Options`）
-- 导入格式：`import { 合同类型Options } from "@01s-11comm/type"`
+- 将模块特定的选项名称（如 `draftContractTypeOptions`）替换为公共选项名称（如 `contractTypeOptions`）
+- 导入格式：`import { contractTypeOptions } from "@01s-11comm/type"`
 
 **更新使用处：**
 
 - 在组件中使用选项数组的地方，将变量名替换为公共选项名称
-- 例如：`options: 合同草稿类型Options` 改为 `options: 合同类型Options`
+- 例如：`options: draftContractTypeOptions` 改为 `options: contractTypeOptions`
 
 **示例：**
 
@@ -203,14 +203,14 @@ Admin 项目（`apps/admin`）SHALL 按以下规范使用公共业务选项：
 
 ```vue
 <script lang="ts" setup>
-import { 合同草稿类型Options } from "@01s-11comm/type";
+import { draftContractTypeOptions } from "@01s-11comm/type";
 
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: 合同草稿类型Options,
+		options: draftContractTypeOptions,
 		// ...
 	},
 ]);
@@ -221,14 +221,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 ```vue
 <script lang="ts" setup>
-import { 合同类型Options } from "@01s-11comm/type";
+import { contractTypeOptions } from "@01s-11comm/type";
 
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: 合同类型Options,
+		options: contractTypeOptions,
 		// ...
 	},
 ]);
@@ -237,16 +237,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 #### Scenario: Admin 项目更新导入语句
 
-- **GIVEN** Admin 项目中的表单组件使用 `合同草稿类型Options`
+- **GIVEN** Admin 项目中的表单组件使用 `draftContractTypeOptions`
 - **WHEN** 重构为使用公共选项
-- **THEN** 导入语句改为：`import { 合同类型Options } from "@01s-11comm/type"`
-- **AND** 不使用 `import { 合同草稿类型Options }`
+- **THEN** 导入语句改为：`import { contractTypeOptions } from "@01s-11comm/type"`
+- **AND** 不使用 `import { draftContractTypeOptions }`
 
 #### Scenario: Admin 项目更新使用处
 
-- **GIVEN** 表单配置中使用 `options: 合同草稿类型Options`
+- **GIVEN** 表单配置中使用 `options: draftContractTypeOptions`
 - **WHEN** 更新为公共选项名称
-- **THEN** 改为 `options: 合同类型Options`
+- **THEN** 改为 `options: contractTypeOptions`
 - **AND** 不使用类型断言或 `as` 转换
 - **AND** TypeScript 类型检查通过
 
