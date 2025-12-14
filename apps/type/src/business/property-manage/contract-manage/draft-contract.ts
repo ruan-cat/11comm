@@ -1,5 +1,5 @@
 import type { OptionsType } from "../../../common";
-import { 合同类型Options } from "../../../common/business-options";
+import { contractTypeOptions } from "../../../common/business-options";
 
 /**
  * @description draft-contract列表数据
@@ -72,17 +72,25 @@ export const draftContractStatusOptions: OptionsType = [
  * @description 合同草稿类型选项
  * Draft contract type options
  */
-export const 合同草稿类型Options = 合同类型Options;
+export const draftContractTypeOptions = contractTypeOptions;
 
 /**
  * @description 合同类型选项别名
  * Contract type options alias
  */
-export const contractTypeOptionsData = 合同草稿类型Options;
+export const contractTypeOptionsData = draftContractTypeOptions;
+
+// ==================== 兼容旧中文名称 ====================
 
 /**
- * @description 合同草稿状态选项
- * Draft contract status options
+ * @description 合同草稿类型选项（兼容性）
+ * Draft contract type options (for compatibility)
+ */
+export const 合同草稿类型Options = draftContractTypeOptions;
+
+/**
+ * @description 合同草稿状态选项（兼容性）
+ * Draft contract status options (for compatibility)
  */
 export const 合同草稿状态Options = draftContractStatusOptions;
 

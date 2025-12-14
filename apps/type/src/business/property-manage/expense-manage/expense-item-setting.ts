@@ -73,7 +73,7 @@ export const expenseItemSettingStatusOptions: OptionsType = [
  * @description 费用项设置标识选项
  * Expense item setting identifier options
  */
-export const 费用项设置标识Options: OptionsType = [
+export const expenseItemSettingIdentifierOptions: OptionsType = [
 	{ label: "周期性费用", value: "周期性费用" },
 	{ label: "一次性费用", value: "一次性费用" },
 ];
@@ -82,7 +82,7 @@ export const 费用项设置标识Options: OptionsType = [
  * @description 费用项设置付费类型选项
  * Expense item setting payment type options
  */
-export const 费用项设置付费类型Options: OptionsType = [
+export const expenseItemSettingPaymentTypeOptions: OptionsType = [
 	{ label: "预付费", value: "预付费" },
 	{ label: "后付费", value: "后付费" },
 ];
@@ -91,14 +91,34 @@ export const 费用项设置付费类型Options: OptionsType = [
  * @description 费用项设置抵扣选项
  * Expense item setting deduction options
  */
-export const 费用项设置抵扣Options: OptionsType = [
+export const expenseItemSettingDeductionOptions: OptionsType = [
 	{ label: "是", value: "是" },
 	{ label: "否", value: "否" },
 ];
 
+// ==================== 兼容旧中文名称 ====================
+
 /**
- * @description 费用项设置自定义选项
- * Expense item setting custom options
+ * @description 费用项设置标识选项（兼容性）
+ * Expense item setting identifier options (for compatibility)
+ */
+export const 费用项设置标识Options = expenseItemSettingIdentifierOptions;
+
+/**
+ * @description 费用项设置付费类型选项（兼容性）
+ * Expense item setting payment type options (for compatibility)
+ */
+export const 费用项设置付费类型Options = expenseItemSettingPaymentTypeOptions;
+
+/**
+ * @description 费用项设置抵扣选项（兼容性）
+ * Expense item setting deduction options (for compatibility)
+ */
+export const 费用项设置抵扣Options = expenseItemSettingDeductionOptions;
+
+/**
+ * @description 费用项设置自定义选项（兼容性）
+ * Expense item setting custom options (for compatibility)
  */
 export const 费用项设置自定义选项: OptionsType = [
 	{ label: "是", value: "是" },

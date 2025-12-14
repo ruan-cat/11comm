@@ -47,9 +47,17 @@ export const reserveVenueOrderStatusOptions: OptionsType = [
  * @description 预约场地选项
  * Reservation venue options
  */
-export const 预约场地Options: OptionsType = [
+export const reservedVenueOptions: OptionsType = [
 	{ label: "会议室", value: "会议室" },
 	{ label: "健身房", value: "健身房" },
 	{ label: "游泳池", value: "游泳池" },
 	{ label: "羽毛球场", value: "羽毛球场" },
 ];
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 预约场地选项（兼容性）
+ * Reserved venue options (for compatibility)
+ */
+export const 预约场地Options = reservedVenueOptions;

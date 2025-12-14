@@ -61,7 +61,7 @@ export const discountSettingStatusOptions: OptionsType = [
  * @description 折扣设置类型选项
  * Discount setting type options
  */
-export const 折扣设置类型Options: OptionsType = [
+export const discountSettingTypeOptions: OptionsType = [
 	{ label: "百分比折扣", value: "百分比折扣" },
 	{ label: "固定金额折扣", value: "固定金额折扣" },
 	{ label: "阶梯折扣", value: "阶梯折扣" },
@@ -71,11 +71,25 @@ export const 折扣设置类型Options: OptionsType = [
  * @description 折扣设置规则选项
  * Discount setting rule options
  */
-export const 折扣设置规则Options: OptionsType = [
+export const discountSettingRuleOptions: OptionsType = [
 	{ label: "全部适用", value: "全部适用" },
 	{ label: "按时间限制", value: "按时间限制" },
 	{ label: "按金额限制", value: "按金额限制" },
 ];
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 折扣设置类型选项（兼容性）
+ * Discount setting type options (for compatibility)
+ */
+export const 折扣设置类型Options = discountSettingTypeOptions;
+
+/**
+ * @description 折扣设置规则选项（兼容性）
+ * Discount setting rule options (for compatibility)
+ */
+export const 折扣设置规则Options = discountSettingRuleOptions;
 
 // ==================== 兼容旧类型定义 ====================
 

@@ -104,10 +104,10 @@ export const systemConfigStatusOptions: OptionsType = [
 ];
 
 /**
- * @description 配置类型选项
- * Config type options
+ * @description 系统配置类型选项
+ * System config type options
  */
-export const 配置类型Options: OptionsType = [
+export const systemConfigTypeOptionsAlias: OptionsType = [
 	{ label: "系统配置", value: "系统配置" },
 	{ label: "业务配置", value: "业务配置" },
 	{ label: "接口配置", value: "接口配置" },
@@ -117,8 +117,22 @@ export const 配置类型Options: OptionsType = [
  * @description 配置分组选项
  * Config group options
  */
-export const 配置分组Options: OptionsType = [
+export const configGroupOptions: OptionsType = [
 	{ label: "基础配置", value: "基础配置" },
 	{ label: "高级配置", value: "高级配置" },
 	{ label: "安全配置", value: "安全配置" },
 ];
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 配置类型选项（兼容性）
+ * Config type options (for compatibility)
+ */
+export const 配置类型Options = systemConfigTypeOptionsAlias;
+
+/**
+ * @description 配置分组选项（兼容性）
+ * Config group options (for compatibility)
+ */
+export const 配置分组Options = configGroupOptions;

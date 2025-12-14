@@ -83,9 +83,11 @@ export const initializeCellStatusOptions: OptionsType = [
 	{ label: "初始化失败", value: "初始化失败" },
 ];
 
+// ==================== 兼容旧中文名称 ====================
+
 /**
- * @description 单元格类型选项
- * Cell type options
+ * @description 单元格类型选项（兼容性）
+ * Cell type options (for compatibility)
  */
 export const 单元格类型Options: OptionsType = [
 	{ label: "文本", value: "文本" },

@@ -1,5 +1,5 @@
 import type { OptionsType } from "../../../common";
-import { 合同类型Options } from "../../../common/business-options";
+import { contractTypeOptions } from "../../../common/business-options";
 
 /**
  * @description first-party列表数据
@@ -65,10 +65,18 @@ export const firstPartyStatusOptions: OptionsType = [
 ];
 
 /**
- * @description 合同甲方类型选项
- * Contract first-party type options
+ * @description 合同甲方类型选项（使用公共合同类型）
+ * Contract first-party type options (using common contract type options)
  */
-export const 合同甲方类型Options = 合同类型Options;
+export const contractFirstPartyTypeOptions = contractTypeOptions;
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 合同甲方类型选项（兼容性）
+ * Contract first-party type options (for compatibility)
+ */
+export const 合同甲方类型Options = contractFirstPartyTypeOptions;
 
 // ==================== 兼容旧类型定义 ====================
 

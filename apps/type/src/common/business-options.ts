@@ -6,10 +6,10 @@
 import type { OptionsType } from "./OptionsType";
 
 /**
- * @description 合同类型
- * Draft contract type options
+ * @description 合同类型选项
+ * Contract type options
  */
-export const 合同类型Options: OptionsType = [
+export const contractTypeOptions: OptionsType = [
 	{ label: "物业服务合同", value: "物业服务合同" },
 	{ label: "租赁合同", value: "租赁合同" },
 	{ label: "维修合同", value: "维修合同" },

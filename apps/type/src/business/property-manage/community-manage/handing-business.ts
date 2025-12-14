@@ -91,5 +91,13 @@ export const feeStatusOptions: OptionsType = [
  * @description 业务受理状态选项
  * Business handling status options
  */
-export const 业务受理状态Options = feeStatusOptions;
+export const businessHandlingStatusOptions = feeStatusOptions;
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 业务受理状态选项（兼容性）
+ * Business handling status options (for compatibility)
+ */
+export const 业务受理状态Options = businessHandlingStatusOptions;
 

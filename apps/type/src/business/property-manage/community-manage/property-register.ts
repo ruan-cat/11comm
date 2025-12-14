@@ -110,22 +110,17 @@ export const propertyRegisterStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-// ==================== 中文名称导出 ====================
-
-/** 产权登记审核状态选项（中文名称） */
-export const 产权登记审核状态Options = propertyRegisterStatusOptions;
-
-/** 审核状态选项（中文名称） */
-export const 审核状态Options = propertyRegisterStatusOptions;
-
-/** 产权登记审核状态选项（中文名称）- 别名 */
-export const 产权登记审核状态选项 = propertyRegisterStatusOptions;
+/**
+ * @description 产权登记审核状态选项
+ * Property registration audit status options
+ */
+export const propertyRegistrationAuditStatusOptions = propertyRegisterStatusOptions;
 
 /**
  * @description 楼栋选项
  * Building options
  */
-export const 楼栋Options: OptionsType = [
+export const buildingOptions: OptionsType = [
 	{ label: "A栋", value: "A栋" },
 	{ label: "B栋", value: "B栋" },
 	{ label: "C栋", value: "C栋" },
@@ -136,11 +131,43 @@ export const 楼栋Options: OptionsType = [
  * @description 单元选项
  * Unit options
  */
-export const 单元Options: OptionsType = [
+export const unitOptions: OptionsType = [
 	{ label: "1单元", value: "1单元" },
 	{ label: "2单元", value: "2单元" },
 	{ label: "3单元", value: "3单元" },
 ];
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 产权登记审核状态选项（兼容性）
+ * Property registration audit status options (for compatibility)
+ */
+export const 产权登记审核状态Options = propertyRegistrationAuditStatusOptions;
+
+/**
+ * @description 审核状态选项（兼容性）
+ * Audit status options (for compatibility)
+ */
+export const 审核状态Options = propertyRegistrationAuditStatusOptions;
+
+/**
+ * @description 产权登记审核状态选项（兼容性）- 别名
+ * Property registration audit status options (for compatibility) - alias
+ */
+export const 产权登记审核状态选项 = propertyRegistrationAuditStatusOptions;
+
+/**
+ * @description 楼栋选项（兼容性）
+ * Building options (for compatibility)
+ */
+export const 楼栋Options = buildingOptions;
+
+/**
+ * @description 单元选项（兼容性）
+ * Unit options (for compatibility)
+ */
+export const 单元Options = unitOptions;
 
 // ==================== 兼容旧类型定义 ====================
 

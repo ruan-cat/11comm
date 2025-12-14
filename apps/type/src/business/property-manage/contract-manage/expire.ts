@@ -1,5 +1,5 @@
 import type { OptionsType } from "../../../common";
-import { 合同类型Options } from "../../../common/business-options";
+import { contractTypeOptions } from "../../../common/business-options";
 
 /**
  * @description expire列表数据
@@ -76,7 +76,7 @@ export const expireStatusOptions: OptionsType = [
  * @description 到期合同处理状态选项
  * Expire contract processing status options
  */
-export const 到期合同处理状态Options: OptionsType = [
+export const expiredContractHandlingStatusOptions: OptionsType = [
 	{ label: "未处理", value: "未处理" },
 	{ label: "处理中", value: "处理中" },
 	{ label: "已处理", value: "已处理" },
@@ -86,7 +86,7 @@ export const 到期合同处理状态Options: OptionsType = [
  * @description 到期合同类型选项
  * Expire contract type options
  */
-export const 到期合同类型Options = 合同类型Options;
+export const expiredContractTypeOptions = contractTypeOptions;
 
 // ==================== 兼容旧类型定义 ====================
 
@@ -106,4 +106,22 @@ export type 到期合同_列表查询_VO = ExpireQueryParams;
  * @description 处理状态选项（兼容性）
  * Processing status options (for compatibility)
  */
-export const 处理状态Options = 到期合同处理状态Options;
+export const 处理状态Options = expiredContractHandlingStatusOptions;
+
+/**
+ * @description 到期合同处理状态选项（兼容性）
+ * Expire contract handling status options (for compatibility)
+ */
+export const 到期合同处理状态Options = expiredContractHandlingStatusOptions;
+
+/**
+ * @description 到期合同类型选项（兼容性）
+ * Expire contract type options (for compatibility)
+ */
+export const 到期合同类型Options = expiredContractTypeOptions;
+
+/**
+ * @description 到期合同处理状态选项别名
+ * Handling status options alias
+ */
+export const handlingStatusOptions = expiredContractHandlingStatusOptions;
