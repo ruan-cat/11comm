@@ -46,8 +46,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
 - `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
 
-- 后台项目： 即 `apps\admin\package.json` 项目。
-- 类型项目： 即 `apps\type\package.json` 项目。
+- 后台项目： 即 `apps\admin\package.json` 项目。又称为 `admin后台项目` 。
+- 类型项目： 即 `apps\type\package.json` 项目。又称为 `type类型项目` 。
 
 ## 代码/编码格式要求
 
