@@ -1,4 +1,4 @@
-import { 合同草稿类型Options } from "@01s-11comm/type";
+import { 合同类型Options } from "@01s-11comm/type";
 
 /** 合同草稿表单业务类型 */
 export interface ContractDraftFormVO {

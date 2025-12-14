@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { 合同类型Options } from "../../../common/business-options";
 
 /**
  * @description first-party列表数据
@@ -67,11 +68,7 @@ export const firstPartyStatusOptions: OptionsType = [
  * @description 合同甲方类型选项
  * Contract first-party type options
  */
-export const 合同甲方类型Options: OptionsType = [
-	{ label: "物业服务合同", value: "物业服务合同" },
-	{ label: "租赁合同", value: "租赁合同" },
-	{ label: "维修合同", value: "维修合同" },
-];
+export const 合同甲方类型Options = 合同类型Options;
 
 // ==================== 兼容旧类型定义 ====================
 

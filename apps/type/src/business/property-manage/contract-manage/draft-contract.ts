@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { 合同类型Options } from "../../../common/business-options";
 
 /**
  * @description draft-contract列表数据
@@ -71,11 +72,7 @@ export const draftContractStatusOptions: OptionsType = [
  * @description 合同草稿类型选项
  * Draft contract type options
  */
-export const 合同草稿类型Options: OptionsType = [
-	{ label: "物业服务合同", value: "物业服务合同" },
-	{ label: "租赁合同", value: "租赁合同" },
-	{ label: "维修合同", value: "维修合同" },
-];
+export const 合同草稿类型Options = 合同类型Options;
 
 /**
  * @description 合同类型选项别名

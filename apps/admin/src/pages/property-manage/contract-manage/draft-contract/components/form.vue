@@ -6,7 +6,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { ContractDraftFormProps, ContractDraftFormVO } from "./form";
-import { 合同草稿类型Options } from "@01s-11comm/type";
+import { 合同类型Options } from "@01s-11comm/type";
 
 const props = defineProps<ContractDraftFormProps>();
 
@@ -68,7 +68,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: 合同草稿类型Options,
+		options: 合同类型Options,
 		required: true,
 		span: 8,
 		fieldProps: {

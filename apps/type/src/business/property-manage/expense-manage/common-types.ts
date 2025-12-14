@@ -1,4 +1,5 @@
 import type { OptionsType, BaseListQueryParams } from "../../../common";
+import { 合同类型Options } from "../../../common/business-options";
 
 // FIXME: 这些写法不对，不合适 应该写到各自的类型文件内 而且不应该使用中文命名方式
 
@@ -144,12 +145,11 @@ export const 费用项名称Options: OptionsType = [
 	{ label: "维修费", value: "维修费" },
 ];
 
-/** 合同类型选项 */
-export const 合同类型Options: OptionsType = [
-	{ label: "物业服务合同", value: "物业服务合同" },
-	{ label: "租赁合同", value: "租赁合同" },
-	{ label: "维修合同", value: "维修合同" },
-];
+/**
+ * @description 合同类型选项（从公共选项导出）
+ * Contract type options (exported from common options)
+ */
+export { 合同类型Options };
 
 // ==================== 通用类型定义 ====================
 

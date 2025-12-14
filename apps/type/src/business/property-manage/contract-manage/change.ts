@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { 合同类型Options } from "../../../common/business-options";
 
 /**
  * @description change列表数据
@@ -67,14 +68,10 @@ export const changeStatusOptions: OptionsType = [
 ];
 
 /**
- * @description 合同类型选项
- * Contract type options
+ * @description 合同类型选项（从公共选项导出）
+ * Contract type options (exported from common options)
  */
-export const 合同类型Options: OptionsType = [
-	{ label: "物业服务合同", value: "物业服务合同" },
-	{ label: "租赁合同", value: "租赁合同" },
-	{ label: "维修合同", value: "维修合同" },
-];
+export { 合同类型Options };
 
 // ==================== 兼容旧类型定义 ====================
 

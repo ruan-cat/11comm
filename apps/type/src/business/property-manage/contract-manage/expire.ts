@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { 合同类型Options } from "../../../common/business-options";
 
 /**
  * @description expire列表数据
@@ -85,11 +86,7 @@ export const 到期合同处理状态Options: OptionsType = [
  * @description 到期合同类型选项
  * Expire contract type options
  */
-export const 到期合同类型Options: OptionsType = [
-	{ label: "物业服务合同", value: "物业服务合同" },
-	{ label: "租赁合同", value: "租赁合同" },
-	{ label: "维修合同", value: "维修合同" },
-];
+export const 到期合同类型Options = 合同类型Options;
 
 // ==================== 兼容旧类型定义 ====================
 
