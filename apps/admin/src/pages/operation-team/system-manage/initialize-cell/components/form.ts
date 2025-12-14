@@ -1,5 +1,5 @@
 import type { OptionsType } from "plus-pro-components";
-export { 单元格类型Options } from "@01s-11comm/type";
+export { cellTypeOptions } from "@01s-11comm/type";
 export { 状态Options } from "@01s-11comm/type";
 
 // ==================== 联合类型定义 ====================

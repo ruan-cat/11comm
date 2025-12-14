@@ -88,11 +88,6 @@ export const merchantTypeOptions: OptionsType = [
 	{ label: "其他", value: "其他" },
 ];
 
-/**
- * @description 商户类型选项中文别名
- * Chinese alias for merchantTypeOptions
- */
-export const 商户类型选项 = merchantTypeOptions;
 
 /**
  * @description 经营状态选项
@@ -105,9 +100,4 @@ export const businessStatusOptions: OptionsType = [
 	{ label: "已停业", value: "已停业" },
 ];
 
-/**
- * @description 经营状态选项中文别名
- * Chinese alias for businessStatusOptions
- */
-export const 经营状态选项 = businessStatusOptions;
 

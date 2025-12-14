@@ -104,8 +104,6 @@ export const 省份选项: OptionsType = [
 	{ label: "浙江省", value: "浙江省" },
 ];
 
-/** 小区状态选项（中文名称） */
-export const 小区状态选项 = myStatusOptions;
 
 // ==================== 兼容旧类型定义 ====================
 

@@ -156,13 +156,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "楼栋",
 		prop: "楼栋",
 		valueType: "select",
-		options: 楼栋Options,
+		options: buildingOptions,
 	},
 	{
 		label: "单元",
 		prop: "单元",
 		valueType: "select",
-		options: 单元Options,
+		options: unitOptions,
 	},
 ]);
 

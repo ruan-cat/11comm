@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { MerchantInfoFormProps, 商户信息_表单_VO, 商户类型选项, 经营状态选项 } from "./form";
+import { MerchantInfoFormProps, 商户信息_表单_VO, merchantTypeOptions, businessStatusOptions } from "./form";
 import type { PlusColumn } from "plus-pro-components";
 
 const props = defineProps<MerchantInfoFormProps>();
@@ -66,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "商户类型",
 		valueType: "select",
 		width: "160px",
-		options: 商户类型选项,
+		options: merchantTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -78,7 +78,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "经营状态",
 		valueType: "select",
 		width: "140px",
-		options: 经营状态选项,
+		options: businessStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择经营状态",

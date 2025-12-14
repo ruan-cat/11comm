@@ -6,7 +6,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { ParkingSpaceStructureDiagramFormProps, 车位结构图表单_VO } from "./form";
-import { 车位类型选项, 车位状态选项, 楼层区域选项, 是否充电桩选项 } from "@01s-11comm/type";
+import { parkingSpaceTypeOptions, 车位状态选项, floorAreaOptions, isChargingPileOptions } from "@01s-11comm/type";
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
 
 /** 默认的表单重置变量 */
@@ -56,7 +56,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "parkingSpaceType",
 		valueType: "select",
 		width: "160px",
-		options: 车位类型选项,
+		options: parkingSpaceTypeOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择车位类型",
@@ -123,7 +123,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "floorArea",
 		valueType: "select",
 		width: "140px",
-		options: 楼层区域选项,
+		options: floorAreaOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择楼层区域",
@@ -236,7 +236,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "hasEvChargingPile",
 		valueType: "select",
 		width: "140px",
-		options: 是否充电桩选项,
+		options: isChargingPileOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择",

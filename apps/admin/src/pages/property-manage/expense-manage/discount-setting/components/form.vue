@@ -51,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "折扣类型",
 		prop: "折扣类型",
 		valueType: "select",
-		options: 折扣类型Options,
+		options: discountTypeOptions,
 		required: true,
 		fieldProps: {
 			clearable: true,
@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "规则",
 		prop: "规则",
 		valueType: "select",
-		options: 规则Options,
+		options: ruleOptions,
 		required: true,
 		fieldProps: {
 			clearable: true,

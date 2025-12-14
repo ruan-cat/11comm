@@ -172,7 +172,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "发票类型",
 		prop: "发票类型",
 		valueType: "select",
-		options: 发票类型选项,
+		options: invoiceTypeOptions,
 	},
 
 	{

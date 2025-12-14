@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import { type InvoiceTitleFormProps, defaultForm, 发票类型选项 } from "./form";
+import {type InvoiceTitleFormProps, defaultForm,, invoiceTypeOptions} from "./form";
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();
@@ -47,7 +47,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "发票类型",
 		prop: "发票类型",
 		valueType: "select",
-		options: 发票类型选项,
+		options: invoiceTypeOptions,
 		fieldProps: {
 			placeholder: "请选择发票类型",
 		},

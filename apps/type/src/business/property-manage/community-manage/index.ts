@@ -11,3 +11,6 @@ export * from "./my";
 export * from "./parking-space-structure-diagram";
 export * from "./property-register";
 
+// 导出默认值
+export { defaultForm } from "./property-register";
+

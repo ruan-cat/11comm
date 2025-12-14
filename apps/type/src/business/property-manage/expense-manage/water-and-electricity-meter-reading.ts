@@ -47,7 +47,7 @@ export const waterAndElectricityMeterReadingStatusOptions: OptionsType = [
  * @description 表类型选项
  * Meter type options
  */
-export const 表类型Options: OptionsType = [
+export const meterTypeOptions: OptionsType = [
 	{ label: "水表", value: "水表" },
 	{ label: "电表", value: "电表" },
 ];

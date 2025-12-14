@@ -14,7 +14,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type CancelFeeFormProps, defaultForm, type CancelFeeFormVO } from "./components/form";
 import CancelFeeForm from "./components/form.vue";
 import { useCancelFeeListQuery } from "@/api/property-manage/expense-manage/cancel-fee";
-import { type CancelFeeListItem, type CancelFeeQueryParams, 审核状态Options } from "@01s-11comm/type";
+import {type CancelFeeListItem, type CancelFeeQueryParams,, auditStatusOptions} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -159,7 +159,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "审核状态",
 		prop: "auditStatus",
 		valueType: "select",
-		options: 审核状态Options,
+		options: auditStatusOptions,
 	},
 ]);
 

@@ -10,13 +10,13 @@ export { CommunityConfigFormVO };
 
 // ==================== Options 导出 ====================
 
-import { 设置类型选项, 数据状态选项 } from "@01s-11comm/type";
+import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
 
-/** 设置类型选项 */
-export { 设置类型选项 };
+/** settingTypeOptions */
+export { settingTypeOptions };
 
-/** 数据状态选项 */
-export { 数据状态选项 };
+/** communityConfigStatusOptions */
+export { communityConfigStatusOptions };
 
 // ==================== 默认表单 ====================
 

@@ -202,13 +202,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用类型",
 		prop: "费用类型",
 		valueType: "select",
-		options: 费用类型Options,
+		options: feeTypeOptions,
 	},
 	{
 		label: "审核状态",
 		prop: "审核状态",
 		valueType: "select",
-		options: 审核状态Options,
+		options: auditStatusOptions,
 	},
 ]);
 

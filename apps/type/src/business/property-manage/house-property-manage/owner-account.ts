@@ -60,7 +60,7 @@ export interface 业主账户表单_VO {
  * @description 账户类型选项
  * Account type options
  */
-export const 账户类型选项: OptionsType = [
+export const accountTypeOptions: OptionsType = [
 	{ label: "微信", value: "微信" },
 	{ label: "支付宝", value: "支付宝" },
 	{ label: "银行卡", value: "银行卡" },
@@ -71,7 +71,7 @@ export const 账户类型选项: OptionsType = [
  * @description 支付方式选项
  * Payment method options
  */
-export const 支付方式选项: OptionsType = [
+export const paymentMethodOptions: OptionsType = [
 	{ label: "微信支付", value: "微信支付" },
 	{ label: "支付宝支付", value: "支付宝支付" },
 	{ label: "银行转账", value: "银行转账" },

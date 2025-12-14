@@ -13,7 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import { type ExpenseItemSettingFormProps, defaultForm, type ExpenseItemSettingFormVO, type FeeType, type ExpenseIdentifierType, type PaymentType, type AccountDeductionType, type MobilePaymentType, type RoundingModeType, type DecimalPlacesType } from "./components/form";
 import ExpenseItemSettingForm from "./components/form.vue";
 import { useExpenseItemSettingListQuery } from "@/api/property-manage/expense-manage/expense-item-setting";
-import { type ExpenseItemSettingListItem, type ExpenseItemSettingQueryParams, 费用项设置标识Options, 费用项设置付费类型Options, 费用项设置抵扣Options, 费用项设置自定义选项 } from "@01s-11comm/type";
+import {type ExpenseItemSettingListItem, type ExpenseItemSettingQueryParams, 费用项设置标识Options, 费用项设置, paymentTypeOptions, 费用项设置抵扣Options, 费用项设置自定义选项} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";

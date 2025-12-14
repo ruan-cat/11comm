@@ -166,7 +166,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "车位状态",
 		prop: "车位状态",
 		valueType: "select",
-		options: 车位状态Options,
+		options: parkingSpaceStatusOptions,
 	},
 	{
 		label: "车位类型",

@@ -5,13 +5,9 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import {
-	ReminderForOverduePaymentsFormProps,
+import {ReminderForOverduePaymentsFormProps,
 	欠费催缴表单_VO,
-	defaultForm,
-	催缴方式Options,
-	催缴状态Options,
-} from "./form";
+	defaultForm,, reminderMethodOptions,, reminderStatusOptions,} from "./form";
 
 const props = defineProps<ReminderForOverduePaymentsFormProps>();
 
@@ -108,7 +104,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "催缴方式",
 		valueType: "select",
 		width: "200px",
-		options: 催缴方式Options,
+		options: reminderMethodOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -121,7 +117,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "状态",
 		valueType: "select",
 		width: "200px",
-		options: 催缴状态Options,
+		options: reminderStatusOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,

@@ -14,7 +14,7 @@ import { transformI18n } from "@/plugins/i18n";
 import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
 import { useHandingBusinessListQuery } from "@/api/property-manage/community-manage/handing-business";
 import type { HandingBusinessFormProps, 业务受理表单_VO } from "./components/form";
-import { defaultForm, 列表数据转表单数据, 费用类型Options, 状态Options } from "./components/form";
+import { defaultForm, 列表数据转表单数据, feeTypeOptions, 状态Options } from "./components/form";
 import HandingBusinessForm from "./components/form.vue";
 
 const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
@@ -153,7 +153,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用类型",
 		prop: "feeType",
 		valueType: "select",
-		options: 费用类型Options,
+		options: feeTypeOptions,
 	},
 
 	/** 状态 */

@@ -7,13 +7,13 @@ export type 菜单目录表单_VO = MenuCatalogFormData;
 
 // ==================== Options 导出 ====================
 
-import { 组类型选项, 归属商户选项 } from "@01s-11comm/type";
+import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
 
-/** 组类型选项 */
-export { 组类型选项 };
+/** groupTypeOptions */
+export { groupTypeOptions };
 
-/** 归属商户选项 */
-export { 归属商户选项 };
+/** storeTypeOptions */
+export { storeTypeOptions };
 
 // ==================== 默认表单 ====================
 

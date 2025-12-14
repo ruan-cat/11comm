@@ -251,7 +251,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "发审核状态",
 		prop: "发审核状态",
 		valueType: "select",
-		options: 审核状态Options,
+		options: auditStatusOptions,
 	},
 ]);
 

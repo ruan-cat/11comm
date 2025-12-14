@@ -60,11 +60,6 @@ export const merchantAdminStatusOptions: OptionsType = [
 	{ label: "待审核", value: "待审核" },
 ];
 
-/**
- * @description 商户管理员状态选项中文别名
- * Chinese alias for merchantAdminStatusOptions
- */
-export const 商户管理员状态选项 = merchantAdminStatusOptions;
 
 /**
  * @description 物业公司选项
@@ -83,9 +78,4 @@ export const propertyCompanyOptions: OptionsType = [
 	{ label: "富力物业服务集团有限公司", value: "富力物业服务集团有限公司" },
 ];
 
-/**
- * @description 物业公司选项中文别名
- * Chinese alias for propertyCompanyOptions
- */
-export const 物业公司选项 = propertyCompanyOptions;
 

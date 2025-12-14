@@ -228,7 +228,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceStatus")),
 		prop: "车位状态",
 		valueType: "select",
-		options: 车位状态Options,
+		options: parkingSpaceStatusOptions,
 	},
 
 	// 业主名称

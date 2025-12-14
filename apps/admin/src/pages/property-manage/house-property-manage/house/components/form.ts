@@ -7,13 +7,13 @@ export type HouseManagementFormVO_中文 = HouseManagementFormVO;
 
 // ==================== Options 导出 ====================
 
-import { 房屋类型选项, 房屋状态选项 } from "@01s-11comm/type";
+import { houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
 
-/** 房屋类型选项 */
-export { 房屋类型选项 };
+/** houseTypeOptions */
+export { houseTypeOptions };
 
-/** 房屋状态选项 */
-export { 房屋状态选项 };
+/** houseStatusOptions */
+export { houseStatusOptions };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: HouseManagementFormVO = {

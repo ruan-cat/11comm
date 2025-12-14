@@ -1,4 +1,4 @@
-import { 审核状态Options } from "@01s-11comm/type";
+import { auditStatusOptions } from "@01s-11comm/type";
 
 // ==================== 类型定义 ====================
 
@@ -42,4 +42,4 @@ export interface CancelFeeFormProps {
 	defaultValues: CancelFeeFormVO;
 }
 
-export { 审核状态Options };
+export { auditStatusOptions };

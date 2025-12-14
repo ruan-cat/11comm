@@ -15,7 +15,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type DiscountApplyFormProps, defaultForm, type DiscountApplyFormVO } from "./components/form";
 import DiscountApplyForm from "./components/form.vue";
 import { useDiscountApplyListQuery } from "@/api/property-manage/expense-manage/discount-apply";
-import { type DiscountApplyListItem, type DiscountApplyQueryParams, 申请类型Options, 使用状态Options } from "@01s-11comm/type";
+import {type DiscountApplyListItem, type DiscountApplyQueryParams,, applicationTypeOptions,, usageStatusOptions} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -171,14 +171,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "申请类型",
 		prop: "applicationType",
 		valueType: "select",
-		options: 申请类型Options,
+		options: applicationTypeOptions,
 	},
 	// 使用状态
 	{
 		label: "使用状态",
 		prop: "usageStatus",
 		valueType: "select",
-		options: 使用状态Options,
+		options: usageStatusOptions,
 	},
 ]);
 

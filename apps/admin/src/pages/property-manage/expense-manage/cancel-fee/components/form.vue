@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import { CancelFeeFormProps, defaultForm, type CancelFeeFormVO, 审核状态Options } from "./form";
+import { CancelFeeFormProps, defaultForm, type CancelFeeFormVO, auditStatusOptions } from "./form";
 
 const props = defineProps<CancelFeeFormProps>();
 
@@ -60,7 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "审核状态",
 		prop: "auditStatus",
 		valueType: "select",
-		options: 审核状态Options,
+		options: auditStatusOptions,
 	},
 	{
 		label: "审核意见",

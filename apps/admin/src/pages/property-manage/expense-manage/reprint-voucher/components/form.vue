@@ -48,7 +48,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "费用类型",
 		prop: "费用类型",
 		valueType: "select",
-		options: 费用类型Options,
+		options: feeTypeOptions,
 		fieldProps: {
 			disabled: true,
 			clearable: true,

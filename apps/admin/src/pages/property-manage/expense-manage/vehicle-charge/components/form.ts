@@ -4,7 +4,7 @@ const _费用类型 = ["押金", "停车费", "维修费", "服务费", "其他"
 export type 费用类型 = (typeof _费用类型)[number];
 
 /** 费用类型选项 */
-export const 费用类型Options = [
+export const feeTypeOptions = [
 	{ label: "押金", value: "押金" },
 	{ label: "停车费", value: "停车费" },
 	{ label: "维修费", value: "维修费" },

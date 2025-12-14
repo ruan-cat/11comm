@@ -215,7 +215,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseState")),
 		prop: "房屋状态",
 		valueType: "select",
-		options: 房屋状态选项,
+		options: houseStatusOptions,
 	},
 
 	// 房屋类型
@@ -223,7 +223,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_housePropertyManage.houses.type")),
 		prop: "房屋类型",
 		valueType: "select",
-		options: 房屋类型选项,
+		options: houseTypeOptions,
 	},
 
 	// 楼栋单元

@@ -37,13 +37,13 @@ export type 字典表单_VO = DictionaryFormVO;
 
 // ==================== Options 导出 ====================
 
-import { 字典类型选项, 是否启用选项 } from "@01s-11comm/type";
+import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
 
-/** 字典类型选项 */
-export { 字典类型选项 };
+/** dictionaryTypeOptions */
+export { dictionaryTypeOptions };
 
-/** 是否启用选项 */
-export { 是否启用选项 };
+/** enableStatusOptions */
+export { enableStatusOptions };
 
 // ==================== 默认表单数据 ====================
 

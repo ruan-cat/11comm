@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { 业务受理表单_VO, 费用类型Options, 状态Options } from "./form";
+import { 业务受理表单_VO, feeTypeOptions, 状态Options } from "./form";
 import type { HandingBusinessFormProps } from "./form";
 
 const props = defineProps<HandingBusinessFormProps>();
@@ -62,7 +62,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "费用类型",
 		valueType: "select",
 		required: true,
-		options: 费用类型Options,
+		options: feeTypeOptions,
 	},
 
 	// 应收金额

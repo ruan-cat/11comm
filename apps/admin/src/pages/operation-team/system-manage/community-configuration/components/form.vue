@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { CommunityConfigurationFormProps, defaultForm } from "./form";
-import { CommunityConfigFormVO, 设置类型选项, 数据状态选项 } from "./form";
+import { CommunityConfigFormVO, settingTypeOptions, communityConfigStatusOptions } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<CommunityConfigurationFormProps>();
@@ -65,7 +65,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "设置类型",
 		prop: "settingType",
 		valueType: "select",
-		options: 设置类型选项,
+		options: settingTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -75,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "数据状态",
 		prop: "statusCd",
 		valueType: "select",
-		options: 数据状态选项,
+		options: communityConfigStatusOptions,
 		fieldProps: {
 			clearable: true,
 		},

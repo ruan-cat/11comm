@@ -14,7 +14,7 @@ import { type OverduePaymentInformationFormProps, defaultForm, type OverduePayme
 import OverduePaymentInformationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useOverduePaymentInformationListQuery } from "@/api/property-manage/expense-manage/overdue-payment-information";
-import { type OverduePaymentInformationListItem, type OverduePaymentInformationQueryParams, 收费对象Options } from "@01s-11comm/type";
+import {type OverduePaymentInformationListItem, type OverduePaymentInformationQueryParams,, chargeObjectOptions} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -149,7 +149,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "收费对象",
 		prop: "chargeObject",
 		valueType: "select",
-		options: 收费对象Options,
+		options: chargeObjectOptions,
 	},
 	// 业主名称
 	{

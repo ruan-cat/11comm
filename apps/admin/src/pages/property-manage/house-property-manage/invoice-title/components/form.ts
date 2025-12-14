@@ -1,5 +1,5 @@
 import type { 发票抬头表单_VO } from "@01s-11comm/type";
-import { 发票类型选项, invoiceTitleDefaultForm as defaultForm } from "@01s-11comm/type";
+import { invoiceTypeOptions, invoiceTitleDefaultForm as defaultForm } from "@01s-11comm/type";
 
 // ==================== 表单Props类型定义 ====================
 
@@ -17,4 +17,4 @@ export interface InvoiceTitleFormProps {
 
 // ==================== 导出表单相关 ====================
 
-export { defaultForm, 发票类型选项 };
+export { defaultForm, invoiceTypeOptions };

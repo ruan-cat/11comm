@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { MerchantAdminFormProps, 商户管理员表单_VO, 物业公司选项, statusOptions } from "./form";
+import { MerchantAdminFormProps, 商户管理员表单_VO, propertyCompanyOptions, statusOptions } from "./form";
 
 const props = defineProps<MerchantAdminFormProps>();
 
@@ -43,7 +43,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "物业公司",
 		prop: "物业公司",
 		valueType: "select",
-		options: 物业公司选项,
+		options: propertyCompanyOptions,
 		width: "300px",
 		fieldProps: {
 			clearable: true,

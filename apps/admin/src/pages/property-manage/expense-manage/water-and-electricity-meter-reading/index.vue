@@ -106,7 +106,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.tableType")),
 		prop: "表类型",
 		valueType: "select",
-		options: 表类型Options,
+		options: meterTypeOptions,
 	},
 	// 表ID
 	{

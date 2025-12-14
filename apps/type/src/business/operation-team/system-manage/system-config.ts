@@ -123,16 +123,3 @@ export const configGroupOptions: OptionsType = [
 	{ label: "安全配置", value: "安全配置" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 配置类型选项（兼容性）
- * Config type options (for compatibility)
- */
-export const 配置类型Options = systemConfigTypeOptionsAlias;
-
-/**
- * @description 配置分组选项（兼容性）
- * Config group options (for compatibility)
- */
-export const 配置分组Options = configGroupOptions;

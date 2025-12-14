@@ -39,13 +39,13 @@ export type 配置项表单_VO = ConfigItemFormVO;
 
 // ==================== Options 导出 ====================
 
-import { 配置项类型选项, 配置项是否启用选项 } from "@01s-11comm/type";
+import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type";
 
-/** 配置项类型选项 */
-export { 配置项类型选项 };
+/** configItemTypeOptions */
+export { configItemTypeOptions };
 
-/** 是否启用选项 */
-export { 配置项是否启用选项 };
+/** enableStatusOptions */
+export { itemEnableStatusOptions };
 
 // ==================== 默认表单数据 ====================
 

@@ -18,8 +18,8 @@ import { useMyListQuery } from "@/api/property-manage/community-manage/my";
 import {
 	type MyCommunityListItem,
 	type MyCommunityQueryParams,
-	省份选项,
-	小区状态选项
+	provinceOptions,
+	myStatusOptions,
 } from "@01s-11comm/type";
 
 /** 表单组件实例 */
@@ -166,7 +166,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "省份",
 		prop: "province",
 		valueType: "select",
-		options: 省份选项,
+		options: provinceOptions,
 	},
 
 	/** 市州 */
@@ -202,7 +202,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: 小区状态选项,
+		options: myStatusOptions,
 	},
 ]);
 

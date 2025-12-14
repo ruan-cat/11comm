@@ -189,7 +189,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用标识",
 		prop: "费用标识",
 		valueType: "select",
-		options: 费用标识Options,
+		options: expenseIdentifierOptions,
 	},
 
 	/** 费用类型 */
@@ -197,7 +197,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用类型",
 		prop: "费用类型",
 		valueType: "select",
-		options: 费用类型Options,
+		options: feeTypeOptions,
 	},
 
 	/** 状态 */

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import { type OwnerAccountFormProps, 账户类型选项, 支付方式选项 } from "./form";
+import {type OwnerAccountFormProps,, accountTypeOptions,, paymentMethodOptions} from "./form";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();
@@ -39,7 +39,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "账户类型",
 		prop: "账户类型",
 		valueType: "select",
-		options: 账户类型选项,
+		options: accountTypeOptions,
 		fieldProps: {
 			placeholder: "请选择账户类型",
 		},
@@ -72,7 +72,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "支付方式",
 		prop: "支付方式",
 		valueType: "select",
-		options: 支付方式选项,
+		options: paymentMethodOptions,
 		fieldProps: {
 			placeholder: "请选择支付方式",
 		},

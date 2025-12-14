@@ -29,7 +29,7 @@ export interface 欠费催缴表单_VO {
 /**
  * 催缴方式选项
  */
-export const 催缴方式Options: OptionsType = [
+export const reminderMethodOptions: OptionsType = [
 	{ label: "短信", value: "短信" },
 	{ label: "电话", value: "电话" },
 	{ label: "上门", value: "上门" },
@@ -39,7 +39,7 @@ export const 催缴方式Options: OptionsType = [
 /**
  * 催缴状态选项
  */
-export const 催缴状态Options: OptionsType = [
+export const reminderStatusOptions: OptionsType = [
 	{ label: "待催缴", value: "待催缴" },
 	{ label: "催缴中", value: "催缴中" },
 	{ label: "已缴费", value: "已缴费" },

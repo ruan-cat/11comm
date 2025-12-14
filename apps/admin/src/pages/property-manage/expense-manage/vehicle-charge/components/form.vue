@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { VehicleChargeFormProps, 费用类型, 车辆收费表单_VO, defaultForm, 费用类型Options } from "./form";
+import {VehicleChargeFormProps, 费用类型, 车辆收费表单_VO, defaultForm,, feeTypeOptions} from "./form";
 
 const props = defineProps<VehicleChargeFormProps>();
 
@@ -59,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "费用类型",
 		prop: "费用类型",
 		valueType: "select",
-		options: 费用类型Options,
+		options: feeTypeOptions,
 		required: true,
 		fieldProps: {
 			clearable: true,

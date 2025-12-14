@@ -7,8 +7,6 @@
 export type {
 	ChangeListItem,
 	ChangeQueryParams,
-	业务受理_列表数据,
-	合同类型_列表查询_VO,
 } from "./change";
 
 export {
@@ -18,7 +16,6 @@ export {
 export type {
 	DraftContractListItem,
 	DraftContractQueryParams as DraftContractQueryParamsType,
-	合同草稿_列表数据,
 } from "./draft-contract";
 
 export {
@@ -29,8 +26,6 @@ export {
 export type {
 	ExpireListItem,
 	ExpireQueryParams,
-	到期合同_列表数据,
-	到期合同_列表查询_VO,
 } from "./expire";
 
 export {
@@ -41,7 +36,6 @@ export {
 export type {
 	FirstPartyListItem,
 	FirstPartyQueryParams,
-	合同甲方_列表数据,
 } from "./first-party";
 
 export {
@@ -51,8 +45,6 @@ export {
 export type {
 	TypeListItem,
 	TypeQueryParams,
-	合同类型_列表数据,
-	合同类型_列表查询_VO as TypeQueryParamsVO,
 } from "./type";
 
 export {

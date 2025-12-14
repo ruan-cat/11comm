@@ -79,7 +79,7 @@ export const paymentReviewStatusOptions: OptionsType = [
  * @description 费用项目选项
  * Expense item options
  */
-export const 费用项目Options: OptionsType = [
+export const expenseItemOptions: OptionsType = [
 	{ label: "物业费", value: "物业费" },
 	{ label: "水费", value: "水费" },
 	{ label: "电费", value: "电费" },
@@ -90,7 +90,7 @@ export const 费用项目Options: OptionsType = [
  * @description 缴费审核状态选项
  * Payment review status options
  */
-export const 缴费审核状态Options: OptionsType = [
+export const paymentReviewAuditStatusOptions: OptionsType = [
 	{ label: "待审核", value: "待审核" },
 	{ label: "已通过", value: "已通过" },
 	{ label: "已拒绝", value: "已拒绝" },

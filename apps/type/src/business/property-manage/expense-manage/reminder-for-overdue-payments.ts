@@ -47,7 +47,7 @@ export const reminderForOverduePaymentsStatusOptions: OptionsType = [
  * @description 催缴方式选项
  * Collection method options
  */
-export const 催缴方式Options: OptionsType = [
+export const reminderMethodOptions: OptionsType = [
 	{ label: "短信", value: "短信" },
 	{ label: "电话", value: "电话" },
 	{ label: "上门", value: "上门" },
@@ -57,7 +57,7 @@ export const 催缴方式Options: OptionsType = [
  * @description 催缴状态选项
  * Collection status options
  */
-export const 催缴状态Options: OptionsType = [
+export const reminderStatusOptions: OptionsType = [
 	{ label: "待催缴", value: "待催缴" },
 	{ label: "催缴中", value: "催缴中" },
 	{ label: "已完成", value: "已完成" },

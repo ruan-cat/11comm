@@ -73,11 +73,3 @@ export const itemEnableStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-// ==================== 中文名称导出 ====================
-
-/** 配置项类型选项（中文名称） */
-export const 配置项类型选项 = configItemTypeOptions;
-
-/** 配置项是否启用选项（中文名称） */
-export const 配置项是否启用选项 = itemEnableStatusOptions;
-

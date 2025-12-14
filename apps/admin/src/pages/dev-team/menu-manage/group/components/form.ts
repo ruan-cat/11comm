@@ -73,9 +73,9 @@ export interface 菜单组表单Props {
 // ==================== 常量定义 ====================
 
 /**
- * 组类型选项
+ * groupTypeOptions
  */
-export const 组类型选项 = [
+export const groupTypeOptions = [
 	{ label: "系统菜单", value: "系统菜单" as const },
 	{ label: "用户菜单", value: "用户菜单" as const },
 	{ label: "商户菜单", value: "商户菜单" as const },

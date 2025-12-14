@@ -103,11 +103,3 @@ export const storeTypeOptions: OptionsType = [
 	{ label: "通用平台", value: "common" },
 ];
 
-// ==================== 中文名称导出 ====================
-
-/** 组类型选项（中文名称） */
-export const 组类型选项 = groupTypeOptions;
-
-/** 归属商户选项（中文名称） */
-export const 归属商户选项 = storeTypeOptions;
-

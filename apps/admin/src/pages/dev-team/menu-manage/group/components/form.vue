@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { 菜单组表单Props, 菜单组表单_VO, defaultForm, 组类型选项, 状态选项, 商户选项, 图标选项 } from "./form";
+import { 菜单组表单Props, 菜单组表单_VO, defaultForm, groupTypeOptions, 状态选项, 商户选项, 图标选项 } from "./form";
 
 const props = defineProps<菜单组表单Props>();
 
@@ -85,7 +85,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		width: "180px",
 		required: true,
-		options: 组类型选项,
+		options: groupTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,

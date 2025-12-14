@@ -187,7 +187,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "账户类型",
 		prop: "账户类型",
 		valueType: "select",
-		options: 账户类型选项,
+		options: accountTypeOptions,
 	},
 ]);
 

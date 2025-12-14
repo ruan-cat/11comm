@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { DiscountTypeFormProps, DiscountTypeFormVO, defaultForm, 折扣类型Options } from "./form";
+import {DiscountTypeFormProps, DiscountTypeFormVO, defaultForm,, discountTypeOptions} from "./form";
 
 const props = defineProps<DiscountTypeFormProps>();
 
@@ -57,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "discountType",
 		valueType: "select",
 		width: "200px",
-		options: 折扣类型Options,
+		options: discountTypeOptions,
 		fieldProps: {
 			clearable: true,
 			disabled: props.disabled,

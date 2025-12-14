@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { CatalogFormProps, defaultForm } from "./form";
-import { 菜单目录表单_VO, 组类型选项, 归属商户选项 } from "./form";
+import { 菜单目录表单_VO, groupTypeOptions, storeTypeOptions } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<CatalogFormProps>();
@@ -74,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "组类型",
 		prop: "groupType",
 		valueType: "select",
-		options: 组类型选项,
+		options: groupTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -84,7 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "归属商户",
 		prop: "storeType",
 		valueType: "select",
-		options: 归属商户选项,
+		options: storeTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import { InitializeCellFormProps, defaultForm, type 初始化单元格表单_VO, 单元格类型Options, 状态Options } from "./form";
+import { InitializeCellFormProps, defaultForm, type 初始化单元格表单_VO, cellTypeOptions, 状态Options } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<InitializeCellFormProps>();
@@ -48,7 +48,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "单元格类型",
 		prop: "单元格类型",
 		valueType: "select",
-		options: 单元格类型Options,
+		options: cellTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,

@@ -238,14 +238,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "催缴方式",
 		prop: "催缴方式",
 		valueType: "select",
-		options: 催缴方式Options,
+		options: reminderMethodOptions,
 	},
 	/** 状态 */
 	{
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: 催缴状态Options,
+		options: reminderStatusOptions,
 	},
 ]);
 

@@ -14,12 +14,8 @@ import { type PaymentReviewFormProps, defaultForm, type PaymentReviewFormVO } fr
 import 缴费审核Form from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { usePaymentReviewListQuery } from "@/api/property-manage/expense-manage/payment-review";
-import {
-	type PaymentReviewListItem,
-	type PaymentReviewQueryParams,
-	费用项目Options,
-	缴费审核状态Options,
-} from "@01s-11comm/type";
+import {type PaymentReviewListItem,
+	type PaymentReviewQueryParams,, expenseItemOptions,, paymentReviewAuditStatusOptions,} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -171,14 +167,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用项目",
 		prop: "expenseItem",
 		valueType: "select",
-		options: 费用项目Options,
+		options: expenseItemOptions,
 	},
 	/** 审核状态 */
 	{
 		label: "审核状态",
 		prop: "auditStatus",
 		valueType: "select",
-		options: 缴费审核状态Options,
+		options: paymentReviewAuditStatusOptions,
 	},
 	/** 缴费时间范围 */
 	{

@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { SystemConfigFormProps, 系统配置表单_VO, defaultForm, 配置类型Options, 配置分组Options, 状态Options } from "./form";
+import { SystemConfigFormProps, 系统配置表单_VO, defaultForm, systemConfigTypeOptionsAlias, configGroupOptions, 状态Options } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
 
@@ -75,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: 配置类型Options,
+		options: systemConfigTypeOptionsAlias,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -90,7 +90,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: 配置分组Options,
+		options: configGroupOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,

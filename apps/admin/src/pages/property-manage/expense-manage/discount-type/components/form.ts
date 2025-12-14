@@ -1,4 +1,4 @@
-import { 折扣类型Options } from "@01s-11comm/type";
+import { discountTypeOptions } from "@01s-11comm/type";
 
 // ==================== 联合类型定义 ====================
 
@@ -43,4 +43,4 @@ export interface DiscountTypeFormProps {
 	disabled?: boolean;
 }
 
-export { 折扣类型Options };
+export { discountTypeOptions };

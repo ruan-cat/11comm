@@ -1,5 +1,5 @@
 import type { 业主账户表单_VO } from "@01s-11comm/type";
-import { 账户类型选项, 支付方式选项, ownerAccountDefaultForm as defaultForm } from "@01s-11comm/type";
+import { accountTypeOptions, paymentMethodOptions, ownerAccountDefaultForm as defaultForm } from "@01s-11comm/type";
 
 // ==================== 表单Props类型定义 ====================
 
@@ -17,4 +17,4 @@ export interface OwnerAccountFormProps {
 
 // ==================== 导出表单相关 ====================
 
-export { defaultForm, 账户类型选项, 支付方式选项 };
+export { defaultForm, accountTypeOptions, paymentMethodOptions };

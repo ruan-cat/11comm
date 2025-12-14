@@ -69,11 +69,6 @@ export const feeTypeOptions: OptionsType = [
 	{ label: "违约金", value: "违约金" },
 ];
 
-/**
- * @description 费用类型选项中文别名
- * Chinese alias for feeTypeOptions
- */
-export const 费用类型Options = feeTypeOptions;
 
 /**
  * @description 费用状态选项
@@ -92,12 +87,4 @@ export const feeStatusOptions: OptionsType = [
  * Business handling status options
  */
 export const businessHandlingStatusOptions = feeStatusOptions;
-
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 业务受理状态选项（兼容性）
- * Business handling status options (for compatibility)
- */
-export const 业务受理状态Options = businessHandlingStatusOptions;
 

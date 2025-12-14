@@ -71,9 +71,9 @@ export interface 小区配置表单_VO {
 // ==================== 常量定义 ====================
 
 /**
- * 设置类型选项
+ * settingTypeOptions
  */
-export const 设置类型选项: OptionsType = [
+export const settingTypeOptions: OptionsType = [
 	{
 		label: "基础配置",
 		value: "1001",
@@ -97,9 +97,9 @@ export const 设置类型选项: OptionsType = [
 ];
 
 /**
- * 数据状态选项
+ * communityConfigStatusOptions
  */
-export const 数据状态选项: OptionsType = [
+export const communityConfigStatusOptions: OptionsType = [
 	{
 		label: "正常",
 		value: "0",

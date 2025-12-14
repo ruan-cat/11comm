@@ -1,5 +1,5 @@
 import type { HandingBusinessListItem } from "@01s-11comm/type";
-import { 费用类型Options, 业务受理状态Options as 状态Options } from "@01s-11comm/type";
+import { feeTypeOptions, businessHandlingStatusOptions as 状态Options } from "@01s-11comm/type";
 
 /** 业务受理表单 VO */
 export interface 业务受理表单_VO {
@@ -52,4 +52,4 @@ export function 列表数据转表单数据(列表数据: HandingBusinessListIte
 }
 
 /** 导出选项供其他文件使用 */
-export { 费用类型Options, 状态Options };
+export { feeTypeOptions, 状态Options };

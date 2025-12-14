@@ -19,9 +19,9 @@ import { usePropertyRegisterListQuery } from "@/api/property-manage/community-ma
 import {
 	type PropertyRegisterListItem,
 	type PropertyRegisterQueryParams,
-	审核状态Options,
-	楼栋Options,
-	单元Options
+	auditStatusOptions,
+	buildingOptions,
+	unitOptions,
 } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -199,7 +199,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "审核状态",
 		prop: "status",
 		valueType: "select",
-		options: 审核状态Options,
+		options: auditStatusOptions,
 	},
 
 	/** 楼栋 */
@@ -207,7 +207,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "楼栋",
 		prop: "building",
 		valueType: "select",
-		options: 楼栋Options,
+		options: buildingOptions,
 	},
 
 	/** 单元 */
@@ -215,7 +215,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "单元",
 		prop: "unit",
 		valueType: "select",
-		options: 单元Options,
+		options: unitOptions,
 	},
 ]);
 

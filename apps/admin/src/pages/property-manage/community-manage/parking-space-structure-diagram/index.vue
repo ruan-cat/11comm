@@ -18,10 +18,10 @@ import { useParkingSpaceStructureDiagramListQuery } from "@/api/property-manage/
 import {
 	type ParkingSpaceStructureDiagramListItem,
 	type ParkingSpaceStructureDiagramQueryParams,
-	车位类型选项,
+	parkingSpaceTypeOptions,
 	车位状态选项,
-	楼层区域选项,
-	是否充电桩选项
+	floorAreaOptions,
+	isChargingPileOptions,
 } from "@01s-11comm/type";
 
 /** 表单组件实例 */

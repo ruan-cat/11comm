@@ -139,7 +139,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		prop: "车位状态",
 		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleSpaceStatus")),
 		valueType: "select",
-		options: 车位状态Options,
+		options: parkingSpaceStatusOptions,
 	},
 ]);
 /** 表格搜索栏组件 配置  */

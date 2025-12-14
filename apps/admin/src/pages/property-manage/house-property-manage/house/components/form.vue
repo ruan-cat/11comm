@@ -59,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "类型",
 		prop: "类型",
 		valueType: "select",
-		options: 房屋类型选项,
+		options: houseTypeOptions,
 	},
 
 	// 房屋面积
@@ -81,7 +81,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "房屋状态",
 		prop: "房屋状态",
 		valueType: "select",
-		options: 房屋状态选项,
+		options: houseStatusOptions,
 	},
 
 	// 有效期

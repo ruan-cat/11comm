@@ -6,7 +6,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { DictionaryFormProps, DictionaryFormVO } from "./form";
-import { 字典类型选项, 是否启用选项 } from "@01s-11comm/type";
+import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<DictionaryFormProps>();
 
@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "字典类型",
 		prop: "dictionaryType",
 		valueType: "select",
-		options: 字典类型选项,
+		options: dictionaryTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -90,7 +90,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "是否启用",
 		prop: "isEnabled",
 		valueType: "select",
-		options: 是否启用选项,
+		options: enableStatusOptions,
 		fieldProps: {
 			clearable: true,
 		},

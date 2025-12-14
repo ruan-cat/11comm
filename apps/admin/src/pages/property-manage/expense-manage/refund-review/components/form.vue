@@ -55,7 +55,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "feeType",
 		prop: "feeType",
 		valueType: "select",
-		options: 费用类型Options,
+		options: feeTypeOptions,
 		fieldProps: {
 			disabled: true,
 		},
@@ -96,7 +96,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "refundReason",
 		prop: "refundReason",
 		valueType: "select",
-		options: 退费原因Options,
+		options: refundReasonOptions,
 		fieldProps: {
 			disabled: true,
 		},
@@ -113,7 +113,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "auditStatus",
 		prop: "auditStatus",
 		valueType: "select",
-		options: 审核状态Options,
+		options: auditStatusOptions,
 	},
 	{
 		label: "auditor",
