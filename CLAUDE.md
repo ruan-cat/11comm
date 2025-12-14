@@ -339,6 +339,8 @@ pnpm -F @01s-11comm/type typecheck
 
 ## 获取技术栈对应的上下文
 
+以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
+
 ### taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
@@ -350,4 +352,12 @@ pnpm -F @01s-11comm/type typecheck
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
-这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。
+这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
+
+#### 编写接口需要导入正确的模块
+
+<!-- TODO: -->
+
+#### 配置文件格式没有 vite 配置对象
+
+<!-- TODO: -->
