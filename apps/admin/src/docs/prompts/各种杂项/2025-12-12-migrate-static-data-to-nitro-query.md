@@ -235,4 +235,19 @@ openspec validate migrate-static-data-to-nitro-query --strict
 5. 先完成 `类型项目` 内代码的字段名换成英文，再开始去修改 vue 组件的中文字段命名。
 6. 不断地运行 `后台项目` 提供的类型报错检查命令，直到整个项目都不出现任何类型报错。
 
+### 07 <!-- TODO:  --> 手动整理公共通用使用的业务类型，并设计新的公共下拉选择数组的新规范
+
+对于类型项目，请你在 `./apps/type/src/business` 目录下面，搜索以下代码片段：
+
+```txt
+	{ label: "物业服务合同", value: "物业服务合同" },
+	{ label: "租赁合同", value: "租赁合同" },
+	{ label: "维修合同", value: "维修合同" },
+```
+
+1. 请你将这些公共的，跨项目的，通用的下拉选择数组，统一整理整合到 `apps\type\src\common\business-options.ts` 文件内。
+2. 你迁移删改了类型项目内内容重复的代码，需要你同步的去 admin 后台项目内，将对应文件的使用做同步性的更改。更改时，不应该使用兼容性的 as 写法，直接更换新的，通用的变量名。
+3. 在 `openspec\changes\migrate-static-data-to-nitro-query` 目录内，阅读现有的迁移规范。并且新增满足 openspec 的公共业务下拉选择数组迁移规范。
+   > 统一的将这一种满足 `OptionsType` 类型的下拉选择数组，都迁移到 `apps\type\src\common\business-options.ts` 文件内，统一使用这里的下拉选择数组。
+
 <!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
