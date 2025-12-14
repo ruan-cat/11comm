@@ -5,9 +5,13 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import {ReminderForOverduePaymentsFormProps,
+import {
+	ReminderForOverduePaymentsFormProps,
 	欠费催缴表单_VO,
-	defaultForm,, reminderMethodOptions,, reminderStatusOptions,} from "./form";
+	defaultForm,
+	reminderMethodOptions,
+	reminderStatusOptions,
+} from "./form";
 
 const props = defineProps<ReminderForOverduePaymentsFormProps>();
 

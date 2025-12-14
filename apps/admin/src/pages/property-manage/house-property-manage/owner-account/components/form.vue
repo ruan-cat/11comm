@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import {type OwnerAccountFormProps,, accountTypeOptions,, paymentMethodOptions} from "./form";
+import { type OwnerAccountFormProps, accountTypeOptions, paymentMethodOptions } from "./form";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();

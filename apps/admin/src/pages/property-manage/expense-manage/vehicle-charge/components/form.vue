@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import {VehicleChargeFormProps, 费用类型, 车辆收费表单_VO, defaultForm,, feeTypeOptions} from "./form";
+import { VehicleChargeFormProps, 费用类型, 车辆收费表单_VO, defaultForm, feeTypeOptions } from "./form";
 
 const props = defineProps<VehicleChargeFormProps>();
 

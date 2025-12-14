@@ -12,7 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type HouseDecorationListItem, type HouseDecorationQueryParams, decorationStatusOptions, delayStatusOptions } from "@01s-11comm/type";
 import { useHouseDecorationListQuery } from "@/api/property-manage/community-manage/house-decoration";
-import { type HouseDecorationFormProps, defaultForm, type 房屋装修表单_VO, type 房屋装修状态类型, type 是否延期类型, type 是否违规类型 } from "./components/form";
+import { type HouseDecorationFormProps, defaultForm } from "./components/form";
 import HouseDecorationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -277,7 +277,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}房屋装修`;
 
 	/** 业务对象 */
-	const 房屋装修表单_VO: 房屋装修表单_VO = isAdd.value
+	const 房屋装修表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? {
@@ -289,10 +289,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					申请时间: row?.applicationTime || "",
 					装修单位: row?.decorationCompany || "",
 					负责人电话: row?.managerPhone || "",
-					状态: (row?.status as 房屋装修状态类型) || "待审核",
-					是否延期: (row?.isDelayed as 是否延期类型) || "否",
+					状态: row?.status || "待审核",
+					是否延期: row?.isDelayed || "否",
 					延期时间: row?.delayTime || "",
-					是否违规: (row?.isViolated as 是否违规类型) || "否",
+					是否违规: row?.isViolated || "否",
 					违规说明: row?.violationDescription || "",
 					备注: row?.remarks || "",
 				}

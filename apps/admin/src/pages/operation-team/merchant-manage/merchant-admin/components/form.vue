@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { MerchantAdminFormProps, 商户管理员表单_VO, propertyCompanyOptions, statusOptions } from "./form";
+import { MerchantAdminFormProps, 商户管理员表单_VO, propertyCompanyOptions } from "./form";
+import { statusOptions } from "@01s-11comm/type";
 
 const props = defineProps<MerchantAdminFormProps>();
 
@@ -160,9 +161,7 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入管理员电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	管理员邮箱: [
-		{ type: "email", message: "请输入正确的邮箱地址", trigger: "blur" },
-	],
+	管理员邮箱: [{ type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }],
 	身份证号码: [
 		{ required: true, message: "请输入身份证号码", trigger: "blur" },
 		{ pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: "请输入正确的身份证号码", trigger: "blur" },

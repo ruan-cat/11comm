@@ -16,7 +16,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { type DiscountTypeFormProps, defaultForm, type DiscountTypeFormVO, type DiscountType } from "./components/form";
 import DiscountTypeForm from "./components/form.vue";
 import { useDiscountTypeListQuery } from "@/api/property-manage/expense-manage/discount-type";
-import {type DiscountTypeListItem, type DiscountTypeQueryParams,, discountTypeOptions} from "@01s-11comm/type";
+import { type DiscountTypeListItem, type DiscountTypeQueryParams, discountTypeOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";

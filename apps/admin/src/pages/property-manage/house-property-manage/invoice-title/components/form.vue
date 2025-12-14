@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import {type InvoiceTitleFormProps, defaultForm,, invoiceTypeOptions} from "./form";
+import { type InvoiceTitleFormProps, defaultForm, invoiceTypeOptions } from "./form";
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();
