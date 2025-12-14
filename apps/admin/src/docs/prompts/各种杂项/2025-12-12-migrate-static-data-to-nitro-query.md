@@ -253,7 +253,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 ### 08 <!-- TODO:  order 1 --> 更新 `common-business-options` 规范，禁止类型项目使用含有中文的变量名
 
 1. 阅读该 openspec 规范文件 `openspec\changes\migrate-static-data-to-nitro-query\specs\common-business-options\spec.md`
-2. 这个规范文件，本身很不符合其他的规范文件约束。按照其他的 openspec 规范，是不应该在 type 类型项目和 admin 管理后天项目内，使用任何中文变量名的。
+2. 这个规范文件，本身很不符合其他的规范文件约束。按照其他的 openspec 规范，是不应该在 type 类型项目和 admin 管理后台项目内，使用任何中文变量名的。
 3. 请你更新 `openspec\changes\migrate-static-data-to-nitro-query\specs\common-business-options\spec.md` 内的代码实例。避免使用错误的变量名写法。
 4. 请你也同步更新类型项目内，使用中文的变量名。
 5. 更新使用中文变量名的其他 admin 项目代码。确保变量和类型应用写法相统一。
