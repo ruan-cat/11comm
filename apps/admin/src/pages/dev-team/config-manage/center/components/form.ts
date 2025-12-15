@@ -3,7 +3,6 @@
  * @description Configuration center form types
  */
 
-import type { ConfigCenterListItem } from "@01s-11comm/type";
 import { configTypeOptions, configStatusOptions } from "@01s-11comm/type";
 
 /** 配置中心表单数据类型 Form data type */

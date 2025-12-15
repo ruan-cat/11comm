@@ -93,7 +93,7 @@
 - [x] 2.1.5 新建 `apps/admin/src/api/dev-team/config-manage/center/index.ts`
 - [x] 2.1.6 改写 `apps/admin/src/pages/dev-team/config-manage/center/index.vue` 列表页
 - [x] 2.1.7 删除 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
-- [ ] 2.1.8 更新 `apps/admin/src/pages/dev-team/config-manage/center/form.ts` 和 `form.vue` 文件
+- [x] 2.1.8 更新 `apps/admin/src/pages/dev-team/config-manage/center/form.ts` 和 `form.vue` 文件
 
 ### 2.2 config-manage/dictionary
 
@@ -104,7 +104,7 @@
 - [x] 2.2.5 新建 `apps/admin/src/api/dev-team/config-manage/dictionary/index.ts`
 - [x] 2.2.6 改写 `apps/admin/src/pages/dev-team/config-manage/dictionary/index.vue` 列表页
 - [x] 2.2.7 删除 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
-- [ ] 2.2.8 更新 `apps/admin/src/pages/dev-team/config-manage/dictionary/form.ts` 和 `form.vue` 文件
+- [x] 2.2.8 更新 `apps/admin/src/pages/dev-team/config-manage/dictionary/form.ts` 和 `form.vue` 文件
 
 ### 2.3 config-manage/type
 
@@ -115,7 +115,7 @@
 - [x] 2.3.5 新建 `apps/admin/src/api/dev-team/config-manage/type/index.ts`
 - [x] 2.3.6 改写 `apps/admin/src/pages/dev-team/config-manage/type/index.vue` 列表页
 - [x] 2.3.7 删除 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
-- [ ] 2.3.8 更新 `apps/admin/src/pages/dev-team/config-manage/type/form.ts` 和 `form.vue` 文件
+- [x] 2.3.8 更新 `apps/admin/src/pages/dev-team/config-manage/type/form.ts` 和 `form.vue` 文件
 
 ### 2.4 config-manage/item
 
@@ -126,7 +126,7 @@
 - [x] 2.4.5 新建 `apps/admin/src/api/dev-team/config-manage/item/index.ts`
 - [x] 2.4.6 改写 `apps/admin/src/pages/dev-team/config-manage/item/index.vue` 列表页
 - [x] 2.4.7 删除 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
-- [ ] 2.4.8 更新 `apps/admin/src/pages/dev-team/config-manage/item/form.ts` 和 `form.vue` 文件
+- [x] 2.4.8 更新 `apps/admin/src/pages/dev-team/config-manage/item/form.ts` 和 `form.vue` 文件
 
 ### 2.5 menu-manage/catalog
 
@@ -137,7 +137,7 @@
 - [x] 2.5.5 新建 `apps/admin/src/api/dev-team/menu-manage/catalog/index.ts`
 - [x] 2.5.6 改写 `apps/admin/src/pages/dev-team/menu-manage/catalog/index.vue` 列表页
 - [x] 2.5.7 删除 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
-- [ ] 2.5.8 更新 `apps/admin/src/pages/dev-team/menu-manage/catalog/form.ts` 和 `form.vue` 文件
+- [x] 2.5.8 更新 `apps/admin/src/pages/dev-team/menu-manage/catalog/form.ts` 和 `form.vue` 文件
 
 ### 2.6 menu-manage/group
 
@@ -148,7 +148,7 @@
 - [x] 2.6.5 新建 `apps/admin/src/api/dev-team/menu-manage/group/index.ts`
 - [x] 2.6.6 改写 `apps/admin/src/pages/dev-team/menu-manage/group/index.vue` 列表页
 - [x] 2.6.7 删除 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
-- [ ] 2.6.8 更新 `apps/admin/src/pages/dev-team/menu-manage/group/form.ts` 和 `form.vue` 文件
+- [x] 2.6.8 更新 `apps/admin/src/pages/dev-team/menu-manage/group/form.ts` 和 `form.vue` 文件
 
 ### 2.7 menu-manage/item
 
@@ -159,7 +159,7 @@
 - [x] 2.7.5 新建 `apps/admin/src/api/dev-team/menu-manage/item/index.ts`
 - [x] 2.7.6 改写 `apps/admin/src/pages/dev-team/menu-manage/item/index.vue` 列表页
 - [x] 2.7.7 删除 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
-- [ ] 2.7.8 更新 `apps/admin/src/pages/dev-team/menu-manage/item/form.ts` 和 `form.vue` 文件
+- [x] 2.7.8 更新 `apps/admin/src/pages/dev-team/menu-manage/item/form.ts` 和 `form.vue` 文件
 
 ### 2.8 cache-manage/refresh-cache
 
@@ -170,7 +170,7 @@
 - [x] 2.8.5 新建 `apps/admin/src/api/dev-team/cache-manage/refresh-cache/index.ts`
 - [x] 2.8.6 改写 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/index.vue` 列表页
 - [x] 2.8.7 删除 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
-- [ ] 2.8.8 更新 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/form.ts` 和 `form.vue` 文件
+- [x] 2.8.8 更新 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/form.ts` 和 `form.vue` 文件
 
 ---
 
