@@ -10,7 +10,12 @@ definePage({
 
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "plugins/i18n.ts";
-import { type 员工信息_列表数据, type 员工信息_列表查询_VO, tableData as mockTableData } from "./test-data.ts";
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// import {
+// 	type StaffInfoListData,
+// 	type StaffInfoListQueryVO,
+// 	tableData as mockTableData,
+// } from "@01s-11comm/type";
 import { type StaffInfoFormProps, defaultForm } from "./components/form.ts";
 import StaffInfoForm from "./components/form.vue";
 
@@ -18,7 +23,11 @@ import StaffInfoForm from "./components/form.vue";
 const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<员工信息_列表数据[]>(mockTableData);
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// const tableData = ref<StaffInfoListData[]>(mockTableData);
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// const tableData = ref<StaffInfoListData[]>([]);
+const tableData = ref<any[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -111,7 +120,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 员工信息_列表查询_VO = {
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// const plusSearchModelRef: FieldValues & StaffInfoListQueryVO = {
+const plusSearchModelRef: FieldValues & any = {
 	员工ID: "",
 	员工姓名: "",
 	手机号: "",
@@ -183,7 +194,9 @@ async function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 员工信息_列表数据;
+	// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+	// row?: StaffInfoListData;
+	row?: any;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -303,24 +316,26 @@ function handleAdd() {
 }
 
 /** 编辑员工 */
-function handleEdit(row: 员工信息_列表数据) {
+function handleEdit(row: any) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 重置密码 */
-function handleResetPassword(row: 员工信息_列表数据) {
+function handleResetPassword(row: any) {
 	console.log("重置密码", row);
 	// TODO: 实现重置密码功能
 }
 
 /** 删除员工 */
-function handleDelete(row: 员工信息_列表数据) {
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// function handleDelete(row: any) {
+function handleDelete(row: any) {
 	console.log("删除员工", row);
 	// TODO: 实现删除员工功能
 }
 
 /** 查看详情 */
-function handleDetail(row: 员工信息_列表数据) {
+function handleDetail(row: any) {
 	console.log("查看详情", row);
 	// TODO: 实现查看员工详情
 }

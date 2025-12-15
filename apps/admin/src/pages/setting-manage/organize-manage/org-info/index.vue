@@ -20,19 +20,22 @@ import { ReTreeLineIcon } from "components/ReTreeLineIcon";
 import { useReTreeLineIcon } from "components/ReTreeLineIcon/src/use-re-tree-line-icon.ts";
 import type { TreeNodeWithIcon, TreeSelectEvent, ReTreeLineIconInstance } from "components/ReTreeLineIcon/src/types.ts";
 import { ElMessage } from "element-plus";
-import {
-	mockOrganizationTreeData,
-	tableData as mockTableData,
-	getEmployeesByOrgId,
-	type OrganizationTreeNode,
-	type Employee,
-} from "./test-data.ts";
+
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// import {
+// 	mockOrganizationTreeData,
+// 	tableData as mockTableData,
+// 	getEmployeesByOrgId,
+// 	type OrganizationTreeNode,
+// 	type Employee,
+// } from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 组织树数据已经兼容TreeNodeWithIcon接口，直接使用
-const organizationTreeData = ref<OrganizationTreeNode[]>(mockOrganizationTreeData);
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// const organizationTreeData = ref<OrganizationTreeNode[]>(mockOrganizationTreeData);
 
 // 树组件状态
 const treeRef = ref<ReTreeLineIconInstance | null>(null);
@@ -59,7 +62,8 @@ const {
 const treeLoading = ref(false);
 
 // 表格数据
-const tableData = ref<Employee[]>(mockTableData);
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// const tableData = ref<Employee[]>(mockTableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -114,7 +118,9 @@ const pagination = ref<PaginationProps>({
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
-	data: tableData.value,
+	// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+	// data: tableData.value,
+	data: [],
 	columns: [],
 	pagination: pagination.value,
 });
@@ -229,23 +235,24 @@ async function loadTableData() {
 	try {
 		/** TODO: 替换为真实的API调用 */
 		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = tableData.value;
+		// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+		// let filteredData = tableData.value;
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.employeeName) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.employeeName!));
+			// filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.employeeName!));
 		}
 
 		/** 更新总数 */
-		pagination.value.total = filteredData.length;
+		// pagination.value.total = filteredData.length;
 
 		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
-		const paginatedData = filteredData.slice(startIndex, endIndex);
+		// const paginatedData = filteredData.slice(startIndex, endIndex);
 
 		/** 更新表格配置 */
-		pureTableProps.value.data = paginatedData;
+		// pureTableProps.value.data = paginatedData;
 	} catch (error) {
 		console.error("加载数据失败:", error);
 		/** TODO: 显示错误提示 */
@@ -307,13 +314,15 @@ function handleExportDoc() {
 	console.log("导出文档");
 }
 
-function handleEditEmployee(row: Employee) {
-	console.log("编辑员工:", row);
-}
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// function handleEditEmployee(row: Employee) {
+// 	console.log("编辑员工:", row);
+// }
 
-function handleDeleteEmployee(row: Employee) {
-	console.log("删除员工:", row);
-}
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// function handleDeleteEmployee(row: Employee) {
+// 	console.log("删除员工:", row);
+// }
 
 // ========== 生命周期 ==========
 onMounted(async () => {
@@ -356,7 +365,8 @@ onMounted(async () => {
 
 					<!-- 使用新的树组件 -->
 					<div class="tree-container">
-						<ReTreeLineIcon
+						<!-- // TODO: 改代码需要在执行重构时 取消注释并完成正常使用 -->
+						<!-- <ReTreeLineIcon
 							ref="treeRef"
 							:tree-data="organizationTreeData"
 							:loading="treeLoading"
@@ -365,7 +375,7 @@ onMounted(async () => {
 							:default-expand-all="true"
 							@node-click="handleTreeNodeClick"
 							@selection-change="handleTreeSelectionChange"
-						/>
+						/> -->
 					</div>
 				</el-card>
 			</el-col>
@@ -400,12 +410,13 @@ onMounted(async () => {
 							@page-current-change="handleCurrentPageChange"
 						>
 							<template #operation="{ row }">
-								<ElButton type="warning" @click="handleEditEmployee(row)">
+								<!-- // TODO: 改代码需要在执行重构时 取消注释并完成正常使用 -->
+								<!-- <ElButton type="warning" @click="handleEditEmployee(row)">
 									{{ transformI18n($t("common.buttons.edit")) }}
 								</ElButton>
 								<ElButton type="danger" @click="handleDeleteEmployee(row)">
 									{{ transformI18n($t("common.buttons.del")) }}
-								</ElButton>
+								</ElButton> -->
 							</template>
 						</PureTable>
 					</template>

@@ -16,13 +16,18 @@ import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 
-import { tableData as mockTableData, type WorkingSchedule } from "./test-data.ts";
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// import {
+// 	tableData as mockTableData,
+// 	type WorkingSchedule,
+// } from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 表格数据
-const tableData = ref<WorkingSchedule[]>(mockTableData);
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// const tableData = ref<WorkingSchedule[]>(mockTableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -87,7 +92,9 @@ const pagination = ref<PaginationProps>({
 /** 表格组件 配置 */
 const pureTableProps = ref<PureTableProps>({
 	...defaultPureTableProps,
-	data: tableData.value,
+	// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+	// data: tableData.value,
+	data: [],
 	columns: [],
 	pagination: pagination.value,
 });
@@ -164,7 +171,9 @@ async function loadTableData() {
 	try {
 		/** TODO: 替换为真实的API调用 */
 		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = [...tableData.value];
+		// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+		// let filteredData = [...tableData.value];
+		let filteredData = [];
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.scheduleName) {
@@ -219,13 +228,15 @@ function handleAddSchedule() {
 	console.log("添加排班");
 }
 
-function handleEditSchedule(row: WorkingSchedule) {
-	console.log("编辑排班:", row);
-}
+// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
+// function handleEditSchedule(row: WorkingSchedule) {
+// 	console.log("编辑排班:", row);
+// }
 
-function handleDeleteSchedule(row: WorkingSchedule) {
-	console.log("删除排班:", row);
-}
+// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
+// function handleDeleteSchedule(row: WorkingSchedule) {
+// 	console.log("删除排班:", row);
+// }
 
 function handleExportSchedule() {
 	console.log("导出排班表");
@@ -268,12 +279,13 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEditSchedule(row)">
+						<!-- // TODO: 改代码需要在执行重构时 取消注释并完成正常使用 -->
+						<!-- <ElButton type="warning" @click="handleEditSchedule(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDeleteSchedule(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
-						</ElButton>
+						</ElButton> -->
 					</template>
 				</PureTable>
 			</template>
