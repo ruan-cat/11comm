@@ -31,19 +31,25 @@ import type {
 import {
 	// 按照 nitro 例子的写法 使用来自`vue-router`模块的 createWebHistory 函数
 	createWebHistory,
+	// 用该函数 避免使用浏览器的API
+	createMemoryHistory,
 } from "vue-router";
 import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/auth";
 import { consola } from "consola";
 
 // 自动化路由插件
 // @ts-ignore - vue-router/auto 类型定义问题
-import {
-	createRouter,
-	createMemoryHistory,
-	// routes as autoRoutes
-} from "vue-router/auto";
+import { createRouter } from "vue-router/auto";
+// // createMemoryHistory,
+// // routes as autoRoutes
+// "vue-router/auto";
 
-import { handleHotUpdate, routes as autoRoutes } from "vue-router/auto-routes";
+import {
+	handleHotUpdate,
+	routes as autoRoutes,
+	// createRouter,
+	//  createMemoryHistory
+} from "vue-router/auto-routes";
 
 // 自动化布局插件
 import { createGetRoutes, setupLayouts } from "virtual:meta-layouts";
