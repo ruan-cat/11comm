@@ -40,6 +40,93 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 		resolve: {
 			alias,
 		},
+
+		/**
+		 * SSR 配置
+		 * @description
+		 * 配置服务端构建时需要外部化的依赖，避免在服务端代码中打包客户端依赖
+		 * @see https://cn.vitejs.dev/config/ssr-options.html#ssr-external
+		 */
+		ssr: {
+			external: [
+				// Vue 核心库
+				"vue",
+				"@vue/shared",
+				"@vue/runtime-core",
+				"@vue/runtime-dom",
+				"@vue/reactivity",
+				// 路由相关
+				// "vue-router",
+				// "vue-router/auto-routes",
+				// "unplugin-vue-router/runtime",
+				// 布局插件虚拟模块
+				// "virtual:meta-layouts",
+				// 状态管理
+				"pinia",
+				// UI 组件库（客户端专用）
+				"element-plus",
+				"@element-plus/*",
+				// 工具库
+				"@vueuse/core",
+				"@vueuse/motion",
+				// 其他客户端专用库
+				"tailwindcss",
+			],
+			/**
+			 * 不外部化的依赖
+			 * @description
+			 * 这些依赖需要被服务端构建打包，而不是作为外部模块加载
+			 * 这样可以避免服务端代码错误导入客户端模块
+			 */
+			noExternal:
+				/** @see https://github.com/posva/unplugin-vue-router/discussions/349#discussioncomment-9043123 */
+				mode === "development"
+					? [
+							"vue-router",
+							"virtual:meta-layouts",
+							// lodash-es 是 ESM 模块，需要被 Vite 转换和打包到服务端
+							"lodash-es",
+							// @01s-11comm/type 业务类型库也需要被打包
+							"@01s-11comm/type",
+						]
+					: [],
+		},
+
+		/**
+		 * Vite Environments 配置
+		 * @description
+		 * 用于分离客户端和服务端构建环境
+		 * @see https://cn.vitejs.dev/guide/api-environment.html
+		 */
+		environments: {
+			client: {
+				build: {
+					rollupOptions: {
+						input: "./src/entry-client.ts",
+					},
+				},
+			},
+
+			/**
+			 * 根据 vite v8 beta 的文档 环境API不存在显性的 SSR 键了
+			 * An app doesn't need to use the ssr name for its SSR environment, it could name it server for example.
+			 *
+			 * server
+			 * 但是在 vite v7 内 ，nitro仍旧需要读取 ssr 的配置
+			 */
+			ssr: {
+				resolve: {
+					noExternal:
+						mode === "development" ? ["vue-router", "virtual:meta-layouts", "lodash-es", "@01s-11comm/type"] : [],
+				},
+				build: {
+					rollupOptions: {
+						input: "./src/entry-server.ts",
+					},
+				},
+			},
+		},
+
 		// 服务端渲染
 		server: {
 			open: true,
@@ -68,7 +155,11 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 
 			// 预热文件以提前转换和缓存结果，降低启动期间的初始页面加载时长并防止转换瀑布
 			warmup: {
-				clientFiles: ["./index.html", "./src/{views,components}/*"],
+				clientFiles: [
+					// 模仿SSR配置 不提供任何具体的 index.html 文件
+					// "./index.html",
+					"./src/{views,pages,components}/*",
+				],
 			},
 		},
 		plugins: getPluginsList(VITE_CDN, VITE_COMPRESSION, mode, env),
@@ -88,9 +179,6 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 					// 修复 Element Plus CSS 模块导入问题
 					"@element-plus/components/color-picker-panel/css",
 				],
-				input: {
-					index: pathResolve("./index.html", import.meta.url),
-				},
 				// 静态资源分类打包
 				output: {
 					chunkFileNames: "static/js/[name]-[hash].js",
@@ -107,30 +195,6 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			__INTLIFY_PROD_DEVTOOLS__: false,
 			__APP_INFO__: JSON.stringify(__APP_INFO__),
 		},
-
-		ssr: {
-			external: [
-				"vue",
-				"vue-router/auto-routes",
-				"virtual:meta-layouts",
-				"virtual:meta-layouts",
-				"pinia",
-				"element-plus",
-				"@vue/shared",
-				"@vue/runtime-core",
-				"@vue/runtime-dom",
-				"@vue/reactivity",
-				"vue-router/auto-routes",
-				"virtual:meta-layouts",
-				"pinia",
-				"element-plus",
-				"@vue/shared",
-				"@vue/runtime-core",
-				"@vue/runtime-dom",
-				"@vue/reactivity",
-			],
-		},
-
 		vercel,
 	};
 };

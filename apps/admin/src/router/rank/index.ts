@@ -97,7 +97,7 @@ export function sortRoutes(autoRoutesParams: RouteRecordRaw[]): RouteRecordRaw[]
 
 	// 开发环境下输出排序结果
 	if (import.meta.env.DEV) {
-		console.log("🚀 路由排序完成:", autoRoutesParams);
+		// console.log("🚀 路由排序完成:", autoRoutesParams);
 	}
 
 	return autoRoutesParams;

@@ -15,6 +15,8 @@
    - 绝对路径内： `D:\code\github-desktop-store\nitro__nitrojs\examples\vite-ssr-vue-router` 的这个目录内的项目写法。
    - 请你重点模仿该项目的代码写法，学会在 vite SSR 场景下，如何恰当的改造项目。
    - 搞清楚参考项目的特征，与本项目的特性。按照该项目的方案，改造改写 admin 后台项目。
+   - 注意让 `apps\admin\src\main.ts` 从客户端代码写法，迁移到 `apps\admin\src\entry-client.ts` 内。
+   - 注意编写完整完善的 `apps\admin\src\entry-server.ts` 写法。
 5. vite 服务端构建，需要排除忽略其他客户端依赖，否则会导致接口故障。
 6. 制作区分度高的，能够区分服务端和客户端的入口文件。
 7. 主动使用谷歌浏览器 MCP 做测试。

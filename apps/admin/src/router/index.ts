@@ -28,13 +28,21 @@ import type {
 	// 使用 unplugin-vue-router 自动化路由插件 故不使用原版路由提供的函数
 	// createRouter
 } from "vue-router";
+import {
+	// 按照 nitro 例子的写法 使用来自`vue-router`模块的 createWebHistory 函数
+	createWebHistory,
+} from "vue-router";
 import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/auth";
 import { consola } from "consola";
 
 // 自动化路由插件
 // @ts-ignore - vue-router/auto 类型定义问题
-import { createRouter } from "vue-router/auto";
-// @ts-ignore - vue-router/auto-routes 类型定义问题
+import {
+	createRouter,
+	createMemoryHistory,
+	// routes as autoRoutes
+} from "vue-router/auto";
+
 import { handleHotUpdate, routes as autoRoutes } from "vue-router/auto-routes";
 
 // 自动化布局插件
@@ -76,22 +84,22 @@ Object.keys(routerModulesPureAdmin).forEach((key) => {
 /** 移除脏数据的 自动路由 */
 // @ts-ignore
 const cleanedAutoRoutes = disposalAutoRouter(autoRoutes);
-consola.warn(" 移除脏数据的 自动路由？ cleanedAutoRoutes = ", cleanedAutoRoutes);
+// consola.warn(" 移除脏数据的 自动路由？ cleanedAutoRoutes = ", cleanedAutoRoutes);
 
 // 对自动路由进行排序
 sortRoutes(cleanedAutoRoutes);
 // 对自动路由进行重定向设置
 setRedirectByRank(cleanedAutoRoutes);
-consola.warn(` 排序、且设置重定向的路由？ `, cleanedAutoRoutes);
+// consola.warn(` 排序、且设置重定向的路由？ `, cleanedAutoRoutes);
 
 /** 扁平化的 自动路由 用于测试 */
 const flattenAutoRoutesForTest = formatFlatteningRoutes(ascending(cleanedAutoRoutes.flat(Infinity)));
-consola.warn(` 经过系统函数处理过的 扁平的自动路由？ flattenAutoRoutes = `, flattenAutoRoutesForTest);
+// consola.warn(` 经过系统函数处理过的 扁平的自动路由？ flattenAutoRoutes = `, flattenAutoRoutesForTest);
 
 cleanedAutoRoutes.forEach((route) => {
 	routes.push(route);
 });
-console.warn(" 查看增加数据后的路由 routes = ", routes);
+// console.warn(" 查看增加数据后的路由 routes = ", routes);
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
@@ -110,7 +118,7 @@ export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
  * 用于处理用户退出登录后重新登陆系统时 页面出现布局页丢失的bug。
  */
 const initConstantRoutes: Array<RouteRecordRaw> = cloneDeep(setupLayouts(constantRoutes));
-consola.warn(" 增加布局组件的初始化路由？ initConstantRoutes = ", initConstantRoutes);
+// consola.warn(" 增加布局组件的初始化路由？ initConstantRoutes = ", initConstantRoutes);
 
 /** 用于渲染菜单，保持原始层级 */
 export const constantMenus: Array<RouteComponent> = ascending(routes.flat(Infinity)).concat(...remainingRouter);
@@ -120,14 +128,23 @@ export const remainingPaths = Object.keys(remainingRouter).map((v) => {
 	return remainingRouter[v].path;
 });
 
+/** 目前单独设置出来 是为了让 SSR 入口渲染时使用 */
+export const setupLayoutsRoutes = setupLayouts(constantRoutes.concat(...(remainingRouter as any)));
+
 /** 创建路由实例 */
 export const router: Router = createRouter({
-	history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
+	// 模仿 nitro SSR 的写法 使用 createWebHistory 创建路由历史模式
+	// history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
+	/**
+	 * 尝试不使用浏览器的历史模式 使用内存模式
+	 * @see https://router.vuejs.org/guide/essentials/history-mode.html#Memory-mode
+	 */
+	history: createMemoryHistory(),
 
 	// 改造之前
 	// routes: constantRoutes.concat(...(remainingRouter as any)),
 	// 改造之后 按照布局插件的要求增加特定的函数 实现自动补全布局组件
-	routes: setupLayouts(constantRoutes.concat(...(remainingRouter as any))),
+	routes: setupLayoutsRoutes,
 
 	strict: true,
 	scrollBehavior(to, from, savedPosition) {

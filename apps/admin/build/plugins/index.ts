@@ -41,6 +41,16 @@ import vercel from "vite-plugin-vercel";
 // 将项目一下子变成nuxt全栈项目的插件
 import { nitro } from "nitro/vite";
 
+// Workaround https://github.com/vitejs/vite-plugin-vue/issues/677
+function patchVueExclude(plugin, exclude) {
+	const original = plugin.transform.handler;
+	plugin.transform.handler = function (...args) {
+		if (exclude.test(args[1])) return;
+		return original.call(this, ...args);
+	};
+	return plugin;
+}
+
 export function getPluginsList(
 	VITE_CDN: boolean,
 	VITE_COMPRESSION: ViteCompression,
@@ -139,13 +149,16 @@ export function getPluginsList(
 			// extendRoute
 		}),
 
-		vue({
-			template: {
-				compilerOptions: {
-					isCustomElement: (tag) => tag === "deep-chat",
+		patchVueExclude(
+			vue({
+				template: {
+					compilerOptions: {
+						isCustomElement: (tag) => tag === "deep-chat",
+					},
 				},
-			},
-		}),
+			}),
+			/\?assets/,
+		),
 
 		/**
 		 * 开发调试插件
@@ -169,6 +182,8 @@ export function getPluginsList(
 		// jsx、tsx语法支持
 		vueJsx(),
 		VueI18nPlugin({
+			/** @see https://vue-i18n.intlify.dev/guide/advanced/optimization.html#ssr-server-side-rendering */
+			ssr: true,
 			include: [pathResolve("../locales/**")],
 		}),
 		/**

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { type appType, store, getConfig, storageLocal, deviceDetection, responsiveStorageNameSpace } from "../utils";
-
+import { isClient } from "@pureadmin/utils";
 export const useAppStore = defineStore("pure-app", {
 	state: (): appType => ({
 		sidebar: {
@@ -16,8 +16,8 @@ export const useAppStore = defineStore("pure-app", {
 		device: deviceDetection() ? "mobile" : "desktop",
 		// 浏览器窗口的可视区域大小
 		viewportSize: {
-			width: document.documentElement.clientWidth,
-			height: document.documentElement.clientHeight,
+			width: isClient ? document.documentElement.clientWidth : 0,
+			height: isClient ? document.documentElement.clientHeight : 0,
 		},
 		// 作用于 src/views/components/draggable/index.vue 页面，当离开页面并不会销毁 new Swap()，sortablejs 官网也没有提供任何销毁的 api
 		sortSwap: false,

@@ -7,7 +7,7 @@ import {
 	 * 我们使用自动化路由插件 故不使用原版路由的函数
 	 */
 	// createWebHistory,
-	createWebHashHistory,
+	// createWebHashHistory,
 } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";
@@ -27,7 +27,7 @@ const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
  * 在本工具文件内 我们换成 自动化布局插件 提供的函数
  */
 // @ts-ignore - vue-router/auto 类型定义问题
-import { createWebHistory } from "vue-router/auto";
+import { createWebHistory, createWebHashHistory } from "vue-router/auto";
 
 // 动态路由
 import { getAsyncRoutes } from "@/api/routes";
@@ -62,7 +62,7 @@ function ascending(arr: any[]) {
 		}
 	});
 
-	consola.log(" 排序前的路由：", arr);
+	// consola.log(" 排序前的路由：", arr);
 
 	return arr.sort((a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
 		return a?.meta.rank - b?.meta.rank;

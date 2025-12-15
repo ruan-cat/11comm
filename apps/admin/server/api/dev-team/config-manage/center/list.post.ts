@@ -6,7 +6,6 @@
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { cloneDeep, merge } from "lodash-es";
 // import { mockConfigCenterData } from "./mock-data";
 import consola from "consola";
 
@@ -584,25 +583,31 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 
 	// const { pageIndex = defaultParams.pageIndex, pageSize = defaultParams.pageSize, ...filters } = body ?? defaultParams;
 
-	const mergedParams = merge({}, defaultParams, body);
+	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize } = mergedParams;
 
 	/** 数据筛选 */
-	let filteredData = cloneDeep(mockConfigCenterData);
+	let filteredData = structuredClone(mockConfigCenterData);
 
-	// FIXME: 这段代码不知道为什么 导致了分页接口直接触发无法识别前端路由模块的故障
-	// if (mergedParams?.configName) {
-	// 	filteredData = filteredData.filter((item) => item.configName.includes(mergedParams.configName!));
-	// }
-	// if (mergedParams?.configType) {
-	// 	filteredData = filteredData.filter((item) => item.configType === mergedParams.configType);
-	// }
-	// if (mergedParams?.status) {
-	// 	filteredData = filteredData.filter((item) => item.status === mergedParams.status);
-	// }
-	// if (mergedParams?.configKey) {
-	// 	filteredData = filteredData.filter((item) => item.configKey.includes(mergedParams.configKey!));
-	// }
+	/** 根据配置项名称筛选 */
+	if (mergedParams?.configName) {
+		filteredData = filteredData.filter((item) => item.configName.includes(mergedParams.configName!));
+	}
+
+	/** 根据配置类型筛选 */
+	if (mergedParams?.configType) {
+		filteredData = filteredData.filter((item) => item.configType === mergedParams.configType);
+	}
+
+	/** 根据状态筛选 */
+	if (mergedParams?.status) {
+		filteredData = filteredData.filter((item) => item.status === mergedParams.status);
+	}
+
+	/** 根据配置键名筛选 */
+	if (mergedParams?.configKey) {
+		filteredData = filteredData.filter((item) => item.configKey.includes(mergedParams.configKey!));
+	}
 
 	/** 分页处理 */
 	const total = filteredData.length;

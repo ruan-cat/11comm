@@ -1,6 +1,7 @@
 <script setup lang="ts">
+// 这是 cjs 模块 导致SSR错误了 故考虑手动移除
+// import { posix } from "path-browserify";
 import { getConfig } from "@/config";
-import { posix } from "path-browserify";
 import { menuType } from "@/layout/types";
 import { ReText } from "@/components/ReText";
 import { useNav } from "@/layout/hooks/useNav";
@@ -102,9 +103,11 @@ function resolvePath(routePath) {
 	const httpReg = /^http(s?):\/\//;
 	if (httpReg.test(routePath) || httpReg.test(props.basePath)) {
 		return routePath || props.basePath;
-	} else {
-		return posix.resolve(props.basePath, routePath);
 	}
+	// 尝试不使用 posix 模块 导致SSR错误了 故考虑手动移除
+	// else {
+	// 	return posix.resolve(props.basePath, routePath);
+	// }
 }
 
 watchImmediate(
