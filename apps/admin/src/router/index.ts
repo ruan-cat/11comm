@@ -56,20 +56,24 @@ import { createGetRoutes, setupLayouts } from "virtual:meta-layouts";
 
 import { disposalAutoRouter } from "@ruan-cat/utils/unplugin-vue-router";
 
-/** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
+/**
+ * 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
  * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
-const modules: Record<string, any> = import.meta.glob(["./modules/**/*.ts", "!./modules/**/remaining.ts"], {
-	eager: true,
-});
+// 尝试不导入所有路由文件 只导入必须的路由文件
+// const modules: Record<string, any> = import.meta.glob(["./modules/**/*.ts", "!./modules/**/remaining.ts"], {
+// 	eager: true,
+// });
 
 /**
  * 导入框架自带的路由
  * 其他的路由均不导入
  */
 const routerModulesPureAdmin: Record<string, any> = import.meta.glob(
-	["./modules/**/error.ts", "./modules/**/home.ts"],
+	// 避免导入所有路由文件 只导入必须的路由文件
+	// ["./modules/**/error.ts", "./modules/**/home.ts"],
+	["./modules/error.ts", "./modules/home.ts"],
 	{
 		eager: true,
 	},

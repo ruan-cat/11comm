@@ -141,7 +141,7 @@ export function getPluginsList(
 						 * 如果是生产环境模式，就排除掉多余的案例组件
 						 */
 						// TODO: 做出自定义配置
-						...(mode === "production" ? ["src/views/sample/**"] : []),
+						...(mode === "production" || mode === "development" ? ["src/views/sample/**"] : []),
 					],
 				},
 			],

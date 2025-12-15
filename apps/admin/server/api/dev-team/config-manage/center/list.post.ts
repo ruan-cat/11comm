@@ -593,17 +593,14 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 	if (mergedParams?.configName) {
 		filteredData = filteredData.filter((item) => item.configName.includes(mergedParams.configName!));
 	}
-
 	/** 根据配置类型筛选 */
 	if (mergedParams?.configType) {
 		filteredData = filteredData.filter((item) => item.configType === mergedParams.configType);
 	}
-
 	/** 根据状态筛选 */
 	if (mergedParams?.status) {
 		filteredData = filteredData.filter((item) => item.status === mergedParams.status);
 	}
-
 	/** 根据配置键名筛选 */
 	if (mergedParams?.configKey) {
 		filteredData = filteredData.filter((item) => item.configKey.includes(mergedParams.configKey!));

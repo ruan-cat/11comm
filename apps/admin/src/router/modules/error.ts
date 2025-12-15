@@ -1,4 +1,4 @@
-import { $t } from "@/plugins/i18n";
+import { $t } from "../../plugins/i18n.ts";
 import { RouterOrderEnums } from "@/router/enums";
 
 // import { error } from "@/router/enums";
