@@ -1,23 +1,12 @@
+/**
+ * @file 菜单目录表单类型定义
+ * @description Menu catalog form types
+ */
+
 import type { MenuCatalogFormData } from "@01s-11comm/type";
-
-// ==================== 类型别名 ====================
-
-/** 菜单目录表单数据类型（中文别名） */
-export type 菜单目录表单_VO = MenuCatalogFormData;
-
-// ==================== Options 导出 ====================
-
 import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
 
-/** groupTypeOptions */
-export { groupTypeOptions };
-
-/** storeTypeOptions */
-export { storeTypeOptions };
-
-// ==================== 默认表单 ====================
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
+/** 默认表单 Default form */
 export const defaultForm: MenuCatalogFormData = {
 	gid: "",
 	icon: "",
@@ -29,16 +18,17 @@ export const defaultForm: MenuCatalogFormData = {
 	storeType: "property",
 };
 
-// ==================== Props 类型 ====================
-
 /**
  * 菜单目录表单 props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
+ * @description Menu catalog form props
  */
 export interface CatalogFormProps {
-	/** 表单数据 */
+	/** 表单数据 Form data */
 	form: MenuCatalogFormData;
-	/** 表单组件重置时默认使用的对象 */
+	/** 表单组件重置时默认使用的对象 Default values for form reset */
 	defaultValues: MenuCatalogFormData;
 }
+
+/** 导出选项和类型供表单使用 Export options and types for form use */
+export { groupTypeOptions, storeTypeOptions };
+export type { MenuCatalogFormData };

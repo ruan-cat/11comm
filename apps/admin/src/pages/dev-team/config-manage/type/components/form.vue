@@ -5,44 +5,45 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { DictionaryTypeFormProps, 数据类型, 字典类型分类, 字典类型表单_VO, defaultForm } from "./form";
+import {
+	DictionaryTypeFormProps,
+	DictionaryTypeFormVO,
+	defaultForm,
+	dictionaryTypeStatusOptions,
+	dictionaryCategoryOptions,
+	dataTypeOptions,
+	requiredOptions,
+} from "./form";
 
 const props = defineProps<DictionaryTypeFormProps>();
 
-/** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 字典类型表单_VO;
+/** 默认的表单重置变量 Default values for form reset */
+const defaultValues = props.defaultValues as FieldValues & DictionaryTypeFormVO;
 
-/** 表单组件实例 要求对外直接导出本表单实例 */
+/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
 /**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
+ * 本表单组件实际使用的表单对象
+ * @description Actual form object used by this component
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 字典类型表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & DictionaryTypeFormVO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
+/** 表单对象 Form object */
 const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
+
+/** 只读的表单对象 Readonly form object */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
+/** 表单项配置 Form columns configuration */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 字典编号
 	{
 		label: "字典编号",
-		prop: "字典编号",
+		prop: "dictionaryNumber",
 		valueType: "input",
 		width: "200px",
 		required: true,
@@ -51,11 +52,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入字典编号",
 		},
 	},
-
-	// 字典名称
 	{
 		label: "字典名称",
-		prop: "字典名称",
+		prop: "dictionaryName",
 		valueType: "input",
 		width: "200px",
 		required: true,
@@ -64,11 +63,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入字典名称",
 		},
 	},
-
-	// 字典类型
 	{
 		label: "字典类型",
-		prop: "字典类型",
+		prop: "dictionaryType",
 		valueType: "input",
 		width: "200px",
 		required: true,
@@ -77,60 +74,35 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入字典类型标识",
 		},
 	},
-
-	// 字典分类
 	{
 		label: "字典分类",
-		prop: "字典分类",
+		prop: "dictionaryCategory",
 		valueType: "select",
 		width: "180px",
 		required: true,
-		options: [
-			{ label: "系统字典", value: "系统字典" },
-			{ label: "业务字典", value: "业务字典" },
-			{ label: "自定义字典", value: "自定义字典" },
-			{ label: "第三方字典", value: "第三方字典" },
-		],
+		options: dictionaryCategoryOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 			placeholder: "请选择字典分类",
 		},
 	},
-
-	// 数据类型
 	{
 		label: "数据类型",
-		prop: "数据类型",
+		prop: "dataType",
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: [
-			{ label: "字符串", value: "字符串" },
-			{ label: "数字", value: "数字" },
-			{ label: "布尔值", value: "布尔值" },
-			{ label: "日期", value: "日期" },
-			{ label: "时间", value: "时间" },
-			{ label: "日期时间", value: "日期时间" },
-			{ label: "JSON对象", value: "JSON对象" },
-			{ label: "数组", value: "数组" },
-			{ label: "文件", value: "文件" },
-			{ label: "邮箱", value: "邮箱" },
-			{ label: "手机号", value: "手机号" },
-			{ label: "URL", value: "URL" },
-			{ label: "密码", value: "密码" },
-		],
+		options: dataTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 			placeholder: "请选择数据类型",
 		},
 	},
-
-	// 默认值
 	{
 		label: "默认值",
-		prop: "默认值",
+		prop: "defaultValue",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -138,28 +110,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入默认值",
 		},
 	},
-
-	// 是否必填
 	{
 		label: "是否必填",
-		prop: "是否必填",
+		prop: "isRequired",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: requiredOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择是否必填",
 		},
 	},
-
-	// 验证规则
 	{
 		label: "验证规则",
-		prop: "验证规则",
+		prop: "validationRule",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
@@ -168,11 +133,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			rows: 3,
 		},
 	},
-
-	// 显示顺序
 	{
 		label: "显示顺序",
-		prop: "显示顺序",
+		prop: "displayOrder",
 		valueType: "input-number",
 		width: "150px",
 		required: true,
@@ -183,28 +146,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入显示顺序",
 		},
 	},
-
-	// 字典状态
 	{
 		label: "字典状态",
-		prop: "字典状态",
+		prop: "status",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
-		],
+		options: dictionaryTypeStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择字典状态",
 		},
 	},
-
-	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
@@ -215,33 +171,33 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
+/** 表单项配置 动态计算 只读 Computed form columns */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验规则 */
+/** 表单校验规则 Form validation rules */
 const plusFormRules = ref<PlusFormRules>({
-	字典编号: [
+	dictionaryNumber: [
 		{ required: true, message: "请输入字典编号", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 		{ pattern: /^[A-Za-z0-9_]+$/, message: "只能包含字母、数字和下划线", trigger: "blur" },
 	],
-	字典名称: [
+	dictionaryName: [
 		{ required: true, message: "请输入字典名称", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 	],
-	字典类型: [
+	dictionaryType: [
 		{ required: true, message: "请输入字典类型", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 		{ pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/, message: "必须以字母开头，只能包含字母、数字和下划线", trigger: "blur" },
 	],
-	字典分类: [{ required: true, message: "请选择字典分类", trigger: "change" }],
-	数据类型: [{ required: true, message: "请选择数据类型", trigger: "change" }],
-	是否必填: [{ required: true, message: "请选择是否必填", trigger: "change" }],
-	显示顺序: [
+	dictionaryCategory: [{ required: true, message: "请选择字典分类", trigger: "change" }],
+	dataType: [{ required: true, message: "请选择数据类型", trigger: "change" }],
+	isRequired: [{ required: true, message: "请选择是否必填", trigger: "change" }],
+	displayOrder: [
 		{ required: true, message: "请输入显示顺序", trigger: "blur" },
 		{ type: "number", min: 0, max: 9999, message: "显示顺序必须在 0 到 9999 之间", trigger: "blur" },
 	],
-	字典状态: [{ required: true, message: "请选择字典状态", trigger: "change" }],
+	status: [{ required: true, message: "请选择字典状态", trigger: "change" }],
 });
 
 defineExpose({

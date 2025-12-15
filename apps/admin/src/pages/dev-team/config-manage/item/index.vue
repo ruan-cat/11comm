@@ -18,7 +18,7 @@ import {
 } from "@01s-11comm/type";
 import { useConfigItemListQuery } from "@/api/dev-team/config-manage/item";
 
-import { type ConfigItemFormProps, defaultForm, type 配置项表单_VO } from "./components/form";
+import { type ConfigItemFormProps, type ConfigItemFormVO, defaultForm } from "./components/form";
 import ConfigItemForm from "./components/form.vue";
 const configItemFormInstance = ref<InstanceType<typeof ConfigItemForm> | null>(null);
 
@@ -217,25 +217,25 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 	const title = `${modeText.value}配置项`;
 
 	/** 业务对象 */
-	const 配置项表单_VO: 配置项表单_VO = isAdd.value
+	const formData: ConfigItemFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					配置项名称: row?.configName || "",
-					配置项编码: row?.configCode || "",
-					配置项类型: row?.configType || "",
-					配置项值: row?.configValue || "",
-					配置项描述: row?.description || "",
-					是否启用: row?.isEnabled || "",
-					备注: row?.remark || "",
+					configItemName: row?.configName || "",
+					configItemCode: row?.configCode || "",
+					configItemType: row?.configType || "",
+					configItemValue: row?.configValue || "",
+					configItemDescription: row?.description || "",
+					isEnabled: row?.isEnabled || "",
+					remark: row?.remark || "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ConfigItemFormProps = {
-		form: 配置项表单_VO,
-		defaultValues: 配置项表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

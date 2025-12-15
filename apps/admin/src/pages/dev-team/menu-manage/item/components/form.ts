@@ -1,78 +1,73 @@
-const _菜单类型 = ["目录", "菜单", "按钮", "接口"] as const;
+/**
+ * @file 菜单项表单类型定义
+ * @description Menu item form types
+ */
 
-const _状态选项 = ["启用", "禁用"] as const;
+import { menuTypeOptions, menuItemStatusOptions, booleanOptions } from "@01s-11comm/type";
 
-const _是否选项 = ["是", "否"] as const;
-
-// ==================== 联合类型定义 ====================
-
-/** 菜单类型联合类型 */
-export type 菜单类型 = (typeof _菜单类型)[number];
-
-/** 状态选项联合类型 */
-export type 状态选项 = (typeof _状态选项)[number];
-
-/** 是否选项联合类型 */
-export type 是否选项 = (typeof _是否选项)[number];
-
-/** 菜单表单业务类型 */
-export interface 菜单项表单_VO {
-	/** 菜单编号 */
-	菜单编号: string;
-	/** 菜单名称 */
-	菜单名称: string;
-	/** 父级菜单 */
-	父级菜单: string;
-	/** 菜单类型 */
-	菜单类型: 菜单类型;
-	/** 路由路径 */
-	路由路径: string;
-	/** 组件路径 */
-	组件路径: string;
-	/** 权限标识 */
-	权限标识: string;
-	/** 显示顺序 */
-	排序: number | string;
-	/** 状态 */
-	状态: 状态选项;
-	/** 菜单图标 */
-	图标: string;
-	/** 是否外链 */
-	是否外链: 是否选项;
-	/** 是否缓存 */
-	是否缓存: 是否选项;
-	/** 是否隐藏 */
-	是否隐藏: 是否选项;
-	/** 描述 */
-	描述: string;
+/**
+ * 菜单项表单数据类型
+ * Menu item form data type
+ */
+export interface MenuItemFormVO {
+	/** 菜单编号 Menu ID */
+	menuId: string;
+	/** 菜单名称 Menu name */
+	menuName: string;
+	/** 父级菜单 Parent menu */
+	parentMenu: string;
+	/** 菜单类型 Menu type */
+	menuType: string;
+	/** 路由路径 Route path */
+	routePath: string;
+	/** 组件路径 Component path */
+	componentPath: string;
+	/** 权限标识 Permission key */
+	permissionKey: string;
+	/** 排序 Sort number */
+	sortNo: number | string;
+	/** 状态 Status */
+	status: string;
+	/** 图标 Icon */
+	icon: string;
+	/** 是否外链 Is external link */
+	isExternal: string;
+	/** 是否缓存 Is cached */
+	isCached: string;
+	/** 是否隐藏 Is hidden */
+	isHidden: string;
+	/** 描述 Description */
+	description: string;
 }
 
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 菜单项表单_VO = {
-	菜单编号: "",
-	菜单名称: "",
-	父级菜单: "根菜单",
-	菜单类型: "菜单",
-	路由路径: "",
-	组件路径: "",
-	权限标识: "",
-	排序: 1,
-	状态: "启用",
-	图标: "",
-	是否外链: "否",
-	是否缓存: "否",
-	是否隐藏: "否",
-	描述: "",
+/** 默认表单 Default form */
+export const defaultForm: MenuItemFormVO = {
+	menuId: "",
+	menuName: "",
+	parentMenu: "根菜单",
+	menuType: "菜单",
+	routePath: "",
+	componentPath: "",
+	permissionKey: "",
+	sortNo: 1,
+	status: "启用",
+	icon: "",
+	isExternal: "否",
+	isCached: "否",
+	isHidden: "否",
+	description: "",
 };
 
 /**
  * 菜单项表单 props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
+ * @description Menu item form props
  */
 export interface MenuItemFormProps {
-	/** 表单数据 */
-	form: 菜单项表单_VO;
-	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 菜单项表单_VO;
+	/** 表单数据 Form data */
+	form: MenuItemFormVO;
+	/** 表单组件重置时默认使用的对象 Default values for form reset */
+	defaultValues: MenuItemFormVO;
 }
+
+/** 导出选项供表单使用 Export options for form use */
+export { menuTypeOptions, menuItemStatusOptions, booleanOptions };

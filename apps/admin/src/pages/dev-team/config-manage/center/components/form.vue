@@ -5,44 +5,43 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ConfigCenterFormProps, 配置中心表单_VO, defaultForm, 配置类型, 配置状态 } from "./form";
+import {
+	ConfigCenterFormProps,
+	ConfigCenterFormVO,
+	defaultForm,
+	configTypeOptions,
+	configStatusOptions,
+} from "./form";
 
 const props = defineProps<ConfigCenterFormProps>();
 
-/** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 配置中心表单_VO;
+/** 默认的表单重置变量 Default values for form reset */
+const defaultValues = props.defaultValues as FieldValues & ConfigCenterFormVO;
 
-/** 表单组件实例 要求对外直接导出本表单实例 */
+/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
 /**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
+ * 本表单组件实际使用的表单对象
+ * @description Actual form object used by this component
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 配置中心表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ConfigCenterFormVO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
+/** 表单对象 Form object */
 const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
+
+/** 只读的表单对象 Readonly form object */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
+/** 表单项配置 Form columns configuration */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 配置项名称
 	{
 		label: "配置项名称",
-		prop: "配置项名称",
+		prop: "configName",
 		valueType: "input",
 		required: true,
 		width: "200px",
@@ -51,35 +50,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入配置项名称",
 		},
 	},
-
-	// 配置类型
 	{
 		label: "配置类型",
-		prop: "配置类型",
+		prop: "configType",
 		valueType: "select",
 		required: true,
 		width: "180px",
-		options: [
-			{ label: "系统配置", value: "系统配置" },
-			{ label: "业务配置", value: "业务配置" },
-			{ label: "接口配置", value: "接口配置" },
-			{ label: "数据库配置", value: "数据库配置" },
-			{ label: "缓存配置", value: "缓存配置" },
-			{ label: "安全配置", value: "安全配置" },
-			{ label: "邮件配置", value: "邮件配置" },
-			{ label: "文件配置", value: "文件配置" },
-		],
+		options: configTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 			placeholder: "请选择配置类型",
 		},
 	},
-
-	// 配置键名
 	{
 		label: "配置键名",
-		prop: "配置键名",
+		prop: "configKey",
 		valueType: "input",
 		required: true,
 		width: "220px",
@@ -88,11 +74,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入配置键名（如：system.name）",
 		},
 	},
-
-	// 配置值
 	{
 		label: "配置值",
-		prop: "配置值",
+		prop: "configValue",
 		valueType: "input",
 		required: true,
 		width: "200px",
@@ -101,11 +85,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入配置值",
 		},
 	},
-
-	// 默认值
 	{
 		label: "默认值",
-		prop: "默认值",
+		prop: "defaultValue",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -113,11 +95,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			placeholder: "请输入默认值",
 		},
 	},
-
-	// 配置描述
 	{
 		label: "配置描述",
-		prop: "配置描述",
+		prop: "configDescription",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -126,28 +106,21 @@ const plusFormColumns = ref<PlusColumn[]>([
 			rows: 3,
 		},
 	},
-
-	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		required: true,
 		width: "120px",
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
-		],
+		options: configStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择状态",
 		},
 	},
-
-	// 排序号
 	{
 		label: "排序号",
-		prop: "排序号",
+		prop: "sortOrder",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
@@ -156,11 +129,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 			max: 9999,
 		},
 	},
-
-	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -171,17 +142,17 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
+/** 表单项配置 动态计算 只读 Computed form columns */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验规则 */
+/** 表单校验规则 Form validation rules */
 const plusFormRules = ref<PlusFormRules>({
-	配置项名称: [
+	configName: [
 		{ required: true, message: "请输入配置项名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	配置类型: [{ required: true, message: "请选择配置类型", trigger: "change" }],
-	配置键名: [
+	configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
+	configKey: [
 		{ required: true, message: "请输入配置键名", trigger: "blur" },
 		{
 			pattern: /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)*$/,
@@ -189,8 +160,8 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	配置值: [{ required: true, message: "请输入配置值", trigger: "blur" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	configValue: [{ required: true, message: "请输入配置值", trigger: "blur" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 defineExpose({

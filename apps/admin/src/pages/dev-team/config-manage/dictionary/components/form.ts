@@ -1,53 +1,30 @@
-// ==================== 表单类型定义 ====================
-
 /**
- * 字典表单 props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
+ * @file 字典表单类型定义
+ * @description Dictionary form types
  */
-export interface DictionaryFormProps {
-	/** 表单数据 */
-	form: DictionaryFormVO;
-	/** 表单组件重置时默认使用的对象 */
-	defaultValues: DictionaryFormVO;
-}
-
-/**
- * 字典表单数据类型
- */
-export interface DictionaryFormVO {
-	/** 字典名称 */
-	dictionaryName: string;
-	/** 字典编码 */
-	dictionaryCode: string;
-	/** 字典类型 */
-	dictionaryType: string;
-	/** 字典描述 */
-	dictionaryDescription: string;
-	/** 是否启用 */
-	isEnabled: string;
-	/** 备注 */
-	remark: string;
-}
-
-// ==================== 类型别名 ====================
-
-/** 字典表单数据类型（中文别名） */
-export type 字典表单_VO = DictionaryFormVO;
-
-// ==================== Options 导出 ====================
 
 import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
 
-/** dictionaryTypeOptions */
-export { dictionaryTypeOptions };
+/**
+ * 字典表单数据类型
+ * Dictionary form data type
+ */
+export interface DictionaryFormVO {
+	/** 字典名称 Dictionary name */
+	dictionaryName: string;
+	/** 字典编码 Dictionary code */
+	dictionaryCode: string;
+	/** 字典类型 Dictionary type */
+	dictionaryType: string;
+	/** 字典描述 Dictionary description */
+	dictionaryDescription: string;
+	/** 是否启用 Is enabled */
+	isEnabled: string;
+	/** 备注 Remark */
+	remark: string;
+}
 
-/** enableStatusOptions */
-export { enableStatusOptions };
-
-// ==================== 默认表单数据 ====================
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
+/** 默认表单 Default form */
 export const defaultForm: DictionaryFormVO = {
 	dictionaryName: "",
 	dictionaryCode: "",
@@ -56,3 +33,17 @@ export const defaultForm: DictionaryFormVO = {
 	isEnabled: "",
 	remark: "",
 };
+
+/**
+ * 字典表单 props
+ * @description Dictionary form props
+ */
+export interface DictionaryFormProps {
+	/** 表单数据 Form data */
+	form: DictionaryFormVO;
+	/** 表单组件重置时默认使用的对象 Default values for form reset */
+	defaultValues: DictionaryFormVO;
+}
+
+/** 导出选项供表单使用 Export options for form use */
+export { dictionaryTypeOptions, enableStatusOptions };

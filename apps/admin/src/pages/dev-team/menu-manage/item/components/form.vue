@@ -4,44 +4,54 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { MenuItemFormProps, 菜单项表单_VO, defaultForm, 菜单类型, 状态选项, 是否选项 } from "./form";
+import {
+	MenuItemFormProps,
+	MenuItemFormVO,
+	defaultForm,
+	menuTypeOptions,
+	menuItemStatusOptions,
+	booleanOptions,
+} from "./form";
 
 const props = defineProps<MenuItemFormProps>();
 
-/** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 菜单项表单_VO;
+/** 默认的表单重置变量 Default values for form reset */
+const defaultValues = props.defaultValues as FieldValues & MenuItemFormVO;
 
-/** 表单组件实例 要求对外直接导出本表单实例 */
+/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
 /**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
+ * 本表单组件实际使用的表单对象
+ * @description Actual form object used by this component
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 菜单项表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & MenuItemFormVO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
+/** 表单对象 Form object */
 const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
+
+/** 只读的表单对象 Readonly form object */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
+/** 父级菜单选项 Parent menu options */
+const parentMenuOptions = [
+	{ label: "根菜单", value: "根菜单" },
+	{ label: "系统管理", value: "系统管理" },
+	{ label: "监控管理", value: "监控管理" },
+	{ label: "系统工具", value: "系统工具" },
+	{ label: "日志管理", value: "日志管理" },
+	{ label: "系统设置", value: "系统设置" },
+];
+
+/** 表单项配置 Form columns configuration */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 菜单名称
 	{
 		label: "菜单名称",
-		prop: "菜单名称",
+		prop: "menuName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -50,51 +60,33 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		width: "200px",
 	},
-
-	// 父级菜单
 	{
 		label: "父级菜单",
-		prop: "父级菜单",
+		prop: "parentMenu",
 		valueType: "select",
 		required: true,
-		options: [
-			{ label: "根菜单", value: "根菜单" },
-			{ label: "系统管理", value: "系统管理" },
-			{ label: "监控管理", value: "监控管理" },
-			{ label: "系统工具", value: "系统工具" },
-			{ label: "日志管理", value: "日志管理" },
-			{ label: "系统设置", value: "系统设置" },
-		],
+		options: parentMenuOptions,
 		fieldProps: {
 			placeholder: "请选择父级菜单",
 			clearable: true,
 		},
 		width: "200px",
 	},
-
-	// 菜单类型
 	{
 		label: "菜单类型",
-		prop: "菜单类型",
+		prop: "menuType",
 		valueType: "select",
 		required: true,
-		options: [
-			{ label: "目录", value: "目录" },
-			{ label: "菜单", value: "菜单" },
-			{ label: "按钮", value: "按钮" },
-			{ label: "接口", value: "接口" },
-		],
+		options: menuTypeOptions,
 		fieldProps: {
 			placeholder: "请选择菜单类型",
 			clearable: true,
 		},
 		width: "150px",
 	},
-
-	// 菜单图标
 	{
 		label: "菜单图标",
-		prop: "图标",
+		prop: "icon",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入图标类名，如：mdi:home",
@@ -102,37 +94,31 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		width: "200px",
 	},
-
-	// 路由路径
 	{
 		label: "路由路径",
-		prop: "路由路径",
+		prop: "routePath",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入路由路径，如：/system/user",
 			clearable: true,
 		},
 		width: "250px",
-		hidden: (formData) => formData.菜单类型 === "按钮" || formData.菜单类型 === "接口",
+		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口",
 	},
-
-	// 组件路径
 	{
 		label: "组件路径",
-		prop: "组件路径",
+		prop: "componentPath",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入组件路径，如：/pages/system/user/index",
 			clearable: true,
 		},
 		width: "250px",
-		hidden: (formData) => formData.菜单类型 === "按钮" || formData.菜单类型 === "接口" || formData.菜单类型 === "目录",
+		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口" || formData.menuType === "目录",
 	},
-
-	// 权限标识
 	{
 		label: "权限标识",
-		prop: "权限标识",
+		prop: "permissionKey",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入权限标识，如：system:user:list",
@@ -140,11 +126,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		width: "250px",
 	},
-
-	// 显示顺序
 	{
 		label: "显示顺序",
-		prop: "排序",
+		prop: "sortNo",
 		valueType: "input-number",
 		fieldProps: {
 			placeholder: "请输入显示顺序",
@@ -153,78 +137,56 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		width: "150px",
 	},
-
-	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		required: true,
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
-		],
+		options: menuItemStatusOptions,
 		fieldProps: {
 			placeholder: "请选择状态",
 			clearable: true,
 		},
 		width: "150px",
 	},
-
-	// 是否外链
 	{
 		label: "是否外链",
-		prop: "是否外链",
+		prop: "isExternal",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: booleanOptions,
 		fieldProps: {
 			placeholder: "请选择是否外链",
 			clearable: true,
 		},
 		width: "150px",
-		hidden: (formData) => formData.菜单类型 === "按钮" || formData.菜单类型 === "接口",
+		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口",
 	},
-
-	// 是否缓存
 	{
 		label: "是否缓存",
-		prop: "是否缓存",
+		prop: "isCached",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: booleanOptions,
 		fieldProps: {
 			placeholder: "请选择是否缓存",
 			clearable: true,
 		},
 		width: "150px",
-		hidden: (formData) => formData.菜单类型 === "按钮" || formData.菜单类型 === "接口" || formData.菜单类型 === "目录",
+		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口" || formData.menuType === "目录",
 	},
-
-	// 是否隐藏
 	{
 		label: "是否隐藏",
-		prop: "是否隐藏",
+		prop: "isHidden",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: booleanOptions,
 		fieldProps: {
 			placeholder: "请选择是否隐藏",
 			clearable: true,
 		},
 		width: "150px",
 	},
-
-	// 描述
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			placeholder: "请输入菜单描述信息",
@@ -235,34 +197,34 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
+/** 表单项配置 动态计算 只读 Computed form columns */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 表单校验规则 */
+/** 表单校验规则 Form validation rules */
 const plusFormRules = ref<PlusFormRules>({
-	菜单名称: [
+	menuName: [
 		{ required: true, message: "请输入菜单名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	父级菜单: [{ required: true, message: "请选择父级菜单", trigger: "change" }],
-	菜单类型: [{ required: true, message: "请选择菜单类型", trigger: "change" }],
-	路由路径: [
+	parentMenu: [{ required: true, message: "请选择父级菜单", trigger: "change" }],
+	menuType: [{ required: true, message: "请选择菜单类型", trigger: "change" }],
+	routePath: [
 		{ required: true, message: "请输入路由路径", trigger: "blur" },
 		{ pattern: /^\/[a-zA-Z0-9/-]*$/, message: "路由路径格式不正确，应以/开头", trigger: "blur" },
 	],
-	组件路径: [
+	componentPath: [
 		{ required: true, message: "请输入组件路径", trigger: "blur" },
 		{ pattern: /^\/[a-zA-Z0-9/-]*$/, message: "组件路径格式不正确，应以/开头", trigger: "blur" },
 	],
-	权限标识: [
+	permissionKey: [
 		{ required: true, message: "请输入权限标识", trigger: "blur" },
 		{ pattern: /^[a-zA-Z0-9:_-]+$/, message: "权限标识格式不正确，只能包含字母、数字、冒号、下划线和连字符", trigger: "blur" },
 	],
-	排序: [
+	sortNo: [
 		{ required: true, message: "请输入显示顺序", trigger: "blur" },
 		{ type: "number", min: 1, max: 999, message: "显示顺序应在1-999之间", trigger: "blur" },
 	],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 defineExpose({

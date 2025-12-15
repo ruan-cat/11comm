@@ -1,41 +1,32 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
-import { CatalogFormProps, defaultForm } from "./form";
-import { 菜单目录表单_VO, groupTypeOptions, storeTypeOptions } from "./form";
+import { ref, computed, useTemplateRef } from "vue";
+import { CatalogFormProps, defaultForm, MenuCatalogFormData, groupTypeOptions, storeTypeOptions } from "./form";
 
-/** 表单组件的 props */
+/** 表单组件的 props Form component props */
 const props = defineProps<CatalogFormProps>();
 
-/** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 菜单目录表单_VO;
+/** 默认的表单重置变量 Default values for form reset */
+const defaultValues = props.defaultValues as FieldValues & MenuCatalogFormData;
 
-/** 表单组件实例 要求对外直接导出本表单实例 */
+/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
 /**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
+ * 本表单组件实际使用的表单对象
+ * @description Actual form object used by this component
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 菜单目录表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & MenuCatalogFormData;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
+/** 表单对象 Form object */
 const form = ref(toRefForm);
 
-/** 只读的表单对象 用于外部做判断 */
+/** 只读的表单对象 Readonly form object */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
+/** 表单项配置 Form columns configuration */
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "菜单组名称",
@@ -101,31 +92,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单校验规则 */
+/** 表单校验规则 Form validation rules */
 const plusFormRules = ref<PlusFormRules>({
 	name: [
 		{ required: true, message: "请输入菜单组名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	icon: [
-		{ required: true, message: "请输入图标", trigger: "blur" },
-	],
-	label: [
-		{ required: true, message: "请输入标签", trigger: "blur" },
-	],
+	icon: [{ required: true, message: "请输入图标", trigger: "blur" }],
+	label: [{ required: true, message: "请输入标签", trigger: "blur" }],
 	seq: [
 		{ required: true, message: "请输入序列", trigger: "blur" },
 		{ type: "number", min: 0, max: 999, message: "序列必须在0-999之间", trigger: "blur" },
 	],
-	groupType: [
-		{ required: true, message: "请选择组类型", trigger: "change" },
-	],
-	storeType: [
-		{ required: true, message: "请选择归属商户", trigger: "change" },
-	],
+	groupType: [{ required: true, message: "请选择组类型", trigger: "change" }],
+	storeType: [{ required: true, message: "请选择归属商户", trigger: "change" }],
 });
 
-// 默认对外导出
 defineExpose({
 	plusFormInstance,
 	formComputed,

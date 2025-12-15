@@ -18,7 +18,7 @@ import {
 } from "@01s-11comm/type";
 import { useDictionaryListQuery } from "@/api/dev-team/config-manage/dictionary";
 
-import { type DictionaryFormProps, defaultForm, type 字典表单_VO } from "./components/form";
+import { type DictionaryFormProps, type DictionaryFormVO, defaultForm } from "./components/form";
 import DictionaryForm from "./components/form.vue";
 const dictionaryFormInstance = ref<InstanceType<typeof DictionaryForm> | null>(null);
 
@@ -216,24 +216,24 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 	const title = `${modeText.value}字典`;
 
 	/** 业务对象 */
-	const 字典表单_VO: 字典表单_VO = isAdd.value
+	const formData: DictionaryFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					字典名称: row?.dictionaryName || "",
-					字典编码: row?.dictionaryCode || "",
-					字典类型: row?.dictionaryType || "",
-					字典描述: row?.description || "",
-					是否启用: row?.isEnabled || "",
-					备注: row?.remark || "",
+					dictionaryName: row?.dictionaryName || "",
+					dictionaryCode: row?.dictionaryCode || "",
+					dictionaryType: row?.dictionaryType || "",
+					dictionaryDescription: row?.description || "",
+					isEnabled: row?.isEnabled || "",
+					remark: row?.remark || "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: DictionaryFormProps = {
-		form: 字典表单_VO,
-		defaultValues: 字典表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
