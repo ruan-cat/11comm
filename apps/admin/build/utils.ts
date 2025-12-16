@@ -84,7 +84,13 @@ const fileListTotal: number[] = [];
 
 /** 获取指定文件夹中所有文件的总大小 */
 const getPackageSize = (options) => {
-	const { folder = "dist", callback, format = true } = options;
+	const {
+		// folder = "dist"
+		// 项目使用了 nitro ，所以输出目录是 .output
+		folder = ".output",
+		callback,
+		format = true,
+	} = options;
 	readdir(folder, (err, files: string[]) => {
 		if (err) throw err;
 		let count = 0;
