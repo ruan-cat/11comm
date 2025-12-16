@@ -10,89 +10,70 @@ import Empty from "./empty.svg?component";
 export function useColumns() {
 	const dataList = ref([]);
 	const loading = ref(true);
-
-	/** 表格列配置 */
-	const columns = ref<TableColumnList>([
-		defaultPureTableIndexColumn,
+	const columns: TableColumnList = [
 		{
-			label: "配置项名称",
-			prop: "configName",
-			width: 150,
-			fixed: true,
+			sortable: true,
+			label: "序号",
+			prop: "id",
 		},
 		{
-			label: "配置类型",
-			prop: "configType",
-			width: 120,
+			sortable: true,
+			label: "需求人数",
+			prop: "requiredNumber",
+			filterMultiple: false,
+			filterClassName: "pure-table-filter",
+			filters: [
+				{ text: "≥16000", value: "more" },
+				{ text: "<16000", value: "less" },
+			],
+			filterMethod: (value, { requiredNumber }) => {
+				return value === "more" ? requiredNumber >= 16000 : requiredNumber < 16000;
+			},
 		},
 		{
-			label: "配置键名",
-			prop: "configKey",
-			width: 200,
+			sortable: true,
+			label: "提问数量",
+			prop: "questionNumber",
 		},
 		{
-			label: "配置值",
-			prop: "configValue",
-			width: 150,
+			sortable: true,
+			label: "解决数量",
+			prop: "resolveNumber",
 		},
 		{
-			label: "默认值",
-			prop: "defaultValue",
-			width: 150,
+			sortable: true,
+			label: "用户满意度",
+			minWidth: 100,
+			prop: "satisfaction",
+			cellRenderer: ({ row }) => (
+				<div class='flex justify-center w-full'>
+					<span class='flex items-center w-[60px]'>
+						<span class='ml-auto mr-2'>{row.satisfaction}%</span>
+						<iconifyIconOffline icon={row.satisfaction > 98 ? Hearts : ThumbUp} color='#e85f33' />
+					</span>
+				</div>
+			),
 		},
 		{
-			label: "配置描述",
-			prop: "configDescription",
-			minWidth: 200,
-			showOverflowTooltip: true,
+			sortable: true,
+			label: "统计日期",
+			prop: "date",
 		},
 		{
-			label: "状态",
-			prop: "status",
-			width: 80,
-		},
-		{
-			label: "排序号",
-			prop: "sortOrder",
-			width: 80,
-		},
-		{
-			label: "备注",
-			prop: "remark",
-			minWidth: 150,
-			showOverflowTooltip: true,
-		},
-		{
-			label: "创建时间",
-			prop: "createTime",
-			width: 160,
-		},
-		{
-			label: "更新时间",
-			prop: "updateTime",
-			width: 160,
-		},
-		{
-			label: "创建人",
-			prop: "creator",
-			width: 100,
-		},
-		{
-			/** @see https://vscode.dev/github.com/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-			headerRenderer: () => transformI18n($t("common.table.operation")),
-			width: 200,
+			label: "操作",
 			fixed: "right",
 			slot: "operation",
 		},
-	]);
+	];
 
 	/** 分页配置 */
-	const pagination = computed<PaginationProps>(() => ({
-		...defaultPagination,
-		pageSize: pageSize.value,
-		currentPage: pageIndex.value,
-		total: total.value,
-	}));
+	const pagination = reactive<PaginationProps>({
+		pageSize: 10,
+		currentPage: 1,
+		layout: "prev, pager, next",
+		total: 0,
+		align: "center",
+	});
 
 	function onCurrentChange(page: number) {
 		console.log("onCurrentChange", page);
