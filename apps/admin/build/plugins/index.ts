@@ -196,7 +196,8 @@ export function getPluginsList(
 			bundler: "vite",
 			hideConsole: true,
 		}),
-		viteBuildInfo(),
+		// 不使用信息查看插件了 避免可能的故障
+		// viteBuildInfo(),
 		/**
 		 * 开发环境下移除非必要的vue-router动态路由警告No match found for location with path
 		 * 非必要具体看 https://github.com/vuejs/router/issues/521 和 https://github.com/vuejs/router/issues/359
