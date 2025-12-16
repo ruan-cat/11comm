@@ -2,8 +2,6 @@
 import "animate.css";
 // 引入 src/components/ReIcon/src/offlineIcon.ts 文件中所有使用addIcon添加过的本地图标
 import "@/components/ReIcon/src/offlineIcon";
-
-import { clientOnly } from "vike-vue/clientOnly";
 import { setType } from "./types";
 import { useI18n } from "vue-i18n";
 import { useLayout } from "./hooks/useLayout";
@@ -16,17 +14,8 @@ import { useDark, useGlobal, deviceDetection, useResizeObserver } from "@pureadm
 import LayTag from "./components/lay-tag/index.vue";
 import LayNavbar from "./components/lay-navbar/index.vue";
 import LayContent from "./components/lay-content/index.vue";
-
-/**
- * 使用 clientOnly 组件 只在客户端渲染
- * @see https://vike.dev/clientOnly#vue
- */
-// import NavVertical from "./components/lay-sidebar/NavVertical.vue";
-const NavVertical = clientOnly(() => import("./components/lay-sidebar/NavVertical.vue"));
-
-// import LaySetting from "./components/lay-setting/index.vue";
-const LaySetting = clientOnly(() => import("./components/lay-setting/index.vue"));
-
+import LaySetting from "./components/lay-setting/index.vue";
+import NavVertical from "./components/lay-sidebar/NavVertical.vue";
 import NavHorizontal from "./components/lay-sidebar/NavHorizontal.vue";
 import BackTopIcon from "@/assets/svg/back_top.svg?component";
 
@@ -160,7 +149,7 @@ const LayHeader = defineComponent({
 			class="app-mask"
 			@click="useAppStoreHook().toggleSideBar()"
 		/>
-		<NavVertical v-show="!pureSetting.hiddenSideBar && (layout?.includes('vertical') || layout?.includes('mix'))" />
+		<NavVertical v-show="!pureSetting.hiddenSideBar && (layout.includes('vertical') || layout.includes('mix'))" />
 		<div :class="['main-container', pureSetting.hiddenSideBar ? 'main-hidden' : '']">
 			<div v-if="set.fixedHeader">
 				<LayHeader />
