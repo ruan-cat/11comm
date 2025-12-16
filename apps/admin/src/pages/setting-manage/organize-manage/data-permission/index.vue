@@ -12,25 +12,38 @@ import { ref, computed, useTemplateRef } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import UnitAuthTable from "./components/unit-auth/table.vue";
 import StaffRelationTable from "./components/staff-relation/table.vue";
+import type { DataPermission } from "@01s-11comm/type";
+import { useDataPermissionListQuery } from "@/api/setting-manage/organize-manage/data-permission";
 
 const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
 
+// 使用数据权限列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+} = useDataPermissionListQuery();
+
 /** 左侧数据权限列表数据 */
-const dataPermissionList = ref<数据权限数据[]>(dataPermissionListData);
+const dataPermissionList = computed<DataPermission[]>(() => tableData.value);
 
 /** 当前选中的数据权限项 */
-const selectedItem = ref<数据权限数据>(dataPermissionList.value[0]);
+const selectedItem = ref<DataPermission | null>(null);
 
 /** 右侧动态标题 */
 const rightTitle = computed(() => {
-	return selectedItem.value?.名称 || "A级数据权限";
+	return selectedItem.value?.name || "A级数据权限";
 });
 
 /** 当前激活的Tab标签页 */
 const activeTab = ref("unitAuth");
 
 /** 处理左侧列表项点击 */
-function handleItemClick(item: 数据权限数据) {
+function handleItemClick(item: DataPermission) {
 	selectedItem.value = item;
 	console.log("选中项:", item);
 }
@@ -66,12 +79,12 @@ async function handleTabClick(tab: any) {
 						<div class="data-permission-list">
 							<div
 								v-for="item in dataPermissionList"
-								:key="item.编号"
+								:key="item.id"
 								class="list-item"
-								:class="{ active: selectedItem.编号 === item.编号 }"
+								:class="{ active: selectedItem?.id === item.id }"
 								@click="handleItemClick(item)"
 							>
-								<span class="item-label">{{ item.名称 }}</span>
+								<span class="item-label">{{ item.name }}</span>
 							</div>
 						</div>
 					</ElScrollbar>

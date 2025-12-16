@@ -13,9 +13,19 @@ import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import { type ShiftSettingFormProps, defaultForm, type 班次设置表单_VO } from "./components/form";
 import ShiftSettingForm from "./components/form.vue";
+import type { ShiftSetting } from "@01s-11comm/type";
+import { useShiftSettingListQuery } from "@/api/setting-manage/organize-manage/shift-setting";
 
-/** 表格数据 */
-const tableData = ref<班次设置_列表数据[]>([]);
+// 使用班次设置列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+} = useShiftSettingListQuery();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();

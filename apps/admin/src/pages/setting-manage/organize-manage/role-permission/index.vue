@@ -19,45 +19,45 @@ import { h } from "vue";
 
 import { type RolePermissionFormProps, defaultForm, type 角色权限表单_VO } from "./components/form";
 import RolePermissionForm from "./components/form.vue";
+import type { RolePermission } from "@01s-11comm/type";
+import { useRolePermissionListQuery } from "@/api/setting-manage/organize-manage/role-permission";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
-// 表格数据
-const tableData = ref<角色权限[]>(mockTableData);
+// 使用角色权限列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+} = useRolePermissionListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "角色名称",
-		prop: "角色名称",
+		prop: "name",
 		width: 150,
 	},
 	{
 		label: "角色编码",
-		prop: "角色编码",
+		prop: "code",
 		width: 150,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "enabled",
 		width: 100,
 	},
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		minWidth: 200,
-	},
-	{
-		label: "创建时间",
-		prop: "创建时间",
-		width: 180,
-	},
-	{
-		label: "更新时间",
-		prop: "更新时间",
-		width: 180,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -69,20 +69,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
-	columns: [],
+	columns: columns.value,
 	pagination: pagination.value,
-});
+	loading: isLoading.value,
+}));
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -91,7 +92,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 // PlusSearch 搜索表单数据接口
-interface RolePermissionSearchForm extends 角色权限_列表查询_VO {}
+interface RolePermissionSearchForm {
+	name?: string;
+	code?: string;
+}
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -99,8 +103,8 @@ interface RolePermissionSearchForm extends 角色权限_列表查询_VO {}
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & RolePermissionSearchForm = {
-	角色名称: "",
-	状态: undefined,
+	name: "",
+	code: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -116,17 +120,13 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "角色名称",
-		prop: "角色名称",
+		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "状态",
-		prop: "状态",
-		valueType: "select",
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
-		],
+		label: "角色编码",
+		prop: "code",
+		valueType: "input",
 	},
 ]);
 

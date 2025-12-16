@@ -12,51 +12,56 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type SchedulingSettingFormProps, defaultForm, type 排班设置表单_VO } from "./components/form";
 import SchedulingSettingForm from "./components/form.vue";
+import type { SchedulingSetting } from "@01s-11comm/type";
+import { useSchedulingSettingListQuery } from "@/api/setting-manage/organize-manage/scheduling-setting";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
-/** 表格数据 */
-const tableData = ref<排班设置_列表数据[]>([]);
+// 使用排班设置列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+} = useSchedulingSettingListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "班次名称",
-		prop: "班次名称",
+		prop: "name",
 		minWidth: 200,
 		fixed: true,
 	},
 	{
 		label: "排班类型",
-		prop: "排班类型",
+		prop: "type",
 		width: 120,
 	},
 	{
 		label: "排班周期",
-		prop: "排班周期",
+		prop: "cycle",
 		width: 100,
 	},
 	{
 		label: "生效时间",
-		prop: "生效时间",
+		prop: "effectiveTime",
 		width: 180,
 	},
 	{
 		label: "人员",
-		prop: "人员",
+		prop: "staff",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
-	},
-	{
-		label: "创建时间",
-		prop: "创建时间",
-		width: 180,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -68,20 +73,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 表格组件配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
-	columns: [],
+	columns: columns.value,
 	pagination: pagination.value,
-});
+	loading: isLoading.value,
+}));
 
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -94,9 +100,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 排班设置_列表查询_VO = {
-	排班名称: "",
-	状态: "",
+const plusSearchModelRef: FieldValues & { name?: string; status?: string } = {
+	name: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */

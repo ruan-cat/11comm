@@ -936,9 +936,9 @@
 - [x] 5.1.3 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/mock-data.ts`
 - [x] 5.1.4 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/list.post.ts`
 - [x] 5.1.5 新建 `apps/admin/src/api/setting-manage/organize-manage/data-permission/index.ts`
-- [ ] 5.1.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/index.vue` 列表页
-- [ ] 5.1.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
-- [ ] 5.1.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/form.ts` 和 `form.vue` 文件
+- [x] 5.1.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/index.vue` 列表页
+- [x] 5.1.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
+- [x] 5.1.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/form.ts` 和 `form.vue` 文件
 
 ### 5.2 organize-manage/org-info
 
@@ -958,9 +958,9 @@
 - [x] 5.3.3 新建 `apps/admin/server/api/setting-manage/organize-manage/role-permission/mock-data.ts`
 - [x] 5.3.4 新建 `apps/admin/server/api/setting-manage/organize-manage/role-permission/list.post.ts`
 - [x] 5.3.5 新建 `apps/admin/src/api/setting-manage/organize-manage/role-permission/index.ts`
-- [ ] 5.3.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/index.vue` 列表页
-- [ ] 5.3.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts`
-- [ ] 5.3.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/form.ts` 和 `form.vue` 文件
+- [x] 5.3.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/index.vue` 列表页
+- [x] 5.3.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/test-data.ts`
+- [x] 5.3.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/role-permission/form.ts` 和 `form.vue` 文件
 
 ### 5.4 organize-manage/scheduling-setting
 
@@ -969,9 +969,9 @@
 - [x] 5.4.3 新建 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/mock-data.ts`
 - [x] 5.4.4 新建 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/list.post.ts`
 - [x] 5.4.5 新建 `apps/admin/src/api/setting-manage/organize-manage/scheduling-setting/index.ts`
-- [ ] 5.4.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/index.vue` 列表页
-- [ ] 5.4.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts`
-- [ ] 5.4.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/form.ts` 和 `form.vue` 文件
+- [x] 5.4.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/index.vue` 列表页
+- [x] 5.4.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/test-data.ts`
+- [x] 5.4.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting/form.ts` 和 `form.vue` 文件
 
 ### 5.5 organize-manage/shift-setting
 
@@ -980,9 +980,9 @@
 - [x] 5.5.3 新建 `apps/admin/server/api/setting-manage/organize-manage/shift-setting/mock-data.ts`
 - [x] 5.5.4 新建 `apps/admin/server/api/setting-manage/organize-manage/shift-setting/list.post.ts`
 - [x] 5.5.5 新建 `apps/admin/src/api/setting-manage/organize-manage/shift-setting/index.ts`
-- [ ] 5.5.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/index.vue` 列表页
-- [ ] 5.5.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts`
-- [ ] 5.5.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/form.ts` 和 `form.vue` 文件
+- [x] 5.5.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/index.vue` 列表页
+- [x] 5.5.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/test-data.ts`
+- [x] 5.5.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/shift-setting/form.ts` 和 `form.vue` 文件
 
 ### 5.6 organize-manage/staff-info
 
