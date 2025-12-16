@@ -25,7 +25,11 @@ export function viteBuildInfo(): Plugin {
 		name: "vite:buildInfo",
 		configResolved(resolvedConfig) {
 			config = resolvedConfig;
-			outDir = resolvedConfig.build?.outDir ?? "dist";
+			outDir =
+				resolvedConfig.build?.outDir ??
+				// "dist"
+				// 项目使用了 nitro ，所以输出目录是 .output
+				".output";
 		},
 		buildStart() {
 			console.log(boxen(welcomeMessage, boxenOptions));
