@@ -98,36 +98,22 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 		 * 用于分离客户端和服务端构建环境
 		 * @see https://cn.vitejs.dev/guide/api-environment.html
 		 */
-		environments: {
-			client: {
-				build: {
-					rollupOptions: {
-						input: "./src/entry-client.ts",
-					},
-				},
-			},
+		// environments: {
+		// 	client: { build: { rollupOptions: { input: "./src/entry-client.ts" } } },
+		// 	/**
+		// 	 * 根据 vite v8 beta 的文档 环境API不存在显性的 SSR 键了
+		// 	 * An app doesn't need to use the ssr name for its SSR environment, it could name it server for example.
+		// 	 * 但是在 vite v7 内 ，nitro仍旧需要读取 ssr 的配置
+		// 	 */
+		// 	ssr: {
+		// 		build: { rollupOptions: { input: "./src/entry-server.ts" } },
+		// 		resolve: {
+		// 			noExternal:
+		// 				mode === "development" ? ["vue-router", "virtual:meta-layouts", "lodash-es", "@01s-11comm/type"] : [],
+		// 		},
+		// 	},
+		// },
 
-			/**
-			 * 根据 vite v8 beta 的文档 环境API不存在显性的 SSR 键了
-			 * An app doesn't need to use the ssr name for its SSR environment, it could name it server for example.
-			 *
-			 * server
-			 * 但是在 vite v7 内 ，nitro仍旧需要读取 ssr 的配置
-			 */
-			ssr: {
-				resolve: {
-					noExternal:
-						mode === "development" ? ["vue-router", "virtual:meta-layouts", "lodash-es", "@01s-11comm/type"] : [],
-				},
-				build: {
-					rollupOptions: {
-						input: "./src/entry-server.ts",
-					},
-				},
-			},
-		},
-
-		// 服务端渲染
 		server: {
 			open: true,
 			// 端口号
