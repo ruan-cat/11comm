@@ -183,7 +183,7 @@ export function getPluginsList(
 		vueJsx(),
 		VueI18nPlugin({
 			/** @see https://vue-i18n.intlify.dev/guide/advanced/optimization.html#ssr-server-side-rendering */
-			ssr: true,
+			// ssr: true,
 			include: [pathResolve("../locales/**")],
 		}),
 		/**
