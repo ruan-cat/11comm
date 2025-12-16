@@ -1,32 +1,32 @@
-import type { FieldValues } from "plus-pro-components";
+import type { OrganizationTreeNode, OrganizationType } from "@01s-11comm/type";
 
 /** 组织信息表单业务接口 */
-export interface 组织信息表单_VO {
+export interface OrganizationInfoFormVO extends Partial<OrganizationTreeNode> {
 	/** 组织名称 */
-	组织名称: string;
+	name: string;
 	/** 组织类型 */
-	组织类型: "company" | "department" | "group";
+	type: OrganizationType;
 	/** 组织编码 */
-	组织编码: string;
+	code: string;
 	/** 负责人姓名 */
-	负责人姓名: string;
+	leaderName: string;
 	/** 联系电话 */
-	联系电话: string;
+	phone: string;
 	/** 组织描述 */
-	组织描述: string;
+	description: string;
 	/** 是否启用 */
-	是否启用: boolean;
+	enabled: boolean;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 组织信息表单_VO = {
-	组织名称: "",
-	组织类型: "department",
-	组织编码: "",
-	负责人姓名: "",
-	联系电话: "",
-	组织描述: "",
-	是否启用: true,
+export const defaultForm: OrganizationInfoFormVO = {
+	name: "",
+	type: "department",
+	code: "",
+	leaderName: "",
+	phone: "",
+	description: "",
+	enabled: true,
 };
 
 /**
@@ -36,7 +36,7 @@ export const defaultForm: 组织信息表单_VO = {
  */
 export interface OrganizationInfoFormProps {
 	/** 表单数据 */
-	form: 组织信息表单_VO;
+	form: OrganizationInfoFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 组织信息表单_VO;
+	defaultValues: OrganizationInfoFormVO;
 }

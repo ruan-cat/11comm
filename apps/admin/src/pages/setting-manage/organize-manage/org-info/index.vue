@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -21,21 +21,25 @@ import { useReTreeLineIcon } from "components/ReTreeLineIcon/src/use-re-tree-lin
 import type { TreeNodeWithIcon, TreeSelectEvent, ReTreeLineIconInstance } from "components/ReTreeLineIcon/src/types.ts";
 import { ElMessage } from "element-plus";
 
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// import {
-// 	mockOrganizationTreeData,
-// 	tableData as mockTableData,
-// 	getEmployeesByOrgId,
-// 	type OrganizationTreeNode,
-// 	type Employee,
-// } from "@01s-11comm/type";
+import type { OrganizationTreeNode, Employee, EmployeeListQuery } from "@01s-11comm/type";
+import { useEmployeeListQuery, useOrganizationTreeQuery } from "@/api/setting-manage/organize-manage/org-info";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
-// 组织树数据已经兼容TreeNodeWithIcon接口，直接使用
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// const organizationTreeData = ref<OrganizationTreeNode[]>(mockOrganizationTreeData);
+// 使用组织树查询 Hook
+const { data: organizationTreeData, isLoading: treeLoading } = useOrganizationTreeQuery();
+
+// 使用员工列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading: tableLoading,
+	updateParams,
+	refetch,
+} = useEmployeeListQuery();
 
 // 树组件状态
 const treeRef = ref<ReTreeLineIconInstance | null>(null);
@@ -57,13 +61,6 @@ const {
 	watchSelection: true,
 	autoSearch: false, // 我们手动控制搜索
 });
-
-// 树组件加载状态
-const treeLoading = ref(false);
-
-// 表格数据
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// const tableData = ref<Employee[]>(mockTableData);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -108,22 +105,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
-	// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-	// data: tableData.value,
-	data: [],
-	columns: [],
+	data: tableData.value,
+	columns: columns.value,
 	pagination: pagination.value,
-});
+	loading: tableLoading.value,
+}));
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -215,6 +211,9 @@ function handleTreeNodeClick(event: TreeSelectEvent) {
 	// 根据选中的组织加载关联员工
 	if (localSelectedOrg.value) {
 		loadEmployeesByOrg(localSelectedOrg.value);
+	} else {
+		// 取消选择时，加载所有或重置
+		updateParams({ orgId: undefined, pageIndex: 1 });
 	}
 }
 
@@ -225,63 +224,34 @@ function handleTreeSelectionChange(node: TreeNodeWithIcon | null) {
 
 // 根据组织加载员工
 function loadEmployeesByOrg(org: OrganizationTreeNode) {
-	// 这里应该调用API获取该组织下的员工
-	// console.log("加载组织员工:", org.name);
-	console.log("加载组织员工:", getSelectedNode()?.name);
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-		// let filteredData = tableData.value;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.employeeName) {
-			// filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.employeeName!));
-		}
-
-		/** 更新总数 */
-		// pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		// const paginatedData = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		// pureTableProps.value.data = paginatedData;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
+	updateParams({ orgId: org.id, pageIndex: 1 });
 }
 
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		employeeName: undefined,
+		pageIndex: 1,
+	});
 }
 
 /** 执行搜索 */
 async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		employeeName: plusSearchModel.value.employeeName,
+		pageIndex: 1,
+	});
 }
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+async function handlePageSizeChange(val: number) {
+	pageSize.value = val;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+async function handleCurrentPageChange(val: number) {
+	pageIndex.value = val;
 }
 
 // 组织操作
@@ -314,15 +284,13 @@ function handleExportDoc() {
 	console.log("导出文档");
 }
 
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// function handleEditEmployee(row: Employee) {
-// 	console.log("编辑员工:", row);
-// }
+function handleEditEmployee(row: Employee) {
+	console.log("编辑员工:", row);
+}
 
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// function handleDeleteEmployee(row: Employee) {
-// 	console.log("删除员工:", row);
-// }
+function handleDeleteEmployee(row: Employee) {
+	console.log("删除员工:", row);
+}
 
 // ========== 生命周期 ==========
 onMounted(async () => {
@@ -332,9 +300,6 @@ onMounted(async () => {
 		// 演示API使用
 		demonstrateTreeAPI();
 	});
-
-	// 加载表格数据
-	await loadTableData();
 });
 </script>
 
@@ -365,17 +330,16 @@ onMounted(async () => {
 
 					<!-- 使用新的树组件 -->
 					<div class="tree-container">
-						<!-- // TODO: 改代码需要在执行重构时 取消注释并完成正常使用 -->
-						<!-- <ReTreeLineIcon
+						<ReTreeLineIcon
 							ref="treeRef"
-							:tree-data="organizationTreeData"
+							:tree-data="organizationTreeData || []"
 							:loading="treeLoading"
 							:search-options="treeSearchOptions"
 							:expansion-options="treeExpansionOptions"
 							:default-expand-all="true"
 							@node-click="handleTreeNodeClick"
 							@selection-change="handleTreeSelectionChange"
-						/> -->
+						/>
 					</div>
 				</el-card>
 			</el-col>
@@ -410,13 +374,12 @@ onMounted(async () => {
 							@page-current-change="handleCurrentPageChange"
 						>
 							<template #operation="{ row }">
-								<!-- // TODO: 改代码需要在执行重构时 取消注释并完成正常使用 -->
-								<!-- <ElButton type="warning" @click="handleEditEmployee(row)">
+								<ElButton type="warning" @click="handleEditEmployee(row)">
 									{{ transformI18n($t("common.buttons.edit")) }}
 								</ElButton>
 								<ElButton type="danger" @click="handleDeleteEmployee(row)">
 									{{ transformI18n($t("common.buttons.del")) }}
-								</ElButton> -->
+								</ElButton>
 							</template>
 						</PureTable>
 					</template>

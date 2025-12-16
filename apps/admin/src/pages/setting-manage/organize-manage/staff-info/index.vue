@@ -10,66 +10,67 @@ definePage({
 
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "plugins/i18n.ts";
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// import {
-// 	type StaffInfoListData,
-// 	type StaffInfoListQueryVO,
-// 	tableData as mockTableData,
-// } from "@01s-11comm/type";
-import { type StaffInfoFormProps, defaultForm } from "./components/form.ts";
+import { type StaffInfoFormProps, defaultForm, type StaffInfoFormVO } from "./components/form.ts";
 import StaffInfoForm from "./components/form.vue";
+import { useStaffInfoListQuery } from "@/api/setting-manage/organize-manage/staff-info";
+import type { StaffInfo, StaffInfoListQuery } from "@01s-11comm/type";
 
 /** 表单组件实例引用 */
 const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
 
-/** 表格数据 */
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// const tableData = ref<StaffInfoListData[]>(mockTableData);
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// const tableData = ref<StaffInfoListData[]>([]);
-const tableData = ref<any[]>([]);
+/** 使用列表查询 Hook */
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+	resetParams,
+} = useStaffInfoListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
 		label: "员工编号",
-		prop: "员工编号",
+		prop: "employeeNumber",
 		minWidth: 180,
 		fixed: true,
 	},
 	{
 		label: "姓名",
-		prop: "姓名",
+		prop: "name",
 		width: 120,
 	},
 	{
 		label: "手机号",
-		prop: "手机号",
+		prop: "phone",
 		width: 140,
 	},
 	{
 		label: "关联组织",
-		prop: "关联组织",
+		prop: "orgName",
 		width: 200,
 	},
 	{
 		label: "岗位",
-		prop: "岗位",
+		prop: "position",
 		width: 140,
 	},
 	{
 		label: "邮箱",
-		prop: "邮箱",
+		prop: "email",
 		width: 180,
 	},
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		minWidth: 160,
 	},
 	{
 		label: "性别",
-		prop: "性别",
+		prop: "gender",
 		width: 80,
 	},
 	{
@@ -82,32 +83,31 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: tableData.value.length,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	// 做异步接口请求
+async function handlePageSizeChange(val: number) {
+	pageSize.value = val;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	// 做异步接口请求
+async function handleCurrentPageChange(val: number) {
+	pageIndex.value = val;
 }
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
-	columns: [],
+	columns: columns.value,
 	pagination: pagination.value,
-});
+	loading: isLoading.value,
+}));
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -120,12 +120,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// const plusSearchModelRef: FieldValues & StaffInfoListQueryVO = {
-const plusSearchModelRef: FieldValues & any = {
-	员工ID: "",
-	员工姓名: "",
-	手机号: "",
+const plusSearchModelRef: FieldValues & StaffInfoListQuery = {
+	id: "",
+	name: "",
+	phone: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -142,7 +140,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 员工ID
 	{
 		label: "员工ID",
-		prop: "员工ID",
+		prop: "id",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入员工ID",
@@ -152,7 +150,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 员工姓名
 	{
 		label: "员工姓名",
-		prop: "员工姓名",
+		prop: "name",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入员工姓名",
@@ -162,7 +160,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 手机号
 	{
 		label: "手机号",
-		prop: "手机号",
+		prop: "phone",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入手机号",
@@ -180,23 +178,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 async function handleReSearch() {
-	console.log("重新搜索");
-	// 重置搜索条件并重新加载数据
-	pagination.value.currentPage = 1;
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	resetParams();
 }
 
 async function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	// 根据搜索条件过滤数据
-	pagination.value.currentPage = 1;
+	updateParams(plusSearchModel.value);
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-	// row?: StaffInfoListData;
-	row?: any;
+	row?: StaffInfo;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -225,24 +218,24 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	const testEditProps: StaffInfoFormProps = {
 		form: {
-			员工名称: row?.姓名 || "",
-			员工性别: row?.性别 || "",
-			员工岗位: row?.岗位 || "",
-			员工邮箱: row?.邮箱 || "",
-			手机: row?.手机号 || "",
-			家庭住址: row?.地址 || "",
-			关联组织: row?.关联组织 || "",
-			照片: "",
+			name: row?.name || "",
+			gender: row?.gender || "",
+			position: row?.position || "",
+			email: row?.email || "",
+			phone: row?.phone || "",
+			address: row?.address || "",
+			orgName: row?.orgName || "",
+			avatar: row?.avatar || "",
 		},
 		defaultValues: {
-			员工名称: row?.姓名 || "",
-			员工性别: row?.性别 || "",
-			员工岗位: row?.岗位 || "",
-			员工邮箱: row?.邮箱 || "",
-			手机: row?.手机号 || "",
-			家庭住址: row?.地址 || "",
-			关联组织: row?.关联组织 || "",
-			照片: "",
+			name: row?.name || "",
+			gender: row?.gender || "",
+			position: row?.position || "",
+			email: row?.email || "",
+			phone: row?.phone || "",
+			address: row?.address || "",
+			orgName: row?.orgName || "",
+			avatar: row?.avatar || "",
 		},
 	};
 
@@ -316,26 +309,24 @@ function handleAdd() {
 }
 
 /** 编辑员工 */
-function handleEdit(row: any) {
+function handleEdit(row: StaffInfo) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 重置密码 */
-function handleResetPassword(row: any) {
+function handleResetPassword(row: StaffInfo) {
 	console.log("重置密码", row);
 	// TODO: 实现重置密码功能
 }
 
 /** 删除员工 */
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// function handleDelete(row: any) {
-function handleDelete(row: any) {
+function handleDelete(row: StaffInfo) {
 	console.log("删除员工", row);
 	// TODO: 实现删除员工功能
 }
 
 /** 查看详情 */
-function handleDetail(row: any) {
+function handleDetail(row: StaffInfo) {
 	console.log("查看详情", row);
 	// TODO: 实现查看员工详情
 }

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { OrganizationInfoFormProps, defaultForm, type 组织信息表单_VO } from "./form";
+import { OrganizationInfoFormProps, defaultForm, type OrganizationInfoFormVO } from "./form";
+import { organizationTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<OrganizationInfoFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 组织信息表单_VO;
+const defaultValues = props.defaultValues as FieldValues & OrganizationInfoFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -18,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 组织信息表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & OrganizationInfoFormVO;
 
 /**
  * 表单对象
@@ -35,53 +36,49 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "组织名称",
-		prop: "组织名称",
+		prop: "name",
 		valueType: "input",
 	},
 	{
 		label: "组织类型",
-		prop: "组织类型",
+		prop: "type",
 		valueType: "select",
-		options: [
-			{ label: "公司", value: "company" },
-			{ label: "部门", value: "department" },
-			{ label: "小组", value: "group" },
-		],
+		options: organizationTypeOptions,
 	},
 	{
 		label: "组织编码",
-		prop: "组织编码",
+		prop: "code",
 		valueType: "input",
 	},
 	{
 		label: "负责人姓名",
-		prop: "负责人姓名",
+		prop: "leaderName",
 		valueType: "input",
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "phone",
 		valueType: "input",
 	},
 	{
 		label: "组织描述",
-		prop: "组织描述",
+		prop: "description",
 		valueType: "textarea",
 	},
 	{
 		label: "是否启用",
-		prop: "是否启用",
+		prop: "enabled",
 		valueType: "switch",
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	组织名称: [{ required: true, message: "请输入组织名称", trigger: "blur" }],
-	组织类型: [{ required: true, message: "请选择组织类型", trigger: "change" }],
-	组织编码: [{ required: true, message: "请输入组织编码", trigger: "blur" }],
-	负责人姓名: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
-	联系电话: [
+	name: [{ required: true, message: "请输入组织名称", trigger: "blur" }],
+	type: [{ required: true, message: "请选择组织类型", trigger: "change" }],
+	code: [{ required: true, message: "请输入组织编码", trigger: "blur" }],
+	leaderName: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
+	phone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
