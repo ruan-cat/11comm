@@ -15,9 +15,10 @@ const QUERY_KEY_PREFIX = "workingSchedule";
 /**
  * 排班表列表查询 Hook
  */
-export function useWorkingScheduleListQuery() {
+export function useWorkingScheduleListQuery(initialParams?: WorkingScheduleListQuery) {
 	return useListQuery<WorkingSchedule, WorkingScheduleListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,
+		initialParams,
 	});
 }
