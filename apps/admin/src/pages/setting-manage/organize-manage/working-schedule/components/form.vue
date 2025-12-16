@@ -45,10 +45,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		options: [
 			{ label: "早班", value: "morning" },
-			{ label: "午班", value: "afternoon" },
+			{ label: "中班", value: "afternoon" },
+			{ label: "晚班", value: "evening" },
 			{ label: "夜班", value: "night" },
-			{ label: "节假日", value: "holiday" },
-			{ label: "加班", value: "overtime" },
+			{ label: "全天", value: "全天" },
 		],
 	},
 	{

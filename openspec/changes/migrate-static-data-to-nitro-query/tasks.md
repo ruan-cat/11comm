@@ -931,30 +931,30 @@
 
 ### 5.1 organize-manage/data-permission
 
-- [ ] 5.1.1 新建 `apps/type/src/business/setting-manage/organize-manage/data-permission.ts` 业务类型和选项数组
-- [ ] 5.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 data-permission 类型正确
-- [ ] 5.1.3 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/mock-data.ts`
-- [ ] 5.1.4 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/list.post.ts`
-- [ ] 5.1.5 新建 `apps/admin/src/api/setting-manage/organize-manage/data-permission/index.ts`
+- [x] 5.1.1 新建 `apps/type/src/business/setting-manage/organize-manage/data-permission.ts` 业务类型和选项数组
+- [x] 5.1.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 data-permission 类型正确
+- [x] 5.1.3 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/mock-data.ts`
+- [x] 5.1.4 新建 `apps/admin/server/api/setting-manage/organize-manage/data-permission/list.post.ts`
+- [x] 5.1.5 新建 `apps/admin/src/api/setting-manage/organize-manage/data-permission/index.ts`
 - [ ] 5.1.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/index.vue` 列表页
 - [ ] 5.1.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/test-data.ts`
 - [ ] 5.1.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/data-permission/form.ts` 和 `form.vue` 文件
 
 ### 5.2 organize-manage/org-info
 
-- [ ] 5.2.1 新建 `apps/type/src/business/setting-manage/organize-manage/org-info.ts` 业务类型和选项数组
-- [ ] 5.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 org-info 类型正确
-- [ ] 5.2.3 新建 `apps/admin/server/api/setting-manage/organize-manage/org-info/mock-data.ts`
-- [ ] 5.2.4 新建 `apps/admin/server/api/setting-manage/organize-manage/org-info/list.post.ts`
-- [ ] 5.2.5 新建 `apps/admin/src/api/setting-manage/organize-manage/org-info/index.ts`
-- [ ] 5.2.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/org-info/index.vue` 列表页
-- [ ] 5.2.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
-- [ ] 5.2.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/org-info/form.ts` 和 `form.vue` 文件
+- [x] 5.2.1 新建 `apps/type/src/business/setting-manage/organize-manage/org-info.ts` 业务类型和选项数组
+- [x] 5.2.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 org-info 类型正确
+- [x] 5.2.3 新建 `apps/admin/server/api/setting-manage/organize-manage/org-info/mock-data.ts`
+- [x] 5.2.4 新建 `apps/admin/server/api/setting-manage/organize-manage/org-info/list.post.ts`
+- [x] 5.2.5 新建 `apps/admin/src/api/setting-manage/organize-manage/org-info/index.ts`
+- [x] 5.2.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/org-info/index.vue` 列表页
+- [x] 5.2.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
+- [x] 5.2.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/org-info/form.ts` 和 `form.vue` 文件
 
 ### 5.3 organize-manage/role-permission
 
-- [ ] 5.3.1 新建 `apps/type/src/business/setting-manage/organize-manage/role-permission.ts` 业务类型和选项数组
-- [ ] 5.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 role-permission 类型正确
+- [x] 5.3.1 新建 `apps/type/src/business/setting-manage/organize-manage/role-permission.ts` 业务类型和选项数组
+- [x] 5.3.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 role-permission 类型正确
 - [ ] 5.3.3 新建 `apps/admin/server/api/setting-manage/organize-manage/role-permission/mock-data.ts`
 - [ ] 5.3.4 新建 `apps/admin/server/api/setting-manage/organize-manage/role-permission/list.post.ts`
 - [ ] 5.3.5 新建 `apps/admin/src/api/setting-manage/organize-manage/role-permission/index.ts`
@@ -964,8 +964,8 @@
 
 ### 5.4 organize-manage/scheduling-setting
 
-- [ ] 5.4.1 新建 `apps/type/src/business/setting-manage/organize-manage/scheduling-setting.ts` 业务类型和选项数组
-- [ ] 5.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 scheduling-setting 类型正确
+- [x] 5.4.1 新建 `apps/type/src/business/setting-manage/organize-manage/scheduling-setting.ts` 业务类型和选项数组
+- [x] 5.4.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 scheduling-setting 类型正确
 - [ ] 5.4.3 新建 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/mock-data.ts`
 - [ ] 5.4.4 新建 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/list.post.ts`
 - [ ] 5.4.5 新建 `apps/admin/src/api/setting-manage/organize-manage/scheduling-setting/index.ts`
@@ -975,8 +975,8 @@
 
 ### 5.5 organize-manage/shift-setting
 
-- [ ] 5.5.1 新建 `apps/type/src/business/setting-manage/organize-manage/shift-setting.ts` 业务类型和选项数组
-- [ ] 5.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 shift-setting 类型正确
+- [x] 5.5.1 新建 `apps/type/src/business/setting-manage/organize-manage/shift-setting.ts` 业务类型和选项数组
+- [x] 5.5.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 shift-setting 类型正确
 - [ ] 5.5.3 新建 `apps/admin/server/api/setting-manage/organize-manage/shift-setting/mock-data.ts`
 - [ ] 5.5.4 新建 `apps/admin/server/api/setting-manage/organize-manage/shift-setting/list.post.ts`
 - [ ] 5.5.5 新建 `apps/admin/src/api/setting-manage/organize-manage/shift-setting/index.ts`
@@ -986,25 +986,25 @@
 
 ### 5.6 organize-manage/staff-info
 
-- [ ] 5.6.1 新建 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts` 业务类型和选项数组
-- [ ] 5.6.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 staff-info 类型正确
-- [ ] 5.6.3 新建 `apps/admin/server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
-- [ ] 5.6.4 新建 `apps/admin/server/api/setting-manage/organize-manage/staff-info/list.post.ts`
-- [ ] 5.6.5 新建 `apps/admin/src/api/setting-manage/organize-manage/staff-info/index.ts`
-- [ ] 5.6.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/index.vue` 列表页
-- [ ] 5.6.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
-- [ ] 5.6.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/form.ts` 和 `form.vue` 文件
+- [x] 5.6.1 新建 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts` 业务类型和选项数组
+- [x] 5.6.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 staff-info 类型正确
+- [x] 5.6.3 新建 `apps/admin/server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
+- [x] 5.6.4 新建 `apps/admin/server/api/setting-manage/organize-manage/staff-info/list.post.ts`
+- [x] 5.6.5 新建 `apps/admin/src/api/setting-manage/organize-manage/staff-info/index.ts`
+- [x] 5.6.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/index.vue` 列表页
+- [x] 5.6.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
+- [x] 5.6.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/form.ts` 和 `form.vue` 文件
 
 ### 5.7 organize-manage/working-schedule
 
-- [ ] 5.7.1 新建 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts` 业务类型和选项数组
-- [ ] 5.7.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 working-schedule 类型正确
-- [ ] 5.7.3 新建 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/mock-data.ts`
-- [ ] 5.7.4 新建 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/list.post.ts`
-- [ ] 5.7.5 新建 `apps/admin/src/api/setting-manage/organize-manage/working-schedule/index.ts`
-- [ ] 5.7.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/index.vue` 列表页
-- [ ] 5.7.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
-- [ ] 5.7.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/form.ts` 和 `form.vue` 文件
+- [x] 5.7.1 新建 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts` 业务类型和选项数组
+- [x] 5.7.2 运行 `pnpm -F @01s-11comm/type typecheck` 确保 working-schedule 类型正确
+- [x] 5.7.3 新建 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/mock-data.ts`
+- [x] 5.7.4 新建 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/list.post.ts`
+- [x] 5.7.5 新建 `apps/admin/src/api/setting-manage/organize-manage/working-schedule/index.ts`
+- [x] 5.7.6 改写 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/index.vue` 列表页
+- [x] 5.7.7 删除 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
+- [x] 5.7.8 更新 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/form.ts` 和 `form.vue` 文件
 
 ---
 

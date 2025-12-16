@@ -16,18 +16,22 @@ import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// import {
-// 	tableData as mockTableData,
-// 	type WorkingSchedule,
-// } from "@01s-11comm/type";
+import type { WorkingSchedule, WorkingScheduleListQuery, ScheduleType } from "@01s-11comm/type";
+import { useWorkingScheduleListQuery } from "@/api/setting-manage/organize-manage/working-schedule";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
-// 表格数据
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// const tableData = ref<WorkingSchedule[]>(mockTableData);
+// 使用排班表列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+} = useWorkingScheduleListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -82,22 +86,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
-	// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-	// data: tableData.value,
-	data: [],
-	columns: [],
+	data: tableData.value,
+	columns: columns.value,
 	pagination: pagination.value,
-});
+	loading: isLoading.value,
+}));
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -107,8 +110,8 @@ const pureTableBarProps = ref<PureTableBarProps>({
 
 // PlusSearch 搜索表单数据接口
 interface ScheduleSearchForm {
-	scheduleName?: string;
-	managerName?: string;
+	name?: string;
+	type?: string;
 }
 
 /**
@@ -117,8 +120,8 @@ interface ScheduleSearchForm {
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & ScheduleSearchForm = {
-	scheduleName: "",
-	managerName: "",
+	name: "",
+	type: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -134,13 +137,20 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "排班名称",
-		prop: "scheduleName",
+		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "负责人",
-		prop: "managerName",
-		valueType: "input",
+		label: "排班类型",
+		prop: "type",
+		valueType: "select",
+		options: [
+			{ label: "早班", value: "morning" },
+			{ label: "中班", value: "afternoon" },
+			{ label: "晚班", value: "evening" },
+			{ label: "夜班", value: "night" },
+			{ label: "全天", value: "全天" },
+		],
 	},
 ]);
 
@@ -166,77 +176,46 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-		// let filteredData = [...tableData.value];
-		let filteredData = [];
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.scheduleName) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.scheduleName!));
-		}
-		if (plusSearchModel.value.managerName) {
-			filteredData = filteredData.filter((item) => item.managerName?.includes(plusSearchModel.value.managerName!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		const paginatedData = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = paginatedData;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		name: undefined,
+		type: undefined,
+		pageIndex: 1,
+	});
 }
 
 /** 执行搜索 */
 async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		name: plusSearchModel.value.name,
+		type: plusSearchModel.value.type as ScheduleType | undefined,
+		pageIndex: 1,
+	});
 }
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+async function handlePageSizeChange(val: number) {
+	pageSize.value = val;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+async function handleCurrentPageChange(val: number) {
+	pageIndex.value = val;
 }
 
 function handleAddSchedule() {
 	console.log("添加排班");
 }
 
-// TODO: 改代码需要在执行重构时 取消注释并完成正常使用
-// function handleEditSchedule(row: WorkingSchedule) {
-// 	console.log("编辑排班:", row);
-// }
+function handleEditSchedule(row: WorkingSchedule) {
+	console.log("编辑排班:", row);
+}
 
-// TODO: 该代码需要被换成从 @01s-11comm/type 中导入的类型
-// function handleDeleteSchedule(row: WorkingSchedule) {
-// 	console.log("删除排班:", row);
-// }
+function handleDeleteSchedule(row: WorkingSchedule) {
+	console.log("删除排班:", row);
+}
 
 function handleExportSchedule() {
 	console.log("导出排班表");
@@ -244,8 +223,7 @@ function handleExportSchedule() {
 
 // ========== 生命周期 ==========
 onMounted(async () => {
-	// 加载表格数据
-	await loadTableData();
+	// 数据由 useWorkingScheduleListQuery 自动加载
 });
 </script>
 
@@ -279,13 +257,12 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<!-- // TODO: 改代码需要在执行重构时 取消注释并完成正常使用 -->
-						<!-- <ElButton type="warning" @click="handleEditSchedule(row)">
+						<ElButton type="warning" @click="handleEditSchedule(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDeleteSchedule(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
-						</ElButton> -->
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
