@@ -48,6 +48,19 @@ export const invoiceTitleStatusOptions: OptionsType = [
  * @description 发票抬头表单VO
  * Invoice title form VO
  */
+export interface InvoiceTitleFormVO {
+	/** 名称 Name */
+	name: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/**
+ * @description 发票抬头表单VO（兼容性中文名称）
+ * Invoice title form VO (for compatibility with Chinese names)
+ */
 export interface 发票抬头表单_VO {
 	/** 名称 Name */
 	name: string;

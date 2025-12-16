@@ -11,57 +11,46 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 
-import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO, type 费用类型 } from "./components/form";
+import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO } from "./components/form";
 import HouseChargeForm from "./components/form.vue";
+
+// 从类型库导入正确的类型
+import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import { statusOptions } from "@01s-11comm/type";
 
 /** 表单组件实例 */
 const houseChargeFormInstance = ref<InstanceType<typeof HouseChargeForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<房屋收费_列表数据[]>([]);
+const tableData = ref<HouseChargeListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "费用项目",
-		prop: "费用项目",
+		label: "名称",
+		prop: "name",
 		width: 120,
-	},
-	{
-		label: "费用标识",
-		prop: "费用标识",
-		width: 120,
-	},
-	{
-		label: "费用类型",
-		prop: "费用类型",
-		width: 120,
-	},
-	{
-		label: "应收金额",
-		prop: "应收金额",
-		width: 120,
-	},
-	{
-		label: "建账时间",
-		prop: "建账时间",
-		width: 180,
-	},
-	{
-		label: "应收时间段",
-		prop: "应收时间段",
-		width: 180,
-	},
-	{
-		label: "说明",
-		prop: "说明",
-		minWidth: 200,
 	},
 	{
 		label: "状态",
-		prop: "状态",
-		width: 100,
+		prop: "status",
+		width: 120,
+	},
+	{
+		label: "创建时间",
+		prop: "createTime",
+		width: 180,
+	},
+	{
+		label: "更新时间",
+		prop: "updateTime",
+		width: 180,
+	},
+	{
+		label: "备注",
+		prop: "remark",
+		minWidth: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -106,6 +95,26 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
+/** 模拟数据 */
+const mockTableData: HouseChargeListItem[] = [
+	{
+		id: "1",
+		name: "物业费",
+		status: "启用",
+		createTime: "2023-01-01 00:00:00",
+		updateTime: "2023-01-01 00:00:00",
+		remark: "物业费收费标准",
+	},
+	{
+		id: "2",
+		name: "水费",
+		status: "启用",
+		createTime: "2023-01-01 00:00:00",
+		updateTime: "2023-01-01 00:00:00",
+		remark: "水费收费标准",
+	},
+];
+
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
@@ -114,20 +123,11 @@ async function loadTableData() {
 		let filteredData = mockTableData;
 
 		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.房屋编号) {
-			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.房屋编号!));
+		if (plusSearchModel.value.name) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.name!));
 		}
-		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) => item.费用项目.includes(plusSearchModel.value.业主名称!));
-		}
-		if (plusSearchModel.value.费用标识) {
-			filteredData = filteredData.filter((item) => item.费用标识 === plusSearchModel.value.费用标识);
-		}
-		if (plusSearchModel.value.费用类型) {
-			filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
+		if (plusSearchModel.value.status) {
+			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.status);
 		}
 
 		/** 更新总数 */
@@ -151,12 +151,11 @@ async function loadTableData() {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 房屋收费_列表查询_VO = {
-	房屋编号: "",
-	业主名称: "",
-	费用标识: "",
-	费用类型: "",
-	状态: "",
+const plusSearchModelRef: FieldValues & HouseChargeQueryParams = {
+	name: "",
+	status: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -170,42 +169,19 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 房屋编号 */
+	/** 名称 */
 	{
-		label: "房屋编号",
-		prop: "房屋编号",
+		label: "名称",
+		prop: "name",
 		valueType: "input",
-	},
-
-	/** 业主名称 */
-	{
-		label: "业主名称",
-		prop: "业主名称",
-		valueType: "input",
-	},
-
-	/** 费用标识 */
-	{
-		label: "费用标识",
-		prop: "费用标识",
-		valueType: "select",
-		options: expenseIdentifierOptions,
-	},
-
-	/** 费用类型 */
-	{
-		label: "费用类型",
-		prop: "费用类型",
-		valueType: "select",
-		options: feeTypeOptions,
 	},
 
 	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: statusOptions,
 	},
 ]);
 
@@ -233,7 +209,7 @@ async function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 房屋收费_列表数据;
+	row?: HouseChargeListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -258,14 +234,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}房屋收费`;
 
 	/** 业务对象 */
-	const 房屋收费表单_VO: 房屋收费_VO = isAdd.value
+	const 房屋收费表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
-			? {
+			? ({
 					...defaultForm,
-					费用类型: (row?.费用项目 as 费用类型) || "物业费",
-					收费项目: row?.费用项目 || "",
-					费用标识: (row?.费用标识 as "周期性费用" | "一次性费用") || "周期性费用",
+					费用类型: "物业费",
+					收费项目: row?.name || "",
+					费用标识: "周期性费用",
 					付费类型: "预付费",
 					"缴费周期(单位:月)": "1",
 					"预付期(单位:天)": "30",
@@ -274,11 +250,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					手机缴费: "是",
 					进位方式: "四舍五入",
 					保留小数位: "2位",
-					状态: "启用",
+					状态: row?.status || "启用",
 					计算公式: "",
-					计费单价: row?.应收金额 || "",
+					计费单价: "",
 					固定费用: "",
-				}
+				} as 房屋收费_VO)
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */

@@ -368,10 +368,10 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleOperationClick('批量审核', {} as 缴费审核_列表数据)">
+				<ElButton type="primary" @click="handleOperationClick('批量审核', {} as PaymentReviewListItem)">
 					{{ transformI18n($t("批量审核")) }}
 				</ElButton>
-				<ElButton type="info" @click="handleOperationClick('导出审核记录', {} as 缴费审核_列表数据)">
+				<ElButton type="info" @click="handleOperationClick('导出审核记录', {} as PaymentReviewListItem)">
 					{{ transformI18n($t("导出审核记录")) }}
 				</ElButton>
 			</template>

@@ -7,12 +7,9 @@ import ThumbUp from "~icons/ri/thumb-up-line";
 import Hearts from "~icons/ri/hearts-line";
 import Empty from "./empty.svg?component";
 
-const { tableData, total, pageIndex, pageSize, queryParams, updateParams, resetParams, refetch, isLoading } =
-	useConfigCenterListQuery();
-
 export function useColumns() {
-	const dataList = tableData;
-	const loading = isLoading;
+	const dataList = ref([]);
+	const loading = ref(true);
 
 	/** 表格列配置 */
 	const columns = ref<TableColumnList>([

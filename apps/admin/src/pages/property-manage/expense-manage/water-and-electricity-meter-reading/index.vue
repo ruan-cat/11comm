@@ -12,55 +12,95 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type 水电抄表表单_VO } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
+import { meterTypeOptions } from "@01s-11comm/type";
+
+/** 水电抄表_列表数据 */
+interface WaterMeterReadingListItem {
+	id: string;
+	meterId: string;
+	meterType: string;
+	objectName: string;
+	lastReading: string;
+	currentReading: string;
+	lastReadingTime: string;
+	currentReadingTime: string;
+	createTime: string;
+}
+
+/** 模拟表格数据 */
+const mockTableData: WaterMeterReadingListItem[] = [
+	{
+		id: "1",
+		meterId: "SB202401001",
+		meterType: "水表",
+		objectName: "A栋101室",
+		lastReading: "1234",
+		currentReading: "1356",
+		lastReadingTime: "2024-01-01 10:00:00",
+		currentReadingTime: "2024-02-01 10:00:00",
+		createTime: "2024-01-01 10:00:00",
+	},
+	{
+		id: "2",
+		meterId: "DB202401001",
+		meterType: "电表",
+		objectName: "A栋102室",
+		lastReading: "5678",
+		currentReading: "5890",
+		lastReadingTime: "2024-01-01 10:00:00",
+		currentReadingTime: "2024-02-01 10:00:00",
+		createTime: "2024-01-02 11:00:00",
+	},
+];
 
 const WaterAndElectricityMeterReadingFormInstance = ref<InstanceType<
 	typeof WaterAndElectricityMeterReadingForm
 > | null>(null);
 
 /** 表格数据 */
-const tableData = ref<水电抄表_列表数据[]>([]);
+const tableData = ref<WaterMeterReadingListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "表ID",
-		prop: "表ID",
+		prop: "meterId",
 		width: 150,
 	},
 	{
 		label: "表类型",
-		prop: "表类型",
+		prop: "meterType",
 		width: 100,
 	},
 	{
 		label: "对象名称",
-		prop: "对象名称",
+		prop: "objectName",
 		width: 140,
 	},
 	{
 		label: "上期度数",
-		prop: "上期度数",
+		prop: "lastReading",
 		width: 100,
 	},
 	{
 		label: "本期度数",
-		prop: "本期度数",
+		prop: "currentReading",
 		width: 100,
 	},
 	{
 		label: "上期读表时间",
-		prop: "上期读表时间",
+		prop: "lastReadingTime",
 		width: 180,
 	},
 	{
 		label: "本期读表时间",
-		prop: "本期读表时间",
+		prop: "currentReadingTime",
 		width: 180,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 180,
 	},
 	{
@@ -80,14 +120,20 @@ const pagination = ref<PaginationProps>({
 	total: 0,
 });
 
+/** 水电抄表_列表查询_VO */
+interface WaterMeterReadingQueryVO {
+	meterType: string;
+	meterId: string;
+}
+
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 水电抄表_列表查询_VO = {
-	表类型: "",
-	表ID: "",
+const plusSearchModelRef: FieldValues & WaterMeterReadingQueryVO = {
+	meterType: "",
+	meterId: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -101,17 +147,15 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 表类型
 	{
 		label: transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.tableType")),
-		prop: "表类型",
+		prop: "meterType",
 		valueType: "select",
 		options: meterTypeOptions,
 	},
-	// 表ID
 	{
 		label: transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.tableId")),
-		prop: "表ID",
+		prop: "meterId",
 		valueType: "input",
 	},
 ]);
@@ -167,47 +211,38 @@ async function handleSearch() {
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
 		let filteredData = mockTableData;
 
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.表类型) {
-			filteredData = filteredData.filter((item) => item.表类型.includes(plusSearchModel.value.表类型!));
+		if (plusSearchModel.value.meterType) {
+			filteredData = filteredData.filter((item) => item.meterType.includes(plusSearchModel.value.meterType!));
 		}
-		if (plusSearchModel.value.表ID) {
-			filteredData = filteredData.filter((item) => item.表ID.includes(plusSearchModel.value.表ID!));
+		if (plusSearchModel.value.meterId) {
+			filteredData = filteredData.filter((item) => item.meterId.includes(plusSearchModel.value.meterId!));
 		}
 
-		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
 	}
 }
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 水电抄表_列表数据;
+	row?: WaterMeterReadingListItem;
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 删除水电抄表记录 */
-async function handleDelete(row: 水电抄表_列表数据) {
-	/** TODO: 替换为真实的API调用 */
+async function handleDelete(row: WaterMeterReadingListItem) {
 	consola.log("删除水电抄表记录:", row);
-	/** 当前使用模拟删除 */
 	await loadTableData();
 }
 
@@ -225,23 +260,21 @@ async function testAsync() {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
 	const title = `${modeText.value}水电抄表`;
 
-	/** 业务对象 */
 	const formData: 水电抄表表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					费用类型: row?.表类型 === "水表" ? "水费" : row?.表类型 === "电表" ? "电费" : "水费",
-					收费项目: row?.表类型 === "水表" || row?.表类型 === "电表" ? row?.表类型 as "水表" | "电表" : "水表",
-					抄表类型: (row?.表类型 || "水表") as "水表" | "电表",
-					收费对象: row?.对象名称 || "",
-					上期度数: row?.上期度数 || "",
-					本期度数: row?.本期度数 || "",
-					上期读表时间: row?.上期读表时间 || "",
-					本期读表时间: row?.本期读表时间 || "",
+					费用类型: row?.meterType === "水表" ? "水费" : row?.meterType === "电表" ? "电费" : "水费",
+					收费项目: row?.meterType === "水表" || row?.meterType === "电表" ? row?.meterType as "水表" | "电表" : "水表",
+					抄表类型: (row?.meterType || "水表") as "水表" | "电表",
+					收费对象: row?.objectName || "",
+					上期度数: row?.lastReading || "",
+					本期度数: row?.currentReading || "",
+					上期读表时间: row?.lastReadingTime || "",
+					本期读表时间: row?.currentReadingTime || "",
 					备注: "",
 				})
 			: cloneDeep(defaultForm);

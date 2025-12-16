@@ -1,13 +1,35 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import { type ReprintVoucherFormProps, defaultForm } from "./form";
+import type { ReprintVoucherFormVO } from "@01s-11comm/type";
+import { feeTypeOptions } from "@01s-11comm/type";
 
-/** 表单组件的 props */
+interface ReprintVoucherFormProps {
+	/** 表单数据 */
+	form: ReprintVoucherFormVO;
+	/** 默认值 */
+	defaultValues: ReprintVoucherFormVO;
+}
+
 const props = defineProps<ReprintVoucherFormProps>();
 
+/** 默认表单数据 */
+const defaultForm: ReprintVoucherFormVO = {
+	receiptId: "",
+	receiptNumber: "",
+	feeType: "",
+	feeItem: "",
+	house: "",
+	owner: "",
+	parkingSpace: "",
+	totalAmount: "",
+	paymentTime: "",
+	printCopies: 1,
+	printRemark: "",
+};
+
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 补打收据表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ReprintVoucherFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +42,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 补打收据表单_VO;
+const toRefForm = cloneDeep(props.form);
 
 /**
  * 表单对象
@@ -37,7 +59,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "收据编号",
-		prop: "收据编号",
+		prop: "receiptNumber",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -46,7 +68,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions,
 		fieldProps: {
@@ -57,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "费用项",
-		prop: "费用项",
+		prop: "feeItem",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -66,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -75,7 +97,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -84,7 +106,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位",
-		prop: "车位",
+		prop: "parkingSpace",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -93,7 +115,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "总金额",
-		prop: "总金额",
+		prop: "totalAmount",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -102,7 +124,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "缴费时间",
-		prop: "缴费时间",
+		prop: "paymentTime",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -111,7 +133,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "打印份数",
-		prop: "打印份数",
+		prop: "printCopies",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
@@ -120,7 +142,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "打印备注",
-		prop: "打印备注",
+		prop: "printRemark",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
@@ -131,7 +153,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	打印份数: [
+	printCopies: [
 		{
 			required: true,
 			message: "请输入打印份数",
@@ -145,7 +167,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	打印备注: [
+	printRemark: [
 		{
 			max: 200,
 			message: "打印备注不能超过200个字符",

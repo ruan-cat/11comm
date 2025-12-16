@@ -88,6 +88,46 @@ export const 费用项名称Options = expenseItemNameOptions;
 
 // 注意：公共选项已移至 business-options.ts，请从该文件导入
 
+// ==================== 兼容旧中文名称的选项 ====================
+
+/** 费用类型选项（兼容性） */
+export const feeTypeOptions = expenseTypeOptions;
+
+/** 发票类型选项（兼容性） */
+export const 发票类型Options = [
+	{ label: "普通发票", value: "普通发票" },
+	{ label: "增值税专用发票", value: "增值税专用发票" },
+	{ label: "电子发票", value: "电子发票" },
+];
+
+/** 性别选项（兼容性） */
+export const 性别Options = [
+	{ label: "男", value: "男" },
+	{ label: "女", value: "女" },
+];
+
+/** 成员类型选项（兼容性） */
+export const 成员类型Options = [
+	{ label: "家人", value: "家人" },
+	{ label: "租户", value: "租户" },
+	{ label: "使用人", value: "使用人" },
+];
+
+/** 人员类型选项（兼容性） */
+export const 人员类型Options = [
+	{ label: "业主", value: "业主" },
+	{ label: "家人", value: "家人" },
+	{ label: "租户", value: "租户" },
+	{ label: "使用人", value: "使用人" },
+];
+
+/** 人员角色选项（兼容性） */
+export const 人员角色Options = [
+	{ label: "产权人", value: "产权人" },
+	{ label: "联系人", value: "联系人" },
+	{ label: "使用人", value: "使用人" },
+];
+
 // ==================== 通用类型定义 ====================
 
 /** 退费审核表单 VO */

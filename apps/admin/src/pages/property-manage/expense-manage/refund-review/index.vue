@@ -13,9 +13,59 @@ import { transformI18n } from "@/plugins/i18n";
 import { type RefundReviewFormProps, defaultForm } from "./components/form";
 import RefundReviewForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
+import type { RefundReviewListItem, RefundReviewFormVO } from "@01s-11comm/type";
+import { feeTypeOptions, auditStatusOptions } from "@01s-11comm/type";
+
+/** 退费审核_列表查询_VO */
+interface RefundReviewQueryVO {
+	refundOrderNumber: string;
+	paymentOrderNumber: string;
+	feeType: string;
+	auditStatus: string;
+}
+
+/** 模拟表格数据 */
+const mockTableData: RefundReviewListItem[] = [
+	{
+		id: "1",
+		name: "退费审核1",
+		status: "待审核",
+		createTime: "2024-01-01 10:00:00",
+		updateTime: "2024-01-01 10:00:00",
+		refundOrderNumber: "TF202401010001",
+		paymentOrderNumber: "JF202401010001",
+		feeType: "物业费",
+		payer: "张三",
+		paymentPeriod: "2024-01 至 2024-12",
+		payablePaidAmount: "1200.00",
+		applyTime: "2024-01-15 14:30:00",
+		refundReason: "多缴费用",
+		applicant: "李四",
+		auditStatus: "待审核",
+		auditor: "",
+	},
+	{
+		id: "2",
+		name: "退费审核2",
+		status: "已通过",
+		createTime: "2024-01-02 09:00:00",
+		updateTime: "2024-01-03 16:00:00",
+		refundOrderNumber: "TF202401020002",
+		paymentOrderNumber: "JF202401020002",
+		feeType: "水费",
+		payer: "王五",
+		paymentPeriod: "2024-01 至 2024-03",
+		payablePaidAmount: "350.00",
+		applyTime: "2024-01-16 09:15:00",
+		refundReason: "房屋退租",
+		applicant: "王五",
+		auditStatus: "已通过",
+		auditor: "管理员",
+	},
+];
 
 /** 表格数据 */
-const tableData = ref<退费审核_列表数据[]>([]);
+const tableData = ref<RefundReviewListItem[]>([]);
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -38,11 +88,11 @@ async function testAsync() {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 退费审核_列表查询_VO = {
-	退费单号: "",
-	缴费单号: "",
-	费用类型: "",
-	审核状态: "",
+const plusSearchModelRef: FieldValues & RefundReviewQueryVO = {
+	refundOrderNumber: "",
+	paymentOrderNumber: "",
+	feeType: "",
+	auditStatus: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -65,17 +115,17 @@ async function loadTableData() {
 	try {
 		let filteredData = mockTableData;
 
-		if (plusSearchModel.value.退费单号) {
-			filteredData = filteredData.filter((item) => item.退费单号.includes(plusSearchModel.value.退费单号!));
+		if (plusSearchModel.value.refundOrderNumber) {
+			filteredData = filteredData.filter((item) => item.refundOrderNumber.includes(plusSearchModel.value.refundOrderNumber!));
 		}
-		if (plusSearchModel.value.缴费单号) {
-			filteredData = filteredData.filter((item) => item.缴费单号.includes(plusSearchModel.value.缴费单号!));
+		if (plusSearchModel.value.paymentOrderNumber) {
+			filteredData = filteredData.filter((item) => item.paymentOrderNumber.includes(plusSearchModel.value.paymentOrderNumber!));
 		}
-		if (plusSearchModel.value.费用类型) {
-			filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
+		if (plusSearchModel.value.feeType) {
+			filteredData = filteredData.filter((item) => item.feeType === plusSearchModel.value.feeType);
 		}
-		if (plusSearchModel.value.审核状态) {
-			filteredData = filteredData.filter((item) => item.审核状态 === plusSearchModel.value.审核状态);
+		if (plusSearchModel.value.auditStatus) {
+			filteredData = filteredData.filter((item) => item.auditStatus === plusSearchModel.value.auditStatus);
 		}
 
 		pagination.value.total = filteredData.length;
@@ -93,51 +143,51 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "退费单号",
-		prop: "退费单号",
+		prop: "refundOrderNumber",
 		width: 120,
 	},
 	{
 		label: "缴费单号",
-		prop: "缴费单号",
+		prop: "paymentOrderNumber",
 		width: 120,
 	},
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		width: 100,
 	},
 	{
 		label: "付费对象",
-		prop: "付费对象",
+		prop: "payer",
 		width: 100,
 	},
 	{
 		label: "退费金额",
-		prop: "应付金额实付金额",
+		prop: "payablePaidAmount",
 		width: 100,
 	},
 	{
 		label: "申请时间",
-		prop: "申请时间",
+		prop: "applyTime",
 		width: 180,
 	},
 	{
 		label: "退费原因",
-		prop: "退费原因",
+		prop: "refundReason",
 		width: 100,
 	},
 	{
 		label: "申请人",
-		prop: "申请人",
+		prop: "applicant",
 		width: 100,
 	},
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		width: 100,
 	},
 	{
-		prop: "审核人",
+		prop: "auditor",
 		label: "审核人",
 		width: 120,
 	},
@@ -190,23 +240,23 @@ async function handleCurrentPageChange(currentPage: number) {
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "退费单号",
-		prop: "退费单号",
+		prop: "refundOrderNumber",
 		valueType: "input",
 	},
 	{
 		label: "缴费单号",
-		prop: "缴费单号",
+		prop: "paymentOrderNumber",
 		valueType: "input",
 	},
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions,
 	},
 	{
 		label: "审核状态",
-		prop: "审核状态",
+		prop: "auditStatus",
 		valueType: "select",
 		options: auditStatusOptions,
 	},
@@ -227,35 +277,35 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 退费审核_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
-	const 退费审核表单_VO: 退费审核表单_VO = isAdd.value
+	const formData: RefundReviewFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					退费单号: row?.退费单号 || "",
-					缴费单号: row?.缴费单号 || "",
-					费用类型: row?.费用类型 || "",
-					付费对象: row?.付费对象 || "",
-					付费周期: row?.付费周期 || "",
-					应付金额实付金额: row?.应付金额实付金额 || "",
-					申请时间: row?.申请时间 || "",
-					退费原因: row?.退费原因 || "",
-					申请人: row?.申请人 || "",
-					审核状态: row?.审核状态 || "",
-					审核人: row?.审核人 || "",
-					审核备注: "",
+					refundOrderNumber: row?.refundOrderNumber || "",
+					paymentOrderNumber: row?.paymentOrderNumber || "",
+					feeType: row?.feeType || "",
+					payer: row?.payer || "",
+					paymentPeriod: row?.paymentPeriod || "",
+					payablePaidAmount: row?.payablePaidAmount || "",
+					applyTime: row?.applyTime || "",
+					refundReason: row?.refundReason || "",
+					applicant: row?.applicant || "",
+					auditStatus: row?.auditStatus || "",
+					auditor: row?.auditor || "",
+					auditRemark: "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: RefundReviewFormProps = {
-		form: 退费审核表单_VO,
-		defaultValues: 退费审核表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 弹框组件所需的变量 */

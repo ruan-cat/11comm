@@ -8,14 +8,49 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type ReprintVoucherFormProps, defaultForm } from "./components/form";
+import type { ReprintVoucherFormProps } from "./components/form";
 import ReprintVoucherForm from "./components/form.vue";
+import type { ReprintVoucherListItem, ReprintVoucherQueryParams, ReprintVoucherFormVO } from "@01s-11comm/type";
+import { feeTypeOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 
+/** 默认表单数据 */
+const defaultForm: ReprintVoucherFormVO = {
+	receiptId: "",
+	receiptNumber: "",
+	feeType: "",
+	feeItem: "",
+	house: "",
+	owner: "",
+	parkingSpace: "",
+	totalAmount: "",
+	paymentTime: "",
+	printCopies: 1,
+	printRemark: "",
+};
+
+/** 模拟表格数据 */
+const mockTableData: ReprintVoucherListItem[] = [
+	{
+		id: "1",
+		name: "收据001",
+		status: "启用",
+		createTime: "2024-01-01 10:00:00",
+		updateTime: "2024-01-01 10:00:00",
+	},
+	{
+		id: "2",
+		name: "收据002",
+		status: "禁用",
+		createTime: "2024-01-02 11:00:00",
+		updateTime: "2024-01-02 11:00:00",
+	},
+];
+
 /** 表格数据 */
-const tableData = ref<补打收据_列表数据[]>([]);
+const tableData = ref<ReprintVoucherListItem[]>([]);
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -33,16 +68,11 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & 补打收据_列表查询_VO = {
-	收据编号: "",
-	费用类型: "",
-	房屋: "",
-	业主: "",
+const plusSearchModelRef: FieldValues & ReprintVoucherQueryParams = {
+	name: "",
+	status: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -63,19 +93,20 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		let filteredData = mockTableData;
+		let filteredData = [...mockTableData];
 
-		if (plusSearchModel.value.收据编号) {
-			filteredData = filteredData.filter((item) => item.收据编号.includes(plusSearchModel.value.收据编号!));
+		// 根据名称过滤
+		if (plusSearchModel.value.name?.trim()) {
+			filteredData = filteredData.filter((item) =>
+				item.name.includes(plusSearchModel.value.name!.trim())
+			);
 		}
-		if (plusSearchModel.value.费用类型) {
-			filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
-		}
-		if (plusSearchModel.value.房屋) {
-			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋!));
-		}
-		if (plusSearchModel.value.业主) {
-			filteredData = filteredData.filter((item) => item.业主.includes(plusSearchModel.value.业主!));
+
+		// 根据状态过滤
+		if (plusSearchModel.value.status) {
+			filteredData = filteredData.filter((item) =>
+				item.status === plusSearchModel.value.status
+			);
 		}
 
 		pagination.value.total = filteredData.length;
@@ -92,49 +123,24 @@ async function loadTableData() {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "收据编号",
-		prop: "收据编号",
+		label: "名称",
+		prop: "name",
 		width: 120,
 	},
 	{
-		label: "费用类型",
-		prop: "费用类型",
+		label: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
-		label: "费用项",
-		prop: "费用项",
-		width: 150,
-	},
-	{
-		label: "房屋",
-		prop: "房屋",
-		width: 100,
-	},
-	{
-		label: "业主",
-		prop: "业主",
-		width: 100,
-	},
-	{
-		label: "车位",
-		prop: "车位",
-		width: 100,
-	},
-	{
-		label: "总金额",
-		prop: "总金额",
-		width: 100,
-	},
-	{
-		label: "缴费时间",
-		prop: "缴费时间",
+		label: "创建时间",
+		prop: "createTime",
 		width: 180,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 280,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -180,23 +186,23 @@ async function handleCurrentPageChange(currentPage: number) {
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "收据编号",
-		prop: "收据编号",
+		prop: "receiptNumber",
 		valueType: "input",
 	},
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions,
 	},
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 	},
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		valueType: "input",
 	},
 ]);
@@ -216,34 +222,34 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 补打收据_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
-	const 补打收据表单_VO: 补打收据表单_VO = isAdd.value
+	const formData: ReprintVoucherFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					收据ID: row?.收据ID || "",
-					收据编号: row?.收据编号 || "",
-					费用类型: row?.费用类型 || "",
-					费用项: row?.费用项 || "",
-					房屋: row?.房屋 || "",
-					业主: row?.业主 || "",
-					车位: row?.车位 || "",
-					总金额: row?.总金额 || "",
-					缴费时间: row?.缴费时间 || "",
-					打印份数: 1,
-					打印备注: "",
+					receiptId: row?.id || "",
+					receiptNumber: row?.name || "",
+					feeType: "",
+					feeItem: "",
+					house: "",
+					owner: "",
+					parkingSpace: "",
+					totalAmount: "",
+					paymentTime: row?.createTime || "",
+					printCopies: 1,
+					printRemark: "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ReprintVoucherFormProps = {
-		form: 补打收据表单_VO,
-		defaultValues: 补打收据表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 弹框组件所需的变量 */

@@ -11,94 +11,137 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type HouseManageFormProps, defaultForm } from "./components/form";
+import { type HouseManageFormProps, defaultForm, HouseManagementFormVO, houseTypeOptions, houseStatusOptions } from "./components/form";
 import HouseManageForm from "./components/form.vue";
+import type { HouseListItem } from "@01s-11comm/type";
+import { buildingUnitOptions } from "@01s-11comm/type";
+
 const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>(null);
 
+/** 模拟表格数据 */
+const allTableData: HouseListItem[] = [
+	{
+		houseCode: "A-101",
+		floor: "1",
+		owner: "张三",
+		houseType: "住宅",
+		houseArea: "120",
+		rent: "3000",
+		houseStatus: "已入住",
+		validUntil: "2025-12-31",
+		ownerMembers: "3",
+		ownerVehicles: "1",
+		ownerHouses: "1",
+		complaints: "0",
+		repairs: "2",
+		houseArrears: "0",
+		ownerArrears: "0",
+		houseContract: "有",
+	},
+	{
+		houseCode: "A-102",
+		floor: "1",
+		owner: "李四",
+		houseType: "住宅",
+		houseArea: "100",
+		rent: "2500",
+		houseStatus: "空闲",
+		validUntil: "2025-06-30",
+		ownerMembers: "0",
+		ownerVehicles: "0",
+		ownerHouses: "1",
+		complaints: "1",
+		repairs: "0",
+		houseArrears: "500",
+		ownerArrears: "500",
+		houseContract: "有",
+	},
+];
+
 /** 表格数据 */
-const tableData = ref<房屋管理_列表数据[]>([]);
+const tableData = ref<HouseListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "houseCode",
 		width: 120,
 	},
 	{
 		label: "楼层",
-		prop: "楼层",
+		prop: "floor",
 		width: 100,
 	},
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		width: 120,
 	},
 	{
 		label: "类型",
-		prop: "类型",
+		prop: "houseType",
 		width: 100,
 	},
 	{
 		label: "房屋面积",
-		prop: "房屋面积",
+		prop: "houseArea",
 		width: 120,
 	},
 	{
 		label: "租金",
-		prop: "租金",
+		prop: "rent",
 		width: 100,
 	},
 	{
 		label: "房屋状态",
-		prop: "房屋状态",
+		prop: "houseStatus",
 		width: 100,
 	},
 	{
 		label: "有效期",
-		prop: "有效期",
+		prop: "validUntil",
 		width: 120,
 	},
 	{
 		label: "业主成员",
-		prop: "业主成员",
+		prop: "ownerMembers",
 		width: 100,
 	},
 	{
 		label: "业主车辆",
-		prop: "业主车辆",
+		prop: "ownerVehicles",
 		width: 100,
 	},
 	{
 		label: "业主房屋",
-		prop: "业主房屋",
+		prop: "ownerHouses",
 		width: 100,
 	},
 	{
 		label: "投诉",
-		prop: "投诉",
+		prop: "complaints",
 		width: 100,
 	},
 	{
 		label: "报修",
-		prop: "报修",
+		prop: "repairs",
 		width: 100,
 	},
 	{
 		label: "房屋欠费",
-		prop: "房屋欠费",
+		prop: "houseArrears",
 		width: 100,
 	},
 	{
 		label: "业主欠费",
-		prop: "业主欠费",
+		prop: "ownerArrears",
 		width: 100,
 	},
 	{
 		label: "房屋合同",
-		prop: "房屋合同",
+		prop: "houseContract",
 		width: 120,
 	},
 	{
@@ -146,38 +189,39 @@ const pureTableBarProps = ref<PureTableBarProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
 		let filteredData = allTableData;
 
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.房屋编号) {
-			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.房屋编号!));
+		if (plusSearchModel.value.houseCode) {
+			filteredData = filteredData.filter((item) => item.houseCode.includes(String(plusSearchModel.value.houseCode)));
 		}
-		if (plusSearchModel.value.房屋状态) {
-			filteredData = filteredData.filter((item) => item.房屋状态 === plusSearchModel.value.房屋状态);
+		if (plusSearchModel.value.houseStatus) {
+			filteredData = filteredData.filter((item) => item.houseStatus === plusSearchModel.value.houseStatus);
 		}
-		if (plusSearchModel.value.房屋类型) {
-			filteredData = filteredData.filter((item) => item.类型 === plusSearchModel.value.房屋类型);
+		if (plusSearchModel.value.houseType) {
+			filteredData = filteredData.filter((item) => item.houseType === plusSearchModel.value.houseType);
 		}
-		if (plusSearchModel.value.楼栋单元) {
-			filteredData = filteredData.filter((item) => item.房屋.includes(plusSearchModel.value.楼栋单元!));
+		if (plusSearchModel.value.buildingUnit) {
+			filteredData = filteredData.filter((item) => item.houseCode.includes(String(plusSearchModel.value.buildingUnit)));
 		}
 
-		// 更新总数
 		pagination.value.total = filteredData.length;
 
-		// 分页处理
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		// 更新表格配置
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
 	}
+}
+
+/** 房屋管理_列表查询_VO */
+interface HouseQueryVO {
+	houseCode: string;
+	houseStatus: string;
+	houseType: string;
+	buildingUnit: string;
 }
 
 /**
@@ -185,11 +229,11 @@ async function loadTableData() {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 房屋管理_列表查询_VO = {
-	房屋编号: "",
-	房屋状态: "",
-	房屋类型: "",
-	楼栋单元: "",
+const plusSearchModelRef: FieldValues & HouseQueryVO = {
+	houseCode: "",
+	houseStatus: "",
+	houseType: "",
+	buildingUnit: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -203,35 +247,28 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 房屋编号
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
-		prop: "房屋编号",
+		prop: "houseCode",
 		valueType: "input",
 	},
-
-	// 房屋状态
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseState")),
-		prop: "房屋状态",
+		prop: "houseStatus",
 		valueType: "select",
 		options: houseStatusOptions,
 	},
-
-	// 房屋类型
 	{
 		label: transformI18n($t("propertyManage_housePropertyManage.houses.type")),
-		prop: "房屋类型",
+		prop: "houseType",
 		valueType: "select",
 		options: houseTypeOptions,
 	},
-
-	// 楼栋单元
 	{
 		label: transformI18n($t("propertyManage_housePropertyManage.houses.unionId")),
-		prop: "楼栋单元",
+		prop: "buildingUnit",
 		valueType: "select",
-		options: 楼栋单元选项,
+		options: buildingUnitOptions,
 	},
 ]);
 
@@ -270,32 +307,29 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 房屋管理_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
 	const title = `${modeText.value}房屋管理`;
 
-	/** 业务对象 */
-	const 房屋管理表单_VO: 房屋管理表单_VO = isAdd.value
+	const formData: HouseManagementFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: cloneDeep({
 				...defaultForm,
-				房屋: row?.房屋 || "",
-				楼层: row?.楼层 || "",
-				业主: row?.业主 || "",
-				类型: row?.类型 || "",
-				房屋面积: row?.房屋面积 || "",
-				租金: row?.租金 || "",
-				房屋状态: row?.房屋状态 || "",
-				有效期: row?.有效期 || "",
+				house: row?.houseCode || "",
+				floor: row?.floor || "",
+				owner: row?.owner || "",
+				type: row?.houseType || "",
+				houseArea: row?.houseArea || "",
+				rent: row?.rent || "",
+				houseStatus: row?.houseStatus || "",
+				validUntil: row?.validUntil || "",
 			});
 
-	/** 表单组件需要的props */
 	const props: HouseManageFormProps = {
-		form: 房屋管理表单_VO,
-		defaultValues: 房屋管理表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

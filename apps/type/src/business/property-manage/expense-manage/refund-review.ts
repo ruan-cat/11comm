@@ -17,6 +17,28 @@ export interface RefundReviewListItem {
 	updateTime: string;
 	/** 备注 Remark */
 	remark?: string;
+	/** 退费单号 Refund order number */
+	refundOrderNumber: string;
+	/** 缴费单号 Payment order number */
+	paymentOrderNumber: string;
+	/** 费用类型 Fee type */
+	feeType: string;
+	/** 付费对象 Payer */
+	payer: string;
+	/** 付费周期 Payment period */
+	paymentPeriod: string;
+	/** 应付金额实付金额 Amount */
+	payablePaidAmount: string;
+	/** 申请时间 Apply time */
+	applyTime: string;
+	/** 退费原因 Refund reason */
+	refundReason: string;
+	/** 申请人 Applicant */
+	applicant: string;
+	/** 审核状态 Audit status */
+	auditStatus: string;
+	/** 审核人 Auditor */
+	auditor: string;
 }
 
 /**

@@ -44,4 +44,27 @@ export const reminderForOverduePaymentsStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
+/**
+ * @description 欠费催缴表单VO
+ * Reminder for overdue payments form VO
+ */
+export interface ReminderForOverduePaymentsFormVO {
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 付费对象 Payment object */
+	paymentObject: string;
+	/** 费用名称 Fee name */
+	feeName: string;
+	/** 催缴金额 Reminder amount */
+	reminderAmount: string;
+	/** 催缴方式 Reminder method */
+	reminderMethod: string;
+	/** 催缴状态 Reminder status */
+	reminderStatus: string;
+	/** 催缴时间 Reminder time */
+	reminderTime: string;
+	/** 催缴备注 Reminder remark */
+	reminderRemark?: string;
+}
+
 // 注意：reminderMethodOptions 和 reminderStatusOptions 已从 "../../../common/business-options" 导入

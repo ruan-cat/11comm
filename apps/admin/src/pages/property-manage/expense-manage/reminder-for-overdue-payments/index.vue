@@ -8,22 +8,57 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type ReminderForOverduePaymentsFormProps, type 欠费催缴表单_VO, defaultForm } from "./components/form";
+import type { ReminderForOverduePaymentsFormProps } from "./components/form";
 import ReminderForOverduePaymentsForm from "./components/form.vue";
+import type {
+	ReminderForOverduePaymentsListItem,
+	ReminderForOverduePaymentsQueryParams,
+	ReminderForOverduePaymentsFormVO,
+} from "@01s-11comm/type";
+import { reminderMethodOptions, reminderStatusOptions } from "@01s-11comm/type";
+import { useMode, type Mode } from "@/composables/use-mode";
+
+/** 默认表单数据 */
+const defaultForm: ReminderForOverduePaymentsFormVO = {
+	ownerName: "",
+	paymentObject: "",
+	feeName: "",
+	reminderAmount: "",
+	reminderMethod: "",
+	reminderStatus: "",
+	reminderTime: "",
+	reminderRemark: "",
+};
 
 const reminderForOverduePaymentsFormInstance = ref<InstanceType<typeof ReminderForOverduePaymentsForm> | null>(null);
 
 /**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ * 模拟表格数据
  */
-const plusSearchModelRef: FieldValues & 欠费催缴_列表查询_VO = {
-	业主名称: "",
-	催缴方式: "",
-	状态: "",
+const mockTableData: ReminderForOverduePaymentsListItem[] = [
+	{
+		id: "1",
+		name: "业主A",
+		status: "启用",
+		createTime: "2024-01-01 10:00:00",
+		updateTime: "2024-01-01 10:00:00",
+	},
+	{
+		id: "2",
+		name: "业主B",
+		status: "禁用",
+		createTime: "2024-01-02 11:00:00",
+		updateTime: "2024-01-02 11:00:00",
+	},
+];
+
+const plusSearchModelRef: FieldValues & ReminderForOverduePaymentsQueryParams = {
+	name: "",
+	status: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -45,7 +80,7 @@ async function testAsync() {
 }
 
 /** 表格数据 */
-const tableData = ref<欠费催缴_列表数据[]>([]);
+const tableData = ref<ReminderForOverduePaymentsListItem[]>([]);
 
 /**
  * 加载表格数据
@@ -55,25 +90,14 @@ async function loadTableData() {
 	try {
 		let filteredData = [...mockTableData];
 
-		// 根据业主名称过滤
-		if (plusSearchModel.value.业主名称?.trim()) {
-			filteredData = filteredData.filter((item) =>
-				item.业主名称.includes(plusSearchModel.value.业主名称!.trim())
-			);
-		}
-
-		// 根据催缴方式过滤
-		if (plusSearchModel.value.催缴方式) {
-			filteredData = filteredData.filter((item) =>
-				item.催缴方式 === plusSearchModel.value.催缴方式
-			);
+		// 根据名称过滤
+		if (plusSearchModel.value.name?.trim()) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.name!.trim()));
 		}
 
 		// 根据状态过滤
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) =>
-				item.状态 === plusSearchModel.value.状态
-			);
+		if (plusSearchModel.value.status) {
+			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.status);
 		}
 
 		// 更新分页信息
@@ -97,48 +121,18 @@ async function loadTableData() {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "业主名称",
-		prop: "业主名称",
-		width: 120,
-	},
-	{
-		label: "付费对象",
-		prop: "付费对象",
-		width: 120,
-	},
-	{
-		label: "费用名称",
-		prop: "费用名称",
-		width: 120,
-	},
-	{
-		label: "催缴金额",
-		prop: "催缴金额",
-		width: 120,
-	},
-	{
-		label: "欠费时间段",
-		prop: "欠费时间段",
-		width: 120,
-	},
-	{
-		label: "催缴方式",
-		prop: "催缴方式",
+		label: "名称",
+		prop: "name",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
-		label: "说明",
-		prop: "说明",
-		minWidth: 200,
-	},
-	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 180,
 	},
 	{
@@ -163,13 +157,9 @@ const pagination = ref<PaginationProps>({
  * @description 将搜索条件重置为默认值并重新加载表格数据
  */
 async function handleReSearch() {
-	try {
-		plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-		pagination.value.currentPage = 1;
-		await loadTableData();
-	} catch (error) {
-		console.error("重置搜索失败:", error);
-	}
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	pagination.value.currentPage = 1;
+	await loadTableData();
 }
 
 /**
@@ -227,23 +217,16 @@ async function handleCurrentPageChange(currentPage: number) {
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 业主名称 */
+	/** 名称 */
 	{
-		label: "业主名称",
-		prop: "业主名称",
+		label: "名称",
+		prop: "name",
 		valueType: "input",
-	},
-	/** 催缴方式 */
-	{
-		label: "催缴方式",
-		prop: "催缴方式",
-		valueType: "select",
-		options: reminderMethodOptions,
 	},
 	/** 状态 */
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: reminderStatusOptions,
 	},
@@ -279,12 +262,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @param params.row 当前的行数据（编辑和查看详情时需要）
  * @description 根据不同模式打开相应的弹框，支持新增、编辑和查看详情功能
  */
-function openDialog(params: { mode: Mode; row?: 欠费催缴_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: ReminderForOverduePaymentsListItem }) {
 	try {
 		const { mode, row } = params;
 
 		// 验证模式参数
-		if (!['add', 'edit', 'info'].includes(mode)) {
+		if (!["add", "edit", "info"].includes(mode)) {
 			console.error("无效的弹框模式:", mode);
 			return;
 		}
@@ -295,94 +278,82 @@ function openDialog(params: { mode: Mode; row?: 欠费催缴_列表数据 }) {
 		const title = `${modeText.value}欠费催缴`;
 
 		/** 业务对象 */
-		const 欠费催缴表单_VO: 欠费催缴表单_VO = isAdd.value
+		const formData = isAdd.value
 			? cloneDeep(defaultForm)
 			: isEdit.value
 				? cloneDeep({
 						...defaultForm,
-						业主名称: row?.业主名称 || "",
-						付费对象: row?.付费对象 || "",
-						费用名称: row?.费用名称 || "",
-						催缴金额: row?.催缴金额 || "",
-						欠费时间段: row?.欠费时间段 || "",
-						催缴方式: row?.催缴方式 || "",
-						状态: row?.状态 || "",
-						说明: row?.说明 || "",
+						ownerName: row?.name || "",
+						reminderStatus: row?.status || "",
 					})
 				: cloneDeep({
 						...defaultForm,
-						业主名称: row?.业主名称 || "",
-						付费对象: row?.付费对象 || "",
-						费用名称: row?.费用名称 || "",
-						催缴金额: row?.催缴金额 || "",
-						欠费时间段: row?.欠费时间段 || "",
-						催缴方式: row?.催缴方式 || "",
-						状态: row?.状态 || "",
-						说明: row?.说明 || "",
+						ownerName: row?.name || "",
+						reminderStatus: row?.status || "",
 					});
 
 		/** 表单组件需要的props */
 		const formProps: ReminderForOverduePaymentsFormProps = {
-			form: 欠费催缴表单_VO,
-			defaultValues: 欠费催缴表单_VO,
+			form: formData,
+			defaultValues: formData,
 		};
 
 		/** 根据不同模式下 变化的表单默认重置对象 */
 		const defaultValues = formProps.defaultValues;
 
-	addDialog({
-		...defaultAddDialogParams,
-		title,
-		props: formProps,
+		addDialog({
+			...defaultAddDialogParams,
+			title,
+			props: formProps,
 
-		contentRenderer: () =>
-			h(ReminderForOverduePaymentsForm, {
-				ref: reminderForOverduePaymentsFormInstance,
-				...formProps,
-			}),
+			contentRenderer: () =>
+				h(ReminderForOverduePaymentsForm, {
+					ref: reminderForOverduePaymentsFormInstance,
+					...formProps,
+				}),
 
-		async doBeforeClose({ options, index }) {
-			const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
-			if (formComputed) {
-				await useDoBeforeClose({ defaultValues, formComputed, index, options });
-			}
-		},
-
-		footerButtons: [
-			{
-				label: transformI18n($t("common.buttons.cancel")),
-				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
-					if (formComputed) {
-						await useDoBeforeClose({ defaultValues, formComputed, index, options });
-					}
-				},
+			async doBeforeClose({ options, index }) {
+				const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
+				if (formComputed) {
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				}
 			},
 
-			{
-				label: transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleReset();
+			footerButtons: [
+				{
+					label: transformI18n($t("common.buttons.cancel")),
+					type: "info",
+					btnClick: async ({ dialog: { options, index }, button }) => {
+						const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
+						if (formComputed) {
+							await useDoBeforeClose({ defaultValues, formComputed, index, options });
+						}
+					},
 				},
-			},
 
-			{
-				label: transformI18n($t("common.buttons.submit")),
-				type: "success",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-					}
+				{
+					label: transformI18n($t("common.buttons.reset")),
+					type: "warning",
+					btnClick: ({ dialog: { options, index }, button }) => {
+						reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleReset();
+					},
 				},
-			},
-		],
-	});
+
+				{
+					label: transformI18n($t("common.buttons.submit")),
+					type: "success",
+					btnClick: async ({ dialog: { options, index }, button }) => {
+						const res = await reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleSubmit();
+						if (res) {
+							button.btn.loading = true;
+							await testAsync();
+							button.btn.loading = false;
+							closeDialog(options, index);
+						}
+					},
+				},
+			],
+		});
 	} catch (error) {
 		console.error("打开弹框失败:", error);
 	}

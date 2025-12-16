@@ -8,54 +8,70 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type Mode } from "@/composables/use-mode";
-
-import { type VehicleChargeFormProps, defaultForm, type 车辆收费表单_VO } from "./components/form";
+import { useMode, type Mode } from "@/composables/use-mode";
+import type { VehicleChargeFormProps } from "./components/form";
 import VehicleChargeForm from "./components/form.vue";
+import type { VehicleChargeListItem, VehicleChargeQueryParams, VehicleChargeFormVO } from "@01s-11comm/type";
+import { parkingSpaceStatusOptions } from "@01s-11comm/type";
+
+/** 默认表单数据 */
+const defaultForm: VehicleChargeFormVO = {
+	licensePlateNumber: "",
+	ownerName: "",
+	parkingSpaceStatus: "",
+	chargeAmount: "",
+	chargeTime: "",
+	chargeMethod: "",
+	remark: "",
+};
+
+/** 模拟表格数据 */
+const mockTableData: VehicleChargeListItem[] = [
+	{
+		id: "1",
+		name: "车辆A",
+		status: "启用",
+		createTime: "2024-01-01 10:00:00",
+		updateTime: "2024-01-01 10:00:00",
+	},
+	{
+		id: "2",
+		name: "车辆B",
+		status: "禁用",
+		createTime: "2024-01-02 11:00:00",
+		updateTime: "2024-01-02 11:00:00",
+	},
+];
+
 const VehicleChargeFormInstance = ref<InstanceType<typeof VehicleChargeForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<车辆收费_列表数据[]>([]);
+const tableData = ref<VehicleChargeListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		prop: "车牌号",
-		label: "车牌号",
+		prop: "name",
+		label: "名称",
 		width: 200,
 	},
 	{
-		prop: "停车场(单位:号)",
-		label: "停车场(单位:号)",
+		prop: "status",
+		label: "状态",
 		width: 200,
 	},
 	{
-		prop: "车位(单位:号)",
-		label: "车位(单位:号)",
-		width: 200,
-	},
-	{
-		prop: "业主名称",
-		label: "业主名称",
-		width: 200,
-	},
-	{
-		prop: "联系方式",
-		label: "联系方式",
-		width: 200,
-	},
-	{
-		prop: "车位状态",
-		label: "车位状态",
+		prop: "createTime",
+		label: "创建时间",
 		width: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -94,16 +110,24 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	title: "车辆收费",
 	columns: columns.value,
 });
+/** 车辆收费_列表查询_VO */
+interface VehicleChargeQueryVO {
+	parkingLotSpace: string;
+	licensePlateNumber: string;
+	ownerName: string;
+	parkingSpaceStatus: string;
+}
+
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 车辆收费_列表查询_VO = {
-	"停车场-车位": "",
-	车牌号: "",
-	业主名称: "",
-	车位状态: "",
+const plusSearchModelRef: FieldValues & VehicleChargeQueryVO = {
+	parkingLotSpace: "",
+	licensePlateNumber: "",
+	ownerName: "",
+	parkingSpaceStatus: "",
 };
 /** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
@@ -114,29 +138,23 @@ const plusSearchModel = ref(plusSearchModelRef);
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	//停车场-车位
 	{
-		prop: "停车场-车位",
+		prop: "parkingLotSpace",
 		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleSpaceNumber")),
 		valueType: "input",
-		// placeholder: "请填写停车场-车位，如 1-101",
-		// 框内固定显示
 	},
-	//车牌号
 	{
-		prop: "车牌号",
+		prop: "licensePlateNumber",
 		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleLicensePlate")),
 		valueType: "input",
 	},
-	//业主名称
 	{
-		prop: "业主名称",
+		prop: "ownerName",
 		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.ownerName")),
 		valueType: "input",
 	},
-	//车位状态
 	{
-		prop: "车位状态",
+		prop: "parkingSpaceStatus",
 		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleSpaceStatus")),
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
@@ -154,39 +172,26 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
 		let filteredData = mockTableData;
 
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value["停车场-车位"]) {
-			filteredData = filteredData.filter((item) =>
-				`${item["停车场(单位:号)"]}-${item["车位(单位:号)"]}`.includes(plusSearchModel.value["停车场-车位"]!),
-			);
+		if (plusSearchModel.value.licensePlateNumber) {
+			const searchValue = String(plusSearchModel.value.licensePlateNumber).trim();
+			filteredData = filteredData.filter((item) => item.name.includes(searchValue));
 		}
-		if (plusSearchModel.value.车牌号) {
-			filteredData = filteredData.filter((item) => item.车牌号.includes(plusSearchModel.value.车牌号!));
-		}
-		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
-		}
-		if (plusSearchModel.value.车位状态) {
-			filteredData = filteredData.filter((item) => item.车位状态 === plusSearchModel.value.车位状态);
+		if (plusSearchModel.value.ownerName) {
+			const searchValue = String(plusSearchModel.value.ownerName).trim();
+			filteredData = filteredData.filter((item) => item.name.includes(searchValue));
 		}
 
-		/** 更新总数 */
 		pagination.value.total = filteredData.length;
 
-		/** 分页处理 */
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
 		tableData.value = filteredData.slice(startIndex, endIndex);
 
-		/** 更新表格配置 */
 		pureTableProps.value.data = tableData.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
 	}
 }
 
@@ -220,7 +225,7 @@ async function testAsync() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 车辆收费_列表数据;
+	row?: VehicleChargeListItem;
 }
 
 /** 打开弹框 */
@@ -231,24 +236,25 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}车辆收费`;
 
 	/** 业务对象 */
-	const 车辆收费表单_VO: 车辆收费表单_VO = isAdd.value
+	const formData: VehicleChargeFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					收费范围: "小区",
-					费用类型: "停车费",
-					收费项目: row?.车牌号 || "",
-					车位状态: "已出售",
-					计费起始时间: "2025-01-01",
-					计费结束时间: "2025-12-31",
+					licensePlateNumber: row?.name || "",
+					ownerName: "",
+					parkingSpaceStatus: "已出售",
+					chargeAmount: "",
+					chargeTime: "2025-01-01",
+					chargeMethod: "",
+					remark: "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: VehicleChargeFormProps = {
-		form: 车辆收费表单_VO,
-		defaultValues: 车辆收费表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

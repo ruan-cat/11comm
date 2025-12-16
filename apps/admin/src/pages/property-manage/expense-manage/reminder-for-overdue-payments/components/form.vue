@@ -4,19 +4,32 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { ReminderForOverduePaymentsFormVO } from "@01s-11comm/type";
+import { reminderMethodOptions, reminderStatusOptions } from "@01s-11comm/type";
 
-import {
-	ReminderForOverduePaymentsFormProps,
-	欠费催缴表单_VO,
-	defaultForm,
-	reminderMethodOptions,
-	reminderStatusOptions,
-} from "./form";
+interface ReminderForOverduePaymentsFormProps {
+	/** 表单数据 */
+	form: ReminderForOverduePaymentsFormVO;
+	/** 默认值 */
+	defaultValues: ReminderForOverduePaymentsFormVO;
+}
 
 const props = defineProps<ReminderForOverduePaymentsFormProps>();
 
+/** 默认表单数据 */
+const defaultForm: ReminderForOverduePaymentsFormVO = {
+	ownerName: "",
+	paymentObject: "",
+	feeName: "",
+	reminderAmount: "",
+	reminderMethod: "",
+	reminderStatus: "",
+	reminderTime: "",
+	reminderRemark: "",
+};
+
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 欠费催缴表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ReminderForOverduePaymentsFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -30,7 +43,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 欠费催缴表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ReminderForOverduePaymentsFormVO;
 
 /**
  * 表单对象
@@ -47,7 +60,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -58,7 +71,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "付费对象",
-		prop: "付费对象",
+		prop: "paymentObject",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -69,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "费用名称",
-		prop: "费用名称",
+		prop: "feeName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -80,7 +93,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "催缴金额",
-		prop: "催缴金额",
+		prop: "reminderAmount",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -90,22 +103,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		required: true,
 	},
 	{
-		label: "欠费时间段",
-		prop: "欠费时间段",
-		valueType: "date-picker",
-		width: "360px",
-		fieldProps: {
-			type: "datetimerange",
-			startPlaceholder: "开始时间",
-			endPlaceholder: "结束时间",
-			format: "YYYY-MM-DD HH:mm:ss",
-			valueFormat: "YYYY-MM-DD HH:mm:ss",
-		},
-		required: true,
-	},
-	{
 		label: "催缴方式",
-		prop: "催缴方式",
+		prop: "reminderMethod",
 		valueType: "select",
 		width: "200px",
 		options: reminderMethodOptions,
@@ -117,28 +116,17 @@ const plusFormColumns = ref<PlusColumn[]>([
 		required: true,
 	},
 	{
-		label: "状态",
-		prop: "状态",
+		label: "催缴状态",
+		prop: "reminderStatus",
 		valueType: "select",
 		width: "200px",
 		options: reminderStatusOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择状态",
+			placeholder: "请选择催缴状态",
 		},
 		required: true,
-	},
-	{
-		label: "说明",
-		prop: "说明",
-		valueType: "textarea",
-		width: "300px",
-		fieldProps: {
-			clearable: true,
-			placeholder: "请输入说明",
-			rows: 3,
-		},
 	},
 ]);
 
@@ -147,49 +135,12 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	业主名称: [{ required: true, message: "请输入业主名称", trigger: "blur" }],
-	付费对象: [{ required: true, message: "请输入付费对象", trigger: "blur" }],
-	费用名称: [{ required: true, message: "请输入费用名称", trigger: "blur" }],
-	催缴金额: [
-		{ required: true, message: "请输入催缴金额", trigger: "blur" },
-		{
-			validator: (rule, value, callback) => {
-				if (!value) {
-					callback(new Error("请输入催缴金额"));
-				} else if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-					callback(new Error("请输入正确的金额格式"));
-				} else if (parseFloat(value) <= 0) {
-					callback(new Error("催缴金额必须大于0"));
-				} else {
-					callback();
-				}
-			},
-			trigger: "blur"
-		},
-	],
-	欠费时间段: [
-		{
-			validator: (rule, value, callback) => {
-				if (!value) {
-					callback(new Error("请选择欠费时间段"));
-				} else if (Array.isArray(value) && value.length === 2) {
-					const [start, end] = value;
-					if (new Date(start) >= new Date(end)) {
-						callback(new Error("开始时间必须早于结束时间"));
-					} else {
-						callback();
-					}
-				} else if (typeof value === 'string') {
-					callback();
-				} else {
-					callback(new Error("请选择有效的欠费时间段"));
-				}
-			},
-			trigger: "change"
-		},
-	],
-	催缴方式: [{ required: true, message: "请选择催缴方式", trigger: "change" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	ownerName: [{ required: true, message: "请输入业主名称", trigger: "blur" }],
+	paymentObject: [{ required: true, message: "请输入付费对象", trigger: "blur" }],
+	feeName: [{ required: true, message: "请输入费用名称", trigger: "blur" }],
+	reminderAmount: [{ required: true, message: "请输入催缴金额", trigger: "blur" }],
+	reminderMethod: [{ required: true, message: "请选择催缴方式", trigger: "change" }],
+	reminderStatus: [{ required: true, message: "请选择催缴状态", trigger: "change" }],
 });
 
 defineExpose({

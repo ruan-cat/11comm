@@ -44,4 +44,25 @@ export const vehicleChargeStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
+/**
+ * @description 车辆收费表单VO
+ * Vehicle charge form VO
+ */
+export interface VehicleChargeFormVO {
+	/** 车牌号 License plate number */
+	licensePlateNumber: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 车位状态 Parking space status */
+	parkingSpaceStatus: string;
+	/** 收费金额 Charge amount */
+	chargeAmount: string;
+	/** 收费时间 Charge time */
+	chargeTime: string;
+	/** 收费方式 Charge method */
+	chargeMethod: string;
+	/** 备注 Remark */
+	remark?: string;
+}
+
 // 注意：parkingSpaceStatusOptions 已从 "../../../common/business-options" 导入

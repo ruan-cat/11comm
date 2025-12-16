@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import { type HouseManageFormProps } from "./form";
+import { type HouseManageFormProps, HouseManagementFormVO, houseTypeOptions, houseStatusOptions } from "./form";
+import type { FieldValues } from "plus-pro-components";
 
 const props = defineProps<HouseManageFormProps>();
 
@@ -33,61 +34,46 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 房屋编号
 	{
 		label: "房屋编号",
-		prop: "房屋",
+		prop: "house",
 		valueType: "input",
 	},
-
-	// 楼层
 	{
 		label: "楼层",
-		prop: "楼层",
+		prop: "floor",
 		valueType: "input",
 	},
-
-	// 业主
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		valueType: "input",
 	},
-
-	// 类型
 	{
 		label: "类型",
-		prop: "类型",
+		prop: "type",
 		valueType: "select",
 		options: houseTypeOptions,
 	},
-
-	// 房屋面积
 	{
 		label: "房屋面积",
-		prop: "房屋面积",
+		prop: "houseArea",
 		valueType: "input",
 	},
-
-	// 租金
 	{
 		label: "租金",
-		prop: "租金",
+		prop: "rent",
 		valueType: "input",
 	},
-
-	// 房屋状态
 	{
 		label: "房屋状态",
-		prop: "房屋状态",
+		prop: "houseStatus",
 		valueType: "select",
 		options: houseStatusOptions,
 	},
-
-	// 有效期
 	{
 		label: "有效期",
-		prop: "有效期",
+		prop: "validUntil",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -99,56 +85,56 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	房屋: [
+	house: [
 		{
 			required: true,
 			message: "请输入房屋编号",
 			trigger: "blur",
 		},
 	],
-	楼层: [
+	floor: [
 		{
 			required: true,
 			message: "请输入楼层",
 			trigger: "blur",
 		},
 	],
-	业主: [
+	owner: [
 		{
 			required: true,
 			message: "请输入业主",
 			trigger: "blur",
 		},
 	],
-	类型: [
+	type: [
 		{
 			required: true,
 			message: "请选择类型",
 			trigger: "change",
 		},
 	],
-	房屋面积: [
+	houseArea: [
 		{
 			required: true,
 			message: "请输入房屋面积",
 			trigger: "blur",
 		},
 	],
-	租金: [
+	rent: [
 		{
 			required: true,
 			message: "请输入租金",
 			trigger: "blur",
 		},
 	],
-	房屋状态: [
+	houseStatus: [
 		{
 			required: true,
 			message: "请选择房屋状态",
 			trigger: "change",
 		},
 	],
-	有效期: [
+	validUntil: [
 		{
 			required: true,
 			message: "请选择有效期",

@@ -2,6 +2,8 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { type RefundReviewFormProps, defaultForm } from "./form";
+import type { RefundReviewFormVO } from "@01s-11comm/type";
+import { refundReasonOptions, auditStatusOptions } from "@01s-11comm/type";
 
 /** 表单组件的 props */
 const props = defineProps<RefundReviewFormProps>();
@@ -52,10 +54,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "feeType",
+		label: "费用类型",
 		prop: "feeType",
-		valueType: "select",
-		options: feeTypeOptions,
+		valueType: "input",
 		fieldProps: {
 			disabled: true,
 		},

@@ -47,6 +47,19 @@ export const ownerAccountStatusOptions: OptionsType = [
  * @description 业主账户表单VO
  * Owner account form VO
  */
+export interface OwnerAccountFormVO {
+	/** 名称 Name */
+	name: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/**
+ * @description 业主账户表单VO（兼容性中文名称）
+ * Owner account form VO (for compatibility with Chinese names)
+ */
 export interface 业主账户表单_VO {
 	/** 名称 Name */
 	name: string;
