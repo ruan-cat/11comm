@@ -1,6 +1,8 @@
 /**
  * @file 客户端入口文件
  * @description Client entry for SSR hydration
+ *
+ * 警告 不再继续使用这个入口文件了 不做 nitro SSR 改造了
  */
 
 import App from "./App.vue";

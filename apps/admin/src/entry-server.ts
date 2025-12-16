@@ -2,6 +2,8 @@
  * @file 服务端入口文件
  * @description Server entry for SSR rendering with Nitro V3
  * 模仿 nitro__nitrojs/examples/vite-ssr-vue-router/app/entry-server.ts 的写法
+ *
+ * 警告 不再继续使用这个入口文件了 不做 nitro SSR 改造了
  */
 
 import { createSSRApp } from "vue";
