@@ -8,6 +8,7 @@ import { useRenderFlicker } from "@/components/ReFlicker";
 import { ChartBar, ChartLine, ChartRound } from "./components/charts";
 import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { chartData, barChartData, progressData, latestNewsData } from "./data";
+import { getCenterCommonMenu } from "@/api/j1/home/development-center/development-center";
 
 // 测试接口
 const { execute, data } = getCenterCommonMenu({});

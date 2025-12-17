@@ -142,7 +142,7 @@ export default AutoImport({
 		// 配置
 		{ glob: "src/config/**/*" },
 		// api接口
-		{ glob: "src/api/**/*.ts" },
+		// { glob: "src/api/**/*.ts" },
 		// 路由 工具
 		{ glob: "src/router/utils.ts" },
 		// 路由 排序
