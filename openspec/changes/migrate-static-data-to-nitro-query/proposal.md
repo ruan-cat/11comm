@@ -162,7 +162,6 @@
 
 ## References
 
-- 详细迁移计划：`apps/admin/src/docs/reports/2025-12-12-static-data-migration-to-nitro-query-plan.md`
 - 代码模板和字段映射表见报告第 6-7 章
 - 现有规范：`test-data-quality`, `test-data-backlog`
 - 相关 Agent：`.claude/agents/make-list-page.md`
