@@ -160,6 +160,24 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 
 - 报告语言： 默认用简体中文。
 
+## openspec 使用规范
+
+本项目使用 openspec 来制定长任务执行规范。
+
+### 更新 openspec 的规范文件后应该及时运行校验命令，并根据校验反馈，使得 openspec 规范文件满足格式要求
+
+比如你修改了 `migrate-static-data-to-nitro-query` 这款任务的规范文件后，你应该及时运行以下命令来检查文件是否满足规范：
+
+```bash
+openspec validate migrate-static-data-to-nitro-query --strict
+```
+
+更加通用的命令格式为：
+
+```bash
+openspec validate {任务名称} --strict
+```
+
 ## 注意事项
 
 1. 每次你完成更改时，都要主动运行类型检查命令。我们项目需要你去运行类型检查命令。需要你主动解决类型报错。
