@@ -248,6 +248,35 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 - **THEN** 不进行任何过滤
 - **AND** 返回前 10 条数据
 
+#### Scenario: 通用筛选模式实现
+
+- **GIVEN** 需要实现灵活的筛选逻辑
+- **WHEN** 使用 Object.keys(filters).forEach 遍历所有筛选字段
+- **THEN** 代码实现如下：
+
+```typescript
+// 使用通用筛选模式遍历所有筛选字段
+let filteredData = [...mockHouseChargeData];
+Object.keys(filters).forEach((key) => {
+	const filterValue = filters[key as keyof typeof filters];
+	if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
+		filteredData = filteredData.filter((item) => {
+			const itemValue = item[key as keyof HouseChargeListItem];
+			// 字符串字段使用模糊匹配
+			if (typeof itemValue === "string" && typeof filterValue === "string") {
+				return itemValue.includes(filterValue);
+			}
+			// 其他字段(枚举等)使用精确匹配
+			return itemValue === filterValue;
+		});
+	}
+});
+```
+
+- **AND** 此模式自动处理所有筛选字段，无需为每个字段编写单独的 if 条件
+- **AND** 自动区分字符串字段(模糊匹配)和枚举字段(精确匹配)
+- **AND** 自动忽略空值、null 和 undefined
+
 ---
 
 ### Requirement: 分页处理 (Step 7)
@@ -304,7 +333,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 - **THEN** 代码结构按以下顺序：
 
 ```typescript
-// 必须主动导入来自 `nitro/h3` 的 defineHandler 和 readBody ，在 nitro v3 版本内要按照该写法编写
+// 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { mockHouseChargeData } from "./mock-data";
@@ -318,18 +347,27 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 	const body = await readBody<HouseChargeQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body;
 
-	// 2. 数据筛选
+	// 2. 数据筛选 - 使用通用筛选模式遍历所有筛选字段
 	let filteredData = [...mockHouseChargeData];
-	if (filters.expenseType) {
-		filteredData = filteredData.filter((item) => item.expenseType === filters.expenseType);
-	}
-	// ... 其他筛选条件
+	Object.keys(filters).forEach((key) => {
+		const filterValue = filters[key as keyof typeof filters];
+		if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
+			filteredData = filteredData.filter((item) => {
+				const itemValue = item[key as keyof HouseChargeListItem];
+				// 字符串字段使用模糊匹配
+				if (typeof itemValue === "string" && typeof filterValue === "string") {
+					return itemValue.includes(filterValue);
+				}
+				// 其他字段(枚举等)使用精确匹配
+				return itemValue === filterValue;
+			});
+		}
+	});
 
 	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
-	const endIndex = startIndex + pageSize;
-	const pageData = filteredData.slice(startIndex, endIndex);
+	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	// 4. 返回标准格式 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
