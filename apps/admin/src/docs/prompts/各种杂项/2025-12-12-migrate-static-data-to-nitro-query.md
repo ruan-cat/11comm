@@ -261,4 +261,22 @@ openspec validate migrate-static-data-to-nitro-query --strict
 7. 不要主动增加含有中文变量名的写法，不需要兼容。而是 admin 项目代码的变量名，以 type 类型项目的变量名为准。
 8. 先更改 type 类型项目的代码，先保证其符合不包含中文变量名的规范；然后再去修改 admin 后台项目的代码。
 
+### 09 <!-- TODO: --> 清空重设任务清单
+
+1. 我现在正在高强度的使用 openspec 生成的任务，但是 openspec 任务执行过程中，本身也存在了很多不规范。
+2. 完成任务时，应该按照严格的顺序来完成，不要跳过任务。
+3. 完成 `migrate-static-data-to-nitro-query` 任务时，应该按照以下的严格步骤来修改每一个列表页：
+   - 新建 `apps\type\src\*` 对应目录的业务类型，和下拉选择用的数组。
+   - 新建 `apps\admin\server\*` 对应业务目录的 `mock-data.ts` 固定的假数据。其类型约束满足来自 `@01s-11comm/type` 类型库提供的业务类型。
+   - 新建 `apps\admin\server\*` 对应业务目录的 `list.post.ts` nitro 接口。
+   - 新建 `apps\admin\src\api\*` 对应目录的封装 `useListQuery` 的 hooks 钩子函数。
+   - 改写改造对应业务目录的 index.vue 列表页。使其使用封装好的对应业务 hooks 函数、使用来自 `@01s-11comm/type` 类型库提供的业务类型和下拉选用的数组。
+   - 删除掉对应业务目录的 `test-data.ts` 假数据文件。
+   - 对应的 form.ts 和 form.vue 文件，应该及时更改类型和变量的导入路径，从使用来自 `@01s-11comm/type` 类型库提供的业务类型和下拉选用的数组。
+   - 对应的 `form.ts` 文件，不仅仅需要将业务类型抽取出来，换成纯英文的方式，然后再引入刚刚写入到 `@01s-11comm/type` 类型库的业务类型。
+   - 对应的 `form.vue` 文件，需要从类型库内获取到下拉列表数据，并正确使用下拉列表数据；使用类型库提供的纯英文业务类型。
+4. 每一个文件都必须要检查，并遵守 `migrate-static-data-to-nitro-query` 任务的规范文件。在具体执行任务时，你会遇到有很多代码已经不同程度的完成了任务，但是完成的不准确，有很多缺漏。请你务必对每一个经手的文件，做仔细思考，对比代码写法是否符合 `migrate-static-data-to-nitro-query` 任务的规范写法，并做出修改。
+5. 按照 openspec 的要求，修改更新 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的规范文件，务必确保以后执行`migrate-static-data-to-nitro-query` 任务时，能够满足上述的严格修改步骤。
+6. 请你根据 `apps\admin\src\router\rank\rank-route-keys.ts` 提供的 `RANK_ROUTE_KEYS` 数组，根据数组提供的 `三级路由` ，来清空，并重做整个`openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务文件。`任务列表文件` 的每一个基于 `三级路由` 确定的工作目录，都要按照上面说的任务清单项，列举出非常详细的任务清单步骤。
+
 <!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
