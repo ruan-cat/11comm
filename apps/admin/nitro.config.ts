@@ -40,6 +40,7 @@ export default defineConfig({
 		"@": pathResolve("./src", import.meta.url),
 		components: pathResolve("./src/components", import.meta.url),
 		composables: pathResolve("./src/composables", import.meta.url),
+		utils: pathResolve("./server/utils", import.meta.url),
 	},
 
 	compatibilityDate: "2024-09-19",
