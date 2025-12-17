@@ -41,16 +41,6 @@ import vercel from "vite-plugin-vercel";
 // 将项目一下子变成nuxt全栈项目的插件
 import { nitro } from "nitro/vite";
 
-// Workaround https://github.com/vitejs/vite-plugin-vue/issues/677
-function patchVueExclude(plugin, exclude) {
-	const original = plugin.transform.handler;
-	plugin.transform.handler = function (...args) {
-		if (exclude.test(args[1])) return;
-		return original.call(this, ...args);
-	};
-	return plugin;
-}
-
 export function getPluginsList(
 	VITE_CDN: boolean,
 	VITE_COMPRESSION: ViteCompression,
@@ -125,9 +115,6 @@ export function getPluginsList(
 					 * 文档建议是写在pages内
 					 */
 					src: "src/pages",
-					// 目前不需要路由前缀来区分标识了
-					// path: "10wms-pages-",
-					// path: "/10wms-pages-",
 					exclude: [
 						// TODO: 做出自定义配置
 						...[
@@ -140,25 +127,20 @@ export function getPluginsList(
 						 * 自动路由组件的忽略配置
 						 * 如果是生产环境模式，就排除掉多余的案例组件
 						 */
-						// TODO: 做出自定义配置
 						...(mode === "production" || mode === "development" ? ["src/views/sample/**"] : []),
 					],
 				},
 			],
 			getRouteName,
-			// extendRoute
 		}),
 
-		patchVueExclude(
-			vue({
-				template: {
-					compilerOptions: {
-						isCustomElement: (tag) => tag === "deep-chat",
-					},
+		vue({
+			template: {
+				compilerOptions: {
+					isCustomElement: (tag) => tag === "deep-chat",
 				},
-			}),
-			/\?assets/,
-		),
+			},
+		}),
 
 		/**
 		 * 开发调试插件

@@ -48,30 +48,6 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 		 * @see https://cn.vitejs.dev/config/ssr-options.html#ssr-external
 		 */
 		ssr: {
-			external: [
-				// Vue 核心库
-				"vue",
-				"@vue/shared",
-				"@vue/runtime-core",
-				"@vue/runtime-dom",
-				"@vue/reactivity",
-				// 路由相关
-				// "vue-router",
-				// "vue-router/auto-routes",
-				// "unplugin-vue-router/runtime",
-				// 布局插件虚拟模块
-				// "virtual:meta-layouts",
-				// 状态管理
-				"pinia",
-				// UI 组件库（客户端专用）
-				"element-plus",
-				"@element-plus/*",
-				// 工具库
-				"@vueuse/core",
-				"@vueuse/motion",
-				// 其他客户端专用库
-				"tailwindcss",
-			],
 			/**
 			 * 不外部化的依赖
 			 * @description
@@ -80,16 +56,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			 */
 			noExternal:
 				/** @see https://github.com/posva/unplugin-vue-router/discussions/349#discussioncomment-9043123 */
-				mode === "development"
-					? [
-							"vue-router",
-							"virtual:meta-layouts",
-							// lodash-es 是 ESM 模块，需要被 Vite 转换和打包到服务端
-							"lodash-es",
-							// @01s-11comm/type 业务类型库也需要被打包
-							"@01s-11comm/type",
-						]
-					: [],
+				mode === "development" ? ["vue-router"] : [],
 		},
 
 		/**
@@ -148,7 +115,9 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 				],
 			},
 		},
+
 		plugins: getPluginsList(VITE_CDN, VITE_COMPRESSION, mode, env),
+
 		// https://cn.vitejs.dev/config/dep-optimization-options.html#dep-optimization-options
 		optimizeDeps: {
 			include,

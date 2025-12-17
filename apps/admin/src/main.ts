@@ -78,7 +78,6 @@ app.component("PureTableBar", PureTableBar);
 getPlatformConfig(app).then(async (config) => {
 	setupStore(app);
 	app.use(router);
-	await router.isReady();
 	injectResponsiveStorage(app, config);
 	app
 		.use(MotionPlugin)
