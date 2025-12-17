@@ -21,7 +21,7 @@ import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 import { message } from "@/utils/message";
 
 /** 模式控制 */

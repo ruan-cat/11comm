@@ -16,7 +16,6 @@ import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 import type { WorkingSchedule, WorkingScheduleListQuery, ScheduleType } from "@01s-11comm/type";
 import { useWorkingScheduleListQuery } from "@/api/setting-manage/organize-manage/working-schedule";

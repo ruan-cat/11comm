@@ -37,7 +37,7 @@ import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 import { useMode, type Mode } from "@/composables/use-mode";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { h } from "vue";

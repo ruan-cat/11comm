@@ -15,12 +15,16 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type ContractExpireFormProps, defaultForm, type ContractExpireFormVO } from "./components/form";
 import ContractExpireForm from "./components/form.vue";
 import { useExpireListQuery } from "@/api/property-manage/contract-manage/expire";
-import { type ExpireListItem, type ExpireQueryParams, contractTypeOptions, handlingStatusOptions } from "@01s-11comm/type";
+import {
+	type ExpireListItem,
+	type ExpireQueryParams,
+	contractTypeOptions,
+	handlingStatusOptions,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 const contractExpireFormInstance = ref<InstanceType<typeof ContractExpireForm> | null>(null);
 
@@ -357,12 +361,8 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="openDialog({ mode: 'add', row })">
-							续签处理
-						</ElButton>
-						<ElButton type="danger" @click="openDialog({ mode: 'add', row })">
-							终止处理
-						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'add', row })"> 续签处理 </ElButton>
+						<ElButton type="danger" @click="openDialog({ mode: 'add', row })"> 终止处理 </ElButton>
 					</template>
 				</PureTable>
 			</template>

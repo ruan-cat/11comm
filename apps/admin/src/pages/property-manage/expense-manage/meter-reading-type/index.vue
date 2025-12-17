@@ -15,12 +15,16 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type MeterTypeFormProps, defaultForm, type MeterReadingTypeFormVO } from "./components/form";
 import MeterTypeForm from "./components/form.vue";
 import { useMeterReadingTypeListQuery } from "@/api/property-manage/expense-manage/meter-reading-type";
-import { type MeterReadingTypeListItem, type MeterReadingTypeQueryParams, meterReadingTypeStatusOptions } from "@01s-11comm/type";
+import {
+	type MeterReadingTypeListItem,
+	type MeterReadingTypeQueryParams,
+	meterReadingTypeStatusOptions,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { h } from "vue";
 

@@ -18,12 +18,16 @@ import {
 } from "./components/form";
 import ExpenseSummaryTableForm from "./components/form.vue";
 import { useExpenseSummaryTableListQuery } from "@/api/property-manage/expense-manage/expense-summary-table";
-import { type ExpenseSummaryTableListItem, type ExpenseSummaryTableQueryParams, 费用项名称Options } from "@01s-11comm/type";
+import {
+	type ExpenseSummaryTableListItem,
+	type ExpenseSummaryTableQueryParams,
+	费用项名称Options,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 import { useMode, type Mode } from "@/composables/use-mode";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { h } from "vue";
@@ -312,9 +316,7 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info">
-							欠费缴费
-						</ElButton>
+						<ElButton type="info"> 欠费缴费 </ElButton>
 						<ElButton type="danger">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>

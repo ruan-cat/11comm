@@ -14,13 +14,16 @@ import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/componen
 import ContractDraftForm from "./components/form.vue";
 import { type ContractDraftFormVO, type ContractDraftFormProps, defaultForm } from "./components/form";
 import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
-import { type DraftContractListItem, type DraftContractQueryParamsType, contractTypeOptionsData } from "@01s-11comm/type";
+import {
+	type DraftContractListItem,
+	type DraftContractQueryParamsType,
+	contractTypeOptionsData,
+} from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 

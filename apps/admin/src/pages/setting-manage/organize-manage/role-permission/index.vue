@@ -22,7 +22,6 @@ import RolePermissionForm from "./components/form.vue";
 import type { RolePermission, RolePermissionListQuery } from "@01s-11comm/type";
 import { useRolePermissionListQuery } from "@/api/setting-manage/organize-manage/role-permission";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();

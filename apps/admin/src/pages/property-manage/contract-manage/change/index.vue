@@ -12,7 +12,7 @@ import { h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 import { useMode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
