@@ -21,22 +21,14 @@ import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 import { message } from "@/utils/message";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 使用排班设置列表查询 Hook
-const {
-	tableData,
-	total,
-	pageIndex,
-	pageSize,
-	isLoading,
-	updateParams,
-	refetch,
-} = useSchedulingSettingListQuery();
+const { tableData, total, pageIndex, pageSize, isLoading, updateParams, refetch } = useSchedulingSettingListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([

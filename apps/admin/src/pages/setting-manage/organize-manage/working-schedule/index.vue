@@ -16,7 +16,7 @@ import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 import type { WorkingSchedule, WorkingScheduleListQuery, ScheduleType } from "@01s-11comm/type";
 import { useWorkingScheduleListQuery } from "@/api/setting-manage/organize-manage/working-schedule";
@@ -31,15 +31,7 @@ const workingScheduleFormInstance = ref<InstanceType<typeof WorkingScheduleForm>
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 使用排班表列表查询 Hook
-const {
-	tableData,
-	total,
-	pageIndex,
-	pageSize,
-	isLoading,
-	updateParams,
-	refetch,
-} = useWorkingScheduleListQuery();
+const { tableData, total, pageIndex, pageSize, isLoading, updateParams, refetch } = useWorkingScheduleListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([

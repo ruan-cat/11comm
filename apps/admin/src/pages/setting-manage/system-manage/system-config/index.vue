@@ -14,7 +14,7 @@ import { transformI18n } from "@/plugins/i18n";
 import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./components/form";
 import SystemConfigFormComponent from "./components/form.vue";
 import { useMode } from "@/composables/use-mode";
-import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 import { cloneDeep } from "@pureadmin/utils";
 import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";

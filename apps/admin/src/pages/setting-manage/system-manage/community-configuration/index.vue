@@ -11,7 +11,11 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type CommunityConfigurationFormProps, defaultForm, type CommunityConfigurationFormVO } from "./components/form";
+import {
+	type CommunityConfigurationFormProps,
+	defaultForm,
+	type CommunityConfigurationFormVO,
+} from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 import type { CommunityConfiguration, CommunityConfigurationListQuery } from "@01s-11comm/type";
 import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
@@ -21,19 +25,11 @@ import type { FieldValues, PlusColumn } from "plus-pro-components";
 import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 
 // 使用小区配置列表查询 Hook
-const {
-	tableData,
-	total,
-	pageIndex,
-	pageSize,
-	isLoading,
-	updateParams,
-	refetch,
-	resetParams,
-} = useCommunityConfigurationListQuery();
+const { tableData, total, pageIndex, pageSize, isLoading, updateParams, refetch, resetParams } =
+	useCommunityConfigurationListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
