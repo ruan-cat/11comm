@@ -1,6 +1,33 @@
 ## ADDED Requirements
 
-### Requirement: apps/type 包初始化
+## 实施顺序说明
+
+**CRITICAL**: 在实施类型系统相关任务时，必须严格按照以下顺序执行，不允许跳步。
+
+### 执行顺序
+
+1. **Step 1**: apps/type 包初始化（前置条件）
+2. **Step 2**: 类型库基础类型文件（基础设施）
+3. **Step 3**: 类型库初始化（初始化验证）
+4. **Step 4**: 英文字段命名规范（命名规则）
+5. **Step 5**: 类型文件组织结构（文件组织）
+6. **Step 6**: 类型定义完整性（完整性要求）
+7. **Step 7**: 类型与原数据结构兼容（兼容性验证）
+
+### 步骤依赖关系
+
+- Step 1 是所有步骤的前置条件，必须最先完成
+- Step 2-3 是基础设施步骤，在创建具体业务类型前必须完成
+- Step 4-6 是类型定义规范，在编写每个业务类型时必须遵守
+- Step 7 是最终验证步骤，确保类型与原数据兼容
+
+### 验收标准
+
+每个步骤完成后，必须满足对应 Requirement 中的所有 Scenarios。
+
+---
+
+### Requirement: apps/type 包初始化 (Step 1)
 
 系统 SHALL 在 apps/type 目录下初始化独立的 TypeScript 类型库包，满足以下配置要求：
 
@@ -82,7 +109,7 @@
 
 ---
 
-### Requirement: 类型库基础类型文件
+### Requirement: 类型库基础类型文件 (Step 2)
 
 apps/type 类型库 SHALL 提供固定的基础类型文件：
 
@@ -132,7 +159,7 @@ apps/type 类型库 SHALL 提供固定的基础类型文件：
 
 ---
 
-### Requirement: 类型库初始化
+### Requirement: 类型库初始化 (Step 3)
 
 apps/type 类型库 SHALL 满足以下约束：
 
@@ -158,7 +185,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 英文字段命名规范
+### Requirement: 英文字段命名规范 (Step 4)
 
 所有业务类型 MUST 使用英文字段名：
 
@@ -192,7 +219,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 类型文件组织结构
+### Requirement: 类型文件组织结构 (Step 5)
 
 类型文件 SHALL 按以下规则组织：
 
@@ -218,7 +245,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 类型定义完整性
+### Requirement: 类型定义完整性 (Step 6)
 
 每个列表页的类型文件 MUST 包含：
 
@@ -253,7 +280,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 类型与原数据结构兼容
+### Requirement: 类型与原数据结构兼容 (Step 7)
 
 迁移后的类型定义 MUST 与原 test-data.ts 结构兼容：
 

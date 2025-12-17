@@ -323,35 +323,198 @@ Phase 6: 验证清理（1周）
 
 ### 5.2 单页面迁移步骤
 
+**CRITICAL**: 迁移单个列表页时，必须严格按照以下顺序执行，不允许跳步。
+
+#### 执行顺序概览
+
+每个列表页的迁移包含 **10 个严格顺序的步骤**：
+
 ```plain
-1. 类型迁移（30分钟）
-   - 读取 test-data.ts
-   - 转换字段名为英文
-   - 生成到 apps/type/src/business/**/
-
-2. 假数据迁移（20分钟）
-   - 转换字段名
-   - 生成到 server/api/**/mock-data.ts
-
-3. 编写 Nitro 接口（30分钟）
-   - 使用模板生成 list.post.ts
-   - 实现筛选和分页逻辑
-
-4. 创建 Query Hook（15分钟）
-   - 使用 useListQuery 模板
-   - 生成到 src/api/**/index.ts
-
-5. 更新列表页（40分钟）
-   - 删除 import test-data
-   - 使用 TanStack Query hook
-   - 监听 data 变化
-
-6. 验证和清理（5分钟）
-   - 功能测试
-   - 删除 test-data.ts
+Step 1: 创建类型定义文件（15分钟）
+Step 2: 创建 Mock 数据文件（10分钟）
+Step 3: 创建 Nitro 接口文件（20分钟）
+Step 4: 创建前端 API Hook（10分钟）
+Step 5: 改写列表页（30分钟）
+Step 6: 删除旧的假数据文件（5分钟）
+Step 7: 更新表单类型文件（15分钟）
+Step 8: 更新表单组件（15分钟）
+Step 9: 运行类型检查（5分钟）
+Step 10: 测试验证（15分钟）
 ```
 
 **总计：** 2.5 小时/页面
+
+#### 详细步骤说明
+
+##### Step 1: 创建类型定义文件
+
+**文件路径**：`apps/type/src/business/{module}/{sub-module}/{page}.ts`
+
+**任务内容**：
+- 定义 `{Page}ListItem` 接口（所有字段英文+JSDoc注释）
+- 定义 `{Page}QueryParams` 接口（包含分页参数）
+- 定义相关枚举类型（如 Status、Type 等）
+- 导出 Options 常量（下拉选择用）
+
+**验收标准**：
+- ✅ 所有字段名为英文驼峰命名
+- ✅ 每个字段有 JSDoc 注释（中文+英文）
+- ✅ 枚举值保持中文
+- ✅ Options 导出正确
+
+**关键规范**：遵循 [specs/type-system/spec.md](./specs/type-system/spec.md)
+
+##### Step 2: 创建 Mock 数据文件
+
+**文件路径**：`apps/admin/server/api/{module}/{sub-module}/{page}/mock-data.ts`
+
+**任务内容**：
+- 导入 `{Page}ListItem` 类型
+- 创建 `mock{Page}Data` 数组
+- 数据量：至少 20-50 条
+- 数据类型约束满足 `{Page}ListItem`
+
+**验收标准**：
+- ✅ 类型约束正确
+- ✅ 数据字段名为英文
+- ✅ 数据量充足
+
+##### Step 3: 创建 Nitro 接口文件
+
+**文件路径**：`apps/admin/server/api/{module}/{sub-module}/{page}/list.post.ts`
+
+**任务内容**：
+- 导入必要的类型（JsonVO、PageDTO、{Page}ListItem、{Page}QueryParams）
+- 使用 `defineHandler` 和 `readBody`（从 nitro/h3 导入）
+- 实现筛选逻辑（字符串模糊匹配、枚举精确匹配）
+- 实现分页逻辑（slice）
+- 返回 `JsonVO<PageDTO<{Page}ListItem>>` 格式
+- 添加 JSDoc 注释
+
+**验收标准**：
+- ✅ 使用 Nitro v3 写法
+- ✅ 返回值有完整类型约束
+- ✅ 筛选和分页逻辑正确
+- ✅ 有 JSDoc 注释
+
+**关键规范**：遵循 [specs/nitro-api/spec.md](./specs/nitro-api/spec.md)
+
+##### Step 4: 创建前端 API Hook
+
+**文件路径**：`apps/admin/src/api/{module}/{sub-module}/{page}/index.ts`
+
+**任务内容**：
+- 定义 `use{Page}ListQuery` Hook
+- 调用通用 `useListQuery`
+- 配置 `queryKeyPrefix`（完整路径）
+- 配置 `apiUrl`（对应 Nitro 接口路径）
+
+**验收标准**：
+- ✅ queryKeyPrefix 格式正确
+- ✅ apiUrl 路径正确
+- ✅ 类型泛型参数正确
+
+**关键规范**：遵循 [specs/data-fetching/spec.md](./specs/data-fetching/spec.md)
+
+##### Step 5: 改写列表页
+
+**文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/index.vue`
+
+**任务内容**：
+- 导入类型和 Hook
+- 使用 `use{Page}ListQuery` 获取数据
+- 移除本地 test-data 导入
+- 配置搜索和分页
+- 使用 `isLoading` 控制 loading 状态
+- 监听 data 变化更新 tableData
+
+**验收标准**：
+- ✅ 无 test-data 导入
+- ✅ 使用 TanStack Query Hook
+- ✅ 搜索和分页功能正常
+- ✅ loading 状态正确
+
+**关键规范**：遵循 [specs/list-page-pattern/spec.md](./specs/list-page-pattern/spec.md)
+
+##### Step 6: 删除旧的假数据文件
+
+**文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/test-data.ts`
+
+**任务内容**：
+- 删除文件
+- 确保无任何文件引用
+
+**验收标准**：
+- ✅ 文件已删除
+- ✅ 无导入引用报错
+
+##### Step 7: 更新表单类型文件
+
+**文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/components/form.ts`
+
+**任务内容**：
+- 从 `@01s-11comm/type` 导入类型
+- 移除本地类型定义
+- 使用类型库提供的 Options
+- 字段名改为纯英文
+
+**验收标准**：
+- ✅ 所有类型从类型库导入
+- ✅ 无本地类型定义
+- ✅ Options 从类型库导入
+
+##### Step 8: 更新表单组件
+
+**文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/components/form.vue`
+
+**任务内容**：
+- 导入类型库的 Options
+- 更新表单项配置
+- 使用纯英文类型
+- prop 字段名更新为英文
+
+**验收标准**：
+- ✅ Options 从类型库导入
+- ✅ 表单项配置正确
+- ✅ 类型约束正确
+
+##### Step 9: 运行类型检查
+
+**命令**：`pnpm typecheck`
+
+**任务内容**：
+- 运行类型检查
+- 修复所有类型报错
+- 确保类型库和 admin 项目无报错
+
+**验收标准**：
+- ✅ typecheck 通过
+- ✅ 无类型报错
+
+##### Step 10: 测试验证
+
+**任务内容**：
+- 启动开发服务器测试列表加载
+- 测试搜索功能
+- 测试分页功能
+- 测试新增/编辑/删除功能
+- 测试 loading 状态
+- 测试错误处理
+
+**验收标准**：
+- ✅ 所有功能正常
+- ✅ 无 console 报错
+- ✅ 数据加载正确
+
+#### 步骤依赖关系
+
+- **Step 1-2**: 数据层基础，必须先完成
+- **Step 3**: 依赖 Step 1-2，创建 API 接口
+- **Step 4**: 依赖 Step 3，封装数据查询
+- **Step 5**: 依赖 Step 4，页面集成
+- **Step 6-8**: 清理和类型迁移，依赖 Step 5
+- **Step 9**: 类型验证，确保所有步骤正确
+- **Step 10**: 功能验证，最终确认
 
 ### 5.3 自动化策略
 

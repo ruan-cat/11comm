@@ -1,6 +1,41 @@
 ## MODIFIED Requirements
 
-### Requirement: 列表页数据获取模式
+## 实施顺序说明
+
+**CRITICAL**: 在实施列表页改造相关任务时，必须严格按照以下顺序执行，不允许跳步。
+
+### 执行顺序
+
+1. **Step 1**: 列表页数据获取模式（导入类型和Hook）
+2. **Step 2**: 搜索表单集成（搜索功能改造）
+3. **Step 3**: 分页组件集成（分页功能改造）
+4. **Step 4**: 表格Loading状态（Loading状态集成）
+5. **Step 5**: 错误状态处理（错误处理集成）
+6. **Step 6**: 初始化加载（初始化逻辑）
+7. **Step 7**: 响应式参数管理（参数管理优化）
+8. **Step 8**: 代码组织和注释（代码规范）
+9. **Step 9**: 类型安全的查询参数（类型安全保障）
+10. **Step 10**: Options常量使用（使用类型库Options）
+11. **Step 11**: 删除test-data.ts文件（清理旧文件）
+12. **Step 12**: 删除loadTableData函数（清理旧代码）
+13. **Step 13**: 删除手动loading状态管理（清理旧逻辑）
+14. **Step 14**: 删除列表页本地数据源（最终清理）
+
+### 步骤依赖关系
+
+- Step 1 是核心改造，必须最先完成
+- Step 2-5 是功能集成步骤，依赖 Step 1 的Hook基础
+- Step 6-7 是优化步骤，确保功能完整
+- Step 8-10 是代码质量步骤，规范代码和类型
+- Step 11-14 是清理步骤，删除所有旧代码，必须在前面步骤完成后执行
+
+### 验收标准
+
+每个步骤完成后，必须满足对应 Requirement 中的所有 Scenarios。
+
+---
+
+### Requirement: 列表页数据获取模式 (Step 1)
 
 **FROM**: 本地假数据 + loadTableData 函数
 **TO**: Nitro 接口 + TanStack Query Hooks
@@ -106,7 +141,7 @@ onMounted(async () => {
 
 ---
 
-### Requirement: 搜索表单集成
+### Requirement: 搜索表单集成 (Step 2)
 
 **FROM**: handleSearch 调用 loadTableData
 **TO**: handleSearch 更新 queryParams
@@ -188,7 +223,7 @@ async function handleReset() {
 
 ---
 
-### Requirement: 分页组件集成
+### Requirement: 分页组件集成 (Step 3)
 
 **FROM**: handleCurrentPageChange 调用 loadTableData
 **TO**: 修改 queryParams.pageIndex/pageSize
@@ -267,7 +302,7 @@ watch(data, (newData) => {
 
 ---
 
-### Requirement: 表格 Loading 状态
+### Requirement: 表格 Loading 状态 (Step 4)
 
 **FROM**: 手动控制 loading.value
 **TO**: 直接使用 isLoading
@@ -316,7 +351,7 @@ async function loadTableData() {
 
 ---
 
-### Requirement: 错误状态处理
+### Requirement: 错误状态处理 (Step 5)
 
 列表页 MUST 提供错误状态提示：
 
@@ -350,7 +385,7 @@ async function loadTableData() {
 
 ---
 
-### Requirement: 初始化加载
+### Requirement: 初始化加载 (Step 6)
 
 列表页 MUST 在 onMounted 时触发初始查询：
 
@@ -389,7 +424,7 @@ const queryParams = ref<HouseChargeQueryParams>({
 
 ---
 
-### Requirement: 响应式参数管理
+### Requirement: 响应式参数管理 (Step 7)
 
 queryParams MUST 作为响应式对象管理：
 
@@ -434,7 +469,7 @@ async function handleSearch() {
 
 ---
 
-### Requirement: 代码组织和注释
+### Requirement: 代码组织和注释 (Step 8)
 
 列表页代码 MUST 遵循统一的组织结构：
 
@@ -521,7 +556,7 @@ async function handleSearch() {
 
 ## ADDED Requirements
 
-### Requirement: 类型安全的查询参数
+### Requirement: 类型安全的查询参数 (Step 9)
 
 列表页 MUST 使用业务专用的 QueryParams 类型：
 
@@ -555,7 +590,7 @@ import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/ty
 
 ---
 
-### Requirement: Options 常量使用
+### Requirement: Options 常量使用 (Step 10)
 
 搜索表单 MUST 使用从类型库导出的 Options 常量：
 
@@ -600,7 +635,7 @@ const plusSearchColumns: PlusColumn[] = [
 
 ## REMOVED Requirements
 
-### Requirement: test-data.ts 文件存在
+### Requirement: test-data.ts 文件存在 (Step 11)
 
 **Reason**: 假数据迁移到 `server/api/*/mock-data.ts`
 
@@ -615,7 +650,7 @@ const plusSearchColumns: PlusColumn[] = [
 
 ---
 
-### Requirement: loadTableData 函数
+### Requirement: loadTableData 函数 (Step 12)
 
 **Reason**: 数据获取迁移到 Nitro 接口和 TanStack Query
 
@@ -630,7 +665,7 @@ const plusSearchColumns: PlusColumn[] = [
 
 ---
 
-### Requirement: 手动 loading 状态管理
+### Requirement: 手动 loading 状态管理 (Step 13)
 
 **Reason**: TanStack Query 自动提供 isLoading
 
@@ -647,7 +682,7 @@ const plusSearchColumns: PlusColumn[] = [
 
 ## RENAMED Requirements
 
-### Requirement: 列表页数据源
+### Requirement: 列表页数据源 (Step 14)
 
 - **FROM**: `### Requirement: 本地假数据导入`
 - **TO**: `### Requirement: Nitro 接口数据获取`

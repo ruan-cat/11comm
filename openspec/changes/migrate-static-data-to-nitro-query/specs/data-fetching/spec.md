@@ -1,6 +1,39 @@
 ## ADDED Requirements
 
-### Requirement: TanStack Query 安装和配置
+## 实施顺序说明
+
+**CRITICAL**: 在实施数据获取相关任务时，必须严格按照以下顺序执行，不允许跳步。
+
+### 执行顺序
+
+1. **Step 1**: TanStack Query 安装和配置（前置条件）
+2. **Step 2**: 通用列表查询Hook (useListQuery)（基础设施）
+3. **Step 3**: 业务专用查询Hook（业务封装）
+4. **Step 4**: 查询结果返回类型（类型定义）
+5. **Step 5**: 查询自动触发条件（查询行为）
+6. **Step 6**: 缓存策略（性能优化）
+7. **Step 7**: 错误处理（异常处理）
+8. **Step 8**: 列表页数据获取方式（页面集成）
+9. **Step 9**: 搜索功能实现（搜索功能）
+10. **Step 10**: 分页功能实现（分页功能）
+11. **Step 11**: Loading状态显示（用户体验）
+12. **Step 12**: 本地假数据过滤逻辑移除（清理工作）
+
+### 步骤依赖关系
+
+- Step 1 是所有步骤的前置条件，必须最先完成
+- Step 2-3 是 Hook 层的基础设施，必须在使用前完成
+- Step 4-7 是 Hook 的配置和优化，在创建业务 Hook 时必须遵守
+- Step 8-11 是列表页的改造步骤，依赖 Hook 层完成
+- Step 12 是最终清理步骤，确保无旧代码残留
+
+### 验收标准
+
+每个步骤完成后，必须满足对应 Requirement 中的所有 Scenarios。
+
+---
+
+### Requirement: TanStack Query 安装和配置 (Step 1)
 
 apps/admin MUST 安装并初始化 @tanstack/vue-query：
 
@@ -48,7 +81,7 @@ app.use(VueQueryPlugin, {
 
 ---
 
-### Requirement: 通用列表查询 Hook (useListQuery)
+### Requirement: 通用列表查询 Hook (useListQuery) (Step 2)
 
 apps/admin MUST 提供通用列表查询模板：
 
@@ -114,7 +147,7 @@ return useQuery({
 
 ---
 
-### Requirement: 业务专用查询 Hook
+### Requirement: 业务专用查询 Hook (Step 3)
 
 每个列表页 MUST 提供专用的 TanStack Query Hook：
 
@@ -164,7 +197,7 @@ export function useHouseChargeListQuery(params: Ref<HouseChargeQueryParams>) {
 
 ---
 
-### Requirement: 查询结果返回类型
+### Requirement: 查询结果返回类型 (Step 4)
 
 useListQuery 和业务 Hook MUST 返回完整的查询状态：
 
@@ -211,7 +244,7 @@ useListQuery 和业务 Hook MUST 返回完整的查询状态：
 
 ---
 
-### Requirement: 查询自动触发条件
+### Requirement: 查询自动触发条件 (Step 5)
 
 查询 MUST 在以下情况自动触发：
 
@@ -246,7 +279,7 @@ useListQuery 和业务 Hook MUST 返回完整的查询状态：
 
 ---
 
-### Requirement: 缓存策略
+### Requirement: 缓存策略 (Step 6)
 
 TanStack Query MUST 实现智能缓存：
 
@@ -281,7 +314,7 @@ TanStack Query MUST 实现智能缓存：
 
 ---
 
-### Requirement: 错误处理
+### Requirement: 错误处理 (Step 7)
 
 查询失败 MUST 提供明确的错误状态：
 
@@ -310,7 +343,7 @@ TanStack Query MUST 实现智能缓存：
 
 ## MODIFIED Requirements
 
-### Requirement: 列表页数据获取方式
+### Requirement: 列表页数据获取方式 (Step 8)
 
 **FROM**: 本地 import test-data.ts，使用 loadTableData 函数过滤
 **TO**: 调用 TanStack Query Hook 获取服务端数据
@@ -381,7 +414,7 @@ watch(data, (newData) => {
 
 ---
 
-### Requirement: 搜索功能实现
+### Requirement: 搜索功能实现 (Step 9)
 
 **FROM**: 调用 loadTableData() 本地过滤
 **TO**: 更新 queryParams 触发新请求
@@ -420,7 +453,7 @@ async function handleSearch() {
 
 ---
 
-### Requirement: 分页功能实现
+### Requirement: 分页功能实现 (Step 10)
 
 **FROM**: 手动切片 allTableData
 **TO**: 更新 queryParams.pageIndex/pageSize
@@ -462,7 +495,7 @@ async function handlePageSizeChange(pageSize: number) {
 
 ---
 
-### Requirement: Loading 状态显示
+### Requirement: Loading 状态显示 (Step 11)
 
 列表页 MUST 使用 isLoading 显示加载状态：
 
@@ -494,7 +527,7 @@ async function handlePageSizeChange(pageSize: number) {
 
 ## REMOVED Requirements
 
-### Requirement: 本地假数据过滤逻辑
+### Requirement: 本地假数据过滤逻辑 (Step 12)
 
 **Reason**: 数据获取迁移到 Nitro 服务端，不再需要前端本地过滤
 

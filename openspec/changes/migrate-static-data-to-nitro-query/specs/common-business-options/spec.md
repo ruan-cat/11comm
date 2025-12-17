@@ -1,6 +1,35 @@
 ## ADDED Requirements
 
-### Requirement: 公共业务下拉选择数组集中管理
+## 实施顺序说明
+
+**CRITICAL**: 在实施公共业务选项相关任务时，必须严格按照以下顺序执行，不允许跳步。
+
+### 执行顺序
+
+1. **Step 1**: 公共业务下拉选择数组集中管理（识别公共选项）
+2. **Step 2**: business-options.ts 文件结构（创建公共选项文件）
+3. **Step 3**: 业务类型文件使用公共选项（类型文件集成）
+4. **Step 4**: Admin 项目使用公共选项（Admin项目集成）
+5. **Step 5**: 公共选项迁移验证（迁移验证）
+6. **Step 6**: 迁移文档记录（文档记录）
+7. **Step 7**: 后续新增公共选项流程（流程规范）
+
+### 步骤依赖关系
+
+- Step 1 是识别阶段，找出需要集中管理的公共选项
+- Step 2 是创建基础文件，所有公共选项的存放位置
+- Step 3-4 是集成步骤，在各项目中使用公共选项
+- Step 5 是验证步骤，确保迁移成功
+- Step 6 是文档步骤，记录迁移过程
+- Step 7 是流程规范，指导未来开发
+
+### 验收标准
+
+每个步骤完成后，必须满足对应 Requirement 中的所有 Scenarios。
+
+---
+
+### Requirement: 公共业务下拉选择数组集中管理 (Step 1)
 
 系统 SHALL 将跨模块、跨项目通用的业务下拉选择数组统一整合到 `apps/type/src/common/business-options.ts` 文件内，避免在多个业务类型文件中重复定义相同的选项数组。
 
@@ -42,7 +71,7 @@
 
 ---
 
-### Requirement: business-options.ts 文件结构
+### Requirement: business-options.ts 文件结构 (Step 2)
 
 `apps/type/src/common/business-options.ts` 文件 SHALL 按以下规范组织：
 
@@ -103,7 +132,7 @@ export const auditStatusOptions: OptionsType = [
 
 ---
 
-### Requirement: 业务类型文件使用公共选项
+### Requirement: 业务类型文件使用公共选项 (Step 3)
 
 业务类型文件 SHALL 按以下规范使用公共业务选项：
 
@@ -177,7 +206,7 @@ export { contractTypeOptions };
 
 ---
 
-### Requirement: Admin 项目使用公共选项
+### Requirement: Admin 项目使用公共选项 (Step 4)
 
 Admin 项目（`apps/admin`）SHALL 按以下规范使用公共业务选项：
 
@@ -260,7 +289,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 ---
 
-### Requirement: 公共选项迁移验证
+### Requirement: 公共选项迁移验证 (Step 5)
 
 完成公共选项迁移后，系统 MUST 通过以下验证：
 
@@ -304,7 +333,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 ---
 
-### Requirement: 迁移文档记录
+### Requirement: 迁移文档记录 (Step 6)
 
 公共选项迁移 SHALL 包含以下文档记录：
 
@@ -342,7 +371,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 ---
 
-### Requirement: 后续新增公共选项流程
+### Requirement: 后续新增公共选项流程 (Step 7)
 
 当发现新的公共业务选项时，SHALL 遵循以下流程：
 
