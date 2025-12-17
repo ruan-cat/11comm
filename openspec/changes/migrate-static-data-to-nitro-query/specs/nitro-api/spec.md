@@ -1,6 +1,36 @@
+## 实施顺序说明
+
+**CRITICAL**: 在实施 Nitro API 相关任务时，必须严格按照以下顺序执行，不允许跳步。
+
+### 执行顺序
+
+1. **Step 1**: Nitro 服务端启用（前置条件）
+2. **Step 2**: 接口命名和路径规范（创建文件）
+3. **Step 3**: 假数据文件规范（准备数据）
+4. **Step 4**: 接口返回格式规范（定义响应）
+5. **Step 5**: 请求参数处理（读取请求）
+6. **Step 6**: 数据筛选逻辑（过滤数据）
+7. **Step 7**: 分页处理（分页计算）
+8. **Step 8**: 接口实现模板（完整代码）
+9. **Step 9**: Nitro v3 代码写法规范（代码质量）
+10. **Step 10**: Nitro 代码写法检查（验证修复）
+
+### 步骤依赖关系
+
+- Step 1 是所有步骤的前置条件
+- Step 2-3 必须在 Step 4-8 之前完成
+- Step 4-7 是 Step 8 的组成部分
+- Step 9-10 是质量检查步骤，在所有接口编写完成后统一执行
+
+### 验收标准
+
+每个步骤完成后，必须满足对应 Requirement 中的所有 Scenarios。
+
+---
+
 ## ADDED Requirements
 
-### Requirement: Nitro 服务端启用
+### Requirement: Nitro 服务端启用 (Step 1)
 
 apps/admin SHALL 启用 Nitro 服务端功能：
 
@@ -25,7 +55,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 接口命名和路径规范
+### Requirement: 接口命名和路径规范 (Step 2)
 
 所有 Nitro 接口 MUST 满足以下约束：
 
@@ -51,7 +81,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 接口返回格式规范
+### Requirement: 接口返回格式规范 (Step 4)
 
 所有接口 MUST 返回统一格式 `JsonVO<PageDTO<T>>`：
 
@@ -111,7 +141,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 假数据文件规范
+### Requirement: 假数据文件规范 (Step 3)
 
 假数据 SHALL 从独立的 mock-data.ts 文件导入：
 
@@ -143,7 +173,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 请求参数处理
+### Requirement: 请求参数处理 (Step 5)
 
 接口 MUST 实现请求参数的读取和验证：
 
@@ -181,7 +211,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 数据筛选逻辑
+### Requirement: 数据筛选逻辑 (Step 6)
 
 接口 MUST 实现请求参数的筛选逻辑：
 
@@ -220,7 +250,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 分页处理
+### Requirement: 分页处理 (Step 7)
 
 接口 MUST 实现正确的分页逻辑：
 
@@ -256,7 +286,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ---
 
-### Requirement: 接口实现模板
+### Requirement: 接口实现模板 (Step 8)
 
 所有 list.post.ts 接口 MUST 遵循统一模板：
 
@@ -322,7 +352,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 
 ---
 
-### Requirement: Nitro v3 代码写法规范
+### Requirement: Nitro v3 代码写法规范 (Step 9)
 
 所有 Nitro 接口 MUST 遵循 Nitro v3 的代码写法规范：
 
@@ -401,7 +431,7 @@ export default defineHandler(async (event): Promise<...> => { ... });
 
 ---
 
-### Requirement: Nitro 代码写法检查
+### Requirement: Nitro 代码写法检查 (Step 10)
 
 已生成的 Nitro 接口 MUST 进行代码写法检查和修复：
 
