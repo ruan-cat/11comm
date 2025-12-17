@@ -12,7 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
-import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
+
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type AddFormProps, defaultForm, type ContractTypeFormVO, type IsAuditType } from "./components/form";
 import AddForm from "./components/form.vue";
