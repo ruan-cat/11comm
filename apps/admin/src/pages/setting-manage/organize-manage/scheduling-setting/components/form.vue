@@ -1,12 +1,16 @@
 <script lang="ts" setup>
-import { useTemplateRef, computed, ref, reactive } from "vue";
+import { useTemplateRef, computed, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import type { FieldValues, PlusColumn, PlusFormRules } from "plus-pro-components";
+import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { 排班类型Options, 状态Options, type SchedulingSettingFormProps, type 排班设置表单_VO } from "./form";
+import { type SchedulingSettingFormProps, type SchedulingSettingFormVO } from "./form";
+import { schedulingTypeOptions, schedulingStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<SchedulingSettingFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 排班设置表单_VO;
+const defaultValues = props.defaultValues as FieldValues & SchedulingSettingFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +23,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 排班设置表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & SchedulingSettingFormVO;
 
 /**
  * 表单对象
@@ -36,18 +40,18 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "班次名称",
-		prop: "班次名称",
+		prop: "name",
 		valueType: "input",
 	},
 	{
 		label: "排班类型",
-		prop: "排班类型",
+		prop: "type",
 		valueType: "select",
-		options: 排班类型Options,
+		options: schedulingTypeOptions,
 	},
 	{
 		label: "排班周期",
-		prop: "排班周期",
+		prop: "cycle",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
@@ -55,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "生效时间",
-		prop: "生效时间",
+		prop: "effectiveTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -65,27 +69,27 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "人员",
-		prop: "人员",
+		prop: "staff",
 		valueType: "input",
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: schedulingStatusOptions,
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	班次名称: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
-	排班类型: [{ required: true, message: "请选择排班类型", trigger: "change" }],
-	排班周期: [
+	name: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
+	type: [{ required: true, message: "请选择排班类型", trigger: "change" }],
+	cycle: [
 		{ required: true, message: "请输入排班周期", trigger: "blur" },
 		{ type: "number", min: 1, message: "排班周期必须大于0", trigger: "blur" },
 	],
-	生效时间: [{ required: true, message: "请选择生效时间", trigger: "change" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	effectiveTime: [{ required: true, message: "请选择生效时间", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 /** 对外导出 */

@@ -8,12 +8,21 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type SchedulingSettingFormProps, defaultForm, type 排班设置表单_VO } from "./components/form";
+import { type SchedulingSettingFormProps, defaultForm, type SchedulingSettingFormVO } from "./components/form";
 import SchedulingSettingForm from "./components/form.vue";
 import type { SchedulingSetting } from "@01s-11comm/type";
+import { schedulingStatusOptions } from "@01s-11comm/type";
 import { useSchedulingSettingListQuery } from "@/api/setting-manage/organize-manage/scheduling-setting";
+
+import { useMode, type Mode } from "@/composables/use-mode";
+import { cloneDeep } from "@pureadmin/utils";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { message } from "@/utils/message";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -118,14 +127,14 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "排班名称",
-		prop: "排班名称",
+		prop: "name",
 		valueType: "input",
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: schedulingStatusOptions,
 	},
 ]);
 
@@ -151,30 +160,38 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
+const defaultAddDialogParams = {
+	width: "50%",
+	draggable: true,
+	fullscreenIcon: true,
+	closeOnClickModal: false,
+	contentRenderer: () => h("div"),
+};
+
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 排班设置_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
-	const 排班设置表单_VO: 排班设置表单_VO = isAdd.value
+	const formVO: SchedulingSettingFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					班次名称: row?.班次名称 || "",
-					排班类型: row?.排班类型 || "",
-					排班周期: row?.排班周期 || 1,
-					生效时间: row?.生效时间 || "",
-					人员: row?.人员 || "",
-					状态: row?.状态 || "",
+					name: row?.name || "",
+					type: row?.type || "",
+					cycle: row?.cycle || "1",
+					effectiveTime: row?.effectiveTime || "",
+					staff: row?.staff || "",
+					status: row?.status || "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: SchedulingSettingFormProps = {
-		form: 排班设置表单_VO,
-		defaultValues: 排班设置表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框标题 */
@@ -190,30 +207,34 @@ function openDialog(params: { mode: Mode; row?: 排班设置_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = schedulingSettingFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+			const formComputed = schedulingSettingFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = schedulingSettingFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+					const formComputed = schedulingSettingFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					schedulingSettingFormInstance.value.plusFormInstance.handleReset();
+					schedulingSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await schedulingSettingFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await schedulingSettingFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -226,87 +247,55 @@ function openDialog(params: { mode: Mode; row?: 排班设置_列表数据 }) {
 	});
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = schedulingSettingTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.排班名称) {
-			filteredData = filteredData.filter((item) => item.班次名称.includes(plusSearchModel.value.排班名称!));
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		name: undefined,
+		status: undefined,
+		pageIndex: 1,
+	});
 }
 
 /** 执行搜索 */
 async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		name: plusSearchModel.value.name,
+		status: plusSearchModel.value.status,
+		pageIndex: 1,
+	});
 }
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+async function handlePageSizeChange(val: number) {
+	pageSize.value = val;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+async function handleCurrentPageChange(val: number) {
+	pageIndex.value = val;
 }
 
 /** 修改操作 */
-function handleEdit(row: 排班设置_列表数据) {
+function handleEdit(row: SchedulingSetting) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 删除操作 */
-function handleDelete(row: 排班设置_列表数据) {
+function handleDelete(row: SchedulingSetting) {
 	console.log("删除排班", row);
 }
 
 /** 停用/启用操作 */
-function handleToggleStatus(row: 排班设置_列表数据) {
-	const newStatus = row.状态 === "启用" ? "停用" : "启用";
-	console.log(`${row.状态 === "启用" ? "停用" : "启用"}排班`, row);
-
-	// 更新状态
-	const index = tableData.value.findIndex((item) => item.班次名称 === row.班次名称 && item.创建时间 === row.创建时间);
-	if (index > -1) {
-		tableData.value[index].状态 = newStatus;
-		message(`排班已${newStatus}`, { type: "success" });
-	}
+function handleToggleStatus(row: SchedulingSetting) {
+	const newStatus = row.status === "enabled" ? "disabled" : "enabled";
+	// 这里只是模拟，实际应该调用API
+	console.log(`${row.status === "enabled" ? "停用" : "启用"}排班`, row);
+	message(`排班已${newStatus === "enabled" ? "启用" : "停用"}`, { type: "success" });
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// 数据自动加载
 });
 </script>
 

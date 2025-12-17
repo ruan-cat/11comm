@@ -2,15 +2,16 @@
 import { computed, reactive, ref } from "vue";
 import { useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
-import type { PlusColumn } from "plus-pro-components";
+import type { PlusColumn, PlusFormRules } from "plus-pro-components";
+import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { RolePermissionFormProps, type 角色权限表单_VO } from "./form";
+import { RolePermissionFormProps, type RolePermissionFormVO } from "./form";
 
 /** 表单组件 props */
 const props = defineProps<RolePermissionFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 角色权限表单_VO;
+const defaultValues = props.defaultValues as FieldValues & RolePermissionFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -23,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 角色权限表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & RolePermissionFormVO;
 
 /**
  * 表单对象
@@ -40,7 +41,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "角色名称",
-		prop: "角色名称",
+		prop: "name",
 		valueType: "input",
 		fieldProps: {
 			readonly: false,
@@ -48,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "角色编码",
-		prop: "角色编码",
+		prop: "code",
 		valueType: "input",
 		fieldProps: {
 			readonly: false,
@@ -56,11 +57,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "角色状态",
-		prop: "状态",
+		prop: "enabled",
 		valueType: "select",
 		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
+			{ label: "启用", value: true },
+			{ label: "禁用", value: false },
 		],
 		fieldProps: {
 			readonly: false,
@@ -68,7 +69,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "角色描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			readonly: false,
@@ -79,11 +80,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	角色名称: [
+	name: [
 		{ required: true, message: "请输入角色名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "角色名称长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	角色编码: [
+	code: [
 		{ required: true, message: "请输入角色编码", trigger: "blur" },
 		{
 			pattern: /^[A-Z][A-Z0-9_]*$/,
@@ -91,8 +92,8 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	状态: [{ required: true, message: "请选择角色状态", trigger: "change" }],
-	描述: [{ max: 200, message: "角色描述不能超过 200 个字符", trigger: "blur" }],
+	enabled: [{ required: true, message: "请选择角色状态", trigger: "change" }],
+	description: [{ max: 200, message: "角色描述不能超过 200 个字符", trigger: "blur" }],
 });
 
 // 默认导出表单实例和表单对象，供外部使用

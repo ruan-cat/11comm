@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { useTemplateRef, reactive } from "vue";
+import { useTemplateRef, reactive, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import type { FieldValues, PlusColumn, PlusFormRules } from "plus-pro-components";
+import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { WorkingScheduleFormProps, type 排班表表单_VO } from "./form";
+import { WorkingScheduleFormProps, type WorkingScheduleFormVO } from "./form";
 
 const props = defineProps<WorkingScheduleFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 排班表表单_VO;
+const defaultValues = props.defaultValues as FieldValues & WorkingScheduleFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +22,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 排班表表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & WorkingScheduleFormVO;
 
 /**
  * 表单对象
@@ -36,12 +39,12 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "排班名称",
-		prop: "排班名称",
+		prop: "name",
 		valueType: "input",
 	},
 	{
 		label: "排班类型",
-		prop: "排班类型",
+		prop: "type",
 		valueType: "select",
 		options: [
 			{ label: "早班", value: "morning" },
@@ -53,17 +56,17 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "time-picker",
 	},
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "time-picker",
 	},
 	{
 		label: "星期几",
-		prop: "星期几",
+		prop: "weekday",
 		valueType: "select",
 		options: [
 			{ label: "星期一", value: 1 },
@@ -77,35 +80,35 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "负责人姓名",
-		prop: "负责人姓名",
+		prop: "managerName",
 		valueType: "input",
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "phone",
 		valueType: "input",
 	},
 	{
 		label: "排班描述",
-		prop: "排班描述",
+		prop: "description",
 		valueType: "textarea",
 	},
 	{
 		label: "是否启用",
-		prop: "是否启用",
+		prop: "enabled",
 		valueType: "switch",
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	排班名称: [{ required: true, message: "请输入排班名称", trigger: "blur" }],
-	排班类型: [{ required: true, message: "请选择排班类型", trigger: "change" }],
-	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	星期几: [{ required: true, message: "请选择星期几", trigger: "change" }],
-	负责人姓名: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
-	联系电话: [
+	name: [{ required: true, message: "请输入排班名称", trigger: "blur" }],
+	type: [{ required: true, message: "请选择排班类型", trigger: "change" }],
+	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	weekday: [{ required: true, message: "请选择星期几", trigger: "change" }],
+	managerName: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
+	phone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],

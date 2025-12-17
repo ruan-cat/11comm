@@ -1,45 +1,47 @@
+import type { ChangePasswordRecord } from "@01s-11comm/type";
+
 // ==================== 表单类型定义 ====================
 
 /**
  * 密码修改记录表单类型
  */
-export interface 密码修改记录表单_VO {
+export interface ChangePasswordRecordFormVO extends Partial<ChangePasswordRecord> {
 	/** 记录ID */
-	记录ID: string;
+	id: string;
 	/** 用户名 */
-	用户名: string;
+	username: string;
 	/** 真实姓名 */
-	真实姓名: string;
+	realName: string;
 	/** 所属部门 */
-	所属部门: string;
+	department: string;
 	/** 修改时间 */
-	修改时间: string;
+	changeTime: string;
 	/** 修改IP */
-	修改IP: string;
+	changeIp: string;
 	/** 修改类型 */
-	修改类型: string;
+	changeType: string;
 	/** 操作人 */
-	操作人: string;
+	operator: string;
 	/** 状态 */
-	状态: string;
+	status: string;
 	/** 备注 */
-	备注: string;
+	remark: string;
 }
 
 // ==================== 默认表单值 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 密码修改记录表单_VO = {
-	记录ID: "",
-	用户名: "",
-	真实姓名: "",
-	所属部门: "",
-	修改时间: "",
-	修改IP: "",
-	修改类型: "用户自行修改",
-	操作人: "",
-	状态: "成功",
-	备注: "",
+export const defaultForm: ChangePasswordRecordFormVO = {
+	id: "",
+	username: "",
+	realName: "",
+	department: "",
+	changeTime: "",
+	changeIp: "",
+	changeType: "用户自行修改",
+	operator: "",
+	status: "成功",
+	remark: "",
 };
 
 // ==================== 表单 Props 类型 ====================
@@ -51,7 +53,7 @@ export const defaultForm: 密码修改记录表单_VO = {
  */
 export interface ChangePasswordRecordFormProps {
 	/** 表单数据 */
-	form: 密码修改记录表单_VO;
+	form: ChangePasswordRecordFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 密码修改记录表单_VO;
+	defaultValues: ChangePasswordRecordFormVO;
 }

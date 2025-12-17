@@ -1,0 +1,24 @@
+/**
+ * @file 注册协议 API Hook
+ */
+
+import { useListQuery } from "@/composables/use-list-query";
+import type { RegisterProtocol, RegisterProtocolListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/setting-manage/system-manage/register-protocol/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "registerProtocol";
+
+/**
+ * 注册协议列表查询 Hook
+ */
+export function useRegisterProtocolListQuery() {
+	return useListQuery<RegisterProtocol, RegisterProtocolListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
+	});
+}
+
+export default useRegisterProtocolListQuery;

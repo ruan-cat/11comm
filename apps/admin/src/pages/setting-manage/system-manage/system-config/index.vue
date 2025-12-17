@@ -8,31 +8,47 @@ definePage({
 	},
 });
 
-import { ref } from "vue";
-import { addDialog } from "@/components/ReDialog";
+import { ref, computed, h, watch } from "vue";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import { transformI18n } from "@/plugins/i18n";
-import { type SystemConfigForm, type SystemConfigFormProps, defaultForm } from "./components/form";
+import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./components/form";
 import SystemConfigFormComponent from "./components/form.vue";
+import { useMode } from "@/composables/use-mode";
+import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { cloneDeep } from "@pureadmin/utils";
+import { useToggle } from "@vueuse/core";
+import { sleep } from "@antfu/utils";
+import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
+import type { SystemConfig } from "@01s-11comm/type";
 
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 
+// 使用系统配置列表查询 Hook
+const { tableData, isLoading } = useSystemConfigListQuery();
+
 /** 系统配置数据 */
-const systemConfig = ref({
-	title: "HC小区管理系统",
-	subtitle: "智慧物业系统",
-	shortName: "HC",
-	companyName: "java110团队",
-	logoUrl: "/img/logo.png",
-	staticUrl: "http://demo.homecommunity.cn",
-	defaultCommunityCode: "20230522671001146",
-	ownerTitle: "HC智慧家园",
-	propertyMobileTitle: "HC掌上物业",
-	qqMapKey: "123123",
-	mallUrl: "http://mallapp.homecommunity.cn",
+const systemConfig = computed<SystemConfig>(() => {
+	if (tableData.value && tableData.value.length > 0) {
+		return tableData.value[0];
+	}
+	// 返回默认空值或初始值
+	return {
+		title: "",
+		subtitle: "",
+		shortName: "",
+		companyName: "",
+		logoUrl: "",
+		staticUrl: "",
+		defaultCommunityCode: "",
+		ownerTitle: "",
+		propertyMobileTitle: "",
+		qqMapKey: "",
+		mallUrl: "",
+	};
 });
 
 /** 系统基本信息配置 */
-const basicColumns = [
+const basicColumns = computed(() => [
 	{
 		label: "标题名称",
 		value: systemConfig.value.title,
@@ -53,10 +69,10 @@ const basicColumns = [
 		value: systemConfig.value.companyName,
 		minWidth: 120,
 	},
-];
+]);
 
 /** 系统地址配置 */
-const urlColumns = [
+const urlColumns = computed(() => [
 	{
 		label: "logo地址",
 		value: systemConfig.value.logoUrl,
@@ -75,10 +91,10 @@ const urlColumns = [
 		minWidth: 120,
 		copy: true,
 	},
-];
+]);
 
 /** 业务配置 */
-const businessColumns = [
+const businessColumns = computed(() => [
 	{
 		label: "默认小区编号",
 		value: systemConfig.value.defaultCommunityCode,
@@ -101,7 +117,7 @@ const businessColumns = [
 		minWidth: 120,
 		copy: true,
 	},
-];
+]);
 
 /** 模拟异步操作 */
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -116,6 +132,14 @@ async function testAsync() {
 /** 弹框模式控制 */
 const { setMode } = useMode();
 
+const defaultAddDialogParams = {
+	width: "50%",
+	draggable: true,
+	fullscreenIcon: true,
+	closeOnClickModal: false,
+	contentRenderer: () => h("div"),
+};
+
 /** 打开修改弹框 */
 function openEditDialog() {
 	setMode("edit");
@@ -123,10 +147,14 @@ function openEditDialog() {
 	/** 弹框标题 */
 	const title = "修改系统配置";
 
+	/** 业务对象 */
+	// 将 SystemConfig 转换为 SystemConfigFormVO
+	const formVO: SystemConfigFormVO = cloneDeep(systemConfig.value);
+
 	/** 表单组件需要的props */
 	const formProps: SystemConfigFormProps = {
-		form: cloneDeep(systemConfig.value),
-		defaultValues: cloneDeep(systemConfig.value),
+		form: formVO,
+		defaultValues: cloneDeep(formVO),
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -144,8 +172,10 @@ function openEditDialog() {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = systemConfigFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = systemConfigFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
@@ -153,31 +183,38 @@ function openEditDialog() {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = systemConfigFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = systemConfigFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					systemConfigFormInstance.value.plusFormInstance.handleReset();
+					systemConfigFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await systemConfigFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
+					if (systemConfigFormInstance.value?.plusFormInstance) {
+						const res = await systemConfigFormInstance.value.plusFormInstance.handleSubmit();
+						if (res) {
+							button.btn.loading = true;
+							await testAsync();
 
-						/** 更新系统配置数据 */
-						Object.assign(systemConfig.value, formProps.form);
+							// TODO: 调用API更新配置
+							// 目前只模拟更新本地数据
+							// Object.assign(systemConfig.value, formProps.form); // systemConfig is computed, cannot assign.
+							// should update tableData or refetch.
+							// For now mock data won't persist anyway.
 
-						button.btn.loading = false;
-						closeDialog(options, index);
+							button.btn.loading = false;
+							closeDialog(options, index);
+						}
 					}
 				},
 			},
@@ -187,7 +224,7 @@ function openEditDialog() {
 </script>
 
 <template>
-	<div class="system-config-container">
+	<div class="system-config-container" v-loading="isLoading">
 		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">

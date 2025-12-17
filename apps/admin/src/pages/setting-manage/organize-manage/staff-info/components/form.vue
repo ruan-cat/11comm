@@ -3,14 +3,14 @@
   用于新增 修改员工信息
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
 
-import { StaffInfoFormProps, 员工信息表单数据, defaultForm } from "./form.ts";
+import { type StaffInfoFormProps, type StaffInfoFormVO } from "./form.ts";
 
 const props = defineProps<StaffInfoFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 员工信息表单数据;
+const defaultValues = props.defaultValues as FieldValues & StaffInfoFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 员工信息表单数据;
+const toRefForm = cloneDeep(props.form) as FieldValues & StaffInfoFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 员工名称
 	{
 		label: "员工名称",
-		prop: "员工名称",
+		prop: "name",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请填写员工名称（2-10位）",
@@ -61,7 +61,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 员工性别
 	{
 		label: "员工性别",
-		prop: "员工性别",
+		prop: "gender",
 		valueType: "select",
 		options: [
 			{ label: "男", value: "男" },
@@ -76,7 +76,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 员工岗位
 	{
 		label: "员工岗位",
-		prop: "员工岗位",
+		prop: "position",
 		valueType: "select",
 		options: [
 			{ label: "普通员工", value: "普通员工" },
@@ -98,7 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 员工邮箱
 	{
 		label: "员工邮箱",
-		prop: "员工邮箱",
+		prop: "email",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请填写员工邮箱",
@@ -118,7 +118,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 手机
 	{
 		label: "手机",
-		prop: "手机",
+		prop: "phone",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请填写手机",
@@ -140,7 +140,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 家庭住址
 	{
 		label: "家庭住址",
-		prop: "家庭住址",
+		prop: "address",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请填写家庭住址",
@@ -151,7 +151,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 关联组织
 	{
 		label: "关联组织",
-		prop: "关联组织",
+		prop: "orgName",
 		valueType: "select",
 		options: [
 			{ label: "中航物业1", value: "中航物业1" },
@@ -174,7 +174,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 照片
 	{
 		label: "照片",
-		prop: "照片",
+		prop: "avatar",
 	},
 ]);
 

@@ -1,38 +1,38 @@
-import type { ScheduleType } from "@01s-11comm/type";
+import type { ScheduleType, WorkingSchedule } from "@01s-11comm/type";
 
 /** 排班表表单业务接口 */
-export interface 排班表表单_VO {
+export interface WorkingScheduleFormVO extends Partial<WorkingSchedule> {
 	/** 排班名称 */
-	排班名称: string;
+	name: string;
 	/** 排班类型 */
-	排班类型: ScheduleType;
+	type: ScheduleType;
 	/** 开始时间 */
-	开始时间: string;
+	startTime: string;
 	/** 结束时间 */
-	结束时间: string;
+	endTime: string;
 	/** 星期几 */
-	星期几: number;
+	weekday: number;
 	/** 负责人姓名 */
-	负责人姓名: string;
+	managerName: string;
 	/** 联系电话 */
-	联系电话: string;
+	phone: string;
 	/** 排班描述 */
-	排班描述: string;
+	description: string;
 	/** 是否启用 */
-	是否启用: boolean;
+	enabled: boolean;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 排班表表单_VO = {
-	排班名称: "",
-	排班类型: "morning",
-	开始时间: "",
-	结束时间: "",
-	星期几: 1,
-	负责人姓名: "",
-	联系电话: "",
-	排班描述: "",
-	是否启用: true,
+export const defaultForm: WorkingScheduleFormVO = {
+	name: "",
+	type: "morning",
+	startTime: "",
+	endTime: "",
+	weekday: 1,
+	managerName: "",
+	phone: "",
+	description: "",
+	enabled: true,
 };
 
 /**
@@ -42,7 +42,7 @@ export const defaultForm: 排班表表单_VO = {
  */
 export interface WorkingScheduleFormProps {
 	/** 表单数据 */
-	form: 排班表表单_VO;
+	form: WorkingScheduleFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 排班表表单_VO;
+	defaultValues: WorkingScheduleFormVO;
 }

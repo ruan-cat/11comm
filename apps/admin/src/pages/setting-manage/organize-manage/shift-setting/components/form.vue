@@ -3,14 +3,18 @@
   用于新增 修改班次设置
 -->
 <script lang="ts" setup>
-import { ref, computed, reactive, useTemplateRef } from "vue";
+import { useTemplateRef, computed, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import type { FieldValues, PlusColumn, PlusFormRules } from "plus-pro-components";
+import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { ShiftSettingFormProps, 班次设置表单_VO } from "./form";
+import { type ShiftSettingFormProps, type ShiftSettingFormVO } from "./form";
+import { shiftTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<ShiftSettingFormProps & { mode: Mode }>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 班次设置表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ShiftSettingFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +28,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 班次设置表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ShiftSettingFormVO;
 
 /**
  * 表单对象
@@ -41,7 +45,7 @@ const formComputed = computed(() => {
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "班次名称",
-		prop: "班次名称",
+		prop: "name",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -49,29 +53,48 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: "时段",
-		prop: "时段",
-		valueType: "input",
-		required: true,
-		fieldProps: {
-			disabled: props.mode === "info",
-		},
-	},
-	{
-		label: "状态",
-		prop: "状态",
+		label: "班次类型",
+		prop: "type",
 		valueType: "select",
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "停止", value: "停止" },
-		],
+		options: shiftTypeOptions,
+		required: true,
 		fieldProps: {
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "备注说明",
-		prop: "备注说明",
+		label: "开始时间",
+		prop: "startTime",
+		valueType: "time-picker",
+		required: true,
+		fieldProps: {
+			format: "HH:mm",
+			valueFormat: "HH:mm",
+			disabled: props.mode === "info",
+		},
+	},
+	{
+		label: "结束时间",
+		prop: "endTime",
+		valueType: "time-picker",
+		required: true,
+		fieldProps: {
+			format: "HH:mm",
+			valueFormat: "HH:mm",
+			disabled: props.mode === "info",
+		},
+	},
+	{
+		label: "是否启用",
+		prop: "enabled",
+		valueType: "switch",
+		fieldProps: {
+			disabled: props.mode === "info",
+		},
+	},
+	{
+		label: "描述",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			disabled: props.mode === "info",
@@ -81,9 +104,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 
 // 表单验证规则
 const plusFormRules = ref<PlusFormRules>({
-	班次名称: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
-	时段: [{ required: true, message: "请输入时段", trigger: "blur" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	name: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
+	type: [{ required: true, message: "请选择班次类型", trigger: "change" }],
+	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
 });
 
 // 对外导出表单实例和表单对象

@@ -1,39 +1,41 @@
+import type { SystemConfig } from "@01s-11comm/type";
+
 /** 系统配置表单数据类型 */
-export interface SystemConfigForm {
+export interface SystemConfigFormVO extends Partial<SystemConfig> {
 	/** 标题名称 */
-	title?: string;
+	title: string;
 	/** 副标题 */
-	subtitle?: string;
+	subtitle: string;
 	/** 简写标题 */
-	shortName?: string;
+	shortName: string;
 	/** 公司名称 */
-	companyName?: string;
+	companyName: string;
 	/** logo地址 */
-	logoUrl?: string;
+	logoUrl: string;
 	/** 静态url */
-	staticUrl?: string;
+	staticUrl: string;
 	/** 默认小区编号 */
-	defaultCommunityCode?: string;
+	defaultCommunityCode: string;
 	/** 业主标题 */
-	ownerTitle?: string;
+	ownerTitle: string;
 	/** 物业手机标题 */
-	propertyMobileTitle?: string;
+	propertyMobileTitle: string;
 	/** qq地图key */
-	qqMapKey?: string;
+	qqMapKey: string;
 	/** 商城地址 */
-	mallUrl?: string;
+	mallUrl: string;
 }
 
 /** 系统配置表单组件Props类型 */
 export interface SystemConfigFormProps {
 	/** 表单数据 */
-	form: SystemConfigForm;
+	form: SystemConfigFormVO;
 	/** 默认值 */
-	defaultValues: SystemConfigForm;
+	defaultValues: SystemConfigFormVO;
 }
 
 /** 默认表单对象 */
-export const defaultForm: SystemConfigForm = {
+export const defaultForm: SystemConfigFormVO = {
 	title: "",
 	subtitle: "",
 	shortName: "",

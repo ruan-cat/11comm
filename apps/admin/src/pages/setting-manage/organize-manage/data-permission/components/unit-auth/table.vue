@@ -1,22 +1,34 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { cloneDeep } from "lodash-es";
+import { useToggle } from "@vueuse/core";
+import { sleep } from "@antfu/utils";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useDoBeforeClose } from "@/components/ReDialog/utils";
+import { message } from "@/utils/message";
+
 import { type UnitAuthFormProps, defaultForm } from "./form";
 import UnitAuthForm from "./form.vue";
 
+interface UnitAuthItem {
+	building: string;
+	unit: string;
+}
+
 /** 表格数据 */
-const tableData = ref<单元授权_列表数据[]>(unitAuthTableData);
+const tableData = ref<UnitAuthItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
 		label: "楼栋",
-		prop: "楼栋",
+		prop: "building",
 		minWidth: 200,
 	},
 	{
 		label: "单元",
-		prop: "单元",
+		prop: "unit",
 		minWidth: 200,
 	},
 	{
@@ -99,8 +111,10 @@ function openUnitAuthDialog() {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = unitAuthFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = unitAuthFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
@@ -108,8 +122,10 @@ function openUnitAuthDialog() {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = unitAuthFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = unitAuthFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
@@ -119,7 +135,7 @@ function openUnitAuthDialog() {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
-					unitAuthFormInstance.value.plusFormInstance.handleReset();
+					unitAuthFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -128,6 +144,7 @@ function openUnitAuthDialog() {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 获取选中的数据
+					if (!unitAuthFormInstance.value) return;
 					const selectedData = unitAuthFormInstance.value.getSelectedData();
 
 					if (!selectedData || selectedData.length === 0) {
@@ -141,8 +158,8 @@ function openUnitAuthDialog() {
 
 					// 添加到表格数据
 					const newData = selectedData.map((item) => ({
-						楼栋: item.楼栋编号,
-						单元: item.单元编号,
+						building: item.buildingCode,
+						unit: item.unitCode,
 					}));
 
 					tableData.value.push(...newData);
@@ -157,9 +174,9 @@ function openUnitAuthDialog() {
 }
 
 /** 删除操作 */
-function handleDelete(row: 单元授权_列表数据) {
+function handleDelete(row: UnitAuthItem) {
 	console.log("删除单元授权", row);
-	const index = tableData.value.findIndex((item) => item.楼栋 === row.楼栋 && item.单元 === row.单元);
+	const index = tableData.value.findIndex((item) => item.building === row.building && item.unit === row.unit);
 	if (index > -1) {
 		tableData.value.splice(index, 1);
 		pagination.value.total = tableData.value.length;

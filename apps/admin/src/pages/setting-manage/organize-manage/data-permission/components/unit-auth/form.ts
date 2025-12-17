@@ -1,19 +1,19 @@
 /** 楼栋单元选择表单数据 */
-export interface 楼栋单元选择表单_VO {
-	楼栋编号: string;
-	单元编号: string;
+export interface UnitSelectionFormVO {
+	buildingCode: string;
+	unitCode: string;
 }
 
 /** 楼栋单元搜索条件 */
-export interface 楼栋单元搜索_VO {
-	楼栋编号?: string;
-	单元编号?: string;
+export interface UnitSelectionSearchVO {
+	buildingCode?: string;
+	unitCode?: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 楼栋单元选择表单_VO = {
-	楼栋编号: "",
-	单元编号: "",
+export const defaultForm: UnitSelectionFormVO = {
+	buildingCode: "",
+	unitCode: "",
 };
 
 /**
@@ -23,52 +23,52 @@ export const defaultForm: 楼栋单元选择表单_VO = {
  */
 export interface UnitAuthFormProps {
 	/** 表单数据 */
-	form: 楼栋单元选择表单_VO;
+	form: UnitSelectionFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 楼栋单元选择表单_VO;
+	defaultValues: UnitSelectionFormVO;
 }
 
 /** 楼栋单元选择列表数据 */
-export interface 楼栋单元选择列表_VO {
-	楼栋编号: string;
-	单元编号: string;
+export interface UnitSelectionItemVO {
+	buildingCode: string;
+	unitCode: string;
 }
 
 /** 楼栋单元选择弹框的搜索栏配置 */
-export const 楼栋单元选择弹框搜索数据: 楼栋单元选择列表_VO[] = [
-	{ 楼栋编号: "8", 单元编号: "0" },
-	{ 楼栋编号: "CBZMQ", 单元编号: "0" },
-	{ 楼栋编号: "CBZMQ", 单元编号: "1" },
-	{ 楼栋编号: "11111111", 单元编号: "1" },
-	{ 楼栋编号: "B1", 单元编号: "1" },
-	{ 楼栋编号: "测试0611", 单元编号: "0" },
-	{ 楼栋编号: "999999", 单元编号: "1" },
-	{ 楼栋编号: "33", 单元编号: "0" },
-	{ 楼栋编号: "3", 单元编号: "2" },
-	{ 楼栋编号: "3", 单元编号: "1" },
-	{ 楼栋编号: "A1", 单元编号: "1" },
-	{ 楼栋编号: "A1", 单元编号: "2" },
-	{ 楼栋编号: "A2", 单元编号: "1" },
-	{ 楼栋编号: "A2", 单元编号: "2" },
-	{ 楼栋编号: "A3", 单元编号: "1" },
-	{ 楼栋编号: "A3", 单元编号: "2" },
-	{ 楼栋编号: "B2", 单元编号: "1" },
-	{ 楼栋编号: "B2", 单元编号: "2" },
-	{ 楼栋编号: "B3", 单元编号: "1" },
-	{ 楼栋编号: "B3", 单元编号: "2" },
-	{ 楼栋编号: "C1", 单元编号: "1" },
-	{ 楼栋编号: "C1", 单元编号: "2" },
-	{ 楼栋编号: "C2", 单元编号: "1" },
-	{ 楼栋编号: "C2", 单元编号: "2" },
-	{ 楼栋编号: "C3", 单元编号: "1" },
-	{ 楼栋编号: "C3", 单元编号: "2" },
-	{ 楼栋编号: "D1", 单元编号: "1" },
-	{ 楼栋编号: "D1", 单元编号: "2" },
-	{ 楼栋编号: "D2", 单元编号: "1" },
-	{ 楼栋编号: "D2", 单元编号: "2" },
-	{ 楼栋编号: "E1", 单元编号: "1" },
-	{ 楼栋编号: "E1", 单元编号: "2" },
-	{ 楼栋编号: "E2", 单元编号: "1" },
-	{ 楼栋编号: "E2", 单元编号: "2" },
-	{ 楼栋编号: "F1", 单元编号: "1" },
+export const unitSelectionMockData: UnitSelectionItemVO[] = [
+	{ buildingCode: "8", unitCode: "0" },
+	{ buildingCode: "CBZMQ", unitCode: "0" },
+	{ buildingCode: "CBZMQ", unitCode: "1" },
+	{ buildingCode: "11111111", unitCode: "1" },
+	{ buildingCode: "B1", unitCode: "1" },
+	{ buildingCode: "测试0611", unitCode: "0" },
+	{ buildingCode: "999999", unitCode: "1" },
+	{ buildingCode: "33", unitCode: "0" },
+	{ buildingCode: "3", unitCode: "2" },
+	{ buildingCode: "3", unitCode: "1" },
+	{ buildingCode: "A1", unitCode: "1" },
+	{ buildingCode: "A1", unitCode: "2" },
+	{ buildingCode: "A2", unitCode: "1" },
+	{ buildingCode: "A2", unitCode: "2" },
+	{ buildingCode: "A3", unitCode: "1" },
+	{ buildingCode: "A3", unitCode: "2" },
+	{ buildingCode: "B2", unitCode: "1" },
+	{ buildingCode: "B2", unitCode: "2" },
+	{ buildingCode: "B3", unitCode: "1" },
+	{ buildingCode: "B3", unitCode: "2" },
+	{ buildingCode: "C1", unitCode: "1" },
+	{ buildingCode: "C1", unitCode: "2" },
+	{ buildingCode: "C2", unitCode: "1" },
+	{ buildingCode: "C2", unitCode: "2" },
+	{ buildingCode: "C3", unitCode: "1" },
+	{ buildingCode: "C3", unitCode: "2" },
+	{ buildingCode: "D1", unitCode: "1" },
+	{ buildingCode: "D1", unitCode: "2" },
+	{ buildingCode: "D2", unitCode: "1" },
+	{ buildingCode: "D2", unitCode: "2" },
+	{ buildingCode: "E1", unitCode: "1" },
+	{ buildingCode: "E1", unitCode: "2" },
+	{ buildingCode: "E2", unitCode: "1" },
+	{ buildingCode: "E2", unitCode: "2" },
+	{ buildingCode: "F1", unitCode: "1" },
 ];

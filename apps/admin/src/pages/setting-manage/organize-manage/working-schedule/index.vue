@@ -8,16 +8,24 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useDoBeforeClose } from "@/components/ReDialog/utils";
 
 import type { WorkingSchedule, WorkingScheduleListQuery, ScheduleType } from "@01s-11comm/type";
 import { useWorkingScheduleListQuery } from "@/api/setting-manage/organize-manage/working-schedule";
+
+import { WorkingScheduleFormProps, defaultForm } from "./components/form";
+import WorkingScheduleForm from "./components/form.vue";
+
+/** 表单组件实例引用 */
+const workingScheduleFormInstance = ref<InstanceType<typeof WorkingScheduleForm> | null>(null);
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -205,12 +213,127 @@ async function handleCurrentPageChange(val: number) {
 	pageIndex.value = val;
 }
 
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: WorkingSchedule;
+}
+
+const defaultAddDialogParams = {
+	width: "50%",
+	draggable: true,
+	fullscreenIcon: true,
+	closeOnClickModal: false,
+	contentRenderer: () => h("div"),
+};
+
+/** 打开弹框 */
+function openDialog({ mode, row }: OpenDialogParams) {
+	setMode(mode);
+
+	/** 弹框标题 */
+	const title = `${modeText.value}排班`;
+
+	/** 表单组件需要的props */
+	const formProps: WorkingScheduleFormProps = {
+		form: cloneDeep(defaultForm),
+		defaultValues: cloneDeep(defaultForm),
+	};
+
+	const editProps: WorkingScheduleFormProps = {
+		form: {
+			name: row?.name || "",
+			type: row?.type || "morning",
+			startTime: row?.startTime || "",
+			endTime: row?.endTime || "",
+			weekday: row?.weekday || 1,
+			managerName: row?.managerName || "",
+			phone: row?.phone || "",
+			description: row?.description || "",
+			enabled: row?.enabled ?? true,
+		},
+		defaultValues: {
+			name: row?.name || "",
+			type: row?.type || "morning",
+			startTime: row?.startTime || "",
+			endTime: row?.endTime || "",
+			weekday: row?.weekday || 1,
+			managerName: row?.managerName || "",
+			phone: row?.phone || "",
+			description: row?.description || "",
+			enabled: row?.enabled ?? true,
+		},
+	};
+
+	/** 弹框组件所需的变量 */
+	const props = isAdd.value ? formProps : editProps;
+
+	/** 根据不同模式下 变化的表单默认重置对象 */
+	const defaultValues = props.defaultValues;
+
+	addDialog({
+		...defaultAddDialogParams,
+		title,
+		props,
+
+		contentRenderer: () =>
+			h(WorkingScheduleForm, {
+				ref: workingScheduleFormInstance,
+				...props,
+			}),
+
+		async doBeforeClose({ options, index }) {
+			const formComputed = workingScheduleFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
+		},
+
+		footerButtons: [
+			{
+				label: transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					const formComputed = workingScheduleFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				btnClick: ({ dialog: { options, index }, button }) => {
+					// 手动重置表单
+					workingScheduleFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+
+			{
+				label: transformI18n($t("common.buttons.submit")),
+				type: "success",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					// 提交表单时 校验
+					const res = await workingScheduleFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+					}
+				},
+			},
+		],
+	});
+}
+
 function handleAddSchedule() {
-	console.log("添加排班");
+	openDialog({ mode: "add" });
 }
 
 function handleEditSchedule(row: WorkingSchedule) {
-	console.log("编辑排班:", row);
+	openDialog({ mode: "edit", row });
 }
 
 function handleDeleteSchedule(row: WorkingSchedule) {

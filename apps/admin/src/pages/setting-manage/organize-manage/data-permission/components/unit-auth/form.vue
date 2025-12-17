@@ -7,16 +7,16 @@ import { ref, computed, useTemplateRef } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import {
 	UnitAuthFormProps,
-	楼栋单元选择表单_VO,
-	楼栋单元选择列表_VO,
-	楼栋单元选择弹框搜索数据,
-	楼栋单元搜索_VO,
+	type UnitSelectionFormVO,
+	type UnitSelectionItemVO,
+	unitSelectionMockData,
+	type UnitSelectionSearchVO,
 } from "./form";
 
 const props = defineProps<UnitAuthFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 楼栋单元选择表单_VO;
+const defaultValues = props.defaultValues as FieldValues & UnitSelectionFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef<any>("plusFormRef");
@@ -30,7 +30,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 楼栋单元选择表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & UnitSelectionFormVO;
 
 /**
  * 表单对象
@@ -44,34 +44,34 @@ const formComputed = computed(() => {
 });
 
 /** 搜索表单 */
-const searchForm = ref<楼栋单元搜索_VO>({
-	楼栋编号: "",
-	单元编号: "",
+const searchForm = ref<UnitSelectionSearchVO>({
+	buildingCode: "",
+	unitCode: "",
 });
 
 /** 搜索栏配置 */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "输入楼栋编号",
-		prop: "楼栋编号",
+		prop: "buildingCode",
 		valueType: "input",
 	},
 	{
 		label: "输入单元编号",
-		prop: "单元编号",
+		prop: "unitCode",
 		valueType: "input",
 	},
 ]);
 
 /** 表格数据 */
-const tableData = ref<楼栋单元选择列表_VO[]>(楼栋单元选择弹框搜索数据);
+const tableData = ref<UnitSelectionItemVO[]>(unitSelectionMockData);
 
 /** 过滤后的表格数据 */
 const filteredTableData = computed(() => {
 	return tableData.value.filter((item) => {
-		const 楼栋匹配 = !searchForm.value.楼栋编号 || item.楼栋编号.includes(searchForm.value.楼栋编号);
-		const 单元匹配 = !searchForm.value.单元编号 || item.单元编号.includes(searchForm.value.单元编号);
-		return 楼栋匹配 && 单元匹配;
+		const buildingMatch = !searchForm.value.buildingCode || item.buildingCode.includes(searchForm.value.buildingCode);
+		const unitMatch = !searchForm.value.unitCode || item.unitCode.includes(searchForm.value.unitCode);
+		return buildingMatch && unitMatch;
 	});
 });
 
@@ -83,18 +83,18 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		label: "楼栋编号",
-		prop: "楼栋编号",
+		prop: "buildingCode",
 		minWidth: 200,
 	},
 	{
 		label: "单元编号",
-		prop: "单元编号",
+		prop: "unitCode",
 		minWidth: 200,
 	},
 ]);
 
 /** 选中的表格行 */
-const selectedRows = ref<楼栋单元选择列表_VO[]>([]);
+const selectedRows = ref<UnitSelectionItemVO[]>([]);
 
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
@@ -131,14 +131,14 @@ function handleSearch() {
 /** 重置搜索 */
 function handleReset() {
 	searchForm.value = {
-		楼栋编号: "",
-		单元编号: "",
+		buildingCode: "",
+		unitCode: "",
 	};
 	handleSearch();
 }
 
 /** 表格选择变化 */
-function handleSelectionChange(selection: 楼栋单元选择列表_VO[]) {
+function handleSelectionChange(selection: UnitSelectionItemVO[]) {
 	selectedRows.value = selection;
 }
 

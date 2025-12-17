@@ -1,36 +1,47 @@
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef, onMounted, nextTick } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { cloneDeep } from "lodash-es";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
+
 const tableRef = useTemplateRef("tableRef");
 
+interface StaffRelationItem {
+	name: string;
+	phone: string;
+	email: string;
+	address: string;
+	gender: string;
+}
+
 /** 表格数据 */
-const tableData = ref<员工关联_列表数据[]>(staffRelationTableData);
+const tableData = ref<StaffRelationItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		width: 120,
 	},
 	{
 		label: "手机号",
-		prop: "手机号",
+		prop: "phone",
 		width: 150,
 	},
 	{
 		label: "邮箱",
-		prop: "邮箱",
+		prop: "email",
 		width: 200,
 	},
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		minWidth: 150,
 	},
 	{
 		label: "性别",
-		prop: "性别",
+		prop: "gender",
 		width: 80,
 	},
 	{
@@ -73,10 +84,15 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
+interface StaffRelationSearchForm {
+	name?: string;
+	phone?: string;
+}
+
 /** 表格搜索栏双向绑定的变量 */
-const plusSearchModelRef: FieldValues & 员工关联_列表查询_VO = {
-	员工姓名: "",
-	员工手机号: "",
+const plusSearchModelRef: FieldValues & StaffRelationSearchForm = {
+	name: "",
+	phone: "",
 };
 
 /** 表格搜索栏重置功能用的默认数据 */
@@ -89,12 +105,12 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "员工名称",
-		prop: "员工名称",
+		prop: "name",
 		valueType: "input",
 	},
 	{
 		label: "员工手机号",
-		prop: "员工手机号",
+		prop: "phone",
 		valueType: "input",
 	},
 ]);
@@ -117,12 +133,12 @@ async function handleSearch() {
 }
 
 /** 删除操作 */
-function handleDelete(row: 员工关联_列表数据) {
+function handleDelete(row: StaffRelationItem) {
 	console.log("删除员工关联", row);
 }
 
 /** 查看详情 */
-function handleDetail(row: 员工关联_列表数据) {
+function handleDetail(row: StaffRelationItem) {
 	console.log("查看详情", row);
 }
 

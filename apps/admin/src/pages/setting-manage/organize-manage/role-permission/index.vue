@@ -17,10 +17,12 @@ import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
 import { h } from "vue";
 
-import { type RolePermissionFormProps, defaultForm, type 角色权限表单_VO } from "./components/form";
+import { type RolePermissionFormProps, defaultForm, type RolePermissionFormVO } from "./components/form";
 import RolePermissionForm from "./components/form.vue";
-import type { RolePermission } from "@01s-11comm/type";
+import type { RolePermission, RolePermissionListQuery } from "@01s-11comm/type";
 import { useRolePermissionListQuery } from "@/api/setting-manage/organize-manage/role-permission";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useDoBeforeClose } from "@/components/ReDialog/utils";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -53,6 +55,7 @@ const columns = ref<TableColumnList>([
 		label: "状态",
 		prop: "enabled",
 		width: 100,
+		cellRenderer: ({ row }) => (row.enabled ? "启用" : "禁用"),
 	},
 	{
 		label: "描述",
@@ -91,18 +94,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-// PlusSearch 搜索表单数据接口
-interface RolePermissionSearchForm {
-	name?: string;
-	code?: string;
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & RolePermissionSearchForm = {
+const plusSearchModelRef: FieldValues & RolePermissionListQuery = {
 	name: "",
 	code: "",
 };
@@ -155,40 +152,41 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
+const defaultAddDialogParams = {
+	width: "50%",
+	draggable: true,
+	fullscreenIcon: true,
+	closeOnClickModal: false,
+	contentRenderer: () => h("div"),
+};
+
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 角色权限 }) {
+function openDialog(params: { mode: Mode; row?: RolePermission }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
-	const 角色权限表单VO: 角色权限表单_VO = isAdd.value
+	const formVO: RolePermissionFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
 					id: row?.id || "",
-					角色名称: row?.角色名称 || "",
-					角色编码: row?.角色编码 || "",
-					状态: row?.状态 || "启用",
-					描述: row?.描述 || "",
-					权限列表: row?.权限列表 || [],
+					name: row?.name || "",
+					code: row?.code || "",
+					enabled: row?.enabled ?? true,
+					description: row?.description || "",
 				})
 			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: RolePermissionFormProps = {
-		form: 角色权限表单VO,
-		defaultValues: 角色权限表单VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框标题 */
 	const title = `${modeText.value}角色权限`;
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -200,35 +198,42 @@ function openDialog(params: { mode: Mode; row?: 角色权限 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = rolePermissionFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = rolePermissionFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = rolePermissionFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = rolePermissionFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index } }) => {
-					rolePermissionFormInstance.value.plusFormInstance.handleReset();
+					rolePermissionFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await rolePermissionFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
+					if (rolePermissionFormInstance.value?.plusFormInstance) {
+						const res = await rolePermissionFormInstance.value.plusFormInstance.handleSubmit();
+						if (res) {
+							button.btn.loading = true;
+							await testAsync();
+							button.btn.loading = false;
+							closeDialog(options, index);
+							refetch();
+						}
 					}
 				},
 			},
@@ -238,60 +243,33 @@ function openDialog(params: { mode: Mode; row?: 角色权限 }) {
 
 // ========== 事件处理函数 ==========
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = tableData.value;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.角色名称) {
-			filteredData = filteredData.filter((item) => item.角色名称.includes(plusSearchModel.value.角色名称!));
-		}
-		if (plusSearchModel.value.状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		const paginatedData = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = paginatedData;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		name: undefined,
+		code: undefined,
+		pageIndex: 1,
+	});
 }
 
 /** 执行搜索 */
 async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams({
+		name: plusSearchModel.value.name,
+		code: plusSearchModel.value.code,
+		pageIndex: 1,
+	});
 }
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+async function handlePageSizeChange(val: number) {
+	pageSize.value = val;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+async function handleCurrentPageChange(val: number) {
+	pageIndex.value = val;
 }
 
 // 表格操作函数
@@ -299,22 +277,21 @@ function handleAdd() {
 	openDialog({ mode: "add" });
 }
 
-function handleEdit(row: 角色权限) {
+function handleEdit(row: RolePermission) {
 	openDialog({ mode: "edit", row });
 }
 
-function handleDelete(row: 角色权限) {
-	ElMessage.warning(`删除功能暂未实现: ${row.角色名称}`);
+function handleDelete(row: RolePermission) {
+	ElMessage.warning(`删除功能暂未实现: ${row.name}`);
 }
 
-function handleViewPermissions(row: 角色权限) {
-	ElMessage.info(`查看权限功能暂未实现: ${row.角色名称}`);
+function handleViewPermissions(row: RolePermission) {
+	ElMessage.info(`查看权限功能暂未实现: ${row.name}`);
 }
 
 // ========== 生命周期 ==========
 onMounted(async () => {
-	// 加载表格数据
-	await loadTableData();
+	// 加载表格数据 (auto loaded by hook)
 });
 </script>
 

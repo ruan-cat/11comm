@@ -8,24 +8,39 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type CommunityConfigurationFormProps,
-	defaultForm,
-} from "./components/form";
+import { type CommunityConfigurationFormProps, defaultForm, type CommunityConfigurationFormVO } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
+import type { CommunityConfiguration, CommunityConfigurationListQuery } from "@01s-11comm/type";
+import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
+import { useCommunityConfigurationListQuery } from "@/api/setting-manage/system-manage/community-configuration";
+import { cloneDeep } from "@pureadmin/utils";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
+import { useToggle } from "@vueuse/core";
+import { sleep } from "@antfu/utils";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useDoBeforeClose } from "@/components/ReDialog/utils";
 
-/** 表格数据 */
-const tableData = ref<小区配置_列表数据[]>([]);
+// 使用小区配置列表查询 Hook
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isLoading,
+	updateParams,
+	refetch,
+	resetParams,
+} = useCommunityConfigurationListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		width: 150,
 		fixed: true,
 	},
@@ -46,7 +61,7 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		label: "状态",
-		prop: "状态文本",
+		prop: "statusText",
 		width: 100,
 	},
 	{
@@ -56,12 +71,12 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 160,
 	},
 	{
 		label: "更新时间",
-		prop: "更新时间",
+		prop: "updateTime",
 		width: 160,
 	},
 	{
@@ -74,32 +89,31 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
 
 /** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
+async function handlePageSizeChange(val: number) {
+	pageSize.value = val;
 }
 
 /** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
+async function handleCurrentPageChange(val: number) {
+	pageIndex.value = val;
 }
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
-	columns: [],
+	columns: columns.value,
 	pagination: pagination.value,
-});
+	loading: isLoading.value,
+}));
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -107,54 +121,13 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 替换为真实的API调用
-		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
-
-		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.小区名称) {
-			filteredData = filteredData.filter((item) =>
-				item.小区名称.includes(plusSearchModel.value.小区名称!)
-			);
-		}
-		if (plusSearchModel.value.settingName) {
-			filteredData = filteredData.filter((item) =>
-				item.settingName.includes(plusSearchModel.value.settingName!)
-			);
-		}
-		if (plusSearchModel.value.settingType) {
-			filteredData = filteredData.filter((item) => item.settingType === plusSearchModel.value.settingType);
-		}
-		if (plusSearchModel.value.statusCd) {
-			filteredData = filteredData.filter((item) => item.statusCd === plusSearchModel.value.statusCd);
-		}
-
-		// 更新总数
-		pagination.value.total = filteredData.length;
-
-		// 分页处理
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		// 更新表格配置
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		// TODO: 显示错误提示
-	}
-}
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 小区配置_列表查询_VO = {
-	小区名称: "",
+const plusSearchModelRef: FieldValues & CommunityConfigurationListQuery = {
+	communityName: "",
 	settingName: "",
 	settingType: "",
 	statusCd: "",
@@ -174,7 +147,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 小区名称 */
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		valueType: "input",
 	},
 
@@ -214,14 +187,12 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
 async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	updateParams(plusSearchModel.value);
 }
 
 /** 模式控制 */
@@ -241,20 +212,28 @@ async function testAsync() {
 	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
+const defaultAddDialogParams = {
+	width: "50%",
+	draggable: true,
+	fullscreenIcon: true,
+	closeOnClickModal: false,
+	contentRenderer: () => h("div"),
+};
+
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
-	const 小区配置表单_VO: 小区配置表单_VO = isAdd.value
+	const formVO: CommunityConfigurationFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
 					csId: row?.csId || "",
 					communityId: row?.communityId || "",
-					小区名称: row?.小区名称 || "",
+					communityName: row?.communityName || "",
 					settingName: row?.settingName || "",
 					settingValue: row?.settingValue || "",
 					settingType: row?.settingType || "",
@@ -265,8 +244,8 @@ function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
 
 	/** 表单组件需要的props */
 	const formProps: CommunityConfigurationFormProps = {
-		form: 小区配置表单_VO,
-		defaultValues: 小区配置表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框标题 */
@@ -285,8 +264,10 @@ function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = communityConfigurationFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = communityConfigurationFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
@@ -294,8 +275,10 @@ function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** console.log(options, index, button); */
-					const formComputed = communityConfigurationFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = communityConfigurationFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
@@ -304,7 +287,7 @@ function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					communityConfigurationFormInstance.value.plusFormInstance.handleReset();
+					communityConfigurationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -313,13 +296,15 @@ function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await communityConfigurationFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-						await loadTableData();
+					if (communityConfigurationFormInstance.value?.plusFormInstance) {
+						const res = await communityConfigurationFormInstance.value.plusFormInstance.handleSubmit();
+						if (res) {
+							button.btn.loading = true;
+							await testAsync();
+							button.btn.loading = false;
+							closeDialog(options, index);
+							refetch();
+						}
 					}
 				},
 			},
@@ -328,7 +313,7 @@ function openDialog(params: { mode: Mode; row?: 小区配置_列表数据 }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// 数据自动加载
 });
 </script>
 
