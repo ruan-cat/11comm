@@ -12,7 +12,6 @@ export * from "./register-protocol";
 export type {
 	CommunityConfigListItem,
 	CommunityConfigQueryParams,
-	CommunityConfigFormVO,
 } from "../../operation-team/system-manage/community-configuration";
 
 export {
@@ -20,5 +19,9 @@ export {
 	communityConfigStatusOptions,
 } from "../../operation-team/system-manage/community-configuration";
 
-// 本地小区配置接口（不包含重复的选项常量）
-export type { CommunityConfiguration, CommunityConfigurationListQuery } from "./community-configuration";
+// 本地小区配置接口
+export type {
+	CommunityConfiguration,
+	CommunityConfigurationListQuery,
+	SettingCommunityConfigFormVO,
+} from "./community-configuration";

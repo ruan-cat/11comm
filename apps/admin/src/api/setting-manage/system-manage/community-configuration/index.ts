@@ -13,11 +13,13 @@ const QUERY_KEY_PREFIX = "communityConfiguration";
 
 /**
  * 小区配置列表查询 Hook
+ * Community configuration list query hook
  */
-export function useCommunityConfigurationListQuery() {
+export function useCommunityConfigurationListQuery(initialParams: Partial<CommunityConfigurationListQuery>) {
 	return useListQuery<CommunityConfiguration, CommunityConfigurationListQuery>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams, // 必须传递
 	});
 }
 

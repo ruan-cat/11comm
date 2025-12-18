@@ -183,16 +183,16 @@
 
 **路由路径**：`settingManage.systemManage.communityConfiguration`
 
-- [ ] Task 1.12.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/community-configuration.ts`
-- [ ] Task 1.12.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/community-configuration/mock-data.ts`
-- [ ] Task 1.12.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/community-configuration/list.post.ts`
-- [ ] Task 1.12.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/community-configuration/index.ts`
-- [ ] Task 1.12.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/index.vue`
-- [ ] Task 1.12.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/test-data.ts`
+- [x] Task 1.12.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/community-configuration.ts`
+- [x] Task 1.12.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/community-configuration/mock-data.ts`
+- [x] Task 1.12.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/community-configuration/list.post.ts`
+- [x] Task 1.12.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/community-configuration/index.ts`
+- [x] Task 1.12.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/index.vue`
+- [x] Task 1.12.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/test-data.ts`
 - [x] Task 1.12.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/components/form.ts`
-- [ ] Task 1.12.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/components/form.vue`
-- [ ] Task 1.12.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 1.12.10: 测试验证
+- [x] Task 1.12.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/components/form.vue`
+- [x] Task 1.12.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 1.12.10: 测试验证
 
 ### 2. devTeam（开发团队）- 8 个三级路由
 

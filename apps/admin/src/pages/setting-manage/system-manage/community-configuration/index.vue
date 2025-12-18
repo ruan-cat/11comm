@@ -11,13 +11,13 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type CommunityConfigurationFormProps,
-	defaultForm,
-	type CommunityConfigurationFormVO,
-} from "./components/form";
+import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
-import type { CommunityConfiguration, CommunityConfigurationListQuery } from "@01s-11comm/type";
+import type {
+	CommunityConfiguration,
+	CommunityConfigurationListQuery,
+	SettingCommunityConfigFormVO,
+} from "@01s-11comm/type";
 import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
 import { useCommunityConfigurationListQuery } from "@/api/setting-manage/system-manage/community-configuration";
 import { cloneDeep } from "@pureadmin/utils";
@@ -26,102 +26,12 @@ import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 
-// 使用小区配置列表查询 Hook
-const { tableData, total, pageIndex, pageSize, isFetching, updateParams, doFetch, resetParams } =
-	useCommunityConfigurationListQuery();
-
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "小区名称",
-		prop: "communityName",
-		width: 150,
-		fixed: true,
-	},
-	{
-		label: "设置名称",
-		prop: "settingName",
-		width: 150,
-	},
-	{
-		label: "设置值",
-		prop: "settingValue",
-		width: 120,
-	},
-	{
-		label: "设置类型",
-		prop: "settingType",
-		width: 120,
-	},
-	{
-		label: "状态",
-		prop: "statusText",
-		width: 100,
-	},
-	{
-		label: "备注",
-		prop: "remark",
-		minWidth: 200,
-	},
-	{
-		label: "创建时间",
-		prop: "createTime",
-		width: 160,
-	},
-	{
-		label: "更新时间",
-		prop: "updateTime",
-		width: 160,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "小区配置",
-	columns: columns.value,
-});
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & CommunityConfigurationListQuery = {
+const plusSearchModelRef: FieldValues & Partial<CommunityConfigurationListQuery> = {
 	communityName: "",
 	settingName: "",
 	settingType: "",
@@ -179,15 +89,86 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useCommunityConfigurationListQuery(plusSearchDefaultValues);
+
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "小区名称",
+		prop: "communityName",
+		width: 150,
+		fixed: true,
+	},
+	{
+		label: "设置名称",
+		prop: "settingName",
+		width: 150,
+	},
+	{
+		label: "设置值",
+		prop: "settingValue",
+		width: 120,
+	},
+	{
+		label: "设置类型",
+		prop: "settingType",
+		width: 120,
+	},
+	{
+		label: "状态",
+		prop: "statusText",
+		width: 100,
+	},
+	{
+		label: "备注",
+		prop: "remark",
+		minWidth: 200,
+	},
+	{
+		label: "创建时间",
+		prop: "createTime",
+		width: 160,
+	},
+	{
+		label: "更新时间",
+		prop: "updateTime",
+		width: 160,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "小区配置",
+	columns: columns.value,
+});
+
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	updateParams(plusSearchModel.value);
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 模式控制 */
@@ -221,7 +202,7 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const formVO: CommunityConfigurationFormVO = isAdd.value
+	const formVO: SettingCommunityConfigFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({

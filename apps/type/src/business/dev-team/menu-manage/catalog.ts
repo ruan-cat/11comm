@@ -1,4 +1,4 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
  * @description 菜单组类型
@@ -45,17 +45,13 @@ export interface MenuCatalogListItem {
  * @description 菜单目录列表查询参数
  * Menu catalog list query parameters
  */
-export interface MenuCatalogQueryParams {
+export interface MenuCatalogQueryParams extends BaseListQueryParams {
 	/** 菜单组名称 Menu group name */
 	name?: string;
 	/** 商户类型 Store type */
 	storeType?: StoreType;
 	/** 组类型 Group type */
 	groupType?: MenuGroupType;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**
