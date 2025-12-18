@@ -19,9 +19,85 @@ import {
 import { openDialog } from "./components/dialog";
 import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ConfigCenterQueryParams> = {
+	configName: "",
+	configType: "",
+	status: "",
+	configKey: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 配置项名称
+	{
+		label: "配置项名称",
+		prop: "configName",
+		valueType: "input",
+	},
+
+	// 配置类型
+	{
+		label: "配置类型",
+		prop: "configType",
+		valueType: "select",
+		options: configTypeOptions,
+	},
+
+	// 状态
+	{
+		label: "状态",
+		prop: "status",
+		valueType: "select",
+		options: configStatusOptions,
+	},
+
+	// 配置键名
+	{
+		label: "配置键名",
+		prop: "configKey",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useConfigCenterListQuery();
+const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, doFetch } =
+	useConfigCenterListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+	// doFetch();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+	// doFetch();
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -131,83 +207,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<ConfigCenterQueryParams> = {
-	configName: "",
-	configType: "",
-	status: "",
-	configKey: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 配置项名称
-	{
-		label: "配置项名称",
-		prop: "configName",
-		valueType: "input",
-	},
-
-	// 配置类型
-	{
-		label: "配置类型",
-		prop: "configType",
-		valueType: "select",
-		options: configTypeOptions,
-	},
-
-	// 状态
-	{
-		label: "状态",
-		prop: "status",
-		valueType: "select",
-		options: configStatusOptions,
-	},
-
-	// 配置键名
-	{
-		label: "配置键名",
-		prop: "configKey",
-		valueType: "input",
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<ConfigCenterQueryParams>);
-}
-
 /** 查看详情 */
 function viewDetails(row: ConfigCenterListItem) {
 	console.log("查看详情", row);
@@ -263,7 +262,7 @@ function importConfig() {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

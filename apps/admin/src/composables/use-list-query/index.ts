@@ -89,17 +89,13 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	/** 当前页码 */
 	const pageIndex = computed({
 		get: () => queryParams.value.pageIndex,
-		set: (val) => {
-			queryParams.value.pageIndex = val;
-		},
+		set: (val) => (queryParams.value.pageIndex = val),
 	});
 
 	/** 每页大小 */
 	const pageSize = computed({
 		get: () => queryParams.value.pageSize,
-		set: (val) => {
-			queryParams.value.pageSize = val;
-		},
+		set: (val) => (queryParams.value.pageSize = val),
 	});
 
 	/** 总页数 */
@@ -113,6 +109,12 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	/** TanStack Query 查询 */
 	const tanStackQueryObject = useQuery({
 		queryKey: queryKey.value,
+		// queryKey: [
+		// 	queryKeyPrefix,
+		// 	JSON.stringify(queryParams.value),
+		// 	queryParams.value.pageIndex,
+		// 	queryParams.value.pageSize,
+		// ],
 		queryFn: async (): Promise<JsonVO<PageDTO<TItem>>> => {
 			const response = await http.post<JsonVO<PageDTO<TItem>>, TParams>(apiUrl, { data: queryParams.value });
 			return (
@@ -145,14 +147,13 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 
 	/** 监听参数变化时更新 queryKey */
 	// 根据 queryKey 完成自动监听与触发
-	// watch(
-	// 	queryParams,
-	// 	() => {
-	// 		console.log("参数变化了 开始请求", queryParams.value);
-	// 		query.refetch();
-	// 	},
-	// 	{ deep: true },
-	// );
+	watch(
+		[() => queryParams.value.pageIndex, () => queryParams.value.pageSize],
+		async () => {
+			await doFetch();
+		},
+		{ deep: true },
+	);
 
 	/** 更新查询参数 */
 	function updateParams(params: Partial<TParams>) {
