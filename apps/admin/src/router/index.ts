@@ -127,8 +127,8 @@ const whiteList = ["/login"];
 
 const { VITE_HIDE_HOME } = import.meta.env;
 
-router.beforeEach((to: ToRouteType, _from, next) => {
-	to.meta.loaded = loadedPaths.has(to.path);
+router.beforeEach((to, _from, next) => {
+	(to.meta as CustomizeRouteMeta).loaded = loadedPaths.has(to.path);
 
 	if (!to.meta.loaded) {
 		NProgress.start();
@@ -145,10 +145,11 @@ router.beforeEach((to: ToRouteType, _from, next) => {
 	const externalLink = isUrl(to?.name as string);
 	if (!externalLink) {
 		to.matched.some((item) => {
-			if (!item.meta.title) return "";
+			if (!item.meta.title) return false;
 			const Title = getConfig().Title;
 			if (Title) document.title = `${transformI18n(item.meta.title)} | ${Title}`;
 			else document.title = transformI18n(item.meta.title);
+			return false;
 		});
 	}
 	/** 如果已经登录并存在登录信息后不能跳转到路由白名单，而是继续保持在当前页面 */
