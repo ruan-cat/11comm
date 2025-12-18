@@ -44,9 +44,9 @@
 
 #### Scenario: Hook 文件位置
 
-- **GIVEN** 页面路径 `src\pages\dev-team\config-manage\center\index.vue`
+- **GIVEN** 页面路径 `src/pages/dev-team/config-manage/center/index.vue`
 - **WHEN** 创建查询 Hook
-- **THEN** 文件路径为 `apps\admin\src\api\dev-team\config-manage\center\index.ts`
+- **THEN** 文件路径为 `src/api/dev-team/config-manage/center/index.ts`
 
 #### Scenario: Hook 命名规范
 
@@ -57,7 +57,7 @@
 
 #### Scenario: Hook 实现
 
-- **GIVEN** apps\admin\src\api\dev-team\config-manage\center\index.ts
+- **GIVEN** src/api/dev-team/config-manage/center/index.ts
 - **WHEN** 编写 Hook 代码
 - **THEN** 代码为：
 
@@ -98,7 +98,7 @@ export default useConfigCenterListQuery;
 
 #### Scenario: apiUrl 路径正确
 
-- **GIVEN** Nitro 接口 `apps\admin\server\api\dev-team\config-manage\center\list.post.ts`
+- **GIVEN** Nitro 接口 `server/api/dev-team/config-manage/center/list.post.ts`
 - **WHEN** 配置 apiUrl
 - **THEN** apiUrl = "/api/dev-team/config-manage/center/list"
 - **AND** 路径与接口文件对应
