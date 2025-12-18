@@ -1,4 +1,4 @@
-import type { CommunityInformationListItem } from "@01s-11comm/type";
+import type { CommunityInfoListItem } from "@01s-11comm/type";
 
 /**
  * @description 小区信息模拟数据

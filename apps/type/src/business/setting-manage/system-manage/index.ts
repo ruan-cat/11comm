@@ -1,6 +1,24 @@
-export * from "./community-configuration";
-export * from "./initialize-cell";
-export * from "./change-password";
+/**
+ * @file 系统管理模块类型导出
+ * @description 统一导出系统管理相关的所有业务类型
+ */
+
 export * from "./system-config";
+export * from "./change-password";
+export * from "./initialize-cell";
 export * from "./register-protocol";
-export * from "./community-configuration";
+
+// 重新导出运营团队的小区配置类型，避免重复定义
+export type {
+	CommunityConfigListItem,
+	CommunityConfigQueryParams,
+	CommunityConfigFormVO,
+} from "../../operation-team/system-manage/community-configuration";
+
+export {
+	settingTypeOptions,
+	communityConfigStatusOptions,
+} from "../../operation-team/system-manage/community-configuration";
+
+// 本地小区配置接口（不包含重复的选项常量）
+export type { CommunityConfiguration, CommunityConfigurationListQuery } from "./community-configuration";

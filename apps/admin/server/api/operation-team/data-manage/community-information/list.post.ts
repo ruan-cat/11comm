@@ -1,42 +1,36 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { CommunityInformationListItem, CommunityInformationQueryParams } from "@01s-11comm/type";
+/**
+ * @file 社区信息列表接口
+ * @description Community information list API
+ * POST /api/operation-team/data-manage/community-information/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, CommunityInfoListItem, CommunityInfoQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockCommunityInfoData } from "./mock-data";
 
-/**
- * @description 小区信息列表 POST API
- * Community information list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<CommunityInfoListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityInfoListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<CommunityInfoQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, communityId, communityName, province, city, district } = body;
+	const defaultParams: CommunityInfoQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockCommunityInfoData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockCommunityInfoData, filters);
 
-	// 数据筛选
-	if (communityId) {
-		filteredData = filteredData.filter((item) => item.communityId.includes(communityId));
-	}
-	if (communityName) {
-		filteredData = filteredData.filter((item) => item.communityName.includes(communityName));
-	}
-	if (province) {
-		filteredData = filteredData.filter((item) => item.province === province);
-	}
-	if (city) {
-		filteredData = filteredData.filter((item) => item.city === city);
-	}
-	if (district) {
-		filteredData = filteredData.filter((item) => item.district === district);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<CommunityInfoListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -47,7 +41,8 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<Communit
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
 

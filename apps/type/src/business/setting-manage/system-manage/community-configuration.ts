@@ -1,64 +1,47 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 小区配置信息
+ * @description 小区配置信息
+ * Community configuration
  */
 export interface CommunityConfiguration {
-	/** 主键ID */
+	/** 主键ID Config ID */
 	csId: string;
-	/** 小区ID */
+	/** 小区ID Community ID */
 	communityId: string;
-	/** 小区名称 */
+	/** 小区名称 Community name */
 	communityName: string;
-	/** 设置名称 */
+	/** 设置名称 Setting name */
 	settingName: string;
-	/** 设置值 */
+	/** 设置值 Setting value */
 	settingValue: string;
-	/** 设置类型 */
+	/** 设置类型 Setting type */
 	settingType: string;
-	/** 数据状态 */
+	/** 数据状态 Status code */
 	statusCd: string;
-	/** 状态文本 */
+	/** 状态文本 Status text */
 	statusText: string;
-	/** 备注信息 */
+	/** 备注信息 Remark */
 	remark: string;
-	/** 创建时间 */
+	/** 创建时间 Create time */
 	createTime: string;
-	/** 更新时间 */
+	/** 更新时间 Update time */
 	updateTime: string;
 }
 
 /**
- * 小区配置列表查询参数
+ * @description 小区配置列表查询参数
+ * Community configuration list query parameters
  */
 export interface CommunityConfigurationListQuery extends BaseListQueryParams {
-	/** 小区ID */
+	/** 小区ID Community ID */
 	communityId?: string;
-	/** 小区名称 */
+	/** 小区名称 Community name */
 	communityName?: string;
-	/** 设置名称 */
+	/** 设置名称 Setting name */
 	settingName?: string;
-	/** 设置类型 */
+	/** 设置类型 Setting type */
 	settingType?: string;
-	/** 数据状态 */
+	/** 数据状态 Status code */
 	statusCd?: string;
 }
-
-/**
- * 设置类型选项
- */
-export const settingTypeOptions: OptionsType = [
-	{ label: "基础配置", value: "1001" },
-	{ label: "费用配置", value: "2002" },
-	{ label: "公告配置", value: "3003" },
-	{ label: "安防配置", value: "4004" },
-	{ label: "服务配置", value: "5005" },
-];
-
-/**
- * 小区配置状态选项
- */
-export const communityConfigStatusOptions: OptionsType = [
-	{ label: "正常", value: "0" },
-	{ label: "失效", value: "1" },
-];

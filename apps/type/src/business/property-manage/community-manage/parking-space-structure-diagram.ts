@@ -51,14 +51,14 @@ export interface ParkingSpaceStructureDiagramListItem {
 }
 
 /**
- * @description parking-space-structure-diagram列表查询参数
- * ParkingSpaceStructureDiagram list query parameters
+ * @description 停车场结构图列表查询参数
+ * Parking space structure diagram list query parameters
  */
 export interface ParkingSpaceStructureDiagramQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 车位编号 Parking space number */
+	parkingSpaceNumber?: string;
+	/** 车位状态 Parking space status */
+	parkingSpaceStatus?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */
