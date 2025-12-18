@@ -30,7 +30,7 @@ const workingScheduleFormInstance = ref<InstanceType<typeof WorkingScheduleForm>
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 使用排班表列表查询 Hook
-const { tableData, total, pageIndex, pageSize, isLoading, updateParams, refetch } = useWorkingScheduleListQuery();
+const { tableData, total, pageIndex, pageSize, isFetching, updateParams, doFetch } = useWorkingScheduleListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -98,7 +98,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	data: tableData.value,
 	columns: columns.value,
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 }));
 
 // 表格操作栏配置
@@ -165,14 +165,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 // ========== 事件处理函数 ==========
 
 // 测试异步函数
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 重置搜索条件并重新加载数据 */

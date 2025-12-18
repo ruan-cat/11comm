@@ -21,7 +21,6 @@ const { t } = useI18n();
 const communityNoticeFormInstance = ref<InstanceType<typeof CommunityNoticeForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
 	useCommunityNoticeListQuery();
 
 /** 选中的表格数据 */
@@ -96,7 +95,7 @@ const pureTableProps = ref<PureTableProps>({
 	pagination: pagination.value,
 	adaptive: true,
 	headerAlign: "center",
-	loading: isLoading.value,
+	loading: isFetching.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -204,7 +203,7 @@ async function handleBatchDelete() {
 			}),
 		);
 		selectedRows.value = [];
-		await refetch();
+		await doFetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(
@@ -250,7 +249,7 @@ async function handleBatchPublish() {
 			}),
 		);
 		selectedRows.value = [];
-		await refetch();
+		await doFetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(
@@ -280,7 +279,7 @@ async function handleDelete(row: CommunityNoticeListItem) {
 		await new Promise((resolve) => setTimeout(resolve, 300));
 
 		ElMessage.success(transformI18n($t("propertyManage_communityManage.notice.deleteSuccess")));
-		await refetch();
+		await doFetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(transformI18n($t("propertyManage_communityManage.notice.deleteFailed")));
@@ -297,15 +296,15 @@ interface OpenDialogParams {
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -388,7 +387,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 							);
 							closeDialog(options, index);
 							// 刷新表格数据
-							await refetch();
+							await doFetch();
 						} catch (error) {
 							ElMessage.error(
 								t("propertyManage_communityManage.notice.operationFailed", { operation: modeText.value }),
@@ -431,7 +430,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<div>
 					<ElButton type="primary" @click="openDialog({ mode: 'add' })">

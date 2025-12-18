@@ -23,9 +23,9 @@ const {
 	total,
 	pageIndex,
 	pageSize,
-	isLoading,
+	isFetching,
 	updateParams,
-	refetch,
+	doFetch,
 } = useDataPermissionListQuery();
 
 /** 左侧数据权限列表数据 */

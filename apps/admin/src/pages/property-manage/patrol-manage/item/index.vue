@@ -175,14 +175,14 @@ const { modeText, setMode, isAdd } = useMode();
 /** 表单组件实例 */
 const patrolItemFormInstance = ref<InstanceType<typeof PatrolItemForm> | null>(null);
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */

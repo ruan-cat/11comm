@@ -18,9 +18,35 @@ import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/ty
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
 
+/** 搜索栏双向绑定变量 */
+const plusSearchModelRef: FieldValues & Partial<ReportGroupQueryParams> = {
+	groupId: "",
+	name: "",
+	url: "",
+};
+
+/** 重置功能用的默认值 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 响应式搜索变量 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useReportGroupListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps,
+} = useReportGroupListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -73,14 +99,6 @@ function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isLoading.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "报表组",
@@ -99,8 +117,6 @@ const plusSearchModelRef: FieldValues & Partial<ReportGroupQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
@@ -161,13 +177,13 @@ interface OpenDialogParams {
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -253,7 +269,7 @@ onMounted(async () => {
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

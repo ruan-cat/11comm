@@ -13,7 +13,7 @@ import { useRegisterProtocolListQuery } from "@/api/setting-manage/system-manage
 import type { RegisterProtocol } from "@01s-11comm/type";
 
 // 使用注册协议列表查询 Hook
-const { tableData, isLoading } = useRegisterProtocolListQuery();
+const { tableData, isFetching } = useRegisterProtocolListQuery();
 
 /** 注册协议数据 */
 const registerProtocol = computed<RegisterProtocol>(() => {
@@ -34,7 +34,7 @@ const registerProtocol = computed<RegisterProtocol>(() => {
 </script>
 
 <template>
-	<div class="register-protocol-container" v-loading="isLoading">
+	<div class="register-protocol-container" v-loading="isFetching">
 		<ElCard class="box-card" shadow="never">
 			<template #header>
 				<div class="card-header">

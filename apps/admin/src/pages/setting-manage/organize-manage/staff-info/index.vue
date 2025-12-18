@@ -24,9 +24,9 @@ const {
 	total,
 	pageIndex,
 	pageSize,
-	isLoading,
+	isFetching,
 	updateParams,
-	refetch,
+	doFetch,
 	resetParams,
 } = useStaffInfoListQuery();
 
@@ -106,7 +106,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	data: tableData.value,
 	columns: columns.value,
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 }));
 
 /** 表格操作栏组件 配置  */
@@ -194,13 +194,13 @@ interface OpenDialogParams {
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */

@@ -28,7 +28,7 @@ import { useEmployeeListQuery, useOrganizationTreeQuery } from "@/api/setting-ma
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 使用组织树查询 Hook
-const { data: organizationTreeData, isLoading: treeLoading } = useOrganizationTreeQuery();
+const { data: organizationTreeData, isFetching: treeLoading } = useOrganizationTreeQuery();
 
 // 使用员工列表查询 Hook
 const {
@@ -36,9 +36,9 @@ const {
 	total,
 	pageIndex,
 	pageSize,
-	isLoading: tableLoading,
+	isFetching: tableLoading,
 	updateParams,
-	refetch,
+	doFetch,
 } = useEmployeeListQuery();
 
 // 树组件状态
@@ -186,14 +186,14 @@ const treeExpansionOptions = {
 const localSelectedOrg = ref<OrganizationTreeNode | null>(null);
 
 // 测试异步函数
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 // 示例：如何使用组合式API获取树的状态

@@ -20,7 +20,6 @@ import { useMode, type Mode } from "@/composables/use-mode";
 const houseDecorationFormInstance = ref<InstanceType<typeof HouseDecorationForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
 	useHouseDecorationListQuery();
 
 /** 表格列配置 */
@@ -118,7 +117,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -258,15 +257,15 @@ interface OpenDialogParams {
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -387,7 +386,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

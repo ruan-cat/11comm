@@ -23,8 +23,18 @@ import DictionaryForm from "./components/form.vue";
 const dictionaryFormInstance = ref<InstanceType<typeof DictionaryForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useDictionaryListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useDictionaryListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -109,7 +119,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 }));
 
 /** 表格操作栏组件 配置  */
@@ -319,7 +329,7 @@ function gotoDictionaryItemsPage(row: DictionaryListItem) {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

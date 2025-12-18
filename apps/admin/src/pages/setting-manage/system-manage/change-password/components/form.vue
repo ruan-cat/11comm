@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef } from "vue";
 import { type ChangePasswordRecordFormProps, defaultForm, type ChangePasswordRecordFormVO } from "./form";
-import { type OptionsType, type FieldValues, type PlusColumn, type PlusFormRules } from "plus-pro-components";
+import { type FieldValues, type PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 import { cloneDeep } from "@pureadmin/utils";
 import {

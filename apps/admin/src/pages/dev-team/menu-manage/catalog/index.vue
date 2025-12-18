@@ -23,8 +23,18 @@ import { type CatalogFormProps, defaultForm } from "./components/form";
 import CatalogForm from "./components/form.vue";
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useMenuCatalogListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useMenuCatalogListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -87,23 +97,13 @@ const pagination = computed<PaginationProps>(() => ({
 	total: total.value,
 }));
 
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
 /** 表格组件 配置 */
 const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 }));
 
 /** 表格操作栏组件 配置  */
@@ -276,7 +276,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						refetch();
+						doFetch();
 					}
 				},
 			},
@@ -295,7 +295,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

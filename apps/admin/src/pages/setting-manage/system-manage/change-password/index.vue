@@ -25,9 +25,9 @@ const {
 	total,
 	pageIndex,
 	pageSize,
-	isLoading,
+	isFetching,
 	updateParams,
-	refetch,
+	doFetch,
 	resetParams,
 } = useChangePasswordRecordListQuery();
 
@@ -118,7 +118,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	data: tableData.value,
 	columns: columns.value,
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 }));
 
 /** 表格操作栏组件 配置  */

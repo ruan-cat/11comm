@@ -15,8 +15,16 @@ import { type RefreshCacheListItem, type RefreshCacheQueryParams } from "@01s-11
 import { useRefreshCacheListQuery } from "@/api/dev-team/cache-manage/refresh-cache";
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-    useRefreshCacheListQuery();
+const {
+    tableData,
+    total,
+    pageIndex,
+    pageSize,
+    isFetching,
+    updateParams,
+    resetParams,
+    doFetch,
+} = useRefreshCacheListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -68,7 +76,7 @@ const pureTableProps = ref<PureTableProps>({
     data: tableData.value,
     columns: [],
     pagination: pagination.value,
-    loading: isLoading.value,
+    loading: isFetching.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -161,7 +169,7 @@ const handleClearCache = (row: RefreshCacheListItem) => {
             @reset="handleReSearch"
         />
 
-        <PureTableBar :="pureTableBarProps" @refresh="refetch">
+        <PureTableBar :="pureTableBarProps" @refresh="doFetch">
             <template #buttons>
                 <ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
             </template>

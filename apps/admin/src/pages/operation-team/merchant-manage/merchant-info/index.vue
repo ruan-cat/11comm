@@ -12,7 +12,12 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type MerchantInfoListItem, type MerchantInfoQueryParams, merchantTypeOptions, businessStatusOptions } from "@01s-11comm/type";
+import {
+	type MerchantInfoListItem,
+	type MerchantInfoQueryParams,
+	merchantTypeOptions,
+	businessStatusOptions,
+} from "@01s-11comm/type";
 import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
 import {
 	type 商户信息_表单_VO,
@@ -24,9 +29,37 @@ import {
 import MerchantInfoForm from "./components/form.vue";
 const merchantInfoFormInstance = ref<InstanceType<typeof MerchantInfoForm> | null>(null);
 
+/** 搜索栏双向绑定变量 */
+const plusSearchModelRef: FieldValues & Partial<MerchantInfoQueryParams> = {
+	merchantName: "",
+	merchantType: undefined,
+	contactPhone: "",
+	businessStatus: undefined,
+	affiliatedCommunity: "",
+};
+
+/** 重置功能用的默认值 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 响应式搜索变量 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useMerchantInfoListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps,
+} = useMerchantInfoListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -108,48 +141,12 @@ const pagination = computed<PaginationProps>(() => ({
 	total: total.value,
 }));
 
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isLoading.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "商户管理",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<MerchantInfoQueryParams> = {
-	merchantName: "",
-	merchantType: undefined,
-	contactPhone: "",
-	businessStatus: undefined,
-	affiliatedCommunity: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -205,7 +202,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -220,15 +217,15 @@ function handleSearch() {
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -241,7 +238,7 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 
 	/** 业务对象 */
 	const 商户信息_表单_VO: 商户信息_表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
 			? ({
 					...defaultForm,
@@ -262,7 +259,7 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 					联系人手机: row?.contactMobile || "",
 					备注: row?.remarks || "",
 				} as 商户信息_表单_VO)
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: MerchantInfoFormProps = {
@@ -354,7 +351,7 @@ function handleDelete(row: MerchantInfoListItem) {
 		.then(async () => {
 			/** TODO: 调用删除API */
 			ElMessage.success("删除成功");
-			refetch();
+			doFetch();
 		})
 		.catch(() => {
 			ElMessage.info("已取消删除");
@@ -376,7 +373,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}

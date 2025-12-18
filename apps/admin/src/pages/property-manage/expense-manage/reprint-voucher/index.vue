@@ -59,13 +59,13 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const reprintVoucherFormInstance = ref<InstanceType<typeof ReprintVoucherForm> | null>(null);
 
 /** 模拟异步操作函数 */
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 const plusSearchModelRef: FieldValues & ReprintVoucherQueryParams = {

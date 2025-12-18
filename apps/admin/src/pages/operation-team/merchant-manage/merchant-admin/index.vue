@@ -11,7 +11,11 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type MerchantAdminListItem, type MerchantAdminQueryParams, merchantAdminStatusOptions } from "@01s-11comm/type";
+import {
+	type MerchantAdminListItem,
+	type MerchantAdminQueryParams,
+	merchantAdminStatusOptions,
+} from "@01s-11comm/type";
 import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
 import { type MerchantAdminFormProps, defaultForm, type 商户管理员表单_VO } from "./components/form";
 import MerchantAdminForm from "./components/form.vue";
@@ -19,8 +23,18 @@ import MerchantAdminForm from "./components/form.vue";
 const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useMerchantAdminListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useMerchantAdminListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -102,7 +116,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -189,15 +203,15 @@ function handleSearch() {
 
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -307,7 +321,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

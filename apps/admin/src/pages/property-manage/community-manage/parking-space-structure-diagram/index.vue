@@ -28,7 +28,6 @@ import {
 const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
 	useParkingSpaceStructureDiagramListQuery();
 
 /** 表格列配置 */
@@ -153,7 +152,7 @@ const pureTableProps = ref<PureTableProps>({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 });
 
 /** 表格操作栏组件 配置  */
@@ -233,15 +232,15 @@ interface OpenDialogParams {
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -335,7 +334,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await refetch();
+						await doFetch();
 					}
 				},
 			},

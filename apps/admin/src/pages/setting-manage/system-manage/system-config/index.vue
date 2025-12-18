@@ -24,7 +24,7 @@ import type { SystemConfig } from "@01s-11comm/type";
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 
 // 使用系统配置列表查询 Hook
-const { tableData, isLoading } = useSystemConfigListQuery();
+const { tableData, isFetching } = useSystemConfigListQuery();
 
 /** 系统配置数据 */
 const systemConfig = computed<SystemConfig>(() => {
@@ -120,13 +120,13 @@ const businessColumns = computed(() => [
 ]);
 
 /** 模拟异步操作 */
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 弹框模式控制 */
@@ -209,7 +209,7 @@ function openEditDialog() {
 							// TODO: 调用API更新配置
 							// 目前只模拟更新本地数据
 							// Object.assign(systemConfig.value, formProps.form); // systemConfig is computed, cannot assign.
-							// should update tableData or refetch.
+							// should update tableData or doFetch.
 							// For now mock data won't persist anyway.
 
 							button.btn.loading = false;
@@ -224,7 +224,7 @@ function openEditDialog() {
 </script>
 
 <template>
-	<div class="system-config-container" v-loading="isLoading">
+	<div class="system-config-container" v-loading="isFetching">
 		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">

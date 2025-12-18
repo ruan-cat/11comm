@@ -11,16 +11,50 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ReportComponentListItem, type ReportComponentQueryParams, componentTypeOptions, queryMethodOptions, type ComponentType, type QueryMethod } from "@01s-11comm/type";
+import {
+	type ReportComponentListItem,
+	type ReportComponentQueryParams,
+	componentTypeOptions,
+	queryMethodOptions,
+	type ComponentType,
+	type QueryMethod,
+} from "@01s-11comm/type";
 import { useReportComponentListQuery } from "@/api/operation-team/report-configuration/report-component";
 import { type ReportComponentFormProps, defaultForm, type 报表组件表单_VO } from "./components/form";
 import ReportComponentForm from "./components/form.vue";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
 
+/** 搜索栏双向绑定变量 */
+const plusSearchModelRef: FieldValues & Partial<ReportComponentQueryParams> = {
+	componentId: "",
+	componentName: "",
+	componentType: undefined,
+	queryMethod: undefined,
+};
+
+/** 重置功能用的默认值 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 响应式搜索变量 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useReportComponentListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps,
+} = useReportComponentListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -67,47 +101,12 @@ const pagination = computed<PaginationProps>(() => ({
 	total: total.value,
 }));
 
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isLoading.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "报表组件",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<ReportComponentQueryParams> = {
-	componentId: "",
-	componentName: "",
-	componentType: undefined,
-	queryMethod: undefined,
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -153,7 +152,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -173,13 +172,13 @@ interface OpenDialogParams {
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
 /** 打开弹框 */
@@ -266,9 +265,15 @@ onMounted(async () => {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" @reset="handleReSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}

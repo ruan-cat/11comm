@@ -22,8 +22,29 @@ import {
 import { useChangePasswordRecordListQuery } from "@/api/operation-team/system-manage/change-password";
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useChangePasswordRecordListQuery();
+const plusSearchModelRef = {
+	username: "",
+	realName: "",
+	department: "",
+	changeTime: "",
+	changeType: "",
+	status: "",
+	changeTimeRange: ["", ""],
+};
+
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps,
+} = useChangePasswordRecordListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -121,14 +142,6 @@ function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isLoading.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "密码修改记录",
@@ -154,8 +167,6 @@ const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordQueryParams>
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
@@ -285,7 +296,7 @@ function exportRecords() {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
 				<ElButton type="success" @click="exportRecords">

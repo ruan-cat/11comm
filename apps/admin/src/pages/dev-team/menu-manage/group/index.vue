@@ -14,8 +14,18 @@ import { type MenuGroupListItem, type MenuGroupQueryParams, menuGroupStatusOptio
 import { useMenuGroupListQuery } from "@/api/dev-team/menu-manage/group";
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useMenuGroupListQuery();
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useMenuGroupListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -95,7 +105,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
+	loading: isFetching.value,
 }));
 
 /** 表格操作栏组件 配置  */
@@ -191,7 +201,7 @@ function handleSearch() {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
 			</template>

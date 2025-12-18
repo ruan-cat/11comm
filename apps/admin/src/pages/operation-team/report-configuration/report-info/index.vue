@@ -19,8 +19,25 @@ import ExpenseItemSettingForm from "./components/form.vue";
 const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, refetch } =
-	useReportInfoListQuery();
+const plusSearchModelRef = {
+	reportId: "",
+	reportGroup: "",
+	optionTitle: "",
+};
+
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps,
+} = useReportInfoListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -72,14 +89,6 @@ function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 表格组件配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isLoading.value,
-});
-
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "报表信息",
@@ -97,8 +106,6 @@ const plusSearchModelRef: FieldValues & Partial<ReportInfoQueryParams> = {
 	optionTitle: "",
 };
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
@@ -160,13 +167,13 @@ interface OpenDialogParams {
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-const [isLoadingT, setIsLoadingT] = useToggle(false);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
@@ -256,7 +263,7 @@ onMounted(async () => {
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
 
-		<PureTableBar :="pureTableBarProps" @refresh="refetch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
