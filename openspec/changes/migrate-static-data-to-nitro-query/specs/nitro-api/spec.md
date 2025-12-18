@@ -30,29 +30,6 @@
 
 ## ADDED Requirements
 
-### Requirement: Nitro 服务端启用 (Step 1)
-
-apps/admin SHALL 启用 Nitro 服务端功能：
-
-- nitro.config.ts 设置 `serverDir: "server"`
-- 创建 server/api 目录存放接口文件
-- 接口路径与页面目录结构对应
-- 支持开发模式热重载
-
-#### Scenario: Nitro 配置正确
-
-- **GIVEN** nitro.config.ts 文件存在
-- **WHEN** 设置 `serverDir: "server"`
-- **THEN** Vite 开发服务器启动时加载 server/api 目录
-- **AND** 可以访问 `/api/**` 路径的接口
-
-#### Scenario: 接口热重载
-
-- **GIVEN** 开发服务器正在运行
-- **WHEN** 修改 `server/api/*/list.post.ts` 文件
-- **THEN** Nitro 自动重新加载接口
-- **AND** 无需重启开发服务器
-
 ---
 
 ### Requirement: 接口命名和路径规范 (Step 2)
@@ -119,8 +96,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
     "pageIndex": 1,
     "pageSize": 10,
     "totalPages": 5
-  },
-  "timestamp": 1734000000000
+  }
 }
 ```
 
@@ -178,9 +154,20 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 接口 MUST 实现请求参数的读取和验证：
 
 - 使用 `await readBody<QueryParams>(event)` 读取 POST body
-- 支持所有筛选字段（可选）
-- 必须包含 pageIndex 和 pageSize
-- 提供合理的默认值（pageIndex = 1, pageSize = 10）
+- 使用以下固定的写法，实现请求参数的处理：
+
+```ts
+// 1. 读取请求参数
+const body = await readBody<TypeOfQueryParams>(event);
+const defaultParams: TypeOfQueryParams = {
+	pageIndex: DEFAULT_PAGE_INDEX,
+	pageSize: DEFAULT_PAGE_SIZE,
+};
+const mergedParams = { ...defaultParams, ...body };
+const { pageIndex, pageSize, ...filters } = mergedParams;
+```
+
+这里的 `TypeOfQueryParams` 类型仅仅是示例，实际使用时，应该换成真实的请求参数类型。
 
 #### Scenario: 请求参数解析
 
@@ -215,38 +202,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 接口 MUST 实现请求参数的筛选逻辑：
 
-- 对每个有值的筛选字段进行过滤
-- 字符串字段使用 `.includes()` 模糊匹配
-- 枚举字段使用 `===` 精确匹配
-- 多个条件使用 AND 逻辑
-- 筛选顺序不影响结果
-
-#### Scenario: 单条件筛选
-
-- **GIVEN** mockHouseChargeData 有 50 条数据
-- **WHEN** 请求参数 `{ "expenseType": "物业费" }`
-- **THEN** 返回所有 expenseType === "物业费" 的数据
-- **AND** 过滤后数据数量 ≤ 50
-
-#### Scenario: 多条件 AND 筛选
-
-- **GIVEN** 请求参数 `{ "expenseType": "物业费", "status": "启用" }`
-- **WHEN** 执行筛选
-- **THEN** 返回满足 expenseType === "物业费" **且** status === "启用" 的数据
-- **AND** 结果是两个条件的交集
-
-#### Scenario: 模糊匹配字符串
-
-- **GIVEN** expenseItem 字段支持模糊搜索
-- **WHEN** 请求参数 `{ "expenseItem": "费" }`
-- **THEN** 返回所有 expenseItem.includes("费") 的数据
-
-#### Scenario: 空筛选条件
-
-- **GIVEN** 请求参数仅有分页 `{ "pageIndex": 1, "pageSize": 10 }`
-- **WHEN** 执行筛选
-- **THEN** 不进行任何过滤
-- **AND** 返回前 10 条数据
+- 必须使用 `server/utils/filter-data` 提供的 `filterDataByQuery` 函数来完成全部的筛选。
 
 #### Scenario: 通用筛选模式实现
 
