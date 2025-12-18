@@ -295,7 +295,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 5. 按照 openspec 的要求，修改更新 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的规范文件，务必确保以后执行`migrate-static-data-to-nitro-query` 任务时，能够满足上述的严格修改步骤。
 6. 请你根据 `apps\admin\src\router\rank\rank-route-keys.ts` 提供的 `RANK_ROUTE_KEYS` 数组，根据数组提供的 `三级路由` ，来清空，并重做整个`openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务文件。`任务列表文件` 的每一个基于 `三级路由` 确定的工作目录，都要按照上面说的任务清单项，列举出非常详细的任务清单步骤。
 
-### <!-- TODO: --> 10 单独封装专用的搜索查询工具函数，并更新规范文档的使用代码
+### 10 单独封装专用的搜索查询工具函数，并更新规范文档的使用代码
 
 1. 阅读 `openspec\changes\migrate-static-data-to-nitro-query\specs\nitro-api\spec.md` 的 `2. 数据筛选 - 使用通用筛选模式遍历所有筛选字段` 这部分的 typescript 逻辑，我对这个逻辑非常感兴趣。很喜欢这个写法。请你将这段代码单独抽取出来，作为一个通用工具函数。使用泛型来传递业务类型。
 2. 这是服务端的通用表格字段查询工具函数，请你在 `apps\admin\server\utils` 目录内编写这个通用查询工具。
