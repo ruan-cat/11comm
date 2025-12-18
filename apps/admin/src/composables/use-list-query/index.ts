@@ -7,6 +7,8 @@ import { useQuery, type UseQueryReturnType, keepPreviousData } from "@tanstack/v
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { JsonVO, PageDTO, BaseListQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_INDEX } from "@01s-11comm/type";
+import type { PaginationProps, PureTableProps } from "@pureadmin/table";
+import { defaultPagination, defaultPureTableProps } from "@/config/constant";
 import { http } from "@/utils/http";
 
 /**
@@ -56,6 +58,11 @@ export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams =
 	handlePageSizeChange: (newPageSize: number) => void;
 	/** 处理页码变化 即后端的 pageIndex */
 	handleCurrentPageChange: (currentPage: number) => void;
+
+	/** 分页配置 */
+	pagination: ComputedRef<PaginationProps>;
+	/** 表格组件配置 */
+	pureTableProps: ComputedRef<PureTableProps>;
 
 	/** 原始 Query 对象 Original query object */
 	tanStackQueryObject: UseQueryReturnType<JsonVO<PageDTO<TItem>>, Error>;
@@ -188,12 +195,35 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		pageSize.value = newPageSize;
 	}
 
-	/** 处理页码变化 即后端的 pageIndex
+	/**
+	 * 处理页码变化 即后端的 pageIndex
 	 * @description 用于 `PureTable` 的页码变化事件 `page-current-change`
 	 */
 	function handleCurrentPageChange(currentPage: number) {
 		pageIndex.value = currentPage;
 	}
+
+	/**
+	 * 分页配置
+	 * @description 用于 `PureTable` 的分页配置
+	 */
+	const pagination = computed<PaginationProps>(() => ({
+		...defaultPagination,
+		pageSize: pageSize.value,
+		currentPage: pageIndex.value,
+		total: total.value,
+	}));
+
+	/**
+	 * 表格组件 配置
+	 * @description 用于 `PureTable` 的表格组件配置
+	 */
+	const pureTableProps = computed<PureTableProps>(() => ({
+		...defaultPureTableProps,
+		data: tableData.value,
+		pagination: pagination.value,
+		columns: [],
+	}));
 
 	return {
 		tableData,
@@ -203,6 +233,7 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		totalPages,
 		isFetching,
 		error,
+		tanStackQueryObject,
 		doFetch,
 		updateParams,
 		resetParams,
@@ -210,7 +241,11 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		// 分页变化事件处理
 		handlePageSizeChange,
 		handleCurrentPageChange,
-		tanStackQueryObject,
+
+		// 分页配置
+		pagination,
+		// 表格组件配置
+		pureTableProps,
 	};
 }
 

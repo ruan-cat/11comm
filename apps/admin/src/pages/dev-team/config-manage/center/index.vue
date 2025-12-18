@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import {
 	type ConfigCenterListItem,
@@ -85,9 +85,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 /** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
 	resetParams,
@@ -181,22 +179,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-}));
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
