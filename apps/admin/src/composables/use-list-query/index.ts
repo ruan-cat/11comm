@@ -41,10 +41,6 @@ export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams =
 	pageSize: Ref<number>;
 	/** 总页数 Total pages */
 	totalPages: ComputedRef<number>;
-	/** 查询参数 Query parameters */
-	queryParams: Ref<TParams>;
-	/** 是否正在加载 Loading state */
-	isLoading: Ref<boolean>;
 	/** 是否正在获取数据 Fetching state */
 	isFetching: Ref<boolean>;
 	/** 错误信息 Error message */
@@ -55,6 +51,12 @@ export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams =
 	updateParams: (params: Partial<TParams>) => void;
 	/** 重置查询参数 Reset query parameters */
 	resetParams: () => void;
+
+	/** 处理页数变化 即后端的 pageSize */
+	handlePageSizeChange: (newPageSize: number) => void;
+	/** 处理页码变化 即后端的 pageIndex */
+	handleCurrentPageChange: (currentPage: number) => void;
+
 	/** 原始 Query 对象 Original query object */
 	tanStackQueryObject: UseQueryReturnType<JsonVO<PageDTO<TItem>>, Error>;
 }
@@ -131,7 +133,7 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		staleTime,
 	});
 
-	const { data, isLoading, isError, isFetching, error, refetch } = tanStackQueryObject;
+	const { data, isError, isFetching, error, refetch } = tanStackQueryObject;
 
 	/** 监听数据变化，更新表格数据 */
 	watch(
@@ -172,12 +174,25 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		queryParams.value = { ...defaultParams };
 	}
 
-	/**
-	 * 执行查询
-	 * @description
-	 */
+	/** 执行查询  */
 	async function doFetch() {
 		await refetch();
+	}
+
+	/**
+	 * 处理页数变化 即后端的 pageSize
+	 * @description
+	 * 用于 `PureTable` 的页数变化事件 `page-size-change`
+	 */
+	function handlePageSizeChange(newPageSize: number) {
+		pageSize.value = newPageSize;
+	}
+
+	/** 处理页码变化 即后端的 pageIndex
+	 * @description 用于 `PureTable` 的页码变化事件 `page-current-change`
+	 */
+	function handleCurrentPageChange(currentPage: number) {
+		pageIndex.value = currentPage;
 	}
 
 	return {
@@ -186,13 +201,15 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		pageIndex,
 		pageSize,
 		totalPages,
-		queryParams,
-		isLoading,
 		isFetching,
 		error,
 		doFetch,
 		updateParams,
 		resetParams,
+
+		// 分页变化事件处理
+		handlePageSizeChange,
+		handleCurrentPageChange,
 		tanStackQueryObject,
 	};
 }

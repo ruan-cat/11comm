@@ -16,7 +16,7 @@ const QUERY_KEY_PREFIX = "configCenter";
  * 配置中心列表查询 Hook
  * Configuration center list query hook
  */
-export function useConfigCenterListQuery(initialParams?: Partial<ConfigCenterQueryParams>) {
+export function useConfigCenterListQuery(initialParams: Partial<ConfigCenterQueryParams>) {
 	return useListQuery<ConfigCenterListItem, ConfigCenterQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,

@@ -83,20 +83,28 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 使用 TanStack Query 获取数据 */
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams, updateParams, resetParams, doFetch } =
-	useConfigCenterListQuery(plusSearchDefaultValues);
+const {
+	tableData,
+	total,
+	pageIndex,
+	pageSize,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useConfigCenterListQuery(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
-	// doFetch();
 }
 
 /** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
-	// doFetch();
 }
 
 /** 表格列配置 */
@@ -182,23 +190,12 @@ const pagination = computed<PaginationProps>(() => ({
 	total: total.value,
 }));
 
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
 /** 表格组件 配置 */
 const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-	loading: isLoading.value,
 }));
 
 /** 表格操作栏组件 配置  */
@@ -277,6 +274,7 @@ function importConfig() {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
