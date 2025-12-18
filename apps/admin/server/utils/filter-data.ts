@@ -12,8 +12,8 @@
  * @example
  * ```typescript
  * const filteredData = filterDataByQuery(
- *   mockHouseChargeData,
- *   { expenseType: "物业费", status: "启用" }
+ *   mockConfigCenterData,
+ *   { configType: "系统配置", status: "启用" }
  * );
  * ```
  *
@@ -23,15 +23,15 @@
  * - 自动忽略空值、null 和 undefined
  * - 多个条件使用 AND 逻辑
  */
-export function filterDataByQuery<TItem extends Record<string, unknown>, TFilters extends Partial<TItem>>(
-	data: TItem[],
+export function filterDataByQuery<TItem, TFilters extends Partial<TItem> = Partial<TItem>>(
+	data: readonly TItem[],
 	filters: TFilters,
 ): TItem[] {
 	// 使用通用筛选模式遍历所有筛选字段
 	let filteredData = [...data];
 
-	Object.keys(filters).forEach((key) => {
-		const filterValue = filters[key as keyof TFilters];
+	(Object.keys(filters) as Array<keyof TFilters>).forEach((key) => {
+		const filterValue = filters[key];
 
 		// 忽略空值、null 和 undefined
 		if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
@@ -44,7 +44,8 @@ export function filterDataByQuery<TItem extends Record<string, unknown>, TFilter
 				}
 
 				// 其他字段(枚举等)使用精确匹配
-				return itemValue === filterValue;
+				// 使用类型断言确保类型兼容性
+				return itemValue === (filterValue as unknown as TItem[keyof TItem]);
 			});
 		}
 	});
