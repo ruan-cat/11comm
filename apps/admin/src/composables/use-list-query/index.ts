@@ -150,6 +150,7 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	watch(
 		[() => queryParams.value.pageIndex, () => queryParams.value.pageSize],
 		async () => {
+			consola.log(" 分页参数变化了 ", queryParams.value.pageIndex, queryParams.value.pageSize);
 			await doFetch();
 		},
 		{ deep: true },

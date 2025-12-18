@@ -267,12 +267,8 @@ function importConfig() {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
-				<ElButton type="success" @click="exportConfig">
-					{{ transformI18n($t("common.buttons.export")) }}
-				</ElButton>
-				<ElButton type="warning" @click="importConfig">
-					{{ transformI18n($t("common.buttons.import")) }}
-				</ElButton>
+				<ElButton type="success" @click="exportConfig"> 导出 </ElButton>
+				<ElButton type="warning" @click="importConfig"> 导入 </ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -291,9 +287,7 @@ function importConfig() {
 						<ElButton type="warning" size="small" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" size="small" @click="copyConfig(row)">
-							{{ transformI18n($t("common.buttons.copy")) }}
-						</ElButton>
+						<ElButton type="info" size="small" @click="copyConfig(row)"> 复制 </ElButton>
 						<ElButton :type="row.status === '启用' ? 'warning' : 'success'" size="small" @click="toggleStatus(row)">
 							{{ row.status === "启用" ? "禁用" : "启用" }}
 						</ElButton>
