@@ -256,7 +256,7 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 
 ```typescript
 // 使用通用筛选工具函数进行数据筛选
-import { filterDataByQuery } from "utils/filter-data";
+import { filterDataByQuery } from "server/utils/filter-data";
 
 const filteredData = filterDataByQuery(mockHouseChargeData, filters);
 ```
@@ -327,7 +327,7 @@ const filteredData = filterDataByQuery(mockHouseChargeData, filters);
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "utils/filter-data";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockHouseChargeData } from "./mock-data";
 
 /**

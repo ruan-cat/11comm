@@ -78,6 +78,9 @@
       ],
       "@build/*": [
         "build/*"
+      ],
+      "server/*": [
+        "server/*"
       ]
     },
     "types": [
@@ -103,6 +106,7 @@
   "include": [
     "mock/*.ts",
     "src/**/*.ts",
+    "server/**/*.ts",
     // "src/**/*.tsx", // 暂时排除 TSX 文件的类型检查，避免 Vue 组件 JSX 类型错误
     "src/**/*.vue",
     "types/*.d.ts",

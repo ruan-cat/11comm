@@ -6,7 +6,7 @@
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "utils/filter-data";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockConfigCenterData } from "./mock-data";
 import consola from "consola";
 

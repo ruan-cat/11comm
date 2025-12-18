@@ -644,7 +644,7 @@ export const expenseIdentifierOptions: OptionsType = [
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, XXXListItem, XXXQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "utils/filter-data";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockXXXData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
