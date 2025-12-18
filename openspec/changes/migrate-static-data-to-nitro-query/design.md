@@ -351,12 +351,14 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/type/src/business/{module}/{sub-module}/{page}.ts`
 
 **任务内容**：
-- 定义 `{Page}ListItem` 接口（所有字段英文+JSDoc注释）
+
+- 定义 `{Page}ListItem` 接口（所有字段英文+JSDoc 注释）
 - 定义 `{Page}QueryParams` 接口（包含分页参数）
 - 定义相关枚举类型（如 Status、Type 等）
 - 导出 Options 常量（下拉选择用）
 
 **验收标准**：
+
 - ✅ 所有字段名为英文驼峰命名
 - ✅ 每个字段有 JSDoc 注释（中文+英文）
 - ✅ 枚举值保持中文
@@ -369,12 +371,14 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/server/api/{module}/{sub-module}/{page}/mock-data.ts`
 
 **任务内容**：
+
 - 导入 `{Page}ListItem` 类型
 - 创建 `mock{Page}Data` 数组
 - 数据量：至少 20-50 条
 - 数据类型约束满足 `{Page}ListItem`
 
 **验收标准**：
+
 - ✅ 类型约束正确
 - ✅ 数据字段名为英文
 - ✅ 数据量充足
@@ -384,6 +388,7 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/server/api/{module}/{sub-module}/{page}/list.post.ts`
 
 **任务内容**：
+
 - 导入必要的类型（JsonVO、PageDTO、{Page}ListItem、{Page}QueryParams）
 - 使用 `defineHandler` 和 `readBody`（从 nitro/h3 导入）
 - 实现筛选逻辑（字符串模糊匹配、枚举精确匹配）
@@ -392,6 +397,7 @@ Step 10: 测试验证（15分钟）
 - 添加 JSDoc 注释
 
 **验收标准**：
+
 - ✅ 使用 Nitro v3 写法
 - ✅ 返回值有完整类型约束
 - ✅ 筛选和分页逻辑正确
@@ -404,12 +410,14 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/src/api/{module}/{sub-module}/{page}/index.ts`
 
 **任务内容**：
+
 - 定义 `use{Page}ListQuery` Hook
 - 调用通用 `useListQuery`
 - 配置 `queryKeyPrefix`（完整路径）
 - 配置 `apiUrl`（对应 Nitro 接口路径）
 
 **验收标准**：
+
 - ✅ queryKeyPrefix 格式正确
 - ✅ apiUrl 路径正确
 - ✅ 类型泛型参数正确
@@ -421,6 +429,7 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/index.vue`
 
 **任务内容**：
+
 - 导入类型和 Hook
 - 使用 `use{Page}ListQuery` 获取数据
 - 移除本地 test-data 导入
@@ -429,6 +438,7 @@ Step 10: 测试验证（15分钟）
 - 监听 data 变化更新 tableData
 
 **验收标准**：
+
 - ✅ 无 test-data 导入
 - ✅ 使用 TanStack Query Hook
 - ✅ 搜索和分页功能正常
@@ -441,10 +451,12 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/test-data.ts`
 
 **任务内容**：
+
 - 删除文件
 - 确保无任何文件引用
 
 **验收标准**：
+
 - ✅ 文件已删除
 - ✅ 无导入引用报错
 
@@ -453,12 +465,14 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/components/form.ts`
 
 **任务内容**：
+
 - 从 `@01s-11comm/type` 导入类型
 - 移除本地类型定义
 - 使用类型库提供的 Options
 - 字段名改为纯英文
 
 **验收标准**：
+
 - ✅ 所有类型从类型库导入
 - ✅ 无本地类型定义
 - ✅ Options 从类型库导入
@@ -468,12 +482,14 @@ Step 10: 测试验证（15分钟）
 **文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/components/form.vue`
 
 **任务内容**：
+
 - 导入类型库的 Options
 - 更新表单项配置
 - 使用纯英文类型
 - prop 字段名更新为英文
 
 **验收标准**：
+
 - ✅ Options 从类型库导入
 - ✅ 表单项配置正确
 - ✅ 类型约束正确
@@ -483,17 +499,20 @@ Step 10: 测试验证（15分钟）
 **命令**：`pnpm typecheck`
 
 **任务内容**：
+
 - 运行类型检查
 - 修复所有类型报错
 - 确保类型库和 admin 项目无报错
 
 **验收标准**：
+
 - ✅ typecheck 通过
 - ✅ 无类型报错
 
 ##### Step 10: 测试验证
 
 **任务内容**：
+
 - 启动开发服务器测试列表加载
 - 测试搜索功能
 - 测试分页功能
@@ -502,6 +521,7 @@ Step 10: 测试验证（15分钟）
 - 测试错误处理
 
 **验收标准**：
+
 - ✅ 所有功能正常
 - ✅ 无 console 报错
 - ✅ 数据加载正确
@@ -623,12 +643,19 @@ export const expenseIdentifierOptions: OptionsType = [
 // 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, XXXListItem, XXXQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "utils/filter-data";
 import { mockXXXData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
-	const body = await readBody<XXXQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, ...filters } = body;
+	// 1. 读取请求参数
+	const body = await readBody<ConfigCenterQueryParams>(event);
+	const defaultParams: ConfigCenterQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	// 数据筛选 - 使用通用筛选工具函数
 	const filteredData = filterDataByQuery(mockXXXData, filters);

@@ -6,6 +6,7 @@
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "utils/filter-data";
 import { mockConfigCenterData } from "./mock-data";
 import consola from "consola";
 
@@ -15,33 +16,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
-
-	consola.box("body", body);
-
-	// const { pageIndex = defaultParams.pageIndex, pageSize = defaultParams.pageSize, ...filters } = body ?? defaultParams;
-
 	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize } = mergedParams;
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	/** 数据筛选 */
-	let filteredData = structuredClone(mockConfigCenterData);
-
-	/** 根据配置项名称筛选 */
-	if (mergedParams?.configName) {
-		filteredData = filteredData.filter((item) => item.configName.includes(mergedParams.configName!));
-	}
-	/** 根据配置类型筛选 */
-	if (mergedParams?.configType) {
-		filteredData = filteredData.filter((item) => item.configType === mergedParams.configType);
-	}
-	/** 根据状态筛选 */
-	if (mergedParams?.status) {
-		filteredData = filteredData.filter((item) => item.status === mergedParams.status);
-	}
-	/** 根据配置键名筛选 */
-	if (mergedParams?.configKey) {
-		filteredData = filteredData.filter((item) => item.configKey.includes(mergedParams.configKey!));
-	}
+	const filteredData = filterDataByQuery(mockConfigCenterData, filters);
 
 	/** 分页处理 */
 	const total = filteredData.length;

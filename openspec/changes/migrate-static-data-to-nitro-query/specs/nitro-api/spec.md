@@ -326,6 +326,7 @@ const filteredData = filterDataByQuery(mockHouseChargeData, filters);
 // 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "utils/filter-data";
 import { mockHouseChargeData } from "./mock-data";
 
@@ -335,8 +336,13 @@ import { mockHouseChargeData } from "./mock-data";
  */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<HouseChargeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, ...filters } = body;
+	const body = await readBody<ConfigCenterQueryParams>(event);
+	const defaultParams: ConfigCenterQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	// 2. 数据筛选 - 使用通用筛选工具函数
 	const filteredData = filterDataByQuery(mockHouseChargeData, filters);
