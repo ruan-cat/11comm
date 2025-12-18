@@ -18,18 +18,22 @@ import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/ty
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
 
-/** 搜索栏双向绑定变量 */
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
 const plusSearchModelRef: FieldValues & Partial<ReportGroupQueryParams> = {
 	groupId: "",
 	name: "",
 	url: "",
 };
 
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 重置功能用的默认值 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 响应式搜索变量 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
@@ -41,8 +45,6 @@ const {
 	updateParams,
 	resetParams,
 	doFetch,
-	handlePageSizeChange,
-	handleCurrentPageChange,
 	handlePageSizeChange,
 	handleCurrentPageChange,
 	pureTableProps,
@@ -80,45 +82,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "报表组",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<ReportGroupQueryParams> = {
-	groupId: "",
-	name: "",
-	url: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
