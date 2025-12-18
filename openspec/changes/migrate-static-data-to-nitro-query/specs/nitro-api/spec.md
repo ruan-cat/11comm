@@ -1,296 +1,47 @@
-## 实施顺序说明
+# Nitro API 接口规范
 
-**CRITICAL**: 在实施 Nitro API 相关任务时，必须严格按照以下顺序执行，不允许跳步。
+## 快速导航
 
-### 执行顺序
+**完整迁移指南**: 请查看 [migration-guide.md](../migration-guide.md#step-3-创建-nitro-接口文件-20分钟)
 
-1. **Step 1**: Nitro 服务端启用（前置条件）
-2. **Step 2**: 接口命名和路径规范（创建文件）
-3. **Step 3**: 假数据文件规范（准备数据）
-4. **Step 4**: 接口返回格式规范（定义响应）
-5. **Step 5**: 请求参数处理（读取请求）
-6. **Step 6**: 数据筛选逻辑（过滤数据）
-7. **Step 7**: 分页处理（分页计算）
-8. **Step 8**: 接口实现模板（完整代码）
-9. **Step 9**: Nitro v3 代码写法规范（代码质量）
-10. **Step 10**: Nitro 代码写法检查（验证修复）
+**代码范例**:
 
-### 步骤依赖关系
-
-- Step 1 是所有步骤的前置条件
-- Step 2-3 必须在 Step 4-8 之前完成
-- Step 4-7 是 Step 8 的组成部分
-- Step 9-10 是质量检查步骤，在所有接口编写完成后统一执行
-
-### 验收标准
-
-每个步骤完成后，必须满足对应 Requirement 中的所有 Scenarios。
+- ✅ **正确范例**: [配置中心接口](../../../../apps/admin/server/api/dev-team/config-manage/center/list.post.ts)
+- ❌ **错误反面例子**: [缴费审核接口](../../../../apps/admin/server/api/property-manage/expense-manage/payment-review/list.post.ts)
 
 ---
 
 ## ADDED Requirements
 
----
+### Requirement: Nitro v3 代码写法规范
 
-### Requirement: 接口命名和路径规范 (Step 2)
+所有 Nitro 接口 MUST 使用 Nitro v3 的标准写法:
 
-所有 Nitro 接口 MUST 满足以下约束：
+- 必须从 `nitro/h3` 导入 `defineHandler` 和 `readBody`
+- 必须使用 `defineHandler` 而不是 `defineEventHandler`
+- 返回值必须创建带类型约束的 `response` 变量
+- 必须添加 JSDoc 注释,包含接口路径
 
-- 全部使用 POST 方法（文件名 `*.post.ts`）
-- 接口路径与页面目录对应
-- 列表查询接口统一命名为 `list.post.ts`
-- 接口 URL 格式：`/api/{module}/{sub-module}/{page}/list`
+#### Scenario: 正确的 Nitro v3 写法
 
-#### Scenario: 接口路径对应关系
-
-- **GIVEN** 页面路径 `src/pages/property-manage/expense-manage/house-charge/index.vue`
-- **WHEN** 创建 Nitro 接口
-- **THEN** 接口文件为 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
-- **AND** 访问 URL 为 `POST /api/property-manage/expense-manage/house-charge/list`
-
-#### Scenario: 仅支持 POST 方法
-
-- **GIVEN** 客户端发起列表查询请求
-- **WHEN** 使用 GET 方法访问 `/api/property-manage/expense-manage/house-charge/list`
-- **THEN** 返回 405 Method Not Allowed
-- **WHEN** 使用 POST 方法访问
-- **THEN** 返回 200 OK 和数据
-
----
-
-### Requirement: 接口返回格式规范 (Step 4)
-
-所有接口 MUST 返回统一格式 `JsonVO<PageDTO<T>>`：
-
-- success: boolean - 请求是否成功
-- code: number - 状态码（200 成功）
-- message: string - 提示信息
-- `data: PageDTO<T>` - 分页数据对象
-- timestamp: number - 时间戳
-
-**重要**: `JsonVO` 和 `PageDTO` 类型 MUST 从 `@01s-11comm/type` 导入，而不是从 `@ruan-cat/utils`
-
-`PageDTO<T>` 包含：
-
-- list: T[] - 数据列表
-- total: number - 总记录数
-- pageIndex: number - 当前页码（1-based）
-- pageSize: number - 每页大小
-- totalPages: number - 总页数
-
-#### Scenario: 成功响应格式
-
-- **GIVEN** 请求 POST /api/property-manage/expense-manage/house-charge/list
-- **WHEN** 接口处理成功
-- **THEN** 返回 HTTP 200
-- **AND** 响应体结构为：
-
-```json
-{
-  "success": true,
-  "code": 200,
-  "message": "查询成功",
-  "data": {
-    "list": [...],
-    "total": 50,
-    "pageIndex": 1,
-    "pageSize": 10,
-    "totalPages": 5
-  }
-}
-```
-
-#### Scenario: 分页计算正确
-
-- **GIVEN** 总记录数 total = 47，pageSize = 10
-- **WHEN** 计算 totalPages
-- **THEN** totalPages = Math.ceil(47 / 10) = 5
-
-#### Scenario: 空列表响应
-
-- **GIVEN** 筛选条件无匹配数据
-- **WHEN** 接口返回
-- **THEN** success = true
-- **AND** data.list = []
-- **AND** data.total = 0
-- **AND** data.totalPages = 0
-
----
-
-### Requirement: 假数据文件规范 (Step 3)
-
-假数据 SHALL 从独立的 mock-data.ts 文件导入：
-
-- 文件位置：与 list.post.ts 同目录
-- 文件命名：`mock-data.ts`
-- 数据命名：`mock{Page}Data`（如 mockHouseChargeData）
-- 数据类型：与类型库定义一致
-
-#### Scenario: 假数据文件位置
-
-- **GIVEN** 接口文件 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
-- **WHEN** 创建假数据文件
-- **THEN** 文件路径为 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
-
-#### Scenario: 假数据导入
-
-- **GIVEN** mock-data.ts 导出 mockHouseChargeData
-- **WHEN** 在 list.post.ts 中导入
-- **THEN** 使用 `import { mockHouseChargeData } from "./mock-data"`
-- **AND** 类型导入为 `import type { HouseChargeListItem } from "@01s-11comm/type"`
-
-#### Scenario: 假数据类型校验
-
-- **GIVEN** mockHouseChargeData 数组
-- **WHEN** TypeScript 编译
-- **THEN** 数组元素类型为 HouseChargeListItem
-- **AND** 所有字段名为英文
-- **AND** 无类型报错
-
----
-
-### Requirement: 请求参数处理 (Step 5)
-
-接口 MUST 实现请求参数的读取和验证：
-
-- 使用 `await readBody<QueryParams>(event)` 读取 POST body
-- 使用以下固定的写法，实现请求参数的处理：
-
-```ts
-// 1. 读取请求参数
-const body = await readBody<TypeOfQueryParams>(event);
-const defaultParams: TypeOfQueryParams = {
-	pageIndex: DEFAULT_PAGE_INDEX,
-	pageSize: DEFAULT_PAGE_SIZE,
-};
-const mergedParams = { ...defaultParams, ...body };
-const { pageIndex, pageSize, ...filters } = mergedParams;
-```
-
-这里的 `TypeOfQueryParams` 类型仅仅是示例，实际使用时，应该换成真实的请求参数类型。
-
-#### Scenario: 请求参数解析
-
-- **GIVEN** 客户端发送 POST 请求，body 为：
-
-```json
-{
-	"expenseType": "物业费",
-	"status": "启用",
-	"pageIndex": 2,
-	"pageSize": 20
-}
-```
-
-- **WHEN** 接口执行 `const body = await readBody<HouseChargeQueryParams>(event)`
-- **THEN** body.expenseType = "物业费"
-- **AND** body.status = "启用"
-- **AND** body.pageIndex = 2
-- **AND** body.pageSize = 20
-
-#### Scenario: 默认参数处理
-
-- **GIVEN** 客户端发送请求，body 为 `{}`
-- **WHEN** 接口解析参数
-- **THEN** pageIndex 默认为 1
-- **AND** pageSize 默认为 10
-- **AND** 其他筛选字段为 undefined
-
----
-
-### Requirement: 数据筛选逻辑 (Step 6)
-
-接口 MUST 实现请求参数的筛选逻辑：
-
-- 必须使用 `server/utils/filter-data` 提供的 `filterDataByQuery` 函数来完成全部的筛选。
-
-#### Scenario: 通用筛选模式实现
-
-- **GIVEN** 需要实现灵活的筛选逻辑
-- **WHEN** 使用通用筛选工具函数 `filterDataByQuery`
-- **THEN** 代码实现如下：
+- **GIVEN** 创建新的 Nitro 接口文件
+- **WHEN** 编写代码
+- **THEN** 必须使用以下标准模板:
 
 ```typescript
-// 使用通用筛选工具函数进行数据筛选
-import { filterDataByQuery } from "server/utils/filter-data";
+/**
+ * @file 配置中心列表接口
+ * @description Configuration center list API
+ * POST /api/dev-team/config-manage/center/list
+ */
 
-const filteredData = filterDataByQuery(mockHouseChargeData, filters);
-```
-
-- **AND** 此工具函数自动处理所有筛选字段，无需为每个字段编写单独的 if 条件
-- **AND** 自动区分字符串字段(模糊匹配)和枚举字段(精确匹配)
-- **AND** 自动忽略空值、null 和 undefined
-- **AND** 工具函数定义位于 `apps/admin/server/utils/filter-data.ts`
-- **AND** 使用泛型支持任意数据类型和筛选条件类型
-
----
-
-### Requirement: 分页处理 (Step 7)
-
-接口 MUST 实现正确的分页逻辑：
-
-- 先筛选再分页
-- 使用 Array.slice() 实现分页
-- 计算正确的 total 和 totalPages
-- 支持超出范围的页码（返回空列表）
-
-#### Scenario: 基础分页
-
-- **GIVEN** 筛选后有 47 条数据
-- **WHEN** 请求 `{ "pageIndex": 2, "pageSize": 10 }`
-- **THEN** startIndex = `(2 - 1) * 10 = 10`
-- **AND** endIndex = 10 + 10 = 20
-- **AND** 返回 data[10:20]（第 11-20 条）
-- **AND** total = 47
-- **AND** totalPages = 5
-
-#### Scenario: 最后一页不满
-
-- **GIVEN** total = 47, pageSize = 10
-- **WHEN** 请求 pageIndex = 5（最后一页）
-- **THEN** 返回第 41-47 条（7 条数据）
-- **AND** list.length = 7
-
-#### Scenario: 超出范围页码
-
-- **GIVEN** total = 47, pageSize = 10
-- **WHEN** 请求 pageIndex = 10
-- **THEN** list = []
-- **AND** total = 47（总数不变）
-- **AND** success = true（仍返回成功）
-
----
-
-### Requirement: 接口实现模板 (Step 8)
-
-所有 list.post.ts 接口 MUST 遵循统一模板：
-
-1. 导入类型和假数据
-2. 使用 defineHandler 定义接口
-3. 读取请求参数
-4. 数据筛选（遍历所有筛选字段）
-5. 分页处理（slice）
-6. 返回 `JsonVO<PageDTO<T>>` 格式
-
-#### Scenario: 接口代码结构
-
-- **GIVEN** 创建新接口 list.post.ts
-- **WHEN** 编写接口代码
-- **THEN** 代码结构按以下顺序：
-
-```typescript
-// 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
-import { mockHouseChargeData } from "./mock-data";
+import { mockConfigCenterData } from "./mock-data";
 
-/**
- * 房屋收费列表查询接口
- * POST /api/property-manage/expense-manage/house-charge/list
- */
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {
 	// 1. 读取请求参数
 	const body = await readBody<ConfigCenterQueryParams>(event);
 	const defaultParams: ConfigCenterQueryParams = {
@@ -301,16 +52,16 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockHouseChargeData, filters);
+	const filteredData = filterDataByQuery(mockConfigCenterData, filters);
 
 	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 4. 返回标准格式 必须要用完整的对象来约束返回的数据格式
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<HouseChargeListItem>> = {
+	const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -327,41 +78,155 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 });
 ```
 
----
+- **AND** 从 `nitro/h3` 导入,不是 `h3`
+- **AND** 使用 `defineHandler`,不是 `defineEventHandler`
+- **AND** 创建 `response` 变量并添加完整类型约束
+- **AND** 有 JSDoc 注释说明接口路径
 
-### Requirement: Nitro v3 代码写法规范 (Step 9)
+#### Scenario: 错误的写法对比
 
-所有 Nitro 接口 MUST 遵循 Nitro v3 的代码写法规范：
-
-- 必须主动导入 `defineHandler` 和 `readBody` 从 `nitro/h3`
-- 不允许使用自动导入，必须显式导入所有工具函数
-- 返回值必须用完整的类型约束，不允许直接返回对象字面量
-- 必须创建 `response` 变量并明确类型约束
-
-#### Scenario: 正确导入 Nitro v3 工具函数
-
-- **GIVEN** 创建新的 Nitro 接口文件
-- **WHEN** 编写导入语句
-- **THEN** 必须使用显式导入：
+**❌ 错误示例 - 缴费审核接口**:
 
 ```typescript
-import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
+// ❌ 错误1: 从 h3 导入而不是 nitro/h3
+import { defineEventHandler, readBody } from "h3";
+
+// ❌ 错误2: 使用 defineEventHandler (Nitro v2 写法)
+export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentReviewListItem>>> => {
+	// ❌ 错误3: 手动解构参数并设置默认值
+	const { pageIndex = 1, pageSize = 10, house, expenseItem } = body;
+
+	// ❌ 错误4: 手动编写 filter 逻辑
+	let filteredData = [...mockPaymentReviewData];
+	if (house) {
+		filteredData = filteredData.filter((item) => item.house.includes(house));
+	}
+
+	// ❌ 错误5: 直接返回对象字面量,没有类型约束变量
+	return {
+		success: true,
+		code: 200,
+		message: "查询成功",
+		data: { ... },
+		timestamp: Date.now(),
+	};
+});
 ```
 
-- **AND** `JsonVO` 和 `PageDTO` 必须从 `@01s-11comm/type` 导入（不是 `@ruan-cat/utils`）
-- **AND** 不允许依赖自动导入
-- **AND** 不允许使用 `defineEventHandler`（Nitro v2 写法）
+**问题分析**:
 
-#### Scenario: 返回值类型约束
+1. 从 `h3` 导入会导致 Nitro v3 兼容性问题
+2. `defineEventHandler` 是 Nitro v2 的旧写法
+3. 手动设置默认值不统一,应使用 DEFAULT 常量
+4. 手动编写 filter 逻辑重复劳动,且容易出错
+5. 直接返回对象字面量缺少类型检查,容易遗漏字段
 
-- **GIVEN** 接口函数准备返回数据
+---
+
+### Requirement: 标准参数处理模式
+
+所有 Nitro 接口 MUST 使用固定的参数处理模式:
+
+- 使用 `readBody<QueryParams>(event)` 读取请求体
+- 创建 `defaultParams` 对象并使用 DEFAULT 常量
+- 使用对象展开合并参数
+- 解构出 `pageIndex`、`pageSize` 和 `filters`
+
+#### Scenario: 参数处理标准流程
+
+- **GIVEN** 接口需要处理查询参数
+- **WHEN** 读取请求体
+- **THEN** 使用以下固定代码模式:
+
+```typescript
+const body = await readBody<ConfigCenterQueryParams>(event);
+const defaultParams: ConfigCenterQueryParams = {
+	pageIndex: DEFAULT_PAGE_INDEX,
+	pageSize: DEFAULT_PAGE_SIZE,
+};
+const mergedParams = { ...defaultParams, ...body };
+const { pageIndex, pageSize, ...filters } = mergedParams;
+```
+
+- **AND** 不允许使用 `const { pageIndex = 1, pageSize = 10 } = body` 这种写法
+- **AND** 必须使用 `DEFAULT_PAGE_INDEX` 和 `DEFAULT_PAGE_SIZE` 常量
+- **AND** `filters` 包含除分页参数外的所有搜索字段
+
+#### Scenario: 默认参数处理
+
+- **GIVEN** 客户端发送请求,body 为 `{}`
+- **WHEN** 接口解析参数
+- **THEN** pageIndex 默认为 1
+- **AND** pageSize 默认为 10
+- **AND** 其他筛选字段为 undefined
+
+---
+
+### Requirement: 使用通用筛选函数 filterDataByQuery
+
+所有 Nitro 接口 MUST 使用 `filterDataByQuery` 工具函数进行数据筛选:
+
+- 导入 `filterDataByQuery` 从 `server/utils/filter-data`
+- 传入数据数组和 filters 对象
+- 工具函数自动处理字符串模糊匹配和枚举精确匹配
+- 工具函数自动忽略空值、null 和 undefined
+
+#### Scenario: 使用通用筛选函数
+
+- **GIVEN** 需要筛选数据
+- **WHEN** 调用 filterDataByQuery
+- **THEN** 代码为:
+
+```typescript
+import { filterDataByQuery } from "server/utils/filter-data";
+
+const filteredData = filterDataByQuery(mockConfigCenterData, filters);
+```
+
+- **AND** 自动处理所有筛选字段,无需为每个字段编写 if 条件
+- **AND** 字符串字段自动模糊匹配
+- **AND** 枚举字段自动精确匹配
+- **AND** 自动忽略空值、null 和 undefined
+
+#### Scenario: 禁止手动编写 filter 逻辑
+
+- **GIVEN** 需要筛选数据
+- **WHEN** 编写筛选代码
+- **THEN** 不允许使用以下写法:
+
+```typescript
+// ❌ 禁止
+let filteredData = [...mockConfigCenterData];
+if (configName) {
+	filteredData = filteredData.filter((item) => item.configName.includes(configName));
+}
+if (configType) {
+	filteredData = filteredData.filter((item) => item.configType === configType);
+}
+```
+
+- **AND** 必须使用 `filterDataByQuery` 工具函数
+
+---
+
+### Requirement: 完整的返回值类型约束
+
+所有 Nitro 接口 MUST 创建带完整类型约束的 `response` 变量:
+
+- 创建 `response` 变量
+- 类型约束为 `JsonVO<PageDTO<{Page}ListItem>>`
+- 包含所有必需字段
+- 最后 return response
+
+#### Scenario: 正确的返回值写法
+
+- **GIVEN** 接口准备返回数据
 - **WHEN** 编写返回逻辑
-- **THEN** 必须创建带类型约束的 response 变量：
+- **THEN** 代码为:
 
 ```typescript
 /** 返回标准格式 */
-const response: JsonVO<PageDTO<HouseChargeListItem>> = {
+const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
 	success: true,
 	code: 200,
 	message: "查询成功",
@@ -377,10 +242,18 @@ const response: JsonVO<PageDTO<HouseChargeListItem>> = {
 return response;
 ```
 
-- **AND** 不允许直接返回对象字面量：
+- **AND** 必须添加 JSDoc 注释
+- **AND** 必须有完整类型约束
+- **AND** 必须包含 success、code、message、data 所有字段
+
+#### Scenario: 禁止直接返回对象字面量
+
+- **GIVEN** 接口准备返回数据
+- **WHEN** 编写返回逻辑
+- **THEN** 不允许使用以下写法:
 
 ```typescript
-// ❌ 错误写法
+// ❌ 禁止
 return {
 	success: true,
 	code: 200,
@@ -389,127 +262,159 @@ return {
 };
 ```
 
-#### Scenario: 添加 JSDoc 注释
+- **AND** 必须创建 response 变量
+- **AND** 必须添加类型约束
 
-- **GIVEN** Nitro 接口文件
-- **WHEN** 定义接口函数
-- **THEN** 必须添加 JSDoc 注释说明接口用途和路径：
+---
 
-```typescript
-/**
- * 房屋收费列表查询接口
- * POST /api/property-manage/expense-manage/house-charge/list
- */
-export default defineHandler(async (event): Promise<...> => { ... });
+### Requirement: 接口命名和路径规范
+
+所有 Nitro 接口 MUST 满足以下约束:
+
+- 全部使用 POST 方法(文件名 `*.post.ts`)
+- 接口路径与页面目录对应
+- 列表查询接口统一命名为 `list.post.ts`
+- 接口 URL 格式: `/api/{module}/{sub-module}/{page}/list`
+
+#### Scenario: 接口路径对应关系
+
+- **GIVEN** 页面路径 `src/pages/property-manage/expense-manage/house-charge/index.vue`
+- **WHEN** 创建 Nitro 接口
+- **THEN** 接口文件为 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
+- **AND** 访问 URL 为 `POST /api/property-manage/expense-manage/house-charge/list`
+
+---
+
+### Requirement: Mock 数据文件规范
+
+Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
+
+- 文件位置: 与 list.post.ts 同目录
+- 文件命名: `mock-data.ts`
+- 数据命名: `mock{Page}Data`(如 mockConfigCenterData)
+- 数据类型: 与类型库定义一致
+
+#### Scenario: Mock 数据导入
+
+- **GIVEN** mock-data.ts 导出 mockConfigCenterData
+- **WHEN** 在 list.post.ts 中导入
+- **THEN** 使用 `import { mockConfigCenterData } from "./mock-data"`
+- **AND** 类型导入为 `import type { ConfigCenterListItem } from "@01s-11comm/type"`
+
+---
+
+### Requirement: 接口返回格式规范
+
+所有接口 MUST 返回统一格式 `JsonVO<PageDTO<T>>`:
+
+- success: boolean - 请求是否成功
+- code: number - 状态码(200 成功)
+- message: string - 提示信息
+- `data: PageDTO<T>` - 分页数据对象
+- timestamp: number - 时间戳(可选)
+
+**重要**: `JsonVO` 和 `PageDTO` 类型 MUST 从 `@01s-11comm/type` 导入。
+
+`PageDTO<T>` 包含:
+
+- list: T[] - 数据列表
+- total: number - 总记录数
+- pageIndex: number - 当前页码(1-based)
+- pageSize: number - 每页大小
+- totalPages: number - 总页数
+
+#### Scenario: 成功响应格式
+
+- **GIVEN** 请求 POST /api/property-manage/expense-manage/house-charge/list
+- **WHEN** 接口处理成功
+- **THEN** 返回 HTTP 200
+- **AND** 响应体结构为:
+
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "查询成功",
+  "data": {
+    "list": [...],
+    "total": 50,
+    "pageIndex": 1,
+    "pageSize": 10,
+    "totalPages": 5
+  }
+}
 ```
 
-- **AND** 必须注明接口的 HTTP 方法（POST）
-- **AND** 必须注明完整的接口路径
+---
+
+### Requirement: 分页处理规范
+
+接口 MUST 实现正确的分页逻辑:
+
+- 先筛选再分页
+- 使用 Array.slice() 实现分页
+- 计算正确的 total 和 totalPages
+- 支持超出范围的页码(返回空列表)
+
+#### Scenario: 基础分页
+
+- **GIVEN** 筛选后有 47 条数据
+- **WHEN** 请求 `{ "pageIndex": 2, "pageSize": 10 }`
+- **THEN** startIndex = `(2 - 1) * 10 = 10`
+- **AND** endIndex = 10 + 10 = 20
+- **AND** 返回 data[10:20](第 11-20 条)
+- **AND** total = 47
+- **AND** totalPages = 5
+
+#### Scenario: 超出范围页码
+
+- **GIVEN** total = 47, pageSize = 10
+- **WHEN** 请求 pageIndex = 10
+- **THEN** list = []
+- **AND** total = 47(总数不变)
+- **AND** success = true(仍返回成功)
 
 ---
 
-### Requirement: Nitro 代码写法检查 (Step 10)
+## REMOVED Requirements
 
-已生成的 Nitro 接口 MUST 进行代码写法检查和修复：
+### Requirement: 手动编写数据筛选逻辑
 
-- 检查是否使用了正确的 Nitro v3 导入方式
-- 检查返回值是否有完整的类型约束
-- 检查是否添加了 JSDoc 注释
-- 修复不符合规范的代码
+**Reason**: 已抽取为通用工具函数 `filterDataByQuery`
 
-#### Scenario: 检查现有接口的导入方式
+**Migration**: 使用 `filterDataByQuery(data, filters)` 替代手动 filter
 
-- **GIVEN** 已生成的 Nitro 接口文件
-- **WHEN** 检查导入语句
-- **THEN** 如果使用了 `defineEventHandler`，必须修改为 `defineHandler`
-- **AND** 如果缺少显式导入，必须添加 `import { defineHandler, readBody } from "nitro/h3";`
+### Requirement: 使用 defineEventHandler
 
-#### Scenario: 检查返回值类型约束
+**Reason**: Nitro v3 废弃此 API
 
-- **GIVEN** 已生成的 Nitro 接口文件
-- **WHEN** 检查返回逻辑
-- **THEN** 如果直接返回对象字面量，必须修改为创建 response 变量
-- **AND** response 变量必须有完整的类型约束 `JsonVO<PageDTO<T>>`
-
-#### Scenario: 批量检查和修复
-
-- **GIVEN** 已生成多个 Nitro 接口
-- **WHEN** 执行代码写法检查任务
-- **THEN** 按模块顺序检查所有接口（dev-team, operation-team, property-manage）
-- **AND** 记录需要修复的文件列表
-- **AND** 逐个修复不符合规范的文件
-- **AND** 修复后运行 typecheck 确保无报错
+**Migration**: 改为使用 `defineHandler` 从 `nitro/h3` 导入
 
 ---
 
-## MODIFIED Requirements
+## 总结
 
-### Requirement: 假数据从 pages/ 迁移到 server/
+### 必须遵守的 5 个核心规则
 
-**FROM**: test-data.ts 位于 `src/pages/{module}/{page}/test-data.ts`
-**TO**: mock-data.ts 位于 `server/api/{module}/{page}/mock-data.ts`
+1. **Nitro v3 写法**: `defineHandler` + `nitro/h3`
+2. **标准参数处理**: 使用固定的参数合并模式
+3. **通用筛选函数**: 使用 `filterDataByQuery`
+4. **完整类型约束**: 创建 `response` 变量并添加类型
+5. **JSDoc 注释**: 包含接口路径说明
 
-假数据文件 MUST 迁移到服务端目录：
+### 快速检查清单
 
-- 字段名从中文转换为英文
-- 数据数组重命名（tableData → mock{Page}Data）
-- 删除原 test-data.ts 文件
+创建 Nitro 接口后,验证以下要点:
 
-#### Scenario: 文件迁移路径
+- [ ] 从 `nitro/h3` 导入 `defineHandler` 和 `readBody`
+- [ ] 使用 `defineHandler` 而不是 `defineEventHandler`
+- [ ] 使用 DEFAULT_PAGE_INDEX 和 DEFAULT_PAGE_SIZE 常量
+- [ ] 使用 `filterDataByQuery` 工具函数
+- [ ] 创建 `response` 变量并添加类型约束 `JsonVO<PageDTO<T>>`
+- [ ] 添加 JSDoc 注释,包含接口路径
+- [ ] 文件路径与页面路径对应
+- [ ] Mock 数据从 mock-data.ts 导入
 
-- **GIVEN** 原文件 `src/pages/property-manage/expense-manage/house-charge/test-data.ts`
-- **WHEN** 迁移完成
-- **THEN** 新文件位于 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
-- **AND** 原文件已删除
+### 完整示例代码
 
-#### Scenario: 字段名转换
-
-- **GIVEN** 原数据对象 `{ "费用项目": "物业费", "状态": "启用" }`
-- **WHEN** 迁移到 mock-data.ts
-- **THEN** 新对象为 `{ expenseItem: "物业费", status: "启用" }`
-- **AND** 枚举值保持中文不变
-
-#### Scenario: 数组命名
-
-- **GIVEN** 原导出 `export const tableData: 房屋收费_列表数据[] = [...]`
-- **WHEN** 迁移到 mock-data.ts
-- **THEN** 新导出为 `export const mockHouseChargeData: HouseChargeListItem[] = [...]`
-
----
-
-### Requirement: 及时删除旧 test-data.ts 文件
-
-完成 Nitro 接口生成后 MUST 及时删除旧的 test-data.ts 文件：
-
-- 在每个页面迁移的最后一步删除 test-data.ts
-- 删除前确保 Nitro 接口和 TanStack Query 集成已完成
-- 删除后运行 typecheck 确保无依赖引用错误
-- 不允许保留旧的 test-data.ts 文件与新接口共存
-
-#### Scenario: 迁移完成后立即删除
-
-- **GIVEN** 页面 `src/pages/property-manage/expense-manage/house-charge/index.vue` 已更新使用 TanStack Query
-- **AND** Nitro 接口 `server/api/property-manage/expense-manage/house-charge/list.post.ts` 已创建
-- **AND** 假数据已迁移到 `server/api/property-manage/expense-manage/house-charge/mock-data.ts`
-- **WHEN** 完成页面迁移的第 5 步
-- **THEN** 必须立即删除 `src/pages/property-manage/expense-manage/house-charge/test-data.ts`
-- **AND** 运行 `pnpm typecheck` 确保无报错
-
-#### Scenario: 删除前验证迁移完整性
-
-- **GIVEN** 准备删除旧 test-data.ts 文件
-- **WHEN** 执行删除操作前
-- **THEN** 必须确认以下条件全部满足：
-  - mock-data.ts 已创建并包含完整数据
-  - list.post.ts 接口已创建并正常工作
-  - TanStack Query Hook 已创建
-  - 页面 index.vue 已更新并移除对 test-data.ts 的导入
-  - 浏览器测试页面功能正常
-
-#### Scenario: 禁止新旧文件共存
-
-- **GIVEN** 某个页面迁移过程中
-- **WHEN** Nitro 接口和 mock-data.ts 已创建
-- **THEN** 不允许同时保留 `pages/{module}/{page}/test-data.ts` 和 `server/api/{module}/{page}/mock-data.ts`
-- **AND** 必须在完成页面更新后立即删除旧文件
-- **AND** 旧文件的保留时间不得超过单个页面迁移周期（约 2.5 小时）
+完整的标准模板和详细说明,请参考 [migration-guide.md](../migration-guide.md#step-3-创建-nitro-接口文件-20分钟)。
