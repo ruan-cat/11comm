@@ -303,7 +303,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 4. 在服务端 nitro 接口内调用通用工具函数时，请你使用 `utils` 作为有效的服务端代码引用别名。即 `apps\admin\nitro.config.ts` 配置文件内写的 `alias` 配置，专用于服务端的配置名称。使用正确的 `utils` 作为正确的模块导入别名。避免使用冗长的相对路径。
 5. 同步地更新 `openspec\changes\migrate-static-data-to-nitro-query\design.md` 的 `7.2 接口实现模板` 部分，说明清楚也使用最新的筛选条件写法了。
 
-### 11 <!-- TODO: --> 重构 `migrate-static-data-to-nitro-query` 任务的规范执行步骤和代码参考案例
+### 11 重构 `migrate-static-data-to-nitro-query` 任务的规范执行步骤和代码参考案例
 
 1. 明确以下文件，这些文件是稍后要被处理更改的文件
    - `openspec\changes\migrate-static-data-to-nitro-query\specs\nitro-api\spec.md`
