@@ -16,7 +16,7 @@ const QUERY_KEY_PREFIX = "configItem";
  * 配置项列表查询 Hook
  * Config item list query hook
  */
-export function useConfigItemListQuery() {
+export function useConfigItemListQuery(initialParams?: Partial<ConfigItemQueryParams>) {
 	return useListQuery<ConfigItemListItem, ConfigItemQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,

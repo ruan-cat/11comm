@@ -21,17 +21,32 @@ import {
 } from "@01s-11comm/type";
 import { useChangePasswordRecordListQuery } from "@/api/operation-team/system-manage/change-password";
 
-/** 使用 TanStack Query 获取数据 */
-const plusSearchModelRef = {
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues &
+	Partial<ChangePasswordRecordQueryParams> & { changeTimeRange: [string, string] } = {
 	username: "",
 	realName: "",
-	department: "",
-	changeTime: "",
-	changeType: "",
-	status: "",
+	userRole: undefined,
+	department: undefined,
+	changeMethod: undefined,
+	status: undefined,
+	success: undefined,
+	startTime: "",
+	endTime: "",
 	changeTimeRange: ["", ""],
 };
 
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	total,
@@ -124,51 +139,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "密码修改记录",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordQueryParams> & { changeTimeRange: [string, string] } = {
-	username: "",
-	realName: "",
-	userRole: undefined,
-	department: undefined,
-	changeMethod: undefined,
-	status: undefined,
-	success: undefined,
-	startTime: "",
-	endTime: "",
-	changeTimeRange: ["", ""],
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置

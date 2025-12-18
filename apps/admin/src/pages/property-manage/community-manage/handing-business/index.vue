@@ -20,7 +20,24 @@ import HandingBusinessForm from "./components/form.vue";
 const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-	useHandingBusinessListQuery();
+const plusSearchModelRef: FieldValues & Partial<HandingBusinessQueryParams> = {
+	feeItem: "",
+	feeType: undefined,
+	status: undefined,
+};
+
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useHandingBusinessListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -74,33 +91,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "业务受理",
@@ -112,20 +102,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & Partial<HandingBusinessQueryParams> = {
-	feeItem: "",
-	feeId: "",
-	feeType: undefined,
-	status: undefined,
-	accountCreationStartTime: "",
-	accountCreationEndTime: "",
-	建账时间范围: ["", ""],
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
 /**
