@@ -303,4 +303,27 @@ openspec validate migrate-static-data-to-nitro-query --strict
 4. 在服务端 nitro 接口内调用通用工具函数时，请你使用 `utils` 作为有效的服务端代码引用别名。即 `apps\admin\nitro.config.ts` 配置文件内写的 `alias` 配置，专用于服务端的配置名称。使用正确的 `utils` 作为正确的模块导入别名。避免使用冗长的相对路径。
 5. 同步地更新 `openspec\changes\migrate-static-data-to-nitro-query\design.md` 的 `7.2 接口实现模板` 部分，说明清楚也使用最新的筛选条件写法了。
 
-<!-- TODO: 手动的将 apps\admin\src\composables\use-list-query\index.ts 的逻辑做整合 实现手写的 完整的数据请求功能 -->
+### 11 <!-- TODO: --> 重构 `migrate-static-data-to-nitro-query` 任务的规范执行步骤和代码参考案例
+
+1. 明确以下文件，这些文件是稍后要被处理更改的文件
+   - `openspec\changes\migrate-static-data-to-nitro-query\specs\nitro-api\spec.md`
+   - `openspec\changes\migrate-static-data-to-nitro-query\specs\data-fetching\spec.md`
+   - `openspec\changes\migrate-static-data-to-nitro-query\specs\list-page-pattern\spec.md`
+   - `openspec\changes\migrate-static-data-to-nitro-query\design.md`
+2. 更新这些文件的 step 步骤序号，因为我对这些文件有内容删改。
+3. 这些文件都是满足 openspec 规范的规格文件和设计文件。这些规范文件是为了实现假数据迁移成 nitro 接口时的迁移注意事项。这里面有很多重复代码，和不合适的迁移规范做法。我希望你帮我重构，重新整理一轮里面的内容，使得里面的迁移步骤更加明确细致。
+4. 以下文件都是最正式的，已经完成 nitro 迁移改造的列表页和相关代码，请你阅读这里的代码写法，将这些代码作为范例，迁移到上述的 `spec.md` 规范文件内。
+   - 类型类型迁移范例： `apps\type\src\business\dev-team\config-manage\center.ts`
+   - mock-data 假数据迁移范例： `apps\admin\server\api\dev-team\config-manage\center\mock-data.ts`
+   - nitro 接口的编写范例： `apps\admin\server\api\dev-team\config-manage\center\list.post.ts`
+   - 封装 api hooks 的编写范例： `apps\admin\src\api\dev-team\config-manage\center\index.ts`
+   - 列表页改造的范例： `apps\admin\src\pages\dev-team\config-manage\center\index.vue`
+   - 请你务必要重点阅读 `列表页改造的范例` 和 `nitro 接口的编写范例` 。
+5. 以下文件是错误的，糟糕的迁移案例。这些代码迁移不完全，不完整，和上述的正确范例差异很大，作为反面例子供你对比：
+   - nitro 接口的反面例子： `apps\admin\server\api\property-manage\expense-manage\payment-review\list.post.ts`
+   - 封装 api hooks 的反面例子： `apps\admin\src\api\property-manage\expense-manage\payment-review\index.ts`
+   - 列表页改造的反面例子： `apps\admin\src\pages\property-manage\expense-manage\payment-review\index.vue`
+   - 请你务必要完整阅读这几个反面例子，和正确的例子做对比。
+
+6. 上述的规范文件，在内容上是有重合的，需要你重新整理，避免重复说明。
+7. 将你对比的结果，整合到 `openspec\changes\migrate-static-data-to-nitro-query\specs` 目录内，并允许你新建一个专门的规范文件来说明清楚迁移细则。
