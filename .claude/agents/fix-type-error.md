@@ -144,6 +144,17 @@ import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 ```
 
+### 找不到正确的 `PlusFormRules` 类型
+
+```ts
+// ❌ 错误 从 `plus-pro-components` 模块内导入 PlusFormRules 类型
+import { type OptionsType, type FieldValues, type PlusColumn, type PlusFormRules } from "plus-pro-components";
+
+// ✅ 正确 在 @/config/constant 全局常量内， 导入 PlusFormRules 类型
+import { type FieldValues, type PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
