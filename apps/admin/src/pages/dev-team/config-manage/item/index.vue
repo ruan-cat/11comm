@@ -329,7 +329,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.view")) }} </ElButton>
+						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
 					</template>
 				</PureTable>
 			</template>

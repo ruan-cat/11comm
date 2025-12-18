@@ -340,7 +340,7 @@ function gotoDictionaryItemsPage(row: DictionaryListItem) {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
-						<ElButton type="info"> {{ transformI18n($t("common.buttons.view")) }} </ElButton>
+						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
 						<ElButton type="info" @click="gotoDictionaryItemsPage(row)"> 字典项管理 </ElButton>
 					</template>
 				</PureTable>

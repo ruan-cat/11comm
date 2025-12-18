@@ -189,7 +189,7 @@ async function handleDelete(row: DiscountTypeListItem) {
 				confirmButtonText: "确认",
 				cancelButtonText: "取消",
 				type: "warning",
-			}
+			},
 		);
 
 		/** TODO: 替换为真实的API调用 */
@@ -236,7 +236,7 @@ function openDialog(params: { mode: Mode; row?: DiscountTypeListItem }) {
 	/** 业务对象 */
 	const 业务对象: DiscountTypeFormVO = isAdd.value
 		? cloneDeep(defaultForm)
-		: (isEdit.value || isInfo.value)
+		: isEdit.value || isInfo.value
 			? cloneDeep({
 					...defaultForm,
 					discountName: row?.name || "",
@@ -355,7 +355,7 @@ onMounted(async () => {
 				>
 					<template #operation="{ row }">
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
-							{{ transformI18n($t("common.buttons.view")) }}
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}

@@ -340,7 +340,7 @@ onMounted(async () => {
 				>
 					<template #operation="{ row }">
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
-							{{ transformI18n($t("common.buttons.view")) }}
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}

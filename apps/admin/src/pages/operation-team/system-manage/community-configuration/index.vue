@@ -11,13 +11,14 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type CommunityConfigListItem, type CommunityConfigQueryParams, settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
-import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/community-configuration";
 import {
-	type CommunityConfigurationFormProps,
-	defaultForm,
-    type 小区配置表单_VO
-} from "./components/form";
+	type CommunityConfigListItem,
+	type CommunityConfigQueryParams,
+	settingTypeOptions,
+	communityConfigStatusOptions,
+} from "@01s-11comm/type";
+import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/community-configuration";
+import { type CommunityConfigurationFormProps, defaultForm, type 小区配置表单_VO } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
 const communityConfigurationFormInstance = ref<InstanceType<typeof CommunityConfigurationForm> | null>(null);
@@ -321,7 +322,7 @@ onMounted(async () => {
 				>
 					<template #operation="{ row }">
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
-							{{ transformI18n($t("common.buttons.view")) }}
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}

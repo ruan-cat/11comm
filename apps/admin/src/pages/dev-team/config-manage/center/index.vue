@@ -282,7 +282,7 @@ function importConfig() {
 				>
 					<template #operation="{ row }">
 						<ElButton type="primary" size="small" @click="viewDetails(row)">
-							{{ transformI18n($t("common.buttons.view")) }}
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="warning" size="small" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}

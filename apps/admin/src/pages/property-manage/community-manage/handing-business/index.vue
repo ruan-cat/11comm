@@ -306,15 +306,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 /** 删除单个业务受理 */
 async function handleDelete(row: HandingBusinessListItem) {
 	try {
-		await ElMessageBox.confirm(
-			`确认删除业务受理记录：${row.feeId} - ${row.feeItem}？`,
-			"删除确认",
-			{
-				confirmButtonText: transformI18n($t("common.buttons.del")),
-				cancelButtonText: transformI18n($t("common.buttons.cancel")),
-				type: "warning",
-			},
-		);
+		await ElMessageBox.confirm(`确认删除业务受理记录：${row.feeId} - ${row.feeItem}？`, "删除确认", {
+			confirmButtonText: transformI18n($t("common.buttons.del")),
+			cancelButtonText: transformI18n($t("common.buttons.cancel")),
+			type: "warning",
+		});
 
 		// TODO: 调用删除API
 		// 模拟删除操作
@@ -365,7 +361,7 @@ onMounted(async () => {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
-							{{ transformI18n($t("common.buttons.view")) }}
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
