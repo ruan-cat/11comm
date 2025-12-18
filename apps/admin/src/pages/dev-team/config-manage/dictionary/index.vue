@@ -22,19 +22,35 @@ import { type DictionaryFormProps, type DictionaryFormVO, defaultForm } from "./
 import DictionaryForm from "./components/form.vue";
 const dictionaryFormInstance = ref<InstanceType<typeof DictionaryForm> | null>(null);
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<DictionaryQueryParams> = {
+	dictionaryName: "",
+	dictionaryCode: "",
+	dictionaryType: "",
+	isEnabled: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
 	resetParams,
 	doFetch,
 	handlePageSizeChange,
 	handleCurrentPageChange,
-} = useDictionaryListQuery();
+} = useDictionaryListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -95,56 +111,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "字典",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<DictionaryQueryParams> = {
-	dictionaryName: "",
-	dictionaryCode: "",
-	dictionaryType: "",
-	isEnabled: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -193,16 +164,13 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
 /** 执行搜索 */
 function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<DictionaryQueryParams>);
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();

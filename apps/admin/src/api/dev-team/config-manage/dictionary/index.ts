@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "dictionary";
  * 字典列表查询 Hook
  * Dictionary list query hook
  */
-export function useDictionaryListQuery() {
+export function useDictionaryListQuery(initialParams: Partial<DictionaryQueryParams>) {
 	return useListQuery<DictionaryListItem, DictionaryQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 
