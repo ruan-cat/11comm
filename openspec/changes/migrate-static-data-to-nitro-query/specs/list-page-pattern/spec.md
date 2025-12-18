@@ -6,25 +6,25 @@
 
 ### 执行顺序
 
-1. **Step 1**: 列表页数据获取模式（导入类型和Hook）
+1. **Step 1**: 列表页数据获取模式（导入类型和 Hook）
 2. **Step 2**: 搜索表单集成（搜索功能改造）
 3. **Step 3**: 分页组件集成（分页功能改造）
-4. **Step 4**: 表格Loading状态（Loading状态集成）
+4. **Step 4**: 表格 Loading 状态（Loading 状态集成）
 5. **Step 5**: 错误状态处理（错误处理集成）
 6. **Step 6**: 初始化加载（初始化逻辑）
 7. **Step 7**: 响应式参数管理（参数管理优化）
 8. **Step 8**: 代码组织和注释（代码规范）
 9. **Step 9**: 类型安全的查询参数（类型安全保障）
-10. **Step 10**: Options常量使用（使用类型库Options）
-11. **Step 11**: 删除test-data.ts文件（清理旧文件）
-12. **Step 12**: 删除loadTableData函数（清理旧代码）
-13. **Step 13**: 删除手动loading状态管理（清理旧逻辑）
+10. **Step 10**: Options 常量使用（使用类型库 Options）
+11. **Step 11**: 删除 test-data.ts 文件（清理旧文件）
+12. **Step 12**: 删除 loadTableData 函数（清理旧代码）
+13. **Step 13**: 删除手动 loading 状态管理（清理旧逻辑）
 14. **Step 14**: 删除列表页本地数据源（最终清理）
 
 ### 步骤依赖关系
 
 - Step 1 是核心改造，必须最先完成
-- Step 2-5 是功能集成步骤，依赖 Step 1 的Hook基础
+- Step 2-5 是功能集成步骤，依赖 Step 1 的 Hook 基础
 - Step 6-7 是优化步骤，确保功能完整
 - Step 8-10 是代码质量步骤，规范代码和类型
 - Step 11-14 是清理步骤，删除所有旧代码，必须在前面步骤完成后执行
@@ -57,61 +57,87 @@
 
 ```vue
 <script setup lang="ts">
-import { useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
-import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
+import { type ConfigCenterListItem, type ConfigCenterQueryParams } from "@01s-11comm/type";
 
-// 1. 分页配置
-const pagination = ref({ currentPage: 1, pageSize: 10, total: 0 });
+// 1. 表格搜索栏 其类型约束为 `@01s-11comm/type` 导入的业务类型
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ConfigCenterQueryParams> = {
+	configName: "",
+	configType: "",
+	status: "",
+	configKey: "",
+};
 
-// 2. 查询参数
-const queryParams = ref<HouseChargeQueryParams>({
-	pageIndex: pagination.value.currentPage,
-	pageSize: pagination.value.pageSize,
+// 2. 固定的表格搜索栏配置
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 表格搜索栏具体的配置
+]);
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
 });
 
-// 3. TanStack Query Hook
-const { data, isLoading, refetch } = useHouseChargeListQuery(queryParams);
+// 3. 使用 TanStack Query hooks
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useConfigCenterListQuery(plusSearchDefaultValues);
 
-// 4. 表格数据
-const tableData = ref<HouseChargeListItem[]>([]);
-
-// 5. 监听数据变化
-watch(data, (newData) => {
-	if (newData?.data) {
-		tableData.value = newData.data.list;
-		pagination.value.total = newData.data.total;
-		pureTableProps.value.data = tableData.value;
-	}
-});
-
-// 6. 搜索函数
-async function handleSearch() {
-	queryParams.value = {
-		...plusSearchModel.value,
-		pageIndex: 1,
-		pageSize: pagination.value.pageSize,
-	};
+// 5. 搜索函数
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
-
-// 7. 分页函数
-async function handleCurrentPageChange(currentPage: number) {
-	queryParams.value.pageIndex = currentPage;
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
-async function handlePageSizeChange(pageSize: number) {
-	queryParams.value.pageSize = pageSize;
-	queryParams.value.pageIndex = 1;
-}
-
-// 8. 初始化
-onMounted(() => {
-	refetch();
-});
 </script>
 
 <template>
 	<PlusSearch v-model="plusSearchModel" @search="handleSearch" @reset="handleReset" />
-	<PureTable :loading="isLoading" :data="tableData" :pagination="pagination" />
+	<PureTableBar @refresh="doFetch">
+		<template #default="{ size, dynamicColumns }">
+			<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+			<PureTable
+				:="pureTableProps"
+				:columns="dynamicColumns"
+				:size="size"
+				:loading="isFetching"
+				@page-size-change="handlePageSizeChange"
+				@page-current-change="handleCurrentPageChange"
+			>
+				<template #operation="{ row }">
+					<!-- 表格搜索栏按钮 -->
+				</template>
+			</PureTable>
+		</template>
+	</PureTableBar>
 </template>
 ```
 
@@ -133,6 +159,37 @@ async function loadTableData() {
 	pagination.value.total = filteredData.length;
 }
 
+// ❌ 删除掉具体的 `分页配置`
+/** 分页配置 */
+const pagination = computed<PaginationProps>(() => ({
+	...defaultPagination,
+	pageSize: pageSize.value,
+	currentPage: pageIndex.value,
+	total: total.value,
+}));
+
+// ❌ 删除掉具体的 `表格配置对象` 因为该配置现在从 hooks 内导出
+/** 表格配置 */
+const pureTableProps = ref<PureTableProps>({
+	...defaultPureTableProps,
+	data: tableData.value,
+	columns: [],
+	pagination: pagination.value,
+	loading: isLoading.value,
+});
+
+// ❌ 删除掉具体的 handlePageSizeChange 函数
+/** 处理页数变化 */
+function handlePageSizeChange(newPageSize: number) {
+	pageSize.value = newPageSize;
+}
+
+// ❌ 删除掉具体的 handleCurrentPageChange 函数
+/** 处理页码变化 即后端的 pageIndex */
+function handleCurrentPageChange(currentPage: number) {
+	pageIndex.value = currentPage;
+}
+
 // ❌ 删除（onMounted 中调用 loadTableData）
 onMounted(async () => {
 	await loadTableData();
@@ -144,14 +201,25 @@ onMounted(async () => {
 ### Requirement: 搜索表单集成 (Step 2)
 
 **FROM**: handleSearch 调用 loadTableData
-**TO**: handleSearch 更新 queryParams
+**TO**: 使用业务 api hooks 暴露出来的 `handleReSearch` 和 `handleSearch` 函数完成内置的搜索功能。
 
-搜索表单 MUST 通过修改 queryParams 触发查询：
+搜索功能 MUST 使用以下**固定写法**的 `handleReSearch` 和 `handleSearch` 函数：
 
-- plusSearchModel 绑定搜索表单
-- handleSearch 合并搜索条件到 queryParams
-- 重置 pageIndex 为 1
-- 自动触发 TanStack Query
+具体代码写法为：
+
+```typescript
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
+```
+
+这是**固定的**代码写法，凡是在列表页遇到 `handleReSearch` 和 `handleSearch` 函数时，就直接重写成上面的固定代码写法格式。不允许更改代码写法。
 
 #### Scenario: PlusSearch 组件配置
 
@@ -191,113 +259,57 @@ const plusSearchColumns: PlusColumn[] = [
 
 - **GIVEN** 用户填写搜索条件
 - **WHEN** 点击搜索按钮
-- **THEN** handleSearch 执行：
+- **THEN** 执行 `handleSearch` 函数。使用固定写法的 `handleSearch`。
 
-```typescript
-async function handleSearch() {
-	queryParams.value = {
-		...plusSearchModel.value, // 合并搜索条件
-		pageIndex: 1, // 重置到第一页
-		pageSize: pagination.value.pageSize,
-	};
-	// TanStack Query 自动触发请求
-}
-```
+如果遇到不满足固定写法的 `handleSearch` 函数，请无条件的改写替换。
 
 #### Scenario: handleReset 实现
 
 - **GIVEN** 用户点击重置按钮
 - **WHEN** handleReset 执行
-- **THEN** 代码为：
+- **THEN** 执行 `handleReset` 函数。使用固定写法的 `handleReset`。
 
-```typescript
-async function handleReset() {
-	plusSearchModel.value = {}; // 清空搜索条件
-	queryParams.value = {
-		pageIndex: 1,
-		pageSize: pagination.value.pageSize,
-	};
-	// TanStack Query 自动触发请求
-}
-```
+如果遇到不满足固定写法的 `handleReset` 函数，请无条件的改写替换。
 
 ---
 
 ### Requirement: 分页组件集成 (Step 3)
 
 **FROM**: handleCurrentPageChange 调用 loadTableData
-**TO**: 修改 queryParams.pageIndex/pageSize
+**TO**: 使用业务 api hooks 暴露出来的 `handlePageSizeChange` 和 `handleCurrentPageChange` 函数完成内置的搜索功能。
 
-分页 MUST 通过修改 queryParams 实现：
+分页 MUST 通过使用固定的 `handlePageSizeChange` 和 `handleCurrentPageChange` 实现：
 
-- pagination 对象存储当前状态
-- handleCurrentPageChange 更新 pageIndex
-- handlePageSizeChange 更新 pageSize 并重置 pageIndex
-- 监听器自动同步 total
-
-#### Scenario: PureTable 分页配置
-
-- **GIVEN** 列表页使用 PureTable
-- **WHEN** 配置分页属性
-- **THEN** 代码为：
-
-```vue
-<template>
-	<PureTable
-		:loading="isLoading"
-		:data="tableData"
-		:columns="columns"
-		:pagination="pagination"
-		@current-change="handleCurrentPageChange"
-		@size-change="handlePageSizeChange"
-	/>
-</template>
-
-<script setup lang="ts">
-const pagination = ref({
-	currentPage: 1,
-	pageSize: 10,
-	total: 0,
-	pageSizes: [10, 20, 30, 50],
-	background: true,
-});
-</script>
-```
+- `handleCurrentPageChange` 更新 pageIndex
+- `handlePageSizeChange` 更新 pageSize
+- 自动触发查询
 
 #### Scenario: 分页事件处理
 
 - **GIVEN** 用户切换页码或每页大小
 - **WHEN** 事件触发
-- **THEN** 代码为：
+- **THEN** 使用 api hooks 固定返回的函数。
 
-```typescript
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	queryParams.value.pageIndex = currentPage;
-}
+```vue
+<script lang="ts" setup>
+/** 使用 TanStack Query 获取数据 */
+const { isFetching, handlePageSizeChange, handleCurrentPageChange } = useConfigCenterListQuery(plusSearchDefaultValues);
+</script>
 
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	pagination.value.currentPage = 1; // 重置页码
-	queryParams.value.pageSize = pageSize;
-	queryParams.value.pageIndex = 1;
-}
-```
-
-#### Scenario: total 自动同步
-
-- **GIVEN** watch 监听器
-- **WHEN** data 变化
-- **THEN** 自动更新 pagination.value.total：
-
-```typescript
-watch(data, (newData) => {
-	if (newData?.data) {
-		tableData.value = newData.data.list;
-		pagination.value.total = newData.data.total; // 自动同步总数
-		pureTableProps.value.data = tableData.value;
-	}
-});
+<template>
+	<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+	<PureTable
+		:columns="dynamicColumns"
+		:size="size"
+		:loading="isFetching"
+		@page-size-change="handlePageSizeChange"
+		@page-current-change="handleCurrentPageChange"
+	>
+		<template #operation="{ row }">
+			<!-- 操作栏按钮 -->
+		</template>
+	</PureTable>
+</template>
 ```
 
 ---
@@ -305,9 +317,9 @@ watch(data, (newData) => {
 ### Requirement: 表格 Loading 状态 (Step 4)
 
 **FROM**: 手动控制 loading.value
-**TO**: 直接使用 isLoading
+**TO**: 直接使用 `isFetching`
 
-表格 MUST 使用 TanStack Query 的 isLoading 状态：
+表格 MUST 使用 TanStack Query 的 `isFetching` 状态：
 
 - PureTable 的 loading 属性绑定 isLoading
 - 不需要手动设置 loading = true/false
@@ -320,7 +332,7 @@ watch(data, (newData) => {
 - **THEN** 代码为：
 
 ```vue
-<PureTable :loading="isLoading" :data="tableData" />
+<PureTable :loading="isFetching" />
 ```
 
 - **WHEN** 查询进行中
@@ -351,79 +363,6 @@ async function loadTableData() {
 
 ---
 
-### Requirement: 错误状态处理 (Step 5)
-
-列表页 MUST 提供错误状态提示：
-
-- 使用 isError 和 error 显示错误信息
-- 提供重试按钮（调用 refetch）
-- 不阻塞页面渲染
-
-#### Scenario: 错误提示 UI
-
-- **GIVEN** 查询失败（isError = true）
-- **WHEN** 渲染页面
-- **THEN** 可选显示错误提示：
-
-```vue
-<template>
-	<div v-if="isError" class="error-message">
-		<p>数据加载失败：{{ error?.message }}</p>
-		<button @click="refetch">重试</button>
-	</div>
-
-	<PureTable v-else :loading="isLoading" :data="tableData" />
-</template>
-```
-
-#### Scenario: 全局错误处理
-
-- **GIVEN** TanStack Query 全局配置
-- **WHEN** 查询失败
-- **THEN** 可通过 Vue 全局错误处理器统一处理
-- **AND** 显示 ElMessage 提示
-
----
-
-### Requirement: 初始化加载 (Step 6)
-
-列表页 MUST 在 onMounted 时触发初始查询：
-
-- 调用 refetch() 立即加载数据
-- 或确保 queryParams 有效（pageIndex > 0）
-- 避免重复触发
-
-#### Scenario: onMounted 触发查询
-
-- **GIVEN** 列表页组件挂载
-- **WHEN** onMounted 钩子执行
-- **THEN** 代码为：
-
-```typescript
-onMounted(() => {
-	refetch(); // 手动触发首次查询
-});
-```
-
-- **OR** 依赖自动触发：
-
-```typescript
-// queryParams 初始化时 pageIndex > 0，自动触发
-const queryParams = ref<HouseChargeQueryParams>({
-	pageIndex: 1, // 自动触发查询
-	pageSize: 10,
-});
-```
-
-#### Scenario: 避免重复请求
-
-- **GIVEN** onMounted 调用 refetch()
-- **WHEN** queryParams 已经触发自动查询
-- **THEN** TanStack Query 缓存机制避免重复请求
-- **AND** 相同 queryKey 不会发起多次请求
-
----
-
 ### Requirement: 响应式参数管理 (Step 7)
 
 queryParams MUST 作为响应式对象管理：
@@ -433,38 +372,29 @@ queryParams MUST 作为响应式对象管理：
 - 包含所有搜索条件和分页参数
 - 类型为业务专用的 QueryParams 接口
 
-#### Scenario: queryParams 定义
+#### Scenario: updateParams 使用
 
 - **GIVEN** 列表页 setup
-- **WHEN** 定义 queryParams
+- **WHEN** 定义 plusSearchDefaultValues 并传递给 api hooks 即可
 - **THEN** 代码为：
 
 ```typescript
-import type { HouseChargeQueryParams } from "@01s-11comm/type";
-
-const queryParams = ref<HouseChargeQueryParams>({
-	pageIndex: 1,
-	pageSize: 10,
-	// 搜索条件初始为空
-	expenseType: undefined,
-	status: undefined,
-});
-```
-
-#### Scenario: queryParams 更新
-
-- **GIVEN** 用户执行搜索
-- **WHEN** handleSearch 更新参数
-- **THEN** 代码为：
-
-```typescript
-async function handleSearch() {
-	queryParams.value = {
-		...queryParams.value, // 保留 pageSize
-		...plusSearchModel.value, // 合并搜索条件
-		pageIndex: 1, // 重置页码
-	};
-}
+import type { ConfigCenterQueryParams } from "@01s-11comm/type";
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ConfigCenterQueryParams> = {
+	configName: "",
+	configType: "",
+	status: "",
+	configKey: "",
+};
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+/** 使用 TanStack Query 获取数据 */
+const { updateParams } = useConfigCenterListQuery(plusSearchDefaultValues);
 ```
 
 ---
@@ -475,13 +405,10 @@ async function handleSearch() {
 
 1. 类型导入
 2. 搜索表单配置
-3. 分页配置
-4. 查询参数
-5. TanStack Query Hook
-6. 表格数据
-7. 监听器
-8. 事件处理函数
-9. 生命周期钩子
+3. 查询参数
+4. TanStack Query Hook
+5. 表格数据
+6. 事件处理函数
 
 #### Scenario: 代码结构模板
 
@@ -490,47 +417,43 @@ async function handleSearch() {
 - **THEN** 按以下顺序编写：
 
 ```typescript
-// ==================== 1. 类型导入 ====================
-import { useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
-import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
 
-// ==================== 2. 搜索表单配置 ====================
-const plusSearchModel = ref({});
-const plusSearchColumns: PlusColumn[] = [...];
-
-// ==================== 3. 分页配置 ====================
-const pagination = ref({ currentPage: 1, pageSize: 10, total: 0 });
-
-// ==================== 4. 查询参数 ====================
-const queryParams = ref<HouseChargeQueryParams>({
-  pageIndex: pagination.value.currentPage,
-  pageSize: pagination.value.pageSize,
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<查询字段业务类型> = {
+	//... 列举出全部的字段 并赋初值
+};
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// ...具体的代码写法配置
+]);
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	// ...具体的代码写法配置
 });
 
-// ==================== 5. TanStack Query Hook ====================
-const { data, isLoading, refetch } = useHouseChargeListQuery(queryParams);
-
-// ==================== 6. 表格数据 ====================
-const tableData = ref<HouseChargeListItem[]>([]);
-
-// ==================== 7. 监听器 ====================
-watch(data, (newData) => {
-  if (newData?.data) {
-    tableData.value = newData.data.list;
-    pagination.value.total = newData.data.total;
-  }
-});
-
-// ==================== 8. 事件处理函数 ====================
-async function handleSearch() { ... }
-async function handleReset() { ... }
-async function handleCurrentPageChange(currentPage: number) { ... }
-async function handlePageSizeChange(pageSize: number) { ... }
-
-// ==================== 9. 生命周期钩子 ====================
-onMounted(() => {
-  refetch();
-});
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useConfigCenterListQuery(plusSearchDefaultValues);
 ```
 
 #### Scenario: JSDoc 注释规范
@@ -540,12 +463,6 @@ onMounted(() => {
 - **THEN** 使用 JSDoc 格式：
 
 ```typescript
-/** 查询参数 Query parameters */
-const queryParams = ref<HouseChargeQueryParams>({
-	pageIndex: 1,
-	pageSize: 10,
-});
-
 /** 搜索函数 Search function */
 async function handleSearch() {
 	// ...
@@ -560,7 +477,7 @@ async function handleSearch() {
 
 列表页 MUST 使用业务专用的 QueryParams 类型：
 
-- 从 @01s-11comm/type 导入
+- 从 `@01s-11comm/type` 导入
 - ref 泛型参数指定类型
 - TypeScript 编译时检查参数有效性
 
