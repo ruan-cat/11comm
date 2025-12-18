@@ -251,31 +251,21 @@ apps/admin SHALL 启用 Nitro 服务端功能：
 #### Scenario: 通用筛选模式实现
 
 - **GIVEN** 需要实现灵活的筛选逻辑
-- **WHEN** 使用 Object.keys(filters).forEach 遍历所有筛选字段
+- **WHEN** 使用通用筛选工具函数 `filterDataByQuery`
 - **THEN** 代码实现如下：
 
 ```typescript
-// 使用通用筛选模式遍历所有筛选字段
-let filteredData = [...mockHouseChargeData];
-Object.keys(filters).forEach((key) => {
-	const filterValue = filters[key as keyof typeof filters];
-	if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
-		filteredData = filteredData.filter((item) => {
-			const itemValue = item[key as keyof HouseChargeListItem];
-			// 字符串字段使用模糊匹配
-			if (typeof itemValue === "string" && typeof filterValue === "string") {
-				return itemValue.includes(filterValue);
-			}
-			// 其他字段(枚举等)使用精确匹配
-			return itemValue === filterValue;
-		});
-	}
-});
+// 使用通用筛选工具函数进行数据筛选
+import { filterDataByQuery } from "utils/filter-data";
+
+const filteredData = filterDataByQuery(mockHouseChargeData, filters);
 ```
 
-- **AND** 此模式自动处理所有筛选字段，无需为每个字段编写单独的 if 条件
+- **AND** 此工具函数自动处理所有筛选字段，无需为每个字段编写单独的 if 条件
 - **AND** 自动区分字符串字段(模糊匹配)和枚举字段(精确匹配)
 - **AND** 自动忽略空值、null 和 undefined
+- **AND** 工具函数定义位于 `apps/admin/server/utils/filter-data.ts`
+- **AND** 使用泛型支持任意数据类型和筛选条件类型
 
 ---
 
@@ -336,6 +326,7 @@ Object.keys(filters).forEach((key) => {
 // 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
+import { filterDataByQuery } from "utils/filter-data";
 import { mockHouseChargeData } from "./mock-data";
 
 /**
@@ -347,22 +338,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 	const body = await readBody<HouseChargeQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body;
 
-	// 2. 数据筛选 - 使用通用筛选模式遍历所有筛选字段
-	let filteredData = [...mockHouseChargeData];
-	Object.keys(filters).forEach((key) => {
-		const filterValue = filters[key as keyof typeof filters];
-		if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
-			filteredData = filteredData.filter((item) => {
-				const itemValue = item[key as keyof HouseChargeListItem];
-				// 字符串字段使用模糊匹配
-				if (typeof itemValue === "string" && typeof filterValue === "string") {
-					return itemValue.includes(filterValue);
-				}
-				// 其他字段(枚举等)使用精确匹配
-				return itemValue === filterValue;
-			});
-		}
-	});
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockHouseChargeData, filters);
 
 	// 3. 分页处理
 	const total = filteredData.length;

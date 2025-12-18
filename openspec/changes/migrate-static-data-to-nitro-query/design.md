@@ -612,23 +612,26 @@ export const expenseIdentifierOptions: OptionsType = [
 
 ### 7.2 接口实现模板
 
+**注意**: 自 2025-12-18 起，数据筛选逻辑已抽取为通用工具函数 `filterDataByQuery`，位于 `apps/admin/server/utils/filter-data.ts`。该工具函数支持：
+
+- 字符串字段的模糊匹配
+- 枚举等其他字段的精确匹配
+- 自动忽略空值、null 和 undefined
+- 使用泛型支持任意数据类型
+
 ```typescript
 // 必须要手动导入函数 在 nitro v3 版本内，必须在 nitro/h3 路径内手动导入函数
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, XXXListItem, XXXQueryParams } from "@01s-11comm/type";
+import { filterDataByQuery } from "utils/filter-data";
 import { mockXXXData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>> => {
 	const body = await readBody<XXXQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, ...filters } = body;
 
-	// 数据筛选
-	let filteredData = [...mockXXXData];
-	Object.keys(filters).forEach((key) => {
-		if (filters[key]) {
-			filteredData = filteredData.filter(/* 筛选逻辑 */);
-		}
-	});
+	// 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockXXXData, filters);
 
 	// 分页处理
 	const total = filteredData.length;
@@ -637,7 +640,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<XXXListItem>>
 
 	// 4. 返回标准格式 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<HouseChargeListItem>> = {
+	const response: JsonVO<PageDTO<XXXListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
