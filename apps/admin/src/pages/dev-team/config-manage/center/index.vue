@@ -281,17 +281,17 @@ function importConfig() {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="primary" size="small" @click="viewDetails(row)">
+						<ElButton type="primary" @click="viewDetails(row)">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="warning" size="small" @click="openDialog({ mode: 'edit', row })">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" size="small" @click="copyConfig(row)"> 复制 </ElButton>
-						<ElButton :type="row.status === '启用' ? 'warning' : 'success'" size="small" @click="toggleStatus(row)">
+						<ElButton type="info" @click="copyConfig(row)"> 复制 </ElButton>
+						<ElButton :type="row.status === '启用' ? 'warning' : 'success'" @click="toggleStatus(row)">
 							{{ row.status === "启用" ? "禁用" : "启用" }}
 						</ElButton>
-						<ElButton type="danger" size="small" @click="deleteConfig(row)">
+						<ElButton type="danger" @click="deleteConfig(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
