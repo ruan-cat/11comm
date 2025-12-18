@@ -189,7 +189,7 @@
 - [ ] Task 1.12.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/community-configuration/index.ts`
 - [ ] Task 1.12.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/index.vue`
 - [ ] Task 1.12.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/test-data.ts`
-- [ ] Task 1.12.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/components/form.ts`
+- [x] Task 1.12.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/components/form.ts`
 - [ ] Task 1.12.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/community-configuration/components/form.vue`
 - [ ] Task 1.12.9: 运行类型检查 `pnpm typecheck`
 - [ ] Task 1.12.10: 测试验证
