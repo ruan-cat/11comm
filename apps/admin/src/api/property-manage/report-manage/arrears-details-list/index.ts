@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "arrearsDetailsList";
 /**
  * arrears-details-list列表查询 Hook
  * ArrearsDetailsList list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useArrearsDetailsListListQuery() {
+export function useArrearsDetailsListListQuery(initialParams: Partial<ArrearsDetailsListQueryParams>) {
 	return useListQuery<ArrearsDetailsListListItem, ArrearsDetailsListQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

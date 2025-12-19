@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "ownersCommittee";
 /**
  * owners-committee列表查询 Hook
  * OwnersCommittee list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOwnersCommitteeListQuery() {
+export function useOwnersCommitteeListQuery(initialParams: Partial<OwnersCommitteeQueryParams>) {
 	return useListQuery<OwnersCommitteeListItem, OwnersCommitteeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

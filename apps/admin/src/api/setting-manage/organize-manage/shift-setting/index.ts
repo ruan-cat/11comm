@@ -14,10 +14,12 @@ const QUERY_KEY_PREFIX = "shiftSetting";
 
 /**
  * 班次设置列表查询 Hook
+ * Shift setting list query hook
  */
-export function useShiftSettingListQuery() {
+export function useShiftSettingListQuery(initialParams: Partial<ShiftSettingListQuery>) {
 	return useListQuery<ShiftSetting, ShiftSettingListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,
+		initialParams,
 	});
 }

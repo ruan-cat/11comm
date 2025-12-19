@@ -8,10 +8,11 @@ import type { BuildingSpaceStructureDiagramListItem, BuildingSpaceStructureDiagr
 
 /**
  * 获取楼宇空间结构图列表数据
+ * Get building space structure diagram list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useBuildingSpaceStructureDiagramListQuery(initialParams?: Partial<BuildingSpaceStructureDiagramQueryParams>) {
+export function useBuildingSpaceStructureDiagramListQuery(initialParams: Partial<BuildingSpaceStructureDiagramQueryParams>) {
 	return useListQuery<BuildingSpaceStructureDiagramListItem, BuildingSpaceStructureDiagramQueryParams>({
 		queryKeyPrefix: "propertyManage:communityManage:buildingSpaceStructureDiagram:list",
 		apiUrl: "/api/property-manage/community-manage/building-space-structure-diagram/list",

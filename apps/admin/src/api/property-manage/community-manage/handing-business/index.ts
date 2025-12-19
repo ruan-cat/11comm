@@ -5,7 +5,7 @@ import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-1
  * @description 业务受理列表查询 Hook
  * Handing business list query hook
  */
-export function useHandingBusinessListQuery(initialParams?: Partial<HandingBusinessQueryParams>) {
+export function useHandingBusinessListQuery(initialParams: Partial<HandingBusinessQueryParams>) {
 	return useListQuery<HandingBusinessListItem, HandingBusinessQueryParams>({
 		queryKeyPrefix: "handing-business-list",
 		apiUrl: "/api/property-manage/community-manage/handing-business/list",

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "point";
 /**
  * point列表查询 Hook
  * Point list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePointListQuery() {
+export function usePointListQuery(initialParams: Partial<PointQueryParams>) {
 	return useListQuery<PointListItem, PointQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

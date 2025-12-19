@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "discountApply";
 /**
  * discount-apply列表查询 Hook
  * DiscountApply list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useDiscountApplyListQuery() {
+export function useDiscountApplyListQuery(initialParams: Partial<DiscountApplyQueryParams>) {
 	return useListQuery<DiscountApplyListItem, DiscountApplyQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

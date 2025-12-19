@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "type";
 /**
  * type列表查询 Hook
  * Type list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useTypeListQuery() {
+export function useTypeListQuery(initialParams: Partial<TypeQueryParams>) {
 	return useListQuery<TypeListItem, TypeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

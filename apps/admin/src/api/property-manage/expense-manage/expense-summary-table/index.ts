@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "expenseSummaryTable";
 /**
  * expense-summary-table列表查询 Hook
  * ExpenseSummaryTable list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useExpenseSummaryTableListQuery() {
+export function useExpenseSummaryTableListQuery(initialParams: Partial<ExpenseSummaryTableQueryParams>) {
 	return useListQuery<ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

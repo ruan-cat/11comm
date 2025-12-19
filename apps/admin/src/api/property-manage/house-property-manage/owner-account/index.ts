@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "ownerAccount";
 /**
  * owner-account列表查询 Hook
  * OwnerAccount list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOwnerAccountListQuery() {
+export function useOwnerAccountListQuery(initialParams: Partial<OwnerAccountQueryParams>) {
 	return useListQuery<OwnerAccountListItem, OwnerAccountQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

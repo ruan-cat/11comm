@@ -18,11 +18,13 @@ const QUERY_KEY_PREFIX = "orgInfo";
 
 /**
  * 员工列表查询 Hook
+ * Employee list query hook
  */
-export function useEmployeeListQuery() {
+export function useEmployeeListQuery(initialParams: Partial<EmployeeListQuery>) {
 	return useListQuery<Employee, EmployeeListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,
+		initialParams,
 	});
 }
 

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "repairsHaveDone";
 /**
  * repairs-have-done列表查询 Hook
  * RepairsHaveDone list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useRepairsHaveDoneListQuery() {
+export function useRepairsHaveDoneListQuery(initialParams: Partial<RepairsHaveDoneQueryParams>) {
 	return useListQuery<RepairsHaveDoneListItem, RepairsHaveDoneQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

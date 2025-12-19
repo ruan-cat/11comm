@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "houseCharge";
 /**
  * house-charge列表查询 Hook
  * HouseCharge list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useHouseChargeListQuery() {
+export function useHouseChargeListQuery(initialParams: Partial<HouseChargeQueryParams>) {
 	return useListQuery<HouseChargeListItem, HouseChargeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "draft-contract";
 /**
  * draft-contract列表查询 Hook
  * DraftContract list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useDraftContractListQuery() {
+export function useDraftContractListQuery(initialParams: Partial<DraftContractQueryParamsType>) {
 	return useListQuery<DraftContractListItem, DraftContractQueryParamsType>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

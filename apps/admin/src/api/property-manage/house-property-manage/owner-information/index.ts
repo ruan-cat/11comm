@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "ownerInformation";
 /**
  * owner-information列表查询 Hook
  * OwnerInformation list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOwnerInformationListQuery() {
+export function useOwnerInformationListQuery(initialParams: Partial<OwnerInformationQueryParams>) {
 	return useListQuery<OwnerInformationListItem, OwnerInformationQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

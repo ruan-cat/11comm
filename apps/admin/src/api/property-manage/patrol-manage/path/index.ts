@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "path";
 /**
  * path列表查询 Hook
  * Path list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePathListQuery() {
+export function usePathListQuery(initialParams: Partial<PathQueryParams>) {
 	return useListQuery<PathListItem, PathQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

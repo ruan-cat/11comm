@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "my";
 /**
  * my列表查询 Hook
  * My list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useMyListQuery() {
+export function useMyListQuery(initialParams: Partial<MyCommunityQueryParams>) {
 	return useListQuery<MyCommunityListItem, MyCommunityQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

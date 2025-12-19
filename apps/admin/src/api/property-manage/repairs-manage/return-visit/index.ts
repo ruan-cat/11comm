@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "returnVisit";
  * return-visit列表查询 Hook
  * ReturnVisit list query hook
  */
-export function useReturnVisitListQuery() {
+export function useReturnVisitListQuery(initialParams: Partial<ReturnVisitQueryParams>) {
 	return useListQuery<ReturnVisitListItem, ReturnVisitQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

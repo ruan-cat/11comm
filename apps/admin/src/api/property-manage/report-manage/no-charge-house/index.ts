@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "noChargeHouse";
  * no-charge-house列表查询 Hook
  * NoChargeHouse list query hook
  */
-export function useNoChargeHouseListQuery() {
+export function useNoChargeHouseListQuery(initialParams: Partial<NoChargeHouseQueryParams>) {
 	return useListQuery<NoChargeHouseListItem, NoChargeHouseQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

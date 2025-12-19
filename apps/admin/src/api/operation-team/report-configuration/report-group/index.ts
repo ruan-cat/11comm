@@ -8,10 +8,11 @@ import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/ty
 
 /**
  * 获取报表分组列表数据
+ * Get report group list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useReportGroupListQuery(initialParams?: Partial<ReportGroupQueryParams>) {
+export function useReportGroupListQuery(initialParams: Partial<ReportGroupQueryParams>) {
 	return useListQuery<ReportGroupListItem, ReportGroupQueryParams>({
 		queryKeyPrefix: "operationTeam:reportConfiguration:reportGroup:list",
 		apiUrl: "/api/operation-team/report-configuration/report-group/list",

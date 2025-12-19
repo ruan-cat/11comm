@@ -24,7 +24,7 @@ const {
     updateParams,
     resetParams,
     doFetch,
-} = useRefreshCacheListQuery();
+} = useRefreshCacheListQuery({});
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([

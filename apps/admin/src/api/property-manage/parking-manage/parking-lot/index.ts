@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "parkingLot";
 /**
  * parking-lot列表查询 Hook
  * ParkingLot list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useParkingLotListQuery() {
+export function useParkingLotListQuery(initialParams: Partial<ParkingLotQueryParams>) {
 	return useListQuery<ParkingLotListItem, ParkingLotQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

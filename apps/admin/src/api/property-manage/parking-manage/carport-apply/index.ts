@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "carportApply";
 /**
  * carport-apply列表查询 Hook
  * CarportApply list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useCarportApplyListQuery() {
+export function useCarportApplyListQuery(initialParams: Partial<CarportApplyQueryParams>) {
 	return useListQuery<CarportApplyListItem, CarportApplyQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

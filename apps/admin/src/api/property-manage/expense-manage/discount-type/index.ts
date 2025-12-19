@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "discountType";
 /**
  * discount-type列表查询 Hook
  * DiscountType list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useDiscountTypeListQuery() {
+export function useDiscountTypeListQuery(initialParams: Partial<DiscountTypeQueryParams>) {
 	return useListQuery<DiscountTypeListItem, DiscountTypeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

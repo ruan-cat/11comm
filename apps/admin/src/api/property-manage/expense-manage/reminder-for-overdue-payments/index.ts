@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "reminderForOverduePayments";
 /**
  * reminder-for-overdue-payments列表查询 Hook
  * ReminderForOverduePayments list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useReminderForOverduePaymentsListQuery() {
+export function useReminderForOverduePaymentsListQuery(initialParams: Partial<ReminderForOverduePaymentsQueryParams>) {
 	return useListQuery<ReminderForOverduePaymentsListItem, ReminderForOverduePaymentsQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

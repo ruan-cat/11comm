@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "ownerVehicle";
 /**
  * owner-vehicle列表查询 Hook
  * OwnerVehicle list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOwnerVehicleListQuery() {
+export function useOwnerVehicleListQuery(initialParams: Partial<OwnerVehicleQueryParams>) {
 	return useListQuery<OwnerVehicleListItem, OwnerVehicleQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

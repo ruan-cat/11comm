@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "first-party";
 /**
  * first-party列表查询 Hook
  * FirstParty list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useFirstPartyListQuery() {
+export function useFirstPartyListQuery(initialParams: Partial<FirstPartyQueryParams>) {
 	return useListQuery<FirstPartyListItem, FirstPartyQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "statementExpenses";
 /**
  * statement-expenses列表查询 Hook
  * StatementExpenses list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useStatementExpensesListQuery() {
+export function useStatementExpensesListQuery(initialParams: Partial<StatementExpensesQueryParams>) {
 	return useListQuery<StatementExpensesListItem, StatementExpensesQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "detail";
 /**
  * detail列表查询 Hook
  * Detail list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useDetailListQuery() {
+export function useDetailListQuery(initialParams: Partial<DetailQueryParams>) {
 	return useListQuery<DetailListItem, DetailQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

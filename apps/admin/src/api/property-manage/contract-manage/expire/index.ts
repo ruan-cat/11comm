@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "expire";
 /**
  * expire列表查询 Hook
  * Expire list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useExpireListQuery() {
+export function useExpireListQuery(initialParams: Partial<ExpireQueryParams>) {
 	return useListQuery<ExpireListItem, ExpireQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

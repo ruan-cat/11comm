@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "invoice";
 /**
  * invoice列表查询 Hook
  * Invoice list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useInvoiceListQuery() {
+export function useInvoiceListQuery(initialParams: Partial<InvoiceQueryParams>) {
 	return useListQuery<InvoiceListItem, InvoiceQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

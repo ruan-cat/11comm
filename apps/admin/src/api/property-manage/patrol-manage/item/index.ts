@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "item";
 /**
  * item列表查询 Hook
  * Item list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useItemListQuery() {
+export function useItemListQuery(initialParams: Partial<ItemQueryParams>) {
 	return useListQuery<ItemListItem, ItemQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

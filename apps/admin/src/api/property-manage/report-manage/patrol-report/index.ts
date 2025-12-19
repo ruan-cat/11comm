@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "patrolReport";
 /**
  * patrol-report列表查询 Hook
  * PatrolReport list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePatrolReportListQuery() {
+export function usePatrolReportListQuery(initialParams: Partial<PatrolReportQueryParams>) {
 	return useListQuery<PatrolReportListItem, PatrolReportQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

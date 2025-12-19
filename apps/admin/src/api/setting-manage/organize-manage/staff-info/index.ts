@@ -14,11 +14,13 @@ const QUERY_KEY_PREFIX = "staffInfo";
 
 /**
  * 员工信息列表查询 Hook
+ * Staff info list query hook
  */
-export function useStaffInfoListQuery() {
+export function useStaffInfoListQuery(initialParams: Partial<StaffInfoListQuery>) {
 	return useListQuery<StaffInfo, StaffInfoListQuery>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

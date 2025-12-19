@@ -14,10 +14,12 @@ const QUERY_KEY_PREFIX = "schedulingSetting";
 
 /**
  * 排班设置列表查询 Hook
+ * Scheduling setting list query hook
  */
-export function useSchedulingSettingListQuery() {
+export function useSchedulingSettingListQuery(initialParams: Partial<SchedulingSettingListQuery>) {
 	return useListQuery<SchedulingSetting, SchedulingSettingListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,
+		initialParams,
 	});
 }

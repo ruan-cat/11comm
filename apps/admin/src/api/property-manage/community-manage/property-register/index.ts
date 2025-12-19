@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "property-register";
 /**
  * 产权登记列表查询 Hook
  * PropertyRegister list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePropertyRegisterListQuery() {
+export function usePropertyRegisterListQuery(initialParams: Partial<PropertyRegisterQueryParams>) {
 	return useListQuery<PropertyRegisterListItem, PropertyRegisterQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

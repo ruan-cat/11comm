@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "menuGroup";
  * 菜单组列表查询 Hook
  * Menu group list query hook
  */
-export function useMenuGroupListQuery() {
+export function useMenuGroupListQuery(initialParams: Partial<MenuGroupQueryParams>) {
 	return useListQuery<MenuGroupListItem, MenuGroupQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

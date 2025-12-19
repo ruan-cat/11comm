@@ -8,10 +8,11 @@ import type { RegisterProtocolListItem, RegisterProtocolQueryParams } from "@01s
 
 /**
  * 获取注册协议列表数据
+ * Get register protocol list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useRegisterProtocolListQuery(initialParams?: Partial<RegisterProtocolQueryParams>) {
+export function useRegisterProtocolListQuery(initialParams: Partial<RegisterProtocolQueryParams>) {
 	return useListQuery<RegisterProtocolListItem, RegisterProtocolQueryParams>({
 		queryKeyPrefix: "operationTeam:systemManage:registerProtocol:list",
 		apiUrl: "/api/operation-team/system-manage/register-protocol/list",

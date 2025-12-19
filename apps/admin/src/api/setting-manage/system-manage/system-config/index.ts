@@ -13,11 +13,13 @@ const QUERY_KEY_PREFIX = "systemConfig";
 
 /**
  * 系统配置列表查询 Hook
+ * System config list query hook
  */
-export function useSystemConfigListQuery() {
+export function useSystemConfigListQuery(initialParams: Partial<SystemConfigListQuery>) {
 	return useListQuery<SystemConfig, SystemConfigListQuery>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

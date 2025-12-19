@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "depositReport";
  * deposit-report列表查询 Hook
  * DepositReport list query hook
  */
-export function useDepositReportListQuery() {
+export function useDepositReportListQuery(initialParams: Partial<DepositReportQueryParams>) {
 	return useListQuery<DepositReportListItem, DepositReportQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

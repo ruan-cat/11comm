@@ -8,10 +8,11 @@ import type { InitializeCellListItem, InitializeCellQueryParams } from "@01s-11c
 
 /**
  * 获取小区初始化列表数据
+ * Get initialize cell list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useInitializeCellListQuery(initialParams?: Partial<InitializeCellQueryParams>) {
+export function useInitializeCellListQuery(initialParams: Partial<InitializeCellQueryParams>) {
 	return useListQuery<InitializeCellListItem, InitializeCellQueryParams>({
 		queryKeyPrefix: "operationTeam:systemManage:initializeCell:list",
 		apiUrl: "/api/operation-team/system-manage/initialize-cell/list",

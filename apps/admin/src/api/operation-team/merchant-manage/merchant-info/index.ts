@@ -8,10 +8,11 @@ import type { MerchantInfoListItem, MerchantInfoQueryParams } from "@01s-11comm/
 
 /**
  * 获取商家信息列表数据
+ * Get merchant info list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useMerchantInfoListQuery(initialParams?: Partial<MerchantInfoQueryParams>) {
+export function useMerchantInfoListQuery(initialParams: Partial<MerchantInfoQueryParams>) {
 	return useListQuery<MerchantInfoListItem, MerchantInfoQueryParams>({
 		queryKeyPrefix: "operationTeam:merchantManage:merchantInfo:list",
 		apiUrl: "/api/operation-team/merchant-manage/merchant-info/list",

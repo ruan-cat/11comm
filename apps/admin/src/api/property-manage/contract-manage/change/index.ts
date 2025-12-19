@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "change";
 /**
  * change列表查询 Hook
  * Change list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useChangeListQuery() {
+export function useChangeListQuery(initialParams: Partial<ChangeQueryParams>) {
 	return useListQuery<ChangeListItem, ChangeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -8,10 +8,11 @@ import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/
 
 /**
  * 获取缓存刷新列表数据
+ * Get refresh cache list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useRefreshCacheListQuery(initialParams?: Partial<RefreshCacheQueryParams>) {
+export function useRefreshCacheListQuery(initialParams: Partial<RefreshCacheQueryParams>) {
 	return useListQuery<RefreshCacheListItem, RefreshCacheQueryParams>({
 		queryKeyPrefix: "devTeam:cacheManage:refreshCache:list",
 		apiUrl: "/api/dev-team/cache-manage/refresh-cache/list",

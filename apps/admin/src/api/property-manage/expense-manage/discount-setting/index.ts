@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "discountSetting";
 /**
  * discount-setting列表查询 Hook
  * DiscountSetting list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useDiscountSettingListQuery() {
+export function useDiscountSettingListQuery(initialParams: Partial<DiscountSettingQueryParams>) {
 	return useListQuery<DiscountSettingListItem, DiscountSettingQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

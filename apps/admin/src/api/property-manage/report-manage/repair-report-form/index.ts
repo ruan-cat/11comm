@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "repairReportForm";
 /**
  * repair-report-form列表查询 Hook
  * RepairReportForm list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useRepairReportFormListQuery() {
+export function useRepairReportFormListQuery(initialParams: Partial<RepairReportFormQueryParams>) {
 	return useListQuery<RepairReportFormListItem, RepairReportFormQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

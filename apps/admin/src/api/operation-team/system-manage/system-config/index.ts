@@ -8,10 +8,11 @@ import type { SystemConfigListItem, SystemConfigQueryParams } from "@01s-11comm/
 
 /**
  * 获取系统配置列表数据
+ * Get system config list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useSystemConfigListQuery(initialParams?: Partial<SystemConfigQueryParams>) {
+export function useSystemConfigListQuery(initialParams: Partial<SystemConfigQueryParams>) {
 	return useListQuery<SystemConfigListItem, SystemConfigQueryParams>({
 		queryKeyPrefix: "operationTeam:systemManage:systemConfig:list",
 		apiUrl: "/api/operation-team/system-manage/system-config/list",

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "repairsTodo";
 /**
  * repairs-todo列表查询 Hook
  * RepairsTodo list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useRepairsTodoListQuery() {
+export function useRepairsTodoListQuery(initialParams: Partial<RepairsTodoQueryParams>) {
 	return useListQuery<RepairsTodoListItem, RepairsTodoQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -13,11 +13,13 @@ const QUERY_KEY_PREFIX = "changePasswordRecord";
 
 /**
  * 密码修改记录列表查询 Hook
+ * Change password record list query hook
  */
-export function useChangePasswordRecordListQuery() {
+export function useChangePasswordRecordListQuery(initialParams: Partial<ChangePasswordRecordListQuery>) {
 	return useListQuery<ChangePasswordRecord, ChangePasswordRecordListQuery>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

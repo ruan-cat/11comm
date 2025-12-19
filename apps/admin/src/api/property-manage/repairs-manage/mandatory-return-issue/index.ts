@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "mandatoryReturnIssue";
 /**
  * mandatory-return-issue列表查询 Hook
  * MandatoryReturnIssue list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useMandatoryReturnIssueListQuery() {
+export function useMandatoryReturnIssueListQuery(initialParams: Partial<MandatoryReturnIssueQueryParams>) {
 	return useListQuery<MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

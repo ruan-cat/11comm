@@ -8,10 +8,11 @@ import type { ReportComponentListItem, ReportComponentQueryParams } from "@01s-1
 
 /**
  * 获取报表组件列表数据
+ * Get report component list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useReportComponentListQuery(initialParams?: Partial<ReportComponentQueryParams>) {
+export function useReportComponentListQuery(initialParams: Partial<ReportComponentQueryParams>) {
 	return useListQuery<ReportComponentListItem, ReportComponentQueryParams>({
 		queryKeyPrefix: "operationTeam:reportConfiguration:reportComponent:list",
 		apiUrl: "/api/operation-team/report-configuration/report-component/list",

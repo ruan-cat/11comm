@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "siteManagement";
 /**
  * site-management列表查询 Hook
  * SiteManagement list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useSiteManagementListQuery() {
+export function useSiteManagementListQuery(initialParams: Partial<SiteManagementQueryParams>) {
 	return useListQuery<SiteManagementListItem, SiteManagementQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

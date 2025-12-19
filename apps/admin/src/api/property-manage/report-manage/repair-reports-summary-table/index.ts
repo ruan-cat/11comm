@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "repairReportsSummaryTable";
 /**
  * repair-reports-summary-table列表查询 Hook
  * RepairReportsSummaryTable list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useRepairReportsSummaryTableListQuery() {
+export function useRepairReportsSummaryTableListQuery(initialParams: Partial<RepairReportsSummaryTableQueryParams>) {
 	return useListQuery<RepairReportsSummaryTableListItem, RepairReportsSummaryTableQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

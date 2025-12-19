@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "paymentDetailsForm";
 /**
  * payment-details-form列表查询 Hook
  * PaymentDetailsForm list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePaymentDetailsFormListQuery() {
+export function usePaymentDetailsFormListQuery(initialParams: Partial<PaymentDetailsFormQueryParams>) {
 	return useListQuery<PaymentDetailsFormListItem, PaymentDetailsFormQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

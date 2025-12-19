@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "plan";
 /**
  * plan列表查询 Hook
  * Plan list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePlanListQuery() {
+export function usePlanListQuery(initialParams: Partial<PlanQueryParams>) {
 	return useListQuery<PlanListItem, PlanQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

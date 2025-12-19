@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "meterReadingType";
 /**
  * meter-reading-type列表查询 Hook
  * MeterReadingType list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useMeterReadingTypeListQuery() {
+export function useMeterReadingTypeListQuery(initialParams: Partial<MeterReadingTypeQueryParams>) {
 	return useListQuery<MeterReadingTypeListItem, MeterReadingTypeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

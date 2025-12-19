@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "menuItem";
  * 菜单项列表查询 Hook
  * Menu item list query hook
  */
-export function useMenuItemListQuery() {
+export function useMenuItemListQuery(initialParams: Partial<MenuItemQueryParams>) {
 	return useListQuery<MenuItemListItem, MenuItemQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

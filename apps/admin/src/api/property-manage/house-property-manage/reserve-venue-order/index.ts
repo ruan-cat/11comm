@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "reserveVenueOrder";
 /**
  * reserve-venue-order列表查询 Hook
  * ReserveVenueOrder list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useReserveVenueOrderListQuery() {
+export function useReserveVenueOrderListQuery(initialParams: Partial<ReserveVenueOrderQueryParams>) {
 	return useListQuery<ReserveVenueOrderListItem, ReserveVenueOrderQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

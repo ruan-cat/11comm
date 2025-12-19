@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "reprintVoucher";
 /**
  * reprint-voucher列表查询 Hook
  * ReprintVoucher list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useReprintVoucherListQuery() {
+export function useReprintVoucherListQuery(initialParams: Partial<ReprintVoucherQueryParams>) {
 	return useListQuery<ReprintVoucherListItem, ReprintVoucherQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

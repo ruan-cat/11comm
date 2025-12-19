@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "paymentReview";
 /**
  * payment-review列表查询 Hook
  * PaymentReview list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePaymentReviewListQuery() {
+export function usePaymentReviewListQuery(initialParams: Partial<PaymentReviewQueryParams>) {
 	return useListQuery<PaymentReviewListItem, PaymentReviewQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

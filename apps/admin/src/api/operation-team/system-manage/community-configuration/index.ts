@@ -8,10 +8,11 @@ import type { CommunityConfigListItem, CommunityConfigQueryParams } from "@01s-1
 
 /**
  * 获取社区配置列表数据
+ * Get community config list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useCommunityConfigListQuery(initialParams?: Partial<CommunityConfigQueryParams>) {
+export function useCommunityConfigListQuery(initialParams: Partial<CommunityConfigQueryParams>) {
 	return useListQuery<CommunityConfigListItem, CommunityConfigQueryParams>({
 		queryKeyPrefix: "operationTeam:systemManage:communityConfiguration:list",
 		apiUrl: "/api/operation-team/system-manage/community-configuration/list",

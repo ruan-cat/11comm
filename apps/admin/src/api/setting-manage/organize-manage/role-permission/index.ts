@@ -14,10 +14,12 @@ const QUERY_KEY_PREFIX = "rolePermission";
 
 /**
  * 角色权限列表查询 Hook
+ * Role permission list query hook
  */
-export function useRolePermissionListQuery() {
+export function useRolePermissionListQuery(initialParams: Partial<RolePermissionListQuery>) {
 	return useListQuery<RolePermission, RolePermissionListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,
+		initialParams,
 	});
 }

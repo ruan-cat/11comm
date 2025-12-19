@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "dataStatistics";
  * data-statistics列表查询 Hook
  * DataStatistics list query hook
  */
-export function useDataStatisticsListQuery() {
+export function useDataStatisticsListQuery(initialParams: Partial<DataStatisticsQueryParams>) {
 	return useListQuery<DataStatisticsListItem, DataStatisticsQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

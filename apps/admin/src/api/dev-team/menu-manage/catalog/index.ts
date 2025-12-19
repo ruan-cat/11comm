@@ -16,10 +16,11 @@ const QUERY_KEY_PREFIX = "menuCatalog";
  * 菜单目录列表查询 Hook
  * Menu catalog list query hook
  */
-export function useMenuCatalogListQuery() {
+export function useMenuCatalogListQuery(initialParams: Partial<MenuCatalogQueryParams>) {
 	return useListQuery<MenuCatalogListItem, MenuCatalogQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

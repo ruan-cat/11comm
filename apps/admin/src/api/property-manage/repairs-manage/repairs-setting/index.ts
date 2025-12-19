@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "repairsSetting";
 /**
  * repairs-setting列表查询 Hook
  * RepairsSetting list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useRepairsSettingListQuery() {
+export function useRepairsSettingListQuery(initialParams: Partial<RepairsSettingQueryParams>) {
 	return useListQuery<RepairsSettingListItem, RepairsSettingQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

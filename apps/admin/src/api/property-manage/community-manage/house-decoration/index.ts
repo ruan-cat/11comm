@@ -8,10 +8,11 @@ import type { HouseDecorationListItem, HouseDecorationQueryParams } from "@01s-1
 
 /**
  * 获取房屋装修列表数据
+ * Get house decoration list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useHouseDecorationListQuery(initialParams?: Partial<HouseDecorationQueryParams>) {
+export function useHouseDecorationListQuery(initialParams: Partial<HouseDecorationQueryParams>) {
 	return useListQuery<HouseDecorationListItem, HouseDecorationQueryParams>({
 		queryKeyPrefix: "propertyManage:communityManage:houseDecoration:list",
 		apiUrl: "/api/property-manage/community-manage/house-decoration/list",

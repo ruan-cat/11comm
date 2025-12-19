@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "cancel-fee";
 /**
  * cancel-fee列表查询 Hook
  * CancelFee list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useCancelFeeListQuery() {
+export function useCancelFeeListQuery(initialParams: Partial<CancelFeeQueryParams>) {
 	return useListQuery<CancelFeeListItem, CancelFeeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

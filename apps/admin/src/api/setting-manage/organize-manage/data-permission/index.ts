@@ -14,10 +14,12 @@ const QUERY_KEY_PREFIX = "dataPermission";
 
 /**
  * 数据权限列表查询 Hook
+ * Data permission list query hook
  */
-export function useDataPermissionListQuery() {
+export function useDataPermissionListQuery(initialParams: Partial<DataPermissionListQuery>) {
 	return useListQuery<DataPermission, DataPermissionListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,
+		initialParams,
 	});
 }

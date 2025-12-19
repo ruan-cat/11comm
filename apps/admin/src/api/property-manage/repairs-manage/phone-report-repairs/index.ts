@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "phoneReportRepairs";
 /**
  * phone-report-repairs列表查询 Hook
  * PhoneReportRepairs list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function usePhoneReportRepairsListQuery() {
+export function usePhoneReportRepairsListQuery(initialParams: Partial<PhoneReportRepairsQueryParams>) {
 	return useListQuery<PhoneReportRepairsListItem, PhoneReportRepairsQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

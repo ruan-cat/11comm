@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "outstandingFeesAnalysis";
 /**
  * outstanding-fees-analysis列表查询 Hook
  * OutstandingFeesAnalysis list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOutstandingFeesAnalysisListQuery() {
+export function useOutstandingFeesAnalysisListQuery(initialParams: Partial<OutstandingFeesAnalysisQueryParams>) {
 	return useListQuery<OutstandingFeesAnalysisListItem, OutstandingFeesAnalysisQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "overduePaymentInformation";
 /**
  * overdue-payment-information列表查询 Hook
  * OverduePaymentInformation list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOverduePaymentInformationListQuery() {
+export function useOverduePaymentInformationListQuery(initialParams: Partial<OverduePaymentInformationQueryParams>) {
 	return useListQuery<OverduePaymentInformationListItem, OverduePaymentInformationQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -14,8 +14,9 @@ const QUERY_KEY_PREFIX = "workingSchedule";
 
 /**
  * 排班表列表查询 Hook
+ * Working schedule list query hook
  */
-export function useWorkingScheduleListQuery(initialParams?: WorkingScheduleListQuery) {
+export function useWorkingScheduleListQuery(initialParams: Partial<WorkingScheduleListQuery>) {
 	return useListQuery<WorkingSchedule, WorkingScheduleListQuery>({
 		queryKeyPrefix: `${QUERY_KEY_PREFIX}List`,
 		apiUrl: LIST_API_URL,

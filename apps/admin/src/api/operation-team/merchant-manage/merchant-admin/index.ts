@@ -8,10 +8,11 @@ import type { MerchantAdminListItem, MerchantAdminQueryParams } from "@01s-11com
 
 /**
  * 获取商家管理员列表数据
+ * Get merchant admin list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function useMerchantAdminListQuery(initialParams?: Partial<MerchantAdminQueryParams>) {
+export function useMerchantAdminListQuery(initialParams: Partial<MerchantAdminQueryParams>) {
 	return useListQuery<MerchantAdminListItem, MerchantAdminQueryParams>({
 		queryKeyPrefix: "operationTeam:merchantManage:merchantAdmin:list",
 		apiUrl: "/api/operation-team/merchant-manage/merchant-admin/list",

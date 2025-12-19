@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "expenseItemSetting";
 /**
  * expense-item-setting列表查询 Hook
  * ExpenseItemSetting list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useExpenseItemSettingListQuery() {
+export function useExpenseItemSettingListQuery(initialParams: Partial<ExpenseItemSettingQueryParams>) {
 	return useListQuery<ExpenseItemSettingListItem, ExpenseItemSettingQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

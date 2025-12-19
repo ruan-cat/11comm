@@ -8,10 +8,11 @@ import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-1
 
 /**
  * 获取物业公司列表数据
+ * Get property company list data
  * @param initialParams 初始查询参数
  * @returns 查询结果
  */
-export function usePropertyCompanyListQuery(initialParams?: Partial<PropertyCompanyQueryParams>) {
+export function usePropertyCompanyListQuery(initialParams: Partial<PropertyCompanyQueryParams>) {
 	return useListQuery<PropertyCompanyListItem, PropertyCompanyQueryParams>({
 		queryKeyPrefix: "operationTeam:dataManage:propertyCompany:list",
 		apiUrl: "/api/operation-team/data-manage/property-company/list",

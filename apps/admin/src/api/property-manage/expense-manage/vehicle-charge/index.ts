@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "vehicleCharge";
 /**
  * vehicle-charge列表查询 Hook
  * VehicleCharge list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useVehicleChargeListQuery() {
+export function useVehicleChargeListQuery(initialParams: Partial<VehicleChargeQueryParams>) {
 	return useListQuery<VehicleChargeListItem, VehicleChargeQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

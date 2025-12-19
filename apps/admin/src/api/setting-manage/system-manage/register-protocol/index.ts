@@ -13,11 +13,13 @@ const QUERY_KEY_PREFIX = "registerProtocol";
 
 /**
  * 注册协议列表查询 Hook
+ * Register protocol list query hook
  */
-export function useRegisterProtocolListQuery() {
+export function useRegisterProtocolListQuery(initialParams: Partial<RegisterProtocolListQuery>) {
 	return useListQuery<RegisterProtocol, RegisterProtocolListQuery>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

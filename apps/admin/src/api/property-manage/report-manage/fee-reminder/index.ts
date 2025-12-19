@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "feeReminder";
 /**
  * fee-reminder列表查询 Hook
  * FeeReminder list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useFeeReminderListQuery() {
+export function useFeeReminderListQuery(initialParams: Partial<FeeReminderQueryParams>) {
 	return useListQuery<FeeReminderListItem, FeeReminderQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 

@@ -15,11 +15,13 @@ const QUERY_KEY_PREFIX = "ownerPaymentDetails";
 /**
  * owner-payment-details列表查询 Hook
  * OwnerPaymentDetails list query hook
+ * @param initialParams - Initial query parameters for filtering the list
  */
-export function useOwnerPaymentDetailsListQuery() {
+export function useOwnerPaymentDetailsListQuery(initialParams: Partial<OwnerPaymentDetailsQueryParams>) {
 	return useListQuery<OwnerPaymentDetailsListItem, OwnerPaymentDetailsQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
+		initialParams,
 	});
 }
 
