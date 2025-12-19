@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@10.25.0",
+	"packageManager": "pnpm@10.26.1",
 	"engines": {
 		"node": ">=22.14.0"
 	},
@@ -26,7 +26,7 @@
 	],
 	"license": "MIT",
 	"dependencies": {
-		"@ruan-cat/utils": "^4.19.0"
+		"@ruan-cat/utils": "^4.20.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
