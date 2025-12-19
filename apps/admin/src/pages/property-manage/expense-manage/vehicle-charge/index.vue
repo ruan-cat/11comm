@@ -11,61 +11,110 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import type { VehicleChargeFormProps } from "./components/form";
+import { type VehicleChargeFormProps, defaultForm } from "./components/form";
 import VehicleChargeForm from "./components/form.vue";
+import { useVehicleChargeListQuery } from "@/api/property-manage/expense-manage/vehicle-charge";
 import type { VehicleChargeListItem, VehicleChargeQueryParams, VehicleChargeFormVO } from "@01s-11comm/type";
 import { parkingSpaceStatusOptions } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 
-/** 默认表单数据 */
-const defaultForm: VehicleChargeFormVO = {
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<VehicleChargeQueryParams> = {
+	parkingLotSpace: "",
 	licensePlateNumber: "",
 	ownerName: "",
 	parkingSpaceStatus: "",
-	chargeAmount: "",
-	chargeTime: "",
-	chargeMethod: "",
-	remark: "",
 };
 
-/** 模拟表格数据 */
-const mockTableData: VehicleChargeListItem[] = [
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		id: "1",
-		name: "车辆A",
-		status: "启用",
-		createTime: "2024-01-01 10:00:00",
-		updateTime: "2024-01-01 10:00:00",
+		label: "车位编号",
+		prop: "parkingLotSpace",
+		valueType: "input",
 	},
 	{
-		id: "2",
-		name: "车辆B",
-		status: "禁用",
-		createTime: "2024-01-02 11:00:00",
-		updateTime: "2024-01-02 11:00:00",
+		label: "车牌号",
+		prop: "licensePlateNumber",
+		valueType: "input",
 	},
-];
+	{
+		label: "车主姓名",
+		prop: "ownerName",
+		valueType: "input",
+	},
+	{
+		label: "车位状态",
+		prop: "parkingSpaceStatus",
+		valueType: "select",
+		options: parkingSpaceStatusOptions,
+	},
+]);
 
-const VehicleChargeFormInstance = ref<InstanceType<typeof VehicleChargeForm> | null>(null);
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
 
-/** 表格数据 */
-const tableData = ref<VehicleChargeListItem[]>([]);
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useVehicleChargeListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		prop: "name",
 		label: "名称",
+		prop: "name",
 		width: 200,
 	},
 	{
-		prop: "status",
 		label: "状态",
+		prop: "status",
 		width: 200,
 	},
 	{
-		prop: "createTime",
 		label: "创建时间",
+		prop: "createTime",
 		width: 200,
 	},
 	{
@@ -77,140 +126,17 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "车辆收费",
 	columns: columns.value,
 });
-/** 车辆收费_列表查询_VO */
-interface VehicleChargeQueryVO {
-	parkingLotSpace: string;
-	licensePlateNumber: string;
-	ownerName: string;
-	parkingSpaceStatus: string;
-}
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & VehicleChargeQueryVO = {
-	parkingLotSpace: "",
-	licensePlateNumber: "",
-	ownerName: "",
-	parkingSpaceStatus: "",
-};
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		prop: "parkingLotSpace",
-		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleSpaceNumber")),
-		valueType: "input",
-	},
-	{
-		prop: "licensePlateNumber",
-		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleLicensePlate")),
-		valueType: "input",
-	},
-	{
-		prop: "ownerName",
-		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.ownerName")),
-		valueType: "input",
-	},
-	{
-		prop: "parkingSpaceStatus",
-		label: transformI18n($t("propertyManage_expensesManage.vehicle-charge.vehicleSpaceStatus")),
-		valueType: "select",
-		options: parkingSpaceStatusOptions,
-	},
-]);
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+/** 弹框相关功能 */
+const VehicleChargeFormInstance = ref<InstanceType<typeof VehicleChargeForm> | null>(null);
+/** 模式控制 */
+const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = mockTableData;
-
-		if (plusSearchModel.value.licensePlateNumber) {
-			const searchValue = String(plusSearchModel.value.licensePlateNumber).trim();
-			filteredData = filteredData.filter((item) => item.name.includes(searchValue));
-		}
-		if (plusSearchModel.value.ownerName) {
-			const searchValue = String(plusSearchModel.value.ownerName).trim();
-			filteredData = filteredData.filter((item) => item.name.includes(searchValue));
-		}
-
-		pagination.value.total = filteredData.length;
-
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 测试异步函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
 /** 模拟异步操作函数 */
@@ -222,24 +148,19 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: VehicleChargeListItem;
-}
-
 /** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog(params: { mode: Mode; row?: VehicleChargeListItem }) {
+	const { mode, row } = params;
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}车辆收费`;
 
 	/** 业务对象 */
-	const formData: VehicleChargeFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+	const 业务对象: VehicleChargeFormVO = isAdd.value
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					licensePlateNumber: row?.name || "",
 					ownerName: "",
@@ -249,12 +170,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					chargeMethod: "",
 					remark: "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: VehicleChargeFormProps = {
-		form: formData,
-		defaultValues: formData,
+		form: 业务对象,
+		defaultValues: 业务对象,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -264,36 +185,31 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		...defaultAddDialogParams,
 		title,
 		props: formProps,
-
 		contentRenderer: () =>
 			h(VehicleChargeForm, {
 				ref: VehicleChargeFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = VehicleChargeFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index } }) => {
+				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = VehicleChargeFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: () => {
+				btnClick: ({ dialog: { options, index }, button }) => {
 					VehicleChargeFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
-
 			{
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
@@ -304,6 +220,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
@@ -312,7 +229,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 
@@ -340,6 +257,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

@@ -8,57 +8,87 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type 水电抄表表单_VO } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
+import { useWaterAndElectricityMeterReadingListQuery } from "@/api/property-manage/expense-manage/water-and-electricity-meter-reading";
+import type {
+	WaterAndElectricityMeterReadingListItem,
+	WaterAndElectricityMeterReadingQueryParams,
+} from "@01s-11comm/type";
 import { meterTypeOptions } from "@01s-11comm/type";
+import { useToggle } from "@vueuse/core";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useMode, type Mode } from "@/composables/use-mode";
 
-/** 水电抄表_列表数据 */
-interface WaterMeterReadingListItem {
-	id: string;
-	meterId: string;
-	meterType: string;
-	objectName: string;
-	lastReading: string;
-	currentReading: string;
-	lastReadingTime: string;
-	currentReadingTime: string;
-	createTime: string;
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<WaterAndElectricityMeterReadingQueryParams> = {
+	meterType: "",
+	meterId: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	{
+		label: "表类型",
+		prop: "meterType",
+		valueType: "select",
+		options: meterTypeOptions,
+	},
+	{
+		label: "表ID",
+		prop: "meterId",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useWaterAndElectricityMeterReadingListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
-/** 模拟表格数据 */
-const mockTableData: WaterMeterReadingListItem[] = [
-	{
-		id: "1",
-		meterId: "SB202401001",
-		meterType: "水表",
-		objectName: "A栋101室",
-		lastReading: "1234",
-		currentReading: "1356",
-		lastReadingTime: "2024-01-01 10:00:00",
-		currentReadingTime: "2024-02-01 10:00:00",
-		createTime: "2024-01-01 10:00:00",
-	},
-	{
-		id: "2",
-		meterId: "DB202401001",
-		meterType: "电表",
-		objectName: "A栋102室",
-		lastReading: "5678",
-		currentReading: "5890",
-		lastReadingTime: "2024-01-01 10:00:00",
-		currentReadingTime: "2024-02-01 10:00:00",
-		createTime: "2024-01-02 11:00:00",
-	},
-];
-
-const WaterAndElectricityMeterReadingFormInstance = ref<InstanceType<
-	typeof WaterAndElectricityMeterReadingForm
-> | null>(null);
-
-/** 表格数据 */
-const tableData = ref<WaterMeterReadingListItem[]>([]);
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -112,141 +142,21 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 水电抄表_列表查询_VO */
-interface WaterMeterReadingQueryVO {
-	meterType: string;
-	meterId: string;
-}
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & WaterMeterReadingQueryVO = {
-	meterType: "",
-	meterId: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.tableType")),
-		prop: "meterType",
-		valueType: "select",
-		options: meterTypeOptions,
-	},
-	{
-		label: transformI18n($t("propertyManage_expensesManage.water-and-electricity-meter-reading.tableId")),
-		prop: "meterId",
-		valueType: "input",
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps, // 默认配置
-	data: tableData.value, // 表格数据
-	columns: [], // 列配置
-	pagination: pagination.value, // 分页配置
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "水电抄表",
 	columns: columns.value,
 });
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = mockTableData;
-
-		if (plusSearchModel.value.meterType) {
-			filteredData = filteredData.filter((item) => item.meterType.includes(plusSearchModel.value.meterType!));
-		}
-		if (plusSearchModel.value.meterId) {
-			filteredData = filteredData.filter((item) => item.meterId.includes(plusSearchModel.value.meterId!));
-		}
-
-		pagination.value.total = filteredData.length;
-
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
-}
-
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: WaterMeterReadingListItem;
-}
-
+/** 弹框相关功能 */
+const WaterAndElectricityMeterReadingFormInstance = ref<InstanceType<
+	typeof WaterAndElectricityMeterReadingForm
+> | null>(null);
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
-/** 删除水电抄表记录 */
-async function handleDelete(row: WaterMeterReadingListItem) {
-	consola.log("删除水电抄表记录:", row);
-	await loadTableData();
-}
-
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
@@ -256,6 +166,18 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: WaterAndElectricityMeterReadingListItem;
+}
+
+/** 删除水电抄表记录 */
+async function handleDelete(row: WaterAndElectricityMeterReadingListItem) {
+	consola.log("删除水电抄表记录:", row);
+	await doFetch();
+}
+
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
@@ -263,21 +185,23 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}水电抄表`;
 
 	const formData: 水电抄表表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
-					费用类型: row?.meterType === "水表" ? "水费" : row?.meterType === "电表" ? "电费" : "水费",
-					收费项目: row?.meterType === "水表" || row?.meterType === "电表" ? row?.meterType as "水表" | "电表" : "水表",
-					抄表类型: (row?.meterType || "水表") as "水表" | "电表",
-					收费对象: row?.objectName || "",
-					上期度数: row?.lastReading || "",
-					本期度数: row?.currentReading || "",
-					上期读表时间: row?.lastReadingTime || "",
-					本期读表时间: row?.currentReadingTime || "",
-					备注: "",
+					// TODO: 需要补充完善
+					// 费用类型: row?.meterType === "水表" ? "水费" : row?.meterType === "电表" ? "电费" : "水费",
+					// 收费项目:
+					// 	row?.meterType === "水表" || row?.meterType === "电表" ? (row?.meterType as "水表" | "电表") : "水表",
+					// 抄表类型: (row?.meterType || "水表") as "水表" | "电表",
+					// 收费对象: row?.meterType || "",
+					// 上期度数: row?.lastReading || "",
+					// 本期度数: row?.currentReading || "",
+					// 上期读表时间: row?.meterReadingTime || "",
+					// 本期读表时间: row?.currentReadingTime || "",
+					// 备注: "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: WaterAndElectricityMeterReadingFormProps = {
@@ -332,6 +256,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
@@ -340,7 +265,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 
@@ -376,6 +301,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

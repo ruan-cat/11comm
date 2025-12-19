@@ -8,8 +8,9 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO } from "./components/form";
 import HouseChargeForm from "./components/form.vue";
@@ -17,12 +18,42 @@ import HouseChargeForm from "./components/form.vue";
 // 从类型库导入正确的类型
 import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { statusOptions } from "@01s-11comm/type";
+import { useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
+import { useToggle } from "@vueuse/core";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 
 /** 表单组件实例 */
 const houseChargeFormInstance = ref<InstanceType<typeof HouseChargeForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<HouseChargeListItem[]>([]);
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<HouseChargeQueryParams> = {
+	name: "",
+	status: undefined,
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useHouseChargeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -61,108 +92,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "房屋收费",
 	columns: columns.value,
 });
-
-/** 模拟数据 */
-const mockTableData: HouseChargeListItem[] = [
-	{
-		id: "1",
-		name: "物业费",
-		status: "启用",
-		createTime: "2023-01-01 00:00:00",
-		updateTime: "2023-01-01 00:00:00",
-		remark: "物业费收费标准",
-	},
-	{
-		id: "2",
-		name: "水费",
-		status: "启用",
-		createTime: "2023-01-01 00:00:00",
-		updateTime: "2023-01-01 00:00:00",
-		remark: "水费收费标准",
-	},
-];
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.name) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.name!));
-		}
-		if (plusSearchModel.value.status) {
-			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.status);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & HouseChargeQueryParams = {
-	name: "",
-	status: "",
-	pageIndex: 1,
-	pageSize: 10,
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -195,16 +129,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -212,6 +144,7 @@ interface OpenDialogParams {
 	row?: HouseChargeListItem;
 }
 
+/** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
@@ -235,7 +168,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const 房屋收费表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
 			? ({
 					...defaultForm,
@@ -255,7 +188,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					计费单价: "",
 					固定费用: "",
 				} as 房屋收费_VO)
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: HouseChargeFormProps = {
@@ -317,7 +250,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 
@@ -344,6 +277,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
