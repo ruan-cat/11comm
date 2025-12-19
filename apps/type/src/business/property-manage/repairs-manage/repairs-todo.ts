@@ -80,3 +80,34 @@ export const defaultRepairsTodoForm: RepairsTodoFormVO = {
 	status: "",
 	remark: "",
 };
+
+/**
+ * @description 报修待办列表数据 (向后兼容)
+ * Repairs todo list data (backward compatibility)
+ */
+export interface RepairsTodoListData extends RepairsTodoListItem {
+	/** 工单编号 */
+	工单编号: string;
+	/** 位置 */
+	位置: string;
+	/** 报修类型 */
+	报修类型: string;
+	/** 维修类型 */
+	维修类型: string;
+	/** 报修人 */
+	报修人: string;
+	/** 联系方式 */
+	联系方式: string;
+	/** 预约时间 */
+	预约时间: string;
+	/** 状态 */
+	状态: string;
+	/** 备注 */
+	备注: string;
+}
+
+/**
+ * @description 报修待办列表数据 (向后兼容)
+ * Repairs todo list data (backward compatibility)
+ */
+export type 报修待办_列表数据 = RepairsTodoListData;

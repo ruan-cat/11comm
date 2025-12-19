@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import ExpirationReminders from "./components/Expiration-reminders.vue";
 import PrepaymentReminders from "./components/Prepayment-reminders.vue";
+import type { ReminderForOverduePaymentsListItem, ReminderForOverduePaymentsQueryParams, expenseItemNameOptions } from "@01s-11comm/type";
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -21,30 +22,30 @@ const pagination = ref<PaginationProps>({
 });
 
 /** 表格数据 */
-const tableData = ref<费用提醒_表格数据[]>([]);
+const tableData = ref<ReminderForOverduePaymentsListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "房屋编号/合同名称",
-		prop: "房屋编号合同名称",
-		minWidth: 200,
+		label: "时间",
+		prop: "time",
+		width: 120,
 	},
 	{
-		label: "业主名称",
-		prop: "业主名称",
-		minWidth: 160,
+		label: "费用项ID",
+		prop: "expenseItemId",
+		width: 120,
 	},
 	{
-		label: "业主手机号",
-		prop: "业主手机号",
-		minWidth: 160,
+		label: "费用项名称",
+		prop: "expenseItemName",
+		width: 120,
 	},
 	{
-		label: "费用项",
-		prop: "费用项",
-		minWidth: 140,
+		label: "应收金额",
+		prop: "receivableAmount",
+		width: 120,
 	},
 	{
 		label: "小区",
@@ -98,13 +99,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 费用提醒_搜索_VO = {
-	房屋编号合同名称: "",
-	业主名称: "",
-	业主手机号: "",
-	费用项: "",
-	小区: "",
-	提醒类型: "",
+const plusSearchModelRef: FieldValues & Partial<ReminderForOverduePaymentsQueryParams> = {
+	time: "",
+	expenseItemId: "",
+	expenseItemName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -119,31 +117,24 @@ const plusSearchModel = ref(plusSearchModelRef);
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "房屋编号/合同名称",
-		prop: "房屋编号合同名称",
+		label: "时间",
+		prop: "time",
 		valueType: "input",
 	},
 	{
-		label: "业主名称",
-		prop: "业主名称",
+		label: "费用项ID",
+		prop: "expenseItemId",
 		valueType: "input",
 	},
 	{
-		label: "业主手机号",
-		prop: "业主手机号",
-		valueType: "input",
-	},
-	{
-		label: "费用项",
-		prop: "费用项",
+		label: "费用项名称",
+		prop: "expenseItemName",
 		valueType: "select",
-		options: 费用项Options,
-	},
-	{
-		label: "小区",
-		prop: "小区",
-		valueType: "select",
-		options: 小区Options,
+		options: expenseItemNameOptions,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 	{
 		label: "提醒类型",

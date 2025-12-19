@@ -172,7 +172,7 @@ export interface MerchantInfoFormProps {
 	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
 	defaultValues: MerchantInfoFormVO;
 	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "view";
+	mode?: "add" | "edit" | "info";
 }
 
 

@@ -1,16 +1,28 @@
 import type { OptionsType } from "../../../common";
 
 /**
- * @description invoice-title列表数据
+ * @description 发票抬头列表数据
  * InvoiceTitle list item
  */
 export interface InvoiceTitleListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 编号 Code */
+	code: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 发票类型 Invoice type */
+	invoiceType: string;
+	/** 发票名头 Invoice title */
+	invoiceTitle: string;
+	/** 纳税人识别号 Taxpayer ID */
+	taxpayerId: string;
+	/** 地址 Address */
+	address: string;
+	/** 电话 Phone */
+	phone: string;
+	/** 开户行及账号 Bank and account */
+	bankAccount: string;
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
@@ -20,14 +32,16 @@ export interface InvoiceTitleListItem {
 }
 
 /**
- * @description invoice-title列表查询参数
+ * @description 发票抬头列表查询参数
  * InvoiceTitle list query parameters
  */
 export interface InvoiceTitleQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 业主名称 Owner name */
+	ownerName?: string;
+	/** 发票类型 Invoice type */
+	invoiceType?: string;
+	/** 发票名头 Invoice title */
+	invoiceTitle?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */
@@ -43,29 +57,25 @@ export const invoiceTitleStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-// TODO: 不应该写成中文变量名 对应的更改admin管理后台项目的代码名称
 /**
  * @description 发票抬头表单VO
  * Invoice title form VO
  */
 export interface InvoiceTitleFormVO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
-}
-
-/**
- * @description 发票抬头表单VO（兼容性中文名称）
- * Invoice title form VO (for compatibility with Chinese names)
- */
-export interface 发票抬头表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 发票类型 Invoice type */
+	invoiceType: string;
+	/** 发票名头 Invoice title */
+	invoiceTitle: string;
+	/** 纳税人识别号 Taxpayer ID */
+	taxpayerId: string;
+	/** 地址 Address */
+	address: string;
+	/** 电话 Phone */
+	phone: string;
+	/** 开户行及账号 Bank and account */
+	bankAccount: string;
 	/** 备注 Remark */
 	remark: string;
 }
@@ -74,7 +84,7 @@ export interface 发票抬头表单_VO {
  * @description 发票类型选项
  * Invoice type options
  */
-export const 发票类型选项: OptionsType = [
+export const invoiceTitleTypeOptions: OptionsType = [
 	{ label: "增值税专用发票", value: "增值税专用发票" },
 	{ label: "增值税普通发票", value: "增值税普通发票" },
 	{ label: "电子普通发票", value: "电子普通发票" },
@@ -84,8 +94,39 @@ export const 发票类型选项: OptionsType = [
  * @description 发票抬头表单默认值
  * Invoice title form default values
  */
-export const invoiceTitleDefaultForm: 发票抬头表单_VO = {
-	name: "",
-	status: "启用",
+export const invoiceTitleDefaultForm: InvoiceTitleFormVO = {
+	ownerName: "",
+	invoiceType: "",
+	invoiceTitle: "",
+	taxpayerId: "",
+	address: "",
+	phone: "",
+	bankAccount: "",
 	remark: "",
 };
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 发票抬头列表数据（兼容性中文名称）
+ * InvoiceTitle list item (for compatibility with Chinese names)
+ */
+export type 发票抬头_列表数据 = InvoiceTitleListItem;
+
+/**
+ * @description 发票抬头列表查询参数（兼容性中文名称）
+ * InvoiceTitle query parameters (for compatibility with Chinese names)
+ */
+export type 发票抬头_列表查询_VO = InvoiceTitleQueryParams;
+
+/**
+ * @description 发票抬头表单VO（兼容性中文名称）
+ * Invoice title form VO (for compatibility with Chinese names)
+ */
+export type 发票抬头表单_VO = InvoiceTitleFormVO;
+
+/**
+ * @description 发票类型选项（兼容性中文名称）
+ * Invoice type options (for compatibility with Chinese names)
+ */
+export const 发票类型选项 = invoiceTitleTypeOptions;

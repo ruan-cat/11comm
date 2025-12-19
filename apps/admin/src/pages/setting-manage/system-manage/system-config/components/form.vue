@@ -2,7 +2,8 @@
 import { ref, computed, useTemplateRef } from "vue";
 import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./form";
 import { cloneDeep } from "@pureadmin/utils";
-import type { FieldValues, PlusColumn, PlusFormRules } from "plus-pro-components";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 const props = defineProps<SystemConfigFormProps>();

@@ -60,7 +60,6 @@ export const merchantAdminStatusOptions: OptionsType = [
 	{ label: "待审核", value: "待审核" },
 ];
 
-
 /**
  * @description 物业公司选项
  * Property company options
@@ -134,5 +133,3 @@ export interface MerchantAdminFormProps {
 	/** 表单模式 Form mode */
 	mode?: "add" | "edit" | "view";
 }
-
-

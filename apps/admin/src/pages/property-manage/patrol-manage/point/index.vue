@@ -15,10 +15,63 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPointFormProps, defaultForm, type PatrolPointFormVO } from "./components/form";
+import { type PatrolPointListData, type PatrolPointListQueryVO } from "@01s-11comm/type";
 import PatrolPointForm from "./components/form.vue";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
+
+/** 模拟数据 */
+const mockTableData: PatrolPointListData[] = [
+	{
+		id: "1",
+		name: "巡逻点1",
+		status: "正常",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-01 18:00:00",
+		remark: "正常巡逻点",
+		taskDetailId: "TD001",
+		patrolPointName: "东门巡逻点",
+		patrolPlanName: "日常巡逻计划",
+		patrolRouteName: "东区巡逻路线",
+		patrolPersonTime: "08:00-18:00",
+		patrolPointTime: "09:00-17:00",
+		actualPatrolTime: "2024-01-01 09:30:00",
+		actualCheckInStatus: "已签到",
+		planPatrolPerson: "张三",
+		actualPatrolPerson: "张三",
+		patrolMethod: "二维码",
+		taskStatus: "已完成",
+		patrolPointStatus: "正常",
+		patrolSituation: "正常",
+		patrolPhotos: "photo1.jpg,photo2.jpg",
+		locationInfo: "东门入口处",
+	},
+	{
+		id: "2",
+		name: "巡逻点2",
+		status: "正常",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-01 18:00:00",
+		remark: "正常巡逻点",
+		taskDetailId: "TD002",
+		patrolPointName: "西门巡逻点",
+		patrolPlanName: "日常巡逻计划",
+		patrolRouteName: "西区巡逻路线",
+		patrolPersonTime: "08:00-18:00",
+		patrolPointTime: "10:00-16:00",
+		actualPatrolTime: "2024-01-01 10:15:00",
+		actualCheckInStatus: "迟到",
+		planPatrolPerson: "李四",
+		actualPatrolPerson: "李四",
+		patrolMethod: "NFC",
+		taskStatus: "执行中",
+		patrolPointStatus: "正常",
+		patrolSituation: "发现问题",
+		patrolPhotos: "photo3.jpg",
+		locationInfo: "西门入口处",
+	},
+];
 
 /** 表格数据 */
 const tableData = ref<PatrolPointListData[]>([]);

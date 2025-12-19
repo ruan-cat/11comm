@@ -100,3 +100,34 @@ export const defaultPatrolTaskForm: PatrolTaskFormVO = {
 
 /** 向后兼容：巡检任务表单_VO / Backward compatibility: 巡检任务表单_VO */
 export type 巡检任务表单_VO = PatrolTaskFormVO;
+
+/**
+ * @description 巡逻任务列表数据 (向后兼容)
+ * Patrol task list data (backward compatibility)
+ */
+export interface PatrolTaskListItem extends TaskListItem {
+	/** 任务编码 */
+	任务编码: string;
+	/** 巡检计划 */
+	巡检计划: string;
+	/** 巡检人开始/结束时间 */
+	巡检人开始_结束时间: string;
+	/** 实际巡检时间 */
+	实际巡检时间: string;
+	/** 计划巡检人 */
+	计划巡检人: string;
+	/** 当前巡检人 */
+	当前巡检人: string;
+	/** 转移描述 */
+	转移描述: string;
+	/** 巡检方式 */
+	巡检方式: string;
+	/** 巡检状态 */
+	巡检状态: string;
+}
+
+/**
+ * @description 巡检任务列表数据 (向后兼容)
+ * Patrol task list data (backward compatibility)
+ */
+export type 巡检任务_列表数据 = PatrolTaskListItem;

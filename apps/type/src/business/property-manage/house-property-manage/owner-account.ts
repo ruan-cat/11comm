@@ -58,19 +58,6 @@ export const ownerAccountStatusOptions: OptionsType = [
  * Owner account form VO
  */
 export interface OwnerAccountFormVO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
-}
-
-/**
- * @description 业主账户表单VO
- * Owner account form VO
- */
-export interface OwnerAccountFormVO {
 	/** 账户类型 Account type */
 	accountType: string;
 	/** 业主手机 Owner phone */
@@ -140,3 +127,17 @@ export const ownerAccountDefaultForm: 业主账户表单_VO = {
 	paymentMethod: "现金",
 	remark: "",
 };
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 业主账户列表数据（兼容性中文名称）
+ * OwnerAccount list item (for compatibility with Chinese names)
+ */
+export type OwnerAccountListItem_中文 = OwnerAccountListItem;
+
+/**
+ * @description 业主账户列表查询参数（兼容性中文名称）
+ * OwnerAccount query parameters (for compatibility with Chinese names)
+ */
+export type OwnerAccountQueryParams_中文 = OwnerAccountQueryParams;

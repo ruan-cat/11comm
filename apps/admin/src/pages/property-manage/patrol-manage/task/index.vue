@@ -15,6 +15,7 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolTaskFormProps, defaultForm, type 巡检任务表单_VO } from "./components/form";
+import type { 巡检任务_列表数据 } from "@01s-11comm/type";
 import PatrolTaskForm from "./components/form.vue";
 
 /** 模式控制 */
@@ -22,6 +23,44 @@ const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const patrolTaskFormInstance = ref<InstanceType<typeof PatrolTaskForm> | null>(null);
+
+/** 模拟数据 */
+const mockTableData: 巡检任务_列表数据[] = [
+	{
+		id: "1",
+		name: "日常巡逻任务1",
+		status: "执行中",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-01 18:00:00",
+		remark: "东区巡逻",
+		任务编码: "PT202401010001",
+		巡检计划: "日常巡逻计划",
+		巡检人开始_结束时间: "08:00-18:00",
+		实际巡检时间: "2024-01-01 09:30:00",
+		计划巡检人: "张三",
+		当前巡检人: "张三",
+		转移描述: "正常巡逻",
+		巡检方式: "二维码",
+		巡检状态: "执行中",
+	},
+	{
+		id: "2",
+		name: "日常巡逻任务2",
+		status: "已完成",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-01 18:00:00",
+		remark: "西区巡逻",
+		任务编码: "PT202401010002",
+		巡检计划: "日常巡逻计划",
+		巡检人开始_结束时间: "08:00-18:00",
+		实际巡检时间: "2024-01-01 17:45:00",
+		计划巡检人: "李四",
+		当前巡检人: "李四",
+		转移描述: "正常巡逻",
+		巡检方式: "NFC",
+		巡检状态: "已完成",
+	},
+];
 
 /** 表格数据 */
 const tableData = ref<巡检任务_列表数据[]>([]);

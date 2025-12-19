@@ -2,12 +2,13 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import { type InvoiceTitleFormProps, defaultForm, invoiceTypeOptions } from "./form";
+import type { 发票抬头表单_VO } from "@01s-11comm/type";
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 发票抬头表单_VO;
+const defaultValues = props.defaultValues as 发票抬头表单_VO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +21,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 发票抬头表单_VO;
+const toRefForm = cloneDeep(props.form) as 发票抬头表单_VO;
 
 /**
  * 表单对象

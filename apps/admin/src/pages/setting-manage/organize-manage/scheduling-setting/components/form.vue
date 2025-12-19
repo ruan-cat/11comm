@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { useTemplateRef, computed, ref } from "vue";
 import { cloneDeep } from "@pureadmin/utils";
-import type { FieldValues, PlusColumn, PlusFormRules } from "plus-pro-components";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 import { type SchedulingSettingFormProps, type SchedulingSettingFormVO } from "./form";

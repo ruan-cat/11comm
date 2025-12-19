@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
+import type { InvoiceFormVO } from "@01s-11comm/type";
+import { invoiceTypeOptions, invoiceAuditStatusOptions } from "@01s-11comm/type";
 import { InvoiceFormProps } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<InvoiceFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 发票表单_VO;
+const defaultValues = props.defaultValues as FieldValues & InvoiceFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -21,7 +23,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 发票表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & InvoiceFormVO;
 
 /**
  * 表单对象
@@ -38,7 +40,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "code",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -46,49 +48,49 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "发票类型",
-		prop: "发票类型",
+		prop: "invoiceType",
 		valueType: "select",
-		options: 发票类型Options,
+		options: invoiceTypeOptions,
 	},
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 	},
 	{
 		label: "申请人",
-		prop: "申请人",
+		prop: "applicant",
 		valueType: "input",
 	},
 	{
 		label: "发票名头",
-		prop: "发票名头",
+		prop: "invoiceTitle",
 		valueType: "input",
 	},
 	{
 		label: "纳税人识别号",
-		prop: "纳税人识别号",
+		prop: "taxpayerId",
 		valueType: "input",
 	},
 	{
 		label: "申请金额",
-		prop: "申请金额",
+		prop: "applicationAmount",
 		valueType: "input",
 	},
 	{
 		label: "发票号",
-		prop: "发票号",
+		prop: "invoiceNumber",
 		valueType: "input",
 	},
 	{
-		label: "发审核状态",
-		prop: "发审核状态",
+		label: "审核状态",
+		prop: "auditStatus",
 		valueType: "select",
-		options: auditStatusOptions,
+		options: invoiceAuditStatusOptions,
 	},
 	{
 		label: "申请时间",
-		prop: "申请时间",
+		prop: "applicationTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -100,49 +102,49 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	发票类型: [
+	invoiceType: [
 		{
 			required: true,
 			message: "请选择发票类型",
 			trigger: "change",
 		},
 	],
-	业主名称: [
+	ownerName: [
 		{
 			required: true,
 			message: "请输入业主名称",
 			trigger: "blur",
 		},
 	],
-	申请人: [
+	applicant: [
 		{
 			required: true,
 			message: "请输入申请人",
 			trigger: "blur",
 		},
 	],
-	发票名头: [
+	invoiceTitle: [
 		{
 			required: true,
 			message: "请输入发票名头",
 			trigger: "blur",
 		},
 	],
-	纳税人识别号: [
+	taxpayerId: [
 		{
 			required: true,
 			message: "请输入纳税人识别号",
 			trigger: "blur",
 		},
 	],
-	申请金额: [
+	applicationAmount: [
 		{
 			required: true,
 			message: "请输入申请金额",
 			trigger: "blur",
 		},
 	],
-	发票号: [
+	invoiceNumber: [
 		{
 			required: true,
 			message: "请输入发票号",

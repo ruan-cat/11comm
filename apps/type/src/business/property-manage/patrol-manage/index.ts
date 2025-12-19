@@ -3,7 +3,6 @@
  * @description 统一导出 patrol-manage 相关的所有业务类型
  */
 
-
 export * from "./detail";
 export * from "./item";
 export * from "./path";

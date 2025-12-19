@@ -10,6 +10,7 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
+import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams } from "@01s-11comm/type";
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -19,7 +20,7 @@ const pagination = ref<PaginationProps>({
 });
 
 /** 表格数据 */
-const tableData = ref<缴费明细表_表格数据[]>([]);
+const tableData = ref<ExpenseSummaryTableListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -146,7 +147,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 缴费明细表_搜索_VO = {
+const plusSearchModelRef: FieldValues & Partial<ExpenseSummaryTableQueryParams> = {
 	缴费开始时间: "",
 	缴费结束时间: "",
 	支付方式: "",

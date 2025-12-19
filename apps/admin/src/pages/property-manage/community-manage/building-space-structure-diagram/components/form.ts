@@ -17,4 +17,5 @@ export const 楼栋状态选项 = buildingStatusOptions;
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm = defaultBuildingSpaceStructureDiagramForm;
 
-export { BuildingSpaceStructureDiagramFormVO, BuildingSpaceStructureDiagramFormProps, defaultBuildingSpaceStructureDiagramForm, buildingStructureOptions, buildingStatusOptions };
+export type { BuildingSpaceStructureDiagramFormVO, BuildingSpaceStructureDiagramFormProps };
+export { defaultBuildingSpaceStructureDiagramForm, buildingStructureOptions, buildingStatusOptions };

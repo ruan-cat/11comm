@@ -1,22 +1,4 @@
 import type { OptionsType, BaseListQueryParams } from "../../../common";
-import {
-	contractTypeOptions,
-	auditStatusOptions,
-	expenseIdentifierOptions,
-	paymentTypeOptions,
-	accountDeductionOptions,
-	statusOptions,
-	parkingSpaceStatusOptions,
-	expenseItemOptions,
-	discountTypeOptions,
-	ruleOptions,
-	applicationTypeOptions,
-	meterTypeOptions,
-	chargeObjectOptions,
-	refundReasonOptions,
-	reminderMethodOptions,
-	reminderStatusOptions,
-} from "../../../common/business-options";
 
 // ==================== 通用选项定义 ====================
 
@@ -46,7 +28,7 @@ export const usageStatusOptions: OptionsType = [
 	{ label: "已过期", value: "已过期" },
 ];
 
-/** 状态选项 Status options */
+/** 费用状态选项 Expense status options */
 export const expenseStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
@@ -60,140 +42,86 @@ export const expenseItemNameOptions: OptionsType = [
 	{ label: "维修费", value: "维修费" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/** 费用类型选项（兼容性） */
-export const 费用类型Options = expenseTypeOptions;
-
-/** 审核状态选项（兼容性） */
-export const 审核状态Options = auditStatusOptions;
-
-/** 费用标识选项（兼容性） */
-export const 费用标识Options = expenseIdentifierOptions;
-
-/** 付费类型选项（兼容性） */
-export const 付费类型Options = paymentTypeOptions;
-
-/** 账户抵扣选项（兼容性） */
-export const 账户抵扣Options = accountDeductionOptions;
-
-/** 自定义费用选项（兼容性） */
-export const 自定义费用Options = customExpenseOptions;
-
-/** 使用状态选项（兼容性） */
-export const 使用状态Options = usageStatusOptions;
-
-/** 费用项名称选项（兼容性） */
-export const 费用项名称Options = expenseItemNameOptions;
-
-// 注意：公共选项已移至 business-options.ts，请从该文件导入
-
-// ==================== 兼容旧中文名称的选项 ====================
-
-/** 费用类型选项（兼容性） */
+/** 费用类型选项别名 Fee type options alias */
 export const feeTypeOptions = expenseTypeOptions;
-
-/** 发票类型选项（兼容性） */
-export const 发票类型Options = [
-	{ label: "普通发票", value: "普通发票" },
-	{ label: "增值税专用发票", value: "增值税专用发票" },
-	{ label: "电子发票", value: "电子发票" },
-];
-
-/** 性别选项（兼容性） */
-export const 性别Options = [
-	{ label: "男", value: "男" },
-	{ label: "女", value: "女" },
-];
-
-/** 成员类型选项（兼容性） */
-export const 成员类型Options = [
-	{ label: "家人", value: "家人" },
-	{ label: "租户", value: "租户" },
-	{ label: "使用人", value: "使用人" },
-];
-
-/** 人员类型选项（兼容性） */
-export const 人员类型Options = [
-	{ label: "业主", value: "业主" },
-	{ label: "家人", value: "家人" },
-	{ label: "租户", value: "租户" },
-	{ label: "使用人", value: "使用人" },
-];
-
-/** 人员角色选项（兼容性） */
-export const 人员角色Options = [
-	{ label: "产权人", value: "产权人" },
-	{ label: "联系人", value: "联系人" },
-	{ label: "使用人", value: "使用人" },
-];
 
 // ==================== 通用类型定义 ====================
 
-/** 退费审核表单 VO */
-export interface 退费审核表单_VO {
-	/** 退费金额 */
+/**
+ * @description 退费审核表单 VO
+ * Refund review form VO
+ */
+export interface RefundReviewFormVO {
+	/** 退费金额 Refund amount */
 	refundAmount: number;
-	/** 退费原因 */
+	/** 退费原因 Refund reason */
 	refundReason: string;
-	/** 审核状态 */
+	/** 审核状态 Audit status */
 	auditStatus: string;
-	/** 审核意见 */
+	/** 审核意见 Audit comment */
 	auditComment?: string;
 }
 
-/** 补打收据表单 VO */
-export interface 补打收据表单_VO {
-	/** 收据编号 */
+/**
+ * @description 补打收据表单 VO
+ * Reprint receipt form VO
+ */
+export interface ReprintReceiptFormVO {
+	/** 收据编号 Receipt number */
 	receiptNumber: string;
-	/** 补打原因 */
+	/** 补打原因 Reprint reason */
 	reprintReason: string;
-	/** 申请人 */
+	/** 申请人 Applicant */
 	applicant: string;
-	/** 申请时间 */
+	/** 申请时间 Application time */
 	applicationTime: string;
 }
 
-/** 抄表类型 VO */
-export interface 抄表类型_VO {
-	/** 表类型名称 */
+/**
+ * @description 抄表类型 VO
+ * Meter reading type VO
+ */
+export interface MeterReadingTypeVO {
+	/** 表类型名称 Meter type name */
 	meterTypeName: string;
-	/** 表单位 */
+	/** 表单位 Meter unit */
 	meterUnit: string;
-	/** 计费方式 */
+	/** 计费方式 Billing method */
 	billingMethod: string;
-	/** 单价 */
+	/** 单价 Unit price */
 	unitPrice: number;
-	/** 状态 */
+	/** 状态 Status */
 	status: string;
 }
 
 // ==================== 通用列表数据类型 ====================
 
 /**
- * 通用列表数据项接口
+ * @description 通用列表数据项接口
+ * Common list item interface
  */
 export interface CommonListItem {
 	/** ID */
 	id: string;
-	/** 名称 */
+	/** 名称 Name */
 	name: string;
-	/** 状态 */
+	/** 状态 Status */
 	status: string;
-	/** 创建时间 */
+	/** 创建时间 Create time */
 	createTime: string;
-	/** 更新时间 */
+	/** 更新时间 Update time */
 	updateTime: string;
-	/** 备注 */
+	/** 备注 Remark */
 	remark?: string;
 }
 
 /**
- * 通用查询参数接口
+ * @description 通用查询参数接口
+ * Common query params interface
  */
 export interface CommonQueryParams extends BaseListQueryParams {
-	/** 名称 */
+	/** 名称 Name */
 	name?: string;
-	/** 状态 */
+	/** 状态 Status */
 	status?: string;
 }

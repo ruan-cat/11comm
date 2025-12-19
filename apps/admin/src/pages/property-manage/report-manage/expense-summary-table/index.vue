@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import BuildChart from "./components/build.vue";
 import PaymentChart from "./components/payment.vue";
+import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams, expenseItemNameOptions, expenseStatusOptions } from "@01s-11comm/type";
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -21,7 +22,7 @@ const pagination = ref<PaginationProps>({
 });
 
 /** 表格数据 */
-const tableData = ref<费用汇总表_表格数据[]>([]);
+const tableData = ref<ExpenseSummaryTableListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -127,12 +128,10 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 费用汇总表_搜索_VO = {
-	房屋编号合同名称: "",
-	业主名称: "",
-	业主手机号: "",
-	费用项: "",
-	小区: "",
+const plusSearchModelRef: FieldValues & Partial<ExpenseSummaryTableQueryParams> = {
+	time: "",
+	expenseItemId: "",
+	expenseItemName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -162,16 +161,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 	},
 	{
-		label: "费用项",
-		prop: "费用项",
+		label: "费用项名称",
+		prop: "expenseItemName",
 		valueType: "select",
-		options: 费用项Options,
-	},
-	{
-		label: "小区",
-		prop: "小区",
-		valueType: "select",
-		options: 小区Options,
+		options: expenseItemNameOptions,
+		fieldProps: {
+			clearable: true,
+			filterable: true,
+		},
 	},
 ]);
 

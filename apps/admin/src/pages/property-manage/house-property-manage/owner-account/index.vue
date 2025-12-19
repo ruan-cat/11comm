@@ -11,6 +11,8 @@ definePage({
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
+import type { OwnerAccountListItem, OwnerAccountQueryParams, accountTypeOptions, 业主账户表单_VO } from "@01s-11comm/type";
+import type { TableColumnList } from "@pureadmin/table";
 import { type OwnerAccountFormProps, defaultForm } from "./components/form";
 import OwnerAccountForm from "./components/form.vue";
 import { useOwnerAccountListQuery } from "@/api/property-manage/house-property-manage/owner-account";

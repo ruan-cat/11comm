@@ -21,7 +21,7 @@ import { useExpenseSummaryTableListQuery } from "@/api/property-manage/expense-m
 import {
 	type ExpenseSummaryTableListItem,
 	type ExpenseSummaryTableQueryParams,
-	费用项名称Options,
+	expenseItemNameOptions,
 } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
@@ -129,7 +129,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用项名称",
 		prop: "expenseItemName",
 		valueType: "select",
-		options: 费用项名称Options,
+		options: expenseItemNameOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,

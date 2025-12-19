@@ -2,7 +2,8 @@
 import { computed, reactive, ref } from "vue";
 import { useTemplateRef } from "vue";
 import { cloneDeep } from "lodash-es";
-import type { PlusColumn, PlusFormRules } from "plus-pro-components";
+import type { PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 import { RolePermissionFormProps, type RolePermissionFormVO } from "./form";

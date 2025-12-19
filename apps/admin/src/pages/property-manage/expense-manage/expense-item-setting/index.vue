@@ -27,9 +27,7 @@ import { useExpenseItemSettingListQuery } from "@/api/property-manage/expense-ma
 import {
 	type ExpenseItemSettingListItem,
 	type ExpenseItemSettingQueryParams,
-	费用项设置标识Options,
-	费用项设置付费类型Options,
-	费用项设置抵扣Options,
+	expenseIdentifierOptions,
 	paymentTypeOptions,
 	accountDeductionOptions,
 } from "@01s-11comm/type";
@@ -171,7 +169,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesUnit")),
 		prop: "expenseIdentifier",
 		valueType: "select",
-		options: 费用项设置标识Options,
+		options: expenseIdentifierOptions,
 	},
 
 	// 付费类型
@@ -179,14 +177,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesType")),
 		prop: "paymentType",
 		valueType: "select",
-		options: 费用项设置付费类型Options,
+		options: paymentTypeOptions,
 	},
 	//账户抵扣
 	{
 		label: transformI18n($t("propertyManage_expensesManage.expenses-setup.expensesAmount")),
 		prop: "accountDeduction",
 		valueType: "select",
-		options: 费用项设置抵扣Options,
+		options: accountDeductionOptions,
 	},
 	//自定义费用
 	// {

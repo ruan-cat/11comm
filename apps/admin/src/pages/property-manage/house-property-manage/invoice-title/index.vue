@@ -11,12 +11,27 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
+import type {
+	InvoiceTitleListItem,
+	InvoiceTitleQueryParams,
+	发票抬头_列表数据,
+	发票抬头_列表查询_VO,
+	发票抬头表单_VO,
+} from "@01s-11comm/type";
+import { 发票类型选项, invoiceTitleDefaultForm } from "@01s-11comm/type";
+import type { TableColumns } from "@pureadmin/table";
+import type { PaginationProps } from "element-plus";
 
 /** 表格数据 */
-const tableData = ref<发票_列表数据[]>([]);
+const tableData = ref<发票抬头_列表数据[]>([]);
+
+/** 全部表格数据（用于本地搜索过滤） */
+const allTableData = ref<发票抬头_列表数据[]>([
+	// TODO: 替换为真实API数据
+]);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = ref<TableColumns>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",
@@ -111,17 +126,17 @@ async function loadTableData() {
 	try {
 		// TODO: 替换为真实的API调用
 		// 当前使用模拟数据和本地搜索过滤
-		let filteredData = allTableData;
+		let filteredData = [...allTableData.value];
 
 		// 根据搜索条件过滤数据
-		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
+		if (plusSearchModel.value.ownerName) {
+			filteredData = filteredData.filter((item) => item.ownerName.includes(plusSearchModel.value.ownerName!));
 		}
-		if (plusSearchModel.value.发票类型) {
-			filteredData = filteredData.filter((item) => item.发票类型 === plusSearchModel.value.发票类型);
+		if (plusSearchModel.value.invoiceType) {
+			filteredData = filteredData.filter((item) => item.invoiceType === plusSearchModel.value.invoiceType);
 		}
-		if (plusSearchModel.value.发票名头) {
-			filteredData = filteredData.filter((item) => item.发票名头.includes(plusSearchModel.value.发票名头!));
+		if (plusSearchModel.value.invoiceTitle) {
+			filteredData = filteredData.filter((item) => item.invoiceTitle.includes(plusSearchModel.value.invoiceTitle!));
 		}
 
 		// 更新总数
@@ -145,10 +160,10 @@ async function loadTableData() {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 发票_列表查询_VO = {
-	业主名称: "",
-	发票类型: "",
-	发票名头: "",
+const plusSearchModelRef: FieldValues & 发票抬头_列表查询_VO = {
+	ownerName: "",
+	invoiceType: "",
+	invoiceTitle: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -170,9 +185,9 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	{
 		label: "发票类型",
-		prop: "发票类型",
+		prop: "invoiceType",
 		valueType: "select",
-		options: invoiceTypeOptions,
+		options: 发票类型选项,
 	},
 
 	{
@@ -208,7 +223,7 @@ async function handleSearch() {
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 // 导入表单组件
-import { type InvoiceTitleFormProps, defaultForm } from "./components/form";
+import { type InvoiceTitleFormProps } from "./components/form";
 import InvoiceTitleForm from "./components/form.vue";
 
 const invoiceTitleFormInstance = ref<InstanceType<typeof InvoiceTitleForm> | null>(null);
@@ -224,7 +239,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: 发票抬头_列表数据 }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -232,24 +247,24 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 	const title = `${modeText.value}发票抬头`;
 
 	/** 业务对象 */
-	const 发票抬头表单_VO: 发票抬头表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+	const formData: 发票抬头表单_VO = isAdd.value
+		? cloneDeep(invoiceTitleDefaultForm)
 		: cloneDeep({
-				...defaultForm,
-				业主名称: row?.业主名称 || "",
-				发票类型: row?.发票类型 || "",
-				发票名头: row?.发票名头 || "",
-				纳税人识别号: row?.纳税人识别号 || "",
-				地址: row?.地址 || "",
-				电话: row?.电话 || "",
-				开户行及账号: row?.开户行及账号 || "",
-				备注: row?.备注 || "",
+				...invoiceTitleDefaultForm,
+				ownerName: row?.ownerName || "",
+				invoiceType: row?.invoiceType || "",
+				invoiceTitle: row?.invoiceTitle || "",
+				taxpayerId: row?.taxpayerId || "",
+				address: row?.address || "",
+				phone: row?.phone || "",
+				bankAccount: row?.bankAccount || "",
+				remark: row?.remark || "",
 			});
 
 	/** 表单组件需要的props */
 	const formProps: InvoiceTitleFormProps = {
-		form: 发票抬头表单_VO,
-		defaultValues: 发票抬头表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

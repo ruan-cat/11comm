@@ -92,3 +92,21 @@ export const 人员角色Options = personRoleOptions;
  * Gender options (for compatibility)
  */
 export const 性别Options = genderOptions;
+
+/**
+ * @description 业主信息列表数据（兼容性中文名称）
+ * OwnerInformation list item (for compatibility with Chinese names)
+ */
+export type 业主信息_列表数据 = OwnerInformationListItem;
+
+/**
+ * @description 业主信息列表查询参数（兼容性中文名称）
+ * OwnerInformation query parameters (for compatibility with Chinese names)
+ */
+export type 业主信息_列表查询_VO = OwnerInformationQueryParams;
+
+/**
+ * @description 业主信息表单VO（兼容性中文名称）
+ * Owner information form VO (for compatibility with Chinese names)
+ */
+export type 业主信息表单_VO = OwnerInformationFormVO;

@@ -15,6 +15,7 @@ import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RepairsTodoFormProps, defaultForm, type 报修待办表单_VO } from "./components/form";
+import type { 报修待办_列表数据 } from "@01s-11comm/type";
 import RepairsTodoForm from "./components/form.vue";
 
 /** 模式控制 */
@@ -22,6 +23,44 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const repairsTodoFormInstance = ref<InstanceType<typeof RepairsTodoForm> | null>(null);
+
+/** 模拟数据 */
+const mockTableData: 报修待办_列表数据[] = [
+	{
+		id: "1",
+		name: "待办工单1",
+		status: "待处理",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-01 08:00:00",
+		remark: "紧急维修",
+		工单编号: "RW202401010001",
+		位置: "1栋2单元101",
+		报修类型: "水电维修",
+		维修类型: "紧急维修",
+		报修人: "张三",
+		联系方式: "13800138000",
+		预约时间: "2024-01-01 14:00:00",
+		状态: "待处理",
+		备注: "水龙头漏水严重",
+	},
+	{
+		id: "2",
+		name: "待办工单2",
+		status: "处理中",
+		createTime: "2024-01-01 09:00:00",
+		updateTime: "2024-01-01 10:00:00",
+		remark: "一般维修",
+		工单编号: "RW202401010002",
+		位置: "2栋3单元202",
+		报修类型: "设备维修",
+		维修类型: "计划维修",
+		报修人: "李四",
+		联系方式: "13800138001",
+		预约时间: "2024-01-01 16:00:00",
+		状态: "处理中",
+		备注: "电梯异响",
+	},
+];
 
 /** 表格数据 */
 const tableData = ref<报修待办_列表数据[]>([]);

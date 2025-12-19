@@ -9,16 +9,16 @@ import { mockInvoiceData } from "./mock-data";
  */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListItem>>> => {
 	const body = await readBody<InvoiceQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, ownerName, invoiceType } = body;
 
 	let filteredData = [...mockInvoiceData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (ownerName) {
+		filteredData = filteredData.filter((item) => item.ownerName.includes(ownerName));
 	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
+	if (invoiceType) {
+		filteredData = filteredData.filter((item) => item.invoiceType === invoiceType);
 	}
 
 	// 分页处理

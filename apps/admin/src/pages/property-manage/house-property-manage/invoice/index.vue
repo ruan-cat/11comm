@@ -11,11 +11,20 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type InvoiceFormProps } from "./components/form";
+import type { InvoiceListItem, InvoiceQueryParams, 发票_列表数据, 发票_列表查询_VO, 发票表单_VO } from "@01s-11comm/type";
+import { 发票类型Options, 发票审核状态Options } from "@01s-11comm/type";
+import type { TableColumns } from "@pureadmin/table";
+import type { PaginationProps } from "element-plus";
+import { type InvoiceFormProps, defaultForm } from "./components/form";
 import InvoiceForm from "./components/form.vue";
 
 /** 表格数据 */
 const tableData = ref<发票_列表数据[]>([]);
+
+/** 模拟表格数据（用于本地搜索过滤） */
+const mockTableData = ref<发票_列表数据[]>([
+	// TODO: 替换为真实API数据
+]);
 
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
@@ -26,7 +35,7 @@ const pagination = ref<PaginationProps>({
 });
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = ref<TableColumns>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",
@@ -127,26 +136,26 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 	const title = `${modeText.value}发票`;
 
 	/** 业务对象 */
-	const 发票表单_VO: 发票表单_VO = isAdd.value
+	const formData: 发票表单_VO = isAdd.value
 		? cloneDeep(defaultForm)
 		: cloneDeep({
 				...defaultForm,
-				编号: row?.编号 || "",
-				发票类型: row?.发票类型 || "",
-				业主名称: row?.业主名称 || "",
-				申请人: row?.申请人 || "",
-				发票名头: row?.发票名头 || "",
-				纳税人识别号: row?.纳税人识别号 || "",
-				申请金额: row?.申请金额 || "",
-				发票号: row?.发票号 || "",
-				发审核状态: row?.发审核状态 || "",
-				申请时间: row?.申请时间 || "",
+				code: row?.code || "",
+				invoiceType: row?.invoiceType || "",
+				ownerName: row?.ownerName || "",
+				applicant: row?.applicant || "",
+				invoiceTitle: row?.invoiceTitle || "",
+				taxpayerId: row?.taxpayerId || "",
+				applicationAmount: row?.applicationAmount || "",
+				invoiceNumber: row?.invoiceNumber || "",
+				auditStatus: row?.auditStatus || "",
+				applicationTime: row?.applicationTime || "",
 			});
 
 	/** 表单组件需要的props */
 	const formProps: InvoiceFormProps = {
-		form: 发票表单_VO,
-		defaultValues: 发票表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -209,11 +218,13 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & 发票_列表查询_VO = {
-	编号: "",
-	发票类型: "",
-	业主名称: "",
-	申请人: "",
-	发审核状态: "",
+	code: "",
+	invoiceType: "",
+	ownerName: "",
+	applicant: "",
+	auditStatus: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -251,7 +262,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "发审核状态",
 		prop: "发审核状态",
 		valueType: "select",
-		options: auditStatusOptions,
+		options: 发票审核状态Options,
 	},
 ]);
 

@@ -16,4 +16,5 @@ export const 公示类型选项 = noticeTypeOptions;
 /** 公示状态选项 */
 export const 公示状态选项 = noticeStatusOptions;
 
-export { CommunityNoticeFormVO, CommunityNoticeFormProps, defaultCommunityNoticeForm, noticeTypeOptions, noticeStatusOptions, 列表数据转表单数据 };
+export type { CommunityNoticeFormVO, CommunityNoticeFormProps };
+export { defaultCommunityNoticeForm, noticeTypeOptions, noticeStatusOptions, 列表数据转表单数据 };
