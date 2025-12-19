@@ -154,7 +154,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<PropertyRegisterQueryParams>);
+	});
 }
 
 /** 表格列配置 */

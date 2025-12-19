@@ -31,7 +31,7 @@ import { h } from "vue";
 const meterTypeFormInstance = ref<InstanceType<typeof MeterTypeForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-	useMeterReadingTypeListQuery();
+useMeterReadingTypeListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -89,7 +89,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<MeterReadingTypeQueryParams>);
+	});
 }
 
 /** 处理页数变化 */

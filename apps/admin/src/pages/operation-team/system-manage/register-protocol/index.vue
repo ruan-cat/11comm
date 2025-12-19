@@ -10,9 +10,23 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type RegisterProtocolListItem, type RegisterProtocolQueryParams, protocolTypeOptions, registerProtocolStatusOptions, isMandatoryOptions, type RegisterProtocolListItem as 注册协议_列表数据 } from "@01s-11comm/type";
+import {
+	type RegisterProtocolListItem,
+	type RegisterProtocolQueryParams,
+	protocolTypeOptions,
+	registerProtocolStatusOptions,
+	isMandatoryOptions,
+	type RegisterProtocolListItem as 注册协议_列表数据,
+} from "@01s-11comm/type";
 import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage/register-protocol";
-import { type RegisterProtocolFormProps, defaultForm, type 注册协议表单_VO, type 协议类型枚举, type 状态枚举, type 是否强制同意枚举 } from "./components/form";
+import {
+	type RegisterProtocolFormProps,
+	defaultForm,
+	type 注册协议表单_VO,
+	type 协议类型枚举,
+	type 状态枚举,
+	type 是否强制同意枚举,
+} from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -122,7 +136,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "注册协议",
@@ -186,7 +199,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<RegisterProtocolQueryParams>);
+	});
 }
 
 /** 打开弹框 参数 */

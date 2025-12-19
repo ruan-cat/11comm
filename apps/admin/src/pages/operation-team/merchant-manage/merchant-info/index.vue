@@ -198,7 +198,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<MerchantInfoQueryParams>);
+	});
 }
 
 /** 模式控制 */

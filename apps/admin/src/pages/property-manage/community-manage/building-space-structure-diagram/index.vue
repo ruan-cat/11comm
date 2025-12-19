@@ -10,14 +10,21 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type BuildingSpaceStructureDiagramListItem, type BuildingSpaceStructureDiagramQueryParams, buildingStructureOptions, buildingStatusOptions } from "@01s-11comm/type";
+import {
+	type BuildingSpaceStructureDiagramListItem,
+	type BuildingSpaceStructureDiagramQueryParams,
+	buildingStructureOptions,
+	buildingStatusOptions,
+} from "@01s-11comm/type";
 import { useBuildingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/building-space-structure-diagram";
 import { type BuildingSpaceStructureDiagramFormProps, defaultForm, type 楼栋结构图表单_VO } from "./components/form";
 import BuildingSpaceStructureDiagramForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 /** 表单组件实例 */
-const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(null);
+const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(
+	null,
+);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -117,7 +124,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "楼栋结构图",
@@ -187,7 +193,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<BuildingSpaceStructureDiagramQueryParams>);
+	});
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();
@@ -347,12 +353,8 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="viewDrawing(row)">
-							查看图纸
-						</ElButton>
-						<ElButton type="info" @click="downloadDrawing(row)">
-							下载图纸
-						</ElButton>
+						<ElButton type="info" @click="viewDrawing(row)"> 查看图纸 </ElButton>
+						<ElButton type="info" @click="downloadDrawing(row)"> 下载图纸 </ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>

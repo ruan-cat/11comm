@@ -180,7 +180,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<HandingBusinessQueryParams>);
+	});
 }
 
 /** 打开弹框 参数 */

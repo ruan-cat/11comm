@@ -158,7 +158,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<DiscountTypeQueryParams>);
+	});
 }
 
 /** 删除优惠类型 */

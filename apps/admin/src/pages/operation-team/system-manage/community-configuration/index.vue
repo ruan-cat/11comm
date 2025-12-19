@@ -107,7 +107,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "小区配置",
@@ -170,7 +169,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<CommunityConfigQueryParams>);
+	});
 }
 
 /** 模式控制 */

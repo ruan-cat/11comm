@@ -165,7 +165,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<MerchantAdminQueryParams>);
+	});
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();

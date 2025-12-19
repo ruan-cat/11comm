@@ -25,7 +25,7 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 import { h } from "vue";
 
 /** 使用 TanStack Query 获取数据 */
-	useDiscountSettingListQuery();
+useDiscountSettingListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -173,7 +173,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<DiscountSettingQueryParams>);
+	});
 }
 
 // 弹框相关功能

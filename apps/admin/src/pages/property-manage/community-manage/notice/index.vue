@@ -142,7 +142,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<CommunityNoticeQueryParams>);
+	});
 }
 
 /** 处理表格选择变化 */

@@ -242,7 +242,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<ChangePasswordRecordQueryParams>);
+	});
 }
 
 /** 查看详情 */

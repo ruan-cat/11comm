@@ -271,7 +271,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<SystemConfigQueryParams>);
+	});
 }
 
 /** 删除系统配置 */

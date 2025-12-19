@@ -285,7 +285,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<CommunityInfoQueryParams>);
+	});
 }
 </script>
 

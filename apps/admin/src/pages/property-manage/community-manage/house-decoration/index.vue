@@ -223,7 +223,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<HouseDecorationQueryParams>);
+	});
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();

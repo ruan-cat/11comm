@@ -148,7 +148,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<ReportComponentQueryParams>);
+	});
 }
 
 /** 打开弹框 参数 */

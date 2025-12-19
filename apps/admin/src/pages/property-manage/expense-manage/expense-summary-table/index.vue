@@ -36,7 +36,7 @@ import { h } from "vue";
 const expenseSummaryTableFormInstance = ref<InstanceType<typeof ExpenseSummaryTableForm> | null>(null);
 
 /** 使用 TanStack Query 获取数据 */
-	useExpenseSummaryTableListQuery();
+useExpenseSummaryTableListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -176,7 +176,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<ExpenseSummaryTableQueryParams>);
+	});
 }
 
 /** 打开弹框 参数 */

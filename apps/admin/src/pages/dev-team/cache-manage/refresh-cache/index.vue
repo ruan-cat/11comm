@@ -124,7 +124,7 @@ function handleSearch() {
     updateParams({
         ...plusSearchModel.value,
         pageIndex: 1,
-    } as Partial<RefreshCacheQueryParams>);
+    });
 }
 
 /** 刷新缓存处理函数 */

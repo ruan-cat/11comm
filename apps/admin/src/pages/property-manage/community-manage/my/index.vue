@@ -203,7 +203,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<MyCommunityQueryParams>);
+	});
 }
 
 /** 打开弹框参数 */

@@ -154,7 +154,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<FirstPartyQueryParams>);
+	});
 }
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);

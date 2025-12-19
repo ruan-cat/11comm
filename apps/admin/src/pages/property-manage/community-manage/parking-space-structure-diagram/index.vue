@@ -201,7 +201,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<ParkingSpaceStructureDiagramQueryParams>);
+	});
 }
 
 const { gotoDetailPage } = useGotoDetailsPage();

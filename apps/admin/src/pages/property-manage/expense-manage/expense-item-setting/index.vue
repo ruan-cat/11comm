@@ -217,7 +217,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<ExpenseItemSettingQueryParams>);
+	});
 }
 
 /** 打开弹框 参数 */

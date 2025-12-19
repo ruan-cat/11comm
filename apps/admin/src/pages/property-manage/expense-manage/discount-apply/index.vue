@@ -15,7 +15,12 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type DiscountApplyFormProps, defaultForm, type DiscountApplyFormVO } from "./components/form";
 import DiscountApplyForm from "./components/form.vue";
 import { useDiscountApplyListQuery } from "@/api/property-manage/expense-manage/discount-apply";
-import { type DiscountApplyListItem, type DiscountApplyQueryParams, applicationTypeOptions, usageStatusOptions } from "@01s-11comm/type";
+import {
+	type DiscountApplyListItem,
+	type DiscountApplyQueryParams,
+	applicationTypeOptions,
+	usageStatusOptions,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
@@ -25,7 +30,7 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 import { h } from "vue";
 
 /** 使用 TanStack Query 获取数据 */
-	useDiscountApplyListQuery();
+useDiscountApplyListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -201,7 +206,7 @@ function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
 		pageIndex: 1,
-	} as Partial<DiscountApplyQueryParams>);
+	});
 }
 
 // 弹框相关功能
