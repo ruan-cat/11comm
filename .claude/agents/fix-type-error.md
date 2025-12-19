@@ -242,13 +242,22 @@ getRouteRank 是在宏上的使用的。
 import { getRouteRank } from "@/router/rank";
 ```
 
-### 错误导入 FieldValues 类型
+### 错误导入全局 FieldValues
 
 请注意，`FieldValues` 类型是全局导入的类型。这是常见错误。如果你需要处理类型错误而导入全局类型，请在 `plus-pro-components` 模块内导入正确的类型。
 
 ```ts
 // 正确的导入路径
 import type { FieldValues } from "plus-pro-components";
+```
+
+### 错误导入全局类型 TableColumnList
+
+在客户端代码内，类型 `TableColumnList` 来自于全局类型文件 `apps\admin\types\global.d.ts` 。不应该手动导入。
+
+```ts
+// 该写法是错误的 不应该去任何模块导入 TableColumnList 类型
+import type { TableColumnList } from "@pureadmin/table";
 ```
 
 ## 3. 项目特定的类型处理策略
