@@ -200,121 +200,121 @@
 
 **路由路径**：`devTeam.menuManage.catalog`
 
-- [ ] Task 2.1.1: 创建类型定义文件 `apps/type/src/business/dev-team/menu-manage/catalog.ts`
-- [ ] Task 2.1.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/menu-manage/catalog/mock-data.ts`
-- [ ] Task 2.1.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/menu-manage/catalog/list.post.ts`
-- [ ] Task 2.1.4: 创建前端 API Hook `apps/admin/src/api/dev-team/menu-manage/catalog/index.ts`
-- [ ] Task 2.1.5: 改写列表页 `apps/admin/src/pages/dev-team/menu-manage/catalog/index.vue`
-- [ ] Task 2.1.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
-- [ ] Task 2.1.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/menu-manage/catalog/components/form.ts`
-- [ ] Task 2.1.8: 更新表单组件 `apps/admin/src/pages/dev-team/menu-manage/catalog/components/form.vue`
-- [ ] Task 2.1.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.1.10: 测试验证
+- [x] Task 2.1.1: 创建类型定义文件 `apps/type/src/business/dev-team/menu-manage/catalog.ts`
+- [x] Task 2.1.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/menu-manage/catalog/mock-data.ts`
+- [x] Task 2.1.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/menu-manage/catalog/list.post.ts`
+- [x] Task 2.1.4: 创建前端 API Hook `apps/admin/src/api/dev-team/menu-manage/catalog/index.ts`
+- [x] Task 2.1.5: 改写列表页 `apps/admin/src/pages/dev-team/menu-manage/catalog/index.vue`
+- [x] Task 2.1.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/menu-manage/catalog/test-data.ts`
+- [x] Task 2.1.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/menu-manage/catalog/components/form.ts`
+- [x] Task 2.1.8: 更新表单组件 `apps/admin/src/pages/dev-team/menu-manage/catalog/components/form.vue`
+- [x] Task 2.1.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.1.10: 测试验证
 
 #### 2.2 devTeam.menuManage.group（菜单组）
 
 **路由路径**：`devTeam.menuManage.group`
 
-- [ ] Task 2.2.1: 创建类型定义文件 `apps/type/src/business/dev-team/menu-manage/group.ts`
-- [ ] Task 2.2.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/menu-manage/group/mock-data.ts`
-- [ ] Task 2.2.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/menu-manage/group/list.post.ts`
-- [ ] Task 2.2.4: 创建前端 API Hook `apps/admin/src/api/dev-team/menu-manage/group/index.ts`
-- [ ] Task 2.2.5: 改写列表页 `apps/admin/src/pages/dev-team/menu-manage/group/index.vue`
-- [ ] Task 2.2.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
-- [ ] Task 2.2.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/menu-manage/group/components/form.ts`
-- [ ] Task 2.2.8: 更新表单组件 `apps/admin/src/pages/dev-team/menu-manage/group/components/form.vue`
-- [ ] Task 2.2.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.2.10: 测试验证
+- [x] Task 2.2.1: 创建类型定义文件 `apps/type/src/business/dev-team/menu-manage/group.ts`
+- [x] Task 2.2.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/menu-manage/group/mock-data.ts`
+- [x] Task 2.2.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/menu-manage/group/list.post.ts`
+- [x] Task 2.2.4: 创建前端 API Hook `apps/admin/src/api/dev-team/menu-manage/group/index.ts`
+- [x] Task 2.2.5: 改写列表页 `apps/admin/src/pages/dev-team/menu-manage/group/index.vue`
+- [x] Task 2.2.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/menu-manage/group/test-data.ts`
+- [x] Task 2.2.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/menu-manage/group/components/form.ts`
+- [x] Task 2.2.8: 更新表单组件 `apps/admin/src/pages/dev-team/menu-manage/group/components/form.vue`
+- [x] Task 2.2.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.2.10: 测试验证
 
 #### 2.3 devTeam.menuManage.item（菜单项）
 
 **路由路径**：`devTeam.menuManage.item`
 
-- [ ] Task 2.3.1: 创建类型定义文件 `apps/type/src/business/dev-team/menu-manage/item.ts`
-- [ ] Task 2.3.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/menu-manage/item/mock-data.ts`
-- [ ] Task 2.3.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/menu-manage/item/list.post.ts`
-- [ ] Task 2.3.4: 创建前端 API Hook `apps/admin/src/api/dev-team/menu-manage/item/index.ts`
-- [ ] Task 2.3.5: 改写列表页 `apps/admin/src/pages/dev-team/menu-manage/item/index.vue`
-- [ ] Task 2.3.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
-- [ ] Task 2.3.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/menu-manage/item/components/form.ts`
-- [ ] Task 2.3.8: 更新表单组件 `apps/admin/src/pages/dev-team/menu-manage/item/components/form.vue`
-- [ ] Task 2.3.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.3.10: 测试验证
+- [x] Task 2.3.1: 创建类型定义文件 `apps/type/src/business/dev-team/menu-manage/item.ts`
+- [x] Task 2.3.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/menu-manage/item/mock-data.ts`
+- [x] Task 2.3.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/menu-manage/item/list.post.ts`
+- [x] Task 2.3.4: 创建前端 API Hook `apps/admin/src/api/dev-team/menu-manage/item/index.ts`
+- [x] Task 2.3.5: 改写列表页 `apps/admin/src/pages/dev-team/menu-manage/item/index.vue`
+- [x] Task 2.3.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/menu-manage/item/test-data.ts`
+- [x] Task 2.3.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/menu-manage/item/components/form.ts`
+- [x] Task 2.3.8: 更新表单组件 `apps/admin/src/pages/dev-team/menu-manage/item/components/form.vue`
+- [x] Task 2.3.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.3.10: 测试验证
 
 #### 2.4 devTeam.cacheManage.refreshCache（刷新缓存）
 
 **路由路径**：`devTeam.cacheManage.refreshCache`
 
-- [ ] Task 2.4.1: 创建类型定义文件 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
-- [ ] Task 2.4.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
-- [ ] Task 2.4.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
-- [ ] Task 2.4.4: 创建前端 API Hook `apps/admin/src/api/dev-team/cache-manage/refresh-cache/index.ts`
-- [ ] Task 2.4.5: 改写列表页 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/index.vue`
-- [ ] Task 2.4.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
-- [ ] Task 2.4.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/components/form.ts`
-- [ ] Task 2.4.8: 更新表单组件 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/components/form.vue`
-- [ ] Task 2.4.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.4.10: 测试验证
+- [x] Task 2.4.1: 创建类型定义文件 `apps/type/src/business/dev-team/cache-manage/refresh-cache.ts`
+- [x] Task 2.4.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/mock-data.ts`
+- [x] Task 2.4.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
+- [x] Task 2.4.4: 创建前端 API Hook `apps/admin/src/api/dev-team/cache-manage/refresh-cache/index.ts`
+- [x] Task 2.4.5: 改写列表页 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/index.vue`
+- [x] Task 2.4.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/test-data.ts`
+- [x] Task 2.4.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/components/form.ts`
+- [x] Task 2.4.8: 更新表单组件 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/components/form.vue`
+- [x] Task 2.4.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.4.10: 测试验证
 
 #### 2.5 devTeam.configManage.type（字典类型）
 
 **路由路径**：`devTeam.configManage.type`
 
-- [ ] Task 2.5.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/type.ts`
-- [ ] Task 2.5.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/type/mock-data.ts`
-- [ ] Task 2.5.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/type/list.post.ts`
-- [ ] Task 2.5.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/type/index.ts`
-- [ ] Task 2.5.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/type/index.vue`
-- [ ] Task 2.5.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
-- [ ] Task 2.5.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/type/components/form.ts`
-- [ ] Task 2.5.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/type/components/form.vue`
-- [ ] Task 2.5.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.5.10: 测试验证
+- [x] Task 2.5.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/type.ts`
+- [x] Task 2.5.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/type/mock-data.ts`
+- [x] Task 2.5.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/type/list.post.ts`
+- [x] Task 2.5.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/type/index.ts`
+- [x] Task 2.5.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/type/index.vue`
+- [x] Task 2.5.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/type/test-data.ts`
+- [x] Task 2.5.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/type/components/form.ts`
+- [x] Task 2.5.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/type/components/form.vue`
+- [x] Task 2.5.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.5.10: 测试验证
 
 #### 2.6 devTeam.configManage.item（配置项）
 
 **路由路径**：`devTeam.configManage.item`
 
-- [ ] Task 2.6.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/item.ts`
-- [ ] Task 2.6.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/item/mock-data.ts`
-- [ ] Task 2.6.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/item/list.post.ts`
-- [ ] Task 2.6.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/item/index.ts`
-- [ ] Task 2.6.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/item/index.vue`
-- [ ] Task 2.6.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
-- [ ] Task 2.6.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/item/components/form.ts`
-- [ ] Task 2.6.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/item/components/form.vue`
-- [ ] Task 2.6.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.6.10: 测试验证
+- [x] Task 2.6.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/item.ts`
+- [x] Task 2.6.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/item/mock-data.ts`
+- [x] Task 2.6.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/item/list.post.ts`
+- [x] Task 2.6.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/item/index.ts`
+- [x] Task 2.6.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/item/index.vue`
+- [x] Task 2.6.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/item/test-data.ts`
+- [x] Task 2.6.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/item/components/form.ts`
+- [x] Task 2.6.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/item/components/form.vue`
+- [x] Task 2.6.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.6.10: 测试验证
 
 #### 2.7 devTeam.configManage.dictionary（字典）
 
 **路由路径**：`devTeam.configManage.dictionary`
 
-- [ ] Task 2.7.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/dictionary.ts`
-- [ ] Task 2.7.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/dictionary/mock-data.ts`
-- [ ] Task 2.7.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts`
-- [ ] Task 2.7.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/dictionary/index.ts`
-- [ ] Task 2.7.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/dictionary/index.vue`
-- [ ] Task 2.7.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
-- [ ] Task 2.7.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/dictionary/components/form.ts`
-- [ ] Task 2.7.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/dictionary/components/form.vue`
-- [ ] Task 2.7.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.7.10: 测试验证
+- [x] Task 2.7.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/dictionary.ts`
+- [x] Task 2.7.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/dictionary/mock-data.ts`
+- [x] Task 2.7.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts`
+- [x] Task 2.7.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/dictionary/index.ts`
+- [x] Task 2.7.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/dictionary/index.vue`
+- [x] Task 2.7.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/dictionary/test-data.ts`
+- [x] Task 2.7.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/dictionary/components/form.ts`
+- [x] Task 2.7.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/dictionary/components/form.vue`
+- [x] Task 2.7.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.7.10: 测试验证
 
 #### 2.8 devTeam.configManage.center（配置中心）
 
 **路由路径**：`devTeam.configManage.center`
 
-- [ ] Task 2.8.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/center.ts`
-- [ ] Task 2.8.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/center/mock-data.ts`
-- [ ] Task 2.8.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/center/list.post.ts`
-- [ ] Task 2.8.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/center/index.ts`
-- [ ] Task 2.8.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/center/index.vue`
-- [ ] Task 2.8.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
-- [ ] Task 2.8.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/center/components/form.ts`
-- [ ] Task 2.8.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/center/components/form.vue`
-- [ ] Task 2.8.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 2.8.10: 测试验证
+- [x] Task 2.8.1: 创建类型定义文件 `apps/type/src/business/dev-team/config-manage/center.ts`
+- [x] Task 2.8.2: 创建 Mock 数据文件 `apps/admin/server/api/dev-team/config-manage/center/mock-data.ts`
+- [x] Task 2.8.3: 创建 Nitro 接口文件 `apps/admin/server/api/dev-team/config-manage/center/list.post.ts`
+- [x] Task 2.8.4: 创建前端 API Hook `apps/admin/src/api/dev-team/config-manage/center/index.ts`
+- [x] Task 2.8.5: 改写列表页 `apps/admin/src/pages/dev-team/config-manage/center/index.vue`
+- [x] Task 2.8.6: 删除旧的假数据文件 `apps/admin/src/pages/dev-team/config-manage/center/test-data.ts`
+- [x] Task 2.8.7: 更新表单类型文件 `apps/admin/src/pages/dev-team/config-manage/center/components/form.ts`
+- [x] Task 2.8.8: 更新表单组件 `apps/admin/src/pages/dev-team/config-manage/center/components/form.vue`
+- [x] Task 2.8.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 2.8.10: 测试验证
 
 ### 3. operationTeam（运营团队）- 12 个三级路由
 
