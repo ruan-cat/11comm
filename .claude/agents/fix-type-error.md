@@ -155,6 +155,15 @@ import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 ```
 
+### 在错误的地方导入 `TableColumnList` 类型
+
+```typescript
+// ❌ 错误 从 `@pureadmin/table` 模块内导入了不存在的 `TableColumnList` 类型
+import type { TableColumnList } from "@pureadmin/table";
+
+// ✅ 正确 无需手动导入， TableColumnList 类型是全局类型，不需要我们手动导入
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
