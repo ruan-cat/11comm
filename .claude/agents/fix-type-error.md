@@ -206,6 +206,12 @@ export interface MerchantAdminFormProps {
 }
 ```
 
+### 使用错误的，不存在的，容易带来误导的 `mode?: "add" | "edit" | "view";` 类型
+
+1. 类型 `mode?: "add" | "edit" | "view";` 是错误的。
+2. 类型 `mode?: "add" | "edit" | "info";` 才是正确的。我们不存在错误的 view 类型。
+3. 我们事实上也不应该直接写字面意义上的 `mode?: "add" | "edit" | "info";` 类型。在客户端代码，即 `apps\admin\src` 目录内，我们应该直接使用 `mode?: Mode;` 的写法。其中 Mode 是客户端代码内全局导入的类型。直接使用即可。
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
