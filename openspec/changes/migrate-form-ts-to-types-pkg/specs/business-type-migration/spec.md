@@ -9,7 +9,7 @@
 1. **Step 1**: 目录映射与文件定位（根据 RANK_ROUTE_KEYS 确定迁移目标）
 2. **Step 2**: 类型定义迁移（将 form.ts 中的业务类型迁移到类型项目）
 3. **Step 3**: 命名规范化（将中文命名改为英文命名）
-4. **Step 4**: JSDoc 注释保留（保持所有注释说明）
+4. **Step 4**: JSDoc 注释保留（**必须完整保留所有注释说明，注释丢失视为迁移失败**）
 5. **Step 5**: 导入路径更新（更新 form.ts 中的导入路径）
 6. **Step 6**: 验证与测试（确保迁移后功能正常）
 
@@ -58,19 +58,27 @@
 - **THEN** 在 `apps/type/src/business/.../staff-info.ts` 中创建相同接口
 - **AND** 保留所有字段定义
 
-#### Scenario: 迁移默认值对象
+#### Scenario: 保留默认值对象在 form.ts
 
 - **GIVEN** form.ts 中定义了 `defaultForm` 常量
-- **WHEN** 迁移到类型项目
-- **THEN** 在类型文件中创建 `defaultStaffInfoForm` 常量
-- **AND** 保留所有字段值
+- **WHEN** 执行迁移
+- **THEN** `defaultForm` 常量保留在 form.ts 文件内
+- **AND** 不将 `defaultForm` 迁移到类型项目
 
-#### Scenario: 迁移 Props 接口
+#### Scenario: 迁移表单数据 Props 接口
 
-- **GIVEN** form.ts 中定义了 `StaffInfoFormProps` 接口
+- **GIVEN** form.ts 中定义了 `StaffInfoFormProps` 接口（表单数据相关）
 - **WHEN** 迁移到类型项目
 - **THEN** 在类型文件中创建相同接口
 - **AND** 后续添加 `mode` 字段
+
+#### Scenario: 保留弹框类型在 form.ts
+
+- **GIVEN** form.ts 中定义了弹框相关的 Props 接口（如 `AddFormProps`, `EditFormProps`, `ViewFormProps`）
+- **WHEN** 执行迁移
+- **THEN** 弹框类型接口保留在 form.ts 文件内
+- **AND** 不将弹框类型迁移到类型项目
+- **AND** 弹框类型包括：新增弹框、编辑弹框、查看弹框等相关接口
 
 ---
 
@@ -103,7 +111,7 @@
 
 ## Requirement: JSDoc 注释保留 (Step 4)
 
-系统 SHALL 保留所有类型和字段的 JSDoc 注释。
+系统 SHALL 完整保留所有类型和字段的 JSDoc 注释，**注释丢失视为迁移失败**。
 
 #### Scenario: 类型注释保留
 
@@ -126,6 +134,23 @@
 - **THEN** 使用 `/** ... */` 格式
 - **AND** 保持中英文双语
 
+#### Scenario: 注释完整性验证
+
+- **GIVEN** 完成类型迁移
+- **WHEN** 检查迁移后的类型文件
+- **THEN** 所有原类型都有对应的 JSDoc 注释
+- **AND** 所有原字段都有对应的 JSDoc 注释
+- **AND** 注释内容与原始注释保持一致
+- **AND** 如发现注释丢失，必须重新迁移
+
+#### Scenario: 注释对比验证
+
+- **GIVEN** 迁移前的 form.ts 文件和迁移后的类型文件
+- **WHEN** 逐行对比注释
+- **THEN** 类型注释数量一致
+- **AND** 字段注释数量一致
+- **AND** 注释内容完整保留
+
 ---
 
 ## Requirement: 导入路径更新 (Step 5)
@@ -139,19 +164,29 @@
 - **THEN** 改为 `import type { StaffInfoFormVO } from "@01s-11comm/type"`
 - **AND** 移除本地类型定义
 
-#### Scenario: 更新默认值导入
+#### Scenario: 保留默认值在 form.ts
 
-- **GIVEN** form.ts 中本地定义了 `defaultForm`
-- **WHEN** 更新导入路径
-- **THEN** 改为 `import { defaultStaffInfoForm } from "@01s-11comm/type"`
-- **AND** 保留 `export { defaultStaffInfoForm as defaultForm }`
+- **GIVEN** form.ts 中定义了 `defaultForm`
+- **WHEN** 执行迁移
+- **THEN** `defaultForm` 保持原有定义不变
+- **AND** 不从类型项目导入默认值
+- **AND** `defaultForm` 继续在 form.ts 中导出
 
 #### Scenario: 验证导入路径
 
 - **GIVEN** 更新后的 form.ts 文件
 - **WHEN** 检查导入语句
-- **THEN** 所有类型从 `@01s-11comm/type` 导入
+- **THEN** 所有业务类型从 `@01s-11comm/type` 导入
+- **AND** 弹框类型保留本地定义，不导入
 - **AND** 使用正确的命名导入语法
+
+#### Scenario: 保留弹框类型本地定义
+
+- **GIVEN** form.ts 中的弹框类型（如 `AddFormProps`, `EditFormProps`）
+- **WHEN** 执行迁移
+- **THEN** 弹框类型继续在 form.ts 中本地定义
+- **AND** 不从类型项目导入弹框类型
+- **AND** 弹框类型可以引用已导入的业务类型
 
 ---
 
@@ -308,21 +343,6 @@ export interface FirstPartyFormVO {
 }
 
 /**
- * @description 合同甲方表单默认值
- * Default values for first party form
- */
-export const defaultFirstPartyForm: FirstPartyFormVO = {
-	partyA: "",
-	contactPerson: "",
-	contactPhone: "",
-	address: "",
-	creditCode: "",
-	establishmentDate: "",
-	legalRepresentative: "",
-	businessScope: "",
-};
-
-/**
  * @description 合同甲方表单 props
  * First party form props
  */
@@ -339,23 +359,19 @@ export interface FirstPartyFormProps {
 ### 更新后（form.ts）
 
 ```typescript
-import type { FirstPartyFormVO, FirstPartyFormProps, defaultFirstPartyForm } from "@01s-11comm/type";
+import type { FirstPartyFormVO, FirstPartyFormProps } from "@01s-11comm/type";
 
-/**
- * @description 合同甲方表单 props
- * First party form props
- */
-export interface FirstPartyFormProps {
-	/** 表单数据 Form data */
-	form: FirstPartyFormVO;
-	/** 表单组件重置时默认使用的对象 Default values */
-	defaultValues: FirstPartyFormVO;
-	/** 表单模式 Form mode */
-	mode?: Mode;
-}
-
-/** 对外导出用于其他场景使用 */
-export { defaultFirstPartyForm as defaultForm };
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: FirstPartyFormVO = {
+	partyA: "",
+	contactPerson: "",
+	contactPhone: "",
+	address: "",
+	creditCode: "",
+	establishmentDate: "",
+	legalRepresentative: "",
+	businessScope: "",
+};
 ```
 
 ## 注意事项
@@ -365,6 +381,7 @@ export { defaultFirstPartyForm as defaultForm };
 3. **备份重要**：在迁移前备份原始文件
 4. **文档更新**：及时更新相关文档和注释
 5. **测试验证**：每个阶段完成后进行充分测试
+6. **注释完整性**：**必须确保所有 JSDoc 注释完整保留，注释丢失视为迁移失败**
 
 ## 参考资料
 
