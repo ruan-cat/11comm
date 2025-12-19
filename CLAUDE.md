@@ -51,6 +51,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - 客户端代码： 即 后台项目的 `apps\admin\src` 目录，这个目录下的全部代码，都是`客户端代码`。
 - 服务端代码： 即 后台项目的 `apps\admin\server` 目录，这个目录下的全部代码，都是`服务端代码`。
 
+- 业务路径： 即 `apps\admin\src\router\rank\rank-route-keys.ts` 文件的全部`三级路由`所体现出来的文件路径。被认定为`业务路径`。`类型项目`、`服务端代码`、`后台项目`、`客户端代码`等。都要依赖于业务路径来组织代码。是本项目**非常重要**的路径概念。
+
 ## 代码/编码格式要求
 
 ### 1. markdown 文档的 table 编写格式
