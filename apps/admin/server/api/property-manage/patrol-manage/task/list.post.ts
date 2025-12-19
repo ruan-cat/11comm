@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { TaskListItem, TaskQueryParams } from "@01s-11comm/type";
 import { mockTaskData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockTaskData } from "./mock-data";
  * @description task列表 POST API
  * Task list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<TaskListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<TaskListItem>>> => {
 	const body = await readBody<TaskQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

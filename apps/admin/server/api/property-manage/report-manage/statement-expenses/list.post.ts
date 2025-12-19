@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { StatementExpensesListItem, StatementExpensesQueryParams } from "@01s-11comm/type";
 import { mockStatementExpensesData } from "./mock-data";
@@ -7,18 +7,24 @@ import { mockStatementExpensesData } from "./mock-data";
  * @description statement-expenses列表 POST API
  * StatementExpenses list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<StatementExpensesListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<StatementExpensesListItem>>> => {
 	const body = await readBody<StatementExpensesQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, community, ownerName, expenseType, expenseStatus } = body;
 
 	let filteredData = [...mockStatementExpensesData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (community) {
+		filteredData = filteredData.filter((item) => item.community.includes(community));
 	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
+	if (ownerName) {
+		filteredData = filteredData.filter((item) => item.ownerName.includes(ownerName));
+	}
+	if (expenseType) {
+		filteredData = filteredData.filter((item) => item.expenseType === expenseType);
+	}
+	if (expenseStatus) {
+		filteredData = filteredData.filter((item) => item.expenseStatus === expenseStatus);
 	}
 
 	// 分页处理

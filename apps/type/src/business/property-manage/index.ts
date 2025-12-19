@@ -15,8 +15,12 @@ export type {
 	ParkingSpaceStructureDiagramQueryParams,
 	BuildingSpaceStructureDiagramListItem,
 	BuildingSpaceStructureDiagramQueryParams,
+	BuildingSpaceStructureDiagramFormVO,
+	BuildingSpaceStructureDiagramFormProps,
 	CommunityNoticeListItem,
 	CommunityNoticeQueryParams,
+	CommunityNoticeFormVO,
+	CommunityNoticeFormProps,
 	PropertyRegisterListItem,
 	PropertyRegisterFormVO,
 	PropertyRegisterQueryParams,
@@ -38,6 +42,8 @@ export {
 	buildingOptions,
 	unitOptions,
 	defaultForm,
+	defaultBuildingSpaceStructureDiagramForm,
+	defaultCommunityNoticeForm,
 	feeTypeOptions,
 	feeStatusOptions,
 	businessHandlingStatusOptions,
@@ -45,6 +51,9 @@ export {
 	delayStatusOptions,
 	buildingStructureOptions,
 	buildingStatusOptions,
+	noticeTypeOptions,
+	noticeStatusOptions,
+	列表数据转表单数据,
 } from "./community-manage";
 
 // 房产管理模块

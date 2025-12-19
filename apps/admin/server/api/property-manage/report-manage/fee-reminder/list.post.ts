@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { FeeReminderListItem, FeeReminderQueryParams } from "@01s-11comm/type";
 import { mockFeeReminderData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockFeeReminderData } from "./mock-data";
  * @description fee-reminder列表 POST API
  * FeeReminder list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<FeeReminderListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<FeeReminderListItem>>> => {
 	const body = await readBody<FeeReminderQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

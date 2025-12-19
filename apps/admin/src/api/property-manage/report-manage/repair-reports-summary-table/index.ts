@@ -1,5 +1,5 @@
 /**
- * @file repair-reports-summary-table API Hook
+ * @file 报修汇总表 API Hook
  * @description RepairReportsSummaryTable API hooks using TanStack Query
  */
 
@@ -13,7 +13,7 @@ const API_URL = "/api/property-manage/report-manage/repair-reports-summary-table
 const QUERY_KEY_PREFIX = "repairReportsSummaryTable";
 
 /**
- * repair-reports-summary-table列表查询 Hook
+ * 报修汇总表列表查询 Hook
  * RepairReportsSummaryTable list query hook
  * @param initialParams - Initial query parameters for filtering the list
  */

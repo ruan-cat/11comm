@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams } from "@01s-11comm/type";
 import { mockExpenseSummaryTableData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockExpenseSummaryTableData } from "./mock-data";
  * @description 费用汇总表列表 POST API
  * ExpenseSummaryTable list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ExpenseSummaryTableListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseSummaryTableListItem>>> => {
 	const body = await readBody<ExpenseSummaryTableQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, time, expenseItemId, expenseItemName, status } = body;
 

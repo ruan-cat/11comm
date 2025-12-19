@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type";
 import { mockHouseData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockHouseData } from "./mock-data";
  * @description 房屋管理列表 POST API
  * House list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem>>> => {
 	const body = await readBody<HouseQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, houseCode, houseStatus, houseType } = body;
 

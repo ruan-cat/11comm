@@ -1,24 +1,34 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { RepairReportsSummaryTableListItem, RepairReportsSummaryTableQueryParams } from "@01s-11comm/type";
 import { mockRepairReportsSummaryTableData } from "./mock-data";
 
 /**
- * @description repair-reports-summary-table列表 POST API
- * RepairReportsSummaryTable list POST API
+ * @description 报修汇总表列表 POST API
+ * Repair reports summary table list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<RepairReportsSummaryTableListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReportsSummaryTableListItem>>> => {
 	const body = await readBody<RepairReportsSummaryTableQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, repairType, repairStatus, urgencyLevel, community, statisticsStartTime, statisticsEndTime } = body;
 
 	let filteredData = [...mockRepairReportsSummaryTableData];
 
 	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
+	if (repairType) {
+		filteredData = filteredData.filter((item) => item.repairType === repairType);
 	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
+
+	if (community) {
+		filteredData = filteredData.filter((item) => item.community === community);
+	}
+
+	if (statisticsStartTime && statisticsEndTime) {
+		filteredData = filteredData.filter((item) => {
+			const itemTime = new Date(item.statisticsTime).getTime();
+			const startTime = new Date(statisticsStartTime).getTime();
+			const endTime = new Date(statisticsEndTime).getTime();
+			return itemTime >= startTime && itemTime <= endTime;
+		});
 	}
 
 	// 分页处理

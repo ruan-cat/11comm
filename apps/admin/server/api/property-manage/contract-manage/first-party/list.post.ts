@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { FirstPartyListItem, FirstPartyQueryParams } from "@01s-11comm/type";
 import { mockFirstPartyData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockFirstPartyData } from "./mock-data";
  * @description first-party列表 POST API
  * FirstParty list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<FirstPartyListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<FirstPartyListItem>>> => {
 	const body = await readBody<FirstPartyQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, partyA, contactPerson, contactPhone, legalRepresentative, status } = body;
 

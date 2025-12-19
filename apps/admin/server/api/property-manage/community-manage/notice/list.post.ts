@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { mockCommunityNoticeData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockCommunityNoticeData } from "./mock-data";
  * @description 小区公示列表 POST API
  * Community notice list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<CommunityNoticeListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityNoticeListItem>>> => {
 	const body = await readBody<CommunityNoticeQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, noticeTitle, noticeType } = body;
 

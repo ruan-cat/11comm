@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PropertyRegisterListItem, PropertyRegisterQueryParams } from "@01s-11comm/type";
 import { mockPropertyRegisterData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockPropertyRegisterData } from "./mock-data";
  * @description property-register列表 POST API
  * PropertyRegister list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PropertyRegisterListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<PropertyRegisterListItem>>> => {
 	const body = await readBody<PropertyRegisterQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, houseId, houseNumber, ownerName, contactInfo, idCardNumber, address, status } = body;
 

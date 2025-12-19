@@ -1,0 +1,73 @@
+import type { TemplateListItem } from "@01s-11comm/type";
+
+/**
+ * 合同模板模拟数据
+ * Template mock data
+ */
+export const mockTemplateData: TemplateListItem[] = [
+	{
+		id: "1",
+		templateName: "标准采购合同模板",
+		templateNumber: "MB-2024-001",
+		applicableContractType: "采购合同",
+		templateVersion: "V1.0",
+		templateDescription: "适用于一般物资采购的标准合同模板",
+		status: "启用",
+		createTime: "2024-01-01 10:00:00",
+		updateTime: "2024-06-01 10:00:00",
+		creator: "管理员",
+		usageCount: 128,
+	},
+	{
+		id: "2",
+		templateName: "物业服务合同模板",
+		templateNumber: "MB-2024-002",
+		applicableContractType: "服务合同",
+		templateVersion: "V2.1",
+		templateDescription: "适用于物业管理服务的合同模板",
+		status: "启用",
+		createTime: "2024-01-05 11:00:00",
+		updateTime: "2024-08-15 14:00:00",
+		creator: "管理员",
+		usageCount: 56,
+	},
+	{
+		id: "3",
+		templateName: "设备租赁合同模板",
+		templateNumber: "MB-2024-003",
+		applicableContractType: "租赁合同",
+		templateVersion: "V1.2",
+		templateDescription: "适用于各类设备租赁的合同模板",
+		status: "启用",
+		createTime: "2024-02-01 09:00:00",
+		updateTime: "2024-07-20 16:00:00",
+		creator: "李四",
+		usageCount: 34,
+	},
+	{
+		id: "4",
+		templateName: "技术服务合同模板",
+		templateNumber: "MB-2024-004",
+		applicableContractType: "技术合同",
+		templateVersion: "V1.0",
+		templateDescription: "适用于技术开发、技术咨询等服务",
+		status: "禁用",
+		createTime: "2024-03-01 10:00:00",
+		updateTime: "2024-03-01 10:00:00",
+		creator: "王五",
+		usageCount: 12,
+	},
+	{
+		id: "5",
+		templateName: "劳动合同模板",
+		templateNumber: "MB-2024-005",
+		applicableContractType: "劳动合同",
+		templateVersion: "V3.0",
+		templateDescription: "适用于员工劳动合同签订",
+		status: "草稿",
+		createTime: "2024-12-01 10:00:00",
+		updateTime: "2024-12-15 11:00:00",
+		creator: "管理员",
+		usageCount: 0,
+	},
+];

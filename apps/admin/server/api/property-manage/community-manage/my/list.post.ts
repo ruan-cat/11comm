@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { MyCommunityListItem, MyCommunityQueryParams } from "@01s-11comm/type";
 import { mockMyData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockMyData } from "./mock-data";
  * @description my列表 POST API
  * My list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MyCommunityListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<MyCommunityListItem>>> => {
 	const body = await readBody<MyCommunityQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, communityName, status, province, city, district, communityCode } = body;
 

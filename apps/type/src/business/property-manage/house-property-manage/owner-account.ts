@@ -1,33 +1,43 @@
 import type { OptionsType } from "../../../common";
 
 /**
- * @description owner-account列表数据
+ * @description 业主账户列表数据
  * OwnerAccount list item
  */
 export interface OwnerAccountListItem {
-	/** ID */
-	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 账户编号 Account number */
+	accountNo: string;
+	/** 账户名称 Account name */
+	accountName: string;
+	/** 身份证号 ID card */
+	idCard: string;
+	/** 手机号 Phone */
+	phone: string;
+	/** 账户类型 Account type */
+	accountType: string;
+	/** 账户金额 Account balance */
+	accountBalance: string;
+	/** 扣款房号 Deduct house number */
+	deductHouseNo: string;
 	/** 创建时间 Create time */
 	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
 	/** 备注 Remark */
 	remark?: string;
 }
 
 /**
- * @description owner-account列表查询参数
+ * @description 业主账户列表查询参数
  * OwnerAccount list query parameters
  */
 export interface OwnerAccountQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 账户名称 Account name */
+	accountName?: string;
+	/** 身份证号 ID card */
+	idCard?: string;
+	/** 手机号 Phone */
+	phone?: string;
+	/** 账户类型 Account type */
+	accountType?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */
@@ -57,14 +67,39 @@ export interface OwnerAccountFormVO {
 }
 
 /**
+ * @description 业主账户表单VO
+ * Owner account form VO
+ */
+export interface OwnerAccountFormVO {
+	/** 账户类型 Account type */
+	accountType: string;
+	/** 业主手机 Owner phone */
+	ownerPhone: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 预存金额 Prepaid amount */
+	prepaidAmount: string;
+	/** 支付方式 Payment method */
+	paymentMethod: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/**
  * @description 业主账户表单VO（兼容性中文名称）
  * Owner account form VO (for compatibility with Chinese names)
  */
 export interface 业主账户表单_VO {
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 账户类型 Account type */
+	accountType: string;
+	/** 业主手机 Owner phone */
+	ownerPhone: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 预存金额 Prepaid amount */
+	prepaidAmount: string;
+	/** 支付方式 Payment method */
+	paymentMethod: string;
 	/** 备注 Remark */
 	remark: string;
 }
@@ -74,6 +109,7 @@ export interface 业主账户表单_VO {
  * Account type options
  */
 export const accountTypeOptions: OptionsType = [
+	{ label: "通用账户", value: "通用账户" },
 	{ label: "微信", value: "微信" },
 	{ label: "支付宝", value: "支付宝" },
 	{ label: "银行卡", value: "银行卡" },
@@ -97,7 +133,10 @@ export const paymentMethodOptions: OptionsType = [
  * Owner account form default values
  */
 export const ownerAccountDefaultForm: 业主账户表单_VO = {
-	name: "",
-	status: "启用",
+	accountType: "通用账户",
+	ownerPhone: "",
+	ownerName: "",
+	prepaidAmount: "",
+	paymentMethod: "现金",
 	remark: "",
 };

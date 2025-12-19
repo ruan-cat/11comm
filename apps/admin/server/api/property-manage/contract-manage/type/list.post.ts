@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { TypeListItem, TypeQueryParams } from "@01s-11comm/type";
 import { mockTypeData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockTypeData } from "./mock-data";
  * @description type列表 POST API
  * Type list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<TypeListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<TypeListItem>>> => {
 	const body = await readBody<TypeQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, typeName, isAudit, status } = body;
 

@@ -1,0 +1,73 @@
+import type { PrintListItem } from "@01s-11comm/type";
+
+/**
+ * 合同打印模拟数据
+ * Print mock data
+ */
+export const mockPrintData: PrintListItem[] = [
+	{
+		id: "1",
+		contractName: "2024年度办公用品采购合同",
+		contractNumber: "HT-2024-001",
+		contractType: "采购合同",
+		partyA: "某某物业公司",
+		partyB: "某某供应商有限公司",
+		printCount: 3,
+		lastPrintTime: "2024-12-15 10:00:00",
+		lastPrinter: "张三",
+		printStatus: "已打印",
+		createTime: "2024-01-01 10:00:00",
+	},
+	{
+		id: "2",
+		contractName: "物业服务合同",
+		contractNumber: "HT-2024-002",
+		contractType: "服务合同",
+		partyA: "某某地产开发公司",
+		partyB: "某某物业公司",
+		printCount: 5,
+		lastPrintTime: "2024-12-10 14:00:00",
+		lastPrinter: "李四",
+		printStatus: "已打印",
+		createTime: "2024-01-01 10:00:00",
+	},
+	{
+		id: "3",
+		contractName: "电梯维保合同",
+		contractNumber: "HT-2024-003",
+		contractType: "服务合同",
+		partyA: "某某物业公司",
+		partyB: "某某电梯公司",
+		printCount: 0,
+		lastPrintTime: "",
+		lastPrinter: "",
+		printStatus: "未打印",
+		createTime: "2024-03-01 09:00:00",
+	},
+	{
+		id: "4",
+		contractName: "绿化养护合同",
+		contractNumber: "HT-2024-011",
+		contractType: "服务合同",
+		partyA: "某某物业公司",
+		partyB: "某某园林公司",
+		printCount: 1,
+		lastPrintTime: "2024-12-18 16:30:00",
+		lastPrinter: "王五",
+		printStatus: "打印中",
+		createTime: "2024-06-01 10:00:00",
+	},
+	{
+		id: "5",
+		contractName: "安保服务合同",
+		contractNumber: "HT-2024-004",
+		contractType: "服务合同",
+		partyA: "某某物业公司",
+		partyB: "某某保安公司",
+		printCount: 2,
+		lastPrintTime: "2024-11-20 11:00:00",
+		lastPrinter: "赵六",
+		printStatus: "已打印",
+		createTime: "2024-01-01 10:00:00",
+	},
+];

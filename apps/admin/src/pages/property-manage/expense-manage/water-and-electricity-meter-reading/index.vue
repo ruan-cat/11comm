@@ -10,7 +10,7 @@ definePage({
 
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type 水电抄表表单_VO } from "./components/form";
+import { type WaterAndElectricityMeterReadingFormProps, defaultForm, type WaterAndElectricityMeterReadingFormVO } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
 import { useWaterAndElectricityMeterReadingListQuery } from "@/api/property-manage/expense-manage/water-and-electricity-meter-reading";
 import type {
@@ -184,7 +184,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	const title = `${modeText.value}水电抄表`;
 
-	const formData: 水电抄表表单_VO = isAdd.value
+	const formData: WaterAndElectricityMeterReadingFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({

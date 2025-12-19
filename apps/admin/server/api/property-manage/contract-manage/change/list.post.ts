@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { ChangeListItem, ChangeQueryParams } from "@01s-11comm/type";
 import { mockChangeData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockChangeData } from "./mock-data";
  * @description change列表 POST API
  * Change list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ChangeListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ChangeListItem>>> => {
 	const body = await readBody<ChangeQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, contractName, contractNumber, contractType, status } = body;
 

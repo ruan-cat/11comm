@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { OwnerInformationListItem, OwnerInformationQueryParams } from "@01s-11comm/type";
 import { mockOwnerInformationData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockOwnerInformationData } from "./mock-data";
  * @description owner-information列表 POST API
  * OwnerInformation list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformationListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformationListItem>>> => {
 	const body = await readBody<OwnerInformationQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

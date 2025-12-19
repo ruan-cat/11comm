@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { WaterAndElectricityMeterReadingFormProps, type 水电抄表表单_VO } from "./form";
+import { WaterAndElectricityMeterReadingFormProps, type WaterAndElectricityMeterReadingFormVO } from "./form";
 
 const props = defineProps<WaterAndElectricityMeterReadingFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 水电抄表表单_VO;
+const defaultValues = props.defaultValues as FieldValues & WaterAndElectricityMeterReadingFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 水电抄表表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & WaterAndElectricityMeterReadingFormVO;
 
 /**
  * 表单对象
@@ -38,7 +38,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 费用类型
 	{
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "expenseType",
 		valueType: "select",
 		options: [
 			{ label: "水费", value: "水费" },
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 收费项目
 	{
 		label: "收费项目",
-		prop: "收费项目",
+		prop: "chargeItem",
 		valueType: "select",
 		options: [
 			{ label: "水表", value: "水表" },
@@ -68,7 +68,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 抄表类型
 	{
 		label: "抄表类型",
-		prop: "抄表类型",
+		prop: "meterReadingType",
 		valueType: "select",
 		options: [
 			{ label: "水表", value: "水表" },
@@ -83,7 +83,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 收费对象
 	{
 		label: "收费对象",
-		prop: "收费对象",
+		prop: "chargeObject",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -94,7 +94,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 上期度数
 	{
 		label: "上期度数",
-		prop: "上期度数",
+		prop: "lastReading",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -105,7 +105,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 本期度数
 	{
 		label: "本期度数",
-		prop: "本期度数",
+		prop: "currentReading",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -116,7 +116,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 上期读表时间
 	{
 		label: "上期读表时间",
-		prop: "上期读表时间",
+		prop: "lastReadingTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -129,7 +129,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 本期读表时间
 	{
 		label: "本期读表时间",
-		prop: "本期读表时间",
+		prop: "currentReadingTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -142,7 +142,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -157,23 +157,23 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
-	收费项目: [{ required: true, message: "请选择收费项目", trigger: "change" }],
-	抄表类型: [{ required: true, message: "请选择抄表类型", trigger: "change" }],
-	收费对象: [
+	expenseType: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	chargeItem: [{ required: true, message: "请选择收费项目", trigger: "change" }],
+	meterReadingType: [{ required: true, message: "请选择抄表类型", trigger: "change" }],
+	chargeObject: [
 		{ required: true, message: "请输入收费对象", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" } as any,
 	],
-	上期度数: [
+	lastReading: [
 		{ required: true, message: "请输入上期度数", trigger: "blur" },
 		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" } as any,
 	],
-	本期度数: [
+	currentReading: [
 		{ required: true, message: "请输入本期度数", trigger: "blur" },
 		{ pattern: /^\d+$/, message: "请输入有效的数字", trigger: "blur" } as any,
 	],
-	上期读表时间: [{ required: true, message: "请选择上期读表时间", trigger: "change" }],
-	本期读表时间: [{ required: true, message: "请选择本期读表时间", trigger: "change" }],
+	lastReadingTime: [{ required: true, message: "请选择上期读表时间", trigger: "change" }],
+	currentReadingTime: [{ required: true, message: "请选择本期读表时间", trigger: "change" }],
 });
 
 defineExpose({

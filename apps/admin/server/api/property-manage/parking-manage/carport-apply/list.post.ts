@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { CarportApplyListItem, CarportApplyQueryParams } from "@01s-11comm/type";
 import { mockCarportApplyData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockCarportApplyData } from "./mock-data";
  * @description carport-apply列表 POST API
  * CarportApply list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<CarportApplyListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportApplyListItem>>> => {
 	const body = await readBody<CarportApplyQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

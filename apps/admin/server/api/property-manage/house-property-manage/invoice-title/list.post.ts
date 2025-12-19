@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { InvoiceTitleListItem, InvoiceTitleQueryParams } from "@01s-11comm/type";
 import { mockInvoiceTitleData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockInvoiceTitleData } from "./mock-data";
  * @description invoice-title列表 POST API
  * InvoiceTitle list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<InvoiceTitleListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceTitleListItem>>> => {
 	const body = await readBody<InvoiceTitleQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

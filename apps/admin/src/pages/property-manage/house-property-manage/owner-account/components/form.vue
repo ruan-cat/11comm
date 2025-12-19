@@ -37,7 +37,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "账户类型",
-		prop: "账户类型",
+		prop: "accountType",
 		valueType: "select",
 		options: accountTypeOptions,
 		fieldProps: {
@@ -46,7 +46,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "业主手机",
-		prop: "业主手机",
+		prop: "ownerPhone",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入业主手机号",
@@ -54,7 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入业主名称",
@@ -62,7 +62,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "预存金额",
-		prop: "预存金额",
+		prop: "prepaidAmount",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入预存金额",
@@ -70,7 +70,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "支付方式",
-		prop: "支付方式",
+		prop: "paymentMethod",
 		valueType: "select",
 		options: paymentMethodOptions,
 		fieldProps: {
@@ -79,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
 			placeholder: "请输入备注信息",
@@ -90,14 +90,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	账户类型: [
+	accountType: [
 		{
 			required: true,
 			message: "请选择账户类型",
 			trigger: "change",
 		},
 	],
-	业主手机: [
+	ownerPhone: [
 		{
 			required: true,
 			message: "请输入业主手机号",
@@ -109,14 +109,14 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	业主名称: [
+	ownerName: [
 		{
 			required: true,
 			message: "请输入业主名称",
 			trigger: "blur",
 		},
 	],
-	预存金额: [
+	prepaidAmount: [
 		{
 			required: true,
 			message: "请输入预存金额",

@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { DetailListItem, DetailQueryParams } from "@01s-11comm/type";
 import { mockDetailData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockDetailData } from "./mock-data";
  * @description detail列表 POST API
  * Detail list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<DetailListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<DetailListItem>>> => {
 	const body = await readBody<DetailQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

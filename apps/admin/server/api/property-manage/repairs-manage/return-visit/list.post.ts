@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { ReturnVisitListItem, ReturnVisitQueryParams } from "@01s-11comm/type";
 import { mockReturnVisitData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockReturnVisitData } from "./mock-data";
  * @description return-visit列表 POST API
  * ReturnVisit list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitListItem>>> => {
 	const body = await readBody<ReturnVisitQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams } from "@01s-11comm/type";
 import { mockMandatoryReturnIssueData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockMandatoryReturnIssueData } from "./mock-data";
  * @description mandatory-return-issue列表 POST API
  * MandatoryReturnIssue list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MandatoryReturnIssueListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<MandatoryReturnIssueListItem>>> => {
 	const body = await readBody<MandatoryReturnIssueQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

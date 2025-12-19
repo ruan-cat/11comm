@@ -2,33 +2,37 @@ import type { OptionsType } from "../../../common";
 import { meterTypeOptions } from "../../../common/business-options";
 
 /**
- * @description water-and-electricity-meter-reading列表数据
- * WaterAndElectricityMeterReading list item
+ * @description 水电抄表列表数据
+ * Water and electricity meter reading list item
  */
 export interface WaterAndElectricityMeterReadingListItem {
-	/** ID */
-	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 表ID Meter ID */
+	meterId: string;
+	/** 表类型 Meter type */
+	meterType: string;
+	/** 对象名称 Object name */
+	objectName: string;
+	/** 上期度数 Last reading */
+	lastReading: string;
+	/** 本期度数 Current reading */
+	currentReading: string;
+	/** 上期读表时间 Last reading time */
+	lastReadingTime: string;
+	/** 本期读表时间 Current reading time */
+	currentReadingTime: string;
 	/** 创建时间 Create time */
 	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
-	/** 备注 Remark */
-	remark?: string;
 }
 
 /**
- * @description water-and-electricity-meter-reading列表查询参数
- * WaterAndElectricityMeterReading list query parameters
+ * @description 水电抄表列表查询参数
+ * Water and electricity meter reading list query parameters
  */
 export interface WaterAndElectricityMeterReadingQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 表类型 Meter type */
+	meterType?: string;
+	/** 表ID Meter ID */
+	meterId?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */

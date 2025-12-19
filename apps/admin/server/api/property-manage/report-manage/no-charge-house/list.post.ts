@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { NoChargeHouseListItem, NoChargeHouseQueryParams } from "@01s-11comm/type";
 import { mockNoChargeHouseData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockNoChargeHouseData } from "./mock-data";
  * @description no-charge-house列表 POST API
  * NoChargeHouse list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<NoChargeHouseListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<NoChargeHouseListItem>>> => {
 	const body = await readBody<NoChargeHouseQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { OutstandingFeesAnalysisListItem, OutstandingFeesAnalysisQueryParams } from "@01s-11comm/type";
 import { mockOutstandingFeesAnalysisData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockOutstandingFeesAnalysisData } from "./mock-data";
  * @description outstanding-fees-analysis列表 POST API
  * OutstandingFeesAnalysis list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFeesAnalysisListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFeesAnalysisListItem>>> => {
 	const body = await readBody<OutstandingFeesAnalysisQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

@@ -1,5 +1,5 @@
 /**
- * @file owner-account API Hook
+ * @file 业主账户 API Hook
  * @description OwnerAccount API hooks using TanStack Query
  */
 
@@ -13,9 +13,8 @@ const API_URL = "/api/property-manage/house-property-manage/owner-account/list";
 const QUERY_KEY_PREFIX = "ownerAccount";
 
 /**
- * owner-account列表查询 Hook
+ * 业主账户列表查询 Hook
  * OwnerAccount list query hook
- * @param initialParams - Initial query parameters for filtering the list
  */
 export function useOwnerAccountListQuery(initialParams: Partial<OwnerAccountQueryParams>) {
 	return useListQuery<OwnerAccountListItem, OwnerAccountQueryParams>({

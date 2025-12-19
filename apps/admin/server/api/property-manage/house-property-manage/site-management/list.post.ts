@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { SiteManagementListItem, SiteManagementQueryParams } from "@01s-11comm/type";
 import { mockSiteManagementData } from "./mock-data";
@@ -7,7 +7,7 @@ import { mockSiteManagementData } from "./mock-data";
  * @description site-management列表 POST API
  * SiteManagement list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<SiteManagementListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<SiteManagementListItem>>> => {
 	const body = await readBody<SiteManagementQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 

@@ -20,8 +20,8 @@ export * from "./reprint-voucher";
 export * from "./vehicle-charge";
 export * from "./water-and-electricity-meter-reading";
 
-// 导出业务选项
-export { expenseTypeOptions, expenseItemOptions, auditStatusOptions } from "../../../common/business-options";
+// 导出业务选项 - 使用本地定义的版本避免重复
+export { auditStatusOptions } from "../../../common/business-options";
 export { refundReasonOptions, reminderMethodOptions, reminderStatusOptions } from "../../../common/business-options";
 export { parkingSpaceStatusOptions, meterTypeOptions } from "../../../common/business-options";
 

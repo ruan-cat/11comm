@@ -1,0 +1,71 @@
+import type { AttachmentListItem } from "@01s-11comm/type";
+
+/**
+ * 合同附件模拟数据
+ * Attachment mock data
+ */
+export const mockAttachmentData: AttachmentListItem[] = [
+	{
+		id: "1",
+		attachmentName: "采购合同正本扫描件",
+		contractNumber: "HT-2024-001",
+		contractName: "2024年度办公用品采购合同",
+		attachmentType: "合同正本",
+		fileSize: "2.5MB",
+		fileFormat: "PDF",
+		uploader: "张三",
+		uploadTime: "2024-01-02 10:00:00",
+		status: "正常",
+		remark: "已盖章扫描件",
+	},
+	{
+		id: "2",
+		attachmentName: "营业执照复印件",
+		contractNumber: "HT-2024-001",
+		contractName: "2024年度办公用品采购合同",
+		attachmentType: "资质证明",
+		fileSize: "1.2MB",
+		fileFormat: "PDF",
+		uploader: "张三",
+		uploadTime: "2024-01-02 10:05:00",
+		status: "正常",
+	},
+	{
+		id: "3",
+		attachmentName: "物业服务合同副本",
+		contractNumber: "HT-2024-002",
+		contractName: "物业服务合同",
+		attachmentType: "合同副本",
+		fileSize: "3.8MB",
+		fileFormat: "PDF",
+		uploader: "李四",
+		uploadTime: "2024-01-05 14:00:00",
+		status: "正常",
+		remark: "乙方存档副本",
+	},
+	{
+		id: "4",
+		attachmentName: "补充协议-付款方式变更",
+		contractNumber: "HT-2024-002",
+		contractName: "物业服务合同",
+		attachmentType: "补充协议",
+		fileSize: "0.8MB",
+		fileFormat: "PDF",
+		uploader: "李四",
+		uploadTime: "2024-06-15 09:00:00",
+		status: "正常",
+	},
+	{
+		id: "5",
+		attachmentName: "授权委托书",
+		contractNumber: "HT-2024-003",
+		contractName: "电梯维保合同",
+		attachmentType: "授权文件",
+		fileSize: "0.5MB",
+		fileFormat: "PDF",
+		uploader: "王五",
+		uploadTime: "2024-03-01 11:00:00",
+		status: "已删除",
+		remark: "已更新新版本",
+	},
+];
