@@ -346,6 +346,12 @@ openspec validate migrate-static-data-to-nitro-query --strict
 2. 阅读 `RANK_ROUTE_KEYS` 数组暴露出来的 `三级路由` ，根据三级路由的路径，明确清楚在 `apps\admin\src\api` 目录应该检索那些文件并修改，避免出现检索范围过大的情况。
 3. 根据 `三级路由` 展现出来的文件结构，设计 tasks.md 任务列表文件。
 
+---
+
+#### <!-- TODO: 长期使用 直到完成 --> 提示词
+
+/openspec:apply 执行 `fix-api-hooks-missing-initial-params` 任务；请及时的更新 tasks.md 任务进度文件；请连续的，持续的运行，直到全部的任务都处理完毕。不要完成一个任务后就停下来询问我；请使用中文回复；
+
 ### 13 批量的针对性改写现存的 index.vue 列表页代码写法
 
 你的任务是：在 openspec 的帮助下，新建一个满足 openspec 规范的任务清单、任务规范等。新建修复类型故障的，openspec 长任务。
@@ -357,3 +363,9 @@ openspec validate migrate-static-data-to-nitro-query --strict
 3. 根据 `三级路由` 展现出来的文件结构，设计 tasks.md 任务列表文件。设计代码批量改写改造的任务。
    - 确保对 api hooks 的使用满足类型约束，没有故障。
    - 确保代码写法格式满足要求。
+
+---
+
+#### <!-- TODO: 长期使用 直到完成 --> 提示词
+
+/openspec:apply 执行 `fix-list-pages-code-patterns` 任务；请及时的更新 tasks.md 任务进度文件；请连续的，持续的运行，直到全部的任务都处理完毕。不要完成一个任务后就停下来询问我；请使用中文回复；
