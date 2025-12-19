@@ -260,6 +260,13 @@ import type { FieldValues } from "plus-pro-components";
 import type { TableColumnList } from "@pureadmin/table";
 ```
 
+### 错误导入全局类型 PureTableBarProps
+
+```ts
+// 该写法是错误的 不应该去任何模块导入 PureTableBarProps 类型。 不应该去任何 `@pureadmin` 模块内导入该类型
+import type { PureTableBarProps } from "@pureadmin/table";
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
