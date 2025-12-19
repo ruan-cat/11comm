@@ -1,681 +1,243 @@
-# 将全部后台项目的 form.ts 文件做迁移重构 - 任务清单
-
-## 任务概述
-
-本任务清单详细列出了将后台项目所有 form.ts 文件迁移到类型项目的具体工作项。任务按模块分组，确保全面覆盖所有三级路由对应的文件。
-
-## 执行顺序
-
-### 准备阶段
-
-1. **建立工作目录结构**
-   - [ ] 创建 `apps/type/src/business/` 下各模块目录
-   - [ ] 验证目录结构与 `RANK_ROUTE_KEYS` 对应关系
-
-2. **分析现有文件**
-   - [ ] 扫描所有 form.ts 文件，建立文件清单
-   - [ ] 识别需要迁移的业务类型
-   - [ ] 识别需要迁移的公共选项
-
-### 阶段一：业务类型迁移（按模块执行）
-
-#### 1.1 setting-manage 模块（12 个三级路由）
-
-**1.1.1 setting-manage/organize-manage（7 个）**
-- [ ] `setting-manage/organize-manage/staff-info/components/form.ts`
-  - [ ] 迁移 `StaffInfoFormVO` 到 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts`
-  - [ ] 更新 form.ts 导入 `@01s-11comm/type`
-  - [ ] 添加 `mode?: Mode` 字段到 `StaffInfoFormProps`
-
-- [ ] `setting-manage/organize-manage/org-info/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/organize-manage/working-schedule/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/organize-manage/scheduling-setting/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/organize-manage/shift-setting/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/organize-manage/role-permission/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/organize-manage/data-permission/unit-auth/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.1.2 setting-manage/system-manage（5 个）**
-- [ ] `setting-manage/system-manage/change-password/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/system-manage/system-config/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/system-manage/register-protocol/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/system-manage/initialize-cell/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `setting-manage/system-manage/community-configuration/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-#### 1.2 dev-team 模块（8 个三级路由）
-
-**1.2.1 dev-team/menu-manage（3 个）**
-- [ ] `dev-team/menu-manage/catalog/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `dev-team/menu-manage/group/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `dev-team/menu-manage/item/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.2.2 dev-team/cache-manage（1 个）**
-- [ ] `dev-team/cache-manage/refresh-cache/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.2.3 dev-team/config-manage（4 个）**
-- [ ] `dev-team/config-manage/type/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `dev-team/config-manage/item/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `dev-team/config-manage/dictionary/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `dev-team/config-manage/center/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-#### 1.3 operation-team 模块（12 个三级路由）
-
-**1.3.1 operation-team/system-manage（5 个）**
-- [ ] `operation-team/system-manage/change-password/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/system-manage/system-config/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/system-manage/register-protocol/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/system-manage/initialize-cell/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/system-manage/community-configuration/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.3.2 operation-team/data-manage（2 个）**
-- [ ] `operation-team/data-manage/community-information/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/data-manage/property-management-company/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.3.3 operation-team/merchant-manage（2 个）**
-- [ ] `operation-team/merchant-manage/merchant-info/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/merchant-manage/merchant-admin/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.3.4 operation-team/report-configuration（3 个）**
-- [ ] `operation-team/report-configuration/report-group/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/report-configuration/report-info/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `operation-team/report-configuration/report-component/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-#### 1.4 property-manage 模块（57 个三级路由）
-
-**1.4.1 property-manage/community-manage（7 个）**
-- [ ] `property-manage/community-manage/house-decoration/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/community-manage/building-space-structure-diagram/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/community-manage/notice/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/community-manage/property-register/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/community-manage/handing-business/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/community-manage/my/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/community-manage/parking-space-structure-diagram/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.4.2 property-manage/contract-manage（5 个）**
-- [ ] `property-manage/contract-manage/change/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/contract-manage/draft-contract/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/contract-manage/expire/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/contract-manage/first-party/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/contract-manage/type/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.4.3 property-manage/expense-manage（16 个）**
-- [ ] `property-manage/expense-manage/water-and-electricity-meter-reading/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/vehicle-charge/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/reminder-for-overdue-payments/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/reprint-voucher/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/overdue-payment-information/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/payment-review/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/refund-review/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/house-charge/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/meter-reading-type/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/discount-type/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/expense-summary-table/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/discount-apply/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/discount-setting/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/contracte-charge/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/expense-item-setting/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/expense-manage/cancel-fee/components/form.ts`
-  - [ ] 迁移业务类型（注意：此文件已部分迁移，需检查）
-  - [ ] 更新导入
-  - [ ] 验证 `mode` 字段已存在
-
-**1.4.4 property-manage/house-property-manage（10 个）**
-- [ ] `property-manage/house-property-manage/house/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/invoice/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/invoice-title/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/owner-account/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/owner-information/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/owner-member/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/owners-committee/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/reserve-venue/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/reserve-venue-order/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/house-property-manage/site-management/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.4.5 property-manage/parking-manage（4 个）**
-- [ ] `property-manage/parking-manage/carport-apply/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/parking-manage/carport-info/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/parking-manage/owner-vehicle/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/parking-manage/parking-lot/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.4.6 property-manage/patrol-manage（6 个）**
-- [ ] `property-manage/patrol-manage/detail/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/patrol-manage/item/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/patrol-manage/path/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/patrol-manage/plan/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/patrol-manage/point/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/patrol-manage/task/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.4.7 property-manage/repairs-manage（7 个）**
-- [ ] `property-manage/repairs-manage/issues/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/repairs-manage/mandatory-return-issue/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/repairs-manage/phone-report-repairs/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/repairs-manage/repairs-have-done/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/repairs-manage/repairs-setting/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/repairs-manage/repairs-todo/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/repairs-manage/return-visit/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-**1.4.8 property-manage/report-manage（12 个）**
-- [ ] `property-manage/report-manage/arrears-details-list/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/data-statistics/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/deposit-report/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/expense-summary-table/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/fee-reminder/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/no-charge-house/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/outstanding-fees-analysis/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/owner-payment-details/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/patrol-report/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/payment-details-form/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/repair-report-form/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/repair-reports-summary-table/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-- [ ] `property-manage/report-manage/statement-expenses/components/form.ts`
-  - [ ] 迁移业务类型
-  - [ ] 更新导入
-  - [ ] 添加 `mode` 字段
-
-### 阶段二：公共选项迁移
-
-2. **识别重复选项**
-   - [ ] 扫描所有 form.ts 文件中的选项数组
-   - [ ] 建立重复选项清单
-   - [ ] 确认公共选项列表
-
-3. **迁移到 business-options.ts**
-   - [ ] 将识别的公共选项迁移到 `apps/type/src/common/business-options.ts`
-   - [ ] 为每个选项添加 JSDoc 注释
-   - [ ] 更新选项数组变量名为英文
-
-4. **更新引用**
-   - [ ] 更新所有 form.ts 文件中的选项引用
-   - [ ] 从 `@01s-11comm/type` 导入公共选项
-   - [ ] 删除本地重复定义
-
-### 阶段三：类型项目集成
-
-5. **更新类型项目导出**
-   - [ ] 更新 `apps/type/src/business/*/index.ts` 文件
-   - [ ] 导出所有新迁移的类型
-   - [ ] 更新 `apps/type/src/index.ts` 文件
-
-6. **验证类型项目**
-   - [ ] 运行 `pnpm -F @01s-11comm/type typecheck`
-   - [ ] 修复类型检查错误
-   - [ ] 确保所有导出正确
-
-### 阶段四：Admin 项目更新
-
-7. **更新 form.ts 导入**
-   - [ ] 更新所有 form.ts 文件导入路径
-   - [ ] 从 `@01s-11comm/type` 导入类型
-   - [ ] 移除本地类型定义
-
-8. **添加 mode 字段**
-   - [ ] 为所有 Props 接口添加 `mode?: Mode` 字段
-   - [ ] 添加 JSDoc 注释：`/** 表单模式 */`
-   - [ ] 验证类型检查通过
-
-### 阶段五：验证与测试
-
-9. **类型检查**
-   - [ ] 运行 `pnpm -F @01s-11comm/admin typecheck`
-   - [ ] 修复所有类型错误
-   - [ ] 确保无类型报错
-
-10. **代码审查**
-    - [ ] 检查所有迁移文件的命名规范
-    - [ ] 验证 JSDoc 注释完整性
-    - [ ] 确认导入路径正确性
-
-11. **功能测试**
-    - [ ] 启动 Admin 项目
-    - [ ] 测试各个页面的表单功能
-    - [ ] 验证下拉选项显示正确
-
-### 阶段六：文档与总结
-
-12. **更新文档**
-    - [ ] 更新 `apps/type/README.md`（如果存在）
-    - [ ] 记录迁移过程中的注意事项
-    - [ ] 总结最佳实践
-
-13. **创建迁移报告**
-    - [ ] 记录迁移的文件列表
-    - [ ] 记录迁移的公共选项
-    - [ ] 记录遇到的问题及解决方案
-
-## 任务依赖关系
-
-### 前置依赖
-- 阶段一必须在阶段二之前完成（业务类型迁移完成后才能识别公共选项）
-- 阶段三必须在阶段四之前完成（类型项目更新完成才能在 Admin 项目中使用）
-
-### 并行执行
-- 同一模块内的多个文件可以并行迁移
-- 不同模块之间的迁移可以并行进行
-
-### 验证依赖
-- 每个阶段完成后必须进行类型检查
-- 所有阶段完成后进行最终验证
-
-## 质量标准
-
-1. **代码规范**
-   - [ ] 所有类型和字段使用英文命名
-   - [ ] 保留所有 JSDoc 注释
-   - [ ] 遵循 TypeScript 最佳实践
-
-2. **类型安全**
-   - [ ] 通过 `pnpm -F @01s-11comm/type typecheck`
-   - [ ] 通过 `pnpm -F @01s-11comm/admin typecheck`
-   - [ ] 无类型错误或警告
-
-3. **功能完整**
-   - [ ] 所有表单功能正常
-   - [ ] 所有下拉选项正确显示
-   - [ ] 所有 Props 接口包含 mode 字段
-
-## 交付物
-
-1. **迁移后的类型文件**
-   - `apps/type/src/business/*/` 下的所有类型文件
-
-2. **更新的 form.ts 文件**
-   - 所有 `apps/admin/src/pages/*/components/form.ts` 文件
-
-3. **公共选项文件**
-   - `apps/type/src/common/business-options.ts`
-
-4. **验证报告**
-   - 类型检查通过报告
-   - 功能测试报告
-
-## 风险控制
-
-### 回滚方案
-- 保留原始 form.ts 文件备份
-- 使用 Git 分支进行开发
-- 分阶段提交，便于回滚
-
-### 质量保证
-- 每完成一个模块进行类型检查
-- 及时修复发现的问题
-- 不遗留未完成的工作项
-
----
-
-**任务总数：约 89 个 form.ts 文件需要迁移**
-
-**预计工作量：3-5 个工作日**
-
-**优先级：高（影响全项目类型管理）**
+# 将 form.ts 文件业务类型迁移到类型包 - 任务清单
+
+## 阶段一：准备和分析 (Phase 1: Preparation and Analysis)
+
+### 任务 1.1: 分析现有 form.ts 文件结构
+- [ ] 扫描所有 form.ts 文件位置
+  - 路径：`apps/admin/src/pages/**/components/form.ts`
+- [ ] 统计文件总数和按模块分布情况
+- [ ] 记录每个文件中的业务类型数量
+- [ ] 识别中文命名的类型和字段
+- [ ] 识别下拉选项数组定义
+- [ ] 识别表单 props 类型定义
+
+**依赖**: 无
+**预计产出**: form.ts 文件清单和分析报告
+
+### 任务 1.2: 创建迁移映射表
+- [ ] 根据 RANK_ROUTE_KEYS 建立路径映射关系
+- [ ] 确定每个 form.ts 对应的类型包文件路径
+- [ ] 标记已存在的类型文件和需要创建的文件
+- [ ] 识别重复的业务类型定义
+
+**依赖**: 1.1
+**预计产出**: 迁移映射表 (form.ts → type package)
+
+### 任务 1.3: 检查类型包现有结构
+- [ ] 验证 apps/type/src/business/ 目录结构完整性
+- [ ] 检查已有的业务类型文件内容
+- [ ] 验证 business-options.ts 文件状态
+- [ ] 确认 Mode 类型定义和可用性
+
+**依赖**: 无
+**预计产出**: 类型包结构验证报告
+
+## 阶段二：业务类型迁移 (Phase 2: Business Type Migration)
+
+### 任务 2.1: 迁移 property-manage 模块业务类型
+- [ ] contract-manage 子模块
+  - [ ] first-party.ts: 迁移 FirstPartyFormVO
+  - [ ] type.ts: 迁移 ContractTypeFormVO (如果存在)
+  - [ ] change.ts: 迁移相关表单类型
+  - [ ] draft-contract.ts: 迁移草稿合同表单类型
+  - [ ] expire.ts: 迁移到期合同表单类型
+- [ ] expense-manage 子模块
+  - [ ] cancel-fee.ts: 迁移 CancelFeeFormVO
+  - [ ] house-charge.ts: 迁移 HouseChargeFormVO
+  - [ ] 其他费用相关文件类型迁移
+- [ ] house-property-manage 子模块
+  - [ ] house.ts: 迁移房屋信息表单类型
+  - [ ] owner-information.ts: 迁移业主信息表单类型
+  - [ ] owner-member.ts: 迁移业主成员表单类型
+- [ ] 其他子模块按同样模式处理
+
+**依赖**: 1.2, 1.3
+**验收标准**:
+- 运行 `pnpm -F @01s-11comm/type typecheck` 无报错
+- 所有类型都有正确的 JSDoc 注释
+- 中文命名已转换为英文
+
+### 任务 2.2: 迁移 operation-team 模块业务类型
+- [ ] data-manage 子模块业务类型迁移
+- [ ] merchant-manage 子模块业务类型迁移
+- [ ] report-configuration 子模块业务类型迁移
+- [ ] system-manage 子模块业务类型迁移
+
+**依赖**: 2.1
+**验收标准**: 同 2.1
+
+### 任务 2.3: 迁移 dev-team 模块业务类型
+- [ ] menu-manage 子模块业务类型迁移
+- [ ] cache-manage 子模块业务类型迁移
+- [ ] config-manage 子模块业务类型迁移
+
+**依赖**: 2.2
+**验收标准**: 同 2.1
+
+### 任务 2.4: 迁移 setting-manage 模块业务类型
+- [ ] organize-manage 子模块业务类型迁移
+- [ ] system-manage 子模块业务类型迁移
+
+**依赖**: 2.3
+**验收标准**: 同 2.1
+
+## 阶段三：下拉选项迁移 (Phase 3: Dropdown Options Migration)
+
+### 任务 3.1: 识别和分析下拉选项
+- [ ] 扫描所有 form.ts 文件中的选项数组
+- [ ] 统计选项的使用频率和分布
+- [ ] 识别公共选项候选
+- [ ] 创建选项迁移清单
+
+**依赖**: 2.4
+**预计产出**: 下拉选项分析报告
+
+### 任务 3.2: 迁移公共选项到 business-options.ts
+- [ ] 审核状态选项 (auditStatusOptions)
+- [ ] 通用状态选项 (enableStatusOptions)
+- [ ] 合同类型选项 (contractTypeOptions)
+- [ ] 其他识别出的公共选项
+
+**依赖**: 3.1
+**验收标准**:
+- 所有公共选项集中在 business-options.ts
+- 运行类型检查无报错
+- 选项命名规范化
+
+### 任务 3.3: 迁移模块特定选项
+- [ ] 将模块特定选项迁移到对应业务类型文件
+- [ ] 更新选项导入路径
+- [ ] 删除 form.ts 中的重复定义
+
+**依赖**: 3.2
+**验收标准**:
+- 模块选项正确分类
+- 无重复定义
+- 导入路径正确
+
+## 阶段四：更新 form.ts 文件 (Phase 4: Update form.ts Files)
+
+### 任务 4.1: 更新 property-manage 模块 form.ts 文件
+- [ ] 添加类型导入语句
+- [ ] 删除已迁移的类型定义
+- [ ] 创建类型别名（保持向后兼容）
+- [ ] 更新选项导入
+- [ ] 保留 defaultForm 和 FormProps 类型
+
+**依赖**: 2.1, 3.3
+**验收标准**:
+- 运行 `pnpm -F @01s-11comm/admin typecheck` 无报错
+- 功能验证正常
+
+### 任务 4.2: 更新 operation-team 模块 form.ts 文件
+- [ ] 同 4.1 的更新步骤
+
+**依赖**: 2.2, 3.3
+**验收标准**: 同 4.1
+
+### 任务 4.3: 更新 dev-team 模块 form.ts 文件
+- [ ] 同 4.1 的更新步骤
+
+**依赖**: 2.3, 3.3
+**验收标准**: 同 4.1
+
+### 任务 4.4: 更新 setting-manage 模块 form.ts 文件
+- [ ] 同 4.1 的更新步骤
+
+**依赖**: 2.4, 3.3
+**验收标准**: 同 4.1
+
+## 阶段五：添加 Mode 字段 (Phase 5: Add Mode Field)
+
+### 任务 5.1: 为 property-manage 模块添加 mode 字段
+- [ ] 识别所有 FormProps 类型
+- [ ] 检查是否已有 mode 字段
+- [ ] 为缺少 mode 字段的类型添加 `mode?: Mode`
+- [ ] 验证类型定义正确
+
+**依赖**: 4.1
+**验收标准**:
+- 所有表单 props 都有 mode 字段
+- 类型检查通过
+
+### 任务 5.2: 为其他模块添加 mode 字段
+- [ ] operation-team 模块
+- [ ] dev-team 模块
+- [ ] setting-manage 模块
+
+**依赖**: 4.2, 4.3, 4.4
+**验收标准**: 同 5.1
+
+## 阶段六：验证和测试 (Phase 6: Validation and Testing)
+
+### 任务 6.1: 全面类型检查
+- [ ] 运行 `pnpm -F @01s-11comm/type typecheck`
+- [ ] 运行 `pnpm -F @01s-11comm/admin typecheck`
+- [ ] 修复所有类型错误
+- [ ] 确保无类型警告
+
+**依赖**: 5.2
+**验收标准**: 所有类型检查通过
+
+### 任务 6.2: 功能验证测试
+- [ ] 启动 Admin 项目
+- [ ] 访问各模块页面
+- [ ] 测试表单显示和功能
+- [ ] 验证下拉选项正确
+- [ ] 测试表单提交功能
+
+**依赖**: 6.1
+**验收标准**: 所有功能正常工作
+
+### 任务 6.3: 性能和构建验证
+- [ ] 运行 `pnpm build:admin`
+- [ ] 检查构建是否成功
+- [ ] 验证打包大小合理性
+- [ ] 检查是否有未使用的导入
+
+**依赖**: 6.2
+**验收标准**: 构建成功，无明显问题
+
+## 阶段七：文档和清理 (Phase 7: Documentation and Cleanup)
+
+### 任务 7.1: 更新类型包索引文件
+- [ ] 更新各模块的 index.ts 文件
+- [ ] 确保新导出的类型可被正确引用
+- [ ] 验证导入路径正确性
+
+**依赖**: 6.3
+**验收标准**: 类型包结构清晰，导入方便
+
+### 任务 7.2: 编写迁移文档
+- [ ] 记录迁移过程和遇到的问题
+- [ ] 编写类型使用指南
+- [ ] 更新开发规范文档
+
+**依赖**: 7.1
+**预计产出**: 完整的迁移文档
+
+### 任务 7.3: 代码清理
+- [ ] 移除无用的注释和调试代码
+- [ ] 统一代码格式
+- [ ] 确保所有文件都有适当的版权信息
+
+**依赖**: 7.2
+**验收标准**: 代码整洁，符合项目规范
+
+## 执行注意事项
+
+1. **顺序执行**: 必须按照阶段顺序执行，每个阶段完成后再进入下一阶段
+2. **及时验证**: 每完成一个任务都要运行相应的验证命令
+3. **备份重要**: 在大规模修改前建议创建代码备份
+4. **渐进处理**: 可以按模块逐步处理，避免一次性修改过多文件
+5. **问题记录**: 遇到问题及时记录，并在完成后总结解决方案
+
+## 验收标准总结
+
+- ✅ 所有业务类型已迁移到类型包
+- ✅ 所有下拉选项已正确分类和迁移
+- ✅ 所有表单 props 都有 mode 字段
+- ✅ 类型检查完全通过
+- ✅ 功能测试正常
+- ✅ 构建成功
+- ✅ 代码整洁，文档完整

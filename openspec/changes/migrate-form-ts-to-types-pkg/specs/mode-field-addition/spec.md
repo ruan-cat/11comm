@@ -1,24 +1,20 @@
-# Mode 字段增加规范
-
 ## ADDED Requirements
 
-**CRITICAL**: 在实施 mode 字段添加任务时，必须严格按照以下顺序执行，不允许跳步。
+**CRITICAL**: 在为表单 props 类型添加 mode 字段时，必须严格按照以下规范执行。
 
 **执行顺序:**
 
-1. **Step 1**: 字段定义（为所有 Props 接口添加 mode 字段）
-2. **Step 2**: 类型检查（确保 mode 字段类型正确）
-3. **Step 3**: 注释完善（添加 JSDoc 注释）
-4. **Step 4**: 格式验证（验证字段格式规范）
-5. **Step 5**: 功能测试（确保 mode 字段正常工作）
+1. **Step 1**: 识别所有表单 props 类型
+2. **Step 2**: 检查是否已有 mode 字段
+3. **Step 3**: 添加 mode 字段
+4. **Step 4**: 验证类型检查
 
 **步骤依赖关系:**
 
-- Step 1 是添加阶段，为所有 Props 接口添加 mode 字段
-- Step 2 是验证阶段，确保类型正确
-- Step 3 是完善阶段，添加注释
-- Step 4 是检查阶段，验证格式
-- Step 5 是测试阶段，确保功能正常
+- Step 1 是识别阶段，找出所有需要修改的表单 props 类型
+- Step 2 是检查阶段，避免重复添加
+- Step 3 是实施阶段，为缺少 mode 字段的类型添加该字段
+- Step 4 是验证阶段，确保添加正确
 
 **验收标准:**
 
@@ -26,337 +22,258 @@
 
 ---
 
-### Requirement: 字段定义 (Step 1)
+### Requirement: 识别所有表单 props 类型 (Step 1)
 
-系统 SHALL 为所有弹框组件的 Props 类型添加非必填的 `mode` 字段。
+系统 MUST 识别 `form.ts` 文件中的所有表单 props 类型定义。
 
-#### Scenario: 添加 mode 字段到类型项目中的 Props 接口
+**识别标准:**
 
-- **GIVEN** 类型项目中存在 `StaffInfoFormProps` 接口
-- **WHEN** 添加 mode 字段
-- **THEN** 接口包含 `mode?: Mode` 字段
-- **AND** 字段标记为可选（使用 `?`）
-- **AND** 类型使用 `Mode`（全局类型）
+表单 props 类型满足以下特征：
 
-#### Scenario: 添加 mode 字段到 form.ts 中的 Props 接口
+1. **命名模式** - 以 `FormProps` 结尾的接口
+2. **导出接口** - 使用 `export interface` 定义
+3. **包含表单数据** - 包含 `form` 和 `defaultValues` 属性
 
-- **GIVEN** form.ts 文件中存在 `AddFormProps` 接口
-- **WHEN** 添加 mode 字段
-- **THEN** 接口包含 `mode?: Mode` 字段
-- **AND** 字段标记为可选（使用 `?`）
-- **AND** 类型使用 `Mode`
+**典型命名模式:**
 
-#### Scenario: 为多个 Props 接口添加 mode 字段
+- `xxxFormProps`
+- `xxxFormDialogProps`
+- `xxxFormDrawerProps`
 
-- **GIVEN** 文件中包含 `AddFormProps`、`EditFormProps`、`ViewFormProps` 三个接口
-- **WHEN** 为每个接口添加 mode 字段
-- **THEN** 所有三个接口都包含 `mode?: Mode` 字段
-- **AND** 每个字段都标记为可选
+#### Scenario: 识别标准的表单 props 类型
 
-#### Scenario: 更新已有 mode 字段的接口
-
-- **GIVEN** 接口中已有 `mode?: string` 字段
-- **WHEN** 更新字段类型
-- **THEN** 改为 `mode?: Mode`
-- **AND** 保留可选标记
-
----
-
-### Requirement: 类型检查 (Step 2)
-
-系统 SHALL 确保 mode 字段使用正确的类型。
-
-#### Scenario: 验证 Mode 类型
-
-- **GIVEN** 添加了 mode 字段
-- **WHEN** 检查字段类型
-- **THEN** 使用 `Mode` 类型（注意大小写）
-- **AND** 不使用 `mode`（小写）或 `string` 类型
-
-#### Scenario: 验证可选标记
-
-- **GIVEN** 添加了 mode 字段
-- **WHEN** 检查字段可选性
-- **THEN** 使用 `mode?: Mode` 格式
-- **AND** 不使用 `mode: Mode`（缺少 `?`）
-
-#### Scenario: 验证全局类型
-
-- **GIVEN** 使用 Mode 类型
-- **WHEN** 检查导入
-- **THEN** Mode 是全局类型，无需导入
-- **AND** 如果项目配置要求导入，则从正确位置导入
-
-#### Scenario: 类型检查命令通过
-
-- **GIVEN** 完成 mode 字段添加
-- **WHEN** 运行 `pnpm -F @01s-11comm/type typecheck`
-- **THEN** 输出无报错
-- **AND** 运行 `pnpm -F @01s-11comm/admin typecheck` 输出无报错
-
----
-
-### Requirement: 注释完善 (Step 3)
-
-系统 SHALL 为所有 mode 字段添加 JSDoc 注释。
-
-#### Scenario: 添加字段注释
-
-- **GIVEN** 接口中添加了 mode 字段
-- **WHEN** 添加注释
-- **THEN** 使用 `/** 表单模式 */` 作为注释
-- **AND** 注释位置在字段定义之前
-
-#### Scenario: 验证注释格式
-
-- **GIVEN** 添加了 mode 字段注释
-- **WHEN** 检查注释格式
-- **THEN** 使用 `/** ... */` JSDoc 格式
-- **AND** 注释内容简洁明了
-
-#### Scenario: 验证注释位置
-
-- **GIVEN** 接口中有多个字段
-- **WHEN** 检查注释位置
-- **THEN** mode 字段注释在其他字段之后
-- **AND** 与前后字段有空行分隔
-
-#### Scenario: 为所有接口添加注释
-
-- **GIVEN** 多个接口都添加了 mode 字段
-- **WHEN** 检查注释
-- **THEN** 所有 mode 字段都包含注释
-- **AND** 注释内容一致
-
----
-
-### Requirement: 格式验证 (Step 4)
-
-系统 SHALL 验证 mode 字段格式符合规范。
-
-#### Scenario: 验证字段定义格式
-
-- **GIVEN** mode 字段定义
-- **WHEN** 检查格式
-- **THEN** 使用 `mode?: Mode;` 格式
-- **AND** 字段名使用 `mode`
-- **AND** 使用 `?` 表示可选
-- **AND** 类型使用 `Mode`
-- **AND** 以分号结束
-
-#### Scenario: 验证错误格式
-
-- **GIVEN** 需要检查格式
-- **WHEN** 验证字段定义
-- **THEN** 不允许以下错误格式：
-  - `mode: Mode;`（缺少 `?`）
-  - `mode?: mode;`（类型小写）
-  - `mode ? : Mode;`（空格位置错误）
-  - `mode = Mode;`（使用等号）
-
-#### Scenario: 验证接口结构
-
-- **GIVEN** 完整的 Props 接口
-- **WHEN** 检查接口结构
-- **THEN** 字段顺序为：form、defaultValues、mode
-- **AND** mode 字段位于接口末尾
-
-#### Scenario: 验证注释与字段间距
-
-- **GIVEN** 添加了 mode 字段和注释
-- **WHEN** 检查间距
-- **THEN** 注释与字段之间无空行
-- **AND** mode 字段与前后字段有空行分隔
-
----
-
-### Requirement: 功能测试 (Step 5)
-
-系统 SHALL 确保 mode 字段能正常工作。
-
-#### Scenario: 组件接收 mode 属性
-
-- **GIVEN** 表单组件接收 Props
-- **WHEN** 传递 mode 属性
-- **THEN** 组件能正确接收 mode 属性
-- **AND** 属性为可选，传递 undefined 也正常
-
-#### Scenario: mode 属性可选性
-
-- **GIVEN** 组件使用 Props 接口
-- **WHEN** 不传递 mode 属性
-- **THEN** TypeScript 不报错
-- **AND** 组件能正常运行
-
-#### Scenario: mode 属性默认值
-
-- **GIVEN** 组件需要处理 mode 属性
-- **WHEN** 获取 mode 值
-- **THEN** 默认值为 undefined
-- **AND** 可以在组件逻辑中设置默认值
-
-#### Scenario: 不同 mode 值的处理
-
-- **GIVEN** Mode 类型包含多个值（如 "add"、"edit"、"view"）
-- **WHEN** 传递不同的 mode 值
-- **THEN** 组件能正确处理不同值
-- **AND** 根据 mode 值调整表单行为
-
----
-
-## 字段定义规范
-
-### 基本定义
-
+- **GIVEN** 检查 form.ts 文件
+- **WHEN** 发现以下代码：
 ```typescript
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	/** 表单模式 */
-	mode?: Mode;
+export interface FirstPartyFormProps {
+  form: FirstPartyFormVO;
+  defaultValues: FirstPartyFormVO;
 }
 ```
+- **THEN** 识别为表单 props 类型
+- **AND** 记录名称为 `FirstPartyFormProps`
+- **AND** 标记需要添加 mode 字段
 
-### 字段说明
+#### Scenario: 识别不同命名变体
 
-**字段名：** `mode`
-**类型：** `Mode`（全局类型）
-**必填性：** 可选（使用 `?` 标识符）
-**注释：** `/** 表单模式 */`
+- **GIVEN** 检查 form.ts 文件
+- **WHEN** 发现以下代码：
+```typescript
+export interface CancelFeeDialogProps {
+  form: CancelFeeFormVO;
+  defaultValues: CancelFeeFormVO;
+}
+```
+- **THEN** 识别为表单 props 类型
+- **AND** 即使不以 `FormProps` 结尾也应该包含
+- **AND** 标记需要添加 mode 字段
 
-### JSDoc 注释格式
+#### Scenario: 排除非表单 props 类型
+
+- **GIVEN** 检查接口定义
+- **WHEN** 发现以下代码：
+```typescript
+export interface TableProps {
+  data: any[];
+  loading: boolean;
+}
+```
+- **THEN** 不识别为表单 props 类型
+- **AND** 理由：不包含表单数据和默认值
+
+---
+
+### Requirement: 检查是否已有 mode 字段 (Step 2)
+
+系统 SHALL 对于识别出的表单 props 类型，检查是否已经包含了 mode 字段。
+
+**检查标准:**
+
+1. **已有 mode 字段** - 包含 `mode?: Mode` 或类似定义
+2. **缺少 mode 字段** - 不包含任何模式相关的字段
+
+**Mode 字段规范:**
+
+- **字段名**: `mode`
+- **类型**: `Mode`
+- **可选性**: `?` (可选)
+- **注释**: 表单模式
+
+#### Scenario: 检查已有 mode 字段
+
+- **GIVEN** 检查 `CancelFeeFormProps` 类型
+- **WHEN** 发现以下定义：
+```typescript
+export interface CancelFeeFormProps {
+  form: CancelFeeFormVO;
+  defaultValues: CancelFeeFormVO;
+  mode?: Mode;
+}
+```
+- **THEN** 标记为已有 mode 字段
+- **AND** 不需要再次添加
+- **AND** 验证类型定义是否正确
+
+#### Scenario: 检查缺少 mode 字段
+
+- **GIVEN** 检查 `FirstPartyFormProps` 类型
+- **WHEN** 发现以下定义：
+```typescript
+export interface FirstPartyFormProps {
+  form: FirstPartyFormVO;
+  defaultValues: FirstPartyFormVO;
+}
+```
+- **THEN** 标记为缺少 mode 字段
+- **AND** 需要添加该字段
+- **AND** 记录在待修改列表中
+
+#### Scenario: 检查错误的 mode 字段定义
+
+- **GIVEN** 检查表单 props 类型
+- **WHEN** 发现以下定义：
+```typescript
+export interface XxxFormProps {
+  form: XxxFormVO;
+  defaultValues: XxxFormVO;
+  mode: string; // 错误的类型
+}
+```
+- **THEN** 标记需要修正
+- **AND** 应该改为 `mode?: Mode`
+- **AND** 注明可选性
+
+---
+
+### Requirement: 添加 mode 字段 (Step 3)
+
+系统 SHALL 为缺少 mode 字段的表单 props 类型添加该字段。
+
+**添加规范:**
+
+1. **位置** - 在所有现有属性之后
+2. **类型** - 使用 `Mode` 类型（全局类型，无需导入）
+3. **可选性** - 使用 `?` 标记为可选
+4. **注释** - 添加 JSDoc 注释说明
+
+**添加格式:**
 
 ```typescript
 /** 表单模式 */
 mode?: Mode;
 ```
 
-### 错误格式示例
+#### Scenario: 为标准表单 props 添加 mode 字段
 
+- **GIVEN** `FirstPartyFormProps` 缺少 mode 字段
+- **WHEN** 添加该字段
+- **THEN** 更新为：
 ```typescript
-// 错误 1：缺少可选标记
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	mode: Mode;  // ✗ 错误
-}
+export interface FirstPartyFormProps {
+  form: FirstPartyFormVO;
+  defaultValues: FirstPartyFormVO;
 
-// 错误 2：类型错误
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	mode?: string;  // ✗ 错误
-}
-
-// 错误 3：类型大小写错误
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	mode?: mode;  // ✗ 错误
-}
-
-// 错误 4：缺少注释
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	mode?: Mode;  // ✗ 错误
+  /** 表单模式 */
+  mode?: Mode;
 }
 ```
+- **AND** 字段位于最后
+- **AND** 包含 JSDoc 注释
+- **AND** 标记为可选
 
-## 完整示例
+#### Scenario: 为复杂表单 props 添加 mode 字段
 
-### 示例 1：员工信息表单
+- **GIVEN** 表单 props 包含多个属性
+- **WHEN** 添加 mode 字段
+- **THEN** 在所有属性后添加
+- **AND** 保持适当的空行
+- **AND** 保持代码格式一致
 
-**修改前：**
-```typescript
-export interface StaffInfoFormProps {
-	form: StaffInfoFormVO;
-	defaultValues: StaffInfoFormVO;
-}
-```
+#### Scenario: 修正错误的 mode 字段定义
 
-**修改后：**
-```typescript
-export interface StaffInfoFormProps {
-	form: StaffInfoFormVO;
-	defaultValues: StaffInfoFormVO;
-	/** 表单模式 */
-	mode?: Mode;
-}
-```
+- **GIVEN** 发现有错误的 mode 字段定义
+- **WHEN** 修正该定义
+- **THEN** 改为 `mode?: Mode`
+- **AND** 确保类型正确
+- **AND** 确保可选性正确
 
-### 示例 2：合同类型表单
+---
 
-**修改前：**
-```typescript
-export interface AddFormProps {
-	form: ContractTypeFormVO;
-	defaultValues: ContractTypeFormVO;
-}
-```
+### Requirement: 验证类型检查 (Step 4)
 
-**修改后：**
-```typescript
-export interface AddFormProps {
-	form: ContractTypeFormVO;
-	defaultValues: ContractTypeFormVO;
-	/** 表单模式 */
-	mode?: Mode;
-}
-```
+系统 SHALL 在完成 mode 字段添加后，进行类型检查验证。
 
-### 示例 3：已有 mode 字段的接口
+**验证内容:**
 
-**修改前：**
-```typescript
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	mode?: string;  // 类型错误
-}
-```
+1. 类型定义正确
+2. Mode 类型可用
+3. 类型检查通过
+4. 组件使用正确
 
-**修改后：**
-```typescript
-export interface ExampleFormProps {
-	form: ExampleFormVO;
-	defaultValues: ExampleFormVO;
-	/** 表单模式 */
-	mode?: Mode;  // 类型正确
-}
-```
+#### Scenario: 验证 Mode 类型可用
 
-## 常见问题
+- **GIVEN** 添加了 `mode?: Mode` 字段
+- **WHEN** 运行类型检查
+- **THEN** Mode 类型被正确识别
+- **AND** 无 "cannot find name 'Mode'" 错误
+- **AND** 类型推断正常工作
 
-### Q1: 是否需要导入 Mode 类型？
+#### Scenario: 验证类型检查通过
 
-**A:** Mode 是全局类型，使用时无需导入（除非项目配置要求）。
+- **GIVEN** 完成所有 mode 字段添加
+- **WHEN** 运行 `pnpm -F @01s-11comm/admin typecheck`
+- **THEN** 输出无类型错误
+- **AND** 所有表单 props 类型定义正确
+- **AND** 无相关类型警告
 
-### Q2: 如何处理多个 Props 接口？
+#### Scenario: 验证组件使用正确
 
-**A:** 需要为每个 Props 接口都添加 mode 字段。
+- **GIVEN** 表单 props 添加了 mode 字段
+- **WHEN** 检查使用该 props 的组件
+- **THEN** 组件能够正确接收 mode 属性
+- **AND** 组件内部可以正确使用 mode 值
+- **AND** TypeScript 类型推断正常
 
-### Q3: mode 字段的默认值是什么？
+#### Scenario: 验证向后兼容性
 
-**A:** mode 字段是可选的，默认值为 undefined。
+- **GIVEN** mode 字段为可选
+- **WHEN** 组件不传递 mode 属性
+- **THEN** 组件正常工作
+- **AND** 无缺少必需属性的警告
+- **AND** 保持向后兼容
 
-### Q4: 如何在组件中使用 mode 字段？
+---
 
-**A:** 可以在组件逻辑中处理 mode 值，例如：
-```typescript
-const effectiveMode = computed(() => props.mode || "add");
-```
+### Requirement: 批量处理规范
 
-## 注意事项
+系统 SHALL 在需要处理大量 form.ts 文件时，遵循以下批量处理规范。
 
-1. **全局类型**：`Mode` 是全局类型，使用时无需导入
-2. **可选字段**：`mode` 字段必须标记为可选（使用 `?`）
-3. **注释完整**：所有 `mode` 字段必须包含 JSDoc 注释
-4. **格式一致**：所有 `mode` 字段使用相同的格式和注释
-5. **类型正确**：所有 `mode` 字段使用 `Mode` 类型（注意大小写）
+**处理策略:**
 
-## 参考资料
+1. **分批处理** - 按模块分批处理，避免一次性修改过多文件
+2. **逐步验证** - 每完成一批立即进行类型检查
+3. **记录进度** - 记录已处理和待处理的文件清单
 
-1. `apps/admin/src/pages/property-manage/expense-manage/cancel-fee/components/form.ts` - 已包含 mode 字段的示例
-2. `apps/type/src/business/` - 类型项目中的接口定义
-3. `apps/admin/src/pages/*/components/form.ts` - 表单组件文件
+#### Scenario: 按模块分批处理
+
+- **GIVEN** 需要处理 property-manage 模块的所有 form.ts 文件
+- **WHEN** 分批处理
+- **THEN** 先处理 contract-manage 子模块
+- **AND** 完成后进行类型检查验证
+- **AND** 再处理下一个子模块
+
+#### Scenario: 记录处理进度
+
+- **GIVEN** 正在进行批量处理
+- **WHEN** 完成一批文件
+- **THEN** 记录已处理的文件列表
+- **AND** 记录遇到的问题和解决方案
+- **AND** 更新待处理文件列表
+
+#### Scenario: 处理特殊情况
+
+- **GIVEN** 发现特殊的表单 props 定义
+- **WHEN** 无法确定是否需要添加 mode 字段
+- **THEN** 标记为特殊情况
+- **AND** 记录原因和上下文
+- **AND** 单独评估处理方案
