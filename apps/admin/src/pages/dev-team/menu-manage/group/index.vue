@@ -10,8 +10,7 @@ definePage({
 
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { getRouteRank } from "@/router/rank";
-import type { FieldValues, TableColumnList, PureTableBarProps, PlusColumn, PlusSearchProps } from "@pureadmin/table";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
 import { defaultPureTableIndexColumn } from "@/config/constant";
 import { useI18n } from "vue-i18n";
 import { type MenuGroupListItem, type MenuGroupQueryParams, menuGroupStatusOptions } from "@01s-11comm/type";
