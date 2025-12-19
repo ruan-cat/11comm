@@ -366,6 +366,18 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 ---
 
+#### 增加严格规范以便处理重复类型声明的故障
+
+1. 为了避免在实际实施过程中出现明显类型故障，避免出现重复变量声明，请阅读以下文档，并增加及时调整以下变量的排布顺序：
+   - `plusSearchModelRef`
+   - `plusSearchDefaultValues`
+   - `plusSearchModel`
+2. 你处理的列表页内，几乎都存在上述的变量，在处理时，请你采用移动代码的方案，移动现有的代码到 api hooks 的上面。而不是单纯的新增代码。
+3. `plusSearchModelRef` 的业务类型约束，必须要增加 `Partial` 类型约束。
+4. 需要阅读并增加规范的文档：
+   - `openspec\changes\migrate-static-data-to-nitro-query\specs\list-page-pattern\spec.md`
+   - `openspec\changes\fix-list-pages-code-patterns\specs\list-pages\spec.md`
+
 #### <!-- TODO: 长期使用 直到完成 --> 提示词
 
 /openspec:apply 执行 `fix-list-pages-code-patterns` 任务；请及时的更新 tasks.md 任务进度文件；请连续的，持续的运行，直到全部的任务都处理完毕。不要完成一个任务后就停下来询问我；请使用中文回复；
