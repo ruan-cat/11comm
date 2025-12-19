@@ -30,16 +30,32 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 // 使用组织树查询 Hook
 const { data: organizationTreeData, isFetching: treeLoading } = useOrganizationTreeQuery();
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & EmployeeSearchForm = {
+	employeeName: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 // 使用员工列表查询 Hook
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching: tableLoading,
 	updateParams,
+	resetParams,
 	doFetch,
-} = useEmployeeListQuery();
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useEmployeeListQuery(plusSearchDefaultValues);
 
 // 树组件状态
 const treeRef = ref<ReTreeLineIconInstance | null>(null);
@@ -104,22 +120,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: tableLoading.value,
-}));
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -131,21 +131,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 interface EmployeeSearchForm {
 	employeeName?: string;
 }
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & EmployeeSearchForm = {
-	employeeName: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -228,12 +213,9 @@ function loadEmployeesByOrg(org: OrganizationTreeNode) {
 }
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	updateParams({
-		employeeName: undefined,
-		pageIndex: 1,
-	});
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
@@ -244,15 +226,6 @@ async function handleSearch() {
 	});
 }
 
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
-}
 
 // 组织操作
 function handleAddOrg() {
@@ -370,6 +343,7 @@ onMounted(async () => {
 							:="pureTableProps"
 							:columns="dynamicColumns"
 							:size="size"
+							:loading="tableLoading"
 							@page-size-change="handlePageSizeChange"
 							@page-current-change="handleCurrentPageChange"
 						>

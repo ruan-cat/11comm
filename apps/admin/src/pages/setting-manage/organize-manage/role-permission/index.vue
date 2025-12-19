@@ -26,8 +26,33 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<RolePermissionListQuery> = {
+	name: "",
+	code: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 // 使用角色权限列表查询 Hook
-const { tableData, total, pageIndex, pageSize, isFetching, updateParams, doFetch } = useRolePermissionListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useRolePermissionListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -62,44 +87,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "角色权限管理",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & RolePermissionListQuery = {
-	name: "",
-	code: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -235,32 +227,14 @@ function openDialog(params: { mode: Mode; row?: RolePermission }) {
 // ========== 事件处理函数 ==========
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	updateParams({
-		name: undefined,
-		code: undefined,
-		pageIndex: 1,
-	});
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	updateParams({
-		name: plusSearchModel.value.name,
-		code: plusSearchModel.value.code,
-		pageIndex: 1,
-	});
-}
-
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 // 表格操作函数
@@ -311,6 +285,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

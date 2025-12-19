@@ -18,17 +18,34 @@ import type { StaffInfo, StaffInfoListQuery } from "@01s-11comm/type";
 /** 表单组件实例引用 */
 const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<StaffInfoListQuery> = {
+	id: "",
+	name: "",
+	phone: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用列表查询 Hook */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
-	doFetch,
 	resetParams,
-} = useStaffInfoListQuery();
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useStaffInfoListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -82,55 +99,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "员工管理",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & StaffInfoListQuery = {
-	id: "",
-	name: "",
-	phone: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -177,13 +150,15 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-async function handleSearch() {
-	updateParams(plusSearchModel.value);
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 打开弹框 参数 */
@@ -334,7 +309,13 @@ function handleDetail(row: StaffInfo) {
 
 <template>
 	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+		<PlusSearch
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
@@ -349,6 +330,7 @@ function handleDetail(row: StaffInfo) {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

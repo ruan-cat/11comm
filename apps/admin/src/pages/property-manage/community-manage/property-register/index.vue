@@ -27,102 +27,6 @@ import { useMode, type Mode } from "@/composables/use-mode";
 
 const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
 
-/** 使用 TanStack Query 获取数据 */
-	usePropertyRegisterListQuery();
-
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "房屋产权ID",
-		prop: "propertyRightId",
-		width: 120,
-	},
-	{
-		label: "房屋ID",
-		prop: "houseId",
-		width: 120,
-	},
-	{
-		label: "房屋编号",
-		prop: "houseNumber",
-		width: 120,
-	},
-	{
-		label: "姓名",
-		prop: "ownerName",
-		width: 120,
-	},
-	{
-		label: "联系方式",
-		prop: "contactInfo",
-		width: 120,
-	},
-	{
-		label: "身份证号",
-		prop: "idCardNumber",
-		width: 180,
-	},
-	{
-		label: "地址",
-		prop: "address",
-		width: 200,
-	},
-	{
-		label: "状态",
-		prop: "status",
-		width: 100,
-		cellRenderer: ({ row }) => {
-			const statusMap = {
-				启用: { type: "success", text: "启用" },
-				禁用: { type: "danger", text: "禁用" },
-			};
-			const statusInfo = statusMap[row.status] || { type: "info", text: row.status };
-			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
-		},
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "产权登记",
-	columns: columns.value,
-});
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -141,10 +45,22 @@ const plusSearchModelRef: FieldValues & Partial<PropertyRegisterQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = usePropertyRegisterListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -240,6 +156,72 @@ function handleSearch() {
 		pageIndex: 1,
 	} as Partial<PropertyRegisterQueryParams>);
 }
+
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "房屋产权ID",
+		prop: "propertyRightId",
+		width: 120,
+	},
+	{
+		label: "房屋ID",
+		prop: "houseId",
+		width: 120,
+	},
+	{
+		label: "房屋编号",
+		prop: "houseNumber",
+		width: 120,
+	},
+	{
+		label: "姓名",
+		prop: "ownerName",
+		width: 120,
+	},
+	{
+		label: "联系方式",
+		prop: "contactInfo",
+		width: 120,
+	},
+	{
+		label: "身份证号",
+		prop: "idCardNumber",
+		width: 180,
+	},
+	{
+		label: "地址",
+		prop: "address",
+		width: 200,
+	},
+	{
+		label: "状态",
+		prop: "status",
+		width: 100,
+		cellRenderer: ({ row }) => {
+			const statusMap = {
+				启用: { type: "success", text: "启用" },
+				禁用: { type: "danger", text: "禁用" },
+			};
+			const statusInfo = statusMap[row.status] || { type: "info", text: row.status };
+			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
+		},
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 240,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "产权登记",
+	columns: columns.value,
+});
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {

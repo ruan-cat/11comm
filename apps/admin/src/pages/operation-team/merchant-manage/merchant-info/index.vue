@@ -47,15 +47,10 @@ const plusSearchModel = ref(plusSearchModelRef);
 /** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
 	isFetching,
 	updateParams,
 	resetParams,
 	doFetch,
-	handlePageSizeChange,
-	handleCurrentPageChange,
 	handlePageSizeChange,
 	handleCurrentPageChange,
 	pureTableProps,
@@ -132,14 +127,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
 
 /** 表格组件 配置 */
 /** 表格操作栏组件 配置  */
@@ -386,6 +373,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

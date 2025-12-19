@@ -19,17 +19,38 @@ import {
 	changePasswordRecordDepartmentOptions,
 } from "@01s-11comm/type";
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordListQuery> = {
+	username: "",
+	realName: "",
+	department: "",
+	changeTime: "",
+	changeType: "",
+	status: "",
+	changeTimeRange: ["", ""],
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 // 使用密码修改记录列表查询 Hook
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
-	doFetch,
 	resetParams,
-} = useChangePasswordRecordListQuery();
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useChangePasswordRecordListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -94,59 +115,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "密码修改记录",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & ChangePasswordRecordListQuery = {
-	username: "",
-	realName: "",
-	department: "",
-	changeTime: "",
-	changeType: "",
-	status: "",
-	changeTimeRange: ["", ""],
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置

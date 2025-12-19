@@ -24,8 +24,37 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 
 import { message } from "@/utils/message";
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ShiftSettingListQuery> = {
+	name: "",
+	type: "",
+	startTime: "",
+	endTime: "",
+	enabled: true,
+	description: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 // 使用班次设置列表查询 Hook
-const { tableData, total, pageIndex, pageSize, isFetching, updateParams, doFetch } = useShiftSettingListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useShiftSettingListQuery(plusSearchDefaultValues);
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -89,7 +118,7 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -107,7 +136,7 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 		async doBeforeClose({ options, index }) {
 			const formComputed = shiftSettingFormInstance.value?.formComputed;
 			if (formComputed) {
-				await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
 		footerButtons: [
@@ -117,7 +146,7 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = shiftSettingFormInstance.value?.formComputed;
 					if (formComputed) {
-						await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
@@ -192,53 +221,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
-}
-
-/** 表格组件配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "班次信息",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & ShiftSettingListQuery = {
-	name: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -262,20 +249,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	updateParams({
-		name: undefined,
-		pageIndex: 1,
-	});
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	updateParams({
-		name: plusSearchModel.value.name,
-		pageIndex: 1,
-	});
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 新增操作 */
@@ -373,6 +354,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

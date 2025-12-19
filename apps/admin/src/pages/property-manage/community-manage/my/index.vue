@@ -16,17 +16,42 @@ import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO }
 import CommunityManageForm from "./components/form.vue";
 import { useMyListQuery } from "@/api/property-manage/community-manage/my";
 import { provinceOptions } from "./components/form";
-import {
-	type MyCommunityListItem,
-	type MyCommunityQueryParams,
-	myStatusOptions,
-} from "@01s-11comm/type";
+import { type MyCommunityListItem, type MyCommunityQueryParams, myStatusOptions } from "@01s-11comm/type";
 
 /** 表单组件实例 */
 const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
+	province: "",
+	city: "",
+	district: "",
+	communityName: "",
+	communityCode: "",
+	status: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
-	useMyListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useMyListQuery(plusSearchDefaultValues);
 
 /** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -102,58 +127,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "我的小区",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
-	province: "",
-	city: "",
-	district: "",
-	communityName: "",
-	communityCode: "",
-	status: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -302,7 +280,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 			...(isInfo.value
 				? []
-				: [
+				: ([
 						{
 							label: transformI18n($t("common.buttons.reset")),
 							type: "warning",
@@ -325,7 +303,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 								}
 							},
 						} as any,
-				  ] as any),
+					] as any)),
 		],
 	});
 }

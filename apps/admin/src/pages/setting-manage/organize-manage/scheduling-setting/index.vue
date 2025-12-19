@@ -12,7 +12,7 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type SchedulingSettingFormProps, defaultForm, type SchedulingSettingFormVO } from "./components/form";
 import SchedulingSettingForm from "./components/form.vue";
-import type { SchedulingSetting } from "@01s-11comm/type";
+import type { SchedulingSetting, SchedulingSettingListQuery } from "@01s-11comm/type";
 import { schedulingStatusOptions } from "@01s-11comm/type";
 import { useSchedulingSettingListQuery } from "@/api/setting-manage/organize-manage/scheduling-setting";
 
@@ -27,8 +27,34 @@ import { message } from "@/utils/message";
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<SchedulingSettingListQuery> = {
+	name: "",
+	type: "",
+	cycle: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 // 使用排班设置列表查询 Hook
-const { tableData, total, pageIndex, pageSize, isFetching, updateParams, doFetch } = useSchedulingSettingListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useSchedulingSettingListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -73,44 +99,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: columns.value,
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
-
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "排班设置",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & { name?: string; status?: string } = {
-	name: "",
-	status: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -240,32 +233,14 @@ function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 }
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	updateParams({
-		name: undefined,
-		status: undefined,
-		pageIndex: 1,
-	});
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	updateParams({
-		name: plusSearchModel.value.name,
-		status: plusSearchModel.value.status,
-		pageIndex: 1,
-	});
-}
-
-/** 处理页数变化 */
-async function handlePageSizeChange(val: number) {
-	pageSize.value = val;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(val: number) {
-	pageIndex.value = val;
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 修改操作 */
@@ -301,7 +276,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -314,6 +289,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

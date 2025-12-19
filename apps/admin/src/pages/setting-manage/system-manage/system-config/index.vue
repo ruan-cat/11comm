@@ -24,7 +24,7 @@ import type { SystemConfig } from "@01s-11comm/type";
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 
 // 使用系统配置列表查询 Hook
-const { tableData, isFetching } = useSystemConfigListQuery();
+const { tableData, isFetching } = useSystemConfigListQuery({});
 
 /** 系统配置数据 */
 const systemConfig = computed<SystemConfig>(() => {

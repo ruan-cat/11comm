@@ -133,7 +133,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -291,8 +291,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 表单组件需要的props */
 	const formProps: CommunityNoticeFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: structuredClone(defaultForm),
+		defaultValues: structuredClone(defaultForm),
 	};
 
 	/** 编辑模式的表单数据 */
@@ -301,7 +301,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		const 表单数据 = 列表数据转表单数据(row);
 		editFormProps = {
 			form: 表单数据,
-			defaultValues: cloneDeep(表单数据),
+			defaultValues: structuredClone(表单数据),
 		};
 	}
 

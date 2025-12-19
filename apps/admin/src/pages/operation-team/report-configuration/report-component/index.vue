@@ -42,15 +42,10 @@ const plusSearchModel = ref(plusSearchModelRef);
 /** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
 	isFetching,
 	updateParams,
 	resetParams,
 	doFetch,
-	handlePageSizeChange,
-	handleCurrentPageChange,
 	handlePageSizeChange,
 	handleCurrentPageChange,
 	pureTableProps,
@@ -92,14 +87,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
 
 /** 表格组件 配置 */
 /** 表格操作栏组件 配置  */
@@ -188,9 +175,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const 报表组件表单_VO: 报表组件表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					组件名称: row?.componentName || "",
 					组件类型: (row?.componentType || "数据卡片") as ComponentType,
@@ -199,7 +186,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					java: row?.java || "",
 					描述: row?.description || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ReportComponentFormProps = {
@@ -286,6 +273,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

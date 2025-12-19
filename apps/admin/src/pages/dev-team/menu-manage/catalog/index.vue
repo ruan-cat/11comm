@@ -21,20 +21,36 @@ import {
 import { useMenuCatalogListQuery } from "@/api/dev-team/menu-manage/catalog";
 import { type CatalogFormProps, defaultForm } from "./components/form";
 import CatalogForm from "./components/form.vue";
+import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<MenuCatalogQueryParams> = {
+	name: "",
+	type: "",
+	status: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
 	resetParams,
 	doFetch,
 	handlePageSizeChange,
 	handleCurrentPageChange,
-} = useMenuCatalogListQuery();
+} = useMenuCatalogListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -89,45 +105,12 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件 配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-}));
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "菜单目录",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<MenuCatalogQueryParams> = {
-	name: "",
-	groupType: undefined,
-	storeType: undefined,
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -169,16 +152,13 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
 /** 执行搜索 */
 function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<MenuCatalogQueryParams>);
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 模式控制 */
@@ -205,9 +185,9 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 
 	/** 业务对象 */
 	const menuCatalogFormData: MenuCatalogFormData = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					gid: row?.gid || "",
 					icon: row?.icon || "",
@@ -218,7 +198,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 					label: row?.label || "",
 					storeType: row?.storeType || "property",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: CatalogFormProps = {
@@ -308,6 +288,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

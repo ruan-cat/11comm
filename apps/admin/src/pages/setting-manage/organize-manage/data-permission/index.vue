@@ -20,13 +20,14 @@ const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
 // 使用数据权限列表查询 Hook
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
+	resetParams,
 	doFetch,
-} = useDataPermissionListQuery();
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useDataPermissionListQuery({});
 
 /** 左侧数据权限列表数据 */
 const dataPermissionList = computed<DataPermission[]>(() => tableData.value);
