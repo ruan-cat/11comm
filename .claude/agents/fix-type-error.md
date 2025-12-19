@@ -235,8 +235,20 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 
 以下代码是错误的，你不应该主动导入任何 getRouteRank 函数。这个函数是全局自动导入的，不需要你手动导入。
 
+getRouteRank 是在宏上的使用的。
+
 ```ts
+// 错误的导入 应该删除
 import { getRouteRank } from "@/router/rank";
+```
+
+### 错误导入 FieldValues 类型
+
+请注意，`FieldValues` 类型是全局导入的类型。这是常见错误。如果你需要处理类型错误而导入全局类型，请在 `plus-pro-components` 模块内导入正确的类型。
+
+```ts
+// 正确的导入路径
+import type { FieldValues } from "plus-pro-components";
 ```
 
 ## 3. 项目特定的类型处理策略
