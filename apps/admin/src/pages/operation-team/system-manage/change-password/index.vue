@@ -49,16 +49,13 @@ const plusSearchModel = ref(plusSearchModelRef);
 /** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
-	total,
-	pageIndex,
-	pageSize,
+	pureTableProps,
 	isFetching,
 	updateParams,
 	resetParams,
 	doFetch,
 	handlePageSizeChange,
 	handleCurrentPageChange,
-	pureTableProps,
 } = useChangePasswordRecordListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */

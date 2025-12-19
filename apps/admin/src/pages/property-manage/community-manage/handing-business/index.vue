@@ -26,7 +26,7 @@ const plusSearchModelRef: FieldValues & Partial<HandingBusinessQueryParams> = {
 	status: undefined,
 };
 
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 const {
 	tableData,
@@ -171,7 +171,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 

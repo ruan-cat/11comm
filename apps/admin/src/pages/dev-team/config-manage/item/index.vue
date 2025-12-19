@@ -196,9 +196,9 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 
 	/** 业务对象 */
 	const formData: ConfigItemFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					configItemName: row?.configName || "",
 					configItemCode: row?.configCode || "",
@@ -208,7 +208,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 					isEnabled: row?.isEnabled || "",
 					remark: row?.remark || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ConfigItemFormProps = {

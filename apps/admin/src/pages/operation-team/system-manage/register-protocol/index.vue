@@ -19,8 +19,35 @@ import { useMode, type Mode } from "@/composables/use-mode";
 /** 表单组件实例 */
 const registerProtocolFormInstance = ref<InstanceType<typeof RegisterProtocolForm> | null>(null);
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<RegisterProtocolQueryParams> = {
+	protocolName: "",
+	protocolType: undefined,
+	status: undefined,
+	isMandatory: undefined,
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
-	useRegisterProtocolListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useRegisterProtocolListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -95,55 +122,12 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "注册协议",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<RegisterProtocolQueryParams> = {
-	protocolName: "",
-	protocolType: undefined,
-	status: undefined,
-	isMandatory: undefined,
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -193,7 +177,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -235,9 +219,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const 注册协议表单_VO: 注册协议表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value || isInfo.value
-			? (cloneDeep({
+			? (structuredClone({
 					...defaultForm,
 					协议名称: row?.protocolName || "",
 					协议类型: (row?.protocolType || "用户注册协议") as 协议类型枚举,
@@ -250,7 +234,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					失效日期: row?.expirationDate || "",
 					排序权重: row?.sortOrder || 0,
 				}) as 注册协议表单_VO)
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: RegisterProtocolFormProps = {

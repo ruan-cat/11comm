@@ -195,9 +195,9 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 
 	/** 业务对象 */
 	const formData: DictionaryFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					dictionaryName: row?.dictionaryName || "",
 					dictionaryCode: row?.dictionaryCode || "",
@@ -206,7 +206,7 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 					isEnabled: row?.isEnabled || "",
 					remark: row?.remark || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: DictionaryFormProps = {
