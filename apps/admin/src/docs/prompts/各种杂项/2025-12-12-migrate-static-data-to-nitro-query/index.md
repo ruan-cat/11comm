@@ -188,9 +188,10 @@ export interface PageDTO<T> {
 3. 在执行任务时，请及时的更新 `openspec\changes\migrate-static-data-to-nitro-query\tasks.md` 任务进度文件。
 4. 禁止编写脚本完成批处理任务： **不允许**你编写任何 Python、typescript、javascript，或 bash 脚本，完成大批量代码删改之类的任务。你应该阅读文件来完成更改，而不是使用不稳定的，容易带来语法错误的，删改不干净不合理的批处理脚本，来完成任务
 5. 每一个文件都必须亲自访问，阅读，然后按照要求做更改。
-6. 一旦你自动完成一轮上下文合并时，请你重新阅读一次 `openspec\changes\migrate-static-data-to-nitro-query` 目录内全部的规范文件，避免出现幻觉。
-7. 请持续使用中文回复。
-8. 请连续的，持续的运行，直到全部的任务都处理完毕。不要完成一个任务后就停下来询问我。
+6. 请你主动的开启多个独立并行的修改子代理，加快修改任务。
+7. 一旦你自动完成一轮上下文合并时，请你重新阅读一次 `openspec\changes\migrate-static-data-to-nitro-query` 目录内全部的规范文件，避免出现幻觉。
+8. 请持续使用中文回复。
+9. 请连续的，持续的运行，直到全部的任务都处理完毕。不要完成一个任务后就停下来询问我。
 
 ## 杂项跟进提示词
 
