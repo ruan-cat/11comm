@@ -329,7 +329,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 6. 上述的规范文件，在内容上是有重合的，需要你重新整理，避免重复说明。
 7. 将你对比的结果，整合到 `openspec\changes\migrate-static-data-to-nitro-query\specs` 目录内，并允许你新建一个专门的规范文件来说明清楚迁移细则。
 
-### 12 <!-- TODO: --> 批量的针对性修复现存的 api hooks 接口请求代码写法
+### 12 批量的针对性修复现存的 api hooks 接口请求代码写法
 
 1. 请你根据 `apps\admin\src\router\rank\rank-route-keys.ts` 提供的 `RANK_ROUTE_KEYS` 数组，根据数组提供的 `三级路由` ，来确定基于路由结构而定义的 api 接口。这些接口目录都在 `apps\admin\src\api` 目录内。
 2. 请你务必先研究学习，`RANK_ROUTE_KEYS` 数组暴露出来的 `三级路由` ，根据三级路由的路径，明确清楚在 `apps\admin\src\api` 目录应该检索那些文件并修改，避免出现检索范围过大的情况。
