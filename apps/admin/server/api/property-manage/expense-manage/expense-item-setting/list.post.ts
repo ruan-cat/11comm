@@ -1,45 +1,35 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ExpenseItemSettingListItem, ExpenseItemSettingQueryParams } from "@01s-11comm/type";
+/**
+ * @file 费用项目设置列表接口
+ * @description Expense item setting list API
+ * POST /api/property-manage/expense-manage/expense-item-setting/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, ExpenseItemSettingListItem, ExpenseItemSettingQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockExpenseItemSettingData } from "./mock-data";
 
-/**
- * @description expense-item-setting列表 POST API
- * ExpenseItemSetting list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ExpenseItemSettingListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseItemSettingListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<ExpenseItemSettingQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, code, expenseItem, expenseIdentifier, paymentType, accountDeduction, status } = body;
+	const defaultParams: ExpenseItemSettingQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockExpenseItemSettingData];
+	// 2. 数据筛选
+	const filteredData = filterDataByQuery(mockExpenseItemSettingData, filters);
 
-	// 数据筛选
-	if (code) {
-		filteredData = filteredData.filter((item) => item.code.includes(code));
-	}
-	if (expenseItem) {
-		filteredData = filteredData.filter((item) => item.expenseItem.includes(expenseItem));
-	}
-	if (expenseIdentifier) {
-		filteredData = filteredData.filter((item) => item.expenseIdentifier === expenseIdentifier);
-	}
-	if (paymentType) {
-		filteredData = filteredData.filter((item) => item.paymentType === paymentType);
-	}
-	if (accountDeduction) {
-		filteredData = filteredData.filter((item) => item.accountDeduction === accountDeduction);
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式
+	const response: JsonVO<PageDTO<ExpenseItemSettingListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -50,6 +40,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ExpenseI
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

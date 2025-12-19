@@ -1,33 +1,35 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ReprintVoucherListItem, ReprintVoucherQueryParams } from "@01s-11comm/type";
+/**
+ * @file 补打收据列表接口
+ * @description Reprint voucher list API
+ * POST /api/property-manage/expense-manage/reprint-voucher/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, ReprintVoucherListItem, ReprintVoucherQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockReprintVoucherData } from "./mock-data";
 
-/**
- * @description reprint-voucher列表 POST API
- * ReprintVoucher list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ReprintVoucherListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReprintVoucherListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<ReprintVoucherQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const defaultParams: ReprintVoucherQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockReprintVoucherData];
+	// 2. 数据筛选
+	const filteredData = filterDataByQuery(mockReprintVoucherData, filters);
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式
+	const response: JsonVO<PageDTO<ReprintVoucherListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,6 +40,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ReprintV
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

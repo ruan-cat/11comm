@@ -1,33 +1,35 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { DiscountTypeListItem, DiscountTypeQueryParams } from "@01s-11comm/type";
+/**
+ * @file 优惠类型列表接口
+ * @description Discount type list API
+ * POST /api/property-manage/expense-manage/discount-type/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, DiscountTypeListItem, DiscountTypeQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockDiscountTypeData } from "./mock-data";
 
-/**
- * @description discount-type列表 POST API
- * DiscountType list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<DiscountTypeListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<DiscountTypeListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<DiscountTypeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const defaultParams: DiscountTypeQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockDiscountTypeData];
+	// 2. 数据筛选
+	const filteredData = filterDataByQuery(mockDiscountTypeData, filters);
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式
+	const response: JsonVO<PageDTO<DiscountTypeListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,6 +40,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<Discount
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
