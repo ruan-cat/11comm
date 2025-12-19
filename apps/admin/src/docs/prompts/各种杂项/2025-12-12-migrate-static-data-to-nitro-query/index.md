@@ -348,4 +348,12 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 ### 13 <!-- TODO: --> 批量的针对性改写现存的 index.vue 列表页代码写法
 
-在 `apps\admin\src\pages` 内，健硕
+你的任务是：在 openspec 的帮助下，新建一个满足 openspec 规范的任务清单、任务规范等。新建修复类型故障的，openspec 长任务。
+
+按照以下步骤完成：
+
+1. 阅读代码约束规范：先阅读 `openspec\changes\migrate-static-data-to-nitro-query\specs\migration-guide.md` 规范的 `Step 5: 改写列表页 (30 分钟)` 部分。明确清楚列表页代码编写规范。
+2. 阅读 `RANK_ROUTE_KEYS` 数组暴露出来的 `三级路由` ，根据三级路由的路径，明确清楚在 `apps\admin\src\pages` 目录应该检索那些文件并修改，避免出现检索范围过大的情况。
+3. 根据 `三级路由` 展现出来的文件结构，设计 tasks.md 任务列表文件。设计代码批量改写改造的任务。
+   - 确保对 api hooks 的使用满足类型约束，没有故障。
+   - 确保代码写法格式满足要求。
