@@ -15,7 +15,23 @@
 2. 如果遇到中文命名的业务类型和字段名。请统一换成英文名。
 3. 迁移业务类型时，必须保留 jsdoc 注释说明。
 4. 保留 defaultForm 变量，这个变量不允许被迁移到`类型项目`内。
-5. 保留弹框类型。弹框类型不允许被迁移到`类型项目`内。
+   - 凡是遇到形如 `export const defaultForm: XXX = {};` 格式的对象。请不要迁移 defaultForm 变量。保留在 `form.ts` 内。
+5. 保留弹框类型。弹框类型不允许被迁移到`类型项目`内遇到形如以下结构的类型，请不要迁移。 `export interface xxxFormProps` 格式的表单弹框类型，不允许迁移。
+
+```ts
+/**
+ * 费用项设置表单 props
+ * @description
+ * 为了避免全局类型冲突 故设计较长的类型名称
+ */
+export interface ExpenseItemSettingFormProps {
+	/** 表单数据 */
+	form: ExpenseItemSettingFormVO;
+	/** 表单组件重置时默认使用的对象 */
+	defaultValues: ExpenseItemSettingFormVO;
+}
+```
+
 6. 迁移业务类型到`类型项目`后，在 form.ts 内导入刚刚迁移到`类型项目`内的业务类型。确保不会出现严重的类型报错。
 
 ## 迁移重构要求 2： 迁移下拉选项到`类型项目`内
