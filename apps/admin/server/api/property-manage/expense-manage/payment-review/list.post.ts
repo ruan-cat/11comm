@@ -1,28 +1,28 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { PaymentReviewListItem, PaymentReviewQueryParams } from "@01s-11comm/type";
+/**
+ * @file 缴费审核列表接口
+ * @description Payment review list API
+ * @route POST /api/property-manage/expense-manage/payment-review/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, PaymentReviewListItem, PaymentReviewQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockPaymentReviewData } from "./mock-data";
 
-/**
- * @description payment-review列表 POST API
- * PaymentReview list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentReviewListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<PaymentReviewListItem>>> => {
 	const body = await readBody<PaymentReviewQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, house, expenseItem, auditStatus, paymentStartTime, paymentEndTime, status } = body;
+	const defaultParams: PaymentReviewQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, paymentStartTime, paymentEndTime, ...filters } = mergedParams;
 
-	let filteredData = [...mockPaymentReviewData];
+	/** 数据筛选 */
+	let filteredData = filterDataByQuery(mockPaymentReviewData, filters);
 
-	// 数据筛选
-	if (house) {
-		filteredData = filteredData.filter((item) => item.house.includes(house));
-	}
-	if (expenseItem) {
-		filteredData = filteredData.filter((item) => item.expenseItem === expenseItem);
-	}
-	if (auditStatus) {
-		filteredData = filteredData.filter((item) => item.auditStatus === auditStatus);
-	}
+	/** 处理日期范围筛选 */
 	if (paymentStartTime && paymentEndTime) {
 		filteredData = filteredData.filter((item) => {
 			const itemTime = new Date(item.paymentTime).getTime();
@@ -31,17 +31,14 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentR
 			return itemTime >= start && itemTime <= end;
 		});
 	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
 
-	// 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<PaymentReviewListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -52,6 +49,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentR
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
