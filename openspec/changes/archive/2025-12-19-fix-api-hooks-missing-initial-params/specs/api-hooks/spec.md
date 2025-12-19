@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: API Hook 函数必须提供 initialParams 参数
 
@@ -21,8 +21,6 @@
 - **WHEN** 列表页组件使用 API Hook
 - **THEN** 必须传递初始查询参数(通常是 `plusSearchDefaultValues`)
 - **AND** Hook 返回的数据能正确反映初始参数
-
-## ADDED Requirements
 
 ### Requirement: API Hook 代码格式统一
 
