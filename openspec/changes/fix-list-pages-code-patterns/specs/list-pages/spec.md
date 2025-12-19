@@ -47,8 +47,90 @@
 
 - **WHEN** 列表页组件初始化搜索表单
 - **THEN** 必须定义 `plusSearchModelRef` 对象,类型为 `FieldValues & Partial<{Page}QueryParams>`
+- **AND** 必须包含 `Partial` 类型约束,不能省略
 - **AND** 必须使用 `structuredClone(plusSearchModelRef)` 创建 `plusSearchDefaultValues`
 - **AND** 必须使用 `ref(plusSearchModelRef)` 创建 `plusSearchModel`
+- **AND** 这三个变量必须按顺序连续声明,且在 API Hook 调用之前
+
+### Requirement: 搜索表单变量必须严格按顺序声明且在 API Hook 之前
+
+所有列表页的搜索表单变量 MUST 严格按照固定顺序声明,且 MUST 在调用 API Hook 之前声明完成。
+
+#### Scenario: 变量声明顺序的强制要求
+
+- **WHEN** 编写或迁移列表页代码
+- **THEN** 必须按以下顺序声明搜索表单变量:
+  1. **第一步**: 声明 `plusSearchModelRef`,类型必须为 `FieldValues & Partial<{Page}QueryParams>`
+  2. **第二步**: 声明 `plusSearchDefaultValues = structuredClone(plusSearchModelRef)`
+  3. **第三步**: 声明 `plusSearchModel = ref(plusSearchModelRef)`
+- **AND** 这三个变量必须连续声明,中间不能插入其他无关代码
+- **AND** 声明完这三个变量后,才能调用 `use{Page}ListQuery(plusSearchDefaultValues)`
+
+#### Scenario: 避免重复声明和类型错误
+
+- **WHEN** 迁移现有列表页代码时
+- **THEN** 如果发现这三个变量已存在但位置或顺序错误
+- **THEN** 必须使用"移动代码"方式调整,而不是新增代码
+- **AND** 不能出现同一变量声明两次的情况
+- **AND** 必须确保 `plusSearchModelRef` 包含 `Partial` 类型约束
+
+**错误示例**:
+
+```typescript
+// ❌ 错误1: 缺少 Partial 约束
+const plusSearchModelRef: FieldValues & ExpenseQueryParams = {
+	expenseName: "",
+};
+
+// ❌ 错误2: 变量声明在 API Hook 之后
+const { tableData } = useExpenseListQuery(plusSearchDefaultValues);
+const plusSearchModel = ref(plusSearchModelRef); // 太晚了
+
+// ❌ 错误3: 变量声明不连续
+const plusSearchModelRef: FieldValues & Partial<ExpenseQueryParams> = {};
+const someOtherVariable = "..."; // 中间插入了其他代码
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+// ❌ 错误4: 重复声明
+const plusSearchModelRef: FieldValues & Partial<ExpenseQueryParams> = {};
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const { tableData } = useExpenseListQuery(plusSearchDefaultValues);
+const plusSearchModel = ref(plusSearchModelRef); // 重复/错位
+```
+
+**正确示例**:
+
+```typescript
+// ✅ 正确: 严格按顺序且在 API Hook 之前声明
+const plusSearchModelRef: FieldValues & Partial<ExpenseQueryParams> = {
+	expenseName: "",
+	expenseType: "",
+	status: "",
+};
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchModel = ref(plusSearchModelRef);
+
+// 完成变量声明后,才调用 API Hook
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useExpenseListQuery(plusSearchDefaultValues);
+```
+
+#### Scenario: 迁移时的处理策略
+
+- **WHEN** 迁移现有列表页代码
+- **THEN** 如果发现搜索表单变量位置错误或顺序混乱
+- **THEN** 必须识别现有的变量声明位置
+- **AND** 使用 Edit 工具的移动代码功能,将这些变量移动到正确位置
+- **AND** 确保移动后满足: 顺序正确 + 在 API Hook 之前 + 连续声明
+- **AND** 不能采用"删除旧代码 + 新增代码"的方式,必须移动现有代码
 
 ### Requirement: 列表页必须删除旧的本地数据相关代码
 
