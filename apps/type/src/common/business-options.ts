@@ -359,3 +359,91 @@ export const parkingLotOptions: OptionsType = [
 	{ label: "地面停车场", value: "地面停车场" },
 	{ label: "立体停车场", value: "立体停车场" },
 ];
+
+/**
+ * @description 停车场类型选项
+ * Parking lot type options
+ */
+export const parkingLotTypeOptions: OptionsType = [
+	{ label: "地下停车场", value: "地下停车场" },
+	{ label: "地面停车场", value: "地面停车场" },
+	{ label: "立体停车场", value: "立体停车场" },
+	{ label: "路边停车场", value: "路边停车场" },
+	{ label: "楼顶停车场", value: "楼顶停车场" },
+];
+
+/**
+ * @description 签到状态选项
+ * Check-in status options
+ */
+export const checkInStatusOptions: OptionsType = [
+	{ label: "未签到", value: "未签到" },
+	{ label: "已签到", value: "已签到" },
+	{ label: "迟到", value: "迟到" },
+	{ label: "缺勤", value: "缺勤" },
+];
+
+/**
+ * @description 保留小数位选项
+ * Decimal places options
+ */
+export const decimalPlacesOptions: OptionsType = [
+	{ label: "保留0位小数", value: 0 },
+	{ label: "保留1位小数", value: 1 },
+	{ label: "保留2位小数", value: 2 },
+	{ label: "保留3位小数", value: 3 },
+	{ label: "保留4位小数", value: 4 },
+];
+
+/**
+ * @description 进位方式选项
+ * Rounding method options
+ */
+export const roundingMethodOptions: OptionsType = [
+	{ label: "四舍五入", value: "四舍五入" },
+	{ label: "向上进位", value: "向上进位" },
+	{ label: "向下舍去", value: "向下舍去" },
+	{ label: "银行家进位", value: "银行家进位" },
+];
+
+/**
+ * @description 手机缴费选项
+ * Mobile payment options
+ */
+export const mobilePaymentOptions: OptionsType = [
+	{ label: "支持", value: "支持" },
+	{ label: "不支持", value: "不支持" },
+];
+
+/**
+ * @description 巡检方式选项
+ * Patrol method options
+ */
+export const patrolMethodOptions: OptionsType = [
+	{ label: "日常巡检", value: "日常巡检" },
+	{ label: "专项巡检", value: "专项巡检" },
+	{ label: "突击巡检", value: "突击巡检" },
+	{ label: "定期巡检", value: "定期巡检" },
+];
+
+/**
+ * @description 巡检情况选项
+ * Patrol situation options
+ */
+export const patrolSituationOptions: OptionsType = [
+	{ label: "正常", value: "正常" },
+	{ label: "异常", value: "异常" },
+	{ label: "需要维修", value: "需要维修" },
+	{ label: "需要更换", value: "需要更换" },
+];
+
+/**
+ * @description 巡检点状态选项
+ * Patrol point status options
+ */
+export const patrolPointStatusOptions: OptionsType = [
+	{ label: "正常", value: "正常" },
+	{ label: "异常", value: "异常" },
+	{ label: "已处理", value: "已处理" },
+	{ label: "待处理", value: "待处理" },
+];

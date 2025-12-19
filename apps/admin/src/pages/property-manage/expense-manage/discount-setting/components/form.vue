@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import { discountTypeOptions, ruleOptions } from "@01s-11comm/type";
+import { type FieldValues, type PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
+import { usePlusFormReset } from "@/composables/use-plus-form-reset";
+import { cloneDeep } from "@pureadmin/utils";
 
 import { DiscountSettingFormProps, 折扣设置表单_VO, defaultForm } from "./form";
 

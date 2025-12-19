@@ -1,25 +1,15 @@
-/** 场地管理 表单数据类型 */
-export interface 场地管理_VO {
-	编号: string;
-	名称: string;
-	开场时间: string;
-	关场时间: string;
-	每小时费用: string;
-	管理员: string;
-	管理员电话: string;
-	状态: string;
-}
+import type { SiteManagementFormVO, 场地管理_VO, Mode } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 场地管理_VO = {
-	编号: "",
-	名称: "",
-	开场时间: "",
-	关场时间: "",
-	每小时费用: "",
-	管理员: "",
-	管理员电话: "",
-	状态: "可预约",
+export const defaultForm: SiteManagementFormVO = {
+	id: "",
+	name: "",
+	openingTime: "",
+	closingTime: "",
+	hourlyFee: "",
+	administrator: "",
+	administratorPhone: "",
+	status: "可预约",
 };
 
 /**
@@ -29,7 +19,12 @@ export const defaultForm: 场地管理_VO = {
  */
 export interface SiteManagementFormProps {
 	/** 表单数据 */
-	form: 场地管理_VO;
+	form: SiteManagementFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 场地管理_VO;
+	defaultValues: SiteManagementFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
+
+// 兼容旧版类型导出
+export type { 场地管理_VO };

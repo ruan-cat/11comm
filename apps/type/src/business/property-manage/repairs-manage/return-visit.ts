@@ -42,3 +42,38 @@ export const returnVisitStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 报修回访表单 VO
+ * Return visit form VO
+ */
+export interface ReturnVisitFormVO {
+	/** 工单编号 Work order number */
+	workOrderNumber: string;
+	/** 位置 Location */
+	location: string;
+	/** 报修类型 Repair type */
+	repairType: string;
+	/** 报修人 Reporter */
+	reporter: string;
+	/** 联系方式 Contact information */
+	contactInfo: string;
+	/** 预约时间 Appointment time */
+	appointmentTime: string;
+	/** 回访状态 Return visit status */
+	returnVisitStatus: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultReturnVisitForm: ReturnVisitFormVO = {
+	workOrderNumber: "",
+	location: "",
+	repairType: "",
+	reporter: "",
+	contactInfo: "",
+	appointmentTime: "",
+	returnVisitStatus: "",
+	remark: "",
+};

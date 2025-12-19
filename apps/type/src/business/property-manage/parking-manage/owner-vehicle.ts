@@ -71,3 +71,32 @@ export interface 业主车辆表单_VO {
 	/** 备注 Remark */
 	备注: string;
 }
+
+/**
+ * @description 业主车辆表单数据类型（英文命名）
+ * Owner vehicle form data type (English naming)
+ */
+export interface OwnerVehicleFormVO {
+	/** 车牌号 License plate */
+	licensePlate: string;
+	/** 汽车品牌 Car brand */
+	carBrand: string;
+	/** 车类型 Car type */
+	carType: string;
+	/** 颜色 Color */
+	color: string;
+	/** 车牌类型 License plate type */
+	licensePlateType: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 业主 Owner */
+	owner: string;
+	/** 车位 Parking space */
+	parkingSpace: string;
+	/** 业主车辆 Owner vehicle */
+	ownerVehicle: string;
+	/** 备注 Remark */
+	remark: string;
+}

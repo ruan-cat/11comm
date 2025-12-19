@@ -1,28 +1,10 @@
-/** 报修待办表单_VO */
-export interface 报修待办表单_VO {
-	工单编号: string;
-	位置: string;
-	报修类型: string;
-	维修类型: string;
-	报修人: string;
-	联系方式: string;
-	预约时间: string;
-	状态: string;
-	备注: string;
-}
+import { RepairsTodoFormVO, defaultRepairsTodoForm } from "@01s-11comm/type";
+
+// 为了向后兼容，创建类型别名
+export type 报修待办表单_VO = RepairsTodoFormVO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 报修待办表单_VO = {
-	工单编号: "",
-	位置: "",
-	报修类型: "",
-	维修类型: "",
-	报修人: "",
-	联系方式: "",
-	预约时间: "",
-	状态: "",
-	备注: "",
-};
+export const defaultForm = defaultRepairsTodoForm;
 
 /**
  * 报修待办表单 props
@@ -31,7 +13,7 @@ export const defaultForm: 报修待办表单_VO = {
  */
 export interface RepairsTodoFormProps {
 	/** 表单数据 */
-	form: 报修待办表单_VO;
+	form: RepairsTodoFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 报修待办表单_VO;
+	defaultValues: RepairsTodoFormVO;
 }

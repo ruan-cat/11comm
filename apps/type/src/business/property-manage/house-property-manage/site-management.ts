@@ -41,4 +41,38 @@ export interface SiteManagementQueryParams {
 export const siteManagementStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
+	{ label: "可预约", value: "可预约" },
 ];
+
+// ==================== 表单相关类型 ====================
+
+/**
+ * @description 场地管理表单数据类型
+ * Site management form data type
+ */
+export interface SiteManagementFormVO {
+	/** 编号 ID/Number */
+	id: string;
+	/** 名称 Name */
+	name: string;
+	/** 开场时间 Opening time */
+	openingTime: string;
+	/** 关场时间 Closing time */
+	closingTime: string;
+	/** 每小时费用 Hourly fee */
+	hourlyFee: string;
+	/** 管理员 Administrator */
+	administrator: string;
+	/** 管理员电话 Administrator phone */
+	administratorPhone: string;
+	/** 状态 Status */
+	status: string;
+}
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 场地管理表单数据类型（兼容旧版本）
+ * @deprecated 请使用 SiteManagementFormVO
+ */
+export type 场地管理_VO = SiteManagementFormVO;

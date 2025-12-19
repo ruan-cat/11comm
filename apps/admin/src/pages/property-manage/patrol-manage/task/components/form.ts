@@ -35,3 +35,8 @@ export interface PatrolTaskFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 巡检任务表单_VO;
 }
+
+// ==================== 英文类型别名（已迁移到类型包）====================
+
+/** 英文类型别名：PatrolTaskFormVO */
+export type PatrolTaskFormVO = 巡检任务表单_VO;

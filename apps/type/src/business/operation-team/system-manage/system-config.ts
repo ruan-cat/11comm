@@ -123,3 +123,60 @@ export const configGroupOptions: OptionsType = [
 	{ label: "安全配置", value: "安全配置" },
 ];
 
+/**
+ * @description 系统配置状态选项
+ * System config status options
+ */
+export const systemConfigStatusOptionsCN: OptionsType = [
+	{ label: "启用", value: "启用" },
+	{ label: "禁用", value: "禁用" },
+];
+
+/**
+ * @description 系统配置表单数据类型 System config form data type
+ * @description
+ * 用于表单组件的数据传输和验证
+ * Used for data transfer and validation of form components
+ */
+export interface SystemConfigFormVO {
+	/** 配置名称 Config name */
+	configName: string;
+	/** 配置值 Config value */
+	configValue: string;
+	/** 配置类型 Config type */
+	configType: SystemConfigType;
+	/** 配置分组 Config group */
+	configGroup: SystemConfigGroup;
+	/** 状态 Status */
+	status: SystemConfigStatus;
+	/** 描述 Description */
+	description: string;
+}
+
+/**
+ * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
+ */
+export const systemConfigDefaultForm: SystemConfigFormVO = {
+	configName: "",
+	configValue: "",
+	configType: "文本",
+	configGroup: "系统基础",
+	status: "启用",
+	description: "",
+};
+
+/**
+ * @description 系统配置表单 props System config form props
+ * @description
+ * 为了避免全局类型冲突 故设计较长的类型名称
+ * To avoid global type conflicts, a longer type name is designed
+ */
+export interface SystemConfigFormProps {
+	/** 表单数据 Form data */
+	form: SystemConfigFormVO;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: SystemConfigFormVO;
+	/** 表单模式 Form mode */
+	mode?: "add" | "edit" | "info";
+}
+

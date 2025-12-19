@@ -54,6 +54,41 @@ export const reservedVenueOptions: OptionsType = [
 	{ label: "羽毛球场", value: "羽毛球场" },
 ];
 
+// ==================== 表单相关类型 ====================
+
+/**
+ * @description 场地预约订单表单数据类型
+ * Reserve venue order form data type
+ */
+export interface ReserveVenueOrderFormVO {
+	/** 订单编号 Order number */
+	orderNumber: string;
+	/** 场馆 Venue */
+	venue: string;
+	/** 场地 Site/Location */
+	site: string;
+	/** 预约人 Reserver name */
+	reserver: string;
+	/** 预约电话 Reservation phone */
+	reservationPhone: string;
+	/** 预约日期 Reservation date */
+	reservationDate: string;
+	/** 预约时间 Reservation time */
+	reservationTime: string;
+	/** 应收金额 Receivable amount */
+	receivableAmount: string;
+	/** 实收金额 Received amount */
+	receivedAmount: string;
+	/** 支付方式 Payment method */
+	paymentMethod: string;
+	/** 状态 Status */
+	status: string;
+	/** 创建时间 Create time */
+	createTime: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
 // ==================== 兼容旧中文名称 ====================
 
 /**
@@ -61,3 +96,9 @@ export const reservedVenueOptions: OptionsType = [
  * Reserved venue options (for compatibility)
  */
 export const 预约场地Options = reservedVenueOptions;
+
+/**
+ * @description 场地预约订单表单数据类型（兼容旧版本）
+ * @deprecated 请使用 ReserveVenueOrderFormVO
+ */
+export type 场地预约订单_VO = ReserveVenueOrderFormVO;

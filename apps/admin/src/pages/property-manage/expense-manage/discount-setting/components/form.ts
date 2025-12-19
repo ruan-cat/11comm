@@ -1,26 +1,9 @@
+import type { DiscountSettingFormVO, 折扣设置表单_VO, Mode } from "@01s-11comm/type";
+
+// Re-export types from type package for compatibility
+export type { 折扣设置表单_VO } from "@01s-11comm/type";
+
 // ==================== 类型定义 ====================
-
-/** 折扣设置表单数据类型 */
-export interface 折扣设置表单_VO {
-	/** 折扣名称 */
-	折扣名称: string;
-	/** 折扣类型 */
-	折扣类型: string;
-	/** 规则 */
-	规则: string;
-	/** 描述 */
-	描述: string;
-}
-
-// ==================== 常量定义 ====================
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 折扣设置表单_VO = {
-	折扣名称: "",
-	折扣类型: "优惠",
-	规则: "",
-	描述: "",
-};
 
 /**
  * 折扣设置表单 props
@@ -32,4 +15,16 @@ export interface DiscountSettingFormProps {
 	form: 折扣设置表单_VO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 折扣设置表单_VO;
+	/** 表单模式 */
+	mode?: Mode;
 }
+
+// ==================== 常量定义 ====================
+
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: DiscountSettingFormVO = {
+	discountName: "",
+	discountType: "优惠",
+	rule: "",
+	description: "",
+};

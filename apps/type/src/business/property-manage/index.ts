@@ -24,6 +24,7 @@ export type {
 	HandingBusinessQueryParams,
 	HouseDecorationListItem,
 	HouseDecorationQueryParams,
+	Mode,
 } from "./community-manage";
 
 export {

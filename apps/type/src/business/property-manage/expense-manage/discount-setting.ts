@@ -104,3 +104,24 @@ export type 折扣设置_列表数据 = DiscountSettingListItem[];
  * Discount setting list query VO type (for compatibility)
  */
 export type 折扣设置_列表查询_VO = DiscountSettingQueryParams;
+
+/**
+ * @description 折扣设置表单数据类型
+ * Discount setting form data type
+ */
+export interface DiscountSettingFormVO {
+	/** 折扣名称 Discount Name */
+	discountName: string;
+	/** 折扣类型 Discount Type */
+	discountType: string;
+	/** 规则 Rule */
+	rule: string;
+	/** 描述 Description */
+	description: string;
+}
+
+/**
+ * @description 折扣设置表单_VO 类型（兼容性）
+ * Discount setting form VO type (for compatibility)
+ */
+export type 折扣设置表单_VO = DiscountSettingFormVO;

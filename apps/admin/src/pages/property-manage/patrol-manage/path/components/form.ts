@@ -23,4 +23,9 @@ export interface PatrolPathFormProps {
 	defaultValues: PatrolPathFormData;
 }
 
+// ==================== 英文类型别名（已迁移到类型包）====================
+
+/** 英文类型别名：PatrolPathFormVO */
+export type PatrolPathFormVO = PatrolPathFormData;
+
 export type { PatrolPathFormData };

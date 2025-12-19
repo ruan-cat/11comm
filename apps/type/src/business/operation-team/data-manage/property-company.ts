@@ -68,3 +68,69 @@ export interface PropertyCompanyQueryParams {
 	pageSize: number;
 }
 
+/**
+ * @description 物业公司表单数据类型 Property management company form data type
+ */
+export interface PropertyManagementCompanyFormVO {
+	/** 物业公司编号 Company ID */
+	code: string;
+	/** 物业公司名称 Company name */
+	name: string;
+	/** 公司地址 Address */
+	address: string;
+	/** 联系电话 Phone */
+	phone: string;
+	/** 管理员姓名 Administrator */
+	administrator: string;
+	/** 公司法人代表 Legal representative */
+	legalRepresentative: string;
+	/** 公司成立日期 Establishment date */
+	establishmentDate: string;
+	/** 位置地标 Landmark */
+	landmark: string;
+	/** 开通小区数量 Number of communities */
+	communityCount: number;
+	/** 公司类型 Company type */
+	companyType: string;
+	/** 服务等级 Service level */
+	serviceLevel: string;
+	/** 运营状态 Operation status */
+	operationStatus: string;
+	/** 备注 Remarks */
+	remarks: string;
+}
+
+/**
+ * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
+ */
+export const propertyManagementCompanyDefaultForm: PropertyManagementCompanyFormVO = {
+	code: "",
+	name: "",
+	address: "",
+	phone: "",
+	administrator: "",
+	legalRepresentative: "",
+	establishmentDate: "",
+	landmark: "",
+	communityCount: 0,
+	companyType: "",
+	serviceLevel: "",
+	operationStatus: "正常运营",
+	remarks: "",
+};
+
+/**
+ * @description 物业公司表单 props Property management company form props
+ * @description
+ * 为了避免全局类型冲突 故设计较长的类型名称
+ * To avoid global type conflicts, a longer type name is designed
+ */
+export interface PropertyManagementCompanyFormProps {
+	/** 表单数据 Form data */
+	form: PropertyManagementCompanyFormVO;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: PropertyManagementCompanyFormVO;
+	/** 表单模式 Form mode */
+	mode?: "add" | "edit" | "view";
+}
+

@@ -53,3 +53,20 @@ export interface 巡查明细表单Props {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 巡查明细表单_VO;
 }
+
+// ==================== 英文类型别名（已迁移到类型包）====================
+
+/** 英文类型别名：PatrolMethodType */
+export type PatrolMethodType = 巡检方式;
+
+/** 英文类型别名：TaskStatusType */
+export type TaskStatusType = 任务状态;
+
+/** 英文类型别名：PatrolPointStatusType */
+export type PatrolPointStatusType = 巡检点状态;
+
+/** 英文类型别名：PatrolDetailFormVO */
+export type PatrolDetailFormVO = 巡查明细表单_VO;
+
+/** 英文类型别名：PatrolDetailFormProps */
+export type PatrolDetailFormProps = 巡查明细表单Props;

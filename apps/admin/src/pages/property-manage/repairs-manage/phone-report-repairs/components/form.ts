@@ -1,22 +1,11 @@
-// 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
-export interface 电话报修表单_VO {
-	报修范围: string;
-	报修类型: string;
-	报修人: string;
-	联系方式: string;
-	预约时间: string;
-	报修内容: string;
-}
+import { PhoneRepairsFormVO, defaultPhoneRepairsForm } from "@01s-11comm/type";
+import type { Mode } from "@01s-11comm/type";
+
+// 为了向后兼容，创建类型别名
+export type 电话报修表单_VO = PhoneRepairsFormVO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 电话报修表单_VO = {
-	报修范围: "小区公区",
-	报修类型: "水管维修",
-	报修人: "",
-	联系方式: "",
-	预约时间: "",
-	报修内容: "",
-};
+export const defaultForm = defaultPhoneRepairsForm;
 
 /**
  * 电话报修表单 props
@@ -25,7 +14,9 @@ export const defaultForm: 电话报修表单_VO = {
  */
 export interface PhoneRepairsFormProps {
 	/** 表单数据 */
-	form: 电话报修表单_VO;
+	form: PhoneRepairsFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 电话报修表单_VO;
+	defaultValues: PhoneRepairsFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

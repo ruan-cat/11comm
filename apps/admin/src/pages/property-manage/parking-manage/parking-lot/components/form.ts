@@ -1,46 +1,28 @@
-// ==================== 联合类型定义 ====================
+import type { ParkingLotFormVO, ParkingLotFormProps as ParkingLotFormPropsType, ParkingLotType, ParkingSpaceType } from "@01s-11comm/type";
 
-/** 停车场类型联合类型 */
-export type 停车场类型 = "地面停车场" | "地下停车场" | "立体停车场" | "路边停车位";
+// ==================== 向后兼容的类型别名 ====================
 
-/** 车位类型联合类型 */
-export type 车位类型 = "标准车位" | "大型车位" | "无障碍车位" | "充电桩车位" | "访客车位";
+/** 停车场类型联合类型 - 向后兼容别名 */
+export type 停车场类型 = ParkingLotType;
 
-// ==================== 业务类型定义 ====================
+/** 车位类型联合类型 - 向后兼容别名 */
+export type 车位类型 = ParkingSpaceType;
 
-/**
- * 停车场表单数据类型
- */
-export interface 停车场表单_VO {
-	/** 停车场编号 */
-	停车场编号: string;
-	/** 停车场类型 */
-	停车场类型: 停车场类型;
-	/** 车位类型 */
-	车位类型: 车位类型;
-	/** 外部编码 */
-	外部编码: string;
-	/** 备注 */
-	备注: string;
-}
+/** 停车场表单数据类型 - 向后兼容别名 */
+export type 停车场表单_VO = ParkingLotFormVO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 停车场表单_VO = {
-	停车场编号: "",
-	停车场类型: "地下停车场",
-	车位类型: "标准车位",
-	外部编码: "",
-	备注: "",
+export const defaultForm: ParkingLotFormVO = {
+	parkingLotNumber: "",
+	parkingLotType: "地下停车场",
+	parkingSpaceType: "标准车位",
+	externalCode: "",
+	remark: "",
 };
 
 /**
- * 停车场表单 props
+ * 停车场表单 props - 向后兼容别名
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export interface 停车场表单Props {
-	/** 表单数据 */
-	form: 停车场表单_VO;
-	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 停车场表单_VO;
-}
+export interface 停车场表单Props extends ParkingLotFormPropsType {}

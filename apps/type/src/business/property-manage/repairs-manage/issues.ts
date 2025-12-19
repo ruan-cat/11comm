@@ -42,3 +42,53 @@ export const issuesStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 工单池表单 VO
+ * Issues form VO
+ */
+export interface IssuesFormVO {
+	/** 工单编码 Work order code */
+	workOrderCode: string;
+	/** 位置 Location */
+	location: string;
+	/** 报修类型 Repair type */
+	repairType: string;
+	/** 维修类型 Maintenance type */
+	maintenanceType: string;
+	/** 报修人 Reporter */
+	reporter: string;
+	/** 联系方式 Contact information */
+	contactInfo: string;
+	/** 预约开始结束时间 Appointment start and end time */
+	appointmentTimeRange: string;
+	/** 提交时间 Submit time */
+	submitTime: string;
+	/** 提单时长 Order duration */
+	orderDuration: string;
+	/** 完成时间 Complete time */
+	completeTime: string;
+	/** 状态 Status */
+	status: string;
+	/** 违规说明 Violation description */
+	violationDescription: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultIssuesForm: IssuesFormVO = {
+	workOrderCode: "",
+	location: "",
+	repairType: "",
+	maintenanceType: "",
+	reporter: "",
+	contactInfo: "",
+	appointmentTimeRange: "",
+	submitTime: "",
+	orderDuration: "",
+	completeTime: "",
+	status: "",
+	violationDescription: "",
+	remark: "",
+};

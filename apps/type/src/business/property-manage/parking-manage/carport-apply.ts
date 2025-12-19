@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import type { Mode } from "../community-manage/my";
 
 /**
  * @description carport-apply列表数据
@@ -42,3 +43,47 @@ export const carportApplyStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+// ==================== 车位申请表单类型 Carport Apply Form Types ====================
+
+/**
+ * @description 车位申请表单数据类型
+ * Carport application form data type
+ */
+export interface CarportApplyFormVO {
+	/** 申请ID Application ID */
+	applicationId: string;
+	/** 车牌号 License plate number */
+	licensePlate: string;
+	/** 停车位 Parking space */
+	parkingSpace: string;
+	/** 汽车品牌 Car brand */
+	carBrand: string;
+	/** 车辆类型 Vehicle type */
+	vehicleType: string;
+	/** 颜色 Color */
+	color: string;
+	/** 起租时间 Start lease time */
+	startLeaseTime: string;
+	/** 结租时间 End lease time */
+	endLeaseTime: string;
+	/** 申请人 Applicant */
+	applicant: string;
+	/** 手机号 Phone number */
+	phoneNumber: string;
+	/** 审核结果 Review result */
+	reviewResult: string;
+}
+
+/**
+ * @description 车位申请表单 Props
+ * Carport apply form props
+ */
+export interface CarportApplyFormProps {
+	/** 表单数据 Form data */
+	form: CarportApplyFormVO;
+	/** 表单组件重置时默认使用的对象 Default values for form reset */
+	defaultValues: CarportApplyFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}

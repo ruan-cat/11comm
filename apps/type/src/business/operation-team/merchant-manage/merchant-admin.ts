@@ -78,4 +78,61 @@ export const propertyCompanyOptions: OptionsType = [
 	{ label: "富力物业服务集团有限公司", value: "富力物业服务集团有限公司" },
 ];
 
+/**
+ * @description 商户管理员表单数据类型 Merchant admin form data type
+ */
+export interface MerchantAdminFormVO {
+	/** 物业公司名称 Property company name */
+	propertyCompany: string;
+	/** 管理员姓名 Admin name */
+	adminName: string;
+	/** 管理员电话 Admin phone */
+	adminPhone: string;
+	/** 管理员邮箱 Admin email */
+	adminEmail: string;
+	/** 身份证号码 ID card number */
+	idCardNumber: string;
+	/** 账户状态 Account status */
+	accountStatus: string;
+	/** 登录密码 Login password */
+	loginPassword: string;
+	/** 确认密码 Confirm password */
+	confirmPassword: string;
+	/** 联系地址 Contact address */
+	contactAddress: string;
+	/** 备注 Remarks */
+	remarks: string;
+}
+
+/**
+ * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
+ */
+export const merchantAdminDefaultForm: MerchantAdminFormVO = {
+	propertyCompany: "",
+	adminName: "",
+	adminPhone: "",
+	adminEmail: "",
+	idCardNumber: "",
+	accountStatus: "正常",
+	loginPassword: "",
+	confirmPassword: "",
+	contactAddress: "",
+	remarks: "",
+};
+
+/**
+ * @description 商户管理员表单 props Merchant admin form props
+ * @description
+ * 为了避免全局类型冲突 故设计较长的类型名称
+ * To avoid global type conflicts, a longer type name is designed
+ */
+export interface MerchantAdminFormProps {
+	/** 表单数据 Form data */
+	form: MerchantAdminFormVO;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: MerchantAdminFormVO;
+	/** 表单模式 Form mode */
+	mode?: "add" | "edit" | "view";
+}
+
 

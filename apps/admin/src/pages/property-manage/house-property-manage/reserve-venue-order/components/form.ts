@@ -1,35 +1,20 @@
-/** 场地预约订单 表单数据类型 */
-export interface 场地预约订单_VO {
-	订单编号: string;
-	场馆: string;
-	场地: string;
-	预约人: string;
-	预约电话: string;
-	预约日期: string;
-	预约时间: string;
-	应收金额: string;
-	实收金额: string;
-	支付方式: string;
-	状态: string;
-	创建时间: string;
-	备注: string;
-}
+import type { ReserveVenueOrderFormVO, 场地预约订单_VO, Mode } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 场地预约订单_VO = {
-	订单编号: "",
-	场馆: "",
-	场地: "",
-	预约人: "",
-	预约电话: "",
-	预约日期: "",
-	预约时间: "",
-	应收金额: "",
-	实收金额: "",
-	支付方式: "",
-	状态: "",
-	创建时间: "",
-	备注: "",
+export const defaultForm: ReserveVenueOrderFormVO = {
+	orderNumber: "",
+	venue: "",
+	site: "",
+	reserver: "",
+	reservationPhone: "",
+	reservationDate: "",
+	reservationTime: "",
+	receivableAmount: "",
+	receivedAmount: "",
+	paymentMethod: "",
+	status: "",
+	createTime: "",
+	remark: "",
 };
 
 /**
@@ -39,7 +24,12 @@ export const defaultForm: 场地预约订单_VO = {
  */
 export interface ReserveVenueOrderFormProps {
 	/** 表单数据 */
-	form: 场地预约订单_VO;
+	form: ReserveVenueOrderFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 场地预约订单_VO;
+	defaultValues: ReserveVenueOrderFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
+
+// 兼容旧版类型导出
+export type { 场地预约订单_VO };

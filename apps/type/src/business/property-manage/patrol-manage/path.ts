@@ -63,3 +63,8 @@ export interface PatrolPathFormData {
 	/** 排序 Sort order */
 	sortOrder: string;
 }
+
+// ==================== 向后兼容的类型别名 ====================
+
+/** 向后兼容：统一命名 / Backward compatibility: Unified naming */
+export type PatrolPathFormVO = PatrolPathFormData;
