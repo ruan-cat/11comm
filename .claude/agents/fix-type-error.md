@@ -81,6 +81,8 @@ interface 工单池_列表查询_VO { ... }
 
 - `build/plugins/unplugin-auto-import/index.ts`
 
+请务必要完整阅读 `apps\admin\build\plugins\unplugin-auto-import\index.ts` 自动导入文件，了解清楚那些类型属于自动导入的，以确保这些自动导入的类型、函数、变量。不会被使用错误的模块导入。
+
 **常见自动导入项：**
 
 - `lodash-es`: `merge`, `isEmpty` 等
@@ -242,22 +244,21 @@ getRouteRank 是在宏上的使用的。
 import { getRouteRank } from "@/router/rank";
 ```
 
-### 错误导入全局类型 FieldValues
+### 错误导入来自 `plus-pro-components` 模块的全局类型
 
-请注意，`FieldValues` 类型是全局导入的类型。这是常见错误。如果你需要处理类型错误而导入全局类型，请在 `plus-pro-components` 模块内导入正确的类型。
+请注意，以下即可类型均来自于 `plus-pro-components` 模块，他们都是客户端代码内全局通用的类型。
+
+- `FieldValues`
+- `PlusSearchProps`
+- `PlusColumn`
+
+这些类型都在 `apps\admin\build\plugins\unplugin-auto-import\index.ts` 自动导入插件内有声明。
+
+这是常见错误。如果你需要处理类型错误而导入全局类型，请在 `plus-pro-components` 模块内导入正确的类型。
 
 ```ts
 // 正确的导入路径
 import type { FieldValues } from "plus-pro-components";
-```
-
-### 错误导入全局类型 PlusColumn
-
-请注意，`PlusColumn` 类型是全局导入的类型。这是常见错误。如果你需要处理类型错误而导入全局类型，请在 `plus-pro-components` 模块内导入正确的类型。
-
-```ts
-// 正确的导入路径
-import type { PlusColumn } from "plus-pro-components";
 ```
 
 ### 错误导入全局类型 TableColumnList
