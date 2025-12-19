@@ -382,7 +382,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 /openspec:apply 执行 `fix-list-pages-code-patterns` 任务；请及时的更新 tasks.md 任务进度文件；请连续的，持续的运行，直到全部的任务都处理完毕。不要完成一个任务后就停下来询问我；请使用中文回复；
 
-### 014 <!-- TODO: --> 正则文本手动替换任务
+### 014 正则文本手动替换任务
 
 - `\}\s+as\s+Partial<.*QueryParams>\);`
 - `});`
