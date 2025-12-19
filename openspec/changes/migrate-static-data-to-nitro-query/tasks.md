@@ -322,181 +322,181 @@
 
 **路由路径**：`operationTeam.systemManage.changePassword`
 
-- [ ] Task 3.1.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/change-password.ts`
-- [ ] Task 3.1.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/change-password/mock-data.ts`
-- [ ] Task 3.1.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/change-password/list.post.ts`
-- [ ] Task 3.1.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/change-password/index.ts`
-- [ ] Task 3.1.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/change-password/index.vue`
-- [ ] Task 3.1.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts`
-- [ ] Task 3.1.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/change-password/components/form.ts`
-- [ ] Task 3.1.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/change-password/components/form.vue`
-- [ ] Task 3.1.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.1.10: 测试验证
+- [x] Task 3.1.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/change-password.ts`
+- [x] Task 3.1.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/change-password/mock-data.ts`
+- [x] Task 3.1.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/change-password/list.post.ts`
+- [x] Task 3.1.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/change-password/index.ts`
+- [x] Task 3.1.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/change-password/index.vue`
+- [x] Task 3.1.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/change-password/test-data.ts`
+- [x] Task 3.1.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/change-password/components/form.ts`
+- [x] Task 3.1.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/change-password/components/form.vue`
+- [x] Task 3.1.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.1.10: 测试验证
 
 #### 3.2 operationTeam.systemManage.systemConfig（系统配置）
 
 **路由路径**：`operationTeam.systemManage.systemConfig`
 
-- [ ] Task 3.2.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/system-config.ts`
-- [ ] Task 3.2.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/system-config/mock-data.ts`
-- [ ] Task 3.2.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/system-config/list.post.ts`
-- [ ] Task 3.2.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/system-config/index.ts`
-- [ ] Task 3.2.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/system-config/index.vue`
-- [ ] Task 3.2.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts`
-- [ ] Task 3.2.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/system-config/components/form.ts`
-- [ ] Task 3.2.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/system-config/components/form.vue`
-- [ ] Task 3.2.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.2.10: 测试验证
+- [x] Task 3.2.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/system-config.ts`
+- [x] Task 3.2.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/system-config/mock-data.ts`
+- [x] Task 3.2.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/system-config/list.post.ts`
+- [x] Task 3.2.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/system-config/index.ts`
+- [x] Task 3.2.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/system-config/index.vue`
+- [x] Task 3.2.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/system-config/test-data.ts`
+- [x] Task 3.2.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/system-config/components/form.ts`
+- [x] Task 3.2.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/system-config/components/form.vue`
+- [x] Task 3.2.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.2.10: 测试验证
 
 #### 3.3 operationTeam.systemManage.registerProtocol（注册协议）
 
 **路由路径**：`operationTeam.systemManage.registerProtocol`
 
-- [ ] Task 3.3.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/register-protocol.ts`
-- [ ] Task 3.3.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/register-protocol/mock-data.ts`
-- [ ] Task 3.3.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/register-protocol/list.post.ts`
-- [ ] Task 3.3.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/register-protocol/index.ts`
-- [ ] Task 3.3.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/register-protocol/index.vue`
-- [ ] Task 3.3.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts`
-- [ ] Task 3.3.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/register-protocol/components/form.ts`
-- [ ] Task 3.3.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/register-protocol/components/form.vue`
-- [ ] Task 3.3.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.3.10: 测试验证
+- [x] Task 3.3.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/register-protocol.ts`
+- [x] Task 3.3.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/register-protocol/mock-data.ts`
+- [x] Task 3.3.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/register-protocol/list.post.ts`
+- [x] Task 3.3.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/register-protocol/index.ts`
+- [x] Task 3.3.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/register-protocol/index.vue`
+- [x] Task 3.3.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/register-protocol/test-data.ts`
+- [x] Task 3.3.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/register-protocol/components/form.ts`
+- [x] Task 3.3.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/register-protocol/components/form.vue`
+- [x] Task 3.3.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.3.10: 测试验证
 
 #### 3.4 operationTeam.systemManage.initializeCell（初始化小区）
 
 **路由路径**：`operationTeam.systemManage.initializeCell`
 
-- [ ] Task 3.4.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts`
-- [ ] Task 3.4.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
-- [ ] Task 3.4.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/initialize-cell/list.post.ts`
-- [ ] Task 3.4.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/initialize-cell/index.ts`
-- [ ] Task 3.4.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/index.vue`
-- [ ] Task 3.4.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts`
-- [ ] Task 3.4.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/components/form.ts`
-- [ ] Task 3.4.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/components/form.vue`
-- [ ] Task 3.4.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.4.10: 测试验证
+- [x] Task 3.4.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/initialize-cell.ts`
+- [x] Task 3.4.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/initialize-cell/mock-data.ts`
+- [x] Task 3.4.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/initialize-cell/list.post.ts`
+- [x] Task 3.4.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/initialize-cell/index.ts`
+- [x] Task 3.4.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/index.vue`
+- [x] Task 3.4.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/test-data.ts`
+- [x] Task 3.4.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/components/form.ts`
+- [x] Task 3.4.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/initialize-cell/components/form.vue`
+- [x] Task 3.4.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.4.10: 测试验证
 
 #### 3.5 operationTeam.systemManage.communityConfiguration（小区配置）
 
 **路由路径**：`operationTeam.systemManage.communityConfiguration`
 
-- [ ] Task 3.5.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/community-configuration.ts`
-- [ ] Task 3.5.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/community-configuration/mock-data.ts`
-- [ ] Task 3.5.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/community-configuration/list.post.ts`
-- [ ] Task 3.5.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/community-configuration/index.ts`
-- [ ] Task 3.5.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/community-configuration/index.vue`
-- [ ] Task 3.5.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts`
-- [ ] Task 3.5.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/community-configuration/components/form.ts`
-- [ ] Task 3.5.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/community-configuration/components/form.vue`
-- [ ] Task 3.5.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.5.10: 测试验证
+- [x] Task 3.5.1: 创建类型定义文件 `apps/type/src/business/operation-team/system-manage/community-configuration.ts`
+- [x] Task 3.5.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/system-manage/community-configuration/mock-data.ts`
+- [x] Task 3.5.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/system-manage/community-configuration/list.post.ts`
+- [x] Task 3.5.4: 创建前端 API Hook `apps/admin/src/api/operation-team/system-manage/community-configuration/index.ts`
+- [x] Task 3.5.5: 改写列表页 `apps/admin/src/pages/operation-team/system-manage/community-configuration/index.vue`
+- [x] Task 3.5.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/system-manage/community-configuration/test-data.ts`
+- [x] Task 3.5.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/system-manage/community-configuration/components/form.ts`
+- [x] Task 3.5.8: 更新表单组件 `apps/admin/src/pages/operation-team/system-manage/community-configuration/components/form.vue`
+- [x] Task 3.5.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.5.10: 测试验证
 
 #### 3.6 operationTeam.dataManage.communityInformation（小区信息）
 
 **路由路径**：`operationTeam.dataManage.communityInformation`
 
-- [ ] Task 3.6.1: 创建类型定义文件 `apps/type/src/business/operation-team/data-manage/community-information.ts`
-- [ ] Task 3.6.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/data-manage/community-information/mock-data.ts`
-- [ ] Task 3.6.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/data-manage/community-information/list.post.ts`
-- [ ] Task 3.6.4: 创建前端 API Hook `apps/admin/src/api/operation-team/data-manage/community-information/index.ts`
-- [ ] Task 3.6.5: 改写列表页 `apps/admin/src/pages/operation-team/data-manage/community-information/index.vue`
-- [ ] Task 3.6.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts`
-- [ ] Task 3.6.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/data-manage/community-information/components/form.ts`
-- [ ] Task 3.6.8: 更新表单组件 `apps/admin/src/pages/operation-team/data-manage/community-information/components/form.vue`
-- [ ] Task 3.6.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.6.10: 测试验证
+- [x] Task 3.6.1: 创建类型定义文件 `apps/type/src/business/operation-team/data-manage/community-information.ts`
+- [x] Task 3.6.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/data-manage/community-information/mock-data.ts`
+- [x] Task 3.6.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/data-manage/community-information/list.post.ts`
+- [x] Task 3.6.4: 创建前端 API Hook `apps/admin/src/api/operation-team/data-manage/community-information/index.ts`
+- [x] Task 3.6.5: 改写列表页 `apps/admin/src/pages/operation-team/data-manage/community-information/index.vue`
+- [x] Task 3.6.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/data-manage/community-information/test-data.ts`
+- [x] Task 3.6.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/data-manage/community-information/components/form.ts`
+- [x] Task 3.6.8: 更新表单组件 `apps/admin/src/pages/operation-team/data-manage/community-information/components/form.vue`
+- [x] Task 3.6.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.6.10: 测试验证
 
 #### 3.7 operationTeam.dataManage.propertyManagementCompany（物业公司）
 
 **路由路径**：`operationTeam.dataManage.propertyManagementCompany`
 
-- [ ] Task 3.7.1: 创建类型定义文件 `apps/type/src/business/operation-team/data-manage/property-management-company.ts`
-- [ ] Task 3.7.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/data-manage/property-management-company/mock-data.ts`
-- [ ] Task 3.7.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/data-manage/property-management-company/list.post.ts`
-- [ ] Task 3.7.4: 创建前端 API Hook `apps/admin/src/api/operation-team/data-manage/property-management-company/index.ts`
-- [ ] Task 3.7.5: 改写列表页 `apps/admin/src/pages/operation-team/data-manage/property-management-company/index.vue`
-- [ ] Task 3.7.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts`
-- [ ] Task 3.7.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/data-manage/property-management-company/components/form.ts`
-- [ ] Task 3.7.8: 更新表单组件 `apps/admin/src/pages/operation-team/data-manage/property-management-company/components/form.vue`
-- [ ] Task 3.7.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.7.10: 测试验证
+- [x] Task 3.7.1: 创建类型定义文件 `apps/type/src/business/operation-team/data-manage/property-management-company.ts`
+- [x] Task 3.7.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/data-manage/property-management-company/mock-data.ts`
+- [x] Task 3.7.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/data-manage/property-management-company/list.post.ts`
+- [x] Task 3.7.4: 创建前端 API Hook `apps/admin/src/api/operation-team/data-manage/property-management-company/index.ts`
+- [x] Task 3.7.5: 改写列表页 `apps/admin/src/pages/operation-team/data-manage/property-management-company/index.vue`
+- [x] Task 3.7.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/data-manage/property-management-company/test-data.ts`
+- [x] Task 3.7.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/data-manage/property-management-company/components/form.ts`
+- [x] Task 3.7.8: 更新表单组件 `apps/admin/src/pages/operation-team/data-manage/property-management-company/components/form.vue`
+- [x] Task 3.7.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.7.10: 测试验证
 
 #### 3.8 operationTeam.merchantManage.merchantInfo（商户信息）
 
 **路由路径**：`operationTeam.merchantManage.merchantInfo`
 
-- [ ] Task 3.8.1: 创建类型定义文件 `apps/type/src/business/operation-team/merchant-manage/merchant-info.ts`
-- [ ] Task 3.8.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-info/mock-data.ts`
-- [ ] Task 3.8.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-info/list.post.ts`
-- [ ] Task 3.8.4: 创建前端 API Hook `apps/admin/src/api/operation-team/merchant-manage/merchant-info/index.ts`
-- [ ] Task 3.8.5: 改写列表页 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/index.vue`
-- [ ] Task 3.8.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts`
-- [ ] Task 3.8.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/components/form.ts`
-- [ ] Task 3.8.8: 更新表单组件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/components/form.vue`
-- [ ] Task 3.8.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.8.10: 测试验证
+- [x] Task 3.8.1: 创建类型定义文件 `apps/type/src/business/operation-team/merchant-manage/merchant-info.ts`
+- [x] Task 3.8.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-info/mock-data.ts`
+- [x] Task 3.8.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-info/list.post.ts`
+- [x] Task 3.8.4: 创建前端 API Hook `apps/admin/src/api/operation-team/merchant-manage/merchant-info/index.ts`
+- [x] Task 3.8.5: 改写列表页 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/index.vue`
+- [x] Task 3.8.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/test-data.ts`
+- [x] Task 3.8.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/components/form.ts`
+- [x] Task 3.8.8: 更新表单组件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-info/components/form.vue`
+- [x] Task 3.8.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.8.10: 测试验证
 
 #### 3.9 operationTeam.merchantManage.merchantAdmin（商户管理员）
 
 **路由路径**：`operationTeam.merchantManage.merchantAdmin`
 
-- [ ] Task 3.9.1: 创建类型定义文件 `apps/type/src/business/operation-team/merchant-manage/merchant-admin.ts`
-- [ ] Task 3.9.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-admin/mock-data.ts`
-- [ ] Task 3.9.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-admin/list.post.ts`
-- [ ] Task 3.9.4: 创建前端 API Hook `apps/admin/src/api/operation-team/merchant-manage/merchant-admin/index.ts`
-- [ ] Task 3.9.5: 改写列表页 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/index.vue`
-- [ ] Task 3.9.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts`
-- [ ] Task 3.9.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/components/form.ts`
-- [ ] Task 3.9.8: 更新表单组件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/components/form.vue`
-- [ ] Task 3.9.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.9.10: 测试验证
+- [x] Task 3.9.1: 创建类型定义文件 `apps/type/src/business/operation-team/merchant-manage/merchant-admin.ts`
+- [x] Task 3.9.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-admin/mock-data.ts`
+- [x] Task 3.9.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/merchant-manage/merchant-admin/list.post.ts`
+- [x] Task 3.9.4: 创建前端 API Hook `apps/admin/src/api/operation-team/merchant-manage/merchant-admin/index.ts`
+- [x] Task 3.9.5: 改写列表页 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/index.vue`
+- [x] Task 3.9.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/test-data.ts`
+- [x] Task 3.9.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/components/form.ts`
+- [x] Task 3.9.8: 更新表单组件 `apps/admin/src/pages/operation-team/merchant-manage/merchant-admin/components/form.vue`
+- [x] Task 3.9.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.9.10: 测试验证
 
 #### 3.10 operationTeam.reportConfiguration.reportGroup（报表组）
 
 **路由路径**：`operationTeam.reportConfiguration.reportGroup`
 
-- [ ] Task 3.10.1: 创建类型定义文件 `apps/type/src/business/operation-team/report-configuration/report-group.ts`
-- [ ] Task 3.10.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/report-configuration/report-group/mock-data.ts`
-- [ ] Task 3.10.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/report-configuration/report-group/list.post.ts`
-- [ ] Task 3.10.4: 创建前端 API Hook `apps/admin/src/api/operation-team/report-configuration/report-group/index.ts`
-- [ ] Task 3.10.5: 改写列表页 `apps/admin/src/pages/operation-team/report-configuration/report-group/index.vue`
-- [ ] Task 3.10.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts`
-- [ ] Task 3.10.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/report-configuration/report-group/components/form.ts`
-- [ ] Task 3.10.8: 更新表单组件 `apps/admin/src/pages/operation-team/report-configuration/report-group/components/form.vue`
-- [ ] Task 3.10.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.10.10: 测试验证
+- [x] Task 3.10.1: 创建类型定义文件 `apps/type/src/business/operation-team/report-configuration/report-group.ts`
+- [x] Task 3.10.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/report-configuration/report-group/mock-data.ts`
+- [x] Task 3.10.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/report-configuration/report-group/list.post.ts`
+- [x] Task 3.10.4: 创建前端 API Hook `apps/admin/src/api/operation-team/report-configuration/report-group/index.ts`
+- [x] Task 3.10.5: 改写列表页 `apps/admin/src/pages/operation-team/report-configuration/report-group/index.vue`
+- [x] Task 3.10.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/report-configuration/report-group/test-data.ts`
+- [x] Task 3.10.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/report-configuration/report-group/components/form.ts`
+- [x] Task 3.10.8: 更新表单组件 `apps/admin/src/pages/operation-team/report-configuration/report-group/components/form.vue`
+- [x] Task 3.10.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.10.10: 测试验证
 
 #### 3.11 operationTeam.reportConfiguration.reportInfo（报表信息）
 
 **路由路径**：`operationTeam.reportConfiguration.reportInfo`
 
-- [ ] Task 3.11.1: 创建类型定义文件 `apps/type/src/business/operation-team/report-configuration/report-info.ts`
-- [ ] Task 3.11.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/report-configuration/report-info/mock-data.ts`
-- [ ] Task 3.11.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/report-configuration/report-info/list.post.ts`
-- [ ] Task 3.11.4: 创建前端 API Hook `apps/admin/src/api/operation-team/report-configuration/report-info/index.ts`
-- [ ] Task 3.11.5: 改写列表页 `apps/admin/src/pages/operation-team/report-configuration/report-info/index.vue`
-- [ ] Task 3.11.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts`
-- [ ] Task 3.11.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/report-configuration/report-info/components/form.ts`
-- [ ] Task 3.11.8: 更新表单组件 `apps/admin/src/pages/operation-team/report-configuration/report-info/components/form.vue`
-- [ ] Task 3.11.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.11.10: 测试验证
+- [x] Task 3.11.1: 创建类型定义文件 `apps/type/src/business/operation-team/report-configuration/report-info.ts`
+- [x] Task 3.11.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/report-configuration/report-info/mock-data.ts`
+- [x] Task 3.11.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/report-configuration/report-info/list.post.ts`
+- [x] Task 3.11.4: 创建前端 API Hook `apps/admin/src/api/operation-team/report-configuration/report-info/index.ts`
+- [x] Task 3.11.5: 改写列表页 `apps/admin/src/pages/operation-team/report-configuration/report-info/index.vue`
+- [x] Task 3.11.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/report-configuration/report-info/test-data.ts`
+- [x] Task 3.11.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/report-configuration/report-info/components/form.ts`
+- [x] Task 3.11.8: 更新表单组件 `apps/admin/src/pages/operation-team/report-configuration/report-info/components/form.vue`
+- [x] Task 3.11.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.11.10: 测试验证
 
 #### 3.12 operationTeam.reportConfiguration.reportComponent（报表组件）
 
 **路由路径**：`operationTeam.reportConfiguration.reportComponent`
 
-- [ ] Task 3.12.1: 创建类型定义文件 `apps/type/src/business/operation-team/report-configuration/report-component.ts`
-- [ ] Task 3.12.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/report-configuration/report-component/mock-data.ts`
-- [ ] Task 3.12.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/report-configuration/report-component/list.post.ts`
-- [ ] Task 3.12.4: 创建前端 API Hook `apps/admin/src/api/operation-team/report-configuration/report-component/index.ts`
-- [ ] Task 3.12.5: 改写列表页 `apps/admin/src/pages/operation-team/report-configuration/report-component/index.vue`
-- [ ] Task 3.12.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts`
-- [ ] Task 3.12.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/report-configuration/report-component/components/form.ts`
-- [ ] Task 3.12.8: 更新表单组件 `apps/admin/src/pages/operation-team/report-configuration/report-component/components/form.vue`
-- [ ] Task 3.12.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 3.12.10: 测试验证
+- [x] Task 3.12.1: 创建类型定义文件 `apps/type/src/business/operation-team/report-configuration/report-component.ts`
+- [x] Task 3.12.2: 创建 Mock 数据文件 `apps/admin/server/api/operation-team/report-configuration/report-component/mock-data.ts`
+- [x] Task 3.12.3: 创建 Nitro 接口文件 `apps/admin/server/api/operation-team/report-configuration/report-component/list.post.ts`
+- [x] Task 3.12.4: 创建前端 API Hook `apps/admin/src/api/operation-team/report-configuration/report-component/index.ts`
+- [x] Task 3.12.5: 改写列表页 `apps/admin/src/pages/operation-team/report-configuration/report-component/index.vue`
+- [x] Task 3.12.6: 删除旧的假数据文件 `apps/admin/src/pages/operation-team/report-configuration/report-component/test-data.ts`
+- [x] Task 3.12.7: 更新表单类型文件 `apps/admin/src/pages/operation-team/report-configuration/report-component/components/form.ts`
+- [x] Task 3.12.8: 更新表单组件 `apps/admin/src/pages/operation-team/report-configuration/report-component/components/form.vue`
+- [x] Task 3.12.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 3.12.10: 测试验证
 
 ### 4. propertyManage（物业管理）- 68 个三级路由
 
