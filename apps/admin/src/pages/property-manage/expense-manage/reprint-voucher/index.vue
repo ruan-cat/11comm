@@ -10,27 +10,12 @@ definePage({
 
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import type { ReprintVoucherFormProps } from "./components/form";
+import { type ReprintVoucherFormProps, defaultForm } from "./components/form";
 import ReprintVoucherForm from "./components/form.vue";
-import type { ReprintVoucherListItem, ReprintVoucherQueryParams, ReprintVoucherFormVO } from "@01s-11comm/type";
+import type { ReprintVoucherListItem, ReprintVoucherQueryParams } from "@01s-11comm/type";
 import { feeTypeOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useReprintVoucherListQuery } from "@/api/property-manage/expense-manage/reprint-voucher";
-
-/** 默认表单数据 */
-const defaultForm: ReprintVoucherFormVO = {
-	receiptId: "",
-	receiptNumber: "",
-	feeType: "",
-	feeItem: "",
-	house: "",
-	owner: "",
-	parkingSpace: "",
-	totalAmount: "",
-	paymentTime: "",
-	printCopies: 1,
-	printRemark: "",
-};
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -163,22 +148,14 @@ function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const formData: ReprintVoucherFormVO = isAdd.value
+	const formData = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
 					receiptId: row?.id || "",
 					receiptNumber: row?.name || "",
-					feeType: "",
-					feeItem: "",
-					house: "",
-					owner: "",
-					parkingSpace: "",
-					totalAmount: "",
 					paymentTime: row?.createTime || "",
-					printCopies: 1,
-					printRemark: "",
 				})
 			: cloneDeep(defaultForm);
 
