@@ -213,6 +213,24 @@ export interface MerchantAdminFormProps {
 3. 我们事实上也不应该直接写字面意义上的 `mode?: "add" | "edit" | "info";` 类型。在客户端代码，即 `apps\admin\src` 目录内，我们应该直接使用 `mode?: Mode;` 的写法。其中 Mode 是客户端代码内全局导入的类型。直接使用即可。
 4. 如果在`类型项目`内，出现上述写法，请你将这个错误迁移位置的类型，根据`业务路径`，迁移回到`后台项目`的对应`业务路径`的 form.ts 文件内。`类型项目`是不应该出现这样的写法的，出现的原因是因为有工具错误的迁移该类型到`类型项目`目录下了，所以需要你将该类型迁移到正确的位置。
 
+### 不要写向后兼容的类型
+
+1. 就比如以下的类型，就是不合适的类型，你应该删除掉纯中文的类型，并要求使用中文类型的其他文件，直接使用纯英文的业务类型即可。不需要写任何向后兼容的中文类型。
+2. 你应该重点去修复因为中文类型被删除后而导致的类型错误，其修复方式就是直接替换掉中文类型，直接换成英文类型。
+
+```ts
+/** 向后兼容：巡检方式 / Backward compatibility: PatrolMethodType */
+export type 巡检方式 = PatrolMethodType;
+/** 向后兼容：任务状态 / Backward compatibility: TaskStatusType */
+export type 任务状态 = TaskStatusType;
+/** 向后兼容：巡检点状态 / Backward compatibility: PatrolPointStatusType */
+export type 巡检点状态 = PatrolPointStatusType;
+/** 向后兼容：巡查明细表单_VO / Backward compatibility: 巡查明细表单_VO */
+export type 巡查明细表单_VO = PatrolDetailFormVO;
+/** 向后兼容：巡查明细表单Props / Backward compatibility: 巡查明细表单Props */
+export type 巡查明细表单Props = PatrolDetailFormProps;
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
