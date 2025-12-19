@@ -328,3 +328,24 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 6. 上述的规范文件，在内容上是有重合的，需要你重新整理，避免重复说明。
 7. 将你对比的结果，整合到 `openspec\changes\migrate-static-data-to-nitro-query\specs` 目录内，并允许你新建一个专门的规范文件来说明清楚迁移细则。
+
+### 12 <!-- TODO: --> 批量的针对性修复现存的 api hooks 接口请求代码写法
+
+1. 请你根据 `apps\admin\src\router\rank\rank-route-keys.ts` 提供的 `RANK_ROUTE_KEYS` 数组，根据数组提供的 `三级路由` ，来确定基于路由结构而定义的 api 接口。这些接口目录都在 `apps\admin\src\api` 目录内。
+2. 请你务必先研究学习，`RANK_ROUTE_KEYS` 数组暴露出来的 `三级路由` ，根据三级路由的路径，明确清楚在 `apps\admin\src\api` 目录应该检索那些文件并修改，避免出现检索范围过大的情况。
+3. 这些 api 接口二次封装了 `apps\admin\src\composables\use-list-query\index.ts` 的 useListQuery 函数，并用作于对应路由的 index.vue 列表页。
+4. 但是这些接口的类型约束，不满足 `openspec\changes\migrate-static-data-to-nitro-query\specs\migration-guide.md` 规范的 `Step 4: 创建前端 API Hook (10 分钟)` 部分，其代码写法普遍缺少了必填的参数，和部分业务类型约束。
+5. 我需要你帮我按照该规范，统一处理类型报错。
+6. 值得注意的是，会有非常多的文件需要你处理，你不可能一次性处理完的。因此我需要你在 openspec 的帮助下，新建一款任务，专门完成 api 接口的类型报错修复。
+
+你现在的任务是：在 openspec 的帮助下，新建一个满足 openspec 规范的任务清单、任务规范等。新建修复类型故障的，openspec 长任务。
+
+按照以下步骤完成：
+
+1. 阅读代码约束规范：先阅读 `openspec\changes\migrate-static-data-to-nitro-query\specs\migration-guide.md` 规范的 `Step 4: 创建前端 API Hook (10 分钟)` 部分。明确清楚代码编写规范。
+2. 阅读 `RANK_ROUTE_KEYS` 数组暴露出来的 `三级路由` ，根据三级路由的路径，明确清楚在 `apps\admin\src\api` 目录应该检索那些文件并修改，避免出现检索范围过大的情况。
+3. 根据 `三级路由` 展现出来的文件结构，设计 tasks.md 任务列表文件。
+
+### 13 <!-- TODO: --> 批量的针对性改写现存的 index.vue 列表页代码写法
+
+在 `apps\admin\src\pages` 内，健硕
