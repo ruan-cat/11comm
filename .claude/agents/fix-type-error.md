@@ -1,6 +1,6 @@
 ---
 name: fix-type-error
-description: 修复类型错误的通用子代理。包含了修复常见类型错误的方法，和通用的方法论。
+description: 修复类型错误，优化类型写法的通用子代理。包含了修复常见类型错误的方法，和通用的方法论。包括了常见类型写法的优化方案。
 color: blue
 ---
 
@@ -44,7 +44,7 @@ npx vue-tsc --noEmit --skipLibCheck 2>&1 | grep -i "issues\|工单池"
    - `TS2345`: 参数类型不兼容
 3. **上下文信息**：查看错误前后的代码片段
 
-## 2. 常见类型错误及解决方案
+## 2. 常见类型错误解决方案，以及常见的类型写法优化方案
 
 ### 2.1 导入冲突问题
 
@@ -162,6 +162,48 @@ import type { PlusFormRules } from "@/config/constant";
 import type { TableColumnList } from "@pureadmin/table";
 
 // ✅ 正确 无需手动导入， TableColumnList 类型是全局类型，不需要我们手动导入
+```
+
+### 用导入的 mode 类型来优化手写的 mode 模式类型
+
+不好的类型写法如下：
+
+```ts
+/**
+ * @description 商户管理员表单 props Merchant admin form props
+ * @description
+ * 为了避免全局类型冲突 故设计较长的类型名称
+ * To avoid global type conflicts, a longer type name is designed
+ */
+export interface MerchantAdminFormProps {
+	/** 表单数据 Form data */
+	form: MerchantAdminFormVO;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: MerchantAdminFormVO;
+	/** 表单模式 Form mode */
+	mode?: "add" | "edit" | "info";
+}
+```
+
+我们不应该手写类型 `mode?: "add" | "edit" | "info";` ，这很容易出错。相反，我们应该使用导入的 mode 类型，来完成类型优化。好的类型写法如下：
+
+`Mode` 是一个在客户端代码内全局导入的类型，直接使用即可，无需考虑手动导入。
+
+```ts
+/**
+ * @description 商户管理员表单 props Merchant admin form props
+ * @description
+ * 为了避免全局类型冲突 故设计较长的类型名称
+ * To avoid global type conflicts, a longer type name is designed
+ */
+export interface MerchantAdminFormProps {
+	/** 表单数据 Form data */
+	form: MerchantAdminFormVO;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: MerchantAdminFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}
 ```
 
 ## 3. 项目特定的类型处理策略
