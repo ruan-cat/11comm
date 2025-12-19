@@ -83,7 +83,7 @@ interface 工单池_列表查询_VO { ... }
 
 **常见自动导入项：**
 
-- `lodash-es`: `cloneDeep`, `merge`, `isEmpty` 等
+- `lodash-es`: `merge`, `isEmpty` 等
 - `vue`: 所有 Vue 组合式 API
 - `plus-pro-components`: `FieldValues`, `PlusColumn` 等
 - `src/composables/**/*.ts`: 所有自定义组合式函数
