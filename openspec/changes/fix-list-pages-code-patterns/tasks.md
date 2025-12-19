@@ -37,63 +37,53 @@
 - [x] 11.1 修复 `property-manage/community-manage/house-decoration/index.vue`
 - [x] 11.2 修复 `property-manage/community-manage/my/index.vue`
 - [x] 11.3 修复 `property-manage/community-manage/notice/index.vue`
-- [ ] 11.4 修复 `property-manage/community-manage/property-register/index.vue`
-- [ ] 11.5 修复 `property-manage/community-manage/handing-business/index.vue`
-- [ ] 11.6 修复 `property-manage/community-manage/parking-space-structure-diagram/index.vue`
-- [ ] 11.7 修复 `property-manage/community-manage/building-space-structure-diagram/index.vue`
+- [x] 11.4 修复 `property-manage/community-manage/property-register/index.vue`
+- [x] 11.5 修复 `property-manage/community-manage/handing-business/index.vue`
+- [x] 11.6 修复 `property-manage/community-manage/parking-space-structure-diagram/index.vue`
+- [x] 11.7 修复 `property-manage/community-manage/building-space-structure-diagram/index.vue`
 
 ## 5. devTeam.cacheManage 模块 (1 个文件)
 
-- [ ] 5.1 修复 `dev-team/cache-manage/refresh-cache/index.vue`
+- [x] 5.1 修复 `dev-team/cache-manage/refresh-cache/index.vue`
 
 ## 6. devTeam.configManage 模块 (4 个文件)
 
-- [ ] 6.1 修复 `dev-team/config-manage/type/index.vue`
-- [ ] 6.2 修复 `dev-team/config-manage/item/index.vue`
-- [ ] 6.3 修复 `dev-team/config-manage/dictionary/index.vue`
-- [ ] 6.4 验证 `dev-team/config-manage/center/index.vue` (已符合规范,作为参考)
+- [x] 6.1 修复 `dev-team/config-manage/type/index.vue` (已正确)
+- [x] 6.2 修复 `dev-team/config-manage/item/index.vue`
+- [x] 6.3 修复 `dev-team/config-manage/dictionary/index.vue`
+- [x] 6.4 验证 `dev-team/config-manage/center/index.vue` (已符合规范,作为参考)
 
 ## 7. operationTeam.systemManage 模块 (5 个文件)
 
-- [ ] 7.1 修复 `operation-team/system-manage/change-password/index.vue`
-- [ ] 7.2 修复 `operation-team/system-manage/system-config/index.vue`
-- [ ] 7.3 修复 `operation-team/system-manage/register-protocol/index.vue`
-- [ ] 7.4 修复 `operation-team/system-manage/initialize-cell/index.vue`
-- [ ] 7.5 修复 `operation-team/system-manage/community-configuration/index.vue`
+- [x] 7.1 修复 `operation-team/system-manage/change-password/index.vue`
+- [x] 7.2 修复 `operation-team/system-manage/system-config/index.vue`
+- [x] 7.3 修复 `operation-team/system-manage/register-protocol/index.vue`
+- [x] 7.4 修复 `operation-team/system-manage/initialize-cell/index.vue`
+- [x] 7.5 修复 `operation-team/system-manage/community-configuration/index.vue`
 
 ## 8. operationTeam.dataManage 模块 (2 个文件)
 
-- [ ] 8.1 修复 `operation-team/data-manage/community-information/index.vue`
-- [ ] 8.2 修复 `operation-team/data-manage/property-company/index.vue`
+- [x] 8.1 修复 `operation-team/data-manage/community-information/index.vue`
+- [x] 8.2 修复 `operation-team/data-manage/property-management-company/index.vue`
 
 ## 9. operationTeam.merchantManage 模块 (2 个文件)
 
-- [ ] 9.1 修复 `operation-team/merchant-manage/merchant-info/index.vue`
-- [ ] 9.2 修复 `operation-team/merchant-manage/merchant-admin/index.vue`
+- [x] 9.1 修复 `operation-team/merchant-manage/merchant-info/index.vue`
+- [x] 9.2 修复 `operation-team/merchant-manage/merchant-admin/index.vue`
 
 ## 10. operationTeam.reportConfiguration 模块 (3 个文件)
 
-- [ ] 10.1 修复 `operation-team/report-configuration/report-group/index.vue`
-- [ ] 10.2 修复 `operation-team/report-configuration/report-info/index.vue`
-- [ ] 10.3 修复 `operation-team/report-configuration/report-component/index.vue`
-
-## 11. propertyManage.communityManage 模块 (7 个文件)
-
-- [ ] 11.1 修复 `property-manage/community-manage/house-decoration/index.vue`
-- [ ] 11.2 修复 `property-manage/community-manage/building-space-structure-diagram/index.vue`
-- [ ] 11.3 修复 `property-manage/community-manage/notice/index.vue`
-- [ ] 11.4 修复 `property-manage/community-manage/property-register/index.vue`
-- [ ] 11.5 修复 `property-manage/community-manage/handing-business/index.vue`
-- [ ] 11.6 修复 `property-manage/community-manage/my/index.vue`
-- [ ] 11.7 修复 `property-manage/community-manage/parking-space-structure-diagram/index.vue`
+- [x] 10.1 修复 `operation-team/report-configuration/report-group/index.vue`
+- [x] 10.2 修复 `operation-team/report-configuration/report-info/index.vue`
+- [x] 10.3 修复 `operation-team/report-configuration/report-component/index.vue`
 
 ## 12. propertyManage.contractManage 模块 (5 个文件)
 
-- [ ] 12.1 修复 `property-manage/contract-manage/change/index.vue`
-- [ ] 12.2 修复 `property-manage/contract-manage/draft-contract/index.vue`
-- [ ] 12.3 修复 `property-manage/contract-manage/expire/index.vue`
-- [ ] 12.4 修复 `property-manage/contract-manage/first-party/index.vue`
-- [ ] 12.5 修复 `property-manage/contract-manage/type/index.vue`
+- [x] 12.1 修复 `property-manage/contract-manage/change/index.vue`
+- [x] 12.2 修复 `property-manage/contract-manage/draft-contract/index.vue`
+- [x] 12.3 修复 `property-manage/contract-manage/expire/index.vue`
+- [x] 12.4 修复 `property-manage/contract-manage/first-party/index.vue`
+- [x] 12.5 修复 `property-manage/contract-manage/type/index.vue`
 
 ## 13. propertyManage.expenseManage 模块 (16 个文件)
 
@@ -101,17 +91,17 @@
 - [ ] 13.2 修复 `property-manage/expense-manage/vehicle-charge/index.vue`
 - [ ] 13.3 修复 `property-manage/expense-manage/reminder-for-overdue-payments/index.vue`
 - [ ] 13.4 修复 `property-manage/expense-manage/reprint-voucher/index.vue`
-- [ ] 13.5 修复 `property-manage/expense-manage/overdue-payment-information/index.vue`
-- [ ] 13.6 修复 `property-manage/expense-manage/payment-review/index.vue`
+- [x] 13.5 修复 `property-manage/expense-manage/overdue-payment-information/index.vue`
+- [x] 13.6 修复 `property-manage/expense-manage/payment-review/index.vue`
 - [ ] 13.7 修复 `property-manage/expense-manage/refund-review/index.vue`
-- [ ] 13.8 修复 `property-manage/expense-manage/house-charge/index.vue`
+- [ ] 13.8 修复 `property-manage/expense-manage/house-charge/index.vue` (部分修复)
 - [ ] 13.9 修复 `property-manage/expense-manage/meter-reading-type/index.vue`
-- [ ] 13.10 修复 `property-manage/expense-manage/discount-type/index.vue`
+- [x] 13.10 修复 `property-manage/expense-manage/discount-type/index.vue`
 - [ ] 13.11 修复 `property-manage/expense-manage/expense-summary-table/index.vue`
 - [ ] 13.12 修复 `property-manage/expense-manage/discount-apply/index.vue`
 - [ ] 13.13 修复 `property-manage/expense-manage/discount-setting/index.vue`
 - [ ] 13.14 修复 `property-manage/expense-manage/contracte-charge/index.vue`
-- [ ] 13.15 修复 `property-manage/expense-manage/expense-item-setting/index.vue`
+- [x] 13.15 修复 `property-manage/expense-manage/expense-item-setting/index.vue`
 - [ ] 13.16 修复 `property-manage/expense-manage/cancel-fee/index.vue`
 
 ## 14. propertyManage.housePropertyManage 模块 (10 个文件)

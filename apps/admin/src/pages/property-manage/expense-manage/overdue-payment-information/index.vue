@@ -8,20 +8,25 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type OverduePaymentInformationFormProps, defaultForm, type OverduePaymentInformationFormVO } from "./components/form";
+import {
+	type OverduePaymentInformationFormProps,
+	defaultForm,
+	type OverduePaymentInformationFormVO,
+} from "./components/form";
 import OverduePaymentInformationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useOverduePaymentInformationListQuery } from "@/api/property-manage/expense-manage/overdue-payment-information";
-import { type OverduePaymentInformationListItem, type OverduePaymentInformationQueryParams, chargeObjectOptions } from "@01s-11comm/type";
+import {
+	type OverduePaymentInformationListItem,
+	type OverduePaymentInformationQueryParams,
+	chargeObjectOptions,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { h } from "vue";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -29,18 +34,83 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const overduePaymentInformationFormInstance = ref<InstanceType<typeof OverduePaymentInformationForm> | null>(null);
 
-/** 使用 TanStack Query 获取数据 */
-	useOverduePaymentInformationListQuery();
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues &
+	Partial<OverduePaymentInformationQueryParams> & { 欠费时间范围?: [string, string] } = {
+	chargeObject: "",
+	ownerName: "",
+	phoneNumber: "",
+	startTime: "",
+	endTime: "",
+	欠费时间范围: ["", ""],
+};
 
-/** 模拟异步操作函数 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 收费对象
+	{
+		label: "收费对象",
+		prop: "chargeObject",
+		valueType: "select",
+		options: chargeObjectOptions,
+	},
+	// 业主名称
+	{
+		label: "业主名称",
+		prop: "ownerName",
+		valueType: "input",
+	},
+	// 手机号
+	{
+		label: "手机号",
+		prop: "phoneNumber",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useOverduePaymentInformationListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 表格列配置 */
@@ -86,121 +156,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<OverduePaymentInformationQueryParams>);
-}
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<OverduePaymentInformationQueryParams> & { 欠费时间范围?: [string, string] } = {
-	chargeObject: "",
-	ownerName: "",
-	phoneNumber: "",
-	startTime: "",
-	endTime: "",
-	欠费时间范围: ["", ""],
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 收费对象
-	{
-		label: "收费对象",
-		prop: "chargeObject",
-		valueType: "select",
-		options: chargeObjectOptions,
-	},
-	// 业主名称
-	{
-		label: "业主名称",
-		prop: "ownerName",
-		valueType: "input",
-	},
-	// 手机号
-	{
-		label: "手机号",
-		prop: "phoneNumber",
-		valueType: "input",
-	},
-	// 欠费时间范围
-	{
-		label: "欠费时间范围",
-		prop: "欠费时间范围",
-		valueType: "date-picker",
-		fieldProps: {
-			type: "daterange",
-			valueFormat: "YYYY-MM-DD",
-			format: "YYYY-MM-DD",
-			onChange(value: string[] | null) {
-				plusSearchModel.value.startTime = value?.[0] ?? "";
-				plusSearchModel.value.endTime = value?.[1] ?? "";
-			},
-			onClear() {
-				plusSearchModel.value.startTime = "";
-				plusSearchModel.value.endTime = "";
-			},
-		},
-	},
-]);
-
-/** 表格搜索栏组件 配置 */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "欠费信息",
@@ -217,9 +172,9 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 
 	/** 业务对象 */
 	const overduePaymentInformationFormVO: OverduePaymentInformationFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					chargeObject: row?.chargeObject || "",
 					ownerName: row?.ownerName || "",
@@ -232,7 +187,7 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 					contactAddress: "", // Default
 					overdueDescription: "", // Default
 				} as OverduePaymentInformationFormVO)
-			: cloneDeep({
+			: structuredClone({
 					...defaultForm,
 					chargeObject: row?.chargeObject || "",
 					ownerName: row?.ownerName || "",
@@ -294,7 +249,6 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 					const res = await overduePaymentInformationFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
-						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
 						await doFetch();
@@ -341,12 +295,8 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
-				<ElButton type="primary">
-					欠费缴费
-				</ElButton>
-				<ElButton type="info">
-					导出欠费清单
-				</ElButton>
+				<ElButton type="primary"> 欠费缴费 </ElButton>
+				<ElButton type="info"> 导出欠费清单 </ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -355,19 +305,14 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleOperationClick('欠费缴费', row)">
-							欠费缴费
-						</ElButton>
-						<ElButton type="info" @click="handleOperationClick('查看详情', row)">
-							查看详情
-						</ElButton>
-						<ElButton type="primary" @click="handleOperationClick('查看费用', row)">
-							查看费用
-						</ElButton>
+						<ElButton type="warning" @click="handleOperationClick('欠费缴费', row)"> 欠费缴费 </ElButton>
+						<ElButton type="info" @click="handleOperationClick('查看详情', row)"> 查看详情 </ElButton>
+						<ElButton type="primary" @click="handleOperationClick('查看费用', row)"> 查看费用 </ElButton>
 					</template>
 				</PureTable>
 			</template>

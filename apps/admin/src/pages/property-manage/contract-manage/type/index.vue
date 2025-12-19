@@ -19,7 +19,6 @@ import AddForm from "./components/form.vue";
 import { useTypeListQuery } from "@/api/property-manage/contract-manage/type";
 import { type TypeListItem, type TypeQueryParams, auditTypeOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 
 /** 模式控制 */
@@ -27,8 +26,34 @@ const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const addFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<TypeQueryParams> = {
+	typeName: "",
+	description: "",
+	isAudit: undefined,
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
 /** 使用 TanStack Query 获取数据 */
-	useTypeListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useTypeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -69,22 +94,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 /**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<TypeQueryParams> = {
-	typeName: "",
-	isAudit: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
@@ -104,51 +113,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	border: true,
-	stripe: true,
-	adaptive: true,
-	highlightCurrentRow: true,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<TypeQueryParams>);
-}
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
@@ -157,6 +121,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 	labelPosition: "right",
 	showNumber: 3,
 });
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -178,15 +153,15 @@ function openDialog(params: { mode: Mode; row?: TypeListItem }) {
 
 	/** 业务对象 */
 	const contractTypeFormVO: ContractTypeFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					typeName: row?.typeName || "",
 					isAudit: (row?.isAudit === "是" ? "是" : "否") as IsAuditType,
 					description: row?.description || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
@@ -301,6 +276,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

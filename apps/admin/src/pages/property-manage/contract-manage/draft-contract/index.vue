@@ -10,7 +10,7 @@ definePage({
 
 import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import ContractDraftForm from "./components/form.vue";
 import { type ContractDraftFormVO, type ContractDraftFormProps, defaultForm } from "./components/form";
 import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
@@ -21,13 +21,90 @@ import {
 } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 
 const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParamsType> = {
+	contractName: "",
+	contractNumber: "",
+	contractType: undefined,
+	handler: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useDraftContractListQuery(plusSearchDefaultValues);
+
 /** 模式控制 */
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	{
+		label: "合同名称",
+		prop: "contractName",
+		valueType: "input",
+	},
+	{
+		label: "合同编号",
+		prop: "contractNumber",
+		valueType: "input",
+	},
+	{
+		label: "合同类型",
+		prop: "contractType",
+		valueType: "select",
+		options: contractTypeOptionsData,
+	},
+	{
+		label: "经办人",
+		prop: "handler",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
+
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
@@ -39,9 +116,6 @@ async function testAsync() {
 	setIsLoadingT(false);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
-
-/** 使用 TanStack Query 获取数据 */
-	useDraftContractListQuery();
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -110,106 +184,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "起草合同信息",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParamsType> = {
-	contractName: "",
-	contractNumber: "",
-	contractType: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 合同名称
-	{
-		label: "合同名称",
-		prop: "contractName",
-		valueType: "input",
-	},
-
-	// 合同编号
-	{
-		label: "合同编号",
-		prop: "contractNumber",
-		valueType: "input",
-	},
-
-	// 合同类型
-	{
-		label: "合同类型",
-		prop: "contractType",
-		valueType: "select",
-		options: contractTypeOptionsData,
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<DraftContractQueryParamsType>);
-}
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -226,9 +205,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const contractDraftFormVO: ContractDraftFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					contractName: row?.contractName || "",
 					contractNumber: row?.contractNumber || "",
@@ -237,20 +216,18 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					contractAmount: row?.contractAmount || "",
 					startTime: row?.startTime || "",
 					endTime: row?.endTime || "",
-					// 保留其他表单字段的默认值
-					partyA: row?.partyA || defaultForm.partyA,
-					partyAContact: defaultForm.partyAContact,
-					partyAPhone: defaultForm.partyAPhone,
-					partyB: row?.partyB || defaultForm.partyB,
-					partyBContact: defaultForm.partyBContact,
-					partyBPhone: defaultForm.partyBPhone,
-					handlerPhone: defaultForm.handlerPhone,
-					signingTime: defaultForm.signingTime,
-					description: defaultForm.description,
-					// 保留默认的合同附件数组
-					attachments: cloneDeep(defaultForm.attachments),
+					partyA: row?.partyA || "",
+					partyAContact: "",
+					partyAPhone: "",
+					partyB: row?.partyB || "",
+					partyBContact: "",
+					partyBPhone: "",
+					handlerPhone: "",
+					signingTime: "",
+					description: "",
+					attachments: [],
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractDraftFormProps = {
@@ -355,6 +332,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

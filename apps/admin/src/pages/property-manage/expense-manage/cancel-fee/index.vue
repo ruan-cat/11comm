@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type CancelFeeFormProps, defaultForm, type CancelFeeFormVO } from "./components/form";
@@ -16,15 +16,84 @@ import CancelFeeForm from "./components/form.vue";
 import { useCancelFeeListQuery } from "@/api/property-manage/expense-manage/cancel-fee";
 import { type CancelFeeListItem, type CancelFeeQueryParams, auditStatusOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { h } from "vue";
+
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<CancelFeeQueryParams> = {
+	batchNumber: "",
+	employee: "",
+	auditStatus: undefined,
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	// 批次号
+	{
+		label: "批次号",
+		prop: "batchNumber",
+		valueType: "input",
+	},
+	// 员工
+	{
+		label: "员工",
+		prop: "employee",
+		valueType: "input",
+	},
+	// 审核状态
+	{
+		label: "审核状态",
+		prop: "auditStatus",
+		valueType: "select",
+		options: auditStatusOptions,
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
 
 /** 使用 TanStack Query 获取数据 */
-	useCancelFeeListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useCancelFeeListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -68,122 +137,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "取消费用",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<CancelFeeQueryParams> = {
-	batchNumber: "",
-	employee: "",
-	time: "",
-	cancelReason: "",
-	auditStatus: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 批次号
-	{
-		label: "批次号",
-		prop: "batchNumber",
-		valueType: "input",
-	},
-
-	// 员工
-	{
-		label: "员工",
-		prop: "employee",
-		valueType: "input",
-	},
-
-	// 时间
-	{
-		label: "时间",
-		prop: "time",
-		valueType: "input",
-	},
-
-	// 取消原因
-	{
-		label: "取消原因",
-		prop: "cancelReason",
-		valueType: "input",
-	},
-
-	// 审核状态
-	{
-		label: "审核状态",
-		prop: "auditStatus",
-		valueType: "select",
-		options: auditStatusOptions,
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<CancelFeeQueryParams>);
-}
 
 // 弹框相关功能
 const cancelFeeFormInstance = ref<InstanceType<typeof CancelFeeForm> | null>(null);
@@ -211,8 +169,8 @@ function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 
 	/** 业务对象 */
 	const 业务对象: CancelFeeFormVO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				batchNumber: row?.batchNumber || "",
 				employee: row?.employee || "",
@@ -311,6 +269,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

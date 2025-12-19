@@ -22,14 +22,40 @@ import {
 	handlingStatusOptions,
 } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 
-const contractExpireFormInstance = ref<InstanceType<typeof ContractExpireForm> | null>(null);
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ExpireQueryParams> = {
+	contractName: "",
+	contractNumber: "",
+	contractType: undefined,
+	partyA: "",
+	partyB: "",
+	processingStatus: undefined,
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
-	useExpireListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useExpireListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -115,24 +141,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 });
 
 /**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<ExpireQueryParams> = {
-	contractName: "",
-	contractNumber: "",
-	contractType: "",
-	processingStatus: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
@@ -154,53 +162,22 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		options: contractTypeOptions,
 	},
 	{
+		label: "甲方",
+		prop: "partyA",
+		valueType: "input",
+	},
+	{
+		label: "乙方",
+		prop: "partyB",
+		valueType: "input",
+	},
+	{
 		label: "处理状态",
 		prop: "processingStatus",
 		valueType: "select",
 		options: handlingStatusOptions,
 	},
 ]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<ExpireQueryParams>);
-}
 
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
@@ -211,16 +188,24 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: ExpireListItem;
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
+
+/** 弹框相关功能 */
+const contractExpireFormInstance = ref<InstanceType<typeof ContractExpireForm> | null>(null);
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
@@ -228,6 +213,12 @@ async function testAsync() {
 	await sleep(1300);
 	setIsLoadingT(false);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+}
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: ExpireListItem;
 }
 
 /** 打开弹框 */
@@ -239,9 +230,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const contractExpireFormVO: ContractExpireFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					contractName: row?.contractName || "",
 					contractNumber: row?.contractNumber || "",
@@ -262,7 +253,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					processor: row?.processor || "",
 					description: "", // Missing in list item
 				} as ContractExpireFormVO)
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractExpireFormProps = {
@@ -353,6 +344,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

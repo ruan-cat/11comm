@@ -7,27 +7,91 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { h } from "vue";
+import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
-
-import { useMode } from "@/composables/use-mode";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { consola } from "consola";
-
 import { type ContractChangeFormProps, defaultForm, type ContractChangeFormVO } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
 import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
 import { type ChangeListItem, type ChangeQueryParams, contractTypeOptions } from "@01s-11comm/type";
 
-/** 表单组件实例引用 */
-const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ChangeQueryParams> = {
+	contractName: "",
+	contractNumber: "",
+	contractType: undefined,
+	partyA: "",
+	partyB: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	{
+		label: "合同名称",
+		prop: "contractName",
+		valueType: "input",
+	},
+	{
+		label: "合同编号",
+		prop: "contractNumber",
+		valueType: "input",
+	},
+	{
+		label: "合同类型",
+		prop: "contractType",
+		valueType: "select",
+		options: contractTypeOptions,
+	},
+]);
+
+/** 表格搜索栏组件配置 */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
 
 /** 使用 TanStack Query 获取数据 */
-	useChangeListQuery();
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useChangeListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 搜索处理函数 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -107,110 +171,8 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-/**
- * 表格搜索栏双向绑定的变量原始数据
- * @description 为了满足搜索栏组件的校验需求这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & Partial<ChangeQueryParams> = {
-	contractName: "",
-	contractNumber: "",
-	contractType: "",
-};
-
-/** 表格搜索栏重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量双向绑定的响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: "合同名称",
-		prop: "contractName",
-		valueType: "input",
-	},
-
-	{
-		label: "合同编号",
-		prop: "contractNumber",
-		valueType: "input",
-	},
-
-	{
-		label: "合同类型",
-		prop: "contractType",
-		valueType: "select",
-		options: contractTypeOptions,
-	},
-]);
-
-/** 分页配置 */
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-/** 表格组件配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	border: true,
-	stripe: true,
-	adaptive: true,
-	highlightCurrentRow: true,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isFetching.value,
-});
-
-/** 处理页数变化 */
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-/** 处理页码变化即后端的pageIndex */
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-
-/** 表格搜索栏组件配置 */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 重新搜索处理函数 */
-function handleReSearch() {
-	console.log("重新搜索");
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 搜索处理函数 */
-function handleSearch() {
-	console.log("搜索", plusSearchModel.value);
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	} as Partial<ChangeQueryParams>);
-}
-
-/** 打开弹框参数接口 */
-interface OpenDialogParams {
-	/** 操作模式 */
-	mode: Mode;
-	/** 行数据 */
-	row?: ChangeListItem;
-}
+/** 表单组件实例引用 */
+const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
 
 /** 模式相关状态管理 */
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
@@ -227,6 +189,14 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
+/** 打开弹框参数接口 */
+interface OpenDialogParams {
+	/** 操作模式 */
+	mode: Mode;
+	/** 行数据 */
+	row?: ChangeListItem;
+}
+
 /** 打开弹框函数 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
@@ -236,9 +206,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const 合同变更表单业务对象 = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					contractName: row?.contractName || "",
 					contractNumber: row?.contractNumber || "",
 					contractType: row?.contractType || "",
@@ -261,7 +231,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					afterChange: "",
 					attachments: [],
 				} as ContractChangeFormVO)
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractChangeFormProps = {
@@ -362,6 +332,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
