@@ -40,6 +40,9 @@ export interface CancelFeeFormProps {
 	form: CancelFeeFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: CancelFeeFormVO;
+
+	/** 表单模式 */
+	mode?: Mode;
 }
 
 export { auditStatusOptions };
