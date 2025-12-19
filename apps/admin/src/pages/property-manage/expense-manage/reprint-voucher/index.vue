@@ -15,6 +15,7 @@ import ReprintVoucherForm from "./components/form.vue";
 import type { ReprintVoucherListItem, ReprintVoucherQueryParams, ReprintVoucherFormVO } from "@01s-11comm/type";
 import { feeTypeOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { useReprintVoucherListQuery } from "@/api/property-manage/expense-manage/reprint-voucher";
 
 /** 默认表单数据 */
 const defaultForm: ReprintVoucherFormVO = {
@@ -30,27 +31,6 @@ const defaultForm: ReprintVoucherFormVO = {
 	printCopies: 1,
 	printRemark: "",
 };
-
-/** 模拟表格数据 */
-const mockTableData: ReprintVoucherListItem[] = [
-	{
-		id: "1",
-		name: "收据001",
-		status: "启用",
-		createTime: "2024-01-01 10:00:00",
-		updateTime: "2024-01-01 10:00:00",
-	},
-	{
-		id: "2",
-		name: "收据002",
-		status: "禁用",
-		createTime: "2024-01-02 11:00:00",
-		updateTime: "2024-01-02 11:00:00",
-	},
-];
-
-/** 表格数据 */
-const tableData = ref<ReprintVoucherListItem[]>([]);
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -68,18 +48,33 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-const plusSearchModelRef: FieldValues & ReprintVoucherQueryParams = {
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<ReprintVoucherQueryParams> = {
 	name: "",
 	status: "",
-	pageIndex: 1,
-	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useReprintVoucherListQuery(plusSearchDefaultValues);
 
 /** 表格搜索栏组件 配置  */
 const plusSearchProps = ref<PlusSearchProps>({
@@ -90,33 +85,15 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = [...mockTableData];
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
 
-		// 根据名称过滤
-		if (plusSearchModel.value.name?.trim()) {
-			filteredData = filteredData.filter((item) =>
-				item.name.includes(plusSearchModel.value.name!.trim())
-			);
-		}
-
-		// 根据状态过滤
-		if (plusSearchModel.value.status) {
-			filteredData = filteredData.filter((item) =>
-				item.status === plusSearchModel.value.status
-			);
-		}
-
-		pagination.value.total = filteredData.length;
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 表格列配置 */
@@ -146,39 +123,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
@@ -206,14 +150,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 	},
 ]);
-
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -308,7 +244,7 @@ function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query will auto-fetch on mount
 });
 </script>
 
@@ -322,7 +258,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.batchReprint")) }}
@@ -335,6 +271,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
