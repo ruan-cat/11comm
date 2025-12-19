@@ -231,6 +231,14 @@ export type 巡查明细表单_VO = PatrolDetailFormVO;
 export type 巡查明细表单Props = PatrolDetailFormProps;
 ```
 
+### 错误导入 getRouteRank 函数
+
+以下代码是错误的，你不应该主动导入任何 getRouteRank 函数。这个函数是全局自动导入的，不需要你手动导入。
+
+```ts
+import { getRouteRank } from "@/router/rank";
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
