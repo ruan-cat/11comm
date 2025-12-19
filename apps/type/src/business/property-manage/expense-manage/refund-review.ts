@@ -46,10 +46,14 @@ export interface RefundReviewListItem {
  * RefundReview list query parameters
  */
 export interface RefundReviewQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 退费单号 Refund order number */
+	refundOrderNumber?: string;
+	/** 缴费单号 Payment order number */
+	paymentOrderNumber?: string;
+	/** 费用类型 Fee type */
+	feeType?: string;
+	/** 审核状态 Audit status */
+	auditStatus?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */

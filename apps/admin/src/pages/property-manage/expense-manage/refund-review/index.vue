@@ -13,62 +13,14 @@ import { transformI18n } from "@/plugins/i18n";
 import { type RefundReviewFormProps, defaultForm } from "./components/form";
 import RefundReviewForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
-import type { RefundReviewListItem, RefundReviewFormVO } from "@01s-11comm/type";
-import { feeTypeOptions, auditStatusOptions } from "@01s-11comm/type";
-
-/** 退费审核_列表查询_VO */
-interface RefundReviewQueryVO {
-	refundOrderNumber: string;
-	paymentOrderNumber: string;
-	feeType: string;
-	auditStatus: string;
-}
-
-/** 模拟表格数据 */
-const mockTableData: RefundReviewListItem[] = [
-	{
-		id: "1",
-		name: "退费审核1",
-		status: "待审核",
-		createTime: "2024-01-01 10:00:00",
-		updateTime: "2024-01-01 10:00:00",
-		refundOrderNumber: "TF202401010001",
-		paymentOrderNumber: "JF202401010001",
-		feeType: "物业费",
-		payer: "张三",
-		paymentPeriod: "2024-01 至 2024-12",
-		payablePaidAmount: "1200.00",
-		applyTime: "2024-01-15 14:30:00",
-		refundReason: "多缴费用",
-		applicant: "李四",
-		auditStatus: "待审核",
-		auditor: "",
-	},
-	{
-		id: "2",
-		name: "退费审核2",
-		status: "已通过",
-		createTime: "2024-01-02 09:00:00",
-		updateTime: "2024-01-03 16:00:00",
-		refundOrderNumber: "TF202401020002",
-		paymentOrderNumber: "JF202401020002",
-		feeType: "水费",
-		payer: "王五",
-		paymentPeriod: "2024-01 至 2024-03",
-		payablePaidAmount: "350.00",
-		applyTime: "2024-01-16 09:15:00",
-		refundReason: "房屋退租",
-		applicant: "王五",
-		auditStatus: "已通过",
-		auditor: "管理员",
-	},
-];
-
-/** 表格数据 */
-const tableData = ref<RefundReviewListItem[]>([]);
-
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+import {
+	type RefundReviewListItem,
+	type RefundReviewFormVO,
+	type RefundReviewQueryParams,
+	feeTypeOptions,
+	auditStatusOptions,
+} from "@01s-11comm/type";
+import { useRefundReviewListQuery } from "@/api/property-manage/expense-manage/refund-review";
 
 /** 表单组件实例 */
 const refundReviewFormInstance = ref<InstanceType<typeof RefundReviewForm> | null>(null);
@@ -87,56 +39,42 @@ async function testAsync() {
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ * @important
+ * 【必须使用 Partial 类型约束】类型定义必须为: FieldValues & Partial<{Page}QueryParams>
+ * 【必须在 API Hook 之前声明】此变量必须在调用 use{Page}ListQuery 之前定义
  */
-const plusSearchModelRef: FieldValues & RefundReviewQueryVO = {
+const plusSearchModelRef: FieldValues & Partial<RefundReviewQueryParams> = {
 	refundOrderNumber: "",
 	paymentOrderNumber: "",
 	feeType: "",
 	auditStatus: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+/**
+ * 表格搜索栏 重置功能用的默认数据
+ * @important
+ * 【必须在 API Hook 之前声明】此变量必须在调用 use{Page}ListQuery 之前定义
+ */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+/**
+ * 表格搜索栏变量 双向绑定的变量 响应式数据
+ * @important
+ * 【必须在 API Hook 之前声明】此变量必须在调用 use{Page}ListQuery 之前定义
+ */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = mockTableData;
-
-		if (plusSearchModel.value.refundOrderNumber) {
-			filteredData = filteredData.filter((item) => item.refundOrderNumber.includes(plusSearchModel.value.refundOrderNumber!));
-		}
-		if (plusSearchModel.value.paymentOrderNumber) {
-			filteredData = filteredData.filter((item) => item.paymentOrderNumber.includes(plusSearchModel.value.paymentOrderNumber!));
-		}
-		if (plusSearchModel.value.feeType) {
-			filteredData = filteredData.filter((item) => item.feeType === plusSearchModel.value.feeType);
-		}
-		if (plusSearchModel.value.auditStatus) {
-			filteredData = filteredData.filter((item) => item.auditStatus === plusSearchModel.value.auditStatus);
-		}
-
-		pagination.value.total = filteredData.length;
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
-}
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useRefundReviewListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -200,38 +138,25 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
+});
 
 /**
  * 表格搜索栏组件 表单配置
@@ -262,19 +187,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "退费审核",
 	columns: columns.value,
 });
+
+/** 模式控制 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
@@ -364,7 +284,7 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 }
 
 onMounted(async () => {
-	await loadTableData();
+	// TanStack Query 会自动加载数据，无需手动调用
 });
 </script>
 
@@ -378,7 +298,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary">
 					{{ transformI18n($t("common.buttons.batchAudit")) }}
@@ -391,6 +311,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
