@@ -13,7 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type SystemConfigListItem, type SystemConfigQueryParams, systemConfigTypeOptions, systemConfigGroupOptions, systemConfigStatusOptions } from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
-import { type SystemConfigFormProps, defaultForm, type 系统配置表单_VO } from "./components/form";
+import { type SystemConfigFormProps, defaultForm, type FormVO } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -178,7 +178,7 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const 系统配置表单_VO = isAdd.value
+	const formVO: FormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value || isInfo.value
 			? cloneDeep({
@@ -201,8 +201,8 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 
 	/** 表单组件需要的props */
 	const formProps: SystemConfigFormProps = {
-		form: 系统配置表单_VO,
-		defaultValues: 系统配置表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框组件所需的变量 */

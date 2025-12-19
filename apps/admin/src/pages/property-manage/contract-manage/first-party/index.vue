@@ -14,7 +14,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type FirstPartyFormProps, defaultForm, type FirstPartyFormVO } from "./components/form";
 import FirstPartyForm from "./components/form.vue";
 import { useFirstPartyListQuery } from "@/api/property-manage/contract-manage/first-party";
-import { type FirstPartyListItem, type FirstPartyQueryParams } from "@01s-11comm/type";
+import { type FirstPartyListItem, type FirstPartyQueryParams, contractFirstPartyTypeOptions, firstPartyStatusOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";

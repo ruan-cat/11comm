@@ -4,19 +4,19 @@ import type { OptionsType } from "../../../common";
  * @description 菜单项类型
  * Menu item type
  */
-export type MenuItemType = "目录" | "菜单" | "按钮" | "接口";
+export type MenuItemType = "catalog" | "menu" | "button" | "interface";
 
 /**
  * @description 菜单项状态
  * Menu item status
  */
-export type MenuItemStatus = "启用" | "禁用";
+export type MenuItemStatus = "enabled" | "disabled";
 
 /**
  * @description 是否选项值
  * Boolean option value
  */
-export type BooleanOption = "是" | "否";
+export type BooleanOption = "true" | "false";
 
 /**
  * @description 菜单项列表数据
@@ -85,9 +85,9 @@ export interface MenuItemQueryParams {
  * Menu type options
  */
 export const menuTypeOptions: OptionsType = [
-	{ label: "目录", value: "目录" },
-	{ label: "菜单", value: "菜单" },
-	{ label: "按钮", value: "按钮" },
+	{ label: "目录", value: "catalog" },
+	{ label: "菜单", value: "menu" },
+	{ label: "按钮", value: "button" },
 ];
 
 /**
@@ -95,8 +95,8 @@ export const menuTypeOptions: OptionsType = [
  * Status options
  */
 export const menuItemStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 /**
@@ -104,8 +104,8 @@ export const menuItemStatusOptions: OptionsType = [
  * Boolean options
  */
 export const booleanOptions: OptionsType = [
-	{ label: "是", value: "是" },
-	{ label: "否", value: "否" },
+	{ label: "是", value: "true" },
+	{ label: "否", value: "false" },
 ];
 
 /**
@@ -149,28 +149,17 @@ export const menuItemDefaultForm: MenuItemFormVO = {
 	menuId: "",
 	menuName: "",
 	parentMenu: "根菜单",
-	menuType: "菜单",
+	menuType: "menu",
 	routePath: "",
 	componentPath: "",
 	permissionKey: "",
 	sortNo: 1,
-	status: "启用",
+	status: "enabled",
 	icon: "",
-	isExternal: "否",
-	isCached: "否",
-	isHidden: "否",
+	isExternal: "false",
+	isCached: "false",
+	isHidden: "false",
 	description: "",
 };
 
-/**
- * @description 菜单项表单 props Menu item form props
- */
-export interface MenuItemFormProps {
-	/** 表单数据 Form data */
-	form: MenuItemFormVO;
-	/** 表单组件重置时默认使用的对象 Default values for form reset */
-	defaultValues: MenuItemFormVO;
-	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "info";
-}
 

@@ -69,3 +69,4 @@ export interface BaseListQueryParams {
 	/** 每页大小 Page size */
 	pageSize: number;
 }
+

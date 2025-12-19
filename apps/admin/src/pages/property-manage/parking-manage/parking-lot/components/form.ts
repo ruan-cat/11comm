@@ -1,4 +1,5 @@
-import type { ParkingLotFormVO, ParkingLotFormProps as ParkingLotFormPropsType, ParkingLotType, ParkingSpaceType } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
+import type { ParkingLotFormVO, ParkingLotType, ParkingSpaceType } from "@01s-11comm/type";
 
 // ==================== 向后兼容的类型别名 ====================
 
@@ -21,8 +22,17 @@ export const defaultForm: ParkingLotFormVO = {
 };
 
 /**
- * 停车场表单 props - 向后兼容别名
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
+ * 停车场表单 Props
+ * Parking lot form props
  */
-export interface 停车场表单Props extends ParkingLotFormPropsType {}
+export interface ParkingLotFormProps {
+	/** 表单数据 Form data */
+	form: ParkingLotFormVO;
+	/** 表单组件重置时默认使用的对象 Default values for form reset */
+	defaultValues: ParkingLotFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}
+
+/** 向后兼容：停车场表单 Props */
+export type 停车场表单Props = ParkingLotFormProps;

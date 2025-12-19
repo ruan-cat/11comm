@@ -1,8 +1,5 @@
 import type { OptionsType } from "../../../common";
 
-/** Mode type definition for form component */
-export type Mode = "add" | "edit" | "info";
-
 // ==================== 联合类型定义 ====================
 
 /** 省份联合类型 / Province union type */
@@ -54,17 +51,6 @@ export interface CommunityManageMyFormVO {
 	status: CommunityStatusType;
 }
 
-/**
- * 我的小区管理表单 Props / My community management form props
- */
-export interface CommunityManageMyFormProps {
-	/** 表单数据 / Form data */
-	form: CommunityManageMyFormVO;
-	/** 表单组件重置时默认使用的对象 / Default values for form reset */
-	defaultValues: CommunityManageMyFormVO;
-	/** 弹框模式 / Dialog mode */
-	mode: Mode;
-}
 
 // ==================== 常量定义 ====================
 

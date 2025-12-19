@@ -20,9 +20,9 @@ import {
 } from "@01s-11comm/type";
 import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
 import {
-	type 商户信息_表单_VO,
-	type 商户类型,
-	type 经营状态,
+	type FormVO,
+	type MerchantType,
+	type BusinessStatus,
 	type MerchantInfoFormProps,
 	defaultForm,
 } from "./components/form";
@@ -224,7 +224,7 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 	const title = `${modeText.value}商户信息`;
 
 	/** 业务对象 */
-	const 商户信息_表单_VO: 商户信息_表单_VO = isAdd.value
+	const formVO: FormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? ({
@@ -233,10 +233,10 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 					商户名称: row?.merchantName || "",
 					商户地址: row?.merchantAddress || "",
 					联系电话: row?.contactPhone || "",
-					商户类型: (row?.merchantType || "餐饮服务") as 商户类型,
+					商户类型: (row?.merchantType || "餐饮服务") as MerchantType,
 					企业法人: row?.legalRepresentative || "",
 					成立日期: row?.establishmentDate || "",
-					经营状态: (row?.businessStatus || "正常营业") as 经营状态,
+					经营状态: (row?.businessStatus || "正常营业") as BusinessStatus,
 					所属小区: row?.affiliatedCommunity || "",
 					营业时间: row?.businessHours || "",
 					经营面积: row?.businessArea || "",
@@ -245,13 +245,13 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 					银行账号: row?.bankAccount || "",
 					联系人手机: row?.contactMobile || "",
 					备注: row?.remarks || "",
-				} as 商户信息_表单_VO)
+				} as FormVO)
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: MerchantInfoFormProps = {
-		form: 商户信息_表单_VO,
-		defaultValues: 商户信息_表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 		mode,
 	};
 

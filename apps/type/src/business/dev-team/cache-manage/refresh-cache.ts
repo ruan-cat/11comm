@@ -60,29 +60,29 @@ export interface RefreshCacheQueryParams {
 
 /** 缓存类型选项 Cache type options */
 export const cacheTypeOptions: OptionsType = [
-    { label: "Redis", value: "Redis" },
-    { label: "Memory", value: "Memory" },
-    { label: "Memcached", value: "Memcached" },
-    { label: "Ehcache", value: "Ehcache" },
-    { label: "Caffeine", value: "Caffeine" },
-    { label: "Guava Cache", value: "Guava Cache" },
-    { label: "Hazelcast", value: "Hazelcast" },
-    { label: "Infinispan", value: "Infinispan" },
+    { label: "Redis", value: "redis" },
+    { label: "Memory", value: "memory" },
+    { label: "Memcached", value: "memcached" },
+    { label: "Ehcache", value: "ehcache" },
+    { label: "Caffeine", value: "caffeine" },
+    { label: "Guava Cache", value: "guava" },
+    { label: "Hazelcast", value: "hazelcast" },
+    { label: "Infinispan", value: "infinispan" },
 ];
 
 /** 刷新策略选项 Refresh policy options */
 export const refreshPolicyOptions: OptionsType = [
-    { label: "定时刷新", value: "定时刷新" },
-    { label: "手动刷新", value: "手动刷新" },
-    { label: "懒加载刷新", value: "懒加载刷新" },
-    { label: "事件触发刷新", value: "事件触发刷新" },
-    { label: "TTL过期刷新", value: "TTL过期刷新" },
-    { label: "LRU淘汰刷新", value: "LRU淘汰刷新" },
+    { label: "定时刷新", value: "scheduled" },
+    { label: "手动刷新", value: "manual" },
+    { label: "懒加载刷新", value: "lazy" },
+    { label: "事件触发刷新", value: "event" },
+    { label: "TTL过期刷新", value: "ttl" },
+    { label: "LRU淘汰刷新", value: "lru" },
 ];
 
 /** 缓存状态选项 Cache status options */
 export const cacheStatusOptions: OptionsType = [
-    { label: "启用", value: "启用" },
-    { label: "禁用", value: "禁用" },
-    { label: "维护中", value: "维护中" },
+    { label: "启用", value: "enabled" },
+    { label: "禁用", value: "disabled" },
+    { label: "维护中", value: "maintenance" },
 ];

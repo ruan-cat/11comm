@@ -1,4 +1,5 @@
-import type { DiscountSettingFormVO, 折扣设置表单_VO, Mode } from "@01s-11comm/type";
+import type { DiscountSettingFormVO, 折扣设置表单_VO } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
 
 // Re-export types from type package for compatibility
 export type { 折扣设置表单_VO } from "@01s-11comm/type";

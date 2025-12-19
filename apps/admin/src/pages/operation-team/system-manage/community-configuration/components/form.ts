@@ -1,9 +1,7 @@
 import type { CommunityConfigFormVO } from "@01s-11comm/type";
 
-// ==================== 类型别名 ====================
-
-/** 小区配置表单数据类型（中文别名） */
-export type 小区配置表单_VO = CommunityConfigFormVO;
+/** FormVO类型别名 */
+export type FormVO = CommunityConfigFormVO;
 
 /** 小区配置表单数据类型 */
 export { CommunityConfigFormVO };

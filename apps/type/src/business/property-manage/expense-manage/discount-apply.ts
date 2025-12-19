@@ -61,7 +61,7 @@ export const discountApplyStatusOptions: OptionsType = [
  * @description 申请类型选项
  * Application type options
  */
-export const 申请类型Options: OptionsType = [
+export const applicationTypeOptions: OptionsType = [
 	{ label: "新申请", value: "新申请" },
 	{ label: "续期申请", value: "续期申请" },
 	{ label: "变更申请", value: "变更申请" },
@@ -71,8 +71,22 @@ export const 申请类型Options: OptionsType = [
  * @description 使用状态选项
  * Usage status options
  */
-export const 使用状态Options: OptionsType = [
+export const usageStatusOptions: OptionsType = [
 	{ label: "未使用", value: "未使用" },
 	{ label: "使用中", value: "使用中" },
 	{ label: "已使用", value: "已使用" },
 ];
+
+// ==================== 兼容旧中文名称 ====================
+
+/**
+ * @description 申请类型选项（兼容性）
+ * Application type options (for compatibility)
+ */
+export const 申请类型Options = applicationTypeOptions;
+
+/**
+ * @description 使用状态选项（兼容性）
+ * Usage status options (for compatibility)
+ */
+export const 使用状态Options = usageStatusOptions;

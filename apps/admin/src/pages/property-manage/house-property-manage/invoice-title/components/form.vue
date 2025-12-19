@@ -154,7 +154,7 @@ defineExpose({
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
-			:default-values="defaultValues"
+			:default-values="defaultValues as FieldValues"
 			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>

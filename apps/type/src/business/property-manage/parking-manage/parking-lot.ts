@@ -1,5 +1,4 @@
 import type { OptionsType } from "../../../common";
-import type { Mode } from "../community-manage/my";
 
 /**
  * @description parking-lot列表数据
@@ -69,15 +68,3 @@ export interface ParkingLotFormVO {
 	remark: string;
 }
 
-/**
- * @description 停车场表单 Props
- * Parking lot form props
- */
-export interface ParkingLotFormProps {
-	/** 表单数据 Form data */
-	form: ParkingLotFormVO;
-	/** 表单组件重置时默认使用的对象 Default values for form reset */
-	defaultValues: ParkingLotFormVO;
-	/** 表单模式 Form mode */
-	mode?: Mode;
-}

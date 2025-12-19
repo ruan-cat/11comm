@@ -15,6 +15,9 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
 import OwnerVehicleForm from "./components/form.vue";
+import { parkingSpaceStatusOptions } from "@01s-11comm/type";
+import type { OwnerVehicleListItem } from "@01s-11comm/type";
+
 const OwnerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
 /** 模式控制 */
@@ -31,41 +34,42 @@ async function testAsync() {
 }
 
 /** 表格数据 */
-const tableData = ref<业主车辆_列表数据[]>([]);
+const tableData = ref<OwnerVehicleListItem[]>([]);
 
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
 		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
+		/** TODO: 使用 TanStack Query Hook 替代 mockTableData */
+		/** 当前暂时使用空数组，后续接入真实API */
+		let filteredData: OwnerVehicleListItem[] = [];
 
 		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.车牌号) {
-			filteredData = filteredData.filter((item) => item.车牌号.includes(plusSearchModel.value.车牌号!));
+		if (plusSearchModel.value.licensePlate) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.licensePlate!));
 		}
-		if (plusSearchModel.value.车位编号) {
-			filteredData = filteredData.filter((item) => item.车位.includes(plusSearchModel.value.车位编号!));
+		if (plusSearchModel.value.parkingSpaceNumber) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.parkingSpaceNumber!));
 		}
-		if (plusSearchModel.value.车位状态) {
+		if (plusSearchModel.value.parkingSpaceStatus) {
 			filteredData = filteredData.filter(
 				(item) =>
-					item.状态 ===
-					(plusSearchModel.value.车位状态 === "1"
+					item.status ===
+					(plusSearchModel.value.parkingSpaceStatus === "1"
 						? "正常"
-						: plusSearchModel.value.车位状态 === "3"
+						: plusSearchModel.value.parkingSpaceStatus === "3"
 							? "到期"
 							: "无车位"),
 			);
 		}
-		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) => item.业主.includes(plusSearchModel.value.业主名称!));
+		if (plusSearchModel.value.ownerName) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.ownerName!));
 		}
-		if (plusSearchModel.value.联系方式) {
-			filteredData = filteredData.filter((item) => item.备注.includes(plusSearchModel.value.联系方式!));
+		if (plusSearchModel.value.contactInfo) {
+			filteredData = filteredData.filter((item) => item.remark?.includes(plusSearchModel.value.contactInfo!));
 		}
-		if (plusSearchModel.value.成员车牌号) {
-			filteredData = filteredData.filter((item) => item.成员车辆.includes(plusSearchModel.value.成员车牌号!));
+		if (plusSearchModel.value.memberPlateNumber) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.memberPlateNumber!));
 		}
 
 		/** 更新总数 */
@@ -189,13 +193,26 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 业主车辆_列表查询_VO = {
-	车牌号: "",
-	车位编号: "",
-	车位状态: "",
-	业主名称: "",
-	联系方式: "",
-	成员车牌号: "",
+const plusSearchModelRef: FieldValues & {
+	/** 车牌号 License plate number */
+	licensePlate: string;
+	/** 车位编号 Parking space number */
+	parkingSpaceNumber: string;
+	/** 车位状态 Parking space status */
+	parkingSpaceStatus: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 联系方式 Contact info */
+	contactInfo: string;
+	/** 成员车牌号 Member plate number */
+	memberPlateNumber: string;
+} = {
+	licensePlate: "",
+	parkingSpaceNumber: "",
+	parkingSpaceStatus: "",
+	ownerName: "",
+	contactInfo: "",
+	memberPlateNumber: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -212,21 +229,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 车牌号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.plateNumber")),
-		prop: "车牌号",
+		prop: "licensePlate",
 		valueType: "input",
 	},
 
 	// 车位编号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceNumber")),
-		prop: "车位编号",
+		prop: "parkingSpaceNumber",
 		valueType: "input",
 	},
 
 	// 车位状态
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceStatus")),
-		prop: "车位状态",
+		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
 	},
@@ -234,20 +251,20 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 业主名称
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.ownerName")),
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 	},
 
 	// 联系方式
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.phone")),
-		prop: "联系方式",
+		prop: "contactInfo",
 		valueType: "input",
 	},
 	// 成员车牌号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.memberPlateNumber")),
-		prop: "成员车牌号",
+		prop: "memberPlateNumber",
 		valueType: "input",
 	},
 ]);

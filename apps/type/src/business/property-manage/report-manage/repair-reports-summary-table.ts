@@ -4,6 +4,7 @@
  */
 
 import type { OptionsType, BaseListQueryParams } from "../../../common";
+import { repairStatusOptions as commonRepairStatusOptions, repairTypeOptions as commonRepairTypeOptions } from "../../../common/business-options";
 
 /**
  * 报修汇总表列表数据
@@ -58,10 +59,10 @@ export interface RepairReportsSummaryTableQueryParams extends BaseListQueryParam
 }
 
 /**
- * 报修类型选项
- * Repair type options
+ * 报修汇总表报修类型选项
+ * Repair reports summary table repair type options
  */
-export const repairTypeOptions: OptionsType = [
+export const summaryRepairTypeOptions: OptionsType = [
 	{ label: "水电维修", value: "水电维修" },
 	{ label: "电梯维修", value: "电梯维修" },
 	{ label: "门禁维修", value: "门禁维修" },
@@ -72,10 +73,10 @@ export const repairTypeOptions: OptionsType = [
 ];
 
 /**
- * 报修状态选项
- * Repair status options
+ * 报修汇总表报修状态选项
+ * Repair reports summary table repair status options
  */
-export const repairStatusOptions: OptionsType = [
+export const summaryRepairStatusOptions: OptionsType = [
 	{ label: "待处理", value: "待处理" },
 	{ label: "处理中", value: "处理中" },
 	{ label: "已完成", value: "已完成" },

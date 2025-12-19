@@ -17,7 +17,7 @@ import { consola } from "consola";
 import { type ContractChangeFormProps, defaultForm, type ContractChangeFormVO } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
 import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
-import { type ChangeListItem, type ChangeQueryParams, contractTypeOptions } from "@01s-11comm/type";
+import { type ChangeListItem, type ChangeQueryParams, contractTypeOptions, changeStatusOptions } from "@01s-11comm/type";
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据

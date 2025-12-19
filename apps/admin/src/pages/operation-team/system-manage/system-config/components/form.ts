@@ -1,6 +1,6 @@
 import type { OptionsType } from "plus-pro-components";
 import type {
-	SystemConfigFormVO as FormVO,
+	SystemConfigFormVO,
 	SystemConfigFormProps,
 	SystemConfigType,
 	SystemConfigGroup,
@@ -13,19 +13,8 @@ import {
 	systemConfigStatusOptionsCN as 状态Options,
 } from "@01s-11comm/type";
 
-// ==================== 联合类型定义 ====================
-
-/** 配置类型联合类型 */
-export type 配置类型 = SystemConfigType;
-
-/** 配置分组联合类型 */
-export type 配置分组 = SystemConfigGroup;
-
-/** 状态联合类型 */
-export type 状态 = SystemConfigStatus;
-
-/** 向后兼容的类型别名 */
-export type 系统配置表单_VO = FormVO;
+/** FormVO类型别名 */
+export type FormVO = SystemConfigFormVO;
 
 // ==================== 常量定义 ====================
 

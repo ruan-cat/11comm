@@ -12,7 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type CommunityInfoListItem, type CommunityInfoQueryParams, communitySearchOptions } from "@01s-11comm/type";
 import { useCommunityInfoListQuery } from "@/api/operation-team/data-manage/community-information";
-import { type CommunityInformationFormProps, defaultForm, type 小区信息表单_VO } from "./components/form";
+import { type CommunityInformationFormProps, defaultForm, type FormVO } from "./components/form";
 import CommunityInformationForm from "./components/form.vue";
 
 /**
@@ -194,7 +194,7 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const 小区信息表单_VO: 小区信息表单_VO = isAdd.value
+	const formVO: FormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
@@ -218,8 +218,8 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 
 	/** 表单组件需要的props */
 	const formProps: CommunityInformationFormProps = {
-		form: 小区信息表单_VO,
-		defaultValues: 小区信息表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框标题 */

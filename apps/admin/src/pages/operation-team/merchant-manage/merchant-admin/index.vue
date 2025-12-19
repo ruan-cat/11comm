@@ -17,7 +17,7 @@ import {
 	merchantAdminStatusOptions,
 } from "@01s-11comm/type";
 import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
-import { type MerchantAdminFormProps, defaultForm, type 商户管理员表单_VO } from "./components/form";
+import { type MerchantAdminFormProps, defaultForm, type FormVO } from "./components/form";
 import MerchantAdminForm from "./components/form.vue";
 
 const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
@@ -190,7 +190,7 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 	const title = `${modeText.value}商户管理员`;
 
 	/** 业务对象 */
-	const 商户管理员表单_VO: 商户管理员表单_VO = isAdd.value
+	const formVO: FormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
@@ -210,8 +210,8 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 
 	/** 表单组件需要的props */
 	const props: MerchantAdminFormProps = {
-		form: 商户管理员表单_VO,
-		defaultValues: 商户管理员表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 		mode,
 	};
 

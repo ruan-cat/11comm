@@ -5,14 +5,14 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import { FormatFormProps, type 格式化确认表单_VO } from "./format-form";
+import { FormatFormProps, type FormatConfirmationFormVO } from "./format-form";
 
 const props = defineProps<FormatFormProps>();
 
 /**
  * 默认的表单重置变量
  */
-const defaultValues = props.defaultValues as FieldValues & 格式化确认表单_VO;
+const defaultValues = props.defaultValues as FieldValues & FormatConfirmationFormVO;
 
 /**
  * 表单组件实例 要求对外直接导出本表单实例
@@ -27,7 +27,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 格式化确认表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & FormatConfirmationFormVO;
 
 /**
  * 表单对象
@@ -49,7 +49,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "开发者密码",
-		prop: "开发者密码",
+		prop: "developerPassword",
 		valueType: "input",
 		fieldProps: {
 			type: "password",
@@ -77,7 +77,12 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 /**
  * 表单校验
  */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = ref<PlusFormRules>({
+	developerPassword: [
+		{ required: true, message: "请输入开发者密码", trigger: "blur" },
+		{ min: 6, max: 50, message: "长度在 6 到 50 个字符", trigger: "blur" },
+	],
+});
 
 defineExpose({
 	plusFormInstance,
@@ -91,8 +96,8 @@ defineExpose({
 		<div class="warning-text">
 			<p style="color: #e74c3c; font-size: 14px; line-height: 1.6; margin-bottom: 20px">
 				<span style="color: #e74c3c">• </span>
-				请谨慎操作，此操作将清空所有 <strong>【{{ props.小区名称 }}】</strong> 小区数据，小区编码为
-				<strong>【{{ props.小区ID }}】</strong> ，连错期间，请再次跟相关人员核实确认！
+				请谨慎操作，此操作将清空所有 <strong>【{{ props.communityName }}】</strong> 小区数据，小区编码为
+				<strong>【{{ props.communityId }}】</strong> ，连错期间，请再次跟相关人员核实确认！
 			</p>
 		</div>
 

@@ -16,8 +16,9 @@ import { type ContractDraftFormVO, type ContractDraftFormProps, defaultForm } fr
 import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
 import {
 	type DraftContractListItem,
-	type DraftContractQueryParamsType,
+	type DraftContractQueryParams,
 	contractTypeOptionsData,
+	draftContractStatusOptions,
 } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";

@@ -16,11 +16,9 @@ export type {
 	BuildingSpaceStructureDiagramListItem,
 	BuildingSpaceStructureDiagramQueryParams,
 	BuildingSpaceStructureDiagramFormVO,
-	BuildingSpaceStructureDiagramFormProps,
 	CommunityNoticeListItem,
 	CommunityNoticeQueryParams,
 	CommunityNoticeFormVO,
-	CommunityNoticeFormProps,
 	PropertyRegisterListItem,
 	PropertyRegisterFormVO,
 	PropertyRegisterQueryParams,
@@ -28,7 +26,6 @@ export type {
 	HandingBusinessQueryParams,
 	HouseDecorationListItem,
 	HouseDecorationQueryParams,
-	Mode,
 } from "./community-manage";
 
 export {

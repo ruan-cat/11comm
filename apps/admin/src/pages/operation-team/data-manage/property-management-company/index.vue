@@ -13,7 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PropertyCompanyListItem, type PropertyCompanyQueryParams } from "@01s-11comm/type";
 import { usePropertyCompanyListQuery } from "@/api/operation-team/data-manage/property-company";
-import { type PropertyManagementCompanyFormProps, defaultForm, type 物业公司表单_VO } from "./components/form";
+import { type PropertyManagementCompanyFormProps, defaultForm, type FormVO } from "./components/form";
 import PropertyManagementCompanyForm from "./components/form.vue";
 
 const PropertyManagementCompanyFormInstance = ref<InstanceType<typeof PropertyManagementCompanyForm> | null>(null);
@@ -196,7 +196,7 @@ function openDialog(params: { mode: Mode; row?: PropertyCompanyListItem }) {
 	const title = `${modeText.value}物业公司`;
 
 	/** 业务对象 */
-	const 物业公司表单_VO: 物业公司表单_VO = isAdd.value
+	const formVO: FormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
@@ -219,8 +219,8 @@ function openDialog(params: { mode: Mode; row?: PropertyCompanyListItem }) {
 
 	/** 表单组件需要的props */
 	const props: PropertyManagementCompanyFormProps = {
-		form: 物业公司表单_VO,
-		defaultValues: 物业公司表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 		mode,
 	};
 

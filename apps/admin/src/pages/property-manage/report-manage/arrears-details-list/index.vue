@@ -14,7 +14,13 @@ import { useToggle } from "@vueuse/core";
 import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ArrearsDetailsFormProps, defaultForm, type 欠费明细表单_VO } from "./components/form";
+import type {
+  ArrearsDetailsFormVO,
+  ArrearsDetailsFormProps,
+  ArrearsDetailsListListItem,
+  ArrearsDetailsListQueryParams
+} from "@01s-11comm/type";
+import { defaultArrearsDetailsForm } from "@01s-11comm/type";
 import ArrearsDetailsForm from "./components/form.vue";
 
 const smallTotal = ref<number>(0);
@@ -27,7 +33,7 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const arrearsDetailsFormInstance = ref<InstanceType<typeof ArrearsDetailsForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<欠费明细_列表数据[]>([]);
+const tableData = ref<ArrearsDetailsListListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -129,13 +135,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 欠费明细_列表查询_VO = {
-	费用大类: "",
-	填写房屋编号: "",
-	开始时间: "",
-	结束时间: "",
-	小区: "",
-	填写业主名称: "",
+const plusSearchModelRef: FieldValues & ArrearsDetailsListQueryParams = {
+	name: "",
+	status: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -152,20 +156,20 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	//费用大类
 	{
 		label: "费用大类",
-		prop: "费用大类",
+		prop: "feeCategory",
 		valueType: "select",
-		options: 费用大类Options,
+		options: [],
 	},
 	//房屋编号
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
-		prop: "填写房屋编号",
+		prop: "roomNumber",
 		valueType: "input",
 	},
 	// 开始时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.startTime")),
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -176,7 +180,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 结束时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.endTime")),
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -187,14 +191,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	//小区
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.cell")),
-		prop: "小区",
+		prop: "community",
 		valueType: "select",
-		options: 小区Options,
+		options: [],
 	},
 	//业主名称
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.employerName")),
-		prop: "填写业主名称",
+		prop: "ownerName",
 		valueType: "input",
 	},
 ]);
@@ -221,34 +225,15 @@ async function handleSearch() {
 /** 加载表格数据 */
 async function loadTableData() {
 	try {
-		let filteredData = mockTableData;
+		// TODO: 使用 TanStack Query Hook 替换 mockTableData
+		// 这里应该调用 API 获取真实数据
 
-		if (plusSearchModel.value.费用大类) {
-			filteredData = filteredData.filter((item) => item.费用项.includes(plusSearchModel.value.费用大类!));
-		}
-		if (plusSearchModel.value.填写房屋编号) {
-			filteredData = filteredData.filter((item) => item.房号.includes(plusSearchModel.value.填写房屋编号!));
-		}
-		if (plusSearchModel.value.小区) {
-			filteredData = filteredData.filter((item) => item.房号.includes(plusSearchModel.value.小区!));
-		}
-		if (plusSearchModel.value.填写业主名称) {
-			filteredData = filteredData.filter((item) => item.业主.includes(plusSearchModel.value.填写业主名称!));
-		}
-		if (plusSearchModel.value.开始时间) {
-			filteredData = filteredData.filter((item) => item.开始时间 >= plusSearchModel.value.开始时间!);
-		}
-		if (plusSearchModel.value.结束时间) {
-			filteredData = filteredData.filter((item) => item.结束时间 <= plusSearchModel.value.结束时间!);
-		}
-
-		pagination.value.total = filteredData.length;
+		pagination.value.total = tableData.value.length;
 		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
 		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-		pureTableProps.value.data = tableData.value;
+		pureTableProps.value.data = tableData.value.slice(startIndex, endIndex);
 
-		smallTotal.value = filteredData.reduce((sum, item) => sum + Number(item.欠费金额), 0);
+		smallTotal.value = tableData.value.reduce((sum, item) => sum + Number(item.arrearsAmount || 0), 0);
 		largeTotal.value = smallTotal.value;
 	} catch (error) {
 		console.error("加载数据失败:", error);
@@ -268,7 +253,7 @@ async function testAsync() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 欠费明细_列表数据;
+	row?: ArrearsDetailsListListItem;
 }
 
 /** 打开弹框 */
@@ -279,23 +264,23 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}欠费明细表`;
 
 	/** 业务对象 */
-	const formValue: 欠费明细表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+	const formValue: ArrearsDetailsFormVO = isAdd.value
+		? cloneDeep(defaultArrearsDetailsForm)
 		: isEdit.value
 			? cloneDeep({
-					...defaultForm,
-					费用编号: row?.费用编号 || "",
-					房号: row?.房号 || "",
-					业主: row?.业主 || "",
-					业主电话: row?.业主电话 || "",
-					面积: row?.面积 || "",
-					费用项: row?.费用项 || "",
-					开始时间: row?.开始时间 || "",
-					结束时间: row?.结束时间 || "",
-					欠费时长: row?.欠费时长 || "",
-					欠费金额: row?.欠费金额 || "",
+					...defaultArrearsDetailsForm,
+					feeNumber: row?.feeNumber || "",
+					roomNumber: row?.roomNumber || "",
+					owner: row?.owner || "",
+					ownerPhone: row?.ownerPhone || "",
+					area: row?.area || "",
+					feeItem: row?.feeItem || "",
+					startTime: row?.startTime || "",
+					endTime: row?.endTime || "",
+					arrearsDuration: row?.arrearsDuration || "",
+					arrearsAmount: row?.arrearsAmount || "",
 				})
-			: cloneDeep(defaultForm);
+			: cloneDeep(defaultArrearsDetailsForm);
 	const defaultValues = cloneDeep(formValue);
 
 	/** 表单组件需要的props */
@@ -359,17 +344,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 欠费明细_列表数据) {
+function handleEdit(row: ArrearsDetailsListListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 欠费明细_列表数据) {
+function handleView(row: ArrearsDetailsListListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 欠费明细_列表数据) {
+async function handleDelete(row: ArrearsDetailsListListItem) {
 	consola.log("删除", row);
 	await loadTableData();
 }

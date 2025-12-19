@@ -18,7 +18,7 @@ import {
 	communityConfigStatusOptions,
 } from "@01s-11comm/type";
 import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/community-configuration";
-import { type CommunityConfigurationFormProps, defaultForm, type 小区配置表单_VO } from "./components/form";
+import { type CommunityConfigurationFormProps, defaultForm, type FormVO } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
 const communityConfigurationFormInstance = ref<InstanceType<typeof CommunityConfigurationForm> | null>(null);
@@ -192,7 +192,7 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const 小区配置表单_VO: 小区配置表单_VO = isAdd.value
+	const formVO: FormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
@@ -210,8 +210,8 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 
 	/** 表单组件需要的props */
 	const formProps: CommunityConfigurationFormProps = {
-		form: 小区配置表单_VO,
-		defaultValues: 小区配置表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框标题 */

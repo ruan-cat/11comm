@@ -46,8 +46,8 @@ export interface DictionaryTypeQueryParams extends BaseListQueryParams {
  * Status options
  */
 export const dictionaryTypeStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 /**
@@ -55,10 +55,10 @@ export const dictionaryTypeStatusOptions: OptionsType = [
  * Dictionary category options
  */
 export const dictionaryCategoryOptions: OptionsType = [
-	{ label: "系统字典", value: "系统字典" },
-	{ label: "业务字典", value: "业务字典" },
-	{ label: "自定义字典", value: "自定义字典" },
-	{ label: "第三方字典", value: "第三方字典" },
+	{ label: "系统字典", value: "system" },
+	{ label: "业务字典", value: "business" },
+	{ label: "自定义字典", value: "custom" },
+	{ label: "第三方字典", value: "thirdParty" },
 ];
 
 /**
@@ -66,19 +66,19 @@ export const dictionaryCategoryOptions: OptionsType = [
  * Data type options
  */
 export const dataTypeOptions: OptionsType = [
-	{ label: "字符串", value: "字符串" },
-	{ label: "数字", value: "数字" },
-	{ label: "布尔值", value: "布尔值" },
-	{ label: "日期", value: "日期" },
-	{ label: "时间", value: "时间" },
-	{ label: "日期时间", value: "日期时间" },
-	{ label: "JSON对象", value: "JSON对象" },
-	{ label: "数组", value: "数组" },
-	{ label: "文件", value: "文件" },
-	{ label: "邮箱", value: "邮箱" },
-	{ label: "手机号", value: "手机号" },
-	{ label: "URL", value: "URL" },
-	{ label: "密码", value: "密码" },
+	{ label: "字符串", value: "string" },
+	{ label: "数字", value: "number" },
+	{ label: "布尔值", value: "boolean" },
+	{ label: "日期", value: "date" },
+	{ label: "时间", value: "time" },
+	{ label: "日期时间", value: "datetime" },
+	{ label: "JSON对象", value: "json" },
+	{ label: "数组", value: "array" },
+	{ label: "文件", value: "file" },
+	{ label: "邮箱", value: "email" },
+	{ label: "手机号", value: "phone" },
+	{ label: "URL", value: "url" },
+	{ label: "密码", value: "password" },
 ];
 
 /**
@@ -86,6 +86,6 @@ export const dataTypeOptions: OptionsType = [
  * Required options
  */
 export const requiredOptions: OptionsType = [
-	{ label: "是", value: "是" },
-	{ label: "否", value: "否" },
+	{ label: "是", value: "true" },
+	{ label: "否", value: "false" },
 ];

@@ -10,16 +10,21 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
+import { cloneDeep } from "lodash-es";
+import type {
+  DataStatisticsListItem,
+  DataStatisticsQueryParams
+} from "@01s-11comm/type";
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: mockTableData.length,
+	total: 0,
 });
 
 /** 表格数据 */
-const tableData = ref<报表管理_数据统计_表格数据[]>([]);
+const tableData = ref<DataStatisticsListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -136,10 +141,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报表管理_数据统计_搜索_VO = {
-	开始时间: "",
-	结束时间: "",
-	小区: "",
+const plusSearchModelRef: FieldValues & DataStatisticsQueryParams = {
+	name: "",
+	status: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -155,19 +161,19 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		valueType: "select",
-		options: 小区Options,
+		options: [],
 	},
 ]);
 
@@ -182,29 +188,19 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 加载表格数据 */
 async function loadTableData() {
-	let filteredData = mockTableData;
+	try {
+		// TODO: 使用 TanStack Query Hook 替换 mockTableData
+		// 这里应该调用 API 获取真实数据
 
-	if (plusSearchModel.value.小区) {
-		filteredData = filteredData.filter((item) => item.小区 === plusSearchModel.value.小区);
+		pagination.value.total = tableData.value.length;
+
+		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
+		const endIndex = startIndex + pagination.value.pageSize;
+		pureTableProps.value.data = tableData.value.slice(startIndex, endIndex);
+		pureTableProps.value.pagination = pagination.value;
+	} catch (error) {
+		console.error("加载数据失败:", error);
 	}
-
-	if (plusSearchModel.value.开始时间 && plusSearchModel.value.结束时间) {
-		const start = dayjs(plusSearchModel.value.开始时间);
-		const end = dayjs(plusSearchModel.value.结束时间);
-		filteredData = filteredData.filter((item) => {
-			const current = dayjs(item.统计时间);
-			return current.isAfter(start) && current.isBefore(end);
-		});
-	}
-
-	pagination.value.total = filteredData.length;
-
-	const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-	const endIndex = startIndex + pagination.value.pageSize;
-	tableData.value = filteredData.slice(startIndex, endIndex);
-
-	pureTableProps.value.data = tableData.value;
-	pureTableProps.value.pagination = pagination.value;
 }
 
 /** 重置搜索条件并重新加载数据 */

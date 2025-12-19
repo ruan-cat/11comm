@@ -96,38 +96,55 @@ export const defaultPatrolTaskForm: PatrolTaskFormVO = {
 	patrolStatus: "",
 };
 
-// ==================== 向后兼容的类型别名 ====================
-
-/** 向后兼容：巡检任务表单_VO / Backward compatibility: 巡检任务表单_VO */
-export type 巡检任务表单_VO = PatrolTaskFormVO;
+// ==================== 扩展类型定义 ====================
 
 /**
- * @description 巡逻任务列表数据 (向后兼容)
- * Patrol task list data (backward compatibility)
+ * @description 巡逻任务列表数据
+ * Patrol task list data
  */
 export interface PatrolTaskListItem extends TaskListItem {
-	/** 任务编码 */
-	任务编码: string;
-	/** 巡检计划 */
-	巡检计划: string;
-	/** 巡检人开始/结束时间 */
-	巡检人开始_结束时间: string;
-	/** 实际巡检时间 */
-	实际巡检时间: string;
-	/** 计划巡检人 */
-	计划巡检人: string;
-	/** 当前巡检人 */
-	当前巡检人: string;
-	/** 转移描述 */
-	转移描述: string;
-	/** 巡检方式 */
-	巡检方式: string;
-	/** 巡检状态 */
-	巡检状态: string;
+	/** 任务编码 Task code */
+	taskCode: string;
+	/** 巡检计划 Patrol plan */
+	patrolPlan: string;
+	/** 巡检人开始/结束时间 Patrol person start/end time */
+	patrolPersonTimeRange: string;
+	/** 实际巡检时间 Actual patrol time */
+	actualPatrolTime: string;
+	/** 计划巡检人 Planned patrol person */
+	plannedPatrolPerson: string;
+	/** 当前巡检人 Current patrol person */
+	currentPatrolPerson: string;
+	/** 转移描述 Transfer description */
+	transferDescription: string;
+	/** 巡检方式 Patrol method */
+	patrolMethod: string;
+	/** 巡检状态 Patrol status */
+	patrolStatus: string;
 }
 
 /**
- * @description 巡检任务列表数据 (向后兼容)
- * Patrol task list data (backward compatibility)
+ * @description 巡检任务列表查询参数
+ * Patrol task list query parameters
  */
-export type 巡检任务_列表数据 = PatrolTaskListItem;
+export interface PatrolTaskQueryParams extends TaskQueryParams {
+	/** 执行人 Executor */
+	executor?: string;
+	/** 巡检开始时间 Patrol start time */
+	patrolStartTime?: string;
+	/** 巡检结束时间 Patrol end time */
+	patrolEndTime?: string;
+	/** 巡检状态 Patrol status */
+	patrolStatus?: string;
+}
+
+/**
+ * @description 巡检状态选项
+ * Patrol status options
+ */
+export const patrolStatusOptions: OptionsType = [
+	{ label: "待执行", value: "待执行" },
+	{ label: "执行中", value: "执行中" },
+	{ label: "已完成", value: "已完成" },
+	{ label: "已逾期", value: "已逾期" },
+];

@@ -68,3 +68,33 @@ export interface PatrolPathFormData {
 
 /** 向后兼容：统一命名 / Backward compatibility: Unified naming */
 export type PatrolPathFormVO = PatrolPathFormData;
+
+/**
+ * @description 巡检路线列表数据
+ * Patrol path list data
+ */
+export interface PatrolPathListItem extends PathListItem {
+	/** 巡检点ID Patrol point ID */
+	patrolPointId: string;
+	/** 巡检点名称 Patrol point name */
+	patrolPointName: string;
+	/** 巡检点类型 Patrol point type */
+	patrolPointType: string;
+	/** 巡检位置 Patrol location */
+	patrolLocation: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 排序 Sort order */
+	sortOrder: string;
+}
+
+/**
+ * @description 巡检路线列表查询参数
+ * Patrol path list query parameters
+ */
+export interface PatrolPathQueryParams extends PathQueryParams {
+	/** 巡检路线名称 Patrol path name */
+	patrolPathName?: string;
+}

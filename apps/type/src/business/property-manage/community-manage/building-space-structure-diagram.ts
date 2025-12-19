@@ -32,15 +32,6 @@ export interface BuildingSpaceStructureDiagramFormVO {
 	remarks: string;
 }
 
-/**
- * 楼栋结构图表单 Props / Building space structure diagram form props
- */
-export interface BuildingSpaceStructureDiagramFormProps {
-	/** 表单数据 / Form data */
-	form: BuildingSpaceStructureDiagramFormVO;
-	/** 表单组件重置时默认使用的对象 / Default values for form reset */
-	defaultValues: BuildingSpaceStructureDiagramFormVO;
-}
 
 // ==================== 原有类型定义 ====================
 
@@ -142,13 +133,3 @@ export const defaultBuildingSpaceStructureDiagramForm: BuildingSpaceStructureDia
 	remarks: "",
 };
 
-// ==================== 向后兼容的类型别名 ====================
-
-/** 向后兼容：楼栋结构图表单_VO / Backward compatibility: 楼栋结构图表单_VO */
-export type 楼栋结构图表单_VO = BuildingSpaceStructureDiagramFormVO;
-
-/** 向后兼容：建筑结构选项 / Backward compatibility: 建筑结构选项 */
-export const 建筑结构选项 = buildingStructureOptions;
-
-/** 向后兼容：楼栋状态选项 / Backward compatibility: 楼栋状态选项 */
-export const 楼栋状态选项 = buildingStatusOptions;

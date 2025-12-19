@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { type InitializeCellFormProps, type InitializeCellFormVO, 状态Options } from "./form";
+import { type InitializeCommunityFormProps, type InitializeCommunityFormVO, statusOptions } from "./form";
 
-const props = defineProps<InitializeCellFormProps>();
+const props = defineProps<InitializeCommunityFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & InitializeCellFormVO;
+const defaultValues = props.defaultValues as FieldValues & InitializeCommunityFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -18,7 +18,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & InitializeCellFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & InitializeCommunityFormVO;
 
 /**
  * 表单对象
@@ -40,7 +40,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "小区ID",
-		prop: "小区ID",
+		prop: "communityId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -49,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -58,7 +58,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "附近地标",
-		prop: "附近地标",
+		prop: "nearbyLandmark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "城市编码",
-		prop: "城市编码",
+		prop: "cityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -76,9 +76,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: statusOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -94,23 +94,23 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	小区ID: [
+	communityId: [
 		{ required: true, message: "请输入小区ID", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	小区名称: [
+	communityName: [
 		{ required: true, message: "请输入小区名称", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 	],
-	附近地标: [
+	nearbyLandmark: [
 		{ required: true, message: "请输入附近地标", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 	],
-	城市编码: [
+	cityCode: [
 		{ required: true, message: "请输入城市编码", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 	],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 defineExpose({

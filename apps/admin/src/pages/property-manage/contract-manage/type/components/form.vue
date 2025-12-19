@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import type { FieldValues } from "element-plus";
 import { cloneDeep } from "@pureadmin/utils";
-import type { PlusColumn } from "plus-pro-components";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 

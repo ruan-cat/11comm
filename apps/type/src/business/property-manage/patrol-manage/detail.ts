@@ -33,15 +33,6 @@ export interface PatrolDetailFormVO {
 	patrolSituation: string;
 }
 
-/**
- * 巡查明细表单 Props / Patrol detail form props
- */
-export interface PatrolDetailFormProps {
-	/** 表单数据 / Form data */
-	form: PatrolDetailFormVO;
-	/** 表单组件重置时默认使用的对象 / Default values for form reset */
-	defaultValues: PatrolDetailFormVO;
-}
 
 // ==================== 原有类型定义 ====================
 
@@ -101,19 +92,65 @@ export const defaultPatrolDetailForm: PatrolDetailFormVO = {
 	patrolSituation: "",
 };
 
-// ==================== 向后兼容的类型别名 ====================
 
-/** 向后兼容：巡检方式 / Backward compatibility: PatrolMethodType */
-export type 巡检方式 = PatrolMethodType;
 
-/** 向后兼容：任务状态 / Backward compatibility: TaskStatusType */
-export type 任务状态 = TaskStatusType;
+// ==================== 列表相关类型 ====================
 
-/** 向后兼容：巡检点状态 / Backward compatibility: PatrolPointStatusType */
-export type 巡检点状态 = PatrolPointStatusType;
+/**
+ * @description 巡检明细列表数据
+ * Patrol detail list data
+ */
+export interface PatrolDetailListItem extends DetailListItem {
+	/** 任务详情ID / Task detail ID */
+	taskDetailId: string;
+	/** 巡检点名称 / Patrol point name */
+	patrolPointName: string;
+	/** 巡检计划名称 / Patrol plan name */
+	patrolPlanName: string;
+	/** 巡检路线名称 / Patrol route name */
+	patrolRouteName: string;
+	/** 巡检人开始结束时间 / Patrol person start and end time */
+	patrolPersonStartEndTime: string;
+	/** 巡检点开始结束时间 / Patrol point start and end time */
+	patrolPointStartEndTime: string;
+	/** 实际巡检时间 / Actual patrol time */
+	actualPatrolTime: string;
+	/** 实际签到状态 / Actual check-in status */
+	actualCheckInStatus: string;
+	/** 计划巡检人 / Planned patrol person */
+	plannedPatrolPerson: string;
+	/** 实际巡检人 / Actual patrol person */
+	actualPatrolPerson: string;
+	/** 巡检方式 / Patrol method */
+	patrolMethod: PatrolMethodType | string;
+	/** 任务状态 / Task status */
+	taskStatus: TaskStatusType | string;
+	/** 巡检点状态 / Patrol point status */
+	patrolPointStatus: PatrolPointStatusType | string;
+	/** 巡检情况 / Patrol situation */
+	patrolSituation: string;
+	/** 巡检照片 / Patrol photos */
+	patrolPhotos: string;
+	/** 位置信息 / Location info */
+	locationInfo: string;
+}
 
-/** 向后兼容：巡查明细表单_VO / Backward compatibility: 巡查明细表单_VO */
-export type 巡查明细表单_VO = PatrolDetailFormVO;
+/**
+ * @description 巡检明细列表查询参数
+ * Patrol detail list query parameters
+ */
+export interface PatrolDetailQueryParams {
+	/** 巡检人 / Patrol person */
+	patrolPerson?: string;
+	/** 巡检开始时间 / Patrol start time */
+	patrolStartTime?: string;
+	/** 巡检结束时间 / Patrol end time */
+	patrolEndTime?: string;
+	/** 巡检方式 / Patrol method */
+	patrolMethod?: PatrolMethodType | string;
+	/** 任务状态 / Task status */
+	taskStatus?: TaskStatusType | string;
+	/** 巡检点状态 / Patrol point status */
+	patrolPointStatus?: PatrolPointStatusType | string;
+}
 
-/** 向后兼容：巡查明细表单Props / Backward compatibility: 巡查明细表单Props */
-export type 巡查明细表单Props = PatrolDetailFormProps;

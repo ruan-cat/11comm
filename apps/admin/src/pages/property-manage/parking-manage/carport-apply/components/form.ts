@@ -1,4 +1,5 @@
-import type { CarportApplyFormVO, CarportApplyFormProps as CarportApplyFormPropsType } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
+import type { CarportApplyFormVO } from "@01s-11comm/type";
 
 /** 车位申请 表单数据类型 - 向后兼容别名 */
 export type 车位申请_VO = CarportApplyFormVO;
@@ -19,8 +20,14 @@ export const defaultForm: CarportApplyFormVO = {
 };
 
 /**
- * 车位申请表单 props - 向后兼容别名
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
+ * 车位申请表单 props
+ * @description 车位申请表单属性
  */
-export interface CarportApplyFormProps extends CarportApplyFormPropsType {}
+export interface CarportApplyFormProps {
+	/** 表单数据 Form data */
+	form: CarportApplyFormVO;
+	/** 表单组件重置时默认使用的对象 Default values for form reset */
+	defaultValues: CarportApplyFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}

@@ -1,21 +1,21 @@
 import type { OptionsType } from "plus-pro-components";
-import type { InitializeCellFormVO } from "@01s-11comm/type";
+import type { InitializeCommunityFormVO } from "@01s-11comm/type";
 
 /** 状态选项 */
-export const 状态Options: OptionsType = [
+export const statusOptions: OptionsType = [
 	{ label: "待审核", value: "待审核" },
 	{ label: "审核完成", value: "审核完成" },
 	{ label: "审核失败", value: "审核失败" },
 ];
 
 // 重新导出类型，供组件使用
-export type { InitializeCellFormVO };
+export type { InitializeCommunityFormVO };
 
 /**
  * 默认表单
  * @description 对外导出用于其他场景使用
  */
-export const defaultForm: InitializeCellFormVO = {
+export const defaultForm: InitializeCommunityFormVO = {
 	communityId: "",
 	communityName: "",
 	nearbyLandmark: "",
@@ -28,9 +28,9 @@ export const defaultForm: InitializeCellFormVO = {
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export interface InitializeCellFormProps {
+export interface InitializeCommunityFormProps {
 	/** 表单数据 */
-	form: InitializeCellFormVO;
+	form: InitializeCommunityFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: InitializeCellFormVO;
+	defaultValues: InitializeCommunityFormVO;
 }

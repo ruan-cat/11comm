@@ -15,10 +15,11 @@ import { transformI18n } from "@/plugins/i18n";
 import { type CarportInfoFormProps, defaultForm } from "./components/form";
 import CarportInfoForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { parkingSpaceStatusOptions } from "@01s-11comm/type";
+import { parkingSpaceStatusOptions, parkingSpaceTypeOptions, parkingLotOptions } from "@01s-11comm/type";
+import type { CarportInfoListItem } from "@01s-11comm/type";
 
 /** 表格数据 */
-const tableData = ref<车位信息_列表数据[]>([]);
+const tableData = ref<CarportInfoListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -131,14 +132,29 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 车位信息_列表查询_VO = {
-	停车场: "",
-	车位: "",
-	车位状态: "",
-	车位类型: "",
-	业主姓名: "",
-	联系电话: "",
-	车辆号码: "",
+const plusSearchModelRef: FieldValues & {
+	/** 停车场 Parking lot */
+	parkingLot: string;
+	/** 车位 Parking space */
+	parkingSpace: string;
+	/** 车位状态 Parking space status */
+	parkingSpaceStatus: string;
+	/** 车位类型 Parking space type */
+	parkingSpaceType: string;
+	/** 业主姓名 Owner name */
+	ownerName: string;
+	/** 联系电话 Contact phone */
+	contactPhone: string;
+	/** 车辆号码 Vehicle number */
+	vehicleNumber: string;
+} = {
+	parkingLot: "",
+	parkingSpace: "",
+	parkingSpaceStatus: "",
+	parkingSpaceType: "",
+	ownerName: "",
+	contactPhone: "",
+	vehicleNumber: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -154,40 +170,40 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "停车场",
-		prop: "停车场",
+		prop: "parkingLot",
 		valueType: "select",
-		options: 停车场Options,
+		options: parkingLotOptions,
 	},
 	{
 		label: "车位编号",
-		prop: "车位",
+		prop: "parkingSpace",
 		valueType: "input",
 	},
 	{
 		label: "车位状态",
-		prop: "车位状态",
+		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
 	},
 	{
 		label: "车位类型",
-		prop: "车位类型",
+		prop: "parkingSpaceType",
 		valueType: "select",
-		options: 车位类型Options,
+		options: parkingSpaceTypeOptions,
 	},
 	{
 		label: "业主姓名",
-		prop: "业主姓名",
+		prop: "ownerName",
 		valueType: "input",
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 	{
 		label: "车辆号码",
-		prop: "车辆号码",
+		prop: "vehicleNumber",
 		valueType: "input",
 	},
 ]);
@@ -205,30 +221,31 @@ const plusSearchProps = ref<PlusSearchProps>({
 async function loadTableData() {
 	try {
 		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
+		/** TODO: 使用 TanStack Query Hook 替代 mockTableData */
+		/** 当前暂时使用空数组，后续接入真实API */
+		let filteredData: CarportInfoListItem[] = [];
 
 		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.停车场) {
-			filteredData = filteredData.filter((item) => item.停车场.includes(plusSearchModel.value.停车场!));
+		if (plusSearchModel.value.parkingLot) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.parkingLot!));
 		}
-		if (plusSearchModel.value.车位) {
-			filteredData = filteredData.filter((item) => item.车位.includes(plusSearchModel.value.车位!));
+		if (plusSearchModel.value.parkingSpace) {
+			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.parkingSpace!));
 		}
-		if (plusSearchModel.value.车位状态) {
-			filteredData = filteredData.filter((item) => item.车位状态 === plusSearchModel.value.车位状态);
+		if (plusSearchModel.value.parkingSpaceStatus) {
+			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.parkingSpaceStatus);
 		}
-		if (plusSearchModel.value.车位类型) {
-			filteredData = filteredData.filter((item) => item.车位类型 === plusSearchModel.value.车位类型);
+		if (plusSearchModel.value.parkingSpaceType) {
+			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.parkingSpaceType);
 		}
-		if (plusSearchModel.value.业主姓名) {
-			filteredData = filteredData.filter((item) => item.业主姓名?.includes(plusSearchModel.value.业主姓名!));
+		if (plusSearchModel.value.ownerName) {
+			filteredData = filteredData.filter((item) => item.name?.includes(plusSearchModel.value.ownerName!));
 		}
-		if (plusSearchModel.value.联系电话) {
-			filteredData = filteredData.filter((item) => item.联系电话?.includes(plusSearchModel.value.联系电话!));
+		if (plusSearchModel.value.contactPhone) {
+			filteredData = filteredData.filter((item) => item.name?.includes(plusSearchModel.value.contactPhone!));
 		}
-		if (plusSearchModel.value.车辆号码) {
-			filteredData = filteredData.filter((item) => item.车辆号码?.includes(plusSearchModel.value.车辆号码!));
+		if (plusSearchModel.value.vehicleNumber) {
+			filteredData = filteredData.filter((item) => item.name?.includes(plusSearchModel.value.vehicleNumber!));
 		}
 
 		/** 更新总数 */
@@ -277,14 +294,14 @@ async function testAsync() {
 const carportInfoFormInstance = ref<InstanceType<typeof CarportInfoForm> | null>(null);
 
 /** 打开弹框 */
-function openDialog({ mode, row }: { mode: Mode; row?: 车位信息_列表数据 }) {
+function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}车位信息`;
 
 	/** 业务对象 */
-	const 车位信息表单_VO: 车位信息_表单_VO = isAdd.value
+	const carportInfoFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: cloneDeep({
 				...defaultForm,
@@ -293,8 +310,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: 车位信息_列表数据
 
 	/** 表单组件需要的props */
 	const formProps: CarportInfoFormProps = {
-		form: 车位信息表单_VO,
-		defaultValues: 车位信息表单_VO,
+		form: carportInfoFormVO,
+		defaultValues: carportInfoFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

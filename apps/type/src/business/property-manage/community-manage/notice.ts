@@ -90,16 +90,6 @@ export interface CommunityNoticeFormVO {
 	noticeTime?: string;
 }
 
-/**
- * @description 小区公示表单 Props 类型
- * Community notice form props type
- */
-export interface CommunityNoticeFormProps {
-	/** 表单数据 Form data */
-	form: CommunityNoticeFormVO;
-	/** 表单组件重置时默认使用的对象 Default values for form reset */
-	defaultValues: CommunityNoticeFormVO;
-}
 
 /**
  * @description 默认小区公示表单

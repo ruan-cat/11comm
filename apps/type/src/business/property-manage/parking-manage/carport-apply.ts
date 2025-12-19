@@ -1,5 +1,4 @@
 import type { OptionsType } from "../../../common";
-import type { Mode } from "../community-manage/my";
 
 /**
  * @description carport-apply列表数据
@@ -75,15 +74,3 @@ export interface CarportApplyFormVO {
 	reviewResult: string;
 }
 
-/**
- * @description 车位申请表单 Props
- * Carport apply form props
- */
-export interface CarportApplyFormProps {
-	/** 表单数据 Form data */
-	form: CarportApplyFormVO;
-	/** 表单组件重置时默认使用的对象 Default values for form reset */
-	defaultValues: CarportApplyFormVO;
-	/** 表单模式 Form mode */
-	mode?: Mode;
-}

@@ -223,3 +223,15 @@ overrides:
     ]
 }
 ```
+
+## 019 <!-- TODO: --> 待整理
+
+类型项目不该自己定义 Mode 类型，不应该将形如 xxxFormProps 的类型加入到 type 类型项目内的。
+
+你应该阅读对应的业务类型路径，进入到对应业务类型的 form.ts 文件内，在这个 form.ts 文件内使用这个 xxxFormProps 类型。
+
+形如 xxxFormProps 的表单 props 类型，就应该存放在 form.ts 内。
+
+请你立刻开启一个独立的，专项的子代理，修复类型项目出现的 ，形如 xxxFormProps 类型的表单 props 类型，迁移到正确对应的 form.ts 内。
+
+而不是在类型项目内做处理。

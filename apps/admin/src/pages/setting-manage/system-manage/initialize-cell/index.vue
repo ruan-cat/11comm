@@ -12,44 +12,46 @@ import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type InitializeCellFormProps, defaultForm } from "./components/form";
+import { type InitializeCommunityFormProps, defaultForm } from "./components/form";
 import InitializeCellForm from "./components/form.vue";
 
 import { type FormatFormProps, defaultForm as formatDefaultForm } from "./components/format-form";
 import FormatForm from "./components/format-form.vue";
 
+import { mockTableData, type InitializeCommunityListItem, type InitializeCommunityListQueryVO, type InitializeCommunityFormVO } from "./test-data";
+
 const initializeCellFormInstance = ref<InstanceType<typeof InitializeCellForm> | null>(null);
 const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<初始化小区_列表数据[]>([]);
+const tableData = ref<InitializeCommunityListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "小区ID",
-		prop: "小区ID",
+		prop: "communityId",
 		width: 120,
 	},
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		minWidth: 150,
 	},
 	{
 		label: "附近地标",
-		prop: "附近地标",
+		prop: "nearbyLandmark",
 		width: 150,
 	},
 	{
 		label: "城市编码",
-		prop: "城市编码",
+		prop: "cityCode",
 		width: 200,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
@@ -89,11 +91,11 @@ async function loadTableData() {
 		let filteredData = mockTableData;
 
 		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.小区ID) {
-			filteredData = filteredData.filter((item) => item.小区ID.includes(plusSearchModel.value.小区ID!));
+		if (plusSearchModel.value.communityId) {
+			filteredData = filteredData.filter((item) => item.communityId.includes(plusSearchModel.value.communityId!));
 		}
-		if (plusSearchModel.value.小区名称) {
-			filteredData = filteredData.filter((item) => item.小区名称.includes(plusSearchModel.value.小区名称!));
+		if (plusSearchModel.value.communityName) {
+			filteredData = filteredData.filter((item) => item.communityName.includes(plusSearchModel.value.communityName!));
 		}
 
 		/** 更新总数 */
@@ -131,9 +133,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 初始化小区_列表查询_VO = {
-	小区ID: "",
-	小区名称: "",
+const plusSearchModelRef: FieldValues & InitializeCommunityListQueryVO = {
+	communityId: "",
+	communityName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -150,14 +152,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 小区ID
 	{
 		label: "小区ID",
-		prop: "小区ID",
+		prop: "communityId",
 		valueType: "input",
 	},
 
 	// 小区名称
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		valueType: "input",
 	},
 ]);
@@ -202,35 +204,35 @@ async function testAsync() {
 /**
  * 打开弹框
  */
-function openDialog(params: { mode: Mode; row?: 初始化小区_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 	/** 弹框标题 */
 	const title = `${modeText.value}初始化小区`;
 	/** 业务对象 */
-	const 初始化小区表单: 初始化小区表单_VO = isAdd.value
+	const initializeCommunityForm: InitializeCommunityFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					小区ID: row?.小区ID || "",
-					小区名称: row?.小区名称 || "",
-					附近地标: row?.附近地标 || "",
-					城市编码: row?.城市编码 || "",
-					状态: row?.状态 || "",
+					communityId: row?.communityId || "",
+					communityName: row?.communityName || "",
+					nearbyLandmark: row?.nearbyLandmark || "",
+					cityCode: row?.cityCode || "",
+					status: row?.status || "",
 				})
 			: cloneDeep({
 					...defaultForm,
-					小区ID: row?.小区ID || "",
-					小区名称: row?.小区名称 || "",
-					附近地标: row?.附近地标 || "",
-					城市编码: row?.城市编码 || "",
-					状态: row?.状态 || "",
+					communityId: row?.communityId || "",
+					communityName: row?.communityName || "",
+					nearbyLandmark: row?.nearbyLandmark || "",
+					cityCode: row?.cityCode || "",
+					status: row?.status || "",
 				});
 	/** 表单组件需要的props */
-	const formProps: InitializeCellFormProps = {
-		form: 初始化小区表单,
-		defaultValues: 初始化小区表单,
+	const formProps: InitializeCommunityFormProps = {
+		form: initializeCommunityForm,
+		defaultValues: initializeCommunityForm,
 	};
 
 	addDialog({
@@ -291,7 +293,7 @@ function openDialog(params: { mode: Mode; row?: 初始化小区_列表数据 }) 
 /**
  * 打开格式化确认弹框
  */
-function openFormatDialog(row: 初始化小区_列表数据) {
+function openFormatDialog(row: InitializeCommunityListItem) {
 	/** 弹框标题 */
 	const title = "温馨提示！";
 
@@ -299,8 +301,8 @@ function openFormatDialog(row: 初始化小区_列表数据) {
 	const formProps: FormatFormProps = {
 		form: cloneDeep(formatDefaultForm),
 		defaultValues: cloneDeep(formatDefaultForm),
-		小区ID: row.小区ID,
-		小区名称: row.小区名称,
+		小区ID: row.communityId,
+		小区名称: row.communityName,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -359,7 +361,7 @@ function openFormatDialog(row: 初始化小区_列表数据) {
 /**
  * 格式化操作
  */
-function handleFormat(row: 初始化小区_列表数据) {
+function handleFormat(row: InitializeCommunityListItem) {
 	console.log("格式化操作", row);
 	openFormatDialog(row);
 }

@@ -1,4 +1,6 @@
 import type { OptionsType } from "../../../common";
+import { repairStatusOptions, repairSourceOptions } from "../../../common/business-options";
+
 
 /**
  * @description phone-report-repairs列表数据
@@ -71,3 +73,34 @@ export const defaultPhoneRepairsForm: PhoneRepairsFormVO = {
 	appointmentTime: "",
 	repairDescription: "",
 };
+
+/**
+ * @description 电话报修列表数据 (向后兼容)
+ * Phone report repairs list data (backward compatibility)
+ */
+export interface 电话报修_列表数据 extends PhoneReportRepairsListItem {
+	/** 工单编号 */
+	工单编号: string;
+	/** 位置 */
+	位置: string;
+	/** 报修类型 */
+	报修类型: string;
+	/** 维修类型 */
+	维修类型: string;
+	/** 报修人 */
+	报修人: string;
+	/** 联系方式 */
+	联系方式: string;
+	/** 预约时间 */
+	预约时间: string;
+	/** 状态 */
+	状态: string;
+	/** 备注 */
+	备注: string;
+}
+
+/**
+ * @description 电话报修搜索 VO (向后兼容)
+ * Phone report repairs search VO (backward compatibility)
+ */
+export interface 电话报修_搜索_VO extends PhoneReportRepairsQueryParams {}

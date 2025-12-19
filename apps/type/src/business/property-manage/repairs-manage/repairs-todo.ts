@@ -1,4 +1,6 @@
 import type { OptionsType } from "../../../common";
+import { repairStatusOptions, repairSourceOptions } from "../../../common/business-options";
+
 
 /**
  * @description repairs-todo列表数据
@@ -111,3 +113,15 @@ export interface RepairsTodoListData extends RepairsTodoListItem {
  * Repairs todo list data (backward compatibility)
  */
 export type 报修待办_列表数据 = RepairsTodoListData;
+
+/**
+ * @description 待办维修列表数据 (向后兼容)
+ * Repairs todo list data (backward compatibility)
+ */
+export interface 待办维修_列表数据 extends RepairsTodoListData {}
+
+/**
+ * @description 待办维修搜索 VO (向后兼容)
+ * Repairs todo search VO (backward compatibility)
+ */
+export interface 待办维修_搜索_VO extends RepairsTodoQueryParams {}

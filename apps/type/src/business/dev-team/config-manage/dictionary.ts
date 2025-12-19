@@ -54,11 +54,11 @@ export interface DictionaryQueryParams extends BaseListQueryParams {
  * Dictionary type options
  */
 export const dictionaryTypeOptions: OptionsType = [
-	{ label: "系统字典", value: "系统字典" },
-	{ label: "业务字典", value: "业务字典" },
-	{ label: "地区字典", value: "地区字典" },
-	{ label: "状态字典", value: "状态字典" },
-	{ label: "配置字典", value: "配置字典" },
+	{ label: "系统字典", value: "system" },
+	{ label: "业务字典", value: "business" },
+	{ label: "地区字典", value: "region" },
+	{ label: "状态字典", value: "status" },
+	{ label: "配置字典", value: "config" },
 ];
 
 /**
@@ -66,6 +66,6 @@ export const dictionaryTypeOptions: OptionsType = [
  * Enable status options
  */
 export const enableStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];

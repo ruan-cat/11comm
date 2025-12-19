@@ -76,3 +76,45 @@ export interface PatrolPlanFormVO {
 	/** 巡检人员 Patrol staff */
 	patrolStaff: string;
 }
+
+/**
+ * @description 巡检计划列表数据
+ * Patrol plan list data
+ */
+export interface PatrolPlanListItem extends PlanListItem {
+	/** 计划名称 Plan name */
+	planName: string;
+	/** 计划路线 Plan route */
+	planRoute: string;
+	/** 计划周期 Plan cycle */
+	planCycle: string;
+	/** 签到方式 Check-in method */
+	checkInMethod: string;
+	/** 日期范围 Date range */
+	dateRange: string;
+	/** 时间范围 Time range */
+	timeRange: string;
+	/** 任务提前(分钟) Task advance (minutes) */
+	taskAdvanceMinutes: string;
+	/** 制定人 Planner */
+	planner: string;
+	/** 制定时间 Plan time */
+	planTime: string;
+	/** 巡检人员 Patrol staff */
+	patrolStaff: string;
+}
+
+/**
+ * @description 巡检计划列表查询参数
+ * Patrol plan list query parameters
+ */
+export interface PatrolPlanQueryParams extends PlanQueryParams {
+	/** 计划ID Plan ID */
+	planId?: string;
+	/** 计划名称 Plan name */
+	planName?: string;
+	/** 巡检人 Patrol person */
+	patrolPerson?: string;
+	/** 巡检状态 Patrol status */
+	patrolStatus?: string;
+}

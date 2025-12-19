@@ -6,9 +6,9 @@ import {
 	type AreaType,
 	type OwnerDisplayType,
 	type NotificationMethodType,
-	type ReturnVisitSettingType,
-	type Mode
+	type ReturnVisitSettingType
 } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
 
 // 为了向后兼容，创建类型别名
 export type 报修设置类型 = RepairsSettingType;

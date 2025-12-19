@@ -54,14 +54,14 @@ export interface ConfigItemQueryParams extends BaseListQueryParams {
  * Config item type options
  */
 export const configItemTypeOptions: OptionsType = [
-	{ label: "系统配置", value: "系统配置" },
-	{ label: "业务配置", value: "业务配置" },
-	{ label: "接口配置", value: "接口配置" },
-	{ label: "数据库配置", value: "数据库配置" },
-	{ label: "缓存配置", value: "缓存配置" },
-	{ label: "日志配置", value: "日志配置" },
-	{ label: "安全配置", value: "安全配置" },
-	{ label: "通知配置", value: "通知配置" },
+	{ label: "系统配置", value: "system" },
+	{ label: "业务配置", value: "business" },
+	{ label: "接口配置", value: "api" },
+	{ label: "数据库配置", value: "database" },
+	{ label: "缓存配置", value: "cache" },
+	{ label: "日志配置", value: "log" },
+	{ label: "安全配置", value: "security" },
+	{ label: "通知配置", value: "notification" },
 ];
 
 /**
@@ -69,8 +69,8 @@ export const configItemTypeOptions: OptionsType = [
  * Enable status options
  */
 export const itemEnableStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 /**
@@ -106,15 +106,4 @@ export const configItemDefaultForm: ConfigItemFormVO = {
 	remark: "",
 };
 
-/**
- * @description 配置项表单 props Config item form props
- */
-export interface ConfigItemFormProps {
-	/** 表单数据 Form data */
-	form: ConfigItemFormVO;
-	/** 表单组件重置时默认使用的对象 Default values for form reset */
-	defaultValues: ConfigItemFormVO;
-	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "info";
-}
 

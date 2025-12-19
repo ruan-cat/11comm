@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { contractTypeOptions } from "../../../common/business-options";
 
 /**
  * @description contracte-charge列表数据

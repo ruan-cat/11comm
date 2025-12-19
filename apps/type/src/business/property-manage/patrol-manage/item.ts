@@ -57,3 +57,25 @@ export interface PatrolItemFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
+
+/**
+ * @description 巡检项目列表数据
+ * Patrol item list data
+ */
+export interface PatrolItemListItem extends ItemListItem {
+	/** 编号 Code */
+	code: string;
+	/** 巡检项目 Patrol item */
+	patrolItem: string;
+}
+
+/**
+ * @description 巡检项目列表查询参数
+ * Patrol item list query parameters
+ */
+export interface PatrolItemQueryParams extends ItemQueryParams {
+	/** 项目编号 Project code */
+	projectCode?: string;
+	/** 巡检项目名称 Patrol item name */
+	patrolItemName?: string;
+}

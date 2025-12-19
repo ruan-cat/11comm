@@ -447,3 +447,55 @@ export const patrolPointStatusOptions: OptionsType = [
 	{ label: "已处理", value: "已处理" },
 	{ label: "待处理", value: "待处理" },
 ];
+
+/**
+ * @description 报修状态选项
+ * Repair status options
+ */
+export const repairStatusOptions: OptionsType = [
+	{ label: "待处理", value: "待处理" },
+	{ label: "处理中", value: "处理中" },
+	{ label: "已完成", value: "已完成" },
+	{ label: "已取消", value: "已取消" },
+	{ label: "已暂停", value: "已暂停" },
+];
+
+/**
+ * @description 报修类型选项
+ * Repair type options
+ */
+export const repairTypeOptions: OptionsType = [
+	{ label: "水管维修", value: "水管维修" },
+	{ label: "电路维修", value: "电路维修" },
+	{ label: "门窗维修", value: "门窗维修" },
+	{ label: "电梯维修", value: "电梯维修" },
+	{ label: "消防设施", value: "消防设施" },
+	{ label: "清洁服务", value: "清洁服务" },
+	{ label: "绿化养护", value: "绿化养护" },
+	{ label: "其他", value: "其他" },
+];
+
+/**
+ * @description 报修来源选项
+ * Repair source options
+ */
+export const repairSourceOptions: OptionsType = [
+	{ label: "业主APP", value: "业主APP" },
+	{ label: "电话报修", value: "电话报修" },
+	{ label: "现场报修", value: "现场报修" },
+	{ label: "微信公众号", value: "微信公众号" },
+	{ label: "物业前台", value: "物业前台" },
+	{ label: "其他", value: "其他" },
+];
+
+/**
+ * @description 回访状态选项
+ * Return visit status options
+ */
+export const returnVisitStatusOptions: OptionsType = [
+	{ label: "未回访", value: "未回访" },
+	{ label: "已回访", value: "已回访" },
+	{ label: "满意", value: "满意" },
+	{ label: "不满意", value: "不满意" },
+];
+

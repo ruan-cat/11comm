@@ -4,13 +4,13 @@ import type { OptionsType } from "../../../common";
  * @description 菜单组状态
  * Menu group status
  */
-export type MenuGroupStatus = "启用" | "禁用";
+export type MenuGroupStatus = "enabled" | "disabled";
 
 /**
  * @description 菜单组类型名称
  * Menu group type name
  */
-export type MenuGroupTypeName = "系统菜单" | "用户菜单" | "商户菜单";
+export type MenuGroupTypeName = "system" | "user" | "merchant";
 
 /**
  * @description 菜单组列表数据
@@ -65,7 +65,7 @@ export interface MenuGroupQueryParams {
  * Status options
  */
 export const menuGroupStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 

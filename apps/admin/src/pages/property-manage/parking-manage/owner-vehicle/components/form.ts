@@ -1,4 +1,5 @@
-import type { 业主车辆表单_VO, OwnerVehicleFormVO, Mode } from "@01s-11comm/type";
+import type { 业主车辆表单_VO, OwnerVehicleFormVO } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
 
 /** 业主车辆表单_VO - 向后兼容别名 */
 export type 业主车辆表单_VO_Alias = 业主车辆表单_VO;

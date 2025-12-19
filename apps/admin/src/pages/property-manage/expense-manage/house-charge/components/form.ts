@@ -3,9 +3,9 @@ import {
 } from "@01s-11comm/type";
 import type {
 	HouseChargeFormVO,
-	房屋收费_VO,
-	Mode
+	房屋收费_VO
 } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
 
 // Re-export types from type package for compatibility
 export type {

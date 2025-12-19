@@ -10,6 +10,10 @@ definePage({
 
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
+import { getRouteRank } from "@/router/rank";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
+import { defaultPureTableIndexColumn } from "@/config/constant";
+import { useI18n } from "vue-i18n";
 import {
 	type MenuItemListItem,
 	type MenuItemQueryParams,
@@ -18,6 +22,8 @@ import {
 	booleanOptions,
 } from "@01s-11comm/type";
 import { useMenuItemListQuery } from "@/api/dev-team/menu-manage/item";
+
+const { t } = useI18n();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -123,7 +129,7 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		/** @see https://vscode.dev/github.com/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: () => transformI18n(t("common.table.operation")),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -237,7 +243,7 @@ function handleSearch() {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary">
-					{{ transformI18n($t("common.buttons.add")) }}
+					{{ transformI18n(t("common.buttons.add")) }}
 				</ElButton>
 			</template>
 
@@ -252,10 +258,10 @@ function handleSearch() {
 				>
 					<template #operation="{ row }">
 						<ElButton type="warning">
-							{{ transformI18n($t("common.buttons.edit")) }}
+							{{ transformI18n(t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger">
-							{{ transformI18n($t("common.buttons.del")) }}
+							{{ transformI18n(t("common.buttons.del")) }}
 						</ElButton>
 					</template>
 				</PureTable>

@@ -231,18 +231,18 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? {
 					...defaultForm,
-					楼栋编号: row?.buildingId || "",
-					楼栋名称: row?.buildingName || "",
-					总楼层: row?.totalFloors || 0,
-					总户数: row?.totalHouseholds || 0,
-					建筑面积: row?.buildingArea || 0,
-					建筑结构: row?.buildingStructure || "",
-					建成年份: row?.constructionYear || "",
-					图纸路径: row?.drawingPath || "",
-					状态: row?.status || "正常使用",
-					负责人: row?.personInCharge || "",
-					联系电话: row?.contactPhone || "",
-					备注: row?.remarks || "",
+					buildingId: row?.buildingId || "",
+					buildingName: row?.buildingName || "",
+					totalFloors: row?.totalFloors || 0,
+					totalHouseholds: row?.totalHouseholds || 0,
+					buildingArea: row?.buildingArea || 0,
+					buildingStructure: row?.buildingStructure || "",
+					constructionYear: row?.constructionYear || "",
+					drawingPath: row?.drawingPath || "",
+					status: row?.status || "正常使用",
+					personInCharge: row?.personInCharge || "",
+					contactPhone: row?.contactPhone || "",
+					remarks: row?.remarks || "",
 				}
 			: cloneDeep(defaultForm);
 

@@ -13,8 +13,6 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { InvoiceListItem, InvoiceQueryParams, 发票_列表数据, 发票_列表查询_VO, 发票表单_VO } from "@01s-11comm/type";
 import { 发票类型Options, 发票审核状态Options } from "@01s-11comm/type";
-import type { TableColumns } from "@pureadmin/table";
-import type { PaginationProps } from "element-plus";
 import { type InvoiceFormProps, defaultForm } from "./components/form";
 import InvoiceForm from "./components/form.vue";
 
@@ -27,7 +25,7 @@ const mockTableData = ref<发票_列表数据[]>([
 ]);
 
 /** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = ref({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
@@ -35,7 +33,7 @@ const pagination = ref<PaginationProps>({
 });
 
 /** 表格列配置 */
-const columns = ref<TableColumns>([
+const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",

@@ -60,14 +60,14 @@ export interface ConfigCenterQueryParams extends BaseListQueryParams {
  * Config type options
  */
 export const configTypeOptions: OptionsType = [
-	{ label: "系统配置", value: "系统配置" },
-	{ label: "业务配置", value: "业务配置" },
-	{ label: "接口配置", value: "接口配置" },
-	{ label: "数据库配置", value: "数据库配置" },
-	{ label: "缓存配置", value: "缓存配置" },
-	{ label: "安全配置", value: "安全配置" },
-	{ label: "邮件配置", value: "邮件配置" },
-	{ label: "文件配置", value: "文件配置" },
+	{ label: "系统配置", value: "system" },
+	{ label: "业务配置", value: "business" },
+	{ label: "接口配置", value: "api" },
+	{ label: "数据库配置", value: "database" },
+	{ label: "缓存配置", value: "cache" },
+	{ label: "安全配置", value: "security" },
+	{ label: "邮件配置", value: "email" },
+	{ label: "文件配置", value: "file" },
 ];
 
 /**
@@ -75,6 +75,6 @@ export const configTypeOptions: OptionsType = [
  * Config status options
  */
 export const configStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
