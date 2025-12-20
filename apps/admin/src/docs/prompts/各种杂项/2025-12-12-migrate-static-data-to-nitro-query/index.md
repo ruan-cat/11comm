@@ -406,3 +406,31 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 - `\}\s+as\s+Partial<.*QueryParams>\);`
 - `});`
+
+### 015 <!-- TODO: --> 更新迭代 `migrate-static-data-to-nitro-query` 的全部文档，避免出现编写兼容性的中文类型变量
+
+在多次的迭代中，我发现现在的 `migrate-static-data-to-nitro-query` 任务执行的时候，总是会在类型项目和后台项目内新建兼容性的中文变量，和中文类型。这是非常错误的做法！
+
+正确的操作规范如下：
+
+删除向后兼容的中文类型，直接用纯英文命名的类型做替换
+
+1. 就比如以下的类型，就是不合适的类型，你应该删除掉纯中文的类型，并要求使用中文类型的其他文件，直接使用纯英文的业务类型即可。不需要写任何向后兼容的中文类型。
+2. 你应该重点去修复因为中文类型被删除后而导致的类型错误，其修复方式就是直接替换掉中文类型，直接换成英文类型。
+
+```ts
+/** 向后兼容：巡检方式 / Backward compatibility: PatrolMethodType */
+export type 巡检方式 = PatrolMethodType;
+/** 向后兼容：任务状态 / Backward compatibility: TaskStatusType */
+export type 任务状态 = TaskStatusType;
+/** 向后兼容：巡检点状态 / Backward compatibility: PatrolPointStatusType */
+export type 巡检点状态 = PatrolPointStatusType;
+/** 向后兼容：巡查明细表单_VO / Backward compatibility: 巡查明细表单_VO */
+export type 巡查明细表单_VO = PatrolDetailFormVO;
+/** 向后兼容：巡查明细表单Props / Backward compatibility: 巡查明细表单Props */
+export type 巡查明细表单Props = PatrolDetailFormProps;
+```
+
+在你明白这个重要的类型处理规范后，请你务必更新 `migrate-static-data-to-nitro-query` 任务的全部文档，不要再编写任何兼容性的，中文变量名和类型名。
+
+直接替换成纯英文的变量名。
