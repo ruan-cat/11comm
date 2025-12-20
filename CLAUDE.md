@@ -36,8 +36,6 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 在我和你沟通时，我会使用以下术语，便于你理解。
 
-### 2.1. 全局术语
-
 在任何沟通下，这些术语都生效。
 
 - `code-style` ： `.claude\agents\code-style.md` `代码风格子代理` ，用于说明代码编写规范的子代理。
@@ -45,6 +43,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
 - `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
 - `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
+
+- `type-project-organization` ：`.claude\skills\type-project-organization\SKILL.md` 类型项目代码组织规范技能
 
 - 后台项目： 即 `apps\admin\package.json` 项目。又称为 `admin后台项目` 。
 - 类型项目： 即 `apps\type\package.json` 项目。又称为 `type类型项目` 。
@@ -168,12 +168,12 @@ export * from "./expense-manage";
 
 ```typescript
 export type {
-  PatrolTaskFormVO,
-  PatrolTaskFormProps,
-  TaskListItem,
-  TaskQueryParams,
-  PatrolTaskListItem,
-  PatrolTaskQueryParams,
+	PatrolTaskFormVO,
+	PatrolTaskFormProps,
+	TaskListItem,
+	TaskQueryParams,
+	PatrolTaskListItem,
+	PatrolTaskQueryParams,
 } from "./task";
 ```
 
@@ -274,17 +274,17 @@ export * from "./task";
  * Audit status options
  */
 export const auditStatusOptions: OptionsType = [
-  { label: "待审核", value: "待审核" },
-  { label: "已通过", value: "已通过" },
-  { label: "已拒绝", value: "已拒绝" },
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
 ];
 
 /** 费用项名称选项 Expense item name options */
 export const expenseItemNameOptions: OptionsType = [
-  { label: "物业费", value: "物业费" },
-  { label: "水电费", value: "水电费" },
-  { label: "停车费", value: "停车费" },
-  { label: "维修费", value: "维修费" },
+	{ label: "物业费", value: "物业费" },
+	{ label: "水电费", value: "水电费" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
 ];
 
 /** 费用类型选项别名 Fee type options alias */
@@ -299,11 +299,7 @@ export const feeTypeOptions = expenseTypeOptions;
 // 导出通用类型 - 先导出 common
 export * from "./common";
 // 导出业务类型 - 后导出 business，避免冲突时使用命名导出
-export {
-  patrolMethodOptions,
-  patrolPointStatusOptions,
-  returnVisitStatusOptions,
-} from "./common";
+export { patrolMethodOptions, patrolPointStatusOptions, returnVisitStatusOptions } from "./common";
 // 选择性导出业务模块，避免重复导出
 export * from "./business/dev-team";
 export * from "./business/operation-team";
