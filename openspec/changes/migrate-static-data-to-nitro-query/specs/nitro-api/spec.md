@@ -9,6 +9,27 @@
 - ✅ **正确范例**: [配置中心接口](../../../../apps/admin/server/api/dev-team/config-manage/center/list.post.ts)
 - ❌ **错误反面例子**: [缴费审核接口](../../../../apps/admin/server/api/property-manage/expense-manage/payment-review/list.post.ts)
 
+## ⚠️ 重要警告：严格禁止向后兼容的中文类型
+
+**在实施 Nitro API 接口相关任务时，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
+
+❌ **错误示例（严格禁止）**：
+```typescript
+// 不允许创建中文类型别名
+export type 巡检方式 = PatrolMethodType;
+export type 任务状态 = TaskStatusType;
+
+// 不允许创建中文变量别名
+export const 费用类型 = contractTypeOptions;
+export const 状态选项 = statusOptions;
+```
+
+✅ **正确做法**：
+- 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
+- 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
+- 不需要任何中文类型的兼容层
+- 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
+
 ---
 
 ## ADDED Requirements
@@ -408,6 +429,8 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 
 - [ ] 从 `nitro/h3` 导入 `defineHandler` 和 `readBody`
 - [ ] 使用 `defineHandler` 而不是 `defineEventHandler`
+- [ ] **严格禁止：未创建任何中文类型别名**（如 `export type 巡检方式 = PatrolMethodType;`）
+- [ ] **严格禁止：未创建任何中文变量别名**（如 `export const 费用类型 = contractTypeOptions;`）
 - [ ] 使用 DEFAULT_PAGE_INDEX 和 DEFAULT_PAGE_SIZE 常量
 - [ ] 使用 `filterDataByQuery` 工具函数
 - [ ] 创建 `response` 变量并添加类型约束 `JsonVO<PageDTO<T>>`

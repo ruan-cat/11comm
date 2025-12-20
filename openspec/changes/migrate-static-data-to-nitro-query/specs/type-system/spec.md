@@ -189,6 +189,8 @@ apps/type 类型库 SHALL 满足以下约束：
 
 - 采用驼峰命名法（camelCase）
 - 不允许出现任何中文变量名
+- **严格禁止：不允许创建任何向后兼容的中文类型别名**，如 `export type 巡检方式 = PatrolMethodType;`
+- **严格禁止：不允许为兼容中文字段而创建中文变量名或中文类型**
 - 每个字段必须包含 JSDoc 注释，格式：`/** {中文} {English} */`
 - 优先使用完整单词，避免缩写（除非是业界通用缩写如 ID、URL）
 - 布尔类型字段使用 is/has/should 前缀
@@ -214,6 +216,23 @@ apps/type 类型库 SHALL 满足以下约束：
 - **WHEN** 创建类型定义
 - **THEN** 使用 TypeScript 字面量联合类型：`type ExpenseIdentifier = "周期性费用" | "一次性费用"`
 - **AND** 配套导出 Options 常量：`export const expenseIdentifierOptions: OptionsType = [...]`
+
+#### Scenario: 严格禁止向后兼容的中文类型
+
+- **GIVEN** 原代码中存在中文字段，需要迁移到英文字段
+- **WHEN** 定义新的类型系统
+- **THEN** **严格禁止**创建中文类型别名，如：
+  ```typescript
+  // ❌ 错误：不允许创建中文类型别名
+  export type 巡检方式 = PatrolMethodType;
+  export type 任务状态 = TaskStatusType;
+  export type 巡检点状态 = PatrolPointStatusType;
+  export type 巡查明细表单_VO = PatrolDetailFormVO;
+  export type 巡查明细表单Props = PatrolDetailFormProps;
+  ```
+- **AND** 应该直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
+- **AND** 不需要任何中文类型的兼容层，直接替换即可
+- **AND** 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
 
 ---
 

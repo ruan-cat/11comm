@@ -11,6 +11,36 @@
 - **类型安全优先** - 所有返回值必须有显式类型约束
 - **代码复用** - 最大化使用封装好的 composables 和 utils
 
+## ⚠️ 重要警告：严格禁止向后兼容的中文类型
+
+**在迁移过程中，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
+
+❌ **错误示例（严格禁止）**：
+```typescript
+// 不允许创建中文类型别名
+export type 巡检方式 = PatrolMethodType;
+export type 任务状态 = TaskStatusType;
+export type 巡检点状态 = PatrolPointStatusType;
+export type 巡查明细表单_VO = PatrolDetailFormVO;
+export type 巡查明细表单Props = PatrolDetailFormProps;
+
+// 不允许创建中文变量别名
+export const 费用类型 = contractTypeOptions;
+export const 状态选项 = statusOptions;
+```
+
+✅ **正确做法**：
+- 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
+- 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
+- 不需要任何中文类型的兼容层
+- 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
+
+**原因**：
+- 避免长期维护兼容层的技术债
+- 强制统一代码规范
+- 简化类型定义
+- 减少代码体积
+
 ---
 
 ## 2. 迁移前准备
@@ -87,6 +117,33 @@ export interface {Page}QueryParams extends BaseListQueryParams {
 export const {enum}Options: OptionsType = [
 	{ label: "选项1", value: "选项1" },
 	{ label: "选项2", value: "选项2" },
+];
+```
+
+#### ⚠️ 重要警告：禁止创建中文类型别名
+
+**在创建类型定义文件时，严格禁止以下做法**：
+
+❌ **错误示例（严格禁止）**：
+```typescript
+// ❌ 错误1: 创建中文类型别名
+export type 巡检方式 = PatrolMethodType;
+export type 任务状态 = TaskStatusType;
+
+// ❌ 错误2: 创建中文变量别名
+export const 费用类型 = expenseTypeOptions;
+export const 状态选项 = statusOptions;
+```
+
+✅ **正确做法**：
+```typescript
+// ✅ 正确: 直接使用英文类型和变量名
+export interface PatrolMethodType {
+	// ...
+}
+
+export const expenseTypeOptions: OptionsType = [
+	{ label: "费用类型", value: "费用类型" },
 ];
 ```
 
@@ -1022,6 +1079,8 @@ pnpm typecheck
 
 - [ ] 文件位置正确
 - [ ] 所有字段名为英文驼峰命名
+- [ ] **严格禁止：未创建任何中文类型别名**（如 `export type 巡检方式 = PatrolMethodType;`）
+- [ ] **严格禁止：未创建任何中文变量别名**（如 `export const 费用类型 = contractTypeOptions;`）
 - [ ] 每个字段有 JSDoc 注释
 - [ ] QueryParams 继承 BaseListQueryParams
 - [ ] Options 导出正确

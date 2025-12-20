@@ -84,7 +84,8 @@
 - 每个选项数组必须包含 JSDoc 注释，说明选项的用途
 - 注释格式：`/** @description {中文描述} {English description} */`
 - 使用 `export const` 导出选项数组
-- 选项数组变量名使用英文命名，禁止使用中文变量名
+- 选项数组变量名使用英文命名，**严格禁止使用中文变量名**
+- **严格禁止：不允许创建任何向后兼容的中文变量别名**，如 `export const 费用类型 = contractTypeOptions;`
 - 类型标注为 `OptionsType`
 
 **示例：**

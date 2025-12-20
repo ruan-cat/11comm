@@ -9,6 +9,27 @@
 - ✅ **正确范例**: [配置中心列表页](../../../../apps/admin/src/pages/dev-team/config-manage/center/index.vue)
 - ❌ **错误反面例子**: [缴费审核列表页](../../../../apps/admin/src/pages/property-manage/expense-manage/payment-review/index.vue)
 
+## ⚠️ 重要警告：严格禁止向后兼容的中文类型
+
+**在实施列表页改造相关任务时，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
+
+❌ **错误示例（严格禁止）**：
+```typescript
+// 不允许创建中文类型别名
+export type 巡检方式 = PatrolMethodType;
+export type 任务状态 = TaskStatusType;
+
+// 不允许创建中文变量别名
+export const 费用类型 = contractTypeOptions;
+export const 状态选项 = statusOptions;
+```
+
+✅ **正确做法**：
+- 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
+- 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
+- 不需要任何中文类型的兼容层
+- 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
+
 ---
 
 ## MODIFIED Requirements
@@ -423,6 +444,8 @@ const { tableData, pureTableProps, isFetching, updateParams, resetParams } =
 ### 快速检查清单
 
 - [ ] 使用 `plusSearchDefaultValues` 作为初始值传给 Hook
+- [ ] **严格禁止：未创建任何中文类型别名**（如 `export type 巡检方式 = PatrolMethodType;`）
+- [ ] **严格禁止：未创建任何中文变量别名**（如 `export const 费用类型 = contractTypeOptions;`）
 - [ ] 使用 `handleReSearch` 和 `handleSearch` 固定写法
 - [ ] 使用 `handlePageSizeChange` 和 `handleCurrentPageChange` 固定写法
 - [ ] 直接使用 `pureTableProps` 从 Hook 导出
