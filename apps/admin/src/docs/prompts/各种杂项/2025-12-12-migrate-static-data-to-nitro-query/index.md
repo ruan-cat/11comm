@@ -435,7 +435,7 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 
 直接替换成纯英文的变量名。
 
-### 016 <!-- TODO: --> 更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况
+### 016 更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况
 
 [016](./016.md)
 
