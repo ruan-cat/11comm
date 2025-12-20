@@ -939,196 +939,196 @@
 
 **路由路径**：`propertyManage.housePropertyManage.invoice`
 
-- [ ] Task 4.30.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/invoice.ts`
-- [ ] Task 4.30.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/invoice/mock-data.ts`
-- [ ] Task 4.30.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/invoice/list.post.ts`
-- [ ] Task 4.30.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/invoice/index.ts`
-- [ ] Task 4.30.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/invoice/index.vue`
-- [ ] Task 4.30.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice/test-data.ts`
-- [ ] Task 4.30.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice/components/form.ts`
-- [ ] Task 4.30.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/invoice/components/form.vue`
-- [ ] Task 4.30.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.30.10: 测试验证
+- [x] Task 4.30.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/invoice.ts` ✅
+- [x] Task 4.30.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/invoice/mock-data.ts` ✅
+- [x] Task 4.30.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/invoice/list.post.ts` ✅
+- [x] Task 4.30.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/invoice/index.ts` ✅
+- [x] Task 4.30.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/invoice/index.vue` ✅
+- [x] Task 4.30.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice/test-data.ts` ✅
+- [x] Task 4.30.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice/components/form.ts` ✅
+- [x] Task 4.30.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/invoice/components/form.vue` ✅
+- [x] Task 4.30.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.30.10: 测试验证 ✅
 
 #### 4.31 propertyManage.housePropertyManage.invoiceTitle（发票抬头）
 
 **路由路径**：`propertyManage.housePropertyManage.invoiceTitle`
 
-- [ ] Task 4.31.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/invoice-title.ts`
-- [ ] Task 4.31.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/invoice-title/mock-data.ts`
-- [ ] Task 4.31.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/invoice-title/list.post.ts`
-- [ ] Task 4.31.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/invoice-title/index.ts`
-- [ ] Task 4.31.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/index.vue`
-- [ ] Task 4.31.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/test-data.ts`
-- [ ] Task 4.31.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/components/form.ts`
-- [ ] Task 4.31.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/components/form.vue`
-- [ ] Task 4.31.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.31.10: 测试验证
+- [x] Task 4.31.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/invoice-title.ts` ✅
+- [x] Task 4.31.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/invoice-title/mock-data.ts` ✅
+- [x] Task 4.31.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/invoice-title/list.post.ts` ✅
+- [x] Task 4.31.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/invoice-title/index.ts` ✅
+- [x] Task 4.31.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/index.vue` ✅
+- [x] Task 4.31.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/test-data.ts` ✅
+- [x] Task 4.31.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/components/form.ts` ✅
+- [x] Task 4.31.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/invoice-title/components/form.vue` ✅
+- [x] Task 4.31.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.31.10: 测试验证 ✅
 
 #### 4.32 propertyManage.housePropertyManage.ownerAccount（业主账户）
 
 **路由路径**：`propertyManage.housePropertyManage.ownerAccount`
 
-- [ ] Task 4.32.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owner-account.ts`
-- [ ] Task 4.32.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owner-account/mock-data.ts`
-- [ ] Task 4.32.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owner-account/list.post.ts`
-- [ ] Task 4.32.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owner-account/index.ts`
-- [ ] Task 4.32.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/index.vue`
-- [ ] Task 4.32.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/test-data.ts`
-- [ ] Task 4.32.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/components/form.ts`
-- [ ] Task 4.32.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/components/form.vue`
-- [ ] Task 4.32.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.32.10: 测试验证
+- [x] Task 4.32.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owner-account.ts` ✅
+- [x] Task 4.32.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owner-account/mock-data.ts` ✅
+- [x] Task 4.32.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owner-account/list.post.ts` ✅
+- [x] Task 4.32.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owner-account/index.ts` ✅
+- [x] Task 4.32.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/index.vue` ✅
+- [x] Task 4.32.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/test-data.ts` ✅
+- [x] Task 4.32.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/components/form.ts` ✅
+- [x] Task 4.32.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owner-account/components/form.vue` ✅
+- [x] Task 4.32.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.32.10: 测试验证 ✅
 
 #### 4.33 propertyManage.housePropertyManage.ownerInformation（业主信息）
 
 **路由路径**：`propertyManage.housePropertyManage.ownerInformation`
 
-- [ ] Task 4.33.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owner-information.ts`
-- [ ] Task 4.33.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owner-information/mock-data.ts`
-- [ ] Task 4.33.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owner-information/list.post.ts`
-- [ ] Task 4.33.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owner-information/index.ts`
-- [ ] Task 4.33.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/index.vue`
-- [ ] Task 4.33.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/test-data.ts`
-- [ ] Task 4.33.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/components/form.ts`
-- [ ] Task 4.33.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/components/form.vue`
-- [ ] Task 4.33.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.33.10: 测试验证
+- [x] Task 4.33.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owner-information.ts` ✅
+- [x] Task 4.33.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owner-information/mock-data.ts` ✅
+- [x] Task 4.33.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owner-information/list.post.ts` ✅
+- [x] Task 4.33.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owner-information/index.ts` ✅
+- [x] Task 4.33.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/index.vue` ✅
+- [x] Task 4.33.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/test-data.ts` ✅
+- [x] Task 4.33.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/components/form.ts` ✅
+- [x] Task 4.33.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owner-information/components/form.vue` ✅
+- [x] Task 4.33.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.33.10: 测试验证 ✅
 
 #### 4.34 propertyManage.housePropertyManage.ownerMember（业主成员）
 
 **路由路径**：`propertyManage.housePropertyManage.ownerMember`
 
-- [ ] Task 4.34.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owner-member.ts`
-- [ ] Task 4.34.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owner-member/mock-data.ts`
-- [ ] Task 4.34.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owner-member/list.post.ts`
-- [ ] Task 4.34.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owner-member/index.ts`
-- [ ] Task 4.34.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/index.vue`
-- [ ] Task 4.34.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/test-data.ts`
-- [ ] Task 4.34.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/components/form.ts`
-- [ ] Task 4.34.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/components/form.vue`
-- [ ] Task 4.34.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.34.10: 测试验证
+- [x] Task 4.34.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owner-member.ts` ✅
+- [x] Task 4.34.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owner-member/mock-data.ts` ✅
+- [x] Task 4.34.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owner-member/list.post.ts` ✅
+- [x] Task 4.34.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owner-member/index.ts` ✅
+- [x] Task 4.34.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/index.vue` ✅
+- [x] Task 4.34.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/test-data.ts` ✅
+- [x] Task 4.34.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/components/form.ts` ✅
+- [x] Task 4.34.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owner-member/components/form.vue` ✅
+- [x] Task 4.34.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.34.10: 测试验证 ✅
 
 #### 4.35 propertyManage.housePropertyManage.ownersCommittee（业委会）
 
 **路由路径**：`propertyManage.housePropertyManage.ownersCommittee`
 
-- [ ] Task 4.35.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owners-committee.ts`
-- [ ] Task 4.35.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owners-committee/mock-data.ts`
-- [ ] Task 4.35.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owners-committee/list.post.ts`
-- [ ] Task 4.35.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owners-committee/index.ts`
-- [ ] Task 4.35.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/index.vue`
-- [ ] Task 4.35.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/test-data.ts`
-- [ ] Task 4.35.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/components/form.ts`
-- [ ] Task 4.35.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/components/form.vue`
-- [ ] Task 4.35.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.35.10: 测试验证
+- [x] Task 4.35.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/owners-committee.ts` ✅
+- [x] Task 4.35.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/owners-committee/mock-data.ts` ✅
+- [x] Task 4.35.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/owners-committee/list.post.ts` ✅
+- [x] Task 4.35.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/owners-committee/index.ts` ✅
+- [x] Task 4.35.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/index.vue` ✅
+- [x] Task 4.35.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/test-data.ts` ✅
+- [x] Task 4.35.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/components/form.ts` ✅
+- [x] Task 4.35.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/owners-committee/components/form.vue` ✅
+- [x] Task 4.35.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.35.10: 测试验证 ✅
 
 #### 4.36 propertyManage.housePropertyManage.reserveVenue（场地预约）
 
 **路由路径**：`propertyManage.housePropertyManage.reserveVenue`
 
-- [ ] Task 4.36.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/reserve-venue.ts`
-- [ ] Task 4.36.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue/mock-data.ts`
-- [ ] Task 4.36.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue/list.post.ts`
-- [ ] Task 4.36.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/reserve-venue/index.ts`
-- [ ] Task 4.36.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/index.vue`
-- [ ] Task 4.36.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/test-data.ts`
-- [ ] Task 4.36.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/components/form.ts`
-- [ ] Task 4.36.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/components/form.vue`
-- [ ] Task 4.36.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.36.10: 测试验证
+- [x] Task 4.36.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/reserve-venue.ts` ✅
+- [x] Task 4.36.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue/mock-data.ts` ✅
+- [x] Task 4.36.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue/list.post.ts` ✅
+- [x] Task 4.36.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/reserve-venue/index.ts` ✅
+- [x] Task 4.36.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/index.vue` ✅
+- [x] Task 4.36.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/test-data.ts` ✅
+- [x] Task 4.36.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/components/form.ts` ✅
+- [x] Task 4.36.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue/components/form.vue` ✅
+- [x] Task 4.36.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.36.10: 测试验证 ✅
 
 #### 4.37 propertyManage.housePropertyManage.reserveVenueOrder（预约场馆订单）
 
 **路由路径**：`propertyManage.housePropertyManage.reserveVenueOrder`
 
-- [ ] Task 4.37.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/reserve-venue-order.ts`
-- [ ] Task 4.37.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue-order/mock-data.ts`
-- [ ] Task 4.37.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue-order/list.post.ts`
-- [ ] Task 4.37.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/reserve-venue-order/index.ts`
-- [ ] Task 4.37.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/index.vue`
-- [ ] Task 4.37.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/test-data.ts`
-- [ ] Task 4.37.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/components/form.ts`
-- [ ] Task 4.37.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/components/form.vue`
-- [ ] Task 4.37.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.37.10: 测试验证
+- [x] Task 4.37.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/reserve-venue-order.ts` ✅
+- [x] Task 4.37.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue-order/mock-data.ts` ✅
+- [x] Task 4.37.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/reserve-venue-order/list.post.ts` ✅
+- [x] Task 4.37.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/reserve-venue-order/index.ts` ✅
+- [x] Task 4.37.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/index.vue` ✅
+- [x] Task 4.37.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/test-data.ts` ✅
+- [x] Task 4.37.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/components/form.ts` ✅
+- [x] Task 4.37.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/reserve-venue-order/components/form.vue` ✅
+- [x] Task 4.37.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.37.10: 测试验证 ✅
 
 #### 4.38 propertyManage.housePropertyManage.siteManagement（场地管理）
 
 **路由路径**：`propertyManage.housePropertyManage.siteManagement`
 
-- [ ] Task 4.38.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/site-management.ts`
-- [ ] Task 4.38.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/site-management/mock-data.ts`
-- [ ] Task 4.38.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/site-management/list.post.ts`
-- [ ] Task 4.38.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/site-management/index.ts`
-- [ ] Task 4.38.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/site-management/index.vue`
-- [ ] Task 4.38.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/site-management/test-data.ts`
-- [ ] Task 4.38.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/site-management/components/form.ts`
-- [ ] Task 4.38.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/site-management/components/form.vue`
-- [ ] Task 4.38.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.38.10: 测试验证
+- [x] Task 4.38.1: 创建类型定义文件 `apps/type/src/business/property-manage/house-property-manage/site-management.ts` ✅
+- [x] Task 4.38.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/house-property-manage/site-management/mock-data.ts` ✅
+- [x] Task 4.38.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/house-property-manage/site-management/list.post.ts` ✅
+- [x] Task 4.38.4: 创建前端 API Hook `apps/admin/src/api/property-manage/house-property-manage/site-management/index.ts` ✅
+- [x] Task 4.38.5: 改写列表页 `apps/admin/src/pages/property-manage/house-property-manage/site-management/index.vue` ✅
+- [x] Task 4.38.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/house-property-manage/site-management/test-data.ts` ✅
+- [x] Task 4.38.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/house-property-manage/site-management/components/form.ts` ✅
+- [x] Task 4.38.8: 更新表单组件 `apps/admin/src/pages/property-manage/house-property-manage/site-management/components/form.vue` ✅
+- [x] Task 4.38.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.38.10: 测试验证 ✅
 
 #### 4.39 propertyManage.parkingManage.carportApply（车位申请）
 
 **路由路径**：`propertyManage.parkingManage.carportApply`
 
-- [ ] Task 4.39.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/carport-apply.ts`
-- [ ] Task 4.39.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/carport-apply/mock-data.ts`
-- [ ] Task 4.39.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/carport-apply/list.post.ts`
-- [ ] Task 4.39.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/carport-apply/index.ts`
-- [ ] Task 4.39.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/index.vue`
-- [ ] Task 4.39.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/test-data.ts`
-- [ ] Task 4.39.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/components/form.ts`
-- [ ] Task 4.39.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/components/form.vue`
-- [ ] Task 4.39.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.39.10: 测试验证
+- [x] Task 4.39.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/carport-apply.ts` ✅
+- [x] Task 4.39.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/carport-apply/mock-data.ts` ✅
+- [x] Task 4.39.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/carport-apply/list.post.ts` ✅
+- [x] Task 4.39.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/carport-apply/index.ts` ✅
+- [x] Task 4.39.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/index.vue` ✅
+- [x] Task 4.39.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/test-data.ts` ✅
+- [x] Task 4.39.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/components/form.ts` ✅
+- [x] Task 4.39.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/carport-apply/components/form.vue` ✅
+- [x] Task 4.39.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.39.10: 测试验证 ✅
 
 #### 4.40 propertyManage.parkingManage.carportInfo（车位信息）
 
 **路由路径**：`propertyManage.parkingManage.carportInfo`
 
-- [ ] Task 4.40.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/carport-info.ts`
-- [ ] Task 4.40.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/carport-info/mock-data.ts`
-- [ ] Task 4.40.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/carport-info/list.post.ts`
-- [ ] Task 4.40.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/carport-info/index.ts`
-- [ ] Task 4.40.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/carport-info/index.vue`
-- [ ] Task 4.40.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/carport-info/test-data.ts`
-- [ ] Task 4.40.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/carport-info/components/form.ts`
-- [ ] Task 4.40.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/carport-info/components/form.vue`
-- [ ] Task 4.40.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.40.10: 测试验证
+- [x] Task 4.40.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/carport-info.ts` ✅
+- [x] Task 4.40.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/carport-info/mock-data.ts` ✅
+- [x] Task 4.40.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/carport-info/list.post.ts` ✅
+- [x] Task 4.40.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/carport-info/index.ts` ✅
+- [x] Task 4.40.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/carport-info/index.vue` ✅
+- [x] Task 4.40.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/carport-info/test-data.ts` ✅
+- [x] Task 4.40.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/carport-info/components/form.ts` ✅
+- [x] Task 4.40.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/carport-info/components/form.vue` ✅
+- [x] Task 4.40.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.40.10: 测试验证 ✅
 
 #### 4.41 propertyManage.parkingManage.ownerVehicle（业主车辆）
 
 **路由路径**：`propertyManage.parkingManage.ownerVehicle`
 
-- [ ] Task 4.41.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/owner-vehicle.ts`
-- [ ] Task 4.41.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/owner-vehicle/mock-data.ts`
-- [ ] Task 4.41.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/owner-vehicle/list.post.ts`
-- [ ] Task 4.41.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/owner-vehicle/index.ts`
-- [ ] Task 4.41.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/index.vue`
-- [ ] Task 4.41.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/test-data.ts`
-- [ ] Task 4.41.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/components/form.ts`
-- [ ] Task 4.41.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/components/form.vue`
-- [ ] Task 4.41.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.41.10: 测试验证
+- [x] Task 4.41.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/owner-vehicle.ts` ✅
+- [x] Task 4.41.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/owner-vehicle/mock-data.ts` ✅
+- [x] Task 4.41.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/owner-vehicle/list.post.ts` ✅
+- [x] Task 4.41.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/owner-vehicle/index.ts` ✅
+- [x] Task 4.41.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/index.vue` ✅
+- [x] Task 4.41.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/test-data.ts` ✅
+- [x] Task 4.41.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/components/form.ts` ✅
+- [x] Task 4.41.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/owner-vehicle/components/form.vue` ✅
+- [x] Task 4.41.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.41.10: 测试验证 ✅
 
 #### 4.42 propertyManage.parkingManage.parkingLot（停车场管理）
 
 **路由路径**：`propertyManage.parkingManage.parkingLot`
 
-- [ ] Task 4.42.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/parking-lot.ts`
-- [ ] Task 4.42.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/parking-lot/mock-data.ts`
-- [ ] Task 4.42.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/parking-lot/list.post.ts`
-- [ ] Task 4.42.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/parking-lot/index.ts`
-- [ ] Task 4.42.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/index.vue`
-- [ ] Task 4.42.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/test-data.ts`
-- [ ] Task 4.42.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/components/form.ts`
-- [ ] Task 4.42.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/components/form.vue`
-- [ ] Task 4.42.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.42.10: 测试验证
+- [x] Task 4.42.1: 创建类型定义文件 `apps/type/src/business/property-manage/parking-manage/parking-lot.ts` ✅
+- [x] Task 4.42.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/parking-manage/parking-lot/mock-data.ts` ✅
+- [x] Task 4.42.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/parking-manage/parking-lot/list.post.ts` ✅
+- [x] Task 4.42.4: 创建前端 API Hook `apps/admin/src/api/property-manage/parking-manage/parking-lot/index.ts` ✅
+- [x] Task 4.42.5: 改写列表页 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/index.vue` ✅
+- [x] Task 4.42.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/test-data.ts` ✅
+- [x] Task 4.42.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/components/form.ts` ✅
+- [x] Task 4.42.8: 更新表单组件 `apps/admin/src/pages/property-manage/parking-manage/parking-lot/components/form.vue` ✅
+- [x] Task 4.42.9: 运行类型检查 `pnpm typecheck` ✅
+- [x] Task 4.42.10: 测试验证 ✅
 
 #### 4.43 propertyManage.patrolManage.detail（巡检明细）
 
