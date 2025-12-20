@@ -434,3 +434,7 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 在你明白这个重要的类型处理规范后，请你务必更新 `migrate-static-data-to-nitro-query` 任务的全部文档，不要再编写任何兼容性的，中文变量名和类型名。
 
 直接替换成纯英文的变量名。
+
+### 016 <!-- TODO: --> 更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况
+
+[016](./016.md)
