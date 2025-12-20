@@ -146,7 +146,7 @@ import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 ```
 
-### 找不到正确的 `PlusFormRules` 类型
+### 2.6 找不到正确的 `PlusFormRules` 类型
 
 ```ts
 // ❌ 错误 从 `plus-pro-components` 模块内导入 PlusFormRules 类型
@@ -157,7 +157,7 @@ import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 ```
 
-### 在错误的地方导入 `TableColumnList` 类型
+### 2.7 在错误的地方导入 `TableColumnList` 类型
 
 ```typescript
 // ❌ 错误 从 `@pureadmin/table` 模块内导入了不存在的 `TableColumnList` 类型
@@ -166,7 +166,7 @@ import type { TableColumnList } from "@pureadmin/table";
 // ✅ 正确 无需手动导入， TableColumnList 类型是全局类型，不需要我们手动导入
 ```
 
-### 用导入的 mode 类型来优化手写的 mode 模式类型
+### 2.8 用导入的 mode 类型来优化手写的 mode 模式类型
 
 不好的类型写法如下：
 
@@ -208,14 +208,14 @@ export interface MerchantAdminFormProps {
 }
 ```
 
-### 不要使用错误的，不存在的，容易带来误导的 `mode?: "add" | "edit" | "view";` 类型，使用全局的客户端类型 Mode
+### 2.9 不要使用错误的，不存在的，容易带来误导的 `mode?: "add" | "edit" | "view";` 类型，使用全局的客户端类型 Mode
 
 1. 类型 `mode?: "add" | "edit" | "view";` 是错误的。
 2. 类型 `mode?: "add" | "edit" | "info";` 才是正确的。我们不存在错误的 view 类型。
 3. 我们事实上也不应该直接写字面意义上的 `mode?: "add" | "edit" | "info";` 类型。在客户端代码，即 `apps\admin\src` 目录内，我们应该直接使用 `mode?: Mode;` 的写法。其中 Mode 是客户端代码内全局导入的类型。直接使用即可。
 4. 如果在`类型项目`内，出现上述写法，请你将这个错误迁移位置的类型，根据`业务路径`，迁移回到`后台项目`的对应`业务路径`的 form.ts 文件内。`类型项目`是不应该出现这样的写法的，出现的原因是因为有工具错误的迁移该类型到`类型项目`目录下了，所以需要你将该类型迁移到正确的位置。
 
-### 删除向后兼容的中文类型，直接用纯英文命名的类型做替换
+### 2.10 删除向后兼容的中文类型，直接用纯英文命名的类型做替换
 
 1. 就比如以下的类型，就是不合适的类型，你应该删除掉纯中文的类型，并要求使用中文类型的其他文件，直接使用纯英文的业务类型即可。不需要写任何向后兼容的中文类型。
 2. 你应该重点去修复因为中文类型被删除后而导致的类型错误，其修复方式就是直接替换掉中文类型，直接换成英文类型。
@@ -233,7 +233,7 @@ export type 巡查明细表单_VO = PatrolDetailFormVO;
 export type 巡查明细表单Props = PatrolDetailFormProps;
 ```
 
-### 错误导入 getRouteRank 函数
+### 2.11 错误导入 getRouteRank 函数
 
 以下代码是错误的，你不应该主动导入任何 getRouteRank 函数。这个函数是全局自动导入的，不需要你手动导入。
 
@@ -244,7 +244,7 @@ getRouteRank 是在宏上的使用的。
 import { getRouteRank } from "@/router/rank";
 ```
 
-### 错误导入来自 `plus-pro-components` 模块的全局类型
+### 2.12 错误导入来自 `plus-pro-components` 模块的全局类型
 
 请注意，以下即可类型均来自于 `plus-pro-components` 模块，他们都是客户端代码内全局通用的类型。
 
@@ -261,7 +261,7 @@ import { getRouteRank } from "@/router/rank";
 import type { FieldValues } from "plus-pro-components";
 ```
 
-### 错误导入全局类型 TableColumnList
+### 2.13 错误导入全局类型 TableColumnList
 
 在客户端代码内，类型 `TableColumnList` 来自于全局类型文件 `apps\admin\types\global.d.ts` 。不应该手动导入。
 
@@ -270,7 +270,7 @@ import type { FieldValues } from "plus-pro-components";
 import type { TableColumnList } from "@pureadmin/table";
 ```
 
-### 错误导入全局类型 PureTableBarProps
+### 2.14 错误导入全局类型 PureTableBarProps
 
 ```ts
 // 该写法是错误的 不应该去任何模块导入 PureTableBarProps 类型。 不应该去任何 `@pureadmin` 模块内导入该类型
