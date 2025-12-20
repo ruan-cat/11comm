@@ -564,3 +564,187 @@ const plusFormRules = reactive({
 - 逐步移除 `ts-nocheck`：为 JSX 组件补类型或改回模板。
 - 抽象通用 Icon 组件与表格渲染 helper，减少散落的 `as any`。
 - 校准路由 name 枚举，消除对 `as any` 的依赖。
+
+## 8. 类型项目的代码组织方式与导出规范
+
+### 8.1 在类型项目内，必须使用全量的导出语法
+
+不要去区分是单独导出全部的类型，还是全部的变量。全部都批量导出来。
+
+**错误写法：**
+
+不要单独的导出类型，直接导出全部的代码。包括类型和变量。
+
+```typescript
+export type * from "./expense-manage";
+```
+
+**正确写法：**
+
+直接导出全部内容即可。
+
+```typescript
+export * from "./expense-manage";
+```
+
+### 8.2 不允许逐个罗列的导出
+
+**错误写法：**
+
+```typescript
+export type {
+  PatrolTaskFormVO,
+  PatrolTaskFormProps,
+  TaskListItem,
+  TaskQueryParams,
+  PatrolTaskListItem,
+  PatrolTaskQueryParams,
+} from "./task";
+```
+
+**正确写法：**
+
+直接全部导出即可。不要逐个罗列需要被导出的项目。
+
+```typescript
+export * from "./task";
+```
+
+### 8.3 在类型项目，根据业务路径，统一使用 index.ts 来统一作为导出入口
+
+在类型项目内，使用了业务路径来依次组织代码的存放位置。为了逐级获取导出的项目，应该在每一个层级内编写 index.ts 来统一导出全部内容。包括类型和变量。
+
+**正确 index.ts 与业务路径的文件组织关系如下：**
+
+1. 路径 `src/index.ts`
+
+```typescript
+// apps/type/src/index.ts
+// 导出通用类型
+export * from "./common";
+// 导出业务类型
+export * from "./business";
+// 导出常量
+export * from "./constant";
+```
+
+2. 路径 `src/business/index.ts`
+
+```typescript
+// apps/type/src/business/index.ts
+/**
+ * @file 业务类型统一导出
+ * @description 导出所有业务模块的类型定义
+ */
+export * from "./dev-team";
+export * from "./operation-team";
+export * from "./property-manage";
+export * from "./setting-manage";
+```
+
+3. 路径 `src/business/property-manage/index.ts`
+
+```typescript
+// apps/type/src/business/property-manage/index.ts
+// 社区管理模块
+export * from "./community-manage";
+// 房产管理模块
+export * from "./house-property-manage";
+// 合同管理模块
+export * from "./contract-manage";
+// 费用管理模块
+export * from "./expense-manage";
+// 停车管理模块
+export * from "./parking-manage";
+// 巡检管理模块
+export * from "./patrol-manage";
+// 报修管理模块
+export * from "./repairs-manage";
+// 报表管理模块
+export * from "./report-manage";
+```
+
+4. 路径 `src/business/property-manage/patrol-manage/index.ts`
+
+```typescript
+// apps/type/src/business/property-manage/patrol-manage/index.ts
+export * from "./detail";
+export * from "./item";
+export * from "./path";
+export * from "./plan";
+export * from "./point";
+export * from "./task";
+```
+
+### 8.4 遇到类型错误时，重复的内容导出时的处理方式
+
+比如这种错误：
+
+```log
+模块 "./community-manage" 已导出一个名为"auditStatusOptions"的成员。请考虑重新显式导出以解决歧义。
+模块 "./community-manage" 已导出一个名为"feeTypeOptions"的成员。请考虑重新显式导出以解决歧义。
+```
+
+你不应该使用分散导出的方式来解决类型故障，你应该把这些公共的，相通的类型或变量，统一放在一个文件内导出。
+
+- 对于公共的下拉选项式的变量，应该放在 `apps/type/src/common/business-options.ts` 文件内统一整理，并导出。
+- 对于公共的，通用的业务类型，应该放在 `apps/type/src/common/business-types.ts` 文件内统一整理，并导出。
+
+**对于上述错误，正确的做法是统一放在 `apps/type/src/common/business-options.ts` 内并导出：**
+
+```typescript
+// apps/type/src/common/business-options.ts
+/**
+ * @description 审核状态选项
+ * Audit status options
+ */
+export const auditStatusOptions: OptionsType = [
+  { label: "待审核", value: "待审核" },
+  { label: "已通过", value: "已通过" },
+  { label: "已拒绝", value: "已拒绝" },
+];
+
+/** 费用项名称选项 Expense item name options */
+export const expenseItemNameOptions: OptionsType = [
+  { label: "物业费", value: "物业费" },
+  { label: "水电费", value: "水电费" },
+  { label: "停车费", value: "停车费" },
+  { label: "维修费", value: "维修费" },
+];
+
+/** 费用类型选项别名 Fee type options alias */
+export const feeTypeOptions = expenseTypeOptions;
+```
+
+**错误写法：**
+
+不要弄这种复杂的逐项导出，阅读很不美观，难以处理。
+
+```typescript
+// 导出通用类型 - 先导出 common
+export * from "./common";
+// 导出业务类型 - 后导出 business，避免冲突时使用命名导出
+export {
+  patrolMethodOptions,
+  patrolPointStatusOptions,
+  returnVisitStatusOptions,
+} from "./common";
+// 选择性导出业务模块，避免重复导出
+export * from "./business/dev-team";
+export * from "./business/operation-team";
+export * from "./business/property-manage";
+export * from "./business/setting-manage";
+// 导出常量
+export * from "./constant";
+```
+
+**正确写法：**
+
+```typescript
+// 导出通用类型
+export * from "./common";
+// 导出业务类型
+export * from "./business";
+// 导出常量
+export * from "./constant";
+```
