@@ -386,7 +386,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 
 ---
 
-#### 增加严格规范以便处理重复类型声明的故障
+#### 01 增加严格规范以便处理重复类型声明的故障
 
 1. 为了避免在实际实施过程中出现明显类型故障，避免出现重复变量声明，请阅读以下文档，并增加及时调整以下变量的排布顺序：
    - `plusSearchModelRef`
@@ -397,6 +397,16 @@ openspec validate migrate-static-data-to-nitro-query --strict
 4. 需要阅读并增加规范的文档：
    - `openspec\changes\migrate-static-data-to-nitro-query\specs\list-page-pattern\spec.md`
    - `openspec\changes\fix-list-pages-code-patterns\specs\list-pages\spec.md`
+
+#### 02 <!-- TODO: --> 补充列表页处理的规范
+
+1. 请完整的阅读以下规范文档：
+   - apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\016.md
+   - openspec\changes\migrate-static-data-to-nitro-query\specs\list-page-pattern\spec.md
+2. 这些规范文档都说明清楚了如何更新修改列表页，请你认真学习这些规范，并同步迁移到我们 `fix-list-pages-code-patterns` 任务的规范文档内：
+   - openspec\changes\fix-list-pages-code-patterns\specs\list-pages\spec.md
+   - openspec\changes\fix-list-pages-code-patterns\design.md
+   - openspec\changes\fix-list-pages-code-patterns\proposal.md
 
 #### <!-- TODO: 长期使用 直到完成 --> 提示词
 
