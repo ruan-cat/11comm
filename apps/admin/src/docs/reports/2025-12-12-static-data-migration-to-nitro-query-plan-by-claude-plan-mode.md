@@ -1,6 +1,9 @@
-# 2025-12-12 静态假数据迁移至 Nitro + TanStack Query 实施计划
+<!--
+  这份文档是从C盘 C:\Users\pc\.claude\plans 内直接获取的claude code plan 模式生成的原生文档
+  未来不再继续使用 因为不存在假数据文件了
+-->
 
-<!-- 这份文档是从C盘 C:\Users\pc\.claude\plans 内直接获取的claude code plan 模式生成的原生文档 -->
+# 2025-12-12 静态假数据迁移至 Nitro + TanStack Query 实施计划
 
 ## 执行模式：仅设计不实施
 
