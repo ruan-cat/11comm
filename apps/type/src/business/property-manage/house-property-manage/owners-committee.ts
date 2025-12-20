@@ -1,14 +1,33 @@
-import type { OptionsType } from "../../../common";
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 /**
- * @description owners-committee列表数据
- * OwnersCommittee list item
+ * @file 业委会类型定义
+ * @description Owners committee types
+ */
+
+/**
+ * 业委会列表数据
+ * Owners committee list item
  */
 export interface OwnersCommitteeListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 姓名 Full name */
+	fullName: string;
+	/** 性别 Gender */
+	gender: string;
+	/** 电话 Phone */
+	phone: string;
+	/** 身份证 ID number */
+	idNumber: string;
+	/** 住址 Address */
+	address: string;
+	/** 职位 Position */
+	position: string;
+	/** 岗位 Post */
+	post: string;
+	/** 任期 Tenure */
+	tenure: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -20,18 +39,14 @@ export interface OwnersCommitteeListItem {
 }
 
 /**
- * @description owners-committee列表查询参数
- * OwnersCommittee list query parameters
+ * 业委会查询参数
+ * Owners committee query parameters
  */
-export interface OwnersCommitteeQueryParams {
-	/** 名称 Name */
-	name?: string;
+export interface OwnersCommitteeQueryParams extends BaseListQueryParams {
+	/** 姓名 Full name */
+	fullName?: string;
 	/** 状态 Status */
 	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**

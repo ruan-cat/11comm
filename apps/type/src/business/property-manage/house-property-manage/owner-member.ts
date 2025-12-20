@@ -1,17 +1,34 @@
-import type { OptionsType } from "../../../common";
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 import { genderOptions, memberTypeOptions } from "../../../common/business-options";
 
 /**
- * @description owner-member列表数据
- * OwnerMember list item
+ * @file 业主成员类型定义
+ * @description Owner member types
+ */
+
+/**
+ * 业主成员列表数据
+ * Owner member list item
  */
 export interface OwnerMemberListItem {
 	/** ID */
 	id: string;
+	/** 成员人脸 Member face */
+	memberFace: string;
 	/** 名称 Name */
 	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 性别 Gender */
+	gender: string;
+	/** 类型 Type */
+	type: string;
+	/** 身份证 ID card */
+	idCard: string;
+	/** 联系方式 Contact */
+	contact: string;
+	/** 家庭住址 Home address */
+	homeAddress: string;
+	/** 门禁钥匙 Access key */
+	accessKey: string;
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
@@ -21,18 +38,14 @@ export interface OwnerMemberListItem {
 }
 
 /**
- * @description owner-member列表查询参数
- * OwnerMember list query parameters
+ * 业主成员查询参数
+ * Owner member query parameters
  */
-export interface OwnerMemberQueryParams {
+export interface OwnerMemberQueryParams extends BaseListQueryParams {
 	/** 名称 Name */
 	name?: string;
 	/** 状态 Status */
 	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**

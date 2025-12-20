@@ -1,4 +1,4 @@
-import type { OptionsType } from "../../../common";
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 /**
  * @description site-management列表数据
@@ -7,14 +7,24 @@ import type { OptionsType } from "../../../common";
 export interface SiteManagementListItem {
 	/** ID */
 	id: string;
+	/** 编号 ID/Number */
+	idNumber: string;
 	/** 名称 Name */
 	name: string;
+	/** 开场时间 Opening time */
+	openingTime: string;
+	/** 关场时间 Closing time */
+	closingTime: string;
+	/** 每小时费用 Hourly fee */
+	hourlyFee: string;
+	/** 管理员 Administrator */
+	administrator: string;
+	/** 管理员电话 Administrator phone */
+	administratorPhone: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
 	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
 	/** 备注 Remark */
 	remark?: string;
 }
@@ -23,15 +33,15 @@ export interface SiteManagementListItem {
  * @description site-management列表查询参数
  * SiteManagement list query parameters
  */
-export interface SiteManagementQueryParams {
+export interface SiteManagementQueryParams extends BaseListQueryParams {
+	/** 编号 ID/Number */
+	idNumber?: string;
 	/** 名称 Name */
 	name?: string;
+	/** 管理员 Administrator */
+	administrator?: string;
 	/** 状态 Status */
 	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**
@@ -42,6 +52,7 @@ export const siteManagementStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 	{ label: "可预约", value: "可预约" },
+	{ label: "维护中", value: "维护中" },
 ];
 
 // ==================== 表单相关类型 ====================
@@ -52,7 +63,7 @@ export const siteManagementStatusOptions: OptionsType = [
  */
 export interface SiteManagementFormVO {
 	/** 编号 ID/Number */
-	id: string;
+	idNumber: string;
 	/** 名称 Name */
 	name: string;
 	/** 开场时间 Opening time */
