@@ -8,17 +8,16 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
-import { useMode, type Mode } from "@/composables/use-mode";
+import { useOwnerVehicleListQuery } from "@/api/property-manage/parking-manage/owner-vehicle";
 import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
 import OwnerVehicleForm from "./components/form.vue";
+import { useMode, type Mode } from "@/composables/use-mode";
 import { parkingSpaceStatusOptions } from "@01s-11comm/type";
-import type { OwnerVehicleListItem } from "@01s-11comm/type";
-
-const OwnerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
+import type { OwnerVehicleListItem, OwnerVehicleQueryParams } from "@01s-11comm/type";
 
 /** 模式控制 */
 const { mode, modeText, setMode, isAdd } = useMode();
@@ -33,180 +32,16 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 表格数据 */
-const tableData = ref<OwnerVehicleListItem[]>([]);
+/** 表单组件实例 */
+const ownerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** TODO: 使用 TanStack Query Hook 替代 mockTableData */
-		/** 当前暂时使用空数组，后续接入真实API */
-		let filteredData: OwnerVehicleListItem[] = [];
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.licensePlate) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.licensePlate!));
-		}
-		if (plusSearchModel.value.parkingSpaceNumber) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.parkingSpaceNumber!));
-		}
-		if (plusSearchModel.value.parkingSpaceStatus) {
-			filteredData = filteredData.filter(
-				(item) =>
-					item.status ===
-					(plusSearchModel.value.parkingSpaceStatus === "1"
-						? "正常"
-						: plusSearchModel.value.parkingSpaceStatus === "3"
-							? "到期"
-							: "无车位"),
-			);
-		}
-		if (plusSearchModel.value.ownerName) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.ownerName!));
-		}
-		if (plusSearchModel.value.contactInfo) {
-			filteredData = filteredData.filter((item) => item.remark?.includes(plusSearchModel.value.contactInfo!));
-		}
-		if (plusSearchModel.value.memberPlateNumber) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.memberPlateNumber!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "车牌号",
-		prop: "车牌号",
-		width: 120,
-	},
-	{
-		label: "成员车辆",
-		prop: "成员车辆",
-		width: 120,
-	},
-	{
-		label: "房屋号",
-		prop: "房屋号",
-		width: 120,
-	},
-	{
-		label: "车牌类型",
-		prop: "车牌类型",
-		width: 120,
-	},
-	{
-		label: "车辆类型",
-		prop: "车辆类型",
-		width: 120,
-	},
-	{
-		label: "颜色",
-		prop: "颜色",
-		width: 120,
-	},
-	{
-		label: "业主",
-		prop: "业主",
-		width: 120,
-	},
-	{
-		label: "车位",
-		prop: "车位",
-		width: 120,
-	},
-	{
-		label: "有效期",
-		prop: "有效期",
-		width: 120,
-	},
-	{
-		label: "状态",
-		prop: "状态",
-		width: 120,
-	},
-	{
-		label: "备注",
-		prop: "备注",
-		width: 120,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业主车辆",
-	columns: columns.value,
-});
-
+// 1. 表格搜索栏配置
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & {
-	/** 车牌号 License plate number */
-	licensePlate: string;
-	/** 车位编号 Parking space number */
-	parkingSpaceNumber: string;
-	/** 车位状态 Parking space status */
-	parkingSpaceStatus: string;
-	/** 业主名称 Owner name */
-	ownerName: string;
-	/** 联系方式 Contact info */
-	contactInfo: string;
-	/** 成员车牌号 Member plate number */
-	memberPlateNumber: string;
-} = {
+const plusSearchModelRef: FieldValues & Partial<OwnerVehicleQueryParams> = {
 	licensePlate: "",
 	parkingSpaceNumber: "",
 	parkingSpaceStatus: "",
@@ -216,7 +51,7 @@ const plusSearchModelRef: FieldValues & {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -242,7 +77,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 车位状态
 	{
-		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceStatus")),
+		label: transformI18n($t("property-manage.owner-vehicle-manage_parking.parkingSpaceStatus")),
 		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
@@ -278,38 +113,123 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+// 2. 使用 TanStack Query hooks
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useOwnerVehicleListQuery(plusSearchDefaultValues);
+
+// 3. 搜索函数(固定写法)
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
+// 4. 表格列配置
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "车牌号",
+		prop: "licensePlate",
+		width: 120,
+	},
+	{
+		label: "成员车辆",
+		prop: "memberVehicle",
+		width: 120,
+	},
+	{
+		label: "房屋号",
+		prop: "houseNumber",
+		width: 120,
+	},
+	{
+		label: "车牌类型",
+		prop: "licensePlateType",
+		width: 120,
+	},
+	{
+		label: "车辆类型",
+		prop: "vehicleType",
+		width: 120,
+	},
+	{
+		label: "颜色",
+		prop: "color",
+		width: 120,
+	},
+	{
+		label: "业主",
+		prop: "owner",
+		width: 120,
+	},
+	{
+		label: "车位",
+		prop: "parkingSpace",
+		width: 120,
+	},
+	{
+		label: "有效期",
+		prop: "validityPeriod",
+		width: 120,
+	},
+	{
+		label: "状态",
+		prop: "status",
+		width: 120,
+	},
+	{
+		label: "备注",
+		prop: "remark",
+		width: 120,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "业主车辆",
+	columns: columns.value,
+});
+
 /** 打开弹框 */
-function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据 }) {
+function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 */
 	const title = `${modeText.value}业主车辆`;
 
 	/** 业务对象 */
-	const 业主车辆表单_VO: 业主车辆表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+	const ownerVehicleFormVO = isAdd.value
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				...row,
 			});
 
 	/** 表单组件需要的props */
 	const formProps: OwnerVehicleFormProps = {
-		form: 业主车辆表单_VO,
-		defaultValues: 业主车辆表单_VO,
+		form: ownerVehicleFormVO,
+		defaultValues: ownerVehicleFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -322,12 +242,12 @@ function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据
 
 		contentRenderer: () =>
 			h(OwnerVehicleForm, {
-				ref: OwnerVehicleFormInstance,
+				ref: ownerVehicleFormInstance,
 				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = OwnerVehicleFormInstance.value?.formComputed;
+			const formComputed = ownerVehicleFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 
@@ -336,7 +256,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = OwnerVehicleFormInstance.value?.formComputed;
+					const formComputed = ownerVehicleFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -345,7 +265,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					OwnerVehicleFormInstance.value?.plusFormInstance?.handleReset();
+					ownerVehicleFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -353,7 +273,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await OwnerVehicleFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await ownerVehicleFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -365,10 +285,6 @@ function openDialog({ mode, row }: { mode: Mode; row?: 业主车辆_列表数据
 		],
 	});
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -381,7 +297,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -394,6 +310,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
