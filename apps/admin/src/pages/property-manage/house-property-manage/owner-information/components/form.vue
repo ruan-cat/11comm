@@ -3,9 +3,10 @@
   用于新增 修改费用项设置
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
-
-import { OwnerInformationFormProps, defaultForm } from "./form";
+import { ref, computed, useTemplateRef } from "vue";
+import type { OwnerInformationFormVO } from "@01s-11comm/type";
+import { personTypeOptions, personRoleOptions, genderOptions } from "@01s-11comm/type";
+import { OwnerInformationFormProps } from "./form";
 
 const props = defineProps<OwnerInformationFormProps>();
 
@@ -44,7 +45,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "人员类型",
 		prop: "人员类型",
 		valueType: "select",
-		options: 人员类型Options,
+		options: personTypeOptions,
 		required: true,
 	},
 
@@ -53,7 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "人员角色",
 		prop: "人员角色",
 		valueType: "select",
-		options: 人员角色Options,
+		options: personRoleOptions,
 		required: true,
 	},
 
@@ -78,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "性别",
 		prop: "性别",
 		valueType: "select",
-		options: 性别Options,
+		options: genderOptions,
 		required: true,
 	},
 

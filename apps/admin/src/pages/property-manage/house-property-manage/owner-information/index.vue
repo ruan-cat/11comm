@@ -8,96 +8,59 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
+import type { OwnerInformationListItem, OwnerInformationQueryParams, OwnerInformationFormVO } from "@01s-11comm/type";
+import { personTypeOptions } from "@01s-11comm/type";
+import { useOwnerInformationListQuery } from "@/api/property-manage/house-property-manage/owner-information";
 
 import { type OwnerInformationFormProps, defaultForm } from "./components/form";
 import OwnerInformationForm from "./components/form.vue";
 /** 表格组件实例 */
 const OwnerInformationFormInstance = ref<InstanceType<typeof OwnerInformationForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<业主信息_列表数据[]>([]);
-
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{ label: "人脸", prop: "人脸", width: 120 },
-	{ label: "客户名称", prop: "客户名称", width: 120 },
-	{ label: "人员类型", prop: "人员类型", width: 120 },
-	{ label: "人员角色", prop: "人员角色", width: 120 },
-	{ label: "性别", prop: "性别", width: 80 },
-	{ label: "证件号", prop: "证件号", width: 160 },
-	{ label: "联系手机", prop: "联系手机", width: 120 },
-	{ label: "备用手机", prop: "备用手机", width: 120 },
-	{ label: "地址", prop: "地址", width: 180 },
-	{ label: "房屋数", prop: "房屋数", width: 80 },
-	{ label: "业主成员", prop: "业主成员", width: 100 },
-	{ label: "车辆数", prop: "车辆数", width: 80 },
-	{ label: "欠费", prop: "欠费", width: 100 },
-	{ label: "门禁钥匙", prop: "门禁钥匙", width: 100 },
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业主信息",
-	columns: columns.value,
-});
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 业主信息_列表查询_VO = {
-	人员类型: "",
-	客户名称: "",
-	房屋编号: "",
-	联系方式: "",
-	身份证: "",
+const plusSearchModelRef: FieldValues & Partial<OwnerInformationQueryParams> = {
+	personType: "",
+	ownerName: "",
+	houseNo: "",
+	phone: "",
+	idCard: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useOwnerInformationListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
@@ -107,36 +70,36 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 人员类型
 	{
 		label: "人员类型",
-		prop: "人员类型",
+		prop: "personType",
 		valueType: "select",
-		options: 人员类型Options,
+		options: personTypeOptions,
 	},
 
 	// 客户名称
 	{
 		label: "客户名称",
-		prop: "客户名称",
+		prop: "ownerName",
 		valueType: "input",
 	},
 
 	// 房屋编号
 	{
 		label: "房屋编号",
-		prop: "房屋编号",
+		prop: "houseNo",
 		valueType: "input",
 	},
 
 	// 联系电话
 	{
 		label: "联系电话",
-		prop: "联系方式",
+		prop: "phone",
 		valueType: "input",
 	},
 
 	// 身份证
 	{
 		label: "身份证",
-		prop: "身份证",
+		prop: "idCard",
 		valueType: "input",
 	},
 ]);
@@ -150,66 +113,34 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
+/** 表格列配置 */
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{ label: "名称", prop: "name", width: 120 },
+	{ label: "状态", prop: "status", width: 120 },
+	{ label: "创建时间", prop: "createTime", width: 160 },
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
 
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.人员类型) {
-			filteredData = filteredData.filter((item) => item.人员类型 === plusSearchModel.value.人员类型);
-		}
-		if (plusSearchModel.value.客户名称) {
-			filteredData = filteredData.filter((item) => item.客户名称.includes(plusSearchModel.value.客户名称!));
-		}
-		if (plusSearchModel.value.房屋编号) {
-			filteredData = filteredData.filter((item) => item.房屋数.includes(plusSearchModel.value.房屋编号!));
-		}
-		if (plusSearchModel.value.联系方式) {
-			filteredData = filteredData.filter((item) => item.联系手机.includes(plusSearchModel.value.联系方式!));
-		}
-		if (plusSearchModel.value.身份证) {
-			filteredData = filteredData.filter((item) => item.证件号.includes(plusSearchModel.value.身份证!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "业主信息",
+	columns: columns.value,
+});
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd } = useMode();
+const { modeText, setMode, isAdd } = useMode();
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 业主信息_列表数据;
+	row?: OwnerInformationListItem;
 }
 
 /** 打开弹框 */
@@ -220,26 +151,26 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}业主信息`;
 
 	/** 业务对象 */
-	const 业主信息表单对象: 业主信息表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+	const formData: OwnerInformationFormVO = isAdd.value
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
-				人员类型: row?.人员类型 || "个人",
-				人员角色: row?.人员角色 || "业主",
-				客户名称: row?.客户名称 || "",
-				联系手机: row?.联系手机 || "",
-				性别: row?.性别 || "男",
-				备用手机: row?.备用手机 || "",
-				地址: row?.地址 || "",
-				门禁钥匙: row?.门禁钥匙 || "",
-				身份证: row?.证件号 || "",
+				人员类型: "个人",
+				人员角色: "业主",
+				客户名称: row?.name || "",
+				联系手机: "",
+				性别: "男",
+				备用手机: "",
+				地址: "",
+				门禁钥匙: "",
+				身份证: "",
 				备注: "",
 			});
 
 	/** 表单组件需要的props */
 	const formProps: OwnerInformationFormProps = {
-		form: 业主信息表单对象,
-		defaultValues: 业主信息表单对象,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -289,6 +220,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
@@ -300,10 +232,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 async function testAsync() {
 	await sleep(1300);
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -316,7 +244,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -329,6 +257,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

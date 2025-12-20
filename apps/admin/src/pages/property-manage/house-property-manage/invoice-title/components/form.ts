@@ -1,5 +1,19 @@
-import type { 发票抬头表单_VO } from "@01s-11comm/type";
-import { invoiceTypeOptions, invoiceTitleDefaultForm as defaultForm } from "@01s-11comm/type";
+import type { InvoiceTitleFormVO } from "@01s-11comm/type";
+
+/**
+ * @description 发票抬头表单默认值
+ * Invoice title form default values
+ */
+export const defaultForm: InvoiceTitleFormVO = {
+	ownerName: "",
+	invoiceType: "",
+	invoiceTitle: "",
+	taxpayerId: "",
+	address: "",
+	phone: "",
+	bankAccount: "",
+	remark: "",
+};
 
 // ==================== 表单Props类型定义 ====================
 
@@ -10,11 +24,7 @@ import { invoiceTypeOptions, invoiceTitleDefaultForm as defaultForm } from "@01s
  */
 export interface InvoiceTitleFormProps {
 	/** 表单数据 */
-	form: 发票抬头表单_VO;
+	form: InvoiceTitleFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 发票抬头表单_VO;
+	defaultValues: InvoiceTitleFormVO;
 }
-
-// ==================== 导出表单相关 ====================
-
-export { defaultForm, invoiceTypeOptions };

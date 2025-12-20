@@ -1,5 +1,18 @@
-import type { 业主账户表单_VO } from "@01s-11comm/type";
-import { accountTypeOptions, paymentMethodOptions, ownerAccountDefaultForm as defaultForm } from "@01s-11comm/type";
+import type { OwnerAccountFormVO } from "@01s-11comm/type";
+import { accountTypeOptions, paymentMethodOptions } from "@01s-11comm/type";
+
+/**
+ * @description 业主账户表单默认值
+ * Owner account form default values
+ */
+export const defaultForm: OwnerAccountFormVO = {
+	accountType: "通用账户",
+	ownerPhone: "",
+	ownerName: "",
+	prepaidAmount: "",
+	paymentMethod: "现金",
+	remark: "",
+};
 
 // ==================== 表单Props类型定义 ====================
 
@@ -10,11 +23,11 @@ import { accountTypeOptions, paymentMethodOptions, ownerAccountDefaultForm as de
  */
 export interface OwnerAccountFormProps {
 	/** 表单数据 */
-	form: 业主账户表单_VO;
+	form: OwnerAccountFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 业主账户表单_VO;
+	defaultValues: OwnerAccountFormVO;
 }
 
 // ==================== 导出表单相关 ====================
 
-export { defaultForm, accountTypeOptions, paymentMethodOptions };
+export { accountTypeOptions, paymentMethodOptions };

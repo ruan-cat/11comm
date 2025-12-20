@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
+import type { OwnerAccountFormVO } from "@01s-11comm/type";
 import { type OwnerAccountFormProps, accountTypeOptions, paymentMethodOptions } from "./form";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 业主账户表单_VO;
+const defaultValues = props.defaultValues as FieldValues & OwnerAccountFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +21,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 业主账户表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & OwnerAccountFormVO;
 
 /**
  * 表单对象

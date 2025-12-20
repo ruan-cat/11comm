@@ -8,29 +8,97 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import type { InvoiceListItem, InvoiceQueryParams, 发票_列表数据, 发票_列表查询_VO, 发票表单_VO } from "@01s-11comm/type";
-import { 发票类型Options, 发票审核状态Options } from "@01s-11comm/type";
-import { type InvoiceFormProps, defaultForm } from "./components/form";
-import InvoiceForm from "./components/form.vue";
+import type { InvoiceListItem, InvoiceQueryParams, InvoiceFormVO } from "@01s-11comm/type";
+import { invoiceTypeOptions, invoiceAuditStatusOptions } from "@01s-11comm/type";
+import { useInvoiceListQuery } from "@/api/property-manage/house-property-manage/invoice";
 
-/** 表格数据 */
-const tableData = ref<发票_列表数据[]>([]);
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<InvoiceQueryParams> = {
+	code: "",
+	invoiceType: "",
+	ownerName: "",
+	applicant: "",
+	auditStatus: "",
+};
 
-/** 模拟表格数据（用于本地搜索过滤） */
-const mockTableData = ref<发票_列表数据[]>([
-	// TODO: 替换为真实API数据
-]);
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
-/** 分页配置 */
-const pagination = ref({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useInvoiceListQuery(plusSearchDefaultValues);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = ref<PlusSearchProps>({
+	defaultValues: plusSearchDefaultValues,
+	columns: [],
+	labelWidth: 140,
+	labelPosition: "right",
+	showNumber: 3,
 });
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = computed<PlusColumn[]>(() => [
+	{
+		label: "编号",
+		prop: "code",
+		valueType: "input",
+	},
+	{
+		label: "发票类型",
+		prop: "invoiceType",
+		valueType: "select",
+		options: invoiceTypeOptions,
+	},
+	{
+		label: "业主名称",
+		prop: "ownerName",
+		valueType: "input",
+	},
+	{
+		label: "申请人",
+		prop: "applicant",
+		valueType: "input",
+	},
+	{
+		label: "审核状态",
+		prop: "auditStatus",
+		valueType: "select",
+		options: invoiceAuditStatusOptions,
+	},
+]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -94,24 +162,19 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "发票",
 	columns: columns.value,
 });
 
-/** 模式控制 */
+// 模式控制
 const { modeText, setMode, isAdd } = useMode();
 
-/** 表单组件实例 */
+// 导入表单组件
+import { type InvoiceFormProps, defaultForm } from "./components/form";
+import InvoiceForm from "./components/form.vue";
+
 const invoiceFormInstance = ref<InstanceType<typeof InvoiceForm> | null>(null);
 
 /** 测试异步操作 */
@@ -126,7 +189,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -134,7 +197,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 	const title = `${modeText.value}发票`;
 
 	/** 业务对象 */
-	const formData: 发票表单_VO = isAdd.value
+	const formData: InvoiceFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: cloneDeep({
 				...defaultForm,
@@ -172,7 +235,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = invoiceFormInstance.value.formComputed;
+			const formComputed = invoiceFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
@@ -180,7 +243,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = invoiceFormInstance.value.formComputed;
+					const formComputed = invoiceFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
@@ -189,7 +252,7 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					invoiceFormInstance.value.plusFormInstance.handleReset();
+					invoiceFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
@@ -197,150 +260,19 @@ function openDialog(params: { mode: Mode; row?: 发票_列表数据 }) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await invoiceFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await invoiceFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
 		],
 	});
 }
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & 发票_列表查询_VO = {
-	code: "",
-	invoiceType: "",
-	ownerName: "",
-	applicant: "",
-	auditStatus: "",
-	pageIndex: 1,
-	pageSize: 10,
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: "编号",
-		prop: "编号",
-		valueType: "input",
-	},
-	{
-		label: "发票类型",
-		prop: "发票类型",
-		valueType: "select",
-		options: 发票类型Options,
-	},
-	{
-		label: "业主名称",
-		prop: "业主名称",
-		valueType: "input",
-	},
-	{
-		label: "申请人",
-		prop: "申请人",
-		valueType: "input",
-	},
-	{
-		label: "发审核状态",
-		prop: "发审核状态",
-		valueType: "select",
-		options: 发票审核状态Options,
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.编号) {
-			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.编号!));
-		}
-		if (plusSearchModel.value.发票类型) {
-			filteredData = filteredData.filter((item) => item.发票类型 === plusSearchModel.value.发票类型);
-		}
-		if (plusSearchModel.value.业主名称) {
-			filteredData = filteredData.filter((item) => item.业主名称.includes(plusSearchModel.value.业主名称!));
-		}
-		if (plusSearchModel.value.申请人) {
-			filteredData = filteredData.filter((item) => item.申请人.includes(plusSearchModel.value.申请人!));
-		}
-		if (plusSearchModel.value.发审核状态) {
-			filteredData = filteredData.filter((item) => item.发审核状态 === plusSearchModel.value.发审核状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -352,7 +284,7 @@ onMounted(async () => {
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -365,6 +297,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

@@ -11,8 +11,8 @@ definePage({
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import type { OwnerAccountListItem, OwnerAccountQueryParams, accountTypeOptions, 业主账户表单_VO } from "@01s-11comm/type";
-import type { TableColumnList } from "@pureadmin/table";
+import type { OwnerAccountListItem, OwnerAccountQueryParams, OwnerAccountFormVO } from "@01s-11comm/type";
+import { accountTypeOptions } from "@01s-11comm/type";
 import { type OwnerAccountFormProps, defaultForm } from "./components/form";
 import OwnerAccountForm from "./components/form.vue";
 import { useOwnerAccountListQuery } from "@/api/property-manage/house-property-manage/owner-account";
@@ -181,7 +181,7 @@ function openDialog(params: { mode: Mode; row?: OwnerAccountListItem }) {
 	const title = `${modeText.value}业主账户`;
 
 	/** 业务对象 */
-	const 业主账户表单_VO: 业主账户表单_VO = isAdd.value
+	const formData: OwnerAccountFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: structuredClone({
 				...defaultForm,
@@ -195,8 +195,8 @@ function openDialog(params: { mode: Mode; row?: OwnerAccountListItem }) {
 
 	/** 表单组件需要的props */
 	const formProps: OwnerAccountFormProps = {
-		form: 业主账户表单_VO,
-		defaultValues: 业主账户表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

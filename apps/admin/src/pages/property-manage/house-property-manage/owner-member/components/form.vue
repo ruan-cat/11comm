@@ -2,6 +2,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { OwnerMemberFormProps, type OwnerMemberFormVO, defaultForm } from "./form";
+import { genderOptions, memberTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<OwnerMemberFormProps>();
 
@@ -38,14 +39,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 成员人脸
 	{
 		label: "成员人脸",
-		prop: "成员人脸",
+		prop: "memberFace",
 		valueType: "input",
 	},
 
 	// 名称
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		valueType: "input",
 		required: true,
 	},
@@ -53,25 +54,25 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 性别
 	{
 		label: "性别",
-		prop: "性别",
+		prop: "gender",
 		valueType: "select",
-		options: 性别选项,
+		options: genderOptions,
 		required: true,
 	},
 
 	// 类型
 	{
 		label: "类型",
-		prop: "类型",
+		prop: "type",
 		valueType: "select",
-		options: 成员类型选项,
+		options: memberTypeOptions,
 		required: true,
 	},
 
 	// 身份证
 	{
 		label: "身份证",
-		prop: "身份证",
+		prop: "idCard",
 		valueType: "input",
 		required: true,
 	},
@@ -79,7 +80,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 联系方式
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contact",
 		valueType: "input",
 		required: true,
 	},
@@ -87,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 家庭住址
 	{
 		label: "家庭住址",
-		prop: "家庭住址",
+		prop: "homeAddress",
 		valueType: "input",
 		required: true,
 	},
@@ -95,14 +96,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 创建人
 	{
 		label: "创建人",
-		prop: "创建人",
+		prop: "creator",
 		valueType: "input",
 	},
 
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
@@ -112,7 +113,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 门禁钥匙
 	{
 		label: "门禁钥匙",
-		prop: "门禁钥匙",
+		prop: "accessKey",
 		valueType: "select",
 		options: [
 			{ label: "有", value: "有" },
@@ -126,35 +127,35 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	名称: [
+	name: [
 		{
 			required: true,
 			message: "请输入名称",
 			trigger: "blur",
 		},
 	],
-	性别: [
+	gender: [
 		{
 			required: true,
 			message: "请选择性别",
 			trigger: "change",
 		},
 	],
-	类型: [
+	type: [
 		{
 			required: true,
 			message: "请选择类型",
 			trigger: "change",
 		},
 	],
-	身份证: [
+	idCard: [
 		{
 			required: true,
 			message: "请输入身份证",
 			trigger: "blur",
 		},
 	],
-	联系方式: [
+	contact: [
 		{
 			required: true,
 			message: "请输入联系方式",
@@ -166,7 +167,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	家庭住址: [
+	homeAddress: [
 		{
 			required: true,
 			message: "请输入家庭住址",
