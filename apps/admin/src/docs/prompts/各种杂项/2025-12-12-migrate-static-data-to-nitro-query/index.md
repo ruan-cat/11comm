@@ -407,7 +407,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 - `\}\s+as\s+Partial<.*QueryParams>\);`
 - `});`
 
-### 015 <!-- TODO: --> 更新迭代 `migrate-static-data-to-nitro-query` 的全部文档，避免出现编写兼容性的中文类型变量
+### 015 更新迭代 `migrate-static-data-to-nitro-query` 的全部文档，避免出现编写兼容性的中文类型变量
 
 在多次的迭代中，我发现现在的 `migrate-static-data-to-nitro-query` 任务执行的时候，总是会在类型项目和后台项目内新建兼容性的中文变量，和中文类型。这是非常错误的做法！
 
