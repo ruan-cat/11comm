@@ -32,6 +32,267 @@ export const 状态选项 = statusOptions;
 
 ---
 
+## ⚠️ 列表页改造严格规范
+
+**在实施列表页改造任务时，必须严格遵守以下规范，避免出现删改多余内容的情况**：
+
+### Requirement: 无条件按照 fix-type-error 处理类型错误
+
+在处理列表页的类型替换和变量替换时，MUST 严格按照 `.claude\agents\fix-type-error.md` 文档所述的要求来执行。
+
+- 不要自己胡乱发挥，乱写代码
+- 不要胡乱改变原有的类型
+- 不要导入不存在的、冗余的、多余的全局类型
+
+### Requirement: 不要删改破坏现有的弹框函数逻辑
+
+每一个列表页都有这样的代码段。这些逻辑是列表页弹框逻辑必备的函数。**不允许删改**。这不是迁移改造任务的处理范围。
+
+```typescript
+const { modeText, setMode, isAdd } = useMode();
+const [isFetchingT, setIsLoadingT] = useToggle(false);
+/** 模拟异步操作函数 */
+async function testAsync() {
+	setIsLoadingT(true);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+	await sleep(1300);
+	setIsLoadingT(false);
+	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+}
+```
+
+### Requirement: 不要删掉弹框实例代码，只负责做类型替换
+
+不要随便删掉弹框实例新建逻辑，只需要实现中文变量名替换、导入来自类型项目的业务类型即可。
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误：删掉了原来该有的表单实例
+import type { ParkingLotListItem } from "@01s-11comm/type";
+```
+
+✅ **正确做法**：
+
+1. 去类型项目导入 `ParkingLotFormVO`，替代来自 `form.ts` 的 `停车场表单_VO` 中文类型
+2. 把导入的中文变量名换成英文名：`停车场表单` -> `ParkingLotForm`
+3. 把本地的表单实例中文变量名换成英文名：`停车场表单Instance` -> `ParkingLotFormInstance`
+
+```typescript
+import type { ParkingLotFormVO } from "@01s-11comm/type";
+import { type ParkingLotFormProps, defaultForm } from "./components/form";
+import ParkingLotForm from "./components/form.vue";
+const ParkingLotFormInstance = ref<InstanceType<typeof ParkingLotForm> | null>(null);
+```
+
+### Requirement: 不要胡乱删改打开弹框组件的处理逻辑
+
+在处理弹框组件已有的逻辑时，**只负责变量名替换和函数替换**：
+
+- 变量名替换：`停车场表单对象` -> `parkingLotFormVO`
+- 类型替换：`停车场表单_VO` -> `ParkingLotFormVO`
+- 函数替换：`cloneDeep` -> `structuredClone`
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误1: 删除掉表单对象的业务类型约束
+// 错误2: 把 structuredClone(defaultForm) 改成了 structuredClone({})
+// 错误3: 删除了 props 和 defaultValues 变量
+const parkingLotFormVO = isAdd.value
+	? structuredClone({})
+	: structuredClone({
+			...row,
+			parkingLotType: row?.parkingLotType || "地面停车场",
+			parkingSpaceType: row?.parkingSpaceType || "标准车位",
+		});
+```
+
+✅ **正确做法**：
+
+```typescript
+/** 业务对象 */
+const parkingLotFormVO: ParkingLotFormVO = isAdd.value
+	? structuredClone(defaultForm)
+	: structuredClone({
+			...defaultForm,
+			...row,
+			parkingLotType: row?.parkingLotType || defaultForm.parkingLotType,
+			parkingSpaceType: row?.parkingSpaceType || defaultForm.parkingSpaceType,
+		});
+
+/** 表单组件需要的props */
+const props: ParkingLotFormProps = {
+	form: parkingLotFormVO,
+	defaultValues: parkingLotFormVO,
+};
+```
+
+### Requirement: 不要胡乱删改 openDialog 按钮配置逻辑
+
+只负责完成中文变量名和中文类型名的替换，不要删改本来就写好的代码逻辑。
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误1: 删掉了 const formComputed 变量
+// 错误2: 删掉了 useDoBeforeClose 函数调用逻辑
+// 错误3: 删掉了重置按钮这整个配置对象
+footerButtons: [
+	{
+		label: transformI18n($t("common.buttons.cancel")),
+		type: "info",
+		btnClick: async ({ dialog: { options, index }, button }) => {
+			closeDialog(options, index);
+		},
+	},
+	{
+		label: transformI18n($t("common.buttons.submit")),
+		type: "success",
+		btnClick: async ({ dialog: { options, index }, button }) => {
+			button.btn.loading = true;
+			await testAsync();
+			button.btn.loading = false;
+			closeDialog(options, index);
+		},
+	},
+];
+```
+
+✅ **正确做法**：
+
+```typescript
+// 只把中文变量名 停车场表单Instance 换成 ParkingLotFormInstance
+footerButtons: [
+	{
+		label: transformI18n($t("common.buttons.cancel")),
+		type: "info",
+		btnClick: async ({ dialog: { options, index }, button }) => {
+			const formComputed = ParkingLotFormInstance.value?.formComputed;
+			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+		},
+	},
+	{
+		label: transformI18n($t("common.buttons.reset")),
+		type: "warning",
+		btnClick: ({ dialog: { options, index }, button }) => {
+			ParkingLotFormInstance.value?.plusFormInstance?.handleReset();
+		},
+	},
+	{
+		label: transformI18n($t("common.buttons.submit")),
+		type: "success",
+		btnClick: async ({ dialog: { options, index }, button }) => {
+			const res = await ParkingLotFormInstance.value?.plusFormInstance?.handleSubmit();
+			if (res) {
+				button.btn.loading = true;
+				await testAsync();
+				button.btn.loading = false;
+				closeDialog(options, index);
+			}
+		},
+	},
+];
+```
+
+### Requirement: 不要更改 definePage 宏的排布顺序
+
+在每个列表页内，`definePage` 宏 MUST 排在最上面，不允许被修改位置。
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误：把 definePage 宏放到 import 导入函数的下面
+import { ref, computed } from "vue";
+import { transformI18n } from "@/plugins/i18n";
+// ... 其他 import
+
+definePage({
+	meta: {
+		title: "菜单组",
+		// ...
+	},
+});
+```
+
+✅ **正确做法**：
+
+```typescript
+// definePage 宏永远在 import 导入函数之上
+definePage({
+	meta: {
+		title: "菜单组",
+		icon: "mdi:group",
+		roles: ["开发团队"],
+		rank: getRouteRank("devTeam.menuManage.group"),
+	},
+});
+
+import { ref, computed } from "vue";
+import { transformI18n } from "@/plugins/i18n";
+// ... 其他 import
+```
+
+### Requirement: 表格列配置使用全局类型 TableColumnList
+
+表格列配置 `columns` 数组的类型约束 MUST 使用全局类型 `TableColumnList`，不要换掉。
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误：手动导入 TableColumns 类型，替换掉原来的全局类型
+import type { TableColumns } from "@pureadmin/table";
+const columns = ref<TableColumns[]>([
+	// ...
+]);
+```
+
+✅ **正确做法**：
+
+```typescript
+// TableColumnList 是全局类型，不需要导入
+const columns = ref<TableColumnList>([
+	// ...
+]);
+```
+
+### Requirement: 保留全局类型约束 PureTableBarProps
+
+在列表页内，不要删掉本来就写好的全局类型约束 `PureTableBarProps`，保持原样即可。
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误：删掉了本来就写好的类型约束
+const pureTableBarProps = ref({
+	title: "菜单组",
+	columns: columns.value,
+});
+```
+
+✅ **正确做法**：
+
+```typescript
+// 保留原样，PureTableBarProps 是全局类型
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "菜单组",
+	columns: columns.value,
+});
+```
+
+### Requirement: 不要增加 getRouteRank 的导入
+
+不要添油加醋的增加多余的全局导入 `getRouteRank`。这个函数是全局函数，不应该主动导入。
+
+❌ **错误示例（严格禁止）**：
+
+```typescript
+// 错误：不应该导入这个全局函数
+import { getRouteRank } from "@/router/rank/getRouteRank";
+```
+
+---
+
 ## MODIFIED Requirements
 
 ### Requirement: 列表页数据获取模式

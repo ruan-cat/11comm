@@ -638,6 +638,22 @@ export function usePaymentReviewListQuery() {
 
 ### Step 5: 改写列表页 (30 分钟)
 
+#### ⚠️ 列表页改造严格规范
+
+**在实施列表页改造任务时，必须严格遵守以下规范，避免出现删改多余内容的情况**：
+
+1. **无条件按照 fix-type-error 处理类型错误**：必须严格按照 `.claude\agents\fix-type-error.md` 文档要求执行类型替换
+2. **不要删改破坏现有的弹框函数逻辑**：`useMode()`、`useToggle()`、`testAsync()` 等函数不属于迁移范围
+3. **不要删掉弹框实例代码，只做类型替换**：只替换中文变量名为英文，不删除表单实例结构
+4. **不要胡乱删改打开弹框组件的处理逻辑**：只做变量名替换和函数替换（`cloneDeep` -> `structuredClone`）
+5. **不要胡乱删改 openDialog 按钮配置逻辑**：只替换中文变量名
+6. **不要更改 definePage 宏的排布顺序**：`definePage` 必须在最上面
+7. **表格列配置使用全局类型 TableColumnList**：不要换成 `TableColumns`
+8. **保留全局类型约束 PureTableBarProps**：不要删掉
+9. **不要增加 getRouteRank 的导入**：这是全局函数
+
+**详细规范请查看**：[list-page-pattern/spec.md](./list-page-pattern/spec.md#列表页改造严格规范)
+
 #### 3.5.1 列表页模板(固定格式)
 
 ```vue
