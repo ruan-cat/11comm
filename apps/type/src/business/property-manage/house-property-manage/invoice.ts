@@ -1,5 +1,5 @@
 import type { OptionsType } from "../../../common";
-import { invoiceTypeOptions, auditStatusOptions } from "../../../common/business-options";
+import { invoiceTypeOptions } from "../../../common/business-options";
 
 /**
  * @description 发票列表数据

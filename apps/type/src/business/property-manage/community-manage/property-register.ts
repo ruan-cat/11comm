@@ -103,16 +103,6 @@ export const defaultForm: PropertyRegisterFormVO = {
 };
 
 /**
- * 审核状态选项
- * Audit status options
- */
-export const auditStatusOptions: OptionsType = [
-	{ label: "待审核", value: "待审核" },
-	{ label: "已通过", value: "已通过" },
-	{ label: "已拒绝", value: "已拒绝" },
-];
-
-/**
  * 楼栋选项
  * Building options
  */

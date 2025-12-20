@@ -3,9 +3,6 @@
  * @description 导出项目中共享的通用类型，如分页、响应格式等
  */
 
-// 导出测试数据
-export * from "./test-data";
-
 // 状态选项已移至 business-options.ts
 
 // 导出选项类型
@@ -69,4 +66,3 @@ export interface BaseListQueryParams {
 	/** 每页大小 Page size */
 	pageSize: number;
 }
-

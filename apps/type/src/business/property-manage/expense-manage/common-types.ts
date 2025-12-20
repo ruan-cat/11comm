@@ -2,18 +2,6 @@ import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 // ==================== 通用选项定义 ====================
 
-/** 费用类型选项 Expense type options */
-export const expenseTypeOptions: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水费", value: "水费" },
-	{ label: "电费", value: "电费" },
-	{ label: "燃气费", value: "燃气费" },
-	{ label: "停车费", value: "停车费" },
-	{ label: "维修费", value: "维修费" },
-	{ label: "垃圾费", value: "垃圾费" },
-	{ label: "其他费用", value: "其他费用" },
-];
-
 /** 自定义费用选项 Custom expense options */
 export const customExpenseOptions: OptionsType = [
 	{ label: "固定费用", value: "固定费用" },
@@ -33,17 +21,6 @@ export const expenseStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
-
-/** 费用项名称选项 Expense item name options */
-export const expenseItemNameOptions: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水电费", value: "水电费" },
-	{ label: "停车费", value: "停车费" },
-	{ label: "维修费", value: "维修费" },
-];
-
-/** 费用类型选项别名 Fee type options alias */
-export const feeTypeOptions = expenseTypeOptions;
 
 // ==================== 通用类型定义 ====================
 

@@ -25,6 +25,14 @@ export const auditStatusOptions: OptionsType = [
 	{ label: "已拒绝", value: "已拒绝" },
 ];
 
+/** 费用项名称选项 Expense item name options */
+export const expenseItemNameOptions: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水电费", value: "水电费" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
+];
+
 /**
  * @description 费用标识选项
  * Expense identifier options
@@ -47,6 +55,9 @@ export const expenseTypeOptions: OptionsType = [
 	{ label: "垃圾处理费", value: "垃圾处理费" },
 	{ label: "维修费", value: "维修费" },
 ];
+
+/** 费用类型选项别名 Fee type options alias */
+export const feeTypeOptions = expenseTypeOptions;
 
 /**
  * @description 付费类型选项
@@ -498,4 +509,3 @@ export const returnVisitStatusOptions: OptionsType = [
 	{ label: "满意", value: "满意" },
 	{ label: "不满意", value: "不满意" },
 ];
-
