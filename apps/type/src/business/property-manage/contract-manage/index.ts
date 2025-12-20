@@ -40,6 +40,7 @@ export type {
 
 export {
 	firstPartyStatusOptions,
+	contractFirstPartyTypeOptions,
 } from "./first-party";
 
 export type {

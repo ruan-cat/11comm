@@ -80,6 +80,12 @@ export const draftContractTypeOptions = contractTypeOptions;
  */
 export const contractTypeOptionsData = draftContractTypeOptions;
 
+/**
+ * @description 合同草稿查询参数类型别名（兼容性）
+ * Draft contract query params type alias (for compatibility)
+ */
+export type DraftContractQueryParamsType = DraftContractQueryParams;
+
 // ==================== 兼容旧中文名称 ====================
 
 

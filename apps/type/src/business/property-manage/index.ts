@@ -91,6 +91,7 @@ export {
 	expireStatusOptions,
 	handlingStatusOptions,
 	firstPartyStatusOptions,
+	contractFirstPartyTypeOptions,
 	typeStatusOptions,
 	auditTypeOptions,
 	archiveStatusOptions,
