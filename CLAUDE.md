@@ -24,7 +24,7 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 此文件为 Claude Code (claude.ai/code) 在此代码仓库中工作时提供指导。
 
-## 主动问询实施细节
+## 1. 主动问询实施细节
 
 在我与你沟通并要求你具体实施更改时，难免会遇到很多模糊不清的事情。
 
@@ -32,11 +32,11 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 我会与你共同补充细化实现细节。我们先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
 
-## 对话沟通术语表
+## 2. 对话沟通术语表
 
 在我和你沟通时，我会使用以下术语，便于你理解。
 
-### 全局术语
+### 2.1. 全局术语
 
 在任何沟通下，这些术语都生效。
 
@@ -53,13 +53,13 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 - 业务路径： 即 `apps\admin\src\router\rank\rank-route-keys.ts` 文件的全部`三级路由`所体现出来的文件路径。被认定为`业务路径`。`类型项目`、`服务端代码`、`后台项目`、`客户端代码`等。都要依赖于业务路径来组织代码。是本项目**非常重要**的路径概念。
 
-## 代码/编码格式要求
+## 3. 代码/编码格式要求
 
-### 1. markdown 文档的 table 编写格式
+### 3.1. markdown 文档的 table 编写格式
 
 每当你在 markdown 文档内编写表格时，表格的格式一定是**居中对齐**的，必须满足**居中对齐**的格式要求。
 
-### 2. markdown 文档的 vue 组件代码片段编写格式
+### 3.2. markdown 文档的 vue 组件代码片段编写格式
 
 错误写法：
 
@@ -95,7 +95,7 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 </template>
 ```
 
-### 3. javascript / typescript 的代码注释写法
+### 3.3. javascript / typescript 的代码注释写法
 
 代码注释写法应该写成 jsdoc 格式。而不是单纯的双斜杠注释。比如：
 
@@ -129,18 +129,18 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 }
 ```
 
-### 4. markdown 的多级标题要主动提供序号
+### 3.4. markdown 的多级标题要主动提供序号
 
 对于每一份 markdown 文件的`二级标题`和`三级标题`，你都应该要：
 
 1. 主动添加**数字**序号，便于我阅读文档。
 2. 主动**维护正确的数字序号顺序**。如果你处理的 markdown 文档，其手动添加的序号顺序不对，请你及时的更新序号顺序。
 
-### 5. 禁止编写脚本完成批处理任务
+### 3.5. 禁止编写脚本完成批处理任务
 
 **不允许**你编写任何 Python、typescript、javascript，或 bash 脚本，完成大批量代码删改之类的任务。你应该阅读文件来完成更改，而不是使用不稳定的，容易带来语法错误的，删改不干净不合理的批处理脚本，来完成任务
 
-## 报告编写规范
+## 4. 报告编写规范
 
 在大多数情况下，你的更改是**不需要**编写任何说明报告的。但是每当你需要编写报告时，请你首先遵循以下要求：
 
@@ -164,11 +164,11 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 
 - 报告语言： 默认用简体中文。
 
-## openspec 使用规范
+## 5. openspec 使用规范
 
 本项目使用 openspec 来制定长任务执行规范。
 
-### 更新 openspec 的规范文件后应该及时运行校验命令，并根据校验反馈，使得 openspec 规范文件满足格式要求
+### 5.1. 更新 openspec 的规范文件后应该及时运行校验命令，并根据校验反馈，使得 openspec 规范文件满足格式要求
 
 比如你修改了 `migrate-static-data-to-nitro-query` 这款任务的规范文件后，你应该及时运行以下命令来检查文件是否满足规范：
 
@@ -182,15 +182,15 @@ openspec validate migrate-static-data-to-nitro-query --strict
 openspec validate {任务名称} --strict
 ```
 
-## 注意事项
+## 6. 注意事项
 
 1. 每次你完成更改时，都要主动运行类型检查命令。我们项目需要你去运行类型检查命令。需要你主动解决类型报错。
 
-## 常用开发命令
+## 7. 常用开发命令
 
 这是一个用于 11comm 智慧社区 (Smart Community) 项目的 pnpm + Turbo monorepo。
 
-### 构建命令
+### 7.1. 构建命令
 
 ```bash
 # 构建所有项目
@@ -211,7 +211,7 @@ pnpm -F @01s-11comm/admin build:staging
 pnpm -F @01s-11comm/admin docs:build
 ```
 
-### 开发命令
+### 7.2. 开发命令
 
 ```bash
 # 以开发模式运行管理应用
@@ -220,7 +220,7 @@ pnpm -F @01s-11comm/admin dev
 cd apps/admin && pnpm dev
 ```
 
-### 测试命令
+### 7.3. 测试命令
 
 ```bash
 # 使用UI运行测试
@@ -229,7 +229,7 @@ pnpm test
 pnpm -F @01s-11comm/admin test
 ```
 
-### 代码检查和格式化
+### 7.4. 代码检查和格式化
 
 ```bash
 # 检查和格式化管理应用
@@ -244,7 +244,7 @@ pnpm -F @01s-11comm/admin lint:stylelint
 pnpm format
 ```
 
-### 类型检查
+### 7.5. 类型检查
 
 ```bash
 # 对整个项目进行类型检查
@@ -273,9 +273,9 @@ pnpm -F @01s-11comm/type typecheck
 2. 在提交前运行类型检查命令
 3. 保持类型定义的准确性和一致性
 
-## 项目架构
+## 8. 项目架构
 
-### Monorepo 结构
+### 8.1. Monorepo 结构
 
 - `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
 - `apps/type/` - **新增**的业务类型库，集中管理所有共享类型定义
@@ -283,7 +283,7 @@ pnpm -F @01s-11comm/type typecheck
 - `examples/` - 示例应用（01s-origin, 10wms）
 - 根级别管理 monorepo 依赖和共享配置
 
-### 管理应用架构 (`apps/admin/`)
+### 8.2. 管理应用架构 (`apps/admin/`)
 
 **技术栈：**
 
@@ -332,7 +332,7 @@ pnpm -F @01s-11comm/type typecheck
 - Vue i18n，在`locales/`中使用 YAML 区域设置文件
 - 支持中文（zh-CN）和英文（en）
 
-### 关键技术和库
+### 8.3. 关键技术和库
 
 **必需学习（根据 technical-doc.md）：**
 
@@ -352,7 +352,7 @@ pnpm -F @01s-11comm/type typecheck
 - 基于模块的 API 组织
 - 组件驱动的 UI 开发
 
-## 开发工作流
+## 9. 开发工作流
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
@@ -363,27 +363,27 @@ pnpm -F @01s-11comm/type typecheck
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 获取技术栈对应的上下文
+## 10. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
 
-### taskmaster-ai
+### 10.1. taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
 
-### nitro
+### 10.2. nitro
 
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 编写接口需要导入正确的模块
+#### 10.2.1. 编写接口需要导入正确的模块
 
 <!-- TODO: -->
 
-#### 配置文件格式没有 vite 配置对象
+#### 10.2.2. 配置文件格式没有 vite 配置对象
 
 <!-- TODO: -->
