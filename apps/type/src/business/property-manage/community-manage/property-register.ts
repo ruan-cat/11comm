@@ -1,11 +1,16 @@
-import type { OptionsType } from "../../../common";
+/**
+ * @file 产权登记类型定义
+ * @description Property registration types
+ */
+
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 /**
- * @description property-register列表数据
- * PropertyRegister list item
+ * 产权登记列表数据
+ * Property registration list item
  */
 export interface PropertyRegisterListItem {
-	/** ID */
+	/** 主键ID Primary key ID */
 	id: string;
 	/** 房屋产权ID Property Right ID */
 	propertyRightId: string;
@@ -32,8 +37,33 @@ export interface PropertyRegisterListItem {
 }
 
 /**
- * @description 产权登记表单VO
- * Property register form VO
+ * 产权登记查询参数
+ * Property registration query parameters
+ */
+export interface PropertyRegisterQueryParams extends BaseListQueryParams {
+	/** 房屋ID House ID */
+	houseId?: string;
+	/** 房屋编号 House Number */
+	houseNumber?: string;
+	/** 姓名 Owner Name */
+	ownerName?: string;
+	/** 联系方式 Contact Info */
+	contactInfo?: string;
+	/** 身份证号 ID Card Number */
+	idCardNumber?: string;
+	/** 地址 Address */
+	address?: string;
+	/** 状态 Status */
+	status?: string;
+	/** 楼栋 Building */
+	building?: string;
+	/** 单元 Unit */
+	unit?: string;
+}
+
+/**
+ * 产权登记表单VO
+ * Property registration form VO
  */
 export interface PropertyRegisterFormVO {
 	/** 房屋产权ID Property Right ID */
@@ -57,8 +87,8 @@ export interface PropertyRegisterFormVO {
 }
 
 /**
- * @description 产权登记表单默认值
- * Property register form default values
+ * 产权登记表单默认值
+ * Property registration form default values
  */
 export const defaultForm: PropertyRegisterFormVO = {
 	propertyRightId: "",
@@ -73,51 +103,17 @@ export const defaultForm: PropertyRegisterFormVO = {
 };
 
 /**
- * @description property-register列表查询参数
- * PropertyRegister list query parameters
+ * 审核状态选项
+ * Audit status options
  */
-export interface PropertyRegisterQueryParams {
-	/** 房屋ID House ID */
-	houseId?: string;
-	/** 房屋编号 House Number */
-	houseNumber?: string;
-	/** 姓名 Owner Name */
-	ownerName?: string;
-	/** 联系方式 Contact Info */
-	contactInfo?: string;
-	/** 身份证号 ID Card Number */
-	idCardNumber?: string;
-	/** 地址 Address */
-	address?: string;
-	/** 状态 Status */
-	status?: string;
-	/** 楼栋 Building */
-	building?: string;
-	/** 单元 Unit */
-	unit?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
-}
-
-/**
- * @description 状态选项
- * Status options
- */
-export const propertyRegisterStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+export const auditStatusOptions: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
 ];
 
 /**
- * @description 产权登记审核状态选项
- * Property registration audit status options
- */
-export const propertyRegistrationAuditStatusOptions = propertyRegisterStatusOptions;
-
-/**
- * @description 楼栋选项
+ * 楼栋选项
  * Building options
  */
 export const buildingOptions: OptionsType = [
@@ -128,11 +124,20 @@ export const buildingOptions: OptionsType = [
 ];
 
 /**
- * @description 单元选项
+ * 单元选项
  * Unit options
  */
 export const unitOptions: OptionsType = [
 	{ label: "1单元", value: "1单元" },
 	{ label: "2单元", value: "2单元" },
 	{ label: "3单元", value: "3单元" },
+];
+
+/**
+ * 产权登记状态选项
+ * Property registration status options
+ */
+export const propertyRegisterStatusOptions: OptionsType = [
+	{ label: "启用", value: "启用" },
+	{ label: "禁用", value: "禁用" },
 ];

@@ -1,4 +1,4 @@
-import type { OptionsType } from "../../../common";
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 /**
  * @description 公示类型
@@ -17,6 +17,8 @@ export type NoticeStatus = "草稿" | "已发布" | "已过期";
  * Community notice list item
  */
 export interface CommunityNoticeListItem {
+	/** 主键ID Primary key ID */
+	id: string;
 	/** 头部照片 Header image */
 	headerImage: string;
 	/** 公示标题 Notice title */
@@ -33,15 +35,11 @@ export interface CommunityNoticeListItem {
  * @description 小区公示列表查询参数
  * Community notice list query parameters
  */
-export interface CommunityNoticeQueryParams {
+export interface CommunityNoticeQueryParams extends BaseListQueryParams {
 	/** 公示标题 Notice title */
 	noticeTitle?: string;
 	/** 公示类型 Notice type */
 	noticeType?: NoticeType;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**

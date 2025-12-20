@@ -1,21 +1,27 @@
 /**
- * @file 楼宇空间结构图查询 Hook
- * @description 提供楼宇空间结构图列表数据查询功能
+ * @file 楼栋结构图 API Hook
+ * @description Building space structure diagram API hooks using TanStack Query
  */
 
 import { useListQuery } from "@/composables/use-list-query";
 import type { BuildingSpaceStructureDiagramListItem, BuildingSpaceStructureDiagramQueryParams } from "@01s-11comm/type";
 
+/** API 路径 */
+const API_URL = "/api/property-manage/community-manage/building-space-structure-diagram/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "buildingSpaceStructureDiagram";
+
 /**
- * 获取楼宇空间结构图列表数据
- * Get building space structure diagram list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 楼栋结构图列表查询 Hook
+ * Building space structure diagram list query hook
  */
 export function useBuildingSpaceStructureDiagramListQuery(initialParams: Partial<BuildingSpaceStructureDiagramQueryParams>) {
 	return useListQuery<BuildingSpaceStructureDiagramListItem, BuildingSpaceStructureDiagramQueryParams>({
-		queryKeyPrefix: "propertyManage:communityManage:buildingSpaceStructureDiagram:list",
-		apiUrl: "/api/property-manage/community-manage/building-space-structure-diagram/list",
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useBuildingSpaceStructureDiagramListQuery;

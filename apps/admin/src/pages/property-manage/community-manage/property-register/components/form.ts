@@ -1,6 +1,6 @@
 /** 导入类型和默认值供其他文件使用 */
 import type { PropertyRegisterFormVO as 产权登记表单_VO } from "@01s-11comm/type";
-import { propertyRegisterStatusOptions, auditStatusOptions, defaultForm } from "@01s-11comm/type";
+import { auditStatusOptions, defaultForm } from "@01s-11comm/type";
 
 /**
  * 产权登记表单 props

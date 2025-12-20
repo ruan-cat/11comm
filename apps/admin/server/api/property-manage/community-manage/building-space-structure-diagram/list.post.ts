@@ -1,49 +1,34 @@
 /**
  * @file 楼栋结构图列表接口
  * @description Building space structure diagram list API
+ * POST /api/property-manage/community-manage/building-space-structure-diagram/list
  */
 
-/** 获取楼栋结构图列表 POST /api/property-manage/community-manage/building-space-structure-diagram/list */
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, BuildingSpaceStructureDiagramListItem, BuildingSpaceStructureDiagramQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockBuildingSpaceStructureDiagramData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<BuildingSpaceStructureDiagramListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<BuildingSpaceStructureDiagramQueryParams>(event);
-	const {
-		pageIndex = 1,
-		pageSize = 10,
-		buildingId,
-		buildingName,
-		buildingStructure,
-		status,
-		constructionYear,
-	} = body ?? {};
+	const defaultParams: BuildingSpaceStructureDiagramQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	/** 数据筛选 */
-	let filteredData = [...mockBuildingSpaceStructureDiagramData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockBuildingSpaceStructureDiagramData, filters);
 
-	if (buildingId) {
-		filteredData = filteredData.filter((item) => item.buildingId.toLowerCase().includes(buildingId.toLowerCase()));
-	}
-	if (buildingName) {
-		filteredData = filteredData.filter((item) => item.buildingName.toLowerCase().includes(buildingName.toLowerCase()));
-	}
-	if (buildingStructure) {
-		filteredData = filteredData.filter((item) => item.buildingStructure === buildingStructure);
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-	if (constructionYear) {
-		filteredData = filteredData.filter((item) => item.constructionYear.includes(constructionYear));
-	}
-
-	/** 分页处理 */
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<BuildingSpaceStructureDiagramListItem>> = {
 		success: true,

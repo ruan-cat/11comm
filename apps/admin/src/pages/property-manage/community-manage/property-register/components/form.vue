@@ -6,7 +6,8 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import type { PropertyRegisterFormProps } from "./form";
-import { 产权登记表单_VO, auditStatusOptions } from "./form";
+import type { 产权登记表单_VO } from "./form";
+import { auditStatusOptions } from "./form";
 
 const props = defineProps<PropertyRegisterFormProps>();
 

@@ -1,6 +1,14 @@
+/**
+ * @file 楼栋结构图假数据
+ * @description Building space structure diagram mock data
+ */
+
 import type { BuildingSpaceStructureDiagramListItem } from "@01s-11comm/type";
 
-/** 楼栋结构图模拟数据 */
+/**
+ * 楼栋结构图模拟数据
+ * Building space structure diagram mock data
+ */
 export const mockBuildingSpaceStructureDiagramData: BuildingSpaceStructureDiagramListItem[] = [
     {
         buildingId: "B001",

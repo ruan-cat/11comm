@@ -14,6 +14,7 @@ export * from "./property-register";
 // 显式导出选项变量
 export { noticeTypeOptions } from "./notice";
 
-// 导出默认值
+// 导出默认值和类型
 export { defaultForm } from "./property-register";
+export type { PropertyRegisterFormVO } from "./property-register";
 

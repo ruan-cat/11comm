@@ -579,16 +579,16 @@
 
 **路由路径**：`propertyManage.communityManage.my`
 
-- [ ] Task 4.6.1: 创建类型定义文件 `apps/type/src/business/property-manage/community-manage/my.ts`
-- [ ] Task 4.6.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/community-manage/my/mock-data.ts`
-- [ ] Task 4.6.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/community-manage/my/list.post.ts`
-- [ ] Task 4.6.4: 创建前端 API Hook `apps/admin/src/api/property-manage/community-manage/my/index.ts`
-- [ ] Task 4.6.5: 改写列表页 `apps/admin/src/pages/property-manage/community-manage/my/index.vue`
-- [ ] Task 4.6.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/community-manage/my/test-data.ts`
-- [ ] Task 4.6.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/community-manage/my/components/form.ts`
-- [ ] Task 4.6.8: 更新表单组件 `apps/admin/src/pages/property-manage/community-manage/my/components/form.vue`
-- [ ] Task 4.6.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.6.10: 测试验证
+- [x] Task 4.6.1: 创建类型定义文件 `apps/type/src/business/property-manage/community-manage/my.ts` ✅
+- [x] Task 4.6.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/community-manage/my/mock-data.ts` ✅ (扩展至30条)
+- [x] Task 4.6.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/community-manage/my/list.post.ts` ✅ (修复为标准格式)
+- [x] Task 4.6.4: 创建前端 API Hook `apps/admin/src/api/property-manage/community-manage/my/index.ts` ✅
+- [x] Task 4.6.5: 改写列表页 `apps/admin/src/pages/property-manage/community-manage/my/index.vue` ✅
+- [x] Task 4.6.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/community-manage/my/test-data.ts` ✅ (已不存在)
+- [x] Task 4.6.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/community-manage/my/components/form.ts` ✅
+- [x] Task 4.6.8: 更新表单组件 `apps/admin/src/pages/property-manage/community-manage/my/components/form.vue` ✅
+- [x] Task 4.6.9: 运行类型检查 `pnpm typecheck` ✅ (my页面类型检查通过)
+- [x] Task 4.6.10: 测试验证 ✅
 
 #### 4.7 propertyManage.communityManage.parkingSpaceStructureDiagram（车位结构图）
 
@@ -609,16 +609,16 @@
 
 **路由路径**：`propertyManage.contractManage.change`
 
-- [ ] Task 4.8.1: 创建类型定义文件 `apps/type/src/business/property-manage/contract-manage/change.ts`
-- [ ] Task 4.8.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/contract-manage/change/mock-data.ts`
-- [ ] Task 4.8.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/contract-manage/change/list.post.ts`
-- [ ] Task 4.8.4: 创建前端 API Hook `apps/admin/src/api/property-manage/contract-manage/change/index.ts`
-- [ ] Task 4.8.5: 改写列表页 `apps/admin/src/pages/property-manage/contract-manage/change/index.vue`
-- [ ] Task 4.8.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/contract-manage/change/test-data.ts`
-- [ ] Task 4.8.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/contract-manage/change/components/form.ts`
-- [ ] Task 4.8.8: 更新表单组件 `apps/admin/src/pages/property-manage/contract-manage/change/components/form.vue`
-- [ ] Task 4.8.9: 运行类型检查 `pnpm typecheck`
-- [ ] Task 4.8.10: 测试验证
+- [x] Task 4.8.1: 创建类型定义文件 `apps/type/src/business/property-manage/contract-manage/change.ts`
+- [x] Task 4.8.2: 创建 Mock 数据文件 `apps/admin/server/api/property-manage/contract-manage/change/mock-data.ts`
+- [x] Task 4.8.3: 创建 Nitro 接口文件 `apps/admin/server/api/property-manage/contract-manage/change/list.post.ts`
+- [x] Task 4.8.4: 创建前端 API Hook `apps/admin/src/api/property-manage/contract-manage/change/index.ts`
+- [x] Task 4.8.5: 改写列表页 `apps/admin/src/pages/property-manage/contract-manage/change/index.vue`
+- [x] Task 4.8.6: 删除旧的假数据文件 `apps/admin/src/pages/property-manage/contract-manage/change/test-data.ts`
+- [x] Task 4.8.7: 更新表单类型文件 `apps/admin/src/pages/property-manage/contract-manage/change/components/form.ts`
+- [x] Task 4.8.8: 更新表单组件 `apps/admin/src/pages/property-manage/contract-manage/change/components/form.vue`
+- [x] Task 4.8.9: 运行类型检查 `pnpm typecheck`
+- [x] Task 4.8.10: 测试验证
 
 #### 4.9 propertyManage.contractManage.draftContract（起草合同）
 

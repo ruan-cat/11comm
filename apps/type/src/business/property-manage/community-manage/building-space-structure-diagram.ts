@@ -1,4 +1,9 @@
-import type { OptionsType } from "../../../common";
+/**
+ * @file 楼栋结构图类型定义
+ * @description Building space structure diagram types
+ */
+
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 // ==================== 表单类型定义 ====================
 
@@ -72,7 +77,7 @@ export interface BuildingSpaceStructureDiagramListItem {
  * @description 楼栋结构图列表查询参数
  * Building space structure diagram list query parameters
  */
-export interface BuildingSpaceStructureDiagramQueryParams {
+export interface BuildingSpaceStructureDiagramQueryParams extends BaseListQueryParams {
 	/** 楼栋编号 Building ID */
 	buildingId?: string;
 	/** 楼栋名称 Building name */
@@ -83,10 +88,6 @@ export interface BuildingSpaceStructureDiagramQueryParams {
 	status?: string;
 	/** 建成年份 Construction year */
 	constructionYear?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 // ==================== 常量定义 ====================

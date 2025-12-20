@@ -1,48 +1,36 @@
+/**
+ * @file 产权登记列表接口
+ * @description Property registration list API
+ * POST /api/property-manage/community-manage/property-register/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { PropertyRegisterListItem, PropertyRegisterQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, PropertyRegisterListItem, PropertyRegisterQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockPropertyRegisterData } from "./mock-data";
 
-/**
- * @description property-register列表 POST API
- * PropertyRegister list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<PropertyRegisterListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<PropertyRegisterQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, houseId, houseNumber, ownerName, contactInfo, idCardNumber, address, status } = body;
+	const defaultParams: PropertyRegisterQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockPropertyRegisterData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockPropertyRegisterData, filters);
 
-	// 数据筛选
-	if (houseId) {
-		filteredData = filteredData.filter((item) => item.houseId.includes(houseId));
-	}
-	if (houseNumber) {
-		filteredData = filteredData.filter((item) => item.houseNumber.includes(houseNumber));
-	}
-	if (ownerName) {
-		filteredData = filteredData.filter((item) => item.ownerName.includes(ownerName));
-	}
-	if (contactInfo) {
-		filteredData = filteredData.filter((item) => item.contactInfo.includes(contactInfo));
-	}
-	if (idCardNumber) {
-		filteredData = filteredData.filter((item) => item.idCardNumber.includes(idCardNumber));
-	}
-	if (address) {
-		filteredData = filteredData.filter((item) => item.address.includes(address));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<PropertyRegisterListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -53,6 +41,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PropertyRegis
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

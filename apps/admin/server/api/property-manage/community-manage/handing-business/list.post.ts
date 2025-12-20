@@ -1,39 +1,36 @@
+/**
+ * @file 业务受理列表接口
+ * @description Handing business list API
+ * POST /api/property-manage/community-manage/handing-business/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockHandingBusinessData } from "./mock-data";
 
-/**
- * @description 业务受理列表 POST API
- * Handing business list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<HandingBusinessListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<HandingBusinessQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, feeItem, feeId, feeType, status } = body;
+	const defaultParams: HandingBusinessQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockHandingBusinessData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockHandingBusinessData, filters);
 
-	// 数据筛选
-	if (feeItem) {
-		filteredData = filteredData.filter((item) => item.feeItem.includes(feeItem));
-	}
-	if (feeId) {
-		filteredData = filteredData.filter((item) => item.feeId.includes(feeId));
-	}
-	if (feeType) {
-		filteredData = filteredData.filter((item) => item.feeType === feeType);
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<HandingBusinessListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -44,7 +41,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HandingBusine
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
-});
 
+	return response;
+});

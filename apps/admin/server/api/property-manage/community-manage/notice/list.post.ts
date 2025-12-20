@@ -1,33 +1,36 @@
+/**
+ * @file 小区公示列表接口
+ * @description Community notice list API
+ * POST /api/property-manage/community-manage/notice/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockCommunityNoticeData } from "./mock-data";
 
-/**
- * @description 小区公示列表 POST API
- * Community notice list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityNoticeListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<CommunityNoticeQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, noticeTitle, noticeType } = body;
+	const defaultParams: CommunityNoticeQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockCommunityNoticeData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockCommunityNoticeData, filters);
 
-	// 数据筛选
-	if (noticeTitle) {
-		filteredData = filteredData.filter((item) => item.noticeTitle.includes(noticeTitle));
-	}
-	if (noticeType) {
-		filteredData = filteredData.filter((item) => item.noticeType === noticeType);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<CommunityNoticeListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,7 +41,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityNoti
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
 

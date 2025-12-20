@@ -8,11 +8,12 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { h } from "vue";
 import { ElMessageBox, ElTag } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import type { PropertyRegisterFormProps, 产权登记表单_VO } from "./components/form";
+import type { PropertyRegisterFormProps } from "./components/form";
+import type { 产权登记表单_VO } from "./components/form";
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
 import { usePropertyRegisterListQuery } from "@/api/property-manage/community-manage/property-register";
@@ -49,18 +50,6 @@ const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
-
-/** 使用 TanStack Query 获取数据 */
-const {
-	tableData,
-	pureTableProps,
-	isFetching,
-	updateParams,
-	resetParams,
-	doFetch,
-	handlePageSizeChange,
-	handleCurrentPageChange,
-} = usePropertyRegisterListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -143,6 +132,18 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = usePropertyRegisterListQuery(plusSearchDefaultValues);
+
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -151,10 +152,7 @@ function handleReSearch() {
 
 /** 执行搜索 */
 function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	});
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 表格列配置 */
@@ -348,10 +346,6 @@ async function handleDelete(row: PropertyRegisterListItem) {
 		}
 	}
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
