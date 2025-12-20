@@ -10,8 +10,8 @@ definePage({
 
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { getRouteRank } from "@/router/rank";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
+
 import { defaultPureTableIndexColumn } from "@/config/constant";
 import { useI18n } from "vue-i18n";
 import {
