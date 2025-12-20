@@ -344,11 +344,11 @@ export * from "./constant";
 
 - 报告语言： 默认用简体中文。
 
-## 5. 执行 openspec 系列长任务时的注意事项
+## 6. 执行 openspec 系列长任务时的注意事项
 
 本项目使用 openspec 来制定长任务执行规范。
 
-### 5.1. 更新 openspec 的规范文件后应该及时运行校验命令，并根据校验反馈，使得 openspec 规范文件满足格式要求
+### 6.1. 更新 openspec 的规范文件后应该及时运行校验命令，并根据校验反馈，使得 openspec 规范文件满足格式要求
 
 比如你修改了 `migrate-static-data-to-nitro-query` 这款任务的规范文件后，你应该及时运行以下命令来检查文件是否满足规范：
 
@@ -362,7 +362,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
 openspec validate {任务名称} --strict
 ```
 
-### 5.2 执行长任务时的策略与注意事项
+### 6.2 执行长任务时的策略与注意事项
 
 1. **及时更新任务文件**： **必须要**及时更新对应任务的 `tasks.md` 任务进度文件。避免出现大批量完成任务后，没有更新进度文件的情况，带来严重的误解。
 2. 启动**多个子代理**分模块并行完成任务： 务必要启动多个在后台运行的子代理，同时完成 openspec 设定的一系列繁杂的任务。以便加快速度。你应该至少同时启用至少 4 个子代理。并根据情况，主动增加足够数量的子代理完成任务。
@@ -385,15 +385,15 @@ openspec validate {任务名称} --strict
    - 报告编写任务。
    - 进度文件更新与编写任务。
 
-## 6. 注意事项
+## 7. 注意事项
 
 1. 每次你完成更改时，都要主动运行类型检查命令。我们项目需要你去运行类型检查命令。需要你主动解决类型报错。
 
-## 7. 常用开发命令
+## 8. 常用开发命令
 
 这是一个用于 11comm 智慧社区 (Smart Community) 项目的 pnpm + Turbo monorepo。
 
-### 7.1. 构建命令
+### 8.1. 构建命令
 
 ```bash
 # 构建所有项目
@@ -414,7 +414,7 @@ pnpm -F @01s-11comm/admin build:staging
 pnpm -F @01s-11comm/admin docs:build
 ```
 
-### 7.2. 开发命令
+### 8.2. 开发命令
 
 ```bash
 # 以开发模式运行管理应用
@@ -423,7 +423,7 @@ pnpm -F @01s-11comm/admin dev
 cd apps/admin && pnpm dev
 ```
 
-### 7.3. 测试命令
+### 8.3. 测试命令
 
 ```bash
 # 使用UI运行测试
@@ -432,7 +432,7 @@ pnpm test
 pnpm -F @01s-11comm/admin test
 ```
 
-### 7.4. 代码检查和格式化
+### 8.4. 代码检查和格式化
 
 ```bash
 # 检查和格式化管理应用
@@ -447,7 +447,7 @@ pnpm -F @01s-11comm/admin lint:stylelint
 pnpm format
 ```
 
-### 7.5. 类型检查
+### 8.5. 类型检查
 
 ```bash
 # 对整个项目进行类型检查
@@ -476,9 +476,9 @@ pnpm -F @01s-11comm/type typecheck
 2. 在提交前运行类型检查命令
 3. 保持类型定义的准确性和一致性
 
-## 8. 项目架构
+## 9. 项目架构
 
-### 8.1. Monorepo 结构
+### 9.1. Monorepo 结构
 
 - `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
 - `apps/type/` - **新增**的业务类型库，集中管理所有共享类型定义
@@ -486,7 +486,7 @@ pnpm -F @01s-11comm/type typecheck
 - `examples/` - 示例应用（01s-origin, 10wms）
 - 根级别管理 monorepo 依赖和共享配置
 
-### 8.2. 管理应用架构 (`apps/admin/`)
+### 9.2. 管理应用架构 (`apps/admin/`)
 
 **技术栈：**
 
@@ -535,7 +535,7 @@ pnpm -F @01s-11comm/type typecheck
 - Vue i18n，在`locales/`中使用 YAML 区域设置文件
 - 支持中文（zh-CN）和英文（en）
 
-### 8.3. 关键技术和库
+### 9.3. 关键技术和库
 
 **必需学习（根据 technical-doc.md）：**
 
@@ -555,7 +555,7 @@ pnpm -F @01s-11comm/type typecheck
 - 基于模块的 API 组织
 - 组件驱动的 UI 开发
 
-## 9. 开发工作流
+## 10. 开发工作流
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
@@ -566,27 +566,27 @@ pnpm -F @01s-11comm/type typecheck
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 10. 获取技术栈对应的上下文
+## 11. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
 
-### 10.1. taskmaster-ai
+### 11.1. taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
 
-### 10.2. nitro
+### 11.2. nitro
 
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 10.2.1. 编写接口需要导入正确的模块
+#### 11.2.1. 编写接口需要导入正确的模块
 
 <!-- TODO: -->
 
-#### 10.2.2. 配置文件格式没有 vite 配置对象
+#### 11.2.2. 配置文件格式没有 vite 配置对象
 
 <!-- TODO: -->
