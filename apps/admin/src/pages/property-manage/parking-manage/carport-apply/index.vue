@@ -8,138 +8,27 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { transformI18n } from "@/plugins/i18n";
-
+import { useCarportApplyListQuery } from "@/api/property-manage/parking-manage/carport-apply";
 import { type CarportApplyFormProps, defaultForm } from "./components/form";
 import CarportApplyForm from "./components/form.vue";
-import type { CarportApplyListItem } from "@01s-11comm/type";
+import type { CarportApplyListItem, CarportApplyQueryParams } from "@01s-11comm/type";
 import { carBrandOptions, parkingSpaceStatusOptions } from "@01s-11comm/type";
 
 /** 表单组件实例 */
 const carportApplyFormInstance = ref<InstanceType<typeof CarportApplyForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<CarportApplyListItem[]>([]);
-
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "申请ID",
-		prop: "申请ID",
-		width: 120,
-	},
-	{
-		label: "车牌号",
-		prop: "车牌号",
-		width: 120,
-	},
-	{
-		label: "停车位",
-		prop: "停车位",
-		width: 120,
-	},
-	{
-		label: "汽车品牌",
-		prop: "汽车品牌",
-		width: 120,
-	},
-	{
-		label: "车辆类型",
-		prop: "车辆类型",
-		width: 120,
-	},
-	{
-		label: "颜色",
-		prop: "颜色",
-		width: 120,
-	},
-	{
-		label: "起租时间",
-		prop: "起租时间",
-		width: 120,
-	},
-	{
-		label: "结租时间",
-		prop: "结租时间",
-		width: 120,
-	},
-	{
-		label: "申请人",
-		prop: "申请人",
-		width: 120,
-	},
-	{
-		label: "手机号",
-		prop: "手机号",
-		width: 120,
-	},
-	{
-		label: "审核结果",
-		prop: "审核结果",
-		width: 120,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "车位申请",
-	columns: columns.value,
-});
+// 1. 表格搜索栏配置
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & {
-	/** 车牌号 License plate number */
-	licensePlate: string;
-	/** 汽车品牌 Car brand */
-	carBrand: string;
-	/** 手机号 Phone number */
-	phoneNumber: string;
-	/** 审核结果 Review result */
-	reviewResult: string;
-} = {
+const plusSearchModelRef: FieldValues & Partial<CarportApplyQueryParams> = {
 	licensePlate: "",
 	carBrand: "",
 	phoneNumber: "",
@@ -147,9 +36,34 @@ const plusSearchModelRef: FieldValues & {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useCarportApplyListQuery(plusSearchDefaultValues);
+
+// 3. 搜索函数(固定写法)
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
@@ -196,56 +110,78 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** TODO: 使用 TanStack Query Hook 替代 mockTableData */
-		/** 当前暂时使用空数组，后续接入真实API */
-		let filteredData: CarportApplyListItem[] = [];
+// 4. 表格列配置
+const columns = ref<TableColumnList>([
+	defaultPureTableIndexColumn,
+	{
+		label: "申请ID",
+		prop: "applicationId",
+		width: 120,
+	},
+	{
+		label: "车牌号",
+		prop: "licensePlate",
+		width: 120,
+	},
+	{
+		label: "停车位",
+		prop: "parkingSpace",
+		width: 120,
+	},
+	{
+		label: "汽车品牌",
+		prop: "carBrand",
+		width: 120,
+	},
+	{
+		label: "车辆类型",
+		prop: "vehicleType",
+		width: 120,
+	},
+	{
+		label: "颜色",
+		prop: "color",
+		width: 120,
+	},
+	{
+		label: "起租时间",
+		prop: "startLeaseTime",
+		width: 120,
+	},
+	{
+		label: "结租时间",
+		prop: "endLeaseTime",
+		width: 120,
+	},
+	{
+		label: "申请人",
+		prop: "applicant",
+		width: 120,
+	},
+	{
+		label: "手机号",
+		prop: "phoneNumber",
+		width: 120,
+	},
+	{
+		label: "审核结果",
+		prop: "reviewResult",
+		width: 120,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: () => transformI18n($t("common.table.operation")),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
 
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.licensePlate) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.licensePlate!));
-		}
-		if (plusSearchModel.value.carBrand) {
-			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.carBrand);
-		}
-		if (plusSearchModel.value.phoneNumber) {
-			filteredData = filteredData.filter((item) => item.name.includes(plusSearchModel.value.phoneNumber!));
-		}
-		if (plusSearchModel.value.reviewResult) {
-			filteredData = filteredData.filter((item) => item.status === plusSearchModel.value.reviewResult);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = ref<PureTableBarProps>({
+	title: "车位申请",
+	columns: columns.value,
+});
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -274,8 +210,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const carportApplyFormVO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				...row,
 			});
@@ -339,10 +275,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -354,7 +286,7 @@ onMounted(async () => {
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -367,13 +299,14 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-					<ElButton type="info" @click="openDialog({ mode: 'info', row })">
-						{{ transformI18n($t("common.buttons.info")) }}
-					</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>

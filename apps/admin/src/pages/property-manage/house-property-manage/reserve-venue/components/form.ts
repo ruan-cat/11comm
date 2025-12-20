@@ -12,8 +12,6 @@ export interface ReserveVenueFormProps {
 	defaultValues: ReserveVenueFormVO;
 }
 
-export type { ReserveVenueFormVO };
-
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ReserveVenueFormVO = {
 	reserver: "",
@@ -21,8 +19,8 @@ export const defaultForm: ReserveVenueFormVO = {
 	reservationTime: "",
 	startTime: "",
 	endTime: "",
-	venueType: "篮球馆",
-	reservationStatus: "待审核",
+	venueType: "会议室",
+	reservationStatus: "待预约",
 	numberOfUsers: 1,
 	remark: "",
 };

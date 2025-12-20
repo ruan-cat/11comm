@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { OwnersCommitteeProps, defaultForm } from "./form";
+import { OwnersCommitteeFormProps, defaultForm } from "./form";
+import type { OwnersCommitteeFormVO } from "@01s-11comm/type";
+import { genderOptions, ownersCommitteeStatusOptions } from "@01s-11comm/type";
 
-const props = defineProps<OwnersCommitteeProps>();
+const props = defineProps<OwnersCommitteeFormProps>();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnersCommitteeFormVO;
@@ -38,7 +40,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 姓名
 	{
 		label: "姓名",
-		prop: "姓名",
+		prop: "fullName",
 		valueType: "input",
 		required: true,
 	},
@@ -46,16 +48,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 性别
 	{
 		label: "性别",
-		prop: "性别",
+		prop: "gender",
 		valueType: "select",
-		options: 性别选项,
+		options: genderOptions,
 		required: true,
 	},
 
 	// 电话
 	{
 		label: "电话",
-		prop: "电话",
+		prop: "phone",
 		valueType: "input",
 		required: true,
 	},
@@ -63,63 +65,63 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 身份证号码
 	{
 		label: "身份证号码",
-		prop: "身份证号码",
+		prop: "idNumber",
 		valueType: "input",
 		required: true,
 	},
 	// 住址
 	{
 		label: "住址",
-		prop: "住址",
+		prop: "address",
 		valueType: "input",
 		required: true,
 	},
 	// 职位
 	{
 		label: "职位",
-		prop: "职位",
+		prop: "position",
 		valueType: "input",
 		required: true,
 	},
 	// 岗位
 	{
 		label: "岗位",
-		prop: "岗位",
+		prop: "post",
 		valueType: "input",
 		required: true,
 	},
 	// 岗位描述
 	{
 		label: "岗位描述",
-		prop: "岗位描述",
+		prop: "postDescription",
 		valueType: "input",
 	},
 	// 届期
 	{
 		label: "届期",
-		prop: "届期",
+		prop: "term",
 		valueType: "input",
 		required: true,
 	},
 	// 任期
 	{
 		label: "任期",
-		prop: "任期",
+		prop: "tenure",
 		valueType: "input",
 		required: true,
 	},
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态选项,
+		options: ownersCommitteeStatusOptions,
 		required: true,
 	},
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
@@ -129,21 +131,21 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	姓名: [
+	fullName: [
 		{
 			required: true,
 			message: "请输入姓名",
 			trigger: "blur",
 		},
 	],
-	性别: [
+	gender: [
 		{
 			required: true,
 			message: "请选择性别",
 			trigger: "change",
 		},
 	],
-	电话: [
+	phone: [
 		{
 			required: true,
 			message: "请输入电话",
@@ -155,7 +157,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	身份证号码: [
+	idNumber: [
 		{
 			required: true,
 			message: "请输入身份证号码",
@@ -167,42 +169,42 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	住址: [
+	address: [
 		{
 			required: true,
 			message: "请输入住址",
 			trigger: "blur",
 		},
 	],
-	职位: [
+	position: [
 		{
 			required: true,
 			message: "请输入职位",
 			trigger: "blur",
 		},
 	],
-	岗位: [
+	post: [
 		{
 			required: true,
 			message: "请输入岗位",
 			trigger: "blur",
 		},
 	],
-	届期: [
+	term: [
 		{
 			required: true,
 			message: "请输入届期",
 			trigger: "blur",
 		},
 	],
-	任期: [
+	tenure: [
 		{
 			required: true,
 			message: "请输入任期",
 			trigger: "blur",
 		},
 	],
-	状态: [
+	status: [
 		{
 			required: true,
 			message: "请选择状态",

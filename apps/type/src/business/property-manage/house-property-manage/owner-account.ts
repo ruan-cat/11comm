@@ -114,30 +114,3 @@ export const paymentMethodOptions: OptionsType = [
 	{ label: "现金支付", value: "现金支付" },
 	{ label: "刷卡支付", value: "刷卡支付" },
 ];
-
-/**
- * @description 业主账户表单默认值
- * Owner account form default values
- */
-export const ownerAccountDefaultForm: 业主账户表单_VO = {
-	accountType: "通用账户",
-	ownerPhone: "",
-	ownerName: "",
-	prepaidAmount: "",
-	paymentMethod: "现金",
-	remark: "",
-};
-
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 业主账户列表数据（兼容性中文名称）
- * OwnerAccount list item (for compatibility with Chinese names)
- */
-export type OwnerAccountListItem_中文 = OwnerAccountListItem;
-
-/**
- * @description 业主账户列表查询参数（兼容性中文名称）
- * OwnerAccount query parameters (for compatibility with Chinese names)
- */
-export type OwnerAccountQueryParams_中文 = OwnerAccountQueryParams;

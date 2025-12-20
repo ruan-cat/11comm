@@ -90,21 +90,6 @@ export const invoiceTitleTypeOptions: OptionsType = [
 	{ label: "电子普通发票", value: "电子普通发票" },
 ];
 
-/**
- * @description 发票抬头表单默认值
- * Invoice title form default values
- */
-export const invoiceTitleDefaultForm: InvoiceTitleFormVO = {
-	ownerName: "",
-	invoiceType: "",
-	invoiceTitle: "",
-	taxpayerId: "",
-	address: "",
-	phone: "",
-	bankAccount: "",
-	remark: "",
-};
-
 // ==================== 兼容旧中文名称 ====================
 
 /**
@@ -118,12 +103,6 @@ export type 发票抬头_列表数据 = InvoiceTitleListItem;
  * InvoiceTitle query parameters (for compatibility with Chinese names)
  */
 export type 发票抬头_列表查询_VO = InvoiceTitleQueryParams;
-
-/**
- * @description 发票抬头表单VO（兼容性中文名称）
- * Invoice title form VO (for compatibility with Chinese names)
- */
-export type 发票抬头表单_VO = InvoiceTitleFormVO;
 
 /**
  * @description 发票类型选项（兼容性中文名称）
