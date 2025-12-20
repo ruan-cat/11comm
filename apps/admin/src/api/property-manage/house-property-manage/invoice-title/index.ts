@@ -1,5 +1,5 @@
 /**
- * @file invoice-title API Hook
+ * @file 发票抬头 API Hook
  * @description InvoiceTitle API hooks using TanStack Query
  */
 
@@ -13,9 +13,8 @@ const API_URL = "/api/property-manage/house-property-manage/invoice-title/list";
 const QUERY_KEY_PREFIX = "invoiceTitle";
 
 /**
- * invoice-title列表查询 Hook
+ * 发票抬头列表查询 Hook
  * InvoiceTitle list query hook
- * @param initialParams - Initial query parameters for filtering the list
  */
 export function useInvoiceTitleListQuery(initialParams: Partial<InvoiceTitleQueryParams>) {
 	return useListQuery<InvoiceTitleListItem, InvoiceTitleQueryParams>({
