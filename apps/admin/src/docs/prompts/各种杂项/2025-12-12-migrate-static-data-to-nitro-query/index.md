@@ -438,3 +438,15 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 ### 016 <!-- TODO: --> 更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况
 
 [016](./016.md)
+
+### 017 <!-- TODO: 等待细化完善 --> 对`类型项目`的代码组织方式，和代码写法，做出细致要求
+
+1. 全量导出的写法。
+2. 不允许逐个罗列的导出。
+3. 用 index.ts 来统一作为导出入口。
+4. 遇到类型错误时，重复的内容导出时，请通过删减重复项，或设计单一来源的方式解决。
+
+修改文件：
+
+- `.claude\agents\fix-type-error.md`
+- `openspec\changes\migrate-static-data-to-nitro-query\specs\type-system\spec.md`
