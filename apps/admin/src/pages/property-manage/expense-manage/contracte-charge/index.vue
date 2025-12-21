@@ -186,9 +186,9 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 
 	/** 业务对象 */
 	const 业务对象: ContracteChargeFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					feeType: "物业费", // Default or map from row
 					chargeItem: row?.contractName || "",
@@ -196,7 +196,7 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 					billingStartTime: row?.startTime || "",
 					billingEndTime: row?.endTime || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContracteChargeFormProps = {

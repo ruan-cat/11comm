@@ -12,7 +12,7 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type HouseChargeFormProps, defaultForm, type 房屋收费_VO } from "./components/form";
+import { type HouseChargeFormProps, defaultForm, type HouseChargeFormVO } from "./components/form";
 import HouseChargeForm from "./components/form.vue";
 
 // 从类型库导入正确的类型
@@ -167,33 +167,33 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}房屋收费`;
 
 	/** 业务对象 */
-	const 房屋收费表单_VO = isAdd.value
+	const houseChargeFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? ({
 					...defaultForm,
-					费用类型: "物业费",
-					收费项目: row?.name || "",
-					费用标识: "周期性费用",
-					付费类型: "预付费",
-					"缴费周期(单位:月)": "1",
-					"预付期(单位:天)": "30",
-					单位: "元/平方米·月",
-					账户抵扣: "是",
-					手机缴费: "是",
-					进位方式: "四舍五入",
-					保留小数位: "2位",
-					状态: row?.status || "启用",
+					feeType: "物业费",
+					feeItem: row?.name || "",
+					feeFlag: "周期性费用",
+					paymentType: "预付费",
+					"paymentCycleMonths": "1",
+					"advancePaymentDays": "30",
+					unit: "元/平方米·月",
+					accountDeduction: "是",
+					mobilePayment: "是",
+					roundingMode: "四舍五入",
+					reservedDecimalPlaces: "2位",
+					status: row?.status || "启用",
 					计算公式: "",
 					计费单价: "",
 					固定费用: "",
-				} as 房屋收费_VO)
+				} as HouseChargeFormVO)
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: HouseChargeFormProps = {
-		form: 房屋收费表单_VO,
-		defaultValues: 房屋收费表单_VO,
+		form: houseChargeFormVO,
+		defaultValues: houseChargeFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

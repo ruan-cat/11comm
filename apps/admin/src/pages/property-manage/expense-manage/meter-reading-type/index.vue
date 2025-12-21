@@ -173,14 +173,14 @@ function openDialog(params: { mode: Mode; row?: MeterReadingTypeListItem }) {
 
 	/** 业务对象 */
 	const 业务对象: MeterReadingTypeFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					name: row?.name || "",
 					description: row?.description || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: MeterTypeFormProps = {
@@ -274,6 +274,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

@@ -8,37 +8,37 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolItemFormProps, defaultForm } from "./components/form";
 import PatrolItemForm from "./components/form.vue";
-/** 表格数据 */
-const tableData = ref<巡检项目_列表数据[]>([]);
+import { useItemListQuery } from "@/api/property-manage/patrol-manage/item";
+import type { ItemListItem, ItemQueryParams } from "@01s-11comm/type";
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "itemId",
 		width: 120,
 	},
 	{
 		label: "巡检项目",
-		prop: "巡检项目",
+		prop: "itemName",
 		width: 120,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 120,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		width: 120,
 	},
 	{
@@ -49,21 +49,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -76,16 +61,39 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 巡检项目_列表查询_VO = {
-	项目编号: "",
-	巡检项目: "",
+const plusSearchModelRef: FieldValues & Partial<ItemQueryParams> = {
+	itemId: "",
+	itemName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useItemListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
@@ -94,12 +102,12 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_inspectionManage.inspection.projectNumber")),
-		prop: "项目编号",
+		prop: "itemId",
 		valueType: "input",
 	},
 	{
 		label: transformI18n($t("propertyManage_inspectionManage.inspection.inspectionItems")),
-		prop: "巡检项目",
+		prop: "itemName",
 		valueType: "input",
 	},
 ]);
@@ -112,62 +120,6 @@ const plusSearchProps = ref<PlusSearchProps>({
 	labelPosition: "right",
 	showNumber: 3,
 });
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.项目编号) {
-			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.项目编号!));
-		}
-		if (plusSearchModel.value.巡检项目) {
-			filteredData = filteredData.filter((item) => item.巡检项目.includes(plusSearchModel.value.巡检项目!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -186,7 +138,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -194,17 +146,17 @@ function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
 	const title = `${modeText.value}巡检项目`;
 
 	/** 业务对象 */
-	const 巡检项目表单_VO: 巡检项目表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+	const patrolItemFormVO = isAdd.value
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				...row,
 			});
 
 	/** 表单组件需要的props */
 	const formProps: PatrolItemFormProps = {
-		form: 巡检项目表单_VO,
-		defaultValues: 巡检项目表单_VO,
+		form: patrolItemFormVO,
+		defaultValues: patrolItemFormVO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -252,18 +204,12 @@ function openDialog(params: { mode: Mode; row?: 巡检项目_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
 					}
 				},
 			},
 		],
 	});
 }
-
-/** 生命周期 */
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -276,7 +222,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -289,6 +235,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

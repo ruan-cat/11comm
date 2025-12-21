@@ -218,9 +218,9 @@ function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 
 	/** 业务对象 */
 	const 业务对象: DiscountApplyFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					house: row?.house || "",
 					applicationType: (row?.applicationType as DiscountApplyFormVO["applicationType"]) || "空置房",
@@ -232,7 +232,7 @@ function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 					description: row?.discountName || "",
 					material: "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: DiscountApplyFormProps = {
@@ -332,6 +332,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

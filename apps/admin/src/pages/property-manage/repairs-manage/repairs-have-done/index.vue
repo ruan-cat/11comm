@@ -8,14 +8,14 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RepairsHaveDoneFormProps, defaultForm, type 报修已办表单_VO } from "./components/form";
 import RepairsHaveDoneForm from "./components/form.vue";
+import { useRepairsHaveDoneListQuery } from "@/api/property-manage/repairs-manage/repairs-have-done";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -23,8 +23,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const repairsHaveDoneFormInstance = ref<InstanceType<typeof RepairsHaveDoneForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<报修已办_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -78,32 +76,7 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -126,10 +99,22 @@ const plusSearchModelRef: FieldValues & 报修已办_列表查询_VO = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useRepairsHaveDoneListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -190,51 +175,16 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = mockTableData;
-
-		if (plusSearchModel.value.维修类型) {
-			filteredData = filteredData.filter((item) => item.维修类型 === plusSearchModel.value.维修类型);
-		}
-		if (plusSearchModel.value.报修人) {
-			filteredData = filteredData.filter((item) => item.报修人.includes(plusSearchModel.value.报修人!));
-		}
-		if (plusSearchModel.value.报修电话) {
-			filteredData = filteredData.filter((item) => item.联系方式.includes(plusSearchModel.value.报修电话!));
-		}
-		if (plusSearchModel.value.报修类型) {
-			filteredData = filteredData.filter((item) => item.报修类型 === plusSearchModel.value.报修类型);
-		}
-		if (plusSearchModel.value.报修状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.报修状态);
-		}
-		if (plusSearchModel.value.工单编号) {
-			filteredData = filteredData.filter((item) => item.工单编号.includes(plusSearchModel.value.工单编号!));
-		}
-
-		pagination.value.total = filteredData.length;
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
-}
 
 /** 测试异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -256,9 +206,9 @@ function openDialog(params: { mode: Mode; row?: 报修已办_列表数据 }) {
 
 	/** 业务对象 */
 	const formValue: 报修已办表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					工单编号: row?.工单编号 || "",
 					位置: row?.位置 || "",
@@ -270,8 +220,8 @@ function openDialog(params: { mode: Mode; row?: 报修已办_列表数据 }) {
 					状态: row?.状态 || "",
 					备注: row?.备注 || "",
 				})
-			: cloneDeep(defaultForm);
-	const defaultValues = cloneDeep(formValue);
+			: structuredClone(defaultForm);
+	const defaultValues = structuredClone(formValue);
 
 	/** 表单组件需要的props */
 	const formProps: RepairsHaveDoneFormProps = {
@@ -320,7 +270,7 @@ function openDialog(params: { mode: Mode; row?: 报修已办_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
+						await doFetch();
 					}
 				},
 			},
@@ -346,12 +296,10 @@ function handleView(row: 报修已办_列表数据) {
 /** 删除按钮点击事件 */
 async function handleDelete(row: 报修已办_列表数据) {
 	consola.log("删除", row);
-	await loadTableData();
+	await doFetch();
 }
 
-onMounted(async () => {
-	await loadTableData();
-});
+
 </script>
 
 <template>
@@ -377,6 +325,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

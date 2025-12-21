@@ -8,73 +8,73 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPlanFormProps, defaultForm } from "./components/form";
 import PatrolPlanForm from "./components/form.vue";
-
-/** 表格数据 */
-const tableData = ref<巡检计划_列表数据[]>([]);
+import { usePlanListQuery } from "@/api/property-manage/patrol-manage/plan";
+import type { PlanListItem, PlanQueryParams } from "@01s-11comm/type";
+import { planStatusOptions } from "@01s-11comm/type";
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "计划名称",
-		prop: "计划名称",
+		prop: "planName",
 		width: 120,
 	},
 	{
 		label: "计划路线",
-		prop: "计划路线",
+		prop: "routeName",
 		width: 120,
 	},
 	{
 		label: "计划周期",
-		prop: "计划周期",
+		prop: "planCycle",
 		width: 120,
 	},
 	{
 		label: "签到方式",
-		prop: "签到方式",
+		prop: "checkInMethod",
 		width: 120,
 	},
 	{
 		label: "日期范围",
-		prop: "日期范围",
+		prop: "dateRange",
 		width: 120,
 	},
 	{
 		label: "时间范围",
-		prop: "时间范围",
+		prop: "timeRange",
 		width: 120,
 	},
 	{
 		label: "任务提前(分钟)",
-		prop: "任务提前(分钟)",
+		prop: "taskAdvanceMinutes",
 		width: 120,
 	},
 	{
 		label: "制定人",
-		prop: "制定人",
+		prop: "creator",
 		width: 120,
 	},
 	{
 		label: "制定时间",
-		prop: "制定时间",
+		prop: "createTime",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
 		label: "巡检人员",
-		prop: "巡检人员",
+		prop: "patrolPerson",
 		width: 120,
 	},
 	{
@@ -85,69 +85,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.计划ID) {
-			filteredData = filteredData.filter((item) => item.计划名称.includes(plusSearchModel.value.计划ID!));
-		}
-		if (plusSearchModel.value.计划名称) {
-			filteredData = filteredData.filter((item) => item.计划名称.includes(plusSearchModel.value.计划名称!));
-		}
-		if (plusSearchModel.value.巡检人) {
-			filteredData = filteredData.filter((item) => item.巡检人员.includes(plusSearchModel.value.巡检人!));
-		}
-		if (plusSearchModel.value.巡检状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.巡检状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -160,18 +97,41 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 巡检计划_列表查询_VO = {
-	计划ID: "",
-	计划名称: "",
-	巡检人: "",
-	巡检状态: "",
+const plusSearchModelRef: FieldValues & Partial<PlanQueryParams> = {
+	planId: "",
+	planName: "",
+	patrolPerson: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = usePlanListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
@@ -180,24 +140,24 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "计划ID",
-		prop: "计划ID",
+		prop: "planId",
 		valueType: "input",
 	},
 	{
 		label: "计划名称",
-		prop: "计划名称",
+		prop: "planName",
 		valueType: "input",
 	},
 	{
 		label: "巡检人",
-		prop: "巡检人",
+		prop: "patrolPerson",
 		valueType: "input",
 	},
 	{
 		label: "状态",
-		prop: "巡检状态",
+		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: planStatusOptions,
 	},
 ]);
 
@@ -209,19 +169,6 @@ const plusSearchProps = ref<PlusSearchProps>({
 	labelPosition: "right",
 	showNumber: 3,
 });
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -240,7 +187,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: PlanListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -248,17 +195,17 @@ function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
 	const title = `${modeText.value}巡检计划`;
 
 	/** 业务对象 */
-	const 巡检计划表单_VO: 巡检计划表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+	const patrolPlanFormVO = isAdd.value
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				...row,
 			});
 
 	/** 表单组件需要的props */
 	const formProps: PatrolPlanFormProps = {
-		form: 巡检计划表单_VO,
-		defaultValues: 巡检计划表单_VO,
+		form: patrolPlanFormVO,
+		defaultValues: patrolPlanFormVO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -312,10 +259,6 @@ function openDialog(params: { mode: Mode; row?: 巡检计划_列表数据 }) {
 		],
 	});
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -328,7 +271,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -341,6 +284,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

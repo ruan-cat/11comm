@@ -183,16 +183,16 @@ function openDialog(params: { mode: Mode; row?: DiscountSettingListItem }) {
 
 	/** 业务对象 */
 	const 业务对象: 折扣设置表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					discountName: row?.discountName || "",
 					discountType: row?.discountType || "百分比折扣",
 					rule: row?.ruleName || "", // Assuming ruleName maps to 'rule' in form? Check form definition. Form has 'rule' and 'ruleName'? No, form has '规则' and '规则'.
 					description: row?.rule || "", // Assuming 'rule' maps to 'description' in form?
 				})
-			: cloneDeep(defaultForm); // Fallback
+			: structuredClone(defaultForm); // Fallback
 
 	/** 表单组件需要的props */
 	const formProps: DiscountSettingFormProps = {
@@ -286,6 +286,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

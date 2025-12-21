@@ -149,15 +149,15 @@ function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 
 	/** 业务对象 */
 	const formData = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					receiptId: row?.id || "",
 					receiptNumber: row?.name || "",
 					paymentTime: row?.createTime || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ReprintVoucherFormProps = {

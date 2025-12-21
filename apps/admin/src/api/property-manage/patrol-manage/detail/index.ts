@@ -4,7 +4,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { DetailListItem, DetailQueryParams } from "@01s-11comm/type";
+import type { PatrolDetailListItem, PatrolDetailQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/property-manage/patrol-manage/detail/list";
@@ -17,8 +17,8 @@ const QUERY_KEY_PREFIX = "detail";
  * Detail list query hook
  * @param initialParams - Initial query parameters for filtering the list
  */
-export function useDetailListQuery(initialParams: Partial<DetailQueryParams>) {
-	return useListQuery<DetailListItem, DetailQueryParams>({
+export function useDetailListQuery(initialParams: Partial<PatrolDetailQueryParams>) {
+	return useListQuery<PatrolDetailListItem, PatrolDetailQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 		initialParams,

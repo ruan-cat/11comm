@@ -11,7 +11,7 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
+
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type {
@@ -22,6 +22,7 @@ import type {
 } from "@01s-11comm/type";
 import { defaultArrearsDetailsForm } from "@01s-11comm/type";
 import ArrearsDetailsForm from "./components/form.vue";
+import { useArrearsDetailsListQuery } from "@/api/property-manage/report-manage/arrears-details-list";
 
 const smallTotal = ref<number>(0);
 const largeTotal = ref<number>(0);
@@ -31,9 +32,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const arrearsDetailsFormInstance = ref<InstanceType<typeof ArrearsDetailsForm> | null>(null);
-
-/** 表格数据 */
-const tableData = ref<ArrearsDetailsListListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -97,33 +95,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 // 表格操作栏组件配置
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "欠费明细表",
@@ -135,7 +106,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & ArrearsDetailsListQueryParams = {
+const plusSearchModelRef: FieldValues & Partial<ArrearsDetailsListQueryParams> = {
 	name: "",
 	status: "",
 	pageIndex: 1,
@@ -143,10 +114,22 @@ const plusSearchModelRef: FieldValues & ArrearsDetailsListQueryParams = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useArrearsDetailsListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -212,33 +195,17 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		// TODO: 使用 TanStack Query Hook 替换 mockTableData
-		// 这里应该调用 API 获取真实数据
-
-		pagination.value.total = tableData.value.length;
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		pureTableProps.value.data = tableData.value.slice(startIndex, endIndex);
-
-		smallTotal.value = tableData.value.reduce((sum, item) => sum + Number(item.arrearsAmount || 0), 0);
-		largeTotal.value = smallTotal.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
+
 
 /** 测试异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -265,9 +232,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const formValue: ArrearsDetailsFormVO = isAdd.value
-		? cloneDeep(defaultArrearsDetailsForm)
+		? structuredClone(defaultArrearsDetailsForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultArrearsDetailsForm,
 					feeNumber: row?.feeNumber || "",
 					roomNumber: row?.roomNumber || "",
@@ -280,8 +247,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					arrearsDuration: row?.arrearsDuration || "",
 					arrearsAmount: row?.arrearsAmount || "",
 				})
-			: cloneDeep(defaultArrearsDetailsForm);
-	const defaultValues = cloneDeep(formValue);
+			: structuredClone(defaultArrearsDetailsForm);
+	const defaultValues = structuredClone(formValue);
 
 	/** 表单组件需要的props */
 	const formProps: ArrearsDetailsFormProps = {
@@ -356,12 +323,8 @@ function handleView(row: ArrearsDetailsListListItem) {
 /** 删除按钮点击事件 */
 async function handleDelete(row: ArrearsDetailsListListItem) {
 	consola.log("删除", row);
-	await loadTableData();
+	// TODO: 调用删除API并刷新列表
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -374,7 +337,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -387,6 +350,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

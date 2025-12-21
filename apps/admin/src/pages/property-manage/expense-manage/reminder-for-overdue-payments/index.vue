@@ -177,14 +177,14 @@ function openDialog(params: { mode: Mode; row?: ReminderForOverduePaymentsListIt
 
 		/** 业务对象 */
 		const formData = isAdd.value
-			? cloneDeep(defaultForm)
+			? structuredClone(defaultForm)
 			: isEdit.value
-				? cloneDeep({
+				? structuredClone({
 						...defaultForm,
 						ownerName: row?.name || "",
 						reminderStatus: row?.status || "",
 					})
-				: cloneDeep({
+				: structuredClone({
 						...defaultForm,
 						ownerName: row?.name || "",
 						reminderStatus: row?.status || "",

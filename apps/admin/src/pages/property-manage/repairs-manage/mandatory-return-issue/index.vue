@@ -8,14 +8,14 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type MandatoryReturnIssueFormProps, defaultForm, type 强制回单表单_VO } from "./components/form";
 import MandatoryReturnIssueForm from "./components/form.vue";
+import { useMandatoryReturnIssueListQuery } from "@/api/property-manage/repairs-manage/mandatory-return-issue";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -23,8 +23,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const mandatoryReturnIssueFormInstance = ref<InstanceType<typeof MandatoryReturnIssueForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<强制回单_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -78,33 +76,7 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -124,10 +96,22 @@ const plusSearchModelRef: FieldValues & 强制回单_列表查询_VO = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useMandatoryReturnIssueListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -162,51 +146,16 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.报修类型) {
-			filteredData = filteredData.filter((item) => item.报修类型.includes(plusSearchModel.value.报修类型!));
-		}
-		if (plusSearchModel.value.报修人) {
-			filteredData = filteredData.filter((item) => item.报修人.includes(plusSearchModel.value.报修人!));
-		}
-		if (plusSearchModel.value.报修电话) {
-			filteredData = filteredData.filter((item) => item.联系方式.includes(plusSearchModel.value.报修电话!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
 
 /** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -228,8 +177,8 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 
 	/** 业务对象 */
 	const 业务对象: 强制回单表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				工单编号: row?.工单编号 || "",
 				位置: row?.位置 || "",
@@ -241,7 +190,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 				状态: row?.状态 || "",
 				备注: row?.备注 || "",
 			});
-	const defaultValues = cloneDeep(业务对象);
+	const defaultValues = structuredClone(业务对象);
 
 	/** 表单组件需要的props */
 	const formProps: MandatoryReturnIssueFormProps = {
@@ -290,7 +239,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
+						await doFetch();
 					}
 				},
 			},
@@ -323,9 +272,7 @@ async function handleMandatoryReturn(row: 强制回单_列表数据) {
 	// TODO: 实现强制回单逻辑
 }
 
-onMounted(async () => {
-	await loadTableData();
-});
+
 </script>
 
 <template>
@@ -352,6 +299,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

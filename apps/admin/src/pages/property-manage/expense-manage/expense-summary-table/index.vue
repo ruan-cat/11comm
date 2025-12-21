@@ -189,17 +189,17 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const expenseSummaryTableFormVO: ExpenseSummaryTableFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? {
+			? structuredClone({
 					...defaultForm,
 					time: row?.time || "",
 					expenseItemId: row?.expenseItemId || "",
 					expenseItemName: (row?.expenseItemName as ExpenseItemNameType) || "物业费",
 					receivableAmount: row?.receivableAmount || "",
 					actualAmount: row?.actualAmount || "",
-				}
-			: cloneDeep(defaultForm);
+				})
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ExpenseSummaryTableFormProps = {
@@ -289,6 +289,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

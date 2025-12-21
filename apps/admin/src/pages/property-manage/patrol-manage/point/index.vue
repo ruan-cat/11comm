@@ -8,73 +8,18 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPointFormProps, defaultForm, type PatrolPointFormVO } from "./components/form";
-import { type PatrolPointListData, type PatrolPointListQueryVO } from "@01s-11comm/type";
+import { type PointListItem, type PointQueryParams } from "@01s-11comm/type";
 import PatrolPointForm from "./components/form.vue";
+import { usePointListQuery } from "@/api/property-manage/patrol-manage/point";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
-
-/** 模拟数据 */
-const mockTableData: PatrolPointListData[] = [
-	{
-		id: "1",
-		name: "巡逻点1",
-		status: "正常",
-		createTime: "2024-01-01 08:00:00",
-		updateTime: "2024-01-01 18:00:00",
-		remark: "正常巡逻点",
-		taskDetailId: "TD001",
-		patrolPointName: "东门巡逻点",
-		patrolPlanName: "日常巡逻计划",
-		patrolRouteName: "东区巡逻路线",
-		patrolPersonTime: "08:00-18:00",
-		patrolPointTime: "09:00-17:00",
-		actualPatrolTime: "2024-01-01 09:30:00",
-		actualCheckInStatus: "已签到",
-		planPatrolPerson: "张三",
-		actualPatrolPerson: "张三",
-		patrolMethod: "二维码",
-		taskStatus: "已完成",
-		patrolPointStatus: "正常",
-		patrolSituation: "正常",
-		patrolPhotos: "photo1.jpg,photo2.jpg",
-		locationInfo: "东门入口处",
-	},
-	{
-		id: "2",
-		name: "巡逻点2",
-		status: "正常",
-		createTime: "2024-01-01 08:00:00",
-		updateTime: "2024-01-01 18:00:00",
-		remark: "正常巡逻点",
-		taskDetailId: "TD002",
-		patrolPointName: "西门巡逻点",
-		patrolPlanName: "日常巡逻计划",
-		patrolRouteName: "西区巡逻路线",
-		patrolPersonTime: "08:00-18:00",
-		patrolPointTime: "10:00-16:00",
-		actualPatrolTime: "2024-01-01 10:15:00",
-		actualCheckInStatus: "迟到",
-		planPatrolPerson: "李四",
-		actualPatrolPerson: "李四",
-		patrolMethod: "NFC",
-		taskStatus: "执行中",
-		patrolPointStatus: "正常",
-		patrolSituation: "发现问题",
-		patrolPhotos: "photo3.jpg",
-		locationInfo: "西门入口处",
-	},
-];
-
-/** 表格数据 */
-const tableData = ref<PatrolPointListData[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -173,30 +118,45 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & PatrolPointListQueryVO = {
+const plusSearchModelRef: FieldValues & Partial<PointQueryParams> = {
 	patrolPerson: "",
 	patrolStartTime: "",
 	patrolEndTime: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = usePointListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
@@ -239,14 +199,6 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "巡检点",
@@ -255,69 +207,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 
 /** 表单组件实例 */
 const patrolPointFormInstance = ref<InstanceType<typeof PatrolPointForm> | null>(null);
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.patrolPerson) {
-			filteredData = filteredData.filter(
-				(item) =>
-					item.planPatrolPerson.includes(plusSearchModel.value.patrolPerson!) ||
-					item.actualPatrolPerson.includes(plusSearchModel.value.patrolPerson!),
-			);
-		}
-		if (plusSearchModel.value.patrolStartTime) {
-			filteredData = filteredData.filter((item) => item.createTime >= plusSearchModel.value.patrolStartTime!);
-		}
-		if (plusSearchModel.value.patrolEndTime) {
-			filteredData = filteredData.filter((item) => item.createTime <= plusSearchModel.value.patrolEndTime!);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -330,14 +219,14 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
+function openDialog(params: { mode: Mode; row?: PointListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
 	/** 业务对象 */
 	const patrolPointFormData: PatrolPointFormVO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				...row,
 			});
@@ -396,17 +285,12 @@ function openDialog(params: { mode: Mode; row?: PatrolPointListData }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
 					}
 				},
 			},
 		],
 	});
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -419,7 +303,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -432,6 +316,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

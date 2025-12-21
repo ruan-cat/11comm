@@ -1,4 +1,4 @@
-import type { OptionsType } from "../../../common";
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 // ==================== 联合类型定义 ====================
 
@@ -32,7 +32,6 @@ export interface PatrolDetailFormVO {
 	/** 巡检情况 / Patrol situation */
 	patrolSituation: string;
 }
-
 
 // ==================== 原有类型定义 ====================
 
@@ -92,8 +91,6 @@ export const defaultPatrolDetailForm: PatrolDetailFormVO = {
 	patrolSituation: "",
 };
 
-
-
 // ==================== 列表相关类型 ====================
 
 /**
@@ -139,7 +136,7 @@ export interface PatrolDetailListItem extends DetailListItem {
  * @description 巡检明细列表查询参数
  * Patrol detail list query parameters
  */
-export interface PatrolDetailQueryParams {
+export interface PatrolDetailQueryParams extends BaseListQueryParams {
 	/** 巡检人 / Patrol person */
 	patrolPerson?: string;
 	/** 巡检开始时间 / Patrol start time */
@@ -153,4 +150,3 @@ export interface PatrolDetailQueryParams {
 	/** 巡检点状态 / Patrol point status */
 	patrolPointStatus?: PatrolPointStatusType | string;
 }
-

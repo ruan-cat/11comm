@@ -157,7 +157,7 @@ function openDialog(params: { mode: Mode; row?: VehicleChargeListItem }) {
 	const title = `${modeText.value}车辆收费`;
 
 	/** 业务对象 */
-	const 业务对象: VehicleChargeFormVO = isAdd.value
+	const vehicleChargeFormVO: VehicleChargeFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
@@ -174,8 +174,8 @@ function openDialog(params: { mode: Mode; row?: VehicleChargeListItem }) {
 
 	/** 表单组件需要的props */
 	const formProps: VehicleChargeFormProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: vehicleChargeFormVO,
+		defaultValues: vehicleChargeFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

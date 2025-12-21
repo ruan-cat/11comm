@@ -59,10 +59,10 @@ export interface HandingBusinessQueryParams {
 }
 
 /**
- * @description 费用类型选项
- * Fee type options
+ * @description 费用类型选项（费用分类）
+ * Fee category options
  */
-export const feeTypeOptions: OptionsType = [
+export const feeCategoryOptions: OptionsType = [
 	{ label: "周期费用", value: "周期费用" },
 	{ label: "临时费用", value: "临时费用" },
 	{ label: "押金", value: "押金" },

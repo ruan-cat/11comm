@@ -8,63 +8,60 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
-import consola from "consola";
-import { useToggle } from "@vueuse/core";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-
+import type { SiteManagementListItem, SiteManagementQueryParams, SiteManagementFormVO } from "@01s-11comm/type";
+import { siteManagementStatusOptions } from "@01s-11comm/type";
 import { type SiteManagementFormProps, defaultForm } from "./components/form";
 import SiteManagementForm from "./components/form.vue";
-const siteManagementFormInstance = ref<InstanceType<typeof SiteManagementForm> | null>(null);
+import { useSiteManagementListQuery } from "@/api/property-manage/house-property-manage/site-management";
 
-/** 表格数据 */
-const tableData = ref<场地管理_列表数据[]>([]);
+const siteManagementFormInstance = ref<InstanceType<typeof SiteManagementForm> | null>(null);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "idNumber",
 		width: 120,
 	},
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		width: 120,
 	},
 	{
 		label: "开场时间",
-		prop: "开场时间",
+		prop: "openingTime",
 		width: 120,
 	},
 	{
 		label: "关场时间",
-		prop: "关场时间",
+		prop: "closingTime",
 		width: 120,
 	},
 	{
 		label: "每小时费用",
-		prop: "每小时费用",
+		prop: "hourlyFee",
 		width: 120,
 	},
 	{
 		label: "管理员",
-		prop: "管理员",
+		prop: "administrator",
 		width: 120,
 	},
 	{
 		label: "管理员电话",
-		prop: "管理员电话",
-		width: 120,
+		prop: "administratorPhone",
+		width: 150,
 	},
 	{
 		label: "状态",
-		prop: "状态",
-		width: 120,
+		prop: "status",
+		width: 100,
 	},
-
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: () => transformI18n($t("common.table.operation")),
@@ -73,33 +70,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -112,69 +82,68 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 场地管理_列表查询_VO = {
-	场地编号: "",
-	场地类型: "",
-	场地状态: "",
+const plusSearchModelRef: FieldValues & Partial<SiteManagementQueryParams> = {
+	idNumber: "",
+	name: "",
+	administrator: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useSiteManagementListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 场地编号
 	{
 		label: "场地编号",
-		prop: "场地编号",
+		prop: "idNumber",
 		valueType: "input",
 	},
-
-	// 场地类型
 	{
-		label: "场地类型",
-		prop: "场地类型",
-		valueType: "select",
-		options: 场地类型Options,
+		label: "场地名称",
+		prop: "name",
+		valueType: "input",
 	},
-
-	// 场地状态
 	{
-		label: "场地状态",
-		prop: "场地状态",
-		valueType: "select",
-		options: 场地状态Options,
+		label: "管理员",
+		prop: "administrator",
+		valueType: "input",
 	},
-
-	// 装修申请开始时间
-	// {
-	// 	label: transformI18n($t("propertyManage_communityManage.house-decoration.startTimeForDecorationApplication")),
-	// 	prop: "装修申请开始时间",
-	// 	valueType: "date-picker",
-	// 	fieldProps: {
-	// 		type: "date",
-	// 		valueFormat: "YYYY-MM-DD",
-	// 		format: "YYYY-MM-DD",
-	// 	},
-	// },
-
-	// 装修申请结束时间
-	// {
-	// 	label: transformI18n($t("propertyManage_communityManage.house-decoration.endTimeForDecorationApplication")),
-	// 	prop: "装修申请结束时间",
-	// 	valueType: "date-picker",
-	// 	fieldProps: {
-	// 		type: "date",
-	// 		valueFormat: "YYYY-MM-DD",
-	// 		format: "YYYY-MM-DD",
-	// 	},
-	// },
+	{
+		label: "状态",
+		prop: "status",
+		valueType: "select",
+		options: siteManagementStatusOptions,
+	},
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -186,61 +155,10 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
+/** 模式控制 */
+const { modeText, setMode, isAdd } = useMode();
 
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.场地编号) {
-			filteredData = filteredData.filter((item) => item.编号.includes(plusSearchModel.value.场地编号!));
-		}
-		if (plusSearchModel.value.场地类型) {
-			filteredData = filteredData.filter((item) => item.名称 === plusSearchModel.value.场地类型);
-		}
-		if (plusSearchModel.value.场地状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.场地状态);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 场地管理_列表数据;
-}
-
-const { mode, modeText, setMode, isAdd } = useMode();
-
+/** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
@@ -248,6 +166,12 @@ async function testAsync() {
 	await sleep(1300);
 	setIsLoadingT(false);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+}
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: SiteManagementListItem;
 }
 
 /** 打开弹框 */
@@ -258,31 +182,38 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}场地管理`;
 
 	/** 业务对象 */
-	const 场地管理表单_VO: 场地管理_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+	const formData: SiteManagementFormVO = isAdd.value
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
-				...row,
+				idNumber: row?.idNumber || "",
+				name: row?.name || "",
+				openingTime: row?.openingTime || "",
+				closingTime: row?.closingTime || "",
+				hourlyFee: row?.hourlyFee || "",
+				administrator: row?.administrator || "",
+				administratorPhone: row?.administratorPhone || "",
+				status: row?.status || "",
 			});
 
 	/** 表单组件需要的props */
-	const props: SiteManagementFormProps = {
-		form: 场地管理表单_VO,
-		defaultValues: 场地管理表单_VO,
+	const formProps: SiteManagementFormProps = {
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(SiteManagementForm, {
 				ref: siteManagementFormInstance,
-				...props,
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -304,7 +235,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					siteManagementFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
@@ -313,23 +243,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await siteManagementFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
 		],
 	});
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -342,7 +268,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -355,6 +281,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

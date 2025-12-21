@@ -8,10 +8,9 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
@@ -26,6 +25,7 @@ import {
 	type 回访设置类型,
 } from "./components/form";
 import RepairsSettingForm from "./components/form.vue";
+import { useRepairsSettingListQuery } from "@/api/property-manage/repairs-manage/repairs-setting";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -33,8 +33,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const repairsSettingFormInstance = ref<InstanceType<typeof RepairsSettingForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<报修设置_列表数据[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -88,32 +86,7 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -143,10 +116,22 @@ const plusSearchModelRef = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useRepairsSettingListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -202,47 +187,15 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = mockTableData;
-
-		if (plusSearchModel.value.类型名称) {
-			filteredData = filteredData.filter((item) => item.类型名称.includes(plusSearchModel.value.类型名称!));
-		}
-		if (plusSearchModel.value.派单方式) {
-			filteredData = filteredData.filter((item) => item.派单方式 === plusSearchModel.value.派单方式);
-		}
-		if (plusSearchModel.value.报修设置类型) {
-			filteredData = filteredData.filter((item) => item.报修设置类型 === plusSearchModel.value.报修设置类型);
-		}
-		if (plusSearchModel.value.区域) {
-			filteredData = filteredData.filter((item) => item.区域 === plusSearchModel.value.区域);
-		}
-		if (plusSearchModel.value.是否回访) {
-			filteredData = filteredData.filter((item) => item.是否回访 === plusSearchModel.value.是否回访);
-		}
-
-		pagination.value.total = filteredData.length;
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
-}
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -277,7 +230,7 @@ function handleView(row: 报修设置_列表数据) {
 /** 删除按钮点击事件 */
 async function handleDelete(row: 报修设置_列表数据) {
 	consola.log("删除", row);
-	await loadTableData();
+	await doFetch();
 }
 
 /** 打开弹框 */
@@ -289,9 +242,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const formValue: 报修设置表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					类型名称: row?.类型名称 || "",
 					设置类型: (row?.报修设置类型 as 报修设置类型 | undefined) || defaultForm.设置类型,
@@ -302,8 +255,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					回访设置: (row?.是否回访 as 回访设置类型 | undefined) || defaultForm.回访设置,
 					说明: row?.备注 || "",
 				})
-			: cloneDeep(defaultForm);
-	const defaultValues = cloneDeep(formValue);
+			: structuredClone(defaultForm);
+	const defaultValues = structuredClone(formValue);
 
 	/** 表单组件需要的props */
 	const formProps: RepairsSettingFormProps = {
@@ -380,6 +333,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

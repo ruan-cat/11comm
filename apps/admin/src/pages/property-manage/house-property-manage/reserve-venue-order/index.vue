@@ -8,86 +8,89 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import consola from "consola";
-import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
-
+import type {
+	ReserveVenueOrderListItem,
+	ReserveVenueOrderQueryParams,
+	ReserveVenueOrderFormVO,
+} from "@01s-11comm/type";
+import { reserveVenueOrderStatusOptions, reservedVenueOptions } from "@01s-11comm/type";
 import { type ReserveVenueOrderFormProps, defaultForm } from "./components/form";
 import ReserveVenueOrderForm from "./components/form.vue";
-const reserveVenueOrderFormInstance = ref<InstanceType<typeof ReserveVenueOrderForm> | null>(null);
+import { useReserveVenueOrderListQuery } from "@/api/property-manage/house-property-manage/reserve-venue-order";
 
-/** 表格数据 */
-const tableData = ref<场地预约订单_列表数据[]>([]);
+const reserveVenueOrderFormInstance = ref<InstanceType<typeof ReserveVenueOrderForm> | null>(null);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "订单编号",
-		prop: "订单编号",
+		prop: "orderNumber",
 		width: 120,
 	},
 	{
 		label: "场馆",
-		prop: "场馆",
+		prop: "venue",
 		width: 120,
 	},
 	{
 		label: "场地",
-		prop: "场地",
+		prop: "site",
 		width: 120,
 	},
 	{
 		label: "预约人",
-		prop: "预约人",
+		prop: "reserver",
 		width: 120,
 	},
 	{
 		label: "预约电话",
-		prop: "预约电话",
+		prop: "reservationPhone",
 		width: 120,
 	},
 	{
 		label: "预约日期",
-		prop: "预约日期",
+		prop: "reservationDate",
 		width: 120,
 	},
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "reservationTime",
 		width: 120,
 	},
 	{
 		label: "应收金额",
-		prop: "应收金额",
+		prop: "receivableAmount",
 		width: 120,
 	},
 	{
 		label: "实收金额",
-		prop: "实收金额",
+		prop: "receivedAmount",
 		width: 120,
 	},
 	{
 		label: "支付方式",
-		prop: "支付方式",
+		prop: "paymentMethod",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
-		width: 120,
+		prop: "createTime",
+		width: 160,
 	},
 	{
 		label: "备注",
-		prop: "备注",
-		width: 120,
+		prop: "remark",
+		width: 150,
+		showOverflowTooltip: true,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -97,32 +100,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -135,90 +112,74 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 场地预约订单_列表查询_VO = {
-	预约时间: "",
-	预约人: "",
-	预约电话: "",
-	选择状态: "",
-	预约场地: "",
+const plusSearchModelRef: FieldValues & Partial<ReserveVenueOrderQueryParams> = {
+	orderNumber: "",
+	venue: "",
+	reserver: "",
+	reservationPhone: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useReserveVenueOrderListQuery(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 预约时间
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-order.fieldTime")),
-		prop: "预约时间",
-		valueType: "date-picker",
-		fieldProps: {
-			type: "datetime",
-			valueFormat: "YYYY-MM-DD HH:mm:ss",
-			format: "YYYY-MM-DD HH:mm:ss",
-		},
-	},
-
-	// 预约人
-	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-order.fieldMan")),
-		prop: "预约人",
+		label: "订单编号",
+		prop: "orderNumber",
 		valueType: "input",
 	},
-
-	// 预约电话
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-order.fieldPhone")),
-		prop: "预约电话",
+		label: "场馆",
+		prop: "venue",
 		valueType: "input",
 	},
-
-	// 预约状态
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-order.orderState")),
-		prop: "选择状态",
-		valueType: "select",
-		options: 预约状态Options,
+		label: "预约人",
+		prop: "reserver",
+		valueType: "input",
 	},
-
-	// 预约场地
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.field-order.fieldType")),
-		prop: "预约场地",
-		valueType: "select",
-		options: 预约场地Options,
+		label: "预约电话",
+		prop: "reservationPhone",
+		valueType: "input",
 	},
-
-	// 装修申请开始时间
-	// {
-	// 	label: transformI18n($t("propertyManage_communityManage.house-decoration.startTimeForDecorationApplication")),
-	// 	prop: "装修申请开始时间",
-	// 	valueType: "date-picker",
-	// 	fieldProps: {
-	// 		type: "date",
-	// 		valueFormat: "YYYY-MM-DD",
-	// 		format: "YYYY-MM-DD",
-	// 	},
-	// },
-
-	// 装修申请结束时间
-	// {
-	// 	label: transformI18n($t("propertyManage_communityManage.house-decoration.endTimeForDecorationApplication")),
-	// 	prop: "装修申请结束时间",
-	// 	valueType: "date-picker",
-	// 	fieldProps: {
-	// 		type: "date",
-	// 		valueFormat: "YYYY-MM-DD",
-	// 		format: "YYYY-MM-DD",
-	// 	},
-	// },
+	{
+		label: "状态",
+		prop: "status",
+		valueType: "select",
+		options: reserveVenueOrderStatusOptions,
+	},
 ]);
 
 /** 表格搜索栏组件 配置  */
@@ -230,66 +191,10 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
+/** 模式控制 */
+const { modeText, setMode, isAdd } = useMode();
 
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.预约时间) {
-			filteredData = filteredData.filter((item) => item.预约日期.includes(plusSearchModel.value.预约时间!));
-		}
-		if (plusSearchModel.value.预约人) {
-			filteredData = filteredData.filter((item) => item.预约人.includes(plusSearchModel.value.预约人!));
-		}
-		if (plusSearchModel.value.预约电话) {
-			filteredData = filteredData.filter((item) => item.预约电话.includes(plusSearchModel.value.预约电话!));
-		}
-		if (plusSearchModel.value.选择状态) {
-			filteredData = filteredData.filter((item) => item.状态 === plusSearchModel.value.选择状态);
-		}
-		if (plusSearchModel.value.预约场地) {
-			filteredData = filteredData.filter((item) => item.场地 === plusSearchModel.value.预约场地);
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: 场地预约订单_列表数据;
-}
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-
+/** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
@@ -297,6 +202,12 @@ async function testAsync() {
 	await sleep(1300);
 	setIsLoadingT(false);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+}
+
+/** 打开弹框 参数 */
+interface OpenDialogParams {
+	mode: Mode;
+	row?: ReserveVenueOrderListItem;
 }
 
 /** 打开弹框 */
@@ -307,31 +218,43 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}场地预约订单`;
 
 	/** 业务对象 */
-	const 场地预约订单表单_VO: 场地预约订单_VO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+	const formData: ReserveVenueOrderFormVO = isAdd.value
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
-				...row,
+				orderNumber: row?.orderNumber || "",
+				venue: row?.venue || "",
+				site: row?.site || "",
+				reserver: row?.reserver || "",
+				reservationPhone: row?.reservationPhone || "",
+				reservationDate: row?.reservationDate || "",
+				reservationTime: row?.reservationTime || "",
+				receivableAmount: row?.receivableAmount || "",
+				receivedAmount: row?.receivedAmount || "",
+				paymentMethod: row?.paymentMethod || "",
+				status: row?.status || "",
+				createTime: row?.createTime || "",
+				remark: row?.remark || "",
 			});
 
 	/** 表单组件需要的props */
-	const props: ReserveVenueOrderFormProps = {
-		form: 场地预约订单表单_VO,
-		defaultValues: 场地预约订单表单_VO,
+	const formProps: ReserveVenueOrderFormProps = {
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
 		title,
-		props,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(ReserveVenueOrderForm, {
 				ref: reserveVenueOrderFormInstance,
-				...props,
+				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
@@ -353,7 +276,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					reserveVenueOrderFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
@@ -362,23 +284,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await reserveVenueOrderFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
 		],
 	});
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -391,7 +309,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -404,6 +322,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

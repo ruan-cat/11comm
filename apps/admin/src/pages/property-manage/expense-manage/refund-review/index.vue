@@ -203,9 +203,9 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 
 	/** 业务对象 */
 	const formData: RefundReviewFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					refundOrderNumber: row?.refundOrderNumber || "",
 					paymentOrderNumber: row?.paymentOrderNumber || "",
@@ -220,7 +220,7 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 					auditor: row?.auditor || "",
 					auditRemark: "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: RefundReviewFormProps = {
