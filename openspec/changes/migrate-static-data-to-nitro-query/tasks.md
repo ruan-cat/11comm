@@ -1713,15 +1713,15 @@
 
 ### 总体进度
 
-- [ ] settingManage: 0/12 (0%)
+- [x] settingManage: 12/12 (100%)
 - [ ] devTeam: 0/8 (0%)
 - [ ] operationTeam: 0/12 (0%)
 - [ ] propertyManage: 0/68 (0%)
-- **总计**: 0/100 (0%)
+- **总计**: 12/100 (12%)
 
 ### 里程碑
 
-- [ ] Milestone 1: 完成 settingManage 模块（12 个路由）
+- [x] Milestone 1: 完成 settingManage 模块（12 个路由）
 - [ ] Milestone 2: 完成 devTeam 模块（8 个路由）
 - [ ] Milestone 3: 完成 operationTeam 模块（12 个路由）
 - [ ] Milestone 4: 完成 propertyManage 模块（68 个路由）
@@ -1736,12 +1736,3 @@
 - [specs/data-fetching/spec.md](./specs/data-fetching/spec.md) - 数据获取规范
 - [specs/list-page-pattern/spec.md](./specs/list-page-pattern/spec.md) - 列表页模式规范
 - [specs/common-business-options/spec.md](./specs/common-business-options/spec.md) - 公共业务选项规范
-
-## 说明
-
-本任务清单由脚本自动生成，包含所有 100 个三级路由的完整任务清单。
-
-**生成时间**：2025/12/17 23:30:54
-**脚本位置**：`scripts/generate-tasks.ts`
-
-如需更新任务清单，请运行：`pnpm tsx scripts/generate-tasks.ts`
