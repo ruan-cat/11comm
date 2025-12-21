@@ -10,6 +10,8 @@ export default {
 	// 提供明显的文件名
 	output: "CHANGELOG.md",
 
+	// TODO: changelogogenUseTypes in @ruan-cat/commitlint-config
+
 	/** @see https://github.com/viapip/ozon-tracker/blob/master/changelogen.config.json */
 	types: Object.fromEntries(
 		commitTypes
