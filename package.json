@@ -7,7 +7,7 @@
 	"description": "01s-11comm智慧社区 monorepo根目录",
 	"main": "index.js",
 	"type": "module",
-	"packageManager": "pnpm@10.26.1+sha512.664074abc367d2c9324fdc18037097ce0a8f126034160f709928e9e9f95d98714347044e5c3164d65bd5da6c59c6be362b107546292a8eecb7999196e5ce58fa",
+	"packageManager": "pnpm@10.26.1",
 	"engines": {
 		"node": ">=22.14.0"
 	},
@@ -44,7 +44,7 @@
 		"@plus-pro-components/resolver": "^0.0.3",
 		"@prettier/plugin-oxc": "^0.1.3",
 		"@ruan-cat/claude-notifier": "^0.9.0",
-		"@ruan-cat/commitlint-config": "^4.8.0",
+		"@ruan-cat/commitlint-config": "^4.9.1",
 		"@ruan-cat/domains": "^1.7.0",
 		"@ruan-cat/generate-code-workspace": "^0.7.2",
 		"@ruan-cat/taze-config": "^1.0.2",
@@ -70,7 +70,7 @@
 		"cz-git": "^1.12.0",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-config-turbo": "^2.6.3",
+		"eslint-config-turbo": "^2.7.1",
 		"eslint-plugin-prettier": "^5.5.4",
 		"js-yaml": "^4.1.1",
 		"lodash-es": "^4.17.22",
@@ -81,13 +81,13 @@
 		"rimraf": "^6.1.2",
 		"taze": "^19.9.2",
 		"tsx": "^4.21.0",
-		"turbo": "^2.6.3",
+		"turbo": "^2.7.1",
 		"typescript": "^5.9.3",
 		"vercel": "^46.1.1",
 		"vite": "7.1.12",
 		"vitest": "^3.2.4",
 		"vue": "^3.5.26",
-		"vue-tsc": "^3.1.8",
+		"vue-tsc": "^3.2.0",
 		"vuepress": "2.0.0-rc.18"
 	},
 	"dependencies": {
