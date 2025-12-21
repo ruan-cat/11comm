@@ -313,7 +313,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="info">
 					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.discountType")) }}

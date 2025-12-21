@@ -346,7 +346,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleOperationClick('批量审核', {} as PaymentReviewListItem)">
 					{{ transformI18n($t("批量审核")) }}

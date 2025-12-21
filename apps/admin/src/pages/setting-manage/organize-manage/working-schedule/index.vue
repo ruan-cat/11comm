@@ -327,7 +327,7 @@ onMounted(async () => {
 		/>
 
 		<!-- 排班表格区域 -->
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="info" @click="handleExportSchedule"> 导出 </ElButton>
 				<ElButton type="primary" @click="handleAddSchedule">

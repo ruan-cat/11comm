@@ -327,7 +327,7 @@ onMounted(async () => {
 				/>
 
 				<!-- 员工表格区域 -->
-				<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+				<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 					<template #buttons>
 						<ElButton type="info" @click="handleExportDoc"> 文档 </ElButton>
 						<ElButton type="primary" @click="handleAddEmployee">

@@ -316,7 +316,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	<section class="index-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("propertyManage_repairsManage.repairs.add")) }}

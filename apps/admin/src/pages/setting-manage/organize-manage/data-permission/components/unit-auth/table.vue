@@ -187,7 +187,7 @@ function handleDelete(row: UnitAuthItem) {
 
 <template>
 	<section class="unit-auth-table-root">
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openUnitAuthDialog"> 关联单元 </ElButton>
 			</template>

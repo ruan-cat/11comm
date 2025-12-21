@@ -293,7 +293,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary"> 欠费缴费 </ElButton>
 				<ElButton type="info"> 导出欠费清单 </ElButton>

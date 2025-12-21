@@ -160,7 +160,7 @@ onMounted(async () => {});
 	<section class="staff-relation-table-root">
 		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<!--
           TODO: 先完成 单元授权 tab列表页的表格多选弹框功能 然后再复用代码 实现此处的业务逻辑

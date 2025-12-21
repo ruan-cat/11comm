@@ -274,7 +274,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		<!-- {{ plusSearchModel }} -->
 
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{

@@ -280,7 +280,7 @@ async function handleMandatoryReturn(row: 强制回单_列表数据) {
 		/>
 
 		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}
