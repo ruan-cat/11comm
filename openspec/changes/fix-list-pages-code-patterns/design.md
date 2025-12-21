@@ -45,6 +45,14 @@
 
 **决策**: 使用固定的代码模板,对每个列表页执行标准化修复
 
+**重要前提**: 本次修复必须遵守来自 `migrate-static-data-to-nitro-query` 任务的严格执行规范，避免删改多余内容。详细规范请参考 `specs/list-pages/spec.md` 的"列表页改造的严格执行规范"章节。
+
+**核心原则**:
+1. **职责范围限定**: 只进行变量名、类型名替换和特定代码删除，不删改业务逻辑
+2. **保留现有逻辑**: 弹框函数、表单初始化、按钮配置等业务逻辑必须完整保留
+3. **类型安全优先**: 使用全局类型，按照 `fix-type-error` 规范处理类型问题
+4. **位置和格式不变**: `definePage` 宏位置、代码格式不允许修改
+
 **修复清单**(每个文件):
 
 1. **修复 API Hook 调用**:
@@ -407,3 +415,103 @@ function handleSearch() {
 | 使用 `cloneDeep`            | 改为 `structuredClone`                       |
 | 导入 `test-data.ts`         | 删除导入和文件                               |
 | 手动实现分页函数            | 删除,使用 Hook 返回的 `handlePageSizeChange` |
+
+---
+
+## 严格执行规范说明
+
+本节详细说明在执行列表页修复时必须遵守的严格规范，这些规范来自 `migrate-static-data-to-nitro-query` 任务的实践总结。
+
+### 职责范围界定
+
+**允许修改的内容**:
+1. 中文变量名 -> 英文变量名
+2. 中文类型名 -> 英文类型名（来自 `@01s-11comm/type`）
+3. `cloneDeep` -> `structuredClone`
+4. 删除 `test-data.ts` 导入和 `loadTableData` 函数
+5. 删除手动定义的 `pagination`、`pureTableProps`、分页函数
+
+**严格禁止修改的内容**:
+1. 弹框函数逻辑（`useMode`、`testAsync` 等）
+2. 弹框实例创建逻辑
+3. 表单 `props` 和 `defaultValues` 的定义
+4. 按钮配置对象的业务逻辑（取消、重置、提交按钮的完整配置）
+5. 表单字段的默认值和回退逻辑（`row?.field || defaultForm.field`）
+6. `definePage` 宏的位置（必须在所有 import 之上）
+7. 全局类型的使用（`TableColumnList`、`PureTableBarProps`）
+8. 全局函数的导入（不要导入 `getRouteRank`）
+
+### 关键注意事项
+
+#### 1. 弹框处理规范
+
+**错误做法（严格禁止）**:
+- 删除表单实例声明
+- 删除 `props` 和 `defaultValues` 变量
+- 将 `defaultForm` 改成空对象 `{}`
+- 删除表单字段的回退逻辑
+- 删除按钮配置中的任何业务逻辑（如 `formComputed`、`useDoBeforeClose`、重置按钮）
+
+**正确做法**:
+- 只替换变量名和类型名
+- 保留所有业务逻辑结构
+- 保留完整的按钮配置（取消、重置、提交三个按钮）
+- 保留 `defaultForm` 的使用和展开
+- 保留字段回退逻辑
+
+#### 2. 类型处理规范
+
+**错误做法（严格禁止）**:
+- 手动导入 `TableColumns` 类型替换 `TableColumnList`
+- 删除 `PureTableBarProps` 类型约束
+- 导入全局函数 `getRouteRank`
+- 胡乱修改类型定义
+
+**正确做法**:
+- 使用全局类型 `TableColumnList` 和 `PureTableBarProps`
+- 按照 `fix-type-error` 代理的规范处理类型错误
+- 从 `@01s-11comm/type` 导入业务类型
+- 保持全局函数和全局类型的使用方式不变
+
+#### 3. 代码格式规范
+
+**错误做法（严格禁止）**:
+- 将 `definePage` 宏移动到 import 语句下方
+- 修改 `definePage` 宏的内容
+- 改变变量声明的顺序（`plusSearchModelRef` -> `plusSearchDefaultValues` -> `plusSearchModel` 必须在 API Hook 之前）
+
+**正确做法**:
+- 保持 `definePage` 宏在文件最上方
+- 保持搜索表单变量的声明顺序
+- 保持代码注释和格式
+
+### 修复验证清单
+
+每个文件修复后，必须通过以下验证：
+
+1. ✅ 保留了弹框函数逻辑（`useMode`、`testAsync`）
+2. ✅ 保留了弹框实例声明（`{Form}Instance`）
+3. ✅ 保留了 `props` 和 `defaultValues` 变量
+4. ✅ 保留了 `defaultForm` 的使用和展开
+5. ✅ 保留了三个按钮的完整配置
+6. ✅ `definePage` 宏在所有 import 之上
+7. ✅ 使用全局类型 `TableColumnList` 和 `PureTableBarProps`
+8. ✅ 未导入全局函数 `getRouteRank`
+9. ✅ 只进行了变量名、类型名替换和特定代码删除
+10. ✅ 未删减任何业务逻辑
+
+### 常见错误案例
+
+详细的错误案例和正确示例请参考 `specs/list-pages/spec.md` 的"列表页改造的严格执行规范"章节。
+
+**特别注意**:
+- 不要"添油加醋"：不要添加本来没有的代码
+- 不要"画蛇添足"：不要修改不属于职责范围的代码
+- 不要"自作主张"：严格按照规范执行，不要自己发挥
+
+### 参考规范文档
+
+- 详细规范: `specs/list-pages/spec.md` - "列表页改造的严格执行规范"章节
+- 类型错误处理: `.claude/agents/fix-type-error.md`
+- 迁移指南: `openspec/changes/migrate-static-data-to-nitro-query/specs/migration-guide.md` Step 5
+- 列表页规范: `openspec/changes/migrate-static-data-to-nitro-query/specs/list-page-pattern/spec.md`
