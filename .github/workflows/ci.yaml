@@ -37,7 +37,6 @@ jobs:
         run: |
           node -v
           pnpm -v
-          vc -v
           turbo --version
 
       - name: pnpm全局检查依赖包
