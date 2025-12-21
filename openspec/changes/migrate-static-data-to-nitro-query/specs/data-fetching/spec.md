@@ -1,5 +1,26 @@
 # 数据获取规范 (TanStack Query)
 
+## 优先级说明
+
+本规范中使用以下优先级标记：
+
+- **[CRITICAL]**: 核心功能必需，违反会导致系统完全无法工作
+- **[IMPORTANT]**: 重要功能，违反会导致功能异常或性能问题
+
+各 Requirement 的优先级：
+
+| Requirement | 优先级 | 说明 |
+|:----------:|:------:|:-----|
+| 业务专用查询 Hook 必须提供 initialParams 参数 | [CRITICAL] | 无法传递初始参数会破坏 Hook 封装性 |
+| API Hook 返回固定的变量和函数 | [CRITICAL] | 违反会导致列表页无法正常工作 |
+| 列表页使用 TanStack Query Hook 的标准模式 | [CRITICAL] | 标准模式是数据获取的核心架构 |
+| 搜索功能固定写法 | [CRITICAL] | 搜索是列表页的核心功能 |
+| 分页功能固定写法 | [IMPORTANT] | 影响用户体验和数据加载 |
+| Loading 状态必须使用 isFetching | [IMPORTANT] | 影响加载状态的准确性 |
+| 表格配置必须使用 Hook 返回的 pureTableProps | [IMPORTANT] | 简化配置，减少重复代码 |
+
+---
+
 ## 快速导航
 
 **完整迁移指南**: 请查看 [migration-guide.md](../migration-guide.md#step-4-创建前端-api-hook-10分钟)
@@ -34,7 +55,7 @@ export const 状态选项 = statusOptions;
 
 ## ADDED Requirements
 
-### Requirement: 业务专用查询 Hook 必须提供 initialParams 参数
+### Requirement: 业务专用查询 Hook 必须提供 initialParams 参数 [CRITICAL]
 
 每个列表页 MUST 提供专用的 TanStack Query Hook,并且 **MUST** 提供 `initialParams` 必填参数:
 
@@ -108,7 +129,7 @@ export function usePaymentReviewListQuery() {
 
 ---
 
-### Requirement: API Hook 返回固定的变量和函数
+### Requirement: API Hook 返回固定的变量和函数 [CRITICAL]
 
 业务专用的 API Hook **MUST** 返回以下固定的变量和函数,不允许返回其他内容:
 
@@ -144,32 +165,9 @@ const {
 - **AND** 只允许导出这 8 个变量/函数
 - **AND** 不允许导出 `pageIndex`、`pageSize`、`total` 等手动管理的变量
 
-#### Scenario: 禁止手动管理分页变量
-
-**❌ 错误示例 - 手动管理分页**:
-
-```typescript
-// ❌ 错误: 导出手动管理的变量
-const { tableData, total, pageIndex, pageSize, isLoading, queryParams } = usePaymentReviewListQuery();
-
-// ❌ 错误: 手动定义 pagination
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-```
-
-**问题分析**:
-
-1. 破坏了 Hook 的封装性
-2. 需要手动定义 pagination 和 pureTableProps
-3. 增加维护成本
-
 ---
 
-### Requirement: 列表页使用 TanStack Query Hook 的标准模式
+### Requirement: 列表页使用 TanStack Query Hook 的标准模式 [CRITICAL]
 
 列表页 MUST 使用以下标准模式调用 API Hook:
 
@@ -224,7 +222,7 @@ const {
 
 ---
 
-### Requirement: 搜索功能固定写法
+### Requirement: 搜索功能固定写法 [CRITICAL]
 
 列表页的搜索功能 MUST 使用以下固定写法:
 
@@ -254,26 +252,9 @@ function handleSearch() {
 - **AND** 必须使用 `structuredClone` 而不是 `cloneDeep`
 - **AND** 必须调用 `resetParams()` 和 `updateParams()`
 
-#### Scenario: 禁止手动调用 loadTableData
-
-**❌ 错误示例 - 手动加载数据**:
-
-```typescript
-// ❌ 错误: 调用手动定义的 loadTableData
-function handleSearch() {
-	await loadTableData();
-}
-```
-
-**问题分析**:
-
-1. 违反了 TanStack Query 的自动查询机制
-2. 需要手动管理 loading 状态
-3. 无法利用缓存和自动重试
-
 ---
 
-### Requirement: 分页功能固定写法
+### Requirement: 分页功能固定写法 [IMPORTANT]
 
 列表页的分页功能 MUST 使用 Hook 返回的固定函数:
 
@@ -303,30 +284,9 @@ function handleSearch() {
 - **AND** 必须使用 Hook 返回的函数
 - **AND** 不允许手动实现分页逻辑
 
-#### Scenario: 禁止手动实现分页函数
-
-**❌ 错误示例 - 手动分页**:
-
-```typescript
-// ❌ 错误: 手动实现分页函数
-function handlePageSizeChange(newPageSize: number) {
-	pageSize.value = newPageSize;
-}
-
-function handleCurrentPageChange(currentPage: number) {
-	pageIndex.value = currentPage;
-}
-```
-
-**问题分析**:
-
-1. 破坏了 Hook 的封装性
-2. 需要手动管理 pageIndex 和 pageSize
-3. 无法自动触发查询
-
 ---
 
-### Requirement: Loading 状态必须使用 isFetching
+### Requirement: Loading 状态必须使用 isFetching [IMPORTANT]
 
 列表页 MUST 使用 `isFetching` 显示加载状态:
 
@@ -348,34 +308,9 @@ function handleCurrentPageChange(currentPage: number) {
 
 - **AND** 使用 `isFetching` 而不是 `isLoading`
 
-#### Scenario: 禁止手动管理 loading
-
-**❌ 错误示例 - 手动 loading**:
-
-```typescript
-// ❌ 错误: 手动管理 loading
-const loading = ref(false);
-
-async function loadTableData() {
-	loading.value = true;
-	try {
-		// 加载数据
-	} finally {
-		loading.value = false;
-	}
-}
-```
-
-```vue
-<!-- ❌ 错误: 使用手动 loading -->
-<template>
-	<PureTable :loading="loading" />
-</template>
-```
-
 ---
 
-### Requirement: 表格配置必须使用 Hook 返回的 pureTableProps
+### Requirement: 表格配置必须使用 Hook 返回的 pureTableProps [IMPORTANT]
 
 列表页 MUST 直接使用 Hook 返回的 `pureTableProps`,不允许手动定义:
 
@@ -400,29 +335,6 @@ const { pureTableProps, isFetching } = useConfigCenterListQuery(plusSearchDefaul
 ```
 
 - **AND** 直接使用 `:="pureTableProps"` 展开所有属性
-
-#### Scenario: 禁止手动定义 pureTableProps
-
-**❌ 错误示例 - 手动定义**:
-
-```typescript
-// ❌ 错误: 手动定义 pagination
-const pagination = computed<PaginationProps>(() => ({
-	...defaultPagination,
-	pageSize: pageSize.value,
-	currentPage: pageIndex.value,
-	total: total.value,
-}));
-
-// ❌ 错误: 手动定义 pureTableProps
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-	loading: isLoading.value,
-});
-```
 
 ---
 

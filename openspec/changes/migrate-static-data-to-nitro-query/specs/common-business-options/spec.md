@@ -1,16 +1,22 @@
 ## ADDED Requirements
 
+**优先级说明:**
+
+- **[CRITICAL]** - 必须完成的关键任务，直接影响系统功能和数据正确性
+- **[IMPORTANT]** - 重要任务，影响代码质量和可维护性，必须完成
+- **[NICE-TO-HAVE]** - 改进性任务，完成后提升开发体验，可根据时间安排
+
 **CRITICAL**: 在实施公共业务选项相关任务时，必须严格按照以下顺序执行，不允许跳步。
 
 **执行顺序:**
 
-1. **Step 1**: 公共业务下拉选择数组集中管理（识别公共选项）
-2. **Step 2**: business-options.ts 文件结构（创建公共选项文件）
-3. **Step 3**: 业务类型文件使用公共选项（类型文件集成）
-4. **Step 4**: Admin 项目使用公共选项（Admin项目集成）
-5. **Step 5**: 公共选项迁移验证（迁移验证）
-6. **Step 6**: 迁移文档记录（文档记录）
-7. **Step 7**: 后续新增公共选项流程（流程规范）
+1. **Step 1 [IMPORTANT]**: 公共业务下拉选择数组集中管理（识别公共选项）
+2. **Step 2 [IMPORTANT]**: business-options.ts 文件结构（创建公共选项文件）
+3. **Step 3 [IMPORTANT]**: 业务类型文件使用公共选项（类型文件集成）
+4. **Step 4 [IMPORTANT]**: Admin 项目使用公共选项（Admin项目集成）
+5. **Step 5 [CRITICAL]**: 公共选项迁移验证（迁移验证）
+6. **Step 6 [NICE-TO-HAVE]**: 迁移文档记录（文档记录）
+7. **Step 7 [NICE-TO-HAVE]**: 后续新增公共选项流程（流程规范）
 
 **步骤依赖关系:**
 
@@ -27,7 +33,7 @@
 
 ---
 
-### Requirement: 公共业务下拉选择数组集中管理 (Step 1)
+### Requirement: 公共业务下拉选择数组集中管理 (Step 1) [IMPORTANT]
 
 系统 SHALL 将跨模块、跨项目通用的业务下拉选择数组统一整合到 `apps/type/src/common/business-options.ts` 文件内，避免在多个业务类型文件中重复定义相同的选项数组。
 
@@ -59,17 +65,9 @@
 - **THEN** 判定为公共选项，应迁移到 `business-options.ts`
 - **AND** 理由：跨多个子模块使用，内容一致，语义通用
 
-#### Scenario: 排除模块专有选项
-
-- **GIVEN** 某个选项数组仅在单个业务模块中使用
-- **OR** 虽然在多处使用，但不同地方的选项内容存在差异
-- **WHEN** 评估是否应该作为公共选项
-- **THEN** 判定为非公共选项，应保留在各自的业务类型文件中
-- **AND** 理由：不满足跨模块使用或内容一致的标准
-
 ---
 
-### Requirement: business-options.ts 文件结构 (Step 2)
+### Requirement: business-options.ts 文件结构 (Step 2) [IMPORTANT]
 
 `apps/type/src/common/business-options.ts` 文件 SHALL 按以下规范组织：
 
@@ -131,7 +129,7 @@ export const auditStatusOptions: OptionsType = [
 
 ---
 
-### Requirement: 业务类型文件使用公共选项 (Step 3)
+### Requirement: 业务类型文件使用公共选项 (Step 3) [IMPORTANT]
 
 业务类型文件 SHALL 按以下规范使用公共业务选项：
 
@@ -188,14 +186,6 @@ export { contractTypeOptions };
 - **AND** 创建别名：`export const contractFirstPartyTypeOptions = contractTypeOptions`
 - **AND** 保留 JSDoc 注释
 
-#### Scenario: 删除重复定义
-
-- **GIVEN** `expire.ts` 文件原本定义了 `expiredContractTypeOptions`
-- **WHEN** 迁移到使用公共选项
-- **THEN** 删除本地数组字面量定义
-- **AND** 改为从 `business-options` 导入 `contractTypeOptions`
-- **AND** 创建别名：`export const expiredContractTypeOptions = contractTypeOptions`
-
 #### Scenario: 直接使用公共选项名称
 
 - **GIVEN** `change.ts` 文件原本就使用 `contractTypeOptions` 名称
@@ -205,7 +195,7 @@ export { contractTypeOptions };
 
 ---
 
-### Requirement: Admin 项目使用公共选项 (Step 4)
+### Requirement: Admin 项目使用公共选项 (Step 4) [IMPORTANT]
 
 Admin 项目（`apps/admin`）SHALL 按以下规范使用公共业务选项：
 
@@ -278,17 +268,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 - **AND** 不使用类型断言或 `as` 转换
 - **AND** TypeScript 类型检查通过
 
-#### Scenario: 避免兼容性写法
-
-- **GIVEN** 可以通过创建别名来保持向后兼容
-- **WHEN** 评估是否应该使用别名
-- **THEN** 不应该在 admin 项目中创建别名
-- **AND** 应该直接修改代码使用公共选项名称
-- **AND** 理由：统一代码风格，避免增加维护成本
-
 ---
 
-### Requirement: 公共选项迁移验证 (Step 5)
+### Requirement: 公共选项迁移验证 (Step 5) [CRITICAL]
 
 完成公共选项迁移后，系统 MUST 通过以下验证：
 
@@ -332,7 +314,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 ---
 
-### Requirement: 迁移文档记录 (Step 6)
+### Requirement: 迁移文档记录 (Step 6) [NICE-TO-HAVE]
 
 公共选项迁移 SHALL 包含以下文档记录：
 
@@ -370,7 +352,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 ---
 
-### Requirement: 后续新增公共选项流程 (Step 7)
+### Requirement: 后续新增公共选项流程 (Step 7) [NICE-TO-HAVE]
 
 当发现新的公共业务选项时，SHALL 遵循以下流程：
 
@@ -405,10 +387,3 @@ const plusFormColumns = ref<PlusColumn[]>([
 - **THEN** 将费用类型选项迁移到 `business-options.ts`
 - **AND** 更新 3 个业务类型文件使用公共选项
 - **AND** 更新 Admin 项目中的相关引用
-
-#### Scenario: 判断不适合作为公共选项
-
-- **GIVEN** 某个选项数组仅在单个业务模块中使用
-- **WHEN** 评估是否应该作为公共选项
-- **THEN** 保留在业务类型文件中，不迁移到 `business-options.ts`
-- **AND** 在代码注释中说明该选项为模块专有

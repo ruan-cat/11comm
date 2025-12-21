@@ -1,5 +1,13 @@
 # Nitro API 接口规范
 
+## 📊 优先级说明
+
+- 🔴 [CRITICAL] - 必须严格遵守，违反会导致功能故障
+- 🟡 [IMPORTANT] - 强烈建议遵守，违反会影响代码质量
+- 🟢 [NICE-TO-HAVE] - 可选的最佳实践
+
+**执行建议**：优先确保所有 [CRITICAL] 要求满足，再处理 [IMPORTANT] 要求。
+
 ## 快速导航
 
 **完整迁移指南**: 请查看 [migration-guide.md](../migration-guide.md#step-3-创建-nitro-接口文件-20分钟)
@@ -34,7 +42,7 @@ export const 状态选项 = statusOptions;
 
 ## ADDED Requirements
 
-### Requirement: Nitro v3 代码写法规范
+### Requirement: Nitro v3 代码写法规范 [CRITICAL]
 
 所有 Nitro 接口 MUST 使用 Nitro v3 的标准写法:
 
@@ -106,7 +114,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 
 #### Scenario: 错误的写法对比
 
-**❌ 错误示例 - 缴费审核接口**:
+**❌ 错误示例**:
 
 ```typescript
 // ❌ 错误1: 从 h3 导入而不是 nitro/h3
@@ -114,37 +122,19 @@ import { defineEventHandler, readBody } from "h3";
 
 // ❌ 错误2: 使用 defineEventHandler (Nitro v2 写法)
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentReviewListItem>>> => {
-	// ❌ 错误3: 手动解构参数并设置默认值
-	const { pageIndex = 1, pageSize = 10, house, expenseItem } = body;
-
-	// ❌ 错误4: 手动编写 filter 逻辑
-	let filteredData = [...mockPaymentReviewData];
-	if (house) {
-		filteredData = filteredData.filter((item) => item.house.includes(house));
-	}
-
-	// ❌ 错误5: 直接返回对象字面量,没有类型约束变量
+	// ❌ 错误3: 直接返回对象字面量,没有类型约束变量
 	return {
 		success: true,
 		code: 200,
 		message: "查询成功",
 		data: { ... },
-		timestamp: Date.now(),
 	};
 });
 ```
 
-**问题分析**:
-
-1. 从 `h3` 导入会导致 Nitro v3 兼容性问题
-2. `defineEventHandler` 是 Nitro v2 的旧写法
-3. 手动设置默认值不统一,应使用 DEFAULT 常量
-4. 手动编写 filter 逻辑重复劳动,且容易出错
-5. 直接返回对象字面量缺少类型检查,容易遗漏字段
-
 ---
 
-### Requirement: 标准参数处理模式
+### Requirement: 标准参数处理模式 [CRITICAL]
 
 所有 Nitro 接口 MUST 使用固定的参数处理模式:
 
@@ -183,7 +173,7 @@ const { pageIndex, pageSize, ...filters } = mergedParams;
 
 ---
 
-### Requirement: 使用通用筛选函数 filterDataByQuery
+### Requirement: 使用通用筛选函数 filterDataByQuery [CRITICAL]
 
 所有 Nitro 接口 MUST 使用 `filterDataByQuery` 工具函数进行数据筛选:
 
@@ -230,7 +220,7 @@ if (configType) {
 
 ---
 
-### Requirement: 完整的返回值类型约束
+### Requirement: 完整的返回值类型约束 [CRITICAL]
 
 所有 Nitro 接口 MUST 创建带完整类型约束的 `response` 变量:
 
@@ -288,7 +278,7 @@ return {
 
 ---
 
-### Requirement: 接口命名和路径规范
+### Requirement: 接口命名和路径规范 [IMPORTANT]
 
 所有 Nitro 接口 MUST 满足以下约束:
 
@@ -306,7 +296,7 @@ return {
 
 ---
 
-### Requirement: Mock 数据文件规范
+### Requirement: Mock 数据文件规范 [IMPORTANT]
 
 Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 
@@ -324,7 +314,7 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 
 ---
 
-### Requirement: 接口返回格式规范
+### Requirement: 接口返回格式规范 [IMPORTANT]
 
 所有接口 MUST 返回统一格式 `JsonVO<PageDTO<T>>`:
 
@@ -368,7 +358,7 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 
 ---
 
-### Requirement: 分页处理规范
+### Requirement: 分页处理规范 [NICE-TO-HAVE]
 
 接口 MUST 实现正确的分页逻辑:
 

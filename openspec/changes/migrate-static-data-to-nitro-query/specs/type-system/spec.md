@@ -1,16 +1,21 @@
 ## ADDED Requirements
 
+**优先级说明 (Priority Levels):**
+
+- **[CRITICAL]**: 关键需求，必须优先完成，系统核心功能依赖
+- **[IMPORTANT]**: 重要需求，影响系统规范性和可维护性
+
 **CRITICAL**: 在实施类型系统相关任务时，必须严格按照以下顺序执行，不允许跳步。
 
 **执行顺序:**
 
-1. **Step 1**: apps/type 包初始化（前置条件）
-2. **Step 2**: 类型库基础类型文件（基础设施）
-3. **Step 3**: 类型库初始化（初始化验证）
-4. **Step 4**: 英文字段命名规范（命名规则）
-5. **Step 5**: 类型文件组织结构（文件组织）
-6. **Step 6**: 类型定义完整性（完整性要求）
-7. **Step 7**: 原数据结构满足类型约束（类型约束验证）
+1. **Step 1**: apps/type 包初始化（前置条件）- [CRITICAL]
+2. **Step 2**: 类型库基础类型文件（基础设施）- [CRITICAL]
+3. **Step 3**: 类型库初始化（初始化验证）- [CRITICAL]
+4. **Step 4**: 英文字段命名规范（命名规则）- [CRITICAL]
+5. **Step 5**: 类型文件组织结构（文件组织）- [IMPORTANT]
+6. **Step 6**: 类型定义完整性（完整性要求）- [IMPORTANT]
+7. **Step 7**: 原数据结构满足类型约束（类型约束验证）- [CRITICAL]
 
 **步骤依赖关系:**
 
@@ -25,7 +30,7 @@
 
 ---
 
-### Requirement: apps/type 包初始化 (Step 1)
+### Requirement: apps/type 包初始化 (Step 1) [CRITICAL]
 
 系统 SHALL 在 apps/type 目录下初始化独立的 TypeScript 类型库包，满足以下配置要求：
 
@@ -107,7 +112,7 @@
 
 ---
 
-### Requirement: 类型库基础类型文件 (Step 2)
+### Requirement: 类型库基础类型文件 (Step 2) [CRITICAL]
 
 apps/type 类型库 SHALL 提供固定的基础类型文件：
 
@@ -157,7 +162,7 @@ apps/type 类型库 SHALL 提供固定的基础类型文件：
 
 ---
 
-### Requirement: 类型库初始化 (Step 3)
+### Requirement: 类型库初始化 (Step 3) [CRITICAL]
 
 apps/type 类型库 SHALL 满足以下约束：
 
@@ -183,7 +188,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 英文字段命名规范 (Step 4)
+### Requirement: 英文字段命名规范 (Step 4) [CRITICAL]
 
 所有业务类型 MUST 使用英文字段名：
 
@@ -221,22 +226,14 @@ apps/type 类型库 SHALL 满足以下约束：
 
 - **GIVEN** 原代码中存在中文字段，需要迁移到英文字段
 - **WHEN** 定义新的类型系统
-- **THEN** **严格禁止**创建中文类型别名，如：
-  ```typescript
-  // ❌ 错误：不允许创建中文类型别名
-  export type 巡检方式 = PatrolMethodType;
-  export type 任务状态 = TaskStatusType;
-  export type 巡检点状态 = PatrolPointStatusType;
-  export type 巡查明细表单_VO = PatrolDetailFormVO;
-  export type 巡查明细表单Props = PatrolDetailFormProps;
-  ```
+- **THEN** **严格禁止**创建中文类型别名
 - **AND** 应该直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
 - **AND** 不需要任何中文类型的兼容层，直接替换即可
 - **AND** 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
 
 ---
 
-### Requirement: 类型文件组织结构 (Step 5)
+### Requirement: 类型文件组织结构 (Step 5) [IMPORTANT]
 
 类型文件 SHALL 按以下规则组织：
 
@@ -262,7 +259,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 类型定义完整性 (Step 6)
+### Requirement: 类型定义完整性 (Step 6) [IMPORTANT]
 
 每个列表页的类型文件 MUST 包含：
 
@@ -297,7 +294,7 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-### Requirement: 类型与原数据结构兼容 (Step 7)
+### Requirement: 类型与原数据结构兼容 (Step 7) [CRITICAL]
 
 迁移后的类型定义 MUST 与原 test-data.ts 结构兼容：
 
@@ -330,19 +327,11 @@ apps/type 类型库 SHALL 满足以下约束：
 
 ---
 
-## 8. 类型项目的代码组织方式与导出规范
+## 8. 类型项目的代码组织方式与导出规范 [IMPORTANT]
 
 ### 8.1 在类型项目内，必须使用全量的导出语法
 
 不要去区分是单独导出全部的类型，还是全部的变量。全部都批量导出来。
-
-**错误写法：**
-
-不要单独的导出类型，直接导出全部的代码。包括类型和变量。
-
-```typescript
-export type * from "./expense-manage";
-```
 
 **正确写法：**
 
@@ -353,19 +342,6 @@ export * from "./expense-manage";
 ```
 
 ### 8.2 不允许逐个罗列的导出
-
-**错误写法：**
-
-```typescript
-export type {
-  PatrolTaskFormVO,
-  PatrolTaskFormProps,
-  TaskListItem,
-  TaskQueryParams,
-  PatrolTaskListItem,
-  PatrolTaskQueryParams,
-} from "./task";
-```
 
 **正确写法：**
 
@@ -481,28 +457,6 @@ export const expenseItemNameOptions: OptionsType = [
 export const feeTypeOptions = expenseTypeOptions;
 ```
 
-**错误写法：**
-
-不要弄这种复杂的逐项导出，阅读很不美观，难以处理。
-
-```typescript
-// 导出通用类型 - 先导出 common
-export * from "./common";
-// 导出业务类型 - 后导出 business，避免冲突时使用命名导出
-export {
-  patrolMethodOptions,
-  patrolPointStatusOptions,
-  returnVisitStatusOptions,
-} from "./common";
-// 选择性导出业务模块，避免重复导出
-export * from "./business/dev-team";
-export * from "./business/operation-team";
-export * from "./business/property-manage";
-export * from "./business/setting-manage";
-// 导出常量
-export * from "./constant";
-```
-
 **正确写法：**
 
 ```typescript
@@ -519,24 +473,6 @@ export * from "./constant";
 **背景说明：**
 
 对于形如 `xxxxxxFormProps` 格式的类型，这些类型都是表单弹框类型，不是业务类型。你不应该将弹框组件的类型迁移到类型项目内。
-
-**错误示例：**
-
-```ts
-// apps\type\src\business\property-manage\report-manage\repair-reports-summary-table.ts
-/**
- * 报修汇总表表单属性
- * Repair reports summary table form props
- */
-export interface RepairReportsSummaryTableFormProps {
-	/** 表单数据 Form data */
-	form: RepairReportsSummaryTableFormData;
-	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
-	defaultValues: RepairReportsSummaryTableFormData;
-	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "info";
-}
-```
 
 **正确做法：**
 
