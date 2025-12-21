@@ -398,7 +398,7 @@ openspec validate migrate-static-data-to-nitro-query --strict
    - `openspec\changes\migrate-static-data-to-nitro-query\specs\list-page-pattern\spec.md`
    - `openspec\changes\fix-list-pages-code-patterns\specs\list-pages\spec.md`
 
-#### 02 <!-- TODO: --> 补充列表页处理的规范
+#### 02 补充列表页处理的规范
 
 1. 请完整的阅读以下规范文档：
    - apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\016.md
