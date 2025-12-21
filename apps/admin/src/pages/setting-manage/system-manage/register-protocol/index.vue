@@ -13,7 +13,7 @@ import { useRegisterProtocolListQuery } from "@/api/setting-manage/system-manage
 import type { RegisterProtocol } from "@01s-11comm/type";
 
 // 使用注册协议列表查询 Hook
-const { tableData, isFetching } = useRegisterProtocolListQuery({});
+const { tableData, isFetching, doFetch } = useRegisterProtocolListQuery({});
 
 /** 注册协议数据 */
 const registerProtocol = computed<RegisterProtocol>(() => {

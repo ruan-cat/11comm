@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
+import { ref, computed, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -18,18 +18,43 @@ import InitializeCellForm from "./components/form.vue";
 import { type FormatFormProps, defaultForm as formatDefaultForm } from "./components/format-form";
 import FormatForm from "./components/format-form.vue";
 
-import {
-	mockTableData,
-	type InitializeCommunityListItem,
-	type InitializeCommunityListQueryVO,
-	type InitializeCommunityFormVO,
-} from "./test-data";
+import type {
+	InitializeCommunityListItem,
+	InitializeCommunityFormVO,
+	InitializeCommunityQueryParams,
+} from "@01s-11comm/type";
+import { useInitializeCommunityListQuery } from "@/api/setting-manage/system-manage/initialize-cell";
 
 const initializeCellFormInstance = ref<InstanceType<typeof InitializeCellForm> | null>(null);
 const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
 
-/** 表格数据 */
-const tableData = ref<InitializeCommunityListItem[]>([]);
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<InitializeCommunityQueryParams> = {
+	communityId: "",
+	communityName: "",
+};
+
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps,
+} = useInitializeCommunityListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -68,86 +93,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.communityId) {
-			filteredData = filteredData.filter((item) => item.communityId.includes(plusSearchModel.value.communityId!));
-		}
-		if (plusSearchModel.value.communityName) {
-			filteredData = filteredData.filter((item) => item.communityName.includes(plusSearchModel.value.communityName!));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "初始化小区",
 	columns: columns.value,
 });
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & InitializeCommunityListQueryVO = {
-	communityId: "",
-	communityName: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -169,6 +119,17 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
+/** 重置搜索条件并重新加载数据 */
+async function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+async function handleSearch() {
+	updateParams(plusSearchModel.value);
+}
+
 /** 表格搜索栏组件 配置 */
 const plusSearchProps = ref<PlusSearchProps>({
 	defaultValues: plusSearchDefaultValues,
@@ -177,19 +138,6 @@ const plusSearchProps = ref<PlusSearchProps>({
 	labelPosition: "right",
 	showNumber: 3,
 });
-
-/** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
@@ -286,7 +234,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
+						await doFetch();
 						consola.success("操作成功！");
 					}
 				},
@@ -370,10 +318,6 @@ function handleFormat(row: InitializeCommunityListItem) {
 	console.log("格式化操作", row);
 	openFormatDialog(row);
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>

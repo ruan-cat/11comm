@@ -4,7 +4,10 @@
  */
 
 import type { OptionsType, BaseListQueryParams } from "../../../common";
-import { repairStatusOptions as commonRepairStatusOptions, repairTypeOptions as commonRepairTypeOptions } from "../../../common/business-options";
+import {
+	repairStatusOptions as commonRepairStatusOptions,
+	repairTypeOptions as commonRepairTypeOptions,
+} from "../../../common/business-options";
 
 /**
  * 报修汇总表列表数据
@@ -103,3 +106,35 @@ export const communityOptions: OptionsType = [
 	{ label: "幸福社区", value: "幸福社区" },
 	{ label: "美丽家园", value: "美丽家园" },
 ];
+
+/**
+ * 报修汇总表表单数据
+ * Repair reports summary table form data
+ */
+export interface RepairReportsSummaryTableFormData extends Record<string, any> {
+	/** 报修类型 Repair type */
+	repairType?: string;
+	/** 报修状态 Repair status */
+	repairStatus?: string;
+	/** 紧急程度 Urgency level */
+	urgencyLevel?: string;
+	/** 小区 Community */
+	community?: string;
+	/** 统计开始时间 Statistics start time */
+	statisticsStartTime?: string;
+	/** 统计结束时间 Statistics end time */
+	statisticsEndTime?: string;
+}
+
+/**
+ * 报修汇总表表单属性
+ * Repair reports summary table form props
+ */
+export interface RepairReportsSummaryTableFormProps {
+	/** 表单数据 Form data */
+	form: RepairReportsSummaryTableFormData;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: RepairReportsSummaryTableFormData;
+	/** 表单模式 Form mode */
+	mode?: "add" | "edit" | "info";
+}
