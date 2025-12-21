@@ -1,16 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type RepairReportsSummaryTableFormData,
-	repairReportsSummaryTableFormRules,
-} from "./form";
-import {
-	repairTypeOptions,
-	repairStatusOptions,
-	urgencyLevelOptions,
-	communityOptions,
-} from "@01s-11comm/type";
+import { type RepairReportsSummaryTableFormData, repairReportsSummaryTableFormRules } from "./form";
+import { repairTypeOptions, repairStatusOptions, urgencyLevelOptions, communityOptions } from "@01s-11comm/type";
 
 interface Props {
 	/** 表单数据 */
@@ -135,12 +127,7 @@ function handleClose() {
 		width="800px"
 		@close="handleClose"
 	>
-		<PlusForm
-			ref="formRef"
-			v-model="formData"
-			:="formProps"
-			:columns="columns"
-		/>
+		<PlusForm ref="formRef" v-model="formData" :="formProps" :columns="columns" />
 
 		<template #footer>
 			<ElButton @click="handleClose">

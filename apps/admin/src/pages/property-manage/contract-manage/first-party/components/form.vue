@@ -153,21 +153,17 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	address: [
-		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
-	],
+	address: [{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" }],
 	creditCode: [
-		{ pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/, message: "请输入正确的统一社会信用代码", trigger: "blur" },
+		{
+			pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/,
+			message: "请输入正确的统一社会信用代码",
+			trigger: "blur",
+		},
 	],
-	establishmentDate: [
-		{ required: true, message: "请选择成立日期", trigger: "change" },
-	],
-	legalRepresentative: [
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	businessScope: [
-		{ min: 5, max: 500, message: "长度在 5 到 500 个字符", trigger: "blur" },
-	],
+	establishmentDate: [{ required: true, message: "请选择成立日期", trigger: "change" }],
+	legalRepresentative: [{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" }],
+	businessScope: [{ min: 5, max: 500, message: "长度在 5 到 500 个字符", trigger: "blur" }],
 });
 
 defineExpose({

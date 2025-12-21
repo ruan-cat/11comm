@@ -6,7 +6,12 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { ParkingSpaceStructureDiagramFormProps, 车位结构图表单_VO } from "./form";
-import { parkingSpaceTypeOptions, parkingSpaceStatusOptions, floorAreaOptions, isChargingPileOptions } from "@01s-11comm/type";
+import {
+	parkingSpaceTypeOptions,
+	parkingSpaceStatusOptions,
+	floorAreaOptions,
+	isChargingPileOptions,
+} from "@01s-11comm/type";
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
 
 /** 默认的表单重置变量 */
@@ -289,55 +294,32 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入车位编号", trigger: "blur" },
 		{ min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
 	],
-	parkingSpaceType: [
-		{ required: true, message: "请选择车位类型", trigger: "change" },
-	],
-	parkingSpaceStatus: [
-		{ required: true, message: "请选择车位状态", trigger: "change" },
-	],
+	parkingSpaceType: [{ required: true, message: "请选择车位类型", trigger: "change" }],
+	parkingSpaceStatus: [{ required: true, message: "请选择车位状态", trigger: "change" }],
 	parkingSpaceLocation: [
 		{ required: true, message: "请输入车位位置", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	parkingSpaceArea: [
-		{ required: true, message: "请输入车位面积", trigger: "blur" },
-	],
-	parkingSpaceOrientation: [
-		{ required: true, message: "请选择车位朝向", trigger: "change" },
-	],
-	floorArea: [
-		{ required: true, message: "请选择楼层区域", trigger: "change" },
-	],
-	ownerName: [
-		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
-	],
-	contactPhone: [
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
-	],
+	parkingSpaceArea: [{ required: true, message: "请输入车位面积", trigger: "blur" }],
+	parkingSpaceOrientation: [{ required: true, message: "请选择车位朝向", trigger: "change" }],
+	floorArea: [{ required: true, message: "请选择楼层区域", trigger: "change" }],
+	ownerName: [{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }],
+	contactPhone: [{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" }],
 	licensePlateNumber: [
-		{ pattern: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/, message: "请输入正确的车牌号码", trigger: "blur" },
+		{
+			pattern:
+				/^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/,
+			message: "请输入正确的车牌号码",
+			trigger: "blur",
+		},
 	],
-	vehicleBrand: [
-		{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" },
-	],
-	expiryTime: [
-		{ required: true, message: "请选择到期时间", trigger: "change" },
-	],
-	monthlyRent: [
-		{ required: true, message: "请输入月租金", trigger: "blur" },
-	],
-	managementFee: [
-		{ required: true, message: "请输入管理费", trigger: "blur" },
-	],
-	hasEvChargingPile: [
-		{ required: true, message: "请选择是否配备充电桩", trigger: "change" },
-	],
-	chargingPilePower: [
-		{ required: true, message: "请选择充电桩功率", trigger: "change" },
-	],
-	remark: [
-		{ max: 500, message: "备注信息长度不能超过 500 个字符", trigger: "blur" },
-	],
+	vehicleBrand: [{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" }],
+	expiryTime: [{ required: true, message: "请选择到期时间", trigger: "change" }],
+	monthlyRent: [{ required: true, message: "请输入月租金", trigger: "blur" }],
+	managementFee: [{ required: true, message: "请输入管理费", trigger: "blur" }],
+	hasEvChargingPile: [{ required: true, message: "请选择是否配备充电桩", trigger: "change" }],
+	chargingPilePower: [{ required: true, message: "请选择充电桩功率", trigger: "change" }],
+	remark: [{ max: 500, message: "备注信息长度不能超过 500 个字符", trigger: "blur" }],
 });
 
 /** 默认对外导出函数 */

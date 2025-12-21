@@ -1,5 +1,4 @@
-
-import { IssuesFormVO, defaultIssuesForm } from "@01s-11comm/type";
+import { type IssuesFormVO, defaultIssuesForm } from "@01s-11comm/type";
 
 // 为了向后兼容，创建类型别名
 export type 工单池表单_VO = IssuesFormVO;

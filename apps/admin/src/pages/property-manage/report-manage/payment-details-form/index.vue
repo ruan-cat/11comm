@@ -255,9 +255,10 @@ async function loadTableData() {
 	}
 
 	if (plusSearchModel.value.房屋编号车牌号) {
-		filteredData = filteredData.filter((item) =>
-			item.房号业主.includes(plusSearchModel.value.房屋编号车牌号!) ||
-			item.车位?.includes(plusSearchModel.value.房屋编号车牌号!),
+		filteredData = filteredData.filter(
+			(item) =>
+				item.房号业主.includes(plusSearchModel.value.房屋编号车牌号!) ||
+				item.车位?.includes(plusSearchModel.value.房屋编号车牌号!),
 		);
 	}
 

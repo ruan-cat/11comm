@@ -4,9 +4,7 @@
  */
 
 import type { Mode } from "@/composables/use-mode";
-import type {
-	ConfigItemFormVO as FormVO,
-} from "@01s-11comm/type";
+import type { ConfigItemFormVO as FormVO } from "@01s-11comm/type";
 import {
 	configItemDefaultForm as defaultFormValues,
 	configItemTypeOptions,

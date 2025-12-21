@@ -472,4 +472,3 @@ onMounted(async () => {
 		</PureTableBar>
 	</section>
 </template>
-

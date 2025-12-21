@@ -4,9 +4,7 @@
  */
 
 import type { Mode } from "@/composables/use-mode";
-import type {
-	MenuItemFormVO as FormVO,
-} from "@01s-11comm/type";
+import type { MenuItemFormVO as FormVO } from "@01s-11comm/type";
 import {
 	menuItemDefaultForm as defaultFormValues,
 	menuTypeOptions,

@@ -1,6 +1,6 @@
 import type { Mode } from "@/composables/use-mode";
 import {
-	BuildingSpaceStructureDiagramFormVO,
+	type BuildingSpaceStructureDiagramFormVO,
 	defaultBuildingSpaceStructureDiagramForm,
 	buildingStructureOptions,
 	buildingStatusOptions,

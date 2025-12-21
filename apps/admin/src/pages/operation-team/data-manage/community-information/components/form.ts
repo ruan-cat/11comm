@@ -1,12 +1,6 @@
-import type {
-	CommunityInformationFormProps,
-} from "@01s-11comm/type";
-import type {
-	CommunityInformationFormVO,
-} from "@01s-11comm/type";
-import {
-	communityInformationDefaultForm as defaultFormValues,
-} from "@01s-11comm/type";
+import type { CommunityInformationFormProps } from "@01s-11comm/type";
+import type { CommunityInformationFormVO } from "@01s-11comm/type";
+import { communityInformationDefaultForm as defaultFormValues } from "@01s-11comm/type";
 
 /** FormVO类型别名 */
 export type FormVO = CommunityInformationFormVO;

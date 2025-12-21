@@ -5,7 +5,14 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { RegisterProtocolFormProps, 注册协议表单_VO, defaultForm, 协议类型Options, 状态Options, 是否强制同意Options } from "./form";
+import {
+	RegisterProtocolFormProps,
+	注册协议表单_VO,
+	defaultForm,
+	协议类型Options,
+	状态Options,
+	是否强制同意Options,
+} from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
 

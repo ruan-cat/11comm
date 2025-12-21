@@ -105,7 +105,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "菜单目录",

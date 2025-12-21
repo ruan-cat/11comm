@@ -26,4 +26,3 @@ export function useCancelFeeListQuery(initialParams: Partial<CancelFeeQueryParam
 }
 
 export default useCancelFeeListQuery;
-

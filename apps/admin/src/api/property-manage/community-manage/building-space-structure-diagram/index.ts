@@ -16,7 +16,9 @@ const QUERY_KEY_PREFIX = "buildingSpaceStructureDiagram";
  * 楼栋结构图列表查询 Hook
  * Building space structure diagram list query hook
  */
-export function useBuildingSpaceStructureDiagramListQuery(initialParams: Partial<BuildingSpaceStructureDiagramQueryParams>) {
+export function useBuildingSpaceStructureDiagramListQuery(
+	initialParams: Partial<BuildingSpaceStructureDiagramQueryParams>,
+) {
 	return useListQuery<BuildingSpaceStructureDiagramListItem, BuildingSpaceStructureDiagramQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,

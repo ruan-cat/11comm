@@ -8,7 +8,13 @@ import { ref, computed, watch, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 
-import { CommunityNoticeFormProps, CommunityNoticeFormVO, defaultForm, noticeTypeOptions, noticeStatusOptions } from "./form";
+import {
+	CommunityNoticeFormProps,
+	CommunityNoticeFormVO,
+	defaultForm,
+	noticeTypeOptions,
+	noticeStatusOptions,
+} from "./form";
 
 const props = defineProps<CommunityNoticeFormProps>();
 
@@ -340,7 +346,9 @@ defineExpose({
 				<template #header>
 					<div class="卡片头部">
 						<h3 class="公示标题">
-							{{ form.noticeTitle || transformI18n($t("propertyManage_communityManage.notice.form.preview.titlePreview")) }}
+							{{
+								form.noticeTitle || transformI18n($t("propertyManage_communityManage.notice.form.preview.titlePreview"))
+							}}
 						</h3>
 						<div class="公示元信息">
 							<ElTag
@@ -361,7 +369,10 @@ defineExpose({
 							>
 								{{ form.noticeType || transformI18n($t("propertyManage_communityManage.notice.form.preview.type")) }}
 							</ElTag>
-							<ElTag :type="form.status === '已发布' ? 'success' : form.status === '草稿' ? 'info' : 'danger'" size="small">
+							<ElTag
+								:type="form.status === '已发布' ? 'success' : form.status === '草稿' ? 'info' : 'danger'"
+								size="small"
+							>
 								{{ form.status || transformI18n($t("propertyManage_communityManage.notice.form.preview.status")) }}
 							</ElTag>
 						</div>
@@ -383,10 +394,14 @@ defineExpose({
 							}}</span>
 							<span class="时间值">
 								{{
-									form.validityStartTime || transformI18n($t("propertyManage_communityManage.notice.form.preview.startDate"))
+									form.validityStartTime ||
+									transformI18n($t("propertyManage_communityManage.notice.form.preview.startDate"))
 								}}
 								~
-								{{ form.validityEndTime || transformI18n($t("propertyManage_communityManage.notice.form.preview.endDate")) }}
+								{{
+									form.validityEndTime ||
+									transformI18n($t("propertyManage_communityManage.notice.form.preview.endDate"))
+								}}
 							</span>
 						</div>
 						<div class="时间项">

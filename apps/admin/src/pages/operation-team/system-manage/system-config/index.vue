@@ -11,7 +11,13 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type SystemConfigListItem, type SystemConfigQueryParams, systemConfigTypeOptions, systemConfigGroupOptions, systemConfigStatusOptions } from "@01s-11comm/type";
+import {
+	type SystemConfigListItem,
+	type SystemConfigQueryParams,
+	systemConfigTypeOptions,
+	systemConfigGroupOptions,
+	systemConfigStatusOptions,
+} from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
 import { type SystemConfigFormProps, defaultForm, type FormVO } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
@@ -119,7 +125,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "系统配置",
@@ -185,7 +190,14 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 					...defaultForm,
 					配置名称: row?.configName || "",
 					配置值: row?.configValue || "",
-					配置类型: (row?.configType || "文本") as "文本" | "数字" | "布尔值" | "JSON" | "日期时间" | "文件路径" | "URL",
+					配置类型: (row?.configType || "文本") as
+						| "文本"
+						| "数字"
+						| "布尔值"
+						| "JSON"
+						| "日期时间"
+						| "文件路径"
+						| "URL",
 					配置分组: (row?.configGroup || "系统基础") as
 						| "系统基础"
 						| "业务配置"

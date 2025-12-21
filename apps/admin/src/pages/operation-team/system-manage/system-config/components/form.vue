@@ -5,7 +5,14 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { SystemConfigFormProps, type FormVO, defaultForm, systemConfigTypeOptionsAlias, configGroupOptions, 状态Options } from "./form";
+import {
+	SystemConfigFormProps,
+	type FormVO,
+	defaultForm,
+	systemConfigTypeOptionsAlias,
+	configGroupOptions,
+	状态Options,
+} from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
 
@@ -140,18 +147,10 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请填写配置值", trigger: "blur" },
 		{ min: 1, max: 1000, message: "长度在 1 到 1000 个字符", trigger: "blur" },
 	],
-	配置类型: [
-		{ required: true, message: "请选择配置类型", trigger: "change" },
-	],
-	配置分组: [
-		{ required: true, message: "请选择配置分组", trigger: "change" },
-	],
-	状态: [
-		{ required: true, message: "请选择状态", trigger: "change" },
-	],
-	描述: [
-		{ max: 200, message: "描述长度不能超过200个字符", trigger: "blur" },
-	],
+	配置类型: [{ required: true, message: "请选择配置类型", trigger: "change" }],
+	配置分组: [{ required: true, message: "请选择配置分组", trigger: "change" }],
+	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	描述: [{ max: 200, message: "描述长度不能超过200个字符", trigger: "blur" }],
 });
 
 defineExpose({

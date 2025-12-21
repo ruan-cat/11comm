@@ -17,7 +17,9 @@ const QUERY_KEY_PREFIX = "parkingSpaceStructureDiagram";
  * ParkingSpaceStructureDiagram list query hook
  * @param initialParams - Initial query parameters for filtering the list
  */
-export function useParkingSpaceStructureDiagramListQuery(initialParams: Partial<ParkingSpaceStructureDiagramQueryParams>) {
+export function useParkingSpaceStructureDiagramListQuery(
+	initialParams: Partial<ParkingSpaceStructureDiagramQueryParams>,
+) {
 	return useListQuery<ParkingSpaceStructureDiagramListItem, ParkingSpaceStructureDiagramQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,

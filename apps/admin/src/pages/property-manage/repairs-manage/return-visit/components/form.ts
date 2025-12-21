@@ -1,4 +1,4 @@
-import { ReturnVisitFormVO, defaultReturnVisitForm } from "@01s-11comm/type";
+import { type ReturnVisitFormVO, defaultReturnVisitForm } from "@01s-11comm/type";
 
 // 为了向后兼容，创建类型别名
 export type 报修回访表单_VO = ReturnVisitFormVO;

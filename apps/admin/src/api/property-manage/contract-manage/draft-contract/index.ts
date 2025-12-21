@@ -26,4 +26,3 @@ export function useDraftContractListQuery(initialParams: Partial<DraftContractQu
 }
 
 export default useDraftContractListQuery;
-

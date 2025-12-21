@@ -66,9 +66,4 @@ export interface DictionaryTypeFormProps {
 }
 
 /** 导出选项供表单使用 Export options for form use */
-export {
-	dictionaryTypeStatusOptions,
-	dictionaryCategoryOptions,
-	dataTypeOptions,
-	requiredOptions,
-};
+export { dictionaryTypeStatusOptions, dictionaryCategoryOptions, dataTypeOptions, requiredOptions };

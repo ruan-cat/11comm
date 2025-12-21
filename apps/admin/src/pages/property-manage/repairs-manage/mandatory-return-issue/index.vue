@@ -23,7 +23,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const mandatoryReturnIssueFormInstance = ref<InstanceType<typeof MandatoryReturnIssueForm> | null>(null);
 
-
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
@@ -75,8 +74,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -155,7 +152,6 @@ function handleReSearch() {
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
 
 /** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -271,8 +267,6 @@ async function handleDelete(row: 强制回单_列表数据) {
 async function handleMandatoryReturn(row: 强制回单_列表数据) {
 	// TODO: 实现强制回单逻辑
 }
-
-
 </script>
 
 <template>

@@ -10,10 +10,7 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
-import type {
-	PatrolReportListItem,
-	PatrolReportQueryParams,
-} from "@01s-11comm/type";
+import type { PatrolReportListItem, PatrolReportQueryParams } from "@01s-11comm/type";
 import { usePatrolReportListQuery } from "@/api/property-manage/report-manage/patrol-report";
 
 /** 表格列配置 */

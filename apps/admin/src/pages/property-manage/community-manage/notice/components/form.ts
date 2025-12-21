@@ -1,5 +1,5 @@
 import {
-	CommunityNoticeFormVO,
+	type CommunityNoticeFormVO,
 	defaultCommunityNoticeForm,
 	noticeTypeOptions,
 	noticeStatusOptions,

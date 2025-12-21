@@ -1,4 +1,4 @@
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 
 /** 变更类型选项 */
 const _changeType = ["合同金额", "服务期限", "服务内容", "付款方式", "合同主体"] as const;

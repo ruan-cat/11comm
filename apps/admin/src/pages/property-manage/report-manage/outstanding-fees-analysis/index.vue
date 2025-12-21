@@ -9,10 +9,7 @@ definePage({
 });
 
 import { transformI18n } from "@/plugins/i18n";
-import type {
-  OutstandingFeesAnalysisListItem,
-  OutstandingFeesAnalysisQueryParams
-} from "@01s-11comm/type";
+import type { OutstandingFeesAnalysisListItem, OutstandingFeesAnalysisQueryParams } from "@01s-11comm/type";
 import { useOutstandingFeesAnalysisListQuery } from "@/api/property-manage/report-manage/outstanding-fees-analysis";
 
 /** 表格列配置 */

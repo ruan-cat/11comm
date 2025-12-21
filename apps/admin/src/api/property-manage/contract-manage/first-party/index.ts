@@ -26,4 +26,3 @@ export function useFirstPartyListQuery(initialParams: Partial<FirstPartyQueryPar
 }
 
 export default useFirstPartyListQuery;
-

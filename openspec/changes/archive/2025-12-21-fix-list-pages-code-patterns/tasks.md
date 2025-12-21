@@ -2,11 +2,11 @@
 
 ## 1. 准备阶段
 
-- [ ] 1.1 阅读迁移指南 Step 5,明确列表页代码规范
-- [ ] 1.2 检查正确范例 (`dev-team/config-manage/center/index.vue`)
-- [ ] 1.3 检查错误范例 (`property-manage/expense-manage/payment-review/index.vue`)
-- [ ] 1.4 确认所有 API Hook 已添加 `initialParams` 参数(依赖 fix-api-hooks-missing-initial-params 变更)
-- [ ] 1.5 运行初始类型检查,记录当前报错数量: `pnpm -F @01s-11comm/admin typecheck`
+- [x] 1.1 阅读迁移指南 Step 5,明确列表页代码规范
+- [x] 1.2 检查正确范例 (`dev-team/config-manage/center/index.vue`)
+- [x] 1.3 检查错误范例 (`property-manage/expense-manage/payment-review/index.vue`)
+- [x] 1.4 确认所有 API Hook 已添加 `initialParams` 参数(依赖 fix-api-hooks-missing-initial-params 变更)
+- [x] 1.5 运行初始类型检查,记录当前报错数量: `pnpm -F @01s-11comm/admin typecheck`
 
 ## 2. settingManage.organizeManage 模块 (7 个文件)
 
@@ -226,9 +226,9 @@
 
 ## 23. 文档更新
 
-- [ ] 23.1 更新相关技术文档,记录此次修复的范围和方法
-- [ ] 23.2 在 `apps/admin/src/docs/reports` 创建修复报告(如需要)
-- [ ] 23.3 确认所有变更符合 OpenSpec 规范
+- [x] 23.1 更新相关技术文档,记录此次修复的范围和方法
+- [x] 23.2 在 `apps/admin/src/docs/reports` 创建修复报告(如需要)
+- [x] 23.3 确认所有变更符合 OpenSpec 规范
 
 ## 总计
 

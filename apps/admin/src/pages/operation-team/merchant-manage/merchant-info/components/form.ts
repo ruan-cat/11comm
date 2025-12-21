@@ -1,10 +1,5 @@
-import { type Mode } from "@/composables/use-mode";
-import type {
-	MerchantInfoFormVO,
-	MerchantInfoFormProps,
-	MerchantType,
-	BusinessStatus,
-} from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
+import type { MerchantInfoFormVO, MerchantInfoFormProps, MerchantType, BusinessStatus } from "@01s-11comm/type";
 import {
 	merchantInfoDefaultForm as defaultFormValues,
 	merchantTypeOptions,

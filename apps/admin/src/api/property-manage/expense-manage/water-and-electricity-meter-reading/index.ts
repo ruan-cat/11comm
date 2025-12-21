@@ -4,7 +4,10 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { WaterAndElectricityMeterReadingListItem, WaterAndElectricityMeterReadingQueryParams } from "@01s-11comm/type";
+import type {
+	WaterAndElectricityMeterReadingListItem,
+	WaterAndElectricityMeterReadingQueryParams,
+} from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/property-manage/expense-manage/water-and-electricity-meter-reading/list";
@@ -17,7 +20,9 @@ const QUERY_KEY_PREFIX = "waterAndElectricityMeterReading";
  * WaterAndElectricityMeterReading list query hook
  * @param initialParams - Initial query parameters for filtering the list
  */
-export function useWaterAndElectricityMeterReadingListQuery(initialParams: Partial<WaterAndElectricityMeterReadingQueryParams>) {
+export function useWaterAndElectricityMeterReadingListQuery(
+	initialParams: Partial<WaterAndElectricityMeterReadingQueryParams>,
+) {
 	return useListQuery<WaterAndElectricityMeterReadingListItem, WaterAndElectricityMeterReadingQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,

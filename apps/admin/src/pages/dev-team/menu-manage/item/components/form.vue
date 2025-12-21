@@ -218,7 +218,11 @@ const plusFormRules = ref<PlusFormRules>({
 	],
 	permissionKey: [
 		{ required: true, message: "请输入权限标识", trigger: "blur" },
-		{ pattern: /^[a-zA-Z0-9:_-]+$/, message: "权限标识格式不正确，只能包含字母、数字、冒号、下划线和连字符", trigger: "blur" },
+		{
+			pattern: /^[a-zA-Z0-9:_-]+$/,
+			message: "权限标识格式不正确，只能包含字母、数字、冒号、下划线和连字符",
+			trigger: "blur",
+		},
 	],
 	sortNo: [
 		{ required: true, message: "请输入显示顺序", trigger: "blur" },

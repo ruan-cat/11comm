@@ -131,18 +131,18 @@ const plusFormRules = ref<PlusFormRules>({
 	configItemCode: [
 		{ required: true, message: "请输入配置项编码", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-		{ pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: "编码只能包含字母、数字、下划线，且不能以数字开头", trigger: "blur" },
+		{
+			pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+			message: "编码只能包含字母、数字、下划线，且不能以数字开头",
+			trigger: "blur",
+		},
 	],
-	configItemType: [
-		{ required: true, message: "请选择配置项类型", trigger: "change" },
-	],
+	configItemType: [{ required: true, message: "请选择配置项类型", trigger: "change" }],
 	configItemValue: [
 		{ required: true, message: "请输入配置项值", trigger: "blur" },
 		{ min: 1, max: 500, message: "长度在 1 到 500 个字符", trigger: "blur" },
 	],
-	isEnabled: [
-		{ required: true, message: "请选择是否启用", trigger: "change" },
-	],
+	isEnabled: [{ required: true, message: "请选择是否启用", trigger: "change" }],
 });
 
 defineExpose({

@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
-import { OverduePaymentInformationFormProps, chargeObjectOptions, paymentStatusOptions, type OverduePaymentInformationFormVO } from "./form";
+import {
+	OverduePaymentInformationFormProps,
+	chargeObjectOptions,
+	paymentStatusOptions,
+	type OverduePaymentInformationFormVO,
+} from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<OverduePaymentInformationFormProps>();
@@ -28,9 +33,7 @@ const toRefForm = cloneDeep(props.form) as FieldValues & OverduePaymentInformati
  */
 const form = ref({
 	...toRefForm,
-	overdueTimeRange: toRefForm.startTime && toRefForm.endTime
-		? [toRefForm.startTime, toRefForm.endTime]
-		: ["", ""],
+	overdueTimeRange: toRefForm.startTime && toRefForm.endTime ? [toRefForm.startTime, toRefForm.endTime] : ["", ""],
 });
 
 /** 只读的表单对象 用于外部做判断 */

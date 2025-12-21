@@ -23,7 +23,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const repairsHaveDoneFormInstance = ref<InstanceType<typeof RepairsHaveDoneForm> | null>(null);
 
-
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
@@ -75,8 +74,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -184,7 +181,6 @@ function handleReSearch() {
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
 
 /** 测试异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -298,8 +294,6 @@ async function handleDelete(row: 报修已办_列表数据) {
 	consola.log("删除", row);
 	await doFetch();
 }
-
-
 </script>
 
 <template>

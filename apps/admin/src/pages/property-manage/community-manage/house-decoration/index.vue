@@ -10,7 +10,12 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type HouseDecorationListItem, type HouseDecorationQueryParams, decorationStatusOptions, delayStatusOptions } from "@01s-11comm/type";
+import {
+	type HouseDecorationListItem,
+	type HouseDecorationQueryParams,
+	decorationStatusOptions,
+	delayStatusOptions,
+} from "@01s-11comm/type";
 import { useHouseDecorationListQuery } from "@/api/property-manage/community-manage/house-decoration";
 import { type HouseDecorationFormProps, defaultForm } from "./components/form";
 import HouseDecorationForm from "./components/form.vue";

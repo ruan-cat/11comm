@@ -1,4 +1,4 @@
-import { type RouterHistory, type RouteRecordRaw, type RouteComponent, type RouteRecordName } from "vue-router";
+import type { RouterHistory, RouteRecordRaw, RouteComponent, RouteRecordName } from "vue-router";
 import { createWebHistory, createWebHashHistory } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";

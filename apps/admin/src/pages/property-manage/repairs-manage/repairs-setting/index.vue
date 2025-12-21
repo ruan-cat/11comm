@@ -33,7 +33,6 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 /** 表单组件实例 */
 const repairsSettingFormInstance = ref<InstanceType<typeof RepairsSettingForm> | null>(null);
 
-
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
@@ -85,8 +84,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
-
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -195,7 +192,6 @@ function handleReSearch() {
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {

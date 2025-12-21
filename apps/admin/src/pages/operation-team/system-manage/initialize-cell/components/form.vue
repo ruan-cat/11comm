@@ -151,9 +151,7 @@ const plusFormRules = ref<PlusFormRules>({
 		{ type: "number", min: 1, max: 1000, message: "户数必须在 1 到 1000 之间", trigger: "blur" },
 	],
 	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
-	描述: [
-		{ max: 200, message: "描述长度不能超过 200 个字符", trigger: "blur" },
-	],
+	描述: [{ max: 200, message: "描述长度不能超过 200 个字符", trigger: "blur" }],
 });
 
 // 默认对外导出

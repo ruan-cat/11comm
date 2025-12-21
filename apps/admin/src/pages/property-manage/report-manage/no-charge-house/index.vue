@@ -9,10 +9,7 @@ definePage({
 });
 
 import { transformI18n } from "@/plugins/i18n";
-import type {
-  NoChargeHouseListItem,
-  NoChargeHouseQueryParams
-} from "@01s-11comm/type";
+import type { NoChargeHouseListItem, NoChargeHouseQueryParams } from "@01s-11comm/type";
 import { useNoChargeHouseListQuery } from "@/api/property-manage/report-manage/no-charge-house";
 
 /** 表格列配置 */

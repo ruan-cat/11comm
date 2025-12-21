@@ -12,4 +12,3 @@ export function useHouseListQuery(initialParams: Partial<HouseQueryParams>) {
 		initialParams,
 	});
 }
-

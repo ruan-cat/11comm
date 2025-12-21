@@ -1,4 +1,4 @@
-import { PhoneRepairsFormVO, defaultPhoneRepairsForm } from "@01s-11comm/type";
+import { type PhoneRepairsFormVO, defaultPhoneRepairsForm } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
 // 为了向后兼容，创建类型别名

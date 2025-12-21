@@ -106,12 +106,8 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入设置值", trigger: "blur" },
 		{ min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" },
 	],
-	settingType: [
-		{ required: true, message: "请选择设置类型", trigger: "change" },
-	],
-	statusCd: [
-		{ required: true, message: "请选择数据状态", trigger: "change" },
-	],
+	settingType: [{ required: true, message: "请选择设置类型", trigger: "change" }],
+	statusCd: [{ required: true, message: "请选择数据状态", trigger: "change" }],
 });
 
 // 默认对外导出

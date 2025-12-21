@@ -15,10 +15,10 @@ import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type {
-  ArrearsDetailsFormVO,
-  ArrearsDetailsFormProps,
-  ArrearsDetailsListListItem,
-  ArrearsDetailsListQueryParams
+	ArrearsDetailsFormVO,
+	ArrearsDetailsFormProps,
+	ArrearsDetailsListListItem,
+	ArrearsDetailsListQueryParams,
 } from "@01s-11comm/type";
 import { defaultArrearsDetailsForm } from "@01s-11comm/type";
 import ArrearsDetailsForm from "./components/form.vue";
@@ -205,7 +205,6 @@ function handleReSearch() {
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
 
 /** 测试异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);

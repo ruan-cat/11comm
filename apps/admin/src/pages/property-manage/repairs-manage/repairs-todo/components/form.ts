@@ -1,4 +1,4 @@
-import { RepairsTodoFormVO, defaultRepairsTodoForm } from "@01s-11comm/type";
+import { type RepairsTodoFormVO, defaultRepairsTodoForm } from "@01s-11comm/type";
 
 // 为了向后兼容，创建类型别名
 export type 报修待办表单_VO = RepairsTodoFormVO;

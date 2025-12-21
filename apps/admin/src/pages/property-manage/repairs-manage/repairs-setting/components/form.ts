@@ -1,12 +1,12 @@
 import {
-	RepairsSettingFormVO,
+	type RepairsSettingFormVO,
 	defaultRepairsSettingForm,
 	type RepairsSettingType,
 	type DispatchMethodType,
 	type AreaType,
 	type OwnerDisplayType,
 	type NotificationMethodType,
-	type ReturnVisitSettingType
+	type ReturnVisitSettingType,
 } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 

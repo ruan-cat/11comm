@@ -10,7 +10,12 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
-import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams, expenseItemNameOptions, expenseStatusOptions } from "@01s-11comm/type";
+import type {
+	ExpenseSummaryTableListItem,
+	ExpenseSummaryTableQueryParams,
+	expenseItemNameOptions,
+	expenseStatusOptions,
+} from "@01s-11comm/type";
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -131,9 +136,7 @@ async function loadTableData() {
 	let filteredData = mockTableData;
 
 	if (plusSearchModel.value.time) {
-		filteredData = filteredData.filter((item) =>
-			item.time.includes(plusSearchModel.value.time!),
-		);
+		filteredData = filteredData.filter((item) => item.time.includes(plusSearchModel.value.time!));
 	}
 
 	if (plusSearchModel.value.expenseItemId) {

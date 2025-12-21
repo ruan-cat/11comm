@@ -1,10 +1,5 @@
-import {
-	defaultHouseChargeForm
-} from "@01s-11comm/type";
-import type {
-	HouseChargeFormVO,
-	房屋收费_VO
-} from "@01s-11comm/type";
+import { defaultHouseChargeForm } from "@01s-11comm/type";
+import type { HouseChargeFormVO, 房屋收费_VO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
 // Re-export types from type package for compatibility
@@ -17,7 +12,7 @@ export type {
 	进位方式类型,
 	保留小数位类型,
 	状态类型,
-	费用类型
+	费用类型,
 } from "@01s-11comm/type";
 
 // ==================== 类型定义 ====================

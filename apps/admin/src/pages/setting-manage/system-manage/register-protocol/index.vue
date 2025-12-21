@@ -34,7 +34,7 @@ const registerProtocol = computed<RegisterProtocol>(() => {
 </script>
 
 <template>
-	<div class="register-protocol-container" v-loading="isFetching">
+	<div v-loading="isFetching" class="register-protocol-container">
 		<ElCard class="box-card" shadow="never">
 			<template #header>
 				<div class="card-header">

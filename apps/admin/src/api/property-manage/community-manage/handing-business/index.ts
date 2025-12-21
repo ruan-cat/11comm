@@ -12,4 +12,3 @@ export function useHandingBusinessListQuery(initialParams: Partial<HandingBusine
 		initialParams,
 	});
 }
-

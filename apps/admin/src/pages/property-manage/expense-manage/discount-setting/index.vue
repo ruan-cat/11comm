@@ -15,7 +15,11 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type DiscountSettingFormProps, defaultForm, type 折扣设置表单_VO } from "./components/form";
 import DiscountSettingForm from "./components/form.vue";
 import { useDiscountSettingListQuery } from "@/api/property-manage/expense-manage/discount-setting";
-import { type DiscountSettingListItem, type DiscountSettingQueryParams, discountSettingTypeOptions } from "@01s-11comm/type";
+import {
+	type DiscountSettingListItem,
+	type DiscountSettingQueryParams,
+	discountSettingTypeOptions,
+} from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";

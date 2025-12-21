@@ -1,11 +1,6 @@
-import { type Mode } from "@/composables/use-mode";
-import type {
-	MerchantAdminFormVO,
-} from "@01s-11comm/type";
-import {
-	merchantAdminDefaultForm as defaultFormValues,
-	propertyCompanyOptions,
-} from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
+import type { MerchantAdminFormVO } from "@01s-11comm/type";
+import { merchantAdminDefaultForm as defaultFormValues, propertyCompanyOptions } from "@01s-11comm/type";
 
 /** FormVO类型别名 */
 export type FormVO = MerchantAdminFormVO;

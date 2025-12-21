@@ -86,12 +86,8 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入类型名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	isAudit: [
-		{ required: true, message: "请选择是否审核", trigger: "change" },
-	],
-	description: [
-		{ max: 500, message: "描述长度不能超过500个字符", trigger: "blur" },
-	],
+	isAudit: [{ required: true, message: "请选择是否审核", trigger: "change" }],
+	description: [{ max: 500, message: "描述长度不能超过500个字符", trigger: "blur" }],
 });
 
 defineExpose({

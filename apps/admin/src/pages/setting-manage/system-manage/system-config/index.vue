@@ -224,7 +224,7 @@ function openEditDialog() {
 </script>
 
 <template>
-	<div class="system-config-container" v-loading="isFetching">
+	<div v-loading="isFetching" class="system-config-container">
 		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">

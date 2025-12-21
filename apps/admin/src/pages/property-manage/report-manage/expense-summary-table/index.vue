@@ -12,7 +12,12 @@ import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import BuildChart from "./components/build.vue";
 import PaymentChart from "./components/payment.vue";
-import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams, expenseItemNameOptions, expenseStatusOptions } from "@01s-11comm/type";
+import type {
+	ExpenseSummaryTableListItem,
+	ExpenseSummaryTableQueryParams,
+	expenseItemNameOptions,
+	expenseStatusOptions,
+} from "@01s-11comm/type";
 import { useExpenseSummaryTableListQuery } from "@/api/property-manage/report-manage/expense-summary-table";
 
 /** 表格列配置 */

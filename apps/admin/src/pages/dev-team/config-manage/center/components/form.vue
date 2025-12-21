@@ -5,13 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import {
-	ConfigCenterFormProps,
-	ConfigCenterFormVO,
-	defaultForm,
-	configTypeOptions,
-	configStatusOptions,
-} from "./form";
+import { ConfigCenterFormProps, ConfigCenterFormVO, defaultForm, configTypeOptions, configStatusOptions } from "./form";
 
 const props = defineProps<ConfigCenterFormProps>();
 

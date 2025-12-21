@@ -1,5 +1,4 @@
-
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 // 从 @01s-11comm/type 导入缺失的类型
 import type { 组件类型, 查询方式 } from "@01s-11comm/type";
 

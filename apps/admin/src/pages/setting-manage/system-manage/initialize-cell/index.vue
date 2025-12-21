@@ -18,7 +18,12 @@ import InitializeCellForm from "./components/form.vue";
 import { type FormatFormProps, defaultForm as formatDefaultForm } from "./components/format-form";
 import FormatForm from "./components/format-form.vue";
 
-import { mockTableData, type InitializeCommunityListItem, type InitializeCommunityListQueryVO, type InitializeCommunityFormVO } from "./test-data";
+import {
+	mockTableData,
+	type InitializeCommunityListItem,
+	type InitializeCommunityListQueryVO,
+	type InitializeCommunityFormVO,
+} from "./test-data";
 
 const initializeCellFormInstance = ref<InstanceType<typeof InitializeCellForm> | null>(null);
 const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
@@ -401,9 +406,7 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
-							查看
-						</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })"> 查看 </ElButton>
 						<ElButton type="info" @click="handleFormat(row)"> 格式化 </ElButton>
 					</template>
 				</PureTable>

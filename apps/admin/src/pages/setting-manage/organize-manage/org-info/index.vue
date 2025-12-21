@@ -120,7 +120,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "关联员工",
@@ -225,7 +224,6 @@ async function handleSearch() {
 		pageIndex: 1,
 	});
 }
-
 
 // 组织操作
 function handleAddOrg() {

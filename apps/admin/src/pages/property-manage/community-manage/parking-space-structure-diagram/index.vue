@@ -25,7 +25,9 @@ import {
 } from "@01s-11comm/type";
 
 /** 表单组件实例 */
-const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(null);
+const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(
+	null,
+);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -152,7 +154,6 @@ const columns = ref<TableColumnList>([
 		slot: "operation",
 	},
 ]);
-
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -368,12 +369,8 @@ onMounted(async () => {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
-				<ElButton type="info" @click="refreshParkingSpaceStatus">
-					刷新状态
-				</ElButton>
-				<ElButton type="warning" @click="exportParkingSpaceStructure">
-					导出结构图
-				</ElButton>
+				<ElButton type="info" @click="refreshParkingSpaceStatus"> 刷新状态 </ElButton>
+				<ElButton type="warning" @click="exportParkingSpaceStructure"> 导出结构图 </ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -386,9 +383,7 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="gotoParkingSpaceDetailPage(row)">
-							查看详情
-						</ElButton>
+						<ElButton type="info" @click="gotoParkingSpaceDetailPage(row)"> 查看详情 </ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>

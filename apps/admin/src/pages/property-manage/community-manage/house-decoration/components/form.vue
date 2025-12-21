@@ -221,12 +221,8 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	applicationTime: [
-		{ required: true, message: "请选择申请时间", trigger: "change" },
-	],
-	decorationTime: [
-		{ required: true, message: "请选择装修时间", trigger: "change" },
-	],
+	applicationTime: [{ required: true, message: "请选择申请时间", trigger: "change" }],
+	decorationTime: [{ required: true, message: "请选择装修时间", trigger: "change" }],
 	decorationCompany: [
 		{ required: true, message: "请输入装修单位", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
@@ -235,24 +231,12 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入负责人电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	status: [
-		{ required: true, message: "请选择装修状态", trigger: "change" },
-	],
-	isDelayed: [
-		{ required: true, message: "请选择是否延期", trigger: "change" },
-	],
-	delayTime: [
-		{ required: true, message: "请选择延期时间", trigger: "change" },
-	],
-	isViolated: [
-		{ required: true, message: "请选择是否违规", trigger: "change" },
-	],
-	violationDescription: [
-		{ max: 500, message: "违规说明长度不能超过 500 个字符", trigger: "blur" },
-	],
-	remarks: [
-		{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" },
-	],
+	status: [{ required: true, message: "请选择装修状态", trigger: "change" }],
+	isDelayed: [{ required: true, message: "请选择是否延期", trigger: "change" }],
+	delayTime: [{ required: true, message: "请选择延期时间", trigger: "change" }],
+	isViolated: [{ required: true, message: "请选择是否违规", trigger: "change" }],
+	violationDescription: [{ max: 500, message: "违规说明长度不能超过 500 个字符", trigger: "blur" }],
+	remarks: [{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" }],
 });
 
 /** 默认对外导出函数 */

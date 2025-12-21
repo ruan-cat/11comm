@@ -223,19 +223,13 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入房屋编号", trigger: "blur" },
 		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
 	],
-	expenseItem: [
-		{ required: true, message: "请选择费用项目", trigger: "change" },
-	],
+	expenseItem: [{ required: true, message: "请选择费用项目", trigger: "change" }],
 	paymentPeriod: [
 		{ required: true, message: "请输入付费周期", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	paymentStartTime: [
-		{ required: true, message: "请选择缴费起始时间", trigger: "change" },
-	],
-	paymentEndTime: [
-		{ required: true, message: "请选择缴费结束时间", trigger: "change" },
-	],
+	paymentStartTime: [{ required: true, message: "请选择缴费起始时间", trigger: "change" }],
+	paymentEndTime: [{ required: true, message: "请选择缴费结束时间", trigger: "change" }],
 	payableAmount: [
 		{ required: true, message: "请输入应付金额", trigger: "blur" },
 		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
@@ -248,21 +242,11 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入操作员工姓名", trigger: "blur" },
 		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
 	],
-	paymentTime: [
-		{ required: true, message: "请选择缴费时间", trigger: "change" },
-	],
-	auditStatus: [
-		{ required: true, message: "请选择审核状态", trigger: "change" },
-	],
-	auditDescription: [
-		{ max: 500, message: "审核说明长度不能超过 500 个字符", trigger: "blur" },
-	],
-	paymentRemark: [
-		{ max: 500, message: "缴费备注长度不能超过 500 个字符", trigger: "blur" },
-	],
-	details: [
-		{ max: 1000, message: "详情长度不能超过 1000 个字符", trigger: "blur" },
-	],
+	paymentTime: [{ required: true, message: "请选择缴费时间", trigger: "change" }],
+	auditStatus: [{ required: true, message: "请选择审核状态", trigger: "change" }],
+	auditDescription: [{ max: 500, message: "审核说明长度不能超过 500 个字符", trigger: "blur" }],
+	paymentRemark: [{ max: 500, message: "缴费备注长度不能超过 500 个字符", trigger: "blur" }],
+	details: [{ max: 1000, message: "详情长度不能超过 1000 个字符", trigger: "blur" }],
 });
 
 /** 默认对外导出函数 */

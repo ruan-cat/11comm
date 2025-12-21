@@ -9,10 +9,7 @@ definePage({
 });
 
 import { transformI18n } from "@/plugins/i18n";
-import type {
-  OwnerPaymentDetailsListItem,
-  OwnerPaymentDetailsQueryParams
-} from "@01s-11comm/type";
+import type { OwnerPaymentDetailsListItem, OwnerPaymentDetailsQueryParams } from "@01s-11comm/type";
 import { useOwnerPaymentDetailsListQuery } from "@/api/property-manage/report-manage/owner-payment-details";
 
 /** 表格列配置 */

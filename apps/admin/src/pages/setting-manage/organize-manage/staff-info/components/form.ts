@@ -29,4 +29,3 @@ export const defaultForm: StaffInfoFormVO = {
 	orgName: "",
 	avatar: "",
 };
-

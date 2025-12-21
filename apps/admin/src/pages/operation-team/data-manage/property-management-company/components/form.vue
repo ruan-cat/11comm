@@ -211,28 +211,16 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请输入公司法人姓名", trigger: "blur" },
 		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
 	],
-	成立日期: [
-		{ required: true, message: "请选择成立日期", trigger: "change" },
-	],
-	地标: [
-		{ max: 50, message: "长度不能超过 50 个字符", trigger: "blur" },
-	],
+	成立日期: [{ required: true, message: "请选择成立日期", trigger: "change" }],
+	地标: [{ max: 50, message: "长度不能超过 50 个字符", trigger: "blur" }],
 	开通小区数量: [
 		{ required: true, message: "请输入开通小区数量", trigger: "blur" },
 		{ type: "number", min: 0, max: 9999, message: "数量范围 0-9999", trigger: "blur" },
 	],
-	公司类型: [
-		{ required: true, message: "请选择公司类型", trigger: "change" },
-	],
-	服务等级: [
-		{ required: true, message: "请选择服务等级", trigger: "change" },
-	],
-	运营状态: [
-		{ required: true, message: "请选择运营状态", trigger: "change" },
-	],
-	备注: [
-		{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" },
-	],
+	公司类型: [{ required: true, message: "请选择公司类型", trigger: "change" }],
+	服务等级: [{ required: true, message: "请选择服务等级", trigger: "change" }],
+	运营状态: [{ required: true, message: "请选择运营状态", trigger: "change" }],
+	备注: [{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" }],
 });
 
 /** 默认对外导出函数 */
