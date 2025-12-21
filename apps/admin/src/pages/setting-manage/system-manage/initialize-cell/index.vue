@@ -39,7 +39,7 @@ const plusSearchModelRef: FieldValues & Partial<InitializeCommunityQueryParams> 
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -121,7 +121,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -164,9 +164,9 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 	const title = `${modeText.value}初始化小区`;
 	/** 业务对象 */
 	const initializeCommunityForm: InitializeCommunityFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					communityId: row?.communityId || "",
 					communityName: row?.communityName || "",
@@ -174,7 +174,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 					cityCode: row?.cityCode || "",
 					status: row?.status || "",
 				})
-			: cloneDeep({
+			: structuredClone({
 					...defaultForm,
 					communityId: row?.communityId || "",
 					communityName: row?.communityName || "",
@@ -252,10 +252,10 @@ function openFormatDialog(row: InitializeCommunityListItem) {
 
 	/** 表单组件需要的props */
 	const formProps: FormatFormProps = {
-		form: cloneDeep(formatDefaultForm),
-		defaultValues: cloneDeep(formatDefaultForm),
-		小区ID: row.communityId,
-		小区名称: row.communityName,
+		form: structuredClone(formatDefaultForm),
+		defaultValues: structuredClone(formatDefaultForm),
+		communityId: row.communityId,
+		communityName: row.communityName,
 	};
 
 	/** 弹框组件所需的变量 */

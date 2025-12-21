@@ -1,12 +1,9 @@
 import type { OptionsType } from "plus-pro-components";
 import type { InitializeCommunityFormVO } from "@01s-11comm/type";
+import { auditStatusOptions } from "@01s-11comm/type";
 
-/** 状态选项 */
-export const statusOptions: OptionsType = [
-	{ label: "待审核", value: "待审核" },
-	{ label: "审核完成", value: "审核完成" },
-	{ label: "审核失败", value: "审核失败" },
-];
+/** 状态选项 - 从类型项目导入的审核状态选项 */
+export const statusOptions = auditStatusOptions;
 
 // 重新导出类型，供组件使用
 export type { InitializeCommunityFormVO };

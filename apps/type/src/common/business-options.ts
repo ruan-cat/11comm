@@ -21,8 +21,8 @@ export const contractTypeOptions: OptionsType = [
  */
 export const auditStatusOptions: OptionsType = [
 	{ label: "待审核", value: "待审核" },
-	{ label: "已通过", value: "已通过" },
-	{ label: "已拒绝", value: "已拒绝" },
+	{ label: "审核完成", value: "审核完成" },
+	{ label: "审核失败", value: "审核失败" },
 ];
 
 /** 费用项名称选项 Expense item name options */
