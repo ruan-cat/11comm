@@ -462,3 +462,8 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 ### 017 `类型项目`的代码组织方式与导出规范
 
 [017](./017.md)
+
+### 018 <!-- TODO: --> 代码写法手动批量替换
+
+- `<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">`
+- `<PureTableBar :="pureTableBarProps" @refresh="doFetch">`
