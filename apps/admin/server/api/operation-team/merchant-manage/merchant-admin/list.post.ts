@@ -1,39 +1,36 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { MerchantAdminListItem, MerchantAdminQueryParams } from "@01s-11comm/type";
+/**
+ * @file 商户管理员列表接口
+ * @description Merchant admin list API
+ * POST /api/operation-team/merchant-manage/merchant-admin/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, MerchantAdminListItem, MerchantAdminQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockMerchantAdminData } from "./mock-data";
 
-/**
- * @description 商户管理员列表 POST API
- * Merchant admin list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MerchantAdminListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<MerchantAdminListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<MerchantAdminQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, propertyName, adminName, contactPhone, status } = body;
+	const defaultParams: MerchantAdminQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockMerchantAdminData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockMerchantAdminData, filters);
 
-	// 数据筛选
-	if (propertyName) {
-		filteredData = filteredData.filter((item) => item.propertyName.includes(propertyName));
-	}
-	if (adminName) {
-		filteredData = filteredData.filter((item) => item.adminName.includes(adminName));
-	}
-	if (contactPhone) {
-		filteredData = filteredData.filter((item) => item.adminPhone.includes(contactPhone));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<MerchantAdminListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -44,7 +41,8 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<Merchant
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
 

@@ -1,40 +1,47 @@
 /**
  * @file 组织管理-角色权限-列表接口
  * @description Role permission list API
+ * POST /api/setting-manage/organize-manage/role-permission/list
  */
 
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, RolePermission, RolePermissionListQuery } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockRolePermissionData } from "./mock-data";
 
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<RolePermission>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<RolePermission>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<RolePermissionListQuery>(event);
-	const { pageIndex = 1, pageSize = 10, name, code } = body ?? {};
+	const defaultParams: RolePermissionListQuery = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockRolePermissionData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockRolePermissionData, filters);
 
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-
-	if (code) {
-		filteredData = filteredData.filter((item) => item.code.includes(code));
-	}
-
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
-	const list = filteredData.slice(startIndex, startIndex + pageSize);
+	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	return {
-		code: 200,
-		message: "success",
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<RolePermission>> = {
 		success: true,
+		code: 200,
+		message: "查询成功",
 		data: {
-			list,
+			list: pageData,
 			total,
 			pageIndex,
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
 	};
+
+	return response;
 });

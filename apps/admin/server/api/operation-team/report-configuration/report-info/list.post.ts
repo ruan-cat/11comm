@@ -1,36 +1,36 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ReportInfoListItem, ReportInfoQueryParams } from "@01s-11comm/type";
+/**
+ * @file 报表信息列表接口
+ * @description Report info list API
+ * POST /api/operation-team/report-configuration/report-info/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, ReportInfoListItem, ReportInfoQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockReportInfoData } from "./mock-data";
 
-/**
- * @description 报表信息列表 POST API
- * Report info list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ReportInfoListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportInfoListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<ReportInfoQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, reportId, reportGroup, optionTitle } = body;
+	const defaultParams: ReportInfoQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockReportInfoData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockReportInfoData, filters);
 
-	// 数据筛选
-	if (reportId) {
-		filteredData = filteredData.filter((item) => item.reportId.includes(reportId));
-	}
-	if (reportGroup) {
-		filteredData = filteredData.filter((item) => item.reportGroup.includes(reportGroup));
-	}
-	if (optionTitle) {
-		filteredData = filteredData.filter((item) => item.optionTitle.includes(optionTitle));
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<ReportInfoListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -41,7 +41,8 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ReportIn
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
 

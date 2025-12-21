@@ -1,9 +1,9 @@
 /**
- * @file 初始化小区列表接口
+ * @file 系统管理-初始化小区-初始化小区列表接口
  * @description Initialize community list API
+ * POST /api/setting-manage/system-manage/initialize-cell/list
  */
 
-/** 获取初始化小区列表 POST /api/setting-manage/system-manage/initialize-cell/list */
 import { defineHandler, readBody } from "nitro/h3";
 import type {
 	JsonVO,
@@ -11,31 +11,29 @@ import type {
 	InitializeCommunityListItem,
 	InitializeCommunityQueryParams,
 } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockInitializeCommunityData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<InitializeCommunityListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<InitializeCommunityQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, communityId, communityName } = body ?? {};
+	const defaultParams: InitializeCommunityQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	/** 数据筛选 */
-	let filteredData = [...mockInitializeCommunityData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockInitializeCommunityData, filters);
 
-	if (communityId) {
-		filteredData = filteredData.filter((item) =>
-			item.communityId.toLowerCase().includes(communityId.toLowerCase())
-		);
-	}
-	if (communityName) {
-		filteredData = filteredData.filter((item) =>
-			item.communityName.toLowerCase().includes(communityName.toLowerCase())
-		);
-	}
-
-	/** 分页处理 */
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<InitializeCommunityListItem>> = {
 		success: true,

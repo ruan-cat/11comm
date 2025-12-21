@@ -1,18 +1,18 @@
 /**
- * @file 房屋装修列表接口
- * @description House decoration list API
- * POST /api/property-manage/community-manage/house-decoration/list
+ * @file 配置项列表接口
+ * @description Config item list API
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, HouseDecorationListItem, HouseDecorationQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ConfigItemListItem, ConfigItemQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
-import { mockHouseDecorationData } from "./mock-data";
+import { mockConfigItemData } from "./mock-data";
+import consola from "consola";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseDecorationListItem>>> => {
-	const body = await readBody<HouseDecorationQueryParams>(event);
-	const defaultParams: HouseDecorationQueryParams = {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigItemListItem>>> => {
+	const body = await readBody<ConfigItemQueryParams>(event);
+	const defaultParams: ConfigItemQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -20,7 +20,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseDecorati
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockHouseDecorationData, filters);
+	const filteredData = filterDataByQuery(mockConfigItemData, filters);
 
 	/** 分页处理 */
 	const total = filteredData.length;
@@ -28,7 +28,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseDecorati
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<HouseDecorationListItem>> = {
+	const response: JsonVO<PageDTO<ConfigItemListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

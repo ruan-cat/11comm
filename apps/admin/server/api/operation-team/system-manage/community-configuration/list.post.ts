@@ -1,41 +1,34 @@
 /**
  * @file 小区配置列表接口
  * @description Community configuration list API
+ * POST /api/operation-team/system-manage/community-configuration/list
  */
 
-/** 获取小区配置列表 POST /api/operation-team/system-manage/community-configuration/list */
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, CommunityConfigListItem, CommunityConfigQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockCommunityConfigData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityConfigListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<CommunityConfigQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, communityId, communityName, settingName, settingType, statusCd } = body ?? {};
+	const defaultParams: CommunityConfigQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	/** 数据筛选 */
-	let filteredData = [...mockCommunityConfigData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockCommunityConfigData, filters);
 
-	if (communityId) {
-		filteredData = filteredData.filter((item) => item.communityId.toLowerCase().includes(communityId.toLowerCase()));
-	}
-	if (communityName) {
-		filteredData = filteredData.filter((item) => item.communityName.toLowerCase().includes(communityName.toLowerCase()));
-	}
-	if (settingName) {
-		filteredData = filteredData.filter((item) => item.settingName.toLowerCase().includes(settingName.toLowerCase()));
-	}
-	if (settingType) {
-		filteredData = filteredData.filter((item) => item.settingType === settingType);
-	}
-	if (statusCd) {
-		filteredData = filteredData.filter((item) => item.statusCd === statusCd);
-	}
-
-	/** 分页处理 */
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<CommunityConfigListItem>> = {
 		success: true,

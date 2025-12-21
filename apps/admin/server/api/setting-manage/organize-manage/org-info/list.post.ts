@@ -1,41 +1,47 @@
 /**
  * @file 组织管理-组织信息-员工列表接口
  * @description Organization info employee list API
+ * POST /api/setting-manage/organize-manage/org-info/list
  */
 
-import { defineEventHandler, readBody } from "h3";
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, Employee, EmployeeListQuery } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockEmployeeData } from "./mock-data";
 
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<Employee>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<Employee>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<EmployeeListQuery>(event);
-	const { pageIndex = 1, pageSize = 10, employeeName, orgId } = body ?? {};
+	const defaultParams: EmployeeListQuery = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockEmployeeData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockEmployeeData, filters);
 
-	if (employeeName) {
-		filteredData = filteredData.filter((item) => item.name.includes(employeeName));
-	}
-
-	if (orgId) {
-		// 简单的模拟：只匹配当前组织，实际可能需要匹配子组织
-		filteredData = filteredData.filter((item) => item.orgId === orgId);
-	}
-
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
-	const list = filteredData.slice(startIndex, startIndex + pageSize);
+	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	return {
-		code: 200,
-		message: "success",
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<Employee>> = {
 		success: true,
+		code: 200,
+		message: "查询成功",
 		data: {
-			list,
+			list: pageData,
 			total,
 			pageIndex,
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
 	};
+
+	return response;
 });

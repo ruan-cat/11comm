@@ -1,28 +1,35 @@
-import { defineEventHandler } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { RegisterProtocol } from "@01s-11comm/type";
+/**
+ * @file 系统管理-注册协议-注册协议列表接口
+ * @description Register protocol list API
+ * POST /api/setting-manage/system-manage/register-protocol/list
+ */
+
+import { defineHandler } from "nitro/h3";
+import type { JsonVO, PageDTO, RegisterProtocol } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { mockRegisterProtocolData } from "./mock-data";
 
-/**
- * @description 注册协议列表 POST API
- */
-export default defineEventHandler(async (): Promise<JsonVO<PageDTO<RegisterProtocol>>> => {
+export default defineHandler(async (): Promise<JsonVO<PageDTO<RegisterProtocol>>> => {
 	// 注册协议只有一个，直接返回
 	const pageData = mockRegisterProtocolData;
 	const total = pageData.length;
+	const pageIndex = DEFAULT_PAGE_INDEX;
+	const pageSize = DEFAULT_PAGE_SIZE;
 
-	// 返回标准格式
-	return {
+	// 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<RegisterProtocol>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
 		data: {
 			list: pageData,
 			total,
-			pageIndex: 1,
-			pageSize: 10,
+			pageIndex,
+			pageSize,
 			totalPages: 1,
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

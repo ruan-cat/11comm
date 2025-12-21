@@ -1,21 +1,27 @@
 /**
- * @file 房屋装修查询 Hook
- * @description 提供房屋装修列表数据查询功能
+ * @file 房屋装修 API Hook
+ * @description House decoration API hooks using TanStack Query
  */
 
 import { useListQuery } from "@/composables/use-list-query";
 import type { HouseDecorationListItem, HouseDecorationQueryParams } from "@01s-11comm/type";
 
+/** API 路径 */
+const API_URL = "/api/property-manage/community-manage/house-decoration/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "houseDecoration";
+
 /**
- * 获取房屋装修列表数据
- * Get house decoration list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 房屋装修列表查询 Hook
+ * House decoration list query hook
  */
 export function useHouseDecorationListQuery(initialParams: Partial<HouseDecorationQueryParams>) {
 	return useListQuery<HouseDecorationListItem, HouseDecorationQueryParams>({
-		queryKeyPrefix: "propertyManage:communityManage:houseDecoration:list",
-		apiUrl: "/api/property-manage/community-manage/house-decoration/list",
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useHouseDecorationListQuery;

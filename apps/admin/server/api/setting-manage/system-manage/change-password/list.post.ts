@@ -1,62 +1,36 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ChangePasswordRecord, ChangePasswordRecordListQuery } from "@01s-11comm/type";
+/**
+ * @file 系统管理-修改密码-密码修改记录列表接口
+ * @description Change password record list API
+ * POST /api/setting-manage/system-manage/change-password/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, ChangePasswordRecord, ChangePasswordRecordListQuery } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockChangePasswordRecordData } from "./mock-data";
 
-/**
- * @description 密码修改记录列表 POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ChangePasswordRecord>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ChangePasswordRecord>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<ChangePasswordRecordListQuery>(event);
-	const {
-		pageIndex = 1,
-		pageSize = 10,
-		username,
-		realName,
-		department,
-		changeTime,
-		changeType,
-		status,
-		changeTimeRange,
-	} = body;
+	const defaultParams: ChangePasswordRecordListQuery = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockChangePasswordRecordData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockChangePasswordRecordData, filters);
 
-	// 数据筛选
-	if (username) {
-		filteredData = filteredData.filter((item) => item.username.includes(username));
-	}
-	if (realName) {
-		filteredData = filteredData.filter((item) => item.realName.includes(realName));
-	}
-	if (department) {
-		filteredData = filteredData.filter((item) => item.department === department);
-	}
-	if (changeTime) {
-		filteredData = filteredData.filter((item) => item.changeTime.includes(changeTime));
-	}
-	if (changeType) {
-		filteredData = filteredData.filter((item) => item.changeType === changeType);
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-	if (changeTimeRange && changeTimeRange[0] && changeTimeRange[1]) {
-		const startTime = new Date(changeTimeRange[0]).getTime();
-		const endTime = new Date(changeTimeRange[1]).getTime();
-		filteredData = filteredData.filter((item) => {
-			const time = new Date(item.changeTime).getTime();
-			return time >= startTime && time <= endTime;
-		});
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<ChangePasswordRecord>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -67,6 +41,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ChangePa
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
