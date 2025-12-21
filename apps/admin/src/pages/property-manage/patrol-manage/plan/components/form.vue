@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { cloneDeep } from "lodash-es";
+
 import { PatrolPlanFormProps } from "./form";
 
 const props = defineProps<PatrolPlanFormProps>();
@@ -20,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & PatrolPlanFormVO;
+const toRefForm = structuredClone(props.form) as FieldValues & PatrolPlanFormVO;
 
 /**
  * 表单对象

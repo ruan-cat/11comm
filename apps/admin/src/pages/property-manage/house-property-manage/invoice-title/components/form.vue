@@ -22,7 +22,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as InvoiceTitleFormVO;
+const toRefForm = structuredClone(props.form) as InvoiceTitleFormVO;
 
 /**
  * 表单对象

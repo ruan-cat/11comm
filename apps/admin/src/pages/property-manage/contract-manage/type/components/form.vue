@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
@@ -24,7 +23,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & ContractTypeFormVO;
+const toRefForm = structuredClone(props.form) as FieldValues & ContractTypeFormVO;
 
 /**
  * 表单对象

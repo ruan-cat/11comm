@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import { cloneDeep } from "lodash-es";
+
 import { IssuesSettingFormProps, type 工单池表单_VO } from "./form";
 
 const props = defineProps<IssuesSettingFormProps>();
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 工单池表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & 工单池表单_VO;
 
 /**
  * 表单对象

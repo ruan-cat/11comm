@@ -10,7 +10,7 @@ definePage({
 
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type DictionaryTypeListItem, type DictionaryTypeQueryParams, statusOptions } from "@01s-11comm/type";
+import { type DictionaryTypeListItem, type DictionaryTypeQueryParams, dictionaryTypeStatusOptions } from "@01s-11comm/type";
 import { useDictionaryTypeListQuery } from "@/api/dev-team/config-manage/type";
 
 /**
@@ -129,7 +129,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: statusOptions,
+		options: dictionaryTypeStatusOptions,
 	},
 ]);
 

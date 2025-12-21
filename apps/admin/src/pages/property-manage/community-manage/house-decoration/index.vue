@@ -219,7 +219,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -262,7 +262,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const 房屋装修表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
@@ -280,7 +280,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					违规说明: row?.violationDescription || "",
 					备注: row?.remarks || "",
 				}
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: HouseDecorationFormProps = {

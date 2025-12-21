@@ -16,7 +16,6 @@ import {
 import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
-import { cloneDeep } from "@pureadmin/utils";
 
 import {
 	HouseChargeFormProps,
@@ -49,7 +48,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 房屋收费_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & 房屋收费_VO;
 
 /**
  * 表单对象

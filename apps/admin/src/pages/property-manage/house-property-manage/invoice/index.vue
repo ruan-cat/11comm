@@ -198,8 +198,8 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 
 	/** 业务对象 */
 	const formData: InvoiceFormVO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				code: row?.code || "",
 				invoiceType: row?.invoiceType || "",

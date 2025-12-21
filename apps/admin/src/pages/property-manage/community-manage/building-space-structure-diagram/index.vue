@@ -227,7 +227,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const 楼栋结构图表单_VO: 楼栋结构图表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
@@ -244,7 +244,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					contactPhone: row?.contactPhone || "",
 					remarks: row?.remarks || "",
 				}
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: BuildingSpaceStructureDiagramFormProps = {

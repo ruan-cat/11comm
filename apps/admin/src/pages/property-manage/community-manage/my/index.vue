@@ -36,7 +36,7 @@ const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -194,7 +194,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -223,9 +223,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const CommunityManageMyFormVO: CommunityManageMyFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					province: (row?.province as CommunityManageMyFormVO["province"]) || "福建省",
 					city: row?.city || "",
@@ -238,7 +238,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					endTime: "", // MyCommunityListItem doesn't have endTime?
 					status: (row?.status as CommunityManageMyFormVO["status"]) || "正常运营",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: CommunityManageMyFormProps = {

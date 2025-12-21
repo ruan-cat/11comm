@@ -90,7 +90,7 @@ const plusSearchModelRef: FieldValues & Partial<ExpenseSummaryTableQueryParams> 
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -159,7 +159,7 @@ async function loadTableData() {
 
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }

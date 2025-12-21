@@ -187,8 +187,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 表单组件需要的props */
 	const formProps: StaffInfoFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+		form: structuredClone(defaultForm),
+		defaultValues: structuredClone(defaultForm),
 	};
 
 	const testEditProps: StaffInfoFormProps = {

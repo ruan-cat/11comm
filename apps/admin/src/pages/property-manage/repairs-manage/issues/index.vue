@@ -11,7 +11,7 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { cloneDeep } from "lodash-es";
+
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./components/form";
@@ -145,7 +145,7 @@ const plusSearchModelRef: FieldValues & 工单池_列表查询_VO = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -243,7 +243,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 重置搜索条件并重新加载数据 */
 async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	pagination.value.currentPage = 1;
 	await loadTableData();
 }
@@ -324,9 +324,9 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 
 	/** 业务对象 */
 	const 工单池表单VO: 工单池表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					工单编码: row?.工单编码 || "",
 					位置: row?.位置 || "",
@@ -342,8 +342,8 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 					违规说明: row?.违规说明 || "",
 					备注: row?.备注 || "",
 				})
-			: cloneDeep(defaultForm);
-	const defaultValues = cloneDeep(工单池表单VO);
+			: structuredClone(defaultForm);
+	const defaultValues = structuredClone(工单池表单VO);
 
 	/** 表单组件需要的props */
 	const formProps: IssuesSettingFormProps = {

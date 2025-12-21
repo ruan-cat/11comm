@@ -1,7 +1,12 @@
-import type { OptionsType } from "../../../common";
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 /**
- * @description 房屋装修列表数据
+ * @file 房屋装修类型定义
+ * @description House decoration types
+ */
+
+/**
+ * 房屋装修列表数据
  * House decoration list item
  */
 export interface HouseDecorationListItem {
@@ -34,10 +39,10 @@ export interface HouseDecorationListItem {
 }
 
 /**
- * @description 房屋装修列表查询参数
- * House decoration list query parameters
+ * 房屋装修查询参数
+ * House decoration query parameters
  */
-export interface HouseDecorationQueryParams {
+export interface HouseDecorationQueryParams extends BaseListQueryParams {
 	/** 房屋编号 House number */
 	houseNumber?: string;
 	/** 联系人 Contact name */
@@ -54,10 +59,6 @@ export interface HouseDecorationQueryParams {
 	applicationStartTime?: string;
 	/** 装修申请结束时间 Application end time */
 	applicationEndTime?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**

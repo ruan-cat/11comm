@@ -217,8 +217,8 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 	const title = `${modeText.value}房屋管理`;
 
 	const formData: HouseManagementFormVO = isAdd.value
-		? cloneDeep(defaultForm)
-		: cloneDeep({
+		? structuredClone(defaultForm)
+		: structuredClone({
 				...defaultForm,
 				house: row?.houseCode || "",
 				floor: row?.floor || "",
