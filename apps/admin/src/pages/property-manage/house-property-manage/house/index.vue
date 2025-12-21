@@ -8,58 +8,46 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type HouseManageFormProps, defaultForm, HouseManagementFormVO } from "./components/form";
 import HouseManageForm from "./components/form.vue";
 import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type";
 import { buildingUnitOptions, houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
+import { useHouseListQuery } from "@/api/property-manage/house-property-manage/house/use-house-list-query";
 
 const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>(null);
 
-/** 模拟表格数据 */
-const allTableData: HouseListItem[] = [
-	{
-		houseCode: "A-101",
-		floor: "1",
-		owner: "张三",
-		houseType: "住宅",
-		houseArea: "120",
-		rent: "3000",
-		houseStatus: "已入住",
-		validUntil: "2025-12-31",
-		ownerMembers: "3",
-		ownerVehicles: "1",
-		ownerHouses: "1",
-		complaints: "0",
-		repairs: "2",
-		houseArrears: "0",
-		ownerArrears: "0",
-		houseContract: "有",
-	},
-	{
-		houseCode: "A-102",
-		floor: "1",
-		owner: "李四",
-		houseType: "住宅",
-		houseArea: "100",
-		rent: "2500",
-		houseStatus: "空闲",
-		validUntil: "2025-06-30",
-		ownerMembers: "0",
-		ownerVehicles: "0",
-		ownerHouses: "1",
-		complaints: "1",
-		repairs: "0",
-		houseArrears: "500",
-		ownerArrears: "500",
-		houseContract: "有",
-	},
-];
+/**
+ * 表格搜索栏 双向绑定的变量 原本的数据
+ * @description
+ * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ */
+const plusSearchModelRef: FieldValues & Partial<HouseQueryParams> = {
+	houseCode: "",
+	houseStatus: "",
+	houseType: "",
+	buildingUnit: "",
+};
 
-/** 表格数据 */
-const tableData = ref<HouseListItem[]>([]);
+/** 表格搜索栏 重置功能用的默认数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+
+/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useHouseListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -153,94 +141,11 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "房屋管理",
 	columns: columns.value,
 });
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		let filteredData = allTableData;
-
-		if (plusSearchModel.value.houseCode) {
-			filteredData = filteredData.filter((item) => item.houseCode.includes(String(plusSearchModel.value.houseCode)));
-		}
-		if (plusSearchModel.value.houseStatus) {
-			filteredData = filteredData.filter((item) => item.houseStatus === plusSearchModel.value.houseStatus);
-		}
-		if (plusSearchModel.value.houseType) {
-			filteredData = filteredData.filter((item) => item.houseType === plusSearchModel.value.houseType);
-		}
-		if (plusSearchModel.value.buildingUnit) {
-			filteredData = filteredData.filter((item) => item.houseCode.includes(String(plusSearchModel.value.buildingUnit)));
-		}
-
-		pagination.value.total = filteredData.length;
-
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-	}
-}
-
-/** 房屋管理_列表查询_VO */
-interface HouseQueryVO {
-	houseCode: string;
-	houseStatus: string;
-	houseType: string;
-	buildingUnit: string;
-}
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModelRef: FieldValues & HouseQueryVO = {
-	houseCode: "",
-	houseStatus: "",
-	houseType: "",
-	buildingUnit: "",
-};
-
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
-const plusSearchModel = ref(plusSearchModelRef);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -282,16 +187,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 const { modeText, setMode, isAdd } = useMode();
@@ -393,9 +296,6 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 	});
 }
 
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -421,6 +321,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
