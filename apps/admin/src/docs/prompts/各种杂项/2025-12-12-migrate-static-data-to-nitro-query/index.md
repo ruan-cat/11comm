@@ -514,3 +514,10 @@ export interface RepairReportsSummaryTableFormProps {
 	mode?: Mode;
 }
 ```
+
+请你将上述的标准，迁移更新到以下文件内：
+
+1. `.claude\agents\fix-type-error.md`
+2. `openspec\changes\migrate-static-data-to-nitro-query\specs\type-system\spec.md`
+
+增加了新的标准和规范后，请运行 openspec 的规范检查文件，确保规范文件满足格式要求。
