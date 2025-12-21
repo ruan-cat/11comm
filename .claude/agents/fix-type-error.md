@@ -277,6 +277,59 @@ import type { TableColumnList } from "@pureadmin/table";
 import type { PureTableBarProps } from "@pureadmin/table";
 ```
 
+
+### 2.15 不要将非业务类型迁移到类型项目内，特别是表单弹框组件类型
+
+**背景说明：**
+
+对于形如 `xxxxxxFormProps` 格式的类型，这些类型都是表单弹框类型，不是业务类型。你不应该将弹框组件的类型迁移到类型项目内。
+
+**错误示例：**
+
+```ts
+// apps\type\src\business\property-manage\report-manage\repair-reports-summary-table.ts
+/**
+ * 报修汇总表表单属性
+ * Repair reports summary table form props
+ */
+export interface RepairReportsSummaryTableFormProps {
+	/** 表单数据 Form data */
+	form: RepairReportsSummaryTableFormData;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: RepairReportsSummaryTableFormData;
+	/** 表单模式 Form mode */
+	mode?: "add" | "edit" | "info";
+}
+```
+
+**正确做法：**
+
+1. 根据业务路径，迁移到对应的 `form.ts` 内。
+2. 在 `form.ts` 内导入固定写法的 `import { type Mode } from "@/composables/use-mode";` 类型。
+3. 将 `mode` 字段的类型，统一换成 `Mode` 类型。
+
+```ts
+// apps\admin\src\pages\property-manage\report-manage\repair-reports-summary-table\components\form.ts
+import { type Mode } from "@/composables/use-mode";
+/**
+ * 报修汇总表表单属性
+ * Repair reports summary table form props
+ */
+export interface RepairReportsSummaryTableFormProps {
+	/** 表单数据 Form data */
+	form: RepairReportsSummaryTableFormData;
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
+	defaultValues: RepairReportsSummaryTableFormData;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}
+```
+
+**关键要点：**
+
+- 表单弹框组件类型应该位于客户端代码的 `form.ts` 文件中，而不是类型项目中
+- `Mode` 类型是客户端代码内全局导入的类型，直接使用即可
+- 避免在类型项目中出现业务无关的表单组件类型
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
