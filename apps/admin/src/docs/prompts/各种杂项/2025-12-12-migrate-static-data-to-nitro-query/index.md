@@ -463,7 +463,7 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 
 [017](./017.md)
 
-### 018 <!-- TODO: --> 代码写法手动批量替换
+### 018 代码写法手动批量替换
 
 - `<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">`
 - `<PureTableBar :="pureTableBarProps" @refresh="doFetch">`
