@@ -28,16 +28,6 @@ export interface ArrearsDetailsFormVO {
 	arrearsAmount: string;
 }
 
-/**
- * 欠费明细表单 Props / Arrears details form props
- */
-export interface ArrearsDetailsFormProps {
-	/** 表单数据 / Form data */
-	form: ArrearsDetailsFormVO;
-	/** 表单组件重置时默认使用的对象 / Default values for form reset */
-	defaultValues: ArrearsDetailsFormVO;
-}
-
 // ==================== 原有类型定义 ====================
 
 /**

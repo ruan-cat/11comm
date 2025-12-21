@@ -88,7 +88,6 @@ export const merchantTypeOptions: OptionsType = [
 	{ label: "其他", value: "其他" },
 ];
 
-
 /**
  * @description 经营状态选项
  * Business status options
@@ -159,20 +158,3 @@ export const merchantInfoDefaultForm: MerchantInfoFormVO = {
 	contactMobile: "",
 	remarks: "",
 };
-
-/**
- * @description 商户信息表单 props Merchant info form props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
- * To avoid global type conflicts, a longer type name is designed
- */
-export interface MerchantInfoFormProps {
-	/** 表单数据 Form data */
-	form: MerchantInfoFormVO;
-	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
-	defaultValues: MerchantInfoFormVO;
-	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "info";
-}
-
-

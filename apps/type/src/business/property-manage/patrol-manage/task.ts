@@ -26,16 +26,6 @@ export interface PatrolTaskFormVO {
 	patrolStatus: string;
 }
 
-/**
- * 巡检任务表单 Props / Patrol task form props
- */
-export interface PatrolTaskFormProps {
-	/** 表单数据 / Form data */
-	form: PatrolTaskFormVO;
-	/** 表单组件重置时默认使用的对象 / Default values for form reset */
-	defaultValues: PatrolTaskFormVO;
-}
-
 // ==================== 原有类型定义 ====================
 
 /**

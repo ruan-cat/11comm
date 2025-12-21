@@ -4,8 +4,6 @@
  */
 
 export * from "./house";
-
-
 export * from "./invoice";
 export * from "./invoice-title";
 export * from "./owner-account";
