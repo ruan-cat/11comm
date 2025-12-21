@@ -1,7 +1,7 @@
 import type { OptionsType } from "plus-pro-components";
+import type { Mode } from "@/composables/use-mode";
 import type {
 	SystemConfigFormVO,
-	SystemConfigFormProps,
 	SystemConfigType,
 	SystemConfigGroup,
 	SystemConfigStatus,
@@ -28,4 +28,11 @@ export const defaultForm = defaultFormValues;
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export { SystemConfigFormProps };
+export interface SystemConfigFormProps {
+	/** 表单数据 */
+	form: SystemConfigFormVO;
+	/** 表单组件重置时默认使用的对象 */
+	defaultValues: SystemConfigFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}

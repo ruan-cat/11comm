@@ -1,3 +1,5 @@
+import type { Mode } from "@/composables/use-mode";
+
 const _报表组类型 = ["组名称", "组url", "描述"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
@@ -27,4 +29,6 @@ export interface ReportGroupFormProps {
 	form: 报表组表单_VO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 报表组表单_VO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }

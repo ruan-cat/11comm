@@ -171,12 +171,3 @@ export const systemConfigDefaultForm: SystemConfigFormVO = {
  * 为了避免全局类型冲突 故设计较长的类型名称
  * To avoid global type conflicts, a longer type name is designed
  */
-export interface SystemConfigFormProps {
-	/** 表单数据 Form data */
-	form: SystemConfigFormVO;
-	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
-	defaultValues: SystemConfigFormVO;
-	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "info";
-}
-

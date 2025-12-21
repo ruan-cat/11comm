@@ -1,4 +1,4 @@
-import type { CommunityInformationFormProps } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
 import type { CommunityInformationFormVO } from "@01s-11comm/type";
 import { communityInformationDefaultForm as defaultFormValues } from "@01s-11comm/type";
 
@@ -13,4 +13,11 @@ export const defaultForm = defaultFormValues;
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export { CommunityInformationFormProps };
+export interface CommunityInformationFormProps {
+	/** 表单数据 */
+	form: CommunityInformationFormVO;
+	/** 表单组件重置时默认使用的对象 */
+	defaultValues: CommunityInformationFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}

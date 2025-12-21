@@ -1,3 +1,4 @@
+import type { Mode } from "@/composables/use-mode";
 import type { OptionsType } from "plus-pro-components";
 export { cellTypeOptions } from "@01s-11comm/type";
 export { 状态Options } from "@01s-11comm/type";
@@ -75,4 +76,6 @@ export interface InitializeCellFormProps {
 	form: 初始化单元格表单_VO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 初始化单元格表单_VO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }

@@ -1,3 +1,4 @@
+import type { Mode } from "@/composables/use-mode";
 import type { CommunityConfigFormVO } from "@01s-11comm/type";
 
 /** FormVO类型别名 */
@@ -42,4 +43,6 @@ export interface CommunityConfigurationFormProps {
 	form: CommunityConfigFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: CommunityConfigFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }

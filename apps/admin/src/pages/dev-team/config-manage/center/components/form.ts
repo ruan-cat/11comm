@@ -3,6 +3,7 @@
  * @description Configuration center form types
  */
 
+import type { Mode } from "@/composables/use-mode";
 import { configTypeOptions, configStatusOptions } from "@01s-11comm/type";
 
 /** 配置中心表单数据类型 Form data type */
@@ -49,6 +50,8 @@ export interface ConfigCenterFormProps {
 	form: ConfigCenterFormVO;
 	/** 表单组件重置时默认使用的对象 Default values for form reset */
 	defaultValues: ConfigCenterFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }
 
 /** 导出选项供表单使用 Export options for form use */

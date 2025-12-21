@@ -3,6 +3,7 @@
  * @description Menu group form types
  */
 
+import type { Mode } from "@/composables/use-mode";
 import { menuGroupStatusOptions } from "@01s-11comm/type";
 import type { OptionsType } from "@01s-11comm/type";
 
@@ -53,6 +54,8 @@ export interface MenuGroupFormProps {
 	form: MenuGroupFormVO;
 	/** 表单组件重置时默认使用的对象 Default values for form reset */
 	defaultValues: MenuGroupFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }
 
 /** 组类型选项 Group type options */

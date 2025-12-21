@@ -3,6 +3,7 @@
  * @description Menu catalog form types
  */
 
+import type { Mode } from "@/composables/use-mode";
 import type { MenuCatalogFormData } from "@01s-11comm/type";
 import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
 
@@ -27,6 +28,8 @@ export interface CatalogFormProps {
 	form: MenuCatalogFormData;
 	/** 表单组件重置时默认使用的对象 Default values for form reset */
 	defaultValues: MenuCatalogFormData;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }
 
 /** 导出选项和类型供表单使用 Export options and types for form use */

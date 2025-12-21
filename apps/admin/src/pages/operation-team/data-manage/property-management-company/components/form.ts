@@ -1,5 +1,5 @@
 import type { Mode } from "@/composables/use-mode";
-import type { PropertyManagementCompanyFormVO, PropertyManagementCompanyFormProps } from "@01s-11comm/type";
+import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
 import { propertyManagementCompanyDefaultForm as defaultFormValues } from "@01s-11comm/type";
 
 /** FormVO类型别名 */
@@ -13,4 +13,11 @@ export const defaultForm = defaultFormValues;
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
  */
-export { PropertyManagementCompanyFormProps };
+export interface PropertyManagementCompanyFormProps {
+	/** 表单数据 */
+	form: PropertyManagementCompanyFormVO;
+	/** 表单组件重置时默认使用的对象 */
+	defaultValues: PropertyManagementCompanyFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}

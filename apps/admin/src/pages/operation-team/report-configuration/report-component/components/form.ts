@@ -37,4 +37,6 @@ export interface ReportComponentFormProps {
 	form: 报表组件表单_VO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: 报表组件表单_VO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }

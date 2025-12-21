@@ -3,6 +3,7 @@
  * @description Dictionary type form types
  */
 
+import type { Mode } from "@/composables/use-mode";
 import {
 	dictionaryTypeStatusOptions,
 	dictionaryCategoryOptions,
@@ -63,6 +64,8 @@ export interface DictionaryTypeFormProps {
 	form: DictionaryTypeFormVO;
 	/** 表单组件重置时默认使用的对象 Default values for form reset */
 	defaultValues: DictionaryTypeFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }
 
 /** 导出选项供表单使用 Export options for form use */

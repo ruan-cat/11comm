@@ -1,3 +1,4 @@
+import type { Mode } from "@/composables/use-mode";
 import type { OptionsType } from "plus-pro-components";
 
 // ==================== 类型定义 ====================
@@ -63,6 +64,8 @@ export interface RegisterProtocolFormProps {
 	form: 注册协议表单_VO;
 	/** 表单默认值重置对象（必填） */
 	defaultValues: 注册协议表单_VO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }
 
 // ==================== 选项类型 ====================
