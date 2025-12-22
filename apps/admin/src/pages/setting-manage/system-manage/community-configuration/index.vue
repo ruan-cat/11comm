@@ -20,7 +20,6 @@ import type {
 } from "@01s-11comm/type";
 import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
 import { useCommunityConfigurationListQuery } from "@/api/setting-manage/system-manage/community-configuration";
-import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
@@ -39,7 +38,7 @@ const plusSearchModelRef: FieldValues & Partial<CommunityConfigurationListQuery>
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -162,7 +161,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -203,9 +202,9 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 
 	/** 业务对象 */
 	const formVO: SettingCommunityConfigFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					csId: row?.csId || "",
 					communityId: row?.communityId || "",
@@ -216,7 +215,7 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 					statusCd: row?.statusCd || "0",
 					remark: row?.remark || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: CommunityConfigurationFormProps = {
@@ -316,6 +315,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

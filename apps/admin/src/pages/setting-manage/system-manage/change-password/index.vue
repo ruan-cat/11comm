@@ -10,7 +10,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useChangePasswordRecordListQuery } from "@/api/setting-manage/system-manage/change-password";
-import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { ChangePasswordRecordListQuery } from "@01s-11comm/type";
 import {
@@ -35,7 +34,7 @@ const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordListQuery> =
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -198,14 +197,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	updateParams(plusSearchModel.value);
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 onMounted(async () => {
@@ -234,6 +233,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

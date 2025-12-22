@@ -1,9 +1,10 @@
 import type { BaseListQueryParams } from "../../../common";
 
 /**
- * 注册协议信息
+ * 注册协议显示信息
+ * @description 简化版的注册协议类型，用于页面展示
  */
-export interface RegisterProtocol {
+export interface RegisterProtocolDisplay {
 	/** 协议ID */
 	id: string;
 	/** 协议标题 */

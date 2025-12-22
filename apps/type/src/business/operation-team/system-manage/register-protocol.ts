@@ -52,11 +52,10 @@ export interface RegisterProtocolListQuery extends BaseListQueryParams {
  * 协议类型选项
  */
 export const registerProtocolTypeOptions: OptionsType = [
-	{ label: "用户注册协议", value: "用户注册协议" },
+	{ label: "用户协议", value: "用户协议" },
 	{ label: "隐私政策", value: "隐私政策" },
 	{ label: "服务条款", value: "服务条款" },
 	{ label: "免责声明", value: "免责声明" },
-	{ label: "版权声明", value: "版权声明" },
 ];
 
 /**
@@ -71,6 +70,6 @@ export const registerProtocolEnabledOptions: OptionsType = [
  * 必读状态选项
  */
 export const registerProtocolRequiredOptions: OptionsType = [
-	{ label: "是", value: true },
-	{ label: "否", value: false },
+	{ label: "必读", value: true },
+	{ label: "选读", value: false },
 ];

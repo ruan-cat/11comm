@@ -3,7 +3,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { RegisterProtocol, RegisterProtocolListQuery } from "@01s-11comm/type";
+import type { SettingManagementRegisterProtocolDisplay, SettingManagementRegisterProtocolListQuery } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/setting-manage/system-manage/register-protocol/list";
@@ -15,8 +15,8 @@ const QUERY_KEY_PREFIX = "registerProtocol";
  * 注册协议列表查询 Hook
  * Register protocol list query hook
  */
-export function useRegisterProtocolListQuery(initialParams: Partial<RegisterProtocolListQuery>) {
-	return useListQuery<RegisterProtocol, RegisterProtocolListQuery>({
+export function useRegisterProtocolListQuery(initialParams: Partial<SettingManagementRegisterProtocolListQuery>) {
+	return useListQuery<SettingManagementRegisterProtocolDisplay, SettingManagementRegisterProtocolListQuery>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 		initialParams,

@@ -15,7 +15,7 @@ import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from
 import SystemConfigFormComponent from "./components/form.vue";
 import { useMode } from "@/composables/use-mode";
 
-import { cloneDeep } from "@pureadmin/utils";
+// import { cloneDeep } from "@pureadmin/utils"; // 已迁移到 structuredClone
 import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
 import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
@@ -149,12 +149,12 @@ function openEditDialog() {
 
 	/** 业务对象 */
 	// 将 SystemConfig 转换为 SystemConfigFormVO
-	const formVO: SystemConfigFormVO = cloneDeep(systemConfig.value);
+	const formVO: SystemConfigFormVO = structuredClone(systemConfig.value);
 
 	/** 表单组件需要的props */
 	const formProps: SystemConfigFormProps = {
 		form: formVO,
-		defaultValues: cloneDeep(formVO),
+		defaultValues: structuredClone(formVO),
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

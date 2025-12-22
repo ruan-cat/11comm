@@ -6,6 +6,124 @@
 import type { OptionsType } from "./OptionsType";
 
 /**
+ * 修改类型选项
+ */
+export const changePasswordRecordTypeOptions: OptionsType = [
+	{ label: "用户自行修改", value: "用户自行修改" },
+	{ label: "管理员重置", value: "管理员重置" },
+	{ label: "强制修改", value: "强制修改" },
+	{ label: "首次登录修改", value: "首次登录修改" },
+];
+
+/**
+ * 修改状态选项
+ */
+export const changePasswordRecordStatusOptions: OptionsType = [
+	{ label: "成功", value: "成功" },
+	{ label: "失败", value: "失败" },
+	{ label: "待审核", value: "待审核" },
+];
+
+/**
+ * 部门选项
+ */
+export const changePasswordRecordDepartmentOptions: OptionsType = [
+	{ label: "物业团队", value: "物业团队" },
+	{ label: "开发团队", value: "开发团队" },
+	{ label: "运营团队", value: "运营团队" },
+	{ label: "财务部门", value: "财务部门" },
+	{ label: "客服部门", value: "客服部门" },
+	{ label: "维修部门", value: "维修部门" },
+	{ label: "安保部门", value: "安保部门" },
+	{ label: "绿化部门", value: "绿化部门" },
+];
+
+/**
+ * 运营团队-配置类型选项
+ */
+export const operationCommunityConfigurationTypeOptions: OptionsType = [
+	{ label: "文本", value: "文本" },
+	{ label: "数字", value: "数字" },
+	{ label: "布尔", value: "布尔" },
+	{ label: "JSON", value: "JSON" },
+	{ label: "URL", value: "URL" },
+];
+
+/**
+ * 运营团队-分组选项
+ */
+export const operationCommunityConfigurationGroupOptions: OptionsType = [
+	{ label: "基础配置", value: "基础配置" },
+	{ label: "安全配置", value: "安全配置" },
+	{ label: "通知配置", value: "通知配置" },
+	{ label: "支付配置", value: "支付配置" },
+	{ label: "界面配置", value: "界面配置" },
+];
+
+/**
+ * 运营团队-启用状态选项
+ */
+export const operationCommunityConfigurationEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
+];
+
+/**
+ * 运营团队-协议类型选项
+ */
+export const operationRegisterProtocolTypeOptions: OptionsType = [
+	{ label: "用户注册协议", value: "用户注册协议" },
+	{ label: "隐私政策", value: "隐私政策" },
+	{ label: "服务条款", value: "服务条款" },
+	{ label: "免责声明", value: "免责声明" },
+	{ label: "版权声明", value: "版权声明" },
+];
+
+/**
+ * 运营团队-启用状态选项
+ */
+export const operationRegisterProtocolEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
+];
+
+/**
+ * 运营团队-必读状态选项
+ */
+export const operationRegisterProtocolRequiredOptions: OptionsType = [
+	{ label: "是", value: true },
+	{ label: "否", value: false },
+];
+
+/**
+ * 运营团队-配置类型选项
+ */
+export const operationSystemConfigTypeOptions: OptionsType = [
+	{ label: "文本", value: "文本" },
+	{ label: "数字", value: "数字" },
+	{ label: "布尔", value: "布尔" },
+	{ label: "JSON", value: "JSON" },
+	{ label: "XML", value: "XML" },
+];
+
+/**
+ * 运营团队-启用状态选项
+ */
+export const operationSystemConfigEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
+];
+
+/**
+ * 运营团队-系统内置选项
+ */
+export const operationSystemConfigSystemOptions: OptionsType = [
+	{ label: "是", value: true },
+	{ label: "否", value: false },
+];
+
+
+/**
  * @description 合同类型选项
  * Contract type options
  */
@@ -734,3 +852,25 @@ export const bookingStatusOptions: OptionsType = [
 	{ label: "已拒绝", value: "已拒绝" },
 	{ label: "已取消", value: "已取消" },
 ];
+
+
+/**
+ * 设置类型选项
+ */
+export const settingTypeOptions: OptionsType = [
+	{ label: "系统设置", value: "系统设置" },
+	{ label: "业务设置", value: "业务设置" },
+	{ label: "界面设置", value: "界面设置" },
+	{ label: "功能设置", value: "功能设置" },
+	{ label: "安全设置", value: "安全设置" },
+];
+
+/**
+ * 小区配置状态选项
+ */
+export const communityConfigStatusOptions: OptionsType = [
+	{ label: "启用", value: "0" },
+	{ label: "禁用", value: "1" },
+	{ label: "待审核", value: "2" },
+];
+

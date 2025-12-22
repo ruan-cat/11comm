@@ -1,18 +1,26 @@
 import type { RolePermission } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
-/** 角色权限表单 */
+/**
+ * 角色权限表单数据对象
+ * Role permission form data object
+ */
 export interface RolePermissionFormVO extends Partial<RolePermission> {
-	/** 角色名称 */
+	/** 角色名称 Role name */
 	name: string;
-	/** 角色编码 */
+	/** 角色编码 Role code */
 	code: string;
-	/** 状态 */
+	/** 是否启用 Is enabled */
 	enabled: boolean;
-	/** 描述 */
+	/** 角色描述 Role description */
 	description: string;
 }
 
-/** 默认表单 @description 对外导出用于其他场景使用 */
+/**
+ * 默认表单数据对象
+ * Default form data object
+ * @description 对外导出用于其他场景使用
+ */
 export const defaultForm: RolePermissionFormVO = {
 	name: "",
 	code: "",
@@ -21,13 +29,17 @@ export const defaultForm: RolePermissionFormVO = {
 };
 
 /**
- * 角色权限表单 props
+ * 角色权限表单组件 Props
+ * Role permission form component props
  * @description
  * 为了避免全局类型冲突 故设计较长的类型名称
+ * To avoid global type conflicts, a longer type name is designed
  */
 export interface RolePermissionFormProps {
-	/** 表单数据 */
+	/** 表单数据 Form data */
 	form: RolePermissionFormVO;
-	/** 表单组件重置时默认使用的对象 */
+	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
 	defaultValues: RolePermissionFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }

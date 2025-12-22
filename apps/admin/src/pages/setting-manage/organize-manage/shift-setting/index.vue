@@ -17,7 +17,6 @@ import type { ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
 import { useShiftSettingListQuery } from "@/api/setting-manage/organize-manage/shift-setting";
 
 import { useMode, type Mode } from "@/composables/use-mode";
-import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -90,9 +89,9 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 
 	/** 业务对象 */
 	const formVO: ShiftSettingFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					name: row?.name || "",
 					type: row?.type || "",
@@ -101,7 +100,7 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 					enabled: row?.enabled ?? true,
 					description: row?.description || "",
 				})
-			: cloneDeep({
+			: structuredClone({
 					...defaultForm,
 					name: row?.name || "",
 					type: row?.type || "",

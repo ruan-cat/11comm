@@ -54,7 +54,7 @@ export const systemConfigTypeOptions: OptionsType = [
 	{ label: "数字", value: "数字" },
 	{ label: "布尔", value: "布尔" },
 	{ label: "JSON", value: "JSON" },
-	{ label: "XML", value: "XML" },
+	{ label: "URL", value: "URL" },
 ];
 
 /**

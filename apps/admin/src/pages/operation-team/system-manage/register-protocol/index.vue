@@ -11,12 +11,12 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import {
-	type RegisterProtocolListItem,
-	type RegisterProtocolQueryParams,
+	type OperationTeamRegisterProtocol,
+	type OperationTeamRegisterProtocolListQuery,
 	protocolTypeOptions,
 	registerProtocolStatusOptions,
 	isMandatoryOptions,
-	type RegisterProtocolListItem as 注册协议_列表数据,
+	type OperationTeamRegisterProtocol as 注册协议_列表数据,
 } from "@01s-11comm/type";
 import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage/register-protocol";
 import {
@@ -38,11 +38,11 @@ const registerProtocolFormInstance = ref<InstanceType<typeof RegisterProtocolFor
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & Partial<RegisterProtocolQueryParams> = {
-	protocolName: "",
+const plusSearchModelRef: FieldValues & Partial<OperationTeamRegisterProtocolListQuery> = {
+	title: "",
 	protocolType: undefined,
-	status: undefined,
-	isMandatory: undefined,
+	isEnabled: undefined,
+	isRequired: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -68,13 +68,13 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "协议ID",
-		prop: "protocolId",
+		prop: "id",
 		width: 120,
 		fixed: true,
 	},
 	{
 		label: "协议名称",
-		prop: "protocolName",
+		prop: "title",
 		minWidth: 200,
 	},
 	{
@@ -84,7 +84,7 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		label: "协议版本",
-		prop: "protocolVersion",
+		prop: "version",
 		width: 120,
 	},
 	{
@@ -94,28 +94,28 @@ const columns = ref<TableColumnList>([
 	},
 	{
 		label: "是否强制同意",
-		prop: "isMandatory",
+		prop: "isRequired",
 		width: 120,
 	},
 	{
 		label: "协议摘要",
-		prop: "summary",
+		prop: "remark",
 		minWidth: 250,
 	},
 	{
 		label: "生效日期",
-		prop: "effectiveDate",
+		prop: "effectiveTime",
 		width: 120,
 	},
 	{
 		label: "失效日期",
-		prop: "expirationDate",
+		prop: "expireTime",
 		width: 120,
 	},
 	{
-		label: "排序权重",
-		prop: "sortOrder",
-		width: 100,
+		label: "操作人",
+		prop: "operator",
+		width: 120,
 	},
 	{
 		label: "创建时间",
@@ -150,7 +150,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 协议名称
 	{
 		label: "协议名称",
-		prop: "protocolName",
+		prop: "title",
 		valueType: "input",
 	},
 
@@ -162,18 +162,18 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		options: protocolTypeOptions,
 	},
 
-	// 状态
+	// 是否启用
 	{
-		label: "状态",
-		prop: "status",
+		label: "是否启用",
+		prop: "isEnabled",
 		valueType: "select",
-		options: registerProtocolStatusOptions,
+		options: registerProtocolEnabledOptions,
 	},
 
-	// 是否强制同意
+	// 是否必读
 	{
-		label: "是否强制同意",
-		prop: "isMandatory",
+		label: "是否必读",
+		prop: "isRequired",
 		valueType: "select",
 		options: isMandatoryOptions,
 	},
@@ -205,7 +205,7 @@ function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: RegisterProtocolListItem;
+	row?: OperationTeamRegisterProtocol;
 }
 
 /** 模式控制 */
@@ -236,16 +236,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value || isInfo.value
 			? (structuredClone({
 					...defaultForm,
-					协议名称: row?.protocolName || "",
+					协议名称: row?.title || "",
 					协议类型: (row?.protocolType || "用户注册协议") as 协议类型枚举,
-					协议版本: row?.protocolVersion || "v1.0.0",
+					协议版本: row?.version || "v1.0.0",
 					状态: (row?.status || "草稿") as 状态枚举,
-					是否强制同意: (row?.isMandatory || "是") as 是否强制同意枚举,
-					协议摘要: row?.summary || "",
+					是否强制同意: (row?.isRequired || "是") as 是否强制同意枚举,
+					协议摘要: row?.remark || "",
 					协议内容: row?.content || "",
-					生效日期: row?.effectiveDate || "",
-					失效日期: row?.expirationDate || "",
-					排序权重: row?.sortOrder || 0,
+					生效日期: row?.effectiveTime || "",
+					失效日期: row?.expireTime || "",
+					排序权重: 0,
 				}) as 注册协议表单_VO)
 			: structuredClone(defaultForm);
 

@@ -11,7 +11,6 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { cloneDeep } from "lodash-es";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
@@ -37,7 +36,7 @@ const plusSearchModelRef: FieldValues & Partial<RolePermissionListQuery> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -150,9 +149,9 @@ function openDialog(params: { mode: Mode; row?: RolePermission }) {
 
 	/** 业务对象 */
 	const formVO: RolePermissionFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					id: row?.id || "",
 					name: row?.name || "",
@@ -160,7 +159,7 @@ function openDialog(params: { mode: Mode; row?: RolePermission }) {
 					enabled: row?.enabled ?? true,
 					description: row?.description || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: RolePermissionFormProps = {

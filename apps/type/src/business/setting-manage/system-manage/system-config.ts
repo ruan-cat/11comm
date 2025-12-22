@@ -1,38 +1,59 @@
 import type { BaseListQueryParams } from "../../../common";
 
 /**
- * 系统配置信息
+ * 系统配置列表数据
+ * System config list item
  */
-export interface SystemConfig {
-	/** 标题名称 */
+export interface SystemConfigListItem {
+	/** 配置ID Config ID */
+	configId: string;
+	/** 标题名称 Title name */
 	title: string;
-	/** 副标题 */
+	/** 副标题 Subtitle */
 	subtitle: string;
-	/** 简写名称 */
+	/** 简写名称 Short name */
 	shortName: string;
-	/** 公司名称 */
+	/** 公司名称 Company name */
 	companyName: string;
-	/** logo地址 */
+	/** Logo地址 Logo URL */
 	logoUrl: string;
-	/** 静态url */
+	/** 静态URL Static URL */
 	staticUrl: string;
-	/** 默认小区编号 */
+	/** 默认小区编号 Default community code */
 	defaultCommunityCode: string;
-	/** 业主标题 */
+	/** 业主标题 Owner title */
 	ownerTitle: string;
-	/** 物业手机标题 */
+	/** 物业手机标题 Property mobile title */
 	propertyMobileTitle: string;
-	/** qq地图key */
+	/** QQ地图Key QQ map key */
 	qqMapKey: string;
-	/** 商城地址 */
+	/** 商城地址 Mall URL */
 	mallUrl: string;
 }
 
 /**
- * 系统配置列表查询参数
- * @description 虽然只有一个配置，但为了保持接口统一，仍然定义此接口
+ * 系统配置查询参数
+ * System config query parameters
  */
-export interface SystemConfigListQuery extends BaseListQueryParams {
-	/** 标题名称 */
+export interface SystemConfigQueryParams extends BaseListQueryParams {
+	/** 标题名称 Title name */
 	title?: string;
+	/** 简写名称 Short name */
+	shortName?: string;
+	/** 公司名称 Company name */
+	companyName?: string;
+	/** 默认小区编号 Default community code */
+	defaultCommunityCode?: string;
 }
+
+/**
+ * 系统配置数据类型（别名）
+ * System config data type (alias)
+ */
+export type SystemConfig = SystemConfigListItem;
+
+/**
+ * 系统配置查询参数类型（别名）
+ * System config query params type (alias)
+ */
+export type SystemConfigListQuery = SystemConfigQueryParams;

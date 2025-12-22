@@ -4,6 +4,6 @@
  */
 
 export * from "./dev-team";
-export * from "./operation-team";
 export * from "./property-manage";
 export * from "./setting-manage";
+export * from "./operation-team";

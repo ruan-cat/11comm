@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
 import { useTemplateRef } from "vue";
-import { cloneDeep } from "lodash-es";
 import type { PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
@@ -25,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & RolePermissionFormVO;
+const toRefForm = structuredClone(props.form) as FieldValues & RolePermissionFormVO;
 
 /**
  * 表单对象

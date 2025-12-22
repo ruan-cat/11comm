@@ -10,13 +10,13 @@ definePage({
 
 import { computed } from "vue";
 import { useRegisterProtocolListQuery } from "@/api/setting-manage/system-manage/register-protocol";
-import type { RegisterProtocol } from "@01s-11comm/type";
+import type { SettingManagementRegisterProtocolDisplay } from "@01s-11comm/type";
 
 // 使用注册协议列表查询 Hook
 const { tableData, isFetching, doFetch } = useRegisterProtocolListQuery({});
 
 /** 注册协议数据 */
-const registerProtocol = computed<RegisterProtocol>(() => {
+const registerProtocol = computed<SettingManagementRegisterProtocolDisplay>(() => {
 	if (tableData.value && tableData.value.length > 0) {
 		return tableData.value[0];
 	}

@@ -1,4 +1,5 @@
 import type { ChangePasswordRecord } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 // ==================== 表单类型定义 ====================
 
@@ -56,4 +57,6 @@ export interface ChangePasswordRecordFormProps {
 	form: ChangePasswordRecordFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: ChangePasswordRecordFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

@@ -12,7 +12,6 @@ import { ref, computed, onMounted, nextTick, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { cloneDeep } from "lodash-es";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 
