@@ -1,51 +1,36 @@
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { MenuItemListItem, MenuItemQueryParams } from "@01s-11comm/type";
+/**
+ * @file 菜单项列表接口
+ * @description Menu item list API
+ * POST /api/dev-team/menu-manage/item/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, MenuItemListItem, MenuItemQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockMenuItemData } from "./mock-data";
 
-/**
- * @description 菜单项列表 POST API
- * Menu item list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MenuItemListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuItemListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<MenuItemQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, menuId, menuName, parentMenu, menuType, status, isExternal, isCached, isHidden } = body;
+	const defaultParams: MenuItemQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockMenuItemData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockMenuItemData, filters);
 
-	// 数据筛选
-	if (menuId) {
-		filteredData = filteredData.filter((item) => item.menuId.includes(menuId));
-	}
-	if (menuName) {
-		filteredData = filteredData.filter((item) => item.menuName.includes(menuName));
-	}
-	if (parentMenu) {
-		filteredData = filteredData.filter((item) => item.parentMenu.includes(parentMenu));
-	}
-	if (menuType) {
-		filteredData = filteredData.filter((item) => item.menuType === menuType);
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-	if (isExternal) {
-		filteredData = filteredData.filter((item) => item.isExternal === isExternal);
-	}
-	if (isCached) {
-		filteredData = filteredData.filter((item) => item.isCached === isCached);
-	}
-	if (isHidden) {
-		filteredData = filteredData.filter((item) => item.isHidden === isHidden);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<MenuItemListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -56,7 +41,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MenuItem
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
-});
 
+	return response;
+});

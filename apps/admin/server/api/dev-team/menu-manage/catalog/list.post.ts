@@ -1,35 +1,36 @@
-import { defineEventHandler, readBody } from "h3";
+/**
+ * @file 菜单目录列表接口
+ * @description Menu catalog list API
+ * POST /api/dev-team/menu-manage/catalog/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, MenuCatalogListItem, MenuCatalogQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockMenuCatalogData } from "./mock-data";
 
-/**
- * @description 菜单目录列表 POST API
- * Menu catalog list POST API
- */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MenuCatalogListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuCatalogListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<MenuCatalogQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, storeType, groupType } = body;
+	const defaultParams: MenuCatalogQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockMenuCatalogData];
+	// 2. 数据筛选 - 使用通用筛选工具函数
+	const filteredData = filterDataByQuery(mockMenuCatalogData, filters);
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (storeType) {
-		filteredData = filteredData.filter((item) => item.storeType === storeType);
-	}
-	if (groupType) {
-		filteredData = filteredData.filter((item) => item.groupType === groupType);
-	}
-
-	// 分页处理
+	// 3. 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<MenuCatalogListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -40,6 +41,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<MenuCata
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

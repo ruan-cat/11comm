@@ -1,6 +1,7 @@
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { RepairsTodoListItem, RepairsTodoQueryParams } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockRepairsTodoData } from "./mock-data";
 
 /**
@@ -11,23 +12,16 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsTodoLi
 	const body = await readBody<RepairsTodoQueryParams>(event);
 	const { pageIndex = 1, pageSize = 10, name, status } = body;
 
-	let filteredData = [...mockRepairsTodoData];
-
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
+	// 使用 filterDataByQuery 进行数据筛选
+	const filteredData = filterDataByQuery(mockRepairsTodoData, { name, status });
 
 	// 分页处理
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	// 创建响应对象并添加完整类型约束
+	const response: JsonVO<PageDTO<RepairsTodoListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -40,4 +34,6 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsTodoLi
 		},
 		timestamp: Date.now(),
 	};
+
+	return response;
 });

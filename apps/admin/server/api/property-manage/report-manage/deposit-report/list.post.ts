@@ -1,6 +1,7 @@
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { DepositReportListItem, DepositReportQueryParams } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockDepositReportData } from "./mock-data";
 
 /**
@@ -9,17 +10,10 @@ import { mockDepositReportData } from "./mock-data";
  */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<DepositReportListItem>>> => {
 	const body = await readBody<DepositReportQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const { pageIndex = 1, pageSize = 10, 费用ID, 状态 } = body;
 
-	let filteredData = [...mockDepositReportData];
-
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
+	// 使用 filterDataByQuery 进行数据筛选
+	const filteredData = filterDataByQuery(mockDepositReportData, { 费用ID, 状态 });
 
 	// 分页处理
 	const total = filteredData.length;
