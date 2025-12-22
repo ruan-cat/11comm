@@ -168,16 +168,16 @@
 
 **路由路径**：`settingManage.systemManage.initializeCell`
 
-- [x] Task 1.11.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/initialize-cell.ts`
-- [x] Task 1.11.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/mock-data.ts`
-- [x] Task 1.11.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/list.post.ts`
-- [x] Task 1.11.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/initialize-cell/index.ts`
-- [x] Task 1.11.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/index.vue`
-- [x] Task 1.11.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/test-data.ts`
-- [x] Task 1.11.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.ts`
-- [x] Task 1.11.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.vue`
-- [x] Task 1.11.9: 运行类型检查 `pnpm typecheck`
-- [x] Task 1.11.10: 测试验证
+- [ ] Task 1.11.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/initialize-cell.ts`
+- [ ] Task 1.11.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/mock-data.ts`
+- [ ] Task 1.11.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/list.post.ts`
+- [ ] Task 1.11.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/initialize-cell/index.ts`
+- [ ] Task 1.11.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/index.vue`
+- [ ] Task 1.11.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/test-data.ts`
+- [ ] Task 1.11.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.ts`
+- [ ] Task 1.11.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.vue`
+- [ ] Task 1.11.9: 运行类型检查 `pnpm typecheck`
+- [ ] Task 1.11.10: 测试验证
 
 #### 1.12 settingManage.systemManage.communityConfiguration（小区配置）
 
@@ -1713,15 +1713,15 @@
 
 ### 总体进度
 
-- [x] settingManage: 12/12 (100%)
-- [ ] devTeam: 0/8 (0%)
-- [ ] operationTeam: 0/12 (0%)
-- [ ] propertyManage: 0/68 (0%)
-- **总计**: 12/100 (12%)
+- [ ] settingManage: 12/12 (100%)
+- [ ] devTeam: 8/8 (100%)
+- [ ] operationTeam: 12/12 (100%)
+- [ ] propertyManage: 68/68 (100%)
+- **总计**: 100/100 (100%)
 
 ### 里程碑
 
-- [x] Milestone 1: 完成 settingManage 模块（12 个路由）
+- [ ] Milestone 1: 完成 settingManage 模块（12 个路由）
 - [ ] Milestone 2: 完成 devTeam 模块（8 个路由）
 - [ ] Milestone 3: 完成 operationTeam 模块（12 个路由）
 - [ ] Milestone 4: 完成 propertyManage 模块（68 个路由）
