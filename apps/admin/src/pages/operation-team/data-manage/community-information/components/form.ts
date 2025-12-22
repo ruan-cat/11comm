@@ -1,12 +1,17 @@
 import type { Mode } from "@/composables/use-mode";
-import type { CommunityInformationFormVO } from "@01s-11comm/type";
-import { communityInformationDefaultForm as defaultFormValues } from "@01s-11comm/type";
+import type { CommunityInformation } from "@01s-11comm/type";
 
-/** FormVO类型别名 */
-export type FormVO = CommunityInformationFormVO;
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultFormValues;
+/**
+ * 小区信息表单数据类型
+ */
+export interface CommunityInformationFormVO extends Partial<CommunityInformation> {
+	communityName: string;
+	communityCode: string;
+	region: string;
+	address: string;
+	propertyCompany: string;
+	status: string;
+}
 
 /**
  * 小区信息表单 props
@@ -21,3 +26,15 @@ export interface CommunityInformationFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
+
+/**
+ * 默认表单数据
+ */
+export const defaultForm: CommunityInformationFormVO = {
+	communityName: "",
+	communityCode: "",
+	region: "",
+	address: "",
+	propertyCompany: "",
+	status: "",
+};

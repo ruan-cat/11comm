@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 
@@ -17,7 +17,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import type {
 	ArrearsDetailsFormVO,
 	ArrearsDetailsFormProps,
-	ArrearsDetailsListListItem,
+	ArrearsDetailsListItem,
 	ArrearsDetailsListQueryParams,
 } from "@01s-11comm/type";
 import { defaultArrearsDetailsForm } from "@01s-11comm/type";
@@ -95,7 +95,7 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-// 表格操作栏组件配置
+/** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "欠费明细表",
 	columns: columns.value,
@@ -107,10 +107,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<ArrearsDetailsListQueryParams> = {
-	name: "",
-	status: "",
-	pageIndex: 1,
-	pageSize: 10,
+	feeCategory: "",
+	roomNumber: "",
+	startTime: "",
+	endTime: "",
+	community: "",
+	ownerName: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -136,20 +138,17 @@ const {
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	//费用大类
 	{
 		label: "费用大类",
 		prop: "feeCategory",
 		valueType: "select",
 		options: [],
 	},
-	//房屋编号
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
 		prop: "roomNumber",
 		valueType: "input",
 	},
-	// 开始时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.startTime")),
 		prop: "startTime",
@@ -160,7 +159,6 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD HH:mm:ss",
 		},
 	},
-	// 结束时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.endTime")),
 		prop: "endTime",
@@ -171,14 +169,12 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD HH:mm:ss",
 		},
 	},
-	//小区
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.cell")),
 		prop: "community",
 		valueType: "select",
 		options: [],
 	},
-	//业主名称
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.employerName")),
 		prop: "ownerName",
@@ -219,7 +215,7 @@ async function testAsync() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: ArrearsDetailsListListItem;
+	row?: ArrearsDetailsListItem;
 }
 
 /** 打开弹框 */
@@ -296,7 +292,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
+						await doFetch();
 					}
 				},
 			},
@@ -310,17 +306,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: ArrearsDetailsListListItem) {
+function handleEdit(row: ArrearsDetailsListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: ArrearsDetailsListListItem) {
+function handleView(row: ArrearsDetailsListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: ArrearsDetailsListListItem) {
+async function handleDelete(row: ArrearsDetailsListItem) {
 	consola.log("删除", row);
 	// TODO: 调用删除API并刷新列表
 }

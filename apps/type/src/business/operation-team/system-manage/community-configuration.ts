@@ -1,95 +1,81 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * @description 小区配置列表数据
- * Community configuration list item
+ * 小区配置
  */
-export interface CommunityConfigListItem {
-	/** 主键ID Config ID */
-	csId: string;
-	/** 小区ID Community ID */
-	communityId: string;
-	/** 小区名称 Community name */
-	communityName: string;
-	/** 设置名称 Setting name */
-	settingName: string;
-	/** 设置值 Setting value */
-	settingValue: string;
-	/** 设置类型 Setting type */
-	settingType: string;
-	/** 数据状态 Status code */
-	statusCd: string;
-	/** 状态文本 Status text */
-	statusText: string;
-	/** 备注信息 Remark */
-	remark: string;
-	/** 创建时间 Create time */
+export interface CommunityConfiguration {
+	/** 配置ID */
+	id: string;
+	/** 小区ID */
+	cellId: string;
+	/** 小区名称 */
+	cellName: string;
+	/** 配置项 */
+	configItem: string;
+	/** 配置键 */
+	configKey: string;
+	/** 配置值 */
+	configValue: string;
+	/** 配置类型 */
+	configType: string;
+	/** 分组 */
+	group: string;
+	/** 是否启用 */
+	isEnabled: boolean;
+	/** 描述 */
+	description: string;
+	/** 创建时间 */
 	createTime: string;
-	/** 更新时间 Update time */
+	/** 更新时间 */
 	updateTime: string;
+	/** 操作人 */
+	operator: string;
 }
 
 /**
- * @description 小区配置列表查询参数
- * Community configuration list query parameters
+ * 小区配置列表查询参数
  */
-export interface CommunityConfigQueryParams {
-	/** 小区ID Community ID */
-	communityId?: string;
-	/** 小区名称 Community name */
-	communityName?: string;
-	/** 设置名称 Setting name */
-	settingName?: string;
-	/** 设置类型 Setting type */
-	settingType?: string;
-	/** 数据状态 Status code */
-	statusCd?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+export interface CommunityConfigurationListQuery extends BaseListQueryParams {
+	/** 小区ID */
+	cellId?: string;
+	/** 小区名称 */
+	cellName?: string;
+	/** 配置项 */
+	configItem?: string;
+	/** 配置键 */
+	configKey?: string;
+	/** 分组 */
+	group?: string;
+	/** 是否启用 */
+	isEnabled?: boolean;
 }
 
 /**
- * @description 设置类型选项
- * Setting type options
+ * 配置类型选项
  */
-export const settingTypeOptions: OptionsType = [
-	{ label: "基础配置", value: "1001" },
-	{ label: "费用配置", value: "2002" },
-	{ label: "公告配置", value: "3003" },
-	{ label: "安防配置", value: "4004" },
-	{ label: "服务配置", value: "5005" },
+export const communityConfigurationTypeOptions: OptionsType = [
+	{ label: "文本", value: "文本" },
+	{ label: "数字", value: "数字" },
+	{ label: "布尔", value: "布尔" },
+	{ label: "JSON", value: "JSON" },
+	{ label: "URL", value: "URL" },
 ];
 
 /**
- * @description 数据状态选项
- * Status options
+ * 分组选项
  */
-export const communityConfigStatusOptions: OptionsType = [
-	{ label: "正常", value: "0" },
-	{ label: "失效", value: "1" },
+export const communityConfigurationGroupOptions: OptionsType = [
+	{ label: "基础配置", value: "基础配置" },
+	{ label: "安全配置", value: "安全配置" },
+	{ label: "通知配置", value: "通知配置" },
+	{ label: "支付配置", value: "支付配置" },
+	{ label: "界面配置", value: "界面配置" },
 ];
 
 /**
- * @description 小区配置表单VO
- * Community configuration form VO
+ * 启用状态选项
  */
-export interface CommunityConfigFormVO {
-	/** 主键ID Config ID */
-	csId: string;
-	/** 小区ID Community ID */
-	communityId: string;
-	/** 小区名称 Community name */
-	communityName: string;
-	/** 设置名称 Setting name */
-	settingName: string;
-	/** 设置值 Setting value */
-	settingValue: string;
-	/** 设置类型 Setting type */
-	settingType: string;
-	/** 数据状态 Status code */
-	statusCd: string;
-	/** 备注信息 Remark */
-	remark: string;
-}
+export const communityConfigurationEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
+];

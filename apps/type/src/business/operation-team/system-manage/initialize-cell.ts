@@ -1,85 +1,75 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * @description 初始化单元格列表数据
- * Initialize cell list item
+ * 初始化小区
  */
-export interface InitializeCellListItem {
-	/** 单元格ID Cell ID */
-	cellId: string;
-	/** 单元格名称 Cell name */
+export interface InitializeCell {
+	/** 小区ID */
+	id: string;
+	/** 小区名称 */
 	cellName: string;
-	/** 单元格类型 Cell type */
-	cellType: string;
-	/** 建筑物ID Building ID */
-	buildingId: string;
-	/** 建筑物名称 Building name */
-	buildingName: string;
-	/** 楼层 Floor */
-	floor: string;
-	/** 单元号 Unit number */
-	unitNumber: string;
-	/** 户数 Number of households */
+	/** 小区编码 */
+	cellCode: string;
+	/** 所属区域 */
+	region: string;
+	/** 详细地址 */
+	address: string;
+	/** 建筑面积 */
+	buildingArea: number;
+	/** 占地面积 */
+	landArea: number;
+	/** 楼栋数量 */
+	buildingCount: number;
+	/** 单元数量 */
+	unitCount: number;
+	/** 户数 */
 	houseCount: number;
-	/** 状态 Status */
+	/** 车位数量 */
+	parkingCount: number;
+	/** 绿化率 */
+	greenRate: number;
+	/** 容积率 */
+	plotRatio: number;
+	/** 开发商 */
+	developer: string;
+	/** 物业公司 */
+	propertyCompany: string;
+	/** 成立时间 */
+	establishedTime: string;
+	/** 初始化状态 */
 	status: string;
-	/** 描述 Description */
-	description: string;
-	/** 创建时间 Create time */
+	/** 创建时间 */
 	createTime: string;
-	/** 更新时间 Update time */
+	/** 更新时间 */
 	updateTime: string;
-	/** 创建人 Creator */
-	creator: string;
-	/** 更新人 Updater */
-	updater: string;
+	/** 操作人 */
+	operator: string;
 }
 
 /**
- * @description 初始化单元格列表查询参数
- * Initialize cell list query parameters
+ * 初始化小区列表查询参数
  */
-export interface InitializeCellQueryParams {
-	/** 单元格名称 Cell name */
+export interface InitializeCellListQuery extends BaseListQueryParams {
+	/** 小区名称 */
 	cellName?: string;
-	/** 单元格类型 Cell type */
-	cellType?: string;
-	/** 建筑物名称 Building name */
-	buildingName?: string;
-	/** 状态 Status */
+	/** 小区编码 */
+	cellCode?: string;
+	/** 所属区域 */
+	region?: string;
+	/** 物业公司 */
+	propertyCompany?: string;
+	/** 初始化状态 */
 	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+	/** 成立时间范围 */
+	establishedTimeRange?: [string, string];
 }
 
 /**
- * @description 单元格类型选项
- * Cell type options
- */
-export const cellTypeOptions: OptionsType = [
-	{ label: "住宅单元", value: "住宅单元" },
-	{ label: "商业单元", value: "商业单元" },
-	{ label: "车库单元", value: "车库单元" },
-	{ label: "办公单元", value: "办公单元" },
-	{ label: "会所单元", value: "会所单元" },
-	{ label: "物业单元", value: "物业单元" },
-	{ label: "运动单元", value: "运动单元" },
-	{ label: "教育单元", value: "教育单元" },
-	{ label: "医疗单元", value: "医疗单元" },
-	{ label: "仓储单元", value: "仓储单元" },
-	{ label: "文化单元", value: "文化单元" },
-];
-
-/**
- * @description 状态选项
- * Status options
+ * 初始化状态选项
  */
 export const initializeCellStatusOptions: OptionsType = [
-	{ label: "已初始化", value: "已初始化" },
-	{ label: "未初始化", value: "未初始化" },
+	{ label: "待初始化", value: "待初始化" },
 	{ label: "初始化中", value: "初始化中" },
+	{ label: "已完成", value: "已完成" },
 	{ label: "初始化失败", value: "初始化失败" },
 ];
-

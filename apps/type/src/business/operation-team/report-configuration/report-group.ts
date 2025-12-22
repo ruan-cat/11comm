@@ -1,32 +1,47 @@
+import type { BaseListQueryParams, OptionsType } from "../../../common";
+
 /**
- * @description 报表组列表数据
- * Report group list item
+ * 报表组
  */
-export interface ReportGroupListItem {
-	/** 组ID Group ID */
-	groupId: string;
-	/** 名称 Name */
-	name: string;
-	/** URL URL */
-	url: string;
-	/** 备注 Remark */
-	remark: string;
+export interface ReportGroup {
+	/** 组ID */
+	id: string;
+	/** 组名称 */
+	groupName: string;
+	/** 组编码 */
+	groupCode: string;
+	/** 组描述 */
+	description: string;
+	/** 排序号 */
+	sortOrder: number;
+	/** 是否启用 */
+	isEnabled: boolean;
+	/** 报表数量 */
+	reportCount: number;
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+	/** 操作人 */
+	operator: string;
 }
 
 /**
- * @description 报表组列表查询参数
- * Report group list query parameters
+ * 报表组列表查询参数
  */
-export interface ReportGroupQueryParams {
-	/** 组ID Group ID */
-	groupId?: string;
-	/** 名称 Name */
-	name?: string;
-	/** URL URL */
-	url?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+export interface ReportGroupListQuery extends BaseListQueryParams {
+	/** 组名称 */
+	groupName?: string;
+	/** 组编码 */
+	groupCode?: string;
+	/** 是否启用 */
+	isEnabled?: boolean;
 }
 
+/**
+ * 启用状态选项
+ */
+export const reportGroupEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
+];

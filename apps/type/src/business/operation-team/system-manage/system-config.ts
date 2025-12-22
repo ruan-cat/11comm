@@ -1,173 +1,74 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * @description 配置类型
- * Config type
+ * 系统配置
  */
-export type SystemConfigType = "文本" | "数字" | "布尔值" | "JSON" | "日期时间" | "文件路径" | "URL";
-
-/**
- * @description 配置分组
- * Config group
- */
-export type SystemConfigGroup = "系统基础" | "业务配置" | "第三方服务" | "安全设置" | "通知设置" | "日志配置" | "缓存配置";
-
-/**
- * @description 配置状态
- * Config status
- */
-export type SystemConfigStatus = "启用" | "禁用";
-
-/**
- * @description 系统配置列表数据
- * System config list item
- */
-export interface SystemConfigListItem {
-	/** 配置ID Config ID */
-	configId: string;
-	/** 配置名称 Config name */
+export interface SystemConfig {
+	/** 配置ID */
+	id: string;
+	/** 配置名称 */
 	configName: string;
-	/** 配置值 Config value */
+	/** 配置键 */
+	configKey: string;
+	/** 配置值 */
 	configValue: string;
-	/** 配置类型 Config type */
-	configType: SystemConfigType;
-	/** 配置分组 Config group */
-	configGroup: SystemConfigGroup;
-	/** 状态 Status */
-	status: SystemConfigStatus;
-	/** 描述 Description */
+	/** 配置类型 */
+	configType: string;
+	/** 默认值 */
+	defaultValue: string;
+	/** 是否系统内置 */
+	isSystem: boolean;
+	/** 是否启用 */
+	isEnabled: boolean;
+	/** 描述 */
 	description: string;
-	/** 创建时间 Create time */
+	/** 创建时间 */
 	createTime: string;
-	/** 更新时间 Update time */
+	/** 更新时间 */
 	updateTime: string;
-	/** 创建人 Creator */
-	creator: string;
-	/** 更新人 Updater */
-	updater: string;
+	/** 操作人 */
+	operator: string;
 }
 
 /**
- * @description 系统配置列表查询参数
- * System config list query parameters
+ * 系统配置列表查询参数
  */
-export interface SystemConfigQueryParams {
-	/** 配置名称 Config name */
+export interface SystemConfigListQuery extends BaseListQueryParams {
+	/** 配置名称 */
 	configName?: string;
-	/** 配置类型 Config type */
-	configType?: SystemConfigType;
-	/** 配置分组 Config group */
-	configGroup?: SystemConfigGroup;
-	/** 状态 Status */
-	status?: SystemConfigStatus;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+	/** 配置键 */
+	configKey?: string;
+	/** 配置类型 */
+	configType?: string;
+	/** 是否启用 */
+	isEnabled?: boolean;
+	/** 是否系统内置 */
+	isSystem?: boolean;
 }
 
 /**
- * @description 配置类型选项
- * Config type options
+ * 配置类型选项
  */
 export const systemConfigTypeOptions: OptionsType = [
 	{ label: "文本", value: "文本" },
 	{ label: "数字", value: "数字" },
-	{ label: "布尔值", value: "布尔值" },
+	{ label: "布尔", value: "布尔" },
 	{ label: "JSON", value: "JSON" },
-	{ label: "日期时间", value: "日期时间" },
-	{ label: "文件路径", value: "文件路径" },
-	{ label: "URL", value: "URL" },
+	{ label: "XML", value: "XML" },
 ];
 
 /**
- * @description 配置分组选项
- * Config group options
+ * 启用状态选项
  */
-export const systemConfigGroupOptions: OptionsType = [
-	{ label: "系统基础", value: "系统基础" },
-	{ label: "业务配置", value: "业务配置" },
-	{ label: "第三方服务", value: "第三方服务" },
-	{ label: "安全设置", value: "安全设置" },
-	{ label: "通知设置", value: "通知设置" },
-	{ label: "日志配置", value: "日志配置" },
-	{ label: "缓存配置", value: "缓存配置" },
+export const systemConfigEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
 ];
 
 /**
- * @description 状态选项
- * Status options
+ * 系统内置选项
  */
-export const systemConfigStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+export const systemConfigSystemOptions: OptionsType = [
+	{ label: "是", value: true },
+	{ label: "否", value: false },
 ];
-
-/**
- * @description 系统配置类型选项
- * System config type options
- */
-export const systemConfigTypeOptionsAlias: OptionsType = [
-	{ label: "系统配置", value: "系统配置" },
-	{ label: "业务配置", value: "业务配置" },
-	{ label: "接口配置", value: "接口配置" },
-];
-
-/**
- * @description 配置分组选项
- * Config group options
- */
-export const configGroupOptions: OptionsType = [
-	{ label: "基础配置", value: "基础配置" },
-	{ label: "高级配置", value: "高级配置" },
-	{ label: "安全配置", value: "安全配置" },
-];
-
-/**
- * @description 系统配置状态选项
- * System config status options
- */
-export const systemConfigStatusOptionsCN: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];
-
-/**
- * @description 系统配置表单数据类型 System config form data type
- * @description
- * 用于表单组件的数据传输和验证
- * Used for data transfer and validation of form components
- */
-export interface SystemConfigFormVO {
-	/** 配置名称 Config name */
-	configName: string;
-	/** 配置值 Config value */
-	configValue: string;
-	/** 配置类型 Config type */
-	configType: SystemConfigType;
-	/** 配置分组 Config group */
-	configGroup: SystemConfigGroup;
-	/** 状态 Status */
-	status: SystemConfigStatus;
-	/** 描述 Description */
-	description: string;
-}
-
-/**
- * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
- */
-export const systemConfigDefaultForm: SystemConfigFormVO = {
-	configName: "",
-	configValue: "",
-	configType: "文本",
-	configGroup: "系统基础",
-	status: "启用",
-	description: "",
-};
-
-/**
- * @description 系统配置表单 props System config form props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
- * To avoid global type conflicts, a longer type name is designed
- */

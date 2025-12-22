@@ -99,29 +99,3 @@ export interface PropertyManagementCompanyFormVO {
 	/** 备注 Remarks */
 	remarks: string;
 }
-
-/**
- * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
- */
-export const propertyManagementCompanyDefaultForm: PropertyManagementCompanyFormVO = {
-	code: "",
-	name: "",
-	address: "",
-	phone: "",
-	administrator: "",
-	legalRepresentative: "",
-	establishmentDate: "",
-	landmark: "",
-	communityCount: 0,
-	companyType: "",
-	serviceLevel: "",
-	operationStatus: "正常运营",
-	remarks: "",
-};
-
-/**
- * @description 物业公司表单 props Property management company form props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
- * To avoid global type conflicts, a longer type name is designed
- */

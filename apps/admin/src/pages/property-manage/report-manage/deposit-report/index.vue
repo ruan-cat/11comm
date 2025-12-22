@@ -8,9 +8,16 @@ definePage({
 	},
 });
 
-import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import type { DepositReportListItem, DepositReportQueryParams } from "@01s-11comm/type";
+import {
+	buildingOptions,
+	unitOptions,
+	feeItemNameOptions,
+	chargeStatusOptions,
+	chargeObjectTypeOptions,
+	refundStatusOptions,
+} from "@01s-11comm/type";
 import { useDepositReportListQuery } from "@/api/property-manage/report-manage/deposit-report";
 
 /** 表格列配置 */
@@ -100,17 +107,17 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 押金报表_搜索_VO = {
-	楼栋: "",
-	单元: "",
-	房屋编号: "",
-	费用id: "",
-	费用项目名称: "",
-	收费状态: "",
-	收费对象类型: "",
-	费用创建开始时间: "",
-	费用创建结束时间: "",
-	退费状态: "",
+const plusSearchModelRef: FieldValues & Partial<DepositReportQueryParams> = {
+	building: "",
+	unit: "",
+	roomNumber: "",
+	feeId: "",
+	feeItemName: "",
+	chargeStatus: "",
+	chargeObjectType: "",
+	feeCreateStartTime: "",
+	feeCreateEndTime: "",
+	refundStatus: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -138,59 +145,59 @@ const {
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "楼栋",
-		prop: "楼栋",
+		prop: "building",
 		valueType: "select",
 		options: buildingOptions,
 	},
 	{
 		label: "单元",
-		prop: "单元",
+		prop: "unit",
 		valueType: "select",
 		options: unitOptions,
 	},
 	{
 		label: "房屋编号",
-		prop: "房屋编号",
+		prop: "roomNumber",
 		valueType: "input",
 	},
 	{
 		label: "费用ID",
-		prop: "费用id",
+		prop: "feeId",
 		valueType: "input",
 	},
 	{
 		label: "费用项目名称",
-		prop: "费用项目名称",
+		prop: "feeItemName",
 		valueType: "select",
-		options: 费用项目名称Options,
+		options: feeItemNameOptions,
 	},
 	{
 		label: "收费状态",
-		prop: "收费状态",
+		prop: "chargeStatus",
 		valueType: "select",
-		options: 收费状态Options,
+		options: chargeStatusOptions,
 	},
 	{
 		label: "收费对象类型",
-		prop: "收费对象类型",
+		prop: "chargeObjectType",
 		valueType: "select",
-		options: 收费对象类型Options,
+		options: chargeObjectTypeOptions,
 	},
 	{
 		label: "费用创建开始时间",
-		prop: "费用创建开始时间",
+		prop: "feeCreateStartTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "费用创建结束时间",
-		prop: "费用创建结束时间",
+		prop: "feeCreateEndTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "退费状态",
-		prop: "退费状态",
+		prop: "refundStatus",
 		valueType: "select",
-		options: 退费状态Options,
+		options: refundStatusOptions,
 	},
 ]);
 

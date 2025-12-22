@@ -1,151 +1,77 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * @description 小区信息列表数据
- * Community information list item
+ * 小区信息
  */
-export interface CommunityInfoListItem {
-	/** 小区ID Community ID */
-	communityId: string;
-	/** 小区名称 Community name */
+export interface CommunityInformation {
+	/** 小区ID */
+	id: string;
+	/** 小区名称 */
 	communityName: string;
-	/** 物业公司 Property company */
-	propertyCompany: string;
-	/** 附近地标 Nearby landmark */
-	nearbyLandmark: string;
-	/** 城市编码 City code */
-	cityCode: string;
-	/** 创建时间 Creation time */
-	createTime: string;
-	/** 社区编码 Community code */
+	/** 小区编码 */
 	communityCode: string;
-	/** 状态 Status */
-	status: string;
-	/** 省份 Province */
-	province: string;
-	/** 城市 City */
-	city: string;
-	/** 区县 District */
-	district: string;
-	/** 详细地址 Detailed address */
-	detailedAddress: string;
-	/** 联系电话 Contact phone */
+	/** 所属区域 */
+	region: string;
+	/** 详细地址 */
+	address: string;
+	/** 占地面积 */
+	landArea: number;
+	/** 建筑面积 */
+	buildingArea: number;
+	/** 楼栋数量 */
+	buildingCount: number;
+	/** 单元数量 */
+	unitCount: number;
+	/** 户数 */
+	houseCount: number;
+	/** 车位数量 */
+	parkingCount: number;
+	/** 绿化率 */
+	greenRate: number;
+	/** 容积率 */
+	plotRatio: number;
+	/** 开发商 */
+	developer: string;
+	/** 物业公司 */
+	propertyCompany: string;
+	/** 成立时间 */
+	establishedTime: string;
+	/** 联系电话 */
 	contactPhone: string;
-	/** 管理员 Administrator */
-	administrator: string;
+	/** 状态 */
+	status: string;
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+	/** 操作人 */
+	operator: string;
 }
 
 /**
- * @description 小区信息列表查询参数
- * Community information list query parameters
+ * 小区信息列表查询参数
  */
-export interface CommunityInfoQueryParams {
-	/** 小区ID Community ID */
-	communityId?: string;
-	/** 小区名称 Community name */
+export interface CommunityInformationListQuery extends BaseListQueryParams {
+	/** 小区名称 */
 	communityName?: string;
-	/** 省份 Province */
-	province?: string;
-	/** 城市 City */
-	city?: string;
-	/** 区县 District */
-	district?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+	/** 小区编码 */
+	communityCode?: string;
+	/** 所属区域 */
+	region?: string;
+	/** 物业公司 */
+	propertyCompany?: string;
+	/** 状态 */
+	status?: string;
+	/** 成立时间范围 */
+	establishedTimeRange?: [string, string];
 }
 
 /**
- * @description 搜索栏下拉选项
- * Search options
+ * 状态选项
  */
-export const communitySearchOptions = {
-	/** 省份选项 Province options */
-	provinces: [
-		{ label: "福建省", value: "福建省" },
-		{ label: "浙江省", value: "浙江省" },
-		{ label: "江苏省", value: "江苏省" },
-		{ label: "广东省", value: "广东省" },
-	] as OptionsType,
-
-	/** 城市选项 City options */
-	cities: [
-		{ label: "福州市", value: "福州市" },
-		{ label: "厦门市", value: "厦门市" },
-		{ label: "漳州市", value: "漳州市" },
-		{ label: "泉州市", value: "泉州市" },
-	] as OptionsType,
-
-	/** 区县选项 District options */
-	districts: [
-		{ label: "仓山区", value: "仓山区" },
-		{ label: "鼓楼区", value: "鼓楼区" },
-		{ label: "台江区", value: "台江区" },
-		{ label: "晋安区", value: "晋安区" },
-		{ label: "马尾区", value: "马尾区" },
-		{ label: "长乐区", value: "长乐区" },
-		{ label: "闽侯县", value: "闽侯县" },
-	] as OptionsType,
-};
-
-/**
- * @description 小区信息表单业务类型 Community information form business type
- */
-export interface CommunityInformationFormVO {
-	/** 小区ID Community ID */
-	communityId: string;
-	/** 小区名称 Community name */
-	communityName: string;
-	/** 物业公司 Property company */
-	propertyCompany: string;
-	/** 附近地标 Nearby landmark */
-	nearbyLandmark: string;
-	/** 城市编码 City code */
-	cityCode: string;
-	/** 创建时间 Creation time */
-	createTime: string;
-	/** 社区编码 Community code */
-	communityCode: string;
-	/** 状态 Status */
-	status: string;
-	/** 省份 Province */
-	province: string;
-	/** 城市 City */
-	city: string;
-	/** 区县 District */
-	district: string;
-	/** 详细地址 Detailed address */
-	detailedAddress: string;
-	/** 联系电话 Contact phone */
-	contactPhone: string;
-	/** 管理员 Administrator */
-	administrator: string;
-}
-
-/**
- * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
- */
-export const communityInformationDefaultForm: CommunityInformationFormVO = {
-	communityId: "",
-	communityName: "",
-	propertyCompany: "",
-	nearbyLandmark: "",
-	cityCode: "",
-	createTime: "",
-	communityCode: "",
-	status: "正常运营",
-	province: "",
-	city: "",
-	district: "",
-	detailedAddress: "",
-	contactPhone: "",
-	administrator: "",
-};
-
-/**
- * @description 小区信息表单 props Community information form props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
- * To avoid global type conflicts, a longer type name is designed
- */
+export const communityInformationStatusOptions: OptionsType = [
+	{ label: "正常", value: "正常" },
+	{ label: "停用", value: "停用" },
+	{ label: "筹建中", value: "筹建中" },
+	{ label: "已交付", value: "已交付" },
+];

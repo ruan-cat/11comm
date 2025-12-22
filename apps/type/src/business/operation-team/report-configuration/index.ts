@@ -1,9 +1,7 @@
 /**
- * @file 报表配置模块类型导出
- * @description 统一导出报表配置相关的所有业务类型
+ * @file 报表配置模块
+ * @description Report configuration module
  */
-
-export * from "./report-component";
 export * from "./report-group";
 export * from "./report-info";
-
+export * from "./report-component";

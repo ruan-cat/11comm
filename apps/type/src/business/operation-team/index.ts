@@ -1,16 +1,8 @@
 /**
- * @file operation-team 模块类型导出
- * @description 运营团队模块的所有业务类型
+ * @file 运营团队模块
+ * @description Operation team module
  */
-
-// 数据管理模块
-export * from "./data-manage";
-
-// 商户管理模块
-export * from "./merchant-manage";
-
-// 报表配置模块
-export * from "./report-configuration";
-
-// 系统管理模块
 export * from "./system-manage";
+export * from "./data-manage";
+export * from "./merchant-manage";
+export * from "./report-configuration";

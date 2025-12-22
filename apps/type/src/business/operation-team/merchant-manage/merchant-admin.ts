@@ -1,121 +1,92 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * @description 管理员状态
- * Admin status
+ * 商户管理员
  */
-export type MerchantAdminStatus = "正常" | "禁用" | "待审核";
-
-/**
- * @description 商户管理员列表数据
- * Merchant admin list item
- */
-export interface MerchantAdminListItem {
-	/** 物业名称 Property name */
-	propertyName: string;
-	/** 管理员姓名 Admin name */
-	adminName: string;
-	/** 管理员电话 Admin phone */
-	adminPhone: string;
-	/** 管理员ID Admin ID */
-	adminId: string;
-	/** 状态 Status */
-	status: MerchantAdminStatus;
-	/** 创建时间 Creation time */
+export interface MerchantAdmin {
+	/** 管理员ID */
+	id: string;
+	/** 商户ID */
+	merchantId: string;
+	/** 商户名称 */
+	merchantName: string;
+	/** 管理员用户名 */
+	username: string;
+	/** 真实姓名 */
+	realName: string;
+	/** 手机号 */
+	phone: string;
+	/** 邮箱 */
+	email: string;
+	/** 性别 */
+	gender: string;
+	/** 职位 */
+	position: string;
+	/** 身份证号 */
+	idCard: string;
+	/** 紧急联系人 */
+	emergencyContact: string;
+	/** 紧急联系电话 */
+	emergencyPhone: string;
+	/** 权限等级 */
+	permissionLevel: string;
+	/** 最后登录时间 */
+	lastLoginTime: string;
+	/** 状态 */
+	status: string;
+	/** 创建时间 */
 	createTime: string;
-	/** 最后登录时间 Last login time */
-	lastLoginTime?: string;
-	/** 隶属小区数量 Number of affiliated communities */
-	affiliatedCommunityCount: number;
-	/** 登录次数 Login count */
-	loginCount: number;
+	/** 更新时间 */
+	updateTime: string;
+	/** 操作人 */
+	operator: string;
 }
 
 /**
- * @description 商户管理员列表查询参数
- * Merchant admin list query parameters
+ * 商户管理员列表查询参数
  */
-export interface MerchantAdminQueryParams {
-	/** 物业名称 Property name */
-	propertyName?: string;
-	/** 管理员姓名 Admin name */
-	adminName?: string;
-	/** 联系电话 Contact phone */
-	contactPhone?: string;
-	/** 状态 Status */
-	status?: MerchantAdminStatus;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+export interface MerchantAdminListQuery extends BaseListQueryParams {
+	/** 商户ID */
+	merchantId?: string;
+	/** 商户名称 */
+	merchantName?: string;
+	/** 管理员用户名 */
+	username?: string;
+	/** 真实姓名 */
+	realName?: string;
+	/** 手机号 */
+	phone?: string;
+	/** 职位 */
+	position?: string;
+	/** 权限等级 */
+	permissionLevel?: string;
+	/** 状态 */
+	status?: string;
 }
 
 /**
- * @description 状态选项
- * Status options
+ * 性别选项
+ */
+export const merchantAdminGenderOptions: OptionsType = [
+	{ label: "男", value: "男" },
+	{ label: "女", value: "女" },
+];
+
+/**
+ * 权限等级选项
+ */
+export const merchantAdminPermissionLevelOptions: OptionsType = [
+	{ label: "超级管理员", value: "超级管理员" },
+	{ label: "普通管理员", value: "普通管理员" },
+	{ label: "业务操作员", value: "业务操作员" },
+];
+
+/**
+ * 状态选项
  */
 export const merchantAdminStatusOptions: OptionsType = [
 	{ label: "正常", value: "正常" },
 	{ label: "禁用", value: "禁用" },
 	{ label: "待审核", value: "待审核" },
+	{ label: "已离职", value: "已离职" },
 ];
-
-/**
- * @description 物业公司选项
- * Property company options
- */
-export const propertyCompanyOptions: OptionsType = [
-	{ label: "万科物业服务有限公司", value: "万科物业服务有限公司" },
-	{ label: "保利物业发展股份有限公司", value: "保利物业发展股份有限公司" },
-	{ label: "碧桂园生活服务集团股份有限公司", value: "碧桂园生活服务集团股份有限公司" },
-	{ label: "绿城服务集团有限公司", value: "绿城服务集团有限公司" },
-	{ label: "龙湖智慧服务", value: "龙湖智慧服务" },
-	{ label: "金地物业管理有限公司", value: "金地物业管理有限公司" },
-	{ label: "华润物业科技服务有限公司", value: "华润物业科技服务有限公司" },
-	{ label: "中海物业管理有限公司", value: "中海物业管理有限公司" },
-	{ label: "恒大金碧物业有限公司", value: "恒大金碧物业有限公司" },
-	{ label: "富力物业服务集团有限公司", value: "富力物业服务集团有限公司" },
-];
-
-/**
- * @description 商户管理员表单数据类型 Merchant admin form data type
- */
-export interface MerchantAdminFormVO {
-	/** 物业公司名称 Property company name */
-	propertyCompany: string;
-	/** 管理员姓名 Admin name */
-	adminName: string;
-	/** 管理员电话 Admin phone */
-	adminPhone: string;
-	/** 管理员邮箱 Admin email */
-	adminEmail: string;
-	/** 身份证号码 ID card number */
-	idCardNumber: string;
-	/** 账户状态 Account status */
-	accountStatus: string;
-	/** 登录密码 Login password */
-	loginPassword: string;
-	/** 确认密码 Confirm password */
-	confirmPassword: string;
-	/** 联系地址 Contact address */
-	contactAddress: string;
-	/** 备注 Remarks */
-	remarks: string;
-}
-
-/**
- * @description 默认表单 @description 对外导出用于其他场景使用 Default form for external use
- */
-export const merchantAdminDefaultForm: MerchantAdminFormVO = {
-	propertyCompany: "",
-	adminName: "",
-	adminPhone: "",
-	adminEmail: "",
-	idCardNumber: "",
-	accountStatus: "正常",
-	loginPassword: "",
-	confirmPassword: "",
-	contactAddress: "",
-	remarks: "",
-};
-

@@ -1,8 +1,6 @@
 /**
- * @file 商户管理模块类型导出
- * @description 统一导出商户管理相关的所有业务类型
+ * @file 商户管理模块
+ * @description Merchant management module
  */
-
-export * from "./merchant-admin";
 export * from "./merchant-info";
-
+export * from "./merchant-admin";

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { ArrearsDetailsFormProps, type 欠费明细表单_VO } from "./form";
+import type { ArrearsDetailsFormProps, ArrearsDetailsFormVO } from "./form";
 
 const props = defineProps<ArrearsDetailsFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 欠费明细表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ArrearsDetailsFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 欠费明细表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & ArrearsDetailsFormVO;
 
 /**
  * 表单对象
@@ -36,7 +36,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "费用编号",
-		prop: "费用编号",
+		prop: "feeNumber",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -44,65 +44,60 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "房号",
-		prop: "房号",
+		prop: "roomNumber",
 		valueType: "input",
 	},
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		valueType: "input",
 	},
 	{
 		label: "业主电话",
-		prop: "业主电话",
+		prop: "ownerPhone",
 		valueType: "input",
 	},
 	{
 		label: "面积",
-		prop: "面积",
+		prop: "area",
 		valueType: "input",
 	},
 	{
 		label: "费用项",
-		prop: "费用项",
+		prop: "feeItem",
 		valueType: "input",
 	},
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "欠费时长",
-		prop: "欠费时长",
+		prop: "arrearsDuration",
 		valueType: "input",
 	},
 	{
 		label: "欠费金额",
-		prop: "欠费金额",
+		prop: "arrearsAmount",
 		valueType: "input",
-	},
-	{
-		label: "备注",
-		prop: "备注",
-		valueType: "textarea",
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	房号: [{ required: true, message: "请输入房号", trigger: "blur" }],
-	业主: [{ required: true, message: "请输入业主", trigger: "blur" }],
-	业主电话: [{ required: true, message: "请输入业主电话", trigger: "blur" }],
-	费用项: [{ required: true, message: "请输入费用项", trigger: "blur" }],
-	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	欠费金额: [{ required: true, message: "请输入欠费金额", trigger: "blur" }],
+	roomNumber: [{ required: true, message: "请输入房号", trigger: "blur" }],
+	owner: [{ required: true, message: "请输入业主", trigger: "blur" }],
+	ownerPhone: [{ required: true, message: "请输入业主电话", trigger: "blur" }],
+	feeItem: [{ required: true, message: "请输入费用项", trigger: "blur" }],
+	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	arrearsAmount: [{ required: true, message: "请输入欠费金额", trigger: "blur" }],
 });
 
 /** 动态计算的表单项配置 */

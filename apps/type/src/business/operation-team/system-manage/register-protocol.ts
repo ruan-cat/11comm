@@ -1,84 +1,76 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * @description 注册协议列表数据
- * Register protocol list item
+ * 注册协议
  */
-export interface RegisterProtocolListItem {
-	/** 协议ID Protocol ID */
-	protocolId: string;
-	/** 协议名称 Protocol name */
-	protocolName: string;
-	/** 协议类型 Protocol type */
+export interface RegisterProtocol {
+	/** 协议ID */
+	id: string;
+	/** 协议标题 */
+	title: string;
+	/** 协议类型 */
 	protocolType: string;
-	/** 协议版本 Protocol version */
-	protocolVersion: string;
-	/** 状态 Status */
-	status: string;
-	/** 是否强制同意 Is mandatory */
-	isMandatory: string;
-	/** 协议摘要 Protocol summary */
-	summary: string;
-	/** 协议内容 Protocol content */
+	/** 协议版本 */
+	version: string;
+	/** 协议内容 */
 	content: string;
-	/** 生效日期 Effective date */
-	effectiveDate: string;
-	/** 失效日期 Expiration date */
-	expirationDate: string;
-	/** 排序权重 Sort weight */
-	sortOrder: number;
-	/** 创建时间 Create time */
+	/** 是否启用 */
+	isEnabled: boolean;
+	/** 是否必读 */
+	isRequired: boolean;
+	/** 生效时间 */
+	effectiveTime: string;
+	/** 失效时间 */
+	expireTime: string;
+	/** 创建时间 */
 	createTime: string;
-	/** 更新时间 Update time */
+	/** 更新时间 */
 	updateTime: string;
+	/** 操作人 */
+	operator: string;
+	/** 备注 */
+	remark: string;
 }
 
 /**
- * @description 注册协议列表查询参数
- * Register protocol list query parameters
+ * 注册协议列表查询参数
  */
-export interface RegisterProtocolQueryParams {
-	/** 协议名称 Protocol name */
-	protocolName?: string;
-	/** 协议类型 Protocol type */
+export interface RegisterProtocolListQuery extends BaseListQueryParams {
+	/** 协议标题 */
+	title?: string;
+	/** 协议类型 */
 	protocolType?: string;
-	/** 状态 Status */
-	status?: string;
-	/** 是否强制同意 Is mandatory */
-	isMandatory?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
+	/** 是否启用 */
+	isEnabled?: boolean;
+	/** 是否必读 */
+	isRequired?: boolean;
+	/** 生效时间范围 */
+	effectiveTimeRange?: [string, string];
 }
 
 /**
- * @description 协议类型选项
- * Protocol type options
+ * 协议类型选项
  */
-export const protocolTypeOptions: OptionsType = [
+export const registerProtocolTypeOptions: OptionsType = [
 	{ label: "用户注册协议", value: "用户注册协议" },
 	{ label: "隐私政策", value: "隐私政策" },
 	{ label: "服务条款", value: "服务条款" },
-	{ label: "社区规则", value: "社区规则" },
 	{ label: "免责声明", value: "免责声明" },
+	{ label: "版权声明", value: "版权声明" },
 ];
 
 /**
- * @description 状态选项
- * Status options
+ * 启用状态选项
  */
-export const registerProtocolStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-	{ label: "草稿", value: "草稿" },
+export const registerProtocolEnabledOptions: OptionsType = [
+	{ label: "启用", value: true },
+	{ label: "禁用", value: false },
 ];
 
 /**
- * @description 是否强制同意选项
- * Is mandatory options
+ * 必读状态选项
  */
-export const isMandatoryOptions: OptionsType = [
-	{ label: "是", value: "是" },
-	{ label: "否", value: "否" },
+export const registerProtocolRequiredOptions: OptionsType = [
+	{ label: "是", value: true },
+	{ label: "否", value: false },
 ];

@@ -15,7 +15,7 @@ const pagination = ref<PaginationProps>({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
-	total: mockTableData.length,
+	total: 0,
 });
 
 /** 表格数据 */
@@ -197,7 +197,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 加载表格数据 */
 async function loadTableData() {
-	let filteredData = mockTableData;
+	let filteredData: 报修报表_表格数据[] = [];
 
 	if (plusSearchModel.value.报修类型) {
 		filteredData = filteredData.filter((item) => item.报修类型 === plusSearchModel.value.报修类型);

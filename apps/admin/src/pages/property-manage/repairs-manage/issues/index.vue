@@ -16,9 +16,12 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./components/form";
 import IssuesSettingForm from "./components/form.vue";
+// TODO: 需要换成英文类型 不允许写成中文类型
 import {
 	type IssuesListItem,
 	type IssuesQueryParams,
+	type 工单池_列表数据,
+	type 工单池_列表查询_VO,
 	repairTypeOptions,
 	repairStatusOptions,
 	repairCategoryOptions,
@@ -33,6 +36,9 @@ const issuesSettingFormInstance = ref<InstanceType<typeof IssuesSettingForm> | n
 
 /** 表格数据 */
 const tableData = ref<工单池_列表数据[]>([]);
+
+/** 模拟数据 - TODO: 替换为真实API调用 */
+const mockTableData: 工单池_列表数据[] = [];
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
