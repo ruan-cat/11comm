@@ -1,21 +1,26 @@
 /**
- * @file 修改密码记录查询 Hook
- * @description 提供修改密码记录列表数据查询功能
+ * @file 密码修改记录 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { ChangePasswordRecordListItem, ChangePasswordRecordQueryParams } from "@01s-11comm/type";
+import type { ChangePasswordRecord, ChangePasswordRecordListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/system-manage/change-password/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "changePasswordRecord";
 
 /**
- * 获取修改密码记录列表数据
- * Get change password record list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 密码修改记录列表查询 Hook
+ * Change password record list query hook
  */
-export function useChangePasswordRecordListQuery(initialParams: Partial<ChangePasswordRecordQueryParams>) {
-	return useListQuery<ChangePasswordRecordListItem, ChangePasswordRecordQueryParams>({
-		queryKeyPrefix: "operationTeam:systemManage:changePassword:list",
-		apiUrl: "/api/operation-team/system-manage/change-password/list",
+export function useChangePasswordRecordListQuery(initialParams: Partial<ChangePasswordRecordListQuery>) {
+	return useListQuery<ChangePasswordRecord, ChangePasswordRecordListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useChangePasswordRecordListQuery;

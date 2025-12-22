@@ -1,21 +1,26 @@
 /**
- * @file 商家信息查询 Hook
- * @description 提供商家信息列表数据查询功能
+ * @file 商户信息 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { MerchantInfoListItem, MerchantInfoQueryParams } from "@01s-11comm/type";
+import type { MerchantInfo, MerchantInfoListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/merchant-manage/merchant-info/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "merchantInfo";
 
 /**
- * 获取商家信息列表数据
- * Get merchant info list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 商户信息列表查询 Hook
+ * Merchant info list query hook
  */
-export function useMerchantInfoListQuery(initialParams: Partial<MerchantInfoQueryParams>) {
-	return useListQuery<MerchantInfoListItem, MerchantInfoQueryParams>({
-		queryKeyPrefix: "operationTeam:merchantManage:merchantInfo:list",
-		apiUrl: "/api/operation-team/merchant-manage/merchant-info/list",
+export function useMerchantInfoListQuery(initialParams: Partial<MerchantInfoListQuery>) {
+	return useListQuery<MerchantInfo, MerchantInfoListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useMerchantInfoListQuery;

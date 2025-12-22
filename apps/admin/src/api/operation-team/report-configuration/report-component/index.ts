@@ -1,21 +1,26 @@
 /**
- * @file 报表组件查询 Hook
- * @description 提供报表组件列表数据查询功能
+ * @file 报表组件 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { ReportComponentListItem, ReportComponentQueryParams } from "@01s-11comm/type";
+import type { ReportComponent, ReportComponentListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/report-configuration/report-component/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "reportComponent";
 
 /**
- * 获取报表组件列表数据
- * Get report component list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 报表组件列表查询 Hook
+ * Report component list query hook
  */
-export function useReportComponentListQuery(initialParams: Partial<ReportComponentQueryParams>) {
-	return useListQuery<ReportComponentListItem, ReportComponentQueryParams>({
-		queryKeyPrefix: "operationTeam:reportConfiguration:reportComponent:list",
-		apiUrl: "/api/operation-team/report-configuration/report-component/list",
+export function useReportComponentListQuery(initialParams: Partial<ReportComponentListQuery>) {
+	return useListQuery<ReportComponent, ReportComponentListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useReportComponentListQuery;

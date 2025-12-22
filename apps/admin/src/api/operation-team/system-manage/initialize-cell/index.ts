@@ -1,21 +1,26 @@
 /**
- * @file 小区初始化查询 Hook
- * @description 提供小区初始化列表数据查询功能
+ * @file 初始化小区 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { InitializeCellListItem, InitializeCellQueryParams } from "@01s-11comm/type";
+import type { InitializeCell, InitializeCellListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/system-manage/initialize-cell/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "initializeCell";
 
 /**
- * 获取小区初始化列表数据
- * Get initialize cell list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 初始化小区列表查询 Hook
+ * Initialize cell list query hook
  */
-export function useInitializeCellListQuery(initialParams: Partial<InitializeCellQueryParams>) {
-	return useListQuery<InitializeCellListItem, InitializeCellQueryParams>({
-		queryKeyPrefix: "operationTeam:systemManage:initializeCell:list",
-		apiUrl: "/api/operation-team/system-manage/initialize-cell/list",
+export function useInitializeCellListQuery(initialParams: Partial<InitializeCellListQuery>) {
+	return useListQuery<InitializeCell, InitializeCellListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useInitializeCellListQuery;

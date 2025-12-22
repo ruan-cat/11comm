@@ -1,21 +1,26 @@
 /**
- * @file 报表分组查询 Hook
- * @description 提供报表分组列表数据查询功能
+ * @file 报表组 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";
+import type { ReportGroup, ReportGroupListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/report-configuration/report-group/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "reportGroup";
 
 /**
- * 获取报表分组列表数据
- * Get report group list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 报表组列表查询 Hook
+ * Report group list query hook
  */
-export function useReportGroupListQuery(initialParams: Partial<ReportGroupQueryParams>) {
-	return useListQuery<ReportGroupListItem, ReportGroupQueryParams>({
-		queryKeyPrefix: "operationTeam:reportConfiguration:reportGroup:list",
-		apiUrl: "/api/operation-team/report-configuration/report-group/list",
+export function useReportGroupListQuery(initialParams: Partial<ReportGroupListQuery>) {
+	return useListQuery<ReportGroup, ReportGroupListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useReportGroupListQuery;

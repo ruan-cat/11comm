@@ -1,21 +1,26 @@
 /**
- * @file 社区信息查询 Hook
- * @description 提供社区信息列表数据查询功能
+ * @file 小区信息 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { CommunityInfoListItem, CommunityInfoQueryParams } from "@01s-11comm/type";
+import type { CommunityInformation, CommunityInformationListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/data-manage/community-information/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "communityInformation";
 
 /**
- * 获取社区信息列表数据
- * Get community info list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 小区信息列表查询 Hook
+ * Community information list query hook
  */
-export function useCommunityInfoListQuery(initialParams: Partial<CommunityInfoQueryParams>) {
-	return useListQuery<CommunityInfoListItem, CommunityInfoQueryParams>({
-		queryKeyPrefix: "operationTeam:dataManage:communityInformation:list",
-		apiUrl: "/api/operation-team/data-manage/community-information/list",
+export function useCommunityInformationListQuery(initialParams: Partial<CommunityInformationListQuery>) {
+	return useListQuery<CommunityInformation, CommunityInformationListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useCommunityInformationListQuery;

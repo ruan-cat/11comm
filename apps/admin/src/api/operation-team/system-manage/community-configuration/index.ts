@@ -1,21 +1,26 @@
 /**
- * @file 社区配置查询 Hook
- * @description 提供社区配置列表数据查询功能
+ * @file 小区配置 API Hook
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { CommunityConfigListItem, CommunityConfigQueryParams } from "@01s-11comm/type";
+import type { CommunityConfiguration, CommunityConfigurationListQuery } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = "/api/operation-team/system-manage/community-configuration/list";
+
+/** 查询键前缀 */
+const QUERY_KEY_PREFIX = "communityConfiguration";
 
 /**
- * 获取社区配置列表数据
- * Get community config list data
- * @param initialParams 初始查询参数
- * @returns 查询结果
+ * 小区配置列表查询 Hook
+ * Community configuration list query hook
  */
-export function useCommunityConfigListQuery(initialParams: Partial<CommunityConfigQueryParams>) {
-	return useListQuery<CommunityConfigListItem, CommunityConfigQueryParams>({
-		queryKeyPrefix: "operationTeam:systemManage:communityConfiguration:list",
-		apiUrl: "/api/operation-team/system-manage/community-configuration/list",
+export function useCommunityConfigurationListQuery(initialParams: Partial<CommunityConfigurationListQuery>) {
+	return useListQuery<CommunityConfiguration, CommunityConfigurationListQuery>({
+		queryKeyPrefix: QUERY_KEY_PREFIX,
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
+
+export default useCommunityConfigurationListQuery;
