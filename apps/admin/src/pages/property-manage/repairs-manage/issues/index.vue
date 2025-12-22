@@ -16,6 +16,14 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./components/form";
 import IssuesSettingForm from "./components/form.vue";
+import {
+	type IssuesListItem,
+	type IssuesQueryParams,
+	repairTypeOptions,
+	repairStatusOptions,
+	repairCategoryOptions,
+	repairsSettingTypeOptions,
+} from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -181,7 +189,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
 		prop: "报修类型",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 
 	// 报修设置类型
@@ -189,7 +197,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairReportingSettingType")),
 		prop: "报修设置类型",
 		valueType: "select",
-		options: 报修设置类型Options,
+		options: repairsSettingTypeOptions,
 	},
 
 	// 报修位置
@@ -204,7 +212,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.maintenanceType")),
 		prop: "维修类型",
 		valueType: "select",
-		options: 维修类型Options,
+		options: repairCategoryOptions,
 	},
 
 	// 开始时间

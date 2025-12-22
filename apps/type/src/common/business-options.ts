@@ -509,3 +509,228 @@ export const returnVisitStatusOptions: OptionsType = [
 	{ label: "满意", value: "满意" },
 	{ label: "不满意", value: "不满意" },
 ];
+
+/**
+ * @description 维修类型选项
+ * Maintenance type options
+ */
+export const maintenanceTypeOptions: OptionsType = [
+	{ label: "日常维修", value: "日常维修" },
+	{ label: "紧急维修", value: "紧急维修" },
+	{ label: "计划维修", value: "计划维修" },
+	{ label: "预防性维修", value: "预防性维修" },
+];
+
+/**
+ * @description 报修设置类型选项
+ * Repairs setting type options
+ */
+export const repairsSettingTypeOptions: OptionsType = [
+	{ label: "保洁单", value: "保洁单" },
+	{ label: "维修单", value: "维修单" },
+];
+
+/**
+ * @description 派单方式选项
+ * Dispatch method options
+ */
+export const dispatchMethodOptions: OptionsType = [
+	{ label: "抢单", value: "抢单" },
+	{ label: "指派", value: "指派" },
+	{ label: "轮训", value: "轮训" },
+];
+
+/**
+ * @description 区域选项
+ * Area options
+ */
+export const areaOptions: OptionsType = [
+	{ label: "房屋", value: "房屋" },
+	{ label: "公共区域", value: "公共区域" },
+	{ label: "车库", value: "车库" },
+	{ label: "非房屋", value: "非房屋" },
+];
+
+/**
+ * @description 楼栋选项
+ * Building options
+ */
+export const buildingOptions: OptionsType = [
+	{ label: "1栋", value: "1栋" },
+	{ label: "2栋", value: "2栋" },
+	{ label: "3栋", value: "3栋" },
+	{ label: "A栋", value: "A栋" },
+	{ label: "B栋", value: "B栋" },
+	{ label: "C栋", value: "C栋" },
+];
+
+/**
+ * @description 单元选项
+ * Unit options
+ */
+export const unitOptions: OptionsType = [
+	{ label: "1单元", value: "1单元" },
+	{ label: "2单元", value: "2单元" },
+	{ label: "3单元", value: "3单元" },
+];
+
+/**
+ * @description 维修类型选项
+ * Repair category options
+ */
+export const repairCategoryOptions: OptionsType = [
+	{ label: "紧急维修", value: "紧急维修" },
+	{ label: "一般维修", value: "一般维修" },
+	{ label: "计划维修", value: "计划维修" },
+	{ label: "预防性维修", value: "预防性维修" },
+];
+
+/**
+ * @description 工单状态选项
+ * Work order status options
+ */
+export const workOrderStatusOptions: OptionsType = [
+	{ label: "待处理", value: "待处理" },
+	{ label: "处理中", value: "处理中" },
+	{ label: "已完成", value: "已完成" },
+	{ label: "已取消", value: "已取消" },
+];
+
+/**
+ * @description 紧急程度选项
+ * Urgency level options
+ */
+export const urgencyLevelOptions: OptionsType = [
+	{ label: "普通", value: "普通" },
+	{ label: "紧急", value: "紧急" },
+	{ label: "非常紧急", value: "非常紧急" },
+];
+
+/**
+ * @description 小区选项
+ * Community options
+ */
+export const communityOptions: OptionsType = [
+	{ label: "阳光花园", value: "阳光花园" },
+	{ label: "翠湖苑", value: "翠湖苑" },
+	{ label: "碧水蓝天", value: "碧水蓝天" },
+	{ label: "金色家园", value: "金色家园" },
+];
+
+/**
+ * @description 收费状态选项
+ * Charge status options
+ */
+export const chargeStatusOptions: OptionsType = [
+	{ label: "已收费", value: "已收费" },
+	{ label: "未收费", value: "未收费" },
+	{ label: "部分收费", value: "部分收费" },
+];
+
+/**
+ * @description 巡检类型选项
+ * Patrol type options
+ */
+export const patrolTypeOptions: OptionsType = [
+	{ label: "日常巡检", value: "日常巡检" },
+	{ label: "专项巡检", value: "专项巡检" },
+	{ label: "设备巡检", value: "设备巡检" },
+	{ label: "安全巡检", value: "安全巡检" },
+];
+
+/**
+ * @description 巡检级别选项
+ * Patrol level options
+ */
+export const patrolLevelOptions: OptionsType = [
+	{ label: "一级", value: "一级" },
+	{ label: "二级", value: "二级" },
+	{ label: "三级", value: "三级" },
+];
+
+/**
+ * @description 提醒类型选项
+ * Reminder type options
+ */
+export const reminderTypeOptions: OptionsType = [
+	{ label: "短信提醒", value: "短信提醒" },
+	{ label: "电话提醒", value: "电话提醒" },
+	{ label: "APP推送", value: "APP推送" },
+	{ label: "微信提醒", value: "微信提醒" },
+];
+
+/**
+ * @description 费用项选项
+ * Fee item options
+ */
+export const feeItemOptions: OptionsType = [
+	{ label: "物业费", value: "物业费" },
+	{ label: "水费", value: "水费" },
+	{ label: "电费", value: "电费" },
+	{ label: "燃气费", value: "燃气费" },
+	{ label: "停车费", value: "停车费" },
+];
+
+/**
+ * @description 收费大类选项
+ * Charge category options
+ */
+export const chargeCategoryOptions: OptionsType = [
+	{ label: "物业服务费", value: "物业服务费" },
+	{ label: "能源费用", value: "能源费用" },
+	{ label: "车辆服务费", value: "车辆服务费" },
+	{ label: "其他费用", value: "其他费用" },
+];
+
+/**
+ * @description 年度选项
+ * Year options
+ */
+export const yearOptions: OptionsType = [
+	{ label: "2024年", value: "2024" },
+	{ label: "2025年", value: "2025" },
+	{ label: "2026年", value: "2026" },
+];
+
+/**
+ * @description 支付方式选项
+ * Payment method options
+ */
+export const paymentMethodOptions: OptionsType = [
+	{ label: "现金", value: "现金" },
+	{ label: "微信支付", value: "微信支付" },
+	{ label: "支付宝", value: "支付宝" },
+	{ label: "银行卡", value: "银行卡" },
+	{ label: "银行转账", value: "银行转账" },
+];
+
+/**
+ * @description 费用状态选项
+ * Fee status options
+ */
+export const feeStatusOptions: OptionsType = [
+	{ label: "已缴费", value: "已缴费" },
+	{ label: "未缴费", value: "未缴费" },
+	{ label: "部分缴费", value: "部分缴费" },
+	{ label: "逾期", value: "逾期" },
+];
+
+/**
+ * @description 回访设置选项
+ * Return visit setting options
+ */
+export const returnVisitSettingOptions: OptionsType = [
+	{ label: "需要回访", value: "需要回访" },
+	{ label: "不需要回访", value: "不需要回访" },
+];
+
+/**
+ * @description 预约状态选项
+ * Booking status options
+ */
+export const bookingStatusOptions: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+	{ label: "已取消", value: "已取消" },
+];

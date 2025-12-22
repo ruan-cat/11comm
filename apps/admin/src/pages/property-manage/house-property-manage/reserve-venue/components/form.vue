@@ -5,8 +5,10 @@
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
 
-import { type ReserveVenueFormProps } from "./form";
-import { defaultForm } from "./form";
+import { type ReserveVenueFormProps, ReserveVenueFormVO } from "./form";
+// TODO: 将中文类型的下拉选项 迁移成英文写法 迁移到@01s-11comm/type中
+// TODO: 需要换成英文类型 不允许写成中文类型
+import { defaultForm, 场地类型Options, 预约状态Options } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;

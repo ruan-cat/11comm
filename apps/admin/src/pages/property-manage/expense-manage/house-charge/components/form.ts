@@ -2,6 +2,7 @@ import { defaultHouseChargeForm } from "@01s-11comm/type";
 import type { HouseChargeFormVO, 房屋收费_VO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
+// TODO: 需要换成英文类型 不允许写成中文类型
 // Re-export types from type package for compatibility
 export type {
 	房屋收费_VO,
@@ -30,6 +31,9 @@ export interface HouseChargeFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
+
+/** 导出 HouseChargeFormVO 类型以保持兼容性 */
+export type { HouseChargeFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 

@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { 巡查明细表单Props, 巡查明细表单_VO, defaultForm } from "./form";
+import type { Mode } from "@/composables/use-mode";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
+import type { PlusFormRules } from "@/config/constant";
+import type { PatrolDetailFormVO } from "@01s-11comm/type";
+import { patrolMethodOptions } from "@01s-11comm/type";
+import { type PatrolDetailFormProps } from "./form";
 
-const props = defineProps<巡查明细表单Props & { mode: Mode }>();
+const props = defineProps<PatrolDetailFormProps & { mode: Mode }>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 巡查明细表单_VO;
+const defaultValues = props.defaultValues as FieldValues & PatrolDetailFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -20,7 +25,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 巡查明细表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & PatrolDetailFormVO;
 
 /**
  * 表单对象
@@ -73,7 +78,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "巡检方式",
 		valueType: "select",
 		required: true,
-		options: 巡检方式Options,
+		options: patrolMethodOptions,
 	},
 
 	// 位置信息

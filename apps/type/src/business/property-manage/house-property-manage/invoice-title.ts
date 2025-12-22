@@ -90,22 +90,3 @@ export const invoiceTitleTypeOptions: OptionsType = [
 	{ label: "电子普通发票", value: "电子普通发票" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 发票抬头列表数据（兼容性中文名称）
- * InvoiceTitle list item (for compatibility with Chinese names)
- */
-export type 发票抬头_列表数据 = InvoiceTitleListItem;
-
-/**
- * @description 发票抬头列表查询参数（兼容性中文名称）
- * InvoiceTitle query parameters (for compatibility with Chinese names)
- */
-export type 发票抬头_列表查询_VO = InvoiceTitleQueryParams;
-
-/**
- * @description 发票类型选项（兼容性中文名称）
- * Invoice type options (for compatibility with Chinese names)
- */
-export const 发票类型选项 = invoiceTitleTypeOptions;

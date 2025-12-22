@@ -15,7 +15,7 @@ import { type HouseManageFormProps, defaultForm, HouseManagementFormVO } from ".
 import HouseManageForm from "./components/form.vue";
 import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type";
 import { buildingUnitOptions, houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
-import { useHouseListQuery } from "@/api/property-manage/house-property-manage/house/use-house-list-query";
+import { useHouseListQuery } from "@/api/property-manage/house-property-manage/house";
 
 const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>(null);
 
@@ -295,7 +295,6 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 		],
 	});
 }
-
 </script>
 
 <template>

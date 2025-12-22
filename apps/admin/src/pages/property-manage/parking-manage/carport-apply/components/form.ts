@@ -1,8 +1,11 @@
 import type { Mode } from "@/composables/use-mode";
 import type { CarportApplyFormVO } from "@01s-11comm/type";
 
+// 重新导出类型
+export type { CarportApplyFormVO };
+
 /** 车位申请 表单数据类型 - 向后兼容别名 */
-export type 车位申请_VO = CarportApplyFormVO;
+export type CarportApplyFormVOAlias = CarportApplyFormVO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: CarportApplyFormVO = {

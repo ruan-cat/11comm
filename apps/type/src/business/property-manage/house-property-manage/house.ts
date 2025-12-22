@@ -105,24 +105,3 @@ export interface HouseManagementFormVO {
 	validUntil: string;
 }
 
-// ==================== 中文名称导出 ====================
-
-/** 房屋状态选项（中文名称） */
-export const 房屋状态选项 = houseStatusOptions;
-
-/** 房屋类型选项（中文名称） */
-export const 房屋类型选项 = houseTypeOptions;
-
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 房屋管理_列表数据 类型（兼容性）
- * House management list data type (for compatibility)
- */
-export type 房屋管理_列表数据 = HouseListItem[];
-
-/**
- * @description 房屋管理_列表查询_VO 类型（兼容性）
- * House management list query VO type (for compatibility)
- */
-export type 房屋管理_列表查询_VO = HouseQueryParams;

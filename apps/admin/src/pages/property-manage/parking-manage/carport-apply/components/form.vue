@@ -5,12 +5,13 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { CarportApplyFormProps, 车位申请_VO } from "./form";
+import { CarportApplyFormProps, CarportApplyFormVO } from "./form";
+import { carBrandOptions, vehicleTypeOptions, vehicleColorOptions, auditStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<CarportApplyFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 车位申请_VO;
+const defaultValues = props.defaultValues as FieldValues & CarportApplyFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +25,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 车位申请_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & CarportApplyFormVO;
 
 /**
  * 表单对象
@@ -60,7 +61,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "汽车品牌",
 		prop: "汽车品牌",
 		valueType: "select",
-		options: 汽车品牌Options,
+		options: carBrandOptions,
 		required: true,
 	},
 
@@ -69,7 +70,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "车辆类型",
 		prop: "车辆类型",
 		valueType: "select",
-		options: 车辆类型Options,
+		options: vehicleTypeOptions,
 		required: true,
 	},
 
@@ -78,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "颜色",
 		prop: "颜色",
 		valueType: "select",
-		options: 车辆颜色Options,
+		options: vehicleColorOptions,
 		required: true,
 	},
 
@@ -129,7 +130,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "审核结果",
 		prop: "审核结果",
 		valueType: "select",
-		options: 审核结果Options,
+		options: auditStatusOptions,
 		required: true,
 	},
 ]);

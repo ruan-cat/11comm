@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import { type PatrolPathFormProps, defaultForm } from "./form";
+import type { PatrolPathFormData } from "./form";
+import { patrolPointTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPathFormProps>();
 
@@ -45,7 +47,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "巡检点类型",
 		prop: "巡检点类型",
 		valueType: "select",
-		options: 巡检点类型Options,
+		options: patrolPointTypeOptions,
 	},
 	{
 		label: "巡检位置",

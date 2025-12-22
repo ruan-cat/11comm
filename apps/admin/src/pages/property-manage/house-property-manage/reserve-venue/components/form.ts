@@ -1,4 +1,15 @@
 import type { ReserveVenueFormVO } from "@01s-11comm/type";
+import { venueTypeOptions, reservationStatusOptions } from "@01s-11comm/type";
+
+// 重新导出类型
+export type { ReserveVenueFormVO };
+
+// TODO: 需要换成英文类型 不允许写成中文类型
+// 兼容旧版中文选项
+/** 场地类型选项（兼容性） */
+export const 场地类型Options = venueTypeOptions;
+/** 预约状态选项（兼容性） */
+export const 预约状态Options = reservationStatusOptions;
 
 /**
  * 场地预约表单 props

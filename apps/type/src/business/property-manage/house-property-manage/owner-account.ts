@@ -1,4 +1,8 @@
 import type { OptionsType } from "../../../common";
+import { paymentMethodOptions } from "../../../common/business-options";
+
+// 重导出通用选项
+export { paymentMethodOptions };
 
 /**
  * @description 业主账户列表数据
@@ -101,16 +105,4 @@ export const accountTypeOptions: OptionsType = [
 	{ label: "支付宝", value: "支付宝" },
 	{ label: "银行卡", value: "银行卡" },
 	{ label: "现金", value: "现金" },
-];
-
-/**
- * @description 支付方式选项
- * Payment method options
- */
-export const paymentMethodOptions: OptionsType = [
-	{ label: "微信支付", value: "微信支付" },
-	{ label: "支付宝支付", value: "支付宝支付" },
-	{ label: "银行转账", value: "银行转账" },
-	{ label: "现金支付", value: "现金支付" },
-	{ label: "刷卡支付", value: "刷卡支付" },
 ];

@@ -1,4 +1,8 @@
 import type { OptionsType } from "../../../common";
+import { feeStatusOptions } from "../../../common/business-options";
+
+// 重导出通用选项
+export { feeStatusOptions };
 
 /**
  * @description 费用类型
@@ -69,18 +73,6 @@ export const feeCategoryOptions: OptionsType = [
 	{ label: "违约金", value: "违约金" },
 ];
 
-
-/**
- * @description 费用状态选项
- * Fee status options
- */
-export const feeStatusOptions: OptionsType = [
-	{ label: "待缴费", value: "待缴费" },
-	{ label: "已缴费", value: "已缴费" },
-	{ label: "已逾期", value: "已逾期" },
-	{ label: "已减免", value: "已减免" },
-	{ label: "已作废", value: "已作废" },
-];
 
 /**
  * @description 业务受理状态选项

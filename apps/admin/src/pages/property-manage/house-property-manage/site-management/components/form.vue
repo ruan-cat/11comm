@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { SiteManagementFormProps, 场地管理_VO } from "./form";
+import { SiteManagementFormProps, 场地管理_VO, 场地状态Options } from "./form";
 
 const props = defineProps<SiteManagementFormProps>();
 

@@ -19,14 +19,15 @@ import CommunityManagementForm from "./components/community-anagement-form.vue";
 const CommunityManagementFormInstance = ref<InstanceType<typeof CommunityManagementForm> | null>(null);
 
 const router = useRouter();
-import {
-	type 管理小区_列表数据,
-	type 管理小区_列表查询_VO,
-	tableData as mockTableData,
-} from "./manage-community-[id]-test-data";
+// TODO: 需要迁移到 Nitro 接口
+// import {
+// 	type 管理小区_列表数据,
+// 	type 管理小区_列表查询_VO,
+// 	tableData as mockTableData,
+// } from "./manage-community-[id]-test-data";
 
-/** 表格数据 */
-const tableData = ref<管理小区_列表数据[]>(mockTableData);
+/** 表格数据 - TODO: 需要迁移到 Nitro 接口 */
+const tableData = ref<any[]>([]); // 临时使用 any 类型，避免类型错误
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -101,8 +102,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ * TODO: 需要迁移到 Nitro 接口，使用标准类型定义
  */
-const plusSearchModelRef: FieldValues & 管理小区_列表查询_VO = {
+const plusSearchModelRef: FieldValues = {
 	小区编号: "",
 	小区名称: "",
 };
@@ -161,7 +163,7 @@ async function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 管理小区_列表数据;
+	row?: any; // TODO: 需要迁移到 Nitro 接口，使用标准类型定义
 }
 
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();

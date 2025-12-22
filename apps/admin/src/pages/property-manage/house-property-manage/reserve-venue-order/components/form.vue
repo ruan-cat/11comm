@@ -5,7 +5,9 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ReserveVenueOrderFormProps, 场地预约订单_VO } from "./form";
+// TODO: 需要换成英文类型 不允许写成中文类型
+// 将中文类型的下拉选项 迁移成英文写法 迁移到@01s-11comm/type中
+import { ReserveVenueOrderFormProps, 场地预约订单_VO, 预约场地Options, 预约状态Options } from "./form";
 
 const props = defineProps<ReserveVenueOrderFormProps>();
 

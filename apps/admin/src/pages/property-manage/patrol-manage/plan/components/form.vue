@@ -2,6 +2,9 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { PatrolPlanFormProps } from "./form";
+import type { PatrolPlanFormVO } from "./form";
+import { checkInMethodOptions } from "@01s-11comm/type";
+import { statusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPlanFormProps>();
 
@@ -61,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "签到方式",
 		prop: "签到方式",
 		valueType: "select",
-		options: 签到方式Options,
+		options: checkInMethodOptions,
 	},
 	{
 		label: "日期范围",
@@ -97,7 +100,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: 状态Options,
+		options: statusOptions,
 	},
 ]);
 

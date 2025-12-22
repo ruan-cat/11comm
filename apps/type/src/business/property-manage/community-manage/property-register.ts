@@ -103,27 +103,6 @@ export const defaultForm: PropertyRegisterFormVO = {
 };
 
 /**
- * 楼栋选项
- * Building options
- */
-export const buildingOptions: OptionsType = [
-	{ label: "A栋", value: "A栋" },
-	{ label: "B栋", value: "B栋" },
-	{ label: "C栋", value: "C栋" },
-	{ label: "D栋", value: "D栋" },
-];
-
-/**
- * 单元选项
- * Unit options
- */
-export const unitOptions: OptionsType = [
-	{ label: "1单元", value: "1单元" },
-	{ label: "2单元", value: "2单元" },
-	{ label: "3单元", value: "3单元" },
-];
-
-/**
  * 产权登记状态选项
  * Property registration status options
  */

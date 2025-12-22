@@ -1,28 +1,8 @@
-/** 巡检任务 表单_VO */
-export interface 巡检任务表单_VO {
-	任务编码: string;
-	巡检计划: string;
-	"巡检人开始/结束时间": string;
-	实际巡检时间: string;
-	计划巡检人: string;
-	当前巡检人: string;
-	转移描述: string;
-	巡检方式: string;
-	巡检状态: string;
-}
+import type { PatrolTaskFormVO as _PatrolTaskFormVO } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 巡检任务表单_VO = {
-	任务编码: "",
-	巡检计划: "",
-	"巡检人开始/结束时间": "",
-	实际巡检时间: "",
-	计划巡检人: "",
-	当前巡检人: "",
-	转移描述: "",
-	巡检方式: "",
-	巡检状态: "",
-};
+/** 重导出类型 */
+export type PatrolTaskFormVO = _PatrolTaskFormVO;
 
 /**
  * 巡检任务表单 props
@@ -31,12 +11,25 @@ export const defaultForm: 巡检任务表单_VO = {
  */
 export interface PatrolTaskFormProps {
 	/** 表单数据 */
-	form: 巡检任务表单_VO;
+	form: PatrolTaskFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 巡检任务表单_VO;
+	defaultValues: PatrolTaskFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
 
-// ==================== 英文类型别名（已迁移到类型包）====================
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: PatrolTaskFormVO = {
+	taskCode: "",
+	patrolPlan: "",
+	patrolPersonTimeRange: "",
+	actualPatrolTime: "",
+	plannedPatrolPerson: "",
+	currentPatrolPerson: "",
+	transferDescription: "",
+	patrolMethod: "",
+	patrolStatus: "",
+};
 
-/** 英文类型别名：PatrolTaskFormVO */
-export type PatrolTaskFormVO = 巡检任务表单_VO;
+/** 向后兼容：巡检任务表单_VO */
+export type 巡检任务表单_VO = PatrolTaskFormVO;

@@ -83,35 +83,3 @@ export interface OwnerMemberFormVO {
 	/** 门禁钥匙 Access key */
 	accessKey: string;
 }
-
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 业主成员列表数据（兼容性中文名称）
- * OwnerMember list item (for compatibility with Chinese names)
- */
-export type 业主成员_列表数据 = OwnerMemberListItem;
-
-/**
- * @description 业主成员列表查询参数（兼容性中文名称）
- * OwnerMember query parameters (for compatibility with Chinese names)
- */
-export type 业主成员_列表查询_VO = OwnerMemberQueryParams;
-
-/**
- * @description 业主成员表单VO（兼容性中文名称）
- * Owner member form VO (for compatibility with Chinese names)
- */
-export type 业主成员表单_VO = OwnerMemberFormVO;
-
-/**
- * @description 性别选项（兼容性中文名称）
- * Gender options (for compatibility with Chinese names)
- */
-export const 性别选项 = genderOptions;
-
-/**
- * @description 成员类型选项（兼容性中文名称）
- * Member type options (for compatibility with Chinese names)
- */
-export const 成员类型选项 = memberTypeOptions;

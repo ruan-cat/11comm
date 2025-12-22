@@ -44,6 +44,16 @@ export const planStatusOptions: OptionsType = [
 ];
 
 /**
+ * @description 签到方式选项
+ * Check-in method options
+ */
+export const checkInMethodOptions: OptionsType = [
+	{ label: "二维码", value: "二维码" },
+	{ label: "NFC", value: "NFC" },
+	{ label: "GPS", value: "GPS" },
+];
+
+/**
  * @description 巡检计划表单VO
  * Patrol plan form VO
  */

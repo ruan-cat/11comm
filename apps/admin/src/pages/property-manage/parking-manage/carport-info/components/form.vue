@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { CarportInfoFormProps } from "./form";
+import { CarportInfoFormProps, CarportInfoFormVO } from "./form";
+import { parkingLotOptions, parkingSpaceStatusOptions, parkingSpaceTypeOptions } from "@01s-11comm/type";
 
 /** 表单组件的 props */
 const props = defineProps<CarportInfoFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 车位信息_表单_VO;
+const defaultValues = props.defaultValues as FieldValues & CarportInfoFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 车位信息_表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & CarportInfoFormVO;
 
 /**
  * 表单对象
@@ -39,7 +40,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "停车场",
 		prop: "停车场",
 		valueType: "select",
-		options: 停车场Options,
+		options: parkingLotOptions,
 		fieldProps: {
 			clearable: true,
 		},
@@ -65,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "车位类型",
 		prop: "车位类型",
 		valueType: "select",
-		options: 车位类型Options,
+		options: parkingSpaceTypeOptions,
 		fieldProps: {
 			clearable: true,
 		},

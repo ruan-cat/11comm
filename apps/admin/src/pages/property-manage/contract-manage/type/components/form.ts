@@ -1,12 +1,4 @@
-import { auditTypeOptions } from "@01s-11comm/type";
-
-// TODO: 应该从 @01s-11comm/type 导入，但目前有模块解析问题
-// import type { IsAuditType } from "@01s-11comm/type";
-
-/**
- * 是否审核类型
- */
-export type IsAuditType = "是" | "否";
+import { type IsAuditType, auditTypeOptions } from "@01s-11comm/type";
 
 /**
  * 合同类型表单数据类型
@@ -43,4 +35,4 @@ export interface AddFormProps {
 	defaultValues: ContractTypeFormVO;
 }
 
-export { auditTypeOptions };
+export { IsAuditType, auditTypeOptions };

@@ -1,5 +1,12 @@
 import type { ReserveVenueOrderFormVO, 场地预约订单_VO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
+import { venueTypeOptions, reservationStatusOptions, bookingStatusOptions } from "@01s-11comm/type";
+
+// TODO: 需要换成英文类型 不允许写成中文类型
+/** 预约状态选项 别名 */
+export const 预约状态Options = bookingStatusOptions;
+/** 预约场地选项 别名 */
+export const 预约场地Options = venueTypeOptions;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ReserveVenueOrderFormVO = {

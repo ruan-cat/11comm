@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { IssuesSettingFormProps, type 工单池表单_VO } from "./form";
+import { IssuesSettingFormProps, type IssuesFormVO } from "./form";
+import { repairTypeOptions, repairCategoryOptions, workOrderStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<IssuesSettingFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 工单池表单_VO;
+const defaultValues = props.defaultValues as FieldValues & IssuesFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 工单池表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & IssuesFormVO;
 
 /**
  * 表单对象
@@ -51,13 +52,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "报修类型",
 		prop: "报修类型",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 	{
 		label: "维修类型",
 		prop: "维修类型",
 		valueType: "select",
-		options: 维修类型Options,
+		options: repairCategoryOptions,
 	},
 	{
 		label: "报修人",
@@ -93,7 +94,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: 工单状态Options,
+		options: workOrderStatusOptions,
 	},
 	{
 		label: "违规说明",

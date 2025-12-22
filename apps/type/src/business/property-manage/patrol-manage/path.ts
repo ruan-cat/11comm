@@ -44,6 +44,16 @@ export const pathStatusOptions: OptionsType = [
 ];
 
 /**
+ * @description 巡检点类型选项
+ * Patrol point type options
+ */
+export const patrolPointTypeOptions: OptionsType = [
+	{ label: "重要区域", value: "重要区域" },
+	{ label: "普通区域", value: "普通区域" },
+	{ label: "设备区域", value: "设备区域" },
+];
+
+/**
  * @description 巡检路线表单数据
  * Patrol path form data
  */

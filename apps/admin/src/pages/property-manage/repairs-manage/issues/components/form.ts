@@ -1,7 +1,5 @@
 import { type IssuesFormVO, defaultIssuesForm } from "@01s-11comm/type";
-
-// 为了向后兼容，创建类型别名
-export type 工单池表单_VO = IssuesFormVO;
+import { type Mode } from "@/composables/use-mode";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm = defaultIssuesForm;
@@ -16,4 +14,12 @@ export interface IssuesSettingFormProps {
 	form: IssuesFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: IssuesFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
+
+// TODO: 需要换成英文类型 不允许写成中文类型
+/** 向后兼容：工单池表单_VO */
+export type 工单池表单_VO = IssuesFormVO;
+
+export { IssuesFormVO };

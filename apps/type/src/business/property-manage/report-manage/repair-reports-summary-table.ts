@@ -7,7 +7,12 @@ import type { OptionsType, BaseListQueryParams } from "../../../common";
 import {
 	repairStatusOptions as commonRepairStatusOptions,
 	repairTypeOptions as commonRepairTypeOptions,
+	urgencyLevelOptions,
+	communityOptions,
 } from "../../../common/business-options";
+
+// 重导出通用选项
+export { urgencyLevelOptions, communityOptions };
 
 /**
  * 报修汇总表列表数据
@@ -84,27 +89,6 @@ export const summaryRepairStatusOptions: OptionsType = [
 	{ label: "处理中", value: "处理中" },
 	{ label: "已完成", value: "已完成" },
 	{ label: "已关闭", value: "已关闭" },
-];
-
-/**
- * 紧急程度选项
- * Urgency level options
- */
-export const urgencyLevelOptions: OptionsType = [
-	{ label: "一般", value: "一般" },
-	{ label: "紧急", value: "紧急" },
-	{ label: "紧急", value: "紧急" },
-];
-
-/**
- * 小区选项
- * Community options
- */
-export const communityOptions: OptionsType = [
-	{ label: "阳光小区", value: "阳光小区" },
-	{ label: "和谐家园", value: "和谐家园" },
-	{ label: "幸福社区", value: "幸福社区" },
-	{ label: "美丽家园", value: "美丽家园" },
 ];
 
 /**

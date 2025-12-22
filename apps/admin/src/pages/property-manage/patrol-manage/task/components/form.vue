@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { type PatrolTaskFormProps, type 巡检任务表单_VO } from "./form";
+import { type PatrolTaskFormProps, type PatrolTaskFormVO } from "./form";
+import { patrolStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolTaskFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 巡检任务表单_VO;
+const defaultValues = props.defaultValues as FieldValues & PatrolTaskFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +20,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 巡检任务表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & PatrolTaskFormVO;
 
 /**
  * 表单对象
@@ -91,7 +92,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "巡检状态",
 		prop: "巡检状态",
 		valueType: "select",
-		options: 巡检状态Options,
+		options: patrolStatusOptions,
 	},
 ]);
 
