@@ -18,50 +18,60 @@
 
 **路由路径**：`settingManage.organizeManage.staffInfo`
 
-- [ ] Task 1.1.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts`
-- [ ] Task 1.1.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
-- [ ] Task 1.1.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/staff-info/list.post.ts`
-- [ ] Task 1.1.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/organize-manage/staff-info/index.ts`
-- [ ] Task 1.1.5: 改写列表页 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/index.vue`
-- [ ] Task 1.1.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
-- [ ] Task 1.1.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/components/form.ts`
-- [ ] Task 1.1.8: 更新表单组件 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/components/form.vue`
-
-- [ ] Task 1.1.10: 测试验证
+- [x] Task 1.1.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/staff-info.ts`
+- [x] Task 1.1.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/staff-info/mock-data.ts`
+- [x] Task 1.1.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/staff-info/list.post.ts`
+- [x] Task 1.1.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/organize-manage/staff-info/index.ts`
+- [x] Task 1.1.5: 改写列表页 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/index.vue`
+- [x] Task 1.1.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/test-data.ts`
+- [x] Task 1.1.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/components/form.ts`
+- [x] Task 1.1.8: 更新表单组件 `apps/admin/src/pages/setting-manage/organize-manage/staff-info/components/form.vue`
+- [x] Task 1.1.9: 类型检查通过（与本任务相关的文件无错误）
+- [x] Task 1.1.10: 测试验证完成
 
 #### 1.2 settingManage.organizeManage.orgInfo（组织信息）
 
 **路由路径**：`settingManage.organizeManage.orgInfo`
 
-- [ ] Task 1.2.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/org-info.ts`
-- [ ] Task 1.2.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/org-info/mock-data.ts`
-- [ ] Task 1.2.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/org-info/list.post.ts`
-- [ ] Task 1.2.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/organize-manage/org-info/index.ts`
-- [ ] Task 1.2.5: 改写列表页 `apps/admin/src/pages/setting-manage/organize-manage/org-info/index.vue`
-- [ ] Task 1.2.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
-- [ ] Task 1.2.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/organize-manage/org-info/components/form.ts`
-- [ ] Task 1.2.8: 更新表单组件 `apps/admin/src/pages/setting-manage/organize-manage/org-info/components/form.vue`
+- [x] Task 1.2.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/org-info.ts`
+- [x] Task 1.2.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/org-info/mock-data.ts`
+- [x] Task 1.2.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/org-info/list.post.ts`
+- [x] Task 1.2.3.1: 修复 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/org-info/tree.post.ts`
+- [x] Task 1.2.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/organize-manage/org-info/index.ts`
+- [x] Task 1.2.5: 改写列表页 `apps/admin/src/pages/setting-manage/organize-manage/org-info/index.vue`
+- [x] Task 1.2.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/organize-manage/org-info/test-data.ts`
+- [x] Task 1.2.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/organize-manage/org-info/components/form.ts`
+- [x] Task 1.2.8: 更新表单组件 `apps/admin/src/pages/setting-manage/organize-manage/org-info/components/form.vue`
+- [x] Task 1.2.9: 类型检查通过（与本任务相关的文件无错误）
+- [x] Task 1.2.10: 测试验证完成
 
-- [ ] Task 1.2.10: 测试验证
-
-#### 1.3 settingManage.organizeManage.workingSchedule（排班表）
+#### 1.3 settingManage.organizeManage.workingSchedule（排班表）✅ **已完成**
 
 **路由路径**：`settingManage.organizeManage.workingSchedule`
 
-- [ ] Task 1.3.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts`
-- [ ] Task 1.3.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/mock-data.ts`
-- [ ] Task 1.3.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/list.post.ts`
-- [ ] Task 1.3.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/organize-manage/working-schedule/index.ts`
-- [ ] Task 1.3.5: 改写列表页 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/index.vue`
-- [ ] Task 1.3.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts`
-- [ ] Task 1.3.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/components/form.ts`
-- [ ] Task 1.3.8: 更新表单组件 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/components/form.vue`
+- [x] Task 1.3.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/working-schedule.ts` ✅
+- [x] Task 1.3.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/mock-data.ts` ✅
+- [x] Task 1.3.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/organize-manage/working-schedule/list.post.ts` ✅
+- [x] Task 1.3.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/organize-manage/working-schedule/index.ts` ✅
+- [x] Task 1.3.5: 改写列表页 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/index.vue` ✅
+- [x] Task 1.3.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/test-data.ts` ✅
+- [x] Task 1.3.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/components/form.ts` ✅
+- [x] Task 1.3.8: 更新表单组件 `apps/admin/src/pages/setting-manage/organize-manage/working-schedule/components/form.vue` ✅
 
-- [ ] Task 1.3.10: 测试验证
+- [x] Task 1.3.9: 运行类型检查 ✅
+- [x] Task 1.3.10: 测试验证 ✅
 
-#### 1.4 settingManage.organizeManage.schedulingSetting（排班设置）
+**完成时间**: 2025-12-22
+**子代理ID**: adfb538
+**验证报告**: `apps/admin/src/docs/reports/2025-12-22-migrate-static-data-to-nitro-query-working-schedule-validation.md`
+
+#### 1.4 settingManage.organizeManage.schedulingSetting（排班设置）❌ **子代理失败**
 
 **路由路径**：`settingManage.organizeManage.schedulingSetting`
+
+**子代理ID**: ac07378
+**错误状态**: "No assistant messages found"
+**状态**: 需要重新分配给新的子代理
 
 - [ ] Task 1.4.1: 创建类型定义文件 `apps/type/src/business/setting-manage/organize-manage/scheduling-setting.ts`
 - [ ] Task 1.4.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/organize-manage/scheduling-setting/mock-data.ts`
@@ -153,30 +163,30 @@
 
 **路由路径**：`settingManage.systemManage.registerProtocol`
 
-- [ ] Task 1.10.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/register-protocol.ts`
-- [ ] Task 1.10.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/register-protocol/mock-data.ts`
-- [ ] Task 1.10.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/register-protocol/list.post.ts`
-- [ ] Task 1.10.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/register-protocol/index.ts`
-- [ ] Task 1.10.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/index.vue`
-- [ ] Task 1.10.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/test-data.ts`
-- [ ] Task 1.10.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/components/form.ts`
-- [ ] Task 1.10.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/components/form.vue`
-
-- [ ] Task 1.10.10: 测试验证
+- [x] Task 1.10.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/register-protocol.ts`
+- [x] Task 1.10.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/register-protocol/mock-data.ts`
+- [x] Task 1.10.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/register-protocol/list.post.ts`
+- [x] Task 1.10.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/register-protocol/index.ts`
+- [x] Task 1.10.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/index.vue`
+- [x] Task 1.10.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/test-data.ts`（无此文件）
+- [x] Task 1.10.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/components/form.ts`（无表单组件）
+- [x] Task 1.10.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/register-protocol/components/form.vue`（无表单组件）
+- [x] Task 1.10.9: 类型检查通过（类型项目无错误）
+- [x] Task 1.10.10: 测试验证
 
 #### 1.11 settingManage.systemManage.initializeCell（初始化小区）
 
 **路由路径**：`settingManage.systemManage.initializeCell`
 
-- [ ] Task 1.11.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/initialize-cell.ts`
-- [ ] Task 1.11.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/mock-data.ts`
-- [ ] Task 1.11.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/list.post.ts`
-- [ ] Task 1.11.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/initialize-cell/index.ts`
-- [ ] Task 1.11.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/index.vue`
-- [ ] Task 1.11.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/test-data.ts`
-- [ ] Task 1.11.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.ts`
-- [ ] Task 1.11.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.vue`
-
+- [x] Task 1.11.1: 创建类型定义文件 `apps/type/src/business/setting-manage/system-manage/initialize-cell.ts`
+- [x] Task 1.11.2: 创建 Mock 数据文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/mock-data.ts`
+- [x] Task 1.11.3: 创建 Nitro 接口文件 `apps/admin/server/api/setting-manage/system-manage/initialize-cell/list.post.ts`
+- [x] Task 1.11.4: 创建前端 API Hook `apps/admin/src/api/setting-manage/system-manage/initialize-cell/index.ts`
+- [x] Task 1.11.5: 改写列表页 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/index.vue`
+- [x] Task 1.11.6: 删除旧的假数据文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/test-data.ts`
+- [x] Task 1.11.7: 更新表单类型文件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.ts`
+- [x] Task 1.11.8: 更新表单组件 `apps/admin/src/pages/setting-manage/system-manage/initialize-cell/components/form.vue`
+- [x] Task 1.11.9: 类型检查通过（与本任务相关的文件无错误）
 - [ ] Task 1.11.10: 测试验证
 
 #### 1.12 settingManage.systemManage.communityConfiguration（小区配置）
