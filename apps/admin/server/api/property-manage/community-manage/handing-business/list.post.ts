@@ -1,6 +1,6 @@
 /**
- * @file 业务受理列表接口
- * @description Handing business list API
+ * @file Handing Business 列表接口
+ * @description Handing Business list API
  * POST /api/property-manage/community-manage/handing-business/list
  */
 
@@ -11,7 +11,6 @@ import { filterDataByQuery } from "server/utils/filter-data";
 import { mockHandingBusinessData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<HandingBusinessListItem>>> => {
-	// 1. 读取请求参数
 	const body = await readBody<HandingBusinessQueryParams>(event);
 	const defaultParams: HandingBusinessQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -20,15 +19,14 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HandingBusine
 	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
+	/** 数据筛选 */
 	const filteredData = filterDataByQuery(mockHandingBusinessData, filters);
 
-	// 3. 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<HandingBusinessListItem>> = {
 		success: true,

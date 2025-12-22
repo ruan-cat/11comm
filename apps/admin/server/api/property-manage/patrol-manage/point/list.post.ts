@@ -1,33 +1,34 @@
-import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { PointListItem, PointQueryParams } from "@01s-11comm/type";
-import { mockPointData } from "./mock-data";
-
 /**
- * @description point列表 POST API
- * Point list POST API
+ * @file Point 列表接口
+ * @description Point list API
+ * POST /api/property-manage/patrol-manage/point/list
  */
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<PointListItem>>> => {
-	const body = await readBody<PointQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
 
-	let filteredData = [...mockPointData];
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, PointPointListItem, PointPointQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
+import { mockPointPointData } from "./mock-data";
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<PointPointListItem>>> => {
+	const body = await readBody<PointPointQueryParams>(event);
+	const defaultParams: PointPointQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 分页处理
+	/** 数据筛选 */
+	const filteredData = filterDataByQuery(mockPointPointData, filters);
+
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<PointPointListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,6 +39,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PointListItem
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

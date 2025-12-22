@@ -1,33 +1,34 @@
-import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ItemListItem, ItemQueryParams } from "@01s-11comm/type";
-import { mockItemData } from "./mock-data";
-
 /**
- * @description item列表 POST API
- * Item list POST API
+ * @file Item 列表接口
+ * @description Item list API
+ * POST /api/property-manage/patrol-manage/item/list
  */
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ItemListItem>>> => {
-	const body = await readBody<ItemQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
 
-	let filteredData = [...mockItemData];
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, ItemItemListItem, ItemItemQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
+import { mockItemItemData } from "./mock-data";
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ItemItemListItem>>> => {
+	const body = await readBody<ItemItemQueryParams>(event);
+	const defaultParams: ItemItemQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 分页处理
+	/** 数据筛选 */
+	const filteredData = filterDataByQuery(mockItemItemData, filters);
+
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<ItemItemListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,6 +39,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ItemListItem>
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

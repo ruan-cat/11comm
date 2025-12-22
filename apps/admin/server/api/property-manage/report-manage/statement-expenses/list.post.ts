@@ -1,39 +1,34 @@
+/**
+ * @file Statement Expenses 列表接口
+ * @description Statement Expenses list API
+ * POST /api/property-manage/report-manage/statement-expenses/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { StatementExpensesListItem, StatementExpensesQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, StatementExpensesListItem, StatementExpensesQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockStatementExpensesData } from "./mock-data";
 
-/**
- * @description statement-expenses列表 POST API
- * StatementExpenses list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<StatementExpensesListItem>>> => {
 	const body = await readBody<StatementExpensesQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, community, ownerName, expenseType, expenseStatus } = body;
+	const defaultParams: StatementExpensesQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockStatementExpensesData];
+	/** 数据筛选 */
+	const filteredData = filterDataByQuery(mockStatementExpensesData, filters);
 
-	// 数据筛选
-	if (community) {
-		filteredData = filteredData.filter((item) => item.community.includes(community));
-	}
-	if (ownerName) {
-		filteredData = filteredData.filter((item) => item.ownerName.includes(ownerName));
-	}
-	if (expenseType) {
-		filteredData = filteredData.filter((item) => item.expenseType === expenseType);
-	}
-	if (expenseStatus) {
-		filteredData = filteredData.filter((item) => item.expenseStatus === expenseStatus);
-	}
-
-	// 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<StatementExpensesListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -44,6 +39,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<StatementExpe
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

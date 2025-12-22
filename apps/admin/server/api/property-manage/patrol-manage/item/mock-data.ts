@@ -1,47 +1,23 @@
-import type { ItemListItem } from "@01s-11comm/type";
+import type { ItemItemListItem } from "@01s-11comm/type";
 
-/**
- * @description item模拟数据
- * Item mock data
- */
-export const mockItemData: ItemListItem[] = [
-	{
-		id: "1",
-		name: "示例项目1",
-		status: "启用",
-		createTime: "2024-01-01 10:00:00",
-		updateTime: "2024-01-01 10:00:00",
-		remark: "这是示例数据1",
-	},
-	{
-		id: "2",
-		name: "示例项目2",
-		status: "启用",
-		createTime: "2024-01-02 11:00:00",
-		updateTime: "2024-01-02 11:00:00",
-		remark: "这是示例数据2",
-	},
-	{
-		id: "3",
-		name: "示例项目3",
-		status: "禁用",
-		createTime: "2024-01-03 12:00:00",
-		updateTime: "2024-01-03 12:00:00",
-		remark: "这是示例数据3",
-	},
-	{
-		id: "4",
-		name: "示例项目4",
-		status: "启用",
-		createTime: "2024-01-04 13:00:00",
-		updateTime: "2024-01-04 13:00:00",
-	},
-	{
-		id: "5",
-		name: "示例项目5",
-		status: "启用",
-		createTime: "2024-01-05 14:00:00",
-		updateTime: "2024-01-05 14:00:00",
-		remark: "这是示例数据5",
-	},
+/** Item 模拟数据 */
+export const mockItemItemData: ItemItemListItem[] = [
+    {
+        id: "1",
+        createTime: "2024-01-15 09:00:00",
+        updateTime: "2024-01-15 09:00:00",
+        remarks: "模拟数据 1",
+    },
+    {
+        id: "2",
+        createTime: "2024-01-16 10:30:00",
+        updateTime: "2024-01-16 10:30:00",
+        remarks: "模拟数据 2",
+    },
+    {
+        id: "3",
+        createTime: "2024-01-17 11:45:00",
+        updateTime: "2024-01-17 11:45:00",
+        remarks: "模拟数据 3",
+    },
 ];

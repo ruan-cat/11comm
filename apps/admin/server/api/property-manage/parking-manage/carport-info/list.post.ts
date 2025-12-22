@@ -1,6 +1,6 @@
 /**
- * @file carport-info列表接口
- * @description CarportInfo list API
+ * @file Carport Info 列表接口
+ * @description Carport Info list API
  * POST /api/property-manage/parking-manage/carport-info/list
  */
 
@@ -11,7 +11,6 @@ import { filterDataByQuery } from "server/utils/filter-data";
 import { mockCarportInfoData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportInfoListItem>>> => {
-	// 1. 读取请求参数
 	const body = await readBody<CarportInfoQueryParams>(event);
 	const defaultParams: CarportInfoQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -20,15 +19,14 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportInfoLi
 	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
+	/** 数据筛选 */
 	const filteredData = filterDataByQuery(mockCarportInfoData, filters);
 
-	// 3. 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<CarportInfoListItem>> = {
 		success: true,

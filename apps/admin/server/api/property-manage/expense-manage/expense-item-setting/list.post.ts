@@ -1,6 +1,6 @@
 /**
- * @file 费用项目设置列表接口
- * @description Expense item setting list API
+ * @file Expense Item Setting 列表接口
+ * @description Expense Item Setting list API
  * POST /api/property-manage/expense-manage/expense-item-setting/list
  */
 
@@ -11,7 +11,6 @@ import { filterDataByQuery } from "server/utils/filter-data";
 import { mockExpenseItemSettingData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseItemSettingListItem>>> => {
-	// 1. 读取请求参数
 	const body = await readBody<ExpenseItemSettingQueryParams>(event);
 	const defaultParams: ExpenseItemSettingQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -20,15 +19,15 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseItemSe
 	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 2. 数据筛选
+	/** 数据筛选 */
 	const filteredData = filterDataByQuery(mockExpenseItemSettingData, filters);
 
-	// 3. 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 4. 返回标准格式
+	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<ExpenseItemSettingListItem>> = {
 		success: true,
 		code: 200,

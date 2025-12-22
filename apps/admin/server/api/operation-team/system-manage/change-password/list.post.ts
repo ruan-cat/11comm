@@ -1,19 +1,19 @@
 /**
- * @file 修改密码记录列表接口
- * @description Change password record list API
+ * @file change password-列表接口
+ * @description change password list API
  * POST /api/operation-team/system-manage/change-password/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ChangePasswordRecordListItem, ChangePasswordRecordQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ChangePasswordRecord, ChangePasswordRecordListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockChangePasswordRecordData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ChangePasswordRecordListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ChangePasswordRecord>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<ChangePasswordRecordQueryParams>(event);
-	const defaultParams: ChangePasswordRecordQueryParams = {
+	const body = await readBody<ChangePasswordRecordListQuery>(event);
+	const defaultParams: ChangePasswordRecordListQuery = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -30,7 +30,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ChangePasswor
 
 	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ChangePasswordRecordListItem>> = {
+	const response: JsonVO<PageDTO<ChangePasswordRecord>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

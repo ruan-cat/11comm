@@ -1,6 +1,6 @@
 /**
- * @file 房屋收费列表接口
- * @description House charge list API
+ * @file House Charge 列表接口
+ * @description House Charge list API
  * POST /api/property-manage/expense-manage/house-charge/list
  */
 
@@ -11,7 +11,6 @@ import { filterDataByQuery } from "server/utils/filter-data";
 import { mockHouseChargeData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeListItem>>> => {
-	// 1. 读取请求参数
 	const body = await readBody<HouseChargeQueryParams>(event);
 	const defaultParams: HouseChargeQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -20,15 +19,15 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseChargeLi
 	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 2. 数据筛选
+	/** 数据筛选 */
 	const filteredData = filterDataByQuery(mockHouseChargeData, filters);
 
-	// 3. 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 4. 返回标准格式
+	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<HouseChargeListItem>> = {
 		success: true,
 		code: 200,

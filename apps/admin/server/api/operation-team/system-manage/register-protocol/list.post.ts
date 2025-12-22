@@ -1,19 +1,19 @@
 /**
- * @file 注册协议列表接口
- * @description Register protocol list API
+ * @file register protocol-列表接口
+ * @description register protocol list API
  * POST /api/operation-team/system-manage/register-protocol/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, RegisterProtocolListItem, RegisterProtocolQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, RegisterProtocol, RegisterProtocolListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockRegisterProtocolData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<RegisterProtocolListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<RegisterProtocol>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<RegisterProtocolQueryParams>(event);
-	const defaultParams: RegisterProtocolQueryParams = {
+	const body = await readBody<RegisterProtocolListQuery>(event);
+	const defaultParams: RegisterProtocolListQuery = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -30,7 +30,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RegisterProto
 
 	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<RegisterProtocolListItem>> = {
+	const response: JsonVO<PageDTO<RegisterProtocol>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

@@ -1,6 +1,7 @@
 /**
- * @file 业主账户列表接口
- * @description OwnerAccount list API
+ * @file Owner Account 列表接口
+ * @description Owner Account list API
+ * POST /api/property-manage/house-property-manage/owner-account/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
@@ -8,7 +9,6 @@ import type { JsonVO, PageDTO, OwnerAccountListItem, OwnerAccountQueryParams } f
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockOwnerAccountData } from "./mock-data";
-import consola from "consola";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerAccountListItem>>> => {
 	const body = await readBody<OwnerAccountQueryParams>(event);

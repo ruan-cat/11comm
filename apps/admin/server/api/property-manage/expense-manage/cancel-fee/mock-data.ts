@@ -1,72 +1,23 @@
 import type { CancelFeeListItem } from "@01s-11comm/type";
 
-/**
- * @description cancel-fee模拟数据
- * CancelFee mock data
- */
+/** Cancel Fee 模拟数据 */
 export const mockCancelFeeData: CancelFeeListItem[] = [
-	{
-		id: "1",
-		batchNumber: "BN2024001",
-		employee: "张三",
-		time: "2024-01-01 10:00:00",
-		cancelReason: "录入错误",
-		auditStatus: "待审核",
-		auditOpinion: "",
-		status: "启用",
-		createTime: "2024-01-01 10:00:00",
-		updateTime: "2024-01-01 10:00:00",
-		remark: "这是示例数据1",
-	},
-	{
-		id: "2",
-		batchNumber: "BN2024002",
-		employee: "李四",
-		time: "2024-01-02 11:00:00",
-		cancelReason: "重复录入",
-		auditStatus: "已通过",
-		auditOpinion: "同意",
-		status: "启用",
-		createTime: "2024-01-02 11:00:00",
-		updateTime: "2024-01-02 11:00:00",
-		remark: "这是示例数据2",
-	},
-	{
-		id: "3",
-		batchNumber: "BN2024003",
-		employee: "王五",
-		time: "2024-01-03 12:00:00",
-		cancelReason: "业主投诉",
-		auditStatus: "已拒绝",
-		auditOpinion: "原因不充分",
-		status: "禁用",
-		createTime: "2024-01-03 12:00:00",
-		updateTime: "2024-01-03 12:00:00",
-		remark: "这是示例数据3",
-	},
-	{
-		id: "4",
-		batchNumber: "BN2024004",
-		employee: "赵六",
-		time: "2024-01-04 13:00:00",
-		cancelReason: "系统故障",
-		auditStatus: "待审核",
-		auditOpinion: "",
-		status: "启用",
-		createTime: "2024-01-04 13:00:00",
-		updateTime: "2024-01-04 13:00:00",
-	},
-	{
-		id: "5",
-		batchNumber: "BN2024005",
-		employee: "孙七",
-		time: "2024-01-05 14:00:00",
-		cancelReason: "其他原因",
-		auditStatus: "已通过",
-		auditOpinion: "同意",
-		status: "启用",
-		createTime: "2024-01-05 14:00:00",
-		updateTime: "2024-01-05 14:00:00",
-		remark: "这是示例数据5",
-	},
+    {
+        id: "1",
+        createTime: "2024-01-15 09:00:00",
+        updateTime: "2024-01-15 09:00:00",
+        remarks: "模拟数据 1",
+    },
+    {
+        id: "2",
+        createTime: "2024-01-16 10:30:00",
+        updateTime: "2024-01-16 10:30:00",
+        remarks: "模拟数据 2",
+    },
+    {
+        id: "3",
+        createTime: "2024-01-17 11:45:00",
+        updateTime: "2024-01-17 11:45:00",
+        remarks: "模拟数据 3",
+    },
 ];

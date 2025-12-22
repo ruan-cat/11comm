@@ -1,19 +1,19 @@
 /**
- * @file 社区信息列表接口
- * @description Community information list API
+ * @file community information-列表接口
+ * @description community information list API
  * POST /api/operation-team/data-manage/community-information/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, CommunityInfoListItem, CommunityInfoQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, CommunityInformation, CommunityInformationListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
-import { mockCommunityInfoData } from "./mock-data";
+import { mockCommunityInformationData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityInfoListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityInformation>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<CommunityInfoQueryParams>(event);
-	const defaultParams: CommunityInfoQueryParams = {
+	const body = await readBody<CommunityInformationListQuery>(event);
+	const defaultParams: CommunityInformationListQuery = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -21,7 +21,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityInfo
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockCommunityInfoData, filters);
+	const filteredData = filterDataByQuery(mockCommunityInformationData, filters);
 
 	// 3. 分页处理
 	const total = filteredData.length;
@@ -30,7 +30,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityInfo
 
 	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<CommunityInfoListItem>> = {
+	const response: JsonVO<PageDTO<CommunityInformation>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -45,4 +45,3 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityInfo
 
 	return response;
 });
-

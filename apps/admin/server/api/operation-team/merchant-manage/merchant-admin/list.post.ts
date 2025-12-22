@@ -1,19 +1,19 @@
 /**
- * @file 商户管理员列表接口
- * @description Merchant admin list API
+ * @file merchant admin-列表接口
+ * @description merchant admin list API
  * POST /api/operation-team/merchant-manage/merchant-admin/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, MerchantAdminListItem, MerchantAdminQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, MerchantAdmin, MerchantAdminListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockMerchantAdminData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<MerchantAdminListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<MerchantAdmin>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<MerchantAdminQueryParams>(event);
-	const defaultParams: MerchantAdminQueryParams = {
+	const body = await readBody<MerchantAdminListQuery>(event);
+	const defaultParams: MerchantAdminListQuery = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -30,7 +30,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MerchantAdmin
 
 	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<MerchantAdminListItem>> = {
+	const response: JsonVO<PageDTO<MerchantAdmin>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -45,4 +45,3 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MerchantAdmin
 
 	return response;
 });
-

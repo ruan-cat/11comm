@@ -1,6 +1,6 @@
 /**
- * @file 房屋装修列表接口
- * @description House decoration list API
+ * @file House Decoration 列表接口
+ * @description House Decoration list API
  * POST /api/property-manage/community-manage/house-decoration/list
  */
 

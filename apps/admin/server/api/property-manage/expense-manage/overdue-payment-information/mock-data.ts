@@ -1,72 +1,23 @@
 import type { OverduePaymentInformationListItem } from "@01s-11comm/type";
 
-/**
- * @description overdue-payment-information模拟数据
- * OverduePaymentInformation mock data
- */
+/** Overdue Payment Information 模拟数据 */
 export const mockOverduePaymentInformationData: OverduePaymentInformationListItem[] = [
-	{
-		id: "1",
-		chargeObject: "住宅",
-		ownerName: "张三",
-		phoneNumber: "13800138001",
-		startTime: "2023-01-01",
-		endTime: "2023-12-31",
-		totalAmount: "2500",
-		status: "启用",
-		createTime: "2024-01-01 10:00:00",
-		updateTime: "2024-01-01 10:00:00",
-		remark: "这是示例数据1",
-	},
-	{
-		id: "2",
-		chargeObject: "商铺",
-		ownerName: "李四",
-		phoneNumber: "13800138002",
-		startTime: "2023-02-01",
-		endTime: "2024-01-31",
-		totalAmount: "5000",
-		status: "启用",
-		createTime: "2024-01-02 11:00:00",
-		updateTime: "2024-01-02 11:00:00",
-		remark: "这是示例数据2",
-	},
-	{
-		id: "3",
-		chargeObject: "车库",
-		ownerName: "王五",
-		phoneNumber: "13800138003",
-		startTime: "2023-03-01",
-		endTime: "2024-02-29",
-		totalAmount: "3000",
-		status: "禁用",
-		createTime: "2024-01-03 12:00:00",
-		updateTime: "2024-01-03 12:00:00",
-		remark: "这是示例数据3",
-	},
-	{
-		id: "4",
-		chargeObject: "住宅",
-		ownerName: "赵六",
-		phoneNumber: "13800138004",
-		startTime: "2023-04-01",
-		endTime: "2024-03-31",
-		totalAmount: "2800",
-		status: "启用",
-		createTime: "2024-01-04 13:00:00",
-		updateTime: "2024-01-04 13:00:00",
-	},
-	{
-		id: "5",
-		chargeObject: "商铺",
-		ownerName: "孙七",
-		phoneNumber: "13800138005",
-		startTime: "2023-05-01",
-		endTime: "2024-04-30",
-		totalAmount: "6000",
-		status: "启用",
-		createTime: "2024-01-05 14:00:00",
-		updateTime: "2024-01-05 14:00:00",
-		remark: "这是示例数据5",
-	},
+    {
+        id: "1",
+        createTime: "2024-01-15 09:00:00",
+        updateTime: "2024-01-15 09:00:00",
+        remarks: "模拟数据 1",
+    },
+    {
+        id: "2",
+        createTime: "2024-01-16 10:30:00",
+        updateTime: "2024-01-16 10:30:00",
+        remarks: "模拟数据 2",
+    },
+    {
+        id: "3",
+        createTime: "2024-01-17 11:45:00",
+        updateTime: "2024-01-17 11:45:00",
+        remarks: "模拟数据 3",
+    },
 ];

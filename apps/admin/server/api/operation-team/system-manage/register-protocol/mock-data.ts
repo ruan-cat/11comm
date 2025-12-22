@@ -1,651 +1,157 @@
-import type { RegisterProtocolListItem } from "@01s-11comm/type";
+import type { RegisterProtocol } from "@01s-11comm/type";
 
-/** 注册协议模拟数据 */
-export const mockRegisterProtocolData: RegisterProtocolListItem[] = [
-    {
-        protocolId: "AG001",
-        protocolName: "智慧社区用户注册协议",
-        protocolType: "用户注册协议",
-        protocolVersion: "v1.0.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "本协议是用户与智慧社区平台之间关于注册使用平台服务的法律文件",
-        content: `<h3>第一条 总则</h3>
-<p>1.1 智慧社区平台（以下简称"本平台"）是由智慧社区运营的线上服务平台，为社区居民提供便捷的社区生活服务。</p>
-<p>1.2 用户注册本平台即表示用户已充分阅读、理解并同意本协议的全部内容。用户在使用本平台服务时，应当遵守本协议的约定。</p>
-<p>1.3 本平台有权根据业务发展需要，单方修改本协议条款。修改后的协议将在本平台公示，用户继续使用本平台服务即视为同意修改后的协议。</p>
-
-<h3>第二条 用户注册</h3>
-<p>2.1 用户应当是具有完全民事行为能力的自然人，或者依法设立并有效存续的法人或其他组织。</p>
-<p>2.2 用户在注册时应当提供真实、准确、完整的个人资料，包括但不限于姓名、身份证号码、联系电话、住址等信息。</p>
-<p>2.3 用户有义务维护并及时更新个人资料，确保其真实性、准确性和完整性。如因用户提供虚假信息导致的一切损失，由用户自行承担。</p>
-<p>2.4 用户应当妥善保管自己的账户和密码，不得将账户转让、出借给他人使用。如因用户保管不善导致账户被盗用，本平台不承担任何责任。</p>
-
-<h3>第三条 服务内容</h3>
-<p>3.1 本平台为用户提供的服务包括：社区公告、物业缴费、停车管理、访客登记、社区活动、便民服务等。</p>
-<p>3.2 本平台保留随时修改、中止或终止服务的权利，无需事先通知用户。</p>
-<p>3.3 用户在使用本平台服务时，应当遵守相关法律法规，不得利用本平台从事违法违规活动。</p>
-
-<h3>第四条 用户义务</h3>
-<p>4.1 用户在使用本平台服务时，应当遵守社会公德，尊重他人合法权益，不得发布违法信息。</p>
-<p>4.2 用户不得利用本平台服务进行任何形式的商业推广、广告宣传等活动，除非获得本平台的明确授权。</p>
-<p>4.3 用户应当尊重知识产权，不得侵犯他人的著作权、商标权、专利权等合法权益。</p>
-
-<h3>第五条 隐私保护</h3>
-<p>5.1 本平台重视用户隐私保护，将按照相关法律法规和《个人信息保护政策》的规定收集、使用、存储和保护用户的个人信息。</p>
-<p>5.2 未经用户同意，本平台不得向任何第三方披露用户的个人信息，法律法规另有规定的除外。</p>
-
-<h3>第六条 知识产权</h3>
-<p>6.1 本平台的所有内容，包括但不限于文字、图片、音频、视频、软件、程序、版面设计等，均受知识产权法保护。</p>
-<p>6.2 未经本平台书面许可，用户不得复制、传播、展示、镜像、上载、下载本平台的任何内容。</p>
-
-<h3>第七条 免责声明</h3>
-<p>7.1 本平台不对用户发布的任何信息的真实性、准确性、完整性承担责任。</p>
-<p>7.2 因不可抗力、网络故障、系统维护等原因导致的服务中断，本平台不承担责任。</p>
-<p>7.3 用户因使用本平台服务而产生的任何直接或间接损失，本平台不承担赔偿责任。</p>
-
-<h3>第八条 争议解决</h3>
-<p>8.1 因本协议引起的或与本协议有关的任何争议，双方应当友好协商解决。</p>
-<p>8.2 协商不成的，任何一方均可向本平台所在地人民法院提起诉讼。</p>
-
-<h3>第九条 协议生效</h3>
-<p>9.1 本协议自用户同意之日起生效。</p>
-<p>9.2 本协议的修改版本自公示之日起生效。</p>`,
-        effectiveDate: "2024-01-01",
-        expirationDate: "",
-        sortOrder: 1,
-        createTime: "2023-12-15 10:30:00",
-        updateTime: "2024-01-10 14:20:00",
-    },
-    {
-        protocolId: "AG002",
-        protocolName: "个人信息保护政策",
-        protocolType: "隐私政策",
-        protocolVersion: "v2.1.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "本政策详细说明了平台如何收集、使用、存储和保护用户的个人信息",
-        content: `<h3>第一条 信息收集</h3>
-<p>1.1 我们收集的个人信息包括：姓名、联系方式、住址、身份证号等。</p>
-<p>1.2 信息收集的目的是为了提供更好的社区服务。</p>
-<p>1.3 我们只收集与服务相关的必要信息。</p>
-
-<h3>第二条 信息使用</h3>
-<p>2.1 我们使用个人信息来提供和改进服务。</p>
-<p>2.2 我们可能使用个人信息发送服务相关通知。</p>
-<p>2.3 我们不会将个人信息用于营销目的。</p>
-
-<h3>第三条 信息保护</h3>
-<p>3.1 我们采用行业标准的安全措施保护个人信息。</p>
-<p>3.2 我们限制员工对个人信息的访问权限。</p>
-<p>3.3 我们定期审查和更新安全措施。</p>
-
-<h3>第四条 信息共享</h3>
-<p>4.1 我们不会向第三方出售或出租个人信息。</p>
-<p>4.2 我们仅在法律要求或用户同意的情况下共享信息。</p>
-<p>4.3 我们要求合作伙伴保护用户个人信息。</p>
-
-<h3>第五条 用户权利</h3>
-<p>5.1 用户有权访问、更正、删除自己的个人信息。</p>
-<p>5.2 用户有权拒绝接收营销信息。</p>
-<p>5.3 用户有权撤回对信息处理的同意。</p>`,
-        effectiveDate: "2024-01-01",
-        expirationDate: "",
-        sortOrder: 2,
-        createTime: "2023-12-20 09:15:00",
-        updateTime: "2024-02-15 16:30:00",
-    },
-    {
-        protocolId: "AG003",
-        protocolName: "物业服务条款",
-        protocolType: "服务条款",
-        protocolVersion: "v1.5.2",
-        status: "启用",
-        isMandatory: "否",
-        summary: "规定了物业服务的具体内容、标准和用户应遵守的义务",
-        content: `<h3>第一条 服务说明</h3>
-<p>1.1 本平台为社区居民提供各类便民服务。</p>
-<p>1.2 服务内容可能根据需要进行调整。</p>
-<p>1.3 用户使用服务即表示同意本条款。</p>
-
-<h3>第二条 服务范围</h3>
-<p>2.1 物业缴费服务：支持在线缴纳各类物业费用。</p>
-<p>2.2 停车管理服务：提供车位预约、缴费等功能。</p>
-<p>2.3 访客管理服务：支持访客登记、通行授权等。</p>
-<p>2.4 社区活动服务：组织各类社区文化活动。</p>
-
-<h3>第三条 使用规则</h3>
-<p>3.1 用户应当提供真实的个人信息。</p>
-<p>3.2 用户应当合理使用服务，不得恶意干扰。</p>
-<p>3.3 用户应当按时缴纳相关费用。</p>
-
-<h3>第四条 费用说明</h3>
-<p>4.1 部分服务可能收取合理费用。</p>
-<p>4.2 费用标准将在服务页面明确说明。</p>
-<p>4.3 用户有权了解费用明细。</p>
-
-<h3>第五条 服务质量</h3>
-<p>5.1 我们致力于提供高质量的服务。</p>
-<p>5.2 我们建立投诉处理机制。</p>
-<p>5.3 我们定期收集用户反馈改进服务。</p>`,
-        effectiveDate: "2024-02-01",
-        expirationDate: "",
-        sortOrder: 3,
-        createTime: "2024-01-05 11:45:00",
-        updateTime: "2024-01-28 13:10:00",
-    },
-    {
-        protocolId: "AG004",
-        protocolName: "社区生活行为规范",
-        protocolType: "社区规则",
-        protocolVersion: "v1.2.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "社区居民在公共区域和私人空间应遵守的行为准则和规范",
-        content: `<h3>第一条 总则</h3>
-<p>1.1 为了维护社区的良好秩序，营造和谐的居住环境，特制定本行为规范。</p>
-<p>1.2 本规范适用于社区内所有居民及其访客。</p>
-<p>1.3 所有居民应自觉遵守本规范，共同维护社区环境。</p>
-
-<h3>第二条 公共区域行为规范</h3>
-<p>2.1 保持公共区域清洁卫生，不乱扔垃圾，不随地吐痰。</p>
-<p>2.2 爱护公共设施设备，不随意损坏或涂改。</p>
-<p>2.3 在公共区域活动时，应控制音量，避免影响他人正常休息。</p>
-
-<h3>第三条 宠物管理规范</h3>
-<p>3.1 饲养宠物应办理相关手续，遵守社区宠物管理规定。</p>
-<p>3.2 宠物外出时应牵引绳索，及时清理宠物排泄物。</p>
-<p>3.3 不得饲养危险或有攻击性的宠物。</p>`,
-        effectiveDate: "2024-01-15",
-        expirationDate: "",
-        sortOrder: 4,
-        createTime: "2024-01-08 14:20:00",
-        updateTime: "2024-02-20 10:25:00",
-    },
-    {
-        protocolId: "AG005",
-        protocolName: "平台使用免责声明",
-        protocolType: "免责声明",
-        protocolVersion: "v1.0.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "明确了平台服务使用中的责任限制和免责条款",
-        content: `<h3>第一条 责任限制</h3>
-<p>1.1 本平台提供的所有服务仅作为一般信息参考，不构成专业建议。</p>
-<p>1.2 用户使用本平台服务所产生的一切后果由用户自行承担。</p>
-<p>1.3 平台不对因使用服务而产生的任何直接或间接损失承担责任。</p>
-
-<h3>第二条 服务变更</h3>
-<p>2.1 平台保留随时修改、暂停或终止服务的权利。</p>
-<p>2.2 因服务变更给用户造成的不便，平台不承担任何责任。</p>
-
-<h3>第三条 第三方链接</h3>
-<p>3.1 本平台可能包含第三方网站的链接，这些链接仅为方便用户而提供。</p>
-<p>3.2 用户访问第三方网站时，应自行承担风险。</p>`,
-        effectiveDate: "2024-01-01",
-        expirationDate: "",
-        sortOrder: 5,
-        createTime: "2023-12-25 15:35:00",
-        updateTime: "2024-01-12 09:40:00",
-    },
-    {
-        protocolId: "AG006",
-        protocolName: "儿童隐私保护特别条款",
-        protocolType: "隐私政策",
-        protocolVersion: "v1.3.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "针对14岁以下儿童个人信息收集和使用的专门保护规定",
-        content: `<h3>第一条 适用范围</h3>
-<p>1.1 本条款适用于14周岁以下儿童的个人信息处理。</p>
-<p>1.2 对于14周岁以上的未成年人，适用一般隐私政策。</p>
-
-<h3>第二条 监护人同意</h3>
-<p>2.1 收集儿童个人信息前，必须获得监护人的明确同意。</p>
-<p>2.2 监护人有权查看、更正或删除儿童的个人信息。</p>
-
-<h3>第三条 信息保护</h3>
-<p>3.1 采取更加严格的技术措施保护儿童个人信息。</p>
-<p>3.2 不得向第三方分享儿童个人信息，除非获得监护人同意。</p>`,
-        effectiveDate: "2024-03-01",
-        expirationDate: "",
-        sortOrder: 6,
-        createTime: "2024-02-10 16:50:00",
-        updateTime: "2024-02-25 12:15:00",
-    },
-    {
-        protocolId: "AG007",
-        protocolName: "智能设备使用协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.8.0",
-        status: "草稿",
-        isMandatory: "否",
-        summary: "规范社区内智能设备的使用、维护和数据安全相关事宜",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "",
-        expirationDate: "",
-        sortOrder: 7,
-        createTime: "2024-03-01 10:00:00",
-        updateTime: "2024-03-10 14:30:00",
-    },
-    {
-        protocolId: "AG008",
-        protocolName: "业主委员会选举规则",
-        protocolType: "社区规则",
-        protocolVersion: "v2.0.1",
-        status: "启用",
-        isMandatory: "否",
-        summary: "规定了业主委员会的选举流程、资格要求和投票规则",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-15",
-        expirationDate: "",
-        sortOrder: 8,
-        createTime: "2024-01-20 11:15:00",
-        updateTime: "2024-03-05 15:20:00",
-    },
-    {
-        protocolId: "AG009",
-        protocolName: "停车管理服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.4.0",
-        status: "禁用",
-        isMandatory: "否",
-        summary: "停车场使用规定、收费标准和管理要求",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2023-12-01",
-        expirationDate: "2024-03-31",
-        sortOrder: 9,
-        createTime: "2023-11-15 13:25:00",
-        updateTime: "2024-02-28 16:45:00",
-    },
-    {
-        protocolId: "AG010",
-        protocolName: "宠物饲养管理规定",
-        protocolType: "社区规则",
-        protocolVersion: "v1.1.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "社区内宠物饲养的限制条件、登记要求和行为规范",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-20",
-        expirationDate: "",
-        sortOrder: 10,
-        createTime: "2024-01-12 08:40:00",
-        updateTime: "2024-02-18 11:30:00",
-    },
-    {
-        protocolId: "AG011",
-        protocolName: "装修施工管理协议",
-        protocolType: "服务条款",
-        protocolVersion: "v2.2.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "装修施工的申请流程、时间限制、安全要求和违规处理",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-10",
-        expirationDate: "",
-        sortOrder: 11,
-        createTime: "2024-01-25 14:10:00",
-        updateTime: "2024-03-08 09:55:00",
-    },
-    {
-        protocolId: "AG012",
-        protocolName: "垃圾分类处理规定",
-        protocolType: "社区规则",
-        protocolVersion: "v1.0.5",
-        status: "启用",
-        isMandatory: "是",
-        summary: "垃圾分类标准、投放时间和违规处罚措施",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-01",
-        expirationDate: "",
-        sortOrder: 12,
-        createTime: "2023-12-20 16:20:00",
-        updateTime: "2024-02-22 13:40:00",
-    },
-    {
-        protocolId: "AG013",
-        protocolName: "数据安全保护承诺",
-        protocolType: "隐私政策",
-        protocolVersion: "v1.6.0",
-        status: "草稿",
-        isMandatory: "否",
-        summary: "平台对用户数据安全的技术保障措施和管理承诺",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "",
-        expirationDate: "",
-        sortOrder: 13,
-        createTime: "2024-03-05 12:30:00",
-        updateTime: "2024-03-15 10:15:00",
-    },
-    {
-        protocolId: "AG014",
-        protocolName: "线上支付服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v3.1.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "物业费、停车费等在线支付的使用规则和安全保障",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-20",
-        expirationDate: "",
-        sortOrder: 14,
-        createTime: "2024-02-01 15:45:00",
-        updateTime: "2024-03-12 14:25:00",
-    },
-    {
-        protocolId: "AG015",
-        protocolName: "社区活动参与须知",
-        protocolType: "社区规则",
-        protocolVersion: "v1.3.0",
-        status: "启用",
-        isMandatory: "否",
-        summary: "参与社区各类活动的报名方式、行为规范和安全须知",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-10",
-        expirationDate: "",
-        sortOrder: 15,
-        createTime: "2024-01-05 09:20:00",
-        updateTime: "2024-02-14 16:05:00",
-    },
-    {
-        protocolId: "AG016",
-        protocolName: "第三方服务共享协议",
-        protocolType: "隐私政策",
-        protocolVersion: "v1.2.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "与第三方服务商共享用户信息的范围、目的和限制条件",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-05",
-        expirationDate: "",
-        sortOrder: 16,
-        createTime: "2023-12-28 11:35:00",
-        updateTime: "2024-02-05 13:20:00",
-    },
-    {
-        protocolId: "AG017",
-        protocolName: "网络信息安全声明",
-        protocolType: "免责声明",
-        protocolVersion: "v2.0.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "网络服务的安全限制、用户责任和风险提示",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-01",
-        expirationDate: "",
-        sortOrder: 17,
-        createTime: "2024-01-18 14:50:00",
-        updateTime: "2024-03-01 11:40:00",
-    },
-    {
-        protocolId: "AG018",
-        protocolName: "紧急情况处理预案",
-        protocolType: "服务条款",
-        protocolVersion: "v1.7.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "火灾、自然灾害等紧急情况的处理流程和用户配合义务",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-15",
-        expirationDate: "",
-        sortOrder: 18,
-        createTime: "2024-01-10 08:15:00",
-        updateTime: "2024-02-26 15:30:00",
-    },
-    {
-        protocolId: "AG019",
-        protocolName: "商业服务合作协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.9.0",
-        status: "草稿",
-        isMandatory: "否",
-        summary: "社区商业服务的合作模式、费用分配和责任划分",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "",
-        expirationDate: "",
-        sortOrder: 19,
-        createTime: "2024-03-08 10:25:00",
-        updateTime: "2024-03-18 14:10:00",
-    },
-    {
-        protocolId: "AG020",
-        protocolName: "投诉建议处理流程",
-        protocolType: "社区规则",
-        protocolVersion: "v1.4.0",
-        status: "启用",
-        isMandatory: "否",
-        summary: "用户投诉建议的提交渠道、处理时限和反馈机制",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-25",
-        expirationDate: "",
-        sortOrder: 20,
-        createTime: "2024-01-15 12:45:00",
-        updateTime: "2024-03-06 09:20:00",
-    },
-    {
-        protocolId: "AG021",
-        protocolName: "老年用户特别服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.1.0",
-        status: "启用",
-        isMandatory: "否",
-        summary: "为老年用户提供的特殊服务内容和使用方式",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-05",
-        expirationDate: "",
-        sortOrder: 21,
-        createTime: "2024-01-30 16:30:00",
-        updateTime: "2024-03-03 12:50:00",
-    },
-    {
-        protocolId: "AG022",
-        protocolName: "知识产权保护声明",
-        protocolType: "免责声明",
-        protocolVersion: "v1.5.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "平台内容版权、商标权和知识产权的使用限制",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-08",
-        expirationDate: "",
-        sortOrder: 22,
-        createTime: "2023-12-22 13:55:00",
-        updateTime: "2024-02-12 14:40:00",
-    },
-    {
-        protocolId: "AG023",
-        protocolName: "访客管理服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v2.3.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "访客登记、通行权限和安全管理相关规定",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-12",
-        expirationDate: "",
-        sortOrder: 23,
-        createTime: "2024-02-05 09:10:00",
-        updateTime: "2024-03-10 16:15:00",
-    },
-    {
-        protocolId: "AG024",
-        protocolName: "医疗健康信息服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.0.0",
-        status: "禁用",
-        isMandatory: "否",
-        summary: "在线健康咨询服务的使用规范和责任限制",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2023-10-01",
-        expirationDate: "2024-02-29",
-        sortOrder: 24,
-        createTime: "2023-09-15 11:20:00",
-        updateTime: "2024-02-15 13:25:00",
-    },
-    {
-        protocolId: "AG025",
-        protocolName: "公共设施使用规定",
-        protocolType: "社区规则",
-        protocolVersion: "v1.6.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "健身房、游泳池等公共设施的使用时间和安全须知",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-18",
-        expirationDate: "",
-        sortOrder: 25,
-        createTime: "2024-01-08 15:35:00",
-        updateTime: "2024-02-24 10:40:00",
-    },
-    {
-        protocolId: "AG026",
-        protocolName: "跨境数据传输协议",
-        protocolType: "隐私政策",
-        protocolVersion: "v1.3.0",
-        status: "草稿",
-        isMandatory: "否",
-        summary: "涉及跨境数据传输的法律要求和保护措施",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "",
-        expirationDate: "",
-        sortOrder: 26,
-        createTime: "2024-03-12 14:20:00",
-        updateTime: "2024-03-20 11:50:00",
-    },
-    {
-        protocolId: "AG027",
-        protocolName: "物业服务满意度评价机制",
-        protocolType: "服务条款",
-        protocolVersion: "v1.2.0",
-        status: "启用",
-        isMandatory: "否",
-        summary: "服务质量评价标准、反馈渠道和改进措施",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-08",
-        expirationDate: "",
-        sortOrder: 27,
-        createTime: "2024-01-22 10:55:00",
-        updateTime: "2024-03-07 15:15:00",
-    },
-    {
-        protocolId: "AG028",
-        protocolName: "志愿服务管理办法",
-        protocolType: "社区规则",
-        protocolVersion: "v1.0.0",
-        status: "启用",
-        isMandatory: "否",
-        summary: "社区志愿服务的报名、培训、服务记录和激励机制",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-12",
-        expirationDate: "",
-        sortOrder: 28,
-        createTime: "2024-01-03 08:50:00",
-        updateTime: "2024-02-19 12:35:00",
-    },
-    {
-        protocolId: "AG029",
-        protocolName: "未成年人使用特别规定",
-        protocolType: "隐私政策",
-        protocolVersion: "v1.4.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "16-18岁未成年人使用平台的特殊保护措施",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-18",
-        expirationDate: "",
-        sortOrder: 29,
-        createTime: "2024-02-10 13:15:00",
-        updateTime: "2024-03-14 09:45:00",
-    },
-    {
-        protocolId: "AG030",
-        protocolName: "环境保护倡议书",
-        protocolType: "社区规则",
-        protocolVersion: "v1.1.0",
-        status: "启用",
-        isMandatory: "否",
-        summary: "节能减排、绿色生活的社区环保倡议和实践指南",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-22",
-        expirationDate: "",
-        sortOrder: 30,
-        createTime: "2024-01-16 14:40:00",
-        updateTime: "2024-03-02 16:25:00",
-    },
-    {
-        protocolId: "AG031",
-        protocolName: "系统维护服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v2.0.0",
-        status: "草稿",
-        isMandatory: "否",
-        summary: "系统升级维护期间的服务中断通知和补偿机制",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "",
-        expirationDate: "",
-        sortOrder: 31,
-        createTime: "2024-03-15 11:05:00",
-        updateTime: "2024-03-22 13:30:00",
-    },
-    {
-        protocolId: "AG032",
-        protocolName: "智能安防系统使用协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.5.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "智能门禁、监控等安防设备的使用规范和隐私保护",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-02-25",
-        expirationDate: "",
-        sortOrder: 32,
-        createTime: "2024-02-15 09:50:00",
-        updateTime: "2024-03-18 15:05:00",
-    },
-    {
-        protocolId: "AG033",
-        protocolName: "争议解决机制",
-        protocolType: "服务条款",
-        protocolVersion: "v1.3.0",
-        status: "启用",
-        isMandatory: "是",
-        summary: "用户与平台争议的解决方式、适用法律和管辖法院",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2024-01-30",
-        expirationDate: "",
-        sortOrder: 33,
-        createTime: "2024-01-20 12:20:00",
-        updateTime: "2024-02-27 14:55:00",
-    },
-    {
-        protocolId: "AG034",
-        protocolName: "账单通知服务协议",
-        protocolType: "服务条款",
-        protocolVersion: "v1.1.0",
-        status: "禁用",
-        isMandatory: "否",
-        summary: "电子账单推送、查询和支付提醒服务的使用规定",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "2023-11-15",
-        expirationDate: "2024-02-15",
-        sortOrder: 34,
-        createTime: "2023-10-30 15:25:00",
-        updateTime: "2024-02-10 11:15:00",
-    },
-    {
-        protocolId: "AG035",
-        protocolName: "平台功能更新公告",
-        protocolType: "免责声明",
-        protocolVersion: "v1.0.0",
-        status: "草稿",
-        isMandatory: "否",
-        summary: "新功能发布、旧功能下线和服务变更的公告模板",
-        content: `<p>本协议详细内容请查看完整协议文档。</p>`,
-        effectiveDate: "",
-        expirationDate: "",
-        sortOrder: 35,
-        createTime: "2024-03-20 16:45:00",
-        updateTime: "2024-03-25 10:20:00",
-    },
+/**
+ * 注册协议模拟数据
+ */
+export const mockRegisterProtocolData: RegisterProtocol[] = [
+	{
+		id: "PRO001",
+		title: "用户注册协议",
+		protocolType: "用户注册协议",
+		version: "v1.0",
+		content: "欢迎注册11comm智慧社区系统...",
+		isEnabled: true,
+		isRequired: true,
+		effectiveTime: "2024-01-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-15 10:30:00",
+		operator: "admin",
+		remark: "用户注册必须同意的协议",
+	},
+	{
+		id: "PRO002",
+		title: "隐私政策",
+		protocolType: "隐私政策",
+		version: "v2.0",
+		content: "我们非常重视您的隐私保护...",
+		isEnabled: true,
+		isRequired: true,
+		effectiveTime: "2024-01-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-10 14:20:00",
+		operator: "admin",
+		remark: "详细说明数据收集和使用方式",
+	},
+	{
+		id: "PRO003",
+		title: "服务条款",
+		protocolType: "服务条款",
+		version: "v1.5",
+		content: "使用本系统服务需要遵守以下条款...",
+		isEnabled: true,
+		isRequired: true,
+		effectiveTime: "2024-01-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-12 16:45:00",
+		operator: "admin",
+		remark: "系统使用规范和责任声明",
+	},
+	{
+		id: "PRO004",
+		title: "免责声明",
+		protocolType: "免责声明",
+		version: "v1.0",
+		content: "系统提供的信息仅供参考...",
+		isEnabled: true,
+		isRequired: false,
+		effectiveTime: "2024-01-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-08 11:20:00",
+		operator: "admin",
+		remark: "免除系统方部分责任的声明",
+	},
+	{
+		id: "PRO005",
+		title: "版权声明",
+		protocolType: "版权声明",
+		version: "v1.0",
+		content: "本系统及相关文档的知识产权归属...",
+		isEnabled: true,
+		isRequired: false,
+		effectiveTime: "2024-01-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-01-01 08:00:00",
+		updateTime: "2024-01-14 09:30:00",
+		operator: "admin",
+		remark: "知识产权和版权保护声明",
+	},
+	{
+		id: "PRO006",
+		title: "数据安全协议",
+		protocolType: "隐私政策",
+		version: "v1.2",
+		content: "为保障数据安全，我们采取以下措施...",
+		isEnabled: true,
+		isRequired: true,
+		effectiveTime: "2024-02-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-01-15 08:00:00",
+		updateTime: "2024-01-20 10:15:00",
+		operator: "security_admin",
+		remark: "新增数据安全专项协议",
+	},
+	{
+		id: "PRO007",
+		title: "第三方服务协议",
+		protocolType: "服务条款",
+		version: "v1.1",
+		content: "系统集成的第三方服务说明...",
+		isEnabled: true,
+		isRequired: false,
+		effectiveTime: "2024-03-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-02-15 08:00:00",
+		updateTime: "2024-02-20 14:30:00",
+		operator: "admin",
+		remark: "第三方服务集成条款",
+	},
+	{
+		id: "PRO008",
+		title: "账户安全协议",
+		protocolType: "用户注册协议",
+		version: "v1.3",
+		content: "为保护账户安全，请遵守以下规定...",
+		isEnabled: true,
+		isRequired: true,
+		effectiveTime: "2024-04-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-03-15 08:00:00",
+		updateTime: "2024-03-20 11:45:00",
+		operator: "security_admin",
+		remark: "强化账户安全要求",
+	},
+	{
+		id: "PRO009",
+		title: "社区行为规范",
+		protocolType: "服务条款",
+		version: "v1.0",
+		content: "在社区内请遵守文明行为规范...",
+		isEnabled: true,
+		isRequired: true,
+		effectiveTime: "2024-05-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-04-15 08:00:00",
+		updateTime: "2024-04-20 16:20:00",
+		operator: "admin",
+		remark: "社区用户行为准则",
+	},
+	{
+		id: "PRO010",
+		title: "紧急情况处理",
+		protocolType: "免责声明",
+		version: "v1.0",
+		content: "遇紧急情况时的处理流程...",
+		isEnabled: false,
+		isRequired: false,
+		effectiveTime: "2024-06-01 00:00:00",
+		expireTime: "2025-12-31 23:59:59",
+		createTime: "2024-05-15 08:00:00",
+		updateTime: "2024-05-20 13:10:00",
+		operator: "admin",
+		remark: "紧急情况预案，待启用",
+	},
 ];

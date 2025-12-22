@@ -1,33 +1,34 @@
+/**
+ * @file Owner Payment Details 列表接口
+ * @description Owner Payment Details list API
+ * POST /api/property-manage/report-manage/owner-payment-details/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { OwnerPaymentDetailsListItem, OwnerPaymentDetailsQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, OwnerPaymentDetailsListItem, OwnerPaymentDetailsQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockOwnerPaymentDetailsData } from "./mock-data";
 
-/**
- * @description owner-payment-details列表 POST API
- * OwnerPaymentDetails list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerPaymentDetailsListItem>>> => {
 	const body = await readBody<OwnerPaymentDetailsQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const defaultParams: OwnerPaymentDetailsQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockOwnerPaymentDetailsData];
+	/** 数据筛选 */
+	const filteredData = filterDataByQuery(mockOwnerPaymentDetailsData, filters);
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<OwnerPaymentDetailsListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,6 +39,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerPaymentD
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });

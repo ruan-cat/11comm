@@ -1,7 +1,7 @@
 /**
- * @file 缴费审核列表接口
- * @description Payment review list API
- * @route POST /api/property-manage/expense-manage/payment-review/list
+ * @file Payment Review 列表接口
+ * @description Payment Review list API
+ * POST /api/property-manage/expense-manage/payment-review/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
@@ -17,20 +17,10 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PaymentReview
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
 	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, paymentStartTime, paymentEndTime, ...filters } = mergedParams;
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	/** 数据筛选 */
-	let filteredData = filterDataByQuery(mockPaymentReviewData, filters);
-
-	/** 处理日期范围筛选 */
-	if (paymentStartTime && paymentEndTime) {
-		filteredData = filteredData.filter((item) => {
-			const itemTime = new Date(item.paymentTime).getTime();
-			const start = new Date(paymentStartTime).getTime();
-			const end = new Date(paymentEndTime).getTime();
-			return itemTime >= start && itemTime <= end;
-		});
-	}
+	const filteredData = filterDataByQuery(mockPaymentReviewData, filters);
 
 	/** 分页处理 */
 	const total = filteredData.length;

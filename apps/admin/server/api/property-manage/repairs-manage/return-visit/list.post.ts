@@ -1,26 +1,33 @@
+/**
+ * @file Return Visit 列表接口
+ * @description Return Visit list API
+ * POST /api/property-manage/repairs-manage/return-visit/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { ReturnVisitListItem, ReturnVisitQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ReturnVisitListItem, ReturnVisitQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockReturnVisitData } from "./mock-data";
 
-/**
- * @description return-visit列表 POST API
- * ReturnVisit list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitListItem>>> => {
 	const body = await readBody<ReturnVisitQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const defaultParams: ReturnVisitQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 使用 filterDataByQuery 进行数据筛选
-	const filteredData = filterDataByQuery(mockReturnVisitData, { name, status });
+	/** 数据筛选 */
+	const filteredData = filterDataByQuery(mockReturnVisitData, filters);
 
-	// 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 创建响应对象并添加完整类型约束
+	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<ReturnVisitListItem>> = {
 		success: true,
 		code: 200,
@@ -32,7 +39,6 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitLi
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
 
 	return response;

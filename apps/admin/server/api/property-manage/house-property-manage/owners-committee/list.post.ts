@@ -1,6 +1,6 @@
 /**
- * @file 业委会列表接口
- * @description OwnersCommittee list API
+ * @file Owners Committee 列表接口
+ * @description Owners Committee list API
  * POST /api/property-manage/house-property-manage/owners-committee/list
  */
 
@@ -11,7 +11,6 @@ import { filterDataByQuery } from "server/utils/filter-data";
 import { mockOwnersCommitteeData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnersCommitteeListItem>>> => {
-	// 1. 读取请求参数
 	const body = await readBody<OwnersCommitteeQueryParams>(event);
 	const defaultParams: OwnersCommitteeQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -20,15 +19,14 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnersCommitt
 	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
+	/** 数据筛选 */
 	const filteredData = filterDataByQuery(mockOwnersCommitteeData, filters);
 
-	// 3. 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<OwnersCommitteeListItem>> = {
 		success: true,

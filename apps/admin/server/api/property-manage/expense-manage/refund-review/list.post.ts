@@ -1,7 +1,7 @@
 /**
- * @file 退费审核列表接口
- * @description Refund review list API
- * @route POST /api/property-manage/expense-manage/refund-review/list
+ * @file Refund Review 列表接口
+ * @description Refund Review list API
+ * POST /api/property-manage/expense-manage/refund-review/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";

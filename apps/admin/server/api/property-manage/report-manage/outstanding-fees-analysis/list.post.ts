@@ -1,33 +1,34 @@
+/**
+ * @file Outstanding Fees Analysis 列表接口
+ * @description Outstanding Fees Analysis list API
+ * POST /api/property-manage/report-manage/outstanding-fees-analysis/list
+ */
+
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
-import type { OutstandingFeesAnalysisListItem, OutstandingFeesAnalysisQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, OutstandingFeesAnalysisListItem, OutstandingFeesAnalysisQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { filterDataByQuery } from "server/utils/filter-data";
 import { mockOutstandingFeesAnalysisData } from "./mock-data";
 
-/**
- * @description outstanding-fees-analysis列表 POST API
- * OutstandingFeesAnalysis list POST API
- */
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFeesAnalysisListItem>>> => {
 	const body = await readBody<OutstandingFeesAnalysisQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, name, status } = body;
+	const defaultParams: OutstandingFeesAnalysisQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	let filteredData = [...mockOutstandingFeesAnalysisData];
+	/** 数据筛选 */
+	const filteredData = filterDataByQuery(mockOutstandingFeesAnalysisData, filters);
 
-	// 数据筛选
-	if (name) {
-		filteredData = filteredData.filter((item) => item.name.includes(name));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
-
-	// 分页处理
+	/** 分页处理 */
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	// 返回标准格式
-	return {
+	/** 返回标准格式 */
+	const response: JsonVO<PageDTO<OutstandingFeesAnalysisListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
@@ -38,6 +39,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFe
 			pageSize,
 			totalPages: Math.ceil(total / pageSize),
 		},
-		timestamp: Date.now(),
 	};
+
+	return response;
 });
