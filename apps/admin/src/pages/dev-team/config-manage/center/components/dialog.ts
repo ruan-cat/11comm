@@ -42,7 +42,7 @@ function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 
 	/** 业务对象 Form data object */
 	const formData: ConfigCenterFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
@@ -56,7 +56,7 @@ function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 					sortOrder: row?.sortOrder || 0,
 					remark: row?.remark || "",
 				}
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props Form component props */
 	const formProps: ConfigCenterFormProps = {

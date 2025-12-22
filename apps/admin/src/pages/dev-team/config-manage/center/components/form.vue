@@ -21,7 +21,7 @@ usePlusFormReset(plusFormInstance);
  * 本表单组件实际使用的表单对象
  * @description Actual form object used by this component
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & ConfigCenterFormVO;
+const toRefForm = structuredClone(props.form) as FieldValues & ConfigCenterFormVO;
 
 /** 表单对象 Form object */
 const form = ref(toRefForm);
