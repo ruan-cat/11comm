@@ -72,55 +72,6 @@ export interface StatementExpensesQueryParams extends BaseListQueryParams {
 }
 
 /**
- * 费用类型选项
- * Expense type options
- */
-const expenseTypeOptions: OptionsType = [
-	{ label: "物业管理费", value: "物业管理费" },
-	{ label: "停车费", value: "停车费" },
-	{ label: "水费", value: "水费" },
-	{ label: "电费", value: "电费" },
-	{ label: "燃气费", value: "燃气费" },
-	{ label: "维修费", value: "维修费" },
-	{ label: "其他费用", value: "其他费用" },
-];
-
-/**
- * 费用项选项
- * Expense item options
- */
-const expenseItemOptions: OptionsType = [
-	{ label: "基础物业费", value: "基础物业费" },
-	{ label: "车位租赁费", value: "车位租赁费" },
-	{ label: "公共能耗费", value: "公共能耗费" },
-	{ label: "电梯使用费", value: "电梯使用费" },
-	{ label: "二次供水费", value: "二次供水费" },
-];
-
-/**
- * 费用状态选项
- * Expense status options
- */
-const expenseStatusOptions: OptionsType = [
-	{ label: "未缴费", value: "未缴费" },
-	{ label: "部分缴费", value: "部分缴费" },
-	{ label: "已缴费", value: "已缴费" },
-	{ label: "逾期", value: "逾期" },
-];
-
-/**
- * 支付方式选项
- * Payment method options
- */
-const paymentMethodOptions: OptionsType = [
-	{ label: "现金", value: "现金" },
-	{ label: "支付宝", value: "支付宝" },
-	{ label: "微信", value: "微信" },
-	{ label: "银行转账", value: "银行转账" },
-	{ label: "POS机", value: "POS机" },
-];
-
-/**
  * 小区选项
  * Community options
  */
