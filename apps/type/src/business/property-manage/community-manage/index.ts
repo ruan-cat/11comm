@@ -3,8 +3,8 @@
  * @description 统一导出社区管理相关的所有业务类型
  */
 
-export * from "./handing-business";
 export * from "./notice";
+export * from "./handing-business";
 export * from "./building-space-structure-diagram";
 export * from "./house-decoration";
 export * from "./my";
