@@ -30,7 +30,7 @@ export type {
 
 export {
 	expireStatusOptions,
-	handlingStatusOptions,
+	expiredContractHandlingStatusOptions as handlingStatusOptions,
 } from "./expire";
 
 export type {

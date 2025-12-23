@@ -23,9 +23,6 @@ export interface RegisterProtocolDisplay {
 
 /**
  * 注册协议列表查询参数
- * @description 虽然只有一个协议，但为了保持接口统一，仍然定义此接口
+ * @description 从 business-types.ts 导入
  */
-export interface RegisterProtocolListQuery extends BaseListQueryParams {
-	/** 协议标题 */
-	title?: string;
-}
+export type { SettingManagementRegisterProtocolListQuery as RegisterProtocolListQuery } from "../../../common/business-types";

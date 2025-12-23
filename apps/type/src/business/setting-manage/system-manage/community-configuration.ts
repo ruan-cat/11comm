@@ -1,7 +1,7 @@
 // 从公共类型文件导入
 export type {
-	SettingManagementCommunityConfiguration as CommunityConfiguration,
-	SettingManagementCommunityConfigurationListQuery as CommunityConfigurationListQuery,
+	SettingManagementCommunityConfiguration,
+	SettingManagementCommunityConfigurationListQuery,
 } from "../../../common/business-types";
 
 // 从公共选项文件导入

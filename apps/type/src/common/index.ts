@@ -8,7 +8,10 @@
 // 导出选项类型
 export * from "./OptionsType";
 
-// 导出业务共同类型定义 - 统一从 business-options 导出
+// 导出业务共同类型定义
+export * from "./business-types";
+
+// 导出业务共同选项定义
 export * from "./business-options";
 
 /**

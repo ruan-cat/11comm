@@ -1,4 +1,5 @@
 import type { OptionsType } from "../../../common";
+import { expenseItemNameOptions } from "../../../common/business-options";
 
 /**
  * @description expense-summary-table列表数据
@@ -55,13 +56,4 @@ export const expenseSummaryTableStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-/**
- * @description 费用项名称选项
- * Expense item name options
- */
-export const expenseItemNameOptions: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水费", value: "水费" },
-	{ label: "电费", value: "电费" },
-	{ label: "燃气费", value: "燃气费" },
-];
+export { expenseItemNameOptions };

@@ -34,19 +34,9 @@ export interface RegisterProtocol {
 
 /**
  * 注册协议列表查询参数
+ * 从 business-types.ts 导入
  */
-export interface RegisterProtocolListQuery extends BaseListQueryParams {
-	/** 协议标题 */
-	title?: string;
-	/** 协议类型 */
-	protocolType?: string;
-	/** 是否启用 */
-	isEnabled?: boolean;
-	/** 是否必读 */
-	isRequired?: boolean;
-	/** 生效时间范围 */
-	effectiveTimeRange?: [string, string];
-}
+export type { OperationTeamRegisterProtocolListQuery as RegisterProtocolListQuery } from "../../../common/business-types";
 
 /**
  * 协议类型选项
