@@ -51,7 +51,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - 客户端代码： 即 后台项目的 `apps\admin\src` 目录，这个目录下的全部代码，都是`客户端代码`。
 - 服务端代码： 即 后台项目的 `apps\admin\server` 目录，这个目录下的全部代码，都是`服务端代码`。
 
-- 业务路径： 即 `apps\admin\src\router\rank\rank-route-keys.ts` 文件的全部`三级路由`所体现出来的文件路径。被认定为`业务路径`。`类型项目`、`服务端代码`、`后台项目`、`客户端代码`等。都要依赖于业务路径来组织代码。是本项目**非常重要**的路径概念。
+- `业务路径`： 即 `apps\admin\src\router\rank\rank-route-keys.ts` 文件的全部`三级路由`所体现出来的文件路径。被认定为`业务路径`。`类型项目`、`服务端代码`、`后台项目`、`客户端代码`等。都要依赖于`业务路径`来组织代码。是本项目**非常重要**的路径概念。
+  - `业务路径`几乎不会新增。一旦新增了`业务路径`，都会在 `rank-route-keys.ts` 内新增。所以在你执行相关任务时，请不要凭空新建内容。一律在`业务路径`对应的目录和文件内做修改或新增。
 
 ## 3. 代码/编码格式要求
 
@@ -343,6 +344,57 @@ export * from "./constant";
   ````
 
 - 报告语言： 默认用简体中文。
+
+## 6. 基于`业务路径`做任务划分时的主代理与子代理任务划分规范
+
+根据业务路径的`三级路由`，做出细致的子代理任务划分，避免子代理一次性完成过多任务。
+
+有部分`业务路径`的`二级路由`，包含了数量较多的模块，在你划分子代理任务时，你首先应该要全面深刻的阅读 `apps\admin\src\router\rank\rank-route-keys.ts` 所提供的二级路由和三级路由，让子代理只负责 2~3 个具体的三级路由，而不是把一整块三级路由的全部路径对应的修改任务，都交给一个子代理来完成。这很容易出现子代理执行失败的故障。
+
+一个具体的子代理任务划分例子如下：
+
+假定我们要对 `propertyManage.expenseManage` 这款`二级路由`下面全部的`三级路由`对应的`后台项目`的 `form.ts` 文件做处理，统一增加固定的类型导入代码段 `import type { Mode } from "@/composables/use-mode";` ，你作为主代理，面对如下数目的`三级路由`。
+
+```txt
+	// propertyManage.expenseManage 三级路由
+	"propertyManage.expenseManage.waterAndElectricityMeterReading",
+	"propertyManage.expenseManage.vehicleCharge",
+	"propertyManage.expenseManage.reminderForOverduePayments",
+	"propertyManage.expenseManage.reprintVoucher",
+	"propertyManage.expenseManage.overduePaymentInformation",
+	"propertyManage.expenseManage.paymentReview",
+	"propertyManage.expenseManage.refundReview",
+	"propertyManage.expenseManage.houseCharge",
+	"propertyManage.expenseManage.meterReadingType",
+	"propertyManage.expenseManage.discountType",
+	"propertyManage.expenseManage.expenseSummaryTable",
+	"propertyManage.expenseManage.discountApply",
+	"propertyManage.expenseManage.discountSetting",
+	"propertyManage.expenseManage.contracteCharge",
+	"propertyManage.expenseManage.expenseItemSetting",
+	"propertyManage.expenseManage.cancelFee",
+```
+
+很明显，根据业务路径的三级路由，所映射的全部 `form.ts` 文件路径大致如下：
+
+```txt
+apps\admin\src\pages\property-manage\expense-manage\water-and-electricity-meter-reading\components\form.ts
+apps\admin\src\pages\property-manage\expense-manage\vehicle-charge\components\form.ts
+apps\admin\src\pages\property-manage\expense-manage\reminder-for-overdue-payments\components\form.ts
+...剩余的form.ts路径
+```
+
+那么你应该划分 6 个子代理，去完成这些任务：
+
+1. 1 号子代理
+   - waterAndElectricityMeterReading
+   - vehicleCharge
+   - reminderForOverduePayments
+2. 2 号子代理
+   - reprintVoucher
+   - overduePaymentInformation
+   - paymentReview
+3. 以此类推...
 
 ## 6. 执行 openspec 系列长任务时的注意事项
 
