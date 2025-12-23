@@ -1,5 +1,4 @@
 import type { InvoiceFormVO } from "@01s-11comm/type";
-import { invoiceDefaultForm as defaultForm } from "@01s-11comm/type";
 
 /**
  * @description 发票表单 props
@@ -12,5 +11,17 @@ export interface InvoiceFormProps {
 	defaultValues: InvoiceFormVO;
 }
 
-/** 默认表单 Default form for external use */
-export { defaultForm };
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: InvoiceFormVO = {
+	code: "",
+	invoiceType: "",
+	ownerName: "",
+	applicant: "",
+	invoiceTitle: "",
+	taxpayerId: "",
+	applicationAmount: "",
+	invoiceNumber: "",
+	auditStatus: "",
+	applicationTime: "",
+	remark: "",
+};

@@ -93,17 +93,3 @@ export interface ConfigItemFormVO {
 	remark: string;
 }
 
-/**
- * @description 默认表单 Default form
- */
-export const configItemDefaultForm: ConfigItemFormVO = {
-	configItemName: "",
-	configItemCode: "",
-	configItemType: "",
-	configItemValue: "",
-	configItemDescription: "",
-	isEnabled: "",
-	remark: "",
-};
-
-

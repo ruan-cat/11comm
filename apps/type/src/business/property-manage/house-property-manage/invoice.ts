@@ -96,24 +96,6 @@ export interface InvoiceFormVO {
 }
 
 /**
- * @description 发票表单默认值
- * Invoice form default values
- */
-export const invoiceDefaultForm: InvoiceFormVO = {
-	code: "",
-	invoiceType: "",
-	ownerName: "",
-	applicant: "",
-	invoiceTitle: "",
-	taxpayerId: "",
-	applicationAmount: "",
-	invoiceNumber: "",
-	auditStatus: "",
-	applicationTime: "",
-	remark: "",
-};
-
-/**
  * @description 发票审核状态选项
  * Invoice audit status options
  */

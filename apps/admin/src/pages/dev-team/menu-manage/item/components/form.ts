@@ -6,7 +6,6 @@
 import type { Mode } from "@/composables/use-mode";
 import type { MenuItemFormVO as FormVO } from "@01s-11comm/type";
 import {
-	menuItemDefaultForm as defaultFormValues,
 	menuTypeOptions,
 	menuItemStatusOptions,
 	booleanOptions,
@@ -15,8 +14,23 @@ import {
 /** 向后兼容的类型别名 */
 export type MenuItemFormVO_Original = FormVO;
 
-/** 默认表单 Default form */
-export const defaultForm = defaultFormValues;
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: FormVO = {
+	menuId: "",
+	menuName: "",
+	parentMenu: "根菜单",
+	menuType: "menu",
+	routePath: "",
+	componentPath: "",
+	permissionKey: "",
+	sortNo: 1,
+	status: "enabled",
+	icon: "",
+	isExternal: "false",
+	isCached: "false",
+	isHidden: "false",
+	description: "",
+};
 
 /**
  * 菜单项表单 props

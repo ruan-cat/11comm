@@ -142,24 +142,3 @@ export interface MenuItemFormVO {
 	description: string;
 }
 
-/**
- * @description 默认表单 Default form
- */
-export const menuItemDefaultForm: MenuItemFormVO = {
-	menuId: "",
-	menuName: "",
-	parentMenu: "根菜单",
-	menuType: "menu",
-	routePath: "",
-	componentPath: "",
-	permissionKey: "",
-	sortNo: 1,
-	status: "enabled",
-	icon: "",
-	isExternal: "false",
-	isCached: "false",
-	isHidden: "false",
-	description: "",
-};
-
-

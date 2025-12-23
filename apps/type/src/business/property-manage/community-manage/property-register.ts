@@ -87,22 +87,6 @@ export interface PropertyRegisterFormVO {
 }
 
 /**
- * 产权登记表单默认值
- * Property registration form default values
- */
-export const defaultForm: PropertyRegisterFormVO = {
-	propertyRightId: "",
-	houseId: "",
-	houseNumber: "",
-	ownerName: "",
-	contactInfo: "",
-	idCardNumber: "",
-	address: "",
-	status: "启用",
-	remark: "",
-};
-
-/**
  * 产权登记状态选项
  * Property registration status options
  */
