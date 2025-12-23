@@ -76,9 +76,6 @@ export interface PatrolPathFormData {
 
 // ==================== 向后兼容的类型别名 ====================
 
-/** 向后兼容：统一命名 / Backward compatibility: Unified naming */
-export type PatrolPathFormVO = PatrolPathFormData;
-
 /**
  * @description 巡检路线列表数据
  * Patrol path list data

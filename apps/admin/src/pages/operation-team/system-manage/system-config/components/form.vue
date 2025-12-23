@@ -7,7 +7,7 @@ import { ref, computed, useTemplateRef } from "vue";
 
 import {
 	SystemConfigFormProps,
-	type FormVO,
+	type SystemConfigFormVO,
 	defaultForm,
 	systemConfigTypeOptionsAlias,
 	configGroupOptions,
@@ -17,7 +17,7 @@ import {
 const props = defineProps<SystemConfigFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & FormVO;
+const defaultValues = props.defaultValues as FieldValues & SystemConfigFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -31,7 +31,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & FormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & SystemConfigFormVO;
 
 /**
  * 表单对象

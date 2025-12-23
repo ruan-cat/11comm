@@ -7,33 +7,31 @@ import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 // ==================== 列表数据类型定义 ====================
 
-// TODO: 需要换成英文类型 不允许写成中文类型
-// TODO: 不允许编写纯中文的字段
 /**
  * 欠费明细表列表数据
  * Arrears details list item
  */
 export interface ArrearsDetailsListItem {
 	/** 费用编号 Fee number */
-	费用编号: string;
+	feeNumber: string;
 	/** 房号 Room number */
-	房号: string;
+	roomNumber: string;
 	/** 业主 Owner */
-	业主: string;
+	owner: string;
 	/** 业主电话 Owner phone */
-	业主电话: string;
+	ownerPhone: string;
 	/** 面积 Area */
-	面积: string;
+	area: string;
 	/** 费用项 Fee item */
-	费用项: string;
+	feeItem: string;
 	/** 开始时间 Start time */
-	开始时间: string;
+	startTime: string;
 	/** 结束时间 End time */
-	结束时间: string;
+	endTime: string;
 	/** 欠费时长 Arrears duration (days) */
-	欠费时长: string;
+	arrearsDuration: string;
 	/** 欠费金额 Arrears amount */
-	欠费金额: string;
+	arrearsAmount: string;
 }
 
 /**
@@ -42,17 +40,17 @@ export interface ArrearsDetailsListItem {
  */
 export interface ArrearsDetailsListQueryParams extends BaseListQueryParams {
 	/** 费用大类 Fee category */
-	费用编号?: string;
+	feeNumber?: string;
 	/** 房屋编号 Room number */
-	房号?: string;
+	roomNumber?: string;
 	/** 开始时间 Start time */
-	开始时间?: string;
+	startTime?: string;
 	/** 结束时间 End time */
-	结束时间?: string;
+	endTime?: string;
 	/** 小区 Community */
 	community?: string;
 	/** 业主名称 Owner name */
-	业主?: string;
+	owner?: string;
 }
 
 // ==================== 表单类型定义 ====================

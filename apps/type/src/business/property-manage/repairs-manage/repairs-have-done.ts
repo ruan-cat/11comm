@@ -88,22 +88,22 @@ export const defaultRepairsHaveDoneForm: RepairsHaveDoneFormVO = {
  * Repairs have done list data (backward compatibility)
  */
 export interface RepairsHaveDoneListData extends RepairsHaveDoneListItem {
-	/** 工单编号 */
-	工单编号: string;
-	/** 位置 */
-	位置: string;
-	/** 报修类型 */
-	报修类型: string;
-	/** 维修类型 */
-	维修类型: string;
-	/** 报修人 */
-	报修人: string;
-	/** 联系方式 */
-	联系方式: string;
-	/** 预约时间 */
-	预约时间: string;
-	/** 状态 */
-	状态: string;
-	/** 备注 */
-	备注: string;
+	/** 工单编号 Work order number */
+	workOrderNumber: string;
+	/** 位置 Location */
+	location: string;
+	/** 报修类型 Repair type */
+	repairType: string;
+	/** 维修类型 Maintenance type */
+	maintenanceType: string;
+	/** 报修人 Reporter */
+	reporter: string;
+	/** 联系方式 Contact information */
+	contactInfo: string;
+	/** 预约时间 Appointment time */
+	appointmentTime: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark: string;
 }

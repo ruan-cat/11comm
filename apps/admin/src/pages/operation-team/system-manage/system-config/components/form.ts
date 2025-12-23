@@ -13,10 +13,6 @@ import {
 	systemConfigStatusOptionsCN,
 } from "@01s-11comm/type";
 
-/** FormVO类型别名 */
-export type FormVO = SystemConfigFormVO;
-
-// ==================== 常量定义 ====================
 
 export { systemConfigTypeOptionsAlias, configGroupOptions, systemConfigStatusOptionsCN };
 
