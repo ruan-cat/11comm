@@ -10,15 +10,6 @@ import {
 } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
-// 为了向后兼容，创建类型别名
-export type 报修设置类型 = RepairsSettingType;
-export type 派单方式类型 = DispatchMethodType;
-export type 区域类型 = AreaType;
-export type 业主端展示类型 = OwnerDisplayType;
-export type 通知方式类型 = NotificationMethodType;
-export type 回访设置类型 = ReturnVisitSettingType;
-export type 报修设置表单_VO = RepairsSettingFormVO;
-
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm = defaultRepairsSettingForm;
 

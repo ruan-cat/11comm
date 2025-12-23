@@ -27,6 +27,3 @@ export const defaultForm: PatrolDetailFormVO = {
 	patrolSituation: "",
 };
 
-/** 向后兼容类型别名 */
-export type 巡查明细表单Props = PatrolDetailFormProps;
-export type 巡查明细表单_VO = PatrolDetailFormVO;

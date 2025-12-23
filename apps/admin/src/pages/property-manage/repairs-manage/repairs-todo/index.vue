@@ -13,8 +13,8 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type RepairsTodoFormProps, defaultForm, type 报修待办表单_VO } from "./components/form";
-import type { 报修待办_列表数据 } from "@01s-11comm/type";
+import { type RepairsTodoFormProps, defaultForm, type RepairsTodoFormVO } from "./components/form";
+import type { RepairsTodoListItem } from "@01s-11comm/type";
 import RepairsTodoForm from "./components/form.vue";
 import { useRepairsTodoListQuery } from "@/api/property-manage/repairs-manage/repairs-todo";
 
@@ -25,7 +25,7 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const repairsTodoFormInstance = ref<InstanceType<typeof RepairsTodoForm> | null>(null);
 
 /** 模拟数据 */
-const mockTableData: 报修待办_列表数据[] = [
+const mockTableData: RepairsTodoListItem[] = [
 	{
 		id: "1",
 		name: "待办工单1",
@@ -33,15 +33,13 @@ const mockTableData: 报修待办_列表数据[] = [
 		createTime: "2024-01-01 08:00:00",
 		updateTime: "2024-01-01 08:00:00",
 		remark: "紧急维修",
-		工单编号: "RW202401010001",
-		位置: "1栋2单元101",
-		报修类型: "水电维修",
-		维修类型: "紧急维修",
-		报修人: "张三",
-		联系方式: "13800138000",
-		预约时间: "2024-01-01 14:00:00",
-		状态: "待处理",
-		备注: "水龙头漏水严重",
+		workOrderNumber: "RW202401010001",
+		location: "1栋2单元101",
+		repairType: "水电维修",
+		maintenanceType: "紧急维修",
+		reporter: "张三",
+		contactInfo: "13800138000",
+		appointmentTime: "2024-01-01 14:00:00",
 	},
 	{
 		id: "2",
@@ -50,15 +48,13 @@ const mockTableData: 报修待办_列表数据[] = [
 		createTime: "2024-01-01 09:00:00",
 		updateTime: "2024-01-01 10:00:00",
 		remark: "一般维修",
-		工单编号: "RW202401010002",
-		位置: "2栋3单元202",
-		报修类型: "设备维修",
-		维修类型: "计划维修",
-		报修人: "李四",
-		联系方式: "13800138001",
-		预约时间: "2024-01-01 16:00:00",
-		状态: "处理中",
-		备注: "电梯异响",
+		workOrderNumber: "RW202401010002",
+		location: "2栋3单元202",
+		repairType: "设备维修",
+		maintenanceType: "计划维修",
+		reporter: "李四",
+		contactInfo: "13800138001",
+		appointmentTime: "2024-01-01 16:00:00",
 	},
 ];
 
@@ -67,42 +63,42 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "工单编号",
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		width: 140,
 	},
 	{
 		label: "位置",
-		prop: "位置",
+		prop: "location",
 		width: 150,
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		width: 120,
 	},
 	{
 		label: "维修类型",
-		prop: "维修类型",
+		prop: "maintenanceType",
 		width: 120,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		width: 120,
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		width: 140,
 	},
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "appointmentTime",
 		width: 150,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
@@ -125,12 +121,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报修待办_列表查询_VO = {
-	工单编号: "",
-	报修人: "",
-	报修电话: "",
-	报修类型: "",
-	报修状态: "",
+const plusSearchModelRef: FieldValues & RepairsTodoQueryParams = {
+	name: "",
+	status: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -159,36 +152,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 工单编号
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		valueType: "input",
 	},
 
 	// 报修人
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 
-	// 报修电话
-	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
-		prop: "报修电话",
-		valueType: "input",
-	},
-
-	// 报修类型
-	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
-		prop: "报修类型",
-		valueType: "select",
-		options: 报修类型Options,
-	},
-
-	// 报修状态
+	// 状态
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
-		prop: "报修状态",
+		prop: "status",
 		valueType: "select",
 		options: 报修状态Options,
 	},
@@ -227,7 +205,7 @@ async function testAsync() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 报修待办_列表数据;
+	row?: RepairsTodoListItem;
 }
 
 /** 打开弹框 */
@@ -238,20 +216,20 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}报修待办`;
 
 	/** 业务对象 */
-	const formValue: 报修待办表单_VO = isAdd.value
+	const formValue: RepairsTodoFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					工单编号: row?.工单编号 || "",
-					位置: row?.位置 || "",
-					报修类型: row?.报修类型 || "",
-					维修类型: row?.维修类型 || "",
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约时间: row?.预约时间 || "",
-					状态: row?.状态 || "",
-					备注: row?.备注 || "",
+					workOrderNumber: row?.workOrderNumber || "",
+					location: row?.location || "",
+					repairType: row?.repairType || "",
+					maintenanceType: row?.maintenanceType || "",
+					reporter: row?.reporter || "",
+					contactInfo: row?.contactInfo || "",
+					appointmentTime: row?.appointmentTime || "",
+					status: row?.status || "",
+					remark: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);
@@ -317,17 +295,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 报修待办_列表数据) {
+function handleEdit(row: RepairsTodoListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 报修待办_列表数据) {
+function handleView(row: RepairsTodoListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 报修待办_列表数据) {
+async function handleDelete(row: RepairsTodoListItem) {
 	consola.log("删除", row);
 	await doFetch();
 }

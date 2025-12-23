@@ -1,9 +1,6 @@
 import type { Mode } from "@/composables/use-mode";
 import type { CommunityConfigFormVO } from "@01s-11comm/type";
 
-/** FormVO类型别名 */
-export type FormVO = CommunityConfigFormVO;
-
 /** 小区配置表单数据类型 */
 export { CommunityConfigFormVO };
 

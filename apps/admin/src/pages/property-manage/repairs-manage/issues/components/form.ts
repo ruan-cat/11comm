@@ -18,8 +18,4 @@ export interface IssuesSettingFormProps {
 	mode?: Mode;
 }
 
-// TODO: 需要换成英文类型 不允许写成中文类型
-/** 向后兼容：工单池表单_VO */
-export type 工单池表单_VO = IssuesFormVO;
-
 export { IssuesFormVO };

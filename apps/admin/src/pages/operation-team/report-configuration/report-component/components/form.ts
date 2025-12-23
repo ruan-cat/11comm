@@ -1,30 +1,28 @@
 import type { Mode } from "@/composables/use-mode";
-// 从 @01s-11comm/type 导入缺失的类型
-import type { 组件类型, 查询方式 } from "@01s-11comm/type";
 
-const _报表组件类型 = ["组件名称", "组件类型", "查询方式", "sql", "java", "描述"] as const;
+const REPORT_COMPONENT_TYPES = ["组件名称", "组件类型", "查询方式", "sql", "java", "描述"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
-export type 报表组件类型 = (typeof _报表组件类型)[number];
+export type ReportComponentType = (typeof REPORT_COMPONENT_TYPES)[number];
 
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
-export interface 报表组件表单_VO {
-	组件名称: string;
-	组件类型: 组件类型;
-	查询方式: 查询方式;
+export interface ReportComponentFormVO {
+	componentName: string;
+	componentType: string;
+	queryMethod: string;
 	sql?: string;
 	java?: string;
-	描述?: string;
+	description?: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 报表组件表单_VO = {
-	组件名称: "",
-	组件类型: "表格",
-	查询方式: "sql",
+export const defaultForm: ReportComponentFormVO = {
+	componentName: "",
+	componentType: "表格",
+	queryMethod: "sql",
 	sql: "",
 	java: "",
-	描述: "",
+	description: "",
 };
 
 /**
@@ -34,9 +32,9 @@ export const defaultForm: 报表组件表单_VO = {
  */
 export interface ReportComponentFormProps {
 	/** 表单数据 */
-	form: 报表组件表单_VO;
+	form: ReportComponentFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 报表组件表单_VO;
+	defaultValues: ReportComponentFormVO;
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }

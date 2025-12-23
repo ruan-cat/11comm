@@ -1,24 +1,24 @@
 import type { Mode } from "@/composables/use-mode";
 
-const _报表类型 = ["报表组", "选项标题", "排序", "描述"] as const;
+const REPORT_TYPES = ["报表组", "选项标题", "排序", "描述"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
-export type 报表类型 = (typeof _报表类型)[number];
+export type ReportType = (typeof REPORT_TYPES)[number];
 
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
-export interface 报表信息表单_VO {
-	报表组: string;
-	选项标题: string;
-	排序: string;
-	描述: string;
+export interface ReportInfoFormVO {
+	reportGroup: string;
+	optionTitle: string;
+	sort: string;
+	description: string;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 报表信息表单_VO = {
-	报表组: "",
-	选项标题: "",
-	排序: "",
-	描述: "",
+export const defaultForm: ReportInfoFormVO = {
+	reportGroup: "",
+	optionTitle: "",
+	sort: "",
+	description: "",
 };
 
 /**
@@ -28,9 +28,9 @@ export const defaultForm: 报表信息表单_VO = {
  */
 export interface ExpenseItemSettingFormProps {
 	/** 表单数据 */
-	form: 报表信息表单_VO;
+	form: ReportInfoFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 报表信息表单_VO;
+	defaultValues: ReportInfoFormVO;
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }

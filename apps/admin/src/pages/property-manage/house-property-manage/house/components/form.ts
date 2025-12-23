@@ -1,12 +1,5 @@
 import type { HouseManagementFormVO } from "@01s-11comm/type";
 
-// ==================== 类型别名 ====================
-
-/** 房屋管理表单数据类型（中文别名） */
-export type HouseManagementFormVO_中文 = HouseManagementFormVO;
-
-// ==================== Options 导出 ====================
-
 import { houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
 
 /** houseTypeOptions */

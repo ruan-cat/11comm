@@ -1,20 +1,6 @@
 import { defaultHouseChargeForm } from "@01s-11comm/type";
-import type { HouseChargeFormVO, 房屋收费_VO } from "@01s-11comm/type";
+import type { HouseChargeFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
-
-// TODO: 需要换成英文类型 不允许写成中文类型
-// Re-export types from type package for compatibility
-export type {
-	房屋收费_VO,
-	费用标识类型,
-	付费类型,
-	账户抵扣类型,
-	手机缴费类型,
-	进位方式类型,
-	保留小数位类型,
-	状态类型,
-	费用类型,
-} from "@01s-11comm/type";
 
 // ==================== 类型定义 ====================
 
@@ -25,15 +11,12 @@ export type {
  */
 export interface HouseChargeFormProps {
 	/** 表单数据 */
-	form: 房屋收费_VO;
+	form: HouseChargeFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 房屋收费_VO;
+	defaultValues: HouseChargeFormVO;
 	/** 表单模式 */
 	mode?: Mode;
 }
-
-/** 导出 HouseChargeFormVO 类型以保持兼容性 */
-export type { HouseChargeFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 

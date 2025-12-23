@@ -10,7 +10,7 @@ import {
 	systemConfigDefaultForm as defaultFormValues,
 	systemConfigTypeOptionsAlias,
 	configGroupOptions,
-	systemConfigStatusOptionsCN as 状态Options,
+	systemConfigStatusOptionsCN,
 } from "@01s-11comm/type";
 
 /** FormVO类型别名 */
@@ -18,7 +18,7 @@ export type FormVO = SystemConfigFormVO;
 
 // ==================== 常量定义 ====================
 
-export { systemConfigTypeOptionsAlias, configGroupOptions, 状态Options };
+export { systemConfigTypeOptionsAlias, configGroupOptions, systemConfigStatusOptionsCN };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm = defaultFormValues;

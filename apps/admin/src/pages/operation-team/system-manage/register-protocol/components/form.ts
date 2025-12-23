@@ -1,57 +1,47 @@
 import type { Mode } from "@/composables/use-mode";
 import type { OptionsType } from "plus-pro-components";
-
-// ==================== 类型定义 ====================
-
-/** 协议类型枚举 */
-export type 协议类型枚举 = "用户注册协议" | "隐私政策" | "服务条款" | "社区规则" | "免责声明";
-
-/** 状态枚举 */
-export type 状态枚举 = "启用" | "禁用" | "草稿";
-
-/** 是否强制同意枚举 */
-export type 是否强制同意枚举 = "是" | "否";
+export { auditStatusOptions } from "@01s-11comm/type";
 
 // ==================== 表单类型 ====================
 
 /**
  * 注册协议表单 VO
  */
-export interface 注册协议表单_VO {
+export interface RegisterProtocolFormVO {
 	/** 协议名称 */
-	协议名称: string;
+	protocolName: string;
 	/** 协议类型 */
-	协议类型: 协议类型枚举;
+	protocolType: string;
 	/** 协议版本 */
-	协议版本: string;
+	protocolVersion: string;
 	/** 状态 */
-	状态: 状态枚举;
+	status: string;
 	/** 是否强制同意 */
-	是否强制同意: 是否强制同意枚举;
+	isMandatory: string;
 	/** 协议摘要 */
-	协议摘要?: string;
+	protocolSummary?: string;
 	/** 协议内容 */
-	协议内容: string;
+	protocolContent: string;
 	/** 生效日期 */
-	生效日期: string;
+	effectiveDate: string;
 	/** 失效日期 */
-	失效日期?: string;
+	expirationDate?: string;
 	/** 排序权重 */
-	排序权重?: number;
+	sortWeight?: number;
 }
 
 /** 默认表单 @description 用于初始化表单数据 */
-export const defaultForm: 注册协议表单_VO = {
-	协议名称: "",
-	协议类型: "用户注册协议",
-	协议版本: "v1.0.0",
-	状态: "草稿",
-	是否强制同意: "是",
-	协议摘要: "",
-	协议内容: "",
-	生效日期: "",
-	失效日期: "",
-	排序权重: 0,
+export const defaultForm: RegisterProtocolFormVO = {
+	protocolName: "",
+	protocolType: "用户注册协议",
+	protocolVersion: "v1.0.0",
+	status: "草稿",
+	isMandatory: "是",
+	protocolSummary: "",
+	protocolContent: "",
+	effectiveDate: "",
+	expirationDate: "",
+	sortWeight: 0,
 };
 
 /**
@@ -61,9 +51,9 @@ export const defaultForm: 注册协议表单_VO = {
  */
 export interface RegisterProtocolFormProps {
 	/** 表单数据 */
-	form: 注册协议表单_VO;
+	form: RegisterProtocolFormVO;
 	/** 表单默认值重置对象（必填） */
-	defaultValues: 注册协议表单_VO;
+	defaultValues: RegisterProtocolFormVO;
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
@@ -73,7 +63,7 @@ export interface RegisterProtocolFormProps {
 /**
  * 协议类型选项
  */
-export const 协议类型Options: OptionsType = [
+export const protocolTypeOptions: OptionsType = [
 	{
 		label: "用户注册协议",
 		value: "用户注册协议",
@@ -99,7 +89,7 @@ export const 协议类型Options: OptionsType = [
 /**
  * 状态选项
  */
-export const 状态Options: OptionsType = [
+export const statusOptions: OptionsType = [
 	{
 		label: "启用",
 		value: "启用",
@@ -117,7 +107,7 @@ export const 状态Options: OptionsType = [
 /**
  * 是否强制同意选项
  */
-export const 是否强制同意Options: OptionsType = [
+export const isMandatoryOptions: OptionsType = [
 	{
 		label: "是",
 		value: "是",

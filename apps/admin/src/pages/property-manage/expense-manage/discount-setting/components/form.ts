@@ -1,8 +1,5 @@
-import type { DiscountSettingFormVO, 折扣设置表单_VO } from "@01s-11comm/type";
+import type { DiscountSettingFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
-
-// Re-export types from type package for compatibility
-export type { 折扣设置表单_VO } from "@01s-11comm/type";
 
 // ==================== 类型定义 ====================
 
@@ -13,9 +10,9 @@ export type { 折扣设置表单_VO } from "@01s-11comm/type";
  */
 export interface DiscountSettingFormProps {
 	/** 表单数据 */
-	form: 折扣设置表单_VO;
+	form: DiscountSettingFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 折扣设置表单_VO;
+	defaultValues: DiscountSettingFormVO;
 	/** 表单模式 */
 	mode?: Mode;
 }

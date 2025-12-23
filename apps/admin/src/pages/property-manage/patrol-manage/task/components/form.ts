@@ -31,5 +31,3 @@ export const defaultForm: PatrolTaskFormVO = {
 	patrolStatus: "",
 };
 
-/** 向后兼容：巡检任务表单_VO */
-export type 巡检任务表单_VO = PatrolTaskFormVO;

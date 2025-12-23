@@ -6,9 +6,6 @@ import {
 	businessStatusOptions,
 } from "@01s-11comm/type";
 
-/** FormVO类型别名 */
-export type FormVO = MerchantInfoFormVO;
-
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm = defaultFormValues;
 

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { RepairsTodoFormProps, type 报修待办表单_VO } from "./form";
+import { RepairsTodoFormProps, type RepairsTodoFormVO } from "./form";
 
 const props = defineProps<RepairsTodoFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 报修待办表单_VO;
+const defaultValues = props.defaultValues as FieldValues & RepairsTodoFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 报修待办表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & RepairsTodoFormVO;
 
 /**
  * 表单对象
@@ -36,7 +36,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "工单编号",
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -44,58 +44,58 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "位置",
-		prop: "位置",
+		prop: "location",
 		valueType: "input",
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
 		options: 报修类型Options,
 	},
 	{
 		label: "维修类型",
-		prop: "维修类型",
+		prop: "maintenanceType",
 		valueType: "select",
 		options: 维修类型Options,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		valueType: "input",
 	},
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "appointmentTime",
 		valueType: "date-picker",
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: 报修状态Options,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	位置: [{ required: true, message: "请输入位置", trigger: "blur" }],
-	报修类型: [{ required: true, message: "请选择报修类型", trigger: "change" }],
-	维修类型: [{ required: true, message: "请选择维修类型", trigger: "change" }],
-	报修人: [{ required: true, message: "请输入报修人", trigger: "blur" }],
-	联系方式: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
-	预约时间: [{ required: true, message: "请选择预约时间", trigger: "change" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	location: [{ required: true, message: "请输入位置", trigger: "blur" }],
+	repairType: [{ required: true, message: "请选择报修类型", trigger: "change" }],
+	maintenanceType: [{ required: true, message: "请选择维修类型", trigger: "change" }],
+	reporter: [{ required: true, message: "请输入报修人", trigger: "blur" }],
+	contactInfo: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
+	appointmentTime: [{ required: true, message: "请选择预约时间", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 /** 动态计算的表单项配置 */

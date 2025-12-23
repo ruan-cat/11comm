@@ -1,15 +1,6 @@
-import type { SiteManagementFormVO, 场地管理_VO } from "@01s-11comm/type";
+import type { SiteManagementFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 import { siteManagementStatusOptions } from "@01s-11comm/type";
-
-// TODO: 需要换成英文类型 不允许写成中文类型
-// 兼容旧版中文选项
-/** 场地状态选项（兼容性） */
-export const 场地状态Options = siteManagementStatusOptions;
-
-// TODO: 需要换成英文类型 不允许写成中文类型
-// 兼容旧版类型导出
-export type { 场地管理_VO };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: SiteManagementFormVO = {

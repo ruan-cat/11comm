@@ -5,23 +5,23 @@ import type { OptionsType } from "plus-pro-components";
 /**
  * 欠费催缴表单数据类型
  */
-export interface 欠费催缴表单_VO {
+export interface ReminderForOverduePaymentsFormVO {
 	/** 业主名称 */
-	业主名称: string;
+	ownerName: string;
 	/** 付费对象 */
-	付费对象: string;
+	paymentObject: string;
 	/** 费用名称 */
-	费用名称: string;
+	feeName: string;
 	/** 催缴金额 */
-	催缴金额: string;
+	reminderAmount: string;
 	/** 欠费时间段 */
-	欠费时间段: [string, string] | string;
+	overduePeriod: [string, string] | string;
 	/** 催缴方式 */
-	催缴方式: string;
+	reminderMethod: string;
 	/** 状态 */
-	状态: string;
+	status: string;
 	/** 说明 */
-	说明: string;
+	description: string;
 }
 
 // ==================== 常量定义 ====================
@@ -49,15 +49,15 @@ export const reminderStatusOptions: OptionsType = [
 // ==================== 默认表单 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 欠费催缴表单_VO = {
-	业主名称: "",
-	付费对象: "",
-	费用名称: "",
-	催缴金额: "",
-	欠费时间段: "",
-	催缴方式: "",
-	状态: "",
-	说明: "",
+export const defaultForm: ReminderForOverduePaymentsFormVO = {
+	ownerName: "",
+	paymentObject: "",
+	feeName: "",
+	reminderAmount: "",
+	overduePeriod: "",
+	reminderMethod: "",
+	status: "",
+	description: "",
 };
 
 // ==================== 表单 Props 类型 ====================
@@ -69,7 +69,7 @@ export const defaultForm: 欠费催缴表单_VO = {
  */
 export interface ReminderForOverduePaymentsFormProps {
 	/** 表单数据 */
-	form: 欠费催缴表单_VO;
+	form: ReminderForOverduePaymentsFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 欠费催缴表单_VO;
+	defaultValues: ReminderForOverduePaymentsFormVO;
 }

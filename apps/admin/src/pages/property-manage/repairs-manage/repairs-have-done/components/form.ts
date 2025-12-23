@@ -1,8 +1,5 @@
 import { type RepairsHaveDoneFormVO, defaultRepairsHaveDoneForm } from "@01s-11comm/type";
 
-// 为了向后兼容，创建类型别名
-export type 报修已办表单_VO = RepairsHaveDoneFormVO;
-
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm = defaultRepairsHaveDoneForm;
 
