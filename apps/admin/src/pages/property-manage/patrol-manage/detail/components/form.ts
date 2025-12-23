@@ -22,7 +22,7 @@ export const defaultForm: PatrolDetailFormVO = {
 	patrolPlanName: "",
 	patrolRouteName: "",
 	plannedPatrolPerson: "",
-	patrolMethod: "步行巡检",
+	patrolMethod: "walking",
 	location: "",
 	patrolSituation: "",
 };

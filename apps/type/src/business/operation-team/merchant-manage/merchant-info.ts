@@ -93,3 +93,46 @@ export const merchantInfoStatusOptions: OptionsType = [
 	{ label: "合同到期", value: "expired" },
 	{ label: "终止合作", value: "terminated" },
 ];
+
+/**
+ * 商户信息表单 VO
+ */
+export interface MerchantInfoFormVO {
+	/** 商户ID */
+	id?: string;
+	/** 商户名称 */
+	merchantName: string;
+	/** 商户编码 */
+	merchantCode: string;
+	/** 商户类型 */
+	merchantType: string;
+	/** 联系人 */
+	contactPerson: string;
+	/** 联系电话 */
+	contactPhone: string;
+	/** 联系邮箱 */
+	email: string;
+	/** 营业执照号 */
+	businessLicenseNumber: string;
+	/** 法人代表 */
+	legalRepresentative: string;
+	/** 注册地址 */
+	registeredAddress: string;
+	/** 经营地址 */
+	businessAddress: string;
+	/** 注册资本 */
+	registeredCapital: number;
+	/** 成立时间 */
+	establishedTime: string;
+	/** 经营范围 */
+	businessScope: string;
+	/** 服务小区 */
+	serviceCommunities: string;
+	/** 合同开始时间 */
+	contractStartTime: string;
+	/** 合同结束时间 */
+	contractEndTime: string;
+	/** 状态 */
+	status: string;
+}
+

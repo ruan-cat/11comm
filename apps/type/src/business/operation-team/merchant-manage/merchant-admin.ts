@@ -90,3 +90,36 @@ export const merchantAdminStatusOptions: OptionsType = [
 	{ label: "待审核", value: "pending" },
 	{ label: "已离职", value: "resigned" },
 ];
+
+/**
+ * 商户管理员表单 VO
+ */
+export interface MerchantAdminFormVO {
+	/** 管理员ID */
+	id?: string;
+	/** 商户ID */
+	merchantId: string;
+	/** 管理员用户名 */
+	username: string;
+	/** 真实姓名 */
+	realName: string;
+	/** 手机号 */
+	phone: string;
+	/** 邮箱 */
+	email: string;
+	/** 性别 */
+	gender: string;
+	/** 职位 */
+	position: string;
+	/** 身份证号 */
+	idCard: string;
+	/** 紧急联系人 */
+	emergencyContact: string;
+	/** 紧急联系电话 */
+	emergencyPhone: string;
+	/** 权限等级 */
+	permissionLevel: string;
+	/** 状态 */
+	status: string;
+}
+

@@ -1,13 +1,30 @@
 import type { Mode } from "@/composables/use-mode";
 import type { MerchantInfoFormVO, MerchantType, BusinessStatus } from "@01s-11comm/type";
 import {
-	merchantInfoDefaultForm as defaultFormValues,
 	merchantTypeOptions,
 	businessStatusOptions,
 } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultFormValues;
+export const defaultForm: MerchantInfoFormVO = {
+	merchantName: "",
+	merchantCode: "",
+	merchantType: "",
+	contactPerson: "",
+	contactPhone: "",
+	email: "",
+	businessLicenseNumber: "",
+	legalRepresentative: "",
+	registeredAddress: "",
+	businessAddress: "",
+	registeredCapital: 0,
+	establishedTime: "",
+	businessScope: "",
+	serviceCommunities: "",
+	contractStartTime: "",
+	contractEndTime: "",
+	status: "",
+};
 
 /**
  * 商户信息表单 props

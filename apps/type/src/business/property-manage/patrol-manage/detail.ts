@@ -78,19 +78,6 @@ export const detailStatusOptions: OptionsType = [
 	{ label: "禁用", value: "disabled" },
 ];
 
-// ==================== 默认表单对象 ====================
-
-/** 默认表单 / Default form */
-export const defaultPatrolDetailForm: PatrolDetailFormVO = {
-	patrolPointName: "",
-	patrolPlanName: "",
-	patrolRouteName: "",
-	plannedPatrolPerson: "",
-	patrolMethod: "walking",
-	location: "",
-	patrolSituation: "",
-};
-
 // ==================== 列表相关类型 ====================
 
 /**

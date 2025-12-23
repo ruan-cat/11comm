@@ -112,8 +112,6 @@ export const paymentStatusOptions: OptionsType = [
 	{ label: "逾期", value: "overdue" },
 ];
 
-// ==================== 表单数据接口 ====================
-
 /**
  * @description 房屋收费表单数据类型
  * House charge form data type
@@ -158,22 +156,3 @@ export interface HouseChargeFormVO {
 	/** 固定费用 Fixed Fee */
 	fixedFee: string;
 }
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultHouseChargeForm: HouseChargeFormVO = {
-	expenseType: "物业费",
-	chargeItem: "",
-	feeIdentifier: "recurring",
-	paymentType: "prepaid",
-	paymentCycleMonths: "1",
-	prepaidPeriodDays: "30",
-	unit: "元/平方米·月",
-	accountDeduction: "yes",
-	mobilePayment: "yes",
-	roundingMethod: "round",
-	decimalPlaces: "2",
-	status: "enabled",
-	calculationFormula: "",
-	billingUnitPrice: "",
-	fixedFee: "",
-};

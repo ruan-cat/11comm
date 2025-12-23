@@ -90,21 +90,6 @@ export interface CommunityNoticeFormVO {
 
 
 /**
- * @description 默认小区公示表单
- * Default community notice form
- */
-export const defaultCommunityNoticeForm: CommunityNoticeFormVO = {
-	noticeTitle: "",
-	noticeType: "notification",
-	validityStartTime: "",
-	validityEndTime: "",
-	status: "draft",
-	summary: "",
-	publisher: "",
-	noticeTime: "",
-};
-
-/**
  * @description 列表数据转表单数据
  * Convert list data to form data
  */

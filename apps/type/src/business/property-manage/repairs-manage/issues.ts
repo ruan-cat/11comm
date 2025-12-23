@@ -76,20 +76,3 @@ export interface IssuesFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultIssuesForm: IssuesFormVO = {
-	workOrderCode: "",
-	location: "",
-	repairType: "",
-	maintenanceType: "",
-	reporter: "",
-	contactInfo: "",
-	appointmentTimeRange: "",
-	submitTime: "",
-	orderDuration: "",
-	completeTime: "",
-	status: "",
-	violationDescription: "",
-	remark: "",
-};

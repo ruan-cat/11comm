@@ -7,17 +7,24 @@ import type {
 	SystemConfigStatus,
 } from "@01s-11comm/type";
 import {
-	systemConfigDefaultForm as defaultFormValues,
 	systemConfigTypeOptionsAlias,
 	configGroupOptions,
 	systemConfigStatusOptionsCN,
 } from "@01s-11comm/type";
 
-
 export { systemConfigTypeOptionsAlias, configGroupOptions, systemConfigStatusOptions };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultFormValues;
+export const defaultForm: SystemConfigFormVO = {
+	configName: "",
+	configKey: "",
+	configValue: "",
+	configType: "文本",
+	defaultValue: "",
+	isSystem: false,
+	isEnabled: true,
+	description: "",
+};
 
 /**
  * 系统配置表单 props

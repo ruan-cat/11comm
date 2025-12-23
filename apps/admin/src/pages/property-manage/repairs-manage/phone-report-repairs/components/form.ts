@@ -1,8 +1,15 @@
-import { type PhoneRepairsFormVO, defaultPhoneRepairsForm } from "@01s-11comm/type";
+import type { PhoneRepairsFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultPhoneRepairsForm;
+export const defaultForm: PhoneRepairsFormVO = {
+	repairScope: "小区公区",
+	repairType: "水管维修",
+	reporter: "",
+	contactInfo: "",
+	appointmentTime: "",
+	repairDescription: "",
+};
 
 /**
  * 电话报修表单 props

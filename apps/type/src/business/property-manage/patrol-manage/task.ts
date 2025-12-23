@@ -71,21 +71,6 @@ export const taskStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
-// ==================== 默认表单对象 ====================
-
-/** 默认表单 / Default form */
-export const defaultPatrolTaskForm: PatrolTaskFormVO = {
-	taskCode: "",
-	patrolPlan: "",
-	patrolPersonTimeRange: "",
-	actualPatrolTime: "",
-	plannedPatrolPerson: "",
-	currentPatrolPerson: "",
-	transferDescription: "",
-	patrolMethod: "",
-	patrolStatus: "",
-};
-
 // ==================== 扩展类型定义 ====================
 
 /**

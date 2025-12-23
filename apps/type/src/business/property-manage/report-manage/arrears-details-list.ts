@@ -94,22 +94,6 @@ export interface ArrearsDetailsFormProps {
 	defaultValues: ArrearsDetailsFormVO;
 }
 
-// ==================== 默认表单对象 ====================
-
-/** 默认表单 Default form */
-export const defaultArrearsDetailsForm: ArrearsDetailsFormVO = {
-	feeNumber: "",
-	roomNumber: "",
-	owner: "",
-	ownerPhone: "",
-	area: "",
-	feeItem: "",
-	startTime: "",
-	endTime: "",
-	arrearsDuration: "",
-	arrearsAmount: "",
-};
-
 // ==================== 选项定义 ====================
 
 /**

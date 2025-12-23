@@ -109,22 +109,6 @@ export const cityOptions: OptionsType = [
 	{ label: "青岛市", value: "青岛市" },
 ];
 
-// ==================== 默认表单对象 ====================
-
-/** 默认表单数据 / Default form data */
-export const defaultCommunityManageMyForm: CommunityManageMyFormVO = {
-	province: "福建省",
-	city: "",
-	district: "",
-	name: "",
-	code: "",
-	servicePhone: "",
-	area: "",
-	startTime: "",
-	endTime: "",
-	status: "operating",
-};
-
 // ==================== 原有类型定义 ====================
 
 /**

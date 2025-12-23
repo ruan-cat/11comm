@@ -72,3 +72,28 @@ export const systemConfigSystemOptions: OptionsType = [
 	{ label: "是", value: true },
 	{ label: "否", value: false },
 ];
+
+/**
+ * 系统配置表单 VO
+ */
+export interface SystemConfigFormVO {
+	/** 配置ID */
+	id?: string;
+	/** 配置名称 */
+	configName: string;
+	/** 配置键 */
+	configKey: string;
+	/** 配置值 */
+	configValue: string;
+	/** 配置类型 */
+	configType: string;
+	/** 默认值 */
+	defaultValue: string;
+	/** 是否系统内置 */
+	isSystem: boolean;
+	/** 是否启用 */
+	isEnabled: boolean;
+	/** 描述 */
+	description: string;
+}
+

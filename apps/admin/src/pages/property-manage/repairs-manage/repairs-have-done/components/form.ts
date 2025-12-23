@@ -1,7 +1,17 @@
-import { type RepairsHaveDoneFormVO, defaultRepairsHaveDoneForm } from "@01s-11comm/type";
+import type { RepairsHaveDoneFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultRepairsHaveDoneForm;
+export const defaultForm: RepairsHaveDoneFormVO = {
+	workOrderNumber: "",
+	location: "",
+	repairType: "",
+	maintenanceType: "",
+	reporter: "",
+	contactInfo: "",
+	appointmentTime: "",
+	status: "",
+	remark: "",
+};
 
 /**
  * 报修已办表单 props

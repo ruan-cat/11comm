@@ -1,7 +1,17 @@
-import { type MandatoryReturnIssueFormVO, defaultMandatoryReturnIssueForm } from "@01s-11comm/type";
+import type { MandatoryReturnIssueFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultMandatoryReturnIssueForm;
+export const defaultForm: MandatoryReturnIssueFormVO = {
+	workOrderNumber: "",
+	location: "",
+	repairType: "",
+	reporter: "",
+	contactInfo: "",
+	appointmentTime: "",
+	submitTime: "",
+	status: "",
+	remark: "",
+};
 
 /**
  * 强制回单表单 props

@@ -1,10 +1,5 @@
-import {
-	type CommunityNoticeFormVO,
-	defaultCommunityNoticeForm,
-	noticeTypeOptions,
-	noticeStatusOptions,
-	listDataToFormData,
-} from "@01s-11comm/type";
+import type { CommunityNoticeFormVO } from "@01s-11comm/type";
+import { noticeTypeOptions, noticeStatusOptions, listDataToFormData } from "@01s-11comm/type";
 
 /**
  * @description 小区公示表单 Props 类型
@@ -18,6 +13,15 @@ export interface CommunityNoticeFormProps {
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultCommunityNoticeForm;
+export const defaultForm: CommunityNoticeFormVO = {
+	noticeTitle: "",
+	noticeType: "notification",
+	validityStartTime: "",
+	validityEndTime: "",
+	status: "draft",
+	summary: "",
+	publisher: "",
+	noticeTime: "",
+};
 
-export { defaultCommunityNoticeForm, noticeTypeOptions, noticeStatusOptions, listDataToFormData };
+export { noticeTypeOptions, noticeStatusOptions, listDataToFormData };

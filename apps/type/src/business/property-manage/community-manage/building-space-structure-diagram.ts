@@ -116,21 +116,4 @@ export const buildingStatusOptions: OptionsType = [
 	{ label: "已停用", value: "已停用" },
 ];
 
-// ==================== 默认表单对象 ====================
-
-/** 默认表单 / Default form */
-export const defaultBuildingSpaceStructureDiagramForm: BuildingSpaceStructureDiagramFormVO = {
-	buildingId: "",
-	buildingName: "",
-	totalFloors: 0,
-	totalHouseholds: 0,
-	buildingArea: 0,
-	buildingStructure: "",
-	constructionYear: "",
-	drawingPath: "",
-	status: "正常使用",
-	personInCharge: "",
-	contactPhone: "",
-	remarks: "",
-};
-
+// ==================== 常量定义 ====================
