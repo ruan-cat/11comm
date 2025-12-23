@@ -9,15 +9,15 @@
 
 各 Requirement 的优先级：
 
-| Requirement | 优先级 | 说明 |
-|:----------:|:------:|:-----|
-| 业务专用查询 Hook 必须提供 initialParams 参数 | [CRITICAL] | 无法传递初始参数会破坏 Hook 封装性 |
-| API Hook 返回固定的变量和函数 | [CRITICAL] | 违反会导致列表页无法正常工作 |
-| 列表页使用 TanStack Query Hook 的标准模式 | [CRITICAL] | 标准模式是数据获取的核心架构 |
-| 搜索功能固定写法 | [CRITICAL] | 搜索是列表页的核心功能 |
-| 分页功能固定写法 | [IMPORTANT] | 影响用户体验和数据加载 |
-| Loading 状态必须使用 isFetching | [IMPORTANT] | 影响加载状态的准确性 |
-| 表格配置必须使用 Hook 返回的 pureTableProps | [IMPORTANT] | 简化配置，减少重复代码 |
+|                  Requirement                  |   优先级    |                说明                |
+| :-------------------------------------------: | :---------: | :--------------------------------: |
+| 业务专用查询 Hook 必须提供 initialParams 参数 | [CRITICAL]  | 无法传递初始参数会破坏 Hook 封装性 |
+|         API Hook 返回固定的变量和函数         | [CRITICAL]  |    违反会导致列表页无法正常工作    |
+|   列表页使用 TanStack Query Hook 的标准模式   | [CRITICAL]  |    标准模式是数据获取的核心架构    |
+|               搜索功能固定写法                | [CRITICAL]  |       搜索是列表页的核心功能       |
+|               分页功能固定写法                | [IMPORTANT] |       影响用户体验和数据加载       |
+|        Loading 状态必须使用 isFetching        | [IMPORTANT] |        影响加载状态的准确性        |
+|  表格配置必须使用 Hook 返回的 pureTableProps  | [IMPORTANT] |       简化配置，减少重复代码       |
 
 ---
 
@@ -35,6 +35,7 @@
 **在实施数据获取相关任务时，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
 
 ❌ **错误示例（严格禁止）**：
+
 ```typescript
 // 不允许创建中文类型别名
 export type 巡检方式 = PatrolMethodType;
@@ -46,6 +47,7 @@ export const 状态选项 = statusOptions;
 ```
 
 ✅ **正确做法**：
+
 - 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
 - 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
 - 不需要任何中文类型的兼容层

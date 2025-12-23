@@ -13,7 +13,7 @@
 1. **Step 1 [IMPORTANT]**: 公共业务下拉选择数组集中管理（识别公共选项）
 2. **Step 2 [IMPORTANT]**: business-options.ts 文件结构（创建公共选项文件）
 3. **Step 3 [IMPORTANT]**: 业务类型文件使用公共选项（类型文件集成）
-4. **Step 4 [IMPORTANT]**: Admin 项目使用公共选项（Admin项目集成）
+4. **Step 4 [IMPORTANT]**: Admin 项目使用公共选项（Admin 项目集成）
 5. **Step 5 [CRITICAL]**: 公共选项迁移验证（迁移验证）
 6. **Step 6 [NICE-TO-HAVE]**: 迁移文档记录（文档记录）
 7. **Step 7 [NICE-TO-HAVE]**: 后续新增公共选项流程（流程规范）
