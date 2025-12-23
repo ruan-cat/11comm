@@ -28,4 +28,3 @@ export interface OwnersCommitteeFormProps {
 	defaultValues: OwnersCommitteeFormVO;
 }
 
-export type { OwnersCommitteeFormVO };

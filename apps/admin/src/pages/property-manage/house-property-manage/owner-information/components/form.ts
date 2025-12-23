@@ -26,4 +26,3 @@ export interface OwnerInformationFormProps {
 	defaultValues: OwnerInformationFormVO;
 }
 
-export type { OwnerInformationFormVO };

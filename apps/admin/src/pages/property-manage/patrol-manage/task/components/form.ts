@@ -1,8 +1,5 @@
-import type { PatrolTaskFormVO as _PatrolTaskFormVO } from "@01s-11comm/type";
+import type { PatrolTaskFormVO } from "@01s-11comm/type";
 import { type Mode } from "@/composables/use-mode";
-
-/** 重导出类型 */
-export type PatrolTaskFormVO = _PatrolTaskFormVO;
 
 /**
  * 巡检任务表单 props

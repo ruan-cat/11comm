@@ -28,4 +28,3 @@ export interface CommunityConfigurationFormProps {
 	defaultValues: SettingCommunityConfigFormVO;
 }
 
-export type { SettingCommunityConfigFormVO };

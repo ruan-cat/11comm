@@ -29,5 +29,3 @@ export interface PatrolPlanFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: PatrolPlanFormVO;
 }
-
-export type { PatrolPlanFormVO };

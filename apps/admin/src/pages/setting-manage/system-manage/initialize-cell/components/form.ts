@@ -5,8 +5,6 @@ import { auditStatusOptions } from "@01s-11comm/type";
 /** 状态选项 - 从类型项目导入的审核状态选项 */
 export const statusOptions = auditStatusOptions;
 
-// 重新导出类型，供组件使用
-export type { InitializeCommunityFormVO };
 
 /**
  * 默认表单

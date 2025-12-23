@@ -27,7 +27,3 @@ export const defaultForm: PropertyRegisterFormVO = {
 	remark: "",
 };
 
-/** 导出类型和默认值供其他文件使用 */
-export type { PropertyRegisterFormVO };
-export { defaultForm };
-export { auditStatusOptions };

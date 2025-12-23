@@ -31,5 +31,3 @@ export interface HouseManageFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: HouseManagementFormVO;
 }
-
-export type { HouseManagementFormVO };
