@@ -30,6 +30,31 @@
 
 1. **只做**变量替换，将全部中文命名的字段名、变量名、类型名。都换成英文名。
 2. 删减掉全部多余兼容性类型别名。不允许编写中文类型名作为类型别名。
+3. 在之前使用别名的地方，直接换成原本的英文类型。
+
+比如这个例子：
+
+```ts
+import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
+/** FormVO类型别名 */
+export type FormVO = PropertyManagementCompanyFormVO;
+export interface PropertyManagementCompanyFormProps {
+	form: FormVO;
+	defaultValues: FormVO;
+	mode?: Mode;
+}
+```
+
+你需要将多余的别名删除，然后直接换成原本的类型即可：
+
+```ts
+import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
+export interface PropertyManagementCompanyFormProps {
+	form: PropertyManagementCompanyFormVO;
+	defaultValues: PropertyManagementCompanyFormVO;
+	mode?: Mode;
+}
+```
 
 ### 2.处理范围
 
