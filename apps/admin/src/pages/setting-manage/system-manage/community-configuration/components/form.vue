@@ -40,7 +40,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -94,7 +94,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	小区名称: [
+	communityName: [
 		{ required: true, message: "请输入小区名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],

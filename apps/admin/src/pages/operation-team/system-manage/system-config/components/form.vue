@@ -11,7 +11,7 @@ import {
 	defaultForm,
 	systemConfigTypeOptionsAlias,
 	configGroupOptions,
-	状态Options,
+	systemConfigStatusOptions,
 } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
@@ -49,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置名称
 	{
 		label: "配置名称",
-		prop: "配置名称",
+		prop: "configName",
 		valueType: "input",
 		width: "200px",
 		required: true,
@@ -63,7 +63,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置值
 	{
 		label: "配置值",
-		prop: "配置值",
+		prop: "configValue",
 		valueType: "textarea",
 		width: "300px",
 		required: true,
@@ -78,7 +78,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置类型
 	{
 		label: "配置类型",
-		prop: "配置类型",
+		prop: "configType",
 		valueType: "select",
 		width: "150px",
 		required: true,
@@ -93,7 +93,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 配置分组
 	{
 		label: "配置分组",
-		prop: "配置分组",
+		prop: "configGroup",
 		valueType: "select",
 		width: "150px",
 		required: true,
@@ -108,11 +108,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: 状态Options,
+		options: systemConfigStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择状态",
@@ -122,7 +122,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 描述
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
@@ -139,18 +139,18 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	配置名称: [
+	configName: [
 		{ required: true, message: "请填写配置名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	配置值: [
+	configValue: [
 		{ required: true, message: "请填写配置值", trigger: "blur" },
 		{ min: 1, max: 1000, message: "长度在 1 到 1000 个字符", trigger: "blur" },
 	],
-	配置类型: [{ required: true, message: "请选择配置类型", trigger: "change" }],
-	配置分组: [{ required: true, message: "请选择配置分组", trigger: "change" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
-	描述: [{ max: 200, message: "描述长度不能超过200个字符", trigger: "blur" }],
+	configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
+	configGroup: [{ required: true, message: "请选择配置分组", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
+	description: [{ max: 200, message: "描述长度不能超过200个字符", trigger: "blur" }],
 });
 
 defineExpose({

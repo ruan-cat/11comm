@@ -1,6 +1,6 @@
 import type { Mode } from "@/composables/use-mode";
 
-const REPORT_TYPES = ["报表组", "选项标题", "排序", "描述"] as const;
+const REPORT_TYPES = ["reportGroup", "optionTitle", "sort", "description"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
 export type ReportType = (typeof REPORT_TYPES)[number];

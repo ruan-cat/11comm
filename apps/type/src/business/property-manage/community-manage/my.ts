@@ -21,7 +21,7 @@ export type ProvinceType =
 	| "安徽省";
 
 /** 小区状态联合类型 / Community status union type */
-export type CommunityStatusType = "" | "正常运营" | "筹备中" | "维护中" | "已停用";
+export type CommunityStatusType = "" | "operating" | "preparing" | "maintenance" | "disabled";
 
 // ==================== 表单类型定义 ====================
 
@@ -73,7 +73,7 @@ export const provinces = [
 ] as const;
 
 /** 小区状态选项数组 / Community status options array */
-export const communityStatuses = ["正常运营", "筹备中", "维护中", "已停用"] as const;
+export const communityStatuses = ["operating", "preparing", "maintenance", "disabled"] as const;
 
 /** 省份选项列表 / Province options list */
 export const provinceOptions: OptionsType = provinces.map((province) => ({
@@ -82,10 +82,12 @@ export const provinceOptions: OptionsType = provinces.map((province) => ({
 }));
 
 /** 小区状态选项列表 / Community status options list */
-export const communityStatusOptions: OptionsType = communityStatuses.map((status) => ({
-	label: status,
-	value: status,
-}));
+export const communityStatusOptions: OptionsType = [
+	{ label: "正常运营", value: "operating" },
+	{ label: "筹备中", value: "preparing" },
+	{ label: "维护中", value: "maintenance" },
+	{ label: "已停用", value: "disabled" },
+];
 
 /** 城市选项列表 / City options list */
 export const cityOptions: OptionsType = [
@@ -120,7 +122,7 @@ export const defaultCommunityManageMyForm: CommunityManageMyFormVO = {
 	area: "",
 	startTime: "",
 	endTime: "",
-	status: "正常运营",
+	status: "operating",
 };
 
 // ==================== 原有类型定义 ====================
@@ -214,6 +216,6 @@ export interface MyQueryParams {
  * Status options
  */
 export const myStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];

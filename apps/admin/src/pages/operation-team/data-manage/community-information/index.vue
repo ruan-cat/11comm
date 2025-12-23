@@ -12,7 +12,8 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type CommunityInfoListItem, type CommunityInfoQueryParams, communitySearchOptions } from "@01s-11comm/type";
 import { useCommunityInfoListQuery } from "@/api/operation-team/data-manage/community-information";
-import { type CommunityInformationFormProps, defaultForm, type FormVO } from "./components/form";
+import { type CommunityInformationFormProps, defaultForm } from "./components/form";
+import type { CommunityInformationFormVO } from "@01s-11comm/type";
 import CommunityInformationForm from "./components/form.vue";
 
 /**
@@ -194,25 +195,25 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const formVO: FormVO = isAdd.value
+	const formVO: CommunityInformationFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					小区ID: row?.communityId || "",
-					小区名称: row?.communityName || "",
-					物业公司: row?.propertyCompany || "",
-					附近地标: row?.nearbyLandmark || "",
-					城市编码: row?.cityCode || "",
-					创建时间: row?.createTime || "",
-					社区编码: row?.communityCode || "",
-					状态: row?.status || "正常运营",
-					省份: row?.province || "",
-					城市: row?.city || "",
-					区县: row?.district || "",
-					详细地址: row?.detailedAddress || "",
-					联系电话: row?.contactPhone || "",
-					管理员: row?.administrator || "",
+					communityId: row?.communityId || "",
+					communityName: row?.communityName || "",
+					propertyCompany: row?.propertyCompany || "",
+					nearbyLandmark: row?.nearbyLandmark || "",
+					cityCode: row?.cityCode || "",
+					createTime: row?.createTime || "",
+					communityCode: row?.communityCode || "",
+					status: row?.status || "正常运营",
+					province: row?.province || "",
+					city: row?.city || "",
+					district: row?.district || "",
+					detailedAddress: row?.detailedAddress || "",
+					contactPhone: row?.contactPhone || "",
+					administrator: row?.administrator || "",
 				})
 			: cloneDeep(defaultForm);
 

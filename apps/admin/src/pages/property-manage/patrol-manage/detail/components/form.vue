@@ -43,7 +43,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 巡检点名称
 	{
 		label: "巡检点名称",
-		prop: "巡检点名称",
+		prop: "patrolPointName",
 		valueType: "input",
 		required: true,
 	},
@@ -51,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 巡检计划名称
 	{
 		label: "巡检计划名称",
-		prop: "巡检计划名称",
+		prop: "patrolPlanName",
 		valueType: "input",
 		required: true,
 	},
@@ -59,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 巡检路线名称
 	{
 		label: "巡检路线名称",
-		prop: "巡检路线名称",
+		prop: "patrolRouteName",
 		valueType: "input",
 		required: true,
 	},
@@ -67,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 计划巡检人
 	{
 		label: "计划巡检人",
-		prop: "计划巡检人",
+		prop: "plannedPatrolPerson",
 		valueType: "input",
 		required: true,
 	},
@@ -75,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 巡检方式
 	{
 		label: "巡检方式",
-		prop: "巡检方式",
+		prop: "patrolMethod",
 		valueType: "select",
 		required: true,
 		options: patrolMethodOptions,
@@ -84,7 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 位置信息
 	{
 		label: "位置信息",
-		prop: "位置信息",
+		prop: "location",
 		valueType: "input",
 		required: true,
 	},
@@ -92,7 +92,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 巡检情况
 	{
 		label: "巡检情况",
-		prop: "巡检情况",
+		prop: "patrolSituation",
 		valueType: "textarea",
 	},
 ]);

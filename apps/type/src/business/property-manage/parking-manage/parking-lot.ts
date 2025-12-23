@@ -8,9 +8,9 @@ export interface ParkingLotListItem {
 	/** 停车场编号 Parking lot number */
 	parkingLotNumber: string;
 	/** 停车场类型 Parking lot type */
-	parkingLotType: "地面停车场" | "地下停车场" | "立体停车场" | "路边停车位";
+	parkingLotType: "ground" | "underground" | "multi_level" | "roadside";
 	/** 车位类型 Parking space type */
-	parkingSpaceType: "标准车位" | "大型车位" | "无障碍车位" | "充电桩车位" | "访客车位";
+	parkingSpaceType: "standard" | "large" | "accessible" | "charging" | "visitor";
 	/** 外部编码 External code */
 	externalCode: string;
 	/** 备注 Remark */
@@ -29,9 +29,9 @@ export interface ParkingLotQueryParams extends BaseListQueryParams {
 	/** 停车场编号 Parking lot number */
 	parkingLotNumber?: string;
 	/** 停车场类型 Parking lot type */
-	parkingLotType?: "地面停车场" | "地下停车场" | "立体停车场" | "路边停车位";
+	parkingLotType?: "ground" | "underground" | "multi_level" | "roadside";
 	/** 车位类型 Parking space type */
-	parkingSpaceType?: "标准车位" | "大型车位" | "无障碍车位" | "充电桩车位" | "访客车位";
+	parkingSpaceType?: "standard" | "large" | "accessible" | "charging" | "visitor";
 }
 
 /**
@@ -39,17 +39,17 @@ export interface ParkingLotQueryParams extends BaseListQueryParams {
  * Status options
  */
 export const parkingLotStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 // ==================== 停车场表单类型 Parking Lot Form Types ====================
 
 /** 停车场类型联合类型 Parking lot type union */
-export type ParkingLotType = "地面停车场" | "地下停车场" | "立体停车场" | "路边停车位";
+export type ParkingLotType = "ground" | "underground" | "multi_level" | "roadside";
 
 /** 车位类型联合类型 Parking space type union */
-export type ParkingSpaceType = "标准车位" | "大型车位" | "无障碍车位" | "充电桩车位" | "访客车位";
+export type ParkingSpaceType = "standard" | "large" | "accessible" | "charging" | "visitor";
 
 /**
  * @description 停车场表单数据类型

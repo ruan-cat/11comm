@@ -74,22 +74,22 @@ export interface MerchantInfoListQuery extends BaseListQueryParams {
  * 商户类型选项
  */
 export const merchantInfoTypeOptions: OptionsType = [
-	{ label: "便利店", value: "便利店" },
-	{ label: "超市", value: "超市" },
-	{ label: "餐饮", value: "餐饮" },
-	{ label: "美容美发", value: "美容美发" },
-	{ label: "维修服务", value: "维修服务" },
-	{ label: "快递收发", value: "快递收发" },
-	{ label: "干洗服务", value: "干洗服务" },
-	{ label: "其他", value: "其他" },
+	{ label: "便利店", value: "convenience" },
+	{ label: "超市", value: "supermarket" },
+	{ label: "餐饮", value: "restaurant" },
+	{ label: "美容美发", value: "beauty" },
+	{ label: "维修服务", value: "repair" },
+	{ label: "快递收发", value: "express" },
+	{ label: "干洗服务", value: "laundry" },
+	{ label: "其他", value: "other" },
 ];
 
 /**
  * 状态选项
  */
 export const merchantInfoStatusOptions: OptionsType = [
-	{ label: "正常营业", value: "正常营业" },
-	{ label: "暂停营业", value: "暂停营业" },
-	{ label: "合同到期", value: "合同到期" },
-	{ label: "终止合作", value: "终止合作" },
+	{ label: "正常营业", value: "operating" },
+	{ label: "暂停营业", value: "suspended" },
+	{ label: "合同到期", value: "expired" },
+	{ label: "终止合作", value: "terminated" },
 ];

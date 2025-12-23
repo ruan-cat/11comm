@@ -45,21 +45,21 @@ export interface TypeQueryParams {
  * Status options
  */
 export const typeStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 /**
  * @description 是否审核类型
  * Is audit type
  */
-export type IsAuditType = "是" | "否";
+export type IsAuditType = "yes" | "no";
 
 /**
  * @description 审核类型选项
  * Audit type options
  */
 export const auditTypeOptions: OptionsType = [
-	{ label: "是", value: "是" },
-	{ label: "否", value: "否" },
+	{ label: "是", value: "yes" },
+	{ label: "否", value: "no" },
 ];

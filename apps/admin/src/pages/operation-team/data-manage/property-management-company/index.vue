@@ -13,7 +13,8 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PropertyCompanyListItem, type PropertyCompanyQueryParams } from "@01s-11comm/type";
 import { usePropertyCompanyListQuery } from "@/api/operation-team/data-manage/property-company";
-import { type PropertyManagementCompanyFormProps, defaultForm, type FormVO } from "./components/form";
+import { type PropertyManagementCompanyFormProps, defaultForm } from "./components/form";
+import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
 import PropertyManagementCompanyForm from "./components/form.vue";
 
 const PropertyManagementCompanyFormInstance = ref<InstanceType<typeof PropertyManagementCompanyForm> | null>(null);
@@ -196,24 +197,24 @@ function openDialog(params: { mode: Mode; row?: PropertyCompanyListItem }) {
 	const title = `${modeText.value}物业公司`;
 
 	/** 业务对象 */
-	const formVO: FormVO = isAdd.value
+	const formVO: PropertyManagementCompanyFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					编号: row?.companyId || "",
-					名称: row?.companyName || "",
-					地址: row?.address || "",
-					电话: row?.phone || "",
-					管理员: row?.administrator || "",
-					公司法人: row?.legalRepresentative || "",
-					成立日期: row?.establishmentDate || "",
-					地标: row?.landmark || "",
-					开通小区数量: row?.communityCount || 0,
-					公司类型: row?.companyType || "",
-					服务等级: row?.serviceLevel || "",
-					运营状态: row?.operationStatus || "",
-					备注: row?.remarks || "",
+					code: row?.companyId || "",
+					name: row?.companyName || "",
+					address: row?.address || "",
+					phone: row?.phone || "",
+					administrator: row?.administrator || "",
+					legalRepresentative: row?.legalRepresentative || "",
+					establishmentDate: row?.establishmentDate || "",
+					landmark: row?.landmark || "",
+					communityCount: row?.communityCount || 0,
+					companyType: row?.companyType || "",
+					serviceLevel: row?.serviceLevel || "",
+					operationStatus: row?.operationStatus || "",
+					remarks: row?.remarks || "",
 				})
 			: cloneDeep(defaultForm);
 

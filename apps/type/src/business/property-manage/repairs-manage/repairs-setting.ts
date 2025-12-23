@@ -41,45 +41,45 @@ export interface RepairsSettingQueryParams {
  * Status options
  */
 export const repairsSettingStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 /**
  * @description 报修设置类型
  * Repairs setting type
  */
-export type RepairsSettingType = "保洁单" | "维修单";
+export type RepairsSettingType = "cleaning" | "repair";
 
 /**
  * @description 派单方式类型
  * Dispatch method type
  */
-export type DispatchMethodType = "抢单" | "指派" | "轮训";
+export type DispatchMethodType = "grab" | "assign" | "rotate";
 
 /**
  * @description 区域类型
  * Area type
  */
-export type AreaType = "房屋" | "公共区域" | "车库" | "非房屋";
+export type AreaType = "house" | "public" | "garage" | "non_house";
 
 /**
  * @description 业主端展示类型
  * Owner display type
  */
-export type OwnerDisplayType = "是" | "否";
+export type OwnerDisplayType = "yes" | "no";
 
 /**
  * @description 通知方式类型
  * Notification method type
  */
-export type NotificationMethodType = "短信" | "微信" | "微信+员工工牌";
+export type NotificationMethodType = "sms" | "wechat" | "wechat_card";
 
 /**
  * @description 回访设置类型
  * Return visit setting type
  */
-export type ReturnVisitSettingType = "不回访" | "已评价不回访" | "回访";
+export type ReturnVisitSettingType = "no_visit" | "no_visit_after_rating" | "visit";
 
 /**
  * @description 报修设置表单 VO
@@ -107,11 +107,11 @@ export interface RepairsSettingFormVO {
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultRepairsSettingForm: RepairsSettingFormVO = {
 	typeName: "",
-	settingType: "维修单",
-	dispatchMethod: "指派",
-	publicArea: "房屋",
-	ownerDisplay: "是",
-	notificationMethod: "微信",
-	returnVisitSetting: "回访",
+	settingType: "repair",
+	dispatchMethod: "assign",
+	publicArea: "house",
+	ownerDisplay: "yes",
+	notificationMethod: "wechat",
+	returnVisitSetting: "visit",
 	description: "",
 };

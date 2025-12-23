@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./form";
+import { type SystemConfigFormProps, defaultForm } from "./form";
+import type { SystemConfigListItem } from "@01s-11comm/type";
 // import { cloneDeep } from "@pureadmin/utils"; // 已迁移到 structuredClone
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
@@ -9,7 +10,7 @@ import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 const props = defineProps<SystemConfigFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & SystemConfigFormVO;
+const defaultValues = props.defaultValues as FieldValues & SystemConfigListItem;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -23,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & SystemConfigFormVO;
+const toRefForm = structuredClone(props.form) as FieldValues & SystemConfigListItem;
 
 /**
  * 表单对象

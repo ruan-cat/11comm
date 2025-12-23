@@ -18,4 +18,3 @@ export interface IssuesSettingFormProps {
 	mode?: Mode;
 }
 
-export { IssuesFormVO };

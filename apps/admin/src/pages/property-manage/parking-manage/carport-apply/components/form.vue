@@ -43,7 +43,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车牌号
 	{
 		label: "车牌号",
-		prop: "车牌号",
+		prop: "licensePlate",
 		valueType: "input",
 		required: true,
 	},
@@ -51,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 停车位
 	{
 		label: "停车位",
-		prop: "停车位",
+		prop: "parkingSpace",
 		valueType: "input",
 		required: true,
 	},
@@ -59,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 汽车品牌
 	{
 		label: "汽车品牌",
-		prop: "汽车品牌",
+		prop: "carBrand",
 		valueType: "select",
 		options: carBrandOptions,
 		required: true,
@@ -68,7 +68,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车辆类型
 	{
 		label: "车辆类型",
-		prop: "车辆类型",
+		prop: "vehicleType",
 		valueType: "select",
 		options: vehicleTypeOptions,
 		required: true,
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 颜色
 	{
 		label: "颜色",
-		prop: "颜色",
+		prop: "color",
 		valueType: "select",
 		options: vehicleColorOptions,
 		required: true,
@@ -86,7 +86,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 起租时间
 	{
 		label: "起租时间",
-		prop: "起租时间",
+		prop: "startLeaseTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -99,7 +99,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 结租时间
 	{
 		label: "结租时间",
-		prop: "结租时间",
+		prop: "endLeaseTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -112,7 +112,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 申请人
 	{
 		label: "申请人",
-		prop: "申请人",
+		prop: "applicant",
 		valueType: "input",
 		required: true,
 	},
@@ -120,7 +120,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 手机号
 	{
 		label: "手机号",
-		prop: "手机号",
+		prop: "phoneNumber",
 		valueType: "input",
 		required: true,
 	},
@@ -128,7 +128,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 审核结果
 	{
 		label: "审核结果",
-		prop: "审核结果",
+		prop: "reviewResult",
 		valueType: "select",
 		options: auditStatusOptions,
 		required: true,
@@ -140,63 +140,63 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	车牌号: [
+	licensePlate: [
 		{
 			required: true,
 			message: "请输入车牌号",
 			trigger: "blur",
 		},
 	],
-	停车位: [
+	parkingSpace: [
 		{
 			required: true,
 			message: "请输入停车位",
 			trigger: "blur",
 		},
 	],
-	汽车品牌: [
+	carBrand: [
 		{
 			required: true,
 			message: "请选择汽车品牌",
 			trigger: "change",
 		},
 	],
-	车辆类型: [
+	vehicleType: [
 		{
 			required: true,
 			message: "请选择车辆类型",
 			trigger: "change",
 		},
 	],
-	颜色: [
+	color: [
 		{
 			required: true,
 			message: "请选择颜色",
 			trigger: "change",
 		},
 	],
-	起租时间: [
+	startLeaseTime: [
 		{
 			required: true,
 			message: "请选择起租时间",
 			trigger: "change",
 		},
 	],
-	结租时间: [
+	endLeaseTime: [
 		{
 			required: true,
 			message: "请选择结租时间",
 			trigger: "change",
 		},
 	],
-	申请人: [
+	applicant: [
 		{
 			required: true,
 			message: "请输入申请人",
 			trigger: "blur",
 		},
 	],
-	手机号: [
+	phoneNumber: [
 		{
 			required: true,
 			message: "请输入手机号",
@@ -208,7 +208,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	审核结果: [
+	reviewResult: [
 		{
 			required: true,
 			message: "请选择审核结果",

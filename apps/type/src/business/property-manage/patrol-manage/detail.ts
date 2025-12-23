@@ -3,13 +3,13 @@ import type { OptionsType, BaseListQueryParams } from "../../../common";
 // ==================== 联合类型定义 ====================
 
 /** 巡检方式联合类型 / Patrol method union type */
-export type PatrolMethodType = "步行巡检" | "骑车巡检" | "驾车巡检" | "视频巡检";
+export type PatrolMethodType = "walking" | "cycling" | "driving" | "video";
 
 /** 任务状态联合类型 / Task status union type */
-export type TaskStatusType = "待执行" | "执行中" | "已完成" | "已逾期" | "已取消";
+export type TaskStatusType = "pending" | "in_progress" | "completed" | "overdue" | "cancelled";
 
 /** 巡检点状态联合类型 / Patrol point status union type */
-export type PatrolPointStatusType = "正常" | "异常" | "待检查";
+export type PatrolPointStatusType = "normal" | "abnormal" | "pending";
 
 // ==================== 表单类型定义 ====================
 
@@ -74,8 +74,8 @@ export interface DetailQueryParams {
  * Status options
  */
 export const detailStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 // ==================== 默认表单对象 ====================
@@ -86,7 +86,7 @@ export const defaultPatrolDetailForm: PatrolDetailFormVO = {
 	patrolPlanName: "",
 	patrolRouteName: "",
 	plannedPatrolPerson: "",
-	patrolMethod: "步行巡检",
+	patrolMethod: "walking",
 	location: "",
 	patrolSituation: "",
 };

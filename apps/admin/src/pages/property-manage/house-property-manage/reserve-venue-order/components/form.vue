@@ -5,14 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-// TODO: 需要换成英文类型 不允许写成中文类型
-// 将中文类型的下拉选项 迁移成英文写法 迁移到@01s-11comm/type中
-import { ReserveVenueOrderFormProps, 场地预约订单_VO, 预约场地Options, 预约状态Options } from "./form";
+import { ReserveVenueOrderFormProps, ReserveVenueOrderFormVO, reservedVenueOptions, reserveVenueOrderStatusOptions } from "./form";
 
 const props = defineProps<ReserveVenueOrderFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 场地预约订单_VO;
+const defaultValues = props.defaultValues as FieldValues & ReserveVenueOrderFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -26,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 场地预约订单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & ReserveVenueOrderFormVO;
 
 /**
  * 表单对象
@@ -44,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 订单编号
 	{
 		label: "订单编号",
-		prop: "订单编号",
+		prop: "orderNumber",
 		valueType: "input",
 		required: true,
 	},
@@ -52,7 +50,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 场馆
 	{
 		label: "场馆",
-		prop: "场馆",
+		prop: "venue",
 		valueType: "input",
 		required: true,
 	},
@@ -60,16 +58,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 场地
 	{
 		label: "场地",
-		prop: "场地",
+		prop: "site",
 		valueType: "select",
-		options: 预约场地Options,
+		options: reservedVenueOptions,
 		required: true,
 	},
 
 	// 预约人
 	{
 		label: "预约人",
-		prop: "预约人",
+		prop: "reserver",
 		valueType: "input",
 		required: true,
 	},
@@ -77,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 预约电话
 	{
 		label: "预约电话",
-		prop: "预约电话",
+		prop: "reservationPhone",
 		valueType: "input",
 		required: true,
 	},
@@ -85,7 +83,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 预约日期
 	{
 		label: "预约日期",
-		prop: "预约日期",
+		prop: "reservationDate",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -98,7 +96,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 预约时间
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "reservationTime",
 		valueType: "input",
 		required: true,
 	},
@@ -106,7 +104,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 应收金额
 	{
 		label: "应收金额",
-		prop: "应收金额",
+		prop: "receivableAmount",
 		valueType: "input",
 		required: true,
 	},
@@ -114,7 +112,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 实收金额
 	{
 		label: "实收金额",
-		prop: "实收金额",
+		prop: "receivedAmount",
 		valueType: "input",
 		required: true,
 	},
@@ -122,7 +120,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 支付方式
 	{
 		label: "支付方式",
-		prop: "支付方式",
+		prop: "paymentMethod",
 		valueType: "select",
 		options: [
 			{ label: "微信", value: "微信" },
@@ -136,16 +134,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 预约状态Options,
+		options: reserveVenueOrderStatusOptions,
 		required: true,
 	},
 
 	// 创建时间
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -158,7 +156,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "input",
 	},
 ]);
@@ -168,35 +166,35 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	订单编号: [
+	orderNumber: [
 		{
 			required: true,
 			message: "请输入订单编号",
 			trigger: "blur",
 		},
 	],
-	场馆: [
+	venue: [
 		{
 			required: true,
 			message: "请输入场馆",
 			trigger: "blur",
 		},
 	],
-	场地: [
+	site: [
 		{
 			required: true,
 			message: "请选择场地",
 			trigger: "change",
 		},
 	],
-	预约人: [
+	reserver: [
 		{
 			required: true,
 			message: "请输入预约人",
 			trigger: "blur",
 		},
 	],
-	预约电话: [
+	reservationPhone: [
 		{
 			required: true,
 			message: "请输入预约电话",
@@ -208,49 +206,49 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	预约日期: [
+	reservationDate: [
 		{
 			required: true,
 			message: "请选择预约日期",
 			trigger: "change",
 		},
 	],
-	预约时间: [
+	reservationTime: [
 		{
 			required: true,
 			message: "请输入预约时间",
 			trigger: "blur",
 		},
 	],
-	应收金额: [
+	receivableAmount: [
 		{
 			required: true,
 			message: "请输入应收金额",
 			trigger: "blur",
 		},
 	],
-	实收金额: [
+	receivedAmount: [
 		{
 			required: true,
 			message: "请输入实收金额",
 			trigger: "blur",
 		},
 	],
-	支付方式: [
+	paymentMethod: [
 		{
 			required: true,
 			message: "请选择支付方式",
 			trigger: "change",
 		},
 	],
-	状态: [
+	status: [
 		{
 			required: true,
 			message: "请选择状态",
 			trigger: "change",
 		},
 	],
-	创建时间: [
+	createTime: [
 		{
 			required: true,
 			message: "请选择创建时间",

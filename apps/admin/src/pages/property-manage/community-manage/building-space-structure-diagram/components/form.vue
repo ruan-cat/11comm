@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
-import { BuildingSpaceStructureDiagramFormProps, 建筑结构选项, 楼栋状态选项, type 楼栋结构图表单_VO } from "./form";
+import {
+	BuildingSpaceStructureDiagramFormProps,
+	buildingStructureOptions,
+	buildingStatusOptions,
+	type BuildingSpaceStructureDiagramFormVO,
+} from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 楼栋结构图表单_VO;
+const defaultValues = props.defaultValues as FieldValues & BuildingSpaceStructureDiagramFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 楼栋结构图表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & BuildingSpaceStructureDiagramFormVO;
 
 /**
  * 表单对象
@@ -36,7 +41,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "楼栋编号",
-		prop: "楼栋编号",
+		prop: "buildingNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -45,7 +50,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "楼栋名称",
-		prop: "楼栋名称",
+		prop: "buildingName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -54,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "总楼层",
-		prop: "总楼层",
+		prop: "totalFloors",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
@@ -64,7 +69,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "总户数",
-		prop: "总户数",
+		prop: "totalUnits",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
@@ -74,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "建筑面积",
-		prop: "建筑面积",
+		prop: "buildingArea",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
@@ -84,9 +89,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "建筑结构",
-		prop: "建筑结构",
+		prop: "buildingStructure",
 		valueType: "select",
-		options: 建筑结构选项,
+		options: buildingStructureOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -95,7 +100,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "建成年份",
-		prop: "建成年份",
+		prop: "constructionYear",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -104,7 +109,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "图纸路径",
-		prop: "图纸路径",
+		prop: "blueprintPath",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -113,9 +118,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 楼栋状态选项,
+		options: buildingStatusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择楼栋状态",
@@ -123,7 +128,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "负责人",
-		prop: "负责人",
+		prop: "responsiblePerson",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -132,7 +137,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -141,7 +146,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remarks",
 		valueType: "textarea",
 		fieldProps: {
 			clearable: true,
@@ -153,26 +158,26 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	楼栋编号: [{ required: true, message: "请输入楼栋编号", trigger: "blur" }],
-	楼栋名称: [{ required: true, message: "请输入楼栋名称", trigger: "blur" }],
-	总楼层: [
+	buildingNumber: [{ required: true, message: "请输入楼栋编号", trigger: "blur" }],
+	buildingName: [{ required: true, message: "请输入楼栋名称", trigger: "blur" }],
+	totalFloors: [
 		{ required: true, message: "请输入总楼层数", trigger: "blur" },
 		{ type: "number", min: 1, message: "楼层数不能小于1", trigger: "blur" },
 	],
-	总户数: [
+	totalUnits: [
 		{ required: true, message: "请输入总户数", trigger: "blur" },
 		{ type: "number", min: 1, message: "总户数不能小于1", trigger: "blur" },
 	],
-	建筑面积: [
+	buildingArea: [
 		{ required: true, message: "请输入建筑面积", trigger: "blur" },
 		{ type: "number", min: 0, message: "建筑面积不能小于0", trigger: "blur" },
 	],
-	建筑结构: [{ required: true, message: "请选择建筑结构", trigger: "change" }],
-	建成年份: [{ required: true, message: "请输入建成年份", trigger: "blur" }],
-	图纸路径: [{ required: true, message: "请输入图纸路径", trigger: "blur" }],
-	状态: [{ required: true, message: "请选择楼栋状态", trigger: "change" }],
-	负责人: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
-	联系电话: [
+	buildingStructure: [{ required: true, message: "请选择建筑结构", trigger: "change" }],
+	constructionYear: [{ required: true, message: "请输入建成年份", trigger: "blur" }],
+	blueprintPath: [{ required: true, message: "请输入图纸路径", trigger: "blur" }],
+	status: [{ required: true, message: "请选择楼栋状态", trigger: "change" }],
+	responsiblePerson: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
+	contactPhone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],

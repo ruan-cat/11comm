@@ -39,7 +39,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入业主名称",
@@ -47,7 +47,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "发票类型",
-		prop: "发票类型",
+		prop: "invoiceType",
 		valueType: "select",
 		options: invoiceTypeOptions,
 		fieldProps: {
@@ -56,7 +56,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "发票名头",
-		prop: "发票名头",
+		prop: "invoiceTitle",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入发票名头",
@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "纳税人识别号",
-		prop: "纳税人识别号",
+		prop: "taxpayerId",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入纳税人识别号",
@@ -72,7 +72,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入地址",
@@ -80,7 +80,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "电话",
-		prop: "电话",
+		prop: "phone",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入电话",
@@ -88,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "开户行及账号",
-		prop: "开户行及账号",
+		prop: "bankAccount",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入开户行及账号",
@@ -96,7 +96,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
 			placeholder: "请输入备注信息",
@@ -107,28 +107,28 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	业主名称: [
+	ownerName: [
 		{
 			required: true,
 			message: "请输入业主名称",
 			trigger: "blur",
 		},
 	],
-	发票类型: [
+	invoiceType: [
 		{
 			required: true,
 			message: "请选择发票类型",
 			trigger: "change",
 		},
 	],
-	发票名头: [
+	invoiceTitle: [
 		{
 			required: true,
 			message: "请输入发票名头",
 			trigger: "blur",
 		},
 	],
-	纳税人识别号: [
+	taxpayerId: [
 		{
 			required: true,
 			message: "请输入纳税人识别号",

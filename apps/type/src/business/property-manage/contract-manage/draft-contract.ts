@@ -62,10 +62,10 @@ export interface DraftContractQueryParams {
  * Status options
  */
 export const draftContractStatusOptions: OptionsType = [
-	{ label: "草稿", value: "草稿" },
-	{ label: "审批中", value: "审批中" },
-	{ label: "已生效", value: "已生效" },
-	{ label: "已终止", value: "已终止" },
+	{ label: "草稿", value: "draft" },
+	{ label: "审批中", value: "pending" },
+	{ label: "已生效", value: "active" },
+	{ label: "已终止", value: "terminated" },
 ];
 
 /**
@@ -74,15 +74,4 @@ export const draftContractStatusOptions: OptionsType = [
  */
 export const draftContractTypeOptions = contractTypeOptions;
 
-/**
- * @description 合同类型选项别名
- * Contract type options alias
- */
-export const contractTypeOptionsData = draftContractTypeOptions;
-
-/**
- * @description 合同草稿查询参数类型别名（兼容性）
- * Draft contract query params type alias (for compatibility)
- */
-export type DraftContractQueryParamsType = DraftContractQueryParams;
 

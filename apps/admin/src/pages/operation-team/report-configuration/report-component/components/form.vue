@@ -4,12 +4,12 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
-import { ReportComponentFormProps, 报表组件类型, 报表组件表单_VO, defaultForm } from "./form";
+import { ReportComponentFormProps, ReportComponentFormVO, defaultForm } from "./form";
 
 const props = defineProps<ReportComponentFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 报表组件表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ReportComponentFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -23,7 +23,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 报表组件表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ReportComponentFormVO;
 
 /**
  * 表单对象
@@ -40,13 +40,13 @@ const formComputed = computed(() => {
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "组件名称",
-		prop: "组件名称",
+		prop: "componentName",
 		valueType: "input",
 		required: true,
 	},
 	{
 		label: "组件类型",
-		prop: "组件类型",
+		prop: "componentType",
 		valueType: "select",
 		options: [
 			{ label: "表格", value: "表格" },
@@ -56,7 +56,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 	},
 	{
 		label: "查询方式",
-		prop: "查询方式",
+		prop: "queryMethod",
 		valueType: "select",
 		options: [
 			{ label: "SQL", value: "sql" },
@@ -68,17 +68,17 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		label: "SQL",
 		prop: "sql",
 		valueType: "textarea",
-		hidden: () => form.value.查询方式 !== "sql",
+		hidden: () => form.value.queryMethod !== "sql",
 	},
 	{
 		label: "JAVA",
 		prop: "java",
 		valueType: "textarea",
-		hidden: () => form.value.查询方式 !== "java",
+		hidden: () => form.value.queryMethod !== "java",
 	},
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "textarea",
 	},
 ]);

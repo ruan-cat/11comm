@@ -1,6 +1,6 @@
 import type { Mode } from "@/composables/use-mode";
 
-const REPORT_COMPONENT_TYPES = ["组件名称", "组件类型", "查询方式", "sql", "java", "描述"] as const;
+const REPORT_COMPONENT_TYPES = ["componentName", "componentType", "queryMethod", "sql", "java", "description"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
 export type ReportComponentType = (typeof REPORT_COMPONENT_TYPES)[number];

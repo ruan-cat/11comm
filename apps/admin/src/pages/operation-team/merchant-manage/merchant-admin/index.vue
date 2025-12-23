@@ -17,7 +17,7 @@ import {
 	merchantAdminStatusOptions,
 } from "@01s-11comm/type";
 import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
-import { type MerchantAdminFormProps, defaultForm, type FormVO } from "./components/form";
+import { type MerchantAdminFormProps, defaultForm, type MerchantAdminFormVO } from "./components/form";
 import MerchantAdminForm from "./components/form.vue";
 
 const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
@@ -190,21 +190,21 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 	const title = `${modeText.value}商户管理员`;
 
 	/** 业务对象 */
-	const formVO: FormVO = isAdd.value
+	const formVO: MerchantAdminFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
-					物业公司: row?.propertyName || "",
-					管理员姓名: row?.adminName || "",
-					管理员电话: row?.adminPhone || "",
-					管理员邮箱: "",
-					身份证号码: "",
-					账户状态: row?.status || "正常",
-					登录密码: "",
-					确认密码: "",
-					联系地址: "",
-					备注: "",
+					propertyCompany: row?.propertyName || "",
+					adminName: row?.adminName || "",
+					adminPhone: row?.adminPhone || "",
+					adminEmail: "",
+					idCardNo: "",
+					accountStatus: row?.status || "正常",
+					loginPassword: "",
+					confirmPassword: "",
+					contactAddress: "",
+					remarks: "",
 				})
 			: cloneDeep(defaultForm);
 

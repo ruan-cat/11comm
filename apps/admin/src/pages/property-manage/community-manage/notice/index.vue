@@ -14,7 +14,7 @@ import { useI18n } from "vue-i18n";
 import { transformI18n } from "@/plugins/i18n";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { useCommunityNoticeListQuery } from "@/api/property-manage/community-manage/notice";
-import { type CommunityNoticeFormProps, defaultForm, 列表数据转表单数据, noticeTypeOptions } from "./components/form";
+import { type CommunityNoticeFormProps, defaultForm, listDataToFormData, noticeTypeOptions } from "./components/form";
 import CommunityNoticeForm from "./components/form.vue";
 
 const { t } = useI18n();
@@ -298,10 +298,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	/** 编辑模式的表单数据 */
 	let editFormProps: CommunityNoticeFormProps | null = null;
 	if (row && isEdit.value) {
-		const 表单数据 = 列表数据转表单数据(row);
+		const formData = listDataToFormData(row);
 		editFormProps = {
-			form: 表单数据,
-			defaultValues: structuredClone(表单数据),
+			form: formData,
+			defaultValues: structuredClone(formData),
 		};
 	}
 

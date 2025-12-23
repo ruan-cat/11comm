@@ -40,7 +40,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 停车场编号
 	{
 		label: "停车场编号",
-		prop: "停车场编号",
+		prop: "parkingLotNumber",
 		valueType: "input",
 		required: true,
 	},
@@ -48,7 +48,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 停车场类型
 	{
 		label: "停车场类型",
-		prop: "停车场类型",
+		prop: "parkingLotType",
 		valueType: "select",
 		required: true,
 		options: parkingLotTypeOptions,
@@ -57,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车位类型
 	{
 		label: "车位类型",
-		prop: "车位类型",
+		prop: "parkingSpaceType",
 		valueType: "select",
 		required: true,
 		options: parkingSpaceTypeOptions,
@@ -66,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 外部编码
 	{
 		label: "外部编码",
-		prop: "外部编码",
+		prop: "externalCode",
 		valueType: "input",
 		required: true,
 	},
@@ -74,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
@@ -84,28 +84,28 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	停车场编号: [
+	parkingLotNumber: [
 		{
 			required: true,
 			message: "请输入停车场编号",
 			trigger: "blur",
 		},
 	],
-	停车场类型: [
+	parkingLotType: [
 		{
 			required: true,
 			message: "请选择停车场类型",
 			trigger: "change",
 		},
 	],
-	车位类型: [
+	parkingSpaceType: [
 		{
 			required: true,
 			message: "请选择车位类型",
 			trigger: "change",
 		},
 	],
-	外部编码: [
+	externalCode: [
 		{
 			required: true,
 			message: "请输入外部编码",

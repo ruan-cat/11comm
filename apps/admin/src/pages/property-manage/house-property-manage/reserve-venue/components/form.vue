@@ -6,9 +6,7 @@
 import { ref, computed, watch, useTemplateRef } from "vue";
 
 import { type ReserveVenueFormProps, ReserveVenueFormVO } from "./form";
-// TODO: 将中文类型的下拉选项 迁移成英文写法 迁移到@01s-11comm/type中
-// TODO: 需要换成英文类型 不允许写成中文类型
-import { defaultForm, 场地类型Options, 预约状态Options } from "./form";
+import { venueTypeOptions, reservationStatusOptions } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;
@@ -39,7 +37,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 预约人
 	{
 		label: "预约人",
-		prop: "预约人",
+		prop: "reserver",
 		valueType: "input",
 		required: true,
 	},
@@ -47,7 +45,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 联系电话
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		required: true,
 	},
@@ -55,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 预约时间
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "reservationTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -68,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 开始时间
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "time-picker",
 		fieldProps: {
 			format: "HH:mm",
@@ -80,7 +78,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 结束时间
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "time-picker",
 		fieldProps: {
 			format: "HH:mm",
@@ -92,25 +90,25 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 场地类型
 	{
 		label: "场地类型",
-		prop: "场地类型",
+		prop: "venueType",
 		valueType: "select",
-		options: 场地类型Options.map((item) => ({ label: item.label, value: item.value })),
+		options: venueTypeOptions.map((item) => ({ label: item.label, value: item.value })),
 		required: true,
 	},
 
 	// 预约状态
 	{
 		label: "预约状态",
-		prop: "预约状态",
+		prop: "reservationStatus",
 		valueType: "select",
-		options: 预约状态Options.map((item) => ({ label: item.label, value: item.value })),
+		options: reservationStatusOptions.map((item) => ({ label: item.label, value: item.value })),
 		required: true,
 	},
 
 	// 使用人数
 	{
 		label: "使用人数",
-		prop: "使用人数",
+		prop: "numberOfUsers",
 		valueType: "input-number",
 		required: true,
 	},
@@ -118,7 +116,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
@@ -128,14 +126,14 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	预约人: [
+	reserver: [
 		{
 			required: true,
 			message: "请输入预约人",
 			trigger: "blur",
 		},
 	],
-	联系电话: [
+	contactPhone: [
 		{
 			required: true,
 			message: "请输入联系电话",
@@ -147,42 +145,42 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	预约时间: [
+	reservationTime: [
 		{
 			required: true,
 			message: "请选择预约时间",
 			trigger: "change",
 		},
 	],
-	开始时间: [
+	startTime: [
 		{
 			required: true,
 			message: "请选择开始时间",
 			trigger: "change",
 		},
 	],
-	结束时间: [
+	endTime: [
 		{
 			required: true,
 			message: "请选择结束时间",
 			trigger: "change",
 		},
 	],
-	场地类型: [
+	venueType: [
 		{
 			required: true,
 			message: "请选择场地类型",
 			trigger: "change",
 		},
 	],
-	预约状态: [
+	reservationStatus: [
 		{
 			required: true,
 			message: "请选择预约状态",
 			trigger: "change",
 		},
 	],
-	使用人数: [
+	numberOfUsers: [
 		{
 			required: true,
 			message: "请输入使用人数",

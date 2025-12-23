@@ -20,7 +20,7 @@ import {
 } from "@01s-11comm/type";
 import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
 import {
-	type FormVO,
+	type MerchantInfoFormVO,
 	type MerchantType,
 	type BusinessStatus,
 	type MerchantInfoFormProps,
@@ -224,28 +224,28 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 	const title = `${modeText.value}商户信息`;
 
 	/** 业务对象 */
-	const formVO: FormVO = isAdd.value
+	const formVO: MerchantInfoFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? ({
 					...defaultForm,
-					商户编号: row?.merchantId || "",
-					商户名称: row?.merchantName || "",
-					商户地址: row?.merchantAddress || "",
-					联系电话: row?.contactPhone || "",
-					商户类型: (row?.merchantType || "餐饮服务") as MerchantType,
-					企业法人: row?.legalRepresentative || "",
-					成立日期: row?.establishmentDate || "",
-					经营状态: (row?.businessStatus || "正常营业") as BusinessStatus,
-					所属小区: row?.affiliatedCommunity || "",
-					营业时间: row?.businessHours || "",
-					经营面积: row?.businessArea || "",
-					营业执照号: row?.businessLicenseNo || "",
-					开户银行: row?.bankName || "",
-					银行账号: row?.bankAccount || "",
-					联系人手机: row?.contactMobile || "",
-					备注: row?.remarks || "",
-				} as FormVO)
+					merchantId: row?.merchantId || "",
+					merchantName: row?.merchantName || "",
+					merchantAddress: row?.merchantAddress || "",
+					contactPhone: row?.contactPhone || "",
+					merchantType: (row?.merchantType || "餐饮服务") as MerchantType,
+					legalRepresentative: row?.legalRepresentative || "",
+					establishmentDate: row?.establishmentDate || "",
+					businessStatus: (row?.businessStatus || "正常营业") as BusinessStatus,
+					affiliatedCommunity: row?.affiliatedCommunity || "",
+					businessHours: row?.businessHours || "",
+					businessArea: row?.businessArea || "",
+					businessLicenseNo: row?.businessLicenseNo || "",
+					bankName: row?.bankName || "",
+					bankAccount: row?.bankAccount || "",
+					contactMobile: row?.contactMobile || "",
+					remarks: row?.remarks || "",
+				} as MerchantInfoFormVO)
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */

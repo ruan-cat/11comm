@@ -42,7 +42,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "物业公司",
-		prop: "物业公司",
+		prop: "propertyCompany",
 		valueType: "select",
 		options: propertyCompanyOptions,
 		width: "300px",
@@ -54,7 +54,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "管理员姓名",
-		prop: "管理员姓名",
+		prop: "adminName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "管理员电话",
-		prop: "管理员电话",
+		prop: "adminPhone",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -74,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "管理员邮箱",
-		prop: "管理员邮箱",
+		prop: "adminEmail",
 		valueType: "input",
 		width: "250px",
 		fieldProps: {
@@ -84,7 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "身份证号码",
-		prop: "身份证号码",
+		prop: "idCardNo",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -94,7 +94,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "账户状态",
-		prop: "账户状态",
+		prop: "accountStatus",
 		valueType: "select",
 		options: statusOptions,
 		width: "150px",
@@ -105,7 +105,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "登录密码",
-		prop: "登录密码",
+		prop: "loginPassword",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -117,7 +117,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "确认密码",
-		prop: "确认密码",
+		prop: "confirmPassword",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -129,7 +129,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系地址",
-		prop: "联系地址",
+		prop: "contactAddress",
 		valueType: "input",
 		width: "400px",
 		fieldProps: {
@@ -139,7 +139,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remarks",
 		valueType: "textarea",
 		width: "400px",
 		fieldProps: {
@@ -152,30 +152,30 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	物业公司: [{ required: true, message: "请选择物业公司", trigger: "change" }],
-	管理员姓名: [
+	propertyCompany: [{ required: true, message: "请选择物业公司", trigger: "change" }],
+	adminName: [
 		{ required: true, message: "请输入管理员姓名", trigger: "blur" },
 		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
 	],
-	管理员电话: [
+	adminPhone: [
 		{ required: true, message: "请输入管理员电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	管理员邮箱: [{ type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }],
-	身份证号码: [
+	adminEmail: [{ type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }],
+	idCardNo: [
 		{ required: true, message: "请输入身份证号码", trigger: "blur" },
 		{ pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: "请输入正确的身份证号码", trigger: "blur" },
 	],
-	账户状态: [{ required: true, message: "请选择账户状态", trigger: "change" }],
-	登录密码: [
+	accountStatus: [{ required: true, message: "请选择账户状态", trigger: "change" }],
+	loginPassword: [
 		{ required: true, message: "请输入登录密码", trigger: "blur" },
 		{ min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
 	],
-	确认密码: [
+	confirmPassword: [
 		{ required: true, message: "请确认密码", trigger: "blur" },
 		{
 			validator: (rule: any, value: string, callback: any) => {
-				if (value !== form.value.登录密码) {
+				if (value !== form.value.loginPassword) {
 					callback(new Error("两次输入密码不一致"));
 				} else {
 					callback();

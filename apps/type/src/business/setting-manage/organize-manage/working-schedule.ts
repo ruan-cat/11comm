@@ -4,7 +4,7 @@ import type { BaseListQueryParams, OptionsType } from "../../../common";
  * @description 排班类型
  * Schedule type
  */
-export type ScheduleType = "morning" | "afternoon" | "evening" | "night" | "全天";
+export type ScheduleType = "morning" | "afternoon" | "evening" | "night" | "full_day";
 
 /**
  * 排班表信息
@@ -63,5 +63,5 @@ export const scheduleTypeOptions: OptionsType = [
 	{ label: "中班", value: "afternoon" },
 	{ label: "晚班", value: "evening" },
 	{ label: "夜班", value: "night" },
-	{ label: "全天", value: "全天" },
+	{ label: "全天", value: "full_day" },
 ];

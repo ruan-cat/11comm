@@ -1,29 +1,5 @@
-import type { HandingBusinessListItem } from "@01s-11comm/type";
-import { feeTypeOptions, businessHandlingStatusOptions as 状态Options } from "@01s-11comm/type";
-
-/** 业务受理表单 VO */
-export interface 业务受理表单_VO {
-	费用项目: string;
-	费用标识: string;
-	费用类型: string;
-	应收金额: string;
-	建账时间: string;
-	应收时间段: string;
-	说明: string;
-	状态: string;
-}
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: 业务受理表单_VO = {
-	费用项目: "",
-	费用标识: "",
-	费用类型: "",
-	应收金额: "",
-	建账时间: "",
-	应收时间段: "",
-	说明: "",
-	状态: "待缴费",
-};
+import type { HandingBusinessListItem, HandingBusinessFormVO } from "@01s-11comm/type";
+import { feeTypeOptions, businessHandlingStatusOptions } from "@01s-11comm/type";
 
 /**
  * 业务受理表单 props
@@ -32,24 +8,36 @@ export const defaultForm: 业务受理表单_VO = {
  */
 export interface HandingBusinessFormProps {
 	/** 表单数据 */
-	form: 业务受理表单_VO;
+	form: HandingBusinessFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: 业务受理表单_VO;
+	defaultValues: HandingBusinessFormVO;
 }
 
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: HandingBusinessFormVO = {
+	feeItem: "",
+	feeId: "",
+	feeType: "",
+	amountReceivable: "",
+	accountCreationTime: "",
+	receivablePeriod: "",
+	description: "",
+	status: "待缴费",
+};
+
 /** 从列表数据转换为表单数据的辅助函数 */
-export function 列表数据转表单数据(列表数据: HandingBusinessListItem): 业务受理表单_VO {
+export function listDataToFormData(listData: HandingBusinessListItem): HandingBusinessFormVO {
 	return {
-		费用项目: 列表数据.feeItem,
-		费用标识: 列表数据.feeId,
-		费用类型: 列表数据.feeType,
-		应收金额: 列表数据.amountReceivable,
-		建账时间: 列表数据.accountCreationTime,
-		应收时间段: 列表数据.receivablePeriod,
-		说明: 列表数据.description,
-		状态: 列表数据.status,
+		feeItem: listData.feeItem,
+		feeId: listData.feeId,
+		feeType: listData.feeType,
+		amountReceivable: listData.amountReceivable,
+		accountCreationTime: listData.accountCreationTime,
+		receivablePeriod: listData.receivablePeriod,
+		description: listData.description,
+		status: listData.status,
 	};
 }
 
 /** 导出选项供其他文件使用 */
-export { feeTypeOptions, 状态Options };
+export { feeTypeOptions, businessHandlingStatusOptions };

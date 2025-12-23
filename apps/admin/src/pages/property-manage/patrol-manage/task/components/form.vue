@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { type PatrolTaskFormProps, type PatrolTaskFormVO } from "./form";
+import { type PatrolTaskFormProps } from "./form";
+import type { PatrolTaskFormVO } from "@01s-11comm/type";
 import { patrolStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolTaskFormProps>();
@@ -37,7 +38,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "任务编码",
-		prop: "任务编码",
+		prop: "taskCode",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -45,37 +46,37 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "巡检计划",
-		prop: "巡检计划",
+		prop: "patrolPlan",
 		valueType: "input",
 	},
 	{
 		label: "巡检人开始/结束时间",
-		prop: "巡检人开始/结束时间",
+		prop: "patrolPersonTimeRange",
 		valueType: "input",
 	},
 	{
 		label: "实际巡检时间",
-		prop: "实际巡检时间",
+		prop: "actualPatrolTime",
 		valueType: "input",
 	},
 	{
 		label: "计划巡检人",
-		prop: "计划巡检人",
+		prop: "plannedPatrolPerson",
 		valueType: "input",
 	},
 	{
 		label: "当前巡检人",
-		prop: "当前巡检人",
+		prop: "currentPatrolPerson",
 		valueType: "input",
 	},
 	{
 		label: "转移描述",
-		prop: "转移描述",
+		prop: "transferDescription",
 		valueType: "textarea",
 	},
 	{
 		label: "巡检方式",
-		prop: "巡检方式",
+		prop: "patrolMethod",
 		valueType: "select",
 		options: [
 			{
@@ -90,7 +91,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "巡检状态",
-		prop: "巡检状态",
+		prop: "patrolStatus",
 		valueType: "select",
 		options: patrolStatusOptions,
 	},
@@ -98,28 +99,28 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	巡检计划: [
+	patrolPlan: [
 		{
 			required: true,
 			message: "请输入巡检计划",
 			trigger: "blur",
 		},
 	],
-	计划巡检人: [
+	plannedPatrolPerson: [
 		{
 			required: true,
 			message: "请输入计划巡检人",
 			trigger: "blur",
 		},
 	],
-	巡检方式: [
+	patrolMethod: [
 		{
 			required: true,
 			message: "请选择巡检方式",
 			trigger: "change",
 		},
 	],
-	巡检状态: [
+	patrolStatus: [
 		{
 			required: true,
 			message: "请选择巡检状态",

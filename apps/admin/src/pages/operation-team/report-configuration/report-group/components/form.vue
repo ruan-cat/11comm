@@ -4,12 +4,12 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
-import { ReportGroupFormProps, 报表组类型, 报表组表单_VO, defaultForm } from "./form";
+import { ReportGroupFormProps, ReportGroupFormVO, defaultForm } from "./form";
 
 const props = defineProps<ReportGroupFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 报表组表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ReportGroupFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -23,7 +23,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 报表组表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ReportGroupFormVO;
 
 /**
  * 表单对象
@@ -40,19 +40,19 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "组名称",
-		prop: "组名称",
+		prop: "groupName",
 		valueType: "input",
 		required: true,
 	},
 	{
 		label: "组url",
-		prop: "组url",
+		prop: "groupUrl",
 		valueType: "input",
 		required: true,
 	},
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "input",
 		required: true,
 	},

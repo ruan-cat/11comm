@@ -8,13 +8,13 @@ export { feeStatusOptions };
  * @description 费用类型
  * Fee type
  */
-export type FeeType = "周期费用" | "临时费用" | "押金" | "违约金";
+export type FeeType = "periodic" | "temporary" | "deposit" | "penalty";
 
 /**
  * @description 费用状态
  * Fee status
  */
-export type FeeStatus = "待缴费" | "已缴费" | "已逾期" | "已减免" | "已作废";
+export type FeeStatus = "pending" | "paid" | "overdue" | "reduced" | "voided";
 
 /**
  * @description 业务受理列表数据
@@ -67,9 +67,9 @@ export interface HandingBusinessQueryParams {
  * Fee category options
  */
 export const feeCategoryOptions: OptionsType = [
-	{ label: "周期费用", value: "周期费用" },
-	{ label: "临时费用", value: "临时费用" },
-	{ label: "押金", value: "押金" },
-	{ label: "违约金", value: "违约金" },
+	{ label: "周期费用", value: "periodic" },
+	{ label: "临时费用", value: "temporary" },
+	{ label: "押金", value: "deposit" },
+	{ label: "违约金", value: "penalty" },
 ];
 

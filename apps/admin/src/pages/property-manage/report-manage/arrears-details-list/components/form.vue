@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import type { ArrearsDetailsFormProps, ArrearsDetailsFormVO } from "./form";
+import type { ArrearsDetailsFormProps } from "./form";
 
 const props = defineProps<ArrearsDetailsFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & ArrearsDetailsFormVO;
+const defaultValues = props.defaultValues as FieldValues & ArrearsDetailsFormProps["form"];
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ArrearsDetailsFormVO;
+const toRefForm = structuredClone(props.form) as FieldValues & ArrearsDetailsFormProps["form"];
 
 /**
  * 表单对象

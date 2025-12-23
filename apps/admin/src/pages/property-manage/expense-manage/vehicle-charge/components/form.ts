@@ -23,6 +23,3 @@ export const defaultForm: VehicleChargeFormVO = {
 	chargeMethod: "",
 	remark: "",
 };
-
-/** 导出车位状态选项 */
-export { parkingSpaceStatusOptions };

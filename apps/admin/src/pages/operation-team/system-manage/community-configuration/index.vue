@@ -18,7 +18,7 @@ import {
 	communityConfigStatusOptions,
 } from "@01s-11comm/type";
 import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/community-configuration";
-import { type CommunityConfigurationFormProps, defaultForm, type FormVO } from "./components/form";
+import { type CommunityConfigurationFormProps, defaultForm, type CommunityConfigFormVO } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
 const communityConfigurationFormInstance = ref<InstanceType<typeof CommunityConfigurationForm> | null>(null);
@@ -192,14 +192,14 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const formVO: FormVO = isAdd.value
+	const formVO: CommunityConfigFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value
 			? cloneDeep({
 					...defaultForm,
 					csId: row?.csId || "",
 					communityId: row?.communityId || "",
-					小区名称: row?.communityName || "",
+					communityName: row?.communityName || "",
 					settingName: row?.settingName || "",
 					settingValue: row?.settingValue || "",
 					settingType: row?.settingType || "",

@@ -42,7 +42,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "商户编号",
-		prop: "商户编号",
+		prop: "merchantId",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "商户名称",
-		prop: "商户名称",
+		prop: "merchantName",
 		valueType: "input",
 		width: "240px",
 		fieldProps: {
@@ -63,7 +63,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "商户类型",
-		prop: "商户类型",
+		prop: "merchantType",
 		valueType: "select",
 		width: "160px",
 		options: merchantTypeOptions,
@@ -75,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "经营状态",
-		prop: "经营状态",
+		prop: "businessStatus",
 		valueType: "select",
 		width: "140px",
 		options: businessStatusOptions,
@@ -86,7 +86,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "商户地址",
-		prop: "商户地址",
+		prop: "merchantAddress",
 		valueType: "input",
 		width: "320px",
 		fieldProps: {
@@ -96,7 +96,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "所属小区",
-		prop: "所属小区",
+		prop: "affiliatedCommunity",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -106,7 +106,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -116,7 +116,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系人手机",
-		prop: "联系人手机",
+		prop: "contactMobile",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
@@ -126,7 +126,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "企业法人",
-		prop: "企业法人",
+		prop: "legalRepresentative",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
@@ -136,7 +136,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "成立日期",
-		prop: "成立日期",
+		prop: "establishmentDate",
 		valueType: "date-picker",
 		width: "180px",
 		fieldProps: {
@@ -149,7 +149,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "营业时间",
-		prop: "营业时间",
+		prop: "businessHours",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -159,7 +159,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "经营面积",
-		prop: "经营面积",
+		prop: "businessArea",
 		valueType: "input-number",
 		width: "160px",
 		fieldProps: {
@@ -171,7 +171,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "营业执照号",
-		prop: "营业执照号",
+		prop: "businessLicenseNo",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
@@ -181,7 +181,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "开户银行",
-		prop: "开户银行",
+		prop: "bankName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
@@ -191,7 +191,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "银行账号",
-		prop: "银行账号",
+		prop: "bankAccount",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
@@ -201,7 +201,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remarks",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -219,48 +219,48 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	商户名称: [
+	merchantName: [
 		{ required: true, message: "请输入商户名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	商户类型: [{ required: true, message: "请选择商户类型", trigger: "change" }],
-	经营状态: [{ required: true, message: "请选择经营状态", trigger: "change" }],
-	商户地址: [
+	merchantType: [{ required: true, message: "请选择商户类型", trigger: "change" }],
+	businessStatus: [{ required: true, message: "请选择经营状态", trigger: "change" }],
+	merchantAddress: [
 		{ required: true, message: "请输入商户地址", trigger: "blur" },
 		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
 	],
-	所属小区: [
+	affiliatedCommunity: [
 		{ required: true, message: "请输入所属小区", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	联系电话: [
+	contactPhone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^((0\d{2,3}-\d{7,8})|(1[3-9]\d{9}))$/, message: "请输入正确的电话号码", trigger: "blur" },
 	],
-	联系人手机: [
+	contactMobile: [
 		{ required: true, message: "请输入联系人手机", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	企业法人: [
+	legalRepresentative: [
 		{ required: true, message: "请输入企业法人姓名", trigger: "blur" },
 		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
 	],
-	成立日期: [{ required: true, message: "请选择成立日期", trigger: "change" }],
-	营业时间: [
+	establishmentDate: [{ required: true, message: "请选择成立日期", trigger: "change" }],
+	businessHours: [
 		{
 			pattern: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])-([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/,
 			message: "请输入正确的时间格式，如：09:00-22:00",
 			trigger: "blur",
 		},
 	],
-	经营面积: [{ type: "number", min: 0, max: 999999, message: "经营面积范围 0-999999 平方米", trigger: "blur" }],
-	营业执照号: [
+	businessArea: [{ type: "number", min: 0, max: 999999, message: "经营面积范围 0-999999 平方米", trigger: "blur" }],
+	businessLicenseNo: [
 		{ required: true, message: "请输入营业执照号", trigger: "blur" },
 		{ pattern: /^[0-9A-Z]{18}$/, message: "请输入正确的18位营业执照号", trigger: "blur" },
 	],
-	开户银行: [{ max: 50, message: "开户银行长度不能超过 50 个字符", trigger: "blur" }],
-	银行账号: [{ max: 30, message: "银行账号长度不能超过 30 个字符", trigger: "blur" }],
-	备注: [{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" }],
+	bankName: [{ max: 50, message: "开户银行长度不能超过 50 个字符", trigger: "blur" }],
+	bankAccount: [{ max: 30, message: "银行账号长度不能超过 30 个字符", trigger: "blur" }],
+	remarks: [{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" }],
 });
 
 /** 默认对外导出函数 */

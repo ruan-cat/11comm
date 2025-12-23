@@ -1,7 +1,6 @@
 import type { OptionsType } from "../../../common";
 import { repairStatusOptions, repairSourceOptions } from "../../../common/business-options";
 
-
 /**
  * @description mandatory-return-issue列表数据
  * MandatoryReturnIssue list item
@@ -44,3 +43,42 @@ export const mandatoryReturnIssueStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+// TODO:
+/**
+ * @description 强制回单表单 VO
+ * Mandatory return issue form VO
+ */
+export interface MandatoryReturnIssueFormVO {
+	/** 工单编号 Work order number */
+	workOrderNumber: string;
+	/** 位置 Location */
+	location: string;
+	/** 报修类型 Repair type */
+	repairType: string;
+	/** 报修人 Reporter */
+	reporter: string;
+	/** 联系方式 Contact information */
+	contactInfo: string;
+	/** 预约时间 Appointment time */
+	appointmentTime: string;
+	/** 提交时间 Submit time */
+	submitTime: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark: string;
+}
+
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultMandatoryReturnIssueForm: MandatoryReturnIssueFormVO = {
+	workOrderNumber: "",
+	location: "",
+	repairType: "",
+	reporter: "",
+	contactInfo: "",
+	appointmentTime: "",
+	submitTime: "",
+	status: "",
+	remark: "",
+};

@@ -43,7 +43,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 人员类型
 	{
 		label: "人员类型",
-		prop: "人员类型",
+		prop: "personnelType",
 		valueType: "select",
 		options: personTypeOptions,
 		required: true,
@@ -52,7 +52,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 人员角色
 	{
 		label: "人员角色",
-		prop: "人员角色",
+		prop: "personnelRole",
 		valueType: "select",
 		options: personRoleOptions,
 		required: true,
@@ -61,7 +61,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 客户名称
 	{
 		label: "客户名称",
-		prop: "客户名称",
+		prop: "customerName",
 		valueType: "input",
 		required: true,
 	},
@@ -69,7 +69,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 联系手机
 	{
 		label: "联系手机",
-		prop: "联系手机",
+		prop: "contactPhone",
 		valueType: "input",
 		required: true,
 	},
@@ -77,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 性别
 	{
 		label: "性别",
-		prop: "性别",
+		prop: "gender",
 		valueType: "select",
 		options: genderOptions,
 		required: true,
@@ -86,35 +86,35 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备用手机
 	{
 		label: "备用手机",
-		prop: "备用手机",
+		prop: "backupPhone",
 		valueType: "input",
 	},
 
 	// 地址
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		valueType: "input",
 	},
 
 	// 门禁钥匙
 	{
 		label: "门禁钥匙",
-		prop: "门禁钥匙",
+		prop: "accessKey",
 		valueType: "input",
 	},
 
 	// 身份证
 	{
 		label: "身份证",
-		prop: "身份证",
+		prop: "idCard",
 		valueType: "input",
 	},
 
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
@@ -124,28 +124,28 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	人员类型: [
+	personnelType: [
 		{
 			required: true,
 			message: "请选择人员类型",
 			trigger: "change",
 		},
 	],
-	人员角色: [
+	personnelRole: [
 		{
 			required: true,
 			message: "请选择人员角色",
 			trigger: "change",
 		},
 	],
-	客户名称: [
+	customerName: [
 		{
 			required: true,
 			message: "请输入客户名称",
 			trigger: "blur",
 		},
 	],
-	联系手机: [
+	contactPhone: [
 		{
 			required: true,
 			message: "请输入联系手机",
@@ -157,14 +157,14 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	性别: [
+	gender: [
 		{
 			required: true,
 			message: "请选择性别",
 			trigger: "change",
 		},
 	],
-	身份证: [
+	idCard: [
 		{
 			required: true,
 			message: "请输入身份证",

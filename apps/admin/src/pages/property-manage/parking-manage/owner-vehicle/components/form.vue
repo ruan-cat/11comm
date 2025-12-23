@@ -44,7 +44,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车牌号
 	{
 		label: "车牌号",
-		prop: "车牌号",
+		prop: "licensePlate",
 		valueType: "input",
 		required: true,
 	},
@@ -52,14 +52,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 汽车品牌
 	{
 		label: "汽车品牌",
-		prop: "汽车品牌",
+		prop: "carBrand",
 		valueType: "input",
 	},
 
 	// 车类型
 	{
 		label: "车类型",
-		prop: "车类型",
+		prop: "carType",
 		valueType: "select",
 		options: vehicleTypeOptions,
 		required: true,
@@ -68,14 +68,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 颜色
 	{
 		label: "颜色",
-		prop: "颜色",
+		prop: "color",
 		valueType: "input",
 	},
 
 	// 车牌类型
 	{
 		label: "车牌类型",
-		prop: "车牌类型",
+		prop: "licensePlateType",
 		valueType: "select",
 		options: licensePlateTypeOptions,
 		required: true,
@@ -84,7 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 业主
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		valueType: "input",
 		required: true,
 		disabled: true, //不可输入（这里disabled无用）且有一个【按钮】和一个【添加链接】
@@ -93,7 +93,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 车位
 	{
 		label: "车位",
-		prop: "车位",
+		prop: "parkingSpace",
 		valueType: "input",
 		required: true,
 		disabled: true, //不可输入（这里disabled无用）且有一个【按钮】和一个【添加链接】
@@ -102,7 +102,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 业主车辆
 	{
 		label: "业主车辆",
-		prop: "业主车辆",
+		prop: "ownerVehicle",
 		valueType: "select",
 		options: [
 			{ label: "是", value: "是" },
@@ -114,7 +114,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 开始时间
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		required: true,
 	},
@@ -122,7 +122,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 结束时间
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		required: true,
 	},
@@ -130,7 +130,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 备注
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
@@ -140,56 +140,56 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	车牌号: [
+	licensePlate: [
 		{
 			required: true,
 			message: "请输入车牌号",
 			trigger: "blur",
 		},
 	],
-	车类型: [
+	carType: [
 		{
 			required: true,
 			message: "请选择车类型",
 			trigger: "change",
 		},
 	],
-	车牌类型: [
+	licensePlateType: [
 		{
 			required: true,
 			message: "请选择车牌类型",
 			trigger: "change",
 		},
 	],
-	业主: [
+	owner: [
 		{
 			required: true,
 			message: "请输入业主",
 			trigger: "blur",
 		},
 	],
-	车位: [
+	parkingSpace: [
 		{
 			required: true,
 			message: "请输入车位",
 			trigger: "blur",
 		},
 	],
-	业主车辆: [
+	ownerVehicle: [
 		{
 			required: true,
 			message: "请选择是否业主车辆",
 			trigger: "change",
 		},
 	],
-	开始时间: [
+	startTime: [
 		{
 			required: true,
 			message: "请选择开始时间",
 			trigger: "change",
 		},
 	],
-	结束时间: [
+	endTime: [
 		{
 			required: true,
 			message: "请选择结束时间",

@@ -2,19 +2,19 @@
  * @description 物业公司类型
  * Property company type
  */
-export type PropertyCompanyType = "国企" | "民企";
+export type PropertyCompanyType = "state_owned" | "private";
 
 /**
  * @description 服务等级
  * Service level
  */
-export type ServiceLevel = "一级" | "二级" | "三级";
+export type ServiceLevel = "level_1" | "level_2" | "level_3";
 
 /**
  * @description 运营状态
  * Operation status
  */
-export type OperationStatus = "正常运营" | "暂停运营" | "已注销";
+export type OperationStatus = "operating" | "suspended" | "cancelled";
 
 /**
  * @description 物业公司列表数据

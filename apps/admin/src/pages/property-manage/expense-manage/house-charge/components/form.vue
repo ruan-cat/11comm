@@ -55,10 +55,9 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	{
-		/** 费用类型 */
+	/** 费用类型 */
 		label: "费用类型",
-		prop: "费用类型",
+		prop: "expenseType",
 		valueType: "select",
 		options: [
 			{ label: "物业费", value: "物业费" },
@@ -83,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 收费项目 */
 		label: "收费项目",
-		prop: "收费项目",
+		prop: "expenseItem",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -93,7 +92,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 费用标识 */
 		label: "费用标识",
-		prop: "费用标识",
+		prop: "expenseIdentifier",
 		valueType: "select",
 		options: [
 			{ label: "周期性费用", value: "周期性费用" },
@@ -107,7 +106,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 付费类型 */
 		label: "付费类型",
-		prop: "付费类型",
+		prop: "paymentType",
 		valueType: "select",
 		options: [
 			{ label: "预付费", value: "预付费" },
@@ -143,7 +142,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 单位 */
 		label: "单位",
-		prop: "单位",
+		prop: "unit",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -153,7 +152,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 账户抵扣 */
 		label: "账户抵扣",
-		prop: "账户抵扣",
+		prop: "accountDeduction",
 		valueType: "select",
 		options: [
 			{ label: "是", value: "是" },
@@ -167,7 +166,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 手机缴费 */
 		label: "手机缴费",
-		prop: "手机缴费",
+		prop: "mobilePayment",
 		valueType: "select",
 		options: [
 			{ label: "是", value: "是" },
@@ -181,7 +180,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 进位方式 */
 		label: "进位方式",
-		prop: "进位方式",
+		prop: "roundingMode",
 		valueType: "select",
 		options: [
 			{ label: "四舍五入", value: "四舍五入" },
@@ -196,7 +195,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 保留小数位 */
 		label: "保留小数位",
-		prop: "保留小数位",
+		prop: "decimalPlaces",
 		valueType: "select",
 		options: [
 			{ label: "取整", value: "取整" },
@@ -213,7 +212,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 状态 */
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: [
 			{ label: "启用", value: "启用" },
@@ -227,7 +226,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 计算公式 */
 		label: "计算公式",
-		prop: "计算公式",
+		prop: "formula",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -237,7 +236,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 计费单价 */
 		label: "计费单价",
-		prop: "计费单价",
+		prop: "billingUnitPrice",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -247,7 +246,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	{
 		/** 固定费用 */
 		label: "固定费用",
-		prop: "固定费用",
+		prop: "fixedFee",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -261,36 +260,36 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	费用类型: [{ required: true, message: "请选择费用类型", trigger: "change" }],
-	收费项目: [
+	expenseType: [{ required: true, message: "请选择费用类型", trigger: "change" }],
+	expenseItem: [
 		{ required: true, message: "请输入收费项目", trigger: "blur" },
 		{ min: 2, max: 50, message: "收费项目长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	费用标识: [{ required: true, message: "请选择费用标识", trigger: "change" }],
-	付费类型: [{ required: true, message: "请选择付费类型", trigger: "change" }],
-	"缴费周期(单位:月)": [
+	expenseIdentifier: [{ required: true, message: "请选择费用标识", trigger: "change" }],
+	paymentType: [{ required: true, message: "请选择付费类型", trigger: "change" }],
+	paymentCycle: [
 		{ required: true, message: "请输入缴费周期", trigger: "blur" },
 		{ pattern: /^[1-9]\d*$/, message: "缴费周期必须为正整数", trigger: "blur" },
 	],
-	"预付期(单位:天)": [
+	prepaymentPeriod: [
 		{ required: true, message: "请输入预付期", trigger: "blur" },
 		{ pattern: /^[1-9]\d*$/, message: "预付期必须为正整数", trigger: "blur" },
 	],
-	单位: [
+	unit: [
 		{ required: true, message: "请输入单位", trigger: "blur" },
 		{ min: 1, max: 20, message: "单位长度在 1 到 20 个字符", trigger: "blur" },
 	],
-	账户抵扣: [{ required: true, message: "请选择账户抵扣", trigger: "change" }],
-	手机缴费: [{ required: true, message: "请选择手机缴费", trigger: "change" }],
-	进位方式: [{ required: true, message: "请选择进位方式", trigger: "change" }],
-	保留小数位: [{ required: true, message: "请选择保留小数位", trigger: "change" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
-	计算公式: [{ required: true, message: "请输入计算公式", trigger: "blur" }],
-	计费单价: [
+	accountDeduction: [{ required: true, message: "请选择账户抵扣", trigger: "change" }],
+	mobilePayment: [{ required: true, message: "请选择手机缴费", trigger: "change" }],
+	roundingMode: [{ required: true, message: "请选择进位方式", trigger: "change" }],
+	decimalPlaces: [{ required: true, message: "请选择保留小数位", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
+	formula: [{ required: true, message: "请输入计算公式", trigger: "blur" }],
+	billingUnitPrice: [
 		{ required: true, message: "请输入计费单价", trigger: "blur" },
 		{ pattern: /^[0-9]+(\.[0-9]{1,4})?$/, message: "请输入正确的金额格式", trigger: "blur" },
 	],
-	固定费用: [
+	fixedFee: [
 		{ required: true, message: "请输入固定费用", trigger: "blur" },
 		{ pattern: /^[0-9]+(\.[0-9]{1,4})?$/, message: "请输入正确的金额格式", trigger: "blur" },
 	],

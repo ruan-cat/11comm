@@ -68,25 +68,25 @@ export interface MerchantAdminListQuery extends BaseListQueryParams {
  * 性别选项
  */
 export const merchantAdminGenderOptions: OptionsType = [
-	{ label: "男", value: "男" },
-	{ label: "女", value: "女" },
+	{ label: "男", value: "male" },
+	{ label: "女", value: "female" },
 ];
 
 /**
  * 权限等级选项
  */
 export const merchantAdminPermissionLevelOptions: OptionsType = [
-	{ label: "超级管理员", value: "超级管理员" },
-	{ label: "普通管理员", value: "普通管理员" },
-	{ label: "业务操作员", value: "业务操作员" },
+	{ label: "超级管理员", value: "super_admin" },
+	{ label: "普通管理员", value: "normal_admin" },
+	{ label: "业务操作员", value: "operator" },
 ];
 
 /**
  * 状态选项
  */
 export const merchantAdminStatusOptions: OptionsType = [
-	{ label: "正常", value: "正常" },
-	{ label: "禁用", value: "禁用" },
-	{ label: "待审核", value: "待审核" },
-	{ label: "已离职", value: "已离职" },
+	{ label: "正常", value: "normal" },
+	{ label: "禁用", value: "disabled" },
+	{ label: "待审核", value: "pending" },
+	{ label: "已离职", value: "resigned" },
 ];

@@ -4,13 +4,13 @@ import type { OptionsType, BaseListQueryParams } from "../../../common";
  * @description 公示类型
  * Notice type
  */
-export type NoticeType = "通知" | "公告" | "提醒" | "活动" | "维修" | "安全";
+export type NoticeType = "notification" | "announcement" | "reminder" | "activity" | "maintenance" | "safety";
 
 /**
  * @description 公示状态类型
  * Notice status type
  */
-export type NoticeStatus = "草稿" | "已发布" | "已过期";
+export type NoticeStatus = "draft" | "published" | "expired";
 
 /**
  * @description 小区公示列表数据
@@ -47,12 +47,12 @@ export interface CommunityNoticeQueryParams extends BaseListQueryParams {
  * Notice type options
  */
 export const noticeTypeOptions: OptionsType = [
-	{ label: "通知", value: "通知" },
-	{ label: "公告", value: "公告" },
-	{ label: "提醒", value: "提醒" },
-	{ label: "活动", value: "活动" },
-	{ label: "维修", value: "维修" },
-	{ label: "安全", value: "安全" },
+	{ label: "通知", value: "notification" },
+	{ label: "公告", value: "announcement" },
+	{ label: "提醒", value: "reminder" },
+	{ label: "活动", value: "activity" },
+	{ label: "维修", value: "maintenance" },
+	{ label: "安全", value: "safety" },
 ];
 
 /**
@@ -60,9 +60,9 @@ export const noticeTypeOptions: OptionsType = [
  * Notice status options
  */
 export const noticeStatusOptions: OptionsType = [
-	{ label: "草稿", value: "草稿" },
-	{ label: "已发布", value: "已发布" },
-	{ label: "已过期", value: "已过期" },
+	{ label: "草稿", value: "draft" },
+	{ label: "已发布", value: "published" },
+	{ label: "已过期", value: "expired" },
 ];
 
 /**
@@ -95,10 +95,10 @@ export interface CommunityNoticeFormVO {
  */
 export const defaultCommunityNoticeForm: CommunityNoticeFormVO = {
 	noticeTitle: "",
-	noticeType: "通知",
+	noticeType: "notification",
 	validityStartTime: "",
 	validityEndTime: "",
-	status: "草稿",
+	status: "draft",
 	summary: "",
 	publisher: "",
 	noticeTime: "",
@@ -114,7 +114,7 @@ export function convertListToForm(row: CommunityNoticeListItem): CommunityNotice
 		noticeType: row.noticeType,
 		validityStartTime: "",
 		validityEndTime: "",
-		status: "已发布",
+		status: "published",
 		summary: "",
 		publisher: row.publisher,
 		noticeTime: row.noticeTime,

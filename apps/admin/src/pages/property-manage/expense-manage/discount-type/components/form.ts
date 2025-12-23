@@ -42,5 +42,3 @@ export interface DiscountTypeFormProps {
 	/** 是否禁用表单 - 用于查看模式 */
 	disabled?: boolean;
 }
-
-export { discountTypeOptions };

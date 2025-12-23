@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { type CommunityInformationFormProps, type FormVO } from "./form";
+import { type CommunityInformationFormProps, type CommunityInformationFormVO } from "./form";
 
 /** 表单组件 props */
 const props = defineProps<CommunityInformationFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & FormVO;
+const defaultValues = props.defaultValues as FieldValues & CommunityInformationFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -21,7 +21,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & FormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & CommunityInformationFormVO;
 
 /**
  * 表单对象
@@ -39,7 +39,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "小区ID",
-		prop: "小区ID",
+		prop: "communityId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -48,7 +48,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "小区名称",
-		prop: "小区名称",
+		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -57,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "物业公司",
-		prop: "物业公司",
+		prop: "propertyCompany",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -66,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "附近地标",
-		prop: "附近地标",
+		prop: "nearbyLandmark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -75,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "省份",
-		prop: "省份",
+		prop: "province",
 		valueType: "select",
 		options: [
 			{ label: "福建省", value: "福建省" },
@@ -91,7 +91,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "城市",
-		prop: "城市",
+		prop: "city",
 		valueType: "select",
 		options: [
 			{ label: "福州市", value: "福州市" },
@@ -107,7 +107,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "区县",
-		prop: "区县",
+		prop: "district",
 		valueType: "select",
 		options: [
 			{ label: "仓山区", value: "仓山区" },
@@ -126,7 +126,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "详细地址",
-		prop: "详细地址",
+		prop: "detailedAddress",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -135,7 +135,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -144,7 +144,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "管理员",
-		prop: "管理员",
+		prop: "administrator",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -153,7 +153,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: [
 			{ label: "正常运营", value: "正常运营" },
@@ -167,7 +167,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "社区编码",
-		prop: "社区编码",
+		prop: "communityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -176,7 +176,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "城市编码",
-		prop: "城市编码",
+		prop: "cityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -185,7 +185,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -196,30 +196,30 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	小区名称: [
+	communityName: [
 		{ required: true, message: "请输入小区名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	物业公司: [
+	propertyCompany: [
 		{ required: true, message: "请输入物业公司名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	省份: [{ required: true, message: "请选择省份", trigger: "change" }],
-	城市: [{ required: true, message: "请选择城市", trigger: "change" }],
-	区县: [{ required: true, message: "请选择区县", trigger: "change" }],
-	详细地址: [
+	province: [{ required: true, message: "请选择省份", trigger: "change" }],
+	city: [{ required: true, message: "请选择城市", trigger: "change" }],
+	district: [{ required: true, message: "请选择区县", trigger: "change" }],
+	detailedAddress: [
 		{ required: true, message: "请输入详细地址", trigger: "blur" },
 		{ min: 5, max: 100, message: "长度在 5 到 100 个字符", trigger: "blur" },
 	],
-	联系电话: [
+	contactPhone: [
 		{ required: true, message: "请输入联系电话", trigger: "blur" },
 		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
 	],
-	管理员: [
+	administrator: [
 		{ required: true, message: "请输入管理员姓名", trigger: "blur" },
 		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
 	],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 /** 默认对外导出 */

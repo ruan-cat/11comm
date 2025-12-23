@@ -6,20 +6,20 @@ export { statusOptions } from "@01s-11comm/type";
 
 /** 单元格类型联合类型 */
 export type CellType =
-	| "住宅单元"
-	| "商业单元"
-	| "车库单元"
-	| "办公单元"
-	| "会所单元"
-	| "物业单元"
-	| "运动单元"
-	| "教育单元"
-	| "医疗单元"
-	| "仓储单元"
-	| "文化单元";
+	| "ResidentialUnit"
+	| "CommercialUnit"
+	| "GarageUnit"
+	| "OfficeUnit"
+	| "ClubUnit"
+	| "PropertyUnit"
+	| "SportsUnit"
+	| "EducationUnit"
+	| "MedicalUnit"
+	| "StorageUnit"
+	| "CultureUnit";
 
 /** 状态联合类型 */
-export type CellStatus = "已初始化" | "未初始化" | "初始化中" | "初始化失败";
+export type CellStatus = "Initialized" | "Uninitialized" | "Initializing" | "InitializationFailed";
 
 // ==================== 业务类型定义 ====================
 
@@ -55,13 +55,13 @@ export interface InitializeCellFormVO {
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: InitializeCellFormVO = {
 	cellName: "",
-	cellType: "住宅单元",
+	cellType: "ResidentialUnit",
 	buildingId: "",
 	buildingName: "",
 	floor: "",
 	unitNumber: "",
 	households: 0,
-	status: "未初始化",
+	status: "Uninitialized",
 	description: "",
 };
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { type InitializeCommunityFormProps, type InitializeCommunityFormVO, statusOptions } from "./form";
+import { type InitializeCommunityFormProps, statusOptions } from "./form";
 
 const props = defineProps<InitializeCommunityFormProps>();
 

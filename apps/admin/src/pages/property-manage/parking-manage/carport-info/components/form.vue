@@ -38,7 +38,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "停车场",
-		prop: "停车场",
+		prop: "parkingLot",
 		valueType: "select",
 		options: parkingLotOptions,
 		fieldProps: {
@@ -47,7 +47,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位编号",
-		prop: "车位",
+		prop: "parkingSpace",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入车位编号",
@@ -55,7 +55,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位状态",
-		prop: "车位状态",
+		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
 		fieldProps: {
@@ -64,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车位类型",
-		prop: "车位类型",
+		prop: "parkingSpaceType",
 		valueType: "select",
 		options: parkingSpaceTypeOptions,
 		fieldProps: {
@@ -73,7 +73,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "面积",
-		prop: "面积",
+		prop: "area",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入车位面积",
@@ -81,7 +81,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "业主姓名",
-		prop: "业主姓名",
+		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入业主姓名",
@@ -89,7 +89,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "联系电话",
-		prop: "联系电话",
+		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入联系电话",
@@ -97,7 +97,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "车辆号码",
-		prop: "车辆号码",
+		prop: "vehicleNumber",
 		valueType: "input",
 		fieldProps: {
 			placeholder: "请输入车辆号码",
@@ -105,7 +105,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "购买日期",
-		prop: "购买日期",
+		prop: "purchaseDate",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -114,7 +114,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "到期日期",
-		prop: "到期日期",
+		prop: "expiryDate",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -123,7 +123,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "月租费用",
-		prop: "月租费用",
+		prop: "monthlyRent",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
@@ -133,7 +133,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
 			placeholder: "请输入备注信息",
@@ -144,49 +144,49 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	停车场: [
+	parkingLot: [
 		{
 			required: true,
 			message: "请选择停车场",
 			trigger: "change",
 		},
 	],
-	车位: [
+	parkingSpace: [
 		{
 			required: true,
 			message: "请输入车位编号",
 			trigger: "blur",
 		},
 	],
-	车位状态: [
+	parkingSpaceStatus: [
 		{
 			required: true,
 			message: "请选择车位状态",
 			trigger: "change",
 		},
 	],
-	车位类型: [
+	parkingSpaceType: [
 		{
 			required: true,
 			message: "请选择车位类型",
 			trigger: "change",
 		},
 	],
-	面积: [
+	area: [
 		{
 			required: true,
 			message: "请输入车位面积",
 			trigger: "blur",
 		},
 	],
-	联系电话: [
+	contactPhone: [
 		{
 			pattern: /^1[3-9]\d{9}$/,
 			message: "请输入正确的手机号格式",
 			trigger: "blur",
 		},
 	],
-	月租费用: [
+	monthlyRent: [
 		{
 			type: "number",
 			min: 0,

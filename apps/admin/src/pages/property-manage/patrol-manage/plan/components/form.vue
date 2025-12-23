@@ -2,7 +2,7 @@
 import { ref, computed, useTemplateRef } from "vue";
 
 import { PatrolPlanFormProps } from "./form";
-import type { PatrolPlanFormVO } from "./form";
+import type { PatrolPlanFormVO } from "@01s-11comm/type";
 import { checkInMethodOptions } from "@01s-11comm/type";
 import { statusOptions } from "@01s-11comm/type";
 
@@ -40,17 +40,17 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "计划名称",
-		prop: "计划名称",
+		prop: "planName",
 		valueType: "input",
 	},
 	{
 		label: "计划路线",
-		prop: "计划路线",
+		prop: "planRoute",
 		valueType: "input",
 	},
 	{
 		label: "计划周期",
-		prop: "计划周期",
+		prop: "planCycle",
 		valueType: "select",
 		options: [
 			{ label: "每日", value: "每日" },
@@ -62,13 +62,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "签到方式",
-		prop: "签到方式",
+		prop: "checkInMethod",
 		valueType: "select",
 		options: checkInMethodOptions,
 	},
 	{
 		label: "日期范围",
-		prop: "日期范围",
+		prop: "dateRange",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "daterange",
@@ -76,7 +76,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "时间范围",
-		prop: "时间范围",
+		prop: "timeRange",
 		valueType: "time-picker",
 		fieldProps: {
 			isRange: true,
@@ -84,7 +84,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "任务提前(分钟)",
-		prop: "任务提前(分钟)",
+		prop: "taskAdvanceMinutes",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
@@ -93,12 +93,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "巡检人员",
-		prop: "巡检人员",
+		prop: "patrolStaff",
 		valueType: "input",
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: statusOptions,
 	},
@@ -106,18 +106,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	计划名称: [{ required: true, message: "请输入计划名称", trigger: "blur" }],
-	计划路线: [{ required: true, message: "请输入计划路线", trigger: "blur" }],
-	计划周期: [{ required: true, message: "请选择计划周期", trigger: "change" }],
-	签到方式: [{ required: true, message: "请选择签到方式", trigger: "change" }],
-	日期范围: [{ required: true, message: "请选择日期范围", trigger: "change" }],
-	时间范围: [{ required: true, message: "请选择时间范围", trigger: "change" }],
-	"任务提前(分钟)": [
+	planName: [{ required: true, message: "请输入计划名称", trigger: "blur" }],
+	planRoute: [{ required: true, message: "请输入计划路线", trigger: "blur" }],
+	planCycle: [{ required: true, message: "请选择计划周期", trigger: "change" }],
+	checkInMethod: [{ required: true, message: "请选择签到方式", trigger: "change" }],
+	dateRange: [{ required: true, message: "请选择日期范围", trigger: "change" }],
+	timeRange: [{ required: true, message: "请选择时间范围", trigger: "change" }],
+	taskAdvanceMinutes: [
 		{ required: true, message: "请输入任务提前时间", trigger: "blur" },
 		{ type: "number" as const, min: 0, max: 1440, message: "请输入0-1440之间的数字", trigger: "blur" },
 	],
-	巡检人员: [{ required: true, message: "请输入巡检人员", trigger: "blur" }],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
+	patrolStaff: [{ required: true, message: "请输入巡检人员", trigger: "blur" }],
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 });
 
 defineExpose({

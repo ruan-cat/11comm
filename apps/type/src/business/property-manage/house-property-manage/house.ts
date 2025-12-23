@@ -5,13 +5,22 @@ import { houseTypeOptions, houseStatusOptions } from "../../../common/business-o
  * @description 房屋状态
  * House status
  */
-export type HouseStatus = "未销售" | "已入住" | "已交房" | "已装修" | "未入住" | "已出租" | "已出售" | "空闲" | "装修中";
+export type HouseStatus =
+	| "unsold"
+	| "occupied"
+	| "delivered"
+	| "decorating"
+	| "vacant"
+	| "rented"
+	| "sold"
+	| "available"
+	| "under_decoration";
 
 /**
  * @description 房屋类型
  * House type
  */
-export type HouseType = "住宅" | "办公室" | "宿舍" | "储物间";
+export type HouseType = "residential" | "office" | "dormitory" | "storage";
 
 /**
  * @description 房屋管理列表数据

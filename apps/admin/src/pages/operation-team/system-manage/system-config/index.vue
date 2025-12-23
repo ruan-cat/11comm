@@ -19,7 +19,7 @@ import {
 	systemConfigStatusOptions,
 } from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
-import { type SystemConfigFormProps, defaultForm, type FormVO } from "./components/form";
+import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -183,14 +183,14 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const formVO: FormVO = isAdd.value
+	const formVO: SystemConfigFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value || isInfo.value
 			? cloneDeep({
 					...defaultForm,
-					配置名称: row?.configName || "",
-					配置值: row?.configValue || "",
-					配置类型: (row?.configType || "文本") as
+					configName: row?.configName || "",
+					configValue: row?.configValue || "",
+					configType: (row?.configType || "文本") as
 						| "文本"
 						| "数字"
 						| "布尔值"
@@ -198,7 +198,7 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 						| "日期时间"
 						| "文件路径"
 						| "URL",
-					配置分组: (row?.configGroup || "系统基础") as
+					configGroup: (row?.configGroup || "系统基础") as
 						| "系统基础"
 						| "业务配置"
 						| "第三方服务"
@@ -206,8 +206,8 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 						| "通知设置"
 						| "日志配置"
 						| "缓存配置",
-					状态: (row?.status || "启用") as "启用" | "禁用",
-					描述: row?.description || "",
+					status: (row?.status || "启用") as "启用" | "禁用",
+					description: row?.description || "",
 				})
 			: cloneDeep(defaultForm);
 

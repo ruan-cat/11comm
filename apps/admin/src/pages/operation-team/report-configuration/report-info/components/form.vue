@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
 
-import { ExpenseItemSettingFormProps, 报表类型, 报表信息表单_VO, defaultForm } from "./form";
+import { ExpenseItemSettingFormProps, ReportInfoFormVO, defaultForm } from "./form";
 
 const props = defineProps<ExpenseItemSettingFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 报表信息表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ReportInfoFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 报表信息表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ReportInfoFormVO;
 
 /**
  * 表单对象
@@ -39,10 +39,10 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	// 组编号
+	// 报表组
 	{
 		label: "组编号",
-		prop: "组编号",
+		prop: "reportGroup",
 		valueType: "select",
 		options: [
 			{ label: "测试报表组", value: "测试报表组" },
@@ -52,24 +52,24 @@ const plusFormColumns = ref<PlusColumn[]>([
 		],
 		required: true,
 	},
-	//选项标题
+	// 选项标题
 	{
 		label: "选项标题",
-		prop: "选项标题",
+		prop: "optionTitle",
 		valueType: "input",
 		required: true,
 	},
-	//排序
+	// 排序
 	{
 		label: "排序",
-		prop: "排序",
+		prop: "sort",
 		valueType: "input",
 		required: true,
 	},
-	//描述
+	// 描述
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "input",
 		required: true,
 	},

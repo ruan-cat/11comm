@@ -5,12 +5,12 @@ import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { DiscountSettingFormProps, 折扣设置表单_VO, defaultForm } from "./form";
+import { DiscountSettingFormProps, defaultForm } from "./form";
 
 const props = defineProps<DiscountSettingFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 折扣设置表单_VO;
+const defaultValues = props.defaultValues as FieldValues & DiscountSettingFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 折扣设置表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & DiscountSettingFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 折扣名称
 	{
 		label: "折扣名称",
-		prop: "折扣名称",
+		prop: "discountName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
@@ -53,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 折扣类型
 	{
 		label: "折扣类型",
-		prop: "折扣类型",
+		prop: "discountType",
 		valueType: "select",
 		options: discountTypeOptions,
 		required: true,
@@ -66,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 规则
 	{
 		label: "规则",
-		prop: "规则",
+		prop: "rule",
 		valueType: "select",
 		options: ruleOptions,
 		required: true,
@@ -79,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 描述
 	{
 		label: "描述",
-		prop: "描述",
+		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			clearable: true,
@@ -89,12 +89,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	折扣名称: [
+	discountName: [
 		{ required: true, message: "请输入折扣名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
-	折扣类型: [{ required: true, message: "请选择折扣类型", trigger: "change" }],
-	规则: [{ required: true, message: "请选择规则", trigger: "change" }],
+	discountType: [{ required: true, message: "请选择折扣类型", trigger: "change" }],
+	rule: [{ required: true, message: "请选择规则", trigger: "change" }],
 });
 
 defineExpose({

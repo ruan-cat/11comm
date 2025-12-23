@@ -136,14 +136,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	审核状态: [
+	auditStatus: [
 		{
 			required: true,
 			message: "请选择审核状态",
 			trigger: "change",
 		},
 	],
-	审核备注: [
+	auditRemark: [
 		{
 			required: true,
 			message: "请输入审核备注",

@@ -3,25 +3,25 @@ import type { OptionsType } from "../../../common";
 // ==================== 联合类型定义 ====================
 
 /** 费用标识联合类型 Fee identifier union type */
-export type FeeIdentifierType = "周期性费用" | "一次性费用";
+export type FeeIdentifierType = "recurring" | "one_time";
 
 /** 付费类型联合类型 Payment type union type */
-export type PaymentType = "预付费" | "后付费";
+export type PaymentType = "prepaid" | "postpaid";
 
 /** 账户抵扣联合类型 Account deduction union type */
-export type AccountDeductionType = "是" | "否";
+export type AccountDeductionType = "yes" | "no";
 
 /** 手机缴费联合类型 Mobile payment union type */
-export type MobilePaymentType = "是" | "否";
+export type MobilePaymentType = "yes" | "no";
 
 /** 进位方式联合类型 Rounding method union type */
-export type RoundingMethodType = "四舍五入" | "向上取整" | "向下取整";
+export type RoundingMethodType = "round" | "ceil" | "floor";
 
 /** 保留小数位联合类型 Decimal places union type */
-export type DecimalPlacesType = "取整" | "1位" | "2位" | "3位" | "4位";
+export type DecimalPlacesType = "0" | "1" | "2" | "3" | "4";
 
 /** 状态联合类型 Status union type */
-export type StatusType = "启用" | "禁用";
+export type StatusType = "enabled" | "disabled";
 
 /** 费用类型联合类型 Expense type union type */
 export type ExpenseType =
@@ -79,8 +79,8 @@ export interface HouseChargeQueryParams {
  * Status options
  */
 export const houseChargeStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
 ];
 
 /**
@@ -107,9 +107,9 @@ export const houseChargeTypeOptions: OptionsType = [
  * Payment status options
  */
 export const paymentStatusOptions: OptionsType = [
-	{ label: "未缴费", value: "未缴费" },
-	{ label: "已缴费", value: "已缴费" },
-	{ label: "逾期", value: "逾期" },
+	{ label: "未缴费", value: "unpaid" },
+	{ label: "已缴费", value: "paid" },
+	{ label: "逾期", value: "overdue" },
 ];
 
 // ==================== 表单数据接口 ====================
@@ -163,16 +163,16 @@ export interface HouseChargeFormVO {
 export const defaultHouseChargeForm: HouseChargeFormVO = {
 	expenseType: "物业费",
 	chargeItem: "",
-	feeIdentifier: "周期性费用",
-	paymentType: "预付费",
+	feeIdentifier: "recurring",
+	paymentType: "prepaid",
 	paymentCycleMonths: "1",
 	prepaidPeriodDays: "30",
 	unit: "元/平方米·月",
-	accountDeduction: "是",
-	mobilePayment: "是",
-	roundingMethod: "四舍五入",
-	decimalPlaces: "2位",
-	status: "启用",
+	accountDeduction: "yes",
+	mobilePayment: "yes",
+	roundingMethod: "round",
+	decimalPlaces: "2",
+	status: "enabled",
 	calculationFormula: "",
 	billingUnitPrice: "",
 	fixedFee: "",

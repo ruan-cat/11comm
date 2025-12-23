@@ -1,6 +1,6 @@
 import type { Mode } from "@/composables/use-mode";
 
-const REPORT_GROUP_TYPES = ["组名称", "组url", "描述"] as const;
+const REPORT_GROUP_TYPES = ["groupName", "groupUrl", "description"] as const;
 
 // 警告 这里仅为了演示 实际上的业务类型为 string
 export type ReportGroupType = (typeof REPORT_GROUP_TYPES)[number];

@@ -37,7 +37,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "工单编码",
-		prop: "工单编码",
+		prop: "workOrderCode",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
@@ -45,107 +45,107 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "位置",
-		prop: "位置",
+		prop: "location",
 		valueType: "input",
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
 		label: "维修类型",
-		prop: "维修类型",
+		prop: "maintenanceType",
 		valueType: "select",
 		options: repairCategoryOptions,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		valueType: "input",
 	},
 	{
 		label: "预约开始结束时间",
-		prop: "预约开始结束时间",
+		prop: "appointmentTimeRange",
 		valueType: "input",
 	},
 	{
 		label: "提交时间",
-		prop: "提交时间",
+		prop: "submitTime",
 		valueType: "input",
 	},
 	{
 		label: "提单时长",
-		prop: "提单时长",
+		prop: "orderDuration",
 		valueType: "input",
 	},
 	{
 		label: "完成时间",
-		prop: "完成时间",
+		prop: "completeTime",
 		valueType: "input",
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: workOrderStatusOptions,
 	},
 	{
 		label: "违规说明",
-		prop: "违规说明",
+		prop: "violationDescription",
 		valueType: "textarea",
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	位置: [
+	location: [
 		{
 			required: true,
 			message: "请输入位置",
 			trigger: "blur",
 		},
 	],
-	报修类型: [
+	repairType: [
 		{
 			required: true,
 			message: "请选择报修类型",
 			trigger: "change",
 		},
 	],
-	维修类型: [
+	maintenanceType: [
 		{
 			required: true,
 			message: "请选择维修类型",
 			trigger: "change",
 		},
 	],
-	报修人: [
+	reporter: [
 		{
 			required: true,
 			message: "请输入报修人",
 			trigger: "blur",
 		},
 	],
-	联系方式: [
+	contactInfo: [
 		{
 			required: true,
 			message: "请输入联系方式",
 			trigger: "blur",
 		},
 	],
-	状态: [
+	status: [
 		{
 			required: true,
 			message: "请选择状态",

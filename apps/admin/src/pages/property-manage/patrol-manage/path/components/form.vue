@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import { type PatrolPathFormProps, defaultForm } from "./form";
-import type { PatrolPathFormData } from "./form";
+import type { PatrolPathFormData } from "@01s-11comm/type";
 import { patrolPointTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPathFormProps>();
@@ -37,7 +37,7 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "巡检点名称",
-		prop: "巡检点名称",
+		prop: "patrolPointName",
 		valueType: "input",
 		fieldProps: {
 			readonly: true,
@@ -45,18 +45,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "巡检点类型",
-		prop: "巡检点类型",
+		prop: "patrolPointType",
 		valueType: "select",
 		options: patrolPointTypeOptions,
 	},
 	{
 		label: "巡检位置",
-		prop: "巡检位置",
+		prop: "patrolLocation",
 		valueType: "input",
 	},
 	{
 		label: "开始时间",
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "time-picker",
 		fieldProps: {
 			format: "HH:mm",
@@ -65,7 +65,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "结束时间",
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "time-picker",
 		fieldProps: {
 			format: "HH:mm",
@@ -74,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		label: "排序",
-		prop: "排序",
+		prop: "sortOrder",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
@@ -84,12 +84,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	巡检点名称: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
-	巡检点类型: [{ required: true, message: "请选择巡检点类型", trigger: "change" }],
-	巡检位置: [{ required: true, message: "请输入巡检位置", trigger: "blur" }],
-	开始时间: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	结束时间: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	排序: [{ required: true, message: "请输入排序", trigger: "blur" }],
+	patrolPointName: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
+	patrolPointType: [{ required: true, message: "请选择巡检点类型", trigger: "change" }],
+	patrolLocation: [{ required: true, message: "请输入巡检位置", trigger: "blur" }],
+	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
+	sortOrder: [{ required: true, message: "请输入排序", trigger: "blur" }],
 });
 
 defineExpose({

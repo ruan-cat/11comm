@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { PatrolItemFormProps, PatrolItemFormVO } from "./form";
+import { PatrolItemFormProps } from "./form";
+import type { PatrolItemFormVO } from "@01s-11comm/type";
 
 const props = defineProps<PatrolItemFormProps>();
 
@@ -41,46 +42,46 @@ const formComputed = computed(() => {
 const plusFormColumns = ref<PlusColumn[]>([
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "code",
 		valueType: "input",
 		required: true,
 	},
 	{
 		label: "巡检项目",
-		prop: "巡检项目",
+		prop: "patrolItem",
 		valueType: "input",
 		required: true,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		valueType: "date-picker",
 		required: true,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		valueType: "input",
 	},
 ]);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	编号: [
+	code: [
 		{
 			required: true,
 			message: "请输入编号",
 			trigger: "blur",
 		},
 	],
-	巡检项目: [
+	patrolItem: [
 		{
 			required: true,
 			message: "请输入巡检项目",
 			trigger: "blur",
 		},
 	],
-	创建时间: [
+	createTime: [
 		{
 			required: true,
 			message: "请选择创建时间",

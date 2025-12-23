@@ -5,12 +5,12 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { SiteManagementFormProps, 场地管理_VO, 场地状态Options } from "./form";
+import { SiteManagementFormProps, SiteManagementFormVO, siteManagementStatusOptions } from "./form";
 
 const props = defineProps<SiteManagementFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 场地管理_VO;
+const defaultValues = props.defaultValues as FieldValues & SiteManagementFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -24,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 场地管理_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & SiteManagementFormVO;
 
 /**
  * 表单对象
@@ -42,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 编号
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "idNumber",
 		valueType: "input",
 		required: true,
 	},
@@ -50,7 +50,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 名称
 	{
 		label: "名称",
-		prop: "名称",
+		prop: "name",
 		valueType: "input",
 		required: true,
 	},
@@ -58,7 +58,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 开场时间
 	{
 		label: "开场时间",
-		prop: "开场时间",
+		prop: "openingTime",
 		valueType: "time-picker",
 		fieldProps: {
 			format: "HH:mm",
@@ -70,7 +70,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 关场时间
 	{
 		label: "关场时间",
-		prop: "关场时间",
+		prop: "closingTime",
 		valueType: "time-picker",
 		fieldProps: {
 			format: "HH:mm",
@@ -82,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 每小时费用
 	{
 		label: "每小时费用",
-		prop: "每小时费用",
+		prop: "hourlyFee",
 		valueType: "input",
 		required: true,
 	},
@@ -90,7 +90,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 管理员
 	{
 		label: "管理员",
-		prop: "管理员",
+		prop: "administrator",
 		valueType: "input",
 		required: true,
 	},
@@ -98,7 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 管理员电话
 	{
 		label: "管理员电话",
-		prop: "管理员电话",
+		prop: "administratorPhone",
 		valueType: "input",
 		required: true,
 	},
@@ -106,9 +106,9 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
-		options: 场地状态Options,
+		options: siteManagementStatusOptions,
 		required: true,
 	},
 ]);
@@ -118,49 +118,49 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	编号: [
+	idNumber: [
 		{
 			required: true,
 			message: "请输入编号",
 			trigger: "blur",
 		},
 	],
-	名称: [
+	name: [
 		{
 			required: true,
 			message: "请输入名称",
 			trigger: "blur",
 		},
 	],
-	开场时间: [
+	openingTime: [
 		{
 			required: true,
 			message: "请选择开场时间",
 			trigger: "change",
 		},
 	],
-	关场时间: [
+	closingTime: [
 		{
 			required: true,
 			message: "请选择关场时间",
 			trigger: "change",
 		},
 	],
-	每小时费用: [
+	hourlyFee: [
 		{
 			required: true,
 			message: "请输入每小时费用",
 			trigger: "blur",
 		},
 	],
-	管理员: [
+	administrator: [
 		{
 			required: true,
 			message: "请输入管理员",
 			trigger: "blur",
 		},
 	],
-	管理员电话: [
+	administratorPhone: [
 		{
 			required: true,
 			message: "请输入管理员电话",
@@ -172,7 +172,7 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	状态: [
+	status: [
 		{
 			required: true,
 			message: "请选择状态",

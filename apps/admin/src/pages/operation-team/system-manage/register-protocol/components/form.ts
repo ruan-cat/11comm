@@ -33,10 +33,10 @@ export interface RegisterProtocolFormVO {
 /** 默认表单 @description 用于初始化表单数据 */
 export const defaultForm: RegisterProtocolFormVO = {
 	protocolName: "",
-	protocolType: "用户注册协议",
+	protocolType: "UserRegistrationProtocol",
 	protocolVersion: "v1.0.0",
-	status: "草稿",
-	isMandatory: "是",
+	status: "Draft",
+	isMandatory: "Yes",
 	protocolSummary: "",
 	protocolContent: "",
 	effectiveDate: "",
@@ -66,23 +66,23 @@ export interface RegisterProtocolFormProps {
 export const protocolTypeOptions: OptionsType = [
 	{
 		label: "用户注册协议",
-		value: "用户注册协议",
+		value: "UserRegistrationProtocol",
 	},
 	{
 		label: "隐私政策",
-		value: "隐私政策",
+		value: "PrivacyPolicy",
 	},
 	{
 		label: "服务条款",
-		value: "服务条款",
+		value: "TermsOfService",
 	},
 	{
 		label: "社区规则",
-		value: "社区规则",
+		value: "CommunityRules",
 	},
 	{
 		label: "免责声明",
-		value: "免责声明",
+		value: "Disclaimer",
 	},
 ];
 
@@ -92,15 +92,15 @@ export const protocolTypeOptions: OptionsType = [
 export const statusOptions: OptionsType = [
 	{
 		label: "启用",
-		value: "启用",
+		value: "Enabled",
 	},
 	{
 		label: "禁用",
-		value: "禁用",
+		value: "Disabled",
 	},
 	{
 		label: "草稿",
-		value: "草稿",
+		value: "Draft",
 	},
 ];
 
@@ -110,10 +110,10 @@ export const statusOptions: OptionsType = [
 export const isMandatoryOptions: OptionsType = [
 	{
 		label: "是",
-		value: "是",
+		value: "Yes",
 	},
 	{
 		label: "否",
-		value: "否",
+		value: "No",
 	},
 ];
