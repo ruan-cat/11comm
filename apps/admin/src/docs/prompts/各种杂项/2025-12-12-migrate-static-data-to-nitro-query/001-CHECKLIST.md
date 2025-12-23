@@ -8,7 +8,7 @@
 
 ## 📋 单页面完整迁移清单
 
-### Step 1: 创建类型定义文件 (15分钟) 🔴 [CRITICAL]
+### Step 1: 创建类型定义文件 (15 分钟) 🔴 [CRITICAL]
 
 **文件路径**：`apps/type/src/business/{module}/{sub-module}/{page}.ts`
 
@@ -24,7 +24,7 @@
 
 ---
 
-### Step 2: 创建 Mock 数据文件 (10分钟) 🟡 [IMPORTANT]
+### Step 2: 创建 Mock 数据文件 (10 分钟) 🟡 [IMPORTANT]
 
 **文件路径**：`apps/admin/server/api/{module}/{sub-module}/{page}/mock-data.ts`
 
@@ -35,7 +35,7 @@
 
 ---
 
-### Step 3: 创建 Nitro 接口文件 (20分钟) 🔴 [CRITICAL]
+### Step 3: 创建 Nitro 接口文件 (20 分钟) 🔴 [CRITICAL]
 
 **文件路径**：`apps/admin/server/api/{module}/{sub-module}/{page}/list.post.ts`
 
@@ -54,10 +54,12 @@ import { defineHandler, readBody } from "nitro/h3";
 import { filterDataByQuery } from "server/utils/filter-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<T>>> => {
-  const filteredData = filterDataByQuery(mockData, filters);
+	const filteredData = filterDataByQuery(mockData, filters);
 
-  const response: JsonVO<PageDTO<T>> = { /* ... */ };
-  return response;
+	const response: JsonVO<PageDTO<T>> = {
+		/* ... */
+	};
+	return response;
 });
 ```
 
@@ -65,7 +67,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<T>>> => {
 
 ---
 
-### Step 4: 创建前端 API Hook (10分钟) 🔴 [CRITICAL]
+### Step 4: 创建前端 API Hook (10 分钟) 🔴 [CRITICAL]
 
 **文件路径**：`apps/admin/src/api/{module}/{sub-module}/{page}/index.ts`
 
@@ -89,7 +91,7 @@ export function use{Page}ListQuery(initialParams: Partial<{Page}QueryParams>) {
 
 ---
 
-### Step 5: 改写列表页 (30分钟) 🔴 [CRITICAL]
+### Step 5: 改写列表页 (30 分钟) 🔴 [CRITICAL]
 
 **文件路径**：`apps/admin/src/pages/{module}/{sub-module}/{page}/index.vue`
 
@@ -123,12 +125,12 @@ export function use{Page}ListQuery(initialParams: Partial<{Page}QueryParams>) {
 ```typescript
 // ✅ 必须这样写
 function handleReSearch() {
-  plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-  resetParams();
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
 function handleSearch() {
-  updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 ```
 
@@ -170,14 +172,14 @@ function handleSearch() {
 
 ---
 
-### Step 6: 删除旧的假数据文件 (5分钟) 🟡 [IMPORTANT]
+### Step 6: 删除旧的假数据文件 (5 分钟) 🟡 [IMPORTANT]
 
 - [ ] 删除 `apps/admin/src/pages/{module}/{sub-module}/{page}/test-data.ts`
 - [ ] 确认无任何文件引用该文件
 
 ---
 
-### Step 7: 运行类型检查 (5分钟) 🔴 [CRITICAL]
+### Step 7: 运行类型检查 (5 分钟) 🔴 [CRITICAL]
 
 ```bash
 pnpm -F @01s-11comm/type typecheck
@@ -189,7 +191,7 @@ pnpm -F @01s-11comm/admin typecheck
 
 ---
 
-### Step 8: 功能测试 (15分钟) 🔴 [CRITICAL]
+### Step 8: 功能测试 (15 分钟) 🔴 [CRITICAL]
 
 - [ ] 列表页初始加载正常显示数据
 - [ ] 搜索功能正常（筛选条件生效）
@@ -204,11 +206,11 @@ pnpm -F @01s-11comm/admin typecheck
 
 ### 如果 typecheck 报错
 
-| 错误类型 | 快速检查 |
-|:---|:---|
-| `Cannot find name 'xxx'` | 检查是否从正确的模块导入类型 |
+| 错误类型                       | 快速检查                       |
+| :----------------------------- | :----------------------------- |
+| `Cannot find name 'xxx'`       | 检查是否从正确的模块导入类型   |
 | `Type 'xxx' is not assignable` | 检查是否使用了正确的英文类型名 |
-| `Import declaration conflicts` | 检查是否有重复导入或本地定义 |
+| `Import declaration conflicts` | 检查是否有重复导入或本地定义   |
 
 ### 如果列表页数据不显示
 
@@ -260,11 +262,11 @@ pnpm -F @01s-11comm/admin typecheck
 
 ## 🔗 相关文档
 
-| 遇到问题 | 查看文档 |
-|:---|:---|
-| 不知道从哪开始 | [000-CORE-RULES.md](./000-CORE-RULES.md) |
-| 需要详细步骤 | [index.md (migration-guide)](./index.md) |
-| Nitro 接口写法 | [nitro-api/spec.md](../../../../../openspec/changes/migrate-static-data-to-nitro-query/specs/nitro-api/spec.md) |
-| API Hook 写法 | [data-fetching/spec.md](../../../../../openspec/changes/migrate-static-data-to-nitro-query/specs/data-fetching/spec.md) |
-| 列表页改造 | [list-page-pattern/spec.md](../../../../../openspec/changes/migrate-static-data-to-nitro-query/specs/list-page-pattern/spec.md) |
-| 类型错误修复 | [.claude/agents/fix-type-error.md](../../../../../.claude/agents/fix-type-error.md) |
+|    遇到问题    |                                                            查看文档                                                             |
+| :------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
+| 不知道从哪开始 |                                            [000-CORE-RULES.md](./000-CORE-RULES.md)                                             |
+|  需要详细步骤  |                                            [index.md (migration-guide)](./index.md)                                             |
+| Nitro 接口写法 |         [nitro-api/spec.md](../../../../../openspec/changes/migrate-static-data-to-nitro-query/specs/nitro-api/spec.md)         |
+| API Hook 写法  |     [data-fetching/spec.md](../../../../../openspec/changes/migrate-static-data-to-nitro-query/specs/data-fetching/spec.md)     |
+|   列表页改造   | [list-page-pattern/spec.md](../../../../../openspec/changes/migrate-static-data-to-nitro-query/specs/list-page-pattern/spec.md) |
+|  类型错误修复  |                       [.claude/agents/fix-type-error.md](../../../../../.claude/agents/fix-type-error.md)                       |
