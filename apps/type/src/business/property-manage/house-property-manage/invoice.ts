@@ -124,36 +124,3 @@ export const invoiceAuditStatusOptions: OptionsType = [
 ];
 
 // Re-export options for convenience
-export { invoiceTypeOptions };
-
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 发票列表数据（兼容性中文名称）
- * Invoice list item (for compatibility with Chinese names)
- */
-export type 发票_列表数据 = InvoiceListItem;
-
-/**
- * @description 发票列表查询参数（兼容性中文名称）
- * Invoice query parameters (for compatibility with Chinese names)
- */
-export type 发票_列表查询_VO = InvoiceQueryParams;
-
-/**
- * @description 发票表单VO（兼容性中文名称）
- * Invoice form VO (for compatibility with Chinese names)
- */
-export type 发票表单_VO = InvoiceFormVO;
-
-/**
- * @description 发票类型选项（兼容性中文名称）
- * Invoice type options (for compatibility with Chinese names)
- */
-export const 发票类型Options = invoiceTypeOptions;
-
-/**
- * @description 发票审核状态选项（兼容性中文名称）
- * Invoice audit status options (for compatibility with Chinese names)
- */
-export const 发票审核状态Options = invoiceAuditStatusOptions;

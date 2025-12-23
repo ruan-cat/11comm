@@ -1,12 +1,22 @@
 import type { Mode } from "@/composables/use-mode";
 import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
-import { propertyManagementCompanyDefaultForm as defaultFormValues } from "@01s-11comm/type";
-
-/** FormVO类型别名 */
-export type FormVO = PropertyManagementCompanyFormVO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm = defaultFormValues;
+export const defaultForm: PropertyManagementCompanyFormVO = {
+	code: "",
+	name: "",
+	address: "",
+	phone: "",
+	administrator: "",
+	legalRepresentative: "",
+	establishmentDate: "",
+	landmark: "",
+	communityCount: 0,
+	companyType: "",
+	serviceLevel: "",
+	operationStatus: "",
+	remarks: "",
+};
 
 /**
  * 物业公司表单 props

@@ -77,34 +77,6 @@ export const discountSettingRuleOptions: OptionsType = [
 	{ label: "按金额限制", value: "按金额限制" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 折扣设置类型选项（兼容性）
- * Discount setting type options (for compatibility)
- */
-export const 折扣设置类型Options = discountSettingTypeOptions;
-
-/**
- * @description 折扣设置规则选项（兼容性）
- * Discount setting rule options (for compatibility)
- */
-export const 折扣设置规则Options = discountSettingRuleOptions;
-
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 折扣设置_列表数据 类型（兼容性）
- * Discount setting list data type (for compatibility)
- */
-export type 折扣设置_列表数据 = DiscountSettingListItem[];
-
-/**
- * @description 折扣设置_列表查询_VO 类型（兼容性）
- * Discount setting list query VO type (for compatibility)
- */
-export type 折扣设置_列表查询_VO = DiscountSettingQueryParams;
-
 /**
  * @description 折扣设置表单数据类型
  * Discount setting form data type
@@ -119,9 +91,3 @@ export interface DiscountSettingFormVO {
 	/** 描述 Description */
 	description: string;
 }
-
-/**
- * @description 折扣设置表单_VO 类型（兼容性）
- * Discount setting form VO type (for compatibility)
- */
-export type 折扣设置表单_VO = DiscountSettingFormVO;

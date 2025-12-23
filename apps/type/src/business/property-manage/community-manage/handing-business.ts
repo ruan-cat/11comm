@@ -73,10 +73,3 @@ export const feeCategoryOptions: OptionsType = [
 	{ label: "违约金", value: "违约金" },
 ];
 
-
-/**
- * @description 业务受理状态选项
- * Business handling status options
- */
-export const businessHandlingStatusOptions = feeStatusOptions;
-

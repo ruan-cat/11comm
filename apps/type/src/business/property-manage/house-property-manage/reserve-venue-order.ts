@@ -110,17 +110,3 @@ export interface ReserveVenueOrderFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
-
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 预约场地选项（兼容性）
- * Reserved venue options (for compatibility)
- */
-export const 预约场地Options = reservedVenueOptions;
-
-/**
- * @description 场地预约订单表单数据类型（兼容旧版本）
- * @deprecated 请使用 ReserveVenueOrderFormVO
- */
-export type 场地预约订单_VO = ReserveVenueOrderFormVO;

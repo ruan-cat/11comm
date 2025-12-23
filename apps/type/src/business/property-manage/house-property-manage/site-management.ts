@@ -79,11 +79,3 @@ export interface SiteManagementFormVO {
 	/** 状态 Status */
 	status: string;
 }
-
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 场地管理表单数据类型（兼容旧版本）
- * @deprecated 请使用 SiteManagementFormVO
- */
-export type 场地管理_VO = SiteManagementFormVO;

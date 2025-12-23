@@ -107,15 +107,3 @@ export interface RepairsHaveDoneListData extends RepairsHaveDoneListItem {
 	/** 备注 */
 	备注: string;
 }
-
-/**
- * @description 维修完成列表数据 (向后兼容)
- * Repairs have done list data (backward compatibility)
- */
-export interface 维修完成_列表数据 extends RepairsHaveDoneListData {}
-
-/**
- * @description 维修完成搜索 VO (向后兼容)
- * Repairs have done search VO (backward compatibility)
- */
-export interface 维修完成_搜索_VO extends RepairsHaveDoneQueryParams {}

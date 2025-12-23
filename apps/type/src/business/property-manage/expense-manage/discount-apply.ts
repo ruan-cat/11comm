@@ -77,16 +77,4 @@ export const usageStatusOptions: OptionsType = [
 	{ label: "已使用", value: "已使用" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 申请类型选项（兼容性）
- * Application type options (for compatibility)
- */
-export const 申请类型Options = applicationTypeOptions;
-
-/**
- * @description 使用状态选项（兼容性）
- * Usage status options (for compatibility)
- */
-export const 使用状态Options = usageStatusOptions;
+// ==================== 折扣申请相关选项 ====================

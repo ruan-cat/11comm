@@ -108,7 +108,7 @@ export const defaultCommunityNoticeForm: CommunityNoticeFormVO = {
  * @description 列表数据转表单数据
  * Convert list data to form data
  */
-export function 列表数据转表单数据(row: CommunityNoticeListItem): CommunityNoticeFormVO {
+export function convertListToForm(row: CommunityNoticeListItem): CommunityNoticeFormVO {
 	return {
 		noticeTitle: row.noticeTitle,
 		noticeType: row.noticeType,

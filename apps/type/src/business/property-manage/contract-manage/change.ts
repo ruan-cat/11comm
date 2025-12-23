@@ -67,17 +67,3 @@ export const changeStatusOptions: OptionsType = [
 	{ label: "已拒绝", value: "已拒绝" },
 	{ label: "已撤回", value: "已撤回" },
 ];
-
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 业务受理_列表数据 类型（兼容性）
- * Business handling list data type (for compatibility)
- */
-export type 业务受理_列表数据 = ChangeListItem[];
-
-/**
- * @description 合同类型_列表查询_VO 类型（兼容性）
- * Contract type list query VO type (for compatibility)
- */
-export type 合同类型_列表查询_VO = ChangeQueryParams;

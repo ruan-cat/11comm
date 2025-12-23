@@ -88,22 +88,3 @@ export const expiredContractHandlingStatusOptions: OptionsType = [
  */
 export const expiredContractTypeOptions = contractTypeOptions;
 
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 到期合同_列表数据 类型（兼容性）
- * Expire contract list data type (for compatibility)
- */
-export type 到期合同_列表数据 = ExpireListItem[];
-
-/**
- * @description 到期合同_列表查询_VO 类型（兼容性）
- * Expire contract list query VO type (for compatibility)
- */
-export type 到期合同_列表查询_VO = ExpireQueryParams;
-
-/**
- * @description 到期合同处理状态选项别名
- * Handling status options alias
- */
-export const handlingStatusOptions = expiredContractHandlingStatusOptions;

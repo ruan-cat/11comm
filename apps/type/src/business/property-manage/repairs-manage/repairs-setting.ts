@@ -115,32 +115,3 @@ export const defaultRepairsSettingForm: RepairsSettingFormVO = {
 	returnVisitSetting: "回访",
 	description: "",
 };
-
-/**
- * @description 报修设置列表数据 (向后兼容)
- * Repairs setting list data (backward compatibility)
- */
-export interface 报修设置_列表数据 extends RepairsSettingListItem {
-	/** 类型名称 */
-	类型名称: string;
-	/** 设置类型 */
-	设置类型: string;
-	/** 派单方式 */
-	派单方式: string;
-	/** 公共区域 */
-	公共区域: string;
-	/** 业主端展示 */
-	业主端展示: string;
-	/** 通知方式 */
-	通知方式: string;
-	/** 回访设置 */
-	回访设置: string;
-	/** 说明 */
-	说明: string;
-}
-
-/**
- * @description 报修设置搜索 VO (向后兼容)
- * Repairs setting search VO (backward compatibility)
- */
-export interface 报修设置_搜索_VO extends RepairsSettingQueryParams {}

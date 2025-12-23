@@ -69,11 +69,3 @@ export const firstPartyStatusOptions: OptionsType = [
  * Contract first-party type options (using common contract type options)
  */
 export const contractFirstPartyTypeOptions = contractTypeOptions;
-
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 合同甲方_列表数据 类型（兼容性）
- * Contract first-party list data type (for compatibility)
- */
-export type 合同甲方_列表数据 = FirstPartyListItem[];

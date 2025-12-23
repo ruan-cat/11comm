@@ -3,4 +3,4 @@
  * @description Data management module
  */
 export * from "./community-information";
-export * from "./property-company";
+export * from "./property-management-company";

@@ -86,19 +86,3 @@ export const contractTypeOptionsData = draftContractTypeOptions;
  */
 export type DraftContractQueryParamsType = DraftContractQueryParams;
 
-// ==================== 兼容旧中文名称 ====================
-
-
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 合同草稿_列表数据 类型（兼容性）
- * Draft contract list data type (for compatibility)
- */
-export type 合同草稿_列表数据 = DraftContractListItem[];
-
-/**
- * @description 合同类型_列表查询_VO 类型（兼容性）
- * Contract type list query VO type (for compatibility)
- */
-export type 合同类型_列表查询_VO = DraftContractQueryParams;

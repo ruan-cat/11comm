@@ -96,31 +96,3 @@ export const expenseItemSettingDeductionOptions: OptionsType = [
 	{ label: "否", value: "否" },
 ];
 
-// ==================== 兼容旧中文名称 ====================
-
-/**
- * @description 费用项设置标识选项（兼容性）
- * Expense item setting identifier options (for compatibility)
- */
-export const 费用项设置标识Options = expenseItemSettingIdentifierOptions;
-
-/**
- * @description 费用项设置付费类型选项（兼容性）
- * Expense item setting payment type options (for compatibility)
- */
-export const 费用项设置付费类型Options = expenseItemSettingPaymentTypeOptions;
-
-/**
- * @description 费用项设置抵扣选项（兼容性）
- * Expense item setting deduction options (for compatibility)
- */
-export const 费用项设置抵扣Options = expenseItemSettingDeductionOptions;
-
-/**
- * @description 费用项设置自定义选项（兼容性）
- * Expense item setting custom options (for compatibility)
- */
-export const 费用项设置自定义选项: OptionsType = [
-	{ label: "是", value: "是" },
-	{ label: "否", value: "否" },
-];

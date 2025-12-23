@@ -85,9 +85,9 @@ export const houseChargeStatusOptions: OptionsType = [
 
 /**
  * @description 费用标识选项
- * Expense identifier options
+ * Fee identifier options
  */
-export const 费用标识Options: OptionsType = [
+export const feeIdentifierOptions: OptionsType = [
 	{ label: "物业费", value: "物业费" },
 	{ label: "水费", value: "水费" },
 	{ label: "电费", value: "电费" },
@@ -97,34 +97,22 @@ export const 费用标识Options: OptionsType = [
  * @description 房屋收费类型选项
  * House charge type options
  */
-export const 房屋收费类型选项: OptionsType = [
+export const houseChargeTypeOptions: OptionsType = [
 	{ label: "基础费用", value: "基础费用" },
 	{ label: "增值服务费", value: "增值服务费" },
 ];
 
 /**
  * @description 状态选项
- * Status options
+ * Payment status options
  */
-export const 状态Options: OptionsType = [
+export const paymentStatusOptions: OptionsType = [
 	{ label: "未缴费", value: "未缴费" },
 	{ label: "已缴费", value: "已缴费" },
 	{ label: "逾期", value: "逾期" },
 ];
 
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 房屋收费_列表数据 类型（兼容性）
- * House charge list data type (for compatibility)
- */
-export type 房屋收费_列表数据 = HouseChargeListItem[];
-
-/**
- * @description 房屋收费_列表查询_VO 类型（兼容性）
- * House charge list query VO type (for compatibility)
- */
-export type 房屋收费_列表查询_VO = HouseChargeQueryParams;
+// ==================== 表单数据接口 ====================
 
 /**
  * @description 房屋收费表单数据类型
@@ -170,62 +158,6 @@ export interface HouseChargeFormVO {
 	/** 固定费用 Fixed Fee */
 	fixedFee: string;
 }
-
-// ==================== 兼容旧类型定义 ====================
-
-/**
- * @description 费用标识类型（兼容性）
- * Fee identifier type (for compatibility)
- */
-export type 费用标识类型 = FeeIdentifierType;
-
-/**
- * @description 付费类型（兼容性）
- * Payment type (for compatibility)
- */
-export type 付费类型 = PaymentType;
-
-/**
- * @description 账户抵扣类型（兼容性）
- * Account deduction type (for compatibility)
- */
-export type 账户抵扣类型 = AccountDeductionType;
-
-/**
- * @description 手机缴费类型（兼容性）
- * Mobile payment type (for compatibility)
- */
-export type 手机缴费类型 = MobilePaymentType;
-
-/**
- * @description 进位方式类型（兼容性）
- * Rounding method type (for compatibility)
- */
-export type 进位方式类型 = RoundingMethodType;
-
-/**
- * @description 保留小数位类型（兼容性）
- * Decimal places type (for compatibility)
- */
-export type 保留小数位类型 = DecimalPlacesType;
-
-/**
- * @description 状态类型（兼容性）
- * Status type (for compatibility)
- */
-export type 状态类型 = StatusType;
-
-/**
- * @description 费用类型（兼容性）
- * Expense type (for compatibility)
- */
-export type 费用类型 = ExpenseType;
-
-/**
- * @description 房屋收费_VO 类型（兼容性）
- * House charge VO type (for compatibility)
- */
-export type 房屋收费_VO = HouseChargeFormVO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultHouseChargeForm: HouseChargeFormVO = {

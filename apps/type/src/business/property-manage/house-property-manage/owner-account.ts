@@ -77,25 +77,6 @@ export interface OwnerAccountFormVO {
 }
 
 /**
- * @description 业主账户表单VO（兼容性中文名称）
- * Owner account form VO (for compatibility with Chinese names)
- */
-export interface 业主账户表单_VO {
-	/** 账户类型 Account type */
-	accountType: string;
-	/** 业主手机 Owner phone */
-	ownerPhone: string;
-	/** 业主名称 Owner name */
-	ownerName: string;
-	/** 预存金额 Prepaid amount */
-	prepaidAmount: string;
-	/** 支付方式 Payment method */
-	paymentMethod: string;
-	/** 备注 Remark */
-	remark: string;
-}
-
-/**
  * @description 账户类型选项
  * Account type options
  */
