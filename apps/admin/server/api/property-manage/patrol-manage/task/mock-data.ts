@@ -252,7 +252,7 @@ export const mockTaskTaskData: PatrolTaskListItem[] = [
         patrolPersonTimeRange: "2024-01-29 09:00:00 - 2024-01-29 11:00:00",
         actualPatrolTime: "2024-01-29 09:10:00",
         plannedPatrolPerson: "王五",
-        actualPatrolPerson: "王五",
+        currentPatrolPerson: "王五",
         transferDescription: "",
         patrolMethod: "步行巡检",
         patrolStatus: "已完成",
