@@ -82,6 +82,12 @@ export interface PropertyManagementCompanyFormProps {
    - 请你主动的开启多个独立并行的修改子代理，加快修改任务。
    - 你新建的子代理**必须**是**后台运行**的子代理。
 
+## 三、根据`业务路径`，检查全部的`类型项目`的文件命名与文件夹组织模式，是否严格满足`业务路径`的要求
+
+如果发现不符合要求的，重命名文件。或新建一个导出空对象的 typescript 文件。文件命名风格为小驼峰短横杠风格。
+
+根据业务路径，检查`类型项目`全部的文件。
+
 ## 三、将错误迁移的表单组件类型和默认表单数据，迁移回到 `form.ts` 内存储
 
 ### 将形如 `xxxDefaultForm` 的变量迁移回 `form.ts` 内
@@ -127,11 +133,16 @@ export const defaultForm: PropertyManagementCompanyFormVO = {
 
 核心准则如下：
 
-1. 不允许在类型项目内出现形如 `xxxDefaultForm` 变量的导出。应该剪切恢复至对应的 `form.ts` 内。
+1. 不允许在`类型项目`内出现形如 `xxxDefaultForm` 变量的导出。应该剪切恢复至对应的 `form.ts` 内。
 2. 不允许出现多余的变量重命名。
-3. 每一个 `form.ts` 必须导出一个来自类型项目的 `xxxFormVO` 类型约束的 `defaultForm` 变量。
+3. 每一个 `form.ts` 必须导出一个来自`类型项目`的 `xxxFormVO` 类型约束的 `defaultForm` 变量。
 
 ### 处理范围
+
+根据业务路径，检查：
+
+- `类型项目`全部的文件。
+- `后天项目`全部的 form.ts 文件。
 
 ### 其他要求
 
