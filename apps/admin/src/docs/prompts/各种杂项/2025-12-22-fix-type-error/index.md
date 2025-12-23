@@ -64,7 +64,7 @@ export interface PropertyManagementCompanyFormProps {
    - form.ts
    - form.vue
    - index.vue
-3. 全部的类型项目和后台项目，检索 `FormVO` 类型别名，全面清退替换掉这个别名。
+3. 全部的类型项目和后台项目，检索字符串 `FormVO` 将字符串 `FormVO` 这款固定写法的类型别名，全面清退替换掉，换成原本的类型。
 
 ### 3. 处理步骤
 
