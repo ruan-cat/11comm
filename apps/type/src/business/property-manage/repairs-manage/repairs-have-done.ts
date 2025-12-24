@@ -1,7 +1,6 @@
 import type { OptionsType } from "../../../common";
 import { repairStatusOptions, repairSourceOptions } from "../../../common/business-options";
 
-
 /**
  * @description repairs-have-done列表数据
  * RepairsHaveDone list item
@@ -71,7 +70,7 @@ export interface RepairsHaveDoneFormVO {
 }
 
 /**
- * @description 报修已办列表数据 (向后兼容)
+ * @description 报修已办列表数据
  * Repairs have done list data (backward compatibility)
  */
 export interface RepairsHaveDoneListData extends RepairsHaveDoneListItem {

@@ -44,7 +44,7 @@ export const pointStatusOptions: OptionsType = [
 ];
 
 /**
- * @description 巡逻点列表数据 (向后兼容)
+ * @description 巡逻点列表数据
  * Patrol point list data (backward compatibility)
  */
 export interface PatrolPointListData extends PointListItem {
@@ -83,7 +83,7 @@ export interface PatrolPointListData extends PointListItem {
 }
 
 /**
- * @description 巡逻点列表查询参数 (向后兼容)
+ * @description 巡逻点列表查询参数
  * Patrol point list query parameters (backward compatibility)
  */
 export interface PatrolPointListQueryVO {
