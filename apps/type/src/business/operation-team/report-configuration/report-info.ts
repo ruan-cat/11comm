@@ -1,9 +1,9 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 报表信息
+ * 报表信息列表项
  */
-export interface ReportInfo {
+export interface ReportInfoListItem {
 	/** 报表ID */
 	id: string;
 	/** 报表名称 */
@@ -45,7 +45,7 @@ export interface ReportInfo {
 /**
  * 报表信息列表查询参数
  */
-export interface ReportInfoListQuery extends BaseListQueryParams {
+export interface ReportInfoQueryParams extends BaseListQueryParams {
 	/** 报表名称 */
 	reportName?: string;
 	/** 报表编码 */
@@ -59,6 +59,18 @@ export interface ReportInfoListQuery extends BaseListQueryParams {
 	/** 是否启用 */
 	isEnabled?: boolean;
 }
+
+/**
+ * 报表信息
+ * @deprecated 请使用 ReportInfoListItem
+ */
+export interface ReportInfo extends ReportInfoListItem {}
+
+/**
+ * 报表信息列表查询参数
+ * @deprecated 请使用 ReportInfoQueryParams
+ */
+export interface ReportInfoListQuery extends ReportInfoQueryParams {}
 
 /**
  * 报表类型选项

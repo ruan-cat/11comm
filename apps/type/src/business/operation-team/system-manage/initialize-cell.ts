@@ -1,11 +1,15 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 初始化小区
+ * 初始化小区列表项
  */
-export interface InitializeCell {
+export interface InitializeCellListItem {
 	/** 小区ID */
 	id: string;
+	/** 单元格ID */
+	cellId: string;
+	/** 单元格类型 */
+	cellType: string;
 	/** 小区名称 */
 	cellName: string;
 	/** 小区编码 */
@@ -18,6 +22,14 @@ export interface InitializeCell {
 	buildingArea: number;
 	/** 占地面积 */
 	landArea: number;
+	/** 楼栋ID */
+	buildingId: string;
+	/** 楼栋名称 */
+	buildingName: string;
+	/** 楼层 */
+	floor: number;
+	/** 单元号 */
+	unitNumber: string;
 	/** 楼栋数量 */
 	buildingCount: number;
 	/** 单元数量 */
@@ -38,6 +50,8 @@ export interface InitializeCell {
 	establishedTime: string;
 	/** 初始化状态 */
 	status: string;
+	/** 描述 */
+	description: string;
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */
@@ -49,7 +63,7 @@ export interface InitializeCell {
 /**
  * 初始化小区列表查询参数
  */
-export interface InitializeCellListQuery extends BaseListQueryParams {
+export interface InitializeCellQueryParams extends BaseListQueryParams {
 	/** 小区名称 */
 	cellName?: string;
 	/** 小区编码 */
@@ -65,6 +79,23 @@ export interface InitializeCellListQuery extends BaseListQueryParams {
 }
 
 /**
+ * 单元格类型选项
+ */
+export const cellTypeOptions: OptionsType = [
+	{ label: "住宅单元", value: "住宅单元" },
+	{ label: "商业单元", value: "商业单元" },
+	{ label: "车库单元", value: "车库单元" },
+	{ label: "办公单元", value: "办公单元" },
+	{ label: "会所单元", value: "会所单元" },
+	{ label: "物业单元", value: "物业单元" },
+	{ label: "运动单元", value: "运动单元" },
+	{ label: "教育单元", value: "教育单元" },
+	{ label: "医疗单元", value: "医疗单元" },
+	{ label: "仓储单元", value: "仓储单元" },
+	{ label: "文化单元", value: "文化单元" },
+];
+
+/**
  * 初始化状态选项
  */
 export const initializeCellStatusOptions: OptionsType = [
@@ -73,3 +104,15 @@ export const initializeCellStatusOptions: OptionsType = [
 	{ label: "已完成", value: "已完成" },
 	{ label: "初始化失败", value: "初始化失败" },
 ];
+
+/**
+ * 初始化小区
+ * @deprecated 请使用 InitializeCellListItem
+ */
+export interface InitializeCell extends InitializeCellListItem {}
+
+/**
+ * 初始化小区列表查询参数
+ * @deprecated 请使用 InitializeCellQueryParams
+ */
+export interface InitializeCellListQuery extends InitializeCellQueryParams {}

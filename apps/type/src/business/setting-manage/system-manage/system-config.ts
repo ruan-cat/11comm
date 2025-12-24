@@ -47,10 +47,11 @@ export interface SystemConfigQueryParams extends BaseListQueryParams {
 }
 
 /**
- * 系统配置数据类型（别名）
- * System config data type (alias)
+ * 设置管理系统的系统配置数据
  */
-export type {
-	SettingManagementSystemBasicInfoListItem as SystemConfig,
-	SettingManagementSystemBasicInfoQueryParams as SystemConfigListQuery,
-} from "../../../common/business-types";
+export type { SettingManagementSystemBasicInfoListItem as SettingManagementSystemConfig } from "../../../common/business-types";
+
+/**
+ * 设置管理系统配置列表查询参数
+ */
+export type { SettingManagementSystemBasicInfoQueryParams as SettingManagementSystemConfigListQuery } from "../../../common/business-types";

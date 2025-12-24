@@ -3,7 +3,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { InitializeCell, InitializeCellListQuery } from "@01s-11comm/type";
+import type { InitializeCellListItem, InitializeCellQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/operation-team/system-manage/initialize-cell/list";
@@ -15,8 +15,8 @@ const QUERY_KEY_PREFIX = "initializeCell";
  * 初始化小区列表查询 Hook
  * Initialize cell list query hook
  */
-export function useInitializeCellListQuery(initialParams: Partial<InitializeCellListQuery>) {
-	return useListQuery<InitializeCell, InitializeCellListQuery>({
+export function useInitializeCellListQuery(initialParams: Partial<InitializeCellQueryParams>) {
+	return useListQuery<InitializeCellListItem, InitializeCellQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 		initialParams,

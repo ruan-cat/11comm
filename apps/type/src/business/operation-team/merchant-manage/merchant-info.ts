@@ -1,11 +1,13 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 商户信息
+ * 商户信息列表项
  */
-export interface MerchantInfo {
+export interface MerchantInfoListItem {
 	/** 商户ID */
 	id: string;
+	/** 商户ID */
+	merchantId: string;
 	/** 商户名称 */
 	merchantName: string;
 	/** 商户编码 */
@@ -20,26 +22,48 @@ export interface MerchantInfo {
 	email: string;
 	/** 营业执照号 */
 	businessLicenseNumber: string;
+	/** 营业执照号 */
+	businessLicenseNo: string;
 	/** 法人代表 */
 	legalRepresentative: string;
 	/** 注册地址 */
 	registeredAddress: string;
 	/** 经营地址 */
 	businessAddress: string;
+	/** 经营地址 */
+	merchantAddress: string;
 	/** 注册资本 */
 	registeredCapital: number;
 	/** 成立时间 */
 	establishedTime: string;
+	/** 成立日期 */
+	establishmentDate: string;
 	/** 经营范围 */
 	businessScope: string;
 	/** 服务小区 */
 	serviceCommunities: string;
+	/** 所属小区 */
+	affiliatedCommunity: string;
 	/** 合同开始时间 */
 	contractStartTime: string;
 	/** 合同结束时间 */
 	contractEndTime: string;
+	/** 营业时间 */
+	businessHours: string;
+	/** 营业面积 */
+	businessArea: string;
 	/** 状态 */
 	status: string;
+	/** 经营状态 */
+	businessStatus: string;
+	/** 银行名称 */
+	bankName: string;
+	/** 银行账户 */
+	bankAccount: string;
+	/** 联系电话 */
+	contactMobile: string;
+	/** 备注 */
+	remarks: string;
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */
@@ -51,7 +75,7 @@ export interface MerchantInfo {
 /**
  * 商户信息列表查询参数
  */
-export interface MerchantInfoListQuery extends BaseListQueryParams {
+export interface MerchantInfoQueryParams extends BaseListQueryParams {
 	/** 商户名称 */
 	merchantName?: string;
 	/** 商户编码 */
@@ -85,6 +109,11 @@ export const merchantInfoTypeOptions: OptionsType = [
 ];
 
 /**
+ * 商户类型选项别名
+ */
+export const merchantTypeOptions = merchantInfoTypeOptions;
+
+/**
  * 状态选项
  */
 export const merchantInfoStatusOptions: OptionsType = [
@@ -95,17 +124,46 @@ export const merchantInfoStatusOptions: OptionsType = [
 ];
 
 /**
+ * 经营状态选项别名
+ */
+export const businessStatusOptions = merchantInfoStatusOptions;
+
+/**
+ * 商户信息
+ * @deprecated 请使用 MerchantInfoListItem
+ */
+export interface MerchantInfo extends MerchantInfoListItem {}
+
+/**
+ * 商户信息列表查询参数
+ * @deprecated 请使用 MerchantInfoQueryParams
+ */
+export interface MerchantInfoListQuery extends MerchantInfoQueryParams {}
+
+/**
+ * 商户类型
+ */
+export type MerchantType = string;
+
+/**
+ * 经营状态
+ */
+export type BusinessStatus = string;
+
+/**
  * 商户信息表单 VO
  */
 export interface MerchantInfoFormVO {
 	/** 商户ID */
 	id?: string;
+	/** 商户ID */
+	merchantId?: string;
 	/** 商户名称 */
 	merchantName: string;
 	/** 商户编码 */
 	merchantCode: string;
 	/** 商户类型 */
-	merchantType: string;
+	merchantType: MerchantType;
 	/** 联系人 */
 	contactPerson: string;
 	/** 联系电话 */
@@ -114,25 +172,47 @@ export interface MerchantInfoFormVO {
 	email: string;
 	/** 营业执照号 */
 	businessLicenseNumber: string;
+	/** 营业执照号 */
+	businessLicenseNo: string;
 	/** 法人代表 */
 	legalRepresentative: string;
 	/** 注册地址 */
 	registeredAddress: string;
 	/** 经营地址 */
 	businessAddress: string;
+	/** 经营地址 */
+	merchantAddress: string;
 	/** 注册资本 */
 	registeredCapital: number;
 	/** 成立时间 */
 	establishedTime: string;
+	/** 成立日期 */
+	establishmentDate: string;
 	/** 经营范围 */
 	businessScope: string;
 	/** 服务小区 */
 	serviceCommunities: string;
+	/** 所属小区 */
+	affiliatedCommunity: string;
 	/** 合同开始时间 */
 	contractStartTime: string;
 	/** 合同结束时间 */
 	contractEndTime: string;
+	/** 营业时间 */
+	businessHours: string;
+	/** 营业面积 */
+	businessArea: string;
 	/** 状态 */
 	status: string;
+	/** 经营状态 */
+	businessStatus: BusinessStatus;
+	/** 银行名称 */
+	bankName: string;
+	/** 银行账户 */
+	bankAccount: string;
+	/** 联系电话 */
+	contactMobile: string;
+	/** 备注 */
+	remarks: string;
 }
 

@@ -47,6 +47,16 @@ export interface ChangePasswordRecordListQuery extends BaseListQueryParams {
 }
 
 /**
+ * 密码修改记录列表项
+ */
+export type ChangePasswordRecordListItem = ChangePasswordRecord;
+
+/**
+ * 密码修改记录列表查询参数
+ */
+export type ChangePasswordRecordQueryParams = ChangePasswordRecordListQuery;
+
+/**
  * 运营团队小区配置
  */
 export interface OperationTeamCommunityConfiguration {

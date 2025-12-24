@@ -5,6 +5,10 @@
 
 import type { Mode } from "@/composables/use-mode";
 import type { ConfigItemFormVO } from "@01s-11comm/type";
+
+/** 配置项表单 VO */
+export type { ConfigItemFormVO };
+
 import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type";
 
 /** 向后兼容的类型别名 */

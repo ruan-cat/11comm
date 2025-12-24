@@ -1,18 +1,17 @@
 import type { OptionsType } from "plus-pro-components";
 import type { Mode } from "@/composables/use-mode";
-import type {
-	SystemConfigFormVO,
-	SystemConfigType,
-	SystemConfigGroup,
-	SystemConfigStatus,
-} from "@01s-11comm/type";
+import type { SystemConfigFormVO } from "@01s-11comm/type";
+
+/** 系统配置表单 VO */
+export type { SystemConfigFormVO };
+
 import {
-	systemConfigTypeOptionsAlias,
-	configGroupOptions,
-	systemConfigStatusOptionsCN,
+	systemConfigTypeOptions,
+	systemConfigEnabledOptions,
+	systemConfigSystemOptions,
 } from "@01s-11comm/type";
 
-export { systemConfigTypeOptionsAlias, configGroupOptions, systemConfigStatusOptions };
+export { systemConfigTypeOptions, systemConfigEnabledOptions, systemConfigSystemOptions };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: SystemConfigFormVO = {
@@ -20,9 +19,10 @@ export const defaultForm: SystemConfigFormVO = {
 	configKey: "",
 	configValue: "",
 	configType: "文本",
+	configGroup: "",
 	defaultValue: "",
 	isSystem: false,
-	isEnabled: true,
+	status: "Enabled",
 	description: "",
 };
 

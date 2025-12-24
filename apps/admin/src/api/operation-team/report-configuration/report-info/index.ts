@@ -3,7 +3,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { ReportInfo, ReportInfoListQuery } from "@01s-11comm/type";
+import type { ReportInfoListItem, ReportInfoQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/operation-team/report-configuration/report-info/list";
@@ -15,8 +15,8 @@ const QUERY_KEY_PREFIX = "reportInfo";
  * 报表信息列表查询 Hook
  * Report info list query hook
  */
-export function useReportInfoListQuery(initialParams: Partial<ReportInfoListQuery>) {
-	return useListQuery<ReportInfo, ReportInfoListQuery>({
+export function useReportInfoListQuery(initialParams: Partial<ReportInfoQueryParams>) {
+	return useListQuery<ReportInfoListItem, ReportInfoQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 		initialParams,

@@ -16,12 +16,34 @@ export const changePasswordRecordTypeOptions: OptionsType = [
 ];
 
 /**
+ * 修改方式选项
+ */
+export const changeMethodOptions: OptionsType = changePasswordRecordTypeOptions;
+
+/**
  * 修改状态选项
  */
 export const changePasswordRecordStatusOptions: OptionsType = [
 	{ label: "成功", value: "成功" },
 	{ label: "失败", value: "失败" },
 	{ label: "待审核", value: "待审核" },
+];
+
+/**
+ * 修改密码状态选项
+ */
+export const changePasswordStatusOptions: OptionsType = [
+	{ label: "成功", value: "成功" },
+	{ label: "失败", value: "失败" },
+	{ label: "待审核", value: "待审核" },
+];
+
+/**
+ * 修改密码成功选项
+ */
+export const changePasswordSuccessOptions: OptionsType = [
+	{ label: "是", value: "是" },
+	{ label: "否", value: "否" },
 ];
 
 /**
@@ -36,6 +58,20 @@ export const changePasswordRecordDepartmentOptions: OptionsType = [
 	{ label: "维修部门", value: "维修部门" },
 	{ label: "安保部门", value: "安保部门" },
 	{ label: "绿化部门", value: "绿化部门" },
+];
+
+/**
+ * 部门选项别名
+ */
+export const departmentOptions = changePasswordRecordDepartmentOptions;
+
+/**
+ * 用户角色选项
+ */
+export const userRoleOptions: OptionsType = [
+	{ label: "管理员", value: "管理员" },
+	{ label: "普通用户", value: "普通用户" },
+	{ label: "访客", value: "访客" },
 ];
 
 /**
@@ -93,6 +129,15 @@ export const operationRegisterProtocolEnabledOptions: OptionsType = [
 export const operationRegisterProtocolRequiredOptions: OptionsType = [
 	{ label: "是", value: true },
 	{ label: "否", value: false },
+];
+
+/**
+ * 注册协议状态选项
+ */
+export const registerProtocolStatusOptions: OptionsType = [
+	{ label: "草稿", value: "草稿" },
+	{ label: "已发布", value: "已发布" },
+	{ label: "已停用", value: "已停用" },
 ];
 
 /**
@@ -872,5 +917,27 @@ export const communityConfigStatusOptions: OptionsType = [
 	{ label: "启用", value: "0" },
 	{ label: "禁用", value: "1" },
 	{ label: "待审核", value: "2" },
+];
+
+/**
+ * @description 楼层区域选项
+ * Floor area options
+ */
+export const floorAreaOptions: OptionsType = [
+	{ label: "地下一层", value: "地下一层" },
+	{ label: "地下二层", value: "地下二层" },
+	{ label: "地下三层", value: "地下三层" },
+	{ label: "地面一层", value: "地面一层" },
+	{ label: "地面二层", value: "地面二层" },
+	{ label: "地面三层", value: "地面三层" },
+];
+
+/**
+ * @description 是否充电桩选项
+ * Is charging pile options
+ */
+export const isChargingPileOptions: OptionsType = [
+	{ label: "是", value: "是" },
+	{ label: "否", value: "否" },
 ];
 

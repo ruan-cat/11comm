@@ -73,3 +73,55 @@ export const feeCategoryOptions: OptionsType = [
 	{ label: "违约金", value: "penalty" },
 ];
 
+// TODO: 应该删除
+/**
+ * @description 业务受理表单数据
+ * Handing business form data
+ */
+export interface HandingBusinessFormVO {
+	/** 费用项目 Fee item */
+	feeItem: string;
+	/** 费用标识 Fee ID */
+	feeId: string;
+	/** 费用类型 Fee type */
+	feeType: string;
+	/** 应收金额 Amount receivable */
+	amountReceivable: string;
+	/** 建账时间 Account creation time */
+	accountCreationTime: string;
+	/** 应收时间段 Receivable period */
+	receivablePeriod: string;
+	/** 说明 Description */
+	description: string;
+	/** 状态 Status */
+	status: string;
+}
+
+/**
+ * @description 业务处理状态选项
+ * Business handling status options
+ */
+export const businessHandlingStatusOptions: OptionsType = [
+	{ label: "待缴费", value: "待缴费" },
+	{ label: "已缴费", value: "已缴费" },
+	{ label: "已逾期", value: "已逾期" },
+	{ label: "已减免", value: "已减免" },
+	{ label: "已作废", value: "已作废" },
+];
+
+/**
+ * @description 列表数据转表单数据
+ * Convert list data to form data
+ */
+export function listDataToFormData(listData: HandingBusinessListItem): HandingBusinessFormVO {
+	return {
+		feeItem: listData.feeItem,
+		feeId: listData.feeId,
+		feeType: listData.feeType,
+		amountReceivable: listData.amountReceivable,
+		accountCreationTime: listData.accountCreationTime,
+		receivablePeriod: listData.receivablePeriod,
+		description: listData.description,
+		status: listData.status,
+	};
+}

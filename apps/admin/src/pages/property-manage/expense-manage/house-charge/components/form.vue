@@ -55,7 +55,8 @@ const formComputed = computed(() => {
 
 /** 表单项配置 */
 const plusFormColumns = ref<PlusColumn[]>([
-	/** 费用类型 */
+	{
+		/** 费用类型 */
 		label: "费用类型",
 		prop: "expenseType",
 		valueType: "select",

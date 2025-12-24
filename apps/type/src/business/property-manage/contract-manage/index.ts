@@ -20,7 +20,7 @@ export type {
 
 export {
 	draftContractStatusOptions,
-	contractTypeOptionsData,
+	draftContractTypeOptions,
 } from "./draft-contract";
 
 export type {

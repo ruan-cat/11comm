@@ -1,6 +1,17 @@
+import type { OptionsType } from "plus-pro-components";
 import type { Mode } from "@/composables/use-mode";
 import type { MerchantAdminFormVO } from "@01s-11comm/type";
-import { propertyCompanyOptions } from "@01s-11comm/type";
+
+/** 商户管理员表单 VO */
+export type { MerchantAdminFormVO };
+
+// TODO: 迁移到 type 项目内
+/** 物业公司选项 */
+export const propertyCompanyOptions: OptionsType = [
+	{ label: "物业公司A", value: "物业公司A" },
+	{ label: "物业公司B", value: "物业公司B" },
+	{ label: "物业公司C", value: "物业公司C" },
+];
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: MerchantAdminFormVO = {
@@ -32,8 +43,3 @@ export interface MerchantAdminFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-/**
- * 导出选项类型
- */
-export { propertyCompanyOptions };

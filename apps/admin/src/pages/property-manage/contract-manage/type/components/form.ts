@@ -17,7 +17,7 @@ export interface ContractTypeFormVO {
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ContractTypeFormVO = {
 	typeName: "",
-	isAudit: "是",
+	isAudit: "yes",
 	description: "",
 };
 

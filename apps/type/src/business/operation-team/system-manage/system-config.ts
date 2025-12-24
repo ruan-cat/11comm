@@ -1,50 +1,16 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 系统配置
+ * 运营团队系统配置列表查询参数
+ * 从 business-types.ts 导入
  */
-export interface SystemConfig {
-	/** 配置ID */
-	id: string;
-	/** 配置名称 */
-	configName: string;
-	/** 配置键 */
-	configKey: string;
-	/** 配置值 */
-	configValue: string;
-	/** 配置类型 */
-	configType: string;
-	/** 默认值 */
-	defaultValue: string;
-	/** 是否系统内置 */
-	isSystem: boolean;
-	/** 是否启用 */
-	isEnabled: boolean;
-	/** 描述 */
-	description: string;
-	/** 创建时间 */
-	createTime: string;
-	/** 更新时间 */
-	updateTime: string;
-	/** 操作人 */
-	operator: string;
-}
+export type { OperationTeamSystemConfigListQuery } from "../../../common/business-types";
 
 /**
- * 系统配置列表查询参数
+ * 运营团队系统配置
+ * 从 business-types.ts 导入
  */
-export interface SystemConfigListQuery extends BaseListQueryParams {
-	/** 配置名称 */
-	configName?: string;
-	/** 配置键 */
-	configKey?: string;
-	/** 配置类型 */
-	configType?: string;
-	/** 是否启用 */
-	isEnabled?: boolean;
-	/** 是否系统内置 */
-	isSystem?: boolean;
-}
+export type { OperationTeamSystemConfig } from "../../../common/business-types";
 
 /**
  * 配置类型选项
@@ -74,7 +40,7 @@ export const systemConfigSystemOptions: OptionsType = [
 ];
 
 /**
- * 系统配置表单 VO
+ * 运营团队系统配置表单 VO
  */
 export interface SystemConfigFormVO {
 	/** 配置ID */
@@ -87,12 +53,14 @@ export interface SystemConfigFormVO {
 	configValue: string;
 	/** 配置类型 */
 	configType: string;
+	/** 分组 */
+	configGroup: string;
 	/** 默认值 */
 	defaultValue: string;
 	/** 是否系统内置 */
 	isSystem: boolean;
-	/** 是否启用 */
-	isEnabled: boolean;
+	/** 状态 */
+	status: string;
 	/** 描述 */
 	description: string;
 }

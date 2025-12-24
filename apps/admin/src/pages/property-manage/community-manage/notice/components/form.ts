@@ -1,5 +1,9 @@
 import type { CommunityNoticeFormVO } from "@01s-11comm/type";
-import { noticeTypeOptions, noticeStatusOptions, listDataToFormData } from "@01s-11comm/type";
+
+/** 小区公示表单 VO */
+export type { CommunityNoticeFormVO };
+
+import { noticeTypeOptions, noticeStatusOptions } from "@01s-11comm/type";
 
 /**
  * @description 小区公示表单 Props 类型
@@ -24,4 +28,14 @@ export const defaultForm: CommunityNoticeFormVO = {
 	noticeTime: "",
 };
 
-export { noticeTypeOptions, noticeStatusOptions, listDataToFormData };
+export { noticeTypeOptions, noticeStatusOptions };
+
+// TODO: 应该删除
+/**
+ * 列表数据转换为表单数据
+ * @param listData 列表数据
+ * @returns 表单数据
+ */
+export function listDataToFormData(listData: CommunityNoticeFormVO): CommunityNoticeFormVO {
+	return { ...listData };
+}

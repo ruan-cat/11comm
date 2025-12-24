@@ -79,3 +79,15 @@ export const communityConfigurationEnabledOptions: OptionsType = [
 	{ label: "启用", value: true },
 	{ label: "禁用", value: false },
 ];
+
+/**
+ * 小区配置列表项
+ * @deprecated 请使用 CommunityConfiguration
+ */
+export type CommunityConfigListItem = CommunityConfiguration;
+
+/**
+ * 小区配置列表查询参数
+ * @deprecated 请使用 CommunityConfigurationListQuery
+ */
+export type CommunityConfigQueryParams = CommunityConfigurationListQuery;

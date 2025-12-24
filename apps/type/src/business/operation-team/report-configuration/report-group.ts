@@ -1,17 +1,21 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 报表组
+ * 报表组列表项
  */
-export interface ReportGroup {
+export interface ReportGroupListItem {
 	/** 组ID */
 	id: string;
 	/** 组名称 */
-	groupName: string;
+	name: string;
 	/** 组编码 */
 	groupCode: string;
 	/** 组描述 */
 	description: string;
+	/** URL */
+	url: string;
+	/** 备注 */
+	remark: string;
 	/** 排序号 */
 	sortOrder: number;
 	/** 是否启用 */
@@ -29,7 +33,7 @@ export interface ReportGroup {
 /**
  * 报表组列表查询参数
  */
-export interface ReportGroupListQuery extends BaseListQueryParams {
+export interface ReportGroupQueryParams extends BaseListQueryParams {
 	/** 组名称 */
 	groupName?: string;
 	/** 组编码 */
@@ -37,6 +41,18 @@ export interface ReportGroupListQuery extends BaseListQueryParams {
 	/** 是否启用 */
 	isEnabled?: boolean;
 }
+
+/**
+ * 报表组
+ * @deprecated 请使用 ReportGroupListItem
+ */
+export interface ReportGroup extends ReportGroupListItem {}
+
+/**
+ * 报表组列表查询参数
+ * @deprecated 请使用 ReportGroupQueryParams
+ */
+export interface ReportGroupListQuery extends ReportGroupQueryParams {}
 
 /**
  * 启用状态选项

@@ -3,7 +3,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { MerchantAdmin, MerchantAdminListQuery } from "@01s-11comm/type";
+import type { MerchantAdminListItem, MerchantAdminQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/operation-team/merchant-manage/merchant-admin/list";
@@ -15,8 +15,8 @@ const QUERY_KEY_PREFIX = "merchantAdmin";
  * 商户管理员列表查询 Hook
  * Merchant admin list query hook
  */
-export function useMerchantAdminListQuery(initialParams: Partial<MerchantAdminListQuery>) {
-	return useListQuery<MerchantAdmin, MerchantAdminListQuery>({
+export function useMerchantAdminListQuery(initialParams: Partial<MerchantAdminQueryParams>) {
+	return useListQuery<MerchantAdminListItem, MerchantAdminQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 		initialParams,

@@ -5,6 +5,10 @@
 
 import type { Mode } from "@/composables/use-mode";
 import type { MenuItemFormVO } from "@01s-11comm/type";
+
+/** 菜单项表单 VO */
+export type { MenuItemFormVO };
+
 import {
 	menuTypeOptions,
 	menuItemStatusOptions,

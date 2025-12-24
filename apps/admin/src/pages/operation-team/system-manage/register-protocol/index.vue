@@ -14,7 +14,7 @@ import {
 	type OperationTeamRegisterProtocol,
 	type OperationTeamRegisterProtocolListQuery,
 	protocolTypeOptions,
-	registerProtocolStatusOptions,
+	registerProtocolEnabledOptions,
 	isMandatoryOptions,
 	type OperationTeamRegisterProtocol as 注册协议_列表数据,
 } from "@01s-11comm/type";

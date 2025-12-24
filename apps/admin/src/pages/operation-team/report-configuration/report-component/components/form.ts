@@ -5,8 +5,9 @@ const REPORT_COMPONENT_TYPES = ["componentName", "componentType", "queryMethod",
 // 警告 这里仅为了演示 实际上的业务类型为 string
 export type ReportComponentType = (typeof REPORT_COMPONENT_TYPES)[number];
 
+// TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
 // 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内
-export interface ReportComponentFormVO {
+export interface 报表组件表单_VO {
 	componentName: string;
 	componentType: string;
 	queryMethod: string;
@@ -14,6 +15,10 @@ export interface ReportComponentFormVO {
 	java?: string;
 	description?: string;
 }
+
+// TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
+/** 向后兼容：报表组件表单_VO */
+export type ReportComponentFormVO = 报表组件表单_VO;
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ReportComponentFormVO = {

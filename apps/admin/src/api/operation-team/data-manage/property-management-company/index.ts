@@ -3,7 +3,7 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { PropertyManagementCompany, PropertyManagementCompanyListQuery } from "@01s-11comm/type";
+import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/operation-team/data-manage/property-management-company/list";
@@ -15,8 +15,8 @@ const QUERY_KEY_PREFIX = "propertyManagementCompany";
  * 物业公司列表查询 Hook
  * Property management company list query hook
  */
-export function usePropertyManagementCompanyListQuery(initialParams: Partial<PropertyManagementCompanyListQuery>) {
-	return useListQuery<PropertyManagementCompany, PropertyManagementCompanyListQuery>({
+export function usePropertyManagementCompanyListQuery(initialParams: Partial<PropertyCompanyQueryParams>) {
+	return useListQuery<PropertyCompanyListItem, PropertyCompanyQueryParams>({
 		queryKeyPrefix: QUERY_KEY_PREFIX,
 		apiUrl: API_URL,
 		initialParams,

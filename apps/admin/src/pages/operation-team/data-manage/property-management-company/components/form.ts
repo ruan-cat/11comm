@@ -1,6 +1,9 @@
 import type { Mode } from "@/composables/use-mode";
 import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
 
+/** 物业公司表单 VO */
+export type { PropertyManagementCompanyFormVO };
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: PropertyManagementCompanyFormVO = {
 	code: "",

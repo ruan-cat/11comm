@@ -2,6 +2,29 @@ import type { Mode } from "@/composables/use-mode";
 import type { OptionsType } from "plus-pro-components";
 export { auditStatusOptions } from "@01s-11comm/type";
 
+// TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
+/** 向后兼容：注册协议表单_VO */
+export type 注册协议表单_VO = RegisterProtocolFormVO;
+/** 向后兼容：协议类型Options */
+export type 协议类型Options = typeof protocolTypeOptions;
+/** 向后兼容：状态Options */
+export type 状态Options = typeof statusOptions;
+/** 向后兼容：是否强制同意Options */
+export type 是否强制同意Options = typeof isMandatoryOptions;
+// TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
+
+/** 协议类型枚举 */
+export type 协议类型枚举 =
+	| "UserRegistrationProtocol"
+	| "PrivacyPolicy"
+	| "TermsOfService"
+	| "CommunityRules"
+	| "Disclaimer";
+/** 状态枚举 */
+export type 状态枚举 = "Enabled" | "Disabled" | "Draft";
+/** 是否强制同意枚举 */
+export type 是否强制同意枚举 = "Yes" | "No";
+
 // ==================== 表单类型 ====================
 
 /**

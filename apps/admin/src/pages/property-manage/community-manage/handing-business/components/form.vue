@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { businessHandlingStatusOptions, feeTypeOptions, listDataToFormData } from "./form";
+import { handlingStatusOptions, feeTypeOptions, listDataToFormData } from "./form";
 import type { HandingBusinessFormProps } from "./form";
 import type { HandingBusinessFormVO } from "@01s-11comm/type";
 
@@ -109,7 +109,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		prop: "status",
 		valueType: "select",
 		required: true,
-		options: businessHandlingStatusOptions,
+		options: handlingStatusOptions,
 	},
 ]);
 

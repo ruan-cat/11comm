@@ -21,9 +21,9 @@ import {
 import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
 import {
 	type MerchantInfoFormVO,
+	type MerchantInfoFormProps,
 	type MerchantType,
 	type BusinessStatus,
-	type MerchantInfoFormProps,
 	defaultForm,
 } from "./components/form";
 import MerchantInfoForm from "./components/form.vue";

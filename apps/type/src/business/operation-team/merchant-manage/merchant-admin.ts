@@ -1,21 +1,27 @@
 import type { BaseListQueryParams, OptionsType } from "../../../common";
 
 /**
- * 商户管理员
+ * 商户管理员列表项
  */
-export interface MerchantAdmin {
+export interface MerchantAdminListItem {
 	/** 管理员ID */
 	id: string;
 	/** 商户ID */
 	merchantId: string;
 	/** 商户名称 */
 	merchantName: string;
+	/** 商户名称 */
+	propertyName: string;
 	/** 管理员用户名 */
 	username: string;
+	/** 管理员姓名 */
+	adminName: string;
 	/** 真实姓名 */
 	realName: string;
 	/** 手机号 */
 	phone: string;
+	/** 管理员手机号 */
+	adminPhone: string;
 	/** 邮箱 */
 	email: string;
 	/** 性别 */
@@ -45,7 +51,7 @@ export interface MerchantAdmin {
 /**
  * 商户管理员列表查询参数
  */
-export interface MerchantAdminListQuery extends BaseListQueryParams {
+export interface MerchantAdminQueryParams extends BaseListQueryParams {
 	/** 商户ID */
 	merchantId?: string;
 	/** 商户名称 */
@@ -90,6 +96,18 @@ export const merchantAdminStatusOptions: OptionsType = [
 	{ label: "待审核", value: "pending" },
 	{ label: "已离职", value: "resigned" },
 ];
+
+/**
+ * 商户管理员
+ * @deprecated 请使用 MerchantAdminListItem
+ */
+export interface MerchantAdmin extends MerchantAdminListItem {}
+
+/**
+ * 商户管理员列表查询参数
+ * @deprecated 请使用 MerchantAdminQueryParams
+ */
+export interface MerchantAdminListQuery extends MerchantAdminQueryParams {}
 
 /**
  * 商户管理员表单 VO

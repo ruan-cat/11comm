@@ -188,7 +188,7 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 		: isEdit.value || isInfo.value
 			? cloneDeep({
 					...defaultForm,
-					configName: row?.configName || "",
+					configName: row?.title || "",
 					configValue: row?.configValue || "",
 					configType: (row?.configType || "文本") as
 						| "文本"

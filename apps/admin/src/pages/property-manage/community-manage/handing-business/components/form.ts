@@ -1,5 +1,5 @@
 import type { HandingBusinessListItem, HandingBusinessFormVO } from "@01s-11comm/type";
-import { feeTypeOptions, businessHandlingStatusOptions } from "@01s-11comm/type";
+import { feeTypeOptions, handlingStatusOptions } from "@01s-11comm/type";
 
 /**
  * 业务受理表单 props
@@ -40,4 +40,4 @@ export function listDataToFormData(listData: HandingBusinessListItem): HandingBu
 }
 
 /** 导出选项供其他文件使用 */
-export { feeTypeOptions, businessHandlingStatusOptions };
+export { feeTypeOptions, handlingStatusOptions };
