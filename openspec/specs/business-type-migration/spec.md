@@ -1,8 +1,11 @@
 # business-type-migration Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-form-ts-to-types-pkg. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: 识别需要迁移的业务类型 (Step 1)
 
 系统 MUST 识别 `form.ts` 文件中需要迁移到类型包的业务类型，并按照迁移标准进行分类。
@@ -57,6 +60,7 @@ TBD - created by archiving change migrate-form-ts-to-types-pkg. Update Purpose a
 **目录映射规则:**
 
 Admin 项目路径 → Type 项目路径：
+
 - `apps/admin/src/pages/xxx-manage/yyy-manage/zzz/components/form.ts`
 - `apps/type/src/business/xxx-manage/yyy-manage/zzz.ts`
 
@@ -150,8 +154,7 @@ Admin 项目路径 → Type 项目路径：
 
 1. **添加导入语句**：在文件顶部添加必要的导入
 2. **更新类型引用**：更新所有使用该类型的地方
-3. **创建类型别名**：保持向后兼容性
-4. **保留本地内容**：保留 defaultForm 和 Props 类型
+3. **保留本地内容**：保留 defaultForm 和 Props 类型
 
 #### Scenario: 更新 form.ts 文件导入
 
@@ -215,4 +218,3 @@ Admin 项目路径 → Type 项目路径：
 - **AND** 表单功能正常
 - **AND** 数据提交和验证功能正常
 - **AND** 控制台无类型相关错误
-

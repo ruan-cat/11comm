@@ -44,12 +44,14 @@
 
 - **GIVEN** 检查 form.ts 文件
 - **WHEN** 发现以下代码：
+
 ```typescript
 export interface FirstPartyFormProps {
-  form: FirstPartyFormVO;
-  defaultValues: FirstPartyFormVO;
+	form: FirstPartyFormVO;
+	defaultValues: FirstPartyFormVO;
 }
 ```
+
 - **THEN** 识别为表单 props 类型
 - **AND** 记录名称为 `FirstPartyFormProps`
 - **AND** 标记需要添加 mode 字段
@@ -58,12 +60,14 @@ export interface FirstPartyFormProps {
 
 - **GIVEN** 检查 form.ts 文件
 - **WHEN** 发现以下代码：
+
 ```typescript
 export interface CancelFeeDialogProps {
-  form: CancelFeeFormVO;
-  defaultValues: CancelFeeFormVO;
+	form: CancelFeeFormVO;
+	defaultValues: CancelFeeFormVO;
 }
 ```
+
 - **THEN** 识别为表单 props 类型
 - **AND** 即使不以 `FormProps` 结尾也应该包含
 - **AND** 标记需要添加 mode 字段
@@ -72,12 +76,14 @@ export interface CancelFeeDialogProps {
 
 - **GIVEN** 检查接口定义
 - **WHEN** 发现以下代码：
+
 ```typescript
 export interface TableProps {
-  data: any[];
-  loading: boolean;
+	data: any[];
+	loading: boolean;
 }
 ```
+
 - **THEN** 不识别为表单 props 类型
 - **AND** 理由：不包含表单数据和默认值
 
@@ -103,13 +109,15 @@ export interface TableProps {
 
 - **GIVEN** 检查 `CancelFeeFormProps` 类型
 - **WHEN** 发现以下定义：
+
 ```typescript
 export interface CancelFeeFormProps {
-  form: CancelFeeFormVO;
-  defaultValues: CancelFeeFormVO;
-  mode?: Mode;
+	form: CancelFeeFormVO;
+	defaultValues: CancelFeeFormVO;
+	mode?: Mode;
 }
 ```
+
 - **THEN** 标记为已有 mode 字段
 - **AND** 不需要再次添加
 - **AND** 验证类型定义是否正确
@@ -118,12 +126,14 @@ export interface CancelFeeFormProps {
 
 - **GIVEN** 检查 `FirstPartyFormProps` 类型
 - **WHEN** 发现以下定义：
+
 ```typescript
 export interface FirstPartyFormProps {
-  form: FirstPartyFormVO;
-  defaultValues: FirstPartyFormVO;
+	form: FirstPartyFormVO;
+	defaultValues: FirstPartyFormVO;
 }
 ```
+
 - **THEN** 标记为缺少 mode 字段
 - **AND** 需要添加该字段
 - **AND** 记录在待修改列表中
@@ -132,13 +142,15 @@ export interface FirstPartyFormProps {
 
 - **GIVEN** 检查表单 props 类型
 - **WHEN** 发现以下定义：
+
 ```typescript
 export interface XxxFormProps {
-  form: XxxFormVO;
-  defaultValues: XxxFormVO;
-  mode: string; // 错误的类型
+	form: XxxFormVO;
+	defaultValues: XxxFormVO;
+	mode: string; // 错误的类型
 }
 ```
+
 - **THEN** 标记需要修正
 - **AND** 应该改为 `mode?: Mode`
 - **AND** 注明可选性
@@ -168,15 +180,17 @@ mode?: Mode;
 - **GIVEN** `FirstPartyFormProps` 缺少 mode 字段
 - **WHEN** 添加该字段
 - **THEN** 更新为：
+
 ```typescript
 export interface FirstPartyFormProps {
-  form: FirstPartyFormVO;
-  defaultValues: FirstPartyFormVO;
+	form: FirstPartyFormVO;
+	defaultValues: FirstPartyFormVO;
 
-  /** 表单模式 */
-  mode?: Mode;
+	/** 表单模式 */
+	mode?: Mode;
 }
 ```
+
 - **AND** 字段位于最后
 - **AND** 包含 JSDoc 注释
 - **AND** 标记为可选
@@ -233,14 +247,6 @@ export interface FirstPartyFormProps {
 - **THEN** 组件能够正确接收 mode 属性
 - **AND** 组件内部可以正确使用 mode 值
 - **AND** TypeScript 类型推断正常
-
-#### Scenario: 验证向后兼容性
-
-- **GIVEN** mode 字段为可选
-- **WHEN** 组件不传递 mode 属性
-- **THEN** 组件正常工作
-- **AND** 无缺少必需属性的警告
-- **AND** 保持向后兼容
 
 ---
 
