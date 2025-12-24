@@ -5,15 +5,15 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, CommunityConfiguration, CommunityConfigurationListQuery } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, SettingManagementCommunityConfiguration, SettingManagementCommunityConfigurationListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockCommunityConfigurationData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityConfiguration>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<SettingManagementCommunityConfiguration>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<CommunityConfigurationListQuery>(event);
-	const defaultParams: CommunityConfigurationListQuery = {
+	const body = await readBody<SettingManagementCommunityConfigurationListQuery>(event);
+	const defaultParams: SettingManagementCommunityConfigurationListQuery = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -30,7 +30,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityConf
 
 	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<CommunityConfiguration>> = {
+	const response: JsonVO<PageDTO<SettingManagementCommunityConfiguration>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

@@ -1,7 +1,7 @@
 import type { PatrolTaskListItem } from "@01s-11comm/type";
 
 /** Task 模拟数据 */
-export const mockTaskTaskData: PatrolTaskListItem[] = [
+export const mockTaskData: PatrolTaskListItem[] = [
     {
         id: "1",
         name: "日常巡检任务-北区",

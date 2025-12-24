@@ -1,9 +1,9 @@
-import type { CommunityConfiguration } from "@01s-11comm/type";
+import type { SettingManagementCommunityConfiguration } from "@01s-11comm/type";
 
 /**
  * 小区配置模拟数据
  */
-export const mockCommunityConfigurationData: CommunityConfiguration[] = [
+export const mockCommunityConfigurationData: SettingManagementCommunityConfiguration[] = [
 	{
 		csId: "CS001",
 		communityId: "COMM001",

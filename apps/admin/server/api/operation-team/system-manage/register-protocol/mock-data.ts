@@ -1,9 +1,9 @@
-import type { RegisterProtocol } from "@01s-11comm/type";
+import type { OperationTeamRegisterProtocol } from "@01s-11comm/type";
 
 /**
  * 注册协议模拟数据
  */
-export const mockRegisterProtocolData: RegisterProtocol[] = [
+export const mockRegisterProtocolData: OperationTeamRegisterProtocol[] = [
 	{
 		id: "PRO001",
 		title: "用户注册协议",

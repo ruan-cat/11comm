@@ -5,12 +5,12 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ArrearsDetailsListListItem, ArrearsDetailsListQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ArrearsDetailsListItem, ArrearsDetailsListQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockArrearsDetailsListData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ArrearsDetailsListListItem>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ArrearsDetailsListItem>>> => {
 	const body = await readBody<ArrearsDetailsListQueryParams>(event);
 	const defaultParams: ArrearsDetailsListQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -28,7 +28,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ArrearsDetail
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ArrearsDetailsListListItem>> = {
+	const response: JsonVO<PageDTO<ArrearsDetailsListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

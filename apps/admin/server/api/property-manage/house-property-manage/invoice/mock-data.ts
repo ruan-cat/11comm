@@ -1,7 +1,7 @@
 import type { InvoiceListItem } from "@01s-11comm/type";
 
 /** Invoice 模拟数据 */
-export const mockInvoiceInvoiceData: InvoiceListItem[] = [
+export const mockInvoiceData: InvoiceListItem[] = [
     {
         id: "1",
         code: "INV-2024-001",

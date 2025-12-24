@@ -1,9 +1,9 @@
-import type { RegisterProtocolDisplay } from "@01s-11comm/type";
+import type { SettingManagementRegisterProtocolDisplay } from "@01s-11comm/type";
 
 /**
  * 注册协议模拟数据
  */
-export const mockRegisterProtocolData: RegisterProtocolDisplay[] = [
+export const mockRegisterProtocolData: SettingManagementRegisterProtocolDisplay[] = [
 	{
 		id: "1",
 		title: "用户注册协议",

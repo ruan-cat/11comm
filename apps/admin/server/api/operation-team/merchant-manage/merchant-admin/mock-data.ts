@@ -23,6 +23,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-10 08:00:00",
 		updateTime: "2024-01-20 14:30:00",
 		operator: "merchant_admin",
+		propertyName: "阳光小区",
+		adminName: "张三",
+		adminPhone: "13800138001",
 	},
 	{
 		id: "MGA002",
@@ -43,6 +46,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-10 08:00:00",
 		updateTime: "2024-01-20 14:30:00",
 		operator: "merchant_admin",
+		propertyName: "阳光小区",
+		adminName: "张四",
+		adminPhone: "13900139001",
 	},
 	{
 		id: "MGA003",
@@ -63,6 +69,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-11 08:00:00",
 		updateTime: "2024-01-21 10:15:00",
 		operator: "merchant_admin",
+		propertyName: "绿城花园",
+		adminName: "李四",
+		adminPhone: "13800138002",
 	},
 	{
 		id: "MGA004",
@@ -83,6 +92,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-11 08:00:00",
 		updateTime: "2024-01-21 10:15:00",
 		operator: "merchant_admin",
+		propertyName: "绿城花园",
+		adminName: "李五",
+		adminPhone: "13900139002",
 	},
 	{
 		id: "MGA005",
@@ -103,6 +115,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-12 08:00:00",
 		updateTime: "2024-01-22 16:45:00",
 		operator: "merchant_admin",
+		propertyName: "老城胡同",
+		adminName: "王五",
+		adminPhone: "13800138003",
 	},
 	{
 		id: "MGA006",
@@ -123,6 +138,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-12 08:00:00",
 		updateTime: "2024-01-22 16:45:00",
 		operator: "merchant_admin",
+		propertyName: "老城胡同",
+		adminName: "王六",
+		adminPhone: "13900139003",
 	},
 	{
 		id: "MGA007",
@@ -143,6 +161,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-13 08:00:00",
 		updateTime: "2024-01-23 11:20:00",
 		operator: "merchant_admin",
+		propertyName: "时尚社区",
+		adminName: "赵六",
+		adminPhone: "13800138004",
 	},
 	{
 		id: "MGA008",
@@ -163,6 +184,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-14 08:00:00",
 		updateTime: "2024-01-24 15:30:00",
 		operator: "merchant_admin",
+		propertyName: "便民社区",
+		adminName: "钱七",
+		adminPhone: "13800138005",
 	},
 	{
 		id: "MGA009",
@@ -183,6 +207,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-15 08:00:00",
 		updateTime: "2024-01-25 09:45:00",
 		operator: "merchant_admin",
+		propertyName: "菜鸟社区",
+		adminName: "孙八",
+		adminPhone: "13800138006",
 	},
 	{
 		id: "MGA010",
@@ -203,6 +230,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-19 08:00:00",
 		updateTime: "2024-01-29 16:25:00",
 		operator: "merchant_admin",
+		propertyName: "温馨家园",
+		adminName: "刘二",
+		adminPhone: "13800138010",
 	},
 	{
 		id: "MGA011",
@@ -223,6 +253,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-20 08:00:00",
 		updateTime: "2024-01-30 10:15:00",
 		operator: "merchant_admin",
+		propertyName: "社区中心",
+		adminName: "孙实",
+		adminPhone: "13800138011",
 	},
 	{
 		id: "MGA012",
@@ -243,6 +276,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-21 08:00:00",
 		updateTime: "2024-01-31 14:20:00",
 		operator: "merchant_admin",
+		propertyName: "社区医疗中心",
+		adminName: "周正",
+		adminPhone: "13800138012",
 	},
 	{
 		id: "MGA013",
@@ -263,6 +299,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-22 08:00:00",
 		updateTime: "2024-02-01 11:10:00",
 		operator: "merchant_admin",
+		propertyName: "社区金融大厦",
+		adminName: "吴银",
+		adminPhone: "13800138013",
 	},
 	{
 		id: "MGA014",
@@ -283,6 +322,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-23 08:00:00",
 		updateTime: "2024-02-02 16:40:00",
 		operator: "merchant_admin",
+		propertyName: "教育园区",
+		adminName: "郑教",
+		adminPhone: "13800138014",
 	},
 	{
 		id: "MGA015",
@@ -303,6 +345,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-24 08:00:00",
 		updateTime: "2024-02-03 09:25:00",
 		operator: "merchant_admin",
+		propertyName: "宠物乐园",
+		adminName: "徐婉",
+		adminPhone: "13800138015",
 	},
 	{
 		id: "MGA016",
@@ -323,6 +368,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-25 08:00:00",
 		updateTime: "2024-02-04 14:50:00",
 		operator: "merchant_admin",
+		propertyName: "休闲社区",
+		adminName: "黄牌",
+		adminPhone: "13800138016",
 	},
 	{
 		id: "MGA017",
@@ -343,6 +391,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-26 08:00:00",
 		updateTime: "2024-02-05 11:30:00",
 		operator: "merchant_admin",
+		propertyName: "健身中心",
+		adminName: "白健",
+		adminPhone: "13800138017",
 	},
 	{
 		id: "MGA018",
@@ -363,6 +414,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-27 08:00:00",
 		updateTime: "2024-02-06 15:20:00",
 		operator: "merchant_admin",
+		propertyName: "瑜伽天地",
+		adminName: "皮玉",
+		adminPhone: "13800138018",
 	},
 	{
 		id: "MGA019",
@@ -383,6 +437,9 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-28 08:00:00",
 		updateTime: "2024-02-07 10:40:00",
 		operator: "merchant_admin",
+		propertyName: "茶香社区",
+		adminName: "潘银",
+		adminPhone: "13800138019",
 	},
 	{
 		id: "MGA020",
@@ -403,5 +460,8 @@ export const mockMerchantAdminData: MerchantAdmin[] = [
 		createTime: "2024-01-29 08:00:00",
 		updateTime: "2024-02-08 16:10:00",
 		operator: "merchant_admin",
+		propertyName: "甜蜜小区",
+		adminName: "范冰",
+		adminPhone: "13800138020",
 	},
 ];

@@ -5,14 +5,14 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, InvoiceInvoiceListItem, InvoiceInvoiceQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, InvoiceListItem, InvoiceQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
-import { mockInvoiceInvoiceData } from "./mock-data";
+import { mockInvoiceData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceInvoiceListItem>>> => {
-	const body = await readBody<InvoiceInvoiceQueryParams>(event);
-	const defaultParams: InvoiceInvoiceQueryParams = {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListItem>>> => {
+	const body = await readBody<InvoiceQueryParams>(event);
+	const defaultParams: InvoiceQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -20,7 +20,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceInvoic
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockInvoiceInvoiceData, filters);
+	const filteredData = filterDataByQuery(mockInvoiceData, filters);
 
 	/** 分页处理 */
 	const total = filteredData.length;
@@ -28,7 +28,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceInvoic
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<InvoiceInvoiceListItem>> = {
+	const response: JsonVO<PageDTO<InvoiceListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

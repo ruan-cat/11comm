@@ -1,7 +1,7 @@
 import type { PatrolDetailListItem } from "@01s-11comm/type";
 
 /** Detail 模拟数据 */
-export const mockDetailDetailData: PatrolDetailListItem[] = [
+export const mockDetailData: PatrolDetailListItem[] = [
     {
         id: "1",
         name: "巡检点A-北区大门",

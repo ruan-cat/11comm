@@ -1,7 +1,7 @@
 import type { PatrolPointListData } from "@01s-11comm/type";
 
 /** Point 模拟数据 */
-export const mockPointPointData: PatrolPointListData[] = [
+export const mockPointData: PatrolPointListData[] = [
     {
         id: "1",
         name: "北区大门巡检点",

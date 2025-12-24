@@ -1,7 +1,7 @@
 import type { PatrolPlanListItem } from "@01s-11comm/type";
 
 /** Plan 模拟数据 */
-export const mockPlanPlanData: PatrolPlanListItem[] = [
+export const mockPlanData: PatrolPlanListItem[] = [
     {
         id: "1",
         name: "日常巡检计划",

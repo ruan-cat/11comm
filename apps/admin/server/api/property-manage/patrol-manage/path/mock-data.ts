@@ -1,7 +1,7 @@
 import type { PatrolPathListItem } from "@01s-11comm/type";
 
 /** Path 模拟数据 */
-export const mockPathPathData: PatrolPathListItem[] = [
+export const mockPathData: PatrolPathListItem[] = [
     {
         id: "1",
         name: "北区巡检路线",

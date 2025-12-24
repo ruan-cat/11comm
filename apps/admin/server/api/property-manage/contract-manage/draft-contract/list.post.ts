@@ -5,14 +5,14 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, DraftContractListItem, DraftContractQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, DraftContractListItem, DraftContractQueryParamsType } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockDraftContractData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<DraftContractListItem>>> => {
-	const body = await readBody<DraftContractQueryParams>(event);
-	const defaultParams: DraftContractQueryParams = {
+	const body = await readBody<DraftContractQueryParamsType>(event);
+	const defaultParams: DraftContractQueryParamsType = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};

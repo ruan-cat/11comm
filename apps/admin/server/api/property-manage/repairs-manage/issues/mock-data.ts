@@ -1,7 +1,7 @@
 import type { IssuesListItem } from "@01s-11comm/type";
 
 /** Issues 模拟数据 */
-export const mockIssuesIssuesData: IssuesListItem[] = [
+export const mockIssuesData: IssuesListItem[] = [
 	{
 		id: "1",
 		name: "工单池-001",

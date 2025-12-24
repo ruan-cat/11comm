@@ -5,14 +5,14 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, PointPointListItem, PointPointQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, PatrolPointListData, PointQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
-import { mockPointPointData } from "./mock-data";
+import { mockPointData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<PointPointListItem>>> => {
-	const body = await readBody<PointPointQueryParams>(event);
-	const defaultParams: PointPointQueryParams = {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPointListData>>> => {
+	const body = await readBody<PointQueryParams>(event);
+	const defaultParams: PointQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -20,7 +20,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PointPointLis
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
 	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockPointPointData, filters);
+	const filteredData = filterDataByQuery(mockPointData, filters);
 
 	/** 分页处理 */
 	const total = filteredData.length;
@@ -28,7 +28,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PointPointLis
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<PointPointListItem>> = {
+	const response: JsonVO<PageDTO<PatrolPointListData>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

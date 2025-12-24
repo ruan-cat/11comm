@@ -55,7 +55,7 @@ export const mockWorkingScheduleData: WorkingSchedule[] = [
 	{
 		id: "5",
 		name: "物业办公室全天班",
-		type: "全天",
+		type: "full_day",
 		startTime: "09:00",
 		endTime: "18:00",
 		weekday: 4,
@@ -139,7 +139,7 @@ export const mockWorkingScheduleData: WorkingSchedule[] = [
 	{
 		id: "12",
 		name: "财务部全天班",
-		type: "全天",
+		type: "full_day",
 		startTime: "09:00",
 		endTime: "18:00",
 		weekday: 4,
@@ -163,7 +163,7 @@ export const mockWorkingScheduleData: WorkingSchedule[] = [
 	{
 		id: "14",
 		name: "行政部全天班",
-		type: "全天",
+		type: "full_day",
 		startTime: "09:00",
 		endTime: "18:00",
 		weekday: 1,
@@ -235,7 +235,7 @@ export const mockWorkingScheduleData: WorkingSchedule[] = [
 	{
 		id: "20",
 		name: "物业机动班",
-		type: "全天",
+		type: "full_day",
 		startTime: "08:00",
 		endTime: "20:00",
 		weekday: 6,

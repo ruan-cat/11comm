@@ -5,14 +5,14 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, NoticeListItem, NoticeQueryParams } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockNoticeData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<NoticeListItem>>> => {
-	const body = await readBody<NoticeQueryParams>(event);
-	const defaultParams: NoticeQueryParams = {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityNoticeListItem>>> => {
+	const body = await readBody<CommunityNoticeQueryParams>(event);
+	const defaultParams: CommunityNoticeQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -28,7 +28,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<NoticeListIte
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<NoticeListItem>> = {
+	const response: JsonVO<PageDTO<CommunityNoticeListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
