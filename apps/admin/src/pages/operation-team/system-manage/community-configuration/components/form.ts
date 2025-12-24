@@ -4,10 +4,6 @@ import type { SettingCommunityConfigFormVO } from "@01s-11comm/type";
 /** 小区配置表单数据类型 */
 export { SettingCommunityConfigFormVO };
 
-// TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
-/** 小区配置表单 VO (别名) */
-export type { SettingCommunityConfigFormVO as CommunityConfigFormVO };
-
 // ==================== Options 导出 ====================
 
 import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";

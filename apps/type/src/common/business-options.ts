@@ -888,6 +888,27 @@ export const returnVisitSettingOptions: OptionsType = [
 ];
 
 /**
+ * @description 工单状态选项
+ * Issues status options
+ */
+export const issuesStatusOptions: OptionsType = [
+	{ label: "待处理", value: "待处理" },
+	{ label: "处理中", value: "处理中" },
+	{ label: "已完成", value: "已完成" },
+	{ label: "已取消", value: "已取消" },
+];
+
+/**
+ * @description 强制回单状态选项
+ * Mandatory return issue status options
+ */
+export const mandatoryReturnIssueStatusOptions: OptionsType = [
+	{ label: "待回单", value: "待回单" },
+	{ label: "已回单", value: "已回单" },
+	{ label: "已强制回单", value: "已强制回单" },
+];
+
+/**
  * @description 预约状态选项
  * Booking status options
  */

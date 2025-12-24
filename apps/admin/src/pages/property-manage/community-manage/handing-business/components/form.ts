@@ -1,6 +1,9 @@
 import type { HandingBusinessListItem, HandingBusinessFormVO } from "@01s-11comm/type";
 import { feeTypeOptions, handlingStatusOptions } from "@01s-11comm/type";
 
+/** 导出类型供其他文件使用 */
+export type { HandingBusinessFormVO };
+
 /**
  * 业务受理表单 props
  * @description

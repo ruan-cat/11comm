@@ -1,6 +1,8 @@
 import type { HouseChargeFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
+export type { HouseChargeFormVO };
+
 // ==================== 类型定义 ====================
 
 /**

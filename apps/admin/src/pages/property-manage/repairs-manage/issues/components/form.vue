@@ -2,7 +2,7 @@
 import { computed, ref, useTemplateRef } from "vue";
 
 import { IssuesSettingFormProps, type IssuesFormVO } from "./form";
-import { repairTypeOptions, repairCategoryOptions, workOrderStatusOptions } from "@01s-11comm/type";
+import { repairTypeOptions, repairCategoryOptions, issuesStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<IssuesSettingFormProps>();
 
@@ -94,7 +94,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: workOrderStatusOptions,
+		options: issuesStatusOptions,
 	},
 	{
 		label: "违规说明",

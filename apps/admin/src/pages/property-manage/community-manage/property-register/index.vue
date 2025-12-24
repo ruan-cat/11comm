@@ -13,7 +13,7 @@ import { h } from "vue";
 import { ElMessageBox, ElTag } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import type { PropertyRegisterFormProps } from "./components/form";
-import type { 产权登记表单_VO } from "./components/form";
+import type { PropertyRegisterFormVO } from "./components/form";
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
 import { usePropertyRegisterListQuery } from "@/api/property-manage/community-manage/property-register";
@@ -246,7 +246,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}产权登记`;
 
 	/** 业务对象 */
-	const 产权登记表单_VO: 产权登记表单_VO = isAdd.value
+	const propertyRegisterFormVO: PropertyRegisterFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
@@ -264,8 +264,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 表单组件需要的props */
 	const formProps: PropertyRegisterFormProps = {
-		form: 产权登记表单_VO,
-		defaultValues: 产权登记表单_VO,
+		form: propertyRegisterFormVO,
+		defaultValues: propertyRegisterFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

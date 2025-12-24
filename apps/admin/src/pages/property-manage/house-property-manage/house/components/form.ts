@@ -2,6 +2,9 @@ import type { HouseManagementFormVO } from "@01s-11comm/type";
 
 import { houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
 
+/** HouseManagementFormVO */
+export type { HouseManagementFormVO };
+
 /** houseTypeOptions */
 export { houseTypeOptions };
 

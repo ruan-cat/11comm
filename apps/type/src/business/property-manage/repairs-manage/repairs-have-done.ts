@@ -1,5 +1,28 @@
 import type { OptionsType } from "../../../common";
-import { repairStatusOptions, repairSourceOptions } from "../../../common/business-options";
+import { repairStatusOptions, repairTypeOptions, maintenanceTypeOptions } from "../../../common/business-options";
+
+/**
+ * @description repairs-have-done列表查询参数
+ * RepairsHaveDone list query parameters
+ */
+export interface RepairsHaveDoneQueryParams {
+	/** 维修类型 Maintenance type */
+	maintenanceType?: string;
+	/** 报修人 Reporter */
+	reporter?: string;
+	/** 报修电话 Repair phone */
+	repairPhone?: string;
+	/** 报修类型 Repair type */
+	repairType?: string;
+	/** 报修状态 Repair status */
+	repairStatus?: string;
+	/** 工单编号 Work order number */
+	workOrderNumber?: string;
+	/** 当前页码 Current page (1-based) */
+	pageIndex: number;
+	/** 每页大小 Page size */
+	pageSize: number;
+}
 
 /**
  * @description repairs-have-done列表数据
@@ -8,47 +31,6 @@ import { repairStatusOptions, repairSourceOptions } from "../../../common/busine
 export interface RepairsHaveDoneListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 创建时间 Create time */
-	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
-	/** 备注 Remark */
-	remark?: string;
-}
-
-/**
- * @description repairs-have-done列表查询参数
- * RepairsHaveDone list query parameters
- */
-export interface RepairsHaveDoneQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
-}
-
-/**
- * @description 状态选项
- * Status options
- */
-export const repairsHaveDoneStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];
-
-/**
- * @description 报修已办表单 VO
- * Repairs have done form VO
- */
-export interface RepairsHaveDoneFormVO {
 	/** 工单编号 Work order number */
 	workOrderNumber: string;
 	/** 位置 Location */
@@ -66,14 +48,23 @@ export interface RepairsHaveDoneFormVO {
 	/** 状态 Status */
 	status: string;
 	/** 备注 Remark */
-	remark: string;
+	remark?: string;
 }
 
 /**
- * @description 报修已办列表数据
- * Repairs have done list data (backward compatibility)
+ * @description 状态选项
+ * Status options
  */
-export interface RepairsHaveDoneListData extends RepairsHaveDoneListItem {
+export const repairsHaveDoneStatusOptions: OptionsType = [
+	{ label: "启用", value: "启用" },
+	{ label: "禁用", value: "禁用" },
+];
+
+/**
+ * @description 报修已办表单 VO
+ * Repairs have done form VO
+ */
+export interface RepairsHaveDoneFormVO {
 	/** 工单编号 Work order number */
 	workOrderNumber: string;
 	/** 位置 Location */

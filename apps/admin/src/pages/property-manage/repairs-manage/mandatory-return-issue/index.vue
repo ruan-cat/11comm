@@ -13,9 +13,11 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type MandatoryReturnIssueFormProps, defaultForm, type 强制回单表单_VO } from "./components/form";
+import { type MandatoryReturnIssueFormProps, defaultForm, type MandatoryReturnIssueFormVO } from "./components/form";
 import MandatoryReturnIssueForm from "./components/form.vue";
 import { useMandatoryReturnIssueListQuery } from "@/api/property-manage/repairs-manage/mandatory-return-issue";
+import type { MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams } from "@01s-11comm/type";
+import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -86,7 +88,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 强制回单_列表查询_VO = {
+const plusSearchModelRef: FieldValues & MandatoryReturnIssueQueryParams = {
 	报修类型: "",
 	报修人: "",
 	报修电话: "",
@@ -119,7 +121,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "报修类型",
 		prop: "报修类型",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 	{
 		label: "报修人",
@@ -164,7 +166,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: MandatoryReturnIssueListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -172,7 +174,7 @@ function openDialog(params: { mode: Mode; row?: 强制回单_列表数据 }) {
 	const title = `${modeText.value}强制回单`;
 
 	/** 业务对象 */
-	const 业务对象: 强制回单表单_VO = isAdd.value
+	const 业务对象: MandatoryReturnIssueFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: structuredClone({
 				...defaultForm,
@@ -249,22 +251,22 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 强制回单_列表数据) {
+function handleEdit(row: MandatoryReturnIssueListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 强制回单_列表数据) {
+function handleView(row: MandatoryReturnIssueListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 强制回单_列表数据) {
+async function handleDelete(row: MandatoryReturnIssueListItem) {
 	// TODO: 实现删除逻辑
 }
 
 /** 强制回单按钮点击事件 */
-async function handleMandatoryReturn(row: 强制回单_列表数据) {
+async function handleMandatoryReturn(row: MandatoryReturnIssueListItem) {
 	// TODO: 实现强制回单逻辑
 }
 </script>

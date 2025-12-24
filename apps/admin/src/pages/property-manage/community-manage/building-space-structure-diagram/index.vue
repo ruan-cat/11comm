@@ -17,7 +17,7 @@ import {
 	buildingStatusOptions,
 } from "@01s-11comm/type";
 import { useBuildingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/building-space-structure-diagram";
-import { type BuildingSpaceStructureDiagramFormProps, defaultForm, type 楼栋结构图表单_VO } from "./components/form";
+import { type BuildingSpaceStructureDiagramFormProps, defaultForm, type BuildingSpaceStructureDiagramFormVO } from "./components/form";
 import BuildingSpaceStructureDiagramForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -226,7 +226,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}楼栋结构图`;
 
 	/** 业务对象 */
-	const 楼栋结构图表单_VO: 楼栋结构图表单_VO = isAdd.value
+	const buildingSpaceStructureDiagramFormVO: BuildingSpaceStructureDiagramFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? {
@@ -248,8 +248,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 表单组件需要的props */
 	const props: BuildingSpaceStructureDiagramFormProps = {
-		form: 楼栋结构图表单_VO,
-		defaultValues: 楼栋结构图表单_VO,
+		form: buildingSpaceStructureDiagramFormVO,
+		defaultValues: buildingSpaceStructureDiagramFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

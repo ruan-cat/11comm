@@ -14,14 +14,11 @@ import { useToggle } from "@vueuse/core";
 
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type IssuesSettingFormProps, defaultForm, type 工单池表单_VO } from "./components/form";
+import { type IssuesSettingFormProps, defaultForm, type IssuesFormVO } from "./components/form";
 import IssuesSettingForm from "./components/form.vue";
-// TODO: 需要换成英文类型 不允许写成中文类型
 import {
 	type IssuesListItem,
 	type IssuesQueryParams,
-	type 工单池_列表数据,
-	type 工单池_列表查询_VO,
 	repairTypeOptions,
 	repairStatusOptions,
 	repairCategoryOptions,
@@ -35,10 +32,10 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const issuesSettingFormInstance = ref<InstanceType<typeof IssuesSettingForm> | null>(null);
 
 /** 表格数据 */
-const tableData = ref<工单池_列表数据[]>([]);
+const tableData = ref<IssuesListItem[]>([]);
 
 /** 模拟数据 - TODO: 替换为真实API调用 */
-const mockTableData: 工单池_列表数据[] = [];
+const mockTableData: IssuesListItem[] = [];
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -146,7 +143,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 工单池_列表查询_VO = {
+const plusSearchModelRef: FieldValues & IssuesQueryParams = {
 	工单编号: "",
 	报修人: "",
 	报修电话: "",
@@ -329,7 +326,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: IssuesListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -337,7 +334,7 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 	const title = `${modeText.value}工单池`;
 
 	/** 业务对象 */
-	const 工单池表单VO: 工单池表单_VO = isAdd.value
+	const issuesFormVO: IssuesFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
@@ -357,11 +354,11 @@ function openDialog(params: { mode: Mode; row?: 工单池_列表数据 }) {
 					备注: row?.备注 || "",
 				})
 			: structuredClone(defaultForm);
-	const defaultValues = structuredClone(工单池表单VO);
+	const defaultValues = structuredClone(issuesFormVO);
 
 	/** 表单组件需要的props */
 	const formProps: IssuesSettingFormProps = {
-		form: 工单池表单VO,
+		form: issuesFormVO,
 		defaultValues,
 	};
 
@@ -423,17 +420,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 工单池_列表数据) {
+function handleEdit(row: IssuesListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 工单池_列表数据) {
+function handleView(row: IssuesListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 工单池_列表数据) {
+async function handleDelete(row: IssuesListItem) {
 	// TODO: 实现删除逻辑
 	consola.log("删除", row);
 	await loadTableData();

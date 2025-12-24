@@ -2,6 +2,7 @@
 import { computed, ref, useTemplateRef } from "vue";
 
 import { RepairsHaveDoneFormProps, type RepairsHaveDoneFormVO } from "./form";
+import { repairTypeOptions, maintenanceTypeOptions, repairStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<RepairsHaveDoneFormProps>();
 
@@ -51,13 +52,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "报修类型",
 		prop: "repairType",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 	{
 		label: "维修类型",
 		prop: "maintenanceType",
 		valueType: "select",
-		options: 维修类型Options,
+		options: maintenanceTypeOptions,
 	},
 	{
 		label: "报修人",
@@ -78,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: 报修状态Options,
+		options: repairStatusOptions,
 	},
 	{
 		label: "备注",

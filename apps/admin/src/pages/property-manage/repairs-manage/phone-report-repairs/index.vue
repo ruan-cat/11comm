@@ -15,7 +15,8 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PhoneRepairsFormProps, defaultForm } from "./components/form";
 import PhoneRepairsForm from "./components/form.vue";
-import { usePhoneReportRepairsListQuery } from "@/api/property-manage/repairs-manage/phone-report-repairs";
+import type { PhoneReportRepairsListItem, PhoneReportRepairsQueryParams } from "@01s-11comm/type";
+import { repairTypeOptions, repairStatusOptions } from "@01s-11comm/type";
 const phoneRepairsFormInstance = ref<InstanceType<typeof PhoneRepairsForm> | null>(null);
 
 /** 表格列配置 */
@@ -86,7 +87,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 电话报修_列表查询_VO = {
+const plusSearchModelRef: FieldValues & PhoneReportRepairsQueryParams = {
 	工单编号: "",
 	报修人: "",
 	报修电话: "",
@@ -143,7 +144,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
 		prop: "报修类型",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 
 	// 报修状态
@@ -151,7 +152,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
 		prop: "报修状态",
 		valueType: "select",
-		options: 报修状态Options,
+		options: repairStatusOptions,
 	},
 ]);
 
@@ -176,7 +177,7 @@ function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 电话报修_列表数据;
+	row?: PhoneReportRepairsListItem;
 }
 
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -278,17 +279,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 电话报修_列表数据) {
+function handleEdit(row: PhoneReportRepairsListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 电话报修_列表数据) {
+function handleView(row: PhoneReportRepairsListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 电话报修_列表数据) {
+async function handleDelete(row: PhoneReportRepairsListItem) {
 	consola.log("删除", row);
 	await doFetch();
 }

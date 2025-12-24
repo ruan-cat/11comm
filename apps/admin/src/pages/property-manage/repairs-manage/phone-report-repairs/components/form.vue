@@ -2,6 +2,7 @@
 import { computed, ref, useTemplateRef } from "vue";
 
 import { PhoneRepairsFormProps, type PhoneRepairsFormVO } from "./form";
+import { repairTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PhoneRepairsFormProps>();
 
@@ -52,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "报修类型",
 		prop: "repairType",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 		required: true,
 	},
 

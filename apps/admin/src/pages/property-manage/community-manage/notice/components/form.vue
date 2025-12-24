@@ -72,16 +72,16 @@ watch([() => form.value.validityStartTime, () => form.value.validityEndTime], ([
 
 	if (now < start) {
 		// 还未到发布时间
-		if (form.value.status === "已发布") {
-			form.value.status = "草稿";
+		if (form.value.status === "published") {
+			form.value.status = "draft";
 		}
 	} else if (now > end) {
 		// 已过期
-		form.value.status = "已过期";
+		form.value.status = "expired";
 	} else {
 		// 在有效期内
-		if (form.value.status === "草稿") {
-			form.value.status = "已发布";
+		if (form.value.status === "draft") {
+			form.value.status = "published";
 		}
 	}
 });
@@ -276,11 +276,11 @@ function validateBeforeSubmit(): boolean {
 		}
 
 		const now = new Date();
-		if (form.value.status === "已发布" && start > now) {
+		if (form.value.status === "published" && start > now) {
 			ElMessage.warning("开始日期在未来，建议将状态设为草稿");
 		}
 
-		if (form.value.status === "已发布" && end < now) {
+		if (form.value.status === "published" && end < now) {
 			ElMessage.warning("已过有效期，建议将状态设为已过期");
 		}
 	}
@@ -353,15 +353,15 @@ defineExpose({
 						<div class="公示元信息">
 							<ElTag
 								:type="
-									form.noticeType === '通知'
+									form.noticeType === 'notification'
 										? 'primary'
-										: form.noticeType === '公告'
+										: form.noticeType === 'announcement'
 											? 'success'
-											: form.noticeType === '提醒'
+											: form.noticeType === 'reminder'
 												? 'warning'
-												: form.noticeType === '活动'
+												: form.noticeType === 'activity'
 													? 'info'
-													: form.noticeType === '维修'
+													: form.noticeType === 'maintenance'
 														? 'danger'
 														: 'primary'
 								"
@@ -370,7 +370,7 @@ defineExpose({
 								{{ form.noticeType || transformI18n($t("propertyManage_communityManage.notice.form.preview.type")) }}
 							</ElTag>
 							<ElTag
-								:type="form.status === '已发布' ? 'success' : form.status === '草稿' ? 'info' : 'danger'"
+								:type="form.status === 'published' ? 'success' : form.status === 'draft' ? 'info' : 'danger'"
 								size="small"
 							>
 								{{ form.status || transformI18n($t("propertyManage_communityManage.notice.form.preview.status")) }}

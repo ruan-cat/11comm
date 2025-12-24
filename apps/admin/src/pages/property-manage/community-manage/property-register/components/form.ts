@@ -2,9 +2,11 @@
 import type { PropertyRegisterFormVO } from "@01s-11comm/type";
 import { auditStatusOptions } from "@01s-11comm/type";
 
-// TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
-/** 向后兼容：产权登记表单_VO */
-export type 产权登记表单_VO = PropertyRegisterFormVO;
+/** 导出类型供其他文件使用 */
+export type { PropertyRegisterFormVO };
+
+/** 导出选项常量 */
+export { auditStatusOptions };
 
 /**
  * 产权登记表单 props

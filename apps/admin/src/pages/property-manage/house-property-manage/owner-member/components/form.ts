@@ -1,5 +1,8 @@
 import type { OwnerMemberFormVO } from "@01s-11comm/type";
 
+/** OwnerMemberFormVO */
+export type { OwnerMemberFormVO };
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: OwnerMemberFormVO = {
 	memberFace: "",

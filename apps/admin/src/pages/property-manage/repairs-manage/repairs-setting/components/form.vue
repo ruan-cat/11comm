@@ -2,6 +2,14 @@
 import { computed, ref, useTemplateRef } from "vue";
 
 import { RepairsSettingFormProps, type RepairsSettingFormVO } from "./form";
+import {
+	repairsSettingTypeOptions,
+	dispatchMethodOptions,
+	areaOptions,
+	returnVisitSettingOptions,
+} from "@01s-11comm/type";
+
+export { repairsSettingTypeOptions, dispatchMethodOptions, areaOptions, returnVisitSettingOptions };
 
 const props = defineProps<RepairsSettingFormProps>();
 
@@ -48,7 +56,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "设置类型",
 		prop: "settingType",
 		valueType: "select",
-		options: 报修设置类型Options,
+		options: repairsSettingTypeOptions,
 		required: true,
 	},
 	// 派单方式
@@ -56,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "派单方式",
 		prop: "dispatchMethod",
 		valueType: "select",
-		options: 派单方式Options,
+		options: dispatchMethodOptions,
 		required: true,
 	},
 	// 公共区域
@@ -64,7 +72,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "公共区域",
 		prop: "publicArea",
 		valueType: "select",
-		options: 区域Options,
+		options: areaOptions,
 		required: true,
 	},
 	// 业主端展示
@@ -97,7 +105,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "回访设置",
 		prop: "returnVisitSetting",
 		valueType: "select",
-		options: 回访设置Options,
+		options: returnVisitSettingOptions,
 		required: true,
 	},
 

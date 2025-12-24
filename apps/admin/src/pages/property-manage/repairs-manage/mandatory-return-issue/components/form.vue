@@ -2,6 +2,7 @@
 import { computed, ref, useTemplateRef } from "vue";
 
 import { MandatoryReturnIssueFormProps, type MandatoryReturnIssueFormVO } from "./form";
+import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<MandatoryReturnIssueFormProps>();
 
@@ -51,7 +52,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "报修类型",
 		prop: "repairType",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 	{
 		label: "报修人",
@@ -80,7 +81,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: mandatoryReturnIssueStatusOptions,
 	},
 	{
 		label: "备注",

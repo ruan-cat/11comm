@@ -16,16 +16,25 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type RepairsSettingFormProps,
 	defaultForm,
-	type 报修设置表单_VO,
-	type 报修设置类型,
-	type 派单方式类型,
-	type 区域类型,
-	type 业主端展示类型,
-	type 通知方式类型,
-	type 回访设置类型,
 } from "./components/form";
 import RepairsSettingForm from "./components/form.vue";
 import { useRepairsSettingListQuery } from "@/api/property-manage/repairs-manage/repairs-setting";
+import {
+	dispatchMethodOptions,
+	repairsSettingTypeOptions,
+	areaOptions,
+	returnVisitSettingOptions,
+} from "./components/form";
+import type {
+	RepairsSettingListItem,
+	RepairsSettingFormVO,
+	RepairsSettingType,
+	DispatchMethodType,
+	AreaType,
+	OwnerDisplayType,
+	NotificationMethodType,
+	ReturnVisitSettingType,
+} from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -38,42 +47,42 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "类型名称",
-		prop: "类型名称",
+		prop: "typeName",
 		width: 140,
 	},
 	{
 		label: "报修设置类型",
-		prop: "报修设置类型",
+		prop: "settingType",
 		width: 120,
 	},
 	{
 		label: "派单方式",
-		prop: "派单方式",
+		prop: "dispatchMethod",
 		width: 120,
 	},
 	{
 		label: "区域",
-		prop: "区域",
+		prop: "publicArea",
 		width: 120,
 	},
 	{
 		label: "业主端展示",
-		prop: "业主端展示",
+		prop: "ownerDisplay",
 		width: 120,
 	},
 	{
 		label: "通知方式",
-		prop: "通知方式",
+		prop: "notificationMethod",
 		width: 120,
 	},
 	{
 		label: "是否回访",
-		prop: "是否回访",
+		prop: "returnVisitSetting",
 		width: 120,
 	},
 	{
 		label: "创建时间",
-		prop: "创建时间",
+		prop: "createTime",
 		width: 120,
 	},
 	{
@@ -91,12 +100,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
 	columns: columns.value,
 });
 
-interface 报修设置_列表查询_VO {
-	类型名称?: string;
-	派单方式?: string;
-	报修设置类型?: string;
-	区域选择?: string;
-	是否回访?: string;
+interface RepairsSettingQueryVO {
+	typeName?: string;
+	dispatchMethod?: string;
+	settingType?: string;
+	publicArea?: string;
+	returnVisitSetting?: string;
 }
 
 /**
@@ -105,11 +114,11 @@ interface 报修设置_列表查询_VO {
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef = {
-	类型名称: "",
-	派单方式: "",
-	报修设置类型: "",
-	区域: "",
-	是否回访: "",
+	typeName: "",
+	dispatchMethod: "",
+	settingType: "",
+	publicArea: "",
+	returnVisitSetting: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -138,40 +147,40 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 类型名称
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.typeName")),
-		prop: "类型名称",
+		prop: "typeName",
 		valueType: "input",
 	},
 
 	// 派单方式
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.orderMethod")),
-		prop: "派单方式",
+		prop: "dispatchMethod",
 		valueType: "select",
-		options: 派单方式Options,
+		options: dispatchMethodOptions,
 	},
 
 	// 报修设置类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairReportingSettingType")),
-		prop: "报修设置类型",
+		prop: "settingType",
 		valueType: "select",
-		options: 报修设置类型Options,
+		options: repairsSettingTypeOptions,
 	},
 
 	// 区域
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.regionalSelection")),
-		prop: "区域",
+		prop: "publicArea",
 		valueType: "select",
-		options: 区域Options,
+		options: areaOptions,
 	},
 
 	// 是否回访
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.whetherToMakeAReturnVisit")),
-		prop: "是否回访",
+		prop: "returnVisitSetting",
 		valueType: "select",
-		options: 回访设置Options,
+		options: returnVisitSettingOptions,
 	},
 ]);
 
@@ -196,7 +205,7 @@ function handleSearch() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 报修设置_列表数据;
+	row?: RepairsSettingListItem;
 }
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -214,17 +223,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 报修设置_列表数据) {
+function handleEdit(row: RepairsSettingListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 报修设置_列表数据) {
+function handleView(row: RepairsSettingListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 报修设置_列表数据) {
+async function handleDelete(row: RepairsSettingListItem) {
 	consola.log("删除", row);
 	await doFetch();
 }
@@ -237,19 +246,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}报修设置`;
 
 	/** 业务对象 */
-	const formValue: 报修设置表单_VO = isAdd.value
+	const formValue: RepairsSettingFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					类型名称: row?.类型名称 || "",
-					设置类型: (row?.报修设置类型 as 报修设置类型 | undefined) || defaultForm.设置类型,
-					派单方式: (row?.派单方式 as 派单方式类型 | undefined) || defaultForm.派单方式,
-					公共区域: (row?.区域 as 区域类型 | undefined) || defaultForm.公共区域,
-					业主端展示: (row?.业主端展示 as 业主端展示类型 | undefined) || defaultForm.业主端展示,
-					通知方式: (row?.通知方式 as 通知方式类型 | undefined) || defaultForm.通知方式,
-					回访设置: (row?.是否回访 as 回访设置类型 | undefined) || defaultForm.回访设置,
-					说明: row?.备注 || "",
+					typeName: row?.typeName || "",
+					settingType: (row?.settingType as RepairsSettingType | undefined) || defaultForm.settingType,
+					dispatchMethod: (row?.dispatchMethod as DispatchMethodType | undefined) || defaultForm.dispatchMethod,
+					publicArea: (row?.publicArea as AreaType | undefined) || defaultForm.publicArea,
+					ownerDisplay: (row?.ownerDisplay as OwnerDisplayType | undefined) || defaultForm.ownerDisplay,
+					notificationMethod: (row?.notificationMethod as NotificationMethodType | undefined) || defaultForm.notificationMethod,
+					returnVisitSetting: (row?.returnVisitSetting as ReturnVisitSettingType | undefined) || defaultForm.returnVisitSetting,
+					description: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);

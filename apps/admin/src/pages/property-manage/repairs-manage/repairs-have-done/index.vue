@@ -13,9 +13,11 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type RepairsHaveDoneFormProps, defaultForm, type 报修已办表单_VO } from "./components/form";
+import { type RepairsHaveDoneFormProps, defaultForm, type RepairsHaveDoneFormVO } from "./components/form";
 import RepairsHaveDoneForm from "./components/form.vue";
 import { useRepairsHaveDoneListQuery } from "@/api/property-manage/repairs-manage/repairs-have-done";
+import type { RepairsHaveDoneListItem, RepairsHaveDoneQueryParams } from "@01s-11comm/type";
+import { maintenanceTypeOptions, repairTypeOptions, repairStatusOptions } from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -86,13 +88,15 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报修已办_列表查询_VO = {
-	维修类型: "",
-	报修人: "",
-	报修电话: "",
-	报修类型: "",
-	报修状态: "",
-	工单编号: "",
+const plusSearchModelRef: FieldValues & RepairsHaveDoneQueryParams = {
+	maintenanceType: "",
+	reporter: "",
+	repairPhone: "",
+	repairType: "",
+	repairStatus: "",
+	workOrderNumber: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -121,43 +125,43 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 维修类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.maintenanceType")),
-		prop: "维修类型",
+		prop: "maintenanceType",
 		valueType: "select",
-		options: 维修类型Options,
+		options: maintenanceTypeOptions,
 	},
 	// 报修人
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 
 	// 报修电话
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
-		prop: "报修电话",
+		prop: "repairPhone",
 		valueType: "input",
 	},
 	// 报修类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 
 	// 报修状态
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
-		prop: "报修状态",
+		prop: "repairStatus",
 		valueType: "select",
-		options: 报修状态Options,
+		options: repairStatusOptions,
 	},
 
 	// 工单编号
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		valueType: "input",
 	},
 ]);
@@ -193,7 +197,7 @@ async function testAsync() {
 }
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: 报修已办_列表数据 }) {
+function openDialog(params: { mode: Mode; row?: RepairsHaveDoneListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -201,20 +205,20 @@ function openDialog(params: { mode: Mode; row?: 报修已办_列表数据 }) {
 	const title = `${modeText.value}报修已办`;
 
 	/** 业务对象 */
-	const formValue: 报修已办表单_VO = isAdd.value
+	const formValue: RepairsHaveDoneFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					工单编号: row?.工单编号 || "",
-					位置: row?.位置 || "",
-					报修类型: row?.报修类型 || "",
-					维修类型: row?.维修类型 || "",
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约时间: row?.预约时间 || "",
-					状态: row?.状态 || "",
-					备注: row?.备注 || "",
+					workOrderNumber: row?.workOrderNumber || "",
+					location: row?.location || "",
+					repairType: row?.repairType || "",
+					maintenanceType: row?.maintenanceType || "",
+					reporter: row?.reporter || "",
+					contactInfo: row?.contactInfo || "",
+					appointmentTime: row?.appointmentTime || "",
+					status: row?.status || "",
+					remark: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);
@@ -280,17 +284,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 报修已办_列表数据) {
+function handleEdit(row: RepairsHaveDoneListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 报修已办_列表数据) {
+function handleView(row: RepairsHaveDoneListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 报修已办_列表数据) {
+async function handleDelete(row: RepairsHaveDoneListItem) {
 	consola.log("删除", row);
 	await doFetch();
 }

@@ -11,7 +11,7 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useReportGroupListQuery } from "@/api/operation-team/report-configuration/report-group";
-import { type ReportGroupFormProps, defaultForm, type 报表组表单_VO } from "./components/form";
+import { type ReportGroupFormProps, defaultForm, type ReportGroupFormVO } from "./components/form";
 import ReportGroupForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";
@@ -157,21 +157,21 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}报表组`;
 
 	/** 业务对象 */
-	const 报表组表单_VO: 报表组表单_VO = isAdd.value
+	const reportGroupFormVO: ReportGroupFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					组名称: row?.name || "",
-					组url: row?.url || "",
-					描述: row?.remark || "",
+					name: row?.name || "",
+					url: row?.url || "",
+					remark: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ReportGroupFormProps = {
-		form: 报表组表单_VO,
-		defaultValues: 报表组表单_VO,
+		form: reportGroupFormVO,
+		defaultValues: reportGroupFormVO,
 	};
 
 	const defaultValues = formProps.defaultValues;

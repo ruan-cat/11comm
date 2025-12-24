@@ -13,8 +13,8 @@ import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
 import { useHandingBusinessListQuery } from "@/api/property-manage/community-manage/handing-business";
-import type { HandingBusinessFormProps, 业务受理表单_VO } from "./components/form";
-import { defaultForm, 列表数据转表单数据, feeTypeOptions, 状态Options } from "./components/form";
+import type { HandingBusinessFormProps, HandingBusinessFormVO } from "./components/form";
+import { defaultForm, listDataToFormData, feeTypeOptions, handlingStatusOptions } from "./components/form";
 import HandingBusinessForm from "./components/form.vue";
 
 const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
@@ -136,7 +136,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: 状态Options,
+		options: handlingStatusOptions,
 	},
 
 	/** 建账时间范围 */
@@ -211,16 +211,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}业务受理`;
 
 	/** 业务对象 */
-	const 业务受理表单_VO: 业务受理表单_VO = isAdd.value
+	const handingBusinessFormVO: HandingBusinessFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value && row
-			? 列表数据转表单数据(row)
+			? listDataToFormData(row)
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: HandingBusinessFormProps = {
-		form: 业务受理表单_VO,
-		defaultValues: 业务受理表单_VO,
+		form: handingBusinessFormVO,
+		defaultValues: handingBusinessFormVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

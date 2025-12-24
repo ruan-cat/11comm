@@ -5,14 +5,13 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import type { PropertyRegisterFormProps } from "./form";
-import type { 产权登记表单_VO } from "./form";
+import type { PropertyRegisterFormProps, PropertyRegisterFormVO } from "./form";
 import { auditStatusOptions } from "./form";
 
 const props = defineProps<PropertyRegisterFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 产权登记表单_VO;
+const defaultValues = props.defaultValues as FieldValues & PropertyRegisterFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -26,7 +25,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 产权登记表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & PropertyRegisterFormVO;
 
 /**
  * 表单对象

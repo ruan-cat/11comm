@@ -20,7 +20,7 @@ import {
 	type QueryMethod,
 } from "@01s-11comm/type";
 import { useReportComponentListQuery } from "@/api/operation-team/report-configuration/report-component";
-import { type ReportComponentFormProps, defaultForm, type 报表组件表单_VO } from "./components/form";
+import { type ReportComponentFormProps, defaultForm, type ReportComponentFormVO } from "./components/form";
 import ReportComponentForm from "./components/form.vue";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
@@ -174,24 +174,24 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}报表组件`;
 
 	/** 业务对象 */
-	const 报表组件表单_VO: 报表组件表单_VO = isAdd.value
+	const reportComponentFormVO: ReportComponentFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					组件名称: row?.componentName || "",
-					组件类型: (row?.componentType || "数据卡片") as ComponentType,
-					查询方式: (row?.queryMethod || "sql") as QueryMethod,
+					componentName: row?.componentName || "",
+					componentType: (row?.componentType || "数据卡片") as ComponentType,
+					queryMethod: (row?.queryMethod || "sql") as QueryMethod,
 					sql: row?.sql || "",
 					java: row?.java || "",
-					描述: row?.description || "",
+					description: row?.description || "",
 				})
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ReportComponentFormProps = {
-		form: 报表组件表单_VO,
-		defaultValues: 报表组件表单_VO,
+		form: reportComponentFormVO,
+		defaultValues: reportComponentFormVO,
 	};
 
 	const defaultValues = props.defaultValues;
