@@ -13,6 +13,8 @@ import {
 
 // 重导出通用选项
 export { urgencyLevelOptions, communityOptions };
+// 重导出通用报修选项（用于页面）
+export { commonRepairTypeOptions as repairTypeOptions, commonRepairStatusOptions as repairStatusOptions };
 
 /**
  * 报修汇总表列表数据

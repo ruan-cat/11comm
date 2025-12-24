@@ -1,5 +1,8 @@
 import { discountTypeOptions } from "@01s-11comm/type";
 
+// 重新导出 discountTypeOptions 供组件使用
+export { discountTypeOptions };
+
 // ==================== 联合类型定义 ====================
 
 /** 折扣类型联合类型 */

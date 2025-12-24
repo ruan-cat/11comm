@@ -5,9 +5,9 @@
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
 
-import { ExpenseItemSettingFormProps, ReportInfoFormVO, defaultForm } from "./form";
+import { ReportInfoFormProps, ReportInfoFormVO, defaultForm } from "./form";
 
-const props = defineProps<ExpenseItemSettingFormProps>();
+const props = defineProps<ReportInfoFormProps>();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ReportInfoFormVO;

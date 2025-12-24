@@ -23,4 +23,10 @@ export function useCommunityConfigurationListQuery(initialParams: Partial<Commun
 	});
 }
 
+/**
+ * 小区配置列表查询 Hook (别名)
+ * Community configuration list query hook (alias)
+ */
+export const useCommunityConfigListQuery = useCommunityConfigurationListQuery;
+
 export default useCommunityConfigurationListQuery;

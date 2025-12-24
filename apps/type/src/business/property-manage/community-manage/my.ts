@@ -139,25 +139,6 @@ export interface MyCommunityListItem {
 }
 
 /**
- * @description my列表数据
- * My list item
- */
-export interface MyListItem {
-	/** ID */
-	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 创建时间 Create time */
-	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
-	/** 备注 Remark */
-	remark?: string;
-}
-
-/**
  * @description 我的小区列表查询参数
  * My community list query parameters
  */
@@ -172,21 +153,6 @@ export interface MyCommunityQueryParams {
 	communityName?: string;
 	/** 小区编码 Community code */
 	communityCode?: string;
-	/** 状态 Status */
-	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
-}
-
-/**
- * @description my列表查询参数
- * My list query parameters
- */
-export interface MyQueryParams {
-	/** 名称 Name */
-	name?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */

@@ -3,7 +3,7 @@ import type { OptionsType } from "plus-pro-components";
 export { statusOptions } from "@01s-11comm/type";
 
 // TODO: 不要编写向后兼容的中文类型，直接用纯英文命名的类型做替换
-export { cellTypeOptions, initializeCellStatusOptions as 状态Options } from "@01s-11comm/type";
+export { cellTypeOptions, initializeCellStatusOptions } from "@01s-11comm/type";
 
 // ==================== 联合类型定义 ====================
 

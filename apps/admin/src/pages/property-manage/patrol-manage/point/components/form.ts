@@ -1,28 +1,5 @@
+import type { PatrolPointFormVO } from "@01s-11comm/type";
 import type { OptionsType } from "plus-pro-components";
-
-/** 巡检点表单VO */
-export interface PatrolPointFormVO {
-	/** 巡检点名称 */
-	patrolPointName: string;
-	/** 巡检计划名称 */
-	patrolPlanName: string;
-	/** 巡检路线名称 */
-	patrolRouteName: string;
-	/** 计划巡检人 */
-	planPatrolPerson: string;
-	/** 巡检方式 */
-	patrolMethod: string;
-	/** 实际签到状态 */
-	actualCheckInStatus: string;
-	/** 任务状态 */
-	taskStatus: string;
-	/** 巡检点状态 */
-	patrolPointStatus: string;
-	/** 巡检情况 */
-	patrolSituation: string;
-	/** 位置信息 */
-	locationInfo: string;
-}
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: PatrolPointFormVO = {

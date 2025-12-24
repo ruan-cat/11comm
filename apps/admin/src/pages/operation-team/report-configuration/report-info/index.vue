@@ -13,10 +13,10 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { ReportInfoListItem, ReportInfoQueryParams } from "@01s-11comm/type";
 import { useReportInfoListQuery } from "@/api/operation-team/report-configuration/report-info";
-import { type ExpenseItemSettingFormProps, defaultForm, type 报表信息表单_VO } from "./components/form";
-import ExpenseItemSettingForm from "./components/form.vue";
+import { type ReportInfoFormProps, defaultForm, type ReportInfoFormVO } from "./components/form";
+import ReportInfoForm from "./components/form.vue";
 
-const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettingForm> | null>(null);
+const reportInfoFormInstance = ref<InstanceType<typeof ReportInfoForm> | null>(null);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -24,9 +24,9 @@ const expenseItemSettingFormInstance = ref<InstanceType<typeof ExpenseItemSettin
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<ReportInfoQueryParams> = {
-	reportId: "",
-	reportGroup: "",
-	optionTitle: "",
+	reportCode: "",
+	groupId: "",
+	reportName: "",
 };
 /** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
@@ -49,18 +49,18 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "报表编号",
-		prop: "reportId",
+		label: "报表编码",
+		prop: "reportCode",
 		width: 120,
 	},
 	{
-		label: "报表组",
-		prop: "reportGroup",
+		label: "所属组名称",
+		prop: "groupName",
 		width: 150,
 	},
 	{
-		label: "选项标题",
-		prop: "optionTitle",
+		label: "报表名称",
+		prop: "reportName",
 		width: 150,
 	},
 	{
@@ -89,24 +89,24 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 报表编号
+	// 报表编码
 	{
-		label: "报表编号",
-		prop: "reportId",
+		label: "报表编码",
+		prop: "reportCode",
 		valueType: "input",
 	},
 
-	// 报表组
+	// 所属组ID
 	{
-		label: "报表组",
-		prop: "reportGroup",
+		label: "所属组ID",
+		prop: "groupId",
 		valueType: "input",
 	},
 
-	// 选项标题
+	// 报表名称
 	{
-		label: "选项标题",
-		prop: "optionTitle",
+		label: "报表名称",
+		prop: "reportName",
 		valueType: "input",
 	},
 ]);
@@ -158,22 +158,22 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}报表`;
 
 	/** 业务对象 */
-	const 报表信息表单_VO: 报表信息表单_VO = isAdd.value
+	const formVO: ReportInfoFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					报表组: row?.reportGroup || "",
-					选项标题: row?.optionTitle || "",
-					排序: row?.sortOrder || "",
-					描述: row?.description || "",
+					reportGroup: row?.groupId || "",
+					optionTitle: row?.reportName || "",
+					sort: row?.sortOrder?.toString() || "",
+					description: row?.description || "",
 				})
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
-	const formProps: ExpenseItemSettingFormProps = {
-		form: 报表信息表单_VO,
-		defaultValues: 报表信息表单_VO,
+	const formProps: ReportInfoFormProps = {
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	addDialog({
@@ -182,13 +182,13 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		props: formProps,
 
 		contentRenderer: () =>
-			h(ExpenseItemSettingForm, {
-				ref: expenseItemSettingFormInstance,
+			h(ReportInfoForm, {
+				ref: reportInfoFormInstance,
 				...formProps,
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = expenseItemSettingFormInstance.value.formComputed;
+			const formComputed = reportInfoFormInstance.value.formComputed;
 			await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
 		},
 
@@ -197,7 +197,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				label: transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = expenseItemSettingFormInstance.value.formComputed;
+					const formComputed = reportInfoFormInstance.value.formComputed;
 					await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
 				},
 			},
@@ -207,7 +207,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "warning",
 				btnClick: ({ dialog: { options, index } }) => {
 					// 手动重置表单
-					expenseItemSettingFormInstance.value.plusFormInstance.handleReset();
+					reportInfoFormInstance.value.plusFormInstance.handleReset();
 				},
 			},
 
@@ -216,7 +216,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
-					const res = await expenseItemSettingFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await reportInfoFormInstance.value.plusFormInstance.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();

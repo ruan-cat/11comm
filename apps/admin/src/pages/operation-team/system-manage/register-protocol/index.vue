@@ -14,18 +14,15 @@ import {
 	type OperationTeamRegisterProtocol,
 	type OperationTeamRegisterProtocolListQuery,
 	protocolTypeOptions,
-	registerProtocolEnabledOptions,
+	operationRegisterProtocolEnabledOptions,
 	isMandatoryOptions,
-	type OperationTeamRegisterProtocol as 注册协议_列表数据,
 } from "@01s-11comm/type";
 import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage/register-protocol";
 import {
 	type RegisterProtocolFormProps,
 	defaultForm,
-	type 注册协议表单_VO,
-	type 协议类型枚举,
-	type 状态枚举,
-	type 是否强制同意枚举,
+	type RegisterProtocolFormVO,
+	type RegisterProtocolFormVO as RegisterProtocolFormVOType,
 } from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -88,17 +85,17 @@ const columns = ref<TableColumnList>([
 		width: 120,
 	},
 	{
-		label: "状态",
-		prop: "status",
+		label: "启用状态",
+		prop: "isEnabled",
 		width: 100,
 	},
 	{
-		label: "是否强制同意",
+		label: "是否必读",
 		prop: "isRequired",
 		width: 120,
 	},
 	{
-		label: "协议摘要",
+		label: "备注",
 		prop: "remark",
 		minWidth: 250,
 	},
@@ -167,7 +164,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "是否启用",
 		prop: "isEnabled",
 		valueType: "select",
-		options: registerProtocolEnabledOptions,
+		options: operationRegisterProtocolEnabledOptions,
 	},
 
 	// 是否必读
@@ -231,28 +228,28 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}注册协议`;
 
 	/** 业务对象 */
-	const 注册协议表单_VO: 注册协议表单_VO = isAdd.value
+	const formVO: RegisterProtocolFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value || isInfo.value
 			? (structuredClone({
 					...defaultForm,
-					协议名称: row?.title || "",
-					协议类型: (row?.protocolType || "用户注册协议") as 协议类型枚举,
-					协议版本: row?.version || "v1.0.0",
-					状态: (row?.status || "草稿") as 状态枚举,
-					是否强制同意: (row?.isRequired || "是") as 是否强制同意枚举,
-					协议摘要: row?.remark || "",
-					协议内容: row?.content || "",
-					生效日期: row?.effectiveTime || "",
-					失效日期: row?.expireTime || "",
-					排序权重: 0,
-				}) as 注册协议表单_VO)
+					protocolName: row?.title || "",
+					protocolType: row?.protocolType || "UserRegistrationProtocol",
+					protocolVersion: row?.version || "v1.0.0",
+					status: row?.isEnabled ? "Enabled" : "Disabled",
+					isMandatory: row?.isRequired ? "Yes" : "No",
+					protocolSummary: row?.remark || "",
+					protocolContent: row?.content || "",
+					effectiveDate: row?.effectiveTime || "",
+					expirationDate: row?.expireTime || "",
+					sortWeight: 0,
+				}) as RegisterProtocolFormVO)
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: RegisterProtocolFormProps = {
-		form: 注册协议表单_VO,
-		defaultValues: 注册协议表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

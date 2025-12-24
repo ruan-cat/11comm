@@ -9,9 +9,9 @@ import {
 	SystemConfigFormProps,
 	type SystemConfigFormVO,
 	defaultForm,
-	systemConfigTypeOptionsAlias,
-	configGroupOptions,
-	systemConfigStatusOptions,
+	systemConfigTypeOptions,
+	systemConfigSystemOptions,
+	systemConfigEnabledOptions,
 } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
@@ -82,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: systemConfigTypeOptionsAlias,
+		options: systemConfigTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -90,18 +90,30 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 
-	// 配置分组
+	// 配置键
 	{
-		label: "配置分组",
-		prop: "configGroup",
-		valueType: "select",
-		width: "150px",
+		label: "配置键",
+		prop: "configKey",
+		valueType: "input",
+		width: "200px",
 		required: true,
-		options: configGroupOptions,
 		fieldProps: {
 			clearable: true,
-			filterable: true,
-			placeholder: "请选择配置分组",
+			placeholder: "请输入配置键",
+		},
+	},
+
+	// 是否系统内置
+	{
+		label: "是否系统内置",
+		prop: "isSystem",
+		valueType: "select",
+		width: "120px",
+		required: true,
+		options: systemConfigSystemOptions,
+		fieldProps: {
+			clearable: true,
+			placeholder: "请选择",
 		},
 	},
 
@@ -112,7 +124,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: systemConfigStatusOptions,
+		options: systemConfigEnabledOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择状态",
@@ -143,12 +155,16 @@ const plusFormRules = ref<PlusFormRules>({
 		{ required: true, message: "请填写配置名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
 	],
+	configKey: [
+		{ required: true, message: "请填写配置键", trigger: "blur" },
+		{ min: 1, max: 100, message: "长度在 1 到 100 个字符", trigger: "blur" },
+	],
 	configValue: [
 		{ required: true, message: "请填写配置值", trigger: "blur" },
 		{ min: 1, max: 1000, message: "长度在 1 到 1000 个字符", trigger: "blur" },
 	],
 	configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
-	configGroup: [{ required: true, message: "请选择配置分组", trigger: "change" }],
+	isSystem: [{ required: true, message: "请选择是否系统内置", trigger: "change" }],
 	status: [{ required: true, message: "请选择状态", trigger: "change" }],
 	description: [{ max: 200, message: "描述长度不能超过200个字符", trigger: "blur" }],
 });

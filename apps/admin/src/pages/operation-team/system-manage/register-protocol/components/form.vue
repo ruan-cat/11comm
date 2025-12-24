@@ -7,17 +7,17 @@ import { ref, computed, useTemplateRef } from "vue";
 
 import {
 	RegisterProtocolFormProps,
-	注册协议表单_VO,
+	type RegisterProtocolFormVO,
 	defaultForm,
-	协议类型Options,
-	状态Options,
-	是否强制同意Options,
+	protocolTypeOptions,
+	statusOptions,
+	isMandatoryOptions,
 } from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
 
 /** 表单组件所需的默认值 */
-const defaultValues = props.defaultValues as FieldValues & 注册协议表单_VO;
+const defaultValues = props.defaultValues as FieldValues & RegisterProtocolFormVO;
 
 /** 表单组件的 ref 引用，用于表单重置等操作 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -31,7 +31,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 具体原因请看：https://pure-admin-utils.netlify.app/guide/form-plus.html#表单校验
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & 注册协议表单_VO;
+const toRefForm = cloneDeep(props.form) as FieldValues & RegisterProtocolFormVO;
 
 /**
  * 表单数据
@@ -49,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 协议名称
 	{
 		label: "协议名称",
-		prop: "协议名称",
+		prop: "protocolName",
 		valueType: "input",
 		required: true,
 		width: "300px",
@@ -63,11 +63,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 协议类型
 	{
 		label: "协议类型",
-		prop: "协议类型",
+		prop: "protocolType",
 		valueType: "select",
 		required: true,
 		width: "200px",
-		options: 协议类型Options,
+		options: protocolTypeOptions,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
@@ -78,7 +78,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 协议版本
 	{
 		label: "协议版本",
-		prop: "协议版本",
+		prop: "protocolVersion",
 		valueType: "input",
 		required: true,
 		width: "150px",
@@ -91,11 +91,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 状态
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		required: true,
 		width: "150px",
-		options: 状态Options,
+		options: statusOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择状态",
@@ -105,11 +105,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 是否强制同意
 	{
 		label: "是否强制同意",
-		prop: "是否强制同意",
+		prop: "isMandatory",
 		valueType: "select",
 		required: true,
 		width: "150px",
-		options: 是否强制同意Options,
+		options: isMandatoryOptions,
 		fieldProps: {
 			clearable: true,
 			placeholder: "请选择是否强制同意",
@@ -119,7 +119,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 生效日期
 	{
 		label: "生效日期",
-		prop: "生效日期",
+		prop: "effectiveDate",
 		valueType: "date-picker",
 		required: true,
 		width: "200px",
@@ -138,7 +138,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 失效日期
 	{
 		label: "失效日期",
-		prop: "失效日期",
+		prop: "expirationDate",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
@@ -148,8 +148,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			disabledDate: (time: Date, formValues: any) => {
-				if (formValues?.生效日期) {
-					return time.getTime() <= new Date(formValues.生效日期).getTime();
+				if (formValues?.effectiveDate) {
+					return time.getTime() <= new Date(formValues.effectiveDate).getTime();
 				}
 				return false;
 			},
@@ -159,7 +159,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 排序权重
 	{
 		label: "排序权重",
-		prop: "排序权重",
+		prop: "sortWeight",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
@@ -173,7 +173,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 协议摘要
 	{
 		label: "协议摘要",
-		prop: "协议摘要",
+		prop: "protocolSummary",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
@@ -188,7 +188,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	// 协议内容
 	{
 		label: "协议内容",
-		prop: "协议内容",
+		prop: "protocolContent",
 		valueType: "textarea",
 		required: true,
 		width: "100%",
@@ -207,12 +207,12 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({
-	协议名称: [
+	protocolName: [
 		{ required: true, message: "请输入协议名称", trigger: "blur" },
 		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
 	],
-	协议类型: [{ required: true, message: "请选择协议类型", trigger: "change" }],
-	协议版本: [
+	protocolType: [{ required: true, message: "请选择协议类型", trigger: "change" }],
+	protocolVersion: [
 		{ required: true, message: "请输入协议版本", trigger: "blur" },
 		{
 			pattern: /^v?\d+\.\d+\.\d+$/,
@@ -220,13 +220,13 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-	状态: [{ required: true, message: "请选择状态", trigger: "change" }],
-	是否强制同意: [{ required: true, message: "请选择是否强制同意", trigger: "change" }],
-	协议内容: [
+	status: [{ required: true, message: "请选择状态", trigger: "change" }],
+	isMandatory: [{ required: true, message: "请选择是否强制同意", trigger: "change" }],
+	protocolContent: [
 		{ required: true, message: "请输入协议内容", trigger: "blur" },
 		{ min: 100, message: "协议内容至少100个字符", trigger: "blur" },
 	],
-	生效日期: [{ required: true, message: "请选择生效日期", trigger: "change" }],
+	effectiveDate: [{ required: true, message: "请选择生效日期", trigger: "change" }],
 });
 
 defineExpose({

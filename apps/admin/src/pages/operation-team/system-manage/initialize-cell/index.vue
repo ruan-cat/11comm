@@ -18,7 +18,7 @@ import {
 	initializeCellStatusOptions,
 } from "@01s-11comm/type";
 import { useInitializeCellListQuery } from "@/api/operation-team/system-manage/initialize-cell";
-import { type InitializeCellFormProps, defaultForm, type 初始化单元格表单_VO } from "./components/form";
+import { type InitializeCellFormProps, defaultForm, type InitializeCellFormVO } from "./components/form";
 import InitializeCellForm from "./components/form.vue";
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);

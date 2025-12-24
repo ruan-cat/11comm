@@ -12,11 +12,11 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
-	type SystemConfigListItem,
-	type SystemConfigQueryParams,
+	type OperationTeamSystemConfig,
+	type OperationTeamSystemConfigListQuery,
 	systemConfigTypeOptions,
-	systemConfigGroupOptions,
-	systemConfigStatusOptions,
+	systemConfigEnabledOptions,
+	systemConfigSystemOptions,
 } from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
 import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./components/form";
@@ -40,11 +40,11 @@ const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigForm> | nul
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & Partial<SystemConfigQueryParams> = {
+const plusSearchModelRef: FieldValues & Partial<OperationTeamSystemConfigListQuery> = {
 	configName: "",
 	configType: undefined,
-	configGroup: undefined,
-	status: undefined,
+	isEnabled: undefined,
+	isSystem: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -73,7 +73,7 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "配置ID",
-		prop: "configId",
+		prop: "id",
 		width: 120,
 	},
 	{
@@ -92,13 +92,13 @@ const columns = ref<TableColumnList>([
 		width: 100,
 	},
 	{
-		label: "配置分组",
-		prop: "configGroup",
-		width: 120,
+		label: "系统内置",
+		prop: "isSystem",
+		width: 100,
 	},
 	{
-		label: "状态",
-		prop: "status",
+		label: "启用状态",
+		prop: "isEnabled",
 		width: 80,
 	},
 	{
@@ -151,20 +151,20 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		options: systemConfigTypeOptions,
 	},
 
-	/** 配置分组 */
+	/** 是否启用 */
 	{
-		label: "配置分组",
-		prop: "configGroup",
+		label: "是否启用",
+		prop: "isEnabled",
 		valueType: "select",
-		options: systemConfigGroupOptions,
+		options: systemConfigEnabledOptions,
 	},
 
-	/** 状态 */
+	/** 是否系统内置 */
 	{
-		label: "状态",
-		prop: "status",
+		label: "是否系统内置",
+		prop: "isSystem",
 		valueType: "select",
-		options: systemConfigStatusOptions,
+		options: systemConfigSystemOptions,
 	},
 ]);
 
@@ -178,7 +178,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
+function openDialog(params: { mode: Mode; row?: OperationTeamSystemConfig }) {
 	const { mode, row } = params;
 	setMode(mode);
 
@@ -188,8 +188,9 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 		: isEdit.value || isInfo.value
 			? cloneDeep({
 					...defaultForm,
-					configName: row?.title || "",
+					configName: row?.configName || "",
 					configValue: row?.configValue || "",
+					configKey: row?.configKey || "",
 					configType: (row?.configType || "文本") as
 						| "文本"
 						| "数字"
@@ -198,15 +199,6 @@ function openDialog(params: { mode: Mode; row?: SystemConfigListItem }) {
 						| "日期时间"
 						| "文件路径"
 						| "URL",
-					configGroup: (row?.configGroup || "系统基础") as
-						| "系统基础"
-						| "业务配置"
-						| "第三方服务"
-						| "安全设置"
-						| "通知设置"
-						| "日志配置"
-						| "缓存配置",
-					status: (row?.status || "启用") as "启用" | "禁用",
 					description: row?.description || "",
 				})
 			: cloneDeep(defaultForm);
@@ -287,11 +279,11 @@ function handleSearch() {
 }
 
 /** 删除系统配置 */
-async function handleDelete(row: SystemConfigListItem) {
+async function handleDelete(row: OperationTeamSystemConfig) {
 	try {
 		/** TODO: 替换为真实的API调用 */
 		/** 当前使用模拟删除操作 */
-		consola.log("删除系统配置:", row.configId);
+		consola.log("删除系统配置:", row.id);
 
 		/** 模拟异步操作 */
 		await sleep(1000);
