@@ -7,16 +7,50 @@ import type { OptionsType } from "../../../common";
 export interface OwnerPaymentDetailsListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 创建时间 Create time */
-	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
-	/** 备注 Remark */
-	remark?: string;
+	/** 小区 Community */
+	community: string;
+	/** 房屋编号/合同名称 House number/Contract name */
+	houseNumberContractName: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 业主手机号 Owner phone */
+	ownerPhone: string;
+	/** 费用大类 Fee category */
+	feeCategory: string;
+	/** 费用项 Fee item */
+	feeItem: string;
+	/** 年度 Year */
+	year: string;
+	/** 1月 January */
+	january: string;
+	/** 2月 February */
+	february: string;
+	/** 3月 March */
+	march: string;
+	/** 4月 April */
+	april: string;
+	/** 5月 May */
+	may: string;
+	/** 6月 June */
+	june: string;
+	/** 7月 July */
+	july: string;
+	/** 8月 August */
+	august: string;
+	/** 9月 September */
+	september: string;
+	/** 10月 October */
+	october: string;
+	/** 11月 November */
+	november: string;
+	/** 12月 December */
+	december: string;
+	/** 合计 Total */
+	total: string;
+	/** 应收 Receivable */
+	receivable: string;
+	/** 预收 Prepaid */
+	prepaid: string;
 }
 
 /**
@@ -24,21 +58,22 @@ export interface OwnerPaymentDetailsListItem {
  * OwnerPaymentDetails list query parameters
  */
 export interface OwnerPaymentDetailsQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 房屋编号/合同名称 House number/Contract name */
+	houseNumberContractName?: string;
+	/** 业主名称 Owner name */
+	ownerName?: string;
+	/** 业主手机号 Owner phone */
+	ownerPhone?: string;
+	/** 费用大类 Fee category */
+	feeCategory?: string;
+	/** 费用项 Fee item */
+	feeItem?: string;
+	/** 小区 Community */
+	community?: string;
+	/** 年度 Year */
+	year?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */
 	pageSize: number;
 }
-
-/**
- * @description 状态选项
- * Status options
- */
-export const ownerPaymentDetailsStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];

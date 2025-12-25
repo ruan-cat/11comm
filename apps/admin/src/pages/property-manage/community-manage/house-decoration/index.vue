@@ -17,7 +17,7 @@ import {
 	delayStatusOptions,
 } from "@01s-11comm/type";
 import { useHouseDecorationListQuery } from "@/api/property-manage/community-manage/house-decoration";
-import { type HouseDecorationFormProps, defaultForm } from "./components/form";
+import { type HouseDecorationFormProps, defaultForm, type HouseDecorationFormVO } from "./components/form";
 import HouseDecorationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";
@@ -261,31 +261,31 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}房屋装修`;
 
 	/** 业务对象 */
-	const 房屋装修表单_VO = isAdd.value
+	const formData: HouseDecorationFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
-					房屋: row?.houseNumber || "",
-					联系人: row?.contactName || "",
-					联系电话: row?.contactPhone || "",
-					装修时间: row?.decorationTime || "",
-					申请时间: row?.applicationTime || "",
-					装修单位: row?.decorationCompany || "",
-					负责人电话: row?.managerPhone || "",
-					状态: row?.status || "待审核",
-					是否延期: row?.isDelayed || "否",
-					延期时间: row?.delayTime || "",
-					是否违规: row?.isViolated || "否",
-					违规说明: row?.violationDescription || "",
-					备注: row?.remarks || "",
+					houseNumber: row?.houseNumber || "",
+					contactName: row?.contactName || "",
+					contactPhone: row?.contactPhone || "",
+					decorationTime: row?.decorationTime || "",
+					applicationTime: row?.applicationTime || "",
+					decorationCompany: row?.decorationCompany || "",
+					managerPhone: row?.managerPhone || "",
+					status: row?.status || "待审核",
+					isDelayed: row?.isDelayed || "否",
+					delayTime: row?.delayTime || "",
+					isViolated: row?.isViolated || "否",
+					violationDescription: row?.violationDescription || "",
+					remarks: row?.remarks || "",
 				}
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: HouseDecorationFormProps = {
-		form: 房屋装修表单_VO,
-		defaultValues: 房屋装修表单_VO,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

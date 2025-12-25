@@ -856,6 +856,12 @@ export const chargeCategoryOptions: OptionsType = [
 ];
 
 /**
+ * @description 费用大类选项别名
+ * Fee category options alias
+ */
+export const feeCategoryOptions = chargeCategoryOptions;
+
+/**
  * @description 年度选项
  * Year options
  */

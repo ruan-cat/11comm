@@ -11,38 +11,43 @@ definePage({
 import { transformI18n } from "@/plugins/i18n";
 import type { NoChargeHouseListItem, NoChargeHouseQueryParams } from "@01s-11comm/type";
 import { useNoChargeHouseListQuery } from "@/api/property-manage/report-manage/no-charge-house";
+import {
+	communityOptions,
+	buildingOptions,
+	unitOptions,
+} from "@01s-11comm/type";
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		minWidth: 140,
 	},
 	{
 		label: "楼栋",
-		prop: "楼栋",
+		prop: "building",
 		minWidth: 120,
 	},
 	{
 		label: "单元",
-		prop: "单元",
+		prop: "unit",
 		minWidth: 120,
 	},
 	{
 		label: "房屋编号/合同名称",
-		prop: "房屋编号合同名称",
+		prop: "houseNumberContractName",
 		minWidth: 180,
 	},
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		minWidth: 160,
 	},
 	{
 		label: "业主手机号",
-		prop: "业主手机号",
+		prop: "ownerPhone",
 		minWidth: 160,
 	},
 ]);
@@ -58,13 +63,15 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 未收费房屋_搜索_VO = {
-	房屋编号合同名称: "",
-	业主名称: "",
-	业主手机号: "",
-	小区: "",
-	楼栋: "",
-	单元: "",
+const plusSearchModelRef: FieldValues & NoChargeHouseQueryParams = {
+	houseNumberContractName: "",
+	ownerName: "",
+	ownerPhone: "",
+	community: "",
+	building: "",
+	unit: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -92,34 +99,34 @@ const {
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "房屋编号/合同名称",
-		prop: "房屋编号合同名称",
+		prop: "houseNumberContractName",
 		valueType: "input",
 	},
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		valueType: "input",
 	},
 	{
 		label: "业主手机号",
-		prop: "业主手机号",
+		prop: "ownerPhone",
 		valueType: "input",
 	},
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		valueType: "select",
-		options: 小区Options,
+		options: communityOptions,
 	},
 	{
 		label: "楼栋",
-		prop: "楼栋",
+		prop: "building",
 		valueType: "select",
 		options: buildingOptions,
 	},
 	{
 		label: "单元",
-		prop: "单元",
+		prop: "unit",
 		valueType: "select",
 		options: unitOptions,
 	},

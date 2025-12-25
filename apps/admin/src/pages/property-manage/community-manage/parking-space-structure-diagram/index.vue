@@ -12,7 +12,7 @@ import { ref, computed, onMounted } from "vue";
 import { h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ParkingSpaceStructureDiagramFormProps, defaultForm, type 车位结构图表单_VO } from "./components/form";
+import { type ParkingSpaceStructureDiagramFormProps, defaultForm, type ParkingSpaceStructureDiagramFormVO } from "./components/form";
 import ParkingSpaceStructureDiagramForm from "./components/form.vue";
 import { useParkingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/parking-space-structure-diagram";
 import {
@@ -235,7 +235,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}车位结构图`;
 
 	/** 业务对象 */
-	const formData: 车位结构图表单_VO = isAdd.value
+	const formData: ParkingSpaceStructureDiagramFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? {

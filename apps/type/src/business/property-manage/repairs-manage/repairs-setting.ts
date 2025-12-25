@@ -10,7 +10,21 @@ export interface RepairsSettingListItem {
 	/** ID */
 	id: string;
 	/** 名称 Name */
-	name: string;
+	name?: string;
+	/** 类型名称 Type name */
+	typeName: string;
+	/** 设置类型 Setting type */
+	settingType: string;
+	/** 派单方式 Dispatch method */
+	dispatchMethod: string;
+	/** 公共区域 Public area */
+	publicArea: string;
+	/** 业主端展示 Owner display */
+	ownerDisplay: string;
+	/** 通知方式 Notification method */
+	notificationMethod: string;
+	/** 回访设置 Return visit setting */
+	returnVisitSetting: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */
@@ -28,6 +42,16 @@ export interface RepairsSettingListItem {
 export interface RepairsSettingQueryParams {
 	/** 名称 Name */
 	name?: string;
+	/** 类型名称 Type name */
+	typeName?: string;
+	/** 派单方式 Dispatch method */
+	dispatchMethod?: string;
+	/** 设置类型 Setting type */
+	settingType?: string;
+	/** 公共区域 Public area */
+	publicArea?: string;
+	/** 回访设置 Return visit setting */
+	returnVisitSetting?: string;
 	/** 状态 Status */
 	status?: string;
 	/** 当前页码 Current page (1-based) */

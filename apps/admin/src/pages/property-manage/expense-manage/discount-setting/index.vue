@@ -187,22 +187,22 @@ function openDialog(params: { mode: Mode; row?: DiscountSettingListItem }) {
 	const title = `${modeText.value}折扣设置`;
 
 	/** 业务对象 */
-	const 业务对象: 折扣设置表单_VO = isAdd.value
+	const formData: DiscountSettingFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
 					discountName: row?.discountName || "",
-					discountType: row?.discountType || "百分比折扣",
-					rule: row?.ruleName || "", // Assuming ruleName maps to 'rule' in form? Check form definition. Form has 'rule' and 'ruleName'? No, form has '规则' and '规则'.
-					description: row?.rule || "", // Assuming 'rule' maps to 'description' in form?
+					discountType: row?.discountType || "优惠",
+					rule: row?.ruleName || "",
+					description: row?.rule || "",
 				})
-			: structuredClone(defaultForm); // Fallback
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: DiscountSettingFormProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: formData,
+		defaultValues: formData,
 	};
 
 	/** 弹框组件所需的变量 */

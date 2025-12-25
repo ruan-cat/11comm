@@ -10,6 +10,15 @@ definePage({
 
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
+import type { RepairReportFormListItem, RepairReportFormQueryParams } from "@01s-11comm/type";
+import {
+	repairTypeOptions,
+	repairStatusOptions,
+	urgencyLevelOptions,
+	communityOptions,
+	feeStatusOptions,
+} from "@01s-11comm/type";
+
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -19,69 +28,69 @@ const pagination = ref<PaginationProps>({
 });
 
 /** 表格数据 */
-const tableData = ref<报修报表_表格数据[]>([]);
+const tableData = ref<RepairReportFormListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		minWidth: 140,
 	},
 	{
 		label: "报修单号",
-		prop: "报修单号",
+		prop: "repairOrderNumber",
 		minWidth: 160,
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		minWidth: 140,
 	},
 	{
 		label: "紧急程度",
-		prop: "紧急程度",
+		prop: "urgencyLevel",
 		minWidth: 140,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		minWidth: 140,
 	},
 	{
 		label: "报修电话",
-		prop: "报修电话",
+		prop: "reporterPhone",
 		minWidth: 160,
 	},
 	{
 		label: "报修地址",
-		prop: "报修地址",
+		prop: "repairAddress",
 		minWidth: 180,
 	},
 	{
 		label: "报修时间",
-		prop: "报修时间",
+		prop: "reportTime",
 		minWidth: 180,
 	},
 	{
 		label: "受理人",
-		prop: "受理人",
+		prop: "handler",
 		minWidth: 140,
 	},
 	{
 		label: "处理人",
-		prop: "处理人",
+		prop: "processor",
 		minWidth: 140,
 	},
 	{
 		label: "费用状态",
-		prop: "费用状态",
+		prop: "feeStatus",
 		minWidth: 140,
 	},
 	{
 		label: "报修状态",
-		prop: "报修状态",
+		prop: "repairStatus",
 		minWidth: 140,
 	},
 	{
@@ -111,16 +120,18 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报修报表_搜索_VO = {
-	报修类型: "",
-	报修状态: "",
-	紧急程度: "",
-	报修人: "",
-	报修电话: "",
-	小区: "",
-	报修时间开始: "",
-	报修时间结束: "",
-	费用状态: "",
+const plusSearchModelRef: FieldValues & RepairReportFormQueryParams = {
+	repairType: "",
+	repairStatus: "",
+	urgencyLevel: "",
+	reporter: "",
+	reporterPhone: "",
+	community: "",
+	reportTimeStart: "",
+	reportTimeEnd: "",
+	feeStatus: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -136,52 +147,52 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 	{
 		label: "报修状态",
-		prop: "报修状态",
+		prop: "repairStatus",
 		valueType: "select",
-		options: 报修状态Options,
+		options: repairStatusOptions,
 	},
 	{
 		label: "紧急程度",
-		prop: "紧急程度",
+		prop: "urgencyLevel",
 		valueType: "select",
-		options: 紧急程度Options,
+		options: urgencyLevelOptions,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 	{
 		label: "报修电话",
-		prop: "报修电话",
+		prop: "reporterPhone",
 		valueType: "input",
 	},
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		valueType: "select",
-		options: 小区Options,
+		options: communityOptions,
 	},
 	{
 		label: "费用状态",
-		prop: "费用状态",
+		prop: "feeStatus",
 		valueType: "select",
-		options: 收费状态Options,
+		options: feeStatusOptions,
 	},
 	{
 		label: "报修时间开始",
-		prop: "报修时间开始",
+		prop: "reportTimeStart",
 		valueType: "date-picker",
 	},
 	{
 		label: "报修时间结束",
-		prop: "报修时间结束",
+		prop: "reportTimeEnd",
 		valueType: "date-picker",
 	},
 ]);
@@ -197,41 +208,41 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 加载表格数据 */
 async function loadTableData() {
-	let filteredData: 报修报表_表格数据[] = [];
+	let filteredData: RepairReportFormListItem[] = [];
 
-	if (plusSearchModel.value.报修类型) {
-		filteredData = filteredData.filter((item) => item.报修类型 === plusSearchModel.value.报修类型);
+	if (plusSearchModel.value.repairType) {
+		filteredData = filteredData.filter((item) => item.repairType === plusSearchModel.value.repairType);
 	}
 
-	if (plusSearchModel.value.报修状态) {
-		filteredData = filteredData.filter((item) => item.报修状态 === plusSearchModel.value.报修状态);
+	if (plusSearchModel.value.repairStatus) {
+		filteredData = filteredData.filter((item) => item.repairStatus === plusSearchModel.value.repairStatus);
 	}
 
-	if (plusSearchModel.value.紧急程度) {
-		filteredData = filteredData.filter((item) => item.紧急程度 === plusSearchModel.value.紧急程度);
+	if (plusSearchModel.value.urgencyLevel) {
+		filteredData = filteredData.filter((item) => item.urgencyLevel === plusSearchModel.value.urgencyLevel);
 	}
 
-	if (plusSearchModel.value.报修人) {
-		filteredData = filteredData.filter((item) => item.报修人.includes(plusSearchModel.value.报修人!));
+	if (plusSearchModel.value.reporter) {
+		filteredData = filteredData.filter((item) => item.reporter.includes(plusSearchModel.value.reporter!));
 	}
 
-	if (plusSearchModel.value.报修电话) {
-		filteredData = filteredData.filter((item) => item.报修电话.includes(plusSearchModel.value.报修电话!));
+	if (plusSearchModel.value.reporterPhone) {
+		filteredData = filteredData.filter((item) => item.reporterPhone.includes(plusSearchModel.value.reporterPhone!));
 	}
 
-	if (plusSearchModel.value.小区) {
-		filteredData = filteredData.filter((item) => item.小区 === plusSearchModel.value.小区);
+	if (plusSearchModel.value.community) {
+		filteredData = filteredData.filter((item) => item.community === plusSearchModel.value.community);
 	}
 
-	if (plusSearchModel.value.费用状态) {
-		filteredData = filteredData.filter((item) => item.费用状态 === plusSearchModel.value.费用状态);
+	if (plusSearchModel.value.feeStatus) {
+		filteredData = filteredData.filter((item) => item.feeStatus === plusSearchModel.value.feeStatus);
 	}
 
-	if (plusSearchModel.value.报修时间开始 && plusSearchModel.value.报修时间结束) {
-		const start = dayjs(plusSearchModel.value.报修时间开始);
-		const end = dayjs(plusSearchModel.value.报修时间结束);
+	if (plusSearchModel.value.reportTimeStart && plusSearchModel.value.reportTimeEnd) {
+		const start = dayjs(plusSearchModel.value.reportTimeStart);
+		const end = dayjs(plusSearchModel.value.reportTimeEnd);
 		filteredData = filteredData.filter((item) => {
-			const current = dayjs(item.报修时间);
+			const current = dayjs(item.reportTime);
 			return current.isAfter(start) && current.isBefore(end);
 		});
 	}

@@ -9,33 +9,23 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { title } from "process";
+import type { DataStatisticsMonthlyActualCollectionDetailsListItem, DataStatisticsMonthlyActualCollectionDetailsQueryParams } from "@01s-11comm/type";
 
 const outstandingTotal = ref<number>(114514);
 
-interface 报表管理_月实收明细 {
-	房屋: string;
-	业主: string;
-	欠费: string;
-	实收: string;
-	费用名称: string;
-	实收时间段: string;
-	收银员: string;
-	交费时间: string;
-}
-
-const tableDataItem: 报表管理_月实收明细 = {
-	房屋: "001-1-1010",
-	业主: "gugugaga(13912341234)",
-	欠费: "123.123",
-	实收: "物业费 (114514)(2077-10-1~2077-11-11)=1234",
-	费用名称: "物业费gugugaga",
-	实收时间段: "2077-5",
-	收银员: "gugugaga",
-	交费时间: "2077-05-01 15:30:55",
+const tableDataItem: DataStatisticsMonthlyActualCollectionDetailsListItem = {
+	house: "001-1-1010",
+	owner: "gugugaga(13912341234)",
+	arrears: "123.123",
+	actualCollection: "物业费 (114514)(2077-10-1~2077-11-11)=1234",
+	feeName: "物业费gugugaga",
+	actualCollectionPeriod: "2077-5",
+	cashier: "gugugaga",
+	paymentTime: "2077-05-01 15:30:55",
 };
 
 /** 表格数据 */
-const tableData = ref<报表管理_月实收明细[]>(
+const tableData = ref<DataStatisticsMonthlyActualCollectionDetailsListItem[]>(
 	Array(35)
 		.fill(null)
 		.map(() => ({ ...tableDataItem })),
@@ -44,67 +34,57 @@ const tableData = ref<报表管理_月实收明细[]>(
 const columns = ref<TableColumnList>([
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "实收",
-		prop: "实收",
+		prop: "actualCollection",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "费用名称",
-		prop: "费用名称",
+		prop: "feeName",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "实收时间段",
-		prop: "实收时间段",
+		prop: "actualCollectionPeriod",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "收银员",
-		prop: "收银员",
+		prop: "cashier",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "交费时间",
-		prop: "交费时间",
+		prop: "paymentTime",
 		width: 100,
 		fixed: true,
 	},
-	// {
-	// 	label: transformI18n($t("table.operation")),
-	// 	minWidth: 160,
-	// 	fixed: "right",
-	// 	slot: "operation",
-	// },
 ]);
-interface 报表管理_月实收明细_VO {
-	楼栋?: string;
-	开始时间?: string;
-	结束时间?: string;
-}
+
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报表管理_月实收明细_VO = {
-	楼栋: "",
-	开始时间: "",
-	结束时间: "",
+const plusSearchModelRef: FieldValues & DataStatisticsMonthlyActualCollectionDetailsQueryParams = {
+	building: "",
+	startTime: "",
+	endTime: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -122,7 +102,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	//楼栋
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.build")),
-		prop: "楼栋",
+		prop: "building",
 		valueType: "select",
 		options: [
 			{
@@ -142,7 +122,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 开始时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.startTime")),
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -153,7 +133,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 结束时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.endTime")),
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",

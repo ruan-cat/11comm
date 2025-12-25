@@ -24,7 +24,7 @@ import {
 	repairsSettingTypeOptions,
 	areaOptions,
 	returnVisitSettingOptions,
-} from "./components/form";
+} from "@01s-11comm/type";
 import type {
 	RepairsSettingListItem,
 	RepairsSettingFormVO,
@@ -34,6 +34,7 @@ import type {
 	OwnerDisplayType,
 	NotificationMethodType,
 	ReturnVisitSettingType,
+	RepairsSettingQueryParams,
 } from "@01s-11comm/type";
 
 /** 模式控制 */
@@ -113,12 +114,14 @@ interface RepairsSettingQueryVO {
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef = {
+const plusSearchModelRef: FieldValues & RepairsSettingQueryParams = {
 	typeName: "",
 	dispatchMethod: "",
 	settingType: "",
 	publicArea: "",
 	returnVisitSetting: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */

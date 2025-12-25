@@ -84,11 +84,13 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & ReturnVisitQueryParams = {
-	工单编号: "",
-	报修类型: "",
-	报修人: "",
-	报修电话: "",
-	回访状态: "",
+	workOrderNumber: "",
+	repairType: "",
+	reporter: "",
+	contactPhone: "",
+	returnVisitStatus: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -117,14 +119,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 工单编号
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		valueType: "input",
 	},
 
 	// 报修类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
@@ -132,21 +134,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 报修人
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 
 	// 报修电话
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
-		prop: "报修电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	// 回访状态
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.returnStatus")),
-		prop: "回访状态",
+		prop: "returnVisitStatus",
 		valueType: "select",
 		options: returnVisitStatusOptions,
 	},
@@ -201,14 +203,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					工单编号: row?.工单编号 || "",
-					位置: row?.位置 || "",
-					报修类型: row?.报修类型 || "",
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约时间: row?.预约时间 || "",
-					回访状态: row?.回访状态 || "",
-					备注: row?.备注 || "",
+					workOrderNumber: row?.workOrderNumber || "",
+					location: row?.location || "",
+					repairType: row?.repairType || "",
+					reporter: row?.reporter || "",
+					contactInfo: row?.contactInfo || "",
+					appointmentTime: row?.appointmentTime || "",
+					returnVisitStatus: row?.returnVisitStatus || "",
+					remark: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);

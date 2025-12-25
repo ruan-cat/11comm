@@ -7,16 +7,30 @@ import type { OptionsType } from "../../../common";
 export interface OutstandingFeesAnalysisListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
-	/** 创建时间 Create time */
-	createTime: string;
-	/** 更新时间 Update time */
-	updateTime: string;
-	/** 备注 Remark */
-	remark?: string;
+	/** 小区 Community */
+	community: string;
+	/** 楼栋 Building */
+	building: string;
+	/** 单元 Unit */
+	unit: string;
+	/** 房屋编号/合同名称 House number/Contract name */
+	houseNumberContractName: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 业主手机号 Owner phone */
+	ownerPhone: string;
+	/** 费用项 Fee item */
+	feeItem: string;
+	/** 总未收金额 Total uncollected amount */
+	totalUncollectedAmount: string;
+	/** 当期未收金额 Current uncollected amount */
+	currentUncollectedAmount: string;
+	/** 历史未收金额 Historical uncollected amount */
+	historicalUncollectedAmount: string;
+	/** 最近应收月份 Latest receivable month */
+	latestReceivableMonth: string;
+	/** 统计时间 Statistics time */
+	statisticsTime: string;
 }
 
 /**
@@ -24,21 +38,22 @@ export interface OutstandingFeesAnalysisListItem {
  * OutstandingFeesAnalysis list query parameters
  */
 export interface OutstandingFeesAnalysisQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 房屋编号/合同名称 House number/Contract name */
+	houseNumberContractName?: string;
+	/** 业主名称 Owner name */
+	ownerName?: string;
+	/** 业主手机号 Owner phone */
+	ownerPhone?: string;
+	/** 费用项 Fee item */
+	feeItem?: string;
+	/** 小区 Community */
+	community?: string;
+	/** 楼栋 Building */
+	building?: string;
+	/** 单元 Unit */
+	unit?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */
 	pageSize: number;
 }
-
-/**
- * @description 状态选项
- * Status options
- */
-export const outstandingFeesAnalysisStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];

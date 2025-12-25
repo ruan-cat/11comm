@@ -9,27 +9,20 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { title } from "process";
+import type { DataStatisticsMonthlyArrearsDetailsListItem, DataStatisticsMonthlyArrearsDetailsQueryParams } from "@01s-11comm/type";
 
 const realTotal = ref<number>(0);
 
-interface 报表管理_月欠费明细 {
-	房屋: string;
-	业主: string;
-	费用名称: string;
-	欠费时间段: string;
-	欠费金额: string;
-}
-
-const tableDataItem: 报表管理_月欠费明细 = {
-	房屋: "001-1-1010",
-	业主: "gugugaga(13912341234)",
-	费用名称: "物业费gugugaga",
-	欠费时间段: "2077-5",
-	欠费金额: "114514.11",
+const tableDataItem: DataStatisticsMonthlyArrearsDetailsListItem = {
+	house: "001-1-1010",
+	owner: "gugugaga(13912341234)",
+	feeName: "物业费gugugaga",
+	arrearsPeriod: "2077-5",
+	arrearsAmount: "114514.11",
 };
 
 /** 表格数据 */
-const tableData = ref<报表管理_月欠费明细[]>(
+const tableData = ref<DataStatisticsMonthlyArrearsDetailsListItem[]>(
 	Array(35)
 		.fill(null)
 		.map(() => ({ ...tableDataItem })),
@@ -38,55 +31,45 @@ const tableData = ref<报表管理_月欠费明细[]>(
 const columns = ref<TableColumnList>([
 	{
 		label: "房屋",
-		prop: "房屋",
+		prop: "house",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "业主",
-		prop: "业主",
+		prop: "owner",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "费用名称",
-		prop: "费用名称",
+		prop: "feeName",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "欠费时间段",
-		prop: "欠费时间段",
+		prop: "arrearsPeriod",
 		width: 100,
 		fixed: true,
 	},
 	{
 		label: "欠费金额",
-		prop: "欠费金额",
+		prop: "arrearsAmount",
 		width: 100,
 		fixed: true,
 	},
-	// {
-	// 	label: transformI18n($t("table.operation")),
-	// 	minWidth: 160,
-	// 	fixed: "right",
-	// 	slot: "operation",
-	// },
 ]);
-interface 报表管理_月欠费明细_VO {
-	楼栋?: string;
-	开始时间?: string;
-	结束时间?: string;
-}
+
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报表管理_月欠费明细_VO = {
-	楼栋: "",
-	开始时间: "",
-	结束时间: "",
+const plusSearchModelRef: FieldValues & DataStatisticsMonthlyArrearsDetailsQueryParams = {
+	building: "",
+	startTime: "",
+	endTime: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -104,7 +87,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	//楼栋
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.build")),
-		prop: "楼栋",
+		prop: "building",
 		valueType: "select",
 		options: [
 			{
@@ -124,7 +107,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 开始时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.startTime")),
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
@@ -135,7 +118,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 结束时间
 	{
 		label: transformI18n($t("propertyManage_reportManage.report.endTime")),
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",

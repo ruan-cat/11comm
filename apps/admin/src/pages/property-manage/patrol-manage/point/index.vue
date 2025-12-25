@@ -13,8 +13,8 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type PatrolPointFormProps, defaultForm, type PatrolPointFormVO } from "./components/form";
-import { type PointListItem, type PointQueryParams } from "@01s-11comm/type";
+import { type PatrolPointFormProps, defaultForm } from "./components/form";
+import type { PointListItem, PointQueryParams, PatrolPointFormVO } from "@01s-11comm/type";
 import PatrolPointForm from "./components/form.vue";
 import { usePointListQuery } from "@/api/property-manage/patrol-manage/point";
 

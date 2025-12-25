@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { type PatrolPointFormProps, type PatrolPointFormVO } from "./form";
+import { type PatrolPointFormProps } from "./form";
+import type { PatrolPointFormVO } from "@01s-11comm/type";
 import {
-	patrolMethodFormOptions,
-	checkInStatusFormOptions,
-	taskStatusFormOptions,
-	patrolPointStatusFormOptions,
-	patrolSituationFormOptions,
-} from "./form";
+	patrolMethodOptions,
+	checkInStatusOptions,
+	taskStatusOptions,
+	patrolPointStatusOptions,
+	patrolSituationOptions,
+} from "@01s-11comm/type";
 
 /** 表单组件的 props */
 const props = defineProps<PatrolPointFormProps>();
@@ -78,7 +79,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "巡检方式",
 		prop: "patrolMethod",
 		valueType: "select",
-		options: patrolMethodFormOptions,
+		options: patrolMethodOptions,
 		fieldProps: {
 			placeholder: "请选择巡检方式",
 		},
@@ -87,7 +88,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "实际签到状态",
 		prop: "actualCheckInStatus",
 		valueType: "select",
-		options: checkInStatusFormOptions,
+		options: checkInStatusOptions,
 		fieldProps: {
 			placeholder: "请选择实际签到状态",
 		},
@@ -96,7 +97,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "任务状态",
 		prop: "taskStatus",
 		valueType: "select",
-		options: taskStatusFormOptions,
+		options: taskStatusOptions,
 		fieldProps: {
 			placeholder: "请选择任务状态",
 		},
@@ -105,7 +106,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "巡检点状态",
 		prop: "patrolPointStatus",
 		valueType: "select",
-		options: patrolPointStatusFormOptions,
+		options: patrolPointStatusOptions,
 		fieldProps: {
 			placeholder: "请选择巡检点状态",
 		},
@@ -114,7 +115,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "巡检情况",
 		prop: "patrolSituation",
 		valueType: "select",
-		options: patrolSituationFormOptions,
+		options: patrolSituationOptions,
 		fieldProps: {
 			placeholder: "请选择巡检情况",
 		},

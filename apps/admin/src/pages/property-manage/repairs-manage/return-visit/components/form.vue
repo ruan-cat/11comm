@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { ReturnVisitFormProps, type ReturnVisitFormVO } from "./form";
+import { ReturnVisitFormProps } from "./form";
+import type { ReturnVisitFormVO } from "@01s-11comm/type";
+import { repairTypeOptions, returnVisitStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<ReturnVisitFormProps>();
 
@@ -51,7 +53,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "报修类型",
 		prop: "repairType",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 	{
 		label: "报修人",
@@ -72,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "回访状态",
 		prop: "returnVisitStatus",
 		valueType: "select",
-		options: 回访状态Options,
+		options: returnVisitStatusOptions,
 	},
 	{
 		label: "备注",

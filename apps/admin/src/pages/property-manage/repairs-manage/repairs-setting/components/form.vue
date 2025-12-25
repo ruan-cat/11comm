@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { RepairsSettingFormProps, type RepairsSettingFormVO } from "./form";
+import { RepairsSettingFormProps } from "./form";
+import type { RepairsSettingFormVO } from "@01s-11comm/type";
 import {
 	repairsSettingTypeOptions,
 	dispatchMethodOptions,
