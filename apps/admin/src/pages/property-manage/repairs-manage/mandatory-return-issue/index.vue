@@ -13,10 +13,14 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type MandatoryReturnIssueFormProps, defaultForm, type MandatoryReturnIssueFormVO } from "./components/form";
+import { type MandatoryReturnIssueFormProps, defaultForm } from "./components/form";
 import MandatoryReturnIssueForm from "./components/form.vue";
 import { useMandatoryReturnIssueListQuery } from "@/api/property-manage/repairs-manage/mandatory-return-issue";
-import type { MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams } from "@01s-11comm/type";
+import type {
+	MandatoryReturnIssueListItem,
+	MandatoryReturnIssueQueryParams,
+	MandatoryReturnIssueFormVO,
+} from "@01s-11comm/type";
 import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
 /** 模式控制 */
@@ -30,42 +34,42 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "工单编号",
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		width: 120,
 	},
 	{
 		label: "位置",
-		prop: "位置",
+		prop: "location",
 		width: 120,
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		width: 120,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		width: 120,
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		width: 120,
 	},
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "appointmentTime",
 		width: 120,
 	},
 	{
 		label: "提交时间",
-		prop: "提交时间",
+		prop: "submitTime",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
@@ -89,9 +93,11 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & MandatoryReturnIssueQueryParams = {
-	报修类型: "",
-	报修人: "",
-	报修电话: "",
+	repairType: "",
+	reporter: "",
+	contactPhone: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -119,18 +125,18 @@ const {
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 	{
 		label: "报修电话",
-		prop: "报修电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 ]);
@@ -178,15 +184,15 @@ function openDialog(params: { mode: Mode; row?: MandatoryReturnIssueListItem }) 
 		? structuredClone(defaultForm)
 		: structuredClone({
 				...defaultForm,
-				工单编号: row?.工单编号 || "",
-				位置: row?.位置 || "",
-				报修类型: row?.报修类型 || "",
-				报修人: row?.报修人 || "",
-				联系方式: row?.联系方式 || "",
-				预约时间: row?.预约时间 || "",
-				提交时间: row?.提交时间 || "",
-				状态: row?.状态 || "",
-				备注: row?.备注 || "",
+				workOrderNumber: row?.workOrderNumber || "",
+				location: row?.location || "",
+				repairType: row?.repairType || "",
+				reporter: row?.reporter || "",
+				contactInfo: row?.contactInfo || "",
+				appointmentTime: row?.appointmentTime || "",
+				submitTime: row?.submitTime || "",
+				status: row?.status || "",
+				remark: row?.remark || "",
 			});
 	const defaultValues = structuredClone(业务对象);
 

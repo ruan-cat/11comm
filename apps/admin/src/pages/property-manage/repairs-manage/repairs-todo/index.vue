@@ -13,10 +13,11 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type RepairsTodoFormProps, defaultForm, type RepairsTodoFormVO } from "./components/form";
-import type { RepairsTodoListItem } from "@01s-11comm/type";
+import { type RepairsTodoFormProps, defaultForm } from "./components/form";
+import type { RepairsTodoListItem, RepairsTodoQueryParams, RepairsTodoFormVO } from "@01s-11comm/type";
 import RepairsTodoForm from "./components/form.vue";
 import { useRepairsTodoListQuery } from "@/api/property-manage/repairs-manage/repairs-todo";
+import { repairStatusOptions } from "@01s-11comm/type";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -124,6 +125,9 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchModelRef: FieldValues & RepairsTodoQueryParams = {
 	name: "",
 	status: "",
+	// TODO: 该写法是多余的
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -168,7 +172,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
 		prop: "status",
 		valueType: "select",
-		options: 报修状态Options,
+		options: repairStatusOptions,
 	},
 ]);
 

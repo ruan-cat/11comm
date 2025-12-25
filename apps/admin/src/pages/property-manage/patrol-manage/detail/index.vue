@@ -10,7 +10,8 @@ definePage({
 
 import { ref, computed, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type 巡查明细表单Props, defaultForm, type 巡查明细表单_VO } from "./components/form";
+import { type PatrolDetailFormProps, defaultForm } from "./components/form";
+import { type PatrolDetailFormVO } from "@01s-11comm/type";
 import {
 	type PatrolDetailListItem,
 	type PatrolDetailQueryParams,
@@ -259,7 +260,7 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 	setMode(mode);
 
 	/** 业务对象 */
-	const patrolDetailFormVO: 巡查明细表单_VO = isAdd.value
+	const patrolDetailFormVO: PatrolDetailFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
@@ -275,7 +276,7 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
-	const formProps: 巡查明细表单Props = {
+	const formProps: PatrolDetailFormProps = {
 		form: patrolDetailFormVO,
 		defaultValues: patrolDetailFormVO,
 	};

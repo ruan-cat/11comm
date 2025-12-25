@@ -14,11 +14,10 @@ import { useToggle } from "@vueuse/core";
 
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type IssuesSettingFormProps, defaultForm, type IssuesFormVO } from "./components/form";
+import { type IssuesSettingFormProps, defaultForm } from "./components/form";
+import { type IssuesFormVO, type IssuesListItem, type IssuesQueryParams } from "@01s-11comm/type";
 import IssuesSettingForm from "./components/form.vue";
 import {
-	type IssuesListItem,
-	type IssuesQueryParams,
 	repairTypeOptions,
 	repairStatusOptions,
 	repairCategoryOptions,
@@ -42,57 +41,57 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "工单编码",
-		prop: "工单编码",
+		prop: "workOrderCode",
 		width: 120,
 	},
 	{
 		label: "位置",
-		prop: "位置",
+		prop: "location",
 		width: 120,
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		width: 120,
 	},
 	{
 		label: "维修类型",
-		prop: "维修类型",
+		prop: "maintenanceType",
 		width: 100,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		width: 100,
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		width: 120,
 	},
 	{
 		label: "预约开始结束时间",
-		prop: "预约开始结束时间",
+		prop: "appointmentTimeRange",
 		width: 180,
 	},
 	{
 		label: "提交时间",
-		prop: "提交时间",
+		prop: "submitTime",
 		width: 150,
 	},
 	{
 		label: "提单时长",
-		prop: "提单时长",
+		prop: "orderDuration",
 		width: 100,
 	},
 	{
 		label: "完成时间",
-		prop: "完成时间",
+		prop: "completeTime",
 		width: 150,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 100,
 	},
 	{
@@ -143,7 +142,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & IssuesQueryParams = {
+const plusSearchModelRef: FieldValues & Partial<IssuesQueryParams> = {
 	工单编号: "",
 	报修人: "",
 	报修电话: "",
@@ -274,28 +273,28 @@ async function loadTableData() {
 
 		/** 根据搜索条件过滤数据 */
 		if (plusSearchModel.value.工单编号) {
-			filteredData = filteredData.filter((item) => item.工单编码.includes(plusSearchModel.value.工单编号!));
+			filteredData = filteredData.filter((item) => item.workOrderCode?.includes(String(plusSearchModel.value.工单编号)));
 		}
 		if (plusSearchModel.value.报修人) {
-			filteredData = filteredData.filter((item) => item.报修人.includes(plusSearchModel.value.报修人!));
+			filteredData = filteredData.filter((item) => item.reporter?.includes(String(plusSearchModel.value.报修人)));
 		}
 		if (plusSearchModel.value.报修电话) {
-			filteredData = filteredData.filter((item) => item.联系方式.includes(plusSearchModel.value.报修电话!));
+			filteredData = filteredData.filter((item) => item.contactInfo?.includes(String(plusSearchModel.value.报修电话)));
 		}
 		if (plusSearchModel.value.报修类型) {
-			filteredData = filteredData.filter((item) => item.报修类型 === plusSearchModel.value.报修类型);
+			filteredData = filteredData.filter((item) => item.repairType === plusSearchModel.value.报修类型);
 		}
 		if (plusSearchModel.value.报修位置) {
-			filteredData = filteredData.filter((item) => item.位置.includes(plusSearchModel.value.报修位置!));
+			filteredData = filteredData.filter((item) => item.location?.includes(String(plusSearchModel.value.报修位置)));
 		}
 		if (plusSearchModel.value.维修类型) {
-			filteredData = filteredData.filter((item) => item.维修类型 === plusSearchModel.value.维修类型);
+			filteredData = filteredData.filter((item) => item.maintenanceType === plusSearchModel.value.维修类型);
 		}
 		if (plusSearchModel.value.开始时间) {
-			filteredData = filteredData.filter((item) => item.提交时间 >= plusSearchModel.value.开始时间!);
+			filteredData = filteredData.filter((item) => item.submitTime && item.submitTime >= String(plusSearchModel.value.开始时间));
 		}
 		if (plusSearchModel.value.结束时间) {
-			filteredData = filteredData.filter((item) => item.提交时间 <= plusSearchModel.value.结束时间!);
+			filteredData = filteredData.filter((item) => item.submitTime && item.submitTime <= String(plusSearchModel.value.结束时间));
 		}
 
 		/** 更新总数 */
@@ -339,19 +338,19 @@ function openDialog(params: { mode: Mode; row?: IssuesListItem }) {
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					工单编码: row?.工单编码 || "",
-					位置: row?.位置 || "",
-					报修类型: row?.报修类型 || "",
-					维修类型: row?.维修类型 || "",
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约开始结束时间: row?.预约开始结束时间 || "",
-					提交时间: row?.提交时间 || "",
-					提单时长: row?.提单时长 || "",
-					完成时间: row?.完成时间 || "",
-					状态: row?.状态 || "",
-					违规说明: row?.违规说明 || "",
-					备注: row?.备注 || "",
+					workOrderCode: row?.workOrderCode || "",
+					location: row?.location || "",
+					repairType: row?.repairType || "",
+					maintenanceType: row?.maintenanceType || "",
+					reporter: row?.reporter || "",
+					contactInfo: row?.contactInfo || "",
+					appointmentTimeRange: row?.appointmentTimeRange || "",
+					submitTime: row?.submitTime || "",
+					orderDuration: row?.orderDuration || "",
+					completeTime: row?.completeTime || "",
+					status: row?.status || "",
+					violationDescription: row?.violationDescription || "",
+					remark: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(issuesFormVO);
@@ -451,7 +450,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
+		<PureTableBar :="pureTableBarProps" @refresh="loadTableData">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}

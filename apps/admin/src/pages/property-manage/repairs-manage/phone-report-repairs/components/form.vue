@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { PhoneRepairsFormProps, type PhoneRepairsFormVO } from "./form";
+import { PhoneRepairsFormProps } from "./form";
+import type { PhoneRepairsFormVO } from "@01s-11comm/type";
 import { repairTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PhoneRepairsFormProps>();

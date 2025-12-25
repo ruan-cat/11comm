@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 
-import { MandatoryReturnIssueFormProps, type MandatoryReturnIssueFormVO } from "./form";
+import { MandatoryReturnIssueFormProps } from "./form";
+import type { MandatoryReturnIssueFormVO } from "@01s-11comm/type";
 import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<MandatoryReturnIssueFormProps>();

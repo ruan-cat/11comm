@@ -13,7 +13,9 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ReturnVisitFormProps, defaultForm, type 报修回访表单_VO } from "./components/form";
+import { type ReturnVisitFormProps, defaultForm } from "./components/form";
+import { type ReturnVisitFormVO, type ReturnVisitListItem, type ReturnVisitQueryParams } from "@01s-11comm/type";
+import { repairTypeOptions, returnVisitStatusOptions } from "@01s-11comm/type";
 import ReturnVisitForm from "./components/form.vue";
 import { useReturnVisitListQuery } from "@/api/property-manage/repairs-manage/return-visit";
 
@@ -81,7 +83,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & 报修回访_列表查询_VO = {
+const plusSearchModelRef: FieldValues & ReturnVisitQueryParams = {
 	工单编号: "",
 	报修类型: "",
 	报修人: "",
@@ -124,7 +126,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
 		prop: "报修类型",
 		valueType: "select",
-		options: 报修类型Options,
+		options: repairTypeOptions,
 	},
 
 	// 报修人
@@ -146,7 +148,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("propertyManage_repairsManage.repairs.returnStatus")),
 		prop: "回访状态",
 		valueType: "select",
-		options: 回访状态Options,
+		options: returnVisitStatusOptions,
 	},
 ]);
 
@@ -183,7 +185,7 @@ async function testAsync() {
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
-	row?: 报修回访_列表数据;
+	row?: ReturnVisitListItem;
 }
 
 /** 打开弹框 */
@@ -194,7 +196,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}报修回访`;
 
 	/** 业务对象 */
-	const formValue: 报修回访表单_VO = isAdd.value
+	const formValue: ReturnVisitFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
@@ -272,17 +274,17 @@ function handleAdd() {
 }
 
 /** 编辑按钮点击事件 */
-function handleEdit(row: 报修回访_列表数据) {
+function handleEdit(row: ReturnVisitListItem) {
 	openDialog({ mode: "edit", row });
 }
 
 /** 查看按钮点击事件 */
-function handleView(row: 报修回访_列表数据) {
+function handleView(row: ReturnVisitListItem) {
 	openDialog({ mode: "info", row });
 }
 
 /** 删除按钮点击事件 */
-async function handleDelete(row: 报修回访_列表数据) {
+async function handleDelete(row: ReturnVisitListItem) {
 	consola.log("删除", row);
 	await doFetch();
 }

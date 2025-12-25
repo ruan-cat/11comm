@@ -15,8 +15,9 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PhoneRepairsFormProps, defaultForm } from "./components/form";
 import PhoneRepairsForm from "./components/form.vue";
-import type { PhoneReportRepairsListItem, PhoneReportRepairsQueryParams } from "@01s-11comm/type";
+import type { PhoneReportRepairsListItem, PhoneReportRepairsQueryParams, PhoneRepairsFormVO } from "@01s-11comm/type";
 import { repairTypeOptions, repairStatusOptions } from "@01s-11comm/type";
+import { usePhoneReportRepairsListQuery } from "@/api/property-manage/repairs-manage/phone-report-repairs";
 const phoneRepairsFormInstance = ref<InstanceType<typeof PhoneRepairsForm> | null>(null);
 
 /** 表格列配置 */
@@ -24,47 +25,47 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "工单编号",
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		width: 120,
 	},
 	{
 		label: "位置",
-		prop: "位置",
+		prop: "location",
 		width: 120,
 	},
 	{
 		label: "报修类型",
-		prop: "报修类型",
+		prop: "repairType",
 		width: 120,
 	},
 	{
 		label: "报修人",
-		prop: "报修人",
+		prop: "reporter",
 		width: 120,
 	},
 	{
 		label: "联系方式",
-		prop: "联系方式",
+		prop: "contactInfo",
 		width: 120,
 	},
 	{
 		label: "预约时间",
-		prop: "预约时间",
+		prop: "appointmentTime",
 		width: 120,
 	},
 	{
 		label: "超时时间",
-		prop: "超时时间",
+		prop: "overtimeTime",
 		width: 120,
 	},
 	{
 		label: "提交时间",
-		prop: "提交时间",
+		prop: "submitTime",
 		width: 120,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		width: 120,
 	},
 	{
@@ -88,11 +89,13 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & PhoneReportRepairsQueryParams = {
-	工单编号: "",
-	报修人: "",
-	报修电话: "",
-	报修类型: "",
-	报修状态: "",
+	workOrderNumber: "",
+	reporter: "",
+	contactPhone: "",
+	repairType: "",
+	status: "",
+	pageIndex: 1,
+	pageSize: 10,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -121,28 +124,28 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 工单编号
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		valueType: "input",
 	},
 
 	// 报修人
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 
 	// 报修电话
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
-		prop: "报修电话",
+		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	// 报修类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
@@ -150,7 +153,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 报修状态
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
-		prop: "报修状态",
+		prop: "status",
 		valueType: "select",
 		options: repairStatusOptions,
 	},
@@ -199,16 +202,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}电话报修`;
 
 	/** 业务对象 */
-	const formValue = isAdd.value
+	const formValue: PhoneRepairsFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					报修类型: row?.报修类型 || defaultForm.报修类型,
-					报修人: row?.报修人 || "",
-					联系方式: row?.联系方式 || "",
-					预约时间: row?.预约时间 || "",
-					报修内容: row?.备注 || "",
+					repairType: row?.repairType || defaultForm.repairType,
+					reporter: row?.reporter || "",
+					contactInfo: row?.contactInfo || "",
+					appointmentTime: row?.appointmentTime || "",
+					repairDescription: row?.remark || "",
 				})
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);

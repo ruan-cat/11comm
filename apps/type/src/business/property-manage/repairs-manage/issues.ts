@@ -8,10 +8,32 @@ import { repairStatusOptions, repairTypeOptions, repairSourceOptions } from "../
 export interface IssuesListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
+	/** 名称 Name (保留用于兼容) */
+	name?: string;
+	/** 工单编码 Work order code */
+	workOrderCode?: string;
+	/** 位置 Location */
+	location?: string;
+	/** 报修类型 Repair type */
+	repairType?: string;
+	/** 维修类型 Maintenance type */
+	maintenanceType?: string;
+	/** 报修人 Reporter */
+	reporter?: string;
+	/** 联系方式 Contact information */
+	contactInfo?: string;
+	/** 预约开始结束时间 Appointment start and end time */
+	appointmentTimeRange?: string;
+	/** 提交时间 Submit time */
+	submitTime?: string;
+	/** 提单时长 Order duration */
+	orderDuration?: string;
+	/** 完成时间 Complete time */
+	completeTime?: string;
 	/** 状态 Status */
 	status: string;
+	/** 违规说明 Violation description */
+	violationDescription?: string;
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
