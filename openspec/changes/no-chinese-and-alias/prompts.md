@@ -1,4 +1,4 @@
-<!-- TODO: 多次复用提示词 未完成 -->
+<!-- 多次复用提示词 已完成 -->
 
 /openspec:apply 执行 `no-chinese-and-alias` 任务
 
@@ -14,6 +14,7 @@
 ### 2. 执行依赖
 
 本任务应该在 `no-form-ts-redundant-export` 任务**基本完成**后执行，因为：
+
 - `no-form-ts-redundant-export` 已经完成了 form.ts 的导出清理
 - `no-form-ts-redundant-export` 遗留的部分类型错误（约 172 个）中，很多是中文类型相关的问题
 - 本任务将处理这些中文类型问题，作为 `no-form-ts-redundant-export` 的补充
@@ -21,16 +22,19 @@
 ### 3. 严格禁止的操作
 
 **禁止修改 form.ts 的导出结构：**
+
 - form.ts 只应导出 `xxxFormProps` 和 `defaultForm`
 - **不要**添加或删除 FormVO 类型的导出
 - **不要**添加或删除任何其他类型或变量的导出
 - form.ts 的导出结构已由 `no-form-ts-redundant-export` 任务完成，本任务**只修改 Vue 文件中的类型引用**
 
 **禁止重复迁移类型：**
+
 - 如果类型已经在类型项目中存在，直接使用，不要重复创建
 - 如果发现类型缺失，先检查是否已由 `no-form-ts-redundant-export` 任务添加
 
 **禁止修改已完成的类型项目结构：**
+
 - 类型项目的 index.ts 导出链路已由 `no-form-ts-redundant-export` 完成，不要修改
 - 只在必要时添加新的类型定义，不要修改现有的导出结构
 
