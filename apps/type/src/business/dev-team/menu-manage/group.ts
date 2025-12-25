@@ -61,6 +61,31 @@ export interface MenuGroupQueryParams {
 }
 
 /**
+ * @description 菜单组表单VO
+ * Menu group form VO
+ */
+export interface MenuGroupFormVO {
+	/** 组编号 Group ID */
+	groupId: string;
+	/** 组名称 Group name */
+	groupName: string;
+	/** 组编码 Group code */
+	groupCode: string;
+	/** 组类型 Group type */
+	groupType: string;
+	/** 归属商户 Store name */
+	storeName: string;
+	/** 排序 Sort number */
+	sortNo: number;
+	/** 图标 Icon */
+	icon: string;
+	/** 状态 Status */
+	status: string;
+	/** 描述 Description */
+	description: string;
+}
+
+/**
  * @description 状态选项
  * Status options
  */
@@ -68,4 +93,3 @@ export const menuGroupStatusOptions: OptionsType = [
 	{ label: "启用", value: "enabled" },
 	{ label: "禁用", value: "disabled" },
 ];
-

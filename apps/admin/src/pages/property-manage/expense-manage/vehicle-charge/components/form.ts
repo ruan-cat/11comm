@@ -1,7 +1,5 @@
 import type { VehicleChargeFormVO } from "@01s-11comm/type";
 
-export type { VehicleChargeFormVO };
-
 /**
  * 车辆收费表单 props
  * @description

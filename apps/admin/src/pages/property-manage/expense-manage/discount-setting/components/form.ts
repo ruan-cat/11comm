@@ -1,7 +1,5 @@
 import type { DiscountSettingFormVO } from "@01s-11comm/type";
 
-export type { DiscountSettingFormVO };
-
 /**
  * 折扣设置表单 props
  * @description

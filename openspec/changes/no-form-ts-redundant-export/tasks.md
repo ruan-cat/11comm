@@ -4,78 +4,78 @@
 
 - [x] 1.1 扫描全部 form.ts 文件,收集需要迁移的类型和变量
 - [x] 1.2 在 `apps/type/src/common/business-options.ts` 中补充缺失的下拉选项 (已有975行下拉选项定义)
-- [ ] 1.3 在 `apps/type/src/common/business-types.ts` 中补充缺失的通用类型
-- [ ] 1.4 在 `apps/type/src/business/**` 对应的业务路径中补充业务特定类型
-- [ ] 1.5 确保类型项目的导出链路完整(检查各级 index.ts)
-- [ ] 1.6 对类型项目运行类型检查: `pnpm -F @01s-11comm/type typecheck`
+- [x] 1.3 在 `apps/type/src/common/business-types.ts` 中补充缺失的通用类型
+- [x] 1.4 在 `apps/type/src/business/**` 对应的业务路径中补充业务特定类型
+- [x] 1.5 确保类型项目的导出链路完整(检查各级 index.ts)
+- [x] 1.6 对类型项目运行类型检查: `pnpm -F @01s-11comm/type typecheck`
 
 ## 2. 清理 form.ts 文件(按业务路径分批处理)
 
 ### 2.1 setting-manage 模块
 
-- [~] 2.1.1 处理 `setting-manage/organize-manage` 下的全部 form.ts (Agent a13e31b 处理中)
-- [~] 2.1.2 处理 `setting-manage/system-manage` 下的全部 form.ts (Agent a13e31b 处理中)
+- [x] 2.1.1 处理 `setting-manage/organize-manage` 下的全部 form.ts
+- [x] 2.1.2 处理 `setting-manage/system-manage` 下的全部 form.ts
 - [ ] 2.1.3 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.2 dev-team 模块
 
-- [~] 2.2.1 处理 `dev-team/menu-manage` 下的全部 form.ts (Agent a13e31b 处理中)
-- [~] 2.2.2 处理 `dev-team/cache-manage` 下的全部 form.ts (Agent a13e31b 处理中)
-- [~] 2.2.3 处理 `dev-team/config-manage` 下的全部 form.ts (Agent a13e31b 处理中)
-- [ ] 2.2.4 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.2.1 处理 `dev-team/menu-manage` 下的全部 form.ts
+- [x] 2.2.2 处理 `dev-team/cache-manage` 下的全部 form.ts
+- [x] 2.2.3 处理 `dev-team/config-manage` 下的全部 form.ts
+- [~] 2.2.4 验证 form.vue 和 index.vue 的导入调整 (进行中)
 
 ### 2.3 operation-team 模块
 
-- [~] 2.3.1 处理 `operation-team/system-manage` 下的全部 form.ts (Agent a79a259 处理中)
-- [~] 2.3.2 处理 `operation-team/data-manage` 下的全部 form.ts (Agent a79a259 处理中)
-- [~] 2.3.3 处理 `operation-team/merchant-manage` 下的全部 form.ts (Agent a79a259 处理中)
-- [~] 2.3.4 处理 `operation-team/report-configuration` 下的全部 form.ts (Agent a79a259 处理中)
+- [x] 2.3.1 处理 `operation-team/system-manage` 下的全部 form.ts
+- [x] 2.3.2 处理 `operation-team/data-manage` 下的全部 form.ts
+- [x] 2.3.3 处理 `operation-team/merchant-manage` 下的全部 form.ts
+- [x] 2.3.4 处理 `operation-team/report-configuration` 下的全部 form.ts
 - [ ] 2.3.5 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.4 property-manage.community-manage 模块
 
-- [~] 2.4.1 处理 `property-manage/community-manage` 下的全部 form.ts (Agent a79a259 处理中)
+- [x] 2.4.1 处理 `property-manage/community-manage` 下的全部 form.ts
 - [ ] 2.4.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.5 property-manage.contract-manage 模块
 
-- [~] 2.5.1 处理 `property-manage/contract-manage` 下的全部 form.ts (Agent af16f3f 处理中)
+- [x] 2.5.1 处理 `property-manage/contract-manage` 下的全部 form.ts
 - [ ] 2.5.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.6 property-manage.expense-manage 模块(分多批)
 
-- [~] 2.6.1 处理 `expense-manage` 的第 1 批: waterAndElectricityMeterReading, vehicleCharge, reminderForOverduePayments (Agent af16f3f 处理中)
-- [~] 2.6.2 处理 `expense-manage` 的第 2 批: reprintVoucher, overduePaymentInformation, paymentReview (Agent af16f3f 处理中)
-- [~] 2.6.3 处理 `expense-manage` 的第 3 批: refundReview, houseCharge, meterReadingType (Agent af16f3f 处理中)
-- [~] 2.6.4 处理 `expense-manage` 的第 4 批: discountType, expenseSummaryTable, discountApply (Agent af16f3f 处理中)
-- [~] 2.6.5 处理 `expense-manage` 的第 5 批: discountSetting, contracteCharge, expenseItemSetting, cancelFee (Agent af16f3f 处理中)
+- [x] 2.6.1 处理 `expense-manage` 的第 1 批: waterAndElectricityMeterReading, vehicleCharge, reminderForOverduePayments
+- [x] 2.6.2 处理 `expense-manage` 的第 2 批: reprintVoucher, overduePaymentInformation, paymentReview
+- [x] 2.6.3 处理 `expense-manage` 的第 3 批: refundReview, houseCharge, meterReadingType
+- [x] 2.6.4 处理 `expense-manage` 的第 4 批: discountType, expenseSummaryTable, discountApply
+- [x] 2.6.5 处理 `expense-manage` 的第 5 批: discountSetting, contracteCharge, expenseItemSetting, cancelFee
 - [ ] 2.6.6 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.7 property-manage.house-property-manage 模块(分多批)
 
-- [~] 2.7.1 处理 `house-property-manage` 的第 1 批: house, invoice, invoiceTitle (Agent a6aac6d 处理中)
-- [~] 2.7.2 处理 `house-property-manage` 的第 2 批: ownerAccount, ownerInformation, ownerMember (Agent a6aac6d 处理中)
-- [~] 2.7.3 处理 `house-property-manage` 的第 3 批: ownersCommittee, reserveVenue, reserveVenueOrder, siteManagement (Agent a6aac6d 处理中)
+- [x] 2.7.1 处理 `house-property-manage` 的第 1 批: house, invoice, invoiceTitle
+- [x] 2.7.2 处理 `house-property-manage` 的第 2 批: ownerAccount, ownerInformation, ownerMember
+- [x] 2.7.3 处理 `house-property-manage` 的第 3 批: ownersCommittee, reserveVenue, reserveVenueOrder, siteManagement
 - [ ] 2.7.4 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.8 property-manage.parking-manage 模块
 
-- [~] 2.8.1 处理 `property-manage/parking-manage` 下的全部 form.ts (Agent a6aac6d 处理中)
+- [x] 2.8.1 处理 `property-manage/parking-manage` 下的全部 form.ts
 - [ ] 2.8.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.9 property-manage.patrol-manage 模块
 
-- [~] 2.9.1 处理 `property-manage/patrol-manage` 下的全部 form.ts (Agent aa13e09 处理中)
+- [x] 2.9.1 处理 `property-manage/patrol-manage` 下的全部 form.ts
 - [ ] 2.9.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.10 property-manage.repairs-manage 模块
 
-- [~] 2.10.1 处理 `property-manage/repairs-manage` 下的全部 form.ts (Agent aa13e09 处理中)
+- [x] 2.10.1 处理 `property-manage/repairs-manage` 下的全部 form.ts
 - [ ] 2.10.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.11 property-manage.report-manage 模块
 
-- [~] 2.11.1 处理 `property-manage/report-manage` 下的全部 form.ts (Agent a932903 处理中)
+- [x] 2.11.1 处理 `property-manage/report-manage` 下的全部 form.ts
 - [ ] 2.11.2 验证 form.vue 和 index.vue 的导入调整
 
 ## 3. 验证和测试
@@ -90,3 +90,21 @@
 
 - [ ] 4.1 更新项目文档,说明 form.ts 的导出规范
 - [ ] 4.2 在 CLAUDE.md 中补充相关说明(如需要)
+
+## 当前进度总结
+
+### 已完成
+1. ✅ 类型项目准备工作全部完成
+2. ✅ 所有 form.ts 文件的冗余导出已清理完毕
+3. ✅ 类型项目类型检查通过
+4. ✅ 添加了缺失的 FormVO 类型到类型项目：
+   - OverduePaymentInformationFormVO
+   - RegisterProtocolFormVO  
+   - MenuGroupFormVO
+
+### 进行中
+- 🔄 修复 Vue 文件的导入语句（需要从 `@01s-11comm/type` 导入类型和选项）
+
+### 待处理
+- ⏳ 大量 Vue 文件需要调整导入语句
+- ⏳ 完整的类型检查验证

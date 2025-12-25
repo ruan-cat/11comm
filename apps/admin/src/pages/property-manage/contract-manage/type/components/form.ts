@@ -1,7 +1,4 @@
-import type { ContractTypeFormVO, IsAuditType, auditTypeOptions } from "@01s-11comm/type";
-
-export type { ContractTypeFormVO, IsAuditType };
-export { auditTypeOptions };
+import type { ContractTypeFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ContractTypeFormVO = {

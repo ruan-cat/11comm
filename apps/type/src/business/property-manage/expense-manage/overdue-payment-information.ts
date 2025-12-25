@@ -62,4 +62,41 @@ export const overduePaymentInformationStatusOptions: OptionsType = [
 	{ label: "禁用", value: "禁用" },
 ];
 
+/**
+ * @description 欠费信息表单VO
+ * Overdue payment information form VO
+ */
+export interface OverduePaymentInformationFormVO {
+	/** 收费对象 Charge object */
+	chargeObject: string;
+	/** 业主名称 Owner name */
+	ownerName: string;
+	/** 手机号 Phone number */
+	phoneNumber: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 欠费时间范围 Overdue time range */
+	overdueTimeRange: [string, string];
+	/** 欠费金额 Overdue amount */
+	overdueAmount: string;
+	/** 欠费说明 Overdue description */
+	overdueDescription: string;
+	/** 缴费状态 Payment status */
+	paymentStatus: string;
+	/** 联系地址 Contact address */
+	contactAddress: string;
+}
+
+/**
+ * @description 缴费状态选项
+ * Payment status options
+ */
+export const overduePaymentStatusOptions: OptionsType = [
+	{ label: "未缴费", value: "未缴费" },
+	{ label: "部分缴费", value: "部分缴费" },
+	{ label: "已缴费", value: "已缴费" },
+];
+
 // 注意：chargeObjectOptions 已从 "../../../common/business-options" 导入

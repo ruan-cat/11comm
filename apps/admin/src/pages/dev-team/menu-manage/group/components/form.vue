@@ -4,15 +4,11 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { MenuGroupFormVO } from "@01s-11comm/type";
 
 import {
 	MenuGroupFormProps,
-	MenuGroupFormVO,
 	defaultForm,
-	groupTypeOptions,
-	menuGroupStatusOptions,
-	storeOptions,
-	iconOptions,
 } from "./form";
 
 const props = defineProps<MenuGroupFormProps>();

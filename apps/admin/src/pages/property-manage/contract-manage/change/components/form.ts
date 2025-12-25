@@ -1,6 +1,4 @@
-import type { ContractChangeFormVO, ChangeType } from "@01s-11comm/type";
-
-export type { ContractChangeFormVO, ChangeType };
+import type { ContractChangeFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ContractChangeFormVO = {

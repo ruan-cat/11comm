@@ -21,6 +21,33 @@ export type { OperationTeamRegisterProtocolListQuery } from "../../../common/bus
 export type { OperationTeamRegisterProtocol } from "../../../common/business-types";
 
 /**
+ * 注册协议表单 VO
+ * Register protocol form VO
+ */
+export interface RegisterProtocolFormVO {
+	/** 协议名称 Protocol name */
+	protocolName: string;
+	/** 协议类型 Protocol type */
+	protocolType: string;
+	/** 协议版本 Protocol version */
+	protocolVersion: string;
+	/** 状态 Status */
+	status: string;
+	/** 是否强制同意 Is mandatory */
+	isMandatory: string;
+	/** 协议摘要 Protocol summary */
+	protocolSummary?: string;
+	/** 协议内容 Protocol content */
+	protocolContent: string;
+	/** 生效日期 Effective date */
+	effectiveDate: string;
+	/** 失效日期 Expiration date */
+	expirationDate?: string;
+	/** 排序权重 Sort weight */
+	sortWeight?: number;
+}
+
+/**
  * 协议类型选项别名
  */
 export const protocolTypeOptions = operationRegisterProtocolTypeOptions;
@@ -37,3 +64,9 @@ export const registerProtocolRequiredOptions: OptionsType = [
 	{ label: "必读", value: true },
 	{ label: "选读", value: false },
 ];
+
+/**
+ * 注册协议状态选项别名
+ * Register protocol status options alias
+ */
+export const registerProtocolStatusOptionsAlias = registerProtocolStatusOptions;

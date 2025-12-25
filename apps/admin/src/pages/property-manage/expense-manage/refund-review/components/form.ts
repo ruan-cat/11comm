@@ -1,7 +1,5 @@
 import type { RefundReviewFormVO } from "@01s-11comm/type";
 
-export type { RefundReviewFormVO };
-
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: RefundReviewFormVO = {
 	refundOrderNumber: "",

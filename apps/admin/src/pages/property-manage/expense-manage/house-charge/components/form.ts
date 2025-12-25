@@ -1,7 +1,5 @@
 import type { HouseChargeFormVO } from "@01s-11comm/type";
 
-export type { HouseChargeFormVO };
-
 /**
  * 费用项设置表单 props
  * @description
