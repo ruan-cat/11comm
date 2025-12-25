@@ -171,8 +171,6 @@ export const defaultForm: PropertyManagementCompanyFormVO = {
    - 请你主动的开启多个独立并行的修改子代理，加快修改任务。
    - 你新建的子代理**必须**是**后台运行**的子代理。
 
-<!-- TODO: 新建一个长任务 持续补全说明 -->
-
 ## 五、重新调整对 `./form` 路径内的模块导出方式
 
 在后台项目中，有很多模块的导出是冗余的，是重新二次导出的，我需要你帮我删除。
@@ -197,8 +195,50 @@ export const defaultForm: PropertyManagementCompanyFormVO = {
 2. 后台项目全部的 form.vue 文件。
 3. 后台项目全部的 index.vue 列表页文件。
 
-### 处理案例 1
+### 处理案例
 
-### 处理案例 1
+以`业务路径` `dev-team\config-manage\item` 举例，这里将 form.ts 当成了二次导出的中转站。这不符合要求。
 
-<!-- TODO: 新建一个长任务 持续补全说明 -->
+```ts
+// apps\admin\src\pages\dev-team\config-manage\item\components\form.ts
+import type { ConfigItemFormVO } from "@01s-11comm/type";
+import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type";
+export type { ConfigItemFormVO };
+export { configItemTypeOptions, itemEnableStatusOptions };
+```
+
+在 `apps\admin\src\pages\dev-team\config-manage\item\components\form.vue` 内：
+
+```ts
+// apps\admin\src\pages\dev-team\config-manage\item\components\form.vue
+import { ConfigItemFormProps, ConfigItemFormVO } from "./form";
+```
+
+在 `apps\admin\src\pages\dev-team\config-manage\item\index.vue` 内
+
+```ts
+// apps\admin\src\pages\dev-team\config-manage\item\index.vue
+import { type ConfigItemFormProps, type ConfigItemFormVO, defaultForm } from "./components/form";
+```
+
+#### 正确处理方式
+
+在 `form.ts` 内，删除掉全部来自于类型项目 `@01s-11comm/type` 导入的变量和类型。
+
+在 `apps\admin\src\pages\dev-team\config-manage\item\components\form.vue` 内：
+
+```ts
+// apps\admin\src\pages\dev-team\config-manage\item\components\form.vue
+import { ConfigItemFormProps } from "./form";
+// 直接导入来自类型项目提供的类型
+import type { ConfigItemFormVO } from "@01s-11comm/type";
+```
+
+在 `apps\admin\src\pages\dev-team\config-manage\item\index.vue` 内
+
+```ts
+// apps\admin\src\pages\dev-team\config-manage\item\index.vue
+import { type ConfigItemFormProps, defaultForm } from "./components/form";
+// 直接导入来自类型项目提供的类型
+import type { ConfigItemFormVO } from "@01s-11comm/type";
+```
