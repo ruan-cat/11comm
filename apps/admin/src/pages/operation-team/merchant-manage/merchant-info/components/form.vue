@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { MerchantInfoFormProps, type MerchantInfoFormVO, merchantTypeOptions, businessStatusOptions } from "./form";
+import { MerchantInfoFormProps, merchantTypeOptions, businessStatusOptions } from "./form";
+import type { MerchantInfoFormVO } from "@01s-11comm/type";
 import type { PlusColumn } from "plus-pro-components";
 
 const props = defineProps<MerchantInfoFormProps>();

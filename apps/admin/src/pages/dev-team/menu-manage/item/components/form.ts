@@ -44,4 +44,3 @@ export interface MenuItemFormProps {
 
 /** 导出选项供表单使用 Export options for form use */
 export { menuTypeOptions, menuItemStatusOptions, booleanOptions };
-export type { MenuItemFormVO };

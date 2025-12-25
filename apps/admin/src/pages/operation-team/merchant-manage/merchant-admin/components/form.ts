@@ -40,5 +40,3 @@ export interface MerchantAdminFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-export type { MerchantAdminFormVO };

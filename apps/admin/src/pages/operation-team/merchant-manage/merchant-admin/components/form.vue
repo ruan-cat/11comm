@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { MerchantAdminFormProps, type MerchantAdminFormVO, propertyCompanyOptions } from "./form";
+import type { MerchantAdminFormVO } from "@01s-11comm/type";
+import { MerchantAdminFormProps, propertyCompanyOptions } from "./form";
 import { statusOptions } from "@01s-11comm/type";
 
 const props = defineProps<MerchantAdminFormProps>();

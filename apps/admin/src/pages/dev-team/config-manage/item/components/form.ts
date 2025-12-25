@@ -31,4 +31,3 @@ export interface ConfigItemFormProps {
 
 /** 导出选项供表单使用 Export options for form use */
 export { configItemTypeOptions, itemEnableStatusOptions };
-export type { ConfigItemFormVO };

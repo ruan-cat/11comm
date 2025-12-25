@@ -18,7 +18,8 @@ import {
 } from "@01s-11comm/type";
 import { useConfigItemListQuery } from "@/api/dev-team/config-manage/item";
 
-import { type ConfigItemFormProps, type ConfigItemFormVO, defaultForm } from "./components/form";
+import { type ConfigItemFormProps, defaultForm } from "./components/form";
+import type { ConfigItemFormVO } from "@01s-11comm/type";
 import ConfigItemForm from "./components/form.vue";
 const configItemFormInstance = ref<InstanceType<typeof ConfigItemForm> | null>(null);
 

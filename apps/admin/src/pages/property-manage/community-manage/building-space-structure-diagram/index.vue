@@ -17,7 +17,8 @@ import {
 	buildingStatusOptions,
 } from "@01s-11comm/type";
 import { useBuildingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/building-space-structure-diagram";
-import { type BuildingSpaceStructureDiagramFormProps, defaultForm, type BuildingSpaceStructureDiagramFormVO } from "./components/form";
+import { type BuildingSpaceStructureDiagramFormProps, defaultForm } from "./components/form";
+import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import BuildingSpaceStructureDiagramForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 

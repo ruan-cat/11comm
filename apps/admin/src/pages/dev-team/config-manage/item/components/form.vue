@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ConfigItemFormProps, ConfigItemFormVO } from "./form";
+import type { ConfigItemFormVO } from "@01s-11comm/type";
+import { ConfigItemFormProps } from "./form";
 import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<ConfigItemFormProps>();

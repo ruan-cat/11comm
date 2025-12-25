@@ -5,7 +5,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { PropertyManagementCompanyFormProps, type PropertyManagementCompanyFormVO } from "./form";
+import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
+import { PropertyManagementCompanyFormProps } from "./form";
 
 const props = defineProps<PropertyManagementCompanyFormProps>();
 

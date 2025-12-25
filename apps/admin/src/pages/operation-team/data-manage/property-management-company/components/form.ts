@@ -31,5 +31,3 @@ export interface PropertyManagementCompanyFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-export type { PropertyManagementCompanyFormVO };

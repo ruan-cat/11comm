@@ -19,7 +19,8 @@ import {
 	systemConfigSystemOptions,
 } from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
-import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./components/form";
+import { type SystemConfigFormProps, defaultForm } from "./components/form";
+import type { SystemConfigFormVO } from "@01s-11comm/type";
 import SystemConfigForm from "./components/form.vue";
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);

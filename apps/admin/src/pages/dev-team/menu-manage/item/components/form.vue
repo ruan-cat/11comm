@@ -4,9 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { MenuItemFormVO } from "@01s-11comm/type";
 import {
 	MenuItemFormProps,
-	MenuItemFormVO,
 	defaultForm,
 	menuTypeOptions,
 	menuItemStatusOptions,

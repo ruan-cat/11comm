@@ -17,7 +17,8 @@ import {
 	merchantAdminStatusOptions,
 } from "@01s-11comm/type";
 import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
-import { type MerchantAdminFormProps, defaultForm, type MerchantAdminFormVO } from "./components/form";
+import { type MerchantAdminFormProps, defaultForm } from "./components/form";
+import type { MerchantAdminFormVO } from "@01s-11comm/type";
 import MerchantAdminForm from "./components/form.vue";
 
 const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
