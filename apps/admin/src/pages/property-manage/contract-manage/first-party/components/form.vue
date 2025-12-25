@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { FirstPartyFormVO } from "@01s-11comm/type";
 
-import { type FirstPartyFormProps, type FirstPartyFormVO, defaultForm } from "./form";
+import { type FirstPartyFormProps, defaultForm } from "./form";
 
 const props = defineProps<FirstPartyFormProps>();
 

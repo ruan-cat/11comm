@@ -87,3 +87,20 @@ export interface CommunityNoticeFormVO {
 	/** 发布时间 Notice time */
 	noticeTime?: string;
 }
+
+/**
+ * @description 将列表数据转换为表单数据
+ * Convert list data to form data
+ */
+export function noticeListDataToFormData(listData: CommunityNoticeListItem): CommunityNoticeFormVO {
+	return {
+		noticeTitle: listData.noticeTitle,
+		noticeType: listData.noticeType,
+		validityStartTime: "",
+		validityEndTime: "",
+		status: "draft",
+		summary: "",
+		publisher: listData.publisher,
+		noticeTime: listData.noticeTime,
+	};
+}

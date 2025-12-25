@@ -14,10 +14,12 @@ import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/componen
 import { defaultAddDialogParams } from "@/config/constant";
 
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type AddFormProps, defaultForm, type ContractTypeFormVO, type IsAuditType } from "./components/form";
+import type { AddFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import type { ContractTypeFormVO, IsAuditType, TypeListItem, TypeQueryParams } from "@01s-11comm/type";
+import { auditTypeOptions } from "@01s-11comm/type";
 import AddForm from "./components/form.vue";
 import { useTypeListQuery } from "@/api/property-manage/contract-manage/type";
-import { type TypeListItem, type TypeQueryParams, auditTypeOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 

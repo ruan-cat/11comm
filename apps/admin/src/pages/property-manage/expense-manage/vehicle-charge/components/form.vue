@@ -5,9 +5,10 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import type { VehicleChargeFormVO } from "@01s-11comm/type";
+import { parkingSpaceStatusOptions } from "@01s-11comm/type";
 import type { FieldValues } from "plus-pro-components";
 
-import { VehicleChargeFormProps, defaultForm, parkingSpaceStatusOptions } from "./form";
+import { VehicleChargeFormProps, defaultForm } from "./form";
 
 const props = defineProps<VehicleChargeFormProps>();
 

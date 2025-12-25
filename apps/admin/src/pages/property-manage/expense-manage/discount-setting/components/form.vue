@@ -5,7 +5,8 @@ import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { DiscountSettingFormProps, defaultForm } from "./form";
+import type { DiscountSettingFormProps } from "./form";
+import type { DiscountSettingFormVO } from "@01s-11comm/type";
 
 const props = defineProps<DiscountSettingFormProps>();
 

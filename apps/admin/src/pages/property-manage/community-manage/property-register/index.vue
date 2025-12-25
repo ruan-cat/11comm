@@ -13,7 +13,7 @@ import { h } from "vue";
 import { ElMessageBox, ElTag } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import type { PropertyRegisterFormProps } from "./components/form";
-import type { PropertyRegisterFormVO } from "./components/form";
+import type { PropertyRegisterFormVO } from "@01s-11comm/type";
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
 import { usePropertyRegisterListQuery } from "@/api/property-manage/community-manage/property-register";

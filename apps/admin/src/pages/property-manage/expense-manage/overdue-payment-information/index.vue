@@ -13,8 +13,8 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type OverduePaymentInformationFormProps,
 	defaultForm,
-	type OverduePaymentInformationFormVO,
 } from "./components/form";
+import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
 import OverduePaymentInformationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useOverduePaymentInformationListQuery } from "@/api/property-manage/expense-manage/overdue-payment-information";

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
 import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
+import { chargeObjectOptions, overduePaymentStatusOptions } from "@01s-11comm/type";
 
 import {
 	OverduePaymentInformationFormProps,
@@ -115,7 +116,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		label: "缴费状态",
 		prop: "paymentStatus",
 		valueType: "select",
-		options: paymentStatusOptions,
+		options: overduePaymentStatusOptions,
 		fieldProps: {
 			clearable: true,
 		},

@@ -972,3 +972,13 @@ export const isChargingPileOptions: OptionsType = [
 	{ label: "否", value: "否" },
 ];
 
+
+/**
+ * @description 物业公司选项
+ * Property company options
+ * TODO: This should be dynamically loaded from API
+ */
+export const propertyCompanyOptions: OptionsType = [
+	{ label: "示例物业公司1", value: "示例物业公司1" },
+	{ label: "示例物业公司2", value: "示例物业公司2" },
+];

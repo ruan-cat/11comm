@@ -12,7 +12,8 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type DiscountSettingFormProps, defaultForm, type DiscountSettingFormVO } from "./components/form";
+import { type DiscountSettingFormProps, defaultForm } from "./components/form";
+import type { DiscountSettingFormVO } from "@01s-11comm/type";
 import DiscountSettingForm from "./components/form.vue";
 import { useDiscountSettingListQuery } from "@/api/property-manage/expense-manage/discount-setting";
 import {

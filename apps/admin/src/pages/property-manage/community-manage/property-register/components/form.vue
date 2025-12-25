@@ -5,8 +5,9 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import type { PropertyRegisterFormProps, PropertyRegisterFormVO } from "./form";
-import { auditStatusOptions } from "./form";
+import type { PropertyRegisterFormProps } from "./form";
+import type { PropertyRegisterFormVO } from "@01s-11comm/type";
+import { auditStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PropertyRegisterFormProps>();
 

@@ -11,10 +11,11 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import type { HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
+import type { HandingBusinessListItem, HandingBusinessQueryParams, HandingBusinessFormVO } from "@01s-11comm/type";
+import { feeTypeOptions, businessHandlingStatusOptions, handingBusinessListDataToFormData as listDataToFormData } from "@01s-11comm/type";
 import { useHandingBusinessListQuery } from "@/api/property-manage/community-manage/handing-business";
-import type { HandingBusinessFormProps, HandingBusinessFormVO } from "./components/form";
-import { defaultForm, listDataToFormData, feeTypeOptions, handlingStatusOptions } from "./components/form";
+import type { HandingBusinessFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
 import HandingBusinessForm from "./components/form.vue";
 
 const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
@@ -136,7 +137,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "状态",
 		prop: "status",
 		valueType: "select",
-		options: handlingStatusOptions,
+		options: businessHandlingStatusOptions,
 	},
 
 	/** 建账时间范围 */

@@ -4,9 +4,10 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { ContractDraftFormProps, ContractDraftFormVO } from "./form";
+import type { ContractDraftFormVO } from "@01s-11comm/type";
 import { contractTypeOptions } from "@01s-11comm/type";
+
+import { ContractDraftFormProps } from "./form";
 
 const props = defineProps<ContractDraftFormProps>();
 

@@ -12,7 +12,8 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 
-import { type HouseChargeFormProps, defaultForm, type HouseChargeFormVO } from "./components/form";
+import { type HouseChargeFormProps, defaultForm } from "./components/form";
+import type { HouseChargeFormVO } from "@01s-11comm/type";
 import HouseChargeForm from "./components/form.vue";
 
 // 从类型库导入正确的类型

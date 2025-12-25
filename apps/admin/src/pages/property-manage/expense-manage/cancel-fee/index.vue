@@ -11,7 +11,8 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type CancelFeeFormProps, defaultForm, type CancelFeeFormVO } from "./components/form";
+import { type CancelFeeFormProps, defaultForm } from "./components/form";
+import type { CancelFeeFormVO } from "@01s-11comm/type";
 import CancelFeeForm from "./components/form.vue";
 import { useCancelFeeListQuery } from "@/api/property-manage/expense-manage/cancel-fee";
 import { type CancelFeeListItem, type CancelFeeQueryParams, auditStatusOptions } from "@01s-11comm/type";

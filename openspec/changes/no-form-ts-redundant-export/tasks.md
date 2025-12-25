@@ -109,21 +109,26 @@
 5. ✅ 添加了缺失的选项到类型项目：
    - storeOptions
    - iconOptions
-6. ✅ 修复了约 30+ 个 Vue 文件的导入语句
+   - propertyCompanyOptions (新增)
+6. ✅ 修复了约 50+ 个 Vue 文件的导入语句
+7. ✅ 添加了缺失的工具函数到类型项目：
+   - noticeListDataToFormData (notice 模块)
+   - handingBusinessListDataToFormData (handing-business 模块)
+8. ✅ 解决了 listDataToFormData 函数名冲突问题
 
 ### 进行中
-- 🔄 继续修复 Vue 文件的导入语句（还有约 204 个类型错误）
+- 🔄 继续修复 Vue 文件的导入语句（还有约 172 个类型错误）
 - 🔄 主要剩余错误类型：
-  - FormVO 类型从 form.ts 导入改为从 @01s-11comm/type 导入
-  - 选项从 form.ts 导入改为从 @01s-11comm/type 导入
-  - 工具函数（如 listDataToFormData）需要删除或重构
-  - 部分中文类型名称需要处理
+  - FieldValues 类型转换错误（DictionaryTypeFormVO, InitializeCellFormVO）
+  - 中文类型名称需要处理（车位结构图表单VO, 巡检明细表单Props）
+  - 其他非 form.ts 相关的类型错误
 
 ### 待处理
-- ⏳ 约 204 个类型错误需要处理
+- ⏳ 约 172 个类型错误需要处理（大部分不是 form.ts 导入相关）
 - ⏳ 完整的类型检查验证
 
 ### 关键进展
-- 错误数量：228 → 208 → 204
+- 错误数量：228 → 204 → 184 → 172
 - 类型项目已通过类型检查 ✅
 - 所有 form.ts 文件的冗余导出已清理 ✅
+- 所有 form.ts 相关的导入错误已基本修复 ✅

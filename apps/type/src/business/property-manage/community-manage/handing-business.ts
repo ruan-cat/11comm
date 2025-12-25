@@ -113,7 +113,7 @@ export const businessHandlingStatusOptions: OptionsType = [
  * @description 列表数据转表单数据
  * Convert list data to form data
  */
-export function listDataToFormData(listData: HandingBusinessListItem): HandingBusinessFormVO {
+export function handingBusinessListDataToFormData(listData: HandingBusinessListItem): HandingBusinessFormVO {
 	return {
 		feeItem: listData.feeItem,
 		feeId: listData.feeId,
