@@ -1,9 +1,10 @@
-/**
- * 车位结构图表单类型定义
- * 此文件将由其他子代理完成表单类型的详细实现
- */
+import { type Mode } from "@/composables/use-mode";
 
-export interface 车位结构图表单_VO {
+/**
+ * 车位结构图表单数据类型
+ * Parking space structure diagram form VO
+ */
+export interface ParkingSpaceStructureDiagramFormVO {
 	/** 车位编号 */
 	parkingSpaceNumber: string;
 	/** 车位类型 */
@@ -42,13 +43,8 @@ export interface 车位结构图表单_VO {
 	remark: string;
 }
 
-export interface ParkingSpaceStructureDiagramFormProps {
-	form: 车位结构图表单_VO;
-	defaultValues: 车位结构图表单_VO;
-	mode?: string;
-}
-
-export const defaultForm: 车位结构图表单_VO = {
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: ParkingSpaceStructureDiagramFormVO = {
 	parkingSpaceNumber: "",
 	parkingSpaceType: "",
 	parkingSpaceLocation: "",
@@ -68,3 +64,16 @@ export const defaultForm: 车位结构图表单_VO = {
 	chargingPilePower: "",
 	remark: "",
 };
+
+/**
+ * 车位结构图表单 Props
+ * Parking space structure diagram form props
+ */
+export interface ParkingSpaceStructureDiagramFormProps {
+	/** 表单数据 */
+	form: ParkingSpaceStructureDiagramFormVO;
+	/** 表单组件重置时默认使用的对象 */
+	defaultValues: ParkingSpaceStructureDiagramFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
+}

@@ -23,4 +23,6 @@ export interface MandatoryReturnIssueFormProps {
 	form: MandatoryReturnIssueFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: MandatoryReturnIssueFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

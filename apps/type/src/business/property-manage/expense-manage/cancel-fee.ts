@@ -58,3 +58,22 @@ export const cancelFeeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * 取消费用表单数据类型
+ * Cancel fee form VO
+ */
+export interface CancelFeeFormVO {
+	/** 批次号 Batch number */
+	batchNumber: string;
+	/** 员工 Employee */
+	employee: string;
+	/** 时间 Time */
+	time: string;
+	/** 取消原因 Cancel reason */
+	cancelReason: string;
+	/** 审核状态 Audit status */
+	auditStatus: string;
+	/** 审核意见 Audit opinion */
+	auditOpinion: string;
+}

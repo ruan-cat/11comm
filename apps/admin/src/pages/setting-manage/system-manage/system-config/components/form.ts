@@ -9,6 +9,8 @@ export interface SystemConfigFormProps {
 	form: SystemConfigListItem;
 	/** 默认值 Default values */
 	defaultValues: SystemConfigListItem;
+	/** 表单模式 */
+	mode?: Mode;
 }
 
 /**

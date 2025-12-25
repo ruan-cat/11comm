@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { OwnerMemberFormProps, type OwnerMemberFormVO, defaultForm } from "./form";
+import type { OwnerMemberFormVO } from "@01s-11comm/type";
 import { genderOptions, memberTypeOptions } from "@01s-11comm/type";
+import type { OwnerMemberFormProps } from "./form";
 
 const props = defineProps<OwnerMemberFormProps>();
 

@@ -4,10 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { type OwnerVehicleFormProps } from "./form";
-import type { OwnerVehicleFormVO } from "./form";
+import type { OwnerVehicleFormVO } from "@01s-11comm/type";
 import { vehicleTypeOptions, licensePlateTypeOptions } from "@01s-11comm/type";
+import type { OwnerVehicleFormProps } from "./form";
 
 const props = defineProps<OwnerVehicleFormProps>();
 

@@ -1,7 +1,6 @@
 import type { HouseChargeFormVO } from "@01s-11comm/type";
-import type { Mode } from "@/composables/use-mode";
 
-// ==================== 类型定义 ====================
+export type { HouseChargeFormVO };
 
 /**
  * 费用项设置表单 props
@@ -16,8 +15,6 @@ export interface HouseChargeFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
-
-// ==================== 常量定义 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: HouseChargeFormVO = {

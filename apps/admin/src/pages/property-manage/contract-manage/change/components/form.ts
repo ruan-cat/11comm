@@ -1,35 +1,6 @@
-import type { Mode } from "@/composables/use-mode";
+import type { ContractChangeFormVO, ChangeType } from "@01s-11comm/type";
 
-/** 变更类型选项 */
-const _changeType = ["合同金额", "服务期限", "服务内容", "付款方式", "合同主体"] as const;
-
-/** 变更类型 */
-export type ChangeType = (typeof _changeType)[number];
-
-/** 合同变更表单业务类型 */
-export interface ContractChangeFormVO {
-	contractName: string;
-	contractNumber: string;
-	contractType: string;
-	partyA: string;
-	partyAContact: string;
-	partyAPhone: string;
-	partyB: string;
-	partyBContact: string;
-	partyBPhone: string;
-	handler: string;
-	handlerPhone: string;
-	contractAmount: string;
-	startTime: string;
-	endTime: string;
-	signingTime: string;
-	changeType: ChangeType;
-	changer: string;
-	description: string;
-	beforeChange: string;
-	afterChange: string;
-	attachments?: any[];
-}
+export type { ContractChangeFormVO, ChangeType };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ContractChangeFormVO = {
@@ -66,4 +37,6 @@ export interface ContractChangeFormProps {
 	form: ContractChangeFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: ContractChangeFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

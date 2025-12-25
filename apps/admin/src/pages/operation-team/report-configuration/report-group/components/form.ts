@@ -1,4 +1,4 @@
-import type { Mode } from "@/composables/use-mode";
+import { type Mode } from "@/composables/use-mode";
 
 const REPORT_GROUP_TYPES = ["groupName", "groupUrl", "description"] as const;
 

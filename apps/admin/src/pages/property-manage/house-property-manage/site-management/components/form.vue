@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { SiteManagementFormProps, SiteManagementFormVO, siteManagementStatusOptions } from "./form";
+import type { SiteManagementFormVO } from "@01s-11comm/type";
+import { siteManagementStatusOptions } from "@01s-11comm/type";
+import type { SiteManagementFormProps } from "./form";
 
 const props = defineProps<SiteManagementFormProps>();
 

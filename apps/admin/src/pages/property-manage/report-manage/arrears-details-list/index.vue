@@ -16,11 +16,10 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type {
 	ArrearsDetailsFormVO,
-	ArrearsDetailsFormProps,
 	ArrearsDetailsListItem,
 	ArrearsDetailsListQueryParams,
 } from "@01s-11comm/type";
-import { defaultArrearsDetailsForm } from "@01s-11comm/type";
+import { type ArrearsDetailsFormProps, defaultForm as defaultArrearsDetailsForm } from "./components/form";
 import ArrearsDetailsForm from "./components/form.vue";
 import { useArrearsDetailsListQuery } from "@/api/property-manage/report-manage/arrears-details-list";
 

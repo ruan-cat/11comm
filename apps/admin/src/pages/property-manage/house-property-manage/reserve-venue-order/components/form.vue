@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { ReserveVenueOrderFormProps, ReserveVenueOrderFormVO, reservedVenueOptions, reserveVenueOrderStatusOptions } from "./form";
+import type { ReserveVenueOrderFormVO } from "@01s-11comm/type";
+import { reservedVenueOptions, reserveVenueOrderStatusOptions } from "@01s-11comm/type";
+import type { ReserveVenueOrderFormProps } from "./form";
 
 const props = defineProps<ReserveVenueOrderFormProps>();
 

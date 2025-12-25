@@ -39,4 +39,6 @@ export interface OrganizationInfoFormProps {
 	form: OrganizationInfoFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: OrganizationInfoFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

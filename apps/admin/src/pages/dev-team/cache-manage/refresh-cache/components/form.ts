@@ -3,8 +3,7 @@
  * @description Refresh cache form types
  */
 
-import type { Mode } from "@/composables/use-mode";
-import { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /**
  * 刷新缓存表单数据类型
@@ -53,6 +52,3 @@ export interface RefreshCacheFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-/** 导出选项供表单使用 Export options for form use */
-export { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions };

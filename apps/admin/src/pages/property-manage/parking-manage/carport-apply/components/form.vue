@@ -4,9 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { CarportApplyFormProps, CarportApplyFormVO } from "./form";
+import type { CarportApplyFormVO } from "@01s-11comm/type";
 import { carBrandOptions, vehicleTypeOptions, vehicleColorOptions, auditStatusOptions } from "@01s-11comm/type";
+import type { CarportApplyFormProps } from "./form";
 
 const props = defineProps<CarportApplyFormProps>();
 

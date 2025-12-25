@@ -26,6 +26,8 @@ export interface UnitAuthFormProps {
 	form: UnitSelectionFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: UnitSelectionFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
 
 /** 楼栋单元选择列表数据 */

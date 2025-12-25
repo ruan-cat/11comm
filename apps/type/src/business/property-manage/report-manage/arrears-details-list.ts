@@ -82,17 +82,6 @@ export interface ArrearsDetailsFormVO {
 	arrearsAmount: string;
 }
 
-// TODO: 不允许将弹框的表单类型 迁移到@01s-11comm/type中
-/**
- * 欠费明细表单 Props
- * Arrears details form props
- */
-export interface ArrearsDetailsFormProps {
-	/** 表单数据 Form data */
-	form: ArrearsDetailsFormVO;
-	/** 默认值 Default values */
-	defaultValues: ArrearsDetailsFormVO;
-}
 
 // ==================== 选项定义 ====================
 

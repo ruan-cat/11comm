@@ -36,4 +36,6 @@ export interface SchedulingSettingFormProps {
 	form: SchedulingSettingFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: SchedulingSettingFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

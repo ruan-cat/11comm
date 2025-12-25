@@ -1,18 +1,7 @@
-import { type IsAuditType, auditTypeOptions } from "@01s-11comm/type";
+import type { ContractTypeFormVO, IsAuditType, auditTypeOptions } from "@01s-11comm/type";
 
-/**
- * 合同类型表单数据类型
- */
-export interface ContractTypeFormVO {
-	/** 类型名称 */
-	typeName: string;
-	/** 是否审核 */
-	isAudit: IsAuditType;
-	/** 描述 */
-	description: string;
-}
-
-// ==================== 常量定义 ====================
+export type { ContractTypeFormVO, IsAuditType };
+export { auditTypeOptions };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ContractTypeFormVO = {
@@ -20,8 +9,6 @@ export const defaultForm: ContractTypeFormVO = {
 	isAudit: "yes",
 	description: "",
 };
-
-// ==================== Props 类型定义 ====================
 
 /**
  * 合同类型表单 props
@@ -33,6 +20,6 @@ export interface AddFormProps {
 	form: ContractTypeFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: ContractTypeFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
-
-export { IsAuditType, auditTypeOptions };

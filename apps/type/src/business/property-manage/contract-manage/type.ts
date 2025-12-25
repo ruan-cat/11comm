@@ -63,3 +63,16 @@ export const auditTypeOptions: OptionsType = [
 	{ label: "是", value: "yes" },
 	{ label: "否", value: "no" },
 ];
+
+/**
+ * 合同类型表单数据类型
+ * Contract type form VO
+ */
+export interface ContractTypeFormVO {
+	/** 类型名称 Type name */
+	typeName: string;
+	/** 是否审核 Is audit */
+	isAudit: IsAuditType;
+	/** 描述 Description */
+	description: string;
+}

@@ -17,4 +17,6 @@ export interface PatrolItemFormProps {
 	form: PatrolItemFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: PatrolItemFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

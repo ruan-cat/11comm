@@ -88,3 +88,59 @@ export const expiredContractHandlingStatusOptions: OptionsType = [
  */
 export const expiredContractTypeOptions = contractTypeOptions;
 
+/**
+ * 到期处理类型
+ * Processing type
+ */
+export type ProcessingType = "续签" | "终止";
+
+/**
+ * 合同类型
+ * Contract type
+ */
+export type ContractType = "采购合同" | "销售合同" | "服务合同" | "租赁合同" | "劳务合同" | "技术合同";
+
+/**
+ * 合同到期表单接口
+ * Contract expire form VO
+ */
+export interface ContractExpireFormVO {
+	/** 合同名称 Contract name */
+	contractName: string;
+	/** 合同编号 Contract number */
+	contractNumber: string;
+	/** 合同类型 Contract type */
+	contractType: ContractType;
+	/** 甲方 Party A */
+	partyA: string;
+	/** 甲方联系人 Party A contact */
+	partyAContact: string;
+	/** 甲方电话 Party A phone */
+	partyAPhone: string;
+	/** 乙方 Party B */
+	partyB: string;
+	/** 乙方联系人 Party B contact */
+	partyBContact: string;
+	/** 乙方电话 Party B phone */
+	partyBPhone: string;
+	/** 经办人 Handler */
+	handler: string;
+	/** 经办人电话 Handler phone */
+	handlerPhone: string;
+	/** 合同金额 Contract amount */
+	contractAmount: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 签订时间 Signing time */
+	signingTime: string;
+	/** 到期处理类型 Processing type */
+	processingType: ProcessingType;
+	/** 处理人 Processor */
+	processor: string;
+	/** 说明 Description */
+	description: string;
+	/** 附件 Attachments */
+	attachments?: any[];
+}

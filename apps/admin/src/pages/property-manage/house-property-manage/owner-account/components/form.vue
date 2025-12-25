@@ -2,7 +2,8 @@
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
 import type { OwnerAccountFormVO } from "@01s-11comm/type";
-import { type OwnerAccountFormProps, accountTypeOptions, paymentMethodOptions } from "./form";
+import { accountTypeOptions, paymentMethodOptions } from "@01s-11comm/type";
+import type { OwnerAccountFormProps } from "./form";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();

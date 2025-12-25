@@ -1,5 +1,5 @@
-import type { Mode } from "@/composables/use-mode";
 import type { OptionsType } from "plus-pro-components";
+import { type Mode } from "@/composables/use-mode";
 
 // ==================== 表单类型 ====================
 

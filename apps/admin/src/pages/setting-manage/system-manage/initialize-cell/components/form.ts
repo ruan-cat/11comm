@@ -1,9 +1,4 @@
-import type { OptionsType } from "plus-pro-components";
 import type { InitializeCommunityFormVO } from "@01s-11comm/type";
-import { auditStatusOptions } from "@01s-11comm/type";
-
-/** 状态选项 - 从类型项目导入的审核状态选项 */
-export const statusOptions = auditStatusOptions;
 
 
 /**
@@ -28,4 +23,6 @@ export interface InitializeCommunityFormProps {
 	form: InitializeCommunityFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: InitializeCommunityFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

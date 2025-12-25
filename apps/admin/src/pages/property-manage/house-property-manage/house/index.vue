@@ -11,10 +11,10 @@ definePage({
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type HouseManageFormProps, defaultForm, HouseManagementFormVO } from "./components/form";
-import HouseManageForm from "./components/form.vue";
-import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type";
+import type { HouseManagementFormVO, HouseListItem, HouseQueryParams } from "@01s-11comm/type";
 import { buildingUnitOptions, houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
+import { type HouseManageFormProps, defaultForm } from "./components/form";
+import HouseManageForm from "./components/form.vue";
 import { useHouseListQuery } from "@/api/property-manage/house-property-manage/house";
 
 const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>(null);

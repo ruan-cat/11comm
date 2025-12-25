@@ -1,6 +1,15 @@
 import type { PatrolDetailFormVO } from "@01s-11comm/type";
-import { patrolMethodOptions } from "@01s-11comm/type";
-import { type Mode } from "@/composables/use-mode";
+
+/** 默认表单 @description 对外导出用于其他场景使用 */
+export const defaultForm: PatrolDetailFormVO = {
+	patrolPointName: "",
+	patrolPlanName: "",
+	patrolRouteName: "",
+	plannedPatrolPerson: "",
+	patrolMethod: "walking",
+	location: "",
+	patrolSituation: "",
+};
 
 /**
  * 巡查明细表单 props
@@ -15,15 +24,4 @@ export interface PatrolDetailFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: PatrolDetailFormVO = {
-	patrolPointName: "",
-	patrolPlanName: "",
-	patrolRouteName: "",
-	plannedPatrolPerson: "",
-	patrolMethod: "walking",
-	location: "",
-	patrolSituation: "",
-};
 

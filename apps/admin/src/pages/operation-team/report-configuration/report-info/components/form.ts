@@ -1,4 +1,4 @@
-import type { Mode } from "@/composables/use-mode";
+import { type Mode } from "@/composables/use-mode";
 
 const REPORT_TYPES = ["reportGroup", "optionTitle", "sort", "description"] as const;
 

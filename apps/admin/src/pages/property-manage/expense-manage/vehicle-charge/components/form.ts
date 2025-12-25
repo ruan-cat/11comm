@@ -1,5 +1,6 @@
 import type { VehicleChargeFormVO } from "@01s-11comm/type";
-import { parkingSpaceStatusOptions } from "@01s-11comm/type";
+
+export type { VehicleChargeFormVO };
 
 /**
  * 车辆收费表单 props
@@ -11,6 +12,8 @@ export interface VehicleChargeFormProps {
 	form: VehicleChargeFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: VehicleChargeFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
 
 /** 默认表单数据 */

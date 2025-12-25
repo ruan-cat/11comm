@@ -3,9 +3,8 @@
  * @description Menu group form types
  */
 
-import type { Mode } from "@/composables/use-mode";
-import { menuGroupStatusOptions } from "@01s-11comm/type";
 import type { OptionsType } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /**
  * 菜单组表单数据类型
@@ -103,6 +102,3 @@ export const iconOptions: OptionsType = [
 	{ label: "帮助", value: "mdi:help-circle" },
 	{ label: "通知", value: "mdi:bell" },
 ];
-
-/** 导出状态选项 Export status options */
-export { menuGroupStatusOptions };

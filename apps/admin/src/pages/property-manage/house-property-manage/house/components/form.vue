@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import { type HouseManageFormProps, HouseManagementFormVO, houseTypeOptions, houseStatusOptions } from "./form";
+import type { HouseManagementFormVO } from "@01s-11comm/type";
+import { houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
+import type { HouseManageFormProps } from "./form";
 import type { FieldValues } from "plus-pro-components";
 
 const props = defineProps<HouseManageFormProps>();

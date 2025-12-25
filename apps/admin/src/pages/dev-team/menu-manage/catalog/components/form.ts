@@ -1,6 +1,5 @@
-import type { Mode } from "@/composables/use-mode";
 import type { MenuCatalogFormData } from "@01s-11comm/type";
-import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /** 默认表单 Default form */
 export const defaultForm: MenuCatalogFormData = {
@@ -26,6 +25,3 @@ export interface CatalogFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-export type { MenuCatalogFormData };
-export { groupTypeOptions, storeTypeOptions };

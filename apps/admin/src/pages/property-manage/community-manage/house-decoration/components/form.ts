@@ -1,5 +1,4 @@
-import type { Mode } from "@/composables/use-mode";
-import { decorationStatusOptions, delayStatusOptions } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 // ==================== 联合类型定义 ====================
 

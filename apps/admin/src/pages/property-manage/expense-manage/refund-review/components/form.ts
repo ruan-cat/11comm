@@ -1,5 +1,7 @@
 import type { RefundReviewFormVO } from "@01s-11comm/type";
 
+export type { RefundReviewFormVO };
+
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: RefundReviewFormVO = {
 	refundOrderNumber: "",
@@ -26,4 +28,6 @@ export interface RefundReviewFormProps {
 	form: RefundReviewFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: RefundReviewFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }

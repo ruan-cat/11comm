@@ -1,18 +1,5 @@
-import type { Mode } from "@/composables/use-mode";
 import type { SettingCommunityConfigFormVO } from "@01s-11comm/type";
-
-/** 小区配置表单数据类型 */
-export { SettingCommunityConfigFormVO };
-
-// ==================== Options 导出 ====================
-
-import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
-
-/** settingTypeOptions */
-export { settingTypeOptions };
-
-/** communityConfigStatusOptions */
-export { communityConfigStatusOptions };
+import { type Mode } from "@/composables/use-mode";
 
 // ==================== 默认表单 ====================
 

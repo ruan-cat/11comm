@@ -1,17 +1,5 @@
-import type { Mode } from "@/composables/use-mode";
-import type { CommunityInformation } from "@01s-11comm/type";
-
-/**
- * 小区信息表单数据类型
- */
-export interface CommunityInformationFormVO extends Partial<CommunityInformation> {
-	communityName: string;
-	communityCode: string;
-	region: string;
-	address: string;
-	propertyCompany: string;
-	status: string;
-}
+import type { CommunityInformationFormVO } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /**
  * 小区信息表单 props
@@ -37,4 +25,22 @@ export const defaultForm: CommunityInformationFormVO = {
 	address: "",
 	propertyCompany: "",
 	status: "",
+	cityCode: "",
+	landArea: 0,
+	buildingArea: 0,
+	buildingCount: 0,
+	unitCount: 0,
+	houseCount: 0,
+	parkingCount: 0,
+	greenRate: 0,
+	plotRatio: 0,
+	developer: "",
+	establishedTime: "",
+	contactPhone: "",
+	province: "",
+	city: "",
+	district: "",
+	detailedAddress: "",
+	nearbyLandmark: "",
+	administrator: "",
 };

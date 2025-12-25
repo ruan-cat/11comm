@@ -1,6 +1,6 @@
 import type { OptionsType } from "plus-pro-components";
-import type { Mode } from "@/composables/use-mode";
 import type { MerchantAdminFormVO } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 // TODO: 迁移到 type 项目内
 /** 物业公司选项 */

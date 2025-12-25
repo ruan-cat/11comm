@@ -21,4 +21,6 @@ export interface PatrolPathFormProps {
 	form: PatrolPathFormData;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: PatrolPathFormData;
+	/** 表单模式 */
+	mode?: Mode;
 }

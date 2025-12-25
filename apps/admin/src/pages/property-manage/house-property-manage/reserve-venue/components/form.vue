@@ -4,9 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
-
-import { type ReserveVenueFormProps, ReserveVenueFormVO } from "./form";
-import { venueTypeOptions, reservationStatusOptions } from "./form";
+import type { ReserveVenueFormVO } from "@01s-11comm/type";
+import { venueTypeOptions, reservationStatusOptions } from "@01s-11comm/type";
+import type { ReserveVenueFormProps } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;

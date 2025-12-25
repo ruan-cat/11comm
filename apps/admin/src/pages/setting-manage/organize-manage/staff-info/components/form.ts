@@ -16,6 +16,8 @@ export interface StaffInfoFormVO extends Partial<StaffInfo> {
 export interface StaffInfoFormProps {
 	form: StaffInfoFormVO;
 	defaultValues: StaffInfoFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
 
 /** 默认表单数据 */

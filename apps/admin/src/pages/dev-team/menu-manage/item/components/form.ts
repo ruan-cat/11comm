@@ -3,13 +3,8 @@
  * @description Menu item form types
  */
 
-import type { Mode } from "@/composables/use-mode";
 import type { MenuItemFormVO } from "@01s-11comm/type";
-import {
-	menuTypeOptions,
-	menuItemStatusOptions,
-	booleanOptions,
-} from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: MenuItemFormVO = {
@@ -41,6 +36,3 @@ export interface MenuItemFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-/** 导出选项供表单使用 Export options for form use */
-export { menuTypeOptions, menuItemStatusOptions, booleanOptions };

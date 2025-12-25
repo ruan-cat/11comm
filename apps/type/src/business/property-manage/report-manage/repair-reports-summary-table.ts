@@ -97,7 +97,7 @@ export const summaryRepairStatusOptions: OptionsType = [
  * 报修汇总表表单数据
  * Repair reports summary table form data
  */
-export interface RepairReportsSummaryTableFormData extends Record<string, any> {
+export interface RepairReportsSummaryTableFormVO {
 	/** 报修类型 Repair type */
 	repairType?: string;
 	/** 报修状态 Repair status */
@@ -110,17 +110,4 @@ export interface RepairReportsSummaryTableFormData extends Record<string, any> {
 	statisticsStartTime?: string;
 	/** 统计结束时间 Statistics end time */
 	statisticsEndTime?: string;
-}
-
-/**
- * 报修汇总表表单属性
- * Repair reports summary table form props
- */
-export interface RepairReportsSummaryTableFormProps {
-	/** 表单数据 Form data */
-	form: RepairReportsSummaryTableFormData;
-	/** 表单组件重置时默认使用的对象 Default object used when form component is reset */
-	defaultValues: RepairReportsSummaryTableFormData;
-	/** 表单模式 Form mode */
-	mode?: "add" | "edit" | "info";
 }

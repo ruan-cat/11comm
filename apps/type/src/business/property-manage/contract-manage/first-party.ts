@@ -69,3 +69,26 @@ export const firstPartyStatusOptions: OptionsType = [
  * Contract first-party type options (using common contract type options)
  */
 export const contractFirstPartyTypeOptions = contractTypeOptions;
+
+/**
+ * 合同甲方表单数据结构定义
+ * Contract first party form VO
+ */
+export interface FirstPartyFormVO {
+	/** 甲方名称 Party A */
+	partyA: string;
+	/** 甲方联系人 Contact person */
+	contactPerson: string;
+	/** 联系电话 Contact phone */
+	contactPhone: string;
+	/** 地址 Address */
+	address: string;
+	/** 统一社会信用代码 Credit code */
+	creditCode: string;
+	/** 成立日期 Establishment date */
+	establishmentDate: string;
+	/** 法定代表人 Legal representative */
+	legalRepresentative: string;
+	/** 经营范围 Business scope */
+	businessScope: string;
+}

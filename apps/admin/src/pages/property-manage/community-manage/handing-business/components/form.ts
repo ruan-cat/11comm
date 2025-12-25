@@ -1,5 +1,5 @@
-import type { HandingBusinessListItem, HandingBusinessFormVO } from "@01s-11comm/type";
-import { feeTypeOptions, handlingStatusOptions } from "@01s-11comm/type";
+import type { HandingBusinessFormVO } from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /**
  * 业务受理表单 props
@@ -11,6 +11,8 @@ export interface HandingBusinessFormProps {
 	form: HandingBusinessFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: HandingBusinessFormVO;
+	/** 表单模式 Form mode */
+	mode?: Mode;
 }
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
@@ -24,20 +26,3 @@ export const defaultForm: HandingBusinessFormVO = {
 	description: "",
 	status: "待缴费",
 };
-
-/** 从列表数据转换为表单数据的辅助函数 */
-export function listDataToFormData(listData: HandingBusinessListItem): HandingBusinessFormVO {
-	return {
-		feeItem: listData.feeItem,
-		feeId: listData.feeId,
-		feeType: listData.feeType,
-		amountReceivable: listData.amountReceivable,
-		accountCreationTime: listData.accountCreationTime,
-		receivablePeriod: listData.receivablePeriod,
-		description: listData.description,
-		status: listData.status,
-	};
-}
-
-/** 导出选项供其他文件使用 */
-export { feeTypeOptions, handlingStatusOptions };

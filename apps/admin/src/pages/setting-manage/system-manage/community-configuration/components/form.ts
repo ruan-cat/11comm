@@ -26,5 +26,7 @@ export interface CommunityConfigurationFormProps {
 	form: SettingCommunityConfigFormVO;
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: SettingCommunityConfigFormVO;
+	/** 表单模式 */
+	mode?: Mode;
 }
 

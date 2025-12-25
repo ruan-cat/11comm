@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { CarportInfoFormProps, CarportInfoFormVO } from "./form";
+import type { CarportInfoFormVO } from "@01s-11comm/type";
 import { parkingLotOptions, parkingSpaceStatusOptions, parkingSpaceTypeOptions } from "@01s-11comm/type";
+import type { CarportInfoFormProps } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<CarportInfoFormProps>();

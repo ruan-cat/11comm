@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { ParkingLotFormProps } from "./form";
-import type { ParkingLotFormVO } from "./form";
+import type { ParkingLotFormVO } from "@01s-11comm/type";
 import { parkingLotTypeOptions, parkingSpaceTypeOptions } from "@01s-11comm/type";
+import type { ParkingLotFormProps } from "./form";
 
 const props = defineProps<ParkingLotFormProps>();
 

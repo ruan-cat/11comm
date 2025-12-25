@@ -3,13 +3,7 @@
  * @description Dictionary type form types
  */
 
-import type { Mode } from "@/composables/use-mode";
-import {
-	dictionaryTypeStatusOptions,
-	dictionaryCategoryOptions,
-	dataTypeOptions,
-	requiredOptions,
-} from "@01s-11comm/type";
+import { type Mode } from "@/composables/use-mode";
 
 /**
  * 字典类型表单数据类型
@@ -67,6 +61,3 @@ export interface DictionaryTypeFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
-
-/** 导出选项供表单使用 Export options for form use */
-export { dictionaryTypeStatusOptions, dictionaryCategoryOptions, dataTypeOptions, requiredOptions };

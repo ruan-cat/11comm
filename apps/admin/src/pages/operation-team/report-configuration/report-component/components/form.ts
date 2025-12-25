@@ -1,4 +1,4 @@
-import type { Mode } from "@/composables/use-mode";
+import { type Mode } from "@/composables/use-mode";
 
 const REPORT_COMPONENT_TYPES = ["componentName", "componentType", "queryMethod", "sql", "java", "description"] as const;
 
