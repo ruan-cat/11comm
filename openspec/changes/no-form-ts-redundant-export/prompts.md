@@ -10,7 +10,7 @@
 
 1. **全局核心规范**：`apps\admin\src\docs\prompts\各种杂项\no-form-ts-redundant-export` 目录下面的全部文件
 2. **类型安全规范**：`.claude\agents\fix-type-error.md`（严禁出现任何隐式 Any 或类型断言错误）
-3. **具体业务规格**：`openspec\changes\no-form-ts-redundant-export\specs` 目录下的所有文件。
+3. **具体业务规格**：`openspec\changes\no-form-ts-redundant-export` 目录下的所有文件。
 
 ---
 
