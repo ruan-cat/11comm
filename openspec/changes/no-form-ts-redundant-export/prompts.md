@@ -1,4 +1,6 @@
-<!-- TODO: 多次复用提示词 未完成 -->
+<!-- TODO: 多次复用提示词 未完成
+	用 kiro 执行差不多了 需要用gemini复查一下。复查差不多了就归档结束
+-->
 
 /openspec:apply 执行 `no-form-ts-redundant-export` 任务
 
