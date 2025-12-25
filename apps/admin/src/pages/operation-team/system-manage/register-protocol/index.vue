@@ -13,6 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type OperationTeamRegisterProtocol,
 	type OperationTeamRegisterProtocolListQuery,
+	type RegisterProtocolFormVO,
 	protocolTypeOptions,
 	operationRegisterProtocolEnabledOptions,
 	isMandatoryOptions,
@@ -21,8 +22,6 @@ import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage
 import {
 	type RegisterProtocolFormProps,
 	defaultForm,
-	type RegisterProtocolFormVO,
-	type RegisterProtocolFormVO as RegisterProtocolFormVOType,
 } from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";

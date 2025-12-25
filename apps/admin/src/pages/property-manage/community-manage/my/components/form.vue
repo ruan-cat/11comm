@@ -4,8 +4,10 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { CommunityManageMyFormVO } from "@01s-11comm/type";
+import { provinceOptions, communityStatusOptions } from "@01s-11comm/type";
 
-import { CommunityManageMyFormProps, CommunityManageMyFormVO, provinceOptions, communityStatusOptions } from "./form";
+import { CommunityManageMyFormProps } from "./form";
 
 const props = defineProps<CommunityManageMyFormProps>();
 

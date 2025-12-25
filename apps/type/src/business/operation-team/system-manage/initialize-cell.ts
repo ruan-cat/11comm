@@ -116,3 +116,50 @@ export interface InitializeCell extends InitializeCellListItem {}
  * @deprecated 请使用 InitializeCellQueryParams
  */
 export interface InitializeCellListQuery extends InitializeCellQueryParams {}
+
+/**
+ * 初始化小区表单VO
+ * Initialize cell form VO
+ */
+export interface InitializeCellFormVO {
+	/** 小区ID */
+	id?: string;
+	/** 单元格ID */
+	cellId?: string;
+	/** 单元格类型 */
+	cellType: string;
+	/** 小区名称 */
+	cellName: string;
+	/** 小区编码 */
+	cellCode: string;
+	/** 所属区域 */
+	region: string;
+	/** 详细地址 */
+	address: string;
+	/** 建筑面积 */
+	buildingArea: number;
+	/** 占地面积 */
+	landArea: number;
+	/** 楼栋数量 */
+	buildingCount: number;
+	/** 单元数量 */
+	unitCount: number;
+	/** 户数 */
+	houseCount: number;
+	/** 车位数量 */
+	parkingCount: number;
+	/** 绿化率 */
+	greenRate: number;
+	/** 容积率 */
+	plotRatio: number;
+	/** 开发商 */
+	developer: string;
+	/** 物业公司 */
+	propertyCompany: string;
+	/** 成立时间 */
+	establishedTime: string;
+	/** 初始化状态 */
+	status: string;
+	/** 描述 */
+	description?: string;
+}

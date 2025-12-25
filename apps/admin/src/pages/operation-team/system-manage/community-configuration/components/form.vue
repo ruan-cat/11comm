@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
+import type { SettingCommunityConfigFormVO } from "@01s-11comm/type";
+import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
+
 import { CommunityConfigurationFormProps, defaultForm } from "./form";
-import { CommunityConfigFormVO, settingTypeOptions, communityConfigStatusOptions } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<CommunityConfigurationFormProps>();

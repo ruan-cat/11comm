@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { type CommunityInformationFormProps, type CommunityInformationFormVO } from "./form";
+import type { CommunityInformationFormVO } from "@01s-11comm/type";
+
+import { type CommunityInformationFormProps } from "./form";
 
 /** 表单组件 props */
 const props = defineProps<CommunityInformationFormProps>();

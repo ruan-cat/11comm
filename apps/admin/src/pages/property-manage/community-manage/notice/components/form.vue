@@ -7,13 +7,12 @@
 import { ref, computed, watch, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
+import type { CommunityNoticeFormVO } from "@01s-11comm/type";
+import { noticeTypeOptions, noticeStatusOptions } from "@01s-11comm/type";
 
 import {
 	CommunityNoticeFormProps,
-	CommunityNoticeFormVO,
 	defaultForm,
-	noticeTypeOptions,
-	noticeStatusOptions,
 } from "./form";
 
 const props = defineProps<CommunityNoticeFormProps>();

@@ -13,8 +13,9 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { useI18n } from "vue-i18n";
 import { transformI18n } from "@/plugins/i18n";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
+import { noticeTypeOptions } from "@01s-11comm/type";
 import { useCommunityNoticeListQuery } from "@/api/property-manage/community-manage/notice";
-import { type CommunityNoticeFormProps, defaultForm, listDataToFormData, noticeTypeOptions } from "./components/form";
+import { type CommunityNoticeFormProps, defaultForm } from "./components/form";
 import CommunityNoticeForm from "./components/form.vue";
 
 const { t } = useI18n();

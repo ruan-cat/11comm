@@ -11,15 +11,16 @@ import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type FirstPartyFormProps, defaultForm, type FirstPartyFormVO } from "./components/form";
-import FirstPartyForm from "./components/form.vue";
-import { useFirstPartyListQuery } from "@/api/property-manage/contract-manage/first-party";
 import {
+	type FirstPartyFormVO,
 	type FirstPartyListItem,
 	type FirstPartyQueryParams,
 	contractFirstPartyTypeOptions,
 	firstPartyStatusOptions,
 } from "@01s-11comm/type";
+import { type FirstPartyFormProps, defaultForm } from "./components/form";
+import FirstPartyForm from "./components/form.vue";
+import { useFirstPartyListQuery } from "@/api/property-manage/contract-manage/first-party";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";

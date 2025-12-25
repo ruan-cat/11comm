@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
+import type { InitializeCellFormVO } from "@01s-11comm/type";
+import { cellTypeOptions, initializeCellStatusOptions } from "@01s-11comm/type";
+
 import {
 	InitializeCellFormProps,
 	defaultForm,
-	type InitializeCellFormVO,
-	cellTypeOptions,
-	initializeCellStatusOptions,
 } from "./form";
 
 /** 表单组件的 props */

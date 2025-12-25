@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useTemplateRef } from "vue";
+import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
+import { buildingStructureOptions, buildingStatusOptions } from "@01s-11comm/type";
+
 import {
 	BuildingSpaceStructureDiagramFormProps,
-	buildingStructureOptions,
-	buildingStatusOptions,
-	type BuildingSpaceStructureDiagramFormVO,
 } from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();

@@ -12,11 +12,10 @@ import { ref, computed, onMounted, h } from "vue";
 import { ElTag, ElMessage, ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { CommunityManageMyFormProps, defaultForm, type CommunityManageMyFormVO } from "./components/form";
+import { type MyCommunityListItem, type MyCommunityQueryParams, myStatusOptions, provinceOptions } from "@01s-11comm/type";
+import { CommunityManageMyFormProps, defaultForm } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
 import { useMyListQuery } from "@/api/property-manage/community-manage/my";
-import { provinceOptions } from "./components/form";
-import { type MyCommunityListItem, type MyCommunityQueryParams, myStatusOptions } from "@01s-11comm/type";
 
 /** 表单组件实例 */
 const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);

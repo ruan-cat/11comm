@@ -11,15 +11,16 @@ definePage({
 import { ref, computed, h, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import ContractDraftForm from "./components/form.vue";
-import { type ContractDraftFormVO, type ContractDraftFormProps, defaultForm } from "./components/form";
-import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
 import {
+	type ContractDraftFormVO,
 	type DraftContractListItem,
 	type DraftContractQueryParamsType,
-	contractTypeOptionsData,
+	contractTypeOptions,
 	draftContractStatusOptions,
 } from "@01s-11comm/type";
+import { type ContractDraftFormProps, defaultForm } from "./components/form";
+import ContractDraftForm from "./components/form.vue";
+import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";

@@ -14,11 +14,12 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type CommunityConfigListItem,
 	type CommunityConfigQueryParams,
+	type SettingCommunityConfigFormVO,
 	settingTypeOptions,
 	communityConfigStatusOptions,
 } from "@01s-11comm/type";
 import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/community-configuration";
-import { type CommunityConfigurationFormProps, defaultForm, type SettingCommunityConfigFormVO } from "./components/form";
+import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
 const communityConfigurationFormInstance = ref<InstanceType<typeof CommunityConfigurationForm> | null>(null);

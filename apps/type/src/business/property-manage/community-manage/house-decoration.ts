@@ -82,3 +82,36 @@ export const delayStatusOptions: OptionsType = [
 	{ label: "是", value: "是" },
 	{ label: "否", value: "否" },
 ];
+
+/**
+ * 房屋装修表单VO
+ * House decoration form VO
+ */
+export interface HouseDecorationFormVO {
+	/** 房屋编号 House number */
+	houseNumber: string;
+	/** 联系人姓名 Contact name */
+	contactName: string;
+	/** 联系电话 Contact phone */
+	contactPhone: string;
+	/** 装修时间 Decoration time */
+	decorationTime: string;
+	/** 申请时间 Application time */
+	applicationTime: string;
+	/** 装修单位 Decoration company */
+	decorationCompany: string;
+	/** 负责人电话 Manager phone */
+	managerPhone: string;
+	/** 当前状态 Status */
+	status: string;
+	/** 是否延期 Is delayed */
+	isDelayed: string;
+	/** 延期时间 Delay time */
+	delayTime?: string;
+	/** 是否违规 Is violated */
+	isViolated?: string;
+	/** 违规说明 Violation description */
+	violationDescription?: string;
+	/** 备注信息 Remarks */
+	remarks?: string;
+}

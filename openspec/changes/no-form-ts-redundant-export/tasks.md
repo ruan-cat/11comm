@@ -104,24 +104,26 @@
    - ConfigCenterFormVO
    - DictionaryTypeFormVO
    - RefreshCacheFormVO
+   - InitializeCellFormVO
+   - HouseDecorationFormVO
 5. ✅ 添加了缺失的选项到类型项目：
    - storeOptions
    - iconOptions
-6. ✅ 修复了约 15 个 Vue 文件的导入语句
+6. ✅ 修复了约 30+ 个 Vue 文件的导入语句
 
 ### 进行中
-- 🔄 继续修复 Vue 文件的导入语句（还有约 200+ 个类型错误）
-- 🔄 主要错误类型：
+- 🔄 继续修复 Vue 文件的导入语句（还有约 204 个类型错误）
+- 🔄 主要剩余错误类型：
   - FormVO 类型从 form.ts 导入改为从 @01s-11comm/type 导入
   - 选项从 form.ts 导入改为从 @01s-11comm/type 导入
   - 工具函数（如 listDataToFormData）需要删除或重构
+  - 部分中文类型名称需要处理
 
 ### 待处理
-- ⏳ 大量 Vue 文件需要调整导入语句（约 200+ 个错误）
-- ⏳ 部分选项可能不存在于类型项目中，需要添加或确认是否应该动态获取
+- ⏳ 约 204 个类型错误需要处理
 - ⏳ 完整的类型检查验证
 
-### 关键发现
-- 大部分 FormVO 类型已经在类型项目中存在
-- 大部分选项已经在类型项目中存在
-- 主要工作是修改 Vue 文件的导入语句
+### 关键进展
+- 错误数量：228 → 208 → 204
+- 类型项目已通过类型检查 ✅
+- 所有 form.ts 文件的冗余导出已清理 ✅

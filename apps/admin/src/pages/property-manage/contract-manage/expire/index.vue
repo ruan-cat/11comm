@@ -12,15 +12,16 @@ import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ContractExpireFormProps, defaultForm, type ContractExpireFormVO } from "./components/form";
-import ContractExpireForm from "./components/form.vue";
-import { useExpireListQuery } from "@/api/property-manage/contract-manage/expire";
 import {
+	type ContractExpireFormVO,
 	type ExpireListItem,
 	type ExpireQueryParams,
 	contractTypeOptions,
 	handlingStatusOptions,
 } from "@01s-11comm/type";
+import { type ContractExpireFormProps, defaultForm } from "./components/form";
+import ContractExpireForm from "./components/form.vue";
+import { useExpireListQuery } from "@/api/property-manage/contract-manage/expire";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
