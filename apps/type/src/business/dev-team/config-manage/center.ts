@@ -78,3 +78,30 @@ export const configStatusOptions: OptionsType = [
 	{ label: "启用", value: "enabled" },
 	{ label: "禁用", value: "disabled" },
 ];
+
+/**
+ * 配置中心表单VO
+ * Configuration center form VO
+ */
+export interface ConfigCenterFormVO {
+	/** 配置项ID Config item ID */
+	configId?: string;
+	/** 配置项名称 Config item name */
+	configName: string;
+	/** 配置类型 Config type */
+	configType: string;
+	/** 配置键名 Config key */
+	configKey: string;
+	/** 配置值 Config value */
+	configValue: string;
+	/** 默认值 Default value */
+	defaultValue: string;
+	/** 配置描述 Config description */
+	configDescription: string;
+	/** 状态 Status */
+	status: string;
+	/** 排序号 Sort order */
+	sortOrder: number;
+	/** 备注 Remark */
+	remark?: string;
+}

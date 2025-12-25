@@ -4,6 +4,7 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
+import type { HouseChargeFormVO } from "@01s-11comm/type";
 import {
 	discountTypeOptions,
 	paymentTypeOptions,
@@ -19,7 +20,6 @@ import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 import {
 	HouseChargeFormProps,
-	HouseChargeFormVO,
 	defaultForm,
 } from "./form";
 

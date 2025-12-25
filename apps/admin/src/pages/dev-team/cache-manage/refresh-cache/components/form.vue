@@ -4,14 +4,12 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { RefreshCacheFormVO } from "@01s-11comm/type";
+import { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions } from "@01s-11comm/type";
 
 import {
 	RefreshCacheFormProps,
-	RefreshCacheFormVO,
 	defaultForm,
-	cacheTypeOptions,
-	refreshPolicyOptions,
-	cacheStatusOptions,
 } from "./form";
 
 const props = defineProps<RefreshCacheFormProps>();

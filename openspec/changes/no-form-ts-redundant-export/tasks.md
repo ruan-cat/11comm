@@ -101,10 +101,27 @@
    - OverduePaymentInformationFormVO
    - RegisterProtocolFormVO  
    - MenuGroupFormVO
+   - ConfigCenterFormVO
+   - DictionaryTypeFormVO
+   - RefreshCacheFormVO
+5. ✅ 添加了缺失的选项到类型项目：
+   - storeOptions
+   - iconOptions
+6. ✅ 修复了约 15 个 Vue 文件的导入语句
 
 ### 进行中
-- 🔄 修复 Vue 文件的导入语句（需要从 `@01s-11comm/type` 导入类型和选项）
+- 🔄 继续修复 Vue 文件的导入语句（还有约 200+ 个类型错误）
+- 🔄 主要错误类型：
+  - FormVO 类型从 form.ts 导入改为从 @01s-11comm/type 导入
+  - 选项从 form.ts 导入改为从 @01s-11comm/type 导入
+  - 工具函数（如 listDataToFormData）需要删除或重构
 
 ### 待处理
-- ⏳ 大量 Vue 文件需要调整导入语句
+- ⏳ 大量 Vue 文件需要调整导入语句（约 200+ 个错误）
+- ⏳ 部分选项可能不存在于类型项目中，需要添加或确认是否应该动态获取
 - ⏳ 完整的类型检查验证
+
+### 关键发现
+- 大部分 FormVO 类型已经在类型项目中存在
+- 大部分选项已经在类型项目中存在
+- 主要工作是修改 Vue 文件的导入语句

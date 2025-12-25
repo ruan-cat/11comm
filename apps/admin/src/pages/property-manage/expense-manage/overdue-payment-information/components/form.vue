@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
+import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
+
 import {
 	OverduePaymentInformationFormProps,
-	chargeObjectOptions,
-	paymentStatusOptions,
-	type OverduePaymentInformationFormVO,
 } from "./form";
 
 /** 表单组件的 props */

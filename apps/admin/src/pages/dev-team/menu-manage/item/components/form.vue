@@ -5,12 +5,11 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import type { MenuItemFormVO } from "@01s-11comm/type";
+import { menuTypeOptions, menuItemStatusOptions, booleanOptions } from "@01s-11comm/type";
+
 import {
 	MenuItemFormProps,
 	defaultForm,
-	menuTypeOptions,
-	menuItemStatusOptions,
-	booleanOptions,
 } from "./form";
 
 const props = defineProps<MenuItemFormProps>();

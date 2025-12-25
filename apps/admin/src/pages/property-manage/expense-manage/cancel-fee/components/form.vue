@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import { CancelFeeFormProps, defaultForm, type CancelFeeFormVO } from "./form";
+import type { CancelFeeFormVO } from "@01s-11comm/type";
 import { auditStatusOptions } from "@01s-11comm/type";
+
+import { CancelFeeFormProps, defaultForm } from "./form";
 
 const props = defineProps<CancelFeeFormProps>();
 

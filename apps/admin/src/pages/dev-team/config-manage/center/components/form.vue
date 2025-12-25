@@ -4,8 +4,10 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { ConfigCenterFormVO } from "@01s-11comm/type";
+import { configTypeOptions, configStatusOptions } from "@01s-11comm/type";
 
-import { ConfigCenterFormProps, ConfigCenterFormVO, defaultForm, configTypeOptions, configStatusOptions } from "./form";
+import { ConfigCenterFormProps, defaultForm } from "./form";
 
 const props = defineProps<ConfigCenterFormProps>();
 

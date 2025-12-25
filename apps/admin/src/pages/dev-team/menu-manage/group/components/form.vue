@@ -5,6 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import type { MenuGroupFormVO } from "@01s-11comm/type";
+import { groupTypeOptions, storeOptions, iconOptions, menuGroupStatusOptions } from "@01s-11comm/type";
 
 import {
 	MenuGroupFormProps,

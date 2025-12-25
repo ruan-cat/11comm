@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import { CatalogFormProps, defaultForm, MenuCatalogFormData, groupTypeOptions, storeTypeOptions } from "./form";
+import type { MenuCatalogFormData } from "@01s-11comm/type";
+import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
+
+import { CatalogFormProps, defaultForm } from "./form";
 
 /** 表单组件的 props Form component props */
 const props = defineProps<CatalogFormProps>();

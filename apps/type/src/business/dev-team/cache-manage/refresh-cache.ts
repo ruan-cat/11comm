@@ -86,3 +86,30 @@ export const cacheStatusOptions: OptionsType = [
     { label: "禁用", value: "disabled" },
     { label: "维护中", value: "maintenance" },
 ];
+
+/**
+ * 刷新缓存表单VO
+ * Refresh cache form VO
+ */
+export interface RefreshCacheFormVO {
+    /** 缓存ID Cache ID */
+    cacheId?: string;
+    /** 缓存编码 Cache code */
+    cacheCode?: string;
+    /** 缓存名称 Cache name */
+    cacheName: string;
+    /** 缓存键名 Cache key */
+    cacheKey: string;
+    /** 缓存类型 Cache type */
+    cacheType: string;
+    /** 缓存分组 Cache group */
+    cacheGroup: string;
+    /** 过期时间（秒） Expire time (seconds) */
+    expireTime: number;
+    /** 缓存描述 Description */
+    description?: string;
+    /** 刷新策略 Refresh policy */
+    refreshPolicy: string;
+    /** 状态 Status */
+    status: string;
+}

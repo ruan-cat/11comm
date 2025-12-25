@@ -4,10 +4,11 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-
-import { MerchantInfoFormProps, merchantTypeOptions, businessStatusOptions } from "./form";
 import type { MerchantInfoFormVO } from "@01s-11comm/type";
+import { merchantTypeOptions, businessStatusOptions } from "@01s-11comm/type";
 import type { PlusColumn } from "plus-pro-components";
+
+import { MerchantInfoFormProps } from "./form";
 
 const props = defineProps<MerchantInfoFormProps>();
 

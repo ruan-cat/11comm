@@ -89,3 +89,26 @@ export const requiredOptions: OptionsType = [
 	{ label: "是", value: "true" },
 	{ label: "否", value: "false" },
 ];
+
+/**
+ * 字典类型表单VO
+ * Dictionary type form VO
+ */
+export interface DictionaryTypeFormVO {
+	/** 字典编号 Dictionary number */
+	dictionaryNumber: string;
+	/** 字典名称 Dictionary name */
+	dictionaryName: string;
+	/** 字典类型 Dictionary type */
+	dictionaryType: string;
+	/** 字典分类 Dictionary category */
+	dictionaryCategory: string;
+	/** 数据类型 Data type */
+	dataType: string;
+	/** 是否必填 Is required */
+	isRequired: string;
+	/** 状态 Status */
+	status: string;
+	/** 备注 Remark */
+	remark?: string;
+}
