@@ -1,8 +1,4 @@
 import type { CommunityNoticeFormVO } from "@01s-11comm/type";
-
-/** 小区公示表单 VO */
-export type { CommunityNoticeFormVO };
-
 import { noticeTypeOptions, noticeStatusOptions } from "@01s-11comm/type";
 
 /**

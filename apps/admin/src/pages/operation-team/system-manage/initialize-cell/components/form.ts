@@ -1,6 +1,6 @@
 import type { Mode } from "@/composables/use-mode";
 import type { OptionsType } from "plus-pro-components";
-export { cellTypeOptions, initializeCellStatusOptions, statusOptions } from "@01s-11comm/type";
+import { cellTypeOptions, initializeCellStatusOptions, statusOptions } from "@01s-11comm/type";
 
 // ==================== 联合类型定义 ====================
 

@@ -37,9 +37,9 @@ export interface MandatoryReturnIssueQueryParams {
 
 /**
  * @description 状态选项
- * Status options
+ * Status options - 强制回单专用
  */
-export const mandatoryReturnIssueStatusOptions: OptionsType = [
+export const mandatoryReturnIssueFormStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];

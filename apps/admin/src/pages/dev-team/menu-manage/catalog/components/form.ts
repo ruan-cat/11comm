@@ -1,8 +1,3 @@
-/**
- * @file 菜单目录表单类型定义
- * @description Menu catalog form types
- */
-
 import type { Mode } from "@/composables/use-mode";
 import type { MenuCatalogFormData } from "@01s-11comm/type";
 import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
@@ -32,6 +27,5 @@ export interface CatalogFormProps {
 	mode?: Mode;
 }
 
-/** 导出选项和类型供表单使用 Export options and types for form use */
-export { groupTypeOptions, storeTypeOptions };
 export type { MenuCatalogFormData };
+export { groupTypeOptions, storeTypeOptions };

@@ -2,9 +2,6 @@ import type { OptionsType } from "plus-pro-components";
 import type { Mode } from "@/composables/use-mode";
 import type { MerchantAdminFormVO } from "@01s-11comm/type";
 
-/** 商户管理员表单 VO */
-export type { MerchantAdminFormVO };
-
 // TODO: 迁移到 type 项目内
 /** 物业公司选项 */
 export const propertyCompanyOptions: OptionsType = [
@@ -43,3 +40,5 @@ export interface MerchantAdminFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
+
+export type { MerchantAdminFormVO };

@@ -1,9 +1,5 @@
 import type { Mode } from "@/composables/use-mode";
 import type { CommunityManageMyFormVO } from "@01s-11comm/type";
-
-/** 我的小区管理表单 VO */
-export type { CommunityManageMyFormVO };
-
 import { provinceOptions, cityOptions, communityStatusOptions } from "@01s-11comm/type";
 
 /**

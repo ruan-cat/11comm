@@ -1,8 +1,6 @@
 import type { DiscountSettingFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
 
-export type { DiscountSettingFormVO };
-
 // ==================== 类型定义 ====================
 
 /**

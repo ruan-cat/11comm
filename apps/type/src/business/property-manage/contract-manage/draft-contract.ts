@@ -42,6 +42,9 @@ export interface DraftContractListItem {
  * @description draft-contract列表查询参数
  * DraftContract list query parameters
  */
+export type DraftContractQueryParamsType = DraftContractQueryParams;
+
+/** DraftContractQueryParams */
 export interface DraftContractQueryParams {
 	/** 合同名称 Contract Name */
 	contractName?: string;

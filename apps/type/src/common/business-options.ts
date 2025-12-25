@@ -6,6 +6,16 @@
 import type { OptionsType } from "./OptionsType";
 
 /**
+ * @description 业务受理状态选项
+ * Handling business status options
+ */
+export const handlingStatusOptions: OptionsType = [
+	{ label: "待缴费", value: "待缴费" },
+	{ label: "已缴费", value: "已缴费" },
+	{ label: "已取消", value: "已取消" },
+];
+
+/**
  * 修改类型选项
  */
 export const changePasswordRecordTypeOptions: OptionsType = [

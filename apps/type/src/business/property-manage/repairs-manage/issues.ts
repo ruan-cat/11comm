@@ -37,9 +37,9 @@ export interface IssuesQueryParams {
 
 /**
  * @description 状态选项
- * Status options
+ * Status options - 工单池专用
  */
-export const issuesStatusOptions: OptionsType = [
+export const repairsIssuesStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];

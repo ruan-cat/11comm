@@ -1,6 +1,5 @@
 import type { OwnerVehicleFormVO } from "@01s-11comm/type";
 import type { Mode } from "@/composables/use-mode";
-export type { OwnerVehicleFormVO };
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: OwnerVehicleFormVO = {

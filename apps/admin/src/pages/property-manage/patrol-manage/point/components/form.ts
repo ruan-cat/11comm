@@ -1,5 +1,4 @@
 import type { PatrolPointFormVO } from "@01s-11comm/type";
-export type { PatrolPointFormVO };
 import type { OptionsType } from "plus-pro-components";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */

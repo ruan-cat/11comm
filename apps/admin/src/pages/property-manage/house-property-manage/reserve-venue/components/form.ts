@@ -1,15 +1,6 @@
 import type { ReserveVenueFormVO } from "@01s-11comm/type";
 import { venueTypeOptions, reservationStatusOptions } from "@01s-11comm/type";
 
-/** ReserveVenueFormVO */
-export type { ReserveVenueFormVO };
-
-/** venueTypeOptions */
-export { venueTypeOptions };
-
-/** reservationStatusOptions */
-export { reservationStatusOptions };
-
 /**
  * 场地预约表单 props
  * @description

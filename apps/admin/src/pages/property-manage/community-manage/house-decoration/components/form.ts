@@ -73,5 +73,3 @@ export interface HouseDecorationFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
-
-export { decorationStatusOptions, delayStatusOptions };

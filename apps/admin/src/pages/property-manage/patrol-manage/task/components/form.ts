@@ -1,5 +1,4 @@
 import type { PatrolTaskFormVO } from "@01s-11comm/type";
-export type { PatrolTaskFormVO };
 import { type Mode } from "@/composables/use-mode";
 
 /**

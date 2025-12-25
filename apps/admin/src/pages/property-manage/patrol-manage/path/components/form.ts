@@ -22,5 +22,3 @@ export interface PatrolPathFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: PatrolPathFormData;
 }
-
-export type { PatrolPathFormData };

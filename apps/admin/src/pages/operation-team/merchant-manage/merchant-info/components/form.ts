@@ -2,9 +2,6 @@ import type { OptionsType } from "plus-pro-components";
 import type { Mode } from "@/composables/use-mode";
 import type { MerchantInfoFormVO, MerchantType, BusinessStatus } from "@01s-11comm/type";
 
-/** 商户信息表单 VO */
-export type { MerchantInfoFormVO, MerchantType, BusinessStatus };
-
 // TODO: 迁移到 type 项目内
 /** 商户类型选项 */
 export const merchantTypeOptions: OptionsType = [
@@ -67,3 +64,6 @@ export interface MerchantInfoFormProps {
 	/** 表单模式 Form mode */
 	mode?: Mode;
 }
+
+export type { MerchantInfoFormVO, MerchantType, BusinessStatus };
+export { merchantTypeOptions, businessStatusOptions };

@@ -10,10 +10,3 @@ export * from "./house-decoration";
 export * from "./my";
 export * from "./parking-space-structure-diagram";
 export * from "./property-register";
-
-// 显式导出选项变量
-export { noticeTypeOptions } from "./notice";
-
-// 导出类型
-export type { PropertyRegisterFormVO } from "./property-register";
-

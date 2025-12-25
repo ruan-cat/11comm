@@ -1,9 +1,6 @@
 import type { VehicleChargeFormVO } from "@01s-11comm/type";
 import { parkingSpaceStatusOptions } from "@01s-11comm/type";
 
-export type { VehicleChargeFormVO };
-export { parkingSpaceStatusOptions };
-
 /**
  * 车辆收费表单 props
  * @description

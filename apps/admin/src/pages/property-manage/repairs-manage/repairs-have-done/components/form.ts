@@ -24,5 +24,3 @@ export interface RepairsHaveDoneFormProps {
 	/** 表单组件重置时默认使用的对象 */
 	defaultValues: RepairsHaveDoneFormVO;
 }
-
-export type { RepairsHaveDoneFormVO };

@@ -59,9 +59,9 @@ export const discountApplyStatusOptions: OptionsType = [
 
 /**
  * @description 申请类型选项
- * Application type options
+ * Application type options - 折扣申请专用
  */
-export const applicationTypeOptions: OptionsType = [
+export const discountApplyApplicationTypeOptions: OptionsType = [
 	{ label: "新申请", value: "新申请" },
 	{ label: "续期申请", value: "续期申请" },
 	{ label: "变更申请", value: "变更申请" },

@@ -1,9 +1,5 @@
 import type { Mode } from "@/composables/use-mode";
 import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
-
-/** 楼栋结构图表单 VO */
-export type { BuildingSpaceStructureDiagramFormVO };
-
 import { buildingStructureOptions, buildingStatusOptions } from "@01s-11comm/type";
 
 /**
