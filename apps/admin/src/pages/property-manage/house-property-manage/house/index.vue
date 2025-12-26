@@ -26,8 +26,8 @@ const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>
  */
 const plusSearchModelRef: FieldValues & Partial<HouseQueryParams> = {
 	houseCode: "",
-	houseStatus: "",
-	houseType: "",
+	houseStatus: undefined,
+	houseType: undefined,
 	buildingUnit: "",
 };
 

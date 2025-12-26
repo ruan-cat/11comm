@@ -28,8 +28,8 @@ const ParkingLotFormInstance = ref<InstanceType<typeof ParkingLotForm> | null>(n
  */
 const plusSearchModelRef: FieldValues & Partial<ParkingLotQueryParams> = {
 	parkingLotNumber: "",
-	parkingLotType: "地下停车场",
-	parkingSpaceType: "标准车位",
+	parkingLotType: "underground",
+	parkingSpaceType: "standard",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */

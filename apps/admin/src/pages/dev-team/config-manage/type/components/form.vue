@@ -12,15 +12,12 @@ import {
 	requiredOptions,
 } from "@01s-11comm/type";
 
-import {
-	DictionaryTypeFormProps,
-	defaultForm,
-} from "./form";
+import { DictionaryTypeFormProps } from "./form";
 
 const props = defineProps<DictionaryTypeFormProps>();
 
 /** 默认的表单重置变量 Default values for form reset */
-const defaultValues = props.defaultValues as FieldValues & DictionaryTypeFormVO;
+const defaultValues = props.defaultValues as unknown as FieldValues & DictionaryTypeFormVO;
 
 /** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -31,7 +28,7 @@ usePlusFormReset(plusFormInstance);
  * 本表单组件实际使用的表单对象
  * @description Actual form object used by this component
  */
-const toRefForm = cloneDeep(props.form) as FieldValues & DictionaryTypeFormVO;
+const toRefForm = cloneDeep(props.form) as unknown as FieldValues & DictionaryTypeFormVO;
 
 /** 表单对象 Form object */
 const form = ref(toRefForm);

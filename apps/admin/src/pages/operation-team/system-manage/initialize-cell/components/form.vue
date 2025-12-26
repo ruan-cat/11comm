@@ -4,16 +4,13 @@ import { useTemplateRef } from "vue";
 import type { InitializeCellFormVO } from "@01s-11comm/type";
 import { cellTypeOptions, initializeCellStatusOptions } from "@01s-11comm/type";
 
-import {
-	InitializeCellFormProps,
-	defaultForm,
-} from "./form";
+import { InitializeCellFormProps } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<InitializeCellFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & InitializeCellFormVO;
+const defaultValues = props.defaultValues as unknown as FieldValues & InitializeCellFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -26,7 +23,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & InitializeCellFormVO;
+const toRefForm = structuredClone(props.form) as unknown as FieldValues & InitializeCellFormVO;
 
 /**
  * 表单对象
