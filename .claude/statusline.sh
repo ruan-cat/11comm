@@ -2,31 +2,37 @@
 
 input=$(cat)
 
-# ---- 颜色 ----
+# ---- 颜色定义 ----
 use_color=1
 [ -n "$NO_COLOR" ] && use_color=0
 
-C() { [ "$use_color" -eq 1 ] && printf '\033[%sm' "$1"; }
-RST() { [ "$use_color" -eq 1 ] && printf '\033[0m'; }
+# 颜色代码
+C_DIR='\033[38;5;117m'      # 目录 - 天蓝色
+C_GIT='\033[38;5;150m'      # Git - 柔和绿
+C_MODEL='\033[38;5;147m'    # 模型 - 浅紫色
+C_VERSION='\033[38;5;249m'  # 版本 - 浅灰色
+C_CTX_GREEN='\033[38;5;158m'  # 上下文充足 - 绿色
+C_CTX_YELLOW='\033[38;5;215m' # 上下文中等 - 黄色
+C_CTX_RED='\033[38;5;203m'    # 上下文不足 - 红色
+C_RESET='\033[0m'
 
-# ---- 提取基本信息 ----
+# ---- 检查 jq 是否可用 ----
 HAS_JQ=0
 command -v jq >/dev/null 2>&1 && HAS_JQ=1
 
+# ---- 提取基本信息 ----
 if [ "$HAS_JQ" -eq 1 ]; then
-  current_dir=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // "unknown"' 2>/dev/null | sed "s|^$HOME|~|g")
+  current_dir=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // "unknown"' 2>/dev/null)
   model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"' 2>/dev/null)
   cc_version=$(echo "$input" | jq -r '.version // ""' 2>/dev/null)
 else
-  current_dir=$(echo "$input" | grep -o '"cwd"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*"cwd"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/' | sed 's|\\\\|/|g' | head -1)
-  [ -z "$current_dir" ] && current_dir="unknown"
-  current_dir=$(echo "$current_dir" | sed "s|^$HOME|~|g")
-
-  model_name=$(echo "$input" | grep -o '"display_name"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*"display_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/' | head -1)
-  [ -z "$model_name" ] && model_name="Claude"
-
-  cc_version=$(echo "$input" | grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+  current_dir="unknown"
+  model_name="Claude"
+  cc_version=""
 fi
+
+# 简化路径显示（将用户主目录替换为~）
+current_dir=$(echo "$current_dir" | sed "s|^$HOME|~|g")
 
 # ---- Git 分支 ----
 git_branch=""
@@ -34,69 +40,61 @@ if git rev-parse --git-dir >/dev/null 2>&1; then
   git_branch=$(git branch --show-current 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
 fi
 
-# ---- 上下文窗口比例 ----
-get_max_context() {
-  case "$1" in
-    *"Opus"*) echo "200000" ;;
-    *"Sonnet"*) echo "200000" ;;
-    *"Haiku 3.5"*|*"haiku 3.5"*) echo "200000" ;;
-    *"Haiku"*|*"haiku"*) echo "100000" ;;
-    *) echo "200000" ;;
-  esac
-}
+# ---- 计算上下文窗口使用情况 ----
+context_info=""
+context_color="$C_CTX_GREEN"
 
-context_pct=""
-context_color() { [ "$use_color" -eq 1 ] && printf '\033[38;5;158m'; }
+if [ "$HAS_JQ" -eq 1 ]; then
+  # 从 JSON 输入中获取上下文窗口信息
+  window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 0' 2>/dev/null)
+  current_usage=$(echo "$input" | jq '.context_window.current_usage' 2>/dev/null)
 
-# 查找最新的 session 文件并提取 input_tokens
-latest_session=$(find "$HOME/.claude" -name "*.jsonl" -type f 2>/dev/null | sort -r | head -1)
-if [ -n "$latest_session" ] && [ -f "$latest_session" ]; then
-  MAX_CONTEXT=$(get_max_context "$model_name")
+  # 检查是否有当前使用情况数据
+  if [ "$current_usage" != "null" ] && [ -n "$current_usage" ]; then
+    # 计算总输入token数（包括缓存相关的token）
+    input_tokens=$(echo "$current_usage" | jq '(.input_tokens // 0) + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)' 2>/dev/null)
 
-  if [ "$HAS_JQ" -eq 1 ]; then
-    input_tokens=$(tail -30 "$latest_session" 2>/dev/null | jq -r 'select(.message.usage?.input_tokens) | .message.usage.input_tokens' 2>/dev/null | head -1)
-  else
-    input_tokens=$(tail -30 "$latest_session" 2>/dev/null | grep -o '"input_tokens":[0-9]*' | head -1 | grep -o '[0-9]*')
-  fi
+    # 验证数据有效性
+    if [ -n "$window_size" ] && [ "$window_size" -gt 0 ] && [ -n "$input_tokens" ] && [ "$input_tokens" -ge 0 ]; then
+      # 计算使用百分比
+      used_pct=$((input_tokens * 100 / window_size))
 
-  if [ -n "$input_tokens" ] && [ "$input_tokens" -gt 0 ] 2>/dev/null; then
-    remaining=$((MAX_CONTEXT - input_tokens))
-    pct=$(( remaining * 100 / MAX_CONTEXT ))
-    [ "$pct" -lt 0 ] && pct=0
-    [ "$pct" -gt 100 ] && pct=100
+      # 计算剩余百分比
+      remaining_pct=$((100 - used_pct))
+      [ "$remaining_pct" -lt 0 ] && remaining_pct=0
+      [ "$remaining_pct" -gt 100 ] && remaining_pct=100
 
-    if [ "$pct" -le 20 ]; then
-      context_color() { [ "$use_color" -eq 1 ] && printf '\033[38;5;203m'; }
-    elif [ "$pct" -le 40 ]; then
-      context_color() { [ "$use_color" -eq 1 ] && printf '\033[38;5;215m'; }
-    else
-      context_color() { [ "$use_color" -eq 1 ] && printf '\033[38;5;158m'; }
+      # 根据剩余百分比选择颜色
+      if [ "$remaining_pct" -le 20 ]; then
+        context_color="$C_CTX_RED"
+      elif [ "$remaining_pct" -le 40 ]; then
+        context_color="$C_CTX_YELLOW"
+      else
+        context_color="$C_CTX_GREEN"
+      fi
+
+      # 格式化输出（显示剩余百分比）
+      context_info="${remaining_pct}%"
     fi
-
-    context_pct="${pct}%"
   fi
 fi
 
-[ -z "$context_pct" ] && context_pct="N/A"
+# 如果没有获取到有效数据，显示占位符
+[ -z "$context_info" ] && context_info="--"
 
 # ---- 输出状态行 ----
-C='\033[38;5;117m'   # 目录 - 天蓝色
-G='\033[38;5;150m'   # Git - 柔和绿
-M='\033[38;5;147m'   # 模型 - 浅紫色
-V='\033[38;5;249m'   # 版本 - 浅灰色
-
 if [ "$use_color" -eq 1 ]; then
-  printf "${C}%s${RST}" "$current_dir"
-  [ -n "$git_branch" ] && printf "  ${G}%s${RST}" "🌿 $git_branch"
-  printf "  ${M}%s${RST}" "🤖 $model_name"
-  [ -n "$cc_version" ] && printf "  ${V}%s${RST}" "v $cc_version"
-  printf "  $(context_color)%s${RST}" "🧠 $context_pct"
+  printf "${C_DIR}%s${C_RESET}" "$current_dir"
+  [ -n "$git_branch" ] && printf "  ${C_GIT}%s${C_RESET}" "🌿 $git_branch"
+  printf "  ${C_MODEL}%s${C_RESET}" "🤖 $model_name"
+  [ -n "$cc_version" ] && printf "  ${C_VERSION}%s${C_RESET}" "v$cc_version"
+  printf "  ${context_color}%s${C_RESET}" "🧠 $context_info"
 else
   printf "%s" "$current_dir"
   [ -n "$git_branch" ] && printf "  %s" "$git_branch"
   printf "  %s" "$model_name"
-  [ -n "$cc_version" ] && printf "  %s" "$cc_version"
-  printf "  %s" "$context_pct"
+  [ -n "$cc_version" ] && printf "  v%s" "$cc_version"
+  printf "  %s" "$context_info"
 fi
 
 printf '\n'
