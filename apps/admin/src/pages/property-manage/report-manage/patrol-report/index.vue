@@ -19,47 +19,47 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		minWidth: 140,
 	},
 	{
 		label: "巡检编号",
-		prop: "巡检编号",
+		prop: "patrolNumber",
 		minWidth: 160,
 	},
 	{
 		label: "巡检名称",
-		prop: "巡检名称",
+		prop: "patrolName",
 		minWidth: 180,
 	},
 	{
 		label: "巡检类型",
-		prop: "巡检类型",
+		prop: "patrolType",
 		minWidth: 140,
 	},
 	{
 		label: "巡检级别",
-		prop: "巡检级别",
+		prop: "patrolLevel",
 		minWidth: 140,
 	},
 	{
 		label: "负责人",
-		prop: "负责人",
+		prop: "responsiblePerson",
 		minWidth: 140,
 	},
 	{
 		label: "巡检时间",
-		prop: "巡检时间",
+		prop: "patrolTime",
 		minWidth: 180,
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		minWidth: 140,
 	},
 	{
 		label: "异常数",
-		prop: "异常数",
+		prop: "abnormalCount",
 		minWidth: 120,
 	},
 	{
@@ -82,14 +82,14 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<PatrolReportQueryParams> = {
-	巡检名称: "",
-	巡检类型: "",
-	巡检级别: "",
-	负责人: "",
-	状态: "",
-	小区: "",
-	巡检时间开始: "",
-	巡检时间结束: "",
+	patrolName: "",
+	patrolType: "",
+	patrolLevel: "",
+	responsiblePerson: "",
+	status: "",
+	community: "",
+	patrolTimeStart: "",
+	patrolTimeEnd: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -117,46 +117,46 @@ const {
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: "巡检名称",
-		prop: "巡检名称",
+		prop: "patrolName",
 		valueType: "input",
 	},
 	{
 		label: "巡检类型",
-		prop: "巡检类型",
+		prop: "patrolType",
 		valueType: "select",
 		options: patrolTypeOptions,
 	},
 	{
 		label: "巡检级别",
-		prop: "巡检级别",
+		prop: "patrolLevel",
 		valueType: "select",
 		options: patrolLevelOptions,
 	},
 	{
 		label: "负责人",
-		prop: "负责人",
+		prop: "responsiblePerson",
 		valueType: "input",
 	},
 	{
 		label: "状态",
-		prop: "状态",
+		prop: "status",
 		valueType: "select",
 		options: statusOptions,
 	},
 	{
 		label: "小区",
-		prop: "小区",
+		prop: "community",
 		valueType: "select",
 		options: communityOptions,
 	},
 	{
 		label: "巡检时间开始",
-		prop: "巡检时间开始",
+		prop: "patrolTimeStart",
 		valueType: "date-picker",
 	},
 	{
 		label: "巡检时间结束",
-		prop: "巡检时间结束",
+		prop: "patrolTimeEnd",
 		valueType: "date-picker",
 	},
 ]);

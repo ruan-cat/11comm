@@ -51,6 +51,24 @@ export interface IssuesQueryParams {
 	name?: string;
 	/** 状态 Status */
 	status?: string;
+	/** 工单编号 Work order number */
+	workOrderNumber?: string;
+	/** 报修人 Reporter */
+	reporter?: string;
+	/** 报修电话 Reporter phone */
+	reporterPhone?: string;
+	/** 报修类型 Repair type */
+	repairType?: string;
+	/** 报修设置类型 Repair setting type */
+	repairSettingType?: string;
+	/** 报修位置 Repair location */
+	repairLocation?: string;
+	/** 维修类型 Maintenance type */
+	maintenanceType?: string;
+	/** 开始时间 Start time */
+	startTime?: string;
+	/** 结束时间 End time */
+	endTime?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */

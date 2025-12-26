@@ -23,8 +23,6 @@ import { type HouseDecorationFormProps, defaultForm } from "./components/form";
 import type { HouseDecorationFormVO } from "@01s-11comm/type";
 import HouseDecorationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";
-
 /** 表单组件实例 */
 const houseDecorationFormInstance = ref<InstanceType<typeof HouseDecorationForm> | null>(null);
 
@@ -33,11 +31,12 @@ const houseDecorationFormInstance = ref<InstanceType<typeof HouseDecorationForm>
  * @description
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
-const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<HouseDecorationQueryParams> = {
+const plusSearchModelRef: FieldValues & Partial<HouseDecorationQueryParams> = {
 	houseNumber: "",
 	contactName: "",
-	decorationStatus: "",
-	delayStatus: "",
+	contactPhone: "",
+	status: undefined,
+	isDelayed: undefined,
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */

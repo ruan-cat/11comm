@@ -155,16 +155,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		? structuredClone(defaultForm)
 		: structuredClone({
 				...defaultForm,
-				人员类型: "个人",
-				人员角色: "业主",
-				客户名称: row?.name || "",
-				联系手机: "",
-				性别: "男",
-				备用手机: "",
-				地址: "",
-				门禁钥匙: "",
-				身份证: "",
-				备注: "",
+				personnelType: "个人",
+				personnelRole: "业主",
+				customerName: row?.name || "",
+				contactPhone: "",
+				gender: "男",
+				backupPhone: "",
+				address: "",
+				accessKey: "",
+				idCard: "",
+				remark: "",
 			});
 
 	/** 表单组件需要的props */

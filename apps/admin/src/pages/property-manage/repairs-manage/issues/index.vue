@@ -8,7 +8,7 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 
@@ -23,18 +23,13 @@ import {
 	repairCategoryOptions,
 	repairsSettingTypeOptions,
 } from "@01s-11comm/type";
+import { useIssuesListQuery } from "@/api/property-manage/repairs-manage/issues";
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const issuesSettingFormInstance = ref<InstanceType<typeof IssuesSettingForm> | null>(null);
-
-/** 表格数据 */
-const tableData = ref<IssuesListItem[]>([]);
-
-/** 模拟数据 - TODO: 替换为真实API调用 */
-const mockTableData: IssuesListItem[] = [];
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -103,34 +98,6 @@ const columns = ref<TableColumnList>([
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
-});
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-/** 表格组件 配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
-	columns: [],
-	pagination: pagination.value,
-});
-
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
 	title: "工单池",
@@ -143,15 +110,15 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<IssuesQueryParams> = {
-	工单编号: "",
-	报修人: "",
-	报修电话: "",
-	报修类型: "",
-	报修设置类型: "",
-	报修位置: "",
-	维修类型: "",
-	开始时间: "",
-	结束时间: "",
+	workOrderNumber: "",
+	reporter: "",
+	reporterPhone: "",
+	repairType: "",
+	repairSettingType: "",
+	repairLocation: "",
+	maintenanceType: "",
+	startTime: "",
+	endTime: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -159,6 +126,18 @@ const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/** 使用 TanStack Query 获取数据 */
+const {
+	tableData,
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useIssuesListQuery(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
@@ -168,28 +147,28 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 工单编号
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
-		prop: "工单编号",
+		prop: "workOrderNumber",
 		valueType: "input",
 	},
 
 	// 报修人
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
-		prop: "报修人",
+		prop: "reporter",
 		valueType: "input",
 	},
 
 	// 报修电话
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
-		prop: "报修电话",
+		prop: "reporterPhone",
 		valueType: "input",
 	},
 
 	// 报修类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
-		prop: "报修类型",
+		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
@@ -197,7 +176,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 报修设置类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairReportingSettingType")),
-		prop: "报修设置类型",
+		prop: "repairSettingType",
 		valueType: "select",
 		options: repairsSettingTypeOptions,
 	},
@@ -205,14 +184,14 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 报修位置
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.repairLocation")),
-		prop: "报修位置",
+		prop: "repairLocation",
 		valueType: "input",
 	},
 
 	// 维修类型
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.maintenanceType")),
-		prop: "维修类型",
+		prop: "maintenanceType",
 		valueType: "select",
 		options: repairCategoryOptions,
 	},
@@ -220,7 +199,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 开始时间
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.startTime")),
-		prop: "开始时间",
+		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -232,7 +211,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 结束时间
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs.endTime")),
-		prop: "结束时间",
+		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
@@ -252,65 +231,14 @@ const plusSearchProps = ref<PlusSearchProps>({
 });
 
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
-}
-
-/** 加载表格数据 */
-async function loadTableData() {
-	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟数据和本地搜索过滤 */
-		let filteredData = mockTableData;
-
-		/** 根据搜索条件过滤数据 */
-		if (plusSearchModel.value.工单编号) {
-			filteredData = filteredData.filter((item) => item.workOrderCode?.includes(String(plusSearchModel.value.工单编号)));
-		}
-		if (plusSearchModel.value.报修人) {
-			filteredData = filteredData.filter((item) => item.reporter?.includes(String(plusSearchModel.value.报修人)));
-		}
-		if (plusSearchModel.value.报修电话) {
-			filteredData = filteredData.filter((item) => item.contactInfo?.includes(String(plusSearchModel.value.报修电话)));
-		}
-		if (plusSearchModel.value.报修类型) {
-			filteredData = filteredData.filter((item) => item.repairType === plusSearchModel.value.报修类型);
-		}
-		if (plusSearchModel.value.报修位置) {
-			filteredData = filteredData.filter((item) => item.location?.includes(String(plusSearchModel.value.报修位置)));
-		}
-		if (plusSearchModel.value.维修类型) {
-			filteredData = filteredData.filter((item) => item.maintenanceType === plusSearchModel.value.维修类型);
-		}
-		if (plusSearchModel.value.开始时间) {
-			filteredData = filteredData.filter((item) => item.submitTime && item.submitTime >= String(plusSearchModel.value.开始时间));
-		}
-		if (plusSearchModel.value.结束时间) {
-			filteredData = filteredData.filter((item) => item.submitTime && item.submitTime <= String(plusSearchModel.value.结束时间));
-		}
-
-		/** 更新总数 */
-		pagination.value.total = filteredData.length;
-
-		/** 分页处理 */
-		const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-		const endIndex = startIndex + pagination.value.pageSize;
-		tableData.value = filteredData.slice(startIndex, endIndex);
-
-		/** 更新表格配置 */
-		pureTableProps.value.data = tableData.value;
-	} catch (error) {
-		console.error("加载数据失败:", error);
-		/** TODO: 显示错误提示 */
-	}
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
 /** 测试异步操作函数 */
@@ -405,7 +333,7 @@ function openDialog(params: { mode: Mode; row?: IssuesListItem }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
-						await loadTableData();
+						await doFetch();
 					}
 				},
 			},
@@ -432,12 +360,8 @@ function handleView(row: IssuesListItem) {
 async function handleDelete(row: IssuesListItem) {
 	// TODO: 实现删除逻辑
 	consola.log("删除", row);
-	await loadTableData();
+	await doFetch();
 }
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>
@@ -450,7 +374,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="loadTableData">
+		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -463,6 +387,7 @@ onMounted(async () => {
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
+					:loading="isFetching"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>

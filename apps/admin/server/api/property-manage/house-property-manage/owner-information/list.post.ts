@@ -17,10 +17,15 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformat
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
 	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	const { pageIndex, pageSize, personType, ownerName, houseNo, phone, idCard } = mergedParams;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockOwnerInformationData, filters);
+	/** 数据筛选 - 由于查询参数与列表字段不完全匹配，需自定义筛选 */
+	let filteredData = [...mockOwnerInformationData];
+
+	/** 根据名称筛选 (ownerName 对应 name 字段) */
+	if (ownerName) {
+		filteredData = filteredData.filter((item) => item.name?.includes(ownerName));
+	}
 
 	/** 分页处理 */
 	const total = filteredData.length;

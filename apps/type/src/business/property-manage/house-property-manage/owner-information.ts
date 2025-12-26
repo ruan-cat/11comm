@@ -25,10 +25,16 @@ export interface OwnerInformationListItem {
  * OwnerInformation list query parameters
  */
 export interface OwnerInformationQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
-	status?: string;
+	/** 人员类型 Person type */
+	personType?: string;
+	/** 业主名称 Owner name */
+	ownerName?: string;
+	/** 房屋编号 House no */
+	houseNo?: string;
+	/** 电话 Phone */
+	phone?: string;
+	/** 身份证 ID card */
+	idCard?: string;
 	/** 当前页码 Current page (1-based) */
 	pageIndex: number;
 	/** 每页大小 Page size */

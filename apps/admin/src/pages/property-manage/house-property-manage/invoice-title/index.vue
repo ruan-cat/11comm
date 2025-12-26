@@ -95,47 +95,47 @@ const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
 		label: "编号",
-		prop: "编号",
+		prop: "code",
 		width: 120,
 	},
 	{
 		label: "业主名称",
-		prop: "业主名称",
+		prop: "ownerName",
 		width: 120,
 	},
 	{
 		label: "发票类型",
-		prop: "发票类型",
+		prop: "invoiceType",
 		width: 120,
 	},
 	{
 		label: "发票名头",
-		prop: "发票名头",
+		prop: "invoiceTitle",
 		width: 160,
 	},
 	{
 		label: "纳税人识别号",
-		prop: "纳税人识别号",
+		prop: "taxpayerId",
 		width: 160,
 	},
 	{
 		label: "地址",
-		prop: "地址",
+		prop: "address",
 		width: 180,
 	},
 	{
 		label: "电话",
-		prop: "电话",
+		prop: "phone",
 		width: 120,
 	},
 	{
 		label: "开户行及账号",
-		prop: "开户行及账号",
+		prop: "bankAccount",
 		width: 200,
 	},
 	{
 		label: "备注",
-		prop: "备注",
+		prop: "remark",
 		width: 150,
 	},
 	{
