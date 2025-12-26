@@ -12,11 +12,8 @@ import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import ExpirationReminders from "./components/Expiration-reminders.vue";
 import PrepaymentReminders from "./components/Prepayment-reminders.vue";
-import type {
-	ReminderForOverduePaymentsListItem,
-	ReminderForOverduePaymentsQueryParams,
-	expenseItemNameOptions,
-} from "@01s-11comm/type";
+import type { ReminderForOverduePaymentsListItem, ReminderForOverduePaymentsQueryParams } from "@01s-11comm/type";
+import { expenseItemNameOptions } from "@01s-11comm/type";
 import { useFeeReminderListQuery } from "@/api/property-manage/report-manage/fee-reminder";
 
 /** 表格列配置 */

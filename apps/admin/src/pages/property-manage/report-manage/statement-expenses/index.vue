@@ -14,7 +14,7 @@ import type { StatementExpensesListItem, StatementExpensesQueryParams } from "@0
 import {
 	expenseTypeOptions,
 	expenseItemOptions,
-	expenseStatusOptions,
+	expireStatusOptions,
 	paymentMethodOptions,
 	statementExpensesCommunityOptions,
 } from "@01s-11comm/type";
@@ -186,7 +186,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用状态",
 		prop: "expenseStatus",
 		valueType: "select",
-		options: expenseStatusOptions,
+		options: expireStatusOptions,
 	},
 	{
 		label: "支付方式",

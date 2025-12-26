@@ -11,7 +11,7 @@ definePage({
 import { ref, computed, h, watch } from "vue";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { transformI18n } from "@/plugins/i18n";
-import { type SystemConfigFormProps, defaultForm, type SystemConfigFormVO } from "./components/form";
+import { type SystemConfigFormProps, defaultForm } from "./components/form";
 import SystemConfigFormComponent from "./components/form.vue";
 import { useMode } from "@/composables/use-mode";
 
@@ -19,7 +19,7 @@ import { useMode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
 import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
-import type { SystemConfig } from "@01s-11comm/type";
+import type { SystemConfigListItem } from "@01s-11comm/type";
 
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 
@@ -27,12 +27,13 @@ const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormCompone
 const { tableData, isFetching, doFetch } = useSystemConfigListQuery({});
 
 /** 系统配置数据 */
-const systemConfig = computed<SystemConfig>(() => {
+const systemConfig = computed<SystemConfigListItem>(() => {
 	if (tableData.value && tableData.value.length > 0) {
 		return tableData.value[0];
 	}
 	// 返回默认空值或初始值
 	return {
+		configId: "",
 		title: "",
 		subtitle: "",
 		shortName: "",
@@ -148,8 +149,8 @@ function openEditDialog() {
 	const title = "修改系统配置";
 
 	/** 业务对象 */
-	// 将 SystemConfig 转换为 SystemConfigFormVO
-	const formVO: SystemConfigFormVO = structuredClone(systemConfig.value);
+	// 将 SystemConfigListItem 转换为表单数据
+	const formVO: SystemConfigListItem = structuredClone(systemConfig.value);
 
 	/** 表单组件需要的props */
 	const formProps: SystemConfigFormProps = {
