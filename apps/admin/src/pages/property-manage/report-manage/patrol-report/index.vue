@@ -11,6 +11,7 @@ definePage({
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import type { PatrolReportListItem, PatrolReportQueryParams } from "@01s-11comm/type";
+import { patrolTypeOptions, patrolLevelOptions, statusOptions, communityOptions } from "@01s-11comm/type";
 import { usePatrolReportListQuery } from "@/api/property-manage/report-manage/patrol-report";
 
 /** 表格列配置 */
@@ -123,13 +124,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "巡检类型",
 		prop: "巡检类型",
 		valueType: "select",
-		options: 巡检类型Options,
+		options: patrolTypeOptions,
 	},
 	{
 		label: "巡检级别",
 		prop: "巡检级别",
 		valueType: "select",
-		options: 巡检级别Options,
+		options: patrolLevelOptions,
 	},
 	{
 		label: "负责人",
@@ -140,13 +141,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "状态",
 		prop: "状态",
 		valueType: "select",
-		options: 状态Options,
+		options: statusOptions,
 	},
 	{
 		label: "小区",
 		prop: "小区",
 		valueType: "select",
-		options: 小区Options,
+		options: communityOptions,
 	},
 	{
 		label: "巡检时间开始",

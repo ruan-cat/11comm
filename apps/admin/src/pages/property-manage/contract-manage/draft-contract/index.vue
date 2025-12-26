@@ -78,7 +78,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "合同类型",
 		prop: "contractType",
 		valueType: "select",
-		options: contractTypeOptionsData,
+		options: contractTypeOptions,
 	},
 	{
 		label: "经办人",

@@ -17,6 +17,8 @@ import {
 	chargeStatusOptions,
 	chargeObjectOptions,
 	reminderStatusOptions,
+	chargeObjectTypeOptions,
+	refundStatusOptions,
 } from "@01s-11comm/type";
 import { useDepositReportListQuery } from "@/api/property-manage/report-manage/deposit-report";
 
@@ -169,7 +171,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用项目名称",
 		prop: "feeItemName",
 		valueType: "select",
-		options: feeItemNameOptions,
+		options: feeItemOptions,
 	},
 	{
 		label: "收费状态",

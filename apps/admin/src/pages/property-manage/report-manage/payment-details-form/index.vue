@@ -11,6 +11,15 @@ definePage({
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams } from "@01s-11comm/type";
+import {
+	paymentMethodOptions,
+	expenseStatusOptions,
+	feeTypeOptions,
+	expenseItemOptions,
+	communityOptions,
+} from "@01s-11comm/type";
+
+// TODO: 本页面需要继续完成写法改造；
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -183,13 +192,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "支付方式",
 		prop: "支付方式",
 		valueType: "select",
-		options: 支付方式Options,
+		options: paymentMethodOptions,
 	},
 	{
 		label: "费用状态",
 		prop: "费用状态",
 		valueType: "select",
-		options: 费用状态Options,
+		options: expenseStatusOptions,
 	},
 	{
 		label: "费用类型",
@@ -201,7 +210,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "费用项",
 		prop: "费用项",
 		valueType: "select",
-		options: 费用项Options,
+		options: expenseItemOptions,
 	},
 	{
 		label: "房屋编号/车牌号",
@@ -212,7 +221,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "小区",
 		prop: "小区",
 		valueType: "select",
-		options: 小区Options,
+		options: communityOptions,
 	},
 ]);
 

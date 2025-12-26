@@ -13,7 +13,7 @@ import { transformI18n } from "@/plugins/i18n";
 import ExpirationReminders from "./components/Expiration-reminders.vue";
 import PrepaymentReminders from "./components/Prepayment-reminders.vue";
 import type { ReminderForOverduePaymentsListItem, ReminderForOverduePaymentsQueryParams } from "@01s-11comm/type";
-import { expenseItemNameOptions } from "@01s-11comm/type";
+import { expenseItemNameOptions, reminderTypeOptions } from "@01s-11comm/type";
 import { useFeeReminderListQuery } from "@/api/property-manage/report-manage/fee-reminder";
 
 /** 表格列配置 */
@@ -136,7 +136,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		label: "提醒类型",
 		prop: "提醒类型",
 		valueType: "select",
-		options: 提醒类型Options,
+		options: reminderTypeOptions,
 	},
 ]);
 

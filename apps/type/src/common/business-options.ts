@@ -177,7 +177,6 @@ export const operationSystemConfigSystemOptions: OptionsType = [
 	{ label: "否", value: false },
 ];
 
-
 /**
  * @description 合同类型选项
  * Contract type options
@@ -187,6 +186,12 @@ export const contractTypeOptions: OptionsType = [
 	{ label: "租赁合同", value: "租赁合同" },
 	{ label: "维修合同", value: "维修合同" },
 ];
+
+/**
+ * @description 合同类型选项数据别名
+ * Contract type options data alias
+ */
+export const contractTypeOptionsData = contractTypeOptions;
 
 /**
  * @description 审核状态选项
@@ -338,6 +343,17 @@ export const chargeObjectOptions: OptionsType = [
 ];
 
 /**
+ * @description 收费对象类型选项
+ * Charge object type options
+ */
+export const chargeObjectTypeOptions: OptionsType = [
+	{ label: "业主", value: "业主" },
+	{ label: "租户", value: "租户" },
+	{ label: "使用人", value: "使用人" },
+	{ label: "公司", value: "公司" },
+];
+
+/**
  * @description 退费原因选项
  * Refund reason options
  */
@@ -346,6 +362,17 @@ export const refundReasonOptions: OptionsType = [
 	{ label: "重复缴费", value: "重复缴费" },
 	{ label: "服务未提供", value: "服务未提供" },
 	{ label: "其他原因", value: "其他原因" },
+];
+
+/**
+ * @description 退款状态选项
+ * Refund status options
+ */
+export const refundStatusOptions: OptionsType = [
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
+	{ label: "已退款", value: "已退款" },
 ];
 
 /**
@@ -895,6 +922,12 @@ export const feeStatusOptions: OptionsType = [
 ];
 
 /**
+ * @description 费用状态选项别名
+ * Expense status options alias
+ */
+export const expenseStatusOptions = feeStatusOptions;
+
+/**
  * @description 回访设置选项
  * Return visit setting options
  */
@@ -934,7 +967,6 @@ export const bookingStatusOptions: OptionsType = [
 	{ label: "已拒绝", value: "已拒绝" },
 	{ label: "已取消", value: "已取消" },
 ];
-
 
 /**
  * 设置类型选项
@@ -977,7 +1009,6 @@ export const isChargingPileOptions: OptionsType = [
 	{ label: "是", value: "是" },
 	{ label: "否", value: "否" },
 ];
-
 
 /**
  * @description 物业公司选项
