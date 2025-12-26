@@ -13,10 +13,10 @@ import type { DepositReportListItem, DepositReportQueryParams } from "@01s-11com
 import {
 	buildingOptions,
 	unitOptions,
-	feeItemNameOptions,
+	feeItemOptions,
 	chargeStatusOptions,
-	chargeObjectTypeOptions,
-	refundStatusOptions,
+	chargeObjectOptions,
+	reminderStatusOptions,
 } from "@01s-11comm/type";
 import { useDepositReportListQuery } from "@/api/property-manage/report-manage/deposit-report";
 

@@ -95,6 +95,7 @@ export const requiredOptions: OptionsType = [
  * Dictionary type form VO
  */
 export interface DictionaryTypeFormVO {
+	[key: string]: any;
 	/** 字典编号 Dictionary number */
 	dictionaryNumber: string;
 	/** 字典名称 Dictionary name */

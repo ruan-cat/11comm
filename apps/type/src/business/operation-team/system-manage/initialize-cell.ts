@@ -122,6 +122,7 @@ export interface InitializeCellListQuery extends InitializeCellQueryParams {}
  * Initialize cell form VO
  */
 export interface InitializeCellFormVO {
+	[key: string]: any;
 	/** 小区ID */
 	id?: string;
 	/** 单元格ID */
