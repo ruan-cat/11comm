@@ -1,3 +1,182 @@
+## v0.7.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.6.0...v0.7.0)
+
+### 🔥 Performance
+
+- **type:** 避免单独导出代码的写法 ([efb5054f](https://github.com/ruan-cat/11comm/commit/efb5054f))
+- **prompt,admin:** 优化 fix-list-pages-code-patterns 提示词 ([e14f353a](https://github.com/ruan-cat/11comm/commit/e14f353a))
+- **config:** 精简写法 ([97fca661](https://github.com/ruan-cat/11comm/commit/97fca661))
+- **openspec,claude:** [不要将非业务类型迁移到类型项目内，特别是表单弹框组件类型] ([2772c43e](https://github.com/ruan-cat/11comm/commit/2772c43e))
+
+### 🐞 修复缺陷
+
+- **prompt,admin:** 处理markdown语法错误 ([6729b7b0](https://github.com/ruan-cat/11comm/commit/6729b7b0))
+- **prompt,admin:** 修改错别字； ([f7cc30b1](https://github.com/ruan-cat/11comm/commit/f7cc30b1))
+- **type,admin:** 修复错误；并提供类型报错的调研文档。 ([95b7eb8e](https://github.com/ruan-cat/11comm/commit/95b7eb8e))
+- **admin:** 处理错误的vue组件对外导出写法 ([bf4f9601](https://github.com/ruan-cat/11comm/commit/bf4f9601))
+
+### 🦄 代码重构
+
+- **type:** ⚠️  手动修改，重写类型项目导出类型的写法。 ([256b1b02](https://github.com/ruan-cat/11comm/commit/256b1b02))
+- **openspec,type,admin:** 持续完成代码修改任务 ([9c74134b](https://github.com/ruan-cat/11comm/commit/9c74134b))
+- **admin:** 文本替换。 ([237a042c](https://github.com/ruan-cat/11comm/commit/237a042c))
+- **type,admin:** 处理 form.ts 被错误迁移的业务类型 ([4aad8ec0](https://github.com/ruan-cat/11comm/commit/4aad8ec0))
+- **type,server,admin:** 持续完成任务 ([9d3ae6a8](https://github.com/ruan-cat/11comm/commit/9d3ae6a8))
+- **type,admin:** 持续完成任务 ([7a88bf61](https://github.com/ruan-cat/11comm/commit/7a88bf61))
+- **prompt,admin:** 将【不要将非业务类型迁移到类型项目内，特别是表单弹框组件类型】迁移到单独的文件夹内 ([9d8cb8d2](https://github.com/ruan-cat/11comm/commit/9d8cb8d2))
+- **openspec,prompt,admin:** ⚠️  完全重构一次spec规范文件。精简文件，归纳一份关键的修改规范表。 ([22219661](https://github.com/ruan-cat/11comm/commit/22219661))
+- **server,admin:** 大批量重写服务端接口，写成标准的代码格式。修改 31 份文件。 ([19d5e17b](https://github.com/ruan-cat/11comm/commit/19d5e17b))
+- **type,admin:** 持续完成任务，将克隆写法换成浏览器原生支持的深克隆写法。 ([f974f53e](https://github.com/ruan-cat/11comm/commit/f974f53e))
+- **openspec,type,admin:** 持续完成任务。 ([65487b57](https://github.com/ruan-cat/11comm/commit/65487b57))
+- **server,admin:** 持续完成任务，接口满足格式要求； ([bc38a1ae](https://github.com/ruan-cat/11comm/commit/bc38a1ae))
+- **type,admin:** 持续完成代码重构任务 ([621a5c05](https://github.com/ruan-cat/11comm/commit/621a5c05))
+- **server,admin:** ⚠️  大规模改写接口。实现160份文件更改。但是出现部分的模拟假数据类型字段不匹配的情况，需要专门修复。 ([9eced93d](https://github.com/ruan-cat/11comm/commit/9eced93d))
+- **admin:** 持续完成任务。修改 api hooks 接口 ([6c98f242](https://github.com/ruan-cat/11comm/commit/6c98f242))
+- **type,admin:** 持续完成重构任务 ([f11e27bf](https://github.com/ruan-cat/11comm/commit/f11e27bf))
+- **openspec,type,admin:** 持续完成任务 ([20a2aee8](https://github.com/ruan-cat/11comm/commit/20a2aee8))
+- **server,admin:** 持续完成任务 ([40d3a347](https://github.com/ruan-cat/11comm/commit/40d3a347))
+- **type,server,admin:** 持续完成任务 ([d4a0b80d](https://github.com/ruan-cat/11comm/commit/d4a0b80d))
+- **openspec,prompt,admin:** ⚠️  用gemini重构一次提示词内容。 ([044beaae](https://github.com/ruan-cat/11comm/commit/044beaae))
+- **server,admin:** 拓展代码块 ([1c39999e](https://github.com/ruan-cat/11comm/commit/1c39999e))
+- **server,admin:** 持续完成任务 ([29eec1d7](https://github.com/ruan-cat/11comm/commit/29eec1d7))
+- **prompt,admin:** 准备新建【将错误迁移的表单组件类型和默认表单数据，迁移回到 form.ts 内存储】规范 ([99a09ddb](https://github.com/ruan-cat/11comm/commit/99a09ddb))
+- **type:** 重命名，换成正常的业务路径命名 ([2bde9519](https://github.com/ruan-cat/11comm/commit/2bde9519))
+- **type,admin:** 持续完成任务 ([ec0c3a88](https://github.com/ruan-cat/11comm/commit/ec0c3a88))
+- **admin:** 持续完成任务 ([c99afb4d](https://github.com/ruan-cat/11comm/commit/c99afb4d))
+- **type:** 持续完成任务 ([be463196](https://github.com/ruan-cat/11comm/commit/be463196))
+- **type,admin:** 持续完成任务 ([89d557c5](https://github.com/ruan-cat/11comm/commit/89d557c5))
+- **type,admin:** 持续完成任务 ([1c0a1e4f](https://github.com/ruan-cat/11comm/commit/1c0a1e4f))
+- **type:** 完成任务 ([4a50ded4](https://github.com/ruan-cat/11comm/commit/4a50ded4))
+- **admin:** 完成任务 ([f99dfbcb](https://github.com/ruan-cat/11comm/commit/f99dfbcb))
+- **type,admin:** 持续完成任务 ([275523a8](https://github.com/ruan-cat/11comm/commit/275523a8))
+- **type,admin:** 持续完成任务 ([abd959b7](https://github.com/ruan-cat/11comm/commit/abd959b7))
+- **server,admin:** 持续完成任务 ([acb5723c](https://github.com/ruan-cat/11comm/commit/acb5723c))
+- **type,server,admin:** 持续完成任务 ([12701bb3](https://github.com/ruan-cat/11comm/commit/12701bb3))
+- **type,server,admin:** 持续完成任务。 ([211bb0ab](https://github.com/ruan-cat/11comm/commit/211bb0ab))
+- **type,server,admin:** 持续完成任务 ([8075afce](https://github.com/ruan-cat/11comm/commit/8075afce))
+- **type,admin:** 持续完成任务 ([51ebec63](https://github.com/ruan-cat/11comm/commit/51ebec63))
+- **admin:** 持续完成任务。 ([37095298](https://github.com/ruan-cat/11comm/commit/37095298))
+- **openspec,type,admin:** 持续完成任务 ([dc009ec7](https://github.com/ruan-cat/11comm/commit/dc009ec7))
+- **openspec,type,admin:** 持续完成任务 ([da0159cf](https://github.com/ruan-cat/11comm/commit/da0159cf))
+- **openspec,type,admin:** 持续完成任务 ([7127ccec](https://github.com/ruan-cat/11comm/commit/7127ccec))
+- **openspec,type,admin:** 持续完成任务 ([07970b3d](https://github.com/ruan-cat/11comm/commit/07970b3d))
+- **openspec,type,admin:** 持续完成任务 ([a0eb85bd](https://github.com/ruan-cat/11comm/commit/a0eb85bd))
+- **openspec:** ⚠️  重新调整【no-chinese-and-alias】任务，避免出现执行时和【no-form-ts-redundant-export】冲突返工的情况。 ([f9b50bbe](https://github.com/ruan-cat/11comm/commit/f9b50bbe))
+- **openspec,type,server,admin:** 持续完成任务 ([52405079](https://github.com/ruan-cat/11comm/commit/52405079))
+- **openspec,type,server,admin:** 持续完成任务 ([6b472c68](https://github.com/ruan-cat/11comm/commit/6b472c68))
+- **openspec:** 归档【no-chinese-and-alias】任务 ([7ca52e85](https://github.com/ruan-cat/11comm/commit/7ca52e85))
+- **type,admin:** 持续完成任务 ([de620ec4](https://github.com/ruan-cat/11comm/commit/de620ec4))
+- **admin:** 持续完成任务 ([35696405](https://github.com/ruan-cat/11comm/commit/35696405))
+- **type,admin:** 持续完成任务 ([3a6c939c](https://github.com/ruan-cat/11comm/commit/3a6c939c))
+- **claude:** 重做状态栏； ([de7c676a](https://github.com/ruan-cat/11comm/commit/de7c676a))
+- **openspec,admin:** 持续完成任务 ([26750e08](https://github.com/ruan-cat/11comm/commit/26750e08))
+- **admin:** 持续完成任务 ([3e09c43d](https://github.com/ruan-cat/11comm/commit/3e09c43d))
+- **openspec,type,admin:** 持续完成任务，处理了全部的类型故障写法。 ([0a7d118f](https://github.com/ruan-cat/11comm/commit/0a7d118f))
+
+### 📖 Documentation
+
+- **prompt,admin:** 设计【对`类型项目`的代码组织方式，和代码写法，做出细致要求】任务 ([78f41037](https://github.com/ruan-cat/11comm/commit/78f41037))
+- **admin:** 标记报告文档的参考价值下级 ([b649864e](https://github.com/ruan-cat/11comm/commit/b649864e))
+- **openspec:** ⚠️  更新迭代 `migrate-static-data-to-nitro-query` 的全部文档，避免出现编写兼容性的中文类型变量 ([71dfe5a9](https://github.com/ruan-cat/11comm/commit/71dfe5a9))
+- **openspec:** ⚠️  更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况 ([0ceb6cd4](https://github.com/ruan-cat/11comm/commit/0ceb6cd4))
+- **openspec,claude:** ⚠️  为多个文件，增加严格的【类型项目的代码组织方式与导出规范】 ([0bc2639b](https://github.com/ruan-cat/11comm/commit/0bc2639b))
+- **claude:** 增加【type-project-organization】技能文件 ([1fda52a5](https://github.com/ruan-cat/11comm/commit/1fda52a5))
+- **claude:** 说明【类型项目代码组织规范技能】 ([1f1c2d03](https://github.com/ruan-cat/11comm/commit/1f1c2d03))
+- **openspec:** ⚠️  补充列表页处理的规范 ([900d6b0c](https://github.com/ruan-cat/11comm/commit/900d6b0c))
+- **prompt,admin:** 完成任务【fix-list-pages-code-patterns 任务提示词】 ([3b5ab760](https://github.com/ruan-cat/11comm/commit/3b5ab760))
+- **prompt,admin:** 设置规范【不要将非业务类型迁移到类型项目内，特别是表单弹框组件类型】 ([b052b95d](https://github.com/ruan-cat/11comm/commit/b052b95d))
+- **prompt,admin:** 补全细化【执行本任务使用的提示词】 ([f3a004f4](https://github.com/ruan-cat/11comm/commit/f3a004f4))
+- **prompt,admin:** 专门处理【自检文件是否有冲突模糊的情况】 ([bf1c10a6](https://github.com/ruan-cat/11comm/commit/bf1c10a6))
+- **prompt,admin:** 重新设计【执行本任务使用的提示词】 ([ab7c0722](https://github.com/ruan-cat/11comm/commit/ab7c0722))
+- **prompt,admin:** 针对子代理执行任务失败的情况，做细化， ([704c751a](https://github.com/ruan-cat/11comm/commit/704c751a))
+- **prompt,admin:** 【你新建的子代理**必须**是**后台运行**的子代理。】 ([6323545f](https://github.com/ruan-cat/11comm/commit/6323545f))
+- **prompt,admin:** 【子代理工作量划分事项】 ([a95560e3](https://github.com/ruan-cat/11comm/commit/a95560e3))
+- **prompt,admin:** 补充规范 ([e091b358](https://github.com/ruan-cat/11comm/commit/e091b358))
+- **claude:** 删除掉主动做类型检查的要求； ([9494e44c](https://github.com/ruan-cat/11comm/commit/9494e44c))
+- **claude:** 设计规范【基于`业务路径`做任务划分时的主代理与子代理任务划分规范】 ([f48c586c](https://github.com/ruan-cat/11comm/commit/f48c586c))
+- **claude:** 设计【主从代理`调度设计`、`职责说明`与`通信反馈`规范】 ([89b20dd6](https://github.com/ruan-cat/11comm/commit/89b20dd6))
+- **claude:** 统一整理【主从代理的相关规范】 ([f304e550](https://github.com/ruan-cat/11comm/commit/f304e550))
+- **prompt,admin:** 删除类型别名并且完成替换 ([fde22fd2](https://github.com/ruan-cat/11comm/commit/fde22fd2))
+- **prompt,admin:** 新建规范【将形如 `xxxDefaultForm` 的变量迁移回 `form.ts` 内】 ([fa858bfe](https://github.com/ruan-cat/11comm/commit/fa858bfe))
+- **prompt,admin:** 新建规范【根据`业务路径`，检查全部的`类型项目`的文件命名与文件夹组织模式，是否严格满足`业务路径`的要求】 ([0706d9f7](https://github.com/ruan-cat/11comm/commit/0706d9f7))
+- **prompt,admin:** 清退类型别名 FormVO ([5b5aae68](https://github.com/ruan-cat/11comm/commit/5b5aae68))
+- **prompt,admin:** 新增规范【务必要完整阅读 `CLAUDE.md` 文档的全部规范要求。】 ([97526bbe](https://github.com/ruan-cat/11comm/commit/97526bbe))
+- **prompt,admin:** [全部的类型项目和后台项目，检索字符串 `FormVO` 将字符串 `FormVO` 这款固定写法的类型别名，全面清退替换掉，换成原本的类型。] ([85f73b04](https://github.com/ruan-cat/11comm/commit/85f73b04))
+- **prompt,admin:** 运行类型检查命令，生成完整的错误清单报告。 ([1de90eac](https://github.com/ruan-cat/11comm/commit/1de90eac))
+- **admin:** 删除多余报告；增加类型错误的清单报告。 ([18088709](https://github.com/ruan-cat/11comm/commit/18088709))
+- **admin:** 改造【2025-12-24 类型错误清单报告】作为提示词； ([37c0adc7](https://github.com/ruan-cat/11comm/commit/37c0adc7))
+- **prompt,admin:** 迭代提示词【针对性修复类型项目出现的中文命名，和中间变量别名】 ([cad6430b](https://github.com/ruan-cat/11comm/commit/cad6430b))
+- **openspec,prompt,admin:** 初始化【执行 `no-chinese-and-alias` 任务】提示词 ([547760fc](https://github.com/ruan-cat/11comm/commit/547760fc))
+- **prompt,admin:** 设计任务【重新调整对 `./form` 路径内的模块导出方式】 ([ea476a0d](https://github.com/ruan-cat/11comm/commit/ea476a0d))
+- **prompt,admin:** 补全完善【重新调整对 `./form` 路径内的模块导出方式】 ([3e6019ab](https://github.com/ruan-cat/11comm/commit/3e6019ab))
+- **openspec:** 新建 no-form-ts-redundant-export 任务 ([a353e79c](https://github.com/ruan-cat/11comm/commit/a353e79c))
+- **openspec:** 设计任务【no-form-ts-redundant-export】提示词。 ([8f3dd711](https://github.com/ruan-cat/11comm/commit/8f3dd711))
+- 更新迭代AI识别用的文档·1 ([71e0cc3f](https://github.com/ruan-cat/11comm/commit/71e0cc3f))
+- **openspec:** 约束识别范围 ([1814cf67](https://github.com/ruan-cat/11comm/commit/1814cf67))
+- **prompt,admin:** 标记任务已完成 ([4f53abf7](https://github.com/ruan-cat/11comm/commit/4f53abf7))
+- **admin:** 增加类型检查报告文件。 ([68b2743a](https://github.com/ruan-cat/11comm/commit/68b2743a))
+- **claude:** 增加类型项目的字段处理规范 ([fdd8f589](https://github.com/ruan-cat/11comm/commit/fdd8f589))
+- **admin:** 设计【`fix-type-error-20251226`】任务 ([cf4ce198](https://github.com/ruan-cat/11comm/commit/cf4ce198))
+- **prompt,admin:** 标记任务【针对性修复类型项目出现的中文命名，和中间变量别名】需要继续处理。 ([d7d1e7f8](https://github.com/ruan-cat/11comm/commit/d7d1e7f8))
+
+### 🏡 Chore
+
+- **prompt,admin:** 标记完成【更新迭代 `migrate-static-data-to-nitro-query` 的全部文档，避免出现编写兼容性的中文类型变量】任务 ([9e47fb47](https://github.com/ruan-cat/11comm/commit/9e47fb47))
+- **prompt,admin:** 标记【更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况】已完成 ([3f78eab1](https://github.com/ruan-cat/11comm/commit/3f78eab1))
+- **prompt,admin:** 改名【`类型项目`的代码组织方式与导出规范】 ([b0560acd](https://github.com/ruan-cat/11comm/commit/b0560acd))
+- **claude:** 更新序号 ([b9b7a9cc](https://github.com/ruan-cat/11comm/commit/b9b7a9cc))
+- **prompt,admin:** 标记【`类型项目`的代码组织方式与导出规范】已完成 ([58e2cf7b](https://github.com/ruan-cat/11comm/commit/58e2cf7b))
+- **prompt,admin:** 新建任务【补充列表页处理的规范】 ([2141331d](https://github.com/ruan-cat/11comm/commit/2141331d))
+- **prompt,admin:** 完成【补充列表页处理的规范】 ([8eb5fa13](https://github.com/ruan-cat/11comm/commit/8eb5fa13))
+- **config:** 待办任务【changelogogenUseTypes in @ruan-cat/commitlint-config】 ([ba66a1d1](https://github.com/ruan-cat/11comm/commit/ba66a1d1))
+- **prompt,admin:** 新建任务【代码写法手动批量替换】 ([fe0ce613](https://github.com/ruan-cat/11comm/commit/fe0ce613))
+- **openspec,router,admin:** 格式化代码；归档任务。 ([30647a8f](https://github.com/ruan-cat/11comm/commit/30647a8f))
+- **prompt,admin:** 完成任务【码写法手动批量替换】 ([15710b01](https://github.com/ruan-cat/11comm/commit/15710b01))
+- **prompt,admin:** [不要将非业务类型迁移到类型项目内，特别是表单弹框组件类型] ([77edd267](https://github.com/ruan-cat/11comm/commit/77edd267))
+- 手动清空全部的任务清单 ([e3f1693f](https://github.com/ruan-cat/11comm/commit/e3f1693f))
+- **admin:** 持续完成任务。 ([767083ad](https://github.com/ruan-cat/11comm/commit/767083ad))
+- **openspec:** 更新任务进度 ([1654283a](https://github.com/ruan-cat/11comm/commit/1654283a))
+- **openspec:** 取消掉任务进度，大部分文件处理不合适。 ([be494882](https://github.com/ruan-cat/11comm/commit/be494882))
+- **claude:** 更新标题序号。 ([e9f3304b](https://github.com/ruan-cat/11comm/commit/e9f3304b))
+- **prompt,admin:** 序号格式化 ([99e4727a](https://github.com/ruan-cat/11comm/commit/99e4727a))
+- **prompt,admin:** 标记【2025-12-24 类型错误清单报告】已完成 ([3cfdf50a](https://github.com/ruan-cat/11comm/commit/3cfdf50a))
+- **type,admin:** 删除误导性的标记 ([e53aad7a](https://github.com/ruan-cat/11comm/commit/e53aad7a))
+- **openspec:** 标记进度[`no-form-ts-redundant-export`] ([d27cc4f1](https://github.com/ruan-cat/11comm/commit/d27cc4f1))
+- **openspec:** 标记【no-chinese-and-alias】已完成 ([3db76893](https://github.com/ruan-cat/11comm/commit/3db76893))
+
+### 🎨 Styles
+
+- **root:** 格式化 ([827a7678](https://github.com/ruan-cat/11comm/commit/827a7678))
+- **openspec:** 格式 ([af2f6339](https://github.com/ruan-cat/11comm/commit/af2f6339))
+- **prompt,admin:** 格式化 ([3ddbc93c](https://github.com/ruan-cat/11comm/commit/3ddbc93c))
+
+### 🤖 CI
+
+- 移除掉不需要的全局包 ([18d7fb1f](https://github.com/ruan-cat/11comm/commit/18d7fb1f))
+- 删除掉冗余的全局命令 ([d8ba3030](https://github.com/ruan-cat/11comm/commit/d8ba3030))
+
+### 🔧 更新配置
+
+- **openspec:** ⚠️  重置任务清单，重做。 ([c17573b4](https://github.com/ruan-cat/11comm/commit/c17573b4))
+
+#### ⚠️ Breaking Changes
+
+- **type:** ⚠️  手动修改，重写类型项目导出类型的写法。 ([256b1b02](https://github.com/ruan-cat/11comm/commit/256b1b02))
+- **openspec,prompt,admin:** ⚠️  完全重构一次spec规范文件。精简文件，归纳一份关键的修改规范表。 ([22219661](https://github.com/ruan-cat/11comm/commit/22219661))
+- **server,admin:** ⚠️  大规模改写接口。实现160份文件更改。但是出现部分的模拟假数据类型字段不匹配的情况，需要专门修复。 ([9eced93d](https://github.com/ruan-cat/11comm/commit/9eced93d))
+- **openspec,prompt,admin:** ⚠️  用gemini重构一次提示词内容。 ([044beaae](https://github.com/ruan-cat/11comm/commit/044beaae))
+- **openspec:** ⚠️  重新调整【no-chinese-and-alias】任务，避免出现执行时和【no-form-ts-redundant-export】冲突返工的情况。 ([f9b50bbe](https://github.com/ruan-cat/11comm/commit/f9b50bbe))
+- **openspec:** ⚠️  更新迭代 `migrate-static-data-to-nitro-query` 的全部文档，避免出现编写兼容性的中文类型变量 ([71dfe5a9](https://github.com/ruan-cat/11comm/commit/71dfe5a9))
+- **openspec:** ⚠️  更新迭代 `migrate-static-data-to-nitro-query` 的 `list-page-pattern` 列表页改造规范，避免出现删改多余内容的情况 ([0ceb6cd4](https://github.com/ruan-cat/11comm/commit/0ceb6cd4))
+- **openspec,claude:** ⚠️  为多个文件，增加严格的【类型项目的代码组织方式与导出规范】 ([0bc2639b](https://github.com/ruan-cat/11comm/commit/0bc2639b))
+- **openspec:** ⚠️  补充列表页处理的规范 ([900d6b0c](https://github.com/ruan-cat/11comm/commit/900d6b0c))
+- **openspec:** ⚠️  重置任务清单，重做。 ([c17573b4](https://github.com/ruan-cat/11comm/commit/c17573b4))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.6.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.5.0...v0.6.0)
