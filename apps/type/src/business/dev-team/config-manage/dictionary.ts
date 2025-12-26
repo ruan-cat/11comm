@@ -69,3 +69,22 @@ export const enableStatusOptions: OptionsType = [
 	{ label: "启用", value: "enabled" },
 	{ label: "禁用", value: "disabled" },
 ];
+
+/**
+ * 字典表单数据类型
+ * Dictionary form data type
+ */
+export interface DictionaryFormVO {
+	/** 字典名称 Dictionary name */
+	dictionaryName: string;
+	/** 字典编码 Dictionary code */
+	dictionaryCode: string;
+	/** 字典类型 Dictionary type */
+	dictionaryType: string;
+	/** 字典描述 Dictionary description */
+	dictionaryDescription: string;
+	/** 是否启用 Is enabled */
+	isEnabled: string;
+	/** 备注 Remark */
+	remark: string;
+}

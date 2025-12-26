@@ -1,20 +1,4 @@
-import type { ShiftSetting } from "@01s-11comm/type";
-
-/** 班次设置表单 */
-export interface ShiftSettingFormVO extends Partial<ShiftSetting> {
-	/** 班次名称 */
-	name: string;
-	/** 开始时间 */
-	startTime: string;
-	/** 结束时间 */
-	endTime: string;
-	/** 班次类型 */
-	type: string;
-	/** 描述 */
-	description: string;
-	/** 是否启用 */
-	enabled: boolean;
-}
+import type { ShiftSetting, ShiftSettingFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ShiftSettingFormVO = {

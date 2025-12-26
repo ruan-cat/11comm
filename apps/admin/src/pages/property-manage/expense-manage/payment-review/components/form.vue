@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { PaymentReviewFormVO } from "@01s-11comm/type";
 
-import { PaymentReviewFormProps, PaymentReviewFormVO, defaultForm } from "./form";
+import { PaymentReviewFormProps, defaultForm } from "./form";
 
 const props = defineProps<PaymentReviewFormProps>();
 

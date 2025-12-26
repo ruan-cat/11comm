@@ -101,3 +101,18 @@ export const reportInfoEnabledOptions: OptionsType = [
 	{ label: "启用", value: true },
 	{ label: "禁用", value: false },
 ];
+
+/**
+ * 报表类型
+ */
+export type ReportType = "reportGroup" | "optionTitle" | "sort" | "description";
+
+/**
+ * 报表信息表单 VO
+ */
+export interface ReportInfoFormVO {
+	reportGroup: string;
+	optionTitle: string;
+	sort: string;
+	description: string;
+}

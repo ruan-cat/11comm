@@ -1,23 +1,5 @@
 import { discountTypeOptions } from "@01s-11comm/type";
-
-// ==================== 联合类型定义 ====================
-
-/** 折扣类型联合类型 */
-export type DiscountType = "百分比折扣" | "固定金额折扣" | "阶梯折扣";
-
-// ==================== 类型定义 ====================
-
-/** 优惠类型表单数据类型 */
-export interface DiscountTypeFormVO {
-	/** 折扣名称 */
-	discountName: string;
-	/** 折扣类型 */
-	discountType: DiscountType;
-	/** 规则名称 */
-	ruleName: string;
-	/** 规则 */
-	rule: string;
-}
+import type { DiscountType, DiscountTypeFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 

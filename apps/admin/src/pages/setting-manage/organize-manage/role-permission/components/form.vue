@@ -5,7 +5,8 @@ import type { PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { RolePermissionFormProps, type RolePermissionFormVO } from "./form";
+import { RolePermissionFormProps } from "./form";
+import type { RolePermissionFormVO } from "@01s-11comm/type";
 
 /** 表单组件 props */
 const props = defineProps<RolePermissionFormProps>();

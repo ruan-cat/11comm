@@ -1,20 +1,4 @@
-import type { SchedulingSetting } from "@01s-11comm/type";
-
-/** 排班设置表单 */
-export interface SchedulingSettingFormVO extends Partial<SchedulingSetting> {
-	/** 班次名称 */
-	name: string;
-	/** 排班类型 */
-	type: string;
-	/** 排班周期 */
-	cycle: string;
-	/** 生效时间 */
-	effectiveTime: string;
-	/** 人员 */
-	staff: string;
-	/** 状态 */
-	status: string;
-}
+import type { SchedulingSetting, SchedulingSettingFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: SchedulingSettingFormVO = {

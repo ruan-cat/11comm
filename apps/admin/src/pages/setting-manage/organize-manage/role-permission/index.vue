@@ -16,7 +16,8 @@ import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
 import { h } from "vue";
 
-import { type RolePermissionFormProps, defaultForm, type RolePermissionFormVO } from "./components/form";
+import { type RolePermissionFormProps, defaultForm } from "./components/form";
+import type { RolePermissionFormVO } from "@01s-11comm/type";
 import RolePermissionForm from "./components/form.vue";
 import type { RolePermission, RolePermissionListQuery } from "@01s-11comm/type";
 import { useRolePermissionListQuery } from "@/api/setting-manage/organize-manage/role-permission";

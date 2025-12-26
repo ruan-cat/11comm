@@ -13,7 +13,8 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-import { type DiscountTypeFormProps, defaultForm, type DiscountTypeFormVO, type DiscountType } from "./components/form";
+import { type DiscountTypeFormProps, defaultForm } from "./components/form";
+import type { DiscountTypeFormVO, DiscountType } from "@01s-11comm/type";
 import DiscountTypeForm from "./components/form.vue";
 import { useDiscountTypeListQuery } from "@/api/property-manage/expense-manage/discount-type";
 import { type DiscountTypeListItem, type DiscountTypeQueryParams, discountTypeOptions } from "@01s-11comm/type";

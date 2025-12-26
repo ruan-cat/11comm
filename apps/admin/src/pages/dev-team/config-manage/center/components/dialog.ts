@@ -7,7 +7,8 @@ import { ref, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ConfigCenterFormProps, defaultForm, type ConfigCenterFormVO } from "./form";
+import { type ConfigCenterFormProps, defaultForm } from "./form";
+import type { ConfigCenterFormVO } from "@01s-11comm/type";
 import type { ConfigCenterListItem } from "@01s-11comm/type";
 import ConfigCenterForm from "./form.vue";
 

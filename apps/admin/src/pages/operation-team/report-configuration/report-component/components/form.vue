@@ -4,7 +4,8 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
-import { ReportComponentFormProps, ReportComponentFormVO, defaultForm } from "./form";
+import type { ReportComponentFormVO } from "@01s-11comm/type";
+import { ReportComponentFormProps, defaultForm } from "./form";
 
 const props = defineProps<ReportComponentFormProps>();
 

@@ -46,3 +46,14 @@ export const meterReadingTypeStatusOptions: OptionsType = [
 	{ label: "启用", value: "启用" },
 	{ label: "禁用", value: "禁用" },
 ];
+
+/**
+ * @description 抄表类型表单VO
+ * Meter reading type form VO
+ */
+export interface MeterReadingTypeFormVO {
+	/** 名称 Name */
+	name: string;
+	/** 说明 Description */
+	description: string;
+}

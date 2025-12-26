@@ -78,3 +78,28 @@ export const usageStatusOptions: OptionsType = [
 ];
 
 // ==================== 折扣申请相关选项 ====================
+
+/** 警告 这里仅为了演示 实际上的业务类型为 string */
+export type ApplicationType = "空置房" | "困难家庭" | "长期住户" | "特殊贡献";
+
+/** 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内 */
+export interface DiscountApplyFormVO {
+	/** 房屋 */
+	house: string;
+	/** 申请类型 */
+	applicationType: ApplicationType;
+	/** 费用项目 */
+	expenseItem: string;
+	/** 申请人 */
+	applicant: string;
+	/** 申请电话 */
+	applicantPhone: string;
+	/** 开始时间 */
+	startTime: string;
+	/** 结束时间 */
+	endTime: string;
+	/** 申请名说明 */
+	description: string;
+	/** 图片材料 */
+	material: string;
+}

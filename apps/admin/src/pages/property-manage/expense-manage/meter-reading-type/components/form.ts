@@ -1,13 +1,4 @@
-/**
- * @description 抄表类型表单VO
- * Meter reading type form VO
- */
-export interface MeterReadingTypeFormVO {
-	/** 名称 Name */
-	name: string;
-	/** 说明 Description */
-	description: string;
-}
+import type { MeterReadingTypeFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: MeterReadingTypeFormVO = {

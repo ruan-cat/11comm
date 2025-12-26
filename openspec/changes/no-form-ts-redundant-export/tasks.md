@@ -15,14 +15,14 @@
 
 - [x] 2.1.1 处理 `setting-manage/organize-manage` 下的全部 form.ts
 - [x] 2.1.2 处理 `setting-manage/system-manage` 下的全部 form.ts
-- [ ] 2.1.3 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.1.3 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.2 dev-team 模块
 
 - [x] 2.2.1 处理 `dev-team/menu-manage` 下的全部 form.ts
 - [x] 2.2.2 处理 `dev-team/cache-manage` 下的全部 form.ts
 - [x] 2.2.3 处理 `dev-team/config-manage` 下的全部 form.ts
-- [~] 2.2.4 验证 form.vue 和 index.vue 的导入调整 (进行中)
+- [x] 2.2.4 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.3 operation-team 模块
 
@@ -30,17 +30,17 @@
 - [x] 2.3.2 处理 `operation-team/data-manage` 下的全部 form.ts
 - [x] 2.3.3 处理 `operation-team/merchant-manage` 下的全部 form.ts
 - [x] 2.3.4 处理 `operation-team/report-configuration` 下的全部 form.ts
-- [ ] 2.3.5 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.3.5 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.4 property-manage.community-manage 模块
 
 - [x] 2.4.1 处理 `property-manage/community-manage` 下的全部 form.ts
-- [ ] 2.4.2 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.4.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.5 property-manage.contract-manage 模块
 
 - [x] 2.5.1 处理 `property-manage/contract-manage` 下的全部 form.ts
-- [ ] 2.5.2 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.5.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.6 property-manage.expense-manage 模块(分多批)
 
@@ -49,47 +49,47 @@
 - [x] 2.6.3 处理 `expense-manage` 的第 3 批: refundReview, houseCharge, meterReadingType
 - [x] 2.6.4 处理 `expense-manage` 的第 4 批: discountType, expenseSummaryTable, discountApply
 - [x] 2.6.5 处理 `expense-manage` 的第 5 批: discountSetting, contracteCharge, expenseItemSetting, cancelFee
-- [ ] 2.6.6 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.6.6 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.7 property-manage.house-property-manage 模块(分多批)
 
 - [x] 2.7.1 处理 `house-property-manage` 的第 1 批: house, invoice, invoiceTitle
 - [x] 2.7.2 处理 `house-property-manage` 的第 2 批: ownerAccount, ownerInformation, ownerMember
 - [x] 2.7.3 处理 `house-property-manage` 的第 3 批: ownersCommittee, reserveVenue, reserveVenueOrder, siteManagement
-- [ ] 2.7.4 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.7.4 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.8 property-manage.parking-manage 模块
 
 - [x] 2.8.1 处理 `property-manage/parking-manage` 下的全部 form.ts
-- [ ] 2.8.2 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.8.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.9 property-manage.patrol-manage 模块
 
 - [x] 2.9.1 处理 `property-manage/patrol-manage` 下的全部 form.ts
-- [ ] 2.9.2 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.9.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.10 property-manage.repairs-manage 模块
 
 - [x] 2.10.1 处理 `property-manage/repairs-manage` 下的全部 form.ts
-- [ ] 2.10.2 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.10.2 验证 form.vue 和 index.vue 的导入调整
 
 ### 2.11 property-manage.report-manage 模块
 
 - [x] 2.11.1 处理 `property-manage/report-manage` 下的全部 form.ts
-- [ ] 2.11.2 验证 form.vue 和 index.vue 的导入调整
+- [x] 2.11.2 验证 form.vue 和 index.vue 的导入调整
 
 ## 3. 验证和测试
 
-- [ ] 3.1 对整个项目运行类型检查: `pnpm typecheck`
-- [ ] 3.2 对后台项目运行类型检查: `pnpm -F @01s-11comm/admin typecheck`
-- [ ] 3.3 运行 lint 检查: `pnpm -F @01s-11comm/admin lint`
-- [ ] 3.4 确认没有遗留的冗余导出
-- [ ] 3.5 确认所有导入路径正确指向类型项目
+- [x] 3.1 对整个项目运行类型检查: `pnpm typecheck`
+- [x] 3.2 对后台项目运行类型检查: `pnpm -F @01s-11comm/admin typecheck`
+- [x] 3.3 运行 lint 检查: `pnpm -F @01s-11comm/admin lint`
+- [x] 3.4 确认没有遗留的冗余导出
+- [x] 3.5 确认所有导入路径正确指向类型项目
 
 ## 4. 文档更新
 
-- [ ] 4.1 更新项目文档,说明 form.ts 的导出规范
-- [ ] 4.2 在 CLAUDE.md 中补充相关说明(如需要)
+- [x] 4.1 更新项目文档,说明 form.ts 的导出规范
+- [x] 4.2 在 CLAUDE.md 中补充相关说明(如需要)
 
 ## 当前进度总结
 
@@ -97,38 +97,18 @@
 1. ✅ 类型项目准备工作全部完成
 2. ✅ 所有 form.ts 文件的冗余导出已清理完毕
 3. ✅ 类型项目类型检查通过
-4. ✅ 添加了缺失的 FormVO 类型到类型项目：
-   - OverduePaymentInformationFormVO
-   - RegisterProtocolFormVO  
-   - MenuGroupFormVO
-   - ConfigCenterFormVO
-   - DictionaryTypeFormVO
-   - RefreshCacheFormVO
-   - InitializeCellFormVO
-   - HouseDecorationFormVO
-5. ✅ 添加了缺失的选项到类型项目：
-   - storeOptions
-   - iconOptions
-   - propertyCompanyOptions (新增)
-6. ✅ 修复了约 50+ 个 Vue 文件的导入语句
-7. ✅ 添加了缺失的工具函数到类型项目：
-   - noticeListDataToFormData (notice 模块)
-   - handingBusinessListDataToFormData (handing-business 模块)
-8. ✅ 解决了 listDataToFormData 函数名冲突问题
+4. ✅ 添加了所有缺失的 FormVO 类型到类型项目，并解决了所有类型冲突（如 FeeType 重命名为 ExpenseItemFeeType 等）
+5. ✅ 修复了所有 Vue 文件（form.vue 和 index.vue）的导入语句
+6. ✅ 验证了 admin 和 type 项目的类型检查均通过
 
 ### 进行中
-- 🔄 继续修复 Vue 文件的导入语句（还有约 172 个类型错误）
-- 🔄 主要剩余错误类型：
-  - FieldValues 类型转换错误（DictionaryTypeFormVO, InitializeCellFormVO）
-  - 中文类型名称需要处理（车位结构图表单VO, 巡检明细表单Props）
-  - 其他非 form.ts 相关的类型错误
+- (无)
 
 ### 待处理
-- ⏳ 约 172 个类型错误需要处理（大部分不是 form.ts 导入相关）
-- ⏳ 完整的类型检查验证
+- (无)
 
 ### 关键进展
-- 错误数量：228 → 204 → 184 → 172
+- 错误数量：0 (所有类型错误已修复)
 - 类型项目已通过类型检查 ✅
 - 所有 form.ts 文件的冗余导出已清理 ✅
-- 所有 form.ts 相关的导入错误已基本修复 ✅
+- 所有 form.ts 相关的导入错误已修复 ✅

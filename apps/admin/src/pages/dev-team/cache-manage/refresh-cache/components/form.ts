@@ -4,29 +4,7 @@
  */
 
 import { type Mode } from "@/composables/use-mode";
-
-/**
- * 刷新缓存表单数据类型
- * Refresh cache form data type
- */
-export interface RefreshCacheFormVO {
-	/** 缓存名称 Cache name */
-	cacheName: string;
-	/** 缓存键名 Cache key */
-	cacheKey: string;
-	/** 缓存类型 Cache type */
-	cacheType: string;
-	/** 缓存分组 Cache group */
-	cacheGroup: string;
-	/** 过期时间（秒） Expire time (seconds) */
-	expireTime: number;
-	/** 缓存描述 Description */
-	description: string;
-	/** 刷新策略 Refresh policy */
-	refreshPolicy: string;
-	/** 状态 Status */
-	status: string;
-}
+import type { RefreshCacheFormVO } from "@01s-11comm/type";
 
 /** 默认表单 Default form */
 export const defaultForm: RefreshCacheFormVO = {

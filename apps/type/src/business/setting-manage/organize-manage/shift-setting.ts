@@ -43,3 +43,19 @@ export const shiftTypeOptions: OptionsType = [
 	{ label: "夜班", value: "night" },
 	{ label: "全天", value: "full" },
 ];
+
+/** 班次设置表单 */
+export interface ShiftSettingFormVO extends Partial<ShiftSetting> {
+	/** 班次名称 */
+	name: string;
+	/** 开始时间 */
+	startTime: string;
+	/** 结束时间 */
+	endTime: string;
+	/** 班次类型 */
+	type: string;
+	/** 描述 */
+	description: string;
+	/** 是否启用 */
+	enabled: boolean;
+}

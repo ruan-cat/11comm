@@ -1,35 +1,4 @@
-// ==================== 联合类型定义 ====================
-
-/** 费用项名称联合类型 */
-export type ExpenseItemNameType =
-	| "物业费"
-	| "水费"
-	| "电费"
-	| "燃气费"
-	| "停车费"
-	| "电梯费"
-	| "垃圾处理费"
-	| "绿化费"
-	| "安防费"
-	| "维修基金";
-
-// ==================== 接口定义 ====================
-
-/**
- * 费用汇总表表单数据类型
- */
-export interface ExpenseSummaryTableFormVO {
-	/** 时间 */
-	time: string;
-	/** 费用项ID */
-	expenseItemId: string;
-	/** 费用项名称 */
-	expenseItemName: ExpenseItemNameType;
-	/** 应收金额 */
-	receivableAmount: string;
-	/** 实收金额 */
-	actualAmount: string;
-}
+import type { ExpenseItemNameType, ExpenseSummaryTableFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ExpenseSummaryTableFormVO = {

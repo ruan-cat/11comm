@@ -87,3 +87,35 @@ export const paymentReviewAuditStatusOptions: OptionsType = [
 	{ label: "已通过", value: "已通过" },
 	{ label: "已拒绝", value: "已拒绝" },
 ];
+
+/**
+ * 缴费审核表单数据类型
+ */
+export interface PaymentReviewFormVO {
+	/** 房屋 */
+	house: string;
+	/** 费用项目 */
+	expenseItem: string;
+	/** 付费周期 */
+	paymentPeriod: string;
+	/** 缴费起始时间 */
+	paymentStartTime: string;
+	/** 缴费结束时间 */
+	paymentEndTime: string;
+	/** 应付金额 */
+	payableAmount: string;
+	/** 实付金额 */
+	paidAmount: string;
+	/** 操作员工 */
+	operator: string;
+	/** 缴费时间 */
+	paymentTime: string;
+	/** 审核状态 */
+	auditStatus: string;
+	/** 审核说明 */
+	auditDescription: string;
+	/** 缴费备注 */
+	paymentRemark: string;
+	/** 详情 */
+	details: string;
+}

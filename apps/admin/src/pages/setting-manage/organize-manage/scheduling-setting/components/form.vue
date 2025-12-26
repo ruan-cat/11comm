@@ -5,8 +5,8 @@ import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { type SchedulingSettingFormProps, type SchedulingSettingFormVO } from "./form";
-import { schedulingTypeOptions, schedulingStatusOptions } from "@01s-11comm/type";
+import { type SchedulingSettingFormProps } from "./form";
+import { type SchedulingSettingFormVO, schedulingTypeOptions, schedulingStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<SchedulingSettingFormProps>();
 

@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
+import type { ExpenseItemFeeType, ExpenseItemSettingFormVO } from "@01s-11comm/type";
 
-import { ExpenseItemSettingFormProps, type FeeType, ExpenseItemSettingFormVO, defaultForm } from "./form";
+import { ExpenseItemSettingFormProps, defaultForm } from "./form";
 
 const props = defineProps<ExpenseItemSettingFormProps>();
 

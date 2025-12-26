@@ -11,7 +11,8 @@ definePage({
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useReportGroupListQuery } from "@/api/operation-team/report-configuration/report-group";
-import { type ReportGroupFormProps, defaultForm, type ReportGroupFormVO } from "./components/form";
+import { type ReportGroupFormProps, defaultForm } from "./components/form";
+import type { ReportGroupFormVO } from "@01s-11comm/type";
 import ReportGroupForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";

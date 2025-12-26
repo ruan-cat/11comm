@@ -4,9 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { discountTypeOptions, type DiscountTypeFormVO } from "@01s-11comm/type";
 
-import { DiscountTypeFormProps, DiscountTypeFormVO, defaultForm } from "./form";
-import { discountTypeOptions } from "@01s-11comm/type";
+import { DiscountTypeFormProps, defaultForm } from "./form";
 
 const props = defineProps<DiscountTypeFormProps>();
 

@@ -13,15 +13,17 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type ExpenseItemSettingFormProps,
 	defaultForm,
-	type ExpenseItemSettingFormVO,
-	type FeeType,
-	type ExpenseIdentifierType,
-	type PaymentType,
-	type AccountDeductionType,
-	type MobilePaymentType,
-	type RoundingModeType,
-	type DecimalPlacesType,
 } from "./components/form";
+import type {
+	ExpenseItemSettingFormVO,
+	ExpenseItemFeeType as FeeType,
+	ExpenseItemIdentifierType as ExpenseIdentifierType,
+	ExpenseItemPaymentType as PaymentType,
+	ExpenseItemAccountDeductionType as AccountDeductionType,
+	ExpenseItemMobilePaymentType as MobilePaymentType,
+	ExpenseItemRoundingModeType as RoundingModeType,
+	ExpenseItemDecimalPlacesType as DecimalPlacesType,
+} from "@01s-11comm/type";
 import ExpenseItemSettingForm from "./components/form.vue";
 import { useExpenseItemSettingListQuery } from "@/api/property-manage/expense-manage/expense-item-setting";
 import {

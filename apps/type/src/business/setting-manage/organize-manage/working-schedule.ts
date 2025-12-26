@@ -65,3 +65,25 @@ export const scheduleTypeOptions: OptionsType = [
 	{ label: "夜班", value: "night" },
 	{ label: "全天", value: "full_day" },
 ];
+
+/** 排班表表单业务接口 */
+export interface WorkingScheduleFormVO extends Partial<WorkingSchedule> {
+	/** 排班名称 */
+	name: string;
+	/** 排班类型 */
+	type: ScheduleType;
+	/** 开始时间 */
+	startTime: string;
+	/** 结束时间 */
+	endTime: string;
+	/** 星期几 */
+	weekday: number;
+	/** 负责人姓名 */
+	managerName: string;
+	/** 联系电话 */
+	phone: string;
+	/** 排班描述 */
+	description: string;
+	/** 是否启用 */
+	enabled: boolean;
+}

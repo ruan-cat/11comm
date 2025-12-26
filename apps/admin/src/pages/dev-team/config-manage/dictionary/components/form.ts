@@ -4,25 +4,7 @@
  */
 
 import { type Mode } from "@/composables/use-mode";
-
-/**
- * 字典表单数据类型
- * Dictionary form data type
- */
-export interface DictionaryFormVO {
-	/** 字典名称 Dictionary name */
-	dictionaryName: string;
-	/** 字典编码 Dictionary code */
-	dictionaryCode: string;
-	/** 字典类型 Dictionary type */
-	dictionaryType: string;
-	/** 字典描述 Dictionary description */
-	dictionaryDescription: string;
-	/** 是否启用 Is enabled */
-	isEnabled: string;
-	/** 备注 Remark */
-	remark: string;
-}
+import type { DictionaryFormVO } from "@01s-11comm/type";
 
 /** 默认表单 Default form */
 export const defaultForm: DictionaryFormVO = {

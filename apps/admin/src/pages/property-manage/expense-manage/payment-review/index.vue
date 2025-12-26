@@ -10,7 +10,8 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type PaymentReviewFormProps, defaultForm, type PaymentReviewFormVO } from "./components/form";
+import { type PaymentReviewFormProps, defaultForm } from "./components/form";
+import type { PaymentReviewFormVO } from "@01s-11comm/type";
 import 缴费审核Form from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { usePaymentReviewListQuery } from "@/api/property-manage/expense-manage/payment-review";

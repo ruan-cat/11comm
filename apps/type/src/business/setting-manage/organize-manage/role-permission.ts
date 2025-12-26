@@ -40,3 +40,18 @@ export const permissionTypeOptions: OptionsType = [
 	{ label: "数据权限", value: "data" },
 	{ label: "功能权限", value: "function" },
 ];
+
+/**
+ * 角色权限表单数据对象
+ * Role permission form data object
+ */
+export interface RolePermissionFormVO extends Partial<RolePermission> {
+	/** 角色名称 Role name */
+	name: string;
+	/** 角色编码 Role code */
+	code: string;
+	/** 是否启用 Is enabled */
+	enabled: boolean;
+	/** 角色描述 Role description */
+	description: string;
+}

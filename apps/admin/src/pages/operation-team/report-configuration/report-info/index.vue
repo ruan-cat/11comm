@@ -13,7 +13,8 @@ import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { ReportInfoListItem, ReportInfoQueryParams } from "@01s-11comm/type";
 import { useReportInfoListQuery } from "@/api/operation-team/report-configuration/report-info";
-import { type ReportInfoFormProps, defaultForm, type ReportInfoFormVO } from "./components/form";
+import { type ReportInfoFormProps, defaultForm } from "./components/form";
+import type { ReportInfoFormVO } from "@01s-11comm/type";
 import ReportInfoForm from "./components/form.vue";
 
 const reportInfoFormInstance = ref<InstanceType<typeof ReportInfoForm> | null>(null);

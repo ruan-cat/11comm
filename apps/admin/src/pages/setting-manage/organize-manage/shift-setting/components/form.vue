@@ -9,8 +9,8 @@ import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import { type ShiftSettingFormProps, type ShiftSettingFormVO } from "./form";
-import { shiftTypeOptions } from "@01s-11comm/type";
+import { type ShiftSettingFormProps } from "./form";
+import { type ShiftSettingFormVO, shiftTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<ShiftSettingFormProps & { mode: Mode }>();
 

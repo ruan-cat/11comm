@@ -12,7 +12,8 @@ import { ref, computed, onMounted } from "vue";
 import { h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ParkingSpaceStructureDiagramFormProps, defaultForm, type ParkingSpaceStructureDiagramFormVO } from "./components/form";
+import { type ParkingSpaceStructureDiagramFormProps, defaultForm } from "./components/form";
+import type { ParkingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import ParkingSpaceStructureDiagramForm from "./components/form.vue";
 import { useParkingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/parking-space-structure-diagram";
 import {

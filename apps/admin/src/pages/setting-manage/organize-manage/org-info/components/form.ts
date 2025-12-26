@@ -1,22 +1,4 @@
-import type { OrganizationTreeNode, OrganizationType } from "@01s-11comm/type";
-
-/** 组织信息表单业务接口 */
-export interface OrganizationInfoFormVO extends Partial<OrganizationTreeNode> {
-	/** 组织名称 */
-	name: string;
-	/** 组织类型 */
-	type: OrganizationType;
-	/** 组织编码 */
-	code: string;
-	/** 负责人姓名 */
-	leaderName: string;
-	/** 联系电话 */
-	phone: string;
-	/** 组织描述 */
-	description: string;
-	/** 是否启用 */
-	enabled: boolean;
-}
+import type { OrganizationTreeNode, OrganizationType, OrganizationInfoFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: OrganizationInfoFormVO = {

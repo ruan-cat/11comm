@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { OrganizationInfoFormProps, defaultForm, type OrganizationInfoFormVO } from "./form";
-import { organizationTypeOptions } from "@01s-11comm/type";
+import { OrganizationInfoFormProps, defaultForm } from "./form";
+import { organizationTypeOptions, type OrganizationInfoFormVO } from "@01s-11comm/type";
 
 const props = defineProps<OrganizationInfoFormProps>();
 

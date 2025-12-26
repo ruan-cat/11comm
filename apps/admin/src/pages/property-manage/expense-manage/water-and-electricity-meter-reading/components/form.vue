@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { WaterAndElectricityMeterReadingFormVO } from "@01s-11comm/type";
 
-import { WaterAndElectricityMeterReadingFormProps, type WaterAndElectricityMeterReadingFormVO } from "./form";
+import { WaterAndElectricityMeterReadingFormProps } from "./form";
 
 const props = defineProps<WaterAndElectricityMeterReadingFormProps>();
 

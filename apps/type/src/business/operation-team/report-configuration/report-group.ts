@@ -61,3 +61,17 @@ export const reportGroupEnabledOptions: OptionsType = [
 	{ label: "启用", value: true },
 	{ label: "禁用", value: false },
 ];
+
+/**
+ * 报表组类型
+ */
+export type ReportGroupType = "groupName" | "groupUrl" | "description";
+
+/**
+ * 报表组表单 VO
+ */
+export interface ReportGroupFormVO {
+	groupName: string;
+	groupUrl: string;
+	description: string;
+}

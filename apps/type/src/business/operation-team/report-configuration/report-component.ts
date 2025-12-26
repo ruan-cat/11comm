@@ -112,3 +112,20 @@ export const reportComponentEnabledOptions: OptionsType = [
 	{ label: "启用", value: true },
 	{ label: "禁用", value: false },
 ];
+
+/**
+ * 报表组件类型
+ */
+export type ReportComponentType = "componentName" | "componentType" | "queryMethod" | "sql" | "java" | "description";
+
+/**
+ * 报表组件表单 VO
+ */
+export interface ReportComponentFormVO {
+	componentName: string;
+	componentType: string;
+	queryMethod: string;
+	sql?: string;
+	java?: string;
+	description?: string;
+}

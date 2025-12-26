@@ -57,3 +57,19 @@ export const schedulingStatusOptions: OptionsType = [
 	{ label: "启用", value: "enabled" },
 	{ label: "禁用", value: "disabled" },
 ];
+
+/** 排班设置表单 */
+export interface SchedulingSettingFormVO extends Partial<SchedulingSetting> {
+	/** 班次名称 */
+	name: string;
+	/** 排班类型 */
+	type: string;
+	/** 排班周期 */
+	cycle: string;
+	/** 生效时间 */
+	effectiveTime: string;
+	/** 人员 */
+	staff: string;
+	/** 状态 */
+	status: string;
+}

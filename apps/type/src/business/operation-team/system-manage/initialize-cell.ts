@@ -117,50 +117,45 @@ export interface InitializeCell extends InitializeCellListItem {}
  */
 export interface InitializeCellListQuery extends InitializeCellQueryParams {}
 
+/** 单元格类型联合类型 */
+export type CellType =
+	| "ResidentialUnit"
+	| "CommercialUnit"
+	| "GarageUnit"
+	| "OfficeUnit"
+	| "ClubUnit"
+	| "PropertyUnit"
+	| "SportsUnit"
+	| "EducationUnit"
+	| "MedicalUnit"
+	| "StorageUnit"
+	| "CultureUnit";
+
+/** 状态联合类型 */
+export type CellStatus = "Initialized" | "Uninitialized" | "Initializing" | "InitializationFailed";
+
 /**
- * 初始化小区表单VO
- * Initialize cell form VO
+ * 初始化单元格表单数据类型
+ * @description
+ * 用于表单组件的数据传输和验证
  */
 export interface InitializeCellFormVO {
-	[key: string]: any;
-	/** 小区ID */
-	id?: string;
-	/** 单元格ID */
-	cellId?: string;
-	/** 单元格类型 */
-	cellType: string;
-	/** 小区名称 */
+	/** 单元格名称 */
 	cellName: string;
-	/** 小区编码 */
-	cellCode: string;
-	/** 所属区域 */
-	region: string;
-	/** 详细地址 */
-	address: string;
-	/** 建筑面积 */
-	buildingArea: number;
-	/** 占地面积 */
-	landArea: number;
-	/** 楼栋数量 */
-	buildingCount: number;
-	/** 单元数量 */
-	unitCount: number;
+	/** 单元格类型 */
+	cellType: CellType;
+	/** 建筑物ID */
+	buildingId: string;
+	/** 建筑物名称 */
+	buildingName: string;
+	/** 楼层 */
+	floor: string;
+	/** 单元号 */
+	unitNumber: string;
 	/** 户数 */
-	houseCount: number;
-	/** 车位数量 */
-	parkingCount: number;
-	/** 绿化率 */
-	greenRate: number;
-	/** 容积率 */
-	plotRatio: number;
-	/** 开发商 */
-	developer: string;
-	/** 物业公司 */
-	propertyCompany: string;
-	/** 成立时间 */
-	establishedTime: string;
-	/** 初始化状态 */
-	status: string;
+	households: number;
+	/** 状态 */
+	status: CellStatus;
 	/** 描述 */
-	description?: string;
+	description: string;
 }

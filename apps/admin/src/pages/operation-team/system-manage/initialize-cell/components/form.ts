@@ -1,52 +1,6 @@
 import type { OptionsType } from "plus-pro-components";
 import { type Mode } from "@/composables/use-mode";
-
-// ==================== 联合类型定义 ====================
-
-/** 单元格类型联合类型 */
-export type CellType =
-	| "ResidentialUnit"
-	| "CommercialUnit"
-	| "GarageUnit"
-	| "OfficeUnit"
-	| "ClubUnit"
-	| "PropertyUnit"
-	| "SportsUnit"
-	| "EducationUnit"
-	| "MedicalUnit"
-	| "StorageUnit"
-	| "CultureUnit";
-
-/** 状态联合类型 */
-export type CellStatus = "Initialized" | "Uninitialized" | "Initializing" | "InitializationFailed";
-
-// ==================== 业务类型定义 ====================
-
-/**
- * 初始化单元格表单数据类型
- * @description
- * 用于表单组件的数据传输和验证
- */
-export interface InitializeCellFormVO {
-	/** 单元格名称 */
-	cellName: string;
-	/** 单元格类型 */
-	cellType: CellType;
-	/** 建筑物ID */
-	buildingId: string;
-	/** 建筑物名称 */
-	buildingName: string;
-	/** 楼层 */
-	floor: string;
-	/** 单元号 */
-	unitNumber: string;
-	/** 户数 */
-	households: number;
-	/** 状态 */
-	status: CellStatus;
-	/** 描述 */
-	description: string;
-}
+import type { CellType, CellStatus, InitializeCellFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 // 选项常量已移至 ../test-data.ts 中，避免重复定义

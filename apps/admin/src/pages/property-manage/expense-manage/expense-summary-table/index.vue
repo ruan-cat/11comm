@@ -10,12 +10,8 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type ExpenseSummaryTableFormProps,
-	defaultForm,
-	type ExpenseSummaryTableFormVO,
-	type ExpenseItemNameType,
-} from "./components/form";
+import { type ExpenseSummaryTableFormProps, defaultForm } from "./components/form";
+import type { ExpenseSummaryTableFormVO, ExpenseItemNameType } from "@01s-11comm/type";
 import ExpenseSummaryTableForm from "./components/form.vue";
 import { useExpenseSummaryTableListQuery } from "@/api/property-manage/expense-manage/expense-summary-table";
 import {

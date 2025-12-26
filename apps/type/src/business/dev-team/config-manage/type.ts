@@ -91,11 +91,10 @@ export const requiredOptions: OptionsType = [
 ];
 
 /**
- * 字典类型表单VO
- * Dictionary type form VO
+ * 字典类型表单数据类型
+ * Dictionary type form data type
  */
 export interface DictionaryTypeFormVO {
-	[key: string]: any;
 	/** 字典编号 Dictionary number */
 	dictionaryNumber: string;
 	/** 字典名称 Dictionary name */
@@ -106,10 +105,16 @@ export interface DictionaryTypeFormVO {
 	dictionaryCategory: string;
 	/** 数据类型 Data type */
 	dataType: string;
+	/** 默认值 Default value */
+	defaultValue: string;
 	/** 是否必填 Is required */
 	isRequired: string;
-	/** 状态 Status */
+	/** 验证规则 Validation rule */
+	validationRule: string;
+	/** 显示顺序 Display order */
+	displayOrder: number;
+	/** 字典状态 Dictionary status */
 	status: string;
 	/** 备注 Remark */
-	remark?: string;
+	remark: string;
 }

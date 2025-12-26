@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { ParkingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 
-import { ParkingSpaceStructureDiagramFormProps, type ParkingSpaceStructureDiagramFormVO } from "./form";
+import { ParkingSpaceStructureDiagramFormProps } from "./form";
 import {
 	parkingSpaceTypeOptions,
 	parkingSpaceStatusOptions,

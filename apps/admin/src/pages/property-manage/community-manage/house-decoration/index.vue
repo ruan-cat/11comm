@@ -19,7 +19,8 @@ import {
 	delayStatusOptions,
 } from "@01s-11comm/type";
 import { useHouseDecorationListQuery } from "@/api/property-manage/community-manage/house-decoration";
-import { type HouseDecorationFormProps, defaultForm, type HouseDecorationFormVO } from "./components/form";
+import { type HouseDecorationFormProps, defaultForm } from "./components/form";
+import type { HouseDecorationFormVO } from "@01s-11comm/type";
 import HouseDecorationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";

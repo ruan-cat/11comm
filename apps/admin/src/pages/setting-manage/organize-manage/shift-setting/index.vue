@@ -11,7 +11,8 @@ definePage({
 import { ref, computed, onMounted, h } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
-import { type ShiftSettingFormProps, defaultForm, type ShiftSettingFormVO } from "./components/form";
+import { type ShiftSettingFormProps, defaultForm } from "./components/form";
+import type { ShiftSettingFormVO } from "@01s-11comm/type";
 import ShiftSettingForm from "./components/form.vue";
 import type { ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
 import { useShiftSettingListQuery } from "@/api/setting-manage/organize-manage/shift-setting";

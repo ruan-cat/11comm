@@ -1,16 +1,4 @@
-import type { StaffInfo } from "@01s-11comm/type";
-
-/** 员工信息表单数据类型 */
-export interface StaffInfoFormVO extends Partial<StaffInfo> {
-	name: string;
-	gender: string;
-	position: string;
-	email: string;
-	phone: string;
-	address: string;
-	orgName: string;
-	avatar?: string;
-}
+import type { StaffInfo, StaffInfoFormVO } from "@01s-11comm/type";
 
 /** 员工信息表单组件Props */
 export interface StaffInfoFormProps {

@@ -13,13 +13,13 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type WaterAndElectricityMeterReadingFormProps,
 	defaultForm,
-	type WaterAndElectricityMeterReadingFormVO,
 } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
 import { useWaterAndElectricityMeterReadingListQuery } from "@/api/property-manage/expense-manage/water-and-electricity-meter-reading";
 import type {
 	WaterAndElectricityMeterReadingListItem,
 	WaterAndElectricityMeterReadingQueryParams,
+	WaterAndElectricityMeterReadingFormVO,
 } from "@01s-11comm/type";
 import { meterTypeOptions } from "@01s-11comm/type";
 import { useToggle } from "@vueuse/core";

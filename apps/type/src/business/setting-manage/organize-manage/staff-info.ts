@@ -47,3 +47,15 @@ export const staffGenderOptions: OptionsType = [
 	{ label: "男", value: "男" },
 	{ label: "女", value: "女" },
 ];
+
+/** 员工信息表单数据类型 */
+export interface StaffInfoFormVO extends Partial<StaffInfo> {
+	name: string;
+	gender: string;
+	position: string;
+	email: string;
+	phone: string;
+	address: string;
+	orgName: string;
+	avatar?: string;
+}

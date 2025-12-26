@@ -1,20 +1,5 @@
-import type { RolePermission } from "@01s-11comm/type";
+import type { RolePermission, RolePermissionFormVO } from "@01s-11comm/type";
 import { type Mode } from "@/composables/use-mode";
-
-/**
- * 角色权限表单数据对象
- * Role permission form data object
- */
-export interface RolePermissionFormVO extends Partial<RolePermission> {
-	/** 角色名称 Role name */
-	name: string;
-	/** 角色编码 Role code */
-	code: string;
-	/** 是否启用 Is enabled */
-	enabled: boolean;
-	/** 角色描述 Role description */
-	description: string;
-}
 
 /**
  * 默认表单数据对象

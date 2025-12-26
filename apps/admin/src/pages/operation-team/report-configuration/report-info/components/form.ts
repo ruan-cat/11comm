@@ -1,19 +1,5 @@
 import { type Mode } from "@/composables/use-mode";
-
-const REPORT_TYPES = ["reportGroup", "optionTitle", "sort", "description"] as const;
-
-// 警告 这里仅为了演示 实际上的业务类型为 string
-export type ReportType = (typeof REPORT_TYPES)[number];
-
-/**
- * 报表信息表单 VO
- */
-export interface ReportInfoFormVO {
-	reportGroup: string;
-	optionTitle: string;
-	sort: string;
-	description: string;
-}
+import type { ReportInfoFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ReportInfoFormVO = {

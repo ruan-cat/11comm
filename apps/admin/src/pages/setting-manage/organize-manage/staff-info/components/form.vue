@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { StaffInfoFormVO } from "@01s-11comm/type";
 
-import { type StaffInfoFormProps, type StaffInfoFormVO } from "./form.ts";
+import { type StaffInfoFormProps } from "./form.ts";
 
 const props = defineProps<StaffInfoFormProps>();
 

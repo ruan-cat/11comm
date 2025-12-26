@@ -96,3 +96,76 @@ export const expenseItemSettingDeductionOptions: OptionsType = [
 	{ label: "否", value: "否" },
 ];
 
+/** 费用类型联合类型 */
+export type ExpenseItemFeeType =
+	| "物业费"
+	| "押金"
+	| "停车费"
+	| "煤气费"
+	| "取暖费"
+	| "维修费"
+	| "服务费"
+	| "其他"
+	| "水费"
+	| "电费"
+	| "租金"
+	| "公摊费"
+	| "燃气费"
+	| "垃圾处理费"
+	| "电梯费"
+	| "绿化费"
+	| "安防费"
+	| "维修基金"
+	| "暖气费"
+	| "网络费"
+	| "清洁费"
+	| "照明费"
+	| "消防费"
+	| "广告费"
+	| "装修费"
+	| "会费"
+	| "安保费"
+	| "设施费";
+
+/** 费用标识联合类型 */
+export type ExpenseItemIdentifierType = "周期性费用" | "一次性费用";
+
+/** 付费类型联合类型 */
+export type ExpenseItemPaymentType = "预付费" | "后付费";
+
+/** 账户抵扣联合类型 */
+export type ExpenseItemAccountDeductionType = "是" | "否";
+
+/** 手机缴费联合类型 */
+export type ExpenseItemMobilePaymentType = "是" | "否";
+
+/** 进位方式联合类型 */
+export type ExpenseItemRoundingModeType = "四舍五入" | "向上取整" | "向下取整";
+
+/** 保留小数位联合类型 */
+export type ExpenseItemDecimalPlacesType = "取整" | "1位" | "2位" | "3位" | "4位";
+
+export interface ExpenseItemSettingFormVO {
+	feeType: ExpenseItemFeeType;
+	expenseItem: string;
+	expenseIdentifier: ExpenseItemIdentifierType;
+	paymentType: ExpenseItemPaymentType;
+	/**
+	 * 费用类型为 押金 时，该表单隐藏
+	 */
+	paymentCycle?: string;
+	/**
+	 * 费用类型为 煤气费 时，该表单隐藏
+	 */
+	prepaymentPeriod?: string;
+	unit: string;
+	accountDeduction: ExpenseItemAccountDeductionType;
+	mobilePayment: ExpenseItemMobilePaymentType;
+	roundingMode: ExpenseItemRoundingModeType;
+	decimalPlaces: ExpenseItemDecimalPlacesType;
+	status: string;
+	formula: string;
+	billingUnitPrice: string;
+	fixedFee: string | `${number}` | number;
+}
+

@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { ExpenseSummaryTableFormVO } from "@01s-11comm/type";
 
-import { ExpenseSummaryTableFormProps, ExpenseSummaryTableFormVO, defaultForm } from "./form";
+import { ExpenseSummaryTableFormProps, defaultForm } from "./form";
 
 const props = defineProps<ExpenseSummaryTableFormProps>();
 

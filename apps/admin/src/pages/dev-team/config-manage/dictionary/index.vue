@@ -18,7 +18,8 @@ import {
 } from "@01s-11comm/type";
 import { useDictionaryListQuery } from "@/api/dev-team/config-manage/dictionary";
 
-import { type DictionaryFormProps, type DictionaryFormVO, defaultForm } from "./components/form";
+import { type DictionaryFormProps, defaultForm } from "./components/form";
+import type { DictionaryFormVO } from "@01s-11comm/type";
 import DictionaryForm from "./components/form.vue";
 const dictionaryFormInstance = ref<InstanceType<typeof DictionaryForm> | null>(null);
 

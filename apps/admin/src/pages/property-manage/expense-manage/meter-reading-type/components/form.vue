@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
+import type { MeterReadingTypeFormVO } from "@01s-11comm/type";
 
-import { MeterTypeFormProps, MeterReadingTypeFormVO } from "./form";
+import { MeterTypeFormProps } from "./form";
 
 const props = defineProps<MeterTypeFormProps>();
 

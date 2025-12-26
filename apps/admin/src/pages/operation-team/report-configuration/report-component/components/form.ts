@@ -1,21 +1,5 @@
 import { type Mode } from "@/composables/use-mode";
-
-const REPORT_COMPONENT_TYPES = ["componentName", "componentType", "queryMethod", "sql", "java", "description"] as const;
-
-// 警告 这里仅为了演示 实际上的业务类型为 string
-export type ReportComponentType = (typeof REPORT_COMPONENT_TYPES)[number];
-
-/**
- * 报表组件表单 VO
- */
-export interface ReportComponentFormVO {
-	componentName: string;
-	componentType: string;
-	queryMethod: string;
-	sql?: string;
-	java?: string;
-	description?: string;
-}
+import type { ReportComponentFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ReportComponentFormVO = {

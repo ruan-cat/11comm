@@ -4,7 +4,8 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
-import { ReportGroupFormProps, ReportGroupFormVO, defaultForm } from "./form";
+import type { ReportGroupFormVO } from "@01s-11comm/type";
+import { ReportGroupFormProps, defaultForm } from "./form";
 
 const props = defineProps<ReportGroupFormProps>();
 

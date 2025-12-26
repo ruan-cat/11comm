@@ -17,6 +17,9 @@ export type HouseDecorationStatusType = "待审核" | "审核不通过" | "装�
  */
 export type IsDelayedType = "是" | "否";
 
+/** 是否违规联合类型 */
+export type IsViolatedType = "是" | "否";
+
 /**
  * 房屋装修列表数据
  * House decoration list item
@@ -119,11 +122,11 @@ export interface HouseDecorationFormVO {
 	/** 是否延期 Is delayed */
 	isDelayed: IsDelayedType;
 	/** 延期时间 Delay time */
-	delayTime?: string;
+	delayTime: string;
 	/** 是否违规 Is violated */
-	isViolated?: IsDelayedType;
+	isViolated: IsViolatedType;
 	/** 违规说明 Violation description */
-	violationDescription?: string;
+	violationDescription: string;
 	/** 备注信息 Remarks */
-	remarks?: string;
+	remarks: string;
 }

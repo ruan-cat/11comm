@@ -49,26 +49,32 @@ export const waterAndElectricityMeterReadingStatusOptions: OptionsType = [
 ];
 
 /**
+ * @description 费用类型
+ * Expense type
+ */
+export type MeterReadingExpenseType = "水费" | "电费";
+
+/**
  * @description 水电抄表表单VO
  * Water and electricity meter reading form VO
  */
 export interface WaterAndElectricityMeterReadingFormVO {
-	/** 房屋编号 House number */
-	houseNumber: string;
-	/** 业主名称 Owner name */
-	ownerName: string;
-	/** 表计类型 Meter type */
-	meterType: string;
-	/** 上期读数 Last reading */
+	/** 费用类型 Expense type */
+	expenseType: MeterReadingExpenseType;
+	/** 收费项目 Charge item */
+	chargeItem: "水表" | "电表";
+	/** 抄表类型 Meter reading type */
+	meterReadingType: "水表" | "电表";
+	/** 收费对象 Charge object */
+	chargeObject: string;
+	/** 上期度数 Last reading */
 	lastReading: string;
-	/** 本期读数 Current reading */
+	/** 本期度数 Current reading */
 	currentReading: string;
-	/** 用量 Usage */
-	usage: string;
-	/** 抄表时间 Meter reading time */
-	meterReadingTime: string;
-	/** 抄表员 Meter reader */
-	meterReader: string;
+	/** 上期读表时间 Last reading time */
+	lastReadingTime: string;
+	/** 本期读表时间 Current reading time */
+	currentReadingTime: string;
 	/** 备注 Remark */
 	remark?: string;
 }

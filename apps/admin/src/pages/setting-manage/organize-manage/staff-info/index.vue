@@ -10,7 +10,8 @@ definePage({
 
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "plugins/i18n.ts";
-import { type StaffInfoFormProps, defaultForm, type StaffInfoFormVO } from "./components/form.ts";
+import { type StaffInfoFormProps, defaultForm } from "./components/form.ts";
+import type { StaffInfoFormVO } from "@01s-11comm/type";
 import StaffInfoForm from "./components/form.vue";
 import { useStaffInfoListQuery } from "@/api/setting-manage/organize-manage/staff-info";
 import type { StaffInfo, StaffInfoListQuery } from "@01s-11comm/type";

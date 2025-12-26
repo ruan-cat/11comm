@@ -10,7 +10,8 @@ definePage({
 
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type SchedulingSettingFormProps, defaultForm, type SchedulingSettingFormVO } from "./components/form";
+import { type SchedulingSettingFormProps, defaultForm } from "./components/form";
+import type { SchedulingSettingFormVO } from "@01s-11comm/type";
 import SchedulingSettingForm from "./components/form.vue";
 import type { SchedulingSetting, SchedulingSettingListQuery } from "@01s-11comm/type";
 import { schedulingStatusOptions } from "@01s-11comm/type";

@@ -4,8 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import type { DictionaryFormVO } from "@01s-11comm/type";
 
-import { DictionaryFormProps, DictionaryFormVO } from "./form";
+import { DictionaryFormProps } from "./form";
 import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<DictionaryFormProps>();

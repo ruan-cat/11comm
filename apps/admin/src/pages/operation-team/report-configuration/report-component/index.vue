@@ -20,7 +20,8 @@ import {
 	type QueryMethod,
 } from "@01s-11comm/type";
 import { useReportComponentListQuery } from "@/api/operation-team/report-configuration/report-component";
-import { type ReportComponentFormProps, defaultForm, type ReportComponentFormVO } from "./components/form";
+import { type ReportComponentFormProps, defaultForm } from "./components/form";
+import type { ReportComponentFormVO } from "@01s-11comm/type";
 import ReportComponentForm from "./components/form.vue";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
