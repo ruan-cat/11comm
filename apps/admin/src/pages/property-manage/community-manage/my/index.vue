@@ -12,7 +12,13 @@ import { ref, computed, onMounted, h } from "vue";
 import { ElTag, ElMessage, ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type MyCommunityListItem, type MyCommunityQueryParams, myStatusOptions, provinceOptions } from "@01s-11comm/type";
+import {
+	type MyCommunityListItem,
+	type MyCommunityQueryParams,
+	type CommunityManageMyFormVO,
+	myStatusOptions,
+	provinceOptions,
+} from "@01s-11comm/type";
 import { CommunityManageMyFormProps, defaultForm } from "./components/form";
 import CommunityManageForm from "./components/form.vue";
 import { useMyListQuery } from "@/api/property-manage/community-manage/my";
@@ -221,7 +227,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}小区`;
 
 	/** 业务对象 */
-	const CommunityManageMyFormVO: CommunityManageMyFormVO = isAdd.value
+	const formData: CommunityManageMyFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
@@ -235,14 +241,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					area: "", // MyCommunityListItem doesn't have area?
 					startTime: "", // MyCommunityListItem doesn't have startTime?
 					endTime: "", // MyCommunityListItem doesn't have endTime?
-					status: (row?.status as CommunityManageMyFormVO["status"]) || "正常运营",
+					status: (row?.status as CommunityManageMyFormVO["status"]) || "operating",
 				})
 			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: CommunityManageMyFormProps = {
-		form: CommunityManageMyFormVO,
-		defaultValues: CommunityManageMyFormVO,
+		form: formData,
+		defaultValues: formData,
 		mode,
 	};
 

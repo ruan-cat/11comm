@@ -11,6 +11,7 @@ definePage({
 import dayjs from "dayjs";
 import { transformI18n } from "@/plugins/i18n";
 import type { RepairReportFormListItem, RepairReportFormQueryParams } from "@01s-11comm/type";
+import { useRepairReportFormListQuery } from "@/api/property-manage/report-manage/repair-report-form";
 import {
 	repairTypeOptions,
 	repairStatusOptions,
@@ -19,16 +20,28 @@ import {
 	feeStatusOptions,
 } from "@01s-11comm/type";
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
-	...defaultPagination,
-	pageSize: 10,
-	currentPage: 1,
-	total: 0,
+/** 使用列表查询组合式函数 */
+const {
+	tableData,
+	pagination,
+	doFetch,
+	resetParams,
+	updateParams,
+	isFetching,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps: pureTablePropsFromComposable,
+} = useRepairReportFormListQuery({
+	repairType: "",
+	repairStatus: "",
+	urgencyLevel: "",
+	community: "",
+	feeStatus: "",
+	reportTimeStart: "",
+	reportTimeEnd: "",
+	reporter: "",
+	reporterPhone: "",
 });
-
-/** 表格数据 */
-const tableData = ref<RepairReportFormListItem[]>([]);
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -102,12 +115,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
+const pureTableProps = computed<PureTableProps>(() => ({
+	...pureTablePropsFromComposable.value,
 	columns: [],
-	pagination: pagination.value,
-});
+}));
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
@@ -206,85 +217,16 @@ const plusSearchProps = ref<PlusSearchProps>({
 	showNumber: 3,
 });
 
-/** 加载表格数据 */
-async function loadTableData() {
-	let filteredData: RepairReportFormListItem[] = [];
-
-	if (plusSearchModel.value.repairType) {
-		filteredData = filteredData.filter((item) => item.repairType === plusSearchModel.value.repairType);
-	}
-
-	if (plusSearchModel.value.repairStatus) {
-		filteredData = filteredData.filter((item) => item.repairStatus === plusSearchModel.value.repairStatus);
-	}
-
-	if (plusSearchModel.value.urgencyLevel) {
-		filteredData = filteredData.filter((item) => item.urgencyLevel === plusSearchModel.value.urgencyLevel);
-	}
-
-	if (plusSearchModel.value.reporter) {
-		filteredData = filteredData.filter((item) => item.reporter.includes(plusSearchModel.value.reporter!));
-	}
-
-	if (plusSearchModel.value.reporterPhone) {
-		filteredData = filteredData.filter((item) => item.reporterPhone.includes(plusSearchModel.value.reporterPhone!));
-	}
-
-	if (plusSearchModel.value.community) {
-		filteredData = filteredData.filter((item) => item.community === plusSearchModel.value.community);
-	}
-
-	if (plusSearchModel.value.feeStatus) {
-		filteredData = filteredData.filter((item) => item.feeStatus === plusSearchModel.value.feeStatus);
-	}
-
-	if (plusSearchModel.value.reportTimeStart && plusSearchModel.value.reportTimeEnd) {
-		const start = dayjs(plusSearchModel.value.reportTimeStart);
-		const end = dayjs(plusSearchModel.value.reportTimeEnd);
-		filteredData = filteredData.filter((item) => {
-			const current = dayjs(item.reportTime);
-			return current.isAfter(start) && current.isBefore(end);
-		});
-	}
-
-	pagination.value.total = filteredData.length;
-
-	const startIndex = (pagination.value.currentPage - 1) * pagination.value.pageSize;
-	const endIndex = startIndex + pagination.value.pageSize;
-	tableData.value = filteredData.slice(startIndex, endIndex);
-
-	pureTableProps.value.data = tableData.value;
-	pureTableProps.value.pagination = pagination.value;
-}
-
 /** 重置搜索条件并重新加载数据 */
-async function handleReSearch() {
+function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	pagination.value.currentPage = 1;
-	await loadTableData();
+	resetParams();
 }
 
 /** 执行搜索 */
-async function handleSearch() {
-	pagination.value.currentPage = 1;
-	await loadTableData();
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-	await loadTableData();
-}
-
-/** 处理页码变化 即后端的 pageIndex */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-	await loadTableData();
-}
-
-onMounted(async () => {
-	await loadTableData();
-});
 </script>
 
 <template>

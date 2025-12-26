@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 
-import { ParkingSpaceStructureDiagramFormProps, 车位结构图表单_VO } from "./form";
+import { ParkingSpaceStructureDiagramFormProps, type ParkingSpaceStructureDiagramFormVO } from "./form";
 import {
 	parkingSpaceTypeOptions,
 	parkingSpaceStatusOptions,
@@ -15,7 +15,7 @@ import {
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
 
 /** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & 车位结构图表单_VO;
+const defaultValues = props.defaultValues as FieldValues & ParkingSpaceStructureDiagramFormVO;
 
 /** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -29,7 +29,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & 车位结构图表单_VO;
+const toRefForm = structuredClone(props.form) as FieldValues & ParkingSpaceStructureDiagramFormVO;
 
 /**
  * 表单对象
@@ -206,7 +206,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 		},
-		hidden: (form: 车位结构图表单_VO) => form.parkingSpaceStatus !== "已租",
+		hidden: (form: ParkingSpaceStructureDiagramFormVO) => form.parkingSpaceStatus !== "已租",
 	},
 	{
 		label: "月租金",
@@ -219,7 +219,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 			step: 10,
 			controlsPosition: "right",
 		},
-		hidden: (form: 车位结构图表单_VO) => form.parkingSpaceStatus !== "已租",
+		hidden: (form: ParkingSpaceStructureDiagramFormVO) => form.parkingSpaceStatus !== "已租",
 	},
 	{
 		label: "管理费",
@@ -266,7 +266,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 			clearable: true,
 			placeholder: "请选择功率",
 		},
-		hidden: (form: 车位结构图表单_VO) => form.hasEvChargingPile !== "是",
+		hidden: (form: ParkingSpaceStructureDiagramFormVO) => form.hasEvChargingPile !== "是",
 	},
 
 	// 备注信息

@@ -11,7 +11,7 @@ definePage({
 import { ref, computed, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { type PatrolDetailFormProps, defaultForm } from "./components/form";
-import { type PatrolDetailFormVO } from "@01s-11comm/type";
+import { type PatrolDetailFormVO, type PatrolMethodType } from "@01s-11comm/type";
 import {
 	type PatrolDetailListItem,
 	type PatrolDetailQueryParams,
@@ -269,7 +269,7 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 					patrolPlanName: row?.patrolPlanName || "",
 					patrolRouteName: row?.patrolRouteName || "",
 					plannedPatrolPerson: row?.plannedPatrolPerson || "",
-					patrolMethod: row?.patrolMethod || "步行巡检",
+					patrolMethod: (row?.patrolMethod as PatrolMethodType) || "",
 					location: row?.locationInfo || "",
 					patrolSituation: row?.patrolSituation || "",
 				})
