@@ -1,19 +1,19 @@
 /**
- * @file 组织管理-班次设置-列表接口
+ * @file 班次设置列表接口
  * @description Shift setting list API
  * POST /api/setting-manage/organize-manage/shift-setting/list
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ShiftSettingListItem, ShiftSettingQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockShiftSettingData } from "./mock-data";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ShiftSetting>>> => {
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ShiftSettingListItem>>> => {
 	// 1. 读取请求参数
-	const body = await readBody<ShiftSettingListQuery>(event);
-	const defaultParams: ShiftSettingListQuery = {
+	const body = await readBody<ShiftSettingQueryParams>(event);
+	const defaultParams: ShiftSettingQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
@@ -30,7 +30,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ShiftSetting>
 
 	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
 	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ShiftSetting>> = {
+	const response: JsonVO<PageDTO<ShiftSettingListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",

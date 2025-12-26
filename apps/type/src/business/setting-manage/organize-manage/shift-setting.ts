@@ -1,61 +1,88 @@
-import type { BaseListQueryParams, OptionsType } from "../../../common";
+/**
+ * @file 班次设置类型定义
+ * @description Shift setting types
+ */
+
+import type { OptionsType, BaseListQueryParams } from "../../../common";
 
 /**
- * 班次设置信息
- * Shift setting information
+ * 班次设置列表数据
+ * Shift setting list item
  */
-export interface ShiftSetting {
+export interface ShiftSettingListItem {
 	/** 班次ID Shift ID */
 	id: string;
 	/** 班次名称 Shift name */
 	name: string;
+	/** 班次类型 Shift type */
+	type: string;
 	/** 开始时间 Start time */
 	startTime: string;
 	/** 结束时间 End time */
 	endTime: string;
-	/** 班次类型 Shift type */
-	type: string;
+	/** 是否启用 Enabled status */
+	enabled: boolean;
 	/** 描述 Description */
-	description?: string;
-	/** 是否启用 Enabled */
-	enabled?: boolean;
+	description: string;
 }
 
 /**
- * 班次设置列表查询参数
- * Shift setting list query parameters
+ * 班次设置查询参数
+ * Shift setting query parameters
  */
-export interface ShiftSettingListQuery extends BaseListQueryParams {
+export interface ShiftSettingQueryParams extends BaseListQueryParams {
 	/** 班次名称 Shift name */
 	name?: string;
 	/** 班次类型 Shift type */
 	type?: string;
+	/** 开始时间 Start time */
+	startTime?: string;
+	/** 结束时间 End time */
+	endTime?: string;
+	/** 是否启用 Enabled status */
+	enabled?: boolean;
+	/** 描述 Description */
+	description?: string;
 }
+
+/**
+ * 班次设置表单VO
+ * Shift setting form VO
+ */
+export interface ShiftSettingFormVO {
+	/** 班次名称 Shift name */
+	name: string;
+	/** 班次类型 Shift type */
+	type: string;
+	/** 开始时间 Start time */
+	startTime: string;
+	/** 结束时间 End time */
+	endTime: string;
+	/** 是否启用 Enabled status */
+	enabled: boolean;
+	/** 描述 Description */
+	description: string;
+}
+
+/**
+ * 班次设置类型
+ * Shift setting type alias
+ */
+export type ShiftSetting = ShiftSettingListItem;
+
+/**
+ * 班次设置列表查询参数
+ * Shift setting list query parameters alias
+ */
+export type ShiftSettingListQuery = ShiftSettingQueryParams;
 
 /**
  * 班次类型选项
  * Shift type options
  */
 export const shiftTypeOptions: OptionsType = [
-	{ label: "早班", value: "morning" },
-	{ label: "中班", value: "afternoon" },
-	{ label: "晚班", value: "evening" },
-	{ label: "夜班", value: "night" },
-	{ label: "全天", value: "full" },
+	{ label: "白班", value: "白班" },
+	{ label: "夜班", value: "夜班" },
+	{ label: "中班", value: "中班" },
+	{ label: "全天", value: "全天" },
 ];
-
-/** 班次设置表单 */
-export interface ShiftSettingFormVO extends Partial<ShiftSetting> {
-	/** 班次名称 */
-	name: string;
-	/** 开始时间 */
-	startTime: string;
-	/** 结束时间 */
-	endTime: string;
-	/** 班次类型 */
-	type: string;
-	/** 描述 */
-	description: string;
-	/** 是否启用 */
-	enabled: boolean;
-}

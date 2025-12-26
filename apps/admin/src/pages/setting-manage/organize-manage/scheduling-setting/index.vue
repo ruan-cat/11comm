@@ -18,7 +18,6 @@ import { schedulingStatusOptions } from "@01s-11comm/type";
 import { useSchedulingSettingListQuery } from "@/api/setting-manage/organize-manage/scheduling-setting";
 
 import { useMode, type Mode } from "@/composables/use-mode";
-import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -161,9 +160,9 @@ function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 
 	/** 业务对象 */
 	const formVO: SchedulingSettingFormVO = isAdd.value
-		? cloneDeep(defaultForm)
+		? structuredClone(defaultForm)
 		: isEdit.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
 					name: row?.name || "",
 					type: row?.type || "",
@@ -172,7 +171,7 @@ function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 					staff: row?.staff || "",
 					status: row?.status || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: SchedulingSettingFormProps = {

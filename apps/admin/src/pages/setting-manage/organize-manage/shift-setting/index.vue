@@ -8,13 +8,12 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
+import { ref, computed, h } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import { type ShiftSettingFormProps, defaultForm } from "./components/form";
-import type { ShiftSettingFormVO } from "@01s-11comm/type";
+import type { ShiftSettingFormVO, ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
 import ShiftSettingForm from "./components/form.vue";
-import type { ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
 import { useShiftSettingListQuery } from "@/api/setting-manage/organize-manage/shift-setting";
 
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -286,7 +285,7 @@ async function handleDelete(row: ShiftSetting) {
 		// 模拟删除操作
 		console.log("删除班次", row);
 		message("删除成功", { type: "success" });
-		// await loadTableData();
+		doFetch();
 	} catch (error) {
 		// 用户取消删除操作
 	}
@@ -294,7 +293,6 @@ async function handleDelete(row: ShiftSetting) {
 
 /** 停用/启用操作 */
 async function handleToggleStatus(row: ShiftSetting) {
-	const newStatus = !row.enabled;
 	const action = row.enabled ? "停用" : "启用";
 
 	try {
@@ -304,14 +302,10 @@ async function handleToggleStatus(row: ShiftSetting) {
 			type: "warning",
 		});
 
-		// 更新状态
-		// const index = tableData.value.findIndex((item) => item.id === row.id);
-		// if (index > -1) {
-		// 	tableData.value[index].enabled = newStatus;
-		// 	message(`班次已${action}`, { type: "success" });
-		// }
+		// 模拟更新状态
 		console.log(`${action}班次`, row);
 		message(`班次已${action}`, { type: "success" });
+		doFetch();
 	} catch (error) {
 		// 用户取消操作
 	}
@@ -324,7 +318,7 @@ function handleFile() {
 
 /** 组件挂载时加载数据 */
 onMounted(async () => {
-	// await loadTableData();
+	// 数据已通过 TanStack Query 自动加载
 });
 </script>
 
@@ -366,8 +360,8 @@ onMounted(async () => {
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
-						<ElButton :type="row.状态 === '启用' ? 'info' : 'primary'" @click="handleToggleStatus(row)">
-							{{ row.状态 === "启用" ? "停用" : "启用" }}
+						<ElButton :type="row.enabled ? 'info' : 'primary'" @click="handleToggleStatus(row)">
+							{{ row.enabled ? "停用" : "启用" }}
 						</ElButton>
 					</template>
 				</PureTable>
@@ -376,7 +370,4 @@ onMounted(async () => {
 	</section>
 </template>
 
-<style lang="scss" scoped>
-.index-root {
-}
-</style>
+<style lang="scss" scoped></style>

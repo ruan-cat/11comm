@@ -5,5 +5,4 @@ export * from "./staff-info";
 export * from "./data-permission";
 export * from "./scheduling-setting";
 export * from "./shift-setting";
-
-
+export * from "./shift-setting";
