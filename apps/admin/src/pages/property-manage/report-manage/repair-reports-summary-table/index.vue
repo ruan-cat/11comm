@@ -95,6 +95,7 @@ const {
 	tableData,
 	pureTableProps,
 	isFetching,
+	doFetch,
 	updateParams,
 	resetParams,
 	handlePageSizeChange,

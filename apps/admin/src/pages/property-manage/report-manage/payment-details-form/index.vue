@@ -19,7 +19,10 @@ import {
 	communityOptions,
 } from "@01s-11comm/type";
 
-// TODO: 本页面需要继续完成写法改造；
+// TODO: 本页面需要继续完成写法改造；需要从API获取真实数据
+/** 模拟表格数据 - 待替换为真实API数据 */
+const mockTableData: ExpenseSummaryTableListItem[] = [];
+
 /** 分页配置 */
 const pagination = ref<PaginationProps>({
 	...defaultPagination,
@@ -239,8 +242,8 @@ async function loadTableData() {
 	let filteredData = mockTableData;
 
 	if (plusSearchModel.value.缴费开始时间 && plusSearchModel.value.缴费结束时间) {
-		const start = dayjs(plusSearchModel.value.缴费开始时间);
-		const end = dayjs(plusSearchModel.value.缴费结束时间);
+		const start = dayjs(plusSearchModel.value.缴费开始时间 as string);
+		const end = dayjs(plusSearchModel.value.缴费结束时间 as string);
 		filteredData = filteredData.filter((item) => {
 			const current = dayjs(item.缴费时间);
 			return current.isAfter(start) && current.isBefore(end);
@@ -325,7 +328,7 @@ onMounted(async () => {
 			@reset="handleReSearch"
 		/>
 
-		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
+		<PureTableBar :="pureTableBarProps" @refresh="handleReSearch">
 			<template #buttons>
 				<ElButton type="info" @click="handleReSearch">
 					{{ transformI18n($t("common.buttons.pureReload")) }}

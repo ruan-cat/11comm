@@ -88,19 +88,23 @@
   - 导入：`import { reminderTypeOptions } from "@01s-11comm/type"`
   - 注意：将 `提醒类型Options` 替换为 `reminderTypeOptions`
 
-- [ ] 3.2.4 修复业主缴费明细页面
+- [x] 3.2.4 修复业主缴费明细页面
   - `apps/admin/src/pages/property-manage/report-manage/owner-payment-details/index.vue`（行 145, 147, 237, 242）
   - 补充缺失的变量定义（`tableData`, `pagination`, `resetParams`, `updateParams`）
   - 检查是否需要从 `useListQuery` 或其他组合式函数中获取
+  - **已修复**：调用 useOwnerPaymentDetailsListQuery 组合式函数获取所需变量
 
 - [ ] 3.2.5 修复巡检报表页面
   - `apps/admin/src/pages/property-manage/report-manage/patrol-report/index.vue`（行 126, 132, 143, 149）
   - 导入：`import { patrolTypeOptions, patrolLevelOptions, statusOptions, communityOptions } from "@01s-11comm/type"`
 
-- [ ] 3.2.6 修复缴费明细表页面
+- [x] 3.2.6 修复缴费明细表页面
   - `apps/admin/src/pages/property-manage/report-manage/payment-details-form/index.vue`（行 19, 186, 192, 198, 204, 215, 230）
   - 导入：`import { paymentMethodOptions, expenseStatusOptions, feeTypeOptions, expenseItemOptions, communityOptions } from "@01s-11comm/type"`
   - 补充 `mockTableData` 定义或从 API 获取真实数据
+  - 修复 dayjs 类型断言
+  - 移除 doFetch 引用，使用 handleReSearch 替代
+  - **注意**：此页面使用中文属性名，需要更新 ExpenseSummaryTableListItem 类型定义或修改页面使用英文属性名
 
 - [ ] 3.2.7 运行类型检查验证 Options 修复：`pnpm -F @01s-11comm/admin typecheck`
 

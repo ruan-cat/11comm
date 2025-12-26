@@ -11,12 +11,28 @@ definePage({
 import { transformI18n } from "@/plugins/i18n";
 import type { OwnerPaymentDetailsListItem, OwnerPaymentDetailsQueryParams } from "@01s-11comm/type";
 import { useOwnerPaymentDetailsListQuery } from "@/api/property-manage/report-manage/owner-payment-details";
-import {
-	feeCategoryOptions,
-	feeItemOptions,
-	communityOptions,
-	yearOptions,
-} from "@01s-11comm/type";
+import { feeCategoryOptions, feeItemOptions, communityOptions, yearOptions } from "@01s-11comm/type";
+
+/** 使用列表查询组合式函数 */
+const {
+	tableData,
+	pagination,
+	doFetch,
+	resetParams,
+	updateParams,
+	isFetching,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+	pureTableProps: pureTablePropsFromComposable,
+} = useOwnerPaymentDetailsListQuery({
+	houseNumberContractName: "",
+	ownerName: "",
+	ownerPhone: "",
+	feeCategory: "",
+	feeItem: "",
+	community: "",
+	year: "",
+});
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
@@ -140,12 +156,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	...defaultPureTableProps,
-	data: tableData.value,
+const pureTableProps = computed<PureTableProps>(() => ({
+	...pureTablePropsFromComposable.value,
 	columns: [],
-	pagination: pagination.value,
-});
+}));
 
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
