@@ -10,8 +10,6 @@ import {
 	returnVisitSettingOptions,
 } from "@01s-11comm/type";
 
-export { repairsSettingTypeOptions, dispatchMethodOptions, areaOptions, returnVisitSettingOptions };
-
 const props = defineProps<RepairsSettingFormProps>();
 
 /** 默认的表单重置变量 */
