@@ -160,6 +160,13 @@ async function handleSearch() {
 	pagination.value.currentPage = 1;
 }
 
+/** 刷新数据 */
+async function doFetch() {
+	console.log("刷新数据");
+	// TODO: 需要迁移到 Nitro 接口，实现真实的数据加载
+	await handleSearch();
+}
+
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;

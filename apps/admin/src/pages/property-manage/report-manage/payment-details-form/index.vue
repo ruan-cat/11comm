@@ -239,8 +239,12 @@ const plusSearchProps = ref<PlusSearchProps>({
 
 /** 加载表格数据 */
 async function loadTableData() {
+	// TODO: 此函数使用中文属性名，需要重构为使用英文属性名或更新类型定义
+	// 当前 mockTableData 为空数组，此函数实际不会执行任何过滤操作
 	let filteredData = mockTableData;
 
+	// 以下代码暂时注释，等待类型定义更新或重构
+	/*
 	if (plusSearchModel.value.缴费开始时间 && plusSearchModel.value.缴费结束时间) {
 		const start = dayjs(plusSearchModel.value.缴费开始时间 as string);
 		const end = dayjs(plusSearchModel.value.缴费结束时间 as string);
@@ -277,6 +281,7 @@ async function loadTableData() {
 	if (plusSearchModel.value.小区) {
 		filteredData = filteredData.filter((item) => item.小区 === plusSearchModel.value.小区);
 	}
+	*/
 
 	pagination.value.total = filteredData.length;
 

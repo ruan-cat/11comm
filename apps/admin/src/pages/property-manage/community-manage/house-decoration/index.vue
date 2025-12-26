@@ -13,6 +13,8 @@ import { transformI18n } from "@/plugins/i18n";
 import {
 	type HouseDecorationListItem,
 	type HouseDecorationQueryParams,
+	type HouseDecorationStatusType,
+	type IsDelayedType,
 	decorationStatusOptions,
 	delayStatusOptions,
 } from "@01s-11comm/type";
@@ -273,10 +275,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					applicationTime: row?.applicationTime || "",
 					decorationCompany: row?.decorationCompany || "",
 					managerPhone: row?.managerPhone || "",
-					status: row?.status || "待审核",
-					isDelayed: row?.isDelayed || "否",
+					status: (row?.status as HouseDecorationStatusType) || "待审核",
+					isDelayed: (row?.isDelayed as IsDelayedType) || "否",
 					delayTime: row?.delayTime || "",
-					isViolated: row?.isViolated || "否",
+					isViolated: (row?.isViolated as IsDelayedType) || "否",
 					violationDescription: row?.violationDescription || "",
 					remarks: row?.remarks || "",
 				}

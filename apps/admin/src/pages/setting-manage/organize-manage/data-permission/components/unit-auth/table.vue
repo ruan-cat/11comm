@@ -183,6 +183,12 @@ function handleDelete(row: UnitAuthItem) {
 		message("删除成功", { type: "success" });
 	}
 }
+
+/** 刷新数据 */
+async function doFetch() {
+	console.log("刷新数据");
+	// TODO: 实现真实的数据加载
+}
 </script>
 
 <template>

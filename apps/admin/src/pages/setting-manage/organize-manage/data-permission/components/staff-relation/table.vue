@@ -132,6 +132,12 @@ async function handleSearch() {
 	console.log("搜索");
 }
 
+/** 刷新数据 */
+async function doFetch() {
+	console.log("刷新数据");
+	await handleSearch();
+}
+
 /** 删除操作 */
 function handleDelete(row: StaffRelationItem) {
 	console.log("删除员工关联", row);
