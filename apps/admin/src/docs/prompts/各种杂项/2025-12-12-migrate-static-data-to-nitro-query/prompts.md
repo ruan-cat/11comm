@@ -1,4 +1,4 @@
-<!-- TODO: 长期任务 未完成 -->
+<!-- 长期任务 已完成 -->
 
 /openspec:apply 执行 `migrate-static-data-to-nitro-query` 任务
 
