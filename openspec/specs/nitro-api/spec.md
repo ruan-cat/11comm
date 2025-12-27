@@ -1,49 +1,8 @@
-# Nitro API 接口规范
+# nitro-api Specification
 
-## 📊 优先级说明
-
-- 🔴 [CRITICAL] - 必须严格遵守，违反会导致功能故障
-- 🟡 [IMPORTANT] - 强烈建议遵守，违反会影响代码质量
-- 🟢 [NICE-TO-HAVE] - 可选的最佳实践
-
-**执行建议**：优先确保所有 [CRITICAL] 要求满足，再处理 [IMPORTANT] 要求。
-
-## 快速导航
-
-**完整迁移指南**: 请查看 [migration-guide.md](../migration-guide.md#step-3-创建-nitro-接口文件-20分钟)
-
-**代码范例**:
-
-- ✅ **正确范例**: [配置中心接口](../../../../apps/admin/server/api/dev-team/config-manage/center/list.post.ts)
-- ❌ **错误反面例子**: [缴费审核接口](../../../../apps/admin/server/api/property-manage/expense-manage/payment-review/list.post.ts)
-
-## ⚠️ 重要警告：严格禁止向后兼容的中文类型
-
-**在实施 Nitro API 接口相关任务时，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
-
-❌ **错误示例（严格禁止）**：
-
-```typescript
-// 不允许创建中文类型别名
-export type 巡检方式 = PatrolMethodType;
-export type 任务状态 = TaskStatusType;
-
-// 不允许创建中文变量别名
-export const 费用类型 = contractTypeOptions;
-export const 状态选项 = statusOptions;
-```
-
-✅ **正确做法**：
-
-- 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
-- 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
-- 不需要任何中文类型的兼容层
-- 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
-
----
-
-## ADDED Requirements
-
+## Purpose
+TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+## Requirements
 ### Requirement: Nitro v3 代码写法规范 [CRITICAL]
 
 所有 Nitro 接口 MUST 使用 Nitro v3 的标准写法:
@@ -389,47 +348,3 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 
 ---
 
-## REMOVED Requirements
-
-### Requirement: 手动编写数据筛选逻辑
-
-**Reason**: 已抽取为通用工具函数 `filterDataByQuery`
-
-**Migration**: 使用 `filterDataByQuery(data, filters)` 替代手动 filter
-
-### Requirement: 使用 defineEventHandler
-
-**Reason**: Nitro v3 废弃此 API
-
-**Migration**: 改为使用 `defineHandler` 从 `nitro/h3` 导入
-
----
-
-## 总结
-
-### 必须遵守的 5 个核心规则
-
-1. **Nitro v3 写法**: `defineHandler` + `nitro/h3`
-2. **标准参数处理**: 使用固定的参数合并模式
-3. **通用筛选函数**: 使用 `filterDataByQuery`
-4. **完整类型约束**: 创建 `response` 变量并添加类型
-5. **JSDoc 注释**: 包含接口路径说明
-
-### 快速检查清单
-
-创建 Nitro 接口后,验证以下要点:
-
-- [ ] 从 `nitro/h3` 导入 `defineHandler` 和 `readBody`
-- [ ] 使用 `defineHandler` 而不是 `defineEventHandler`
-- [ ] **严格禁止：未创建任何中文类型别名**（如 `export type 巡检方式 = PatrolMethodType;`）
-- [ ] **严格禁止：未创建任何中文变量别名**（如 `export const 费用类型 = contractTypeOptions;`）
-- [ ] 使用 DEFAULT_PAGE_INDEX 和 DEFAULT_PAGE_SIZE 常量
-- [ ] 使用 `filterDataByQuery` 工具函数
-- [ ] 创建 `response` 变量并添加类型约束 `JsonVO<PageDTO<T>>`
-- [ ] 添加 JSDoc 注释,包含接口路径
-- [ ] 文件路径与页面路径对应
-- [ ] Mock 数据从 mock-data.ts 导入
-
-### 完整示例代码
-
-完整的标准模板和详细说明,请参考 [migration-guide.md](../migration-guide.md#step-3-创建-nitro-接口文件-20分钟)。

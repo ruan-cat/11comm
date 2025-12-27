@@ -59,7 +59,7 @@ export const 状态选项 = statusOptions;
 
 ### Requirement: 业务专用查询 Hook 必须提供 initialParams 参数 [CRITICAL]
 
-每个列表页 MUST 提供专用的 TanStack Query Hook,并且 **MUST** 提供 `initialParams` 必填参数:
+每个列表页 MUST 提供专用的 TanStack Query Hook，并且 MUST 提供 `initialParams` 必填参数:
 
 - 文件位置: `src/api/{module}/{page}/index.ts`
 - 导出命名: `use{Page}ListQuery`
@@ -72,62 +72,14 @@ export const 状态选项 = statusOptions;
 - **GIVEN** 页面路径 `src/pages/dev-team/config-manage/center/index.vue`
 - **WHEN** 创建查询 Hook
 - **THEN** 文件路径为 `src/api/dev-team/config-manage/center/index.ts`
-- **AND** 代码为:
-
-```typescript
-/**
- * @file 配置中心 API Hook
- * @description Configuration center API hooks using TanStack Query
- */
-
-import { useListQuery } from "@/composables/use-list-query";
-import type { ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
-
-/** API 路径 */
-const API_URL = "/api/dev-team/config-manage/center/list";
-
-/** 查询键前缀 */
-const QUERY_KEY_PREFIX = "configCenter";
-
-/**
- * 配置中心列表查询 Hook
- * Configuration center list query hook
- */
-export function useConfigCenterListQuery(initialParams: Partial<ConfigCenterQueryParams>) {
-	return useListQuery<ConfigCenterListItem, ConfigCenterQueryParams>({
-		queryKeyPrefix: QUERY_KEY_PREFIX,
-		apiUrl: API_URL,
-		initialParams, // ✅ 必须传递
-	});
-}
-
-export default useConfigCenterListQuery;
-```
-
-- **AND** 函数名使用 PascalCase + List + Query 后缀
-- **AND** 必须提供 `initialParams` 参数
-- **AND** 参数类型为 `Partial<{Page}QueryParams>`
+- **AND** 代码必须包含 `initialParams` 参数
 
 #### Scenario: 错误的 Hook 实现 - 缺少 initialParams
 
-**❌ 错误示例 - 缴费审核 API Hook**:
-
-```typescript
-// ❌ 错误: 缺少 initialParams 必填参数
-export function usePaymentReviewListQuery() {
-	return useListQuery<PaymentReviewListItem, PaymentReviewQueryParams>({
-		queryKeyPrefix: QUERY_KEY_PREFIX,
-		apiUrl: API_URL,
-		// ❌ 缺少 initialParams
-	});
-}
-```
-
-**问题分析**:
-
-1. 无法从列表页传递初始查询参数
-2. 导致列表页需要手动管理查询参数
-3. 破坏了 Hook 的封装性
+- **GIVEN** 业务专用查询 Hook
+- **WHEN** 函数签名缺少 `initialParams` 参数
+- **THEN** 无法从列表页传递初始查询参数
+- **AND** 破坏了 Hook 的封装性
 
 ---
 
@@ -337,48 +289,6 @@ const { pureTableProps, isFetching } = useConfigCenterListQuery(plusSearchDefaul
 ```
 
 - **AND** 直接使用 `:="pureTableProps"` 展开所有属性
-
----
-
-## REMOVED Requirements
-
-### Requirement: 本地假数据导入和 loadTableData 函数
-
-**Reason**: 数据获取迁移到 Nitro 接口和 TanStack Query
-
-**Migration**: 使用 TanStack Query Hook 替代
-
-完成迁移后必须删除以下代码:
-
-```typescript
-// ❌ 删除1: test-data.ts 导入
-import { tableData as allTableData } from "./test-data";
-
-// ❌ 删除2: loadTableData 函数
-async function loadTableData() {
-	let filteredData = [...allTableData];
-	// 筛选逻辑
-	tableData.value = filteredData.slice(startIndex, endIndex);
-	pagination.value.total = filteredData.length;
-}
-
-// ❌ 删除3: onMounted 中调用 loadTableData
-onMounted(async () => {
-	await loadTableData();
-});
-```
-
-### Requirement: 手动定义 pagination 和 pureTableProps
-
-**Reason**: Hook 已自动提供这些配置
-
-**Migration**: 直接使用 Hook 返回的 `pureTableProps`
-
-### Requirement: 手动实现分页函数
-
-**Reason**: Hook 已提供 handlePageSizeChange 和 handleCurrentPageChange
-
-**Migration**: 使用 Hook 返回的函数
 
 ---
 
