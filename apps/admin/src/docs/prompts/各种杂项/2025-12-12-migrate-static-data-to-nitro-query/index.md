@@ -490,7 +490,7 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 2. 我在高强度用 `/openspec:apply` 命令执行 `migrate-static-data-to-nitro-query` 任务时，发现子代理总是出现严重的幻觉，返工的情况。很拖延我的效率。
 3. 请问是不是这些 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的全部文件，写的提示词太差了，甚至是有误导和冲突内容，才导致我执行任务时总是出现返工的情况？请你帮我全面的阅读 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的全部文件，帮我诊断，分析，优化这些规范文件。我不希望以后我再执行 `/openspec:apply` 命令时，子代理的行为总是出现幻觉和不按照要求写代码的情况。
 
-### 021 <!-- TODO: --> 制作 claude code 命令
+### 021 制作 claude code 命令
 
 你的任务是帮我制作一个随时都能够主动唤起使用的 claude code 命令。这个命令名称就是 `migrate-static-data-to-nitro-query` ，该命令将会直接包含非常多的执行细节。
 
