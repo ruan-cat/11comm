@@ -1,3 +1,44 @@
+## v0.8.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.7.0...v0.8.0)
+
+### 🐞 修复缺陷
+
+- **claude:** ⚠️  处理状态栏不显示正常上下文窗口额度的错误。 ([7e563a11](https://github.com/ruan-cat/11comm/commit/7e563a11))
+
+### 🦄 代码重构
+
+- **openspec,type,admin:** 大规模完成`no-form-ts-redundant-export`任务 ([41e49521](https://github.com/ruan-cat/11comm/commit/41e49521))
+- **openspec,type,server,admin:** 持续完成任务 ([01933da5](https://github.com/ruan-cat/11comm/commit/01933da5))
+- **openspec,type,server,admin:** 持续完成任务 ([d3e80a98](https://github.com/ruan-cat/11comm/commit/d3e80a98))
+- **openspec:** 归档【fix-type-error-20251226】任务 ([be667b20](https://github.com/ruan-cat/11comm/commit/be667b20))
+
+### 📖 Documentation
+
+- **openspec,prompt,admin:** 归档 `no-form-ts-redundant-export` 任务 ([f79a143c](https://github.com/ruan-cat/11comm/commit/f79a143c))
+
+### 🏡 Chore
+
+- **admin:** 标记【完整类型错误清单报告】作为任务，已完成 ([740274ef](https://github.com/ruan-cat/11comm/commit/740274ef))
+- **prompt,admin:** 提供待办注释 ([06e12999](https://github.com/ruan-cat/11comm/commit/06e12999))
+- **admin:** Kiro称【migrate-static-data-to-nitro-query】任务已经全部完成。 ([a4c0bc23](https://github.com/ruan-cat/11comm/commit/a4c0bc23))
+- **openspec,admin:** Gemini 称全面完成了【migrate-static-data-to-nitro-query】任务 ([322d4fa4](https://github.com/ruan-cat/11comm/commit/322d4fa4))
+- **prompt,admin:** 调整制作方向。 ([069871e4](https://github.com/ruan-cat/11comm/commit/069871e4))
+- **prompt,admin:** 完成【制作 claude code 命令】 ([555da221](https://github.com/ruan-cat/11comm/commit/555da221))
+- **prompt,admin:** 完成任务【改写`本地假数据`成 nitro 接口，并改写列表页的写法】 ([e004f171](https://github.com/ruan-cat/11comm/commit/e004f171))
+- **prompt,admin:** 完成任务【apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\prompts.md】 ([89cba3eb](https://github.com/ruan-cat/11comm/commit/89cba3eb))
+- **prompt,admin:** 完成任务【按照指定要求来修复类型错误、修改代码】 ([4361f6b8](https://github.com/ruan-cat/11comm/commit/4361f6b8))
+- **openspec:** ⚠️  归档【migrate-static-data-to-nitro-query】任务 ([ec72d8ed](https://github.com/ruan-cat/11comm/commit/ec72d8ed))
+
+#### ⚠️ Breaking Changes
+
+- **claude:** ⚠️  处理状态栏不显示正常上下文窗口额度的错误。 ([7e563a11](https://github.com/ruan-cat/11comm/commit/7e563a11))
+- **openspec:** ⚠️  归档【migrate-static-data-to-nitro-query】任务 ([ec72d8ed](https://github.com/ruan-cat/11comm/commit/ec72d8ed))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.7.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.6.0...v0.7.0)
