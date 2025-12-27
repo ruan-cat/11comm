@@ -489,3 +489,65 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
    - .claude\agents\fix-type-error.md
 2. 我在高强度用 `/openspec:apply` 命令执行 `migrate-static-data-to-nitro-query` 任务时，发现子代理总是出现严重的幻觉，返工的情况。很拖延我的效率。
 3. 请问是不是这些 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的全部文件，写的提示词太差了，甚至是有误导和冲突内容，才导致我执行任务时总是出现返工的情况？请你帮我全面的阅读 `openspec\changes\migrate-static-data-to-nitro-query` 目录内的全部文件，帮我诊断，分析，优化这些规范文件。我不希望以后我再执行 `/openspec:apply` 命令时，子代理的行为总是出现幻觉和不按照要求写代码的情况。
+
+### 021 <!-- TODO: --> 制作 claude code 命令
+
+你的任务是帮我制作一个随时都能够主动唤起使用的 claude code 命令。这个命令名称就是 `migrate-static-data-to-nitro-query` ，该命令将会直接包含非常多的执行细节。
+
+1. 为什么要制作这个命令？我在使用 openspec 和 kiro 的 spec 功能时，几乎把全部的 `migrate-static-data-to-nitro-query` 系列任务都完成了。但是我很清楚，肯定有少数的页面没有完成。为了处理这样的漏网之鱼，我需要有这样的一个命令，让我可以根据具体的`业务路径`，针对性的唤起这一系列处理流程，针对性的补充修改。未来不再直接使用 openspec 提供的 `migrate-static-data-to-nitro-query` 任务了，该任务很快就会被我手动归档了。
+2. 你需要阅读和学习的上下文：`migrate-static-data-to-nitro-query` 系列任务包含了非常多的处理要求和步骤，我需要你该任务甚至过于复杂而针对性的拆分了几个独立的 openspec 任务来辅助完成该任务。你需要分主次的阅读 `migrate-static-data-to-nitro-query` 任务的核心要求。并编写一份完整全面的 claude code 命令。
+
+---
+
+3. 高优先级文档： 以下文档必须要深度的，深刻的阅读。claude code 命令的大多数执行规范，都主要来自于以下文档。
+   - `核心规范一页纸` apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\000-CORE-RULES.md
+   - `迁移执行检查清单` apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\001-CHECKLIST.md
+   - list-page-pattern 处理列表页且避免过度删改的规范： apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\016.md
+   - `类型项目`的代码组织方式与导出规范： apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\017.md
+   - 非业务类型避免迁移到类型项目的规范： apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\019.md
+   - 执行 `migrate-static-data-to-nitro-query` 任务的操作规范： apps\admin\src\docs\prompts\各种杂项\2025-12-12-migrate-static-data-to-nitro-query\prompts.md
+   - 全部 `migrate-static-data-to-nitro-query` 的 openspec 具体执行规范： `openspec\changes\migrate-static-data-to-nitro-query\specs` 目录下面全部的 `spec.md` 文件。
+
+---
+
+4. 中等优先级文档： 以下文档是简要的补充。
+   - 迁移指南： `openspec\changes\migrate-static-data-to-nitro-query\specs\migration-guide.md`
+   - 设计技术文档： `openspec\changes\migrate-static-data-to-nitro-query\design.md`
+   - 迁移提案： `openspec\changes\migrate-static-data-to-nitro-query\proposal.md`
+
+---
+
+5. 低优先级文档： 以下文档是其他多款支撑性的子任务规范文档，主要用于给 `migrate-static-data-to-nitro-query` 任务补充细节。是 `migrate-static-data-to-nitro-query` 任务的一部分。这部分内容和上述内容有些许重合。
+   `fix-api-hooks-missing-initial-params`
+   - 子任务 `fix-api-hooks-missing-initial-params` 规范：
+   - > openspec\changes\archive\2025-12-19-fix-api-hooks-missing-initial-params\specs\api-hooks\spec.md
+   - 子任务 `fix-api-hooks-missing-initial-params` 的其他文件：
+   - > openspec\changes\archive\2025-12-19-fix-api-hooks-missing-initial-params\design.md
+   - > openspec\changes\archive\2025-12-19-fix-api-hooks-missing-initial-params\proposal.md
+
+   `migrate-form-ts-to-types-pkg`
+   - 子任务 `migrate-form-ts-to-types-pkg` 规范：
+   - > openspec\changes\archive\2025-12-19-migrate-form-ts-to-types-pkg\specs\business-type-migration\spec.md
+   - > openspec\changes\archive\2025-12-19-migrate-form-ts-to-types-pkg\specs\common-options-migration\spec.md
+   - > openspec\changes\archive\2025-12-19-migrate-form-ts-to-types-pkg\specs\mode-field-addition\spec.md
+   - 子任务 `migrate-form-ts-to-types-pkg` 的其他文件：
+   - > openspec\changes\archive\2025-12-19-migrate-form-ts-to-types-pkg\proposal.md
+
+   `fix-list-pages-code-patterns`
+   - 子任务 `fix-list-pages-code-patterns` 规范：
+   - > openspec\changes\archive\2025-12-21-fix-list-pages-code-patterns\specs\list-pages\spec.md
+   - 子任务 `fix-list-pages-code-patterns` 的其他文件：
+   - > openspec\changes\archive\2025-12-21-fix-list-pages-code-patterns\design.md
+   - > openspec\changes\archive\2025-12-21-fix-list-pages-code-patterns\proposal.md
+
+   `no-chinese-and-alias`
+   - 子任务 `no-chinese-and-alias` 规范：
+   - > openspec\changes\archive\2025-12-25-no-chinese-and-alias\specs\type-cleanup\spec.md
+   - 子任务 `no-chinese-and-alias` 的其他文件：
+   - > openspec\changes\archive\2025-12-25-no-chinese-and-alias\proposal.md
+
+   `no-form-ts-redundant-export`
+   - 子任务 `no-form-ts-redundant-export` 规范：
+   - > openspec\changes\archive\2025-12-26-no-form-ts-redundant-export\specs\form-module-exports\spec.md
+   - 子任务 `no-form-ts-redundant-export` 的其他文件：
+   - > openspec\changes\archive\2025-12-26-no-form-ts-redundant-export\proposal.md
