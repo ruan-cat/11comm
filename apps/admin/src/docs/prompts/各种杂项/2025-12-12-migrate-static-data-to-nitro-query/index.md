@@ -551,3 +551,14 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
    - > openspec\changes\archive\2025-12-26-no-form-ts-redundant-export\specs\form-module-exports\spec.md
    - 子任务 `no-form-ts-redundant-export` 的其他文件：
    - > openspec\changes\archive\2025-12-26-no-form-ts-redundant-export\proposal.md
+
+#### 01 调整制作方向
+
+1. 不对，我要求制作一个 claude code 命令，主动执行的命令。而不是  
+   skill 技能。预期在 `.claude\commands` 内新建命令文件。
+2. 请确保你也阅读了中，低优先级的文档。
+3. 命令文件不要写对其他文件的引用。这些引用路径迟早会改动，会导致后续  
+   的执行命令失败。所以需要你深度的阅读这些文档，总结归纳好全部的内容。
+4. 我要求你避免使用引用的其他文件的写法，需要你总结并写一个独立能完成  
+   任务的 claude code 命令文档。文档长度预期在 1300 ~ 2100
+   行以内。你应该编写详细完整的 claude code 命令文档。
