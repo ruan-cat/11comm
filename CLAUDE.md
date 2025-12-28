@@ -666,3 +666,12 @@ pnpm -F @01s-11comm/type typecheck
 #### 11.2.2 配置文件格式没有 vite 配置对象
 
 <!-- TODO: -->
+
+### 11.3. pure-admin 后台框架模板
+
+`apps\admin` 项目套用是 `pure-admin` 模板。
+
+- pure-admin 模板仓库 ： https://github.com/pure-admin/vue-pure-admin
+- pure-admin 在线预览界面 ： https://pure-admin.github.io/vue-pure-admin/#/login
+- pure-admin 文档 ： https://pure-admin.cn/
+- pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
