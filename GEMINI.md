@@ -143,7 +143,12 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 
 ## 4. 类型项目的代码组织方式与导出规范
 
-### 4.1. 在类型项目内，必须使用全量的导出语法
+### 4.1. 对现有类型的处理规范
+
+1. **不允许反反复复**的对已经有的类型字段做增删。**不要突然**增加业务类型字段，不要对已经是英文字段命名的字段名又重写重命名。这非常容易导致其他部分出现类型故障，拖累整个项目开发进度。
+2. 除了中文命名的字段名需要被及时的修正，修改成纯英文的字段名以外，其他情况下均不允许你更改增删字段名。
+
+### 4.2. 在类型项目内，必须使用全量的导出语法
 
 不要去区分是单独导出全部的类型，还是全部的变量。全部都批量导出来。
 
@@ -163,7 +168,7 @@ export type * from "./expense-manage";
 export * from "./expense-manage";
 ```
 
-### 4.2. 不允许逐个罗列的导出
+### 4.3. 不允许逐个罗列的导出
 
 **错误写法：**
 
@@ -186,7 +191,7 @@ export type {
 export * from "./task";
 ```
 
-### 4.3. 在类型项目，根据业务路径，统一使用 index.ts 来统一作为导出入口
+### 4.4. 在类型项目，根据业务路径，统一使用 index.ts 来统一作为导出入口
 
 在类型项目内，使用了业务路径来依次组织代码的存放位置。为了逐级获取导出的项目，应该在每一个层级内编写 index.ts 来统一导出全部内容。包括类型和变量。
 
@@ -252,7 +257,7 @@ export * from "./point";
 export * from "./task";
 ```
 
-### 4.4. 遇到类型错误时，重复的内容导出时的处理方式
+### 4.5. 遇到类型错误时，重复的内容导出时的处理方式
 
 比如这种错误：
 
@@ -460,11 +465,54 @@ openspec validate {任务名称} --strict
    - 你应该阅读文件来完成更改，而不是使用不稳定的，容易带来语法错误的，删改不干净不合理的批处理脚本，来完成任务。
    - 你应该新建多个子代理，主代理用具体的子代理来完成大规模的修改任务。
 
-## 8. 常用开发命令
+## 8. <!-- https://github.com/GuDaStudio/geminimcp --> Core Instruction for Gemini MCP
+
+在任何时刻，你必须思考当前过程可以如何与 gemini 进行协作，如何调用 gemini 为你提供的 MCP 工具作为你**客观全面分析**的保障。
+
+其中你**务必执行**以下几个步骤：
+
+**1** 在你对用户需求**形成初步分析后**，
+（1）首先将用户**原始需求（一字不差，严禁转述）**、以及你的初始思路告知 gemini；
+（2）与 gemini 进行**充分讨论、辩驳**，以完善需求分析和实施计划。这一步的结束标志为，**必须**确保对用户需求的透彻理解，并**生成切实可行的行动计划**。
+
+**2** 在实施具体编码任务前，你**必须向 gemini 索要代码实现原型**（要求 gemini 仅给出 unified diff patch，严禁对代码做任何真实修改）。在获取代码原型后，你**只能以此为逻辑参考，再次对代码修改进行重写**，形成企业生产级别、可读性极高、可维护性极高的代码后，才能实施具体编程修改任务。
+
+- **注意：** Gemini 十分擅长前端代码，并精通样式、UI 组件设计。在涉及前端代码时，你必须向其索要代码原型（CSS/React/Vue/HTML 等前端代码），任何时刻，你**必须以 gemini 的前端设计（原型代码）为最终的前端代码基点**。
+- 例如，当你识别到用户给出了前端设计需求，你的首要行为必须自动调整为，将用户需求原封不动转发给 gemini，并让其出具代码示例（此阶段严禁对用户需求进行任何改动、简写等等）。即你必须从 gemini 获取代码基点，才可以进行接下来的各种行为。
+
+## 9. <!-- https://github.com/GuDaStudio/geminimcp --> Gemini Tool Invocation Specification
+
+1.  工具概述
+
+gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执行 AI 任务。该工具拥有极强的前端审美、任务规划与需求理解能力，但在**上下文长度（Effective 32k）**上有限制。
+
+2. 使用方式与规范
+
+   **必须遵守的限制**：
+
+- **会话管理**：捕获返回的 `SESSION_ID` 用于多轮对话。
+- **后端避让**：严禁让 Gemini 编写复杂的后端业务逻辑代码。
+
+**擅长场景（必须优先调用 Gemini）**：
+
+- **需求清晰化**：在任务开始阶段辅助生成引导性问题。
+- **任务规划**：生成 Step-by-step 的实施计划。
+- **前端原型**：编写 CSS、HTML、UI 组件代码，调整样式风格。
+
+## 10. 使用 gemini MCP 或直接使用 gemini 时需要额外主动获取上下文
+
+1. 在使用 `gemini MCP` 或直接使用 `gemini` 时，由于传递信息的关系，gemini 是不会主动的先阅读来自 claude code 的配置文件的，因此你必须要告诉 gemini，并约束 gemini 的上下文读取行为，**必须要求**gemini 首先要无条件的阅读 claude code 的上下文。
+2. 请务必先主动阅读 `CLAUDE.md` 和 `.claude` 目录内的全部的指导文件。
+3. 不需要你阅读以下文件：
+   - .claude\settings.json
+   - .claude\statusline.sh
+4. 你的修改必须按照这些 claude code 文档的要求和约束来做。特别是 `agents` 和 `skills` 的要求。
+
+## 11. 常用开发命令
 
 这是一个用于 11comm 智慧社区 (Smart Community) 项目的 pnpm + Turbo monorepo。
 
-### 8.1. 构建命令
+### 11.1. 构建命令
 
 ```bash
 # 构建所有项目
@@ -485,7 +533,7 @@ pnpm -F @01s-11comm/admin build:staging
 pnpm -F @01s-11comm/admin docs:build
 ```
 
-### 8.2. 开发命令
+### 11.2. 开发命令
 
 ```bash
 # 以开发模式运行管理应用
@@ -494,7 +542,7 @@ pnpm -F @01s-11comm/admin dev
 cd apps/admin && pnpm dev
 ```
 
-### 8.3. 测试命令
+### 11.3. 测试命令
 
 ```bash
 # 使用UI运行测试
@@ -503,7 +551,7 @@ pnpm test
 pnpm -F @01s-11comm/admin test
 ```
 
-### 8.4. 代码检查和格式化
+### 11.4. 代码检查和格式化
 
 ```bash
 # 检查和格式化管理应用
@@ -518,7 +566,7 @@ pnpm -F @01s-11comm/admin lint:stylelint
 pnpm format
 ```
 
-### 8.5. 类型检查
+### 11.5. 类型检查
 
 ```bash
 # 对整个项目进行类型检查
@@ -547,9 +595,9 @@ pnpm -F @01s-11comm/type typecheck
 2. 在提交前运行类型检查命令
 3. 保持类型定义的准确性和一致性
 
-## 9. 项目架构
+## 12. 项目架构
 
-### 9.1. Monorepo 结构
+### 12.1. Monorepo 结构
 
 - `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
 - `apps/type/` - **新增**的业务类型库，集中管理所有共享类型定义
@@ -557,7 +605,7 @@ pnpm -F @01s-11comm/type typecheck
 - `examples/` - 示例应用（01s-origin, 10wms）
 - 根级别管理 monorepo 依赖和共享配置
 
-### 9.2. 管理应用架构 (`apps/admin/`)
+### 12.2. 管理应用架构 (`apps/admin/`)
 
 **技术栈：**
 
@@ -606,7 +654,7 @@ pnpm -F @01s-11comm/type typecheck
 - Vue i18n，在`locales/`中使用 YAML 区域设置文件
 - 支持中文（zh-CN）和英文（en）
 
-### 9.3. 关键技术和库
+### 12.3. 关键技术和库
 
 **必需学习（根据 technical-doc.md）：**
 
@@ -626,7 +674,7 @@ pnpm -F @01s-11comm/type typecheck
 - 基于模块的 API 组织
 - 组件驱动的 UI 开发
 
-## 10. 开发工作流
+## 13. 开发工作流
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
@@ -637,27 +685,42 @@ pnpm -F @01s-11comm/type typecheck
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 11. 获取技术栈对应的上下文
+## 14. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
 
-### 11.1. taskmaster-ai
+### 14.1. taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
 
-### 11.2. nitro
+### 14.2. nitro
 
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 11.2.1. 编写接口需要导入正确的模块
+#### 14.2.1 编写接口需要导入正确的模块
 
 <!-- TODO: -->
 
-#### 11.2.2. 配置文件格式没有 vite 配置对象
+#### 14.2.2 配置文件格式没有 vite 配置对象
 
 <!-- TODO: -->
+
+### 14.3. pure-admin 后台框架模板
+
+`apps\admin` 项目套用是 `pure-admin` 模板。
+
+- pure-admin 模板仓库 ： https://github.com/pure-admin/vue-pure-admin
+- pure-admin 在线预览界面 ： https://pure-admin.github.io/vue-pure-admin/#/login
+- pure-admin 文档 ： https://pure-admin.cn/
+- pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
+- pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
+
+### 14.4. claude code skill
+
+- 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
+- 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
