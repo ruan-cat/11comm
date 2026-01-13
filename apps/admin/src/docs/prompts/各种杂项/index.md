@@ -229,3 +229,10 @@ overrides:
 认真的，人工的阅读每一个页面，看清楚这些页面的基础功能是否正常。
 
 耗时的人工检查任务。不能用 AI 来完成。
+
+## 020 改造 agent 文件为 skills 技能文件
+
+将 `.claude\agents` 的全部子代理改造成 claude code 的 skills 文件。
+
+- 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
+- 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
