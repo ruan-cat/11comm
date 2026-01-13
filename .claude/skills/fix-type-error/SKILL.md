@@ -1,7 +1,6 @@
 ---
 name: fix-type-error
-description: 修复类型错误，优化类型写法的通用子代理。包含了修复常见类型错误的方法，和通用的方法论。包括了常见类型写法的优化方案。
-color: blue
+description: 修复 TypeScript 类型错误，优化类型写法的通用子代理。
 ---
 
 # 类型错误修复方法论
@@ -170,7 +169,7 @@ import type { TableColumnList } from "@pureadmin/table";
 
 不好的类型写法如下：
 
-```ts
+```typescript
 /**
  * @description 商户管理员表单 props Merchant admin form props
  * @description
@@ -191,7 +190,7 @@ export interface MerchantAdminFormProps {
 
 `Mode` 是一个在客户端代码内全局导入的类型，直接使用即可，无需考虑手动导入。
 
-```ts
+```typescript
 /**
  * @description 商户管理员表单 props Merchant admin form props
  * @description
@@ -220,7 +219,7 @@ export interface MerchantAdminFormProps {
 1. 就比如以下的类型，就是不合适的类型，你应该删除掉纯中文的类型，并要求使用中文类型的其他文件，直接使用纯英文的业务类型即可。不需要写任何向后兼容的中文类型。
 2. 你应该重点去修复因为中文类型被删除后而导致的类型错误，其修复方式就是直接替换掉中文类型，直接换成英文类型。
 
-```ts
+```typescript
 /** 向后兼容：巡检方式 / Backward compatibility: PatrolMethodType */
 export type 巡检方式 = PatrolMethodType;
 /** 向后兼容：任务状态 / Backward compatibility: TaskStatusType */
@@ -239,7 +238,7 @@ export type 巡查明细表单Props = PatrolDetailFormProps;
 
 getRouteRank 是在宏上的使用的。
 
-```ts
+```typescript
 // 错误的导入 应该删除
 import { getRouteRank } from "@/router/rank";
 ```
@@ -256,7 +255,7 @@ import { getRouteRank } from "@/router/rank";
 
 这是常见错误。如果你需要处理类型错误而导入全局类型，请在 `plus-pro-components` 模块内导入正确的类型。
 
-```ts
+```typescript
 // 正确的导入路径
 import type { FieldValues } from "plus-pro-components";
 ```
@@ -265,18 +264,17 @@ import type { FieldValues } from "plus-pro-components";
 
 在客户端代码内，类型 `TableColumnList` 来自于全局类型文件 `apps\admin\types\global.d.ts` 。不应该手动导入。
 
-```ts
+```typescript
 // 该写法是错误的 不应该去任何模块导入 TableColumnList 类型
 import type { TableColumnList } from "@pureadmin/table";
 ```
 
 ### 2.14 错误导入全局类型 PureTableBarProps
 
-```ts
+```typescript
 // 该写法是错误的 不应该去任何模块导入 PureTableBarProps 类型。 不应该去任何 `@pureadmin` 模块内导入该类型
 import type { PureTableBarProps } from "@pureadmin/table";
 ```
-
 
 ### 2.15 不要将非业务类型迁移到类型项目内，特别是表单弹框组件类型
 
@@ -286,7 +284,7 @@ import type { PureTableBarProps } from "@pureadmin/table";
 
 **错误示例：**
 
-```ts
+```typescript
 // apps\type\src\business\property-manage\report-manage\repair-reports-summary-table.ts
 /**
  * 报修汇总表表单属性
@@ -308,7 +306,7 @@ export interface RepairReportsSummaryTableFormProps {
 2. 在 `form.ts` 内导入固定写法的 `import { type Mode } from "@/composables/use-mode";` 类型。
 3. 将 `mode` 字段的类型，统一换成 `Mode` 类型。
 
-```ts
+```typescript
 // apps\admin\src\pages\property-manage\report-manage\repair-reports-summary-table\components\form.ts
 import { type Mode } from "@/composables/use-mode";
 /**
@@ -330,6 +328,7 @@ export interface RepairReportsSummaryTableFormProps {
 - 表单弹框组件类型应该位于客户端代码的 `form.ts` 文件中，而不是类型项目中
 - `Mode` 类型是客户端代码内全局导入的类型，直接使用即可
 - 避免在类型项目中出现业务无关的表单组件类型
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
@@ -646,12 +645,12 @@ export * from "./expense-manage";
 
 ```typescript
 export type {
-  PatrolTaskFormVO,
-  PatrolTaskFormProps,
-  TaskListItem,
-  TaskQueryParams,
-  PatrolTaskListItem,
-  PatrolTaskQueryParams,
+	PatrolTaskFormVO,
+	PatrolTaskFormProps,
+	TaskListItem,
+	TaskQueryParams,
+	PatrolTaskListItem,
+	PatrolTaskQueryParams,
 } from "./task";
 ```
 
@@ -752,17 +751,17 @@ export * from "./task";
  * Audit status options
  */
 export const auditStatusOptions: OptionsType = [
-  { label: "待审核", value: "待审核" },
-  { label: "已通过", value: "已通过" },
-  { label: "已拒绝", value: "已拒绝" },
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
 ];
 
 /** 费用项名称选项 Expense item name options */
 export const expenseItemNameOptions: OptionsType = [
-  { label: "物业费", value: "物业费" },
-  { label: "水电费", value: "水电费" },
-  { label: "停车费", value: "停车费" },
-  { label: "维修费", value: "维修费" },
+	{ label: "物业费", value: "物业费" },
+	{ label: "水电费", value: "水电费" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
 ];
 
 /** 费用类型选项别名 Fee type options alias */
@@ -777,11 +776,7 @@ export const feeTypeOptions = expenseTypeOptions;
 // 导出通用类型 - 先导出 common
 export * from "./common";
 // 导出业务类型 - 后导出 business，避免冲突时使用命名导出
-export {
-  patrolMethodOptions,
-  patrolPointStatusOptions,
-  returnVisitStatusOptions,
-} from "./common";
+export { patrolMethodOptions, patrolPointStatusOptions, returnVisitStatusOptions } from "./common";
 // 选择性导出业务模块，避免重复导出
 export * from "./business/dev-team";
 export * from "./business/operation-team";

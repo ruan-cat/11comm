@@ -38,11 +38,11 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 在任何沟通下，这些术语都生效。
 
-- `code-style` ： `.claude\agents\code-style.md` `代码风格子代理` ，用于说明代码编写规范的子代理。
+- `code-style` ： `.claude\skills\code-style\SKILL.md` `代码风格技能` ，用于说明代码编写规范的技能。
 - `make-list-page` ：`.claude\agents\make-list-page.md` `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
 - `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
 - `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
-- `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
+- `fix-type-error` ：`.claude\skills\fix-type-error\SKILL.md` `修复类型报错技能`
 
 - `type-project-organization` ：`.claude\skills\type-project-organization\SKILL.md` 类型项目代码组织规范技能
 
