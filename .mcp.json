@@ -1,13 +1,5 @@
 {
 	"mcpServers": {
-		"taskmaster-ai": {
-			"type": "stdio",
-			"command": "cmd",
-			"args": ["/c", "npx", "-y", "task-master-ai@latest"],
-			"env": {
-				"TASK_MASTER_TOOLS": "core"
-			}
-		},
 		"gitmcp__plus-pro-components__plus-pro-components": {
 			"type": "http",
 			"url": "https://gitmcp.io/plus-pro-components/plus-pro-components"
