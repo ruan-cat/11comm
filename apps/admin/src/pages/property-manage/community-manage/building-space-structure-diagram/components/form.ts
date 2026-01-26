@@ -28,4 +28,3 @@ export const defaultForm: BuildingSpaceStructureDiagramFormVO = {
 	contactPhone: "",
 	remarks: "",
 };
-

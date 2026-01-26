@@ -326,4 +326,3 @@ export const mockPropertyCompanyData: PropertyCompanyListItem[] = [
 		remarks: "",
 	},
 ];
-

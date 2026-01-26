@@ -21,10 +21,12 @@
 - 使用 `structuredClone` 替代 `cloneDeep`
 
 **修改范围限定**:
+
 - ✅ **允许修改**: 变量名、类型名替换，特定代码删除（test-data、loadTableData、手动分页函数）
 - ❌ **严格禁止**: 删改弹框逻辑、表单初始化逻辑、按钮配置逻辑、全局类型使用、definePage 宏位置
 
 **重要规范**:
+
 - 必须遵守来自 `migrate-static-data-to-nitro-query` 任务的严格执行规范
 - 只做职责范围内的修改，不越界删改业务逻辑
 - 详细规范参见 `specs/list-pages/spec.md` 的"列表页改造的严格执行规范"章节

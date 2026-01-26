@@ -26,6 +26,7 @@
 **在实施列表页改造相关任务时，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
 
 ❌ **错误示例（严格禁止）**：
+
 ```typescript
 // 不允许创建中文类型别名
 export type 巡检方式 = PatrolMethodType;
@@ -37,6 +38,7 @@ export const 状态选项 = statusOptions;
 ```
 
 ✅ **正确做法**：
+
 - 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
 - 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
 - 不需要任何中文类型的兼容层

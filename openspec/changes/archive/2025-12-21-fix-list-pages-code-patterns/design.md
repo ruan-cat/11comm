@@ -48,6 +48,7 @@
 **重要前提**: 本次修复必须遵守来自 `migrate-static-data-to-nitro-query` 任务的严格执行规范，避免删改多余内容。详细规范请参考 `specs/list-pages/spec.md` 的"列表页改造的严格执行规范"章节。
 
 **核心原则**:
+
 1. **职责范围限定**: 只进行变量名、类型名替换和特定代码删除，不删改业务逻辑
 2. **保留现有逻辑**: 弹框函数、表单初始化、按钮配置等业务逻辑必须完整保留
 3. **类型安全优先**: 使用全局类型，按照 `fix-type-error` 规范处理类型问题
@@ -425,6 +426,7 @@ function handleSearch() {
 ### 职责范围界定
 
 **允许修改的内容**:
+
 1. 中文变量名 -> 英文变量名
 2. 中文类型名 -> 英文类型名（来自 `@01s-11comm/type`）
 3. `cloneDeep` -> `structuredClone`
@@ -432,6 +434,7 @@ function handleSearch() {
 5. 删除手动定义的 `pagination`、`pureTableProps`、分页函数
 
 **严格禁止修改的内容**:
+
 1. 弹框函数逻辑（`useMode`、`testAsync` 等）
 2. 弹框实例创建逻辑
 3. 表单 `props` 和 `defaultValues` 的定义
@@ -446,6 +449,7 @@ function handleSearch() {
 #### 1. 弹框处理规范
 
 **错误做法（严格禁止）**:
+
 - 删除表单实例声明
 - 删除 `props` 和 `defaultValues` 变量
 - 将 `defaultForm` 改成空对象 `{}`
@@ -453,6 +457,7 @@ function handleSearch() {
 - 删除按钮配置中的任何业务逻辑（如 `formComputed`、`useDoBeforeClose`、重置按钮）
 
 **正确做法**:
+
 - 只替换变量名和类型名
 - 保留所有业务逻辑结构
 - 保留完整的按钮配置（取消、重置、提交三个按钮）
@@ -462,12 +467,14 @@ function handleSearch() {
 #### 2. 类型处理规范
 
 **错误做法（严格禁止）**:
+
 - 手动导入 `TableColumns` 类型替换 `TableColumnList`
 - 删除 `PureTableBarProps` 类型约束
 - 导入全局函数 `getRouteRank`
 - 胡乱修改类型定义
 
 **正确做法**:
+
 - 使用全局类型 `TableColumnList` 和 `PureTableBarProps`
 - 按照 `fix-type-error` 代理的规范处理类型错误
 - 从 `@01s-11comm/type` 导入业务类型
@@ -476,11 +483,13 @@ function handleSearch() {
 #### 3. 代码格式规范
 
 **错误做法（严格禁止）**:
+
 - 将 `definePage` 宏移动到 import 语句下方
 - 修改 `definePage` 宏的内容
 - 改变变量声明的顺序（`plusSearchModelRef` -> `plusSearchDefaultValues` -> `plusSearchModel` 必须在 API Hook 之前）
 
 **正确做法**:
+
 - 保持 `definePage` 宏在文件最上方
 - 保持搜索表单变量的声明顺序
 - 保持代码注释和格式
@@ -505,6 +514,7 @@ function handleSearch() {
 详细的错误案例和正确示例请参考 `specs/list-pages/spec.md` 的"列表页改造的严格执行规范"章节。
 
 **特别注意**:
+
 - 不要"添油加醋"：不要添加本来没有的代码
 - 不要"画蛇添足"：不要修改不属于职责范围的代码
 - 不要"自作主张"：严格按照规范执行，不要自己发挥

@@ -1,8 +1,11 @@
 # test-data-backlog Specification
 
 ## Purpose
+
 TBD - created by archiving change sync-taskmaster-test-data-backlog. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: taskmaster test-data backlog mirrored in OpenSpec
 
 项目 SHALL 在 OpenSpec 侧维护与 `.taskmaster/tasks/tasks.json` v1.1 对齐的 `test-data.ts` 重构 backlog，包含任务 ID、文件路径、状态与分组信息，并在执行时遵循 `.claude/agents/make-list-page.md` 对假数据的约束。
@@ -28,4 +31,3 @@ List page mock data files (`test-data.ts`) SHALL define `tableData` as literal a
 - **GIVEN** 列表页使用 make-list-page 模板
 - **WHEN** 在 `test-data.ts` 提供列表与搜索所需的 mock 数据
 - **THEN** `tableData` 为字面量数组且字段与表格/搜索配置一致；下拉选项使用 `OptionsType` 并从同一文件导出；数据量覆盖典型分页演示。
-

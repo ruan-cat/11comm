@@ -25,7 +25,7 @@ pnpm add consola
 
 ## 3. 目录结构规范
 
-```
+```plain
 project-root/
 ├── server/                          # Nitro 服务端目录
 │   ├── api/                         # API 接口目录
@@ -41,7 +41,7 @@ project-root/
 
 **文件路径映射规则**：文件路径直接映射为 API 路径
 
-```
+```plain
 文件: server/api/dev-team/config-manage/center/list.post.ts
 路径: POST /api/dev-team/config-manage/center/list
 ```
@@ -123,13 +123,13 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 
 ## 5. 常见错误对比
 
-| 错误写法 | 正确写法 |
-| :------- | :------- |
-| `import { defineEventHandler } from "h3"` | `import { defineHandler } from "nitro/h3"` |
-| `export default defineEventHandler(...)` | `export default defineHandler(...)` |
-| `return { success: true, ... }` | `const response: JsonVO<...> = {...}; return response;` |
-| `const { pageIndex = 1 } = body` | 使用 defaultParams 对象合并 |
-| 手动编写 filter 逻辑 | `filterDataByQuery(data, filters)` |
+| 错误写法                                  | 正确写法                                                |
+| :---------------------------------------- | :------------------------------------------------------ |
+| `import { defineEventHandler } from "h3"` | `import { defineHandler } from "nitro/h3"`              |
+| `export default defineEventHandler(...)`  | `export default defineHandler(...)`                     |
+| `return { success: true, ... }`           | `const response: JsonVO<...> = {...}; return response;` |
+| `const { pageIndex = 1 } = body`          | 使用 defaultParams 对象合并                             |
+| 手动编写 filter 逻辑                      | `filterDataByQuery(data, filters)`                      |
 
 ## 6. Nitro 配置
 

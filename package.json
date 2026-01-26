@@ -35,7 +35,8 @@
 		"changelog:conventional-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"changelog:commit-and-tag-version": "commit-and-tag-version",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
-		"ci": "pnpm run build"
+		"ci": "pnpm run build",
+		"prepare": "simple-git-hooks"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^5.4.1",
@@ -64,6 +65,7 @@
 		"commander": "^14.0.2",
 		"commit-and-tag-version": "^12.6.1",
 		"commitizen": "^4.3.1",
+		"commitlint": "^20.3.1",
 		"consola": "^3.4.2",
 		"conventional-changelog-cli": "^5.0.0",
 		"cross-env": "^10.1.0",
@@ -73,12 +75,14 @@
 		"eslint-config-turbo": "^2.7.1",
 		"eslint-plugin-prettier": "^5.5.4",
 		"js-yaml": "^4.1.1",
+		"lint-staged": "^16.2.7",
 		"lodash-es": "^4.17.22",
 		"only-allow": "^1.2.2",
 		"pkg-types": "^2.3.0",
 		"prettier": "^3.7.4",
 		"prettier-plugin-lint-md": "^1.0.1",
 		"rimraf": "^6.1.2",
+		"simple-git-hooks": "^2.13.1",
 		"taze": "^19.9.2",
 		"tsx": "^4.21.0",
 		"turbo": "^2.7.1",

@@ -113,4 +113,3 @@ export interface HouseManagementFormVO {
 	/** 有效期 Valid until */
 	validUntil: string;
 }
-

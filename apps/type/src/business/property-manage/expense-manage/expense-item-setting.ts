@@ -168,4 +168,3 @@ export interface ExpenseItemSettingFormVO {
 	billingUnitPrice: string;
 	fixedFee: string | `${number}` | number;
 }
-

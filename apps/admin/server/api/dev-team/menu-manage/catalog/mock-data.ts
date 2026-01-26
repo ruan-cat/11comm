@@ -461,4 +461,3 @@ export const mockMenuCatalogData: MenuCatalogListItem[] = [
 		updateTime: "2024-04-13 14:40:00",
 	},
 ];
-

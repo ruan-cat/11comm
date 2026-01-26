@@ -440,17 +440,17 @@ export * from "./task";
  * Audit status options
  */
 export const auditStatusOptions: OptionsType = [
-  { label: "待审核", value: "待审核" },
-  { label: "已通过", value: "已通过" },
-  { label: "已拒绝", value: "已拒绝" },
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
 ];
 
 /** 费用项名称选项 Expense item name options */
 export const expenseItemNameOptions: OptionsType = [
-  { label: "物业费", value: "物业费" },
-  { label: "水电费", value: "水电费" },
-  { label: "停车费", value: "停车费" },
-  { label: "维修费", value: "维修费" },
+	{ label: "物业费", value: "物业费" },
+	{ label: "水电费", value: "水电费" },
+	{ label: "停车费", value: "停车费" },
+	{ label: "维修费", value: "维修费" },
 ];
 
 /** 费用类型选项别名 Fee type options alias */

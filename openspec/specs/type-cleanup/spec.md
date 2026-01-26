@@ -1,8 +1,11 @@
 # type-cleanup Specification
 
 ## Purpose
+
 TBD - created by archiving change no-chinese-and-alias. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: 清理类型项目的冗余 FormVO 导出
 
 类型项目的业务模块 `index.ts` 文件中 SHALL 移除所有 `export type { XXXFormVO }` 的选择性导出，改用全量导出 `export * from "./xxx"`。所有缺失的类型定义应及时补充。
@@ -120,4 +123,3 @@ TBD - created by archiving change no-chinese-and-alias. Update Purpose after arc
 - **THEN** 在类型项目对应文件中补充这些属性定义
 - **AND** 确保属性类型正确，使用可选标记 `?` 表示可选属性
 - **AND** 运行类型检查验证修改正确
-

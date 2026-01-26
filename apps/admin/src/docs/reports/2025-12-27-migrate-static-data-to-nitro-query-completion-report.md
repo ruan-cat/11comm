@@ -33,6 +33,7 @@
 ### 2.3 抽样代码审查
 
 我们抽样检查了 `propertyManage.communityManage.houseDecoration`（房屋装修）模块：
+
 - 确认 `index.vue` 已移除 `test-data` 引用。
 - 确认已使用 `useHouseDecorationListQuery` Hook。
 - 确认相关 API 定义和类型定义均符合规范。
@@ -42,6 +43,7 @@
 基于上述验证结果，所有的代码迁移工作实际上已经完成。此前 `tasks.md` 文件未及时更新以反映最新进度。
 
 我们已执行以下操作：
+
 - 更新 `openspec/changes/migrate-static-data-to-nitro-query/tasks.md`，将所有任务状态标记为 **已完成 [x]**。
 - 更新进度追踪，确认所有里程碑均已达成。
 

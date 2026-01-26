@@ -117,4 +117,3 @@ export interface ContractDraftFormVO {
 	/** 附件 Attachments */
 	attachments?: any[];
 }
-

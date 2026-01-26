@@ -1,7 +1,6 @@
 import type { OptionsType } from "../../../common";
 import { repairStatusOptions, repairSourceOptions } from "../../../common/business-options";
 
-
 /**
  * @description phone-report-repairs列表数据
  * PhoneReportRepairs list item
@@ -87,4 +86,3 @@ export interface PhoneRepairsFormVO {
 	/** 报修内容 Repair description */
 	repairDescription: string;
 }
-

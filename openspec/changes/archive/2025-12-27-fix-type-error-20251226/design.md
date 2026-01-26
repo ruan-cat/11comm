@@ -42,11 +42,13 @@
 **选择**：按优先级和影响范围分三个阶段修复
 
 **理由**：
+
 - 第一阶段（批量修复）：解决高频、高影响的通用问题，快速减少错误数量
 - 第二阶段（专项修复）：针对特定模块的深层问题，需要更细致的分析
 - 第三阶段（清理收尾）：处理剩余的个别错误
 
 **替代方案**：
+
 - 按模块顺序修复：可能导致某些通用问题重复修复
 - 按错误类型修复：难以追踪进度
 
@@ -55,11 +57,13 @@
 **选择**：使用 `as unknown as FieldValues & TargetType` 进行类型转换
 
 **理由**：
+
 - TypeScript 允许先转换为 unknown 再转换为目标类型
 - 不需要修改业务类型定义，避免影响其他代码
 - 明确表示这是一个有意的类型断言
 
 **替代方案**：
+
 - 为业务类型添加索引签名 `[key: string]: any`：会降低类型安全性
 - 修改 FieldValues 定义：影响范围太大
 
@@ -68,11 +72,13 @@
 **选择**：将所有中文的 Options 变量名改为英文驼峰命名
 
 **理由**：
+
 - 遵循 JavaScript/TypeScript 最佳实践
 - 提高代码可维护性和国际化支持
 - 避免可能的编码问题
 
 **映射规则**：
+
 - `提醒类型Options` → `reminderTypeOptions`
 - `支付方式Options` → `paymentMethodOptions`
 - `费用状态Options` → `expenseStatusOptions`
@@ -87,11 +93,13 @@
 **选择**：将枚举值从中文改为英文常量
 
 **理由**：
+
 - 类型定义已使用英文枚举值
 - 避免类型不匹配错误
 - 提高代码的国际化支持
 
 **映射示例**：
+
 - `"地下停车场"` → `"underground"`
 - `"标准车位"` → `"standard"`
 
@@ -100,6 +108,7 @@
 **选择**：对于可选的枚举字段，使用 `undefined` 而不是空字符串 `""`
 
 **理由**：
+
 - TypeScript 枚举类型不接受空字符串
 - `undefined` 明确表示"未设置"的语义
 - 符合 TypeScript 类型系统的最佳实践
@@ -109,11 +118,13 @@
 **选择**：将缺失的类型定义和 Options 统一添加到类型项目
 
 **理由**：
+
 - 遵循项目架构约定
 - 实现类型共享和复用
 - 便于集中管理和维护
 
 **需要补充的类型**：
+
 1. Options 变量（各种业务选项）
 2. `SystemConfig` - 系统配置类型
 3. `InitializeCommunityFormVO` - 初始化社区表单类型
@@ -123,7 +134,7 @@
 
 ### 修复工作流
 
-```
+```plain
 1. 读取错误文件
    ↓
 2. 分析错误类型和原因
@@ -159,17 +170,17 @@ const date = dayjs(value as string);
 ```typescript
 // 在 apps/type/src/common/business-options.ts 中
 export const reminderTypeOptions: OptionsType = [
-  { label: "短信提醒", value: "sms" },
-  { label: "邮件提醒", value: "email" },
-  // ...
+	{ label: "短信提醒", value: "sms" },
+	{ label: "邮件提醒", value: "email" },
+	// ...
 ];
 
 // 在 apps/type/src/business/property-manage/repairs-manage/return-visit.ts 中
 export interface ReturnVisitListItem {
-  // 现有属性...
-  workOrderNumber?: string;
-  location?: string;
-  // ...补充的属性
+	// 现有属性...
+	workOrderNumber?: string;
+	location?: string;
+	// ...补充的属性
 }
 ```
 
@@ -180,6 +191,7 @@ export interface ReturnVisitListItem {
 **描述**：使用 `as unknown as` 可能掩盖实际的类型不匹配问题
 
 **缓解措施**：
+
 - 仅在确认业务逻辑正确的情况下使用
 - 添加注释说明类型断言的原因
 - 在代码审查时重点关注
@@ -189,6 +201,7 @@ export interface ReturnVisitListItem {
 **描述**：将中文枚举值改为英文可能导致与数据库数据不匹配
 
 **缓解措施**：
+
 - 检查数据库存储的实际值
 - 如果数据库使用中文值，需要添加映射层
 - 或者保持中文值，修改类型定义以接受中文值
@@ -198,6 +211,7 @@ export interface ReturnVisitListItem {
 **描述**：类型修复可能无意中改变了运行时行为
 
 **缓解措施**：
+
 - 每个修复后进行功能测试
 - 确保不改变业务逻辑
 - 代码审查重点关注修改的逻辑
@@ -207,6 +221,7 @@ export interface ReturnVisitListItem {
 **描述**：使用 `as unknown as` 降低了类型安全性，但保持了代码的简洁
 
 **决策**：接受这个权衡，因为：
+
 - 业务逻辑已经过验证
 - 避免大规模重构
 - 可以在未来逐步改进
@@ -214,22 +229,26 @@ export interface ReturnVisitListItem {
 ## Migration Plan
 
 ### 步骤 1: 准备阶段
+
 1. 获取类型检查基准报告
 2. 备份相关文件
 3. 创建修复分支
 
 ### 步骤 2: 执行修复（三个阶段）
+
 1. 第一阶段：批量修复（预计 1-2 个工作单元）
 2. 第二阶段：专项修复（预计 1 个工作单元）
 3. 第三阶段：清理收尾（预计 0.5 个工作单元）
 
 ### 步骤 3: 验证阶段
+
 1. 运行类型检查确认零错误
 2. 运行构建确认编译通过
 3. 手动测试关键功能
 4. 代码审查
 
 ### 步骤 4: 部署阶段
+
 1. 合并到主分支
 2. 部署到测试环境
 3. 验证功能正常
@@ -238,6 +257,7 @@ export interface ReturnVisitListItem {
 ### 回滚方案
 
 如果修复导致严重问题：
+
 1. 立即回滚代码到修复前的提交
 2. 分析问题原因
 3. 制定新的修复方案
@@ -265,10 +285,12 @@ export interface ReturnVisitListItem {
 ### 关键文件清单
 
 **类型项目**：
+
 - `apps/type/src/common/business-options.ts`
 - `apps/type/src/business/property-manage/repairs-manage/return-visit.ts`
 
 **后台项目（高频修改）**：
+
 - 报表管理模块：7 个文件
 - 社区管理模块：4 个文件
 - 维修管理模块：3 个文件

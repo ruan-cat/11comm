@@ -29,4 +29,3 @@ export interface CommunityConfigurationFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
-

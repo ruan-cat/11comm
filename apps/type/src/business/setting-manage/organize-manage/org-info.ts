@@ -5,7 +5,6 @@ import type { OptionsType, BaseListQueryParams } from "../../../common";
  */
 export type OrganizationType = "company" | "department" | "group";
 
-
 /**
  * 组织类型选项
  */
@@ -14,7 +13,6 @@ export const organizationTypeOptions: OptionsType = [
 	{ label: "部门", value: "department" },
 	{ label: "小组", value: "group" },
 ];
-
 
 /**
  * 组织树节点
@@ -85,7 +83,6 @@ export interface EmployeeListQuery extends BaseListQueryParams {
 	/** 组织ID */
 	orgId?: string;
 }
-
 
 /**
  * 导出选项

@@ -51,7 +51,6 @@ export interface CommunityManageMyFormVO {
 	status: CommunityStatusType;
 }
 
-
 // ==================== 常量定义 ====================
 
 /** 省份选项数组 / Province options array */

@@ -92,4 +92,3 @@ export interface ConfigItemFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
-

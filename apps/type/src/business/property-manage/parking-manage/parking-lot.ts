@@ -67,4 +67,3 @@ export interface ParkingLotFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
-

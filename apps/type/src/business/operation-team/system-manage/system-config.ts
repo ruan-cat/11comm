@@ -64,4 +64,3 @@ export interface SystemConfigFormVO {
 	/** 描述 */
 	description: string;
 }
-

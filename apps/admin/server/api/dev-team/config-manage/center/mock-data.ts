@@ -571,4 +571,3 @@ export const mockConfigCenterData: ConfigCenterListItem[] = [
 		updater: "范冰冰",
 	},
 ];
-

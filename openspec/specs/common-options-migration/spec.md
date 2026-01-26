@@ -1,8 +1,11 @@
 # common-options-migration Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-form-ts-to-types-pkg. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: 识别 form.ts 文件中的下拉选项数组 (Step 1)
 
 系统 MUST 识别 `form.ts` 文件中定义的所有下拉选项数组，并记录其使用情况。
@@ -18,6 +21,7 @@ TBD - created by archiving change migrate-form-ts-to-types-pkg. Update Purpose a
 **收集信息:**
 
 对于每个识别的选项数组，记录：
+
 - 选项数组名称
 - 选项内容（label 和 value）
 - 使用该选项的组件
@@ -27,12 +31,14 @@ TBD - created by archiving change migrate-form-ts-to-types-pkg. Update Purpose a
 
 - **GIVEN** 检查 form.ts 文件
 - **WHEN** 发现以下代码：
+
 ```typescript
 export const statusOptions: OptionsType = [
-  { label: "启用", value: "启用" },
-  { label: "禁用", value: "禁用" },
+	{ label: "启用", value: "启用" },
+	{ label: "禁用", value: "禁用" },
 ];
 ```
+
 - **THEN** 识别为下拉选项数组
 - **AND** 记录名称为 `statusOptions`
 - **AND** 记录选项内容为启用/禁用
@@ -41,6 +47,7 @@ export const statusOptions: OptionsType = [
 
 - **GIVEN** 检查 form.ts 文件
 - **WHEN** 发现直接在表单配置中定义的选项：
+
 ```typescript
 {
   label: "状态",
@@ -52,6 +59,7 @@ export const statusOptions: OptionsType = [
   ],
 }
 ```
+
 - **THEN** 识别为需要提取的下拉选项
 - **AND** 建议将其提取为常量定义
 
@@ -135,17 +143,19 @@ export const statusOptions: OptionsType = [
 - **GIVEN** `auditStatusOptions` 判定为公共选项
 - **WHEN** 迁移到 `business-options.ts`
 - **THEN** 添加到文件末尾：
+
 ```typescript
 /**
  * @description 审核状态选项
  * Audit status options
  */
 export const auditStatusOptions: OptionsType = [
-  { label: "待审核", value: "待审核" },
-  { label: "已通过", value: "已通过" },
-  { label: "已拒绝", value: "已拒绝" },
+	{ label: "待审核", value: "待审核" },
+	{ label: "已通过", value: "已通过" },
+	{ label: "已拒绝", value: "已拒绝" },
 ];
 ```
+
 - **AND** 保持英文命名
 - **AND** 包含中英文注释
 
@@ -251,4 +261,3 @@ export const auditStatusOptions: OptionsType = [
 - **THEN** 公共选项只在 business-options.ts 中定义
 - **AND** 模块选项只在对应的业务文件中定义
 - **AND** form.ts 文件中没有重复的数组字面量定义
-

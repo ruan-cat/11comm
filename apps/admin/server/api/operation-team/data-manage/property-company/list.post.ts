@@ -45,4 +45,3 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PropertyCompa
 
 	return response;
 });
-

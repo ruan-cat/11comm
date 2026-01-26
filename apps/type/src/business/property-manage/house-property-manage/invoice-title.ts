@@ -89,4 +89,3 @@ export const invoiceTitleTypeOptions: OptionsType = [
 	{ label: "增值税普通发票", value: "增值税普通发票" },
 	{ label: "电子普通发票", value: "电子普通发票" },
 ];
-

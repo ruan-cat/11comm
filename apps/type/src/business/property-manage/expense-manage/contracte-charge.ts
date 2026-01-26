@@ -51,7 +51,16 @@ export const contracteChargeStatusOptions: OptionsType = [
 ];
 
 /** 警告 这里仅为了演示 实际上的业务类型为 string */
-export type ContractFeeType = "物业费" | "押金" | "煤气费" | "取暖费" | "维修费" | "服务费" | "其他" | "系统费用" | "租金";
+export type ContractFeeType =
+	| "物业费"
+	| "押金"
+	| "煤气费"
+	| "取暖费"
+	| "维修费"
+	| "服务费"
+	| "其他"
+	| "系统费用"
+	| "租金";
 
 /** 警告 这里仅为了演示 实际上的业务类型应该都来自于 api 目录内 */
 export interface ContracteChargeFormVO {

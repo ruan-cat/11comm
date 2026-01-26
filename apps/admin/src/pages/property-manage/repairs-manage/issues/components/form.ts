@@ -30,4 +30,3 @@ export interface IssuesSettingFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
-

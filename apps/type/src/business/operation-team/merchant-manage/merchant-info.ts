@@ -215,4 +215,3 @@ export interface MerchantInfoFormVO {
 	/** 备注 */
 	remarks: string;
 }
-

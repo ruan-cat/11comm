@@ -6,31 +6,31 @@
 
 ### 1.1 请求处理函数
 
-| 函数                     |       来源        |                                       说明 |
-| :----------------------- | :---------------: | -----------------------------------------: |
-| `defineHandler`          |    `nitro/h3`     |                         定义请求处理器函数 |
-| `readBody`               |    `nitro/h3`     |                             读取请求体数据 |
-| `getQuery`               |    `nitro/h3`     |                           获取 URL 查询参数 |
-| `getRouterParam`         |    `nitro/h3`     |                             获取路由动态参数 |
-| `getHeader`              |    `nitro/h3`     |                               获取请求头 |
-| `setHeader`              |    `nitro/h3`     |                               设置响应头 |
-| `setCookie`              |    `nitro/h3`     |                             设置 Cookie |
-| `getCookie`              |    `nitro/h3`     |                             获取 Cookie |
+| 函数             |    来源    |               说明 |
+| :--------------- | :--------: | -----------------: |
+| `defineHandler`  | `nitro/h3` | 定义请求处理器函数 |
+| `readBody`       | `nitro/h3` |     读取请求体数据 |
+| `getQuery`       | `nitro/h3` |  获取 URL 查询参数 |
+| `getRouterParam` | `nitro/h3` |   获取路由动态参数 |
+| `getHeader`      | `nitro/h3` |         获取请求头 |
+| `setHeader`      | `nitro/h3` |         设置响应头 |
+| `setCookie`      | `nitro/h3` |        设置 Cookie |
+| `getCookie`      | `nitro/h3` |        获取 Cookie |
 
 ### 1.2 运行时配置函数
 
-| 函数                     |           来源            |                   说明 |
-| :----------------------- | :-----------------------: | ---------------------: |
-| `useRuntimeConfig`       | `nitro/runtime-config`    | 获取运行时配置对象 |
+| 函数               |          来源          |               说明 |
+| :----------------- | :--------------------: | -----------------: |
+| `useRuntimeConfig` | `nitro/runtime-config` | 获取运行时配置对象 |
 
 ### 1.3 响应函数
 
-| 函数                     |       来源        |                       说明 |
-| :----------------------- | :---------------: | -------------------------: |
-| `send`                   |    `nitro/h3`     |             发送响应 |
-| `sendRedirect`           |    `nitro/h3`     |           发送重定向响应 |
-| `sendError`              |    `nitro/h3`     |           发送错误响应 |
-| `createError`            |    `nitro/h3`     |           创建错误对象 |
+| 函数           |    来源    |           说明 |
+| :------------- | :--------: | -------------: |
+| `send`         | `nitro/h3` |       发送响应 |
+| `sendRedirect` | `nitro/h3` | 发送重定向响应 |
+| `sendError`    | `nitro/h3` |   发送错误响应 |
+| `createError`  | `nitro/h3` |   创建错误对象 |
 
 ## 2. 配置选项速查
 
@@ -80,15 +80,15 @@ export default defineConfig({
 
 ### 2.2 部署预设列表
 
-| 预设                    |              平台              |
-| :---------------------- | :----------------------------: |
-| `node`                  |       Node.js 服务器        |
-| `cloudflare_module`     |     Cloudflare Workers      |
-| `cloudflare_pages`      |      Cloudflare Pages       |
-| `vercel`                |            Vercel            |
-| `netlify`               |           Netlify            |
-| `static`                |          静态站点           |
-| `deno`                  |         Deno Deploy          |
+| 预设                |        平台        |
+| :------------------ | :----------------: |
+| `node`              |   Node.js 服务器   |
+| `cloudflare_module` | Cloudflare Workers |
+| `cloudflare_pages`  |  Cloudflare Pages  |
+| `vercel`            |       Vercel       |
+| `netlify`           |      Netlify       |
+| `static`            |      静态站点      |
+| `deno`              |    Deno Deploy     |
 
 ## 3. 接口编写速查
 
@@ -199,11 +199,11 @@ export default defineHandler((event) => {
 
 ### 4.2 环境变量命名转换
 
-| 配置键              | 环境变量              |
-| :------------------ | :-------------------- |
-| `apiToken`          | `NITRO_API_TOKEN`     |
-| `databaseUrl`       | `NITRO_DATABASE_URL`  |
-| `myCustomValue`     | `NITRO_MY_CUSTOM_VALUE` |
+| 配置键          | 环境变量                |
+| :-------------- | :---------------------- |
+| `apiToken`      | `NITRO_API_TOKEN`       |
+| `databaseUrl`   | `NITRO_DATABASE_URL`    |
+| `myCustomValue` | `NITRO_MY_CUSTOM_VALUE` |
 
 ## 5. 错误处理速查
 
@@ -240,13 +240,13 @@ const errorResponse: JsonVO<null> = {
 
 ## 6. 文件路径与 API 路径映射
 
-| 文件路径                                    |         HTTP 方法         |         API 路径 |
-| :------------------------------------------ | :-----------------------: | ---------------: |
-| `server/api/users/list.post.ts`             |           POST            | `/api/users/list` |
-| `server/api/users/[id].get.ts`              |            GET            | `/api/users/:id` |
-| `server/api/users/create.post.ts`           |           POST            | `/api/users/create` |
-| `server/api/users/[id]/update.put.ts`       |            PUT            | `/api/users/:id/update` |
-| `server/api/users/[id]/delete.delete.ts`    |          DELETE           | `/api/users/:id/delete` |
+| 文件路径                                 | HTTP 方法 |                API 路径 |
+| :--------------------------------------- | :-------: | ----------------------: |
+| `server/api/users/list.post.ts`          |   POST    |       `/api/users/list` |
+| `server/api/users/[id].get.ts`           |    GET    |        `/api/users/:id` |
+| `server/api/users/create.post.ts`        |   POST    |     `/api/users/create` |
+| `server/api/users/[id]/update.put.ts`    |    PUT    | `/api/users/:id/update` |
+| `server/api/users/[id]/delete.delete.ts` |  DELETE   | `/api/users/:id/delete` |
 
 ## 7. 常用类型定义
 

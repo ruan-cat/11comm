@@ -89,4 +89,3 @@ export interface CarportApplyFormVO {
 	/** 审核结果 Review result */
 	reviewResult: string;
 }
-

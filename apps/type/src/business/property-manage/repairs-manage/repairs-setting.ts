@@ -1,7 +1,6 @@
 import type { OptionsType } from "../../../common";
 import { repairStatusOptions } from "../../../common/business-options";
 
-
 /**
  * @description repairs-setting列表数据
  * RepairsSetting list item

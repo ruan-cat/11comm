@@ -3,7 +3,10 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
-import type { SettingManagementRegisterProtocolDisplay, SettingManagementRegisterProtocolListQuery } from "@01s-11comm/type";
+import type {
+	SettingManagementRegisterProtocolDisplay,
+	SettingManagementRegisterProtocolListQuery,
+} from "@01s-11comm/type";
 
 /** API 路径 */
 const API_URL = "/api/setting-manage/system-manage/register-protocol/list";

@@ -109,4 +109,3 @@ export interface ParkingSpaceStructureDiagramFormVO {
 }
 
 // 注意：parkingSpaceTypeOptions 和 parkingSpaceStatusOptions 已从 "../../../common/business-options" 导入
-

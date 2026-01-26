@@ -1,8 +1,11 @@
 # type-system Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: apps/type 包初始化 (Step 1) [CRITICAL]
 
 系统 SHALL 在 apps/type 目录下初始化独立的 TypeScript 类型库包，满足以下配置要求：
@@ -299,4 +302,3 @@ apps/type 类型库 SHALL 满足以下约束：
 - **AND** 所有字段都是原始类型或枚举类型
 
 ---
-

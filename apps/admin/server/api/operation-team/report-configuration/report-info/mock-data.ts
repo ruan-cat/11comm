@@ -14,8 +14,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM property_fee WHERE fee_date BETWEEN ? AND ?",
 		description: "统计指定月份的物业费收费明细",
-		fieldConfig: '{"columns":[{"prop":"ownerName","label":"业主姓名"},{"prop":"roomNumber","label":"房号"},{"prop":"feeAmount","label":"收费金额"},{"prop":"payTime","label":"缴费时间"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"ownerName","label":"业主姓名"},{"prop":"roomNumber","label":"房号"},{"prop":"feeAmount","label":"收费金额"},{"prop":"payTime","label":"缴费时间"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -34,7 +36,8 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT community_name, SUM(fee_amount) FROM property_fee WHERE YEAR(fee_date)=? GROUP BY community_name",
 		description: "按小区统计年度收费汇总",
-		fieldConfig: '{"columns":[{"prop":"communityName","label":"小区名称"},{"prop":"totalAmount","label":"收费总额"},{"prop":"houseCount","label":"收费户数"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"communityName","label":"小区名称"},{"prop":"totalAmount","label":"收费总额"},{"prop":"houseCount","label":"收费户数"}]}',
 		parameterConfig: '{"params":[{"name":"year","type":"number","label":"年份"}]}',
 		isCache: true,
 		cacheDuration: 7200,
@@ -54,7 +57,8 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM owner_info WHERE community_id IN (?)",
 		description: "业主基本信息明细表",
-		fieldConfig: '{"columns":[{"prop":"ownerName","label":"业主姓名"},{"prop":"phone","label":"联系电话"},{"prop":"roomNumber","label":"房号"},{"prop":"idCard","label":"身份证号"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"ownerName","label":"业主姓名"},{"prop":"phone","label":"联系电话"},{"prop":"roomNumber","label":"房号"},{"prop":"idCard","label":"身份证号"}]}',
 		parameterConfig: '{"params":[{"name":"communityIds","type":"select","label":"小区","multiple":true}]}',
 		isCache: false,
 		cacheDuration: 0,
@@ -92,10 +96,13 @@ export const mockReportInfoData: ReportInfo[] = [
 		groupName: "维修服务报表",
 		reportType: "统计报表",
 		dataSource: "主数据库",
-		sqlQuery: "SELECT status, COUNT(*) as count FROM maintenance_workorder WHERE create_time BETWEEN ? AND ? GROUP BY status",
+		sqlQuery:
+			"SELECT status, COUNT(*) as count FROM maintenance_workorder WHERE create_time BETWEEN ? AND ? GROUP BY status",
 		description: "统计维修工单处理情况",
-		fieldConfig: '{"columns":[{"prop":"status","label":"状态"},{"prop":"count","label":"数量"},{"prop":"percentage","label":"占比"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"status","label":"状态"},{"prop":"count","label":"数量"},{"prop":"percentage","label":"占比"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -114,8 +121,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM patrol_plan WHERE plan_date BETWEEN ? AND ?",
 		description: "巡检计划及执行情况明细",
-		fieldConfig: '{"columns":[{"prop":"planName","label":"计划名称"},{"prop":"planDate","label":"计划日期"},{"prop":"executor","label":"执行人"},{"prop":"status","label":"状态"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"planName","label":"计划名称"},{"prop":"planDate","label":"计划日期"},{"prop":"executor","label":"执行人"},{"prop":"status","label":"状态"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: false,
 		cacheDuration: 0,
 		isEnabled: true,
@@ -134,8 +143,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM access_record WHERE access_time BETWEEN ? AND ?",
 		description: "门禁刷卡出入记录",
-		fieldConfig: '{"columns":[{"prop":"cardNumber","label":"卡号"},{"prop":"personName","label":"姓名"},{"prop":"accessTime","label":"刷卡时间"},{"prop":"gateName","label":"门禁点"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"cardNumber","label":"卡号"},{"prop":"personName","label":"姓名"},{"prop":"accessTime","label":"刷卡时间"},{"prop":"gateName","label":"门禁点"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: false,
 		cacheDuration: 0,
 		isEnabled: true,
@@ -154,8 +165,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM equipment_maintenance WHERE maintenance_date BETWEEN ? AND ?",
 		description: "设备维护保养记录明细",
-		fieldConfig: '{"columns":[{"prop":"equipmentName","label":"设备名称"},{"prop":"maintenanceType","label":"维护类型"},{"prop":"maintenanceDate","label":"维护日期"},{"prop":"technician","label":"技术人员"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"equipmentName","label":"设备名称"},{"prop":"maintenanceType","label":"维护类型"},{"prop":"maintenanceDate","label":"维护日期"},{"prop":"technician","label":"技术人员"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -172,9 +185,11 @@ export const mockReportInfoData: ReportInfo[] = [
 		groupName: "能耗统计报表",
 		reportType: "统计报表",
 		dataSource: "主数据库",
-		sqlQuery: "SELECT energy_type, SUM(consumption) as total FROM energy_consumption WHERE month=? GROUP BY energy_type",
+		sqlQuery:
+			"SELECT energy_type, SUM(consumption) as total FROM energy_consumption WHERE month=? GROUP BY energy_type",
 		description: "月度水电能耗统计",
-		fieldConfig: '{"columns":[{"prop":"energyType","label":"能耗类型"},{"prop":"total","label":"总消耗"},{"prop":"unit","label":"单位"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"energyType","label":"能耗类型"},{"prop":"total","label":"总消耗"},{"prop":"unit","label":"单位"}]}',
 		parameterConfig: '{"params":[{"name":"month","type":"month","label":"月份"}]}',
 		isCache: true,
 		cacheDuration: 7200,
@@ -194,8 +209,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT category, status, COUNT(*) as count FROM customer_service GROUP BY category, status",
 		description: "客服工单分类统计",
-		fieldConfig: '{"columns":[{"prop":"category","label":"工单类别"},{"prop":"status","label":"处理状态"},{"prop":"count","label":"数量"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"category","label":"工单类别"},{"prop":"status","label":"处理状态"},{"prop":"count","label":"数量"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -215,7 +232,8 @@ export const mockReportInfoData: ReportInfo[] = [
 		sqlQuery: "SELECT visit_date, COUNT(*) as count FROM visitor_record GROUP BY visit_date",
 		description: "每日访客进出统计",
 		fieldConfig: '{"columns":[{"prop":"visitDate","label":"日期"},{"prop":"count","label":"访客数量"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -254,8 +272,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM access_card_record WHERE access_time BETWEEN ? AND ?",
 		description: "门禁刷卡记录明细表",
-		fieldConfig: '{"columns":[{"prop":"cardNumber","label":"卡号"},{"prop":"personName","label":"姓名"},{"prop":"accessTime","label":"刷卡时间"},{"prop":"gateName","label":"门禁点"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"cardNumber","label":"卡号"},{"prop":"personName","label":"姓名"},{"prop":"accessTime","label":"刷卡时间"},{"prop":"gateName","label":"门禁点"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: false,
 		cacheDuration: 0,
 		isEnabled: true,
@@ -272,9 +292,11 @@ export const mockReportInfoData: ReportInfo[] = [
 		groupName: "能耗管理报表",
 		reportType: "图表报表",
 		dataSource: "主数据库",
-		sqlQuery: "SELECT energy_type, SUM(consumption) as total FROM energy_consumption WHERE month=? GROUP BY energy_type",
+		sqlQuery:
+			"SELECT energy_type, SUM(consumption) as total FROM energy_consumption WHERE month=? GROUP BY energy_type",
 		description: "月度水电能耗分析",
-		fieldConfig: '{"columns":[{"prop":"energyType","label":"能耗类型"},{"prop":"total","label":"总消耗"},{"prop":"unit","label":"单位"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"energyType","label":"能耗类型"},{"prop":"total","label":"总消耗"},{"prop":"unit","label":"单位"}]}',
 		parameterConfig: '{"params":[{"name":"month","type":"month","label":"月份"}]}',
 		isCache: true,
 		cacheDuration: 7200,
@@ -294,8 +316,10 @@ export const mockReportInfoData: ReportInfo[] = [
 		dataSource: "主数据库",
 		sqlQuery: "SELECT * FROM fire_inspection WHERE inspection_date BETWEEN ? AND ?",
 		description: "消防检查记录明细",
-		fieldConfig: '{"columns":[{"prop":"inspectionDate","label":"检查日期"},{"prop":"inspector","label":"检查人"},{"prop":"location","label":"检查位置"},{"prop":"result","label":"检查结果"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		fieldConfig:
+			'{"columns":[{"prop":"inspectionDate","label":"检查日期"},{"prop":"inspector","label":"检查人"},{"prop":"location","label":"检查位置"},{"prop":"result","label":"检查结果"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -335,7 +359,8 @@ export const mockReportInfoData: ReportInfo[] = [
 		sqlQuery: "SELECT area, SUM(completed) / SUM(total) * 100 as rate FROM cleaning_task GROUP BY area",
 		description: "各区域保洁任务完成率",
 		fieldConfig: '{"columns":[{"prop":"area","label":"区域"},{"prop":"rate","label":"完成率"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -352,10 +377,12 @@ export const mockReportInfoData: ReportInfo[] = [
 		groupName: "工程维修报表",
 		reportType: "统计报表",
 		dataSource: "主数据库",
-		sqlQuery: "SELECT category, AVG(TIMESTAMPDIFF(HOUR, create_time, complete_time)) as avg_hours FROM repair_order GROUP BY category",
+		sqlQuery:
+			"SELECT category, AVG(TIMESTAMPDIFF(HOUR, create_time, complete_time)) as avg_hours FROM repair_order GROUP BY category",
 		description: "各类报修处理平均时效",
 		fieldConfig: '{"columns":[{"prop":"category","label":"报修类别"},{"prop":"avgHours","label":"平均时长(小时)"}]}',
-		parameterConfig: '{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
+		parameterConfig:
+			'{"params":[{"name":"startDate","type":"date","label":"开始日期"},{"name":"endDate","type":"date","label":"结束日期"}]}',
 		isCache: true,
 		cacheDuration: 3600,
 		isEnabled: true,
@@ -395,7 +422,8 @@ export const mockReportInfoData: ReportInfo[] = [
 		sqlQuery: "SELECT service_type, AVG(score) as avg_score FROM satisfaction_survey GROUP BY service_type",
 		description: "各服务类型满意度评分",
 		fieldConfig: '{"columns":[{"prop":"serviceType","label":"服务类型"},{"prop":"avgScore","label":"平均评分"}]}',
-		parameterConfig: '{"params":[{"name":"quarter","type":"select","label":"季度","options":[{"label":"第一季度","value":"Q1"},{"label":"第二季度","value":"Q2"},{"label":"第三季度","value":"Q3"},{"label":"第四季度","value":"Q4"}]}]}',
+		parameterConfig:
+			'{"params":[{"name":"quarter","type":"select","label":"季度","options":[{"label":"第一季度","value":"Q1"},{"label":"第二季度","value":"Q2"},{"label":"第三季度","value":"Q3"},{"label":"第四季度","value":"Q4"}]}]}',
 		isCache: true,
 		cacheDuration: 7200,
 		isEnabled: true,

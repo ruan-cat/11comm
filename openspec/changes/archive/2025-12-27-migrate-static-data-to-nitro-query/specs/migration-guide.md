@@ -16,6 +16,7 @@
 **在迁移过程中，严格禁止创建任何向后兼容的中文类型或中文变量别名**：
 
 ❌ **错误示例（严格禁止）**：
+
 ```typescript
 // 不允许创建中文类型别名
 export type 巡检方式 = PatrolMethodType;
@@ -30,12 +31,14 @@ export const 状态选项 = statusOptions;
 ```
 
 ✅ **正确做法**：
+
 - 直接使用纯英文的业务类型：`PatrolMethodType`、`TaskStatusType` 等
 - 直接使用纯英文的变量名：`contractTypeOptions`、`statusOptions` 等
 - 不需要任何中文类型的兼容层
 - 如果其他文件使用了中文类型，应该直接修改那些文件使用英文类型
 
 **原因**：
+
 - 避免长期维护兼容层的技术债
 - 强制统一代码规范
 - 简化类型定义
@@ -125,6 +128,7 @@ export const {enum}Options: OptionsType = [
 **在创建类型定义文件时，严格禁止以下做法**：
 
 ❌ **错误示例（严格禁止）**：
+
 ```typescript
 // ❌ 错误1: 创建中文类型别名
 export type 巡检方式 = PatrolMethodType;
@@ -136,15 +140,14 @@ export const 状态选项 = statusOptions;
 ```
 
 ✅ **正确做法**：
+
 ```typescript
 // ✅ 正确: 直接使用英文类型和变量名
 export interface PatrolMethodType {
 	// ...
 }
 
-export const expenseTypeOptions: OptionsType = [
-	{ label: "费用类型", value: "费用类型" },
-];
+export const expenseTypeOptions: OptionsType = [{ label: "费用类型", value: "费用类型" }];
 ```
 
 #### 3.1.3 正确范例

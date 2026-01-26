@@ -37,7 +37,6 @@ export interface BuildingSpaceStructureDiagramFormVO {
 	remarks: string;
 }
 
-
 // ==================== 原有类型定义 ====================
 
 /**

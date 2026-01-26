@@ -140,4 +140,3 @@ export interface MerchantAdminFormVO {
 	/** 状态 */
 	status: string;
 }
-

@@ -1,8 +1,11 @@
 # common-business-options Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: 公共业务下拉选择数组集中管理 (Step 1) [IMPORTANT]
 
 系统 SHALL 将跨模块、跨项目通用的业务下拉选择数组统一整合到 `apps/type/src/common/business-options.ts` 文件内，避免在多个业务类型文件中重复定义相同的选项数组。
@@ -357,4 +360,3 @@ const plusFormColumns = ref<PlusColumn[]>([
 - **THEN** 将费用类型选项迁移到 `business-options.ts`
 - **AND** 更新 3 个业务类型文件使用公共选项
 - **AND** 更新 Admin 项目中的相关引用
-

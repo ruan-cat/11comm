@@ -5,10 +5,7 @@ export type {
 } from "../../../common/business-types";
 
 // 从公共选项文件导入
-export {
-	settingTypeOptions,
-	communityConfigStatusOptions,
-} from "../../../common/business-options";
+export { settingTypeOptions, communityConfigStatusOptions } from "../../../common/business-options";
 
 /**
  * 设置管理小区配置表单对象

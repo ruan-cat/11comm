@@ -24,4 +24,3 @@ export interface PatrolDetailFormProps {
 	/** 表单模式 */
 	mode?: Mode;
 }
-

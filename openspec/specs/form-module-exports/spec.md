@@ -1,8 +1,11 @@
 # form-module-exports Specification
 
 ## Purpose
+
 TBD - created by archiving change no-form-ts-redundant-export. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: form.ts 导出规范
 
 后台项目中的 `form.ts` 文件 SHALL 只导出弹框组件所需的 Props 类型和默认表单数据,禁止作为类型和变量的二次导出中转站。
@@ -108,4 +111,3 @@ export interface ConfigItemFormProps {
   - `export { xxxOptions }` (选项的二次导出)
   - `export function listDataToFormData` (工具函数导出)
 - **AND** 所有 `export` 语句应只包含 `xxxFormProps` 接口定义和 `defaultForm` 常量
-

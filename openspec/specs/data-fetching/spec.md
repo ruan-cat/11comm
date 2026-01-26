@@ -1,8 +1,11 @@
 # data-fetching Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: 业务专用查询 Hook 必须提供 initialParams 参数 [CRITICAL]
 
 每个列表页 MUST 提供专用的 TanStack Query Hook，并且 MUST 提供 `initialParams` 必填参数:
@@ -237,4 +240,3 @@ const { pureTableProps, isFetching } = useConfigCenterListQuery(plusSearchDefaul
 - **AND** 直接使用 `:="pureTableProps"` 展开所有属性
 
 ---
-

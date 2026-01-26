@@ -13,7 +13,17 @@ import { mockArchiveData } from "./mock-data";
  */
 export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<ArchiveListItem>>> => {
 	const body = await readBody<ArchiveQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, contractName, contractNumber, contractType, partyA, partyB, archiveNumber, status } = body;
+	const {
+		pageIndex = 1,
+		pageSize = 10,
+		contractName,
+		contractNumber,
+		contractType,
+		partyA,
+		partyB,
+		archiveNumber,
+		status,
+	} = body;
 
 	let filteredData = [...mockArchiveData];
 

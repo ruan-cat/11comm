@@ -1,8 +1,11 @@
 # list-page-pattern Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: 搜索表单变量声明顺序
 
 搜索表单相关的三个核心变量 MUST 按以下顺序声明,且 MUST 在调用 API Hook 之前:
@@ -58,4 +61,3 @@ const { tableData, pureTableProps, isFetching, updateParams, resetParams } =
 - **AND** 确保移动后的代码顺序符合规范
 
 ---
-

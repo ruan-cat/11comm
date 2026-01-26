@@ -1,8 +1,11 @@
 # nitro-api Specification
 
 ## Purpose
+
 TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Nitro v3 代码写法规范 [CRITICAL]
 
 所有 Nitro 接口 MUST 使用 Nitro v3 的标准写法:
@@ -347,4 +350,3 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 - **AND** success = true(仍返回成功)
 
 ---
-

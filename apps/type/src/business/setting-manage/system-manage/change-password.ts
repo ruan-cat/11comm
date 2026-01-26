@@ -7,4 +7,3 @@ export {
 	changePasswordRecordStatusOptions,
 	changePasswordRecordDepartmentOptions,
 } from "../../../common/business-options";
-

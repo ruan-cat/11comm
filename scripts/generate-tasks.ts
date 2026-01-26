@@ -465,14 +465,7 @@ ${milestones}
  * 主函数
  */
 function main() {
-	const outputPath = join(
-		__dirname,
-		"..",
-		"openspec",
-		"changes",
-		"migrate-static-data-to-nitro-query",
-		"tasks.md",
-	);
+	const outputPath = join(__dirname, "..", "openspec", "changes", "migrate-static-data-to-nitro-query", "tasks.md");
 
 	const content = generateFullTasks();
 

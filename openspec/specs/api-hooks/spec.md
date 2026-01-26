@@ -51,7 +51,9 @@
 - **THEN** 文件顶部必须包含 `@file` 和 `@description` JSDoc 注释
 - **AND** Hook 函数必须包含中英文双语注释
 - **AND** 常量定义必须有 JSDoc 注释说明用途
+
 ## Requirements
+
 ### Requirement: API Hook 函数必须提供 initialParams 参数
 
 所有基于 `useListQuery` 的 API Hook 函数 MUST 接受 `initialParams` 参数,并将其传递给 `useListQuery` 配置对象。
@@ -97,4 +99,3 @@
 - **THEN** 文件顶部必须包含 `@file` 和 `@description` JSDoc 注释
 - **AND** Hook 函数必须包含中英文双语注释
 - **AND** 常量定义必须有 JSDoc 注释说明用途
-

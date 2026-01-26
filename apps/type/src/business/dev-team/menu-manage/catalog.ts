@@ -98,4 +98,3 @@ export const storeTypeOptions: OptionsType = [
 	{ label: "业主平台", value: "owner" },
 	{ label: "通用平台", value: "common" },
 ];
-

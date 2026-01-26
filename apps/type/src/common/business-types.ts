@@ -315,5 +315,3 @@ export interface SettingManagementSystemBasicInfoQueryParams extends BaseListQue
 	/** 默认小区编号 Default community code */
 	defaultCommunityCode?: string;
 }
-
-
