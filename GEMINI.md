@@ -28,9 +28,9 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 在我与你沟通并要求你具体实施更改时，难免会遇到很多模糊不清的事情。
 
-请你深度思考这些`遗漏点`，`缺漏点`，和`冲突相悖点`，**并主动的向我问询这些你不清楚的实施细节**。
+请你**深度思考**这些`遗漏点`，`缺漏点`，和`冲突相悖点`，**并主动的向我问询这些你不清楚的实施细节**。请主动使用 claude code 内置的 `AskUserQuestion` 工具，将你不清楚的内容设计成一些列问题，并询问我，向我索要细节，或着与我协作沟通。
 
-我会与你共同补充细化实现细节。我们先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
+我会与你共同补充细化实现细节。我们会先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
 
 ## 2. 对话沟通术语表
 
@@ -38,11 +38,11 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 在任何沟通下，这些术语都生效。
 
-- `code-style` ： `.claude\agents\code-style.md` `代码风格子代理` ，用于说明代码编写规范的子代理。
+- `code-style` ： `.claude\skills\code-style\SKILL.md` `代码风格技能` ，用于说明代码编写规范的技能。
 - `make-list-page` ：`.claude\agents\make-list-page.md` `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
 - `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
 - `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
-- `fix-type-error` ：`.claude\agents\fix-type-error.md` `修复类型报错子代理`
+- `fix-type-error` ：`.claude\skills\fix-type-error\SKILL.md` `修复类型报错技能`
 
 - `type-project-organization` ：`.claude\skills\type-project-organization\SKILL.md` 类型项目代码组织规范技能
 
@@ -724,3 +724,45 @@ pnpm -F @01s-11comm/type typecheck
 
 - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
 - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
+
+## 15. 编写测试用例规范
+
+1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
+2. 测试用例的文件格式为 `*.test.ts` 。
+3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
+4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
+
+## 16. 生成发版日志的操作规范
+
+在你生成发版日志时，按照以下规范来完成：
+
+1. 新建文件： 运行命令 `pnpm dlx @changesets/cli add --empty` ，该命令会在 `.changeset` 目录下，新建一个空的 markdown 文件，这个文件就是你要写入的发版日志。
+2. 发版日志文件重命名： 这个命令会新建一个随机名称的发版日志文件，请你按照报告的规格，换成日期加语义化更新内容的名称。比如 `2025-12-15-add-pnpm-workspace-yaml.md` 就是有意义的命名。
+3. yaml 区域写入 changeset 规格的发版信息： 写入发版包名，和`发版标签`的等级。
+4. 写入更新日志： 在正文内编写更新日志。
+5. 编写更新日志正文的行文规范：
+   - 禁止使用任何等级的 markdown 标题： 编写任何`发版标签`的更新日志时，不允许使用任何等级的 markdown 标题，比如一级标题、二级标题等。这会影响自动合并的 `CHANGELOG.md` 文档的美观度。必须使用 markdown 的序号语法。
+   - major： 详细，清晰。说明清楚 major 版本的重大变更。
+   - minor： 用有序序号，简明扼要的说明清楚更新日志即可。
+   - patch： 用有序序号，简明扼要的说明清楚更新日志即可。
+
+## 17. 沟通协作要求
+
+### `计划模式`
+
+在`计划模式`下，请你按照以下方式与我协作：
+
+1. 你不需要考虑任何向后兼容的设计，允许你做出破坏性的写法。请先设计一个合适的方案，和我沟通后再修改实施。
+2. 如果有疑惑，请询问我。
+3. 完成任务后，请告知我你做了那些破坏性变更。
+
+请注意，在绝大多数情况下，我不会要求你以这种 `计划模式` 来和我协作。
+
+## 18. 术语说明
+
+在我和你沟通时，我会使用以下术语，便于你理解。
+
+### 发版日志相关术语
+
+- `生成更新日志` ： 指的是在 `.changeset` 目录内，编写面向 changeset 的更新日志文件。其`发版标签`分为 `major` `minor` `patch` 这三个档次。如果我在要求你生成更新日志时，没有说明清楚`发版标签`具体发版到那个等级，请及时询问我。要求我给你说明清楚。
+- `生成发版日志` ： `生成更新日志` 的别名，是同一个意思。

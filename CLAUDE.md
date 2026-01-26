@@ -28,9 +28,9 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 在我与你沟通并要求你具体实施更改时，难免会遇到很多模糊不清的事情。
 
-请你深度思考这些`遗漏点`，`缺漏点`，和`冲突相悖点`，**并主动的向我问询这些你不清楚的实施细节**。
+请你**深度思考**这些`遗漏点`，`缺漏点`，和`冲突相悖点`，**并主动的向我问询这些你不清楚的实施细节**。请主动使用 claude code 内置的 `AskUserQuestion` 工具，将你不清楚的内容设计成一些列问题，并询问我，向我索要细节，或着与我协作沟通。
 
-我会与你共同补充细化实现细节。我们先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
+我会与你共同补充细化实现细节。我们会先迭代出一轮完整完善的实施清单，然后再由你亲自落实实施下去。
 
 ## 2. 对话沟通术语表
 
@@ -719,6 +719,13 @@ pnpm -F @01s-11comm/type typecheck
 - pure-admin 文档 ： https://pure-admin.cn/
 - pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
 - pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
+
+## 15. 编写测试用例规范
+
+1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
+2. 测试用例的文件格式为 `*.test.ts` 。
+3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
+4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
 
 ### 14.4. claude code skill
 
