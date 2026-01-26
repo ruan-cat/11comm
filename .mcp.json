@@ -1,6 +1,6 @@
 {
 	"mcpServers": {
-		"gitmcp__plus-pro-components__plus-pro-components": {
+		"gitmcp__plus-pro-components": {
 			"type": "http",
 			"url": "https://gitmcp.io/plus-pro-components/plus-pro-components"
 		}
