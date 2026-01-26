@@ -236,3 +236,38 @@ overrides:
 
 - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
 - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
+
+## 021 <!-- TODO: --> 编写面向 nitro v3 接口写法的完整 claude code 技能规范
+
+请你帮我生成一个使用 nitro v3 编写 nitro 接口的 skills 技能规范。这个技能将帮助我让一个全新的项目赋予 nitro 全栈接口能力。可能是 vite、可能是单纯的 nitro 后端项目，规范代码写法，配置写法等等。不仅能够实现 nitro v3 格式的初始化写法，还能够实现接口写法的规范约束。
+
+### 生成该技能时需要阅读的上下文
+
+你需要阅读以下内容，来确保生成技能时，不会出现明显的错误：
+
+1. nitro： 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
+   - https://github.com/unjs/nitro
+   - https://v3.nitro.build/
+2. claude code skills： 生成 skills 时需要满足的格式规范和最佳实践。
+   - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
+   - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
+3. 全部 openspec\specs 目录内涉及到 nitro 接口编写的规范
+4. apps\admin\server 目录下的 nitro 接口
+5. apps\admin\nitro.config.ts 配置文件
+6. apps\admin\build\plugins\index.ts vite+nitro 插件配置
+
+### 技能要包含的内容
+
+这个技能至少要包含以下内容：
+
+1. nitro v3 框架需要使用的 node 依赖包。
+2. nitro 接口编写的文件夹组织规范。
+3. nitro v3 框架使用的 nitro.config.ts 配置。
+4. 如果被初始化的目标项目是 vite 项目，需要涉及到 nitro 的 vite 插件使用。
+5. 部署 nitro 接口时差异化的部署平台环境变量配置。
+6. 编写 nitro v3 接口时需要使用的标准函数。
+
+### 使用该技能的场景
+
+1. 对一个非 vite 的 node 项目，初始化 nitro 示例代码以及 nitro 配置。新建纯后端的 nitro 接口项目。
+2. 对一个 vite 项目，初始化 nitro 接口和配置，以及 vite 插件。赋予 vite 项目全栈能力。
