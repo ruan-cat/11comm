@@ -237,7 +237,7 @@ overrides:
 - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
 - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
 
-## 021 <!-- TODO: --> 编写面向 nitro v3 接口写法的完整 claude code 技能规范
+## 021 编写面向 nitro v3 接口写法的完整 claude code 技能规范
 
 请你帮我生成一个使用 nitro v3 编写 nitro 接口的 skills 技能规范。这个技能将帮助我让一个全新的项目赋予 nitro 全栈接口能力。可能是 vite、可能是单纯的 nitro 后端项目，规范代码写法，配置写法等等。不仅能够实现 nitro v3 格式的初始化写法，还能够实现接口写法的规范约束。
 
