@@ -1,3 +1,5 @@
+<!-- 一次性任务 已完成 -->
+
 # 制作`neon-postgres`的一系列技能翻译
 
 /openspec:proposal 为我翻译文件
