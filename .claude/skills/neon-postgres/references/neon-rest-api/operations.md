@@ -32,81 +32,81 @@ Example response
 
 ```json
 {
-  "operations": [
-    {
-      "id": "639f7f73-0b76-4749-a767-2d3c627ca5a6",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-long-feather-adpbgzlx",
-      "endpoint_id": "ep-round-morning-adtpn2oc",
-      "action": "apply_config",
-      "status": "finished",
-      "failures_count": 0,
-      "created_at": "2025-09-10T12:15:23Z",
-      "updated_at": "2025-09-10T12:15:23Z",
-      "total_duration_ms": 87
-    },
-    {
-      "id": "b5a7882b-a5b3-4292-ad27-bffe733feae4",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-super-wildflower-adniii9u",
-      "endpoint_id": "ep-ancient-brook-ad5ea04d",
-      "action": "apply_config",
-      "status": "finished",
-      "failures_count": 0,
-      "created_at": "2025-09-10T12:15:23Z",
-      "updated_at": "2025-09-10T12:15:23Z",
-      "total_duration_ms": 49
-    },
-    {
-      "id": "36a1cba0-97f1-476d-af53-d9e0d3a3606d",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-super-wildflower-adniii9u",
-      "endpoint_id": "ep-ancient-brook-ad5ea04d",
-      "action": "start_compute",
-      "status": "finished",
-      "failures_count": 0,
-      "created_at": "2025-09-10T12:15:04Z",
-      "updated_at": "2025-09-10T12:15:05Z",
-      "total_duration_ms": 913
-    },
-    {
-      "id": "409c35ef-cbc3-4f1b-a4ca-f2de319f5360",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-super-wildflower-adniii9u",
-      "action": "create_branch",
-      "status": "finished",
-      "failures_count": 0,
-      "created_at": "2025-09-10T12:15:04Z",
-      "updated_at": "2025-09-10T12:15:04Z",
-      "total_duration_ms": 136
-    },
-    {
-      "id": "274e240f-e2fb-4719-b796-c1ab7c4ae91c",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-long-feather-adpbgzlx",
-      "endpoint_id": "ep-round-morning-adtpn2oc",
-      "action": "start_compute",
-      "status": "finished",
-      "failures_count": 0,
-      "created_at": "2025-09-10T12:14:58Z",
-      "updated_at": "2025-09-10T12:15:03Z",
-      "total_duration_ms": 4843
-    },
-    {
-      "id": "22ef6fbd-21c5-4cdb-9825-b0f9afddbb0d",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-long-feather-adpbgzlx",
-      "action": "create_timeline",
-      "status": "finished",
-      "failures_count": 0,
-      "created_at": "2025-09-10T12:14:58Z",
-      "updated_at": "2025-09-10T12:15:01Z",
-      "total_duration_ms": 3096
-    }
-  ],
-  "pagination": {
-    "cursor": "2025-09-10T12:14:58.848485Z"
-  }
+	"operations": [
+		{
+			"id": "639f7f73-0b76-4749-a767-2d3c627ca5a6",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-long-feather-adpbgzlx",
+			"endpoint_id": "ep-round-morning-adtpn2oc",
+			"action": "apply_config",
+			"status": "finished",
+			"failures_count": 0,
+			"created_at": "2025-09-10T12:15:23Z",
+			"updated_at": "2025-09-10T12:15:23Z",
+			"total_duration_ms": 87
+		},
+		{
+			"id": "b5a7882b-a5b3-4292-ad27-bffe733feae4",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-super-wildflower-adniii9u",
+			"endpoint_id": "ep-ancient-brook-ad5ea04d",
+			"action": "apply_config",
+			"status": "finished",
+			"failures_count": 0,
+			"created_at": "2025-09-10T12:15:23Z",
+			"updated_at": "2025-09-10T12:15:23Z",
+			"total_duration_ms": 49
+		},
+		{
+			"id": "36a1cba0-97f1-476d-af53-d9e0d3a3606d",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-super-wildflower-adniii9u",
+			"endpoint_id": "ep-ancient-brook-ad5ea04d",
+			"action": "start_compute",
+			"status": "finished",
+			"failures_count": 0,
+			"created_at": "2025-09-10T12:15:04Z",
+			"updated_at": "2025-09-10T12:15:05Z",
+			"total_duration_ms": 913
+		},
+		{
+			"id": "409c35ef-cbc3-4f1b-a4ca-f2de319f5360",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-super-wildflower-adniii9u",
+			"action": "create_branch",
+			"status": "finished",
+			"failures_count": 0,
+			"created_at": "2025-09-10T12:15:04Z",
+			"updated_at": "2025-09-10T12:15:04Z",
+			"total_duration_ms": 136
+		},
+		{
+			"id": "274e240f-e2fb-4719-b796-c1ab7c4ae91c",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-long-feather-adpbgzlx",
+			"endpoint_id": "ep-round-morning-adtpn2oc",
+			"action": "start_compute",
+			"status": "finished",
+			"failures_count": 0,
+			"created_at": "2025-09-10T12:14:58Z",
+			"updated_at": "2025-09-10T12:15:03Z",
+			"total_duration_ms": 4843
+		},
+		{
+			"id": "22ef6fbd-21c5-4cdb-9825-b0f9afddbb0d",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-long-feather-adpbgzlx",
+			"action": "create_timeline",
+			"status": "finished",
+			"failures_count": 0,
+			"created_at": "2025-09-10T12:14:58Z",
+			"updated_at": "2025-09-10T12:15:01Z",
+			"total_duration_ms": 3096
+		}
+	],
+	"pagination": {
+		"cursor": "2025-09-10T12:14:58.848485Z"
+	}
 }
 ```
 
@@ -130,17 +130,17 @@ Example response:
 
 ```json
 {
-  "operation": {
-    "id": "274e240f-e2fb-4719-b796-c1ab7c4ae91c",
-    "project_id": "hidden-river-50598307",
-    "branch_id": "br-long-feather-adpbgzlx",
-    "endpoint_id": "ep-round-morning-adtpn2oc",
-    "action": "start_compute",
-    "status": "finished",
-    "failures_count": 0,
-    "created_at": "2025-09-10T12:14:58Z",
-    "updated_at": "2025-09-10T12:15:03Z",
-    "total_duration_ms": 4843
-  }
+	"operation": {
+		"id": "274e240f-e2fb-4719-b796-c1ab7c4ae91c",
+		"project_id": "hidden-river-50598307",
+		"branch_id": "br-long-feather-adpbgzlx",
+		"endpoint_id": "ep-round-morning-adtpn2oc",
+		"action": "start_compute",
+		"status": "finished",
+		"failures_count": 0,
+		"created_at": "2025-09-10T12:14:58Z",
+		"updated_at": "2025-09-10T12:15:03Z",
+		"total_duration_ms": 4843
+	}
 }
 ```

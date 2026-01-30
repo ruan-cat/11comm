@@ -41,7 +41,7 @@ curl -H "Accept: text/markdown" https://neon.com/docs/get-started/signing-up
 2. If readable: Use search_replace to update or append
 3. If unreadable: Use append command or show the line to add manually:
 
-```
+```plain
 DATABASE_URL=postgresql://user:password@host/database
 ```
 
@@ -172,8 +172,8 @@ For detailed setup instructions, see `devtools.md`.
 
 ## Documentation Resources
 
-| Topic              | URL                                                 |
-| ------------------ | --------------------------------------------------- |
+| Topic              | URL                                                |
+| ------------------ | -------------------------------------------------- |
 | Getting Started    | https://neon.com/docs/get-started/signing-up       |
 | Connecting to Neon | https://neon.com/docs/connect/connect-intro        |
 | Connection String  | https://neon.com/docs/connect/connect-from-any-app |

@@ -108,12 +108,12 @@ import { defineConfig } from "drizzle-kit";
 config({ path: ".env.local" });
 
 export default defineConfig({
-  schema: "./src/schema.ts",
-  out: "./drizzle",
-  dialect: "postgresql",
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
+	schema: "./src/schema.ts",
+	out: "./drizzle",
+	dialect: "postgresql",
+	dbCredentials: {
+		url: process.env.DATABASE_URL!,
+	},
 });
 ```
 
@@ -134,24 +134,24 @@ npx drizzle-kit migrate
 import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  role: text("role").default("user").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+	id: serial("id").primaryKey(),
+	name: text("name").notNull(),
+	email: text("email").notNull().unique(),
+	role: text("role").default("user").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type User = typeof usersTable.$inferSelect;
 export type NewUser = typeof usersTable.$inferInsert;
 
 export const postsTable = pgTable("posts", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+	id: serial("id").primaryKey(),
+	title: text("title").notNull(),
+	content: text("content").notNull(),
+	userId: integer("user_id")
+		.notNull()
+		.references(() => usersTable.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type Post = typeof postsTable.$inferSelect;
@@ -164,7 +164,7 @@ export type NewPost = typeof postsTable.$inferInsert;
 
 ```typescript
 export async function batchInsertUsers(users: NewUser[]) {
-  return db.insert(usersTable).values(users).returning();
+	return db.insert(usersTable).values(users).returning();
 }
 ```
 
@@ -174,10 +174,10 @@ export async function batchInsertUsers(users: NewUser[]) {
 import { sql } from "drizzle-orm";
 
 export const getUsersByRolePrepared = db
-  .select()
-  .from(usersTable)
-  .where(sql`${usersTable.role} = $1`)
-  .prepare("get_users_by_role");
+	.select()
+	.from(usersTable)
+	.where(sql`${usersTable.role} = $1`)
+	.prepare("get_users_by_role");
 
 // Usage: getUsersByRolePrepared.execute(['admin'])
 ```
@@ -186,20 +186,20 @@ export const getUsersByRolePrepared = db
 
 ```typescript
 export async function createUserWithPosts(user: NewUser, posts: NewPost[]) {
-  return await db.transaction(async (tx) => {
-    const [newUser] = await tx.insert(usersTable).values(user).returning();
+	return await db.transaction(async (tx) => {
+		const [newUser] = await tx.insert(usersTable).values(user).returning();
 
-    if (posts.length > 0) {
-      await tx.insert(postsTable).values(
-        posts.map((post) => ({
-          ...post,
-          userId: newUser.id,
-        })),
-      );
-    }
+		if (posts.length > 0) {
+			await tx.insert(postsTable).values(
+				posts.map((post) => ({
+					...post,
+					userId: newUser.id,
+				})),
+			);
+		}
 
-    return newUser;
-  });
+		return newUser;
+	});
 }
 ```
 
@@ -210,10 +210,10 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 
 const getBranchUrl = () => {
-  const env = process.env.NODE_ENV;
-  if (env === "development") return process.env.DEV_DATABASE_URL;
-  if (env === "test") return process.env.TEST_DATABASE_URL;
-  return process.env.DATABASE_URL;
+	const env = process.env.NODE_ENV;
+	if (env === "development") return process.env.DEV_DATABASE_URL;
+	if (env === "test") return process.env.TEST_DATABASE_URL;
+	return process.env.DATABASE_URL;
 };
 
 const sql = neon(getBranchUrl()!);
@@ -223,17 +223,15 @@ export const db = drizzle({ client: sql });
 ## Error Handling
 
 ```typescript
-export async function safeNeonOperation<T>(
-  operation: () => Promise<T>,
-): Promise<T> {
-  try {
-    return await operation();
-  } catch (error: any) {
-    if (error.message?.includes("connection pool timeout")) {
-      console.error("Neon connection pool timeout");
-    }
-    throw error;
-  }
+export async function safeNeonOperation<T>(operation: () => Promise<T>): Promise<T> {
+	try {
+		return await operation();
+	} catch (error: any) {
+		if (error.message?.includes("connection pool timeout")) {
+			console.error("Neon connection pool timeout");
+		}
+		throw error;
+	}
 }
 ```
 

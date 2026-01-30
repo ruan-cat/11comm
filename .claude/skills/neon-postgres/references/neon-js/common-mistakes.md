@@ -28,11 +28,11 @@ All adapters must be called with `()`.
 
 ```typescript
 const client = createClient({
-  auth: {
-    adapter: BetterAuthReactAdapter, // Missing ()
-    url: process.env.NEON_AUTH_URL!,
-  },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: {
+		adapter: BetterAuthReactAdapter, // Missing ()
+		url: process.env.NEON_AUTH_URL!,
+	},
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -40,11 +40,11 @@ const client = createClient({
 
 ```typescript
 const client = createClient({
-  auth: {
-    adapter: BetterAuthReactAdapter(), // Called as function
-    url: process.env.NEON_AUTH_URL!,
-  },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: {
+		adapter: BetterAuthReactAdapter(), // Called as function
+		url: process.env.NEON_AUTH_URL!,
+	},
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -102,8 +102,8 @@ VITE_NEON_DATA_API_URL=https://ep-xxx.apirest.c-2.us-east-2.aws.neon.build/dbnam
 import { authClient } from "@/lib/auth/client";
 
 function AuthStatus() {
-  const session = authClient.useSession();
-  // ...
+	const session = authClient.useSession();
+	// ...
 }
 ```
 

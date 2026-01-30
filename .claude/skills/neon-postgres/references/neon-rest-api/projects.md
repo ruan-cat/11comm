@@ -28,56 +28,56 @@ Example response:
 
 ```json
 {
-  "projects": [
-    {
-      "id": "old-fire-32990194",
-      "platform_id": "aws",
-      "region_id": "aws-ap-southeast-1",
-      "name": "old-fire-32990194",
-      "provisioner": "k8s-neonvm",
-      "default_endpoint_settings": {
-        "autoscaling_limit_min_cu": 0.25,
-        "autoscaling_limit_max_cu": 2,
-        "suspend_timeout_seconds": 0
-      },
-      "settings": {
-        "allowed_ips": {
-          "ips": [],
-          "protected_branches_only": false
-        },
-        "enable_logical_replication": false,
-        "maintenance_window": {
-          "weekdays": [5],
-          "start_time": "19:00",
-          "end_time": "20:00"
-        },
-        "block_public_connections": false,
-        "block_vpc_connections": false,
-        "hipaa": false
-      },
-      "pg_version": 17,
-      "proxy_host": "ap-southeast-1.aws.neon.tech",
-      "branch_logical_size_limit": 512,
-      "branch_logical_size_limit_bytes": 536870912,
-      "store_passwords": true,
-      "active_time": 0,
-      "cpu_used_sec": 0,
-      "creation_source": "console",
-      "created_at": "2025-09-10T06:58:33Z",
-      "updated_at": "2025-09-10T06:58:39Z",
-      "synthetic_storage_size": 0,
-      "quota_reset_at": "2025-10-01T00:00:00Z",
-      "owner_id": "org-royal-sun-91776391",
-      "compute_last_active_at": "2025-09-10T06:58:38Z",
-      "org_id": "org-royal-sun-91776391",
-      "history_retention_seconds": 86400
-    }
-  ],
-  "pagination": {
-    "cursor": "old-fire-32990194"
-  },
-  "applications": {},
-  "integrations": {}
+	"projects": [
+		{
+			"id": "old-fire-32990194",
+			"platform_id": "aws",
+			"region_id": "aws-ap-southeast-1",
+			"name": "old-fire-32990194",
+			"provisioner": "k8s-neonvm",
+			"default_endpoint_settings": {
+				"autoscaling_limit_min_cu": 0.25,
+				"autoscaling_limit_max_cu": 2,
+				"suspend_timeout_seconds": 0
+			},
+			"settings": {
+				"allowed_ips": {
+					"ips": [],
+					"protected_branches_only": false
+				},
+				"enable_logical_replication": false,
+				"maintenance_window": {
+					"weekdays": [5],
+					"start_time": "19:00",
+					"end_time": "20:00"
+				},
+				"block_public_connections": false,
+				"block_vpc_connections": false,
+				"hipaa": false
+			},
+			"pg_version": 17,
+			"proxy_host": "ap-southeast-1.aws.neon.tech",
+			"branch_logical_size_limit": 512,
+			"branch_logical_size_limit_bytes": 536870912,
+			"store_passwords": true,
+			"active_time": 0,
+			"cpu_used_sec": 0,
+			"creation_source": "console",
+			"created_at": "2025-09-10T06:58:33Z",
+			"updated_at": "2025-09-10T06:58:39Z",
+			"synthetic_storage_size": 0,
+			"quota_reset_at": "2025-10-01T00:00:00Z",
+			"owner_id": "org-royal-sun-91776391",
+			"compute_last_active_at": "2025-09-10T06:58:38Z",
+			"org_id": "org-royal-sun-91776391",
+			"history_retention_seconds": 86400
+		}
+	],
+	"pagination": {
+		"cursor": "old-fire-32990194"
+	},
+	"applications": {},
+	"integrations": {}
 }
 ```
 
@@ -138,154 +138,154 @@ Example response
 
 ```json
 {
-  "project": {
-    "data_storage_bytes_hour": 0,
-    "data_transfer_bytes": 0,
-    "written_data_bytes": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "cpu_used_sec": 0,
-    "id": "sparkling-hill-99143322",
-    "platform_id": "aws",
-    "region_id": "aws-us-west-2",
-    "name": "my-new-api-project",
-    "provisioner": "k8s-neonvm",
-    "default_endpoint_settings": {
-      "autoscaling_limit_min_cu": 0.25,
-      "autoscaling_limit_max_cu": 0.25,
-      "suspend_timeout_seconds": 0
-    },
-    "settings": {
-      "allowed_ips": {
-        "ips": [],
-        "protected_branches_only": false
-      },
-      "enable_logical_replication": false,
-      "maintenance_window": {
-        "weekdays": [5],
-        "start_time": "07:00",
-        "end_time": "08:00"
-      },
-      "block_public_connections": false,
-      "block_vpc_connections": false,
-      "hipaa": false
-    },
-    "pg_version": 17,
-    "proxy_host": "c-2.us-west-2.aws.neon.tech",
-    "branch_logical_size_limit": 512,
-    "branch_logical_size_limit_bytes": 536870912,
-    "store_passwords": true,
-    "creation_source": "console",
-    "history_retention_seconds": 86400,
-    "created_at": "2025-09-10T07:58:16Z",
-    "updated_at": "2025-09-10T07:58:16Z",
-    "consumption_period_start": "0001-01-01T00:00:00Z",
-    "consumption_period_end": "0001-01-01T00:00:00Z",
-    "owner_id": "org-royal-sun-91776391",
-    "org_id": "org-royal-sun-91776391"
-  },
-  "connection_uris": [
-    {
-      "connection_uri": "postgresql://neondb_owner:npg_N67FDMtGvJke@ep-round-unit-afbn7qv4.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require",
-      "connection_parameters": {
-        "database": "neondb",
-        "password": "npg_N67FDMtGvJke",
-        "role": "neondb_owner",
-        "host": "ep-round-unit-afbn7qv4.c-2.us-west-2.aws.neon.tech",
-        "pooler_host": "ep-round-unit-afbn7qv4-pooler.c-2.us-west-2.aws.neon.tech"
-      }
-    }
-  ],
-  "roles": [
-    {
-      "branch_id": "br-green-mode-afe3fl9y",
-      "name": "neondb_owner",
-      "password": "npg_N67FDMtGvJke",
-      "protected": false,
-      "created_at": "2025-09-10T07:58:16Z",
-      "updated_at": "2025-09-10T07:58:16Z"
-    }
-  ],
-  "databases": [
-    {
-      "id": 6677853,
-      "branch_id": "br-green-mode-afe3fl9y",
-      "name": "neondb",
-      "owner_name": "neondb_owner",
-      "created_at": "2025-09-10T07:58:16Z",
-      "updated_at": "2025-09-10T07:58:16Z"
-    }
-  ],
-  "operations": [
-    {
-      "id": "08b9367d-6918-4cd5-b4a6-41c8fd984b7e",
-      "project_id": "sparkling-hill-99143322",
-      "branch_id": "br-green-mode-afe3fl9y",
-      "action": "create_timeline",
-      "status": "running",
-      "failures_count": 0,
-      "created_at": "2025-09-10T07:58:16Z",
-      "updated_at": "2025-09-10T07:58:16Z",
-      "total_duration_ms": 0
-    },
-    {
-      "id": "c6917f04-5cd3-48a2-97c9-186b1d9729f0",
-      "project_id": "sparkling-hill-99143322",
-      "branch_id": "br-green-mode-afe3fl9y",
-      "endpoint_id": "ep-round-unit-afbn7qv4",
-      "action": "start_compute",
-      "status": "scheduling",
-      "failures_count": 0,
-      "created_at": "2025-09-10T07:58:16Z",
-      "updated_at": "2025-09-10T07:58:16Z",
-      "total_duration_ms": 0
-    }
-  ],
-  "branch": {
-    "id": "br-green-mode-afe3fl9y",
-    "project_id": "sparkling-hill-99143322",
-    "name": "main",
-    "current_state": "init",
-    "pending_state": "ready",
-    "state_changed_at": "2025-09-10T07:58:16Z",
-    "creation_source": "console",
-    "primary": true,
-    "default": true,
-    "protected": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2025-09-10T07:58:16Z",
-    "updated_at": "2025-09-10T07:58:16Z",
-    "init_source": "parent-data"
-  },
-  "endpoints": [
-    {
-      "host": "ep-round-unit-afbn7qv4.c-2.us-west-2.aws.neon.tech",
-      "id": "ep-round-unit-afbn7qv4",
-      "project_id": "sparkling-hill-99143322",
-      "branch_id": "br-green-mode-afe3fl9y",
-      "autoscaling_limit_min_cu": 0.25,
-      "autoscaling_limit_max_cu": 0.25,
-      "region_id": "aws-us-west-2",
-      "type": "read_write",
-      "current_state": "init",
-      "pending_state": "active",
-      "settings": {},
-      "pooler_enabled": false,
-      "pooler_mode": "transaction",
-      "disabled": false,
-      "passwordless_access": true,
-      "creation_source": "console",
-      "created_at": "2025-09-10T07:58:16Z",
-      "updated_at": "2025-09-10T07:58:16Z",
-      "proxy_host": "c-2.us-west-2.aws.neon.tech",
-      "suspend_timeout_seconds": 0,
-      "provisioner": "k8s-neonvm"
-    }
-  ]
+	"project": {
+		"data_storage_bytes_hour": 0,
+		"data_transfer_bytes": 0,
+		"written_data_bytes": 0,
+		"compute_time_seconds": 0,
+		"active_time_seconds": 0,
+		"cpu_used_sec": 0,
+		"id": "sparkling-hill-99143322",
+		"platform_id": "aws",
+		"region_id": "aws-us-west-2",
+		"name": "my-new-api-project",
+		"provisioner": "k8s-neonvm",
+		"default_endpoint_settings": {
+			"autoscaling_limit_min_cu": 0.25,
+			"autoscaling_limit_max_cu": 0.25,
+			"suspend_timeout_seconds": 0
+		},
+		"settings": {
+			"allowed_ips": {
+				"ips": [],
+				"protected_branches_only": false
+			},
+			"enable_logical_replication": false,
+			"maintenance_window": {
+				"weekdays": [5],
+				"start_time": "07:00",
+				"end_time": "08:00"
+			},
+			"block_public_connections": false,
+			"block_vpc_connections": false,
+			"hipaa": false
+		},
+		"pg_version": 17,
+		"proxy_host": "c-2.us-west-2.aws.neon.tech",
+		"branch_logical_size_limit": 512,
+		"branch_logical_size_limit_bytes": 536870912,
+		"store_passwords": true,
+		"creation_source": "console",
+		"history_retention_seconds": 86400,
+		"created_at": "2025-09-10T07:58:16Z",
+		"updated_at": "2025-09-10T07:58:16Z",
+		"consumption_period_start": "0001-01-01T00:00:00Z",
+		"consumption_period_end": "0001-01-01T00:00:00Z",
+		"owner_id": "org-royal-sun-91776391",
+		"org_id": "org-royal-sun-91776391"
+	},
+	"connection_uris": [
+		{
+			"connection_uri": "postgresql://neondb_owner:npg_N67FDMtGvJke@ep-round-unit-afbn7qv4.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require",
+			"connection_parameters": {
+				"database": "neondb",
+				"password": "npg_N67FDMtGvJke",
+				"role": "neondb_owner",
+				"host": "ep-round-unit-afbn7qv4.c-2.us-west-2.aws.neon.tech",
+				"pooler_host": "ep-round-unit-afbn7qv4-pooler.c-2.us-west-2.aws.neon.tech"
+			}
+		}
+	],
+	"roles": [
+		{
+			"branch_id": "br-green-mode-afe3fl9y",
+			"name": "neondb_owner",
+			"password": "npg_N67FDMtGvJke",
+			"protected": false,
+			"created_at": "2025-09-10T07:58:16Z",
+			"updated_at": "2025-09-10T07:58:16Z"
+		}
+	],
+	"databases": [
+		{
+			"id": 6677853,
+			"branch_id": "br-green-mode-afe3fl9y",
+			"name": "neondb",
+			"owner_name": "neondb_owner",
+			"created_at": "2025-09-10T07:58:16Z",
+			"updated_at": "2025-09-10T07:58:16Z"
+		}
+	],
+	"operations": [
+		{
+			"id": "08b9367d-6918-4cd5-b4a6-41c8fd984b7e",
+			"project_id": "sparkling-hill-99143322",
+			"branch_id": "br-green-mode-afe3fl9y",
+			"action": "create_timeline",
+			"status": "running",
+			"failures_count": 0,
+			"created_at": "2025-09-10T07:58:16Z",
+			"updated_at": "2025-09-10T07:58:16Z",
+			"total_duration_ms": 0
+		},
+		{
+			"id": "c6917f04-5cd3-48a2-97c9-186b1d9729f0",
+			"project_id": "sparkling-hill-99143322",
+			"branch_id": "br-green-mode-afe3fl9y",
+			"endpoint_id": "ep-round-unit-afbn7qv4",
+			"action": "start_compute",
+			"status": "scheduling",
+			"failures_count": 0,
+			"created_at": "2025-09-10T07:58:16Z",
+			"updated_at": "2025-09-10T07:58:16Z",
+			"total_duration_ms": 0
+		}
+	],
+	"branch": {
+		"id": "br-green-mode-afe3fl9y",
+		"project_id": "sparkling-hill-99143322",
+		"name": "main",
+		"current_state": "init",
+		"pending_state": "ready",
+		"state_changed_at": "2025-09-10T07:58:16Z",
+		"creation_source": "console",
+		"primary": true,
+		"default": true,
+		"protected": false,
+		"cpu_used_sec": 0,
+		"compute_time_seconds": 0,
+		"active_time_seconds": 0,
+		"written_data_bytes": 0,
+		"data_transfer_bytes": 0,
+		"created_at": "2025-09-10T07:58:16Z",
+		"updated_at": "2025-09-10T07:58:16Z",
+		"init_source": "parent-data"
+	},
+	"endpoints": [
+		{
+			"host": "ep-round-unit-afbn7qv4.c-2.us-west-2.aws.neon.tech",
+			"id": "ep-round-unit-afbn7qv4",
+			"project_id": "sparkling-hill-99143322",
+			"branch_id": "br-green-mode-afe3fl9y",
+			"autoscaling_limit_min_cu": 0.25,
+			"autoscaling_limit_max_cu": 0.25,
+			"region_id": "aws-us-west-2",
+			"type": "read_write",
+			"current_state": "init",
+			"pending_state": "active",
+			"settings": {},
+			"pooler_enabled": false,
+			"pooler_mode": "transaction",
+			"disabled": false,
+			"passwordless_access": true,
+			"creation_source": "console",
+			"created_at": "2025-09-10T07:58:16Z",
+			"updated_at": "2025-09-10T07:58:16Z",
+			"proxy_host": "c-2.us-west-2.aws.neon.tech",
+			"suspend_timeout_seconds": 0,
+			"provisioner": "k8s-neonvm"
+		}
+	]
 }
 ```
 
@@ -309,60 +309,60 @@ Example response
 
 ```json
 {
-  "project": {
-    "data_storage_bytes_hour": 0,
-    "data_transfer_bytes": 0,
-    "written_data_bytes": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "cpu_used_sec": 0,
-    "id": "sparkling-hill-99143322",
-    "platform_id": "aws",
-    "region_id": "aws-us-west-2",
-    "name": "my-new-api-project",
-    "provisioner": "k8s-neonvm",
-    "default_endpoint_settings": {
-      "autoscaling_limit_min_cu": 0.25,
-      "autoscaling_limit_max_cu": 0.25,
-      "suspend_timeout_seconds": 0
-    },
-    "settings": {
-      "allowed_ips": {
-        "ips": [],
-        "protected_branches_only": false
-      },
-      "enable_logical_replication": false,
-      "maintenance_window": {
-        "weekdays": [5],
-        "start_time": "07:00",
-        "end_time": "08:00"
-      },
-      "block_public_connections": false,
-      "block_vpc_connections": false,
-      "hipaa": false
-    },
-    "pg_version": 17,
-    "proxy_host": "c-2.us-west-2.aws.neon.tech",
-    "branch_logical_size_limit": 512,
-    "branch_logical_size_limit_bytes": 536870912,
-    "store_passwords": true,
-    "creation_source": "console",
-    "history_retention_seconds": 86400,
-    "created_at": "2025-09-10T07:58:16Z",
-    "updated_at": "2025-09-10T07:58:25Z",
-    "synthetic_storage_size": 0,
-    "consumption_period_start": "2025-09-10T06:58:15Z",
-    "consumption_period_end": "2025-10-01T00:00:00Z",
-    "owner_id": "org-royal-sun-91776391",
-    "owner": {
-      "email": "<USER_EMAIL>",
-      "name": "My Personal Account",
-      "branches_limit": 10,
-      "subscription_type": "free_v3"
-    },
-    "compute_last_active_at": "2025-09-10T07:58:21Z",
-    "org_id": "org-royal-sun-91776391"
-  }
+	"project": {
+		"data_storage_bytes_hour": 0,
+		"data_transfer_bytes": 0,
+		"written_data_bytes": 0,
+		"compute_time_seconds": 0,
+		"active_time_seconds": 0,
+		"cpu_used_sec": 0,
+		"id": "sparkling-hill-99143322",
+		"platform_id": "aws",
+		"region_id": "aws-us-west-2",
+		"name": "my-new-api-project",
+		"provisioner": "k8s-neonvm",
+		"default_endpoint_settings": {
+			"autoscaling_limit_min_cu": 0.25,
+			"autoscaling_limit_max_cu": 0.25,
+			"suspend_timeout_seconds": 0
+		},
+		"settings": {
+			"allowed_ips": {
+				"ips": [],
+				"protected_branches_only": false
+			},
+			"enable_logical_replication": false,
+			"maintenance_window": {
+				"weekdays": [5],
+				"start_time": "07:00",
+				"end_time": "08:00"
+			},
+			"block_public_connections": false,
+			"block_vpc_connections": false,
+			"hipaa": false
+		},
+		"pg_version": 17,
+		"proxy_host": "c-2.us-west-2.aws.neon.tech",
+		"branch_logical_size_limit": 512,
+		"branch_logical_size_limit_bytes": 536870912,
+		"store_passwords": true,
+		"creation_source": "console",
+		"history_retention_seconds": 86400,
+		"created_at": "2025-09-10T07:58:16Z",
+		"updated_at": "2025-09-10T07:58:25Z",
+		"synthetic_storage_size": 0,
+		"consumption_period_start": "2025-09-10T06:58:15Z",
+		"consumption_period_end": "2025-10-01T00:00:00Z",
+		"owner_id": "org-royal-sun-91776391",
+		"owner": {
+			"email": "<USER_EMAIL>",
+			"name": "My Personal Account",
+			"branches_limit": 10,
+			"subscription_type": "free_v3"
+		},
+		"compute_last_active_at": "2025-09-10T07:58:21Z",
+		"org_id": "org-royal-sun-91776391"
+	}
 }
 ```
 
@@ -422,54 +422,54 @@ Example response
 
 ```json
 {
-  "project": {
-    "data_storage_bytes_hour": 0,
-    "data_transfer_bytes": 0,
-    "written_data_bytes": 29060360,
-    "compute_time_seconds": 79,
-    "active_time_seconds": 308,
-    "cpu_used_sec": 79,
-    "id": "sparkling-hill-99143322",
-    "platform_id": "aws",
-    "region_id": "aws-us-west-2",
-    "name": "updated-project-name",
-    "provisioner": "k8s-neonvm",
-    "default_endpoint_settings": {
-      "autoscaling_limit_min_cu": 0.25,
-      "autoscaling_limit_max_cu": 0.25,
-      "suspend_timeout_seconds": 0
-    },
-    "settings": {
-      "allowed_ips": {
-        "ips": [],
-        "protected_branches_only": false
-      },
-      "enable_logical_replication": false,
-      "maintenance_window": {
-        "weekdays": [5],
-        "start_time": "07:00",
-        "end_time": "08:00"
-      },
-      "block_public_connections": false,
-      "block_vpc_connections": false,
-      "hipaa": false
-    },
-    "pg_version": 17,
-    "proxy_host": "c-2.us-west-2.aws.neon.tech",
-    "branch_logical_size_limit": 512,
-    "branch_logical_size_limit_bytes": 536870912,
-    "store_passwords": true,
-    "creation_source": "console",
-    "history_retention_seconds": 86400,
-    "created_at": "2025-09-10T07:58:16Z",
-    "updated_at": "2025-09-10T08:08:23Z",
-    "synthetic_storage_size": 0,
-    "consumption_period_start": "0001-01-01T00:00:00Z",
-    "consumption_period_end": "0001-01-01T00:00:00Z",
-    "owner_id": "org-royal-sun-91776391",
-    "compute_last_active_at": "2025-09-10T07:58:21Z"
-  },
-  "operations": []
+	"project": {
+		"data_storage_bytes_hour": 0,
+		"data_transfer_bytes": 0,
+		"written_data_bytes": 29060360,
+		"compute_time_seconds": 79,
+		"active_time_seconds": 308,
+		"cpu_used_sec": 79,
+		"id": "sparkling-hill-99143322",
+		"platform_id": "aws",
+		"region_id": "aws-us-west-2",
+		"name": "updated-project-name",
+		"provisioner": "k8s-neonvm",
+		"default_endpoint_settings": {
+			"autoscaling_limit_min_cu": 0.25,
+			"autoscaling_limit_max_cu": 0.25,
+			"suspend_timeout_seconds": 0
+		},
+		"settings": {
+			"allowed_ips": {
+				"ips": [],
+				"protected_branches_only": false
+			},
+			"enable_logical_replication": false,
+			"maintenance_window": {
+				"weekdays": [5],
+				"start_time": "07:00",
+				"end_time": "08:00"
+			},
+			"block_public_connections": false,
+			"block_vpc_connections": false,
+			"hipaa": false
+		},
+		"pg_version": 17,
+		"proxy_host": "c-2.us-west-2.aws.neon.tech",
+		"branch_logical_size_limit": 512,
+		"branch_logical_size_limit_bytes": 536870912,
+		"store_passwords": true,
+		"creation_source": "console",
+		"history_retention_seconds": 86400,
+		"created_at": "2025-09-10T07:58:16Z",
+		"updated_at": "2025-09-10T08:08:23Z",
+		"synthetic_storage_size": 0,
+		"consumption_period_start": "0001-01-01T00:00:00Z",
+		"consumption_period_end": "0001-01-01T00:00:00Z",
+		"owner_id": "org-royal-sun-91776391",
+		"compute_last_active_at": "2025-09-10T07:58:21Z"
+	},
+	"operations": []
 }
 ```
 
@@ -495,54 +495,54 @@ Example response:
 
 ```json
 {
-  "project": {
-    "data_storage_bytes_hour": 0,
-    "data_transfer_bytes": 0,
-    "written_data_bytes": 29060360,
-    "compute_time_seconds": 79,
-    "active_time_seconds": 308,
-    "cpu_used_sec": 79,
-    "id": "sparkling-hill-99143322",
-    "platform_id": "aws",
-    "region_id": "aws-us-west-2",
-    "name": "updated-project-name",
-    "provisioner": "k8s-neonvm",
-    "default_endpoint_settings": {
-      "autoscaling_limit_min_cu": 0.25,
-      "autoscaling_limit_max_cu": 0.25,
-      "suspend_timeout_seconds": 0
-    },
-    "settings": {
-      "allowed_ips": {
-        "ips": [],
-        "protected_branches_only": false
-      },
-      "enable_logical_replication": false,
-      "maintenance_window": {
-        "weekdays": [5],
-        "start_time": "07:00",
-        "end_time": "08:00"
-      },
-      "block_public_connections": false,
-      "block_vpc_connections": false,
-      "hipaa": false
-    },
-    "pg_version": 17,
-    "proxy_host": "c-2.us-west-2.aws.neon.tech",
-    "branch_logical_size_limit": 512,
-    "branch_logical_size_limit_bytes": 536870912,
-    "store_passwords": true,
-    "creation_source": "console",
-    "history_retention_seconds": 86400,
-    "created_at": "2025-09-10T07:58:16Z",
-    "updated_at": "2025-09-10T08:08:23Z",
-    "synthetic_storage_size": 0,
-    "consumption_period_start": "0001-01-01T00:00:00Z",
-    "consumption_period_end": "0001-01-01T00:00:00Z",
-    "owner_id": "org-royal-sun-91776391",
-    "compute_last_active_at": "2025-09-10T07:58:21Z",
-    "org_id": "org-royal-sun-91776391"
-  }
+	"project": {
+		"data_storage_bytes_hour": 0,
+		"data_transfer_bytes": 0,
+		"written_data_bytes": 29060360,
+		"compute_time_seconds": 79,
+		"active_time_seconds": 308,
+		"cpu_used_sec": 79,
+		"id": "sparkling-hill-99143322",
+		"platform_id": "aws",
+		"region_id": "aws-us-west-2",
+		"name": "updated-project-name",
+		"provisioner": "k8s-neonvm",
+		"default_endpoint_settings": {
+			"autoscaling_limit_min_cu": 0.25,
+			"autoscaling_limit_max_cu": 0.25,
+			"suspend_timeout_seconds": 0
+		},
+		"settings": {
+			"allowed_ips": {
+				"ips": [],
+				"protected_branches_only": false
+			},
+			"enable_logical_replication": false,
+			"maintenance_window": {
+				"weekdays": [5],
+				"start_time": "07:00",
+				"end_time": "08:00"
+			},
+			"block_public_connections": false,
+			"block_vpc_connections": false,
+			"hipaa": false
+		},
+		"pg_version": 17,
+		"proxy_host": "c-2.us-west-2.aws.neon.tech",
+		"branch_logical_size_limit": 512,
+		"branch_logical_size_limit_bytes": 536870912,
+		"store_passwords": true,
+		"creation_source": "console",
+		"history_retention_seconds": 86400,
+		"created_at": "2025-09-10T07:58:16Z",
+		"updated_at": "2025-09-10T08:08:23Z",
+		"synthetic_storage_size": 0,
+		"consumption_period_start": "0001-01-01T00:00:00Z",
+		"consumption_period_end": "0001-01-01T00:00:00Z",
+		"owner_id": "org-royal-sun-91776391",
+		"compute_last_active_at": "2025-09-10T07:58:21Z",
+		"org_id": "org-royal-sun-91776391"
+	}
 }
 ```
 
@@ -571,6 +571,6 @@ Example response:
 
 ```json
 {
-  "uri": "postgresql://neondb_owner:npg_IDNnorOST71P@ep-shiny-morning-a1bfdvjs-pooler.ap-southeast-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
+	"uri": "postgresql://neondb_owner:npg_IDNnorOST71P@ep-shiny-morning-a1bfdvjs-pooler.ap-southeast-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
 }
 ```

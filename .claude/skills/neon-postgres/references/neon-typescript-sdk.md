@@ -23,7 +23,7 @@ import { createApiClient } from "@neondatabase/api-client";
 
 const apiKey = process.env.NEON_API_KEY;
 if (!apiKey) {
-  throw new Error("NEON_API_KEY environment variable is not set.");
+	throw new Error("NEON_API_KEY environment variable is not set.");
 }
 
 const apiClient = createApiClient({ apiKey });
@@ -42,12 +42,9 @@ console.log("Projects:", response.data.projects);
 
 ```typescript
 const response = await apiClient.createProject({
-  project: { name: "my-project", pg_version: 17, region_id: "aws-us-east-2" },
+	project: { name: "my-project", pg_version: 17, region_id: "aws-us-east-2" },
 });
-console.log(
-  "Connection URI:",
-  response.data.connection_uris[0]?.connection_uri,
-);
+console.log("Connection URI:", response.data.connection_uris[0]?.connection_uri);
 ```
 
 ### Get Project
@@ -60,7 +57,7 @@ const response = await apiClient.getProject("your-project-id");
 
 ```typescript
 await apiClient.updateProject("your-project-id", {
-  project: { name: "new-name" },
+	project: { name: "new-name" },
 });
 ```
 
@@ -74,10 +71,10 @@ await apiClient.deleteProject("project-id");
 
 ```typescript
 const response = await apiClient.getConnectionUri({
-  projectId: "your-project-id",
-  database_name: "neondb",
-  role_name: "neondb_owner",
-  pooled: true,
+	projectId: "your-project-id",
+	database_name: "neondb",
+	role_name: "neondb_owner",
+	pooled: true,
 });
 console.log("URI:", response.data.uri);
 ```
@@ -90,8 +87,8 @@ console.log("URI:", response.data.uri);
 import { EndpointType } from "@neondatabase/api-client";
 
 const response = await apiClient.createProjectBranch("your-project-id", {
-  branch: { name: "feature-branch" },
-  endpoints: [{ type: EndpointType.ReadWrite, autoscaling_limit_max_cu: 1 }],
+	branch: { name: "feature-branch" },
+	endpoints: [{ type: EndpointType.ReadWrite, autoscaling_limit_max_cu: 1 }],
 });
 ```
 
@@ -99,7 +96,7 @@ const response = await apiClient.createProjectBranch("your-project-id", {
 
 ```typescript
 const response = await apiClient.listProjectBranches({
-  projectId: "your-project-id",
+	projectId: "your-project-id",
 });
 ```
 
@@ -113,7 +110,7 @@ const response = await apiClient.getProjectBranch("your-project-id", "br-xxx");
 
 ```typescript
 await apiClient.updateProjectBranch("your-project-id", "br-xxx", {
-  branch: { name: "updated-name" },
+	branch: { name: "updated-name" },
 });
 ```
 
@@ -129,27 +126,20 @@ await apiClient.deleteProjectBranch("your-project-id", "br-xxx");
 
 ```typescript
 await apiClient.createProjectBranchDatabase("your-project-id", "br-xxx", {
-  database: { name: "my-app-db", owner_name: "neondb_owner" },
+	database: { name: "my-app-db", owner_name: "neondb_owner" },
 });
 ```
 
 ### List Databases
 
 ```typescript
-const response = await apiClient.listProjectBranchDatabases(
-  "your-project-id",
-  "br-xxx",
-);
+const response = await apiClient.listProjectBranchDatabases("your-project-id", "br-xxx");
 ```
 
 ### Delete Database
 
 ```typescript
-await apiClient.deleteProjectBranchDatabase(
-  "your-project-id",
-  "br-xxx",
-  "my-app-db",
-);
+await apiClient.deleteProjectBranchDatabase("your-project-id", "br-xxx", "my-app-db");
 ```
 
 ## Roles
@@ -157,33 +147,22 @@ await apiClient.deleteProjectBranchDatabase(
 ### Create Role
 
 ```typescript
-const response = await apiClient.createProjectBranchRole(
-  "your-project-id",
-  "br-xxx",
-  {
-    role: { name: "app_user" },
-  },
-);
+const response = await apiClient.createProjectBranchRole("your-project-id", "br-xxx", {
+	role: { name: "app_user" },
+});
 console.log("Password:", response.data.role.password);
 ```
 
 ### List Roles
 
 ```typescript
-const response = await apiClient.listProjectBranchRoles(
-  "your-project-id",
-  "br-xxx",
-);
+const response = await apiClient.listProjectBranchRoles("your-project-id", "br-xxx");
 ```
 
 ### Delete Role
 
 ```typescript
-await apiClient.deleteProjectBranchRole(
-  "your-project-id",
-  "br-xxx",
-  "app_user",
-);
+await apiClient.deleteProjectBranchRole("your-project-id", "br-xxx", "app_user");
 ```
 
 ## Endpoints
@@ -194,7 +173,7 @@ await apiClient.deleteProjectBranchRole(
 import { EndpointType } from "@neondatabase/api-client";
 
 const response = await apiClient.createProjectEndpoint("your-project-id", {
-  endpoint: { branch_id: "br-xxx", type: EndpointType.ReadOnly },
+	endpoint: { branch_id: "br-xxx", type: EndpointType.ReadOnly },
 });
 ```
 
@@ -221,7 +200,7 @@ await apiClient.restartProjectEndpoint("your-project-id", "ep-xxx");
 
 ```typescript
 await apiClient.updateProjectEndpoint("your-project-id", "ep-xxx", {
-  endpoint: { autoscaling_limit_max_cu: 2 },
+	endpoint: { autoscaling_limit_max_cu: 2 },
 });
 ```
 
@@ -258,17 +237,14 @@ await apiClient.revokeApiKey(1234);
 
 ```typescript
 const response = await apiClient.listProjectOperations({
-  projectId: "your-project-id",
+	projectId: "your-project-id",
 });
 ```
 
 ### Get Operation
 
 ```typescript
-const response = await apiClient.getProjectOperation(
-  "your-project-id",
-  "op-xxx",
-);
+const response = await apiClient.getProjectOperation("your-project-id", "op-xxx");
 ```
 
 ## Organizations
@@ -289,8 +265,8 @@ const response = await apiClient.getOrganizationMembers("org-xxx");
 
 ```typescript
 const response = await apiClient.createOrgApiKey("org-xxx", {
-  key_name: "ci-key",
-  project_id: "project-xxx", // Optional: scope to project
+	key_name: "ci-key",
+	project_id: "project-xxx", // Optional: scope to project
 });
 ```
 
@@ -300,7 +276,7 @@ const response = await apiClient.createOrgApiKey("org-xxx", {
 import { MemberRole } from "@neondatabase/api-client";
 
 await apiClient.createOrganizationInvitations("org-xxx", {
-  invitations: [{ email: "dev@example.com", role: MemberRole.Member }],
+	invitations: [{ email: "dev@example.com", role: MemberRole.Member }],
 });
 ```
 
@@ -308,27 +284,27 @@ await apiClient.createOrganizationInvitations("org-xxx", {
 
 ```typescript
 async function safeApiOperation(projectId: string) {
-  try {
-    const response = await apiClient.getProject(projectId);
-    return response.data;
-  } catch (error: any) {
-    if (error.isAxiosError) {
-      const status = error.response?.status;
-      switch (status) {
-        case 401:
-          console.error("Check your NEON_API_KEY");
-          break;
-        case 404:
-          console.error("Resource not found");
-          break;
-        case 429:
-          console.error("Rate limit exceeded");
-          break;
-        default:
-          console.error("API error:", error.response?.data?.message);
-      }
-    }
-    return null;
-  }
+	try {
+		const response = await apiClient.getProject(projectId);
+		return response.data;
+	} catch (error: any) {
+		if (error.isAxiosError) {
+			const status = error.response?.status;
+			switch (status) {
+				case 401:
+					console.error("Check your NEON_API_KEY");
+					break;
+				case 404:
+					console.error("Resource not found");
+					break;
+				case 429:
+					console.error("Rate limit exceeded");
+					break;
+				default:
+					console.error("API error:", error.response?.data?.message);
+			}
+		}
+		return null;
+	}
 }
 ```

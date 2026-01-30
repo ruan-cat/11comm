@@ -12,8 +12,8 @@ import { createClient } from "@neondatabase/neon-js";
 import type { Database } from "./database.types";
 
 export const dbClient = createClient<Database>({
-  auth: { url: process.env.NEXT_PUBLIC_NEON_AUTH_URL! },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: { url: process.env.NEXT_PUBLIC_NEON_AUTH_URL! },
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -24,11 +24,11 @@ import { createClient } from "@neondatabase/neon-js";
 import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapters";
 
 const client = createClient<Database>({
-  auth: {
-    adapter: BetterAuthReactAdapter(),
-    url: import.meta.env.VITE_NEON_AUTH_URL,
-  },
-  dataApi: { url: import.meta.env.VITE_NEON_DATA_API_URL },
+	auth: {
+		adapter: BetterAuthReactAdapter(),
+		url: import.meta.env.VITE_NEON_AUTH_URL,
+	},
+	dataApi: { url: import.meta.env.VITE_NEON_DATA_API_URL },
 });
 ```
 
@@ -38,8 +38,8 @@ const client = createClient<Database>({
 import { createClient } from "@neondatabase/neon-js";
 
 const client = createClient<Database>({
-  auth: { url: process.env.NEON_AUTH_URL! },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: { url: process.env.NEON_AUTH_URL! },
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -67,21 +67,17 @@ const { data } = await client.from("items").select("id, name, status");
 
 ```typescript
 const { data } = await client
-  .from("items")
-  .select("id, name, status")
-  .eq("status", "active")
-  .order("created_at", { ascending: false })
-  .limit(10);
+	.from("items")
+	.select("id, name, status")
+	.eq("status", "active")
+	.order("created_at", { ascending: false })
+	.limit(10);
 ```
 
 **Select single row:**
 
 ```typescript
-const { data, error } = await client
-  .from("items")
-  .select("*")
-  .eq("id", 1)
-  .single();
+const { data, error } = await client.from("items").select("*").eq("id", 1).single();
 ```
 
 ### Insert
@@ -89,23 +85,19 @@ const { data, error } = await client
 **Insert single row:**
 
 ```typescript
-const { data, error } = await client
-  .from("items")
-  .insert({ name: "New Item", status: "pending" })
-  .select()
-  .single();
+const { data, error } = await client.from("items").insert({ name: "New Item", status: "pending" }).select().single();
 ```
 
 **Insert multiple rows:**
 
 ```typescript
 const { data, error } = await client
-  .from("items")
-  .insert([
-    { name: "Item 1", status: "pending" },
-    { name: "Item 2", status: "pending" },
-  ])
-  .select();
+	.from("items")
+	.insert([
+		{ name: "Item 1", status: "pending" },
+		{ name: "Item 2", status: "pending" },
+	])
+	.select();
 ```
 
 ### Update
@@ -119,12 +111,7 @@ await client.from("items").update({ status: "completed" }).eq("id", 1);
 **Update and return data:**
 
 ```typescript
-const { data, error } = await client
-  .from("items")
-  .update({ status: "completed" })
-  .eq("id", 1)
-  .select()
-  .single();
+const { data, error } = await client.from("items").update({ status: "completed" }).eq("id", 1).select().single();
 ```
 
 ### Delete
@@ -138,20 +125,13 @@ await client.from("items").delete().eq("id", 1);
 **Delete and return data:**
 
 ```typescript
-const { data, error } = await client
-  .from("items")
-  .delete()
-  .eq("id", 1)
-  .select()
-  .single();
+const { data, error } = await client.from("items").delete().eq("id", 1).select().single();
 ```
 
 ### Upsert
 
 ```typescript
-await client
-  .from("items")
-  .upsert({ id: 1, name: "Updated Item", status: "active" });
+await client.from("items").upsert({ id: 1, name: "Updated Item", status: "active" });
 ```
 
 ---
@@ -250,17 +230,13 @@ const pageSize = 10;
 **One-to-many:**
 
 ```typescript
-const { data } = await client
-  .from("posts")
-  .select("id, title, author:users(name, email)");
+const { data } = await client.from("posts").select("id, title, author:users(name, email)");
 ```
 
 **Many-to-many:**
 
 ```typescript
-const { data } = await client
-  .from("posts")
-  .select("id, title, tags:post_tags(tag:tags(name))");
+const { data } = await client.from("posts").select("id, title, tags:post_tags(tag:tags(name))");
 ```
 
 **Nested relationships:**
@@ -300,8 +276,8 @@ import { createClient } from "@neondatabase/neon-js";
 import type { Database } from "./database.types";
 
 export const dbClient = createClient<Database>({
-  auth: { url: process.env.NEXT_PUBLIC_NEON_AUTH_URL! },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: { url: process.env.NEXT_PUBLIC_NEON_AUTH_URL! },
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -321,10 +297,10 @@ export const dbClient = createClient<Database>({
 const { data, error } = await client.from("items").select();
 
 if (error) {
-  console.error("Database error:", error.message);
-  console.error("Error code:", error.code);
-  console.error("Error details:", error.details);
-  return;
+	console.error("Database error:", error.message);
+	console.error("Error code:", error.code);
+	console.error("Error details:", error.details);
+	return;
 }
 
 // Use data
@@ -378,29 +354,25 @@ import { dbClient } from "@/lib/db/client";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const { data, error } = await dbClient.from("posts").select();
+	const { data, error } = await dbClient.from("posts").select();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+	if (error) {
+		return NextResponse.json({ error: error.message }, { status: 500 });
+	}
 
-  return NextResponse.json(data);
+	return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
+	const body = await request.json();
 
-  const { data, error } = await dbClient
-    .from("posts")
-    .insert(body)
-    .select()
-    .single();
+	const { data, error } = await dbClient.from("posts").insert(body).select().single();
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
-  }
+	if (error) {
+		return NextResponse.json({ error: error.message }, { status: 400 });
+	}
 
-  return NextResponse.json(data, { status: 201 });
+	return NextResponse.json(data, { status: 201 });
 }
 ```
 
@@ -467,8 +439,8 @@ const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 import { createClient, SupabaseAuthAdapter } from "@neondatabase/neon-js";
 
 const client = createClient({
-  auth: { adapter: SupabaseAuthAdapter(), url: NEON_AUTH_URL },
-  dataApi: { url: NEON_DATA_API_URL },
+	auth: { adapter: SupabaseAuthAdapter(), url: NEON_AUTH_URL },
+	dataApi: { url: NEON_DATA_API_URL },
 });
 ```
 

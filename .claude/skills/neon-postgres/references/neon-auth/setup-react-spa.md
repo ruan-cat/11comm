@@ -45,7 +45,7 @@ import { createAuthClient } from "@neondatabase/auth";
 import { BetterAuthReactAdapter } from "@neondatabase/auth/react/adapters";
 
 export const authClient = createAuthClient(import.meta.env.VITE_NEON_AUTH_URL, {
-  adapter: BetterAuthReactAdapter(),
+	adapter: BetterAuthReactAdapter(),
 });
 ```
 
@@ -56,13 +56,13 @@ import { createClient } from "@neondatabase/neon-js";
 import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapters";
 
 export const client = createClient({
-  auth: {
-    adapter: BetterAuthReactAdapter(),
-    url: import.meta.env.VITE_NEON_AUTH_URL,
-  },
-  dataApi: {
-    url: import.meta.env.VITE_NEON_DATA_API_URL,
-  },
+	auth: {
+		adapter: BetterAuthReactAdapter(),
+		url: import.meta.env.VITE_NEON_AUTH_URL,
+	},
+	dataApi: {
+		url: import.meta.env.VITE_NEON_DATA_API_URL,
+	},
 });
 
 export const authClient = client.auth;
@@ -127,11 +127,11 @@ import App from "./App";
 import { Providers } from "./providers";
 
 createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <Providers>
-      <App />
-    </Providers>
-  </BrowserRouter>,
+	<BrowserRouter>
+		<Providers>
+			<App />
+		</Providers>
+	</BrowserRouter>,
 );
 ```
 
@@ -146,32 +146,29 @@ import { authClient } from "./lib/auth-client";
 import type { ReactNode } from "react";
 
 // Adapter for react-router-dom Link
-function Link({
-  href,
-  ...props
-}: { href: string } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  return <RouterLink to={href} {...props} />;
+function Link({ href, ...props }: { href: string } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+	return <RouterLink to={href} {...props} />;
 }
 
 export function Providers({ children }: { children: ReactNode }) {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  return (
-    <NeonAuthUIProvider
-      authClient={authClient}
-      navigate={(path) => navigate(path)}
-      replace={(path) => navigate(path, { replace: true })}
-      onSessionChange={() => {
-        // Optional: refresh data or invalidate cache
-      }}
-      Link={Link}
-      social={{
-        providers: ["google", "github"],
-      }}
-    >
-      {children}
-    </NeonAuthUIProvider>
-  );
+	return (
+		<NeonAuthUIProvider
+			authClient={authClient}
+			navigate={(path) => navigate(path)}
+			replace={(path) => navigate(path, { replace: true })}
+			onSessionChange={() => {
+				// Optional: refresh data or invalidate cache
+			}}
+			Link={Link}
+			social={{
+				providers: ["google", "github"],
+			}}
+		>
+			{children}
+		</NeonAuthUIProvider>
+	);
 }
 ```
 
@@ -187,54 +184,49 @@ export function Providers({ children }: { children: ReactNode }) {
 
 ```tsx
 import { Routes, Route, useParams } from "react-router-dom";
-import {
-  AuthView,
-  UserButton,
-  SignedIn,
-  SignedOut,
-} from "@neondatabase/auth/react/ui";
+import { AuthView, UserButton, SignedIn, SignedOut } from "@neondatabase/auth/react/ui";
 
 // Auth page - handles /auth/sign-in, /auth/sign-up, etc.
 function AuthPage() {
-  const { pathname } = useParams();
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <AuthView pathname={pathname} />
-    </div>
-  );
+	const { pathname } = useParams();
+	return (
+		<div className='flex min-h-screen items-center justify-center'>
+			<AuthView pathname={pathname} />
+		</div>
+	);
 }
 
 // Simple navbar example
 function Navbar() {
-  return (
-    <nav className="flex items-center justify-between p-4 border-b">
-      <a href="/">My App</a>
-      <div className="flex items-center gap-4">
-        <SignedOut>
-          <a href="/auth/sign-in">Sign In</a>
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </div>
-    </nav>
-  );
+	return (
+		<nav className='flex items-center justify-between p-4 border-b'>
+			<a href='/'>My App</a>
+			<div className='flex items-center gap-4'>
+				<SignedOut>
+					<a href='/auth/sign-in'>Sign In</a>
+				</SignedOut>
+				<SignedIn>
+					<UserButton />
+				</SignedIn>
+			</div>
+		</nav>
+	);
 }
 
 function HomePage() {
-  return <div>Welcome to My App!</div>;
+	return <div>Welcome to My App!</div>;
 }
 
 export default function App() {
-  return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/auth/:pathname" element={<AuthPage />} />
-      </Routes>
-    </>
-  );
+	return (
+		<>
+			<Navbar />
+			<Routes>
+				<Route path='/' element={<HomePage />} />
+				<Route path='/auth/:pathname' element={<AuthPage />} />
+			</Routes>
+		</>
+	);
 }
 ```
 

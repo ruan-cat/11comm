@@ -6,7 +6,7 @@ This document provides a comprehensive set of rules and guidelines for an AI age
 
 All Neon API requests must be made to the following base URL:
 
-```
+```plain
 https://console.neon.tech/api/v2/
 ```
 

@@ -116,17 +116,17 @@ Create, use, and close the pool within the same invocation:
 ```typescript
 // Vercel Edge Functions example
 export default async (req: Request, ctx: ExecutionContext) => {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+	const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
 
-  try {
-    const { rows } = await pool.query("SELECT * FROM users");
-    return new Response(JSON.stringify(rows));
-  } catch (err) {
-    console.error(err);
-    return new Response("Database error", { status: 500 });
-  } finally {
-    ctx.waitUntil(pool.end());
-  }
+	try {
+		const { rows } = await pool.query("SELECT * FROM users");
+		return new Response(JSON.stringify(rows));
+	} catch (err) {
+		console.error(err);
+		return new Response("Database error", { status: 500 });
+	} finally {
+		ctx.waitUntil(pool.end());
+	}
 };
 ```
 
@@ -140,14 +140,14 @@ For running multiple queries in a single, non-interactive transaction:
 
 ```typescript
 const [newUser, newProfile] = await sql.transaction(
-  [
-    sql`INSERT INTO users(name) VALUES(${name}) RETURNING id`,
-    sql`INSERT INTO profiles(user_id, bio) VALUES(${userId}, ${bio})`,
-  ],
-  {
-    isolationLevel: "ReadCommitted",
-    readOnly: false,
-  },
+	[
+		sql`INSERT INTO users(name) VALUES(${name}) RETURNING id`,
+		sql`INSERT INTO profiles(user_id, bio) VALUES(${userId}, ${bio})`,
+	],
+	{
+		isolationLevel: "ReadCommitted",
+		readOnly: false,
+	},
 );
 ```
 
@@ -159,23 +159,18 @@ For complex transactions with conditional logic:
 const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
 const client = await pool.connect();
 try {
-  await client.query("BEGIN");
-  const {
-    rows: [{ id }],
-  } = await client.query("INSERT INTO users(name) VALUES($1) RETURNING id", [
-    name,
-  ]);
-  await client.query("INSERT INTO profiles(user_id, bio) VALUES($1, $2)", [
-    id,
-    bio,
-  ]);
-  await client.query("COMMIT");
+	await client.query("BEGIN");
+	const {
+		rows: [{ id }],
+	} = await client.query("INSERT INTO users(name) VALUES($1) RETURNING id", [name]);
+	await client.query("INSERT INTO profiles(user_id, bio) VALUES($1, $2)", [id, bio]);
+	await client.query("COMMIT");
 } catch (err) {
-  await client.query("ROLLBACK");
-  throw err;
+	await client.query("ROLLBACK");
+	throw err;
 } finally {
-  client.release();
-  await pool.end();
+	client.release();
+	await pool.end();
 }
 ```
 
@@ -184,8 +179,8 @@ try {
 ```javascript
 // For Vercel Edge Functions, specify nearest region
 export const config = {
-  runtime: "edge",
-  regions: ["iad1"], // Region nearest to your Neon DB
+	runtime: "edge",
+	regions: ["iad1"], // Region nearest to your Neon DB
 };
 
 // For Cloudflare Workers, consider using Hyperdrive
@@ -223,7 +218,7 @@ import { Pool } from "@neondatabase/serverless";
 import { Kysely, PostgresDialect } from "kysely";
 
 const dialect = new PostgresDialect({
-  pool: new Pool({ connectionString: process.env.DATABASE_URL }),
+	pool: new Pool({ connectionString: process.env.DATABASE_URL }),
 });
 
 const db = new Kysely({ dialect });
@@ -237,18 +232,18 @@ const db = new Kysely({ dialect });
 // Pool error handling
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 pool.on("error", (err) => {
-  console.error("Unexpected error on idle client", err);
-  process.exit(-1);
+	console.error("Unexpected error on idle client", err);
+	process.exit(-1);
 });
 
 // Query error handling
 try {
-  const [post] = await sql`SELECT * FROM posts WHERE id = ${postId}`;
-  if (!post) {
-    return new Response("Not found", { status: 404 });
-  }
+	const [post] = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+	if (!post) {
+		return new Response("Not found", { status: 404 });
+	}
 } catch (err) {
-  console.error("Database query failed:", err);
-  return new Response("Server error", { status: 500 });
+	console.error("Database query failed:", err);
+	return new Response("Server error", { status: 500 });
 }
 ```

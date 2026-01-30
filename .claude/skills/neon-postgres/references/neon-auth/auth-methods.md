@@ -8,9 +8,9 @@ Complete reference for authentication methods, session management, and error han
 
 ```typescript
 await auth.signUp.email({
-  email: "user@example.com",
-  password: "securepassword",
-  name: "John Doe", // Optional
+	email: "user@example.com",
+	password: "securepassword",
+	name: "John Doe", // Optional
 });
 ```
 
@@ -19,14 +19,14 @@ await auth.signUp.email({
 ```typescript
 // Email/password
 await auth.signIn.email({
-  email: "user@example.com",
-  password: "securepassword",
+	email: "user@example.com",
+	password: "securepassword",
 });
 
 // Social (Google, GitHub)
 await auth.signIn.social({
-  provider: "google", // or "github"
-  callbackURL: "/dashboard",
+	provider: "google", // or "github"
+	callbackURL: "/dashboard",
 });
 ```
 
@@ -51,23 +51,23 @@ const session = auth.useSession();
 
 ```typescript
 interface Session {
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    image: string | null;
-    emailVerified: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  session: {
-    id: string;
-    expiresAt: Date;
-    token: string;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: string;
-  };
+	user: {
+		id: string;
+		name: string | null;
+		email: string;
+		image: string | null;
+		emailVerified: boolean;
+		createdAt: Date;
+		updatedAt: Date;
+	};
+	session: {
+		id: string;
+		expiresAt: Date;
+		token: string;
+		createdAt: Date;
+		updatedAt: Date;
+		userId: string;
+	};
 }
 ```
 
@@ -77,22 +77,22 @@ interface Session {
 const { error } = await auth.signIn.email({ email, password });
 
 if (error) {
-  switch (error.code) {
-    case "INVALID_EMAIL_OR_PASSWORD":
-      showError("Invalid email or password");
-      break;
-    case "EMAIL_NOT_VERIFIED":
-      showError("Please verify your email");
-      break;
-    case "USER_NOT_FOUND":
-      showError("User not found");
-      break;
-    case "TOO_MANY_REQUESTS":
-      showError("Too many attempts. Please wait.");
-      break;
-    default:
-      showError("Authentication failed");
-  }
+	switch (error.code) {
+		case "INVALID_EMAIL_OR_PASSWORD":
+			showError("Invalid email or password");
+			break;
+		case "EMAIL_NOT_VERIFIED":
+			showError("Please verify your email");
+			break;
+		case "USER_NOT_FOUND":
+			showError("User not found");
+			break;
+		case "TOO_MANY_REQUESTS":
+			showError("Too many attempts. Please wait.");
+			break;
+		default:
+			showError("Authentication failed");
+	}
 }
 ```
 
@@ -127,18 +127,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  return (
-    <NeonAuthUIProvider
-      authClient={authClient}
-      navigate={router.push}
-      replace={router.replace}
-      onSessionChange={() => router.refresh()}
-      Link={Link}
-    >
-      {children}
-    </NeonAuthUIProvider>
-  );
+	const router = useRouter();
+	return (
+		<NeonAuthUIProvider
+			authClient={authClient}
+			navigate={router.push}
+			replace={router.replace}
+			onSessionChange={() => router.refresh()}
+			Link={Link}
+		>
+			{children}
+		</NeonAuthUIProvider>
+	);
 }
 ```
 
@@ -149,16 +149,12 @@ import { AuthView } from "@neondatabase/auth/react/ui";
 import { authViewPaths } from "@neondatabase/auth/react/ui/server";
 
 export function generateStaticParams() {
-  return Object.values(authViewPaths).map((path) => ({ path }));
+	return Object.values(authViewPaths).map((path) => ({ path }));
 }
 
-export default async function AuthPage({
-  params,
-}: {
-  params: Promise<{ path: string }>;
-}) {
-  const { path } = await params;
-  return <AuthView pathname={path} />;
+export default async function AuthPage({ params }: { params: Promise<{ path: string }> }) {
+	const { path } = await params;
+	return <AuthView pathname={path} />;
 }
 ```
 
@@ -182,24 +178,24 @@ For standard React web apps, **use AuthView**.
 ```tsx
 // ❌ Don't build custom forms unless you have specific requirements
 function CustomSignInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const { error } = await authClient.signIn.email({ email, password });
-    if (error) setError(error.message);
-    setLoading(false);
-  };
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setLoading(true);
+		const { error } = await authClient.signIn.email({ email, password });
+		if (error) setError(error.message);
+		setLoading(false);
+	};
 
-  // ... 50+ more lines of form JSX, validation, error display
+	// ... 50+ more lines of form JSX, validation, error display
 }
 
 // ✅ Use AuthView instead - one component handles everything
-<AuthView pathname="sign-in" />;
+<AuthView pathname='sign-in' />;
 ```
 
 ## Styling
@@ -235,7 +231,7 @@ To customize auth components differently from your main app, use `--neon-*` pref
 
 ```css
 :root {
-  --primary: oklch(0.55 0.25 250); /* Your app's blue */
-  --neon-primary: oklch(0.55 0.18 145); /* Auth uses green */
+	--primary: oklch(0.55 0.25 250); /* Your app's blue */
+	--neon-primary: oklch(0.55 0.18 145); /* Auth uses green */
 }
 ```

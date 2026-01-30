@@ -36,11 +36,11 @@ All adapters are **factory functions** that must be called with `()`.
 
 ```typescript
 const client = createClient({
-  auth: {
-    adapter: BetterAuthReactAdapter, // Missing ()
-    url: process.env.NEON_AUTH_URL!,
-  },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: {
+		adapter: BetterAuthReactAdapter, // Missing ()
+		url: process.env.NEON_AUTH_URL!,
+	},
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -48,11 +48,11 @@ const client = createClient({
 
 ```typescript
 const client = createClient({
-  auth: {
-    adapter: BetterAuthReactAdapter(), // Called as function
-    url: process.env.NEON_AUTH_URL!,
-  },
-  dataApi: { url: process.env.NEON_DATA_API_URL! },
+	auth: {
+		adapter: BetterAuthReactAdapter(), // Called as function
+		url: process.env.NEON_AUTH_URL!,
+	},
+	dataApi: { url: process.env.NEON_DATA_API_URL! },
 });
 ```
 
@@ -170,8 +170,8 @@ Client components using `useSession()` need the `"use client"` directive.
 import { authClient } from "@/lib/auth/client";
 
 function AuthStatus() {
-  const session = authClient.useSession();
-  // ...
+	const session = authClient.useSession();
+	// ...
 }
 ```
 
@@ -183,8 +183,8 @@ function AuthStatus() {
 import { authClient } from "@/lib/auth/client";
 
 function AuthStatus() {
-  const session = authClient.useSession();
-  // ...
+	const session = authClient.useSession();
+	// ...
 }
 ```
 
@@ -196,8 +196,8 @@ Each adapter has its own API style. Don't mix them.
 
 ```typescript
 const client = createClient({
-  auth: { adapter: SupabaseAuthAdapter(), url },
-  dataApi: { url },
+	auth: { adapter: SupabaseAuthAdapter(), url },
+	dataApi: { url },
 });
 
 // This won't work with SupabaseAuthAdapter
@@ -208,8 +208,8 @@ await client.auth.signIn.email({ email, password });
 
 ```typescript
 const client = createClient({
-  auth: { adapter: SupabaseAuthAdapter(), url },
-  dataApi: { url },
+	auth: { adapter: SupabaseAuthAdapter(), url },
+	dataApi: { url },
 });
 
 // Use Supabase-style methods

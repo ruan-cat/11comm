@@ -40,43 +40,43 @@ Example Response:
 
 ```json
 {
-  "endpoint": {
-    "host": "ep-proud-mud-adwmnxz4.c-2.us-east-1.aws.neon.tech",
-    "id": "ep-proud-mud-adwmnxz4",
-    "project_id": "hidden-river-50598307",
-    "branch_id": "br-super-wildflower-adniii9u",
-    "autoscaling_limit_min_cu": 0.25,
-    "autoscaling_limit_max_cu": 2,
-    "region_id": "aws-us-east-1",
-    "type": "read_only",
-    "current_state": "init",
-    "pending_state": "active",
-    "settings": {},
-    "pooler_enabled": false,
-    "pooler_mode": "transaction",
-    "disabled": false,
-    "passwordless_access": true,
-    "creation_source": "console",
-    "created_at": "2025-09-11T06:25:12Z",
-    "updated_at": "2025-09-11T06:25:12Z",
-    "proxy_host": "c-2.us-east-1.aws.neon.tech",
-    "suspend_timeout_seconds": 0,
-    "provisioner": "k8s-neonvm"
-  },
-  "operations": [
-    {
-      "id": "4d10642f-5212-4517-ad60-afd28c9096e2",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-super-wildflower-adniii9u",
-      "endpoint_id": "ep-proud-mud-adwmnxz4",
-      "action": "start_compute",
-      "status": "running",
-      "failures_count": 0,
-      "created_at": "2025-09-11T06:25:12Z",
-      "updated_at": "2025-09-11T06:25:12Z",
-      "total_duration_ms": 0
-    }
-  ]
+	"endpoint": {
+		"host": "ep-proud-mud-adwmnxz4.c-2.us-east-1.aws.neon.tech",
+		"id": "ep-proud-mud-adwmnxz4",
+		"project_id": "hidden-river-50598307",
+		"branch_id": "br-super-wildflower-adniii9u",
+		"autoscaling_limit_min_cu": 0.25,
+		"autoscaling_limit_max_cu": 2,
+		"region_id": "aws-us-east-1",
+		"type": "read_only",
+		"current_state": "init",
+		"pending_state": "active",
+		"settings": {},
+		"pooler_enabled": false,
+		"pooler_mode": "transaction",
+		"disabled": false,
+		"passwordless_access": true,
+		"creation_source": "console",
+		"created_at": "2025-09-11T06:25:12Z",
+		"updated_at": "2025-09-11T06:25:12Z",
+		"proxy_host": "c-2.us-east-1.aws.neon.tech",
+		"suspend_timeout_seconds": 0,
+		"provisioner": "k8s-neonvm"
+	},
+	"operations": [
+		{
+			"id": "4d10642f-5212-4517-ad60-afd28c9096e2",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-super-wildflower-adniii9u",
+			"endpoint_id": "ep-proud-mud-adwmnxz4",
+			"action": "start_compute",
+			"status": "running",
+			"failures_count": 0,
+			"created_at": "2025-09-11T06:25:12Z",
+			"updated_at": "2025-09-11T06:25:12Z",
+			"total_duration_ms": 0
+		}
+	]
 }
 ```
 

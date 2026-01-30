@@ -22,18 +22,18 @@ Example response:
 
 ```json
 [
-  {
-    "id": 2291506,
-    "name": "my-personal-key",
-    "created_at": "2025-09-10T09:44:04Z",
-    "created_by": {
-      "id": "487de658-08ba-4363-b387-86d18b9ad1c8",
-      "name": "<USER_NAME>",
-      "image": "<USER_IMAGE_URL>"
-    },
-    "last_used_at": "2025-09-10T09:44:09Z",
-    "last_used_from_addr": "49.43.218.132,34.211.200.85"
-  }
+	{
+		"id": 2291506,
+		"name": "my-personal-key",
+		"created_at": "2025-09-10T09:44:04Z",
+		"created_by": {
+			"id": "487de658-08ba-4363-b387-86d18b9ad1c8",
+			"name": "<USER_NAME>",
+			"image": "<USER_IMAGE_URL>"
+		},
+		"last_used_at": "2025-09-10T09:44:09Z",
+		"last_used_from_addr": "49.43.218.132,34.211.200.85"
+	}
 ]
 ```
 
@@ -56,11 +56,11 @@ Example response:
 
 ```json
 {
-  "id": 2291515,
-  "key": "napi_9tlr13774gizljemrr133j5koy3bmsphj8iu38mh0yjl9q4r1b0jy2wuhhuxouzr",
-  "name": "my-new-key",
-  "created_at": "2025-09-10T09:47:59Z",
-  "created_by": "487de658-08ba-4363-b387-86d18b9ad1c8"
+	"id": 2291515,
+	"key": "napi_9tlr13774gizljemrr133j5koy3bmsphj8iu38mh0yjl9q4r1b0jy2wuhhuxouzr",
+	"name": "my-new-key",
+	"created_at": "2025-09-10T09:47:59Z",
+	"created_by": "487de658-08ba-4363-b387-86d18b9ad1c8"
 }
 ```
 
@@ -81,12 +81,12 @@ Example response:
 
 ```json
 {
-  "id": 2291515,
-  "name": "mynewkey",
-  "created_at": "2025-09-10T09:47:59Z",
-  "created_by": "487de658-08ba-4363-b387-86d18b9ad1c8",
-  "last_used_at": "2025-09-10T09:53:01Z",
-  "last_used_from_addr": "2405:201:c01f:7013:d962:2b4f:2740:9750",
-  "revoked": true
+	"id": 2291515,
+	"name": "mynewkey",
+	"created_at": "2025-09-10T09:47:59Z",
+	"created_by": "487de658-08ba-4363-b387-86d18b9ad1c8",
+	"last_used_at": "2025-09-10T09:53:01Z",
+	"last_used_from_addr": "2405:201:c01f:7013:d962:2b4f:2740:9750",
+	"revoked": true
 }
 ```

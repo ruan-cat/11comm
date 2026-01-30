@@ -69,7 +69,7 @@ import { createAuthClient } from "@neondatabase/auth";
 import { BetterAuthReactAdapter } from "@neondatabase/auth/react/adapters";
 
 const authClient = createAuthClient(import.meta.env.VITE_NEON_AUTH_URL, {
-  adapter: BetterAuthReactAdapter(),
+	adapter: BetterAuthReactAdapter(),
 });
 ```
 
@@ -119,11 +119,7 @@ import { createAuthClient } from "@neondatabase/auth";
 import { BetterAuthReactAdapter } from "@neondatabase/auth/react/adapters";
 
 // UI components
-import {
-  NeonAuthUIProvider,
-  AuthView,
-  SignInForm,
-} from "@neondatabase/auth/react/ui";
+import { NeonAuthUIProvider, AuthView, SignInForm } from "@neondatabase/auth/react/ui";
 import { authViewPaths } from "@neondatabase/auth/react/ui/server";
 
 // CSS

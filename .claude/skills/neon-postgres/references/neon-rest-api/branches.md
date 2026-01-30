@@ -52,113 +52,113 @@ Example response
 
 ```json
 {
-  "branch": {
-    "id": "br-damp-glitter-adqd4hk5",
-    "project_id": "hidden-river-50598307",
-    "parent_id": "br-super-wildflower-adniii9u",
-    "parent_lsn": "0/1A7F730",
-    "name": "my-new-feature-branch",
-    "current_state": "init",
-    "pending_state": "ready",
-    "state_changed_at": "2025-09-10T16:45:52Z",
-    "creation_source": "console",
-    "primary": false,
-    "default": false,
-    "protected": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2025-09-10T16:45:52Z",
-    "updated_at": "2025-09-10T16:45:52Z",
-    "created_by": {
-      "name": "<USER_NAME>",
-      "image": "<USER_IMAGE_URL>"
-    },
-    "init_source": "parent-data"
-  },
-  "endpoints": [
-    {
-      "host": "ep-raspy-glade-ad8e3gvy.c-2.us-east-1.aws.neon.tech",
-      "id": "ep-raspy-glade-ad8e3gvy",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-damp-glitter-adqd4hk5",
-      "autoscaling_limit_min_cu": 0.25,
-      "autoscaling_limit_max_cu": 2,
-      "region_id": "aws-us-east-1",
-      "type": "read_write",
-      "current_state": "init",
-      "pending_state": "active",
-      "settings": {},
-      "pooler_enabled": false,
-      "pooler_mode": "transaction",
-      "disabled": false,
-      "passwordless_access": true,
-      "creation_source": "console",
-      "created_at": "2025-09-10T16:45:52Z",
-      "updated_at": "2025-09-10T16:45:52Z",
-      "proxy_host": "c-2.us-east-1.aws.neon.tech",
-      "suspend_timeout_seconds": 0,
-      "provisioner": "k8s-neonvm"
-    }
-  ],
-  "operations": [
-    {
-      "id": "cf5d0923-fc13-4125-83d5-8fc31c6b0214",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-damp-glitter-adqd4hk5",
-      "action": "create_branch",
-      "status": "running",
-      "failures_count": 0,
-      "created_at": "2025-09-10T16:45:52Z",
-      "updated_at": "2025-09-10T16:45:52Z",
-      "total_duration_ms": 0
-    },
-    {
-      "id": "e3c60b62-00c8-4ad4-9cd1-cdc3e8fd8154",
-      "project_id": "hidden-river-50598307",
-      "branch_id": "br-damp-glitter-adqd4hk5",
-      "endpoint_id": "ep-raspy-glade-ad8e3gvy",
-      "action": "start_compute",
-      "status": "scheduling",
-      "failures_count": 0,
-      "created_at": "2025-09-10T16:45:52Z",
-      "updated_at": "2025-09-10T16:45:52Z",
-      "total_duration_ms": 0
-    }
-  ],
-  "roles": [
-    {
-      "branch_id": "br-damp-glitter-adqd4hk5",
-      "name": "neondb_owner",
-      "protected": false,
-      "created_at": "2025-09-10T12:14:58Z",
-      "updated_at": "2025-09-10T12:14:58Z"
-    }
-  ],
-  "databases": [
-    {
-      "id": 9554148,
-      "branch_id": "br-damp-glitter-adqd4hk5",
-      "name": "neondb",
-      "owner_name": "neondb_owner",
-      "created_at": "2025-09-10T12:14:58Z",
-      "updated_at": "2025-09-10T12:14:58Z"
-    }
-  ],
-  "connection_uris": [
-    {
-      "connection_uri": "postgresql://neondb_owner:npg_EwcS9IOgFfb7@ep-raspy-glade-ad8e3gvy.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
-      "connection_parameters": {
-        "database": "neondb",
-        "password": "npg_EwcS9IOgFfb7",
-        "role": "neondb_owner",
-        "host": "ep-raspy-glade-ad8e3gvy.c-2.us-east-1.aws.neon.tech",
-        "pooler_host": "ep-raspy-glade-ad8e3gvy-pooler.c-2.us-east-1.aws.neon.tech"
-      }
-    }
-  ]
+	"branch": {
+		"id": "br-damp-glitter-adqd4hk5",
+		"project_id": "hidden-river-50598307",
+		"parent_id": "br-super-wildflower-adniii9u",
+		"parent_lsn": "0/1A7F730",
+		"name": "my-new-feature-branch",
+		"current_state": "init",
+		"pending_state": "ready",
+		"state_changed_at": "2025-09-10T16:45:52Z",
+		"creation_source": "console",
+		"primary": false,
+		"default": false,
+		"protected": false,
+		"cpu_used_sec": 0,
+		"compute_time_seconds": 0,
+		"active_time_seconds": 0,
+		"written_data_bytes": 0,
+		"data_transfer_bytes": 0,
+		"created_at": "2025-09-10T16:45:52Z",
+		"updated_at": "2025-09-10T16:45:52Z",
+		"created_by": {
+			"name": "<USER_NAME>",
+			"image": "<USER_IMAGE_URL>"
+		},
+		"init_source": "parent-data"
+	},
+	"endpoints": [
+		{
+			"host": "ep-raspy-glade-ad8e3gvy.c-2.us-east-1.aws.neon.tech",
+			"id": "ep-raspy-glade-ad8e3gvy",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-damp-glitter-adqd4hk5",
+			"autoscaling_limit_min_cu": 0.25,
+			"autoscaling_limit_max_cu": 2,
+			"region_id": "aws-us-east-1",
+			"type": "read_write",
+			"current_state": "init",
+			"pending_state": "active",
+			"settings": {},
+			"pooler_enabled": false,
+			"pooler_mode": "transaction",
+			"disabled": false,
+			"passwordless_access": true,
+			"creation_source": "console",
+			"created_at": "2025-09-10T16:45:52Z",
+			"updated_at": "2025-09-10T16:45:52Z",
+			"proxy_host": "c-2.us-east-1.aws.neon.tech",
+			"suspend_timeout_seconds": 0,
+			"provisioner": "k8s-neonvm"
+		}
+	],
+	"operations": [
+		{
+			"id": "cf5d0923-fc13-4125-83d5-8fc31c6b0214",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-damp-glitter-adqd4hk5",
+			"action": "create_branch",
+			"status": "running",
+			"failures_count": 0,
+			"created_at": "2025-09-10T16:45:52Z",
+			"updated_at": "2025-09-10T16:45:52Z",
+			"total_duration_ms": 0
+		},
+		{
+			"id": "e3c60b62-00c8-4ad4-9cd1-cdc3e8fd8154",
+			"project_id": "hidden-river-50598307",
+			"branch_id": "br-damp-glitter-adqd4hk5",
+			"endpoint_id": "ep-raspy-glade-ad8e3gvy",
+			"action": "start_compute",
+			"status": "scheduling",
+			"failures_count": 0,
+			"created_at": "2025-09-10T16:45:52Z",
+			"updated_at": "2025-09-10T16:45:52Z",
+			"total_duration_ms": 0
+		}
+	],
+	"roles": [
+		{
+			"branch_id": "br-damp-glitter-adqd4hk5",
+			"name": "neondb_owner",
+			"protected": false,
+			"created_at": "2025-09-10T12:14:58Z",
+			"updated_at": "2025-09-10T12:14:58Z"
+		}
+	],
+	"databases": [
+		{
+			"id": 9554148,
+			"branch_id": "br-damp-glitter-adqd4hk5",
+			"name": "neondb",
+			"owner_name": "neondb_owner",
+			"created_at": "2025-09-10T12:14:58Z",
+			"updated_at": "2025-09-10T12:14:58Z"
+		}
+	],
+	"connection_uris": [
+		{
+			"connection_uri": "postgresql://neondb_owner:npg_EwcS9IOgFfb7@ep-raspy-glade-ad8e3gvy.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
+			"connection_parameters": {
+				"database": "neondb",
+				"password": "npg_EwcS9IOgFfb7",
+				"role": "neondb_owner",
+				"host": "ep-raspy-glade-ad8e3gvy.c-2.us-east-1.aws.neon.tech",
+				"pooler_host": "ep-raspy-glade-ad8e3gvy-pooler.c-2.us-east-1.aws.neon.tech"
+			}
+		}
+	]
 }
 ```
 
@@ -187,76 +187,76 @@ Example response
 
 ```json
 {
-  "branches": [
-    {
-      "id": "br-long-feather-adpbgzlx",
-      "project_id": "hidden-river-50598307",
-      "name": "production",
-      "current_state": "ready",
-      "state_changed_at": "2025-09-10T12:15:01Z",
-      "logical_size": 30785536,
-      "creation_source": "console",
-      "primary": true,
-      "default": true,
-      "protected": false,
-      "cpu_used_sec": 82,
-      "compute_time_seconds": 82,
-      "active_time_seconds": 316,
-      "written_data_bytes": 29060360,
-      "data_transfer_bytes": 0,
-      "created_at": "2025-09-10T12:14:58Z",
-      "updated_at": "2025-09-10T12:35:33Z",
-      "created_by": {
-        "name": "<USER_NAME>",
-        "image": "<USER_IMAGE_URL>"
-      },
-      "init_source": "parent-data"
-    },
-    {
-      "id": "br-super-wildflower-adniii9u",
-      "project_id": "hidden-river-50598307",
-      "parent_id": "br-long-feather-adpbgzlx",
-      "parent_lsn": "0/1A33BC8",
-      "parent_timestamp": "2025-09-10T12:15:03Z",
-      "name": "development",
-      "current_state": "ready",
-      "state_changed_at": "2025-09-10T12:15:04Z",
-      "logical_size": 30842880,
-      "creation_source": "console",
-      "primary": false,
-      "default": false,
-      "protected": false,
-      "cpu_used_sec": 78,
-      "compute_time_seconds": 78,
-      "active_time_seconds": 312,
-      "written_data_bytes": 310120,
-      "data_transfer_bytes": 0,
-      "created_at": "2025-09-10T12:15:04Z",
-      "updated_at": "2025-09-10T12:35:33Z",
-      "created_by": {
-        "name": "<USER_NAME>",
-        "image": "<USER_IMAGE_URL>"
-      },
-      "init_source": "parent-data"
-    }
-  ],
-  "annotations": {
-    "br-long-feather-adpbgzlx": {
-      "object": {
-        "type": "console/branch",
-        "id": "br-long-feather-adpbgzlx"
-      },
-      "value": {
-        "environment": "production"
-      },
-      "created_at": "2025-09-10T12:14:58Z",
-      "updated_at": "2025-09-10T12:14:58Z"
-    }
-  },
-  "pagination": {
-    "sort_by": "created_at",
-    "sort_order": "ASC"
-  }
+	"branches": [
+		{
+			"id": "br-long-feather-adpbgzlx",
+			"project_id": "hidden-river-50598307",
+			"name": "production",
+			"current_state": "ready",
+			"state_changed_at": "2025-09-10T12:15:01Z",
+			"logical_size": 30785536,
+			"creation_source": "console",
+			"primary": true,
+			"default": true,
+			"protected": false,
+			"cpu_used_sec": 82,
+			"compute_time_seconds": 82,
+			"active_time_seconds": 316,
+			"written_data_bytes": 29060360,
+			"data_transfer_bytes": 0,
+			"created_at": "2025-09-10T12:14:58Z",
+			"updated_at": "2025-09-10T12:35:33Z",
+			"created_by": {
+				"name": "<USER_NAME>",
+				"image": "<USER_IMAGE_URL>"
+			},
+			"init_source": "parent-data"
+		},
+		{
+			"id": "br-super-wildflower-adniii9u",
+			"project_id": "hidden-river-50598307",
+			"parent_id": "br-long-feather-adpbgzlx",
+			"parent_lsn": "0/1A33BC8",
+			"parent_timestamp": "2025-09-10T12:15:03Z",
+			"name": "development",
+			"current_state": "ready",
+			"state_changed_at": "2025-09-10T12:15:04Z",
+			"logical_size": 30842880,
+			"creation_source": "console",
+			"primary": false,
+			"default": false,
+			"protected": false,
+			"cpu_used_sec": 78,
+			"compute_time_seconds": 78,
+			"active_time_seconds": 312,
+			"written_data_bytes": 310120,
+			"data_transfer_bytes": 0,
+			"created_at": "2025-09-10T12:15:04Z",
+			"updated_at": "2025-09-10T12:35:33Z",
+			"created_by": {
+				"name": "<USER_NAME>",
+				"image": "<USER_IMAGE_URL>"
+			},
+			"init_source": "parent-data"
+		}
+	],
+	"annotations": {
+		"br-long-feather-adpbgzlx": {
+			"object": {
+				"type": "console/branch",
+				"id": "br-long-feather-adpbgzlx"
+			},
+			"value": {
+				"environment": "production"
+			},
+			"created_at": "2025-09-10T12:14:58Z",
+			"updated_at": "2025-09-10T12:14:58Z"
+		}
+	},
+	"pagination": {
+		"sort_by": "created_at",
+		"sort_order": "ASC"
+	}
 }
 ```
 
@@ -280,44 +280,44 @@ Example Response:
 
 ```json
 {
-  "branch": {
-    "id": "br-super-wildflower-adniii9u",
-    "project_id": "hidden-river-50598307",
-    "parent_id": "br-long-feather-adpbgzlx",
-    "parent_lsn": "0/1A33BC8",
-    "parent_timestamp": "2025-09-10T12:15:03Z",
-    "name": "development",
-    "current_state": "ready",
-    "state_changed_at": "2025-09-10T12:15:04Z",
-    "logical_size": 30842880,
-    "creation_source": "console",
-    "primary": false,
-    "default": false,
-    "protected": false,
-    "cpu_used_sec": 78,
-    "compute_time_seconds": 78,
-    "active_time_seconds": 312,
-    "written_data_bytes": 310120,
-    "data_transfer_bytes": 0,
-    "created_at": "2025-09-10T12:15:04Z",
-    "updated_at": "2025-09-10T12:35:33Z",
-    "created_by": {
-      "name": "<USER_NAME>",
-      "image": "<USER_IMAGE_URL>"
-    },
-    "init_source": "parent-data"
-  },
-  "annotation": {
-    "object": {
-      "type": "console/branch",
-      "id": "br-super-wildflower-adniii9u"
-    },
-    "value": {
-      "environment": "development"
-    },
-    "created_at": "2025-09-10T12:15:04Z",
-    "updated_at": "2025-09-10T12:15:04Z"
-  }
+	"branch": {
+		"id": "br-super-wildflower-adniii9u",
+		"project_id": "hidden-river-50598307",
+		"parent_id": "br-long-feather-adpbgzlx",
+		"parent_lsn": "0/1A33BC8",
+		"parent_timestamp": "2025-09-10T12:15:03Z",
+		"name": "development",
+		"current_state": "ready",
+		"state_changed_at": "2025-09-10T12:15:04Z",
+		"logical_size": 30842880,
+		"creation_source": "console",
+		"primary": false,
+		"default": false,
+		"protected": false,
+		"cpu_used_sec": 78,
+		"compute_time_seconds": 78,
+		"active_time_seconds": 312,
+		"written_data_bytes": 310120,
+		"data_transfer_bytes": 0,
+		"created_at": "2025-09-10T12:15:04Z",
+		"updated_at": "2025-09-10T12:35:33Z",
+		"created_by": {
+			"name": "<USER_NAME>",
+			"image": "<USER_IMAGE_URL>"
+		},
+		"init_source": "parent-data"
+	},
+	"annotation": {
+		"object": {
+			"type": "console/branch",
+			"id": "br-super-wildflower-adniii9u"
+		},
+		"value": {
+			"environment": "development"
+		},
+		"created_at": "2025-09-10T12:15:04Z",
+		"updated_at": "2025-09-10T12:15:04Z"
+	}
 }
 ```
 
@@ -353,34 +353,34 @@ Example response:
 
 ```json
 {
-  "branch": {
-    "id": "br-damp-glitter-adqd4hk5",
-    "project_id": "hidden-river-50598307",
-    "parent_id": "br-super-wildflower-adniii9u",
-    "parent_lsn": "0/1A7F730",
-    "parent_timestamp": "2025-09-10T12:15:05Z",
-    "name": "updated-branch-name",
-    "current_state": "ready",
-    "state_changed_at": "2025-09-10T16:45:52Z",
-    "logical_size": 30842880,
-    "creation_source": "console",
-    "primary": false,
-    "default": false,
-    "protected": false,
-    "cpu_used_sec": 68,
-    "compute_time_seconds": 68,
-    "active_time_seconds": 268,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2025-09-10T16:45:52Z",
-    "updated_at": "2025-09-10T16:55:30Z",
-    "created_by": {
-      "name": "<USER_NAME>",
-      "image": "<USER_IMAGE_URL>"
-    },
-    "init_source": "parent-data"
-  },
-  "operations": []
+	"branch": {
+		"id": "br-damp-glitter-adqd4hk5",
+		"project_id": "hidden-river-50598307",
+		"parent_id": "br-super-wildflower-adniii9u",
+		"parent_lsn": "0/1A7F730",
+		"parent_timestamp": "2025-09-10T12:15:05Z",
+		"name": "updated-branch-name",
+		"current_state": "ready",
+		"state_changed_at": "2025-09-10T16:45:52Z",
+		"logical_size": 30842880,
+		"creation_source": "console",
+		"primary": false,
+		"default": false,
+		"protected": false,
+		"cpu_used_sec": 68,
+		"compute_time_seconds": 68,
+		"active_time_seconds": 268,
+		"written_data_bytes": 0,
+		"data_transfer_bytes": 0,
+		"created_at": "2025-09-10T16:45:52Z",
+		"updated_at": "2025-09-10T16:55:30Z",
+		"created_by": {
+			"name": "<USER_NAME>",
+			"image": "<USER_IMAGE_URL>"
+		},
+		"init_source": "parent-data"
+	},
+	"operations": []
 }
 ```
 
