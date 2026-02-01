@@ -15,3 +15,60 @@
 点此[阅读文档](./src/docs/deploy/index.md)。
 
 ## package.json 命令
+
+### 1. 开发命令
+
+|       命令       |               说明                |
+| :--------------: | :-------------------------------: |
+|    `pnpm dev`    | 启动开发服务器（通过 turbo 调度） |
+| `pnpm vite:dev`  |   直接使用 vite 启动开发服务器    |
+| `pnpm nitro:dev` |       启动 Nitro 开发服务器       |
+| `pnpm docs:dev`  |   启动 VitePress 文档开发服务器   |
+
+### 2. 构建命令
+
+|         命令         |               说明                |
+| :------------------: | :-------------------------------: |
+|     `pnpm build`     | 构建生产环境（等同于 build:prod） |
+|  `pnpm build:prod`   |         构建生产环境版本          |
+| `pnpm build:staging` |        构建预发布环境版本         |
+| `pnpm build:github`  |    构建 GitHub Pages 部署版本     |
+|  `pnpm docs:build`   |        构建 VitePress 文档        |
+
+### 3. 预览和测试命令
+
+|         命令         |              说明              |
+| :------------------: | :----------------------------: |
+|    `pnpm preview`    |          预览构建产物          |
+| `pnpm preview:build` |       构建后预览构建产物       |
+|     `pnpm test`      | 启动 Vitest 测试（带 UI 界面） |
+
+### 4. 代码质量命令
+
+|         命令         |                说明                |
+| :------------------: | :--------------------------------: |
+|     `pnpm lint`      |      运行 ESLint 和 Prettier       |
+|  `pnpm lint:eslint`  |       运行 ESLint 检查并修复       |
+| `pnpm lint:prettier` |      运行 Prettier 格式化代码      |
+|    `pnpm format`     | 格式化代码（等同于 lint:prettier） |
+|   `pnpm typecheck`   |      运行 TypeScript 类型检查      |
+
+### 5. Drizzle ORM 数据库命令
+
+|        命令        |                      说明                      |
+| :----------------: | :--------------------------------------------: |
+| `pnpm db:generate` | 生成数据库迁移文件（根据 schema 变更生成 SQL） |
+| `pnpm db:migrate`  |         执行数据库迁移（应用迁移文件）         |
+|   `pnpm db:push`   |  推送 schema 变更到数据库（开发环境快速同步）  |
+|  `pnpm db:studio`  |  启动 Drizzle Studio（可视化数据库管理界面）   |
+|   `pnpm db:drop`   |            删除迁移文件（谨慎使用）            |
+|   `pnpm db:seed`   |              填充种子数据到数据库              |
+
+### 6. 其他命令
+
+|         命令         |             说明             |
+| :------------------: | :--------------------------: |
+| `pnpm nitro:prepare` |  准备 Nitro 运行时类型生成   |
+|   `pnpm rm:types`    | 删除生成的类型文件（清理用） |
+|  `pnpm clean:cache`  |    清理缓存并重新安装依赖    |
+|     `pnpm svgo`      |        优化 SVG 文件         |
