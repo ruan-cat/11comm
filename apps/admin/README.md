@@ -13,3 +13,5 @@
 ## 项目部署
 
 点此[阅读文档](./src/docs/deploy/index.md)。
+
+## package.json 命令
