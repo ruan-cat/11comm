@@ -38,7 +38,6 @@ const words = [
 	"eslint",
 	"prettier",
 	"sass",
-	"stylelint",
 	"tailwindcss",
 	"typescript",
 	"vite",

@@ -37,7 +37,7 @@
 ### 3.3 测试策略
 
 - 单元/UI：`pnpm test` 或 `pnpm -F @01s-11comm/admin test`
-- Lint：`pnpm -F @01s-11comm/admin lint`（或 `lint:eslint` / `lint:prettier` / `lint:stylelint`）
+- Lint：`pnpm -F @01s-11comm/admin lint`（或 `lint:eslint` / `lint:prettier`）
 - 类型检查：**`pnpm typecheck`**（提交前必跑，对整个项目进行类型检查）
   - 管理应用：`pnpm -F @01s-11comm/admin typecheck`
   - 类型库：`pnpm -F @01s-11comm/type typecheck`

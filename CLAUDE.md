@@ -560,7 +560,6 @@ pnpm -F @01s-11comm/admin lint
 # 单独的检查命令
 pnpm -F @01s-11comm/admin lint:eslint
 pnpm -F @01s-11comm/admin lint:prettier
-pnpm -F @01s-11comm/admin lint:stylelint
 
 # 格式化代码
 pnpm format
