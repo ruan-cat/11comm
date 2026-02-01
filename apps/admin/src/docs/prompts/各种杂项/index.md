@@ -271,3 +271,7 @@ overrides:
 
 1. 对一个非 vite 的 node 项目，初始化 nitro 示例代码以及 nitro 配置。新建纯后端的 nitro 接口项目。
 2. 对一个 vite 项目，初始化 nitro 接口和配置，以及 vite 插件。赋予 vite 项目全栈能力。
+
+## 022 删除 stylelint
+
+检查整个项目关于 `lint:stylelint` 字符串的内容，全部删掉。不提供这个东西。本项目不使用任何形式的 stylelint 。
