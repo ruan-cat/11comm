@@ -1,7 +1,9 @@
 import { config } from "@dotenvx/dotenvx";
 import { defineConfig } from "drizzle-kit";
+import { getDatabaseUrl } from "./server/utils/vercel-env";
 
 config({ path: ".env" });
+config({ path: ".env.vercel.local" });
 
 /**
  * Drizzle Kit 配置文件
@@ -17,6 +19,6 @@ export default defineConfig({
 	out: "./drizzle",
 	dialect: "postgresql",
 	dbCredentials: {
-		url: process.env.DATABASE_URL!,
+		url: getDatabaseUrl(),
 	},
 });

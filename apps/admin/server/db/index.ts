@@ -1,6 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
+import { getDatabaseUrl } from "../utils/vercel-env";
 
 /**
  * 创建 Neon 数据库连接
@@ -8,7 +9,7 @@ import * as schema from "./schema";
  * 使用 @neondatabase/serverless 驱动连接 Neon PostgreSQL
  * 该驱动专为 Serverless 环境优化，支持 Edge Runtime
  */
-const sql = neon(process.env.DATABASE_URL!);
+const sql = neon(getDatabaseUrl());
 
 /**
  * Drizzle ORM 数据库实例

@@ -2,17 +2,22 @@
 
 本文档说明项目的环境变量配置体系及获取流程。
 
+::: tip 相关文档
+关于 Vercel Neon 环境变量前缀机制的详细说明，请参阅 [Vercel Neon 环境变量前缀机制](./vercel-neon-prefix.md)。
+:::
+
 ## 1. 环境变量文件概览
 
 项目中存在多个环境变量文件，各有不同用途：
 
-|           文件位置            |        作用        | 是否提交到 Git |               说明               |
-| :---------------------------: | :----------------: | :------------: | :------------------------------: |
-|         `.env.vercel`         |  Vercel 项目配置   |       是       | 存储 Vercel 项目名称、组织 ID 等 |
-|            `.env`             | 敏感凭证（根目录） |       否       |   存储 VERCEL_TOKEN 等敏感信息   |
-|       `apps/admin/.env`       |    数据库连接等    |       否       | 从 Vercel 拉取的 Neon 数据库凭证 |
-| `apps/admin/.env.development` |    开发环境配置    |       是       |         前端开发环境变量         |
-| `apps/admin/.env.production`  |    生产环境配置    |       是       |         前端生产环境变量         |
+|            文件位置            |          作用          | 是否提交到 Git |                    说明                    |
+| :----------------------------: | :--------------------: | :------------: | :----------------------------------------: |
+|         `.env.vercel`          |    Vercel 项目配置     |       是       |      存储 Vercel 项目名称、组织 ID 等      |
+|             `.env`             |   敏感凭证（根目录）   |       否       |        存储 VERCEL_TOKEN 等敏感信息        |
+|       `apps/admin/.env`        | 项目配置与前缀环境变量 |       是       |       存储 VERCEL_ENV_PREFIX 等配置        |
+| `apps/admin/.env.vercel.local` |    Vercel Neon 凭证    |       否       | 从 Vercel 拉取的带前缀 Neon 数据库环境变量 |
+| `apps/admin/.env.development`  |      开发环境配置      |       是       |              前端开发环境变量              |
+|  `apps/admin/.env.production`  |      生产环境配置      |       是       |              前端生产环境变量              |
 
 ## 2. 环境变量获取流程
 
@@ -50,15 +55,23 @@ pnpm env:pull
 1. 读取根目录 `.env.vercel` 获取 `VERCEL_PROJECT_NAME`
 2. 读取根目录 `.env` 获取 `VERCEL_TOKEN`
 3. 执行 `vercel link` 命令链接到指定项目
-4. 执行 `vercel env pull` 拉取环境变量到 `apps/admin/.env`
+4. 执行 `vercel env pull` 拉取环境变量到 `apps/admin/.env.vercel.local`
+
+::: warning 注意
+拉取的环境变量存储在 `.env.vercel.local` 文件中（已被 .gitignore 忽略），不会覆盖项目的 `.env` 文件。
+:::
 
 ### 2.4. 执行结果
 
-成功执行后，`apps/admin/.env` 将包含从 Vercel 拉取的环境变量，主要包括：
+成功执行后，`apps/admin/.env.vercel.local` 将包含从 Vercel 拉取的带前缀环境变量，例如：
 
-- `DATABASE_URL` - Neon 数据库连接字符串（带连接池）
-- `DATABASE_URL_UNPOOLED` - Neon 数据库直连字符串
-- 其他 Neon 数据库相关的 `POSTGRES_*` 变量
+```bash
+comm_admin_11__DATABASE_URL="postgresql://..."
+comm_admin_11__DATABASE_URL_UNPOOLED="postgresql://..."
+comm_admin_11__PGDATABASE="neondb"
+```
+
+关于如何在代码中使用这些带前缀的环境变量，请参阅 [Vercel Neon 环境变量前缀机制](./vercel-neon-prefix.md)。
 
 ## 3. 环境变量文件详解
 

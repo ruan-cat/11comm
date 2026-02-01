@@ -6,6 +6,9 @@
  * 1. 确保根目录 .env 文件中包含 VERCEL_TOKEN
  * 2. 确保根目录 .env.vercel 文件中包含 VERCEL_PROJECT_NAME
  * 3. 运行 pnpm env:pull
+ *
+ * 注意：拉取的环境变量将存储在 .env.vercel.local 文件中，
+ * 该文件已被 .gitignore 忽略，不会覆盖项目的 .env 文件
  */
 
 import { execSync } from "node:child_process";
@@ -57,7 +60,7 @@ function linkVercelProject() {
 
 /** 拉取环境变量 */
 function pullEnvVariables() {
-	const envFilePath = resolve(adminDir, ".env");
+	const envFilePath = resolve(adminDir, ".env.vercel.local");
 
 	consola.info("开始拉取 Vercel 环境变量...");
 

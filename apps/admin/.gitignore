@@ -28,6 +28,11 @@ tsconfig.tsbuildinfo
 !.env
 !.env.staging
 
+# 从 Vercel 拉取的 Neon 数据库环境变量文件
+# 该文件由 pnpm env:pull 命令自动生成，包含带前缀的敏感连接信息
+# 不应提交到版本控制，每位开发者需要单独拉取
+.env.vercel.local
+
 # 忽略自动复制过来的文件
 src/CHANGELOG.md
 src/index.md
