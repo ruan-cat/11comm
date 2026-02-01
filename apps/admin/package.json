@@ -38,7 +38,7 @@
 		"db:studio": "drizzle-kit studio",
 		"db:drop": "drizzle-kit drop",
 		"db:seed": "npx tsx server/db/seed.ts",
-		"env:pull": "vercel env pull .env",
+		"env:pull": "npx tsx ./scripts/env-pull.ts",
 		"rm:types": "tsx ./scripts/del-types.ts",
 		"format": "pnpm lint:prettier",
 		"build:github": "pnpm vite:build:prod:github"

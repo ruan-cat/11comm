@@ -1,5 +1,12 @@
+import { config } from "@dotenvx/dotenvx";
 import { defineConfig } from "@ruan-cat/vercel-deploy-tool";
 import { getDomains } from "@ruan-cat/domains";
+
+/** 加载 Vercel 项目配置环境变量 */
+config({ path: ".env.vercel" });
+
+/** 加载包含 VERCEL_TOKEN 的敏感环境变量 */
+config({ path: ".env" });
 
 const VITE_IS_REVERSE_PROXY = process.env.VITE_IS_REVERSE_PROXY;
 function IS_REVERSE_PROXY() {
@@ -20,10 +27,10 @@ const targetCWD = isNeedVercelBuild ? "./apps/admin/dist" : "./apps/admin";
 // 这里使用的是阮喵喵的vercel账号
 export default defineConfig({
 	// 01星球专门的vercel部署项目
-	vercelProjectName: "01s-vercel",
-	vercelOrgId: "team_cUeGw4TtOCLp0bbuH8kA7BYH",
-	vercelProjectId: "prj_0dbaKzhoqP9C3A7C4QDkzjSprN2L",
-	vercelToken: "",
+	vercelProjectName: process.env.VERCEL_PROJECT_NAME!,
+	vercelOrgId: process.env.VERCEL_ORG_ID!,
+	vercelProjectId: process.env.VERCEL_PROJECT_ID!,
+	vercelToken: process.env.VERCEL_TOKEN || "",
 
 	// 暂不需要反向代理
 	// vercelJsonPath: "./vercel.reverse-proxy.json",
