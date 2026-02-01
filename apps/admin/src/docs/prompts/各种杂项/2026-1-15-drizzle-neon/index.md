@@ -33,4 +33,10 @@
 9. 最后，在 `apps\admin\src\docs` 目录内，新建合适文件夹，新建合适命名的 markdown 文档，说明清楚这一整套环境变量数据获取的流程，确保其他人能够快速上手理解这一套环境变量获取流程。
    - 你编写的文档是满足 vitepress 文档格式的 markdown 文档。正确的使用 index.md 命名的页面文件。
 
+### 01 更改 link 的过程，修改脚本
+
+我不认可你在 `apps\admin\scripts\env-pull.ts` 内实现 link 的做法。我希望你通过运行 `vercel link` 命令的方式完成项目链接，并不需要你手动的去新建文件。这不是你的职责。
+
+link 时，请注意使用 token 和 project 项目名称。
+
 ## 002 设计专用的前缀变量，重设 admin 项目使用
