@@ -32,8 +32,6 @@
 		"lint:prettier": "prettier --config=../../prettier.config.mjs --write \"src/**/*.{js,ts,json,tsx,css,scss,vue,html,md}\"",
 		"lint": "pnpm lint:eslint && pnpm lint:prettier",
 		"preinstall": "npx only-allow pnpm",
-		"nitro:prepare": "nitro prepare",
-		"nitro:dev": "nitro dev",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
