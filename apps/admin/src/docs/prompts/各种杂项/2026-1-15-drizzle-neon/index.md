@@ -39,4 +39,23 @@
 
 link 时，请注意使用 token 和 project 项目名称。
 
-## 002 设计专用的前缀变量，重设 admin 项目使用
+## 002 <!-- TODO: --> 设计专用的前缀变量，重设 admin 项目使用
+
+1. apps\admin\package.json 的 `env:pull` ，即 `apps\admin\scripts\env-pull.ts` 的 `const envFilePath = resolve(adminDir, ".env");` ，改成存储在特定专用的 vercel 命名风格的环境变量文件名称。命名为 `.env.vercel.local` 。我不希望这个 `apps\admin\.env` 子包的文件被覆盖掉。
+2. 在 `apps\admin\.gitignore` 内，作为子包的忽略文件，确保你忽略掉特定拉取的环境变量文件。其他的环境变量文件正常保留，在子包内，确保 `.env.vercel.local` 这个从 vercel 内获取的 neon 环境变量文件，会被忽略掉。
+3. 确保 `apps\admin\.gitignore` 内补全了合适的说明注释。
+4. 注意阅读以下环境变量例子：
+
+```bash
+comm_admin_11__DATABASE_URL="xxx"
+comm_admin_11__DATABASE_URL_UNPOOLED="xxx"
+comm_admin_11__NEON_AUTH_BASE_URL="xxx"
+comm_admin_11__NEON_PROJECT_ID="xxx"
+```
+
+5. 现在，你从 vercel 获取的环境变量，都会带有 `comm_admin_11_` 前缀。请你在 `apps\admin\.env` admin 项目的项目级别环境变量内，设置一个环境变量，专门存储这个写死的前缀字符串。并且在该`前缀环境变量`增加注释，重点说明该变量在 `https://vercel.com/ruancat-projects/~/integrations/neon/icfg_aFCpQJZiS9sXcBJfKSgHG3ZR/resources/storage/store_1hsWrjTtdSHtwdJQ/projects` url 内设置并维护。
+6. 在 admin 项目内，编写一个通用工具函数，从 `apps\admin\.env` 获取环境变量，先获取 `前缀环境变量` 的 `comm_admin_11_` 前缀，再获取来自 `.env.vercel.local` 环境变量的 neon 数据库字段。注意实现字段名的拼接，实现从 `.env.vercel.local` 内获取正确命名的环境变量。
+7. 模仿 `tests\vercel-env.test.ts` 的内容，也在 admin 项目内，编写一个测试用例，测试获取环境变量。允许测试的环境变量为 `comm_admin_11__PGDATABASE="neondb"` ，测试是否能读取字符串 `neondb` 即可。
+8. 确保你编写的 admin 专用的 `tests\vercel-env.test.ts` 测试用例，能够被 `apps\admin\package.json` 的 vitest 识别到。能够被 test 命令使用并测试到。
+9. 在本项目全局查询 `DATABASE_URL` 字符串。admin 项目更改对 DATABASE_URL 环境变量的使用。并且去更改其他关于 neon 环境变量的使用。环境变量的命名规则改了，增加了前缀。请改成使用你编写的环境变量获取函数来完成。
+10. 最后，在 `apps\admin\src\docs\env-setup` 目录内，专门新建一个文档，说明清楚 admin 项目时如何获取来自 vercel 环境变量的，有哪些细节。目的是为了让其他人能够快速看懂，快速上手这部分的逻辑。
