@@ -58,9 +58,6 @@ vercel.null.def.json
 # 忽略vite的中间构建文件 防止其他人误提交此文件
 vite.config.ts.*.mjs
 
-# 忽略掉自定义的环境变量
-.env.*
-
 # 环境变量文件 提交
 !.env.development
 !.env.production
@@ -68,6 +65,10 @@ vite.config.ts.*.mjs
 # 单独的环境变量文件 要忽略 因为存储了敏感信息
 # !.env
 .env
+# 忽略掉自定义的环境变量
+.env.*
+# 忽略掉来自vercel获取的数据库环境变量文件
+.env*.local
 
 .vercel
 
@@ -86,3 +87,4 @@ vite.config.ts.*.mjs
 
 # 忽略wrangler部署配置文件
 .wrangler
+
