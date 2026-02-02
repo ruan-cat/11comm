@@ -39,7 +39,7 @@
 
 link 时，请注意使用 token 和 project 项目名称。
 
-## 002 设计专用的前缀变量，重设 admin 项目使用
+## 003 设计专用的前缀变量，重设 admin 项目使用
 
 1. apps\admin\package.json 的 `env:pull` ，即 `apps\admin\scripts\env-pull.ts` 的 `const envFilePath = resolve(adminDir, ".env");` ，改成存储在特定专用的 vercel 命名风格的环境变量文件名称。命名为 `.env.vercel.local` 。我不希望这个 `apps\admin\.env` 子包的文件被覆盖掉。
 2. 在 `apps\admin\.gitignore` 内，作为子包的忽略文件，确保你忽略掉特定拉取的环境变量文件。其他的环境变量文件正常保留，在子包内，确保 `.env.vercel.local` 这个从 vercel 内获取的 neon 环境变量文件，会被忽略掉。
@@ -59,3 +59,16 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 8. 确保你编写的 admin 专用的 `tests\vercel-env.test.ts` 测试用例，能够被 `apps\admin\package.json` 的 vitest 识别到。能够被 test 命令使用并测试到。
 9. 在本项目全局查询 `DATABASE_URL` 字符串。admin 项目更改对 DATABASE_URL 环境变量的使用。并且去更改其他关于 neon 环境变量的使用。环境变量的命名规则改了，增加了前缀。请改成使用你编写的环境变量获取函数来完成。
 10. 最后，在 `apps\admin\src\docs\env-setup` 目录内，专门新建一个文档，说明清楚 admin 项目时如何获取来自 vercel 环境变量的，有哪些细节。目的是为了让其他人能够快速看懂，快速上手这部分的逻辑。
+
+## 004 <!-- TODO: 长任务 未完成 --> 初始化 neon 数据库的数据库表字段定义
+
+1. 目前，`apps\admin\server\db\schema.ts` 是空的。因此 admin 项目的 package.json 的 `db:generate` 命令无法使用。因为没有具体的表设置，所以无法生成数据库迁移 sql。
+2. 我需要你全面的阅读全部类型项目内出现的文件。了解清楚涉及到的业务类型有哪些。
+3. 你需要全面的阅读 `apps\admin\server\api` 内出现的 nitro 接口，了解清楚涉及到那些数据内容。
+4. 根据你阅读的内容，在 `apps\admin\server\db` 目录内，设计，并新建数据库表。做好扁平化的文件拆分。避免出现单个过长的 `apps\admin\server\db\schema.ts` 文件。
+5. 这是一个上下文繁重的任务，文件非常多，但是迁移改造难度简单的任务。请你适当的使用 MCP 或者是 skills 技能，使用和 gemini 相关的工具或技能，辅助你完成大量上下文的阅读任务。
+6. 这是一个多文件任务，请你设计多个并行运行的子代理，批量的，高效率完成代码修改任务。
+
+---
+
+去找合适 gemini 相关的 skills，实现大上下文的阅读。
