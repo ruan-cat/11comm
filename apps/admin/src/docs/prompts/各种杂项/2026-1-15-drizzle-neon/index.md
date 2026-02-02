@@ -39,7 +39,7 @@
 
 link 时，请注意使用 token 和 project 项目名称。
 
-## 002 <!-- TODO: --> 设计专用的前缀变量，重设 admin 项目使用
+## 002 设计专用的前缀变量，重设 admin 项目使用
 
 1. apps\admin\package.json 的 `env:pull` ，即 `apps\admin\scripts\env-pull.ts` 的 `const envFilePath = resolve(adminDir, ".env");` ，改成存储在特定专用的 vercel 命名风格的环境变量文件名称。命名为 `.env.vercel.local` 。我不希望这个 `apps\admin\.env` 子包的文件被覆盖掉。
 2. 在 `apps\admin\.gitignore` 内，作为子包的忽略文件，确保你忽略掉特定拉取的环境变量文件。其他的环境变量文件正常保留，在子包内，确保 `.env.vercel.local` 这个从 vercel 内获取的 neon 环境变量文件，会被忽略掉。
