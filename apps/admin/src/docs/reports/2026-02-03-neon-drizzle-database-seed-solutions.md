@@ -310,8 +310,50 @@ export function transformMockData<T, R>(data: T[], mapping: Record<keyof R, keyo
    - 一次性初始化 → 方案 C 或 D 更合适
    - 频繁重置数据库 → 方案 A 或 B 更灵活
 
-## 7. 参考资源
+## 7. 最终决策
 
+**选定方案：方案 C - SQL 导入方案（使用 Drizzle toSQL）**
+
+### 7.1. 决策理由
+
+1. **一次性生成，永久复用**：SQL 文件生成后可版本控制，不需要频繁维护
+2. **利用 Drizzle 类型安全**：使用 `.toSQL()` 方法确保生成的 SQL 与 schema 一致
+3. **复用现有 mock 数据**：保持数据的"真实感"和业务语义
+4. **便于代码审查**：生成的 SQL 文件可以直接审查和验证
+
+### 7.2. 技术实现要点
+
+```typescript
+// 核心技术：使用 Drizzle ORM 的 .toSQL() 方法
+import { db } from "../index";
+import { cmCommunities } from "../schemas/community";
+
+const insertQuery = db.insert(cmCommunities).values([...mockData]);
+const { sql, params } = insertQuery.toSQL();
+
+// 将参数化 SQL 转换为完整 SQL
+function toFullSql(sql: string, params: unknown[]): string {
+	let result = sql;
+	params.forEach((param, index) => {
+		const value = typeof param === "string" ? `'${escapeSql(param)}'` : param === null ? "NULL" : String(param);
+		result = result.replace(`$${index + 1}`, value);
+	});
+	return result;
+}
+```
+
+### 7.3. 已更新的 OpenSpec 文档
+
+- `proposal.md` - 更新为方案 C 的描述
+- `design.md` - 完整的 SQL 生成方案设计
+- `specs/sql-seed-generation/spec.md` - SQL 生成规范
+- `specs/mock-data-transformation/spec.md` - 数据转换规范
+- `specs/seed-sql-module-pattern/spec.md` - 模块编写模式规范
+- `tasks.md` - 更新为 SQL 生成相关的任务列表（共 48 个任务）
+
+## 8. 参考资源
+
+- [Drizzle ORM toSQL 方法文档](https://orm.drizzle.team/docs/goodies#print-sql-query-with-tosql-method)
 - [Drizzle Seed 官方文档](https://orm.drizzle.team/docs/seed-overview)
 - [Neon Branching 文档](https://neon.tech/docs/introduction/branching)
 - [Neon + Drizzle 迁移指南](https://neon.com/guides/drizzle-migrations)
