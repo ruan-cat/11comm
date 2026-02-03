@@ -78,3 +78,11 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 我准备实现有意义的接口了。实现真正的 nitro + drizzle 的后端接口。帮我仔细分析以下，历史的 `openspec\specs` 规范内，是不是会有和编写实际后端接口相悖的内容？
 
 如果有，请你编写一份完整详细的报告，并告诉我如何实现旧规范前提下的迁移改造，实现真正的 nitro + drizzle 的后端接口。
+
+### 01
+
+1. 请你把对 openspec\specs\nitro-api\spec.md 的修改，迁移到 `.claude\skills\use-nitro` 内，迁移 openspec\specs\nitro-api\spec.md 的能力。让现在的 `.claude\skills\use-nitro` 学会如何用真实的 neon + drizzle 实现真正的接口请求。而不是使用 mock 假数据。
+2. 让 `use-nitro` 项目级别技能，参考 `apps\admin\src\docs\reports\2026-02-03-nitro-drizzle-migration-report.md` 报告，学会具体的 mock 假数据迁移成真数据的实施方案。未来实现 mock 接口代码改写成 neon 真实数据时，其更改操作规范就是由 `use-nitro` 来提供的。
+3. 回退 `openspec\specs\nitro-api` 的写法。在你确保已经将相关的核心技能，核心的写法迁移整合到 `use-nitro` 项目级别技能之后，再开始回退`openspec\specs\nitro-api` 目录的规范写法。
+4. 文件夹目录改名，改成 `openspec\specs\nitro-api-with-mock`。
+5. 对 `openspec\specs\nitro-api-with-mock\spec.md` 这个文件增加说明注释，说明这是基于 nitro + 本地 mock 数据的编码规范。在此处仅仅作为归档记录，不作为有效规范。
