@@ -1,6 +1,6 @@
 # Nitro v3 项目初始化模板
 
-本文档提供项目初始化所需的完整代码模板。
+本文档提供项目初始化所需的完整代码模板，涵盖 **Mock 数据开发模式** 和 **Neon + Drizzle 真实数据库模式**。
 
 ## 1. nitro.config.ts 基础模板
 
@@ -65,7 +65,7 @@ export default defineConfig({
 });
 ```
 
-## 3. filter-data.ts 工具函数模板
+## 3. filter-data.ts 工具函数模板 (仅 Mock 模式)
 
 ```typescript
 /**
@@ -118,6 +118,82 @@ export function filterDataByQuery<TItem, TFilters extends Partial<TItem> = Parti
 
 ## 4. 标准列表接口模板
 
+### 4.1 基于 Drizzle ORM 的列表接口 (Standard / Neon)
+
+**适用场景**：生产环境、真实数据库交互。
+
+```typescript
+/**
+ * @file {页面名称}列表接口
+ * @description {Page name} list API
+ * POST /api/{module}/{sub-module}/{page}/list
+ */
+
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO, PageDTO, YourListItem, YourQueryParams } from "@01s-11comm/type";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { db, yourSchemaTable } from "server/db";
+import { count, eq, and, like } from "drizzle-orm";
+
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<YourListItem>>> => {
+	// 1. 读取请求参数
+	const body = await readBody<YourQueryParams>(event);
+	const defaultParams: YourQueryParams = {
+		pageIndex: DEFAULT_PAGE_INDEX,
+		pageSize: DEFAULT_PAGE_SIZE,
+	};
+	const mergedParams = { ...defaultParams, ...body };
+	const { pageIndex, pageSize, name, status } = mergedParams;
+
+	// 2. 构建查询条件 (SQL)
+	const whereConditions = [];
+	if (name) whereConditions.push(like(yourSchemaTable.name, `%${name}%`));
+	if (status) whereConditions.push(eq(yourSchemaTable.status, status));
+
+	const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+	// 3. 执行查询 (分页 + 总数)
+	// 查询总数
+	const [totalResult] = await db.select({ count: count() }).from(yourSchemaTable).where(whereClause);
+	const total = totalResult?.count || 0;
+
+	// 查询数据
+	const records = await db
+		.select()
+		.from(yourSchemaTable)
+		.where(whereClause)
+		.limit(pageSize)
+		.offset((pageIndex - 1) * pageSize);
+
+	// 4. 数据转换 (Snake_case -> CamelCase)
+	// Drizzle Schema 通常会自动处理映射。如果需要额外转换，在此处处理。
+	const list: YourListItem[] = records.map((item) => ({
+		...item,
+		// 额外的转换逻辑
+	})) as unknown as YourListItem[];
+
+	// 5. 返回标准格式
+	const response: JsonVO<PageDTO<YourListItem>> = {
+		success: true,
+		code: 200,
+		message: "查询成功",
+		data: {
+			list,
+			total,
+			pageIndex,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		},
+	};
+
+	return response;
+});
+```
+
+### 4.2 基于 Mock 数据的列表接口 (Legacy / Prototyping)
+
+**适用场景**：原型开发、无数据库环境。
+
 ```typescript
 /**
  * @file {页面名称}列表接口
@@ -132,6 +208,7 @@ import { filterDataByQuery } from "server/utils/filter-data";
 import { mockYourData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<YourListItem>>> => {
+	// 1. 读取请求参数
 	const body = await readBody<YourQueryParams>(event);
 	const defaultParams: YourQueryParams = {
 		pageIndex: DEFAULT_PAGE_INDEX,
@@ -140,15 +217,15 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<YourListItem>
 	const mergedParams = { ...defaultParams, ...body };
 	const { pageIndex, pageSize, ...filters } = mergedParams;
 
-	/** 数据筛选 */
+	// 2. 数据筛选 (内存过滤)
 	const filteredData = filterDataByQuery(mockYourData, filters);
 
-	/** 分页处理 */
+	// 3. 分页处理 (内存切片)
 	const total = filteredData.length;
 	const startIndex = (pageIndex - 1) * pageSize;
 	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
 
-	/** 返回标准格式 */
+	// 4. 返回标准格式
 	const response: JsonVO<PageDTO<YourListItem>> = {
 		success: true,
 		code: 200,
