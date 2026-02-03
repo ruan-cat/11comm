@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change migrate-static-data-to-nitro-query. Update Purpose after archive.
+规范 Nitro API 接口的开发标准，支持从 Mock 数据向 Drizzle ORM 数据库查询的平滑迁移。
 
 ## Requirements
 
@@ -31,8 +31,8 @@ TBD - created by archiving change migrate-static-data-to-nitro-query. Update Pur
 import { defineHandler, readBody } from "nitro/h3";
 import type { JsonVO, PageDTO, ConfigCenterListItem, ConfigCenterQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockConfigCenterData } from "./mock-data";
+import { db, smSystemConfigs } from "server/db";
+import { count, eq, and, like } from "drizzle-orm";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterListItem>>> => {
 	// 1. 读取请求参数
@@ -42,24 +42,46 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 		pageSize: DEFAULT_PAGE_SIZE,
 	};
 	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	const { pageIndex, pageSize, configKey, configType, status } = mergedParams;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockConfigCenterData, filters);
+	// 2. 构建查询条件
+	const whereConditions = [];
+	if (configKey) whereConditions.push(like(smSystemConfigs.configKey, `%${configKey}%`));
+	if (configType) whereConditions.push(eq(smSystemConfigs.configType, configType));
+	if (status) whereConditions.push(eq(smSystemConfigs.status, status as any));
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+	const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
+	// 3. 执行查询 (分页 + 总数)
+	// 查询总数
+	const [totalResult] = await db.select({ count: count() }).from(smSystemConfigs).where(whereClause);
+	const total = totalResult?.count || 0;
+
+	// 查询数据
+	const records = await db
+		.select()
+		.from(smSystemConfigs)
+		.where(whereClause)
+		.limit(pageSize)
+		.offset((pageIndex - 1) * pageSize);
+
+	// 4. 数据转换 (Snake_case -> CamelCase)
+	// 注意：由于 Drizzle Schema 中定义了 name 属性 (e.g. configKey: varchar("config_key")),
+	// Drizzle 查询结果会自动映射为 camelCase (configKey)，通常不需要手动 map。
+	// 如果 schema 未定义 camelCase 映射，则需要手动转换。
+	const list: ConfigCenterListItem[] = records.map((item) => ({
+		...item,
+		// 如果需要额外转换或组合字段，在此处处理
+	})) as unknown as ConfigCenterListItem[];
+
+	// 5. 返回标准格式
 	/** 返回标准格式 */
 	const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
 		success: true,
 		code: 200,
 		message: "查询成功",
 		data: {
-			list: pageData,
+			list,
 			total,
 			pageIndex,
 			pageSize,
@@ -76,26 +98,6 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ConfigCenterL
 - **AND** 创建 `response` 变量并添加完整类型约束
 - **AND** 有 JSDoc 注释说明接口路径
 
-#### Scenario: 错误的写法对比
-
-**❌ 错误示例**:
-
-```typescript
-// ❌ 错误1: 从 h3 导入而不是 nitro/h3
-import { defineEventHandler, readBody } from "h3";
-
-// ❌ 错误2: 使用 defineEventHandler (Nitro v2 写法)
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentReviewListItem>>> => {
-	// ❌ 错误3: 直接返回对象字面量,没有类型约束变量
-	return {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: { ... },
-	};
-});
-```
-
 ---
 
 ### Requirement: 标准参数处理模式 [CRITICAL]
@@ -105,7 +107,7 @@ export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<PaymentR
 - 使用 `readBody<QueryParams>(event)` 读取请求体
 - 创建 `defaultParams` 对象并使用 DEFAULT 常量
 - 使用对象展开合并参数
-- 解构出 `pageIndex`、`pageSize` 和 `filters`
+- 解构出 `pageIndex`、`pageSize` 和具体查询字段
 
 #### Scenario: 参数处理标准流程
 
@@ -125,162 +127,104 @@ const { pageIndex, pageSize, ...filters } = mergedParams;
 
 - **AND** 不允许使用 `const { pageIndex = 1, pageSize = 10 } = body` 这种写法
 - **AND** 必须使用 `DEFAULT_PAGE_INDEX` 和 `DEFAULT_PAGE_SIZE` 常量
-- **AND** `filters` 包含除分页参数外的所有搜索字段
-
-#### Scenario: 默认参数处理
-
-- **GIVEN** 客户端发送请求,body 为 `{}`
-- **WHEN** 接口解析参数
-- **THEN** pageIndex 默认为 1
-- **AND** pageSize 默认为 10
-- **AND** 其他筛选字段为 undefined
 
 ---
 
-### Requirement: 使用通用筛选函数 filterDataByQuery [CRITICAL]
+### Requirement: [DEPRECATED] 使用通用筛选函数 filterDataByQuery
 
-所有 Nitro 接口 MUST 使用 `filterDataByQuery` 工具函数进行数据筛选:
+此规范已废弃，但在完全迁移之前，旧接口 MUST 继续维持原有实现，或者 MUST 迁移到 Drizzle ORM。
 
-- 导入 `filterDataByQuery` 从 `server/utils/filter-data`
-- 传入数据数组和 filters 对象
-- 工具函数自动处理字符串模糊匹配和枚举精确匹配
-- 工具函数自动忽略空值、null 和 undefined
+**Note:** 所有旧的 Nitro 接口曾要求使用 `filterDataByQuery` 工具函数进行数据筛选。
+迁移时，应移除此函数调用，替换为数据库查询逻辑。
 
-#### Scenario: 使用通用筛选函数
+#### Scenario: 废弃说明
 
-- **GIVEN** 需要筛选数据
-- **WHEN** 调用 filterDataByQuery
+- **GIVEN** 准备开发新接口
+- **WHEN** 查阅文档
+- **THEN** 应当忽略此规范，参考 Drizzle ORM 查询规范
+
+---
+
+### Requirement: 使用 Drizzle ORM 查询数据 [CRITICAL]
+
+所有新开发的 Nitro 接口 MUST 使用 Drizzle ORM 进行数据库查询：
+
+- 必须从 `server/db` 导入 `db` 实例
+- 必须从 `server/db` 导入相关的 schema 定义 (e.g., `smSystemConfigs`)
+- 必须使用 `drizzle-orm` 提供的 SQL 运算符 (e.g., `eq`, `like`, `and`, `count`)
+- 必须处理异步数据库操作 (`await`)
+
+#### Scenario: 数据库查询实现
+
+- **GIVEN** 需要从数据库查询数据
+- **WHEN** 编写查询逻辑
 - **THEN** 代码为:
 
 ```typescript
-import { filterDataByQuery } from "server/utils/filter-data";
+import { db, smSystemConfigs } from "server/db";
+import { count, eq, and, like } from "drizzle-orm";
 
-const filteredData = filterDataByQuery(mockConfigCenterData, filters);
+// 构建条件
+const whereConditions = [];
+if (configKey) whereConditions.push(like(smSystemConfigs.configKey, `%${configKey}%`));
+const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+// 查询总数
+const [totalResult] = await db.select({ count: count() }).from(smSystemConfigs).where(whereClause);
+const total = totalResult?.count || 0;
+
+// 查询列表
+const records = await db
+	.select()
+	.from(smSystemConfigs)
+	.where(whereClause)
+	.limit(pageSize)
+	.offset((pageIndex - 1) * pageSize);
 ```
 
-- **AND** 自动处理所有筛选字段,无需为每个字段编写 if 条件
-- **AND** 字符串字段自动模糊匹配
-- **AND** 枚举字段自动精确匹配
-- **AND** 自动忽略空值、null 和 undefined
-
-#### Scenario: 禁止手动编写 filter 逻辑
-
-- **GIVEN** 需要筛选数据
-- **WHEN** 编写筛选代码
-- **THEN** 不允许使用以下写法:
-
-```typescript
-// ❌ 禁止
-let filteredData = [...mockConfigCenterData];
-if (configName) {
-	filteredData = filteredData.filter((item) => item.configName.includes(configName));
-}
-if (configType) {
-	filteredData = filteredData.filter((item) => item.configType === configType);
-}
-```
-
-- **AND** 必须使用 `filterDataByQuery` 工具函数
+- **AND** 使用 `limit` 和 `offset` 实现分页
+- **AND** 分开查询总数和列表数据
 
 ---
 
-### Requirement: 完整的返回值类型约束 [CRITICAL]
+### Requirement: [DEPRECATED] Mock 数据文件规范
 
-所有 Nitro 接口 MUST 创建带完整类型约束的 `response` 变量:
+此规范已废弃，但在完全迁移之前，遗留接口 MUST 继续使用 Mock 数据，直到迁移到数据库。
 
-- 创建 `response` 变量
-- 类型约束为 `JsonVO<PageDTO<{Page}ListItem>>`
-- 包含所有必需字段
-- 最后 return response
+**Note:** Mock 数据文件 (`mock-data.ts`) 仅用于开发阶段或尚未迁移到数据库的接口。
+在迁移过程中，应逐步删除 `mock-data.ts` 文件。
 
-#### Scenario: 正确的返回值写法
+#### Scenario: 废弃说明
 
-- **GIVEN** 接口准备返回数据
-- **WHEN** 编写返回逻辑
-- **THEN** 代码为:
-
-```typescript
-/** 返回标准格式 */
-const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
-	success: true,
-	code: 200,
-	message: "查询成功",
-	data: {
-		list: pageData,
-		total,
-		pageIndex,
-		pageSize,
-		totalPages: Math.ceil(total / pageSize),
-	},
-};
-
-return response;
-```
-
-- **AND** 必须添加 JSDoc 注释
-- **AND** 必须有完整类型约束
-- **AND** 必须包含 success、code、message、data 所有字段
-
-#### Scenario: 禁止直接返回对象字面量
-
-- **GIVEN** 接口准备返回数据
-- **WHEN** 编写返回逻辑
-- **THEN** 不允许使用以下写法:
-
-```typescript
-// ❌ 禁止
-return {
-	success: true,
-	code: 200,
-	message: "查询成功",
-	data: { ... },
-};
-```
-
-- **AND** 必须创建 response 变量
-- **AND** 必须添加类型约束
+- **GIVEN** 准备开发新接口
+- **WHEN** 查阅文档
+- **THEN** 应当忽略此规范，直接使用数据库
 
 ---
 
-### Requirement: 接口命名和路径规范 [IMPORTANT]
+### Requirement: 数据库查询标准模板 [CRITICAL]
 
-所有 Nitro 接口 MUST 满足以下约束:
+所有基于数据库查询的列表接口 MUST 遵循以下模式：
 
-- 全部使用 POST 方法(文件名 `*.post.ts`)
-- 接口路径与页面目录对应
-- 列表查询接口统一命名为 `list.post.ts`
-- 接口 URL 格式: `/api/{module}/{sub-module}/{page}/list`
+1.  **参数解构**：明确解构出所有查询参数。
+2.  **条件构建**：使用数组收集 `where` 条件，最后用 `and(...)` 组合。
+3.  **双重查询**：
+    - 一次查询 `count()` 获取总数。
+    - 一次查询 `select()` 获取分页数据。
+4.  **类型转换**：虽然 Drizzle 会自动处理 camelCase 映射，但仍需确保返回数据符合 `JsonVO<PageDTO<T>>` 的泛型约束。如果有必要，使用 `.map()` 进行转换。
 
-#### Scenario: 接口路径对应关系
+#### Scenario: 模糊查询与精确匹配
 
-- **GIVEN** 页面路径 `src/pages/property-manage/expense-manage/house-charge/index.vue`
-- **WHEN** 创建 Nitro 接口
-- **THEN** 接口文件为 `server/api/property-manage/expense-manage/house-charge/list.post.ts`
-- **AND** 访问 URL 为 `POST /api/property-manage/expense-manage/house-charge/list`
-
----
-
-### Requirement: Mock 数据文件规范 [IMPORTANT]
-
-Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
-
-- 文件位置: 与 list.post.ts 同目录
-- 文件命名: `mock-data.ts`
-- 数据命名: `mock{Page}Data`(如 mockConfigCenterData)
-- 数据类型: 与类型库定义一致
-
-#### Scenario: Mock 数据导入
-
-- **GIVEN** mock-data.ts 导出 mockConfigCenterData
-- **WHEN** 在 list.post.ts 中导入
-- **THEN** 使用 `import { mockConfigCenterData } from "./mock-data"`
-- **AND** 类型导入为 `import type { ConfigCenterListItem } from "@01s-11comm/type"`
+- **GIVEN** 字符串字段 (如 name) 和 枚举字段 (如 status)
+- **WHEN** 构建查询条件
+- **THEN** 字符串字段使用 `like` (e.g., `like(table.name, \`%${val}%\`)`)
+- **AND** 枚举字段使用 `eq` (e.g., `eq(table.status, val)`)
 
 ---
 
 ### Requirement: 接口返回格式规范 [IMPORTANT]
 
-所有接口 MUST 返回统一格式 `JsonVO<PageDTO<T>>`:
+所有 Nitro 接口 MUST 返回统一格式 `JsonVO<PageDTO<T>>`:
 
 - success: boolean - 请求是否成功
 - code: number - 状态码(200 成功)
@@ -300,7 +244,7 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
 
 #### Scenario: 成功响应格式
 
-- **GIVEN** 请求 POST /api/property-manage/expense-manage/house-charge/list
+- **GIVEN** 请求 POST /api/dev-team/config-manage/center/list
 - **WHEN** 接口处理成功
 - **THEN** 返回 HTTP 200
 - **AND** 响应体结构为:
@@ -319,34 +263,3 @@ Mock 数据 SHALL 从独立的 mock-data.ts 文件导入:
   }
 }
 ```
-
----
-
-### Requirement: 分页处理规范 [NICE-TO-HAVE]
-
-接口 MUST 实现正确的分页逻辑:
-
-- 先筛选再分页
-- 使用 Array.slice() 实现分页
-- 计算正确的 total 和 totalPages
-- 支持超出范围的页码(返回空列表)
-
-#### Scenario: 基础分页
-
-- **GIVEN** 筛选后有 47 条数据
-- **WHEN** 请求 `{ "pageIndex": 2, "pageSize": 10 }`
-- **THEN** startIndex = `(2 - 1) * 10 = 10`
-- **AND** endIndex = 10 + 10 = 20
-- **AND** 返回 data[10:20](第 11-20 条)
-- **AND** total = 47
-- **AND** totalPages = 5
-
-#### Scenario: 超出范围页码
-
-- **GIVEN** total = 47, pageSize = 10
-- **WHEN** 请求 pageIndex = 10
-- **THEN** list = []
-- **AND** total = 47(总数不变)
-- **AND** success = true(仍返回成功)
-
----
