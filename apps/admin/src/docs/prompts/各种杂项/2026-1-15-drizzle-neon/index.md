@@ -86,3 +86,11 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 3. 回退 `openspec\specs\nitro-api` 的写法。在你确保已经将相关的核心技能，核心的写法迁移整合到 `use-nitro` 项目级别技能之后，再开始回退`openspec\specs\nitro-api` 目录的规范写法。
 4. 文件夹目录改名，改成 `openspec\specs\nitro-api-with-mock`。
 5. 对 `openspec\specs\nitro-api-with-mock\spec.md` 这个文件增加说明注释，说明这是基于 nitro + 本地 mock 数据的编码规范。在此处仅仅作为归档记录，不作为有效规范。
+
+### 02
+
+请你恰当的拆分文件，说明清楚在 mock 模式下，和 neon 真实情况下 nitro 接口应该如何编写。
+
+现在你的做法是完全覆盖掉了关于 mock 模式下的知识点。我希望你保留关于 mock + nitro 的编写技能。同时保留关于 mock 和 neon 真实数据库的 nitro 接口编写能力。
+
+并且提供清晰的，mock 接口写法迁移成 neon 数据库接口的写法。
