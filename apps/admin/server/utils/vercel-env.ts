@@ -1,10 +1,7 @@
 import { config } from "@dotenvx/dotenvx";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const adminDir = resolve(__dirname, "../..");
+const adminDir = process.cwd();
 
 /** 标记环境变量是否已加载 */
 let envLoaded = false;
