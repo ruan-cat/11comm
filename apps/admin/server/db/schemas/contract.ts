@@ -77,7 +77,7 @@ export const ctSecondParties = pgTable(
 		/** 地址 */
 		address: text("address"),
 		/** 关联业主 ID（可选） */
-		ownerId: text("owner_id").references(() => hpOwners.id),
+		ownerId: uuid("owner_id").references(() => hpOwners.id),
 		/** 备注 */
 		remark: remarkField(),
 		...timestamps,

@@ -367,7 +367,7 @@ CREATE TABLE "ct_second_parties" (
 	"contact_person" varchar(50),
 	"contact_phone" varchar(20),
 	"address" text,
-	"owner_id" text,
+	"owner_id" uuid,
 	"remark" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
