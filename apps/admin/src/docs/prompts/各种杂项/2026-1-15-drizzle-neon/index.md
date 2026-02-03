@@ -94,3 +94,18 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 现在你的做法是完全覆盖掉了关于 mock 模式下的知识点。我希望你保留关于 mock + nitro 的编写技能。同时保留关于 mock 和 neon 真实数据库的 nitro 接口编写能力。
 
 并且提供清晰的，mock 接口写法迁移成 neon 数据库接口的写法。
+
+## 006 分析 nitro 假数据并编写 neon 数据库插入脚本
+
+我们项目目前没有有意义的 `server/db/seed.ts` 文件，所以"db:seed"命令是无法运行的。
+
+1. 请你阅读 `https://github.com/ruan-cat/learn-nitro-starter-with-vercel/blob/dev/server/db/seed.ts` 代码，了解清楚为了实现有意义的数据库写入，需要怎么编写代码。
+2. 请你全面的阅读清楚 `apps\admin\server\api` 内的全部 `mock-data.ts` 文件，思考如何服用这些数据，使得你可以实现有意义的 `server/db/seed.ts` ，最终实现对 neon 数据库的批量写入功能。我期望能够运行 `db:seed` 命令，对数据库表实现一次全量的数据预备。数据库存储一大堆数据。
+3. 这是一个简单，但是文件数量巨大的任务。请你务必使用和 gemini 相关的技能或 MCP，帮助你检索文件。帮助你探索文件。
+4. 我希望最后的 `server/db/seed.ts` 文件，实现了有意义的模块导入和代码分治。
+
+## 007 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
+
+我需要你完成一次重大的代码写法改造改写任务。
+
+现在
