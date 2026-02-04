@@ -1,3 +1,5 @@
+<!-- 有参考意义，不删除 -->
+
 # 2026-02-03 analyze-mock-data-and-create-db-seed 任务全面检查报告
 
 ## 执行摘要
