@@ -106,7 +106,9 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 ### 01 <!-- TODO: 一次性 未完成 --> 更新 `apps\admin\README.md` 文档
 
-openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 package.json 命令，请你及时更新 `apps\admin\README.md` 文档，更新对命令的说明文档，避免出现误导和混乱。
+openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 package.json 命令，请你及时更新 `apps\admin\README.md` 文档，更新对命令的说明文档，避免出现误导和混乱。为 `db:generate-seed` 和 `db:seed` 命令编写文档。
+
+请你阅读 `apps\admin\src\docs\reports\2026-02-03-analyze-mock-data-and-create-db-seed-inspection.md` 报告，将更新的新命令，整理内容，并编写专门的文档。在 `apps\admin\src\docs` 内新建专门的文档，说明清楚如何正确使用 `db:generate-seed` 和 `db:seed` 命令。
 
 ## 007 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
