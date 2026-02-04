@@ -71,6 +71,12 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 请你适当的使用 gemini 相关的 MCP 或者是 skills 技能，完成多文件的阅读，与归纳整理
 
+### 01 <!-- TODO: --> 重启任务并自我复查是否有缺漏缺省的内容
+
+请你仔细检查一下，是否有缺漏的模块没有新建 `apps\admin\server\db\schemas` 数据库表字段设计。
+
+适当的重启 openspec 的 `init-neon-db-schema` 任务。并重新检查，完成全部类型项目、nitro 接口涉及到的全部模块的表设计。
+
 ## 005 排查 `openspec\specs` 存在的潜在冲突与风险内容
 
 请你帮我分析全部的 `openspec\specs` 的规范，看看这些规范是不是有相互冲突的？
