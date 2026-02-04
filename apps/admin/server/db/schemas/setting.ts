@@ -293,3 +293,17 @@ export const smInitializeCells = pgTable(
 		index("sm_initialize_cells_init_status_idx").on(table.initStatus),
 	],
 );
+
+export type InsertSmOrganization = typeof smOrganizations.$inferInsert;
+export type InsertSmStaff = typeof smStaff.$inferInsert;
+export type InsertSmRole = typeof smRoles.$inferInsert;
+export type InsertSmPermission = typeof smPermissions.$inferInsert;
+export type InsertSmRolePermission = typeof smRolePermissions.$inferInsert;
+export type InsertSmStaffRole = typeof smStaffRoles.$inferInsert;
+export type InsertSmDataPermission = typeof smDataPermissions.$inferInsert;
+export type InsertSmShift = typeof smShifts.$inferInsert;
+export type InsertSmSchedulingSetting = typeof smSchedulingSettings.$inferInsert;
+export type InsertSmWorkingSchedule = typeof smWorkingSchedules.$inferInsert;
+export type InsertSmSystemConfig = typeof smSystemConfigs.$inferInsert;
+export type InsertSmRegisterProtocol = typeof smRegisterProtocols.$inferInsert;
+export type InsertSmInitializeCell = typeof smInitializeCells.$inferInsert;

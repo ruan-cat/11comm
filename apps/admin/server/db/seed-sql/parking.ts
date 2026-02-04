@@ -1,0 +1,167 @@
+import { pkParkingLots, pkCarports, pkOwnerVehicles, pkCarportApplications } from "../schemas/parking";
+
+import { mockParkingLotData } from "../../api/property-manage/parking-manage/parking-lot/mock-data";
+import { mockCarportInfoData } from "../../api/property-manage/parking-manage/carport-info/mock-data";
+import { mockOwnerVehicleData } from "../../api/property-manage/parking-manage/owner-vehicle/mock-data";
+import { mockCarportApplyData } from "../../api/property-manage/parking-manage/carport-apply/mock-data";
+
+import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
+import { db } from "../index";
+
+/**
+ * 生成停车管理模块的 SQL
+ */
+export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
+	const statements: SqlStatement[] = [];
+	const defaultCommunityId = idMap.get("cm_communities", "COMM001") || generateUuid("cm_communities", "COMM001");
+
+	// ==========================================
+	// 1. 生成 pk_parking_lots (停车场)
+	// ==========================================
+	console.log("正在生成 pk_parking_lots SQL...");
+	const lotRecords = mockParkingLotData.map((item) => {
+		const id = idMap.register("pk_parking_lots", item.parkingLotNumber);
+		return {
+			id,
+			communityId: defaultCommunityId,
+			lotName: `${item.parkingLotNumber}号停车场`, // Mock data lacks name, synthesize it
+			lotType: item.parkingLotType,
+			// parkingSpaceType: item.parkingSpaceType, // Schema doesn't have this
+			totalSpaces: 100, // Mock
+			availableSpaces: 50, // Mock
+			remark: `External Code: ${item.externalCode}`,
+			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+		};
+	});
+
+	if (lotRecords.length > 0) {
+		const query = db.insert(pkParkingLots).values(lotRecords).toSQL();
+		statements.push({
+			table: "pk_parking_lots",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: lotRecords.length,
+		});
+	}
+
+	// ==========================================
+	// 2. 生成 pk_carports (车位)
+	// ==========================================
+	console.log("正在生成 pk_carports SQL...");
+
+	// Map "A区" -> first lot, "B区" -> second lot, etc. to ensure distribution
+	const uniqueZones = Array.from(new Set(mockCarportInfoData.map((c) => c.parkingLot)));
+	const zoneToLotId = new Map<string, string>();
+	if (lotRecords.length > 0) {
+		uniqueZones.forEach((zone, idx) => {
+			const lot = lotRecords[idx % lotRecords.length];
+			if (lot) zoneToLotId.set(zone, lot.id);
+		});
+	}
+
+	const carportRecords = mockCarportInfoData.map((item) => {
+		const id = idMap.register("pk_carports", item.parkingSpace);
+		const lotId = zoneToLotId.get(item.parkingLot) || (lotRecords[0] ? lotRecords[0].id : null);
+
+		// Status mapping
+		// Mock: "已售", "已租", "空闲"
+		// Schema: empty? Default varchar.
+
+		return {
+			id,
+			parkingLotId: lotId,
+			carportNumber: item.parkingSpace,
+			carportType: item.parkingSpaceType,
+			area: item.area ? String(item.area) : null,
+			status: item.parkingSpaceStatus,
+			ownerName: item.ownerName,
+			contactPhone: item.contactPhone,
+			boundVehicle: item.vehicleNumber,
+			monthlyRent: item.monthlyRent ? String(item.monthlyRent) : null,
+			purchaseDate: item.purchaseDate ? new Date(item.purchaseDate) : null,
+			expiryDate: item.expiryDate ? new Date(item.expiryDate) : null,
+			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+		};
+	});
+
+	if (carportRecords.length > 0) {
+		const query = db.insert(pkCarports).values(carportRecords).toSQL();
+		statements.push({
+			table: "pk_carports",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: carportRecords.length,
+		});
+	}
+
+	// ==========================================
+	// 3. 生成 pk_owner_vehicles (业主车辆)
+	// ==========================================
+	console.log("正在生成 pk_owner_vehicles SQL...");
+	const vehicleRecords = mockOwnerVehicleData.map((item) => {
+		const id = idMap.register("pk_owner_vehicles", item.licensePlate);
+		const ownerId = idMap.get("hp_owners", item.owner);
+		const carportId = idMap.get("pk_carports", item.parkingSpace);
+
+		return {
+			id,
+			ownerId: ownerId, // nullable in schema? Schema says `uuid("owner_id").references(...)`. NOT NULL by default?
+			// Check schema: ownerId uuid references hpOwners.id. No .notNull() in `pkOwnerVehicles` definition in `parking.ts`?
+			// Wait, checking Step 311: `ownerId: uuid("owner_id").references(() => hpOwners.id),`
+			// It does NOT have `.notNull()`. So it can be null.
+
+			carportId: carportId,
+			licensePlate: item.licensePlate,
+			plateType: item.licensePlateType,
+			vehicleType: item.vehicleType,
+			vehicleColor: item.color,
+			relatedHouse: item.houseNumber,
+			// Validity period parsing "2024-01-01 至 2024-12-31"
+			validityStart: item.validityPeriod ? new Date(item.validityPeriod.split(" 至 ")[0]) : null,
+			validityEnd: item.validityPeriod ? new Date(item.validityPeriod.split(" 至 ")[1]) : null,
+
+			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+		};
+	});
+
+	if (vehicleRecords.length > 0) {
+		const query = db.insert(pkOwnerVehicles).values(vehicleRecords).toSQL();
+		statements.push({
+			table: "pk_owner_vehicles",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: vehicleRecords.length,
+		});
+	}
+
+	// ==========================================
+	// 4. 生成 pk_carport_applications (车位申请)
+	// ==========================================
+	console.log("正在生成 pk_carport_applications SQL...");
+	if (mockCarportApplyData && mockCarportApplyData.length > 0) {
+		const applyRecords = mockCarportApplyData.map((item, idx) => {
+			const id = idMap.register("pk_carport_applications", item.applicant + idx);
+
+			return {
+				id,
+				applicant: item.applicant,
+				carportType: item.applyType,
+				status: item.status,
+				// Mapping other fields if mock data has them
+				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+				updatedAt: new Date(),
+			};
+		});
+
+		if (applyRecords.length > 0) {
+			const query = db.insert(pkCarportApplications).values(applyRecords).toSQL();
+			statements.push({
+				table: "pk_carport_applications",
+				sql: toFullSql(query.sql, query.params),
+				recordCount: applyRecords.length,
+			});
+		}
+	}
+
+	return statements;
+}
