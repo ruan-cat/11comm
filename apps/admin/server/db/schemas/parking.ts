@@ -164,3 +164,32 @@ export type NewPkOwnerVehicle = typeof pkOwnerVehicles.$inferInsert;
 /** 车位申请表类型推断 */
 export type PkCarportApplication = typeof pkCarportApplications.$inferSelect;
 export type NewPkCarportApplication = typeof pkCarportApplications.$inferInsert;
+
+/**
+ * 车位结构图表
+ * @description 用于存储停车场或车位区域的结构布局图（如 SVG/JSON 数据）
+ */
+export const pkParkingStructures = pgTable(
+	"pk_parking_structures",
+	{
+		id: primaryId(),
+		/** 关联停车场 ID */
+		parkingLotId: uuid("parking_lot_id")
+			.references(() => pkParkingLots.id)
+			.notNull(),
+		/** 区域/楼层名称 (B1, B2, A区) */
+		regionName: varchar("region_name", { length: 50 }).notNull(),
+		/** 结构图数据 (JSON/SVG内容) */
+		structureData: text("structure_data"),
+		/** 排序号 */
+		sortOrder: integer("sort_order").default(0),
+		/** 备注 */
+		remark: remarkField(),
+		...timestamps,
+	},
+	(table) => [index("pk_parking_structures_parking_lot_id_idx").on(table.parkingLotId)],
+);
+
+/** 车位结构图表类型推断 */
+export type PkParkingStructure = typeof pkParkingStructures.$inferSelect;
+export type NewPkParkingStructure = typeof pkParkingStructures.$inferInsert;

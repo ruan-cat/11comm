@@ -5,7 +5,7 @@
 
 ## 1. 基础架构 (Infrastructure)
 
-- [ ] **创建公共模块定义** <!-- id: common -->
+- [x] **创建公共模块定义** <!-- id: common -->
   - **目标文件**: `apps/admin/server/db/schemas/common.ts`
   - **任务详情**:
     - 实现 `primaryId` (UUID 主键)
@@ -19,7 +19,7 @@
 
 请按顺序检查、创建或更新以下模块文件，确保包含设计文档中定义的所有表结构。
 
-- [ ] **社区管理模块 (Community)** <!-- id: community -->
+- [x] **社区管理模块 (Community)** <!-- id: community -->
   - **目标文件**: `apps/admin/server/db/schemas/community.ts`
   - **包含表**:
     - `cm_communities` (小区基础信息)
@@ -29,7 +29,7 @@
     - `cm_property_registers` (物业登记)
     - `cm_building_structures` (楼栋结构)
 
-- [ ] **房产管理模块 (House Property)** <!-- id: house-property -->
+- [x] **房产管理模块 (House Property)** <!-- id: house-property -->
   - **目标文件**: `apps/admin/server/db/schemas/house-property.ts`
   - **包含表**:
     - `hp_houses` (房屋信息)
@@ -43,7 +43,7 @@
     - `hp_site_managements` (场地管理)
     - `hp_owners_committees` (业委会)
 
-- [ ] **合同管理模块 (Contract)** <!-- id: contract -->
+- [x] **合同管理模块 (Contract)** <!-- id: contract -->
   - **目标文件**: `apps/admin/server/db/schemas/contract.ts`
   - **包含表**:
     - `ct_first_parties` (甲方)
@@ -57,7 +57,7 @@
     - `ct_archives` (合同归档)
     - `ct_prints` (打印记录)
 
-- [ ] **费用管理模块 (Expense)** <!-- id: expense -->
+- [x] **费用管理模块 (Expense)** <!-- id: expense -->
   - **目标文件**: `apps/admin/server/db/schemas/expense.ts`
   - **包含表**:
     - `ex_expense_items` (收费项配置)
@@ -73,7 +73,7 @@
     - `ex_overdue_reminders` (催缴)
     - `ex_reprint_vouchers` (凭证重打)
 
-- [ ] **停车管理模块 (Parking)** <!-- id: parking -->
+- [x] **停车管理模块 (Parking)** <!-- id: parking -->
   - **目标文件**: `apps/admin/server/db/schemas/parking.ts`
   - **注意**: **必须补充 `pk_parking_structures` 表定义 (参见 Design 文档补丁章节)**
   - **包含表**:
@@ -83,7 +83,7 @@
     - `pk_carport_applications` (车位申请)
     - **`pk_parking_structures`** (车位结构图 - NEW!)
 
-- [ ] **巡检管理模块 (Patrol)** <!-- id: patrol -->
+- [x] **巡检管理模块 (Patrol)** <!-- id: patrol -->
   - **目标文件**: `apps/admin/server/db/schemas/patrol.ts`
   - **包含表**:
     - `pt_patrol_plans` (巡检计划)
@@ -93,7 +93,7 @@
     - `pt_patrol_tasks` (巡检任务)
     - `pt_patrol_task_details` (任务明细)
 
-- [ ] **报修管理模块 (Repairs)** <!-- id: repairs -->
+- [x] **报修管理模块 (Repairs)** <!-- id: repairs -->
   - **目标文件**: `apps/admin/server/db/schemas/repairs.ts`
   - **包含表**:
     - `rp_repair_orders` (报修工单)
@@ -104,7 +104,7 @@
     - `rp_mandatory_return_issues` (强制回单)
     - `rp_phone_repair_reports` (电话报修)
 
-- [ ] **报表管理模块 (Report)** <!-- id: report -->
+- [x] **报表管理模块 (Report)** <!-- id: report -->
   - **目标文件**: `apps/admin/server/db/schemas/report.ts`
   - **包含表**:
     - `rpt_expense_summaries` (费用汇总)
@@ -120,7 +120,7 @@
     - `rpt_statement_expenses` (费用报表快照)
     - `rpt_data_statistics` (综合统计)
 
-- [ ] **设置管理模块 (Setting)** <!-- id: setting -->
+- [x] **设置管理模块 (Setting)** <!-- id: setting -->
   - **目标文件**: `apps/admin/server/db/schemas/setting.ts`
   - **包含表**:
     - `sm_organizations` (组织架构)
@@ -131,7 +131,7 @@
     - `sm_register_protocols` (注册协议)
     - `sm_initialize_cells` (初始化配置)
 
-- [ ] **运营团队模块 (Operation)** <!-- id: operation -->
+- [x] **运营团队模块 (Operation)** <!-- id: operation -->
   - **目标文件**: `apps/admin/server/db/schemas/operation.ts`
   - **包含表**:
     - `op_merchants`, `op_merchant_admins` (商户)
@@ -140,7 +140,7 @@
     - `op_report_groups`, `op_report_infos`, `op_report_components` (报表配置)
     - `op_register_protocols` (运营协议)
 
-- [ ] **开发团队模块 (Dev)** <!-- id: dev -->
+- [x] **开发团队模块 (Dev)** <!-- id: dev -->
   - **目标文件**: `apps/admin/server/db/schemas/dev.ts`
   - **包含表**:
     - `dt_config_types`, `dt_configs`, `dt_config_items` (配置中心)
@@ -150,11 +150,11 @@
 
 ## 3. 整合与验证 (Integration & Verification)
 
-- [ ] **更新统一导出入口** <!-- id: main-schema -->
+- [x] **更新统一导出入口** <!-- id: main-schema -->
   - **目标文件**: `apps/admin/server/db/schema.ts`
   - **任务详情**: 导出上述所有模块 (`export * from "./schemas/<module>"`)
 
-- [ ] **Schema 生成验证** <!-- id: verify -->
+- [x] **Schema 生成验证** <!-- id: verify -->
   - **执行命令**: `pnpm db:generate`
   - **验证标准**:
     - 命令执行成功，无报错
