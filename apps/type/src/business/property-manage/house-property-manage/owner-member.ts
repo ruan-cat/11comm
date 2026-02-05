@@ -35,6 +35,12 @@ export interface OwnerMemberListItem {
 	updateTime: string;
 	/** 备注 Remark */
 	remark?: string;
+	/** 业主名称 Owner name (for seed script compatibility) */
+	ownerName?: string;
+	/** 关系 Relation (alias for type, for seed script compatibility) */
+	relation?: string;
+	/** 电话 Phone (alias for contact, for seed script compatibility) */
+	phone?: string;
 }
 
 /**

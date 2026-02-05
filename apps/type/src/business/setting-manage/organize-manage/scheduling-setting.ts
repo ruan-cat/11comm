@@ -20,6 +20,16 @@ export interface SchedulingSetting {
 	status: string;
 	/** 创建时间 */
 	createTime?: string;
+	/** 组织ID Organization ID */
+	orgId?: string;
+	/** 规则名称 Rule name */
+	ruleName?: string;
+	/** 周期类型 Cycle type */
+	cycleType?: string;
+	/** 班次ID数组 Shift IDs */
+	shiftIds?: string[];
+	/** 备注 Remark */
+	remark?: string;
 }
 
 /**

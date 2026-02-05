@@ -30,11 +30,11 @@ export interface HouseListItem {
 	/** 房屋编号 House code */
 	houseCode: string;
 	/** 楼层 Floor */
-	floor: string;
+	floor: string | number;
 	/** 业主 Owner */
 	owner: string;
 	/** 类型 Type */
-	houseType: HouseType;
+	houseType: HouseType | string;
 	/** 房屋面积 House area */
 	houseArea: string;
 	/** 租金 Rent */
@@ -59,6 +59,20 @@ export interface HouseListItem {
 	ownerArrears: string;
 	/** 房屋合同 House contract */
 	houseContract: string;
+	/** 楼栋 Building (for seed script compatibility) */
+	building?: string;
+	/** 单元 Unit (for seed script compatibility) */
+	unit?: string;
+	/** 房号 Room (for seed script compatibility) */
+	room?: string;
+	/** 面积 Area (for seed script compatibility) */
+	area?: number | string;
+	/** 业主名称 Owner name (for seed script compatibility) */
+	ownerName?: string;
+	/** 备注 Remark */
+	remark?: string;
+	/** 创建时间 Create time */
+	createTime?: string;
 }
 
 /**

@@ -14,6 +14,8 @@ export interface ShiftSettingListItem {
 	id: string;
 	/** 班次名称 Shift name */
 	name: string;
+	/** 班次名称别名（用于seed脚本） Shift name alias (for seed script) */
+	shiftName?: string;
 	/** 班次类型 Shift type */
 	type: string;
 	/** 开始时间 Start time */
@@ -24,6 +26,10 @@ export interface ShiftSettingListItem {
 	enabled: boolean;
 	/** 描述 Description */
 	description: string;
+	/** 备注 Remark */
+	remark?: string;
+	/** 创建时间 Create time */
+	createTime?: string;
 }
 
 /**

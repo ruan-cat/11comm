@@ -24,6 +24,8 @@ export interface MerchantInfoListItem {
 	businessLicenseNumber: string;
 	/** 营业执照号 */
 	businessLicenseNo: string;
+	/** 营业执照 (alias for businessLicenseNo) */
+	businessLicense?: string;
 	/** 法人代表 */
 	legalRepresentative: string;
 	/** 注册地址 */
@@ -64,6 +66,8 @@ export interface MerchantInfoListItem {
 	contactMobile: string;
 	/** 备注 */
 	remarks: string;
+	/** 备注 (alias for remarks) */
+	remark?: string;
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */

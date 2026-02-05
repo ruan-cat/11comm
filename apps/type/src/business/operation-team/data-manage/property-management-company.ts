@@ -23,14 +23,20 @@ export type OperationStatus = "operating" | "suspended" | "cancelled";
 export interface PropertyCompanyListItem {
 	/** 编号 Company ID */
 	companyId: string;
+	/** 公司编码 Company code (alias for companyId) */
+	companyCode?: string;
 	/** 名称 Company name */
 	companyName: string;
 	/** 地址 Address */
 	address: string;
 	/** 管理员 Administrator */
 	administrator: string;
+	/** 联系人 Contact person */
+	contactPerson?: string;
 	/** 电话 Phone */
 	phone: string;
+	/** 联系电话 Contact phone */
+	contactPhone?: string;
 	/** 公司法人 Legal representative */
 	legalRepresentative: string;
 	/** 成立日期 Establishment date */
@@ -49,6 +55,8 @@ export interface PropertyCompanyListItem {
 	operationStatus: OperationStatus;
 	/** 备注 Remarks */
 	remarks: string;
+	/** 资质等级 Qualification level */
+	qualificationLevel?: string;
 }
 
 /**

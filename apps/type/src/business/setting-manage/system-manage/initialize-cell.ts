@@ -24,6 +24,8 @@ export interface InitializeCommunityFormVO {
 export interface InitializeCommunityListItem {
 	/** 小区ID Community ID */
 	communityId: string;
+	/** 记录ID Record ID (用于seed脚本) */
+	id?: string;
 	/** 小区名称 Community name */
 	communityName: string;
 	/** 附近地标 Nearby landmark */
@@ -32,6 +34,14 @@ export interface InitializeCommunityListItem {
 	cityCode: string;
 	/** 状态 Status */
 	status: string;
+	/** 单元名称 Cell name */
+	cellName?: string;
+	/** 编码 Code */
+	code?: string;
+	/** 备注 Remark */
+	remark?: string;
+	/** 创建时间 Create time */
+	createTime?: string;
 }
 
 /**

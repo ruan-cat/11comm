@@ -36,6 +36,14 @@ export interface OwnersCommitteeListItem {
 	updateTime: string;
 	/** 备注 Remark */
 	remark?: string;
+	/** 名称别名 Name alias (for seed script compatibility) */
+	name?: string;
+	/** 角色别名 Role alias (for seed script compatibility) */
+	role?: string;
+	/** 任期开始时间 Term start */
+	termStart?: string;
+	/** 任期结束时间 Term end */
+	termEnd?: string;
 }
 
 /**

@@ -18,6 +18,18 @@ export interface OwnerInformationListItem {
 	updateTime: string;
 	/** 备注 Remark */
 	remark?: string;
+	/** 性别 Gender */
+	gender?: string;
+	/** 电话 Phone */
+	phone?: string;
+	/** 身份证 ID card */
+	idCard?: string;
+	/** 紧急联系人 Emergency contact */
+	emergencyContact?: string;
+	/** 紧急联系人电话 Emergency contact phone */
+	emergencyContactPhone?: string;
+	/** 地址 Address */
+	address?: string;
 }
 
 /**

@@ -14,12 +14,16 @@ export interface AttachmentListItem {
 	id: string;
 	/** 附件名称 Attachment name */
 	attachmentName: string;
+	/** 文件名称 (alias for attachmentName) */
+	fileName?: string;
 	/** 所属合同编号 Contract number */
 	contractNumber: string;
 	/** 所属合同名称 Contract name */
 	contractName: string;
 	/** 附件类型 Attachment type */
 	attachmentType: string;
+	/** 文件类型 (alias for attachmentType) */
+	fileType?: string;
 	/** 文件大小 File size */
 	fileSize: string;
 	/** 文件格式 File format */

@@ -31,6 +31,12 @@ export interface ChangeListItem {
 	applyTime: string;
 	/** 说明 Description */
 	description: string;
+	/** 变更原因 Change reason */
+	changeReason?: string;
+	/** 变更内容 Change content */
+	changeContent?: string;
+	/** 变更时间 Change time */
+	changeTime?: string;
 	/** 状态 Status */
 	status: string;
 	/** 创建时间 Create time */

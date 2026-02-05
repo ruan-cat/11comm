@@ -30,6 +30,18 @@ export interface WorkingSchedule {
 	enabled: boolean;
 	/** 排班描述 */
 	description?: string;
+	/** 员工ID Staff ID */
+	staffId?: string;
+	/** 班次ID Shift ID */
+	shiftId?: string;
+	/** 工作日期 Work date */
+	workDate?: string;
+	/** 状态 Status */
+	status?: string;
+	/** 备注 Remark */
+	remark?: string;
+	/** 创建时间 Create time */
+	createTime?: string;
 }
 
 /**

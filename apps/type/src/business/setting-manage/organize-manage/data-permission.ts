@@ -14,6 +14,16 @@ export interface DataPermission {
 	level?: number;
 	/** 是否启用 */
 	enabled?: boolean;
+	/** 角色ID Role ID */
+	roleId?: string;
+	/** 资源类型 Resource type */
+	resourceType?: string;
+	/** 数据范围 Data scope */
+	dataScope?: string;
+	/** 自定义范围 Custom range */
+	customRange?: any;
+	/** 创建时间 Create time */
+	createTime?: string;
 }
 
 /**

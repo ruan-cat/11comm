@@ -7,6 +7,8 @@ import type { BaseListQueryParams } from "../../../common";
 export interface SystemConfigListItem {
 	/** 配置ID Config ID */
 	configId: string;
+	/** 记录ID Record ID (用于seed脚本) */
+	id?: string;
 	/** 标题名称 Title name */
 	title: string;
 	/** 副标题 Subtitle */
@@ -29,6 +31,20 @@ export interface SystemConfigListItem {
 	qqMapKey: string;
 	/** 商城地址 Mall URL */
 	mallUrl: string;
+	/** 配置键 Config key */
+	configKey?: string;
+	/** 配置值 Config value */
+	configValue?: string;
+	/** 描述 Description */
+	description?: string;
+	/** 分类 Category */
+	category?: string;
+	/** 是否系统配置 Is system config */
+	isSystem?: boolean;
+	/** 创建时间 Create time */
+	createTime?: string;
+	/** 更新时间 Update time */
+	updateTime?: string;
 }
 
 /**
