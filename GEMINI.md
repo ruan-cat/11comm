@@ -1,25 +1,3 @@
-<!-- OPENSPEC:START -->
-
-# OpenSpec Instructions
-
-These instructions are for AI assistants working in this project.
-
-Always open `@/openspec/AGENTS.md` when the request:
-
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
-
 # CLAUDE.md
 
 此文件为 Claude Code (claude.ai/code) 在此代码仓库中工作时提供指导。
@@ -719,11 +697,6 @@ pnpm -F @01s-11comm/type typecheck
 - pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
 - pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
 
-### 14.4. claude code skill
-
-- 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
-- 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
-
 ## 15. 编写测试用例规范
 
 1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
@@ -731,37 +704,7 @@ pnpm -F @01s-11comm/type typecheck
 3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
 4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
 
-## 16. 生成发版日志的操作规范
+### 14.4. claude code skill
 
-在你生成发版日志时，按照以下规范来完成：
-
-1. 新建文件： 运行命令 `pnpm dlx @changesets/cli add --empty` ，该命令会在 `.changeset` 目录下，新建一个空的 markdown 文件，这个文件就是你要写入的发版日志。
-2. 发版日志文件重命名： 这个命令会新建一个随机名称的发版日志文件，请你按照报告的规格，换成日期加语义化更新内容的名称。比如 `2025-12-15-add-pnpm-workspace-yaml.md` 就是有意义的命名。
-3. yaml 区域写入 changeset 规格的发版信息： 写入发版包名，和`发版标签`的等级。
-4. 写入更新日志： 在正文内编写更新日志。
-5. 编写更新日志正文的行文规范：
-   - 禁止使用任何等级的 markdown 标题： 编写任何`发版标签`的更新日志时，不允许使用任何等级的 markdown 标题，比如一级标题、二级标题等。这会影响自动合并的 `CHANGELOG.md` 文档的美观度。必须使用 markdown 的序号语法。
-   - major： 详细，清晰。说明清楚 major 版本的重大变更。
-   - minor： 用有序序号，简明扼要的说明清楚更新日志即可。
-   - patch： 用有序序号，简明扼要的说明清楚更新日志即可。
-
-## 17. 沟通协作要求
-
-### `计划模式`
-
-在`计划模式`下，请你按照以下方式与我协作：
-
-1. 你不需要考虑任何向后兼容的设计，允许你做出破坏性的写法。请先设计一个合适的方案，和我沟通后再修改实施。
-2. 如果有疑惑，请询问我。
-3. 完成任务后，请告知我你做了那些破坏性变更。
-
-请注意，在绝大多数情况下，我不会要求你以这种 `计划模式` 来和我协作。
-
-## 18. 术语说明
-
-在我和你沟通时，我会使用以下术语，便于你理解。
-
-### 发版日志相关术语
-
-- `生成更新日志` ： 指的是在 `.changeset` 目录内，编写面向 changeset 的更新日志文件。其`发版标签`分为 `major` `minor` `patch` 这三个档次。如果我在要求你生成更新日志时，没有说明清楚`发版标签`具体发版到那个等级，请及时询问我。要求我给你说明清楚。
-- `生成发版日志` ： `生成更新日志` 的别名，是同一个意思。
+- 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
+- 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
