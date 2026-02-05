@@ -164,18 +164,18 @@ export const genderEnum = pgEnum("gender", ["male", "female"]);
 
 **示例：**
 
-|   模块   | 前缀 |              示例表名              |
-| :------: | :--: | :--------------------------------: |
-| 社区管理 | cm\_ |     cm_communities, cm_notices     |
-| 房产管理 | hp\_ |        hp_houses, hp_owners        |
-| 合同管理 | ct\_ |     ct_contracts, ct_templates     |
-| 费用管理 | ex\_ |      ex_charges, ex_payments       |
-| 停车管理 | pk\_ |    pk_parking_lots, pk_carports    |
-| 巡检管理 | pt\_ | pt_patrol_tasks, pt_patrol_points  |
-| 报修管理 | rp\_ | rp_repair_orders, rp_return_visits |
-| 设置管理 | sm\_ |         sm_staff, sm_roles         |
-| 运营团队 | op\_ |     op_merchants, op_companies     |
-| 开发团队 | dt\_ |        dt_configs, dt_menus        |
+|   模块   | 前缀 |                      示例表名                       |
+| :------: | :--: | :-------------------------------------------------: |
+| 社区管理 | cm\_ |             cm_communities, cm_notices              |
+| 房产管理 | hp\_ |                hp_houses, hp_owners                 |
+| 合同管理 | ct\_ |             ct_contracts, ct_templates              |
+| 费用管理 | ex\_ |               ex_charges, ex_payments               |
+| 停车管理 | pk\_ | pk_parking_lots, pk_carports, pk_parking_structures |
+| 巡检管理 | pt\_ |          pt_patrol_tasks, pt_patrol_points          |
+| 报修管理 | rp\_ |         rp_repair_orders, rp_return_visits          |
+| 设置管理 | sm\_ |                 sm_staff, sm_roles                  |
+| 运营团队 | op\_ |             op_merchants, op_companies              |
+| 开发团队 | dt\_ |                dt_configs, dt_menus                 |
 
 ### 8. 索引策略
 
@@ -225,7 +225,7 @@ communityId: uuid("community_id").references(() => communities.id, { onDelete: "
 
 **实现 (`schemas/common.ts`)：**
 
-```typescript
+````typescript
 import { timestamp, uuid, text } from "drizzle-orm/pg-core";
 
 /** 通用主键字段 */
@@ -247,7 +247,37 @@ export const softDelete = {
 
 /** 备注字段 */
 export const remarkField = () => text("remark");
-```
+
+### 11. 补丁：新增表定义
+
+**pk_parking_structures (车位结构图表):**
+用于存储停车场或车位区域的结构布局图（如 SVG/JSON 数据），对应前端 `parkingSpaceStructureDiagram` 路由。
+
+```typescript
+/** 车位结构图表 */
+export const pkParkingStructures = pgTable(
+	"pk_parking_structures",
+	{
+		id: primaryId(),
+		/** 关联停车场 ID */
+		parkingLotId: uuid("parking_lot_id").references(() => pkParkingLots.id).notNull(),
+		/** 区域/楼层名称 (B1, B2, A区) */
+		regionName: varchar("region_name", { length: 50 }).notNull(),
+		/** 结构图数据 (JSON/SVG内容) */
+		structureData: text("structure_data"),
+		/** 排序号 */
+		sortOrder: integer("sort_order").default(0),
+		/** 备注 */
+		remark: remarkField(),
+		...timestamps,
+	},
+	(table) => [
+		index("pk_parking_structures_parking_lot_id_idx").on(table.parkingLotId),
+	],
+);
+````
+
+```plain
 
 ## Risks / Trade-offs
 
@@ -307,3 +337,4 @@ export const remarkField = () => text("remark");
 
 4. **附件存储策略？**
    - 附件 URL 存储在数据库，实际文件存储位置（OSS/本地）待确定
+```
