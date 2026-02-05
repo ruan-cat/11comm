@@ -112,7 +112,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 3. 这是一个简单，但是文件数量巨大的任务。请你务必使用和 gemini 相关的技能或 MCP，帮助你检索文件。帮助你探索文件。
 4. 我希望最后的 `server/db/seed.ts` 文件，实现了有意义的模块导入和代码分治。
 
-### 01 <!-- TODO: 一次性 未完成 --> 更新 `apps\admin\README.md` 文档
+### 01 更新 `apps\admin\README.md` 文档
 
 openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 package.json 命令，请你及时更新 `apps\admin\README.md` 文档，更新对命令的说明文档，避免出现误导和混乱。为 `db:generate-seed` 和 `db:seed` 命令编写文档。
 
