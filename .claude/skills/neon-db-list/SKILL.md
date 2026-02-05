@@ -1,30 +1,32 @@
 ---
 name: neon-db-list
-description: A comprehensive list of all database tables in the project. Use this skill when you need to verify table names, understand the database structure, or check for existing tables in the `apps\admin\server\db\schemas` directory.
+description: 项目中所有数据库表的完整列表。当你需要验证表名、理解数据库结构或检查 `apps\admin\server\db\schemas` 目录中现有的表时，请使用此技能。
 ---
 
-# Neon Database Tables List
+# Neon 数据库表清单
 
-This document lists all database tables defined in `apps\admin\server\db\schemas`.
-This list is maintained manually and should be updated whenever a table is added, renamed, or removed.
+本文档列出了 `apps\admin\server\db\schemas` 中定义的所有数据库表。
+此列表由人工维护，每当添加、重命名或删除表时，都应立即更新此列表。
 
-## Table of Contents
+## 目录
 
-- [Community (cm)](#community-cm)
-- [Contract (ct)](#contract-ct)
-- [Dev (dt)](#dev-dt)
-- [Expense (ex)](#expense-ex)
-- [House Property (hp)](#house-property-hp)
-- [Operation (op)](#operation-op)
-- [Parking (pk)](#parking-pk)
-- [Patrol (pt)](#patrol-pt)
-- [Repairs (rp)](#repairs-rp)
-- [Report (rpt)](#report-rpt)
-- [Setting (sm)](#setting-sm)
+- [Neon 数据库表清单](#neon-数据库表清单)
+  - [目录](#目录)
+  - [Community (cm)](#community-cm)
+  - [Contract (ct)](#contract-ct)
+  - [Dev (dt)](#dev-dt)
+  - [Expense (ex)](#expense-ex)
+  - [House Property (hp)](#house-property-hp)
+  - [Operation (op)](#operation-op)
+  - [Parking (pk)](#parking-pk)
+  - [Patrol (pt)](#patrol-pt)
+  - [Repairs (rp)](#repairs-rp)
+  - [Report (rpt)](#report-rpt)
+  - [Setting (sm)](#setting-sm)
 
 ## Community (cm)
 
-Source: `apps\admin\server\db\schemas\community.ts`
+来源: `apps\admin\server\db\schemas\community.ts`
 
 - `cmCommunities`
 - `cmNotices`
@@ -35,7 +37,7 @@ Source: `apps\admin\server\db\schemas\community.ts`
 
 ## Contract (ct)
 
-Source: `apps\admin\server\db\schemas\contract.ts`
+来源: `apps\admin\server\db\schemas\contract.ts`
 
 - `ctFirstParties`
 - `ctSecondParties`
@@ -51,7 +53,7 @@ Source: `apps\admin\server\db\schemas\contract.ts`
 
 ## Dev (dt)
 
-Source: `apps\admin\server\db\schemas\dev.ts`
+来源: `apps\admin\server\db\schemas\dev.ts`
 
 - `dtConfigTypes` ("dt_config_types")
 - `dtConfigs`
@@ -65,7 +67,7 @@ Source: `apps\admin\server\db\schemas\dev.ts`
 
 ## Expense (ex)
 
-Source: `apps\admin\server\db\schemas\expense.ts`
+来源: `apps\admin\server\db\schemas\expense.ts`
 
 - `exExpenseItems`
 - `exHouseCharges`
@@ -85,7 +87,7 @@ Source: `apps\admin\server\db\schemas\expense.ts`
 
 ## House Property (hp)
 
-Source: `apps\admin\server\db\schemas\house-property.ts`
+来源: `apps\admin\server\db\schemas\house-property.ts`
 
 - `hpHouses`
 - `hpOwners`
@@ -100,7 +102,7 @@ Source: `apps\admin\server\db\schemas\house-property.ts`
 
 ## Operation (op)
 
-Source: `apps\admin\server\db\schemas\operation.ts`
+来源: `apps\admin\server\db\schemas\operation.ts`
 
 - `opMerchants`
 - `opMerchantAdmins` ("op_merchant_admins")
@@ -114,7 +116,7 @@ Source: `apps\admin\server\db\schemas\operation.ts`
 
 ## Parking (pk)
 
-Source: `apps\admin\server\db\schemas\parking.ts`
+来源: `apps\admin\server\db\schemas\parking.ts`
 
 - `pkParkingStructures` ("pk_parking_structures")
 - `pkParkingLots`
@@ -124,7 +126,7 @@ Source: `apps\admin\server\db\schemas\parking.ts`
 
 ## Patrol (pt)
 
-Source: `apps\admin\server\db\schemas\patrol.ts`
+来源: `apps\admin\server\db\schemas\patrol.ts`
 
 - `ptPatrolPlans`
 - `ptPatrolPaths`
@@ -135,7 +137,7 @@ Source: `apps\admin\server\db\schemas\patrol.ts`
 
 ## Repairs (rp)
 
-Source: `apps\admin\server\db\schemas\repairs.ts`
+来源: `apps\admin\server\db\schemas\repairs.ts`
 
 - `rpRepairOrders`
 - `rpRepairOrderHistories`
@@ -147,7 +149,7 @@ Source: `apps\admin\server\db\schemas\repairs.ts`
 
 ## Report (rpt)
 
-Source: `apps\admin\server\db\schemas\report.ts`
+来源: `apps\admin\server\db\schemas\report.ts`
 
 - `rptExpenseSummaries`
 - `rptDepositReports`
@@ -164,7 +166,7 @@ Source: `apps\admin\server\db\schemas\report.ts`
 
 ## Setting (sm)
 
-Source: `apps\admin\server\db\schemas\setting.ts`
+来源: `apps\admin\server\db\schemas\setting.ts`
 
 - `smOrganizations` ("sm_organizations")
 - `smStaff` ("sm_staff")
