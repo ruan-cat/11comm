@@ -486,11 +486,28 @@ gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执
    - .claude\statusline.sh
 4. 你的修改必须按照这些 claude code 文档的要求和约束来做。特别是 `agents` 和 `skills` 的要求。
 
-## 11. 常用开发命令
+## 11. 编写测试用例规范
+
+1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
+2. 测试用例的文件格式为 `*.test.ts` 。
+3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
+4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
+
+## 12. 数据库变更维护规范
+
+当你在 `apps\admin\server\db\schemas` 目录内执行以下操作时：
+
+1. 新增数据库表
+2. 修改数据库表名
+3. 删除数据库表
+
+你**必须**主动更新 `.claude\skills\neon-db-list\SKILL.md` 文件内的数据库表清单，确保该清单与实际代码保持一致。
+
+## 13. 常用开发命令
 
 这是一个用于 11comm 智慧社区 (Smart Community) 项目的 pnpm + Turbo monorepo。
 
-### 11.1. 构建命令
+### 13.1. 构建命令
 
 ```bash
 # 构建所有项目
@@ -511,7 +528,7 @@ pnpm -F @01s-11comm/admin build:staging
 pnpm -F @01s-11comm/admin docs:build
 ```
 
-### 11.2. 开发命令
+### 13.2. 开发命令
 
 ```bash
 # 以开发模式运行管理应用
@@ -520,7 +537,7 @@ pnpm -F @01s-11comm/admin dev
 cd apps/admin && pnpm dev
 ```
 
-### 11.3. 测试命令
+### 13.3. 测试命令
 
 ```bash
 # 使用UI运行测试
@@ -529,7 +546,7 @@ pnpm test
 pnpm -F @01s-11comm/admin test
 ```
 
-### 11.4. 代码检查和格式化
+### 13.4. 代码检查和格式化
 
 ```bash
 # 检查和格式化管理应用
@@ -543,7 +560,7 @@ pnpm -F @01s-11comm/admin lint:prettier
 pnpm format
 ```
 
-### 11.5. 类型检查
+### 13.5. 类型检查
 
 ```bash
 # 对整个项目进行类型检查
@@ -572,9 +589,9 @@ pnpm -F @01s-11comm/type typecheck
 2. 在提交前运行类型检查命令
 3. 保持类型定义的准确性和一致性
 
-## 12. 项目架构
+## 14. 项目架构
 
-### 12.1. Monorepo 结构
+### 14.1. Monorepo 结构
 
 - `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
 - `apps/type/` - **新增**的业务类型库，集中管理所有共享类型定义
@@ -582,7 +599,7 @@ pnpm -F @01s-11comm/type typecheck
 - `examples/` - 示例应用（01s-origin, 10wms）
 - 根级别管理 monorepo 依赖和共享配置
 
-### 12.2. 管理应用架构 (`apps/admin/`)
+### 14.2. 管理应用架构 (`apps/admin/`)
 
 **技术栈：**
 
@@ -631,7 +648,7 @@ pnpm -F @01s-11comm/type typecheck
 - Vue i18n，在`locales/`中使用 YAML 区域设置文件
 - 支持中文（zh-CN）和英文（en）
 
-### 12.3. 关键技术和库
+### 14.3. 关键技术和库
 
 **必需学习（根据 technical-doc.md）：**
 
@@ -651,7 +668,7 @@ pnpm -F @01s-11comm/type typecheck
 - 基于模块的 API 组织
 - 组件驱动的 UI 开发
 
-## 13. 开发工作流
+## 15. 开发工作流
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
@@ -662,32 +679,32 @@ pnpm -F @01s-11comm/type typecheck
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 14. 获取技术栈对应的上下文
+## 16. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
 
-### 14.1. taskmaster-ai
+### 16.1. taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
 
-### 14.2. nitro
+### 16.2. nitro
 
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 14.2.1 编写接口需要导入正确的模块
+#### 16.2.1. 编写接口需要导入正确的模块
 
 <!-- TODO: -->
 
-#### 14.2.2 配置文件格式没有 vite 配置对象
+#### 16.2.2. 配置文件格式没有 vite 配置对象
 
 <!-- TODO: -->
 
-### 14.3. pure-admin 后台框架模板
+### 16.3. pure-admin 后台框架模板
 
 `apps\admin` 项目套用是 `pure-admin` 模板。
 
@@ -697,14 +714,7 @@ pnpm -F @01s-11comm/type typecheck
 - pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
 - pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
 
-### 14.4. claude code skill
+### 16.4. claude code skill
 
 - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
 - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
-
-## 15. 编写测试用例规范
-
-1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
-2. 测试用例的文件格式为 `*.test.ts` 。
-3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
-4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
