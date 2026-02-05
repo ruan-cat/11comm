@@ -122,7 +122,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 现在数据库表增加了新的表，需要你为这个数据库表增加新的 seed 种子数据。
 
-### 03 <!-- TODO: 未完成 --> 处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错，并评估 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了
+### 03 处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错，并评估 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了
 
 请你帮我评估一下，目录 `apps\admin\server\db\seed-sql` 内文件，其导入的模块，是否都是有意义的？我看到有些模块导入进来但是没有使用。这让我非常怀疑 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了？还是说这个任务执行的有欠缺？不完整？
 
