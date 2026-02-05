@@ -71,7 +71,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 请你适当的使用 gemini 相关的 MCP 或者是 skills 技能，完成多文件的阅读，与归纳整理
 
-### 01 <!-- TODO: --> 检查任务并自我复查是否有缺漏缺省的内容
+### 01 检查任务并自我复查是否有缺漏缺省的内容
 
 请你仔细检查一下，是否有缺漏的模块没有新建 `apps\admin\server\db\schemas` 数据库表字段设计。
 
