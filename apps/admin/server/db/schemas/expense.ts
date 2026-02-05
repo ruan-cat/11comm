@@ -76,6 +76,12 @@ export const exExpenseItems = pgTable(
 		status: statusEnum("status").default("enabled"),
 		/** 备注 */
 		remark: remarkField(),
+		/** 费用标识 - 周期性/一次性 */
+		expenseIdentifier: varchar("expense_identifier", { length: 50 }),
+		/** 预付期(天) */
+		prepaymentPeriod: integer("prepayment_period"),
+		/** 单位 */
+		unit: varchar("unit", { length: 20 }),
 		...timestamps,
 	},
 	(table) => [
@@ -140,6 +146,10 @@ export const exVehicleCharges = pgTable(
 		status: chargeStatusEnum("status").default("unpaid"),
 		/** 备注 */
 		remark: remarkField(),
+		/** 业主名称 */
+		ownerName: varchar("owner_name", { length: 50 }),
+		/** 车位状态 */
+		parkingSpaceStatus: varchar("parking_space_status", { length: 50 }),
 		...timestamps,
 	},
 	(table) => [
@@ -359,6 +369,8 @@ export const exMeterReadingTypes = pgTable("ex_meter_reading_types", {
 	status: statusEnum("status").default("enabled"),
 	/** 备注 */
 	remark: remarkField(),
+	/** 说明 */
+	description: text("description"),
 	...timestamps,
 });
 

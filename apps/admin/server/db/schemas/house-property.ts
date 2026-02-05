@@ -3,7 +3,7 @@
  * @description 定义房产管理相关的表结构，前缀 hp_
  */
 
-import { index, integer, pgTable, text, uuid, varchar, decimal, date } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, text, uuid, varchar, decimal, date, timestamp } from "drizzle-orm/pg-core";
 import { primaryId, timestamps, softDelete, remarkField, statusEnum, genderEnum } from "./common";
 import { cmCommunities } from "./community";
 
@@ -34,6 +34,10 @@ export const hpHouses = pgTable(
 		status: statusEnum("status").default("enabled"),
 		/** 备注 */
 		remark: remarkField(),
+		/** 租金 */
+		rent: decimal("rent", { precision: 12, scale: 2 }),
+		/** 有效期 */
+		validUntil: date("valid_until"),
 		...timestamps,
 	},
 	(table) => [
@@ -63,6 +67,10 @@ export const hpOwners = pgTable(
 		emergencyContact: varchar("emergency_contact", { length: 100 }),
 		/** 备注 */
 		remark: remarkField(),
+		/** 紧急联系人电话 */
+		emergencyContactPhone: varchar("emergency_contact_phone", { length: 20 }),
+		/** 门禁钥匙 */
+		accessKey: varchar("access_key", { length: 100 }),
 		...timestamps,
 		...softDelete,
 	},
@@ -94,6 +102,8 @@ export const hpOwnerMembers = pgTable("hp_owner_members", {
 	accessKey: varchar("access_key", { length: 100 }),
 	/** 备注 */
 	remark: remarkField(),
+	/** 创建人 */
+	creator: varchar("creator", { length: 50 }),
 	...timestamps,
 });
 
@@ -132,6 +142,20 @@ export const hpInvoices = pgTable("hp_invoices", {
 	invoiceDate: date("invoice_date"),
 	/** 关联支付记录 ID */
 	paymentId: uuid("payment_id"),
+	/** 编号 - 申请单号 */
+	code: varchar("code", { length: 50 }),
+	/** 业主名称 */
+	ownerName: varchar("owner_name", { length: 50 }),
+	/** 申请人 */
+	applicant: varchar("applicant", { length: 50 }),
+	/** 发票名头 */
+	invoiceTitle: varchar("invoice_title", { length: 200 }),
+	/** 纳税人识别号 */
+	taxpayerId: varchar("taxpayer_id", { length: 50 }),
+	/** 审核状态 */
+	auditStatus: varchar("audit_status", { length: 20 }).default("pending"),
+	/** 申请时间 */
+	applicationTime: timestamp("application_time"),
 	/** 备注 */
 	remark: remarkField(),
 	...timestamps,
@@ -194,6 +218,14 @@ export const hpReserveVenueOrders = pgTable("hp_reserve_venue_orders", {
 	status: varchar("status", { length: 20 }),
 	/** 备注 */
 	remark: remarkField(),
+	/** 预约时间 - 业务日期 */
+	reservationTime: timestamp("reservation_time"),
+	/** 开始时间 */
+	startTime: timestamp("start_time"),
+	/** 结束时间 */
+	endTime: timestamp("end_time"),
+	/** 使用人数 */
+	numberOfUsers: integer("number_of_users"),
 	...timestamps,
 });
 
@@ -234,6 +266,18 @@ export const hpOwnersCommittees = pgTable("hp_owners_committees", {
 	tenure: varchar("tenure", { length: 50 }),
 	/** 备注 */
 	remark: remarkField(),
+	/** 姓名 */
+	fullName: varchar("full_name", { length: 50 }),
+	/** 性别 */
+	gender: genderEnum("gender"),
+	/** 身份证号码 */
+	idNumber: varchar("id_number", { length: 18 }),
+	/** 住址 */
+	address: text("address"),
+	/** 岗位 */
+	post: varchar("post", { length: 50 }),
+	/** 状态 */
+	status: varchar("status", { length: 20 }),
 	...timestamps,
 });
 

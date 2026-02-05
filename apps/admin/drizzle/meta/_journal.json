@@ -15,6 +15,13 @@
 			"when": 1770265998311,
 			"tag": "0001_petite_luke_cage",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1770289208602,
+			"tag": "0002_spicy_scarlet_spider",
+			"breakpoints": true
 		}
 	]
 }
