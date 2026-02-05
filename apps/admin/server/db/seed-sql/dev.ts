@@ -1,8 +1,6 @@
-import { dtConfigTypes, dtDictionaries, dtMenuGroups } from "../schemas/dev";
+import { dtDictionaries } from "../schemas/dev";
 
 import { mockDictionaryTypeData } from "../../api/dev-team/config-manage/type/mock-data";
-import { mockDictionaryData } from "../../api/dev-team/config-manage/dictionary/mock-data";
-import { mockMenuGroupData } from "../../api/dev-team/menu-manage/group/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { db } from "../index";

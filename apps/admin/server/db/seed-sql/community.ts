@@ -17,7 +17,7 @@ import { mockHouseDecorationData } from "../../api/property-manage/community-man
 import { mockPropertyRegisterData } from "../../api/property-manage/community-manage/property-register/mock-data";
 import { mockBuildingSpaceStructureDiagramData } from "../../api/property-manage/community-manage/building-space-structure-diagram/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, auditStatusMap, toSqlTimestamp, toSqlDate } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, statusMap, toStatusEnum, toAuditStatusEnum } from "./index";
 import { db } from "../index";
 
 /**
@@ -41,7 +41,7 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			code: item.communityCode,
 			address: item.address,
 			phone: item.contactPhone,
-			status: statusMap[item.status] || "enabled", // 默认启用
+			status: toStatusEnum(item.status),
 
 			landArea: item.landArea ? String(item.landArea) : null,
 			buildingArea: item.buildingArea ? String(item.buildingArea) : null,
@@ -62,7 +62,7 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
-		} as any;
+		};
 	});
 
 	if (communityRecords.length > 0) {
@@ -134,7 +134,7 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			decorationCompany: item.decorationCompany,
 			plannedStartTime: item.decorationTime ? String(item.decorationTime) : null,
 			plannedEndTime: null, // decorationTime in mock seems to be start time
-			auditStatus: auditStatusMap[item.status] || "pending",
+			auditStatus: toAuditStatusEnum(item.status),
 			auditor: null,
 			auditTime: null,
 			remark: item.remarks,

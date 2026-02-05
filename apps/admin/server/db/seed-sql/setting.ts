@@ -2,8 +2,6 @@ import {
 	smOrganizations,
 	smStaff,
 	smRoles,
-	smPermissions,
-	smRolePermissions,
 	smDataPermissions,
 	smShifts,
 	smSchedulingSettings,
@@ -35,7 +33,7 @@ import { mockSystemConfigData } from "../../api/setting-manage/system-manage/sys
 import { mockRegisterProtocolData } from "../../api/setting-manage/system-manage/register-protocol/mock-data";
 import { mockInitializeCommunityData } from "../../api/setting-manage/system-manage/initialize-cell/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, genderEnum, generateUuid, toSqlTimestamp } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";
 import { OrganizationTreeNode } from "@01s-11comm/type";
 
@@ -166,9 +164,9 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 		const id = idMap.register("sm_data_permissions", item.id);
 		return {
 			id: id,
-			roleId: idMap.get("sm_roles", item.roleId),
-			resourceType: item.resourceType,
-			dataScope: item.dataScope,
+			roleId: item.roleId ? idMap.get("sm_roles", item.roleId) : null,
+			resourceType: item.resourceType ?? null,
+			dataScope: item.dataScope ?? null,
 			customRange: item.customRange ? JSON.stringify(item.customRange) : null,
 			remark: item.description,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
@@ -194,10 +192,10 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 		const id = idMap.register("sm_shifts", item.id);
 		return {
 			id: id,
-			shiftName: item.shiftName,
+			shiftName: item.shiftName ?? item.name,
 			startTime: item.startTime,
 			endTime: item.endTime,
-			remark: item.remark,
+			remark: item.remark ?? item.description,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
 		};
@@ -219,16 +217,16 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 	console.log("正在生成 sm_scheduling_settings SQL...");
 	const schedulingRecords: InsertSmSchedulingSetting[] = mockSchedulingSettingData.map((item) => {
 		const id = idMap.register("sm_scheduling_settings", item.id);
-		// Link to orgId if simple string or map
-		const orgUuid = idMap.get("sm_organizations", item.orgId); // item.orgId might be "3-1"
+		// Link to orgId if available, otherwise null
+		const orgUuid = item.orgId ? idMap.get("sm_organizations", item.orgId) : null;
 
 		return {
 			id: id,
 			orgId: orgUuid,
-			ruleName: item.ruleName,
-			cycleType: item.cycleType,
-			shiftIds: item.shiftIds, // JSON or Array? Schema is json? Mock says string[]
-			remark: item.remark,
+			ruleName: item.ruleName ?? item.name,
+			cycleType: item.cycleType ?? item.cycle,
+			shiftIds: item.shiftIds ?? null,
+			remark: item.remark ?? null,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
 		};
@@ -248,19 +246,23 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 	// 7. 生成 sm_working_schedules (排班记录)
 	// ==========================================
 	console.log("正在生成 sm_working_schedules SQL...");
-	const workingRecords: InsertSmWorkingSchedule[] = mockWorkingScheduleData.map((item) => {
-		const id = idMap.register("sm_working_schedules", item.id);
-		return {
-			id: id,
-			staffId: idMap.get("sm_staff", item.staffId),
-			shiftId: idMap.get("sm_shifts", item.shiftId),
-			workDate: item.workDate ? String(item.workDate) : null,
-			status: item.status,
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
-		};
-	});
+	const workingRecords: InsertSmWorkingSchedule[] = mockWorkingScheduleData
+		.map((item) => {
+			const id = idMap.register("sm_working_schedules", item.id);
+			const staffIdVal = item.staffId ? idMap.get("sm_staff", item.staffId) : null;
+			const shiftIdVal = item.shiftId ? idMap.get("sm_shifts", item.shiftId) : null;
+
+			// staffId 和 shiftId 是必填字段，如果缺失则跳过
+			if (!staffIdVal || !shiftIdVal) return null;
+
+			return {
+				id: id,
+				staffId: staffIdVal,
+				shiftId: shiftIdVal,
+				scheduleDate: item.workDate ? String(item.workDate) : new Date().toISOString().split("T")[0],
+			};
+		})
+		.filter((x) => x !== null) as InsertSmWorkingSchedule[];
 
 	if (workingRecords.length > 0) {
 		const query = db.insert(smWorkingSchedules).values(workingRecords).toSQL();
@@ -277,14 +279,28 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 	// ==========================================
 	console.log("正在生成 sm_system_configs SQL...");
 	const configRecords: InsertSmSystemConfig[] = mockSystemConfigData.map((item) => {
-		const id = idMap.register("sm_system_configs", item.id);
+		const id = idMap.register("sm_system_configs", item.id ?? item.configId);
 		return {
 			id: id,
-			configKey: item.configKey,
-			configValue: item.configValue,
-			description: item.description,
-			category: item.category,
-			isSystem: item.isSystem,
+			configKey: item.configKey ?? item.configId,
+			configValue:
+				item.configValue ??
+				JSON.stringify({
+					title: item.title,
+					subtitle: item.subtitle,
+					shortName: item.shortName,
+					companyName: item.companyName,
+					logoUrl: item.logoUrl,
+					staticUrl: item.staticUrl,
+					defaultCommunityCode: item.defaultCommunityCode,
+					ownerTitle: item.ownerTitle,
+					propertyMobileTitle: item.propertyMobileTitle,
+					qqMapKey: item.qqMapKey,
+					mallUrl: item.mallUrl,
+				}),
+			description: item.description ?? item.title,
+			category: item.category ?? "system",
+			isSystem: item.isSystem ?? true,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
@@ -308,14 +324,10 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 		const id = idMap.register("sm_register_protocols", item.id);
 		return {
 			id: id,
-			title: item.title,
-			content: item.content,
+			protocolType: null,
+			protocolTitle: item.title,
+			protocolContent: item.content,
 			version: item.version,
-			isRequired: item.isRequired,
-			isEnabled: item.isEnabled,
-			publishedAt: item.publishedAt ? new Date(item.publishedAt) : null,
-			createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
-			updatedAt: new Date(),
 		};
 	});
 
@@ -334,16 +346,17 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 	// ==========================================
 	console.log("正在生成 sm_initialize_cells SQL...");
 	const cellRecords: InsertSmInitializeCell[] = mockInitializeCommunityData.map((item) => {
-		const id = idMap.register("sm_initialize_cells", item.id);
+		const id = idMap.register("sm_initialize_cells", item.id ?? item.communityId);
 		return {
 			id: id,
-			communityName: item.communityName,
-			cellName: item.cellName, // Maps to? Schema has 'cellName'? mock has 'cellName'.
-			// Adjust schema field names if needed. Schema `sm_initialize_cells` likely has `cell_name`.
-			code: item.code,
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			initItem: item.communityName ?? item.nearbyLandmark ?? "默认初始化项",
+			initStatus: "completed",
+			configParams: {
+				communityId: item.communityId,
+				cellName: item.cellName ?? item.nearbyLandmark,
+				code: item.code ?? item.communityId,
+				remark: item.remark ?? item.cityCode,
+			},
 		};
 	});
 

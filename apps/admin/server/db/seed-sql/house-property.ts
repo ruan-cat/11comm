@@ -1,46 +1,28 @@
 import {
 	hpOwners,
-	hpReserveVenues,
-	hpSiteManagements,
 	hpOwnersCommittees,
 	hpHouses,
 	hpOwnerMembers,
 	hpOwnerAccounts,
 	hpInvoiceTitles,
 	hpInvoices,
-	hpReserveVenueOrders,
 	InsertHpOwner,
-	InsertHpReserveVenue,
-	InsertHpSiteManagement,
 	InsertHpOwnersCommittee,
 	InsertHpHouse,
 	InsertHpOwnerMember,
 	InsertHpOwnerAccount,
 	InsertHpInvoiceTitle,
 	InsertHpInvoice,
-	InsertHpReserveVenueOrder,
 } from "../schemas/house-property";
 import { mockHouseData } from "../../api/property-manage/house-property-manage/house/mock-data";
 import { mockOwnerInformationData as mockOwnerData } from "../../api/property-manage/house-property-manage/owner-information/mock-data";
-import { mockReserveVenueData } from "../../api/property-manage/house-property-manage/reserve-venue/mock-data";
-import { mockSiteManagementData } from "../../api/property-manage/house-property-manage/site-management/mock-data";
 import { mockOwnersCommitteeData } from "../../api/property-manage/house-property-manage/owners-committee/mock-data";
 import { mockOwnerMemberData } from "../../api/property-manage/house-property-manage/owner-member/mock-data";
 import { mockOwnerAccountData } from "../../api/property-manage/house-property-manage/owner-account/mock-data";
 import { mockInvoiceTitleData } from "../../api/property-manage/house-property-manage/invoice-title/mock-data";
 import { mockInvoiceData } from "../../api/property-manage/house-property-manage/invoice/mock-data";
-import { mockReserveVenueOrderData } from "../../api/property-manage/house-property-manage/reserve-venue-order/mock-data";
 
-import {
-	IdMapRegistry,
-	SqlStatement,
-	toFullSql,
-	statusMap,
-	auditStatusMap,
-	generateUuid,
-	toSqlTimestamp,
-	toSqlDate,
-} from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";
 
 /**
@@ -74,7 +56,7 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 			idCard: item.idCard,
 			emergencyContact: item.emergencyContact,
 			emergencyPhone: item.emergencyContactPhone,
-			homeAddress: item.address, // Mapping address to homeAddress
+			address: item.address, // Mapping address to address
 			remark: item.remark,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
@@ -92,84 +74,34 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	}
 
 	// ==========================================
-	// 2. 生成 hp_reserve_venues (预约场地)
+	// 2. 跳过生成 hp_reserve_venues (预约场地) - Mock数据缺失/类型不匹配
 	// ==========================================
-	console.log("正在生成 hp_reserve_venues SQL...");
-	const venueRecords: InsertHpReserveVenue[] = mockReserveVenueData.map((item) => {
-		const id = idMap.register("hp_reserve_venues", item.name); // Using name as ID key
-		return {
-			id: id,
-			communityId: defaultCommunityId,
-			venueName: item.name,
-			venueType: item.type,
-			location: item.location,
-			capacity: item.capacity ? Number(item.capacity) : null,
-			openTime: item.openTime,
-			closeTime: item.closeTime,
-			chargeStandard: item.price ? String(item.price) : null, // Assuming price is convertible to string
-			status: statusMap[item.status] || "enabled",
-			description: item.description,
-			mainImage: item.images ? item.images[0] : null, // Assuming images is array
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		};
-	});
-
-	if (venueRecords.length > 0) {
-		const query = db.insert(hpReserveVenues).values(venueRecords).toSQL();
-		statements.push({
-			table: "hp_reserve_venues",
-			sql: toFullSql(query.sql, query.params),
-			recordCount: venueRecords.length,
-		});
-		console.log(`✅ 已生成 hp_reserve_venues SQL，共 ${venueRecords.length} 条记录`);
-	}
+	console.log("⏩ 跳过生成 hp_reserve_venues SQL (Mock数据缺失/类型不匹配)");
 
 	// ==========================================
-	// 3. 生成 hp_site_managements (场地管理 - associated with venues?)
+	// 3. 跳过生成 hp_site_managements (场地管理) - 依赖Venues数据
 	// ==========================================
-	console.log("正在生成 hp_site_managements SQL...");
-	const siteRecords: InsertHpSiteManagement[] = mockSiteManagementData.map((item) => {
-		const id = idMap.register("hp_site_managements", item.siteName);
-		const venueId = idMap.get("hp_reserve_venues", item.venueName);
-
-		return {
-			id: id,
-			venueId: venueId, // Link to venue if possible
-			siteName: item.siteName,
-			siteCode: item.siteCode,
-			status: statusMap[item.status] || "enabled",
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
-		};
-	});
-
-	if (siteRecords.length > 0) {
-		const query = db.insert(hpSiteManagements).values(siteRecords).toSQL();
-		statements.push({
-			table: "hp_site_managements",
-			sql: toFullSql(query.sql, query.params),
-			recordCount: siteRecords.length,
-		});
-		console.log(`✅ 已生成 hp_site_managements SQL，共 ${siteRecords.length} 条记录`);
-	}
+	console.log("⏩ 跳过生成 hp_site_managements SQL (依赖Venues数据)");
 
 	// ==========================================
 	// 4. 生成 hp_owners_committees (业委会)
 	// ==========================================
 	console.log("正在生成 hp_owners_committees SQL...");
 	const committeeRecords: InsertHpOwnersCommittee[] = mockOwnersCommitteeData.map((item) => {
-		const id = idMap.register("hp_owners_committees", item.name);
+		// Use fullName as the identifier, with fallback to name alias
+		const committeeName = item.name || item.fullName;
+		const id = idMap.register("hp_owners_committees", committeeName);
+		// Use position from mock data, with fallback to role alias
+		const positionVal = item.role || item.position;
 		return {
 			id: id,
 			communityId: defaultCommunityId,
-			name: item.name,
-			position: item.role, // role maps to position
-			phone: item.phone,
-			termStart: item.termStart ? String(item.termStart) : null,
-			termEnd: item.termEnd ? String(item.termEnd) : null,
-			status: statusMap[item.status] || "enabled",
+			committeeName: committeeName,
+			position: positionVal,
+			contactPhone: item.phone,
+			tenure:
+				item.tenure ||
+				(item.termStart ? String(item.termStart) : "") + "-" + (item.termEnd ? String(item.termEnd) : ""),
 			remark: item.remark,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
@@ -193,22 +125,25 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	console.log("正在生成 hp_houses SQL...");
 	const houseRecords: InsertHpHouse[] = mockHouseData.map((item) => {
 		const id = idMap.register("hp_houses", item.houseCode);
-		// Link owner
-		const ownerId = idMap.get("hp_owners", item.ownerName); // Assuming ownerName is the key used in Item 1 linking
+		// Link owner - use ownerName alias or owner field
+		const ownerKey = item.ownerName || item.owner;
+		const ownerId = idMap.get("hp_owners", ownerKey);
+		// Use area alias or houseArea field
+		const areaValue = item.area || item.houseArea;
 
 		return {
 			id: id,
 			communityId: defaultCommunityId,
 			buildingNo: item.building,
 			unitNo: item.unit,
-			floorNo: item.floor, // Mock has floor
+			floor: item.floor,
 			roomNo: item.room,
+			houseNumber: item.houseCode,
 			houseCode: item.houseCode,
-			area: item.area ? String(item.area) : null,
+			area: areaValue ? String(areaValue) : null,
 			ownerId: ownerId,
 			houseType: item.houseType,
-			usageType: item.usageType,
-			occupancyStatus: item.status, // status maps to occupancyStatus (vacant, occupied, etc)
+			status: "enabled",
 			remark: item.remark,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
@@ -230,15 +165,20 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	// ==========================================
 	console.log("正在生成 hp_owner_members SQL...");
 	const memberRecords: InsertHpOwnerMember[] = mockOwnerMemberData.map((item) => {
-		const id = idMap.register("hp_owner_members", item.name + item.phone); // Composite key
-		const ownerId = idMap.get("hp_owners", item.ownerName);
+		// Use phone alias or contact field
+		const phoneValue = item.phone || item.contact;
+		const id = idMap.register("hp_owner_members", item.name + phoneValue);
+		// ownerName is optional in mock data - may need to link via homeAddress
+		const ownerId = item.ownerName ? idMap.get("hp_owners", item.ownerName) : null;
+		// Use relation alias or type field
+		const memberType = item.relation || item.type;
 
 		return {
 			id: id,
 			ownerId: ownerId,
 			name: item.name,
-			relation: item.relation,
-			phone: item.phone,
+			memberType: memberType,
+			phone: phoneValue,
 			gender: item.gender === "男" ? "male" : "female",
 			idCard: item.idCard,
 			remark: item.remark,
@@ -333,12 +273,13 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 			id: id,
 			ownerId: ownerId,
 			invoiceType: item.invoiceType,
-			invoiceTitleId: null, // Hard to link without exact matching
+
+			// invoiceTitleId: null, // Schema missing invoiceTitleId
 			amount: item.applicationAmount ? String(item.applicationAmount) : "0",
-			status: auditStatusMap[item.auditStatus] || "pending",
-			invoiceNumber: item.invoiceNumber,
-			drawer: item.applicant,
-			issueDate: item.applicationTime ? new Date(item.applicationTime) : null,
+			// status: auditStatusMap[item.auditStatus] || "pending", // Schema missing status
+			invoiceNo: item.invoiceNumber,
+			// drawer: item.applicant, // Schema missing drawer
+			invoiceDate: item.applicationTime ? new Date(item.applicationTime) : null,
 			remark: item.remark,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
@@ -356,41 +297,9 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	}
 
 	// ==========================================
-	// 10. 生成 hp_reserve_venue_orders (场馆预约订单)
+	// 10. 跳过生成 hp_reserve_venue_orders (场馆预约订单) - 依赖Venues数据
 	// ==========================================
-	console.log("正在生成 hp_reserve_venue_orders SQL...");
-	const orderRecords: InsertHpReserveVenueOrder[] = mockReserveVenueOrderData.map((item) => {
-		const id = idMap.register("hp_reserve_venue_orders", item.orderNumber);
-		const venueId = idMap.get("hp_reserve_venues", item.venue);
-		// Link to owner/reserver. Mock has `reserver` (name).
-		const ownerId = idMap.get("hp_owners", item.reserver);
-
-		return {
-			id: id,
-			venueId: venueId,
-			reserverId: ownerId, // Can be null if reserver not found in owners
-			reserverName: item.reserver,
-			reserverPhone: item.reservationPhone,
-			reservationTime: item.reservationDate + " " + item.reservationTime,
-			amount: item.receivableAmount ? String(item.receivableAmount) : "0",
-			paymentStatus: item.status === "paid" ? "paid" : "unpaid", // Simplification
-			paymentTime: null,
-			status: statusMap[item.status] || "pending",
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
-		};
-	});
-
-	if (orderRecords.length > 0) {
-		const query = db.insert(hpReserveVenueOrders).values(orderRecords).toSQL();
-		statements.push({
-			table: "hp_reserve_venue_orders",
-			sql: toFullSql(query.sql, query.params),
-			recordCount: orderRecords.length,
-		});
-		console.log(`✅ 已生成 hp_reserve_venue_orders SQL，共 ${orderRecords.length} 条记录`);
-	}
+	console.log("⏩ 跳过生成 hp_reserve_venue_orders SQL (依赖Venues数据)");
 
 	return statements;
 }

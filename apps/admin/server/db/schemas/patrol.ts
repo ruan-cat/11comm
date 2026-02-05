@@ -192,3 +192,11 @@ export const ptPatrolTaskDetails = pgTable(
 		index("pt_patrol_task_details_check_in_status_idx").on(table.checkInStatus),
 	],
 );
+
+// Insert Types
+export type InsertPtPatrolPlan = typeof ptPatrolPlans.$inferInsert;
+export type InsertPtPatrolPath = typeof ptPatrolPaths.$inferInsert;
+export type InsertPtPatrolPoint = typeof ptPatrolPoints.$inferInsert;
+export type InsertPtPatrolItem = typeof ptPatrolItems.$inferInsert;
+export type InsertPtPatrolTask = typeof ptPatrolTasks.$inferInsert;
+export type InsertPtPatrolTaskDetail = typeof ptPatrolTaskDetails.$inferInsert;

@@ -23,7 +23,7 @@ import { mockContracteChargeData as mockContractChargeData } from "../../api/pro
 import { mockMeterReadingTypeData } from "../../api/property-manage/expense-manage/meter-reading-type/mock-data";
 import { mockWaterAndElectricityMeterReadingData as mockMeterReadingData } from "../../api/property-manage/expense-manage/water-and-electricity-meter-reading/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, auditStatusMap, generateUuid } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { db } from "../index";
 
 /**

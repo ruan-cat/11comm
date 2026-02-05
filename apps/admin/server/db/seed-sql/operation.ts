@@ -2,10 +2,9 @@ import { opMerchants, opPropertyCompanies, opCommunityInfo } from "../schemas/op
 
 import { mockPropertyCompanyData } from "../../api/operation-team/data-manage/property-company/mock-data";
 import { mockMerchantInfoData } from "../../api/operation-team/merchant-manage/merchant-info/mock-data";
-import { mockMerchantAdminData } from "../../api/operation-team/merchant-manage/merchant-admin/mock-data";
 import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
 import { db } from "../index";
 
 /**
@@ -23,11 +22,11 @@ export function generateOperationSql(idMap: IdMapRegistry): SqlStatement[] {
 		return {
 			id,
 			companyName: item.companyName,
-			companyCode: item.companyCode,
-			contactPerson: item.contactPerson,
-			contactPhone: item.contactPhone,
+			companyCode: item.companyCode ?? item.companyId,
+			contactPerson: item.contactPerson ?? item.administrator,
+			contactPhone: item.contactPhone ?? item.phone,
 			address: item.address,
-			qualificationLevel: item.qualificationLevel,
+			qualificationLevel: item.qualificationLevel ?? item.serviceLevel,
 			// Mapping dates...
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
@@ -56,9 +55,9 @@ export function generateOperationSql(idMap: IdMapRegistry): SqlStatement[] {
 			merchantType: item.merchantType,
 			contactPerson: item.contactPerson,
 			contactPhone: item.contactPhone,
-			businessLicense: item.businessLicense,
+			businessLicense: item.businessLicense ?? item.businessLicenseNo,
 			status: statusMap[item.status] || "enabled",
-			remark: item.remark,
+			remark: item.remark ?? item.remarks,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
 		};

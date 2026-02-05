@@ -7,9 +7,6 @@ import {
 	ctContracts,
 	ctAttachments,
 	ctChanges,
-	ctReviews,
-	ctArchives,
-	ctPrints,
 } from "../schemas/contract";
 
 import { mockFirstPartyData } from "../../api/property-manage/contract-manage/first-party/mock-data";
@@ -20,11 +17,8 @@ import { mockTypeData as mockContractTypeData } from "../../api/property-manage/
 import { mockDraftContractData } from "../../api/property-manage/contract-manage/draft-contract/mock-data";
 import { mockAttachmentData } from "../../api/property-manage/contract-manage/attachment/mock-data";
 import { mockChangeData } from "../../api/property-manage/contract-manage/change/mock-data";
-import { mockReviewData } from "../../api/property-manage/contract-manage/review/mock-data";
-import { mockArchiveData } from "../../api/property-manage/contract-manage/archive/mock-data";
-import { mockPrintData } from "../../api/property-manage/contract-manage/print/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid, toSqlDate, toSqlTimestamp } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
 import { db } from "../index";
 
 const contractStatusMap: Record<string, "draft" | "pending_review" | "effective" | "expired" | "terminated"> = {
@@ -246,7 +240,9 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 	console.log("正在生成 ct_attachments SQL...");
 	const attachmentRecords = mockAttachmentData
 		.map((item, idx) => {
-			const id = idMap.register("ct_attachments", item.fileName + idx);
+			// Use attachmentName as the primary field name (from mock data)
+			const fileName = item.fileName ?? item.attachmentName;
+			const id = idMap.register("ct_attachments", fileName + idx);
 			// attachment mock data has `contractName`
 			const contractId = idMap.get("ct_contracts", item.contractName);
 
@@ -261,13 +257,24 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 
 			if (!realContractId) return null;
 
+			// Parse file size - handle various formats like "2.5MB", "1.2MB", "0.5MB"
+			let fileSizeBytes = 0;
+			const fileSizeStr = item.fileSize;
+			if (fileSizeStr.includes("MB")) {
+				fileSizeBytes = parseFloat(fileSizeStr.replace("MB", "")) * 1024 * 1024;
+			} else if (fileSizeStr.includes("KB")) {
+				fileSizeBytes = parseFloat(fileSizeStr.replace("KB", "")) * 1024;
+			} else {
+				fileSizeBytes = parseFloat(fileSizeStr) || 0;
+			}
+
 			return {
 				id,
 				contractId: realContractId,
-				attachmentName: item.fileName,
-				attachmentType: item.fileType,
-				filePath: "/uploads/mock/" + item.fileName,
-				fileSize: Number(item.fileSize.replace("KB", "")) * 1024,
+				attachmentName: fileName,
+				attachmentType: item.fileType ?? item.attachmentType,
+				filePath: "/uploads/mock/" + fileName,
+				fileSize: Math.round(fileSizeBytes),
 				remark: item.remark,
 				createdAt: item.uploadTime ? new Date(item.uploadTime) : new Date(),
 				updatedAt: new Date(),
@@ -298,9 +305,12 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 				id,
 				contractId,
 				changeType: item.changeType,
-				changeReason: item.changeReason,
-				changeContent: item.changeContent,
-				changeDate: item.changeTime ? new Date(item.changeTime) : null,
+				// Use changeReason if available, fallback to description
+				changeReason: item.changeReason ?? item.description,
+				// Use changeContent if available, fallback to description
+				changeContent: item.changeContent ?? item.description,
+				// Use changeTime if available, fallback to applyTime
+				changeDate: item.changeTime ? new Date(item.changeTime) : item.applyTime ? new Date(item.applyTime) : null,
 				approvalStatus: item.status === "已通过" ? "approved" : "pending",
 				approver: "Administrator",
 				approvalTime: null,

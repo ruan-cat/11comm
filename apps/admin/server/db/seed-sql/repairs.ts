@@ -1,17 +1,8 @@
-import {
-	rpRepairOrders,
-	rpReturnVisits,
-	rpRepairSettings,
-	rpRepairTypes,
-	rpMandatoryReturnIssues,
-	rpPhoneRepairReports,
-} from "../schemas/repairs";
+import { rpRepairOrders } from "../schemas/repairs";
 
 import { mockRepairsTodoData } from "../../api/property-manage/repairs-manage/repairs-todo/mock-data";
-import { mockReturnVisitData } from "../../api/property-manage/repairs-manage/return-visit/mock-data";
-import { mockMandatoryReturnIssueData } from "../../api/property-manage/repairs-manage/mandatory-return-issue/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql } from "./index";
 import { db } from "../index";
 
 /**

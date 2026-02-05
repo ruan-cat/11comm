@@ -15,7 +15,7 @@ import {
 
 import { mockExpenseSummaryTableData } from "../../api/property-manage/report-manage/expense-summary-table/mock-data";
 
-import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
+import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";
 
 /**

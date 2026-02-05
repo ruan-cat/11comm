@@ -3,29 +3,95 @@
  * @description 种子数据生成相关的通用工具函数
  */
 
-/** 状态值映射：中文 -> 英文枚举 */
-export const statusMap: Record<string, string> = {
+/** 状态枚举类型 */
+export type StatusEnum = "enabled" | "disabled";
+
+/** 审核状态枚举类型 */
+export type AuditStatusEnum = "pending" | "approved" | "rejected";
+
+/** 性别枚举类型 */
+export type GenderEnum = "male" | "female";
+
+/** 状态值映射：中文 -> 英文枚举（严格类型） */
+const statusMapInternal: Record<string, StatusEnum> = {
 	启用: "enabled",
 	禁用: "disabled",
 	operating: "enabled",
 	disabled: "disabled",
 	maintenance: "enabled",
 	preparing: "enabled",
-	// 添加默认值处理逻辑在调用处
+	正常: "enabled",
+	筹建中: "disabled",
+	已交付: "enabled",
+	enabled: "enabled",
+	// 默认情况在函数中处理
 };
 
-/** 性别值映射 */
-export const genderMap: Record<string, string> = {
+/** 性别值映射（严格类型） */
+const genderMapInternal: Record<string, GenderEnum> = {
 	男: "male",
 	女: "female",
+	male: "male",
+	female: "female",
 };
 
-/** 审核状态映射 */
-export const auditStatusMap: Record<string, string> = {
+/** 审核状态映射（严格类型） */
+const auditStatusMapInternal: Record<string, AuditStatusEnum> = {
 	待审核: "pending",
 	已通过: "approved",
 	已拒绝: "rejected",
+	待验收: "pending",
+	验收成功: "approved",
+	验收失败: "rejected",
+	审核不通过: "rejected",
+	装修中: "approved",
+	pending: "pending",
+	approved: "approved",
+	rejected: "rejected",
 };
+
+/**
+ * 安全地转换状态值
+ * @param value 输入的状态值
+ * @param defaultValue 默认值（如果未找到映射）
+ * @returns 标准的状态枚举值
+ */
+export function toStatusEnum(value: string | undefined | null, defaultValue: StatusEnum = "enabled"): StatusEnum {
+	if (!value) return defaultValue;
+	const mapped = statusMapInternal[value];
+	return mapped ?? defaultValue;
+}
+
+/**
+ * 安全地转换审核状态值
+ * @param value 输入的审核状态值
+ * @param defaultValue 默认值（如果未找到映射）
+ * @returns 标准的审核状态枚举值
+ */
+export function toAuditStatusEnum(
+	value: string | undefined | null,
+	defaultValue: AuditStatusEnum = "pending",
+): AuditStatusEnum {
+	if (!value) return defaultValue;
+	const mapped = auditStatusMapInternal[value];
+	return mapped ?? defaultValue;
+}
+
+/**
+ * 安全地转换性别值
+ * @param value 输入的性别值
+ * @returns 标准的性别枚举值，如果未找到映射返回 null
+ */
+export function toGenderEnum(value: string | undefined | null): GenderEnum | null {
+	if (!value) return null;
+	const mapped = genderMapInternal[value];
+	return mapped ?? null;
+}
+
+/** 兼容性导出：保留原有的 Map 供查看（但不应用于类型转换） */
+export const statusMap = statusMapInternal;
+export const auditStatusMap = auditStatusMapInternal;
+export const genderMap = genderMapInternal;
 
 /** SQL 字符串转义 */
 export function escapeSql(str: string): string {
@@ -33,20 +99,20 @@ export function escapeSql(str: string): string {
 }
 
 /** 日期字符串转换为 SQL Timestamp 格式 */
-export function toSqlTimestamp(dateStr: string): string {
+export function toSqlTimestamp(dateStr: string | Date): string {
 	if (!dateStr) return "NULL";
 	// 如果已经是 Date 对象
 	if (dateStr instanceof Date) {
-		return `'${(dateStr as Date).toISOString()}'::timestamp`;
+		return `'${dateStr.toISOString()}'::timestamp`;
 	}
 	return `'${dateStr}'::timestamp`;
 }
 
 /** 日期字符串转换为 SQL Date 格式 */
-export function toSqlDate(dateStr: string): string {
+export function toSqlDate(dateStr: string | Date): string {
 	if (!dateStr) return "NULL";
 	if (dateStr instanceof Date) {
-		return `'${(dateStr as Date).toISOString().split("T")[0]}'::date`;
+		return `'${dateStr.toISOString().split("T")[0]}'::date`;
 	}
 	return `'${dateStr}'::date`;
 }
@@ -71,11 +137,6 @@ export function toFullSql(sql: string, params: unknown[]): string {
 		} else {
 			value = String(param);
 		}
-		// 使用正则替换对应的 $N，需要注意避免替换 $10 中的 $1 (虽然 loop 是顺序的，$10 不会先于 $1 出现，但 replaceAll 比较安全)
-		// 简单的 replace 只替换第一个，这里应该是唯一的 $N，但 drizzle 生成的 sql 可能多次使用同一个参数吗？
-		// Drizzle generated SQL currently uses unique placeholders like $1, $2 per value usage.
-		// 简单的 replace 是可以的，但是必须确保 $1 不会匹配到 $10。
-		// 使用 regex: \$1(?!\d) 来确保后面没有数字。
 		const regex = new RegExp(`\\$${index + 1}(?!\\d)`, "g");
 		result = result.replace(regex, value);
 	});
