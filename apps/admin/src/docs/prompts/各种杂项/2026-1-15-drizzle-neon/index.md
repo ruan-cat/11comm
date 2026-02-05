@@ -118,7 +118,11 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 请你阅读 `apps\admin\src\docs\reports\2026-02-03-analyze-mock-data-and-create-db-seed-inspection.md` 报告，将更新的新命令，整理内容，并编写专门的文档。在 `apps\admin\src\docs` 内新建专门的文档，说明清楚如何正确使用 `db:generate-seed` 和 `db:seed` 命令。
 
-### 02 <!-- TODO: 未完成 --> 处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错
+### 02 继续执行 `analyze-mock-data-and-create-db-seed` 任务
+
+现在数据库表增加了新的表，需要你为这个数据库表增加新的 seed 种子数据。
+
+### 03 <!-- TODO: 未完成 --> 处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错
 
 ## 007 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
