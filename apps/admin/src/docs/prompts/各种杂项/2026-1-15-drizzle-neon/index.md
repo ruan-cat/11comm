@@ -122,7 +122,13 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 现在数据库表增加了新的表，需要你为这个数据库表增加新的 seed 种子数据。
 
-### 03 <!-- TODO: 未完成 --> 处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错
+### 03 <!-- TODO: 未完成 --> 处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错，并评估 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了
+
+请你帮我评估一下，目录 `apps\admin\server\db\seed-sql` 内文件，其导入的模块，是否都是有意义的？我看到有些模块导入进来但是没有使用。这让我非常怀疑 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了？还是说这个任务执行的有欠缺？不完整？
+
+如果不完整，有欠缺。请你及时更新 openspec 的 `analyze-mock-data-and-create-db-seed` 任务对应的 `tasks.md` 文件，补充完善。
+
+随后，开始处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错。我不希望看到这些种子生成脚本内，出现任何类型报错。必须是完全正确的代码。
 
 ## 007 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
