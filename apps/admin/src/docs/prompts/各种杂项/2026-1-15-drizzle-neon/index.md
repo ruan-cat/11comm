@@ -87,7 +87,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
    - 新建技能时，请务必满足 skills 的要求。请你使用全局提供的 `skill-creator` 技能，来新建这款本地项目级别的技能 `neon-db-list` 。
 2. 更新 `CLAUDE.md` 文件，说明清楚，只要在 `apps\admin\server\db\schemas` 目录内，增加新的数据库表，或者是数据库表改名了，删除数据库表了。都需要主动去更新 `.claude\skills\neon-db-list` 的清单。为 `CLAUDE.md` 文件增加这款行为规范。
 
-### 03 <!-- TODO: --> 增加类型项目内的字段，是否要同步去增加 schema 目录内数据库表字段？
+### 03 增加类型项目内的字段，是否要同步去增加 schema 目录内数据库表字段？
 
 在类型项目内，最近的提交内，有很多文件的类型拓展了。增加了很多字段。请问对于 `init-neon-db-schema` 任务而言，是否要继续同步增加表字段？
 
