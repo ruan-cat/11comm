@@ -79,7 +79,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 重新制作完整的，完善的，细致的 `openspec\changes\init-neon-db-schema\tasks.md` 任务清单列表。确保你没有出现模块缺漏。确保全部 nitro 对应接口的模块，都有完整的数据库表设计。
 
-### 02 <!-- TODO: --> 列举说明清楚 schema 目录内全部的数据库表，便于查询了解
+### 02 列举说明清楚 schema 目录内全部的数据库表，便于查询了解
 
 现在 `apps\admin\server\db\schemas` 目录内有很多数据库表。我也能在 neon 内看到这些新建的数据库表了，但是我直接去阅读 neon 时，看到那么多表名，还是搞不清这些表。
 
