@@ -1,4 +1,10 @@
-import { pkParkingLots, pkCarports, pkOwnerVehicles, pkCarportApplications } from "../schemas/parking";
+import {
+	pkParkingLots,
+	pkCarports,
+	pkOwnerVehicles,
+	pkCarportApplications,
+	pkParkingStructures,
+} from "../schemas/parking";
 
 import { mockParkingLotData } from "../../api/property-manage/parking-manage/parking-lot/mock-data";
 import { mockCarportInfoData } from "../../api/property-manage/parking-manage/carport-info/mock-data";
@@ -145,8 +151,8 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 			return {
 				id,
 				applicant: item.applicant,
-				carportType: item.applyType,
-				status: item.status,
+				carportType: "标准车位", // Mock data missing this field, using default
+				status: item.reviewResult || "待审核",
 				// Mapping other fields if mock data has them
 				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 				updatedAt: new Date(),
@@ -161,6 +167,46 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 				recordCount: applyRecords.length,
 			});
 		}
+	}
+
+	// ==========================================
+	// 5. 生成 pk_parking_structures (车位结构图)
+	// ==========================================
+	console.log("正在生成 pk_parking_structures SQL...");
+	const structureRecords = [];
+	if (lotRecords.length > 0) {
+		lotRecords.forEach((lot) => {
+			// Generate 2 structures per lot: "A区" and "B区"
+			["A区", "B区"].forEach((region, index) => {
+				const id = idMap.register("pk_parking_structures", `${lot.lotName}-${region}`);
+				structureRecords.push({
+					id,
+					parkingLotId: lot.id,
+					regionName: region,
+					structureData: JSON.stringify({
+						width: 800,
+						height: 600,
+						elements: [
+							{ type: "rect", x: 10, y: 10, w: 100, h: 50, label: "Entrance" },
+							{ type: "rect", x: 10, y: 100, w: 50, h: 100, label: "Space 01" },
+						],
+					}),
+					sortOrder: index + 1,
+					remark: "System generated structure mock data",
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				});
+			});
+		});
+	}
+
+	if (structureRecords.length > 0) {
+		const query = db.insert(pkParkingStructures).values(structureRecords).toSQL();
+		statements.push({
+			table: "pk_parking_structures",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: structureRecords.length,
+		});
 	}
 
 	return statements;
