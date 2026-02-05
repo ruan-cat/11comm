@@ -129,3 +129,114 @@
 - [x] 11.9 验证 `--clean-only` 参数可正常只执行清理
 - [x] 11.10 检查控制台日志输出是否清晰完整
 - [x] 11.11 将生成的 SQL 文件提交到 Git 版本控制
+
+## 12. 完善与清理 (Refinement & Cleanup)
+
+- [x] 12.1 清理 `apps/admin/server/db/seed-sql` 目录下的未使用导入 (Remove unused imports in seed-sql)
+- [x] 12.2 修复 `seed-sql/community.ts` 中缺失的工具函数导入 (Fix missing imports)
+  - 添加 `toStatusEnum` 和 `toAuditStatusEnum` 的导入
+- [x] 12.3 检查并修复所有 seed 脚本中的类型报错 (Fix type errors)
+- [x] 12.4 确认 `cm_handing_business` 和 `rp_return_visits` 等跳过表的后续处理方案 (Verify skipped tables)
+  - 已确认 `hp_reserve_venues` (mock data is orders), `hp_site_managements`, `hp_reserve_venue_orders` 因 Mock 数据缺失或错误而跳过生成。
+  - 已确认 `mockReserveVenueData` 内容实际为订单数据，与 `ReserveVenue` 类型不匹配。
+
+## 13. 类型定义扩展 (策略 B - 扩展类型定义)
+
+### 13.1. 为 patrol 模块添加 Insert 类型导出
+
+- [x] 13.1.1 在 `apps/admin/server/db/schemas/patrol.ts` 中添加 `InferInsertModel` 导入
+- [x] 13.1.2 导出 `InsertPtPatrolPlan` 类型
+- [x] 13.1.3 导出 `InsertPtPatrolPath` 类型
+- [x] 13.1.4 导出 `InsertPtPatrolPoint` 类型
+- [x] 13.1.5 导出 `InsertPtPatrolItem` 类型
+- [x] 13.1.6 导出 `InsertPtPatrolTask` 类型
+- [x] 13.1.7 导出 `InsertPtPatrolTaskDetail` 类型
+
+### 13.2. 扩展 house-property-manage 类型定义
+
+- [x] 13.2.1 扩展 `OwnerInformationListItem` 添加字段: gender, phone, idCard, emergencyContact, emergencyContactPhone, address, remark, createTime, updateTime
+- [x] 13.2.2 扩展 `OwnersCommitteeListItem` 添加字段: name (alias for fullName), role (alias for position), phone, termStart, termEnd, remark, createTime
+- [x] 13.2.3 扩展 `HouseListItem` 添加字段: building, unit, floor, room, houseType, ownerName, remark, createTime
+- [x] 13.2.4 扩展 `OwnerMemberListItem` 添加字段: ownerName, relation (alias for type), phone (alias for contact), gender, idCard, remark, createTime
+- [x] 13.2.5 扩展 `OwnerAccountListItem` 添加字段: accountName, accountNo, accountType, accountBalance, remark, createTime
+- [x] 13.2.6 扩展 `InvoiceTitleListItem` 添加字段: ownerName, code, invoiceType, invoiceTitle, taxpayerId, address, phone, bankAccount, createTime, updateTime
+- [x] 13.2.7 扩展 `InvoiceListItem` 添加字段: ownerName, code, invoiceType, invoiceNumber, applicationAmount, applicationTime, remark, createTime, updateTime
+
+### 13.3. 扩展 setting-manage 类型定义
+
+- [x] 13.3.1 扩展 `ShiftSettingListItem` 添加字段: shiftName (alias for name), startTime, endTime, remark, createTime
+- [x] 13.3.2 扩展 `SchedulingSetting` 添加字段: orgId, ruleName, cycleType, shiftIds, remark, createTime
+- [x] 13.3.3 扩展 `WorkingSchedule` 添加字段: staffId, shiftId, workDate, status, remark, createTime
+- [x] 13.3.4 扩展 `DataPermission` 添加字段: roleId, resourceType, dataScope, customRange, description, createTime
+- [x] 13.3.5 扩展 `SystemConfigListItem` 添加字段: configKey, configValue, description, category, isSystem, createTime, updateTime
+- [x] 13.3.6 扩展 `InitializeCommunityListItem` 添加字段: communityName, cellName, code, remark, createTime
+
+### 13.4. 扩展 operation-team 类型定义
+
+- [x] 13.4.1 扩展 `PropertyCompanyListItem` 添加字段: companyCode (alias for companyId), contactPerson, contactPhone
+- [x] 13.4.2 扩展 `MerchantInfo` 添加字段: businessLicense (alias for businessLicenseNo), remark (alias for remarks)
+
+### 13.5. 扩展 contract-manage 类型定义
+
+- [x] 13.5.1 扩展 `AttachmentListItem` 添加字段: fileName (alias for attachmentName), fileType (alias for attachmentType), fileSize, uploadTime
+- [x] 13.5.2 扩展 `ChangeListItem` 添加字段: changeReason, changeContent, changeTime
+
+## 14. Seed 脚本字段映射修复
+
+### 14.1. 修复 community.ts
+
+- [x] 14.1.1 添加 `toStatusEnum` 和 `toAuditStatusEnum` 导入
+- [x] 14.1.2 移除未使用的导入
+
+### 14.2. 修复 house-property.ts
+
+- [x] 14.2.1 修复 `hp_owners` 生成代码中的字段映射
+- [x] 14.2.2 修复 `hp_owners_committees` 生成代码中的字段映射
+- [x] 14.2.3 修复 `hp_houses` 生成代码中的字段映射
+- [x] 14.2.4 修复 `hp_owner_members` 生成代码中的字段映射
+- [x] 14.2.5 修复 `hp_owner_accounts` 生成代码中的字段映射
+- [x] 14.2.6 修复 `hp_invoice_titles` 生成代码中的字段映射
+- [x] 14.2.7 修复 `hp_invoices` 生成代码中的字段映射
+- [x] 14.2.8 移除未使用的导入
+
+### 14.3. 修复 setting.ts
+
+- [x] 14.3.1 修复 `sm_shifts` 生成代码中的字段映射
+- [x] 14.3.2 修复 `sm_scheduling_settings` 生成代码中的字段映射
+- [x] 14.3.3 修复 `sm_working_schedules` 生成代码中的字段映射
+- [x] 14.3.4 修复 `sm_data_permissions` 生成代码中的字段映射
+- [x] 14.3.5 修复 `sm_system_configs` 生成代码中的字段映射
+- [x] 14.3.6 修复 `sm_initialize_cells` 生成代码中的字段映射
+- [x] 14.3.7 移除未使用的导入
+
+### 14.4. 修复 patrol.ts
+
+- [x] 14.4.1 更新 Insert 类型导入使用正确路径
+- [x] 14.4.2 移除未使用的导入
+
+### 14.5. 修复 contract.ts
+
+- [x] 14.5.1 修复 `ct_attachments` 生成代码中的字段映射
+- [x] 14.5.2 修复 `ct_changes` 生成代码中的字段映射
+- [x] 14.5.3 移除未使用的导入
+
+### 14.6. 修复 operation.ts
+
+- [x] 14.6.1 修复 `op_property_companies` 生成代码中的字段映射
+- [x] 14.6.2 修复 `op_merchants` 生成代码中的字段映射
+- [x] 14.6.3 移除未使用的导入
+
+### 14.7. 修复其他 seed 脚本
+
+- [x] 14.7.1 检查并修复 `repairs.ts` 中的类型报错
+- [x] 14.7.2 检查并修复 `expense.ts` 中的类型报错
+- [x] 14.7.3 检查并修复 `parking.ts` 中的类型报错
+- [x] 14.7.4 检查并修复 `report.ts` 中的类型报错
+- [x] 14.7.5 检查并修复 `dev.ts` 中的类型报错
+
+## 15. 类型检查验证
+
+- [x] 15.1 运行 `pnpm -F @01s-11comm/type typecheck` 验证类型项目无报错
+- [x] 15.2 运行 `pnpm -F @01s-11comm/admin typecheck` 验证 admin 项目中 seed-sql 模块无报错
+  - 注：存在一个与 unplugin-vue-components 相关的非 seed-sql 错误，不属于本任务范围
+- [x] 15.3 运行 seed 脚本生成命令验证功能正常
