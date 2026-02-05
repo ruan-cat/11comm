@@ -708,3 +708,13 @@ pnpm -F @01s-11comm/type typecheck
 2. 测试用例的文件格式为 `*.test.ts` 。
 3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
 4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
+
+## 16. 数据库变更维护规范
+
+当你在 `apps\admin\server\db\schemas` 目录内执行以下操作时：
+
+1. 新增数据库表
+2. 修改数据库表名
+3. 删除数据库表
+
+你**必须**主动更新 `.claude\skills\neon-db-list\SKILL.md` 文件内的数据库表清单，确保该清单与实际代码保持一致。
