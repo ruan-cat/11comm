@@ -60,7 +60,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 9. 在本项目全局查询 `DATABASE_URL` 字符串。admin 项目更改对 DATABASE_URL 环境变量的使用。并且去更改其他关于 neon 环境变量的使用。环境变量的命名规则改了，增加了前缀。请改成使用你编写的环境变量获取函数来完成。
 10. 最后，在 `apps\admin\src\docs\env-setup` 目录内，专门新建一个文档，说明清楚 admin 项目时如何获取来自 vercel 环境变量的，有哪些细节。目的是为了让其他人能够快速看懂，快速上手这部分的逻辑。
 
-## 004 初始化 neon 数据库的数据库表字段定义
+## 004 初始化 neon 数据库的数据库表字段定义 `init-neon-db-schema`
 
 1. 目前，`apps\admin\server\db\schema.ts` 是空的。因此 admin 项目的 package.json 的 `db:generate` 命令无法使用。因为没有具体的表设置，所以无法生成数据库迁移 sql。
 2. 我需要你全面的阅读全部类型项目内出现的文件。了解清楚涉及到的业务类型有哪些。
@@ -174,7 +174,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 - `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
 - `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
 
-## 008 <!-- TODO: 长任务 未完成 --> 面向全栈项目，重构类型项目
+## 008 <!-- TODO: 长任务 未完成 --> 面向全栈项目，重构类型项目 `full-stack-type-transformation`
 
 对应 openspec 任务 `full-stack-type-transformation` 。
 
