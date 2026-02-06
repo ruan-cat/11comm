@@ -163,6 +163,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 - apps\admin\src\docs\reports\2026-02-05-trpc-vs-shared-schema-analysis.md
 - apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md
+- apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md
 
 ## 008 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
