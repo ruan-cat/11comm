@@ -150,7 +150,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 随后，开始处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错。我不希望看到这些种子生成脚本内，出现任何类型报错。必须是完全正确的代码。
 
-### 04 <!-- TODO: --> 检查 seed 生成脚本内隐藏的风险项
+### 04 检查 seed 生成脚本内隐藏的风险项
 
 1. 针对 openspec 的 `analyze-mock-data-and-create-db-seed` 任务。
 2. 全面阅读 `apps\admin\server\db\seed-sql` 出现的 seed 数据生成脚本。
