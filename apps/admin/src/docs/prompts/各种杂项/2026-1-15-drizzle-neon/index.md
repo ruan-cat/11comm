@@ -218,11 +218,17 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 现在我们开始全面重构类型项目，重构成面向全栈的项目了。我相信现在的规范，肯定和 `openspec\changes\full-stack-type-transformation` 体现的规范有巨大冲突。
 
-请你全面阅读以下文件，找到过往类型项目的操作规范，与现行的类型项目操作规范，有那些显著的冲突项。请你帮我罗列出来，以报告的形式全盘罗列出来。务必罗列出一份完整的，巨大的，全面的`冲突规范`报告
+请你全面阅读以下文件，找到过往类型项目的操作规范，与现行的类型项目操作规范，有那些显著的冲突项。请你帮我罗列出来，以报告的形式全盘罗列出来。务必罗列出一份完整的，巨大的，全面的`冲突规范`报告。编写到 `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-conflict-analysis.md` 内。
 
 - `openspec\specs` 全部的历史 spec 文件。重点检查和类型项目相关的规范。
 - `.claude\skills` 本地的 skills 规范。
 - `CLAUDE.md` AI 记忆文件。
+- 其他关于类型项目定位、类型项目指导规范、schema 存储位置、schema 生成 sql 的内容。包括但不限于任何形式的报告、文档、迁移脚本、代码。
+
+你需要检查的冲突项和误导项：
+
+1. schema 数据存储位置的硬编码写法。
+2. 类型项目的定位与处理规范。
 
 ## 009 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
