@@ -230,6 +230,14 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 1. schema 数据存储位置的硬编码写法。
 2. 类型项目的定位与处理规范。
 
+### 003 <!-- TODO: 长任务 需要反复多次执行，避免缺漏 --> 完成 `resolve-type-transformation-conflicts` 相关的清理与重构任务
+
+我们现在处于项目架构转型的危险区，关键期。是偿还技术债务的关键一步。
+
+该系列任务是为了充分解决 `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-conflict-analysis.md` 报告所述的一些列关于类型项目架构改造的内容。
+
+请你严格的，充分思考的，谨慎地，完成类型项目的重构，清理错误的硬编码路径，标记过时的文档等任务。
+
 ## 009 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
 我需要你完成一次重大的代码写法改造改写任务。
