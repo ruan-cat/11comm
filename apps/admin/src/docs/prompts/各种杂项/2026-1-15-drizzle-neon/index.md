@@ -117,7 +117,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 并且提供清晰的，mock 接口写法迁移成 neon 数据库接口的写法。
 
-## 006 分析 nitro 假数据并编写 neon 数据库插入脚本
+## 006 分析 nitro 假数据并编写 neon 数据库插入脚本 `analyze-mock-data-and-create-db-seed`
 
 我们项目目前没有有意义的 `server/db/seed.ts` 文件，所以"db:seed"命令是无法运行的。
 
