@@ -144,7 +144,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 随后，开始处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错。我不希望看到这些种子生成脚本内，出现任何类型报错。必须是完全正确的代码。
 
-## 007 <!-- TODO: 未完成 --> 评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告
+## 007 评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告
 
 1. 请你完整的阅读 `apps\admin\src\docs\reports\2026-02-05-init-neon-db-schema-exploration-report.md` 报告。
 2. 请你评估一下，为了实现全栈化的，统一类型来源的代码改造，这样的破坏性变更。需要对类型项目做怎么样的改造？
