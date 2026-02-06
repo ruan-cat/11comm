@@ -1,91 +1,110 @@
 <!--
-    Actionable implementation tasks.
+    全栈类型统一改造详细操作手册 (Detailed Operational Manual)
+    严格遵循 "影子迁移 (Shadow Migration)" 策略。
 -->
 
-## Phase 1: 基础设施升级 (Infrastructure Upgrade)
+## Phase 1: 基础设施准备 (Sub-Agent A)
 
-- [ ] **apps/type 依赖安装**
-  - 进入 `apps/type` 目录。
-  - 运行 `pnpm add drizzle-orm zod drizzle-zod` (作为 dependencies, 关键!)。
-  - 检查 `package.json` 确保它们不在 `devDependencies` 中。
-- [ ] **apps/type 配置检查**
-  - 检查 `apps/type/package.json`，确保 `main` 或 `exports` 字段正确指向 `src/index.ts` (便于源码引用)。
-  - 检查 `tsconfig.json` 确保 `composite: true` 或允许被引用。
-  - **Reference**: 详见 `specs/infrastructure-config/spec.md`。
-- [ ] **apps/admin 依赖确认**
-  - 进入 `apps/admin` 目录。
-  - 运行 `pnpm add zod` (显式添加，用于前端直接引用)。
-  - 确保 `apps/admin` 依然能正确引用 `@01s-11comm/type`。
+> **代理角色**: DevOps & 配置专家
+> **目标**: 配置 `apps/type` 项目以支持运行时 Schema 定义，并确保编译链路正确。
 
-## Phase 2: 试点迁移 - 运维团队 (Pilot: Operation Team)
+- [ ] **1.1 升级 apps/type 依赖**
+  - **动作**: 在 `apps/type` 中，确保以下包位于 `dependencies` (而不是 `devDependencies`):
+    - `drizzle-orm`
+    - `zod`
+    - `drizzle-zod`
+  - **命令**: `cd apps/type && pnpm add drizzle-orm zod drizzle-zod`
+  - **验证**: 阅读 `apps/type/package.json` 进行确认。
 
-> 目标：通过一个小模块验证完整的“三位一体”编写流程和构建链路。
+- [ ] **1.2 配置 apps/type 导出 (Exports)**
+  - **动作**: 更新 `apps/type/package.json`。
+  - **要求**: 确保 `exports` 字段支持子路径导入（如果需要），或者至少 `.` 指向 `src/index.ts`。
+  - **参考**: 详见 `specs/infrastructure-config/spec.md`。
 
-- [ ] **创建 Schema 文件**
-  - 新建 `apps/type/src/business/operation-team/schema.ts`。
-  - 从 `apps/admin/server/db/schemas/operation-team.ts` (或其他对应位置) 复制表定义。
-  - **Check**: 检查是否有 `pgEnum` 定义。如果名字可能与其他模块冲突，移动到 `apps/type/src/common/enums.ts`。
-  - **Check**: 检查是否有 `json` 字段。如果有，必须在 Zod Schema 中显式定义其结构 (ref: `specs/schema-standard/spec.md`)。
-  - 按照 `specs/schema-standard/spec.md` 补充 Zod Schemas 和 Types。
-- [ ] **导出与替换**
-  - 修改 `apps/type/src/business/operation-team/index.ts`，导出新的 schema 内容。
-  - 删除该文件中旧的手动 Interface 定义，或将其别名指向新 Type。
-- [ ] **初步验证**
-  - 在 `apps/admin` 中尝试 `import { OperationTeam } from "@01s-11comm/type"`，确认类型提示生效。
-  - 尝试 `import { insertOperationTeamSchema } from "@01s-11comm/type"`，确认运行时对象存在。
+- [ ] **1.3 配置 apps/admin 依赖**
+  - **动作**: 在 `apps/admin` 中，确保 `zod` 作为直接依赖项安装。
+  - **命令**: `cd apps/admin && pnpm add zod`
 
-## Phase 3: 核心迁移循环 (The Great Migration Loop)
+- [ ] **1.4 验证环境**
+  - **动作**: 运行构建/类型检查循环，确保没有立即回归。
+  - **命令**: `pnpm -F @01s-11comm/type typecheck`
 
-> 提示：这是纯体力工作，请严格按照 `specs/schema-standard/spec.md` 执行。
-> 不需要一次性全部做完再提交，建议按一级模块分批次提交。
+## Phase 2: 试点迁移 - "运维管理/Operation Team" (Sub-Agent B)
 
-- [ ] **迁移: Property Manage (物业管理)**
-  - [ ] `community-manage` (社区)
-  - [ ] `house-property-manage` (房产)
-  - [ ] `parking-manage` (停车)
-  - [ ] `contract-manage` (合同)
-  - [ ] `expense-manage` (费用 - _包含大量子表_)
-  - [ ] `patrol-manage` (巡检)
-  - [ ] `repairs-manage` (报修)
-  - [ ] `report-manage` (报表)
-- [ ] **迁移: Setting Manage (系统设置)**
-  - [ ] `dictionary-manage` (字典)
-  - [ ] `menu-manage` (菜单)
-  - [ ] `role-manage` (角色)
-  - [ ] `user-manage` (用户)
-  - [ ] `system-manage` (系统)
-- [ ] **迁移: Development Team (开发)**
-  - [ ] `data-dict` (如果有)
+> **代理角色**: 高级后端开发
+> **目标**: 迁移一个隔离的单一模块 (`operation-team`) 以验证模式是否有效。
 
-## Phase 4: 后端切换与验证 (Switch & Verify)
+- [ ] **2.1 创建影子 Schema (Shadow Schema)**
+  - **阅读源文件**: 阅读 `apps/admin/server/db/schemas/operation-team.ts`。
+  - **创建目标文件**: 创建 `apps/type/src/business/operation-team/schema.ts`。
+  - **实现细节**:
+    - 使用 `specs/schema-standard/spec.md` 中的 **三位一体模式 (Trinity Pattern)** (Table + Zod + Type)。
+    - 确保 **所有** 字段都从源表中完整迁移。
+    - 确保 `json` 字段拥有严格的 Zod 定义。
 
-> 此阶段风险最高，必须仔细检查 Diff。
+- [ ] **2.2 对齐导出 (Export Alignment)**
+  - **动作**: 编辑 `apps/type/src/business/operation-team/index.ts`。
+  - **要求**: 添加 `export * from "./schema"`。
+  - **清理**: 注释掉或删除任何与新推导类型 (Inferred Types) 冲突的旧 `interface` 定义。
 
-- [ ] **Update Admin Drizzle Config**
-  - 修改 `apps/admin/drizzle.config.ts` 中的 `schema` 路径，指向 `../../apps/type/src/business/**/schema.ts`。
-- [ ] **Update DB Connection**
-  - 修改 `apps/admin/server/db/index.ts`，从 `@01s-11comm/type/business` (或对应入口) 导入所有 Tables。
-- [ ] **Schema Integrity Check**
-  - 运行 `pnpm -F @01s-11comm/admin db:generate`。
-  - **CRITICAL**: 检查输出。应该显示 "No changes detected"。
-  - **CRITICAL**: 检查输出。应该显示 "No changes detected"。
-  - 如果显示有变更（如 Drop/Create），说明迁移的 Schema 与原版不一致，**必须**修正 `apps/type` 中的代码直到一致。
-- [ ] **Global Export Check**
-  - 检查 `apps/type/src/index.ts` (或各级 index) 是否出现 "Exported variable has or is using name ... from external module but cannot be named" 错误。
-  - 确保所有 Schema 下的导出变量名（`community`, `insertCommunitySchema`）是全局唯一的，没有重复命名。
+- [ ] **2.3 消费者验证 (试点测试)**
+  - **动作**: 在 `apps/admin/server/test_schema_import.ts` 创建一个临时测试文件 (不要提交)。
+  - **代码**: 尝试从 `@01s-11comm/type` 导入 `insertOperationTeamSchema`。
+  - **目标**: 确保导入工作正常，并且 TS 能正确识别类型。
 
-## Phase 5: 全栈集成 (Full-Stack Integration)
+## Phase 3: 全面迁移 (The Great Migration) (Sub-Agents C, D, E)
 
-- [ ] **Backend Integration**
-  - 搜索 `apps/admin/server/api` 下使用旧 `readBody` 的接口。
-  - 逐步替换为 `readValidatedBody(event, NewSchema.parse)`。
-- [ ] **Frontend Integration**
-  - 搜索 `apps/admin/src` 下手动定义的 Form Rules。
-  - 逐步替换为 `toTypedSchema(NewSchema)` 或直接使用 `safeParse`。
+> **策略**: 按模块拆分。每个代理负责特定的业务领域。
+> **核心原则**: 暂时 **不要** 修改 `apps/admin/server/db/schemas/*`。只在 `apps/type` 中创建 **新** 文件。
 
-## Phase 6: 清理 (Cleanup)
+### Group 3.1: 物业管理 A (Sub-Agent C)
 
-- [ ] **移除旧文件**
-  - 删除 `apps/admin/server/db/schemas` 目录。
-- [ ] **代码扫描**
-  - 全局搜索是否还有残留的 `interface` 手动定义与 Schema 重复。
+- [ ] **3.1.1 社区管理 (Community Manage)** (`apps/type/src/business/property-manage/community-manage/schema.ts`)
+- [ ] **3.1.2 房产管理 (House Property)** (`apps/type/src/business/property-manage/house-property-manage/schema.ts`)
+- [ ] **3.1.3 停车管理 (Parking Manage)** (`apps/type/src/business/property-manage/parking-manage/schema.ts`)
+
+### Group 3.2: 物业管理 B (Sub-Agent D)
+
+- [ ] **3.2.1 合同管理 (Contract Manage)** (`apps/type/src/business/property-manage/contract-manage/schema.ts`)
+- [ ] **3.2.2 费用管理 (Expense Manage)** (`apps/type/src/business/property-manage/expense-manage/schema.ts`)
+  - _注意_: 该模块可能包含多个表。将它们放在同一个 `schema.ts` 中，或者如果有必要则拆分，但必须统一导出。
+- [ ] **3.2.3 报修管理 (Repairs Manage)** (`apps/type/src/business/property-manage/repairs-manage/schema.ts`)
+
+### Group 3.3: 系统设置 (System Settings) (Sub-Agent E)
+
+- [ ] **3.3.1 字典管理 (Dictionary)** (`apps/type/src/business/setting-manage/dictionary-manage/schema.ts`)
+- [ ] **3.3.2 角色与用户 (Role & User)** (`apps/type/src/business/setting-manage/role-manage/schema.ts`, `user-manage/schema.ts`)
+- [ ] **3.3.3 菜单与系统 (Menu & System)** (`apps/type/src/business/setting-manage/menu-manage/schema.ts`)
+
+## Phase 4: 切换 (Switchover) (Sub-Agent F)
+
+> **代理角色**: 架构师
+> **目标**: 将现有的数据库配置切换到新的共享 Schema (Shared Schemas)。
+
+- [ ] **4.1 更新 Drizzle 配置**
+  - **文件**: `apps/admin/drizzle.config.ts`。
+  - **变更**: 将 `schema` 指向 `../../apps/type/src/business/**/schema.ts`。
+  - **参考**: `specs/infrastructure-config/spec.md`。
+
+- [ ] **4.2 更新运行时数据库连接**
+  - **文件**: `apps/admin/server/db/index.ts`。
+  - **动作**: 将本地导入替换为 `@01s-11comm/type` 导入。
+  - **代码**: `import * as schema from "@01s-11comm/type/business";` (或类似代码)。
+
+- [ ] **4.3 完整性验证 (CRITICAL)**
+  - **命令**: `pnpm -F @01s-11comm/admin db:generate` (或 `drizzle-kit check`)。
+  - **成功条件**: 输出必须显示 "No changes detected"。
+  - **失败处理**: 如果存在差异 (diffs)，编辑 `apps/type` schemas 以匹配实时 DB。在此阶段 **不要** 生成更改 DB 的迁移文件，除非是有意为之。
+
+## Phase 5: 集成与清理 (Integration & Cleanup) (Sub-Agent G)
+
+- [ ] **5.1 后端集成**
+  - **目标**: `apps/admin/server/api`。
+  - **任务**: 将手动 body 验证替换为 `readValidatedBody` 和 Zod Schemas。
+- [ ] **5.2 前端集成**
+  - **目标**: `apps/admin/src`。
+  - **任务**: 在可能的情况下，使用 Zod Schemas 作为表单验证规则。
+
+- [ ] **5.3 清理**
+  - **动作**: 删除 `apps/admin/server/db/schemas` 目录。
+  - **验证**: 运行完整的项目构建和类型检查。
