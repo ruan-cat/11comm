@@ -160,18 +160,34 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 	// 4. 生成 sm_data_permissions (数据权限)
 	// ==========================================
 	console.log("正在生成 sm_data_permissions SQL...");
-	const dataPermRecords: InsertSmDataPermission[] = mockDataPermissionData.map((item) => {
-		const id = idMap.register("sm_data_permissions", item.id);
-		return {
-			id: id,
-			roleId: item.roleId ? idMap.get("sm_roles", item.roleId) : null,
-			permissionRule: null, // Default
-			scope: item.dataScope ?? null, // Map dataScope to scope
-			dataFilter: null, // Default
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
-		};
-	});
+	const dataPermRecords: InsertSmDataPermission[] = mockDataPermissionData
+		.map((item, index) => {
+			const id = idMap.register("sm_data_permissions", item.id);
+
+			// 尝试将数据权限关联到角色
+			// Mock数据没有roleId字段，逻辑上假设 DataPermission "1" -> Role "1"
+			// Fallback: 如果没有对应ID的角色，默认关联到第一个角色 (ID "1", 系统管理员)
+			let roleId = idMap.get("sm_roles", item.id);
+			if (!roleId) {
+				roleId = idMap.get("sm_roles", "1");
+			}
+
+			if (!roleId) {
+				// 如果连系统管理员都找不到（极少见），跳过
+				return null;
+			}
+
+			return {
+				id: id,
+				roleId: roleId,
+				permissionRule: null, // item.rule // Mock lacking fields
+				scope: "all", // default
+				dataFilter: null,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+		})
+		.filter((x): x is InsertSmDataPermission => x !== null);
 
 	if (dataPermRecords.length > 0) {
 		const query = db.insert(smDataPermissions).values(dataPermRecords).toSQL();

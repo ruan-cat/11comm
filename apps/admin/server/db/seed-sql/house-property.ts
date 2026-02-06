@@ -33,11 +33,18 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	// 1. 生成 hp_owners (业主信息)
 	// ==========================================
 	console.log("正在生成 hp_owners SQL...");
+	const ownerNameToUuidMap = new Map<string, string>(); // Local map for Name -> UUID lookup
+
 	const ownerRecords: InsertHpOwner[] = mockOwnerData.map((item) => {
 		// Check if we have an ID in mock data (e.g. `id`, `ownerId`).
 		// If not, use name.
 		const mockId = (item as any).id || (item as any).ownerId || item.name;
 		const id = idMap.register("hp_owners", mockId);
+
+		// Store mapping for name lookup
+		if (item.name) {
+			ownerNameToUuidMap.set(item.name, id);
+		}
 
 		// Map gender
 		let genderVal: "male" | "female" | null = null;
@@ -124,7 +131,15 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 		const id = idMap.register("hp_houses", item.houseCode);
 		// Link owner - use ownerName alias or owner field
 		const ownerKey = item.ownerName || item.owner;
-		const ownerId = idMap.get("hp_owners", ownerKey);
+
+		// Use ownerNameToUuidMap for lookup by name
+		let ownerId = ownerKey ? ownerNameToUuidMap.get(ownerKey) : null;
+
+		// Fallback: try raw key in idMap (unlikely if registered by ID)
+		if (!ownerId && ownerKey) {
+			ownerId = idMap.get("hp_owners", ownerKey);
+		}
+
 		// Use area alias or houseArea field
 		const areaValue = item.area || item.houseArea;
 
@@ -160,29 +175,73 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	// ==========================================
 	// 6. 生成 hp_owner_members (家庭成员)
 	// ==========================================
+	// ==========================================
+	// 6. 生成 hp_owner_members (家庭成员)
+	// ==========================================
 	console.log("正在生成 hp_owner_members SQL...");
-	const memberRecords: InsertHpOwnerMember[] = mockOwnerMemberData.map((item) => {
-		// Use phone alias or contact field
-		const phoneValue = item.phone || item.contact;
-		const id = idMap.register("hp_owner_members", item.name + phoneValue);
-		// ownerName is optional in mock data - may need to link via homeAddress
-		const ownerId = item.ownerName ? idMap.get("hp_owners", item.ownerName) : null;
-		// Use relation alias or type field
-		const memberType = item.relation || item.type;
 
-		return {
-			id: id,
-			ownerId: ownerId,
-			name: item.name,
-			memberType: memberType,
-			phone: phoneValue,
-			gender: item.gender === "男" ? "male" : "female",
-			idCard: item.idCard,
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
-		};
+	// Helper: Map HouseCode -> OwnerName from mockHouseData to link members to owners via address
+	const houseToOwnerMap = new Map<string, string>();
+	mockHouseData.forEach((h) => {
+		const code = h.houseCode;
+		// @ts-ignore - mock data types might be loose
+		const owner = h.ownerName || h.owner;
+		if (code && owner) {
+			houseToOwnerMap.set(code, owner);
+		}
 	});
+
+	const memberRecords: InsertHpOwnerMember[] = mockOwnerMemberData
+		.map((item) => {
+			// Use phone alias or contact field
+			const phoneValue = item.phone || item.contact;
+			const id = idMap.register("hp_owner_members", item.name + phoneValue);
+
+			// Derive Owner ID
+			// 1. Try explicit ownerName field (if exists)
+			// 2. Try looking up owner via homeAddress (House Code)
+			// 3. If member is "户主", assume they themselves are the owner
+			let ownerName = (item as any).ownerName;
+
+			if (!ownerName && item.homeAddress) {
+				ownerName = houseToOwnerMap.get(item.homeAddress);
+			}
+
+			if (!ownerName && item.remark === "户主") {
+				ownerName = item.name;
+			}
+
+			// Fallback for mock data consistency
+			if (!ownerName) {
+				// console.warn(`⚠️ Member ${item.name} has no linked owner, using default '张三'`);
+				ownerName = "张三";
+			}
+
+			// Resolve UUID using Name Map
+			const ownerId = ownerNameToUuidMap.get(ownerName) || idMap.get("hp_owners", ownerName);
+
+			if (!ownerId) {
+				// Skip if owner not found to satisfy NOT NULL constraint
+				return null;
+			}
+
+			// Use relation alias or type field
+			const memberType = item.relation || item.type;
+
+			return {
+				id: id,
+				ownerId: ownerId,
+				name: item.name,
+				memberType: memberType,
+				phone: phoneValue,
+				gender: item.gender === "男" ? "male" : "female",
+				idCard: item.idCard,
+				remark: item.remark,
+				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+				updatedAt: new Date(),
+			};
+		})
+		.filter(Boolean) as InsertHpOwnerMember[];
 
 	if (memberRecords.length > 0) {
 		const query = db.insert(hpOwnerMembers).values(memberRecords).toSQL();
@@ -198,23 +257,28 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	// 7. 生成 hp_owner_accounts (业主账户)
 	// ==========================================
 	console.log("正在生成 hp_owner_accounts SQL...");
-	const accountRecords: InsertHpOwnerAccount[] = mockOwnerAccountData.map((item) => {
-		const id = idMap.register("hp_owner_accounts", item.accountNo);
-		// Link to owner? Mock data has accountName (owner name).
-		const ownerId = idMap.get("hp_owners", item.accountName);
+	const accountRecords: InsertHpOwnerAccount[] = mockOwnerAccountData
+		.map((item) => {
+			const id = idMap.register("hp_owner_accounts", item.accountNo);
+			// Link to owner? Mock data has accountName (owner name).
+			const ownerName = item.accountName;
+			const ownerId = ownerNameToUuidMap.get(ownerName) || idMap.get("hp_owners", ownerName);
 
-		return {
-			id: id,
-			ownerId: ownerId,
-			accountNo: item.accountNo,
-			accountType: item.accountType,
-			balance: item.accountBalance ? String(item.accountBalance) : "0",
-			status: "enabled", // Default
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
-		};
-	});
+			if (!ownerId) return null;
+
+			return {
+				id: id,
+				ownerId: ownerId,
+				accountNo: item.accountNo,
+				accountType: item.accountType,
+				balance: item.accountBalance ? String(item.accountBalance) : "0",
+				status: "enabled", // Default
+				remark: item.remark,
+				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+				updatedAt: new Date(),
+			};
+		})
+		.filter(Boolean) as InsertHpOwnerAccount[];
 
 	if (accountRecords.length > 0) {
 		const query = db.insert(hpOwnerAccounts).values(accountRecords).toSQL();
@@ -230,23 +294,28 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	// 8. 生成 hp_invoice_titles (发票抬头)
 	// ==========================================
 	console.log("正在生成 hp_invoice_titles SQL...");
-	const titleRecords: InsertHpInvoiceTitle[] = mockInvoiceTitleData.map((item) => {
-		const id = idMap.register("hp_invoice_titles", item.code); // Using code as unique identifier
-		const ownerId = idMap.get("hp_owners", item.ownerName);
+	const titleRecords: InsertHpInvoiceTitle[] = mockInvoiceTitleData
+		.map((item) => {
+			const id = idMap.register("hp_invoice_titles", item.code); // Using code as unique identifier
+			const ownerName = item.ownerName;
+			const ownerId = ownerNameToUuidMap.get(ownerName) || idMap.get("hp_owners", ownerName);
 
-		return {
-			id: id,
-			ownerId: ownerId,
-			titleType: item.invoiceType, // personal/company
-			titleName: item.invoiceTitle,
-			taxId: item.taxpayerId,
-			addressPhone: item.address + " " + item.phone,
-			bankAccount: item.bankAccount,
-			isDefault: false,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
-		};
-	});
+			if (!ownerId) return null;
+
+			return {
+				id: id,
+				ownerId: ownerId,
+				titleType: item.invoiceType, // personal/company
+				titleName: item.invoiceTitle,
+				taxId: item.taxpayerId,
+				addressPhone: item.address + " " + item.phone,
+				bankAccount: item.bankAccount,
+				isDefault: false,
+				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			};
+		})
+		.filter(Boolean) as InsertHpInvoiceTitle[];
 
 	if (titleRecords.length > 0) {
 		const query = db.insert(hpInvoiceTitles).values(titleRecords).toSQL();
@@ -262,26 +331,31 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 	// 9. 生成 hp_invoices (发票记录)
 	// ==========================================
 	console.log("正在生成 hp_invoices SQL...");
-	const invoiceRecords: InsertHpInvoice[] = mockInvoiceData.map((item) => {
-		const id = idMap.register("hp_invoices", item.code);
-		const ownerId = idMap.get("hp_owners", item.ownerName);
+	const invoiceRecords: InsertHpInvoice[] = mockInvoiceData
+		.map((item) => {
+			const id = idMap.register("hp_invoices", item.code);
+			const ownerName = item.ownerName;
+			const ownerId = ownerNameToUuidMap.get(ownerName) || idMap.get("hp_owners", ownerName);
 
-		return {
-			id: id,
-			ownerId: ownerId,
-			invoiceType: item.invoiceType,
+			if (!ownerId) return null;
 
-			// invoiceTitleId: null, // Schema missing invoiceTitleId
-			amount: item.applicationAmount ? String(item.applicationAmount) : "0",
-			// status: auditStatusMap[item.auditStatus] || "pending", // Schema missing status
-			invoiceNo: item.invoiceNumber,
-			// drawer: item.applicant, // Schema missing drawer
-			invoiceDate: item.applicationTime ? new Date(item.applicationTime) : null,
-			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
-		};
-	});
+			return {
+				id: id,
+				ownerId: ownerId,
+				invoiceType: item.invoiceType,
+
+				// invoiceTitleId: null, // Schema missing invoiceTitleId
+				amount: item.applicationAmount ? String(item.applicationAmount) : "0",
+				// status: auditStatusMap[item.auditStatus] || "pending", // Schema missing status
+				invoiceNo: item.invoiceNumber,
+				// drawer: item.applicant, // Schema missing drawer
+				invoiceDate: item.applicationTime ? new Date(item.applicationTime) : null,
+				remark: item.remark,
+				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			};
+		})
+		.filter(Boolean) as InsertHpInvoice[];
 
 	if (invoiceRecords.length > 0) {
 		const query = db.insert(hpInvoices).values(invoiceRecords).toSQL();

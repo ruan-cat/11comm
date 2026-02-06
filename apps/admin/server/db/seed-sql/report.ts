@@ -31,11 +31,26 @@ export function generateReportSql(idMap: IdMapRegistry): SqlStatement[] {
 	console.log("正在生成 rpt_expense_summaries SQL...");
 	const expenseRecords = mockExpenseSummaryTableData.map((item, idx) => {
 		const id = idMap.register("rpt_expense_summaries", `EXP-SUM-${idx}`);
+
+		// Fix date format: YYYY-MM -> YYYY-MM-01, YYYY年QX -> YYYY-MM-01
+		let dateStr = item.time;
+		if (/^\d{4}-\d{2}$/.test(dateStr)) {
+			dateStr = `${dateStr}-01`;
+		} else if (dateStr.includes("Q1")) {
+			dateStr = dateStr.replace("年Q1", "-01-01");
+		} else if (dateStr.includes("Q2")) {
+			dateStr = dateStr.replace("年Q2", "-04-01");
+		} else if (dateStr.includes("Q3")) {
+			dateStr = dateStr.replace("年Q3", "-07-01");
+		} else if (dateStr.includes("Q4")) {
+			dateStr = dateStr.replace("年Q4", "-10-01");
+		}
+
 		return {
 			id,
 			communityId: defaultCommunityId,
-			periodStart: item.time, // Use time field as period string
-			periodEnd: item.time,
+			periodStart: dateStr,
+			periodEnd: dateStr, // Using start date as end date for simplicity in seed
 			receivableTotal: item.receivableAmount,
 			receivedTotal: item.actualAmount,
 			outstandingTotal: String(Number(item.receivableAmount) - Number(item.actualAmount)),
