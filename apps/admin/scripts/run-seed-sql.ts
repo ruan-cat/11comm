@@ -9,6 +9,47 @@ const __dirname = path.dirname(__filename);
 
 const SEED_DIR = path.resolve(__dirname, "../drizzle/seed");
 
+/**
+ * Executes SQL content by splitting it into statements and running them sequentially.
+ * We cannot use transactions here because the Drizzle Neon HTTP driver is stateless and
+ * does not support sessions/transactions in the traditional sense, and its batch API
+ * requires specific usage.
+ *
+ * We split statements to avoid "NeonDbError: cannot insert multiple commands into a prepared statement".
+ */
+async function executeSqlContent(content: string, sourceName: string) {
+	// Remove comments
+	const cleanContent = content.replace(/--.*$/gm, "");
+
+	// Split into statements
+	const statements = cleanContent
+		.split(";")
+		.map((s) => s.trim())
+		.filter((s) => s.length > 0);
+
+	if (statements.length === 0) return;
+
+	// Execute sequentially
+	for (const stmt of statements) {
+		// Skip explicit BEGIN/COMMIT transaction controls
+		// In Neon HTTP (stateless), 'BEGIN' starts a transaction that ends immediately after the request,
+		// essentially doing nothing for subsequent requests. So we skip them.
+		const upperStmt = stmt.toUpperCase();
+		if (upperStmt === "BEGIN" || upperStmt === "COMMIT") {
+			continue;
+		}
+
+		// Execute the statement
+		try {
+			await db.execute(sql.raw(stmt));
+		} catch (e) {
+			console.error(`Error executing statement in ${sourceName}:`);
+			console.error(stmt.substring(0, 100) + (stmt.length > 100 ? "..." : ""));
+			throw e;
+		}
+	}
+}
+
 async function main() {
 	const args = process.argv.slice(2);
 	const clean = args.includes("--clean") || args.includes("--clean-only");
@@ -55,17 +96,8 @@ async function main() {
 		const filePath = path.join(SEED_DIR, cleanFile);
 		const content = fs.readFileSync(filePath, "utf-8");
 
-		// Split into statements? Or execute as one block?
-		// Drizzle/Neon-http might support multi-statement?
-		// Neon HTTP driver typically supports single statement or requires splitting?
-		// Let's assume execute accepts full script or we split by ';'.
-		// Safe approach: split.
-		// However, blocks like BEGIN ... COMMIT are one statement?
-		// Neon HTTP client `neon(url)` returns a function that executes SQL.
-		// It accepts `sql(query, params)`.
-		// It supports multi-statement queries usually.
 		try {
-			await db.execute(sql.raw(content));
+			await executeSqlContent(content, cleanFile);
 			console.log(`   ✅ 清理完成`);
 		} catch (e) {
 			console.error(`   ❌ 清理失败:`, e);
@@ -85,7 +117,7 @@ async function main() {
 		const content = fs.readFileSync(filePath, "utf-8");
 
 		try {
-			await db.execute(sql.raw(content));
+			await executeSqlContent(content, file);
 			console.log(`   ✅ 执行成功`);
 		} catch (e) {
 			console.error(`   ❌ 执行失败: ${file}`, e);
