@@ -105,7 +105,8 @@ export function getDatabaseUrl(): string {
 		return standardDatabaseUrl;
 	}
 
-	throw new Error("DATABASE_URL is not configured. Please set it in .env or run 'pnpm env:pull' to fetch from Vercel.");
+	console.warn("⚠️ DATABASE_URL is not configured. Returning dummy URL for offline generation.");
+	return "postgres://dummy:dummy@localhost:5432/dummy";
 }
 
 /**
