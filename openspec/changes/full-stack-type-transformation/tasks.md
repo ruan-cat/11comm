@@ -11,7 +11,7 @@
 - [ ] **apps/type 配置检查**
   - 检查 `apps/type/package.json`，确保 `main` 或 `exports` 字段正确指向 `src/index.ts` (便于源码引用)。
   - 检查 `tsconfig.json` 确保 `composite: true` 或允许被引用。
-  - **Reference**: 详见 `specs/infrastructure-config.md`。
+  - **Reference**: 详见 `specs/infrastructure-config/spec.md`。
 - [ ] **apps/admin 依赖确认**
   - 进入 `apps/admin` 目录。
   - 运行 `pnpm add zod` (显式添加，用于前端直接引用)。
@@ -25,8 +25,8 @@
   - 新建 `apps/type/src/business/operation-team/schema.ts`。
   - 从 `apps/admin/server/db/schemas/operation-team.ts` (或其他对应位置) 复制表定义。
   - **Check**: 检查是否有 `pgEnum` 定义。如果名字可能与其他模块冲突，移动到 `apps/type/src/common/enums.ts`。
-  - **Check**: 检查是否有 `json` 字段。如果有，必须在 Zod Schema 中显式定义其结构 (ref: `schema-standard.md`)。
-  - 按照 `specs/schema-standard.md` 补充 Zod Schemas 和 Types。
+  - **Check**: 检查是否有 `json` 字段。如果有，必须在 Zod Schema 中显式定义其结构 (ref: `specs/schema-standard/spec.md`)。
+  - 按照 `specs/schema-standard/spec.md` 补充 Zod Schemas 和 Types。
 - [ ] **导出与替换**
   - 修改 `apps/type/src/business/operation-team/index.ts`，导出新的 schema 内容。
   - 删除该文件中旧的手动 Interface 定义，或将其别名指向新 Type。
@@ -36,7 +36,7 @@
 
 ## Phase 3: 核心迁移循环 (The Great Migration Loop)
 
-> 提示：这是纯体力工作，请严格按照 `specs/schema-standard.md` 执行。
+> 提示：这是纯体力工作，请严格按照 `specs/schema-standard/spec.md` 执行。
 > 不需要一次性全部做完再提交，建议按一级模块分批次提交。
 
 - [ ] **迁移: Property Manage (物业管理)**
