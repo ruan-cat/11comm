@@ -119,6 +119,17 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 
 **不允许**你编写任何 Python、typescript、javascript，或 bash 脚本，完成大批量代码删改之类的任务。你应该阅读文件来完成更改，而不是使用不稳定的，容易带来语法错误的，删改不干净不合理的批处理脚本，来完成任务
 
+## 3. 禁止全局安装工具包
+
+**严禁**使用 `npm install -g` 或 `pnpm add -g` 等命令进行工具的全局安装。
+
+这会污染用户的全局环境，且导致工具版本不可控。
+
+**正确做法：**
+
+1.  **优先使用 npx**：例如 `npx prettier --write .`
+2.  **或者使用本地开发依赖**：确保工具已添加到 `package.json` 的 `devDependencies` 中，然后通过 `pnpm exec` 或 npm scripts 运行。
+
 ## 4. 类型项目的代码组织方式与导出规范
 
 ### 4.1. 对现有类型的处理规范
