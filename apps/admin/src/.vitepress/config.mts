@@ -17,6 +17,7 @@ copyClaudeFiles({
 	 * vitepress 命令运行在 apps/admin 目录内，该地址是相对于该运行目录的。
 	 */
 	target: "src/docs/prompts/claude",
+	items: ["commands", "skills"],
 	// rootDir: "../../",
 });
 
