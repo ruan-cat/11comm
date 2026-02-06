@@ -175,18 +175,7 @@ export const smDataPermissions = pgTable(
 		scope: varchar("scope", { length: 50 }),
 		/** 数据过滤条件 */
 		dataFilter: jsonb("data_filter"),
-		/** 名称 */
-		name: varchar("name", { length: 100 }),
-		/** 描述 */
-		description: text("description"),
-		/** 级别 */
-		level: integer("level"),
-		/** 是否启用 */
-		enabled: boolean("enabled").default(true),
-		/** 资源类型 */
-		resourceType: varchar("resource_type", { length: 50 }),
-		/** 自定义范围 */
-		customRange: jsonb("custom_range"),
+
 		...timestamps,
 	},
 	(table) => [index("sm_data_permissions_role_id_idx").on(table.roleId)],
@@ -203,12 +192,7 @@ export const smShifts = pgTable("sm_shifts", {
 	endTime: time("end_time"),
 	/** 工作时长（分钟） */
 	workDuration: integer("work_duration"),
-	/** 班次类型 */
-	type: varchar("type", { length: 50 }),
-	/** 描述 */
-	description: text("description"),
-	/** 是否启用 */
-	enabled: boolean("enabled").default(true),
+
 	...timestamps,
 });
 
@@ -221,26 +205,7 @@ export const smSchedulingSettings = pgTable("sm_scheduling_settings", {
 	applicablePosition: varchar("applicable_position", { length: 100 }),
 	/** 轮换周期 */
 	rotationCycle: varchar("rotation_cycle", { length: 50 }),
-	/** 名称 */
-	name: varchar("name", { length: 100 }),
-	/** 类型 */
-	type: varchar("type", { length: 50 }),
-	/** 周期 */
-	cycle: varchar("cycle", { length: 50 }),
-	/** 生效时间 */
-	effectiveTime: timestamp("effective_time"),
-	/** 人员 */
-	staff: text("staff"),
-	/** 状态 */
-	status: varchar("status", { length: 50 }),
-	/** 组织 ID */
-	orgId: uuid("org_id"),
-	/** 规则名称 */
-	ruleName: varchar("rule_name", { length: 100 }),
-	/** 周期类型 */
-	cycleType: varchar("cycle_type", { length: 50 }),
-	/** 班次 ID 列表 */
-	shiftIds: jsonb("shift_ids"),
+
 	...timestamps,
 });
 
@@ -305,28 +270,7 @@ export const smSystemConfigs = pgTable(
 		configDescription: text("config_description"),
 		/** 状态 */
 		status: statusEnum("status").default("enabled"),
-		/** 标题 */
-		title: varchar("title", { length: 200 }),
-		/** 副标题 */
-		subtitle: varchar("subtitle", { length: 200 }),
-		/** 简写名称 */
-		shortName: varchar("short_name", { length: 100 }),
-		/** 公司名称 */
-		companyName: varchar("company_name", { length: 200 }),
-		/** Logo URL */
-		logoUrl: text("logo_url"),
-		/** 静态资源 URL */
-		staticUrl: text("static_url"),
-		/** 默认小区编码 */
-		defaultCommunityCode: varchar("default_community_code", { length: 50 }),
-		/** 业主端标题 */
-		ownerTitle: varchar("owner_title", { length: 200 }),
-		/** 物业端标题 */
-		propertyMobileTitle: varchar("property_mobile_title", { length: 200 }),
-		/** QQ地图Key */
-		qqMapKey: varchar("qq_map_key", { length: 100 }),
-		/** 商城 URL */
-		mallUrl: text("mall_url"),
+
 		...timestamps,
 	},
 	(table) => [
@@ -369,20 +313,7 @@ export const smInitializeCells = pgTable(
 		initStatus: varchar("init_status", { length: 50 }),
 		/** 配置参数 */
 		configParams: jsonb("config_params"),
-		/** 小区ID */
-		communityId: uuid("community_id"),
-		/** 小区名称 */
-		communityName: varchar("community_name", { length: 100 }),
-		/** 附近地标 */
-		nearbyLandmark: varchar("nearby_landmark", { length: 200 }),
-		/** 城市编码 */
-		cityCode: varchar("city_code", { length: 50 }),
-		/** 状态 */
-		status: varchar("status", { length: 50 }),
-		/** 单元名称 */
-		cellName: varchar("cell_name", { length: 100 }),
-		/** 编码 */
-		code: varchar("code", { length: 50 }),
+
 		...timestamps,
 	},
 	(table) => [

@@ -133,10 +133,14 @@ export function toFullSql(sql: string, params: unknown[]): string {
 		} else if (param instanceof Date) {
 			value = `'${param.toISOString()}'::timestamp`;
 		} else if (typeof param === "object") {
-			value = `'${JSON.stringify(param)}'::jsonb`;
+			// CRITICAL FIX: Escape the JSON string before wrapping in quotes
+			// JSON.stringify can produce strings with single quotes (e.g. {"name": "O'Neil"})
+			// which breaks SQL if not escaped.
+			value = `'${escapeSql(JSON.stringify(param))}'::jsonb`;
 		} else {
 			value = String(param);
 		}
+		// Use a safer regex that matches $N but not $N0, $N1 etc.
 		const regex = new RegExp(`\\$${index + 1}(?!\\d)`, "g");
 		result = result.replace(regex, value);
 	});

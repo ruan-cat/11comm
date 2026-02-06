@@ -165,10 +165,9 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 		return {
 			id: id,
 			roleId: item.roleId ? idMap.get("sm_roles", item.roleId) : null,
-			resourceType: item.resourceType ?? null,
-			dataScope: item.dataScope ?? null,
-			customRange: item.customRange ? JSON.stringify(item.customRange) : null,
-			remark: item.description,
+			permissionRule: null, // Default
+			scope: item.dataScope ?? null, // Map dataScope to scope
+			dataFilter: null, // Default
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
 		};
@@ -195,7 +194,7 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			shiftName: item.shiftName ?? item.name,
 			startTime: item.startTime,
 			endTime: item.endTime,
-			remark: item.remark ?? item.description,
+			workDuration: null, // Default
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
 		};
@@ -222,11 +221,9 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 
 		return {
 			id: id,
-			orgId: orgUuid,
-			ruleName: item.ruleName ?? item.name,
-			cycleType: item.cycleType ?? item.cycle,
-			shiftIds: item.shiftIds ?? null,
-			remark: item.remark ?? null,
+			schedulingMode: null, // Default
+			applicablePosition: null, // Default
+			rotationCycle: null, // Default
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: new Date(),
 		};
@@ -298,9 +295,9 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 					qqMapKey: item.qqMapKey,
 					mallUrl: item.mallUrl,
 				}),
-			description: item.description ?? item.title,
-			category: item.category ?? "system",
-			isSystem: item.isSystem ?? true,
+			configType: null, // Default
+			configDescription: item.description ?? item.title,
+			status: "enabled",
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};

@@ -232,24 +232,7 @@ export const ctChanges = pgTable(
 		approvalTime: timestamp("approval_time"),
 		/** 备注 */
 		remark: remarkField(),
-		/** 合同名称 */
-		contractName: varchar("contract_name", { length: 200 }),
-		/** 合同编号 */
-		contractNumber: varchar("contract_number", { length: 100 }),
-		/** 合同类型 */
-		contractType: varchar("contract_type", { length: 50 }),
-		/** 甲方 */
-		partyA: varchar("party_a", { length: 200 }),
-		/** 乙方 */
-		partyB: varchar("party_b", { length: 200 }),
-		/** 变更人 */
-		changer: varchar("changer", { length: 50 }),
-		/** 申请时间 */
-		applyTime: timestamp("apply_time"),
-		/** 说明 */
-		description: text("description"),
-		/** 状态 */
-		status: varchar("status", { length: 50 }),
+
 		...timestamps,
 	},
 	(table) => [

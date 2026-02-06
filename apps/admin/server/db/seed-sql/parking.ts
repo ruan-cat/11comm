@@ -104,18 +104,23 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 	// 3. 生成 pk_owner_vehicles (业主车辆)
 	// ==========================================
 	console.log("正在生成 pk_owner_vehicles SQL...");
+	const DEFAULT_OWNER_ID = "32f4cbc2-ada7-53eb-8169-34eb23681024";
+
 	const vehicleRecords = mockOwnerVehicleData.map((item) => {
 		const id = idMap.register("pk_owner_vehicles", item.licensePlate);
-		const ownerId = idMap.get("hp_owners", item.owner);
+		let ownerId = idMap.get("hp_owners", item.owner);
+
+		// Fallback if owner not found (logic migrated from patch-06-parking.ts)
+		if (!ownerId) {
+			console.warn(`Owner [${item.owner}] not found for vehicle [${item.licensePlate}], using default.`);
+			ownerId = DEFAULT_OWNER_ID;
+		}
+
 		const carportId = idMap.get("pk_carports", item.parkingSpace);
 
 		return {
 			id,
-			ownerId: ownerId, // nullable in schema? Schema says `uuid("owner_id").references(...)`. NOT NULL by default?
-			// Check schema: ownerId uuid references hpOwners.id. No .notNull() in `pkOwnerVehicles` definition in `parking.ts`?
-			// Wait, checking Step 311: `ownerId: uuid("owner_id").references(() => hpOwners.id),`
-			// It does NOT have `.notNull()`. So it can be null.
-
+			ownerId: ownerId,
 			carportId: carportId,
 			licensePlate: item.licensePlate,
 			plateType: item.licensePlateType,

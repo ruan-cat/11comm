@@ -67,10 +67,7 @@ export const hpOwners = pgTable(
 		emergencyContact: varchar("emergency_contact", { length: 100 }),
 		/** 备注 */
 		remark: remarkField(),
-		/** 紧急联系人电话 */
-		emergencyContactPhone: varchar("emergency_contact_phone", { length: 20 }),
-		/** 门禁钥匙 */
-		accessKey: varchar("access_key", { length: 100 }),
+
 		...timestamps,
 		...softDelete,
 	},
@@ -102,8 +99,7 @@ export const hpOwnerMembers = pgTable("hp_owner_members", {
 	accessKey: varchar("access_key", { length: 100 }),
 	/** 备注 */
 	remark: remarkField(),
-	/** 创建人 */
-	creator: varchar("creator", { length: 50 }),
+
 	...timestamps,
 });
 
