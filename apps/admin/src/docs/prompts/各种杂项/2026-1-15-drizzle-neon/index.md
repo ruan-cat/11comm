@@ -157,6 +157,13 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 请你深度的检索，思考，评判，并给我出具一份非常长的，详细的报告。帮助我了解全貌。
 
+---
+
+有效产出文档如下：
+
+- apps\admin\src\docs\reports\2026-02-05-trpc-vs-shared-schema-analysis.md
+- apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md
+
 ## 008 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
 我需要你完成一次重大的代码写法改造改写任务。
