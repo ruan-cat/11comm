@@ -11,15 +11,17 @@ import {
 
 copyReadmeMd("./src");
 
-copyClaudeFiles({
-	/**
-	 * 该地址是写相对路径的 不能写绝对路径，容易导致意外。
-	 * vitepress 命令运行在 apps/admin 目录内，该地址是相对于该运行目录的。
-	 */
-	target: "src/docs/prompts/claude",
-	items: ["commands", "skills"],
-	// rootDir: "../../",
-});
+// 不再使用 因为很多openspec的命令与技能文档，都存在很多非闭合标签，没时间，没兴趣去维护这些文档。
+// 故不打算继续复制粘贴这些文件了。
+// copyClaudeFiles({
+// 	/**
+// 	 * 该地址是写相对路径的 不能写绝对路径，容易导致意外。
+// 	 * vitepress 命令运行在 apps/admin 目录内，该地址是相对于该运行目录的。
+// 	 */
+// 	target: "src/docs/prompts/claude",
+// 	items: ["commands"],
+// 	// rootDir: "../../",
+// });
 
 // 为文档添加自动生成的changelog
 addChangelog2doc({
