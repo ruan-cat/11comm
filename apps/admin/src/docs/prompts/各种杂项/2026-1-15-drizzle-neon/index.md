@@ -191,9 +191,15 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 - `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
 - `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
 
-### 002 检查过往规范和文档对于类型项目操作规范的冲突
+### 002 <!-- TODO: --> 检查过往规范和文档对于类型项目操作规范的冲突
 
-现在我们开始
+现在我们开始全面重构类型项目，重构成面向全栈的项目了。我相信现在的规范，肯定和 `openspec\changes\full-stack-type-transformation` 体现的规范有巨大冲突。
+
+请你全面阅读以下文件，找到过往类型项目的操作规范，与现行的类型项目操作规范，有那些显著的冲突项。请你帮我罗列出来。
+
+- `openspec\specs` 全部的历史 spec 文件。重点检查和类型项目相关的规范。
+- `.claude\skills` 本地的 skills 规范。
+- `CLAUDE.md` AI 记忆文件。
 
 ## 009 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
