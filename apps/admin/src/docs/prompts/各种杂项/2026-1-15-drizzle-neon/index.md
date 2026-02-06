@@ -93,6 +93,12 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 请你阅读 `openspec\specs` 内关于 `init-neon-db-schema` 任务的内容。并为我分析问题。
 
+### 04 <!-- TODO: --> 排查现有的 schema 是否存在冲突配置
+
+我很怀疑 `apps\admin\server\db\schemas` 目录内设计的数据库表之间的关系很混乱。是否会出现键关联冲突的问题。
+
+请你帮我深度检查以下隐患，避免出现故障。
+
 ## 005 排查 `openspec\specs` 存在的潜在冲突与风险内容
 
 请你帮我分析全部的 `openspec\specs` 的规范，看看这些规范是不是有相互冲突的？
