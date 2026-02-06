@@ -39,6 +39,7 @@
 		"db:drop": "drizzle-kit drop",
 		"db:generate-seed": "npx tsx scripts/generate-seed-sql.ts",
 		"db:seed": "npx tsx scripts/run-seed-sql.ts",
+		"db:reseed": "npx tsx scripts/run-seed-sql.ts --clean",
 		"env:pull": "npx tsx ./scripts/env-pull.ts",
 		"rm:types": "tsx ./scripts/del-types.ts",
 		"format": "pnpm lint:prettier",

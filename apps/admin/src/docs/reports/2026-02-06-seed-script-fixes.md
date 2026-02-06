@@ -56,7 +56,35 @@ Owner [张三] not found for vehicle [京A12345], using default.
 
 已手动清理了所有过时的 `.sql` 文件，并重新执行了一次全量生成。当前 seed 目录结构清晰，无重复文件。
 
-## 验证结论
-
 执行 `pnpm db:generate-seed` 成功，输出文件无冲突。
 执行 `run-seed-sql` (即 `db:seed`) 预计不再会出现主键冲突或卡死现象。
+
+## 后续修复 (2026-02-06 晚)
+
+在进一步的验证中，发现了新的阻塞性问题并已修复：
+
+### 1. 性能优化 (严重卡死问题)
+
+- **现象**：`toFullSql` 函数在处理包含大量参数的 SQL 语句（如包含 2000 个参数的 insert）时，导致 CPU 占用 100% 并卡死数分钟。
+- **原因**：原实现使用 `split` 和 `reduce` 进行逐个占位符替换，复杂度为 O(N\*M)。
+- **修复**：重构为基于正则表达式的单次替换，复杂度降低至 O(M)，生成速度瞬间完成。
+
+### 2. 数据库约束冲突修复
+
+在清理数据库后重新播种 (`db:seed --clean`) 时，暴露出以下 Crash 问题：
+
+- **`sm_data_permissions` (Not Null Violation)**:
+  - **原因**：Mock 数据 `DataPermission` 缺乏 `roleId` 字段，且原脚本查找失败导致插入 `null`，违反 `role_id` 非空约束。
+  - **修复**：增加逻辑，尝试通过 ID 查找角色，失败时回退到默认角色（系统管理员），并跳过无法映射的脏数据。
+
+- **`hp_owner_members` 等表 (Not Null Violation)**:
+  - **原因**：Mock 数据的关联基于**姓名** (e.g., "张三")，但 `IdMapRegistry` 基于由 Mock ID 生成的 UUID。`idMap.get("hp_owners", "张三")` 返回 null，导致 `owner_id` 为空。
+  - **修复**：在 `house-property.ts` 中引入局部 `Name -> UUID` 映射表。在生成 Owner 时同时记录 Name 映射，并在生成 House、Member、Invoice 等子表时优先使用 Name 映射进行 ID 解析。
+
+- **`rpt_expense_summaries` (Invalid Date Format)**:
+  - **原因**：Mock 数据使用了 `YYYY-MM` (e.g., "2024-01") 和 `YYYY年QX` 格式，PostgreSQL `date` 类型无法解析。
+  - **修复**：在生成逻辑中增加日期解析器，将非标准格式规范化为 `YYYY-MM-DD` (e.g., "2024-01-01")。
+
+### 3. 当前状态
+
+所有 Seed 生成逻辑均已修正，`pnpm db:seed --clean` 命令能够在清空数据库后完整、无报错地重新填充 mock 数据。
