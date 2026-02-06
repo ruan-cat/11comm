@@ -146,7 +146,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 ## 007 评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告
 
-1. 请你完整的阅读 `apps\admin\src\docs\reports\2026-02-05-init-neon-db-schema-exploration-report.md` 报告。
+1. 请你完整的阅读 `apps\admin\src\docs\reports\2026-02-05-gemini-zod.md` 报告。
 2. 请你评估一下，为了实现全栈化的，统一类型来源的代码改造，这样的破坏性变更。需要对类型项目做怎么样的改造？
 3. 需要安装那些和 drizzle 相关的依赖？需要安装 zod tRPC 之类的全栈类型统一库么？
 4. 数据库表 schemas ，需要增加那些内容？需要怎么使用上述的包，才能暴露出来自数据库表生成出来的业务类型？
