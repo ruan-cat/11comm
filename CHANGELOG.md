@@ -1,3 +1,178 @@
+## v0.9.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.8.0...v0.9.0)
+
+### ✨ 新增功能
+
+- **admin:** 实现 Vercel Neon 环境变量前缀机制 ([a9ade902](https://github.com/ruan-cat/11comm/commit/a9ade902))
+- **admin,db:** 实现 Neon 数据库 Schema 并生成初始迁移 ([448a5e28](https://github.com/ruan-cat/11comm/commit/448a5e28))
+- **admin/scripts:** 添加数据库 mock 数据生成与种子填充脚本 ([f4269e24](https://github.com/ruan-cat/11comm/commit/f4269e24))
+- 添加了初始化 Neon 数据库模式的设计和任务文档。 ([50fcbc2e](https://github.com/ruan-cat/11comm/commit/50fcbc2e))
+- 添加停车结构数据库表及其 Drizzle 模式和迁移文件。 ([49a6d2e2](https://github.com/ruan-cat/11comm/commit/49a6d2e2))
+- **type:** ⚠️ 为解决数据库数据生成问题，补全类型项目内出现的业务类型字段。 ([9cde5f82](https://github.com/ruan-cat/11comm/commit/9cde5f82))
+- **agent:** 新增 neon-db-list 技能 ([3cbc5c0a](https://github.com/ruan-cat/11comm/commit/3cbc5c0a))
+- **db:** ✨ 同步业务类型定义至数据库 Schema ([ad5441a4](https://github.com/ruan-cat/11comm/commit/ad5441a4))
+
+### 🐞 修复缺陷
+
+- **server,admin:** ⚠️ 处理生成 seed 数据库数据脚本的类型报错。 ([61301d09](https://github.com/ruan-cat/11comm/commit/61301d09))
+
+### 🦄 代码重构
+
+- **claude:** ⚠️ 重构技能文件。 ([a8fa576c](https://github.com/ruan-cat/11comm/commit/a8fa576c))
+- **turbo,openspec,config,type,server,package.json,admin,root,claude:** ⚠️ 初始化 lintstage 配置，并且默认对全部代码做一个全量的 prettier 格式化。 ([01eb1aae](https://github.com/ruan-cat/11comm/commit/01eb1aae))
+- **claude:** ⚠️ 重命名文件，改成 use 开头的技能，避免被误导。 ([3deeae0f](https://github.com/ruan-cat/11comm/commit/3deeae0f))
+- **claude:** ⚠️ 及时更新技能的名称 use-nitro 。 ([bcd0e7b1](https://github.com/ruan-cat/11comm/commit/bcd0e7b1))
+- **claude:** ⚠️ Claude 的技能文件不允许设置成符号链接的目录文件。 ([745d4ba5](https://github.com/ruan-cat/11comm/commit/745d4ba5))
+- **admin:** 移动报告位置。 ([794c563d](https://github.com/ruan-cat/11comm/commit/794c563d))
+- **env,admin,root:** ⚠️ 改造 Vercel 环境变量存储与获取方式 ([230f7c76](https://github.com/ruan-cat/11comm/commit/230f7c76))
+- **prompt,admin:** ⚠️ Create-git-commit 认定为不再使用的 AI 文档。现在被 git-commit 技能替代了 ([107f5d31](https://github.com/ruan-cat/11comm/commit/107f5d31))
+- **claude:** ⚠️ 技能重做，同时提供 mock 和 neon 两种编写模式。 ([ae65183e](https://github.com/ruan-cat/11comm/commit/ae65183e))
+- **openspec:** ⚠️ 重新设计 analyze-mock-data-and-create-db-seed 任务。 ([d2063b35](https://github.com/ruan-cat/11comm/commit/d2063b35))
+- **openspec:** 手动回退任务 ([a5f8f28f](https://github.com/ruan-cat/11comm/commit/a5f8f28f))
+- **admin:** ⚠️ 全面更新 sql 语句，用于生成 seed 初始化数据库内容。 ([ed4456a4](https://github.com/ruan-cat/11comm/commit/ed4456a4))
+- **openspec:** ⚠️ 拓展非常详细清晰的 `full-stack-type-transformation` 任务 ([4f4c0762](https://github.com/ruan-cat/11comm/commit/4f4c0762))
+- **openspec:** 重构 full-stack-type-transformation 目录结构 ([a4ef6cf3](https://github.com/ruan-cat/11comm/commit/a4ef6cf3))
+
+### 📖 Documentation
+
+- **claude:** 补充【pure-admin 后台框架模板】 ([d654988f](https://github.com/ruan-cat/11comm/commit/d654988f))
+- **claude:** Pure-admin 注册路由 ([4a35d9a4](https://github.com/ruan-cat/11comm/commit/4a35d9a4))
+- **claude:** 补充 claude code skill 作为公共技术栈要学习 ([72c289e6](https://github.com/ruan-cat/11comm/commit/72c289e6))
+- **claude:** 增加 gemini 的提示词 ([7486d3e3](https://github.com/ruan-cat/11comm/commit/7486d3e3))
+- **prompt,admin:** 完成任务【编写面向 nitro v3 接口写法的完整 claude code 技能规范】 ([75df3813](https://github.com/ruan-cat/11comm/commit/75df3813))
+- **claude:** ⚠️ 一次性初始化全部 neon 的 skills。使用 neonctl 完成初始化。 ([a1135561](https://github.com/ruan-cat/11comm/commit/a1135561))
+- ⚠️ 完成 neon 技能的翻译。 ([850cb3ca](https://github.com/ruan-cat/11comm/commit/850cb3ca))
+- **admin:** Add git commit skills research report ([bb3ddd9e](https://github.com/ruan-cat/11comm/commit/bb3ddd9e))
+- **prompt,admin:** 初始化 neon 数据库的数据库表字段定义。 ([95eab4a3](https://github.com/ruan-cat/11comm/commit/95eab4a3))
+- **openspec,admin:** 完成 Neon 数据库 schema 规范设计 ([105e8ce2](https://github.com/ruan-cat/11comm/commit/105e8ce2))
+- **admin,db:** 添加数据库迁移故障事故报告 ([16660e42](https://github.com/ruan-cat/11comm/commit/16660e42))
+- **openspec:** 设计基于 seed 插入 mock 数据的 neon 数据库初始化方案。 ([9363f6bc](https://github.com/ruan-cat/11comm/commit/9363f6bc))
+- **admin/reports:** 添加数据库种子生成与检查报告 ([86e3aeff](https://github.com/ruan-cat/11comm/commit/86e3aeff))
+- 为 admin 应用添加 README 和 seed 命令指南。 ([8c01c84b](https://github.com/ruan-cat/11comm/commit/8c01c84b))
+- **neon-db-list:** 完善目录结构并汉化来源标注 ([6d0d7c62](https://github.com/ruan-cat/11comm/commit/6d0d7c62))
+- 同步更新 AI 文档。 ([7fde87c8](https://github.com/ruan-cat/11comm/commit/7fde87c8))
+- **admin:** 新建报告【2026-02-06 全栈类型统一改造深度评估与实施方案】 ([a5ced27a](https://github.com/ruan-cat/11comm/commit/a5ced27a))
+- **claude:** ⚠️ 记录严格的操作规范，【禁止全局安装工具包】 ([98b01288](https://github.com/ruan-cat/11comm/commit/98b01288))
+- **openspec:** 完善全栈类型改造的任务清单与基础设施规范 ([9ee01ad1](https://github.com/ruan-cat/11comm/commit/9ee01ad1))
+
+### 🏡 Chore
+
+- **prompt,admin:** 阅读每一个页面，检查代码写法是否正常，是否有需要微调的部分。 ([9eacdef2](https://github.com/ruan-cat/11comm/commit/9eacdef2))
+- **claude:** 排序 ([b208f091](https://github.com/ruan-cat/11comm/commit/b208f091))
+- 同步全局 AI 记忆文件 ([e2e1e105](https://github.com/ruan-cat/11comm/commit/e2e1e105))
+- **prompt,admin:** 设计任务【改造 agent 文件为 skills 技能文件】 ([0a5bbbdd](https://github.com/ruan-cat/11comm/commit/0a5bbbdd))
+- **prompt,admin:** 标记任务进度【接入 drizzle 和 neon 数据库，改造项目的 nitro 接口，实现真实的后端】 ([97d80693](https://github.com/ruan-cat/11comm/commit/97d80693))
+- **claude:** 用自动化工具，完成内容重设。 ([3d494904](https://github.com/ruan-cat/11comm/commit/3d494904))
+- **prompt,admin:** 新建长任务【制作`neon-postgres`的一系列技能翻译】 ([1954fcc7](https://github.com/ruan-cat/11comm/commit/1954fcc7))
+- **openspec:** 标记完成任务进度 ([70d78d66](https://github.com/ruan-cat/11comm/commit/70d78d66))
+- **openspec:** ⚠️ 归档任务 ([cc0aca23](https://github.com/ruan-cat/11comm/commit/cc0aca23))
+- **prompt,admin:** 标记任务【制作`neon-postgres`的一系列技能翻译】已完成 ([d09be278](https://github.com/ruan-cat/11comm/commit/d09be278))
+- **prompt,admin:** 删除 stylelint ([e6dd1de1](https://github.com/ruan-cat/11comm/commit/e6dd1de1))
+- **admin:** 准备记录 package.json 命令。 ([3e4b3b35](https://github.com/ruan-cat/11comm/commit/3e4b3b35))
+- **prompt,admin:** 设计任务【从其他项目模仿 neon 的初始化配置】 ([60ca6c14](https://github.com/ruan-cat/11comm/commit/60ca6c14))
+- **prompt,admin:** ⚠️ 设计复杂提示词任务 ([db67369f](https://github.com/ruan-cat/11comm/commit/db67369f))
+- **prompt,admin:** 更改 link 的过程，修改脚本。 ([6cc8b394](https://github.com/ruan-cat/11comm/commit/6cc8b394))
+- **admin:** .claude/skills/commit-work 符号链接调查报告。 ([f69502f4](https://github.com/ruan-cat/11comm/commit/f69502f4))
+- **prompt,admin:** ⚠️ 设计复杂任务【设计专用的前缀变量，重设 admin 项目使用】 ([2b965c38](https://github.com/ruan-cat/11comm/commit/2b965c38))
+- **prompt,admin:** 完成任务【设计专用的前缀变量，重设 admin 项目使用】 ([c6cda029](https://github.com/ruan-cat/11comm/commit/c6cda029))
+- **prompt,admin:** 设计任务【初始化 neon 数据库的数据库表字段定义】 ([0c5f31ce](https://github.com/ruan-cat/11comm/commit/0c5f31ce))
+- **admin,db:** 提交初始数据库迁移 SQL 文件 ([3b36bcba](https://github.com/ruan-cat/11comm/commit/3b36bcba))
+- **openspec:** 初始化 neon 数据库 schema 规范 ([3d2004bf](https://github.com/ruan-cat/11comm/commit/3d2004bf))
+- 重置并应用数据库迁移 ([1e8f8602](https://github.com/ruan-cat/11comm/commit/1e8f8602))
+- **prompt,admin:** 设计任务【排查 `openspec\specs` 存在的潜在冲突与风险内容】 ([fcdd8c99](https://github.com/ruan-cat/11comm/commit/fcdd8c99))
+- **prompt,admin:** 完成任务【初始化 neon 数据库的数据库表字段定义】 ([64463db8](https://github.com/ruan-cat/11comm/commit/64463db8))
+- 设计迁移 use-nitro 本地技能的子任务。 ([80ca340d](https://github.com/ruan-cat/11comm/commit/80ca340d))
+- 初步编写 nitro 旧规范的迁移报告。 ([45692d96](https://github.com/ruan-cat/11comm/commit/45692d96))
+- 增加进一步的技能拆分要求。 ([bb395240](https://github.com/ruan-cat/11comm/commit/bb395240))
+- 更新改造 openspec\specs\nitro-api\spec.md 规范，迁移到 openspec\specs\nitro-api-with-mock\spec.md 规范。 ([e129fed8](https://github.com/ruan-cat/11comm/commit/e129fed8))
+- **prompt,admin:** 设计任务【分析 nitro 假数据并编写 neon 数据库插入脚本】 ([46234bdc](https://github.com/ruan-cat/11comm/commit/46234bdc))
+- **admin:** 2026-02-03 Neon + Drizzle 数据库初始化方案探索报告 ([a4ffb3ef](https://github.com/ruan-cat/11comm/commit/a4ffb3ef))
+- **admin:** 设计【更新 `apps\admin\README.md` 文档】任务 ([3dbfaf0c](https://github.com/ruan-cat/11comm/commit/3dbfaf0c))
+- **admin:** 设计【更新 `apps\admin\README.md` 文档】任务 ([e90bc8af](https://github.com/ruan-cat/11comm/commit/e90bc8af))
+- **admin/db:** 添加生成的数据库初始化 sql 种子文件 ([cd47aa4f](https://github.com/ruan-cat/11comm/commit/cd47aa4f))
+- **admin:** 标记报告文档有参考意义。 ([7b9ab326](https://github.com/ruan-cat/11comm/commit/7b9ab326))
+- **prompt,admin:** 拓展【更新 `apps\admin\README.md` 文档】任务要求和细节。 ([2d068553](https://github.com/ruan-cat/11comm/commit/2d068553))
+- **prompt,admin:** 设计任务【处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错】 ([96db1812](https://github.com/ruan-cat/11comm/commit/96db1812))
+- **prompt,admin:** 设计任务【重启任务并自我复查是否有缺漏缺省的内容】 ([7096c430](https://github.com/ruan-cat/11comm/commit/7096c430))
+- **prompt,admin:** ⚠️ 要求复查，重做完整的任务列表列表，仔细检查是否有缺漏的数据库表。 ([8340eece](https://github.com/ruan-cat/11comm/commit/8340eece))
+- 手动更新 AI 记忆文档。 ([30a0e604](https://github.com/ruan-cat/11comm/commit/30a0e604))
+- **claude:** 更新文档标题排序。 ([6884116d](https://github.com/ruan-cat/11comm/commit/6884116d))
+- 设计 init-neon-db-schema 的任务清单 ([c88b22a2](https://github.com/ruan-cat/11comm/commit/c88b22a2))
+- 提供任务完整性报告； ([a4fc03ca](https://github.com/ruan-cat/11comm/commit/a4fc03ca))
+- 归档 init-neon-db-schema 任务 ([8ca348bd](https://github.com/ruan-cat/11comm/commit/8ca348bd))
+- **prompt,admin:** 完成任务【检查任务并自我复查是否有缺漏缺省的内容】 ([83b43c0a](https://github.com/ruan-cat/11comm/commit/83b43c0a))
+- 完成任务【更新 `apps\admin\README.md` 文档】 ([8c9fde49](https://github.com/ruan-cat/11comm/commit/8c9fde49))
+- 为新增加的数据库表，补全增加 seed 种子数据的初始化配置。 ([872f0134](https://github.com/ruan-cat/11comm/commit/872f0134))
+- 完成【继续执行 `analyze-mock-data-and-create-db-seed` 任务】任务 ([37ea3bc6](https://github.com/ruan-cat/11comm/commit/37ea3bc6))
+- 手动赋值粘贴【2026-02-05 11comm 终极全栈类型统一改造计划 】报告，来自 gemini 生成。 ([aa348766](https://github.com/ruan-cat/11comm/commit/aa348766))
+- 扩充任务【处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错，并评估 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了】 ([1b1b1184](https://github.com/ruan-cat/11comm/commit/1b1b1184))
+- **openspec:** ⚠️ 补全 seed 数据库记录生成任务项。 ([1c77853c](https://github.com/ruan-cat/11comm/commit/1c77853c))
+- **prompt,admin:** 评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告. ([ba3bb5f4](https://github.com/ruan-cat/11comm/commit/ba3bb5f4))
+- **prompt,admin:** 完成任务【处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错，并评估 `analyze-mock-data-and-create-db-seed` 任务是否已经完整的执行完成了】 ([3e89c5d0](https://github.com/ruan-cat/11comm/commit/3e89c5d0))
+- **prompt,admin:** ⚠️ 设计任务【列举说明清楚 schema 目录内全部的数据库表，便于查询了解】、【增加类型项目内的字段，是否要同步去增加 schema 目录内数据库表字段？】 ([108b69a7](https://github.com/ruan-cat/11comm/commit/108b69a7))
+- **prompt,admin:** 完成任务【列举说明清楚 schema 目录内全部的数据库表，便于查询了解】 ([68f9f88e](https://github.com/ruan-cat/11comm/commit/68f9f88e))
+- **prompt,admin:** 完成任务【增加类型项目内的字段，是否要同步去增加 schema 目录内数据库表字段？】 ([793f3820](https://github.com/ruan-cat/11comm/commit/793f3820))
+- **prompt,admin:** 完成任务【评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告】 ([07b0d479](https://github.com/ruan-cat/11comm/commit/07b0d479))
+- **prompt,admin:** 标记项目生成出有效的项目产出。 ([5557d7ac](https://github.com/ruan-cat/11comm/commit/5557d7ac))
+- **admin:** 生成基于类型项目做全栈改造的报告。并标记报告有参考意义； ([7756bc0e](https://github.com/ruan-cat/11comm/commit/7756bc0e))
+- **prompt,admin:** ⚠️ 之前参考的报告文章错了。需要重新生成报告文档。 ([5aff19a7](https://github.com/ruan-cat/11comm/commit/5aff19a7))
+- **admin:** 标记【2026-02-06 全栈类型统一改造深度评估与实施方案】不予删除 ([2c8bdb07](https://github.com/ruan-cat/11comm/commit/2c8bdb07))
+- **prompt,admin:** 记录【apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md】为有效产出的参考文档。 ([ea18335e](https://github.com/ruan-cat/11comm/commit/ea18335e))
+- **prompt,admin:** 设计任务【检查报告之间的内容潜在冲突校验】 ([8c799f0a](https://github.com/ruan-cat/11comm/commit/8c799f0a))
+- **prompt,admin:** 提供报告类表 ([a3014041](https://github.com/ruan-cat/11comm/commit/a3014041))
+- **prompt,admin:** 要求 AI 重新拓展非常详细清晰的 `full-stack-type-transformation` 任务 ([26f7d3ab](https://github.com/ruan-cat/11comm/commit/26f7d3ab))
+- **prompt,admin:** ⚠️ 设计任务【检查过往规范和文档对于类型项目操作规范的冲突】 ([b3fa0800](https://github.com/ruan-cat/11comm/commit/b3fa0800))
+
+### 🎨 Styles
+
+- **claude:** AI 文档排序 ([34321565](https://github.com/ruan-cat/11comm/commit/34321565))
+
+### 🤖 CI
+
+- **package.json,admin:** 增加拉取环境变量的命令。 ([98d63bf2](https://github.com/ruan-cat/11comm/commit/98d63bf2))
+
+### 🔧 更新配置
+
+- 更新 MCP 的长度，删减长度，避免对接其他工具时出现错误。 ([ea1cf61b](https://github.com/ruan-cat/11comm/commit/ea1cf61b))
+- **root:** ⚠️ 拉取环境变量，并忽略 vercel 的敏感环境变量文件。 ([c30a864a](https://github.com/ruan-cat/11comm/commit/c30a864a))
+- **claude:** 安装 commit-work 技能。 ([38467bac](https://github.com/ruan-cat/11comm/commit/38467bac))
+- **claude:** ⚠️ 增加 Antigravity 的 openspec 配置。 ([a66ed6f9](https://github.com/ruan-cat/11comm/commit/a66ed6f9))
+- 专门为 Antigravity 安装能够被识别的 skills，安装本地级别的 skills。 ([69541018](https://github.com/ruan-cat/11comm/commit/69541018))
+
+#### ⚠️ Breaking Changes
+
+- **type:** ⚠️ 为解决数据库数据生成问题，补全类型项目内出现的业务类型字段。 ([9cde5f82](https://github.com/ruan-cat/11comm/commit/9cde5f82))
+- **server,admin:** ⚠️ 处理生成 seed 数据库数据脚本的类型报错。 ([61301d09](https://github.com/ruan-cat/11comm/commit/61301d09))
+- **claude:** ⚠️ 重构技能文件。 ([a8fa576c](https://github.com/ruan-cat/11comm/commit/a8fa576c))
+- **turbo,openspec,config,type,server,package.json,admin,root,claude:** ⚠️ 初始化 lintstage 配置，并且默认对全部代码做一个全量的 prettier 格式化。 ([01eb1aae](https://github.com/ruan-cat/11comm/commit/01eb1aae))
+- **claude:** ⚠️ 重命名文件，改成 use 开头的技能，避免被误导。 ([3deeae0f](https://github.com/ruan-cat/11comm/commit/3deeae0f))
+- **claude:** ⚠️ 及时更新技能的名称 use-nitro 。 ([bcd0e7b1](https://github.com/ruan-cat/11comm/commit/bcd0e7b1))
+- **claude:** ⚠️ Claude 的技能文件不允许设置成符号链接的目录文件。 ([745d4ba5](https://github.com/ruan-cat/11comm/commit/745d4ba5))
+- **env,admin,root:** ⚠️ 改造 Vercel 环境变量存储与获取方式 ([230f7c76](https://github.com/ruan-cat/11comm/commit/230f7c76))
+- **prompt,admin:** ⚠️ Create-git-commit 认定为不再使用的 AI 文档。现在被 git-commit 技能替代了 ([107f5d31](https://github.com/ruan-cat/11comm/commit/107f5d31))
+- **claude:** ⚠️ 技能重做，同时提供 mock 和 neon 两种编写模式。 ([ae65183e](https://github.com/ruan-cat/11comm/commit/ae65183e))
+- **openspec:** ⚠️ 重新设计 analyze-mock-data-and-create-db-seed 任务。 ([d2063b35](https://github.com/ruan-cat/11comm/commit/d2063b35))
+- **admin:** ⚠️ 全面更新 sql 语句，用于生成 seed 初始化数据库内容。 ([ed4456a4](https://github.com/ruan-cat/11comm/commit/ed4456a4))
+- **openspec:** ⚠️ 拓展非常详细清晰的 `full-stack-type-transformation` 任务 ([4f4c0762](https://github.com/ruan-cat/11comm/commit/4f4c0762))
+- **claude:** ⚠️ 一次性初始化全部 neon 的 skills。使用 neonctl 完成初始化。 ([a1135561](https://github.com/ruan-cat/11comm/commit/a1135561))
+- ⚠️ 完成 neon 技能的翻译。 ([850cb3ca](https://github.com/ruan-cat/11comm/commit/850cb3ca))
+- **claude:** ⚠️ 记录严格的操作规范，【禁止全局安装工具包】 ([98b01288](https://github.com/ruan-cat/11comm/commit/98b01288))
+- **openspec:** ⚠️ 归档任务 ([cc0aca23](https://github.com/ruan-cat/11comm/commit/cc0aca23))
+- **prompt,admin:** ⚠️ 设计复杂提示词任务 ([db67369f](https://github.com/ruan-cat/11comm/commit/db67369f))
+- **prompt,admin:** ⚠️ 设计复杂任务【设计专用的前缀变量，重设 admin 项目使用】 ([2b965c38](https://github.com/ruan-cat/11comm/commit/2b965c38))
+- **prompt,admin:** ⚠️ 要求复查，重做完整的任务列表列表，仔细检查是否有缺漏的数据库表。 ([8340eece](https://github.com/ruan-cat/11comm/commit/8340eece))
+- **openspec:** ⚠️ 补全 seed 数据库记录生成任务项。 ([1c77853c](https://github.com/ruan-cat/11comm/commit/1c77853c))
+- **prompt,admin:** ⚠️ 设计任务【列举说明清楚 schema 目录内全部的数据库表，便于查询了解】、【增加类型项目内的字段，是否要同步去增加 schema 目录内数据库表字段？】 ([108b69a7](https://github.com/ruan-cat/11comm/commit/108b69a7))
+- **prompt,admin:** ⚠️ 之前参考的报告文章错了。需要重新生成报告文档。 ([5aff19a7](https://github.com/ruan-cat/11comm/commit/5aff19a7))
+- **prompt,admin:** ⚠️ 设计任务【检查过往规范和文档对于类型项目操作规范的冲突】 ([b3fa0800](https://github.com/ruan-cat/11comm/commit/b3fa0800))
+- **root:** ⚠️ 拉取环境变量，并忽略 vercel 的敏感环境变量文件。 ([c30a864a](https://github.com/ruan-cat/11comm/commit/c30a864a))
+- **claude:** ⚠️ 增加 Antigravity 的 openspec 配置。 ([a66ed6f9](https://github.com/ruan-cat/11comm/commit/a66ed6f9))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.8.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.7.0...v0.8.0)
