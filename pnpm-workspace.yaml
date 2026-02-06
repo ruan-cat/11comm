@@ -25,6 +25,7 @@ onlyBuiltDependencies:
   - es5-ext
   - esbuild
   - less
+  - simple-git-hooks
   - typeit
   - vue-demi
   - vue3-danmaku
