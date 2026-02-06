@@ -150,6 +150,15 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 随后，开始处理 `apps\admin\server\db\seed-sql` 内文件出现的类型报错。我不希望看到这些种子生成脚本内，出现任何类型报错。必须是完全正确的代码。
 
+### 04 <!-- TODO: --> 检查 seed 生成脚本内隐藏的风险项
+
+1. 针对 openspec 的 `analyze-mock-data-and-create-db-seed` 任务。
+2. 全面阅读 `apps\admin\server\db\seed-sql` 出现的 seed 数据生成脚本。
+3. 检查 `apps\admin\scripts\generate-seed-sql.ts` 和 `apps\admin\scripts\run-seed-sql.ts` 生成脚本。
+4. 在实际执行 `run-seed-sql` 脚本时，直接就卡死失败了。无法继续执行下去。后台项目的 `db:seed` 命令无法继续执行下去。
+5. 请你帮我检查一下上述的 sql seed 种子数据的生成代码，看看在生成 sql 时，是否存在隐晦的数据库关系冲突的写法。导致运行脚本时直接出错。
+6. 你也可以远程链接 neon 数据库。使用 neon MCP 来连接远程数据库，检查数据库的表设置和相关的关联内容，是否出现冲突？
+
 ## 007 评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告
 
 1. 请你完整的阅读 `apps\admin\src\docs\reports\2026-02-05-gemini-zod.md` 报告。
