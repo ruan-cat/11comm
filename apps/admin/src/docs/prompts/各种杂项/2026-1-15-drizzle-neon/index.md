@@ -165,6 +165,10 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 - apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md
 - apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md
 
+### 01 检查报告之间的内容潜在冲突校验
+
+请你帮我阅读以下这几款报告文档，并深度思考，这些报告之间是否存在冲突，这些报告介绍的基于类型项目的全栈改造方案，是否有彼此冲突的地方？
+
 ## 008 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
 我需要你完成一次重大的代码写法改造改写任务。
