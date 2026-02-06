@@ -18,24 +18,34 @@ const SEED_DIR = path.resolve(__dirname, "../drizzle/seed");
  * We split statements to avoid "NeonDbError: cannot insert multiple commands into a prepared statement".
  */
 async function executeSqlContent(content: string, sourceName: string) {
-	// Remove comments
-	const cleanContent = content.replace(/--.*$/gm, "");
+	// DANGER: Do NOT strictly remove comments with regex, as it might kill strings containing '--'
+	// const cleanContent = content.replace(/--.*$/gm, ""); // REMOVED
 
-	// Split into statements
-	const statements = cleanContent
-		.split(";")
-		.map((s) => s.trim())
-		.filter((s) => s.length > 0);
+	let statements: string[] = [];
+
+	// Robust splitting using our marker
+	if (content.includes("/* STATEMENT_END */")) {
+		statements = content
+			.split("/* STATEMENT_END */")
+			.map((s) => s.trim())
+			.filter((s) => s.length > 0);
+	} else {
+		// Fallback for legacy files (still dangerous if data has semicolons)
+		console.warn(`[${sourceName}] No STATEMENT_END marker found, falling back to semicolon splitting.`);
+		statements = content
+			.split(";")
+			.map((s) => s.trim())
+			.filter((s) => s.length > 0);
+	}
 
 	if (statements.length === 0) return;
 
 	// Execute sequentially
 	for (const stmt of statements) {
-		// Skip explicit BEGIN/COMMIT transaction controls
-		// In Neon HTTP (stateless), 'BEGIN' starts a transaction that ends immediately after the request,
-		// essentially doing nothing for subsequent requests. So we skip them.
+		// Skip explicit BEGIN/COMMIT transaction controls if they exist as standalone statements
+		// (Though we removed them from generator, keeping this check doesn't hurt)
 		const upperStmt = stmt.toUpperCase();
-		if (upperStmt === "BEGIN" || upperStmt === "COMMIT") {
+		if (upperStmt === "BEGIN" || upperStmt === "COMMIT" || upperStmt === "BEGIN;" || upperStmt === "COMMIT;") {
 			continue;
 		}
 

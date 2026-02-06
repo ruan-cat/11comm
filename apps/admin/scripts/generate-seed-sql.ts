@@ -78,13 +78,10 @@ async function main() {
 			const fileContent = [
 				`-- Module: ${config.id} (${config.displayName})`,
 				"",
-				"BEGIN;",
-				"",
 				...statements.map((s) => {
-					return `-- Table: ${s.table} (${s.recordCount} records)\n${s.sql};\n`;
+					// Use a unique marker for splitting to strictly avoid issues with semicolons in data
+					return `-- Table: ${s.table} (${s.recordCount} records)\n${s.sql};\n/* STATEMENT_END */\n`;
 				}),
-				"",
-				"COMMIT;",
 			].join("\n");
 
 			const filePath = path.join(SEED_DIR, `${config.id}.sql`);
@@ -108,9 +105,9 @@ async function main() {
 		const tables = Array.from(allTables);
 		const cleanSql = [
 			"-- Auto-generated clean script",
-			"BEGIN;",
-			...tables.map((t) => `TRUNCATE TABLE "${t}" RESTART IDENTITY CASCADE;`),
-			"COMMIT;",
+			"",
+			...tables.map((t) => `TRUNCATE TABLE "${t}" RESTART IDENTITY CASCADE;\n/* STATEMENT_END */`),
+			"",
 		].join("\n");
 
 		fs.writeFileSync(path.join(SEED_DIR, "_clean.sql"), cleanSql, "utf-8");
