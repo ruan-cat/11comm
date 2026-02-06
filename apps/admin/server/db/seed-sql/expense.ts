@@ -130,5 +130,53 @@ export function generateExpenseSql(idMap: IdMapRegistry): SqlStatement[] {
 		});
 	}
 
+	// ==========================================
+	// 4. 生成 ex_contract_charges (合同收费)
+	// ==========================================
+	console.log("正在生成 ex_contract_charges SQL...");
+	const contractChargeRecords = mockContractChargeData
+		.map((item) => {
+			const id = idMap.register("ex_contract_charges", item.id);
+
+			// Try to find contract by exact name match first
+			let contractId = idMap.get("ct_contracts", item.contractName);
+
+			// Fallback: Try matching by partial name or "name" field if exact match fails
+			if (!contractId && item.name) {
+				contractId = idMap.get("ct_contracts", item.name);
+			}
+
+			// If still not found, we must skip this record because contractId is NOT NULL
+			if (!contractId) {
+				// console.warn(`⚠️ 跳过合同收费记录 ${item.contractName}: 未找到对应合同`);
+				return null;
+			}
+
+			return {
+				id,
+				contractId,
+				contractNumber: null, // Optional, can be updated if contract is found
+				expenseItem: item.name || "合同费用",
+				receivableAmount: "0", // Mock data missing amount, default to 0
+				receivedAmount: "0",
+				chargeCycle: "monthly",
+				status: statusMap[item.status] || "enabled", // Map 'Enable'/'Disable' to status
+				remark: item.remark,
+				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			};
+		})
+		.filter(Boolean); // Filter out nulls
+
+	if (contractChargeRecords.length > 0) {
+		const query = db.insert(exContractCharges).values(contractChargeRecords).toSQL();
+		statements.push({
+			table: "ex_contract_charges",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: contractChargeRecords.length,
+		});
+		console.log(`✅ 已生成 ex_contract_charges SQL，共 ${contractChargeRecords.length} 条记录`);
+	}
+
 	return statements;
 }

@@ -123,9 +123,20 @@ export function toSqlDate(dateStr: string | Date): string {
  * @param params 参数数组
  */
 export function toFullSql(sql: string, params: unknown[]): string {
-	let result = sql;
-	params.forEach((param, index) => {
+	// Optimize replacement:
+	// Instead of iterating 1..N and doing N string replacements (O(N*M)),
+	// we do one pass over the string using a regex that matches placeholders (O(M)).
+	return sql.replace(/\$(\d+)/g, (match, p1) => {
+		const index = parseInt(p1, 10) - 1;
+
+		// If index is out of bounds (which shouldn't happen if sql/params match), return match
+		if (index < 0 || index >= params.length) {
+			return match;
+		}
+
+		const param = params[index];
 		let value: string;
+
 		if (param === null || param === undefined) {
 			value = "NULL";
 		} else if (typeof param === "string") {
@@ -140,9 +151,7 @@ export function toFullSql(sql: string, params: unknown[]): string {
 		} else {
 			value = String(param);
 		}
-		// Use a safer regex that matches $N but not $N0, $N1 etc.
-		const regex = new RegExp(`\\$${index + 1}(?!\\d)`, "g");
-		result = result.replace(regex, value);
+
+		return value;
 	});
-	return result;
 }
