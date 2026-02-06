@@ -159,6 +159,14 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 5. 请你帮我检查一下上述的 sql seed 种子数据的生成代码，看看在生成 sql 时，是否存在隐晦的数据库关系冲突的写法。导致运行脚本时直接出错。
 6. 你也可以远程链接 neon 数据库。使用 neon MCP 来连接远程数据库，检查数据库的表设置和相关的关联内容，是否出现冲突？
 
+### 05 <!-- TODO: --> 总结故障，并编写合适的 skills 技能，避免未来在处理 schema 数据库表、和生成 seed 种子数据时，出现故障
+
+请你阅读以下报告，并总结经验，在 `.claude\skills` 内编写技能。避免以后出现故障。
+
+- apps\admin\src\docs\reports\2026-02-06-schema-architecture-audit.md
+- apps\admin\src\docs\reports\2026-02-06-schema-conflict-analysis.md
+- apps\admin\src\docs\reports\2026-02-06-seed-script-fixes.md
+
 ## 007 评估类型项目改造报告，并生成一份完整的全栈类型改造评估报告
 
 1. 请你完整的阅读 `apps\admin\src\docs\reports\2026-02-05-gemini-zod.md` 报告。
