@@ -1,44 +1,58 @@
 ## Context
 
-项目目前在 `apps/admin` (Drizzle) 中维护数据库定义，在 `apps/type` 中维护 TypeScript 接口。这种隔离导致了同步问题，并阻碍了验证逻辑的共享。我们正在重构 `apps/type`，使其成为类型和运行时验证的“单一事实来源”。
+根据 `2026-02-06` 的最终评估报告，我们确定了在 Monorepo 架构下实现全栈类型统一的最佳路径。当前架构中，Database Schema (Drizzle) 位于 `apps/admin` 后端，而共享类型位于 `apps/type`。这种分离导致了同步困难和代码冗余。
 
-## Goals / Non-Goals
+## Goals
 
-**Goals:**
+1.  **单一数据源 (SSOT)**: 确保 Database Table, Zod Runtime Schema, 和 TypeScript Type 全部源自同一个文件定义。
+2.  **原地改造 (In-Place Transformation)**: 直接升级 `apps/type` 项目，保留其现有的包名和引用关系，避免创建新的 `packages/shared` 带来不必要的 Monorepo 结构变动。
+3.  **业务内聚 (Business Cohesion)**: Schema 定义必须下沉到具体的业务目录 (`src/business/**/schema.ts`)，而不是集中在顶层的 `db` 文件夹。
+4.  **平滑迁移 (Zero-Downtime Migration)**: 使用影子迁移策略，确保迁移过程中随时可以构建和运行。
 
-- **统一 Schema 注册中心**: `apps/type` 导出 Drizzle Tables, Zod Schemas, 和 TS Types。
-- **运行时验证**: 后端 (Nitro) 和 前端 (Vue) 使用同一套 Zod Schemas。
-- **影子迁移 (Shadow Migration)**: 通过先创建并行 Schema 的方式，实现不破坏现有功能的平滑迁移。
+## Non-Goals
 
-**Non-Goals:**
-
-- **tRPC**: 我们**不会**实现 tRPC。我们将继续使用 Nitro 的 API 处理器，但会通过 Zod 验证进行增强。
+1.  **tRPC**: 明确**不引入** tRPC。根据分析报告，tRPC 对现有 Nitro + Axios 架构侵入性过高。我们将采用 "Nitro + Zod" 的轻量级方案达到 80% 的 tRPC 效果。
+2.  **Monorepo 重构**: 不调整 `apps/` vs `packages/` 的顶层结构。
 
 ## Decisions
 
-### 1. 影子迁移策略 (Shadow Migration Strategy)
+### 1. 架构模式：三位一体 Schema (The Trinity Schema)
 
-我们不会进行破坏性的文件移动。相反：
+每个业务实体的定义的 `schema.ts` 文件必须严格包含三个部分：
 
-1.  **复制**: 将表定义复制到 `apps/type`。
-2.  **增强**: 添加 Zod 生成和导出逻辑。
-3.  **切换**: 将 `apps/admin` 的引用指向 `apps/type`。
-4.  **清理**: 删除 `apps/admin` 中的旧 Schemas。
-    这样可以最大限度地降低迁移过程中构建中断的风险。
+- **Part A (DB)**: `const table = pgTable(...)`
+- **Part B (Zod)**: `const insertSchema = createInsertSchema(...)`
+- **Part C (Type)**: `type Model = z.infer<typeof ...>`
 
-### 2. 业务路径结构 (Business Path Structure)
+拒绝将 DB 定义与 Zod 定义分离在不同文件的做法，以保证修改的原子性。
 
-Schemas **不会**被集中在一个单一的 `db` 文件夹中。它们将遵循 `apps/type` 中现有的“业务路径”：
-`apps/type/src/business/<domain>/<subdomain>/schema.ts`
-这符合领域驱动设计 (DDD)，并保持相关的业务逻辑（类型、Schema、常量）在一起。
+### 2. 目录结构：业务路径优先 (Business Path First)
 
-### 3. 运行时依赖 (Runtime Dependency)
+引用 `2026-02-06` 报告的修正决策：**否定** `src/schemas` 集中式存放的方案。
 
-`apps/type` 将从仅含 `devDependencies` 的包转变为包含 `drizzle-orm`, `zod`, 和 `drizzle-zod` 的 `dependencies` 包。这允许它导出运行时代码。
+**Decision**:
+Schema 文件必须存放在 `apps/type/src/business/<domain>/<module>/schema.ts`。
+这确保了 Schema 与该业务模块的其他常量、辅助函数物理在一起，符合领域驱动设计 (DDD)。
 
-## Risks / Trade-offs
+### 3. 迁移策略：影子迁移 (Shadow Migration)
 
-- **风险: 增加打包体积**: 引入 Zod 会增加前端打包体积。
-  - _缓解_: 带来的安全性收益远大于几 KB 的成本。现代打包工具 (Bundlers) 的 Tree-shaking 效果很好。
-- **风险: 迁移疲劳**: 移动大量文件很繁琐。
-  - _缓解_: 我们将先使用一个试点模块（"Dictionary" 或 "OperationTeam"）来验证工作流，然后再进行批量迁移。
+为了避免 "Stop the World"式的重构，我们将：
+
+1.  **Duplicate**: 在 `apps/type` 中复制 Drizzle 表定义。
+2.  **Co-exist**: 此时 `admin` 仍使用旧定义，`type` 拥有新定义。
+3.  **Switch**: 修改 `admin` 的 `drizzle.config.ts` 和 `db/index.ts` 指向 `type`。
+4.  **Prune**: 删除 `admin` 中的旧定义。
+
+### 4. 依赖管理
+
+`apps/type` 将被视为同构库 (Isomorphic Library)。
+
+- **Dependencies**: `drizzle-orm`, `zod`, `drizzle-zod` 必须添加到 `dependencies` 字段（非 `devDependencies`）。
+- **Build**: 确保 `package.json` 的 `exports` 或 `main` 字段正确指向源码 (TS) 或编译产物 (JS/DTS)，在此 monorepo 中，主要依赖 Vite/TS 去解析源码。
+
+## Risks & Mitigations
+
+- **Risk**: 前端引入 `drizzle-orm` 可能导致打包错误（如 Node.js polyfill 问题）。
+  - **Mitigation**: 只使用 `drizzle-orm/pg-core` 等纯 SQL 构建模块，严禁在 `schema.ts` 中引入 `drizzle-orm/node-postgres` 或数据库连接池代码。
+- **Risk**: Date 对象序列化问题。
+  - **Mitigation**: 在 Zod Schema 中使用 `z.preprocess` 或手动定义的 DTO Schema 来处理 API 返回的 JSON 字符串化后的日期字段。
