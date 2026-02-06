@@ -17,6 +17,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { primaryId, timestamps, remarkField } from "./common";
 import { cmCommunities } from "./community";
+import { smStaff } from "./setting";
 
 /** 巡检任务状态枚举 - 待执行/执行中/已完成/已逾期 */
 export const patrolTaskStatusEnum = pgEnum("patrol_task_status", ["pending", "in_progress", "completed", "overdue"]);
@@ -137,6 +138,8 @@ export const ptPatrolTasks = pgTable(
 		taskName: varchar("task_name", { length: 100 }).notNull(),
 		/** 计划巡检人 */
 		plannedPatroller: varchar("planned_patroller", { length: 50 }),
+		/** 计划巡检人 ID */
+		plannedPatrollerId: uuid("planned_patroller_id").references(() => smStaff.id),
 		/** 巡检方式 */
 		patrolMethod: varchar("patrol_method", { length: 50 }),
 		/** 计划开始时间 */
@@ -149,6 +152,8 @@ export const ptPatrolTasks = pgTable(
 		status: patrolTaskStatusEnum("status").default("pending"),
 		/** 当前巡检人 */
 		currentPatrolPerson: varchar("current_patrol_person", { length: 50 }),
+		/** 当前巡检人 ID */
+		currentPatrolPersonId: uuid("current_patrol_person_id").references(() => smStaff.id),
 		/** 转移说明 */
 		transferDescription: text("transfer_description"),
 		...timestamps,
@@ -157,6 +162,8 @@ export const ptPatrolTasks = pgTable(
 		uniqueIndex("pt_patrol_tasks_task_code_idx").on(table.taskCode),
 		index("pt_patrol_tasks_status_start_time_idx").on(table.status, table.plannedStartTime),
 		index("pt_patrol_tasks_current_patrol_person_idx").on(table.currentPatrolPerson),
+		index("pt_patrol_tasks_planned_patroller_id_idx").on(table.plannedPatrollerId),
+		index("pt_patrol_tasks_current_patrol_person_id_idx").on(table.currentPatrolPersonId),
 		index("pt_patrol_tasks_plan_id_idx").on(table.planId),
 	],
 );

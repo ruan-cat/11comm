@@ -5,7 +5,9 @@
  */
 
 import { index, pgEnum, pgTable, text, timestamp, uuid, varchar, integer, uniqueIndex } from "drizzle-orm/pg-core";
+import { isNull } from "drizzle-orm";
 import { primaryId, timestamps, softDelete, remarkField } from "./common";
+import { smStaff } from "./setting";
 
 /** 报修工单状态枚举 */
 export const repairOrderStatusEnum = pgEnum("repair_order_status", [
@@ -77,10 +79,14 @@ export const rpRepairOrders = pgTable(
 
 		/** 指派人 */
 		assigner: varchar("assigner", { length: 50 }),
+		/** 指派人 ID */
+		assignerId: uuid("assigner_id").references(() => smStaff.id),
 		/** 指派时间 */
 		assignTime: timestamp("assign_time"),
 		/** 维修人员 */
 		repairPerson: varchar("repair_person", { length: 50 }),
+		/** 维修人员 ID */
+		repairPersonId: uuid("repair_person_id").references(() => smStaff.id),
 		/** 计划完成时间 */
 		plannedCompletionTime: timestamp("planned_completion_time"),
 
@@ -91,7 +97,7 @@ export const rpRepairOrders = pgTable(
 		...softDelete,
 	},
 	(table) => [
-		uniqueIndex("rp_repair_orders_work_order_number_idx").on(table.workOrderNumber),
+		uniqueIndex("rp_repair_orders_work_order_number_idx").on(table.workOrderNumber).where(isNull(table.deletedAt)),
 		index("rp_repair_orders_status_idx").on(table.status),
 		index("rp_repair_orders_created_at_idx").on(table.createdAt),
 	],
@@ -151,6 +157,8 @@ export const rpReturnVisits = pgTable(
 
 		/** 回访人 */
 		visitor: varchar("visitor", { length: 50 }),
+		/** 回访人 ID */
+		visitorId: uuid("visitor_id").references(() => smStaff.id),
 		/** 回访时间 */
 		visitTime: timestamp("visit_time"),
 		/** 回访方式 */

@@ -17,7 +17,9 @@ import {
 	pgEnum,
 } from "drizzle-orm/pg-core";
 import { primaryId, timestamps, softDelete, remarkField, statusEnum, auditStatusEnum } from "./common";
-import { hpHouses } from "./house-property";
+import { hpHouses, hpOwners } from "./house-property";
+import { pkOwnerVehicles } from "./parking";
+import { ctContracts } from "./contract";
 
 /**
  * 缴费状态枚举
@@ -124,7 +126,9 @@ export const exVehicleCharges = pgTable(
 	{
 		id: primaryId(),
 		/** 关联车辆 ID - 引用 pk_owner_vehicles 表 */
-		vehicleId: uuid("vehicle_id").notNull(),
+		vehicleId: uuid("vehicle_id")
+			.notNull()
+			.references(() => pkOwnerVehicles.id),
 		/** 车牌号 */
 		licensePlate: varchar("license_plate", { length: 20 }).notNull(),
 		/** 车位编号 */
@@ -160,7 +164,9 @@ export const exContractCharges = pgTable(
 	{
 		id: primaryId(),
 		/** 关联合同 ID - 引用 ct_contracts 表 */
-		contractId: uuid("contract_id").notNull(),
+		contractId: uuid("contract_id")
+			.notNull()
+			.references(() => ctContracts.id),
 		/** 合同编号 */
 		contractNumber: varchar("contract_number", { length: 50 }),
 		/** 费用项目 */
@@ -492,3 +498,73 @@ export const exReprintVouchers = pgTable(
 		index("ex_reprint_vouchers_original_voucher_no_idx").on(table.originalVoucherNo),
 	],
 );
+
+/** 发票信息表 */
+export const hpInvoices = pgTable(
+	"hp_invoices",
+	{
+		id: primaryId(),
+		/** 发票号码 */
+		invoiceNo: varchar("invoice_no", { length: 50 }).notNull(),
+		/** 发票类型 */
+		invoiceType: varchar("invoice_type", { length: 50 }),
+		/** 开票金额 */
+		amount: decimal("amount", { precision: 12, scale: 2 }),
+		/** 开票日期 */
+		invoiceDate: date("invoice_date"),
+		/** 关联支付记录 ID */
+		paymentId: uuid("payment_id").references(() => exPayments.id),
+		/** 编号 - 申请单号 */
+		code: varchar("code", { length: 50 }),
+		/** 业主名称 */
+		ownerName: varchar("owner_name", { length: 50 }),
+		/** 申请人 */
+		applicant: varchar("applicant", { length: 50 }),
+		/** 发票名头 */
+		invoiceTitle: varchar("invoice_title", { length: 200 }),
+		/** 纳税人识别号 */
+		taxpayerId: varchar("taxpayer_id", { length: 50 }),
+		/** 审核状态 */
+		auditStatus: varchar("audit_status", { length: 20 }).default("pending"),
+		/** 申请时间 */
+		applicationTime: timestamp("application_time"),
+		/** 备注 */
+		remark: remarkField(),
+		...timestamps,
+	},
+	(table) => [index("hp_invoices_payment_id_idx").on(table.paymentId)],
+);
+
+/** 发票抬头表 */
+export const hpInvoiceTitles = pgTable(
+	"hp_invoice_titles",
+	{
+		id: primaryId(),
+		/** 关联业主 ID */
+		ownerId: uuid("owner_id")
+			.references(() => hpOwners.id)
+			.notNull(),
+		/** 抬头名称 */
+		titleName: varchar("title_name", { length: 200 }).notNull(),
+		/** 纳税人识别号 */
+		taxpayerNo: varchar("taxpayer_no", { length: 50 }),
+		/** 地址电话 */
+		addressPhone: text("address_phone"),
+		/** 开户银行及账号 */
+		bankAccount: text("bank_account"),
+		/** 备注 */
+		remark: remarkField(),
+		...timestamps,
+	},
+	(table) => [index("hp_invoice_titles_owner_id_idx").on(table.ownerId)],
+);
+
+/** 发票信息插入类型 */
+export type InsertHpInvoice = typeof hpInvoices.$inferInsert;
+/** 发票信息查询类型 */
+export type SelectHpInvoice = typeof hpInvoices.$inferSelect;
+
+/** 发票抬头插入类型 */
+export type InsertHpInvoiceTitle = typeof hpInvoiceTitles.$inferInsert;
+/** 发票抬头查询类型 */
+export type SelectHpInvoiceTitle = typeof hpInvoiceTitles.$inferSelect;

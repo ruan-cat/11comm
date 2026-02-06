@@ -15,7 +15,8 @@ import {
 	uniqueIndex,
 	uuid,
 } from "drizzle-orm/pg-core";
-import { primaryId, timestamps, remarkField, statusEnum } from "./common";
+import { isNull } from "drizzle-orm";
+import { primaryId, timestamps, softDelete, remarkField, statusEnum } from "./common";
 import { cmCommunities } from "./community";
 import { hpOwners } from "./house-property";
 
@@ -63,6 +64,8 @@ export const pkCarports = pgTable(
 		area: decimal("area", { precision: 8, scale: 2 }),
 		/** 车位状态：空闲/已售/已租/锁定 */
 		status: varchar("status", { length: 20 }),
+		/** 归属业主 ID */
+		ownerId: uuid("owner_id").references(() => hpOwners.id),
 		/** 归属业主姓名 */
 		ownerName: varchar("owner_name", { length: 50 }),
 		/** 联系电话 */
@@ -110,9 +113,10 @@ export const pkOwnerVehicles = pgTable(
 		/** 有效期结束 */
 		validityEnd: date("validity_end"),
 		...timestamps,
+		...softDelete,
 	},
 	(table) => [
-		uniqueIndex("pk_owner_vehicles_license_plate_idx").on(table.licensePlate),
+		uniqueIndex("pk_owner_vehicles_license_plate_idx").on(table.licensePlate).where(isNull(table.deletedAt)),
 		index("pk_owner_vehicles_owner_id_idx").on(table.ownerId),
 		index("pk_owner_vehicles_carport_id_idx").on(table.carportId),
 	],

@@ -16,6 +16,7 @@ import {
 	uniqueIndex,
 	uuid,
 } from "drizzle-orm/pg-core";
+import { isNull } from "drizzle-orm";
 import { primaryId, timestamps, softDelete, remarkField, statusEnum, auditStatusEnum } from "./common";
 import { hpOwners } from "./house-property";
 
@@ -176,7 +177,7 @@ export const ctContracts = pgTable(
 		...softDelete,
 	},
 	(table) => [
-		uniqueIndex("ct_contracts_contract_number_idx").on(table.contractNumber),
+		uniqueIndex("ct_contracts_contract_number_idx").on(table.contractNumber).where(isNull(table.deletedAt)),
 		index("ct_contracts_status_idx").on(table.status),
 		index("ct_contracts_first_party_id_idx").on(table.firstPartyId),
 		index("ct_contracts_second_party_id_idx").on(table.secondPartyId),
