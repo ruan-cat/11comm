@@ -164,7 +164,7 @@
 		"@intlify/unplugin-vue-i18n": "^11.0.3",
 		"@plus-pro-components/resolver": "^0.0.3",
 		"@ruan-cat/vite-plugin-ts-alias": "^0.2.0",
-		"@ruan-cat/vitepress-preset-config": "^2.13.0",
+		"@ruan-cat/vitepress-preset-config": "^2.14.0",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/codemirror": "^5.60.17",
 		"@types/dagre": "^0.7.53",

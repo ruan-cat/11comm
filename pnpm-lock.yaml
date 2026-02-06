@@ -460,8 +460,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2))
       "@ruan-cat/vitepress-preset-config":
-        specifier: ^2.13.0
-        version: 2.13.0(bf31b9ba9d3e28d195b79b1cb538c38f)
+        specifier: ^2.14.0
+        version: 2.14.0(bf31b9ba9d3e28d195b79b1cb538c38f)
       "@tailwindcss/vite":
         specifier: ^4.1.18
         version: 4.1.18(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2))
@@ -659,7 +659,7 @@ importers:
     dependencies:
       "@ruan-cat/utils":
         specifier: ^4.20.0
-        version: 4.20.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.27(typescript@5.9.3))
+        version: 4.20.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.27)(vue-router@4.6.4(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.27(typescript@5.9.3))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -3898,9 +3898,9 @@ packages:
     peerDependencies:
       vite: ">=6"
 
-  "@ruan-cat/vitepress-preset-config@2.13.0":
+  "@ruan-cat/vitepress-preset-config@2.14.0":
     resolution:
-      { integrity: sha512-oVUbeRLfQj6ZcSyiRZexnym8bKH0i2lihmjWmdR5wWlpR0YqAMPkvbSUN/bPrpQ/8iycbeYHk9EUJj2/j3/ILQ== }
+      { integrity: sha512-slN227uil7Ah/4t39bMjBK7eYNbQuKOWa5doQKOmvLo2YdfHuB0HQ3iwtfVW4RPgAtOmEtba6SrS9xXQZTx4/g== }
     peerDependencies:
       vitepress: ^1.6.x
       vitepress-demo-plugin: ^1
@@ -16077,7 +16077,7 @@ snapshots:
       upath: 2.0.1
       vite: 7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2)
 
-  "@ruan-cat/vitepress-preset-config@2.13.0(bf31b9ba9d3e28d195b79b1cb538c38f)":
+  "@ruan-cat/vitepress-preset-config@2.14.0(bf31b9ba9d3e28d195b79b1cb538c38f)":
     dependencies:
       "@leelaa/vitepress-plugin-extended": 1.0.7(vitepress@1.6.4(@algolia/client-search@5.48.0)(@types/node@24.10.11)(async-validator@4.2.5)(axios@1.13.4)(change-case@5.4.4)(less@4.5.1)(lightningcss@1.30.2)(markdown-it-mathjax3@4.3.2)(nprogress@0.2.0)(postcss@8.5.6)(qrcode@1.5.4)(sass@1.97.3)(search-insights@2.9.0)(sortablejs@1.15.6)(typescript@5.9.3))(vue@3.5.27(typescript@5.9.3))
       "@nolebase/vitepress-plugin-git-changelog": 2.18.2(vitepress@1.6.4(@algolia/client-search@5.48.0)(@types/node@24.10.11)(async-validator@4.2.5)(axios@1.13.4)(change-case@5.4.4)(less@4.5.1)(lightningcss@1.30.2)(markdown-it-mathjax3@4.3.2)(nprogress@0.2.0)(postcss@8.5.6)(qrcode@1.5.4)(sass@1.97.3)(search-insights@2.9.0)(sortablejs@1.15.6)(typescript@5.9.3))(vue@3.5.27(typescript@5.9.3))
