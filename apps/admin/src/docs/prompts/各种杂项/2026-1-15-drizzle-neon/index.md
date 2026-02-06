@@ -174,7 +174,28 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 - `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
 - `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
 
-## 008 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
+## 008 <!-- TODO: 长任务 未完成 --> 面向全栈项目，重构类型项目
+
+对应 openspec 任务 `full-stack-type-transformation` 。
+
+### 001 拓展非常详细清晰的 `full-stack-type-transformation` 任务
+
+针对目录 `openspec\changes\full-stack-type-transformation` 的 openspec 任务。
+
+我认为现在的规范，和具体的实施细节，写的太简单了，不够详细。具体的操作细节存在失真。要求你重新审阅 `full-stack-type-transformation` 的全部文件，补全具体的操作规范和实施细节。
+
+该任务本质上是参考以下文档实现的。目前的 `full-stack-type-transformation` 任务没有完整的，完善的，齐全的以 openspec 实施规范，完整的记录以下报告的实施方案。
+
+- `apps\admin\src\docs\reports\2026-02-05-gemini-zod.md`
+- `apps\admin\src\docs\reports\2026-02-05-trpc-vs-shared-schema-analysis.md`
+- `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
+- `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
+
+### 002 检查过往规范和文档对于类型项目操作规范的冲突
+
+现在我们开始
+
+## 009 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
 
 我需要你完成一次重大的代码写法改造改写任务。
 
