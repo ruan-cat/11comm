@@ -214,7 +214,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 - `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
 - `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
 
-### 002 <!-- TODO: --> 检查过往规范和文档对于类型项目操作规范的冲突
+### 002 检查过往规范和文档对于类型项目操作规范的冲突
 
 现在我们开始全面重构类型项目，重构成面向全栈的项目了。我相信现在的规范，肯定和 `openspec\changes\full-stack-type-transformation` 体现的规范有巨大冲突。
 
