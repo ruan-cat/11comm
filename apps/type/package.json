@@ -17,6 +17,7 @@
 			"types": "./src/index.ts"
 		},
 		"./business": "./src/business/index.ts",
+		"./common": "./src/common/index.ts",
 		"./*": "./src/*.ts"
 	},
 	"scripts": {
