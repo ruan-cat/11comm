@@ -238,8 +238,31 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 请你严格的，充分思考的，谨慎地，完成类型项目的重构，清理错误的硬编码路径，标记过时的文档等任务。
 
-## 009 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写
+## 009 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写任务
 
-我需要你完成一次重大的代码写法改造改写任务。
+我需要你设计，并完成一次重大的代码写法改造改写任务。
 
-现在
+1. 全面检查 `apps\admin\server\api` 内出现的全部 nitro 接口。了解清楚在使用本地假数据时，nitro 接口是怎么编写的。
+2. 全面阅读现在的类型项目，搞清楚现在的类型项目提供了那些业务类型。schema 有哪一些？
+3. 阅读 `openspec\specs` 的全部规范，了解清楚有哪些东西能够指导编写 nitro 接口。我需要编写借助 drizzle 请求 neon 数据库的，真实的 nitro 接口。我希望未来的 nitro 接口，全部都使用真实的 neon 数据库。
+4. 我希望改造后的 nitro 接口，能够使用项目目前已经准备好的，zod 相关的验证库，实现有意义的验证。
+5. 你阅读以下的这些报告，并指定具体能够完成有效改造 nitro 接口的规划设计。
+
+- `apps\admin\src\docs\reports\2026-02-05-gemini-zod.md`
+- `apps\admin\src\docs\reports\2026-02-05-trpc-vs-shared-schema-analysis.md`
+- `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
+- `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
+
+我需要你充分的，全面的，深入的思考上述内容，并为我指定一个完整全面的 nitro 接口改造计划。我需要你的计划做到以下几点，并解决掉以下几个议题：
+
+1. nitro 改造计划将要学习 `.claude\skills` 内那些现存的 nitro 指导技能？
+2. nitro 接口怎么导入现在来自 drizzle 和 zod 生成的 neon 数据库表类型？如何使用 schema 生成的业务数据库表类型？
+3. nitro 接口怎么确保使用类型项目提供的 zod 来完成入参和写表的校验？
+4. nitro 接口怎么使用 drizzle 来查表？写表？
+5. nitro 接口写表或查表时出现的错误处理怎么弄？
+6. 在 nitro 接口全面的使用 schema 数据库表生成的业务类型时，该怎么对待之前已经写好的，数量众多的 Interface 业务类型？
+7. 删除掉旧的类型项目提供的 Interface 业务类型时，怎么去同步迁移，改造前端项目直接使用的这些 Interface 业务类型，并完成平稳的替换和过渡？
+
+我要求你的 nitro 改造计划，要写的足够完善，足够长。我要求你至少要写够 2000 行，作为一个及其详实的计划文档，必须要写够足够的行数。至少要到 2000 行。
+
+### 01 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
