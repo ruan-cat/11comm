@@ -26,6 +26,7 @@
 
 - 后台项目： 即 `apps\admin\package.json` 项目。又称为 `admin后台项目` 。
 - 类型项目： 即 `apps\type\package.json` 项目。又称为 `type类型项目` 。
+  - **[NEW DEFINITION]** 正在转型为**同构运行时库 (Isomorphic Runtime Library)**，包含 Zod Schemas + Drizzle Tables，提供运行时验证。前后端共享同一 Schema 作为 Single Source of Truth。
 - 客户端代码： 即 后台项目的 `apps\admin\src` 目录，这个目录下的全部代码，都是`客户端代码`。
 - 服务端代码： 即 后台项目的 `apps\admin\server` 目录，这个目录下的全部代码，都是`服务端代码`。
 
@@ -132,7 +133,17 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 
 ## 4. 类型项目的代码组织方式与导出规范
 
+> **[ARCHITECTURE TRANSFORMATION NOTICE]**
+>
+> `apps/type` 项目正在从"静态类型库"转型为"同构运行时库 (Isomorphic Runtime Library)"。
+>
+> **新定义**: `apps/type` 不再仅仅是一个 TypeScript 类型定义包，而是一个包含运行时 Zod Schemas 和 Drizzle Tables 的业务核心定义包。
+>
+> **豁免条款**: Full Stack Type Transformation 相关的重构活动豁免 Section 4.1 的"禁止修改"规则。在迁移 Schema 到 `apps/type` 期间，允许进行必要的类型重构和字段调整。
+
 ### 4.1. 对现有类型的处理规范
+
+> **[EXEMPTION FOR TRANSFORMATION]** 在 Full Stack Type Transformation 完成前，本规则对 Schema 迁移活动暂时豁免。允许进行必要的类型重构以支持新架构。
 
 1. **不允许反反复复**的对已经有的类型字段做增删。**不要突然**增加业务类型字段，不要对已经是英文字段命名的字段名又重写重命名。这非常容易导致其他部分出现类型故障，拖累整个项目开发进度。
 2. 除了中文命名的字段名需要被及时的修正，修改成纯英文的字段名以外，其他情况下均不允许你更改增删字段名。

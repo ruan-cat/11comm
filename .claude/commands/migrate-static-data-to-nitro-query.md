@@ -1,3 +1,25 @@
+> **[DEPRECATED - Schema First Required]**
+>
+> **This command promotes a static interface-based workflow that conflicts with the new Schema-First architecture.**
+>
+> **New Requirement**: All type definitions must be created as **Zod Schemas + Drizzle Tables** in `apps/type/src/business/**/schema.ts`, NOT as static TypeScript interfaces.
+>
+> **指向新工作流**:
+>
+> - Design: `openspec/changes/full-stack-type-transformation/design.md`
+> - Schema First 规范: 待创建
+>
+> **关键变更**:
+>
+> - ❌ Step 1: 不再创建 `{Page}ListItem` interface
+> - ✅ Step 1: 应创建 `pgTable` + `createInsertSchema` (Zod)
+> - ❌ Mock 数据: 不再使用静态 TypeScript 类型
+> - ✅ Mock 数据: 使用 Drizzle Schema 推导的类型
+>
+> **在新架构下，请勿使用此指令。等待 Schema First 迁移指令发布。**
+
+---
+
 # migrate-static-data-to-nitro-query
 
 将静态数据列表页迁移到 Nitro Query 模式的专用命令。

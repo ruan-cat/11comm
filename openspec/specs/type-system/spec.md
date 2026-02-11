@@ -1,3 +1,5 @@
+> **[DEPRECATED]** This document is superseded by `openspec/changes/full-stack-type-transformation/design.md`. Do not use. This spec promoted a static type library model that conflicts with the new Schema-First architecture.
+
 # type-system Specification
 
 ## Purpose

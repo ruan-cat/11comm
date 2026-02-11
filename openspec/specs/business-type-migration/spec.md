@@ -1,3 +1,5 @@
+> **[DEPRECATED]** This document is superseded by `openspec/changes/full-stack-type-transformation/design.md`. Moving Interfaces is only valid when converting them to Zod Schemas with runtime validation. Do not use this spec for static type migration.
+
 # business-type-migration Specification
 
 ## Purpose

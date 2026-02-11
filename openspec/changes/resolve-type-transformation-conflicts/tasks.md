@@ -2,17 +2,17 @@
 
 ## 1. Documentation Sanitation (文档清洗)
 
-- [ ] 1.1 将 `openspec/specs/type-system/spec.md` 标记为 [DEPRECATED]，并指向 full-stack-type-transformation/design.md
-- [ ] 1.2 将 `openspec/specs/business-type-migration/spec.md` 标记为 [DEPRECATED]
-- [ ] 1.3 将 `openspec/specs/db-schema-core/spec.md` 标记为 [DEPRECATED]
-- [ ] 1.4 将 `apps/admin/src/docs/reports/2026-02-05-full-stack-type-transformation-assessment.md` 标记为 [Superseded]
+- [x] 1.1 将 `openspec/specs/type-system/spec.md` 标记为 [DEPRECATED]，并指向 full-stack-type-transformation/design.md
+- [x] 1.2 将 `openspec/specs/business-type-migration/spec.md` 标记为 [DEPRECATED]
+- [x] 1.3 将 `openspec/specs/db-schema-core/spec.md` 标记为 [DEPRECATED]
+- [x] 1.4 将 `apps/admin/src/docs/reports/2026-02-05-full-stack-type-transformation-assessment.md` 标记为 [Superseded]
 
 ## 2. Command & Skill Correction (指令与技能修正)
 
-- [ ] 2.1 重写 `.claude/commands/migrate-static-data-to-nitro-query.md` 步骤指令，指示生成 Zod Schema + Drizzle Table 而非 Interfaces
-- [ ] 2.2 更新 `.claude/skills/neon-db-list/SKILL.md` 以扫描 `apps/type/src/business/**/schema.ts`
-- [ ] 2.3 更新 `.claude/skills/schema-and-seed-guardian/SKILL.md` 以引导变更至 `apps/type`
-- [ ] 2.4 更新 `CLAUDE.md` 第 4.1 节以豁免类型改造，并更新 `apps/type` 定义为 "Runtime Library"
+- [x] 2.1 重写 `.claude/commands/migrate-static-data-to-nitro-query.md` 步骤指令，指示生成 Zod Schema + Drizzle Table 而非 Interfaces
+- [x] 2.2 更新 `.claude/skills/neon-db-list/SKILL.md` 以扫描 `apps/type/src/business/**/schema.ts`
+- [x] 2.3 更新 `.claude/skills/schema-and-seed-guardian/SKILL.md` 以引导变更至 `apps/type`
+- [x] 2.4 更新 `CLAUDE.md` 第 4.1 节以豁免类型改造，并更新 `apps/type` 定义为 "Runtime Library"
 
 ## 3. Infrastructure Preparation (基础设施准备)
 

@@ -1,3 +1,5 @@
+> **[DEPRECATED]** This document is superseded by `openspec/changes/full-stack-type-transformation/design.md`. Schema definitions should be created in `apps/type/src/business/**/schema.ts` using Zod + Drizzle, not in `apps/admin/server/db/schemas`. Do not use.
+
 ## ADDED Requirements
 
 ### Requirement: Common Schema Module

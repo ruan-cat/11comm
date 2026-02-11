@@ -1,15 +1,25 @@
 ---
 name: schema-and-seed-guardian
-description: 当你修改 apps/admin/server/db/schemas 下的数据库结构，或 apps/admin/server/db/seed-sql 下的种子生成脚本时，请务必阅读并遵循此指南，以防止性能问题、数据一致性崩溃和部署失败。
+description: 当你修改数据库结构或种子生成脚本时，请务必阅读并遵循此指南，以防止性能问题、数据一致性崩溃和部署失败。新 Schema 应在 apps/type 中创建。
 ---
 
 # Schema and Seed Guardian
+
+> **[MIGRATION NOTICE]** Schema 定义位置正在迁移中:
+>
+> - **旧位置 (Legacy)**: `apps/admin/server/db/schemas` - 仅供只读参考，不要添加新 Schema
+> - **新位置 (Active)**: `apps/type/src/business/**/schema.ts` - **所有新 Schema 必须在此创建**
+>
+> **重要**: 当你需要添加新列或新表时，应在 `apps/type` 项目中创建 Zod Schema + Drizzle Table，而非在 `apps/admin/server/db/schemas` 中。
 
 本技能总结了项目在数据库架构变更和种子数据生成方面的血泪经验。请在进行相关开发时严格查阅以下 Checklist。
 
 ## I. Database Schema 变更规范
 
-在修改或新增 `schema`定义时 (`apps/admin/server/db/schemas/*.ts`)：
+**在修改或新增 Schema 定义时**:
+
+- **新 Schema**: 在 `apps/type/src/business/**/schema.ts` 中创建
+- **现有 Schema (Legacy)**: 在 `apps/admin/server/db/schemas/*.ts` 中维护（仅限已存在的表）
 
 ### 1. 软删除与唯一索引 (Critical)
 

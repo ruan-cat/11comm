@@ -1,12 +1,21 @@
 ---
 name: neon-db-list
-description: 项目中所有数据库表的完整列表。当你需要验证表名、理解数据库结构或检查 `apps\admin\server\db\schemas` 目录中现有的表时，请使用此技能。
+description: 项目中所有数据库表的完整列表。当你需要验证表名、理解数据库结构或检查数据库 Schema 定义时，请使用此技能。
 ---
 
 # Neon 数据库表清单
 
+> **[MIGRATION NOTICE]** Schema 定义位置正在迁移中:
+>
+> - **旧位置 (Legacy)**: `apps\admin\server\db\schemas` - 仅供只读参考
+> - **新位置 (Active)**: `apps/type/src/business/**/schema.ts` - 所有新 Schema 应在此创建
+>
+> 在 Full Stack Type Transformation 完成后，本文档将更新为扫描新位置。
+
 本文档列出了 `apps\admin\server\db\schemas` 中定义的所有数据库表。
 此列表由人工维护，每当添加、重命名或删除表时，都应立即更新此列表。
+
+**重要**: 新的 Schema 定义应在 `apps/type/src/business/**/schema.ts` 中创建，不再添加到 `apps\admin\server\db\schemas`。
 
 ## 目录
 

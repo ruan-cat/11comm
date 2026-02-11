@@ -1,6 +1,13 @@
+> **[Superseded]** This report has been superseded by:
+>
+> - `apps/admin/src/docs/reports/2026-02-06-full-stack-type-transformation-conflict-analysis.md` (Conflict Analysis)
+> - `openspec/changes/full-stack-type-transformation/design.md` (Implementation Design)
+>
+> Refer to the newer documents for the final architecture decisions and implementation plan.
+
 <!-- 有意义的报告 不予删除 -->
 
-# 全栈类型改造评估报告：基于 Neon DB Schema 的统一类型架构
+# 全栈类型改造评估报告:基于 Neon DB Schema 的统一类型架构
 
 ## 1. 报告摘要 (Executive Summary)
 
