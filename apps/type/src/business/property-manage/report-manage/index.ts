@@ -3,6 +3,7 @@
  * @description 统一导出 report-manage 相关的所有业务类型
  */
 
+export * from "./schema";
 export * from "./arrears-details-list";
 export * from "./data-statistics";
 export * from "./deposit-report";
