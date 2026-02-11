@@ -3,6 +3,7 @@
  * @description 统一导出房产管理相关的所有业务类型
  */
 
+export * from "./schema";
 export * from "./house";
 export * from "./invoice";
 export * from "./invoice-title";
