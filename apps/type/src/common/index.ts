@@ -14,6 +14,10 @@ export * from "./business-types";
 // 导出业务共同选项定义
 export * from "./business-options";
 
+// 导出 Drizzle Schema 辅助函数和枚举
+export * from "./helpers";
+export * from "./enums";
+
 /**
  * 前后端数据对接数据对象
  * @description

@@ -8,44 +8,51 @@
 > **代理角色**: DevOps & 配置专家
 > **目标**: 配置 `apps/type` 项目以支持运行时 Schema 定义，并确保编译链路正确。
 
-- [ ] **1.1 升级 apps/type 依赖**
+- [x] **1.1 升级 apps/type 依赖**
   - **动作**: 在 `apps/type` 中，确保以下包位于 `dependencies` (而不是 `devDependencies`):
     - `drizzle-orm`
     - `zod`
     - `drizzle-zod`
   - **命令**: `cd apps/type && pnpm add drizzle-orm zod drizzle-zod`
   - **验证**: 阅读 `apps/type/package.json` 进行确认。
+  - **状态**: ✅ 已有 drizzle-orm@^0.42.0, drizzle-zod@^0.8.0, zod@^3.24.0
 
-- [ ] **1.2 配置 apps/type 导出 (Exports)**
+- [x] **1.2 配置 apps/type 导出 (Exports)**
   - **动作**: 更新 `apps/type/package.json`。
   - **要求**: 确保 `exports` 字段支持子路径导入（如果需要），或者至少 `.` 指向 `src/index.ts`。
   - **参考**: 详见 `specs/infrastructure-config/spec.md`。
+  - **状态**: ✅ 已配置 "./business" 子路径导出
 
-- [ ] **1.3 配置 apps/admin 依赖**
+- [x] **1.3 配置 apps/admin 依赖**
   - **动作**: 在 `apps/admin` 中，确保 `zod` 作为直接依赖项安装。
   - **命令**: `cd apps/admin && pnpm add zod`
+  - **状态**: ✅ 已添加 zod@^3.25.76, drizzle-zod@^0.8.3, drizzle-orm@^0.42.0
 
-- [ ] **1.4 验证环境**
+- [x] **1.4 验证环境**
   - **动作**: 运行构建/类型检查循环，确保没有立即回归。
   - **命令**: `pnpm -F @01s-11comm/type typecheck`
+  - **状态**: ✅ 类型检查通过
 
 ## Phase 2: 试点迁移 - "运维管理/Operation Team" (Sub-Agent B)
 
 > **代理角色**: 高级后端开发
 > **目标**: 迁移一个隔离的单一模块 (`operation-team`) 以验证模式是否有效。
 
-- [ ] **2.1 创建影子 Schema (Shadow Schema)**
+- [x] **2.1 创建影子 Schema (Shadow Schema)**
   - **阅读源文件**: 阅读 `apps/admin/server/db/schemas/operation-team.ts`。
   - **创建目标文件**: 创建 `apps/type/src/business/operation-team/schema.ts`。
   - **实现细节**:
     - 使用 `specs/schema-standard/spec.md` 中的 **三位一体模式 (Trinity Pattern)** (Table + Zod + Type)。
     - 确保 **所有** 字段都从源表中完整迁移。
     - 确保 `json` 字段拥有严格的 Zod 定义。
+  - **状态**: ✅ 已创建完整 Schema，包含 9 张表 (opMerchants, opMerchantAdmins, opPropertyCompanies, opCommunityInfo, opCommunityConfigs, opReportGroups, opReportInfos, opReportComponents, opRegisterProtocols)
+  - **改进**: 采用手动定义 Update Schema 的方式，避免类型断言，保持类型安全
 
-- [ ] **2.2 对齐导出 (Export Alignment)**
+- [x] **2.2 对齐导出 (Export Alignment)**
   - **动作**: 编辑 `apps/type/src/business/operation-team/index.ts`。
   - **要求**: 添加 `export * from "./schema"`。
   - **清理**: 注释掉或删除任何与新推导类型 (Inferred Types) 冲突的旧 `interface` 定义。
+  - **状态**: ✅ 已在 index.ts 顶部添加 schema 导出
 
 - [ ] **2.3 消费者验证 (试点测试)**
   - **动作**: 在 `apps/admin/server/test_schema_import.ts` 创建一个临时测试文件 (不要提交)。

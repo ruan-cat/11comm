@@ -276,8 +276,11 @@ importers:
         specifier: ^2.4.2
         version: 2.4.2
       drizzle-orm:
-        specifier: ^0.38.4
-        version: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)
+        specifier: ^0.42.0
+        version: 0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(zod@3.25.76)
       echarts:
         specifier: ^6.0.0
         version: 6.0.0
@@ -319,7 +322,7 @@ importers:
         version: 5.13.1
       nitro:
         specifier: 3.0.1-alpha.1
-        version: 3.0.1-alpha.1(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6))(lru-cache@11.2.5)(rollup@4.57.1)(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2))
+        version: 3.0.1-alpha.1(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(lru-cache@11.2.5)(rollup@4.57.1)(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2))
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -425,6 +428,9 @@ importers:
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       "@commitlint/cli":
         specifier: ^19.8.1
@@ -6869,99 +6875,6 @@ packages:
     resolution:
       { integrity: sha512-U4wWit0fyZuGuP7iNmRleQyK2V8wCuv57vf5l3MnG4z4fzNTjY/U13M8owyQ5RavqvqxBifWORaR3wIUzlN64g== }
     hasBin: true
-
-  drizzle-orm@0.38.4:
-    resolution:
-      { integrity: sha512-s7/5BpLKO+WJRHspvpqTydxFob8i1vo2rEx4pY6TGY7QSMuUfWUuzaY0DIpXCkgHOo37BaFC+SJQb99dDUXT3Q== }
-    peerDependencies:
-      "@aws-sdk/client-rds-data": ">=3"
-      "@cloudflare/workers-types": ">=4"
-      "@electric-sql/pglite": ">=0.2.0"
-      "@libsql/client": ">=0.10.0"
-      "@libsql/client-wasm": ">=0.10.0"
-      "@neondatabase/serverless": ">=0.10.0"
-      "@op-engineering/op-sqlite": ">=2"
-      "@opentelemetry/api": ^1.4.1
-      "@planetscale/database": ">=1"
-      "@prisma/client": "*"
-      "@tidbcloud/serverless": "*"
-      "@types/better-sqlite3": "*"
-      "@types/pg": "*"
-      "@types/react": ">=18"
-      "@types/sql.js": "*"
-      "@vercel/postgres": ">=0.8.0"
-      "@xata.io/client": "*"
-      better-sqlite3: ">=7"
-      bun-types: "*"
-      expo-sqlite: ">=14.0.0"
-      knex: "*"
-      kysely: "*"
-      mysql2: ">=2"
-      pg: ">=8"
-      postgres: ">=3"
-      prisma: "*"
-      react: ">=18"
-      sql.js: ">=1"
-      sqlite3: ">=5"
-    peerDependenciesMeta:
-      "@aws-sdk/client-rds-data":
-        optional: true
-      "@cloudflare/workers-types":
-        optional: true
-      "@electric-sql/pglite":
-        optional: true
-      "@libsql/client":
-        optional: true
-      "@libsql/client-wasm":
-        optional: true
-      "@neondatabase/serverless":
-        optional: true
-      "@op-engineering/op-sqlite":
-        optional: true
-      "@opentelemetry/api":
-        optional: true
-      "@planetscale/database":
-        optional: true
-      "@prisma/client":
-        optional: true
-      "@tidbcloud/serverless":
-        optional: true
-      "@types/better-sqlite3":
-        optional: true
-      "@types/pg":
-        optional: true
-      "@types/react":
-        optional: true
-      "@types/sql.js":
-        optional: true
-      "@vercel/postgres":
-        optional: true
-      "@xata.io/client":
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
-        optional: true
-      expo-sqlite:
-        optional: true
-      knex:
-        optional: true
-      kysely:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      postgres:
-        optional: true
-      prisma:
-        optional: true
-      react:
-        optional: true
-      sql.js:
-        optional: true
-      sqlite3:
-        optional: true
 
   drizzle-orm@0.42.0:
     resolution:
@@ -19024,9 +18937,9 @@ snapshots:
 
   dayjs@1.11.19: {}
 
-  db0@0.3.4(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)):
+  db0@0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)):
     optionalDependencies:
-      drizzle-orm: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)
+      drizzle-orm: 0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)
 
   debug@4.3.4:
     dependencies:
@@ -19204,11 +19117,6 @@ snapshots:
       gel: 2.2.0
     transitivePeerDependencies:
       - supports-color
-
-  drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6):
-    optionalDependencies:
-      "@neondatabase/serverless": 0.10.4
-      "@types/pg": 8.11.6
 
   drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0):
     optionalDependencies:
@@ -22233,11 +22141,11 @@ snapshots:
 
   nf3@0.1.12: {}
 
-  nitro@3.0.1-alpha.1(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6))(lru-cache@11.2.5)(rollup@4.57.1)(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2)):
+  nitro@3.0.1-alpha.1(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(lru-cache@11.2.5)(rollup@4.57.1)(vite@7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
       consola: 3.4.2
       crossws: 0.4.4(srvx@0.9.8)
-      db0: 0.3.4(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6))
+      db0: 0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))
       h3: 2.0.1-rc.5(crossws@0.4.4(srvx@0.9.8))
       jiti: 2.6.1
       nf3: 0.1.12
@@ -22248,7 +22156,7 @@ snapshots:
       srvx: 0.9.8
       undici: 7.20.0
       unenv: 2.0.0-rc.24
-      unstorage: 2.0.0-alpha.5(@vercel/blob@1.0.2)(chokidar@5.0.0)(db0@0.3.4(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)))(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3)
+      unstorage: 2.0.0-alpha.5(@vercel/blob@1.0.2)(chokidar@5.0.0)(db0@0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)))(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3)
     optionalDependencies:
       rollup: 4.57.1
       vite: 7.2.7(@types/node@24.10.11)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.2)
@@ -24358,11 +24266,11 @@ snapshots:
       picomatch: 4.0.3
       webpack-virtual-modules: 0.6.2
 
-  unstorage@2.0.0-alpha.5(@vercel/blob@1.0.2)(chokidar@5.0.0)(db0@0.3.4(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)))(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3):
+  unstorage@2.0.0-alpha.5(@vercel/blob@1.0.2)(chokidar@5.0.0)(db0@0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)))(lru-cache@11.2.5)(ofetch@2.0.0-alpha.3):
     optionalDependencies:
       "@vercel/blob": 1.0.2
       chokidar: 5.0.0
-      db0: 0.3.4(drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6))
+      db0: 0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))
       lru-cache: 11.2.5
       ofetch: 2.0.0-alpha.3
 
