@@ -151,6 +151,13 @@ import { primaryId, timestamps } from "../../../common";
 
 - `apps/type/src/common/business-options.ts`
 
+**业务选项标准：**
+
+- 详细指南请参考 [options.md](references/options.md)。
+- **英文命名**：使用 `contractTypeOptions`，禁止使用 `合同类型Options`。
+- **禁止别名**：不要为了向后兼容而创建中文别名。
+- **跨模块复用**：如果一个选项在超过 1 个模块中使用，请将其移动到此处。
+
 示例：
 
 ```typescript
@@ -164,17 +171,6 @@ export const auditStatusOptions: OptionsType = [
 	{ label: "已通过", value: "已通过" },
 	{ label: "已拒绝", value: "已拒绝" },
 ];
-
-/** 费用项名称选项 Expense item name options */
-export const expenseItemNameOptions: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水电费", value: "水电费" },
-	{ label: "停车费", value: "停车费" },
-	{ label: "维修费", value: "维修费" },
-];
-
-/** 费用类型选项别名 Fee type options alias */
-export const feeTypeOptions = expenseTypeOptions;
 ```
 
 #### 6.2 公共类型统一到 business-types.ts
@@ -182,6 +178,12 @@ export const feeTypeOptions = expenseTypeOptions;
 对于公共的通用业务类型，统一放在：
 
 - `apps/type/src/common/business-types.ts`
+
+### 7. 核心基础设施配置
+
+关于 `package.json` 和 `tsconfig.json` 的配置标准，请参考：
+
+- [infrastructure.md](references/infrastructure.md)
 
 ## 使用场景
 
@@ -312,3 +314,5 @@ pnpm -F @01s-11comm/type typecheck 2>&1 | grep -i "歧义\|conflict\|duplicate"
 - 类型项目目录：`apps/type/src/`
 - 业务路径参考：`apps/admin/src/router/rank/rank-route-keys.ts`
 - 类型错误修复：`fix-type-error` 子代理
+- 基础配置：[infrastructure.md](references/infrastructure.md)
+- 选项规范：[options.md](references/options.md)

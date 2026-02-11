@@ -23,6 +23,10 @@
 - `fix-type-error` ：`.claude\skills\fix-type-error\SKILL.md` `修复类型报错技能`
 
 - `type-project-organization` ：`.claude\skills\type-project-organization\SKILL.md` 类型项目代码组织规范技能
+- `project-schema-registry` ：`.claude\skills\project-schema-registry\SKILL.md` `项目Schema注册表技能`，这是关于数据库表定义、Zod Runtime Schemas 和 TypeScript 类型定义的唯一事实来源（Single Source of Truth）。
+- `frontend-development` ：`.claude\skills\frontend-development\SKILL.md` `前端开发技能`，包含 Vue 组件开发、Form 表单标准、List 页面标准和数据获取（API Hooks）的标准模式。
+- `nitro-api-development` ：`.claude\skills\nitro-api-development\SKILL.md` `Nitro API 开发技能`，包含基于 Nitro v3、H3 和 Drizzle ORM 的后端接口开发标准。
+- `project-migration-guide` ：`.claude\skills\project-migration-guide\SKILL.md` `项目迁移指南技能`，包含影子迁移（Shadow Migration）等架构迁移策略。
 
 - 后台项目： 即 `apps\admin\package.json` 项目。又称为 `admin后台项目` 。
 - 类型项目： 即 `apps\type\package.json` 项目。又称为 `type类型项目` 。
@@ -720,11 +724,11 @@ pnpm -F @01s-11comm/type typecheck
 
 #### 16.2.1. 编写接口需要导入正确的模块
 
-<!-- TODO: -->
+请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
 
 #### 16.2.2. 配置文件格式没有 vite 配置对象
 
-<!-- TODO: -->
+请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取配置相关信息。
 
 ### 16.3. pure-admin 后台框架模板
 
