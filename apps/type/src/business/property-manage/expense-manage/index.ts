@@ -3,6 +3,7 @@
  * @description 统一导出 expense-manage 相关的所有业务类型
  */
 
+export * from "./schema";
 export * from "./cancel-fee";
 export * from "./contracte-charge";
 export * from "./discount-apply";

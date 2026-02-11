@@ -3,6 +3,7 @@
  * @description 统一导出 repairs-manage 相关的所有业务类型
  */
 
+export * from "./schema";
 export * from "./issues";
 export * from "./mandatory-return-issue";
 export * from "./phone-report-repairs";

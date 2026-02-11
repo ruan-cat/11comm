@@ -3,6 +3,7 @@
  * @description 统一导出合同管理相关的所有业务类型
  */
 
+export * from "./schema";
 export * from "./change";
 export * from "./draft-contract";
 export * from "./expire";
