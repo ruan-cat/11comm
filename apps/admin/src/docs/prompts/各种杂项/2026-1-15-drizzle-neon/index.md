@@ -238,7 +238,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 请你严格的，充分思考的，谨慎地，完成类型项目的重构，清理错误的硬编码路径，标记过时的文档等任务。
 
-## 009 <!-- TODO: --> 压缩合并 openspec 现存的 spec 规范，整理归纳成概括性强的 skills 技能规范
+## 009 压缩合并 openspec 现存的 spec 规范，整理归纳成概括性强的 skills 技能规范
 
 现在的 openspec 的 spec 规范，实在是太多了。这很不对劲。随着 openspec 能够完成的任务越来越多，openspec 出现的 spec 规范文件也是越来越多了。
 
