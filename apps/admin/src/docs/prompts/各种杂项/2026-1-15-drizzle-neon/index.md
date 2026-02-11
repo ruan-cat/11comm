@@ -197,7 +197,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 - `apps\admin\src\docs\reports\2026-02-05-full-stack-type-transformation-assessment.md`
 - `apps\admin\src\docs\reports\2026-02-06-full-stack-type-transformation-assessment.md`
 
-## 008 <!-- TODO: 长任务 未完成 --> 面向全栈项目，重构类型项目 `full-stack-type-transformation`
+## 008 面向全栈项目，重构类型项目 `full-stack-type-transformation`
 
 对应 openspec 任务 `full-stack-type-transformation` 。
 
