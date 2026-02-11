@@ -230,7 +230,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 1. schema 数据存储位置的硬编码写法。
 2. 类型项目的定位与处理规范。
 
-### 003 <!-- TODO: 长任务 需要反复多次执行，避免缺漏 --> 完成 `resolve-type-transformation-conflicts` 相关的清理与重构任务
+### 003 完成 `resolve-type-transformation-conflicts` 相关的清理与重构任务
 
 我们现在处于项目架构转型的危险区，关键期。是偿还技术债务的关键一步。
 
