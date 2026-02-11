@@ -2,81 +2,85 @@
 
 由于 `apps/type` 从纯类型库转变为运行时同构库 (Isomorphic Library)，其基础设施配置至关重要。
 
-## 1. apps/type Package Configuration
+## ADDED Requirements
 
-`apps/type/package.json` 必须包含以下关键字段：
+### Requirement: apps/type Package 配置标准
 
-### Dependencies
+`apps/type/package.json` MUST 将运行时依赖 (`drizzle-orm`, `zod`, `drizzle-zod`) 放入 `dependencies` 字段（非 `devDependencies`）。MUST 配置 `exports` 字段支持子路径导入。
 
-必须将运行时依赖移入 `dependencies`，因为这些代码将在前端和后端运行时被执行。
+#### Scenario: 依赖安装验证
+
+- **WHEN** 检查 `apps/type/package.json` 时
+- **THEN** `drizzle-orm`, `zod`, `drizzle-zod` MUST 在 `dependencies` 中
+- **AND** `exports` 字段 MUST 包含 `"."` 和 `"./business"` 子路径
+
+参考配置:
 
 ```json
 {
 	"name": "@01s-11comm/type",
-	"version": "0.0.1",
-	// ...
-	"main": "src/index.ts",
-	"module": "src/index.ts",
 	"exports": {
 		".": {
 			"import": "./src/index.ts",
 			"require": "./src/index.ts",
 			"types": "./src/index.ts"
 		},
-		"./business": "./src/business/index.ts", // 方便按需引用
+		"./business": "./src/business/index.ts",
 		"./*": "./src/*.ts"
 	},
 	"dependencies": {
-		"drizzle-orm": "^0.39.1",
-		"drizzle-zod": "^0.7.0",
-		"zod": "^3.24.1"
-	},
-	"devDependencies": {
-		"typescript": "^5.7.3"
+		"drizzle-orm": "^0.42.0",
+		"drizzle-zod": "^0.8.0",
+		"zod": "^3.24.0"
 	}
 }
 ```
 
-## 2. apps/type TSConfig Configuration
+### Requirement: apps/type TSConfig 配置标准
 
-`apps/type/tsconfig.json` 必须支持被外部引用。
+`apps/type/tsconfig.json` MUST 配置 `@/*` 路径别名指向 `src/*`，以支持 Schema 文件中的 `@/common` 导入。
+
+#### Scenario: 路径别名验证
+
+- **WHEN** Schema 文件使用 `import { primaryId } from "@/common"` 时
+- **THEN** TypeScript 编译器 MUST 能正确解析到 `src/common/index.ts`
+
+参考配置:
 
 ```json
 {
 	"compilerOptions": {
 		"target": "ESNext",
-		"useDefineForClassFields": true,
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"strict": true,
-		"jsx": "preserve",
-		"composite": true, // 允许被引用
-		"declaration": true,
-		"declarationMap": true,
-		"rootDir": "src",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
 		"allowImportingTsExtensions": true,
-		"noEmit": true // 由使用者负责编译
+		"noEmit": true
 	},
-	"include": ["src"]
+	"include": ["src/**/*.ts"]
 }
 ```
 
-## 3. apps/admin Drizzle Configuration (Critical)
+### Requirement: apps/admin Drizzle 配置切换标准
 
-为了支持影子迁移后的切换，`apps/admin/drizzle.config.ts` 需要修改 schema 扫描路径。
+`apps/admin/drizzle.config.ts` MUST 在 Phase 4 (Switch) 阶段修改 schema 扫描路径。MUST NOT 提前修改。
 
-此配置应在 **Phase 4: Switch** 阶段才进行修改，不要提前修改。
+#### Scenario: 配置切换
+
+- **WHEN** 所有模块完成影子迁移后
+- **THEN** 修改 `schema` 字段指向 `../../apps/type/src/business/**/schema.ts`
+- **AND** 运行 `drizzle-kit check` 验证无 drift
+
+参考配置:
 
 ```typescript
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-	// 旧配置（迁移前）
-	// schema: "./server/db/schemas/*.ts",
-
-	// 新配置（迁移后）
-	// 指向 apps/type 的源码目录
-	// 注意这里使用了 glob pattern 匹配所有业务目录下的 schema.ts
 	schema: "../../apps/type/src/business/**/schema.ts",
 	out: "./drizzle",
 	dialect: "postgresql",
@@ -86,9 +90,13 @@ export default defineConfig({
 });
 ```
 
-## 4. Environment Validation
+### Requirement: 环境验证标准
 
-在执行任何迁移命令前，必须验证环境：
+在执行迁移命令前 MUST 验证环境完整性。
 
-1.  **Node Environment**: 确保 `apps/type` 目录下没有 `node_modules` 混乱，必要时运行 `pnpm install`。
-2.  **Database Connection**: 确保 `.env` 中的 `DATABASE_URL` 有效，以便运行 `drizzle-kit check`。
+#### Scenario: 环境检查
+
+- **WHEN** 准备执行迁移或类型检查时
+- **THEN** MUST 确保 `pnpm install` 已执行且无错误
+- **AND** MUST 确保 `.env` 中 `DATABASE_URL` 有效
+- **AND** MUST 运行 `pnpm -F @01s-11comm/type typecheck` 验证类型正确

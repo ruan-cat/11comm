@@ -2,78 +2,57 @@
 
 本规范细化了 "影子迁移" 的具体执行步骤，确保只增不减（Add Only），最后切换（Switch Over）。
 
-## Workflow Overview
+## ADDED Requirements
 
-1.  **Duplicate (复制)**: 在 `apps/type` 创建新 Schema，内容复制自 `apps/admin`。
-2.  **Verify (验证)**: 确保 `apps/type` 编译通过，Schema 生成无误。
-3.  **Use New (使用新版)**: 在新功能开发中优先使用 `apps/type`。
-4.  **Switch Config (切换配置)**: 只有当所有表都迁移完毕后，才修改 Drizzle Config。
-5.  **Refactor (重构)**: 逐个修改后端 API 和前端 Form 使用新类型。
-6.  **Cleanup (清理)**: 删除旧文件。
+### Requirement: 影子迁移工作流 (Shadow Migration Workflow)
 
-## Detailed Steps per Module
+迁移 MUST 按照 Duplicate → Verify → Use New → Switch Config → Refactor → Cleanup 的顺序执行。在全部模块完成迁移前，MUST NOT 修改 `apps/admin` 的 Drizzle 配置。
 
-对于每一个业务模块 (例如 `Community`)，执行以下微循环：
+#### Scenario: 单模块迁移微循环
 
-### 1. File Creation & Content Migration
+- **WHEN** 迁移某个业务模块（如 Community）时
+- **THEN** Step 1: 找到源文件 `apps/admin/server/db/schemas/<module>.ts`
+- **AND** Step 2: 创建目标文件 `apps/type/src/business/<domain>/<module>/schema.ts`
+- **AND** Step 3: 复制 `pgTable` 定义，添加 Zod Schemas 和 Types
+- **AND** Step 4: 在 `index.ts` 中添加 `export * from "./schema"`
+- **AND** Step 5: MUST 删除或注释掉与新推导类型冲突的旧 interface
+- **AND** Step 6: 运行 `pnpm -F @01s-11comm/type typecheck` 验证无错误
 
-- 找到 `apps/admin/server/db/schemas/community.ts`。
-- 创建 `apps/type/src/business/property-manage/community-manage/schema.ts`。
-- 复制 `pgTable` 定义。
-- 添加 imports (`drizzle-orm/pg-core`, `drizzle-zod`, `zod`).
-- 添加 Zod Schemas (`createInsertSchema`, etc.).
-- 添加 Types (`z.infer`).
+### Requirement: 导出对齐规范 (Export Alignment)
 
-### 2. Export Exposure
+迁移后 MUST 确保 `index.ts` 正确导出 schema，且旧的手动 interface 定义 MUST 被清理。
 
-- 已有: `apps/type/src/business/property-manage/community-manage/index.ts`
-- 修改: 确保它 `export * from "./schema"`.
-- 注意: 如果原 `index.ts` 导出了同名的手动 interface (如 `interface Community`), **必须删除或注释掉旧的手动定义**，完全让位给 `schema.ts` 导出的新 Type。
-  - _Tip_: 如果为了兼容，可以使用 `type OldType = NewType` 做别名。
+#### Scenario: 导出冲突处理
 
-### 3. Verification
+- **WHEN** 原 `index.ts` 导出了同名的手动 interface（如 `interface Community`）
+- **THEN** MUST 删除旧的手动定义
+- **AND** 让 `schema.ts` 导出的新 Type 完全替代
+- **AND** 如需兼容，可使用 `type OldType = NewType` 做别名
 
-- 在 `apps/type` 根目录运行 typescript check (如果配置了) 或者简单的 build check。
-- 确保没有 import errors。
+### Requirement: 全局切换规范 (Global Switch Phase)
 
-## Global Switch Phase (Critical)
+当所有模块都完成影子迁移后，MUST 执行全局切换。切换过程 MUST 包含 Drift Check 验证。
 
-当所有模块都完成上述步骤后：
+#### Scenario: 数据库连接切换
 
-### 1. Database Connection Update
+- **WHEN** 所有模块迁移完成后
+- **THEN** 修改 `apps/admin/server/db/index.ts` 将导入替换为 `@01s-11comm/type`
+- **AND** 修改 `apps/admin/drizzle.config.ts` 的 schema 路径
+- **AND** 运行 `pnpm db:generate` 或 `drizzle-kit check`
+- **AND** 成功标准: 输出 "No changes detected" 或生成的 migration 为空
 
-修改 `apps/admin/server/db/index.ts`:
+#### Scenario: Drift Check 失败处理
 
-```typescript
-// Old
-// import * as schema from "./schemas";
-// New
-import * as schema from "@01s-11comm/type/business"; // 或者是统一的出口
-```
+- **WHEN** Drift Check 提示 Drop Table / Create Table 等差异
+- **THEN** MUST 修改 `apps/type` 中的定义使其与数据库现状完全匹配
+- **AND** 重复 Drift Check 直到 diff 为 0
 
-### 2. Drizzle Config Update
+### Requirement: 清理规范 (Cleanup Phase)
 
-修改 `apps/admin/drizzle.config.ts`:
+全局切换验证通过后，MUST 清理旧的 Schema 文件。
 
-```typescript
-export default defineConfig({
-	// Old
-	// schema: "./server/db/schemas/*.ts",
-	// New
-	schema: "../../apps/type/src/business/**/schema.ts",
-	// ...
-});
-```
+#### Scenario: 旧文件删除
 
-### 3. Drift Check
-
-运行 `pnpm db:generate` 或 `drizzle-kit check`。
-
-- **Success Criteria**: 输出 "No changes detected" 或生成的 migration 为空。
-- **Failure Scenario**: 如果提示 Drop Table X, Create Table X，说明新旧 Schema 定义不一致（表名、字段属性差异）。
-  - **Action**: 修改 `apps/type` 中的定义，使其与数据库现状完全匹配，直到 diff 为 0。
-
-## Cleanup Phase
-
-- `rm -rf apps/admin/server/db/schemas`
-- 全局搜索项目中对旧路径的引用，替换为 `@01s-11comm/type`。
+- **WHEN** Drift Check 通过且应用运行正常后
+- **THEN** 删除 `apps/admin/server/db/schemas/` 目录下的旧 Schema 文件
+- **AND** 全局搜索项目中对旧路径的引用，替换为 `@01s-11comm/type`

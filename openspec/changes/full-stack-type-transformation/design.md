@@ -50,9 +50,39 @@ Schema 文件必须存放在 `apps/type/src/business/<domain>/<module>/schema.ts
 - **Dependencies**: `drizzle-orm`, `zod`, `drizzle-zod` 必须添加到 `dependencies` 字段（非 `devDependencies`）。
 - **Build**: 确保 `package.json` 的 `exports` 或 `main` 字段正确指向源码 (TS) 或编译产物 (JS/DTS)，在此 monorepo 中，主要依赖 Vite/TS 去解析源码。
 
+### 5. drizzle-zod 集成策略：混合模式 (Hybrid Pattern)
+
+> **Decision Date**: 2026-02-11
+> **背景**: 在试点迁移 (Phase 2) 中发现 drizzle-zod 的类型系统与标准 Zod 存在兼容性问题。
+
+**问题**: `createInsertSchema()` 返回的是 drizzle-zod 内部的特殊 ZodObject 变体。对其链式调用 `.partial().extend()` 后，生成的类型与标准 `z.ZodTypeAny` 约束不兼容，无法通过 TypeScript 编译。
+
+**被否决的方案**:
+
+1. ~~使用 `as unknown as z.ZodTypeAny` 类型断言~~ — 属于代码坏味道，掩盖真实类型不安全。
+2. ~~完全放弃 drizzle-zod~~ — 丧失 Insert/Select Schema 自动推导能力。
+3. ~~降级 drizzle-zod 版本~~ — 旧版本缺少函数回调等新特性。
+
+**Decision — 混合模式 (Hybrid Pattern)**:
+
+- **Insert Schema**: 使用 `createInsertSchema()` 自动生成 — 利用 drizzle-zod 的自动推导和类型安全。
+- **Select Schema**: 使用 `createSelectSchema()` 自动生成 — 保持与数据库字段的一致性。
+- **Update Schema**: 手动使用 `z.object()` 定义 — 完全的类型安全，无需断言。
+- **Select/Insert Types**: 使用 Drizzle 的 `$inferSelect` / `$inferInsert` 推导。
+- **Update Types**: 使用 `z.infer<typeof updateSchema>` 从手动 Schema 推导。
+
+**优势**:
+
+1. Insert/Select 仍享受 drizzle-zod 的自动推导（字段类型、约束自动映射）。
+2. Update Schema 完全类型安全，无需任何断言。
+3. 所有 Schema 在运行时均可正常 `.parse()` / `.safeParse()`。
+4. 后续 drizzle-zod 修复兼容性问题后，可无缝回迁。
+
 ## Risks & Mitigations
 
 - **Risk**: 前端引入 `drizzle-orm` 可能导致打包错误（如 Node.js polyfill 问题）。
   - **Mitigation**: 只使用 `drizzle-orm/pg-core` 等纯 SQL 构建模块，严禁在 `schema.ts` 中引入 `drizzle-orm/node-postgres` 或数据库连接池代码。
 - **Risk**: Date 对象序列化问题。
   - **Mitigation**: 在 Zod Schema 中使用 `z.preprocess` 或手动定义的 DTO Schema 来处理 API 返回的 JSON 字符串化后的日期字段。
+- **Risk**: drizzle-zod 返回的 ZodObject 变体与标准 Zod 类型系统不完全兼容。
+  - **Mitigation**: 采用混合模式 (Hybrid Pattern)。Insert/Select 使用 drizzle-zod 自动生成，Update 手动使用 `z.object()` 定义。详见 Decision 5 和 `specs/schema-standard/spec.md` Section 5。
