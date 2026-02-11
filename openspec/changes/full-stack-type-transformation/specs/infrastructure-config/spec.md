@@ -38,12 +38,24 @@
 
 ### Requirement: apps/type TSConfig 配置标准
 
-`apps/type/tsconfig.json` MUST 配置 `@/*` 路径别名指向 `src/*`，以支持 Schema 文件中的 `@/common` 导入。
+`apps/type/tsconfig.json` MUST 配置 `@/*` 路径别名指向 `src/*`，**但此别名仅用于独立的 `tsc --noEmit` 类型检查**。
+
+> **⚠ CRITICAL**: 源码文件中 MUST NOT 使用 `@/` 路径别名导入。MUST 使用相对路径。
+>
+> 原因：`apps/type` 作为 workspace 依赖被 `apps/admin` 消费时，Vite 构建工具使用的是消费端（admin）的路径别名配置，`@/` 会被错误解析为 `apps/admin/src/` 而非 `apps/type/src/`，导致构建失败。
 
 #### Scenario: 路径别名验证
 
-- **WHEN** Schema 文件使用 `import { primaryId } from "@/common"` 时
-- **THEN** TypeScript 编译器 MUST 能正确解析到 `src/common/index.ts`
+- **WHEN** 独立运行 `pnpm -F @01s-11comm/type typecheck` 时
+- **THEN** TypeScript 编译器 MUST 能正确解析 `@/` 路径别名
+- **BUT** 源码中 MUST NOT 使用 `@/` 路径别名，MUST 使用相对路径
+
+#### Scenario: 源码导入路径验证
+
+- **WHEN** 在 `apps/type/src` 下的任何 `.ts` 文件中编写导入语句时
+- **THEN** MUST 使用相对路径（如 `../../common`、`../helpers`）
+- **AND** MUST NOT 使用 `@/common`、`@/business` 等路径别名
+- **AND** 此约束确保 type 包在被其他 workspace 项目消费时不会出现路径解析错误
 
 参考配置:
 

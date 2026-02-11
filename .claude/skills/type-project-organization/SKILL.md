@@ -108,11 +108,44 @@ export * from "./point";
 export * from "./task";
 ```
 
-### 4. 重复导出处理
+### 5. 导入路径必须使用相对路径（禁止路径别名）
+
+**`apps/type` 的所有 `.ts` 源文件中，MUST 使用相对路径导入，MUST NOT 使用 `@/` 路径别名。**
+
+**原因**：`apps/type` 作为 workspace 依赖被 `apps/admin` 等项目消费。当消费端（如 admin）通过 Vite 构建时，构建工具使用的是**消费端项目自身的 `@/` 路径别名配置**（指向 `apps/admin/src/`），而非 type 项目的配置（指向 `apps/type/src/`）。这导致 `@/common` 被错误解析为 `apps/admin/src/common`，引发构建失败。
+
+> `apps/type/tsconfig.json` 中的 `@/* → src/*` 别名仅在独立 `tsc --noEmit` 类型检查时生效，不影响 Vite 构建。
+
+**错误写法：**
+
+```typescript
+import { primaryId, timestamps } from "@/common";
+import { someHelper } from "@/business/utils";
+```
+
+**正确写法：**
+
+```typescript
+/** 从 src/business/<domain>/schema.ts 导入 common（向上两级） */
+import { primaryId, timestamps } from "../../common";
+
+/** 从 src/business/<domain>/<module>/schema.ts 导入 common（向上三级） */
+import { primaryId, timestamps } from "../../../common";
+```
+
+**相对路径深度参考表：**
+
+|                文件位置                 | 导入 common 的相对路径 |
+| :-------------------------------------: | :--------------------: |
+|    `src/business/<domain>/schema.ts`    |     `../../common`     |
+| `src/business/<domain>/<mod>/schema.ts` |   `../../../common`    |
+|         `src/business/utils.ts`         |      `../common`       |
+
+### 6. 重复导出处理
 
 **遇到导出冲突时，统一整理到公共文件，避免分散导出。**
 
-#### 4.1 公共选项统一到 business-options.ts
+#### 6.1 公共选项统一到 business-options.ts
 
 对于公共的下拉选项变量，统一放在：
 
@@ -144,7 +177,7 @@ export const expenseItemNameOptions: OptionsType = [
 export const feeTypeOptions = expenseTypeOptions;
 ```
 
-#### 4.2 公共类型统一到 business-types.ts
+#### 6.2 公共类型统一到 business-types.ts
 
 对于公共的通用业务类型，统一放在：
 
@@ -188,19 +221,21 @@ export const feeTypeOptions = expenseTypeOptions;
 
 ## 最佳实践
 
-### ✅ 推荐做法
+### 推荐做法
 
 - 使用 `export * from "./module"` 进行批量导出
 - 为每个业务层级创建 index.ts
 - 公共选项和类型统一到 common 目录
 - 保持导出语句简洁明了
+- **所有导入使用相对路径**（如 `../../common`），确保跨项目构建正确
 
-### ❌ 避免做法
+### 避免做法
 
 - 使用 `export type * from "./module"`
 - 逐个列出导出项
 - 在不同文件重复定义相同内容
 - 使用复杂的选择性导出
+- **使用 `@/` 路径别名导入**（会导致被其他项目消费时路径解析失败）
 
 ## 验证方法
 
@@ -258,6 +293,19 @@ pnpm -F @01s-11comm/type typecheck 2>&1 | grep -i "歧义\|conflict\|duplicate"
 2. 确保每一层 index.ts 都包含下一层导出
 3. 验证没有遗漏的中间层
 4. 运行类型检查确认修复
+
+### 问题 4：构建时路径别名解析失败（ENOENT）
+
+**症状：** `apps/admin` 构建时报错 `Could not load .../apps/admin/src/common (imported by ../type/src/business/.../schema.ts): ENOENT`
+
+**原因：** type 项目的源文件中使用了 `@/common` 路径别名。当 admin 项目通过 Vite 构建并解析 type 包源码时，`@/` 被解析为 admin 项目的 `src/` 目录，导致找不到文件。
+
+**解决方案：**
+
+1. 在 type 项目的源文件中，将 `@/` 路径别名替换为相对路径
+2. 例如将 `import { primaryId } from "@/common"` 改为 `import { primaryId } from "../../common"`
+3. 根据文件所在目录深度调整相对路径的 `../` 层级数
+4. 运行 `pnpm -F @01s-11comm/type typecheck` 和 `pnpm build:admin` 验证修复
 
 ## 相关资源
 

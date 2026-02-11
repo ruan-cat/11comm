@@ -29,10 +29,11 @@
 - **THEN** MUST 从 `drizzle-orm/pg-core` 导入表定义工具
 - **AND** MUST 从 `drizzle-zod` 导入 `createInsertSchema`, `createSelectSchema`
 - **AND** MUST 从 `zod` 导入 `z`
-- **AND** MUST 从 `@/common` 导入 `primaryId`, `timestamps`, `remarkField`, `statusEnum` 等通用辅助
+- **AND** MUST 使用**相对路径**从 `common` 目录导入 `primaryId`, `timestamps`, `remarkField`, `statusEnum` 等通用辅助
+- **AND** MUST NOT 使用 `@/common` 等路径别名（详见下方「路径别名限制」）
 - **AND** MUST NOT 引用 Node.js 特定模块 (fs, path, os) 或服务端数据库驱动
 
-标准导入模板:
+标准导入模板（以 `src/business/<domain>/schema.ts` 为例）:
 
 ```typescript
 import {
@@ -50,8 +51,24 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { primaryId, timestamps, remarkField, statusEnum } from "@/common";
+import { primaryId, timestamps, remarkField, statusEnum } from "../../common";
 ```
+
+> **注意**：相对路径需根据 `schema.ts` 实际所在目录深度调整。例如：
+>
+> - `src/business/<domain>/schema.ts` → `"../../common"`
+> - `src/business/<domain>/<module>/schema.ts` → `"../../../common"`
+
+#### Scenario: 路径别名限制（CRITICAL）
+
+> **背景**：`apps/type` 作为 workspace 依赖被 `apps/admin` 消费。当 admin 的 Vite 构建过程解析 type 包源码中的 `@/` 路径时，会使用 **admin 项目自身的 `@/` 别名配置**（指向 `apps/admin/src/`），而非 type 项目的配置（指向 `apps/type/src/`）。这导致构建失败。
+
+- **WHEN** 在 `apps/type` 的任何 `.ts` 源文件中编写导入语句时
+- **THEN** MUST 使用**相对路径**（如 `../../common`、`../helpers`）
+- **AND** MUST NOT 使用 `@/` 路径别名（如 ~~`@/common`~~、~~`@/business`~~）
+- **AND** MUST NOT 使用其他 tsconfig 定义的路径别名
+
+**原因**：`apps/type/tsconfig.json` 中的 `@/* → src/*` 别名仅在独立的 `tsc --noEmit` 类型检查中生效。当 type 包被其他项目作为 workspace 依赖消费时，构建工具（Vite/Rollup）使用的是消费端项目的路径别名配置，导致 `@/common` 被错误解析为 `apps/admin/src/common`。
 
 通用辅助函数 (定义在 `apps/type/src/common/helpers.ts`):
 
@@ -255,7 +272,7 @@ export type UpdateOpMerchant = z.infer<typeof updateOpMerchantSchema>;
 import { index, pgTable, text, timestamp, varchar, integer, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { primaryId, timestamps, remarkField, statusEnum } from "@/common";
+import { primaryId, timestamps, remarkField, statusEnum } from "../../common";
 
 // ==========================================
 // Part A: Database Table Definitions
