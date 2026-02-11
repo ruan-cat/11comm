@@ -19,7 +19,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { primaryId, timestamps, remarkField, statusEnum } from "../../common";
+import { primaryId, timestamps, remarkField, statusEnum, baseListQueryParamsSchema } from "../../common";
+import { cmCommunities } from "../property-manage/community-manage/schema";
 
 // ==========================================
 // Part A: Database Table Definitions
@@ -132,7 +133,9 @@ export const opPropertyCompanies = pgTable(
 export const opCommunityInfo = pgTable("op_community_info", {
 	id: primaryId(),
 	/** 关联小区 ID */
-	communityId: uuid("community_id").notNull(),
+	communityId: uuid("community_id")
+		.references(() => cmCommunities.id)
+		.notNull(),
 	/** 运营状态 */
 	operationStatus: varchar("operation_status", { length: 50 }),
 	/** 管理员 */
@@ -146,7 +149,9 @@ export const opCommunityInfo = pgTable("op_community_info", {
 export const opCommunityConfigs = pgTable("op_community_configs", {
 	id: primaryId(),
 	/** 关联小区 ID */
-	communityId: uuid("community_id").notNull(),
+	communityId: uuid("community_id")
+		.references(() => cmCommunities.id)
+		.notNull(),
 	/** 配置类型 */
 	configType: varchar("config_type", { length: 50 }),
 	/** 配置键 */
@@ -233,6 +238,12 @@ export const insertOpMerchantSchema = createInsertSchema(opMerchants, {
 });
 
 export const selectOpMerchantSchema = createSelectSchema(opMerchants);
+
+export const selectOpMerchantListQuerySchema = baseListQueryParamsSchema.extend({
+	merchantName: z.string().optional(),
+	merchantCode: z.string().optional(),
+	status: z.enum(["enabled", "disabled"]).optional(),
+});
 
 export const updateOpMerchantSchema = z.object({
 	id: z.string().uuid(),
