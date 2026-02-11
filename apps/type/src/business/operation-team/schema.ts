@@ -19,7 +19,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { primaryId, timestamps, remarkField, statusEnum } from "@/common";
+import { primaryId, timestamps, remarkField, statusEnum } from "../../common";
 
 // ==========================================
 // Part A: Database Table Definitions
