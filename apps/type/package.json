@@ -26,7 +26,10 @@
 	],
 	"license": "MIT",
 	"dependencies": {
-		"@ruan-cat/utils": "^4.20.0"
+		"@ruan-cat/utils": "^4.20.0",
+		"drizzle-orm": "^0.42.0",
+		"drizzle-zod": "^0.8.0",
+		"zod": "^3.24.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
