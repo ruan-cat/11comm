@@ -11,7 +11,7 @@ import {
 	rptRepairSummaries,
 	rptStatementExpenses,
 	rptDataStatistics,
-} from "../schemas/report";
+} from "@01s-11comm/type";
 
 import { mockExpenseSummaryTableData } from "../../api/property-manage/report-manage/expense-summary-table/mock-data";
 

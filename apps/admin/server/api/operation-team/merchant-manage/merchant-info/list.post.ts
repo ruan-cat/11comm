@@ -4,21 +4,25 @@
  * POST /api/operation-team/merchant-manage/merchant-info/list
  */
 
-import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, MerchantInfo, MerchantInfoListQuery } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
+import { defineHandler, readValidatedBody } from "nitro/h3";
+import {
+	type JsonVO,
+	type PageDTO,
+	type MerchantInfo,
+	DEFAULT_PAGE_INDEX,
+	DEFAULT_PAGE_SIZE,
+	selectOpMerchantListQuerySchema,
+} from "@01s-11comm/type";
 import { filterDataByQuery } from "server/utils/filter-data";
 import { mockMerchantInfoData } from "./mock-data";
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<MerchantInfo>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<MerchantInfoListQuery>(event);
-	const defaultParams: MerchantInfoListQuery = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	// 1. 读取并验证请求参数
+	const body = await readValidatedBody(event, selectOpMerchantListQuerySchema.parse);
+
+	const pageIndex = body.pageIndex ?? DEFAULT_PAGE_INDEX;
+	const pageSize = body.pageSize ?? DEFAULT_PAGE_SIZE;
+	const { ...filters } = body;
 
 	// 2. 数据筛选 - 使用通用筛选工具函数
 	const filteredData = filterDataByQuery(mockMerchantInfoData, filters);

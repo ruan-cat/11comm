@@ -221,7 +221,7 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 		: structuredClone({
 				...defaultForm,
 				house: row?.houseCode || "",
-				floor: row?.floor || "",
+				floor: String(row?.floor ?? ""),
 				owner: row?.owner || "",
 				type: row?.houseType || "",
 				houseArea: row?.houseArea || "",

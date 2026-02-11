@@ -9,17 +9,17 @@ import {
 	smSystemConfigs,
 	smRegisterProtocols,
 	smInitializeCells,
-	InsertSmOrganization,
-	InsertSmRole,
-	InsertSmStaff,
-	InsertSmDataPermission,
-	InsertSmShift,
-	InsertSmSchedulingSetting,
-	InsertSmWorkingSchedule,
-	InsertSmSystemConfig,
-	InsertSmRegisterProtocol,
-	InsertSmInitializeCell,
-} from "../schemas/setting";
+	type NewSmOrganization as InsertSmOrganization,
+	type NewSmRole as InsertSmRole,
+	type NewSmStaff as InsertSmStaff,
+	type NewSmDataPermission as InsertSmDataPermission,
+	type NewSmShift as InsertSmShift,
+	type NewSmSchedulingSetting as InsertSmSchedulingSetting,
+	type NewSmWorkingSchedule as InsertSmWorkingSchedule,
+	type NewSmSystemConfig as InsertSmSystemConfig,
+	type NewSmRegisterProtocol as InsertSmRegisterProtocol,
+	type NewSmInitializeCell as InsertSmInitializeCell,
+} from "@01s-11comm/type";
 import {
 	mockOrganizationTreeData,
 	mockEmployeeData,
@@ -187,7 +187,7 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 				updatedAt: new Date(),
 			};
 		})
-		.filter((x): x is InsertSmDataPermission => x !== null);
+		.filter((x) => x !== null) as InsertSmDataPermission[];
 
 	if (dataPermRecords.length > 0) {
 		const query = db.insert(smDataPermissions).values(dataPermRecords).toSQL();

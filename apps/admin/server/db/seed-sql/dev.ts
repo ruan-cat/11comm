@@ -1,4 +1,14 @@
-import { dtDictionaries } from "../schemas/dev";
+import {
+	dtConfigTypes,
+	dtConfigs,
+	dtConfigItems,
+	dtDictionaries,
+	dtDictionaryItems,
+	dtMenuGroups,
+	dtMenuCatalogs,
+	dtMenuItems,
+	dtCacheConfigs,
+} from "@01s-11comm/type";
 
 import { mockDictionaryTypeData } from "../../api/dev-team/config-manage/type/mock-data";
 

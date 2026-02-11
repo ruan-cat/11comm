@@ -1,4 +1,19 @@
-import { rpRepairOrders } from "../schemas/repairs";
+import {
+	rpRepairOrders,
+	rpRepairOrderHistories,
+	rpReturnVisits,
+	rpRepairSettings,
+	rpRepairTypes,
+	rpMandatoryReturnIssues,
+	rpPhoneRepairReports,
+	type NewRpRepairOrder as InsertRpRepairOrder,
+	type NewRpRepairOrderHistory as InsertRpRepairOrderHistory,
+	type NewRpReturnVisit as InsertRpReturnVisit,
+	type NewRpRepairSetting as InsertRpRepairSetting,
+	type NewRpRepairType as InsertRpRepairType,
+	type NewRpMandatoryReturnIssue as InsertRpMandatoryReturnIssue,
+	type NewRpPhoneRepairReport as InsertRpPhoneRepairReport,
+} from "@01s-11comm/type";
 
 import { mockRepairsTodoData } from "../../api/property-manage/repairs-manage/repairs-todo/mock-data";
 

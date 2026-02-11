@@ -7,7 +7,7 @@ import {
 	ctContracts,
 	ctAttachments,
 	ctChanges,
-} from "../schemas/contract";
+} from "@01s-11comm/type";
 
 import { mockFirstPartyData } from "../../api/property-manage/contract-manage/first-party/mock-data";
 import { mockSecondPartyData } from "../../api/property-manage/contract-manage/second-party/mock-data";

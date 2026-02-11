@@ -4,12 +4,12 @@ import {
 	cmHouseDecorations,
 	cmPropertyRegisters,
 	cmBuildingStructures,
-	InsertCmCommunity,
-	InsertCmNotice,
-	InsertCmHouseDecoration,
-	InsertCmPropertyRegister,
-	InsertCmBuildingStructure,
-} from "../schemas/community";
+	type NewCmCommunity as InsertCmCommunity,
+	type NewCmNotice as InsertCmNotice,
+	type NewCmHouseDecoration as InsertCmHouseDecoration,
+	type NewCmPropertyRegister as InsertCmPropertyRegister,
+	type NewCmBuildingStructure as InsertCmBuildingStructure,
+} from "@01s-11comm/type";
 import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
 import { mockNoticeData } from "../../api/property-manage/community-manage/notice/mock-data";
 // import { mockHandingBusinessData } from "../../api/property-manage/community-manage/handing-business/mock-data"; // Mismatch data type (looks like Fees)

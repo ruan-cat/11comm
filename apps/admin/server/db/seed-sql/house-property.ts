@@ -4,13 +4,16 @@ import {
 	hpHouses,
 	hpOwnerMembers,
 	hpOwnerAccounts,
-	InsertHpOwner,
-	InsertHpOwnersCommittee,
-	InsertHpHouse,
-	InsertHpOwnerMember,
-	InsertHpOwnerAccount,
-} from "../schemas/house-property";
-import { hpInvoiceTitles, hpInvoices, InsertHpInvoiceTitle, InsertHpInvoice } from "../schemas/expense";
+	hpInvoiceTitles,
+	hpInvoices,
+	type NewHpOwner as InsertHpOwner,
+	type NewHpOwnersCommittee as InsertHpOwnersCommittee,
+	type NewHpHouse as InsertHpHouse,
+	type NewHpOwnerMember as InsertHpOwnerMember,
+	type NewHpOwnerAccount as InsertHpOwnerAccount,
+	type NewHpInvoiceTitle as InsertHpInvoiceTitle,
+	type NewHpInvoice as InsertHpInvoice,
+} from "@01s-11comm/type";
 import { mockHouseData } from "../../api/property-manage/house-property-manage/house/mock-data";
 import { mockOwnerInformationData as mockOwnerData } from "../../api/property-manage/house-property-manage/owner-information/mock-data";
 import { mockOwnersCommitteeData } from "../../api/property-manage/house-property-manage/owners-committee/mock-data";

@@ -1,4 +1,4 @@
-import { opMerchants, opPropertyCompanies, opCommunityInfo } from "../schemas/operation";
+import { opMerchants, opPropertyCompanies, opCommunityInfo } from "@01s-11comm/type";
 
 import { mockPropertyCompanyData } from "../../api/operation-team/data-manage/property-company/mock-data";
 import { mockMerchantInfoData } from "../../api/operation-team/merchant-manage/merchant-info/mock-data";

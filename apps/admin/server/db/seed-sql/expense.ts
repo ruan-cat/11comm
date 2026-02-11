@@ -14,7 +14,7 @@ import {
 	exCancelFees,
 	exOverdueReminders,
 	exReprintVouchers,
-} from "../schemas/expense";
+} from "@01s-11comm/type";
 
 import { mockExpenseItemSettingData as mockExpenseItemData } from "../../api/property-manage/expense-manage/expense-item-setting/mock-data";
 import { mockHouseChargeData } from "../../api/property-manage/expense-manage/house-charge/mock-data";

@@ -15,7 +15,6 @@ import { PlusProComponentsResolver } from "@plus-pro-components/resolver";
  * 2. 为每个组件创建显式的别名
  */
 export default Components({
-	version: 3,
 	dts: "./types/components.d.ts",
 	include: [],
 	dirs: [

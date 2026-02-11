@@ -246,7 +246,7 @@ watch(size, (val) => (val === "disabled" ? (dynamicSize.value = "default") : (dy
 			class="ml-[15%]"
 			placeholder="请选择日期时间"
 			:popper-options="{
-				placement,
+				placement: placement as any,
 			}"
 			:size="dynamicSize"
 			:disabled="size === 'disabled'"

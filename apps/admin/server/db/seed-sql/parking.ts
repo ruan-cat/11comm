@@ -4,7 +4,7 @@ import {
 	pkOwnerVehicles,
 	pkCarportApplications,
 	pkParkingStructures,
-} from "../schemas/parking";
+} from "@01s-11comm/type";
 
 import { mockParkingLotData } from "../../api/property-manage/parking-manage/parking-lot/mock-data";
 import { mockCarportInfoData } from "../../api/property-manage/parking-manage/carport-info/mock-data";

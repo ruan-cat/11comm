@@ -5,13 +5,13 @@ import {
 	ptPatrolItems,
 	ptPatrolTasks,
 	ptPatrolTaskDetails,
-	InsertPtPatrolPlan,
-	InsertPtPatrolPath,
-	InsertPtPatrolPoint,
-	InsertPtPatrolItem,
-	InsertPtPatrolTask,
-	InsertPtPatrolTaskDetail,
-} from "../schemas/patrol";
+	type NewPtPatrolPlan as InsertPtPatrolPlan,
+	type NewPtPatrolPath as InsertPtPatrolPath,
+	type NewPtPatrolPoint as InsertPtPatrolPoint,
+	type NewPtPatrolItem as InsertPtPatrolItem,
+	type NewPtPatrolTask as InsertPtPatrolTask,
+	type NewPtPatrolTaskDetail as InsertPtPatrolTaskDetail,
+} from "@01s-11comm/type";
 import { mockPlanData } from "../../api/property-manage/patrol-manage/plan/mock-data";
 import { mockPathData } from "../../api/property-manage/patrol-manage/path/mock-data";
 import { mockItemData } from "../../api/property-manage/patrol-manage/item/mock-data";
