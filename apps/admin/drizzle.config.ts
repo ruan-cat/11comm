@@ -15,7 +15,7 @@ config({ path: ".env.vercel.local" });
  * - dbCredentials: 数据库连接信息
  */
 export default defineConfig({
-	schema: "./server/db/schema.ts",
+	schema: ["../../apps/type/src/common/enums.ts", "../../apps/type/src/business/**/schema.ts"],
 	out: "./drizzle",
 	dialect: "postgresql",
 	dbCredentials: {
