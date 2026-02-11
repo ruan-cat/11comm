@@ -242,7 +242,23 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 现在的 openspec 的 spec 规范，实在是太多了。这很不对劲。随着 openspec 能够完成的任务越来越多，openspec 出现的 spec 规范文件也是越来越多了。
 
-我需要你帮我全面的检查，现在现存的全部 `openspec\specs`
+我需要你帮我全面的检查，现在现存的全部 `openspec\specs` 规范文件内，请你按照内容，做好分类。并设计一个多个有意义的，全面的，充分的，详实的，概括性强的 skills 文档，用 skills 技能文档，来代替现在已经蔓延出来的，过多的 `openspec\specs` 规范文件。
+
+我需要你做出总结，实现对 `openspec\specs` 规范文件的全面压缩，压缩、改造、迁移成 skills 技能文档。
+
+你的 skills 编写在 `.claude\skills` 目录内。
+
+你必须使用 `skill-creator` 这款技能。使用 skill-creator 这款技能的要求，去创建满足规格的技能文档。
+
+1. 先检查冲突内容，确保这些文本所传达的意思，没有出现相互冲突的情况：
+   - `CLAUDE.md`
+   - `.claude\skills` 全部文件
+   - `openspec\specs` 全部规范文件
+2. 根据你对内容的理解，以及对项目整体的理解。设计合适数目的 skills。并在 `.claude\skills` 目录内新建内容。
+3. 对于数量繁多的 spec 规范，和具体的操作规范，我希望你以 skills 参考引用文件的形式，来引用导入这些具体的执行 spec 规范。
+4. 不允许你出现对 spec 操作规范理解失误和失真的情况。我不希望经过本次改造后，出现 spec 知识丢失和遗忘的情况。
+5. 设计合适的步骤，做出检查，检查对 `openspec\specs` 全部规范文件的理解和整合效果。
+6. 最后，我才允许你大批量的删除掉 `openspec\specs` 内现存的文件。最终解决使用 openspec 时出现的 spec 文件蔓延，散乱，不便于统一阅读的情况。
 
 ### 001 <!-- TODO: --> 清除掉过时的 `对话沟通术语表` ，并更新该表
 
