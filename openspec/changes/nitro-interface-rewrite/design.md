@@ -302,10 +302,11 @@ export function handleDbError(err: any, contextStr?: string): never {
 **位置**: `apps/admin/server/api/dev-team/config-manage/dictionary/list.get.ts`
 
 ```typescript
+import { defineHandler, getValidatedQuery } from "nitro/h3";
 import { db, and, like, eq, desc, sql } from "~/server/db";
 import { dictionary, searchDictionarySchema } from "@01s-11comm/type";
 
-export default defineEventHandler(async (event) => {
+export default defineHandler(async (event) => {
 	// 1. 验证查询参数
 	// getValidatedQuery 自动处理类型转换 (string -> number/boolean)
 	const query = await getValidatedQuery(event, searchDictionarySchema.parse);
@@ -347,10 +348,18 @@ export default defineEventHandler(async (event) => {
 		]);
 
 		// 5. 返回标准分页结构
+		const total = countResult[0]?.count || 0;
+
 		return {
-			success: true,
-			data,
-			total: countResult[0]?.count || 0,
+			code: 200,
+			msg: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages: Math.ceil(total / query.pageSize),
+			},
 		};
 	} catch (err) {
 		handleDbError(err, "Dictionary List");
@@ -363,11 +372,12 @@ export default defineEventHandler(async (event) => {
 **位置**: `.../detail.get.ts` (通常是动态路由 `.../[id].get.ts`)
 
 ```typescript
+import { defineHandler, createError, getRouterParam } from "nitro/h3";
 import { db, eq } from "~/server/db";
 import { dictionary } from "@01s-11comm/type";
 import { z } from "zod";
 
-export default defineEventHandler(async (event) => {
+export default defineHandler(async (event) => {
 	// 1. 验证路由参数
 	const idStr = getRouterParam(event, "id");
 	// 必须手动 parse，保证 ID 是数字
@@ -380,7 +390,7 @@ export default defineEventHandler(async (event) => {
 			throw createError({ statusCode: 404, message: "字典项不存在" });
 		}
 
-		return { success: true, data: result[0] };
+		return { code: 200, msg: "查询成功", data: result[0] };
 	} catch (err) {
 		handleDbError(err, "Dictionary Detail");
 	}
@@ -392,10 +402,11 @@ export default defineEventHandler(async (event) => {
 **位置**: `.../create.post.ts`
 
 ```typescript
+import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "~/server/db";
 import { dictionary, insertDictionarySchema } from "@01s-11comm/type";
 
-export default defineEventHandler(async (event) => {
+export default defineHandler(async (event) => {
 	// 1. 严格 Body 校验
 	// 任何多余字段会被剔除，非法字段会被拦截
 	const body = await readValidatedBody(event, insertDictionarySchema.parse);
@@ -405,9 +416,9 @@ export default defineEventHandler(async (event) => {
 		const result = await db.insert(dictionary).values(body).returning(); // 必须返回，让前端拿到新 ID
 
 		return {
-			success: true,
+			code: 200,
+			msg: "创建成功",
 			data: result[0],
-			message: "创建成功",
 		};
 	} catch (err) {
 		// 此时可能会触发 Unqiue Constraint (Code重复)
@@ -421,10 +432,11 @@ export default defineEventHandler(async (event) => {
 **位置**: `.../update.put.ts`
 
 ```typescript
+import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db, eq } from "~/server/db";
 import { dictionary, updateDictionarySchema } from "@01s-11comm/type";
 
-export default defineEventHandler(async (event) => {
+export default defineHandler(async (event) => {
 	// 1. 校验 Body (包含 ID)
 	const body = await readValidatedBody(event, updateDictionarySchema.parse);
 
@@ -443,7 +455,7 @@ export default defineEventHandler(async (event) => {
 			throw createError({ statusCode: 404, message: "数据不存在或已被删除" });
 		}
 
-		return { success: true, data: result[0] };
+		return { code: 200, msg: "更新成功", data: result[0] };
 	} catch (err) {
 		handleDbError(err, "Dictionary Update");
 	}
