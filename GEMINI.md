@@ -16,13 +16,45 @@
 
 在任何沟通下，这些术语都生效。
 
-- `code-style` ： `.claude\skills\code-style\SKILL.md` `代码风格技能` ，用于说明代码编写规范的技能。
-- `make-list-page` ：`.claude\agents\make-list-page.md` `生成标准列表页子代理` ，用于生成本项目标准列表页的子代理。
-- `make-dialog` ：`.claude\agents\make-dialog.md` `生成弹框子代理` ，这是生成基于 addDialog 函数的命令式弹框的子代理。
-- `make-form-for-dialog` ：`.claude\agents\make-form-for-dialog.md` `生成用于弹框的表单子代理` ，这是生成用于命令式弹框的表单组件 的子代理。
-- `fix-type-error` ：`.claude\skills\fix-type-error\SKILL.md` `修复类型报错技能`
+### 2.1. 核心开发技能 (Core Development Skills)
 
-- `type-project-organization` ：`.claude\skills\type-project-organization\SKILL.md` 类型项目代码组织规范技能
+- `code-style` ： `.claude\skills\code-style\SKILL.md` `代码风格技能` ，用于说明代码编写规范的技能。
+- `fix-type-error` ：`.claude\skills\fix-type-error\SKILL.md` `修复类型报错技能` ，专门用于修复 TypeScript 类型错误。
+
+- `type-project-organization` ：`.claude\skills\type-project-organization\SKILL.md` `类型项目组织规范技能` ，规范类型项目代码组织方式、导出语法和文件结构。
+
+- `project-schema-registry` ：`.claude\skills\project-schema-registry\SKILL.md` `项目Schema注册表技能` ，数据库表定义、Zod Runtime Schemas 和 TypeScript 类型定义的**唯一事实来源（Single Source of Truth）**。包含 Trinity Pattern 编写标准和 12 个业务领域的 schema references。
+
+- `frontend-development` ：`.claude\skills\frontend-development\SKILL.md` `前端开发技能` ，包含 Vue 3 组件开发、Form 表单标准、List 页面模式和数据获取（API Hooks）的标准模式。
+
+- `nitro-api-development` ：`.claude\skills\nitro-api-development\SKILL.md` `Nitro API 开发技能` ，包含基于 Nitro v3、H3 和 Drizzle ORM 的后端接口开发标准。支持 Mock 模式和 Neon+Drizzle 生产模式。
+
+- `project-migration-guide` ：`.claude\skills\project-migration-guide\SKILL.md` `项目迁移指南技能` ，包含影子迁移（Shadow Migration）等大规模架构迁移策略。
+
+### 2.2. 数据库与质量保障技能 (Database & Quality)
+
+- `schema-and-seed-guardian` ：`.claude\skills\schema-and-seed-guardian\SKILL.md` `Schema与Seed守护技能` ，用于预防数据库 schema 定义和 seed 数据生成中的常见错误。
+
+- `neon-db-list` ：`.claude\skills\neon-db-list\SKILL.md` `Neon数据库表清单技能` ，维护项目所有数据库表的清单，便于快速查询和理解表结构。
+
+- `neon-postgres-zh` ：`.claude\skills\neon-postgres-zh\SKILL.md` `Neon Postgres中文文档技能` ，Neon PostgreSQL 数据库服务的中文参考文档。
+
+### 2.3. OpenSpec 工作流技能 (OpenSpec Workflow Skills)
+
+OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以下技能用于支持 OpenSpec 工作流：
+
+- `openspec-new-change` ：创建新的 OpenSpec 变更任务
+- `openspec-continue-change` ：继续现有 OpenSpec 变更的下一个 artifact
+- `openspec-ff-change` ：快速通过创建所有 artifacts
+- `openspec-apply-change` ：实施 OpenSpec 变更中的 tasks
+- `openspec-verify-change` ：验证 OpenSpec 变更的实施质量
+- `openspec-explore` ：探索模式，用于需求澄清和问题调研
+- `openspec-sync-specs` ：同步 delta specs 到 main specs
+- `openspec-archive-change` ：归档已完成的变更
+- `openspec-bulk-archive-change` ：批量归档多个变更
+- `openspec-onboard` ：OpenSpec 工作流引导教程
+
+### 2.4. 项目术语 (Project Terminology)
 
 - 后台项目： 即 `apps\admin\package.json` 项目。又称为 `admin后台项目` 。
 - 类型项目： 即 `apps\type\package.json` 项目。又称为 `type类型项目` 。
@@ -515,15 +547,49 @@ gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执
 3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
 4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
 
-## 12. 数据库变更维护规范
+## 12. 数据库 Schema 开发规范
 
-当你在 `apps\admin\server\db\schemas` 目录内执行以下操作时：
+### 12.1. Schema 定义的唯一事实来源
 
-1. 新增数据库表
-2. 修改数据库表名
-3. 删除数据库表
+**核心原则**：`apps/type/src/business/{domain}/{module}/schema.ts` 是数据库表定义的**唯一事实来源（Single Source of Truth）**。
 
-你**必须**主动更新 `.claude\skills\neon-db-list\SKILL.md` 文件内的数据库表清单，确保该清单与实际代码保持一致。
+每个 schema 文件必须导出三种产物（Trinity Pattern）：
+
+1. **Drizzle Table** - 数据库表定义（例如 `communities`）
+2. **Zod Schemas** - 运行时验证（`insertXxxSchema`, `selectXxxSchema`, `updateXxxSchema`）
+3. **TypeScript Types** - 静态类型（`NewXxx`, `Xxx`, `UpdateXxx`）
+
+**详细规范**请参考：`.claude/skills/project-schema-registry/SKILL.md`
+
+### 12.2. Schema 文件位置规范
+
+- **正确位置**：`apps/type/src/business/{domain}/{module}/schema.ts`
+- **错误位置**：`apps/admin/server/db/schemas/` (已废弃，仅作临时过渡)
+
+### 12.3. 数据库变更维护清单
+
+当你在 `apps/type/src/business/` 目录内**新增、修改或删除**schema 时：
+
+1. 你**必须**主动更新 `.claude/skills/neon-db-list/SKILL.md` 文件内的数据库表清单
+2. 确保该清单与实际代码保持一致
+3. 如有 schema 结构变更，需要运行 `pnpm -F @01s-11comm/type db:generate` 生成迁移文件
+
+### 12.4. Schema 编写标准
+
+必须严格遵循**Trinity Pattern**，详见 `project-schema-registry` 技能：
+
+- Part A：使用 `pgTable` 定义表，使用 `primaryId()` 和 `...timestamps`
+- Part B：使用 `createInsertSchema`, `createSelectSchema` 创建 Zod schemas
+- Part C：使用 `$inferSelect`, `$inferInsert` 推断 TypeScript 类型
+
+### 12.5. 常见错误预防
+
+参考 `schema-and-seed-guardian` 技能避免：
+
+- 字段重复定义
+- 外键关系冲突
+- Zod schema 与 Drizzle table 不一致
+- Seed 数据生成器函数（应使用字面量数组）
 
 ## 13. 常用开发命令
 
@@ -720,11 +786,11 @@ pnpm -F @01s-11comm/type typecheck
 
 #### 16.2.1. 编写接口需要导入正确的模块
 
-<!-- TODO: -->
+请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
 
 #### 16.2.2. 配置文件格式没有 vite 配置对象
 
-<!-- TODO: -->
+请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取配置相关信息。
 
 ### 16.3. pure-admin 后台框架模板
 
