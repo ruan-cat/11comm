@@ -65,6 +65,13 @@ export default defineConfig({
 				/** @see https://github.com/cloudflare/workers-sdk/pull/1427 */
 				// npm_config_user_agent: "pnpm",
 			},
+			// cloudflare 开启可观察日志
+			observability: {
+				logs: {
+					enabled: true,
+					invocation_logs: true,
+				},
+			},
 		},
 	},
 });
