@@ -13,24 +13,36 @@ import { users } from "@/server/db/schema"; // 必须使用别名 @/server/db/sc
 import { eq } from "drizzle-orm";
 
 export default defineHandler(async (event) => {
-	// 1. 获取参数 (Get Parameters)
-	const query = getQuery(event);
-	// POST 请求读取 Body
-	const body = await readBody(event);
+	try {
+		// 1. 获取参数 (Get Parameters)
+		const query = getQuery(event);
+		// POST 请求读取 Body (建议断言为 any 以便后续清洗)
+		const body = (await readBody(event)) as any;
 
-	// 2. 业务逻辑 (Business Logic - Database Query)
-	const result = await db.select().from(users).where(eq(users.id, query.id));
+		// 2. 业务逻辑 (Business Logic - Database Query)
+		const result = await db.select().from(users).where(eq(users.id, query.id));
 
-	if (!result.length) {
-		throw createError({ statusCode: 404, message: "User not found" });
+		if (!result.length) {
+			throw createError({ statusCode: 404, message: "User not found" });
+		}
+
+		// 3. 返回标准响应 (Return Standard Response)
+		return {
+			success: true,
+			code: 200,
+			message: "操作成功",
+			data: result[0],
+		};
+	} catch (error: any) {
+		console.error("[API Error]", error);
+		return {
+			success: false,
+			code: 500,
+			message: "操作失败",
+			data: null,
+			error: error.message,
+		};
 	}
-
-	// 3. 返回标准响应 (Return Standard Response)
-	return {
-		code: 200,
-		msg: "操作成功",
-		data: result[0],
-	};
 });
 ```
 
@@ -42,9 +54,11 @@ export default defineHandler(async (event) => {
 
 ```typescript
 interface JsonVO<T> {
+	success: boolean;
 	code: number;
-	msg: string;
+	message: string;
 	data: T;
+	error?: string;
 }
 ```
 
@@ -63,8 +77,9 @@ interface PageDTO<T> {
 
 ```json
 {
+	"success": true,
 	"code": 200,
-	"msg": "操作成功",
+	"message": "操作成功",
 	"data": {
 		"list": [{ "id": 1, "name": "Admin" }],
 		"total": 100,

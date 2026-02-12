@@ -98,13 +98,17 @@ export default defineConfig({
 import { defineHandler, readBody } from "nitro/h3";
 
 export default defineHandler(async (event) => {
-	// 读取请求体
-	const body = await readBody(event);
+	// 读取请求体 (必须使用 await，且建议断言为 any 以便后续清洗)
+	const body = (await readBody(event)) as any;
 
-	// 处理逻辑...
-
-	// 返回响应
-	return { success: true, data: {} };
+	// 建议包裹 try-catch 处理业务逻辑错误
+	try {
+		// 处理逻辑...
+		return { success: true, code: 200, message: "OK", data: {} };
+	} catch (error: any) {
+		console.error(error);
+		return { success: false, code: 500, message: "Internal Error", data: null, error: error.message };
+	}
 });
 ```
 
