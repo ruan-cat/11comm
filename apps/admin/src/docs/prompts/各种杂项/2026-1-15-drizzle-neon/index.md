@@ -294,4 +294,18 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 我要求你的 nitro 改造计划，要写的足够完善，足够长。我要求你至少要写够 2000 行，作为一个及其详实的计划文档，必须要写够足够的行数。至少要到 2000 行。
 
-### 01 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
+### 01 继续改进现有的 `nitro-interface-rewrite` 任务
+
+1. 改进，增强任务文档： 任务清单细节密集但缺少阶段边界、依赖顺序、验收标准与回滚策略，执行上容易失控。那就按照你的设计，去改进 `openspec\changes\nitro-interface-rewrite\tasks.md` 文档。
+2. 技能引用缺口： 任务要求“明确要学习哪些 .claude/skills”，但当前计划未列出具体技能清单与作用范围，容易造成执行时的规范漂移。建议至少显式引用 nitro-api-development、type-project-organization、schema-and-seed-guardian、neon-db-list、project-schema-registry、code-style 等技能，并给出“何时必须引用”的边界。 nitro-api-development。
+3. 规范冲突未闭环： 以 skills 技能为准。按照 `.claude\skills\nitro-api-development\SKILL.md` 即， `nitro-api-development` 技能为准。
+4. 标准写法冲突迹象： 要求以 `defineHandler` ，一律以技能为准。去修改 `openspec\changes\nitro-interface-rewrite\design.md` 文档，让这个设计文档以 `nitro-api-development` 技能为准。
+5. 迁移路径不完整： 任务列出大量 API 与 schema，但没有“从现有接口到目标表”的映射表、也没有“先试点、后批量”的阶段策略。缺少“依赖数据库表已存在”的前提校验步骤。按照你的设计，去改造成 `先试点、后批量` 的试点批量迁移策略。改造 `openspec\changes\nitro-interface-rewrite\tasks.md` 任务清单表。
+6. 旧 Interface 处理不完整： 任务要求明确对旧 Interface 的处置与前端迁移方式，但计划中没有具体“过渡策略”和“替换顺序”说明，只在提案里粗略提到 Shadow Migration，需要更细的可执行规则。
+   > 按照你的设计，去增加合适的，清晰的，可执行规划。去探索该部分的设计。
+7. 错误处理与事务策略不明确： 清单提到 handleDbError，但未定义“什么时候必须事务”“哪些错误要映射到哪些业务码”“是否统一返回结构”。这会造成接口风格不一致。
+   > 去改造对应的写法。说明清楚什么时候应该使用该能力。
+
+需要先形成“统一规范基线 + 分阶段迁移计划 + 类型迁移策略 + 错误处理标准 + 业务映射表”的完整计划文档，再进入实施会更稳。
+
+### 02 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
