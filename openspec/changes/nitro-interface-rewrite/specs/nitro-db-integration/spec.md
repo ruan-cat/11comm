@@ -61,3 +61,70 @@ API 层 MUST 建立“零信任”机制。所有进入系统的外部输入（B
 - **当 (WHEN)** 数据库操作抛出 Foreign Key Violation (Postgres Code 23503) 时
 - **那么 (THEN)** 全局错误处理器必须抛出 HTTP 400 Bad Request 错误
 - **并且 (AND)** 提示用户关联的资源不存在或不可操作
+
+### Requirement: 导入路径与别名唯一来源 (Import & Alias Contract)
+
+API 层 MUST 以 `apps/admin/nitro.config.ts` 的 alias 为唯一依据，避免路径漂移导致类型与编译错误。
+
+#### Scenario: 服务端模块导入 (Server Module Import)
+
+- **当 (WHEN)** API 引入服务端模块（db/utils）时
+- **那么 (THEN)** 必须使用 `server/*` 别名（如 `server/db`）
+- **并且 (AND)** 严禁使用未声明的 `@/server/*` 别名
+
+#### Scenario: Schema 与类型导入 (Schema Import)
+
+- **当 (WHEN)** API 引入表结构或 Zod Schema 时
+- **那么 (THEN)** 必须从 `@01s-11comm/type` 导入
+- **并且 (AND)** 不允许在 `apps/admin` 内重复定义业务类型或 schema
+
+### Requirement: 校验工具可用性闸门 (Validation Helper Availability Gate)
+
+API 层 MUST 以“可用性优先”选择校验 helper，禁止调用不可用函数导致类型错误。
+
+#### Scenario: 校验 Helper 可用 (Helper Available)
+
+- **当 (WHEN)** `readValidatedBody` 或 `getValidatedQuery` 在当前 Nitro 运行时可用
+- **那么 (THEN)** 必须直接使用它们完成校验
+
+#### Scenario: 校验 Helper 不可用 (Helper Missing)
+
+- **当 (WHEN)** helper 不存在或未启用
+- **那么 (THEN)** 必须使用 `readBody/getQuery + Schema.parse` 完成校验
+- **并且 (AND)** 禁止编译期报错或运行期异常作为“后置校验”
+
+### Requirement: 写操作类型安全 (Write Type Safety)
+
+写入操作 MUST 与 Drizzle 表定义严格对齐，避免字段漂移导致类型错误。
+
+#### Scenario: Insert 数据写入 (Insert Payload)
+
+- **当 (WHEN)** 执行 `db.insert` 时
+- **那么 (THEN)** 只允许写入 schema 允许的字段
+- **并且 (AND)** 由数据库默认或触发器维护的字段禁止显式写入
+
+#### Scenario: Update 数据写入 (Update Payload)
+
+- **当 (WHEN)** 执行 `db.update` 时
+- **那么 (THEN)** 只允许更新 `partial()` 中存在的字段
+- **并且 (AND)** 主键或路由参数必须先通过 Zod 校验
+
+### Requirement: 排序字段白名单 (Safe Sort Mapping)
+
+列表排序 MUST 通过白名单映射，避免动态索引带来的类型与运行时错误。
+
+#### Scenario: 排序参数处理 (Sort Mapping)
+
+- **当 (WHEN)** 接口需要使用 `sortBy` 参数
+- **那么 (THEN)** 必须通过字段白名单映射到 Drizzle 列对象
+- **并且 (AND)** 不得直接使用 `table[sortBy]` 形式访问
+
+### Requirement: 响应结构一致性 (Response Envelope Consistency)
+
+API 返回结构 MUST 保持 `JsonVO<PageDTO<T>>` 规范一致，避免旧字段与新字段混用。
+
+#### Scenario: 分页返回结构 (PageDTO Return)
+
+- **当 (WHEN)** 返回分页数据
+- **那么 (THEN)** 必须按 `JsonVO<PageDTO<T>>` 输出
+- **并且 (AND)** 字段名必须与现行约定一致，不得混用旧命名

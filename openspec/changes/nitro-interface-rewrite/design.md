@@ -524,7 +524,40 @@ const rules = useZodRules(insertDictionarySchema);
 </script>
 ```
 
-## 5. 迁移路线与战略 (Migration Roadmap)
+## 5. 实施经验与故障预防 (Implementation Lessons)
+
+### 5.1 故障复盘：偏题与类型错误的根因
+
+- 规范冲突：旧的 Mock 迁移规范与新 DB 交互规范并存，导致接口写法在“假数据模板”和“真实 DB 模板”之间摇摆。
+- 工具认知缺口：误用不存在的校验 helper（如未启用的 `getValidatedQuery`），造成编译失败与运行期异常。
+- 导入路径混乱：在 `@/server/*` 与 `server/*` 别名之间切换，未以 `nitro.config.ts` 的 alias 为准，导致路径不可解析。
+- Schema 假设错误：默认添加 `createdAt/updatedAt` 等字段写入，但实际 schema 由数据库默认或触发器管理，导致 Insert 类型不匹配。
+- 动态字段索引：直接以 `schema[sortBy]` 访问列，触发 `undefined` 或类型不安全，导致排序和类型推导失败。
+- 失败未被前置阻断：缺少“实现前校验清单”，导致错误在类型检查阶段才暴露。
+
+### 5.2 实施前校验清单 (Pre-Implementation Gate)
+
+- 确认业务路径与真实 Schema 文件位置一致（必须来源于 `apps/type/src/business/**/schema.ts`）。
+- 确认数据库表字段是否由数据库默认值管理，避免在 Insert 中显式写入。
+- 确认 `nitro.config.ts` 中 alias，统一使用 `server/*` 与 `@01s-11comm/type`。
+- 确认 `readValidatedBody/getValidatedQuery` 可用性；不可用时必须使用 `readBody/getQuery + schema.parse`。
+- 确认写接口是否需要事务与 `handleDbError` 语义映射。
+- 确认列表排序字段通过白名单映射，而非字符串直索引。
+
+### 5.3 类型错误防线 (Type Error Guardrails)
+
+- Insert 仅允许写入 schema 中定义且可写字段，禁止额外字段写入。
+- Update 仅允许 `partial()` 字段，且必须显式校验主键或路由参数。
+- 所有 Zod schema 必须来自 `apps/type` 的导出，不允许在 API 内手写业务 schema。
+- 列表查询排序字段必须由白名单映射表导出列对象。
+- 在返回体中保持 `JsonVO<PageDTO<T>>` 结构与字段名一致，不得混用旧字段。
+
+### 5.4 偏题防线 (Scope Discipline)
+
+- 每次实现前先对照 `tasks.md` 中的条目与目标文件路径，避免跨模块扩展。
+- 若规范不足，必须先补充 `design.md` 或 `spec.md` 再写接口，避免即兴猜测。
+
+## 6. 迁移路线与战略 (Migration Roadmap)
 
 ### 阶段一：破冰 (The Icebreaker) - 1 天
 
@@ -559,7 +592,7 @@ const rules = useZodRules(insertDictionarySchema);
   2.  删除 `apps/admin/server/db/schemas` (旧 Schema 目录)。
   3.  (可选) 标记 `@deprecated` 的旧类型别名，通知团队逐步通过重构移除。
 
-## 6. 风险与对策 (Risks & Mitigations)
+## 7. 风险与对策 (Risks & Mitigations)
 
 | 风险               | 严重度 | 对策                                                                                                                                 |
 | :----------------- | :----- | :----------------------------------------------------------------------------------------------------------------------------------- |
@@ -568,7 +601,7 @@ const rules = useZodRules(insertDictionarySchema);
 | **TS 类型不兼容**  | 中     | 如果旧 Interface 定义非常松散（全是 any），新类型过于严格，可能导致前端报错。对策：使用 `Partial<>` 或 `Pick<>` 在影子导出层做适配。 |
 | **性能回退**       | 低     | 数据库查询可能比 Mock 慢。对策：合理添加索引（在 schema 中定义），使用分页。                                                         |
 
-## 7. 结论
+## 8. 结论
 
 这份 2000 行级别的设计规划（注：实际执行代码量）不仅仅是让应用“能跑”，而是为了赋予它**工业级的健壮性**。
 
