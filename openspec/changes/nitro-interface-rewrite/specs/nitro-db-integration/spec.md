@@ -93,6 +93,21 @@ API 层 MUST 以“可用性优先”选择校验 helper，禁止调用不可用
 - **那么 (THEN)** 必须使用 `readBody/getQuery + Schema.parse` 完成校验
 - **并且 (AND)** 禁止编译期报错或运行期异常作为“后置校验”
 
+### Requirement: readValidatedBody 类型回填 (Validated Body Type Recovery)
+
+当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，必须显式回填类型，避免出现 `Record<string, never>` 或 `unknown` 导致的插入类型报错。
+
+#### Scenario: Insert 类型回填 (Insert Type Recovery)
+
+- **当 (WHEN)** `readValidatedBody` 推导为 `Record<string, never>` 或 `unknown`
+- **那么 (THEN)** 必须使用 `as unknown as NewX` 将结果回填为 `@01s-11comm/type` 的 Insert 类型
+- **并且 (AND)** 不得依赖 `readValidatedBody<NewX>` 泛型写法（该实现要求多个类型参数，容易产生 TS2558）
+
+#### Example: 安全写入 (Safe Insert)
+
+- `const body = (await readValidatedBody(event, insertSchema.parse)) as unknown as NewX;`
+- `await db.insert(table).values(body).returning();`
+
 ### Requirement: 写操作类型安全 (Write Type Safety)
 
 写入操作 MUST 与 Drizzle 表定义严格对齐，避免字段漂移导致类型错误。
