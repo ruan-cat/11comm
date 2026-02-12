@@ -7,6 +7,8 @@
 	},
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
+		// 折叠 AI大模型记忆文件
+		"CLAUDE.md": "GEMINI.md,AGENTS.md",
 		// 折叠 typescript类型文件
 		"tsconfig.json": "tsconfig.*.json, env.d.ts",
 		// 折叠 vite配置文件
