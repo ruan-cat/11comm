@@ -19,7 +19,7 @@ license: MIT
 
 1.  **定义路由 (Define Route)**: 在 `apps/admin/server/api/` 创建文件。文件路径即 API 路由 (例如 `api/users.ts` -> `/api/users`)。
 2.  **实现处理器 (Implement Handler)**: 使用 `defineHandler` 定义处理函数。
-3.  **查询数据库 (Query Database)**: 导入 `db` (`@/server/db`) 和 schema (`@/server/db/schema`)。
+3.  **查询数据库 (Query Database)**: 导入 `db`（`server/db`）与 schema（`@01s-11comm/type`）。
 4.  **返回数据 (Return Data)**: 确保返回对象符合标准 JSON 格式。
 
 ## 参考文档 (References)
@@ -35,3 +35,19 @@ license: MIT
 - **遗漏 Await**: 数据库操作是异步的，必须使用 `await`。
 - **错误的响应结构**: 前端组件依赖 `{ code, msg, data }` 结构。直接返回数据数组会导致 UI 崩溃。
 - **使用原始 SQL**: 除非万不得已，禁止使用 `sql` 模板字符串。请使用 Drizzle 的查询构建器 (Query Builder)。
+
+## 类型回填 (Type Recovery)
+
+当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，必须显式回填 Insert 类型。
+
+### 必须遵循
+
+- 使用 `@01s-11comm/type` 导出的 `New<Entity>` 类型
+- 禁止依赖 `readValidatedBody<NewX>` 泛型写法
+
+### 写入示例
+
+```typescript
+const body = (await readValidatedBody(event, insertSchema.parse)) as unknown as NewX;
+const result = await db.insert(table).values(body).returning();
+```

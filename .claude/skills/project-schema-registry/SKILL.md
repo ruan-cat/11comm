@@ -56,6 +56,10 @@ description: 项目数据库schema架构综合指南，包含架构原则、编�
 - **Insert Type**: `typeof table.$inferInsert`（名称：`New<Entity>`）
 - **Update Type**: `z.infer<typeof update<Entity>Schema>`（名称：`Update<Entity>`）
 
+## API Insert 类型回填
+
+当后端使用 `readValidatedBody(event, insertSchema.parse)` 但类型推导不足时，必须使用 `New<Entity>` 作为写入类型回填，确保 `db.insert(table).values(body)` 无类型报错。
+
 ## 领域参考文档 (Domain References)
 
 特定业务领域的详细 schema 定义可在 `references/` 目录中找到：
