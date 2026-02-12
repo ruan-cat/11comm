@@ -43,6 +43,12 @@
 - 禁止 `defineEventHandler` 与 `h3` 导入。
 - 所有入参必须通过 `readValidatedBody` 或 `getValidatedQuery` + Zod Schema 校验。
 
+### 1.6 规范与技能同步 (Docs & Skills Sync)
+
+- [x] nitro-db-integration 规范补充 readValidatedBody 类型回填指引。
+- [x] nitro-api-development 技能补充类型回填约束与示例。
+- [x] project-schema-registry 技能补充 Insert 类型回填提示。
+
 ## 2. 基础设施与环境准备 (Infrastructure)
 
 - [ ] 2.1 **升级 `apps/type` 运行时依赖**
@@ -108,25 +114,49 @@
   - 导出 `schema.ts` 内容。
   - 添加影子导出: `export type DictionaryItem = Dictionary;`。
 - [ ] 5.1.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts` (或 list.get.ts)
-  - 引入 `db` 和 `searchDictionarySchema`。
-  - 实现真实分页查询。
-  - 删除 `mock-data.ts`。
+  - [x] 引入 `db` 并实现真实分页查询。
+  - [ ] 删除 `mock-data.ts`。
 - [ ] 5.1.4 **API Create**: 创建/重写 `create.post.ts`
-  - 实现 `readValidatedBody` 和 `insertDictionarySchema`。
+  - [x] 已创建 `create.post.ts` 并完成基础校验。
+  - [x] 实现 `readValidatedBody` 和 `insertDictionarySchema`。
+- [x] 5.1.5 **API Update**: 重写 `update.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `updateDictionarySchema`。
+- [x] 5.1.6 **API Detail**: 重写 `detail.get.ts`
+  - [x] 使用 `getRouterParam` 与 `selectDictionarySchema`。
+- [x] 5.1.7 **API Delete**: 重写 `delete.post.ts`
+  - [x] 使用 `readValidatedBody` 与 `deleteDictionarySchema`。
 
 ### 5.2 配置项管理 (dev-team/config-manage/item)
 
 - [ ] 5.2.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/item/schema.ts`
 - [ ] 5.2.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/item/index.ts`
 - [ ] 5.2.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/item/list.post.ts`
-  - 删除 `mock-data.ts`。
+  - [x] 已重写为真实查询与分页。
+  - [ ] 删除 `mock-data.ts`。
+- [x] 5.2.4 **API Create**: 重写 `create.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `insertConfigItemSchema`。
+- [x] 5.2.5 **API Update**: 重写 `update.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `updateConfigItemSchema`。
+- [x] 5.2.6 **API Detail**: 重写 `detail.get.ts`
+  - [x] 使用 `getRouterParam` 与 `selectConfigItemSchema`。
+- [x] 5.2.7 **API Delete**: 重写 `delete.post.ts`
+  - [x] 使用 `readValidatedBody` 与 `deleteConfigItemSchema`。
 
 ### 5.3 配置类型管理 (dev-team/config-manage/type)
 
 - [ ] 5.3.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/type/schema.ts`
 - [ ] 5.3.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/type/index.ts`
 - [ ] 5.3.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/type/list.post.ts`
-  - 删除 `mock-data.ts`。
+  - [x] 已重写为真实查询与分页。
+  - [ ] 删除 `mock-data.ts`。
+- [x] 5.3.4 **API Create**: 重写 `create.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `insertConfigTypeSchema`。
+- [x] 5.3.5 **API Update**: 重写 `update.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `updateConfigTypeSchema`。
+- [x] 5.3.6 **API Detail**: 重写 `detail.get.ts`
+  - [x] 使用 `getRouterParam` 与 `selectConfigTypeSchema`。
+- [x] 5.3.7 **API Delete**: 重写 `delete.post.ts`
+  - [x] 使用 `readValidatedBody` 与 `deleteConfigTypeSchema`。
 
 ### 5.4 缓存管理 (dev-team/cache-manage)
 
@@ -148,6 +178,16 @@
 
 - [ ] 5.6.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/center/schema.ts`
 - [ ] 5.6.2 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/center/list.post.ts`
+  - [x] 已重写为真实查询与分页。
+  - [ ] 删除 `mock-data.ts`。
+- [x] 5.6.3 **API Create**: 重写 `create.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `insertConfigSchema`。
+- [x] 5.6.4 **API Update**: 重写 `update.post.ts`
+  - [x] 使用 `readValidatedBody` 和 `updateConfigSchema`。
+- [x] 5.6.5 **API Detail**: 重写 `detail.get.ts`
+  - [x] 使用 `getRouterParam` 与 `selectConfigSchema`。
+- [x] 5.6.6 **API Delete**: 重写 `delete.post.ts`
+  - [x] 使用 `readValidatedBody` 与 `deleteConfigSchema`。
 
 ## 6. Schema 迁移与 API 重写 - 运营团队 (Operation Team)
 
