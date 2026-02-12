@@ -308,4 +308,22 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 需要先形成“统一规范基线 + 分阶段迁移计划 + 类型迁移策略 + 错误处理标准 + 业务映射表”的完整计划文档，再进入实施会更稳。
 
+### 02 <!-- TODO: --> 迭代更新现有的接口：补全错误处理、参数获取、返回值字段等来自`nitro-api-development`技能的新要求
+
+我们的 nitro 接口编写要求规范改了。之前已经实现的接口都需要及时的应用新的规范，以便确保接口及时满足新的规范。
+
+新的 skill 规范为： `.claude\skills\nitro-api-development` ，即 `nitro-api-development` 技能。
+
+你需要重点关注的几个增加的新规范要点：
+
+1. 破坏性变更： 返回字段格式有变化。请注意使用最新的，正确的接口返回值字段约束。请你主动使用来自类型项目提供的 `JsonVO` 类型，来实现严格的约束。
+2. post 请求要使用 readBody 函数来完成参数获取。避免出现参数解析错误的情况。
+3. 破坏性变更： 整个接口都应该加上 try-catch 格式，并使用严格的错误返回值类型。并主动暴露出足够的错误信息。
+
+需要你更新的，现有的，已经经过一次 neon+drizzle 真实数据库改造的接口目录如下：
+
+`apps\admin\server\api\dev-team\config-manage` ，即该目录内的全部接口。都需要经过你的补充改造。
+
+请你先列举清楚全部 `apps\admin\server\api\dev-team\config-manage` 子目录下的全部 nitro 接口，确保不会出现缺漏缺省的情况。在不缺漏接口的前提下，开始根据 skills 技能规范的要求，改造代码。
+
 ### 02 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
