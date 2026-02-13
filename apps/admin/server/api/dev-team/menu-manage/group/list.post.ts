@@ -5,43 +5,111 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, MenuGroupListItem, MenuGroupQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockMenuGroupData } from "./mock-data";
+import { z } from "zod";
+import type { JsonVO, PageDTO, MenuGroupListItem } from "@01s-11comm/type";
+import { dtMenuGroups } from "@01s-11comm/type";
+import { db } from "server/db";
+import { and, desc, eq, like, sql } from "drizzle-orm";
+
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).default(20),
+	groupId: z.string().optional(),
+	groupName: z.string().optional(),
+	groupCode: z.string().optional(),
+	status: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuGroupListItem>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<MenuGroupQueryParams>(event);
-	const defaultParams: MenuGroupQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Record<string, unknown>;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockMenuGroupData, filters);
+		const rawQuery = {
+			...body,
+			page: (body.page as number) || (body.pageIndex as number) || 1,
+			groupId: body.groupId === "" ? undefined : (body.groupId as string | undefined),
+			groupName: body.groupName === "" ? undefined : (body.groupName as string | undefined),
+			groupCode: body.groupCode === "" ? undefined : (body.groupCode as string | undefined),
+		};
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<MenuGroupListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const conditions = [];
 
-	return response;
+		if (query.groupId) {
+			conditions.push(eq(dtMenuGroups.id, query.groupId));
+		}
+
+		if (query.groupName) {
+			conditions.push(like(dtMenuGroups.groupName, `%${query.groupName}%`));
+		}
+
+		if (query.groupCode) {
+			conditions.push(like(dtMenuGroups.groupCode, `%${query.groupCode}%`));
+		}
+
+		const offset = (query.page - 1) * query.pageSize;
+
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(dtMenuGroups)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		const data = await db
+			.select({
+				id: dtMenuGroups.id,
+				groupName: dtMenuGroups.groupName,
+				groupCode: dtMenuGroups.groupCode,
+				groupIcon: dtMenuGroups.groupIcon,
+				sortOrder: dtMenuGroups.sortOrder,
+				createdAt: dtMenuGroups.createdAt,
+				updatedAt: dtMenuGroups.updatedAt,
+			})
+			.from(dtMenuGroups)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(dtMenuGroups.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		const list: MenuGroupListItem[] = data.map((item) => ({
+			groupId: item.id,
+			groupName: item.groupName,
+			groupCode: item.groupCode,
+			groupType: "system",
+			storeName: "",
+			sortNo: item.sortOrder ?? 0,
+			icon: item.groupIcon ?? "",
+			status: "enabled",
+			description: "",
+			createTime: item.createdAt ? item.createdAt.toISOString() : "",
+			updateTime: item.updatedAt ? item.updatedAt.toISOString() : "",
+		}));
+
+		const response: JsonVO<PageDTO<MenuGroupListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages: Math.ceil(total / query.pageSize),
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

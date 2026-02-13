@@ -5,43 +5,100 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, MenuCatalogListItem, MenuCatalogQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockMenuCatalogData } from "./mock-data";
+import { z } from "zod";
+import type { JsonVO, PageDTO, MenuCatalogListItem } from "@01s-11comm/type";
+import { dtMenuCatalogs } from "@01s-11comm/type";
+import { db } from "server/db";
+import { and, desc, like, sql } from "drizzle-orm";
+
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).default(20),
+	name: z.string().optional(),
+	storeType: z.string().optional(),
+	groupType: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuCatalogListItem>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<MenuCatalogQueryParams>(event);
-	const defaultParams: MenuCatalogQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Record<string, unknown>;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockMenuCatalogData, filters);
+		const rawQuery = {
+			...body,
+			page: (body.page as number) || (body.pageIndex as number) || 1,
+			name: body.name === "" ? undefined : (body.name as string | undefined),
+		};
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<MenuCatalogListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const conditions = [];
 
-	return response;
+		if (query.name) {
+			conditions.push(like(dtMenuCatalogs.catalogName, `%${query.name}%`));
+		}
+
+		const offset = (query.page - 1) * query.pageSize;
+
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(dtMenuCatalogs)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		const data = await db
+			.select({
+				id: dtMenuCatalogs.id,
+				groupId: dtMenuCatalogs.groupId,
+				catalogName: dtMenuCatalogs.catalogName,
+				catalogIcon: dtMenuCatalogs.catalogIcon,
+				sortOrder: dtMenuCatalogs.sortOrder,
+				createdAt: dtMenuCatalogs.createdAt,
+				updatedAt: dtMenuCatalogs.updatedAt,
+			})
+			.from(dtMenuCatalogs)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(dtMenuCatalogs.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		const list: MenuCatalogListItem[] = data.map((item) => ({
+			gid: item.groupId ?? "",
+			groupType: "system",
+			icon: item.catalogIcon ?? "",
+			label: item.catalogName,
+			name: item.catalogName,
+			seq: String(item.sortOrder ?? 0),
+			storeType: "property",
+			typeText: "",
+			storeTypeText: "",
+			createTime: item.createdAt ? item.createdAt.toISOString() : "",
+			updateTime: item.updatedAt ? item.updatedAt.toISOString() : "",
+		}));
+
+		const response: JsonVO<PageDTO<MenuCatalogListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages: Math.ceil(total / query.pageSize),
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
