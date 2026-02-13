@@ -276,7 +276,7 @@ overrides:
 
 检查整个项目关于 `lint:stylelint` 字符串的内容，全部删掉。不提供这个东西。本项目不使用任何形式的 stylelint 。
 
-## 023 <!-- TODO: 一次性任务 长任务 --> 为全部的 index.vue 列表页文件，补全 `:loading="isFetching"` 的组件 props 使用
+## 023 为全部的 index.vue 列表页文件，补全 `:loading="isFetching"` 的组件 props 使用
 
 请你全面的检查后台项目内，全部 index.vue 文件的列表页。注意检查 `PureTable` 组件对 loading 这个 props 的使用。现在的情况是，有绝大多数的文件，都缺少缺失了这个配置。没有及时的使用来自组合式 api 提供的 `isFetching` 响应式变量。
 
