@@ -326,4 +326,20 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 请你先列举清楚全部 `apps\admin\server\api\dev-team\config-manage` 子目录下的全部 nitro 接口，确保不会出现缺漏缺省的情况。在不缺漏接口的前提下，开始根据 skills 技能规范的要求，改造代码。
 
-### 02 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
+### 03 <!-- TODO: --> 根据增加的 schema 数据库表，及时补全对应的文档和内容
+
+请注意 git `ba4926b89ab836058cad8d3757b995420f6289b0` 的提交，这次提交按照设计，增加了数据库表字段
+
+我需要你严谨地执行 `schema-change-sync` 技能的要求，以及其他技能的要求。去补全相关的：
+
+- 数据库迁移 sql
+- 暴露的业务类型
+- 需要补全补充的 skills 文档
+  - neon-db-list
+  - project-schema-registry
+- 从 schema 内生成的业务类型
+- 以及前端部分的修改。
+
+我列举的内容可能有缺省，你需要认真阅读 `schema-change-sync` 的要求，去确定需要修改的范围，然后补充对应的修改。
+
+### 04 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
