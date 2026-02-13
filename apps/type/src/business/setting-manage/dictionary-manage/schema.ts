@@ -118,14 +118,24 @@ export const dtDictionaryItems = pgTable("dt_dictionary_items", {
 /** 缓存配置表 */
 export const dtCacheConfigs = pgTable("dt_cache_configs", {
 	id: primaryId(),
+	/** 缓存编码 */
+	cacheCode: text("cache_code").notNull(),
+	/** 缓存名称 */
+	cacheName: text("cache_name").notNull(),
 	/** 缓存键 */
 	cacheKey: text("cache_key").notNull(),
 	/** 缓存类型 */
 	cacheType: text("cache_type"),
+	/** 缓存分组 */
+	cacheGroup: text("cache_group"),
 	/** 过期时间（秒） */
 	expireTime: integer("expire_time"),
+	/** 缓存描述 */
+	description: text("description"),
 	/** 刷新策略 */
 	refreshStrategy: text("refresh_strategy"),
+	/** 状态 */
+	status: text("status").default("enabled"),
 	...timestamps,
 });
 
@@ -245,6 +255,8 @@ export const updateDtDictionaryItemSchema = z.object({
 
 // --- dtCacheConfigs ---
 export const insertDtCacheConfigSchema = createInsertSchema(dtCacheConfigs, {
+	cacheCode: (schema) => schema.min(1, "缓存编码不能为空"),
+	cacheName: (schema) => schema.min(1, "缓存名称不能为空"),
 	cacheKey: (schema) => schema.min(1, "缓存键不能为空"),
 }).omit({
 	id: true,
@@ -256,10 +268,15 @@ export const selectDtCacheConfigSchema = createSelectSchema(dtCacheConfigs);
 
 export const updateDtCacheConfigSchema = z.object({
 	id: z.string().uuid(),
+	cacheCode: z.string().min(1, "缓存编码不能为空").optional(),
+	cacheName: z.string().min(1, "缓存名称不能为空").optional(),
 	cacheKey: z.string().min(1, "缓存键不能为空").optional(),
 	cacheType: z.string().optional().nullable(),
+	cacheGroup: z.string().optional().nullable(),
 	expireTime: z.number().int().optional().nullable(),
+	description: z.string().optional().nullable(),
 	refreshStrategy: z.string().optional().nullable(),
+	status: z.enum(["enabled", "disabled", "maintenance"]).optional(),
 });
 
 // ==========================================
