@@ -43,6 +43,13 @@
 			"when": 1770820031804,
 			"tag": "0005_luxuriant_hairball",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1770990495309,
+			"tag": "0006_big_hannibal_king",
+			"breakpoints": true
 		}
 	]
 }
