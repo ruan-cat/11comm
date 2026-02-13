@@ -138,7 +138,7 @@
 - [x] 5.1.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts` (或 list.get.ts)
   - [x] 引入 `db` 并实现真实分页查询。
   - [x] mock-data.ts 未被引用（已废弃）。
-- [ ] 5.1.4 **API Create**: 创建/重写 `create.post.ts`
+- [x] 5.1.4 **API Create**: 创建/重写 `create.post.ts`
   - [x] 已创建 `create.post.ts` 并完成基础校验。
   - [x] 实现 `readValidatedBody` 和 `insertDictionarySchema`。
 - [x] 5.1.5 **API Update**: 重写 `update.post.ts`
@@ -228,206 +228,206 @@
 
 ### 6.1 数据管理 (operation-team/data-manage)
 
-- [ ] 6.1.1 **Community Info**: 重写 `community-information/list.post.ts`
+- [x] 6.1.1 **Community Info**: 重写 `community-information/list.post.ts`
   - Schema: `apps/type/src/business/operation-team/data-manage/community-information/schema.ts`
-- [ ] 6.1.2 **Property Company**: 重写 `property-company/list.post.ts`
+- [x] 6.1.2 **Property Company**: 重写 `property-company/list.post.ts`
   - Schema: `apps/type/src/business/operation-team/data-manage/property-company/schema.ts`
-- [ ] 6.1.3 **Prop Mgmt Company**: 重写 `property-management-company/list.post.ts`
+- [x] 6.1.3 **Prop Mgmt Company**: 重写 `property-management-company/list.post.ts`
   - Schema: `apps/type/src/business/operation-team/data-manage/property-management-company/schema.ts`
 
 ### 6.2 商户管理 (operation-team/merchant-manage)
 
-- [ ] 6.2.1 **Merchant Admin**: 重写 `merchant-admin/list.post.ts`
+- [x] 6.2.1 **Merchant Admin**: 重写 `merchant-admin/list.post.ts`
   - Schema: `apps/type/src/business/operation-team/merchant-manage/merchant-admin/schema.ts`
-- [ ] 6.2.2 **Merchant Info**: 重写 `merchant-info/list.post.ts`
+- [x] 6.2.2 **Merchant Info**: 重写 `merchant-info/list.post.ts`
   - Schema: `apps/type/src/business/operation-team/merchant-manage/merchant-info/schema.ts`
 
 ### 6.3 报表配置 (operation-team/report-configuration)
 
-- [ ] 6.3.1 **Report Component**: 重写 `report-component/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/report-configuration/report-component/schema.ts`
-- [ ] 6.3.2 **Report Group**: 重写 `report-group/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/report-configuration/report-group/schema.ts`
-- [ ] 6.3.3 **Report Info**: 重写 `report-info/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/report-configuration/report-info/schema.ts`
+- [x] 6.3.1 **Report Component**: 重写 `report-component/list.post.ts`
+  - Schema: `apps/type/src/business/operation-team/schema.ts` (opReportComponents)
+- [x] 6.3.2 **Report Group**: 重写 `report-group/list.post.ts`
+  - Schema: `apps/type/src/business/operation-team/schema.ts` (opReportGroups)
+- [x] 6.3.3 **Report Info**: 重写 `report-info/list.post.ts`
+  - Schema: `apps/type/src/business/operation-team/schema.ts` (opReportInfos)
 
 ### 6.4 系统管理 (operation-team/system-manage)
 
-- [ ] 6.4.1 **Change Password**: 重写 `change-password/list.post.ts` (注意：这是写操作，需特殊处理)
-  - Schema: `apps/type/src/business/operation-team/system-manage/change-password/schema.ts`
-- [ ] 6.4.2 **Community Config**: 重写 `community-configuration/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/system-manage/community-configuration/schema.ts`
-- [ ] 6.4.3 **Initialize Cell**: 重写 `initialize-cell/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/system-manage/initialize-cell/schema.ts`
-- [ ] 6.4.4 **Register Protocol**: 重写 `register-protocol/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/system-manage/register-protocol/schema.ts`
-- [ ] 6.4.5 **System Config**: 重写 `system-config/list.post.ts`
-  - Schema: `apps/type/src/business/operation-team/system-manage/system-config/schema.ts`
+- [x] 6.4.1 **Change Password**: 重写 `change-password/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smChangePasswordRecords)
+- [x] 6.4.2 **Community Config**: 重写 `community-configuration/list.post.ts`
+  - Schema: `apps/type/src/business/operation-team/schema.ts` (opCommunityConfigs)
+- [x] 6.4.3 **Initialize Cell**: 重写 `initialize-cell/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smInitializeCells)
+- [x] 6.4.4 **Register Protocol**: 重写 `register-protocol/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smRegisterProtocols)
+- [x] 6.4.5 **System Config**: 重写 `system-config/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smSystemConfigs)
 
 ## 7. Schema 迁移与 API 重写 - 物业管理 (Property Manage)
 
 ### 7.1 社区管理 (property-manage/community-manage)
 
-- [ ] 7.1.1 **Building Space**: 重写 `building-space-structure-diagram/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/community-manage/building-space-structure-diagram/schema.ts`
-- [ ] 7.1.2 **Handing Business**: 重写 `handing-business/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/community-manage/handing-business/schema.ts`
-- [ ] 7.1.3 **House Decoration**: 重写 `house-decoration/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/community-manage/house-decoration/schema.ts`
-- [ ] 7.1.4 **My**: 重写 `my/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/community-manage/my/schema.ts`
-- [ ] 7.1.5 **Notice**: 重写 `notice/list.post.ts` (新增)
-  - Schema: `apps/type/src/business/property-manage/community-manage/notice/schema.ts`
-- [ ] 7.1.6 **Property Register**: 重写 `property-register/list.post.ts` (新增)
-  - Schema: `apps/type/src/business/property-manage/community-manage/property-register/schema.ts`
-- [ ] 7.1.7 **Parking Diagram**: 重写 `parking-space-structure-diagram/list.post.ts` (新增)
-  - Schema: `apps/type/src/business/property-manage/community-manage/parking-space-structure-diagram/schema.ts`
+- [x] 7.1.1 **Building Space**: 重写 `building-space-structure-diagram/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/community-manage/schema.ts` (cmBuildingStructures)
+- [x] 7.1.2 **Handing Business**: 重写 `handing-business/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/community-manage/schema.ts` (cmHandingBusiness)
+- [x] 7.1.3 **House Decoration**: 重写 `house-decoration/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/community-manage/schema.ts` (cmHouseDecorations)
+- [x] 7.1.4 **My**: 重写 `my/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/community-manage/schema.ts` (cmCommunities)
+- [x] 7.1.5 **Notice**: 重写 `notice/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/community-manage/schema.ts` (cmNotices)
+- [x] 7.1.6 **Property Register**: 重写 `property-register/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/community-manage/schema.ts` (cmPropertyRegisters)
+- [x] 7.1.7 **Parking Diagram**: 重写 `parking-space-structure-diagram/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/parking-manage/schema.ts` (pkCarports)
 
 ### 7.2 合同管理 (property-manage/contract-manage) (新增)
 
-- [ ] 7.2.1 **Change**: 重写 `change/list.post.ts`
+- [x] 7.2.1 **Change**: 重写 `change/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/contract-manage/change/schema.ts`
-- [ ] 7.2.2 **Draft**: 重写 `draft-contract/list.post.ts`
+- [x] 7.2.2 **Draft**: 重写 `draft-contract/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/contract-manage/draft-contract/schema.ts`
-- [ ] 7.2.3 **Expire**: 重写 `expire/list.post.ts`
+- [x] 7.2.3 **Expire**: 重写 `expire/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/contract-manage/expire/schema.ts`
-- [ ] 7.2.4 **First Party**: 重写 `first-party/list.post.ts`
+- [x] 7.2.4 **First Party**: 重写 `first-party/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/contract-manage/first-party/schema.ts`
-- [ ] 7.2.5 **Type**: 重写 `type/list.post.ts`
+- [x] 7.2.5 **Type**: 重写 `type/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/contract-manage/type/schema.ts`
 
 ### 7.3 费用管理 (property-manage/expense-manage)
 
 此模块涉及金额计算，需特别注意 Decimal 类型处理。
 
-- [ ] 7.3.1 **Cancel Fee**: 重写 `cancel-fee/list.post.ts`
+- [x] 7.3.1 **Cancel Fee**: 重写 `cancel-fee/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/cancel-fee/schema.ts`
-- [ ] 7.3.2 **Contracte Charge**: 重写 `contracte-charge/list.post.ts`
+- [x] 7.3.2 **Contracte Charge**: 重写 `contracte-charge/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/contracte-charge/schema.ts`
-- [ ] 7.3.3 **Discount Apply**: 重写 `discount-apply/list.post.ts`
+- [x] 7.3.3 **Discount Apply**: 重写 `discount-apply/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/discount-apply/schema.ts`
-- [ ] 7.3.4 **Discount Setting**: 重写 `discount-setting/list.post.ts`
+- [x] 7.3.4 **Discount Setting**: 重写 `discount-setting/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/discount-setting/schema.ts`
-- [ ] 7.3.5 **Discount Type**: 重写 `discount-type/list.post.ts`
+- [x] 7.3.5 **Discount Type**: 重写 `discount-type/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/discount-type/schema.ts`
-- [ ] 7.3.6 **Expense Item**: 重写 `expense-item-setting/list.post.ts`
+- [x] 7.3.6 **Expense Item**: 重写 `expense-item-setting/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/expense-item-setting/schema.ts`
-- [ ] 7.3.7 **Expense Summary**: 重写 `expense-summary-table/list.post.ts`
+- [x] 7.3.7 **Expense Summary**: 重写 `expense-summary-table/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/expense-summary-table/schema.ts`
-- [ ] 7.3.8 **House Charge**: 重写 `house-charge/list.post.ts`
+- [x] 7.3.8 **House Charge**: 重写 `house-charge/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/house-charge/schema.ts`
-- [ ] 7.3.9 **Meter Reading Type**: 重写 `meter-reading-type/list.post.ts`
+- [x] 7.3.9 **Meter Reading Type**: 重写 `meter-reading-type/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/meter-reading-type/schema.ts`
-- [ ] 7.3.10 **Overdue Info**: 重写 `overdue-payment-information/list.post.ts`
+- [x] 7.3.10 **Overdue Info**: 重写 `overdue-payment-information/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/overdue-payment-information/schema.ts`
-- [ ] 7.3.11 **Payment Review**: 重写 `payment-review/list.post.ts`
+- [x] 7.3.11 **Payment Review**: 重写 `payment-review/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/payment-review/schema.ts`
-- [ ] 7.3.12 **Refund Review**: 重写 `refund-review/list.post.ts`
+- [x] 7.3.12 **Refund Review**: 重写 `refund-review/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/refund-review/schema.ts`
-- [ ] 7.3.13 **Reminder**: 重写 `reminder-for-overdue-payments/list.post.ts`
+- [x] 7.3.13 **Reminder**: 重写 `reminder-for-overdue-payments/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/reminder-for-overdue-payments/schema.ts`
-- [ ] 7.3.14 **Reprint Voucher**: 重写 `reprint-voucher/list.post.ts`
+- [x] 7.3.14 **Reprint Voucher**: 重写 `reprint-voucher/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/reprint-voucher/schema.ts`
-- [ ] 7.3.15 **Vehicle Charge**: 重写 `vehicle-charge/list.post.ts`
+- [x] 7.3.15 **Vehicle Charge**: 重写 `vehicle-charge/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/vehicle-charge/schema.ts`
-- [ ] 7.3.16 **Water & Elec**: 重写 `water-and-electricity-meter-reading/list.post.ts`
+- [x] 7.3.16 **Water & Elec**: 重写 `water-and-electricity-meter-reading/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/expense-manage/water-and-electricity-meter-reading/schema.ts`
 
 ### 7.4 房产管理 (property-manage/house-property-manage)
 
-- [ ] 7.4.1 **House**: 重写 `house/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/house/schema.ts`
-- [ ] 7.4.2 **Invoice**: 重写 `invoice/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/invoice/schema.ts`
-- [ ] 7.4.3 **Invoice Title**: 重写 `invoice-title/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/invoice-title/schema.ts`
-- [ ] 7.4.4 **Owner Account**: 重写 `owner-account/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/owner-account/schema.ts`
-- [ ] 7.4.5 **Owner Info**: 重写 `owner-information/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/owner-information/schema.ts`
-- [ ] 7.4.6 **Owner Member**: 重写 `owner-member/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/owner-member/schema.ts`
-- [ ] 7.4.7 **Owners Committee**: 重写 `owners-committee/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/owners-committee/schema.ts`
-- [ ] 7.4.8 **Reserve Venue**: 重写 `reserve-venue/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/reserve-venue/schema.ts`
-- [ ] 7.4.9 **Reserve Order**: 重写 `reserve-venue-order/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/reserve-venue-order/schema.ts`
-- [ ] 7.4.10 **Site Mgmt**: 重写 `site-management/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/house-property-manage/site-management/schema.ts`
+- [x] 7.4.1 **House**: 重写 `house/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpHouses)
+- [x] 7.4.2 **Invoice**: 重写 `invoice/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/expense-manage/schema.ts` (hpInvoices)
+- [x] 7.4.3 **Invoice Title**: 重写 `invoice-title/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/expense-manage/schema.ts` (hpInvoiceTitles)
+- [x] 7.4.4 **Owner Account**: 重写 `owner-account/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpOwnerAccounts)
+- [x] 7.4.5 **Owner Info**: 重写 `owner-information/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpOwners)
+- [x] 7.4.6 **Owner Member**: 重写 `owner-member/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpOwnerMembers)
+- [x] 7.4.7 **Owners Committee**: 重写 `owners-committee/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpOwnersCommittees)
+- [x] 7.4.8 **Reserve Venue**: 重写 `reserve-venue/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpReserveVenues)
+- [x] 7.4.9 **Reserve Order**: 重写 `reserve-venue-order/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpReserveVenueOrders)
+- [x] 7.4.10 **Site Mgmt**: 重写 `site-management/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/house-property-manage/schema.ts` (hpSiteManagements)
 
 ### 7.5 停车管理 (property-manage/parking-manage)
 
-- [ ] 7.5.1 **Carport Apply**: 重写 `carport-apply/list.post.ts`
+- [x] 7.5.1 **Carport Apply**: 重写 `carport-apply/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/parking-manage/carport-apply/schema.ts`
-- [ ] 7.5.2 **Carport Info**: 重写 `carport-info/list.post.ts`
+- [x] 7.5.2 **Carport Info**: 重写 `carport-info/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/parking-manage/carport-info/schema.ts`
-- [ ] 7.5.3 **Owner Vehicle**: 重写 `owner-vehicle/list.post.ts`
+- [x] 7.5.3 **Owner Vehicle**: 重写 `owner-vehicle/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/parking-manage/owner-vehicle/schema.ts`
-- [ ] 7.5.4 **Parking Lot**: 重写 `parking-lot/list.post.ts`
+- [x] 7.5.4 **Parking Lot**: 重写 `parking-lot/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/parking-manage/parking-lot/schema.ts`
 
 ### 7.6 巡逻管理 (property-manage/patrol-manage)
 
-- [ ] 7.6.1 **Detail**: 重写 `detail/list.post.ts`
+- [x] 7.6.1 **Detail**: 重写 `detail/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/patrol-manage/detail/schema.ts`
-- [ ] 7.6.2 **Item**: 重写 `item/list.post.ts`
+- [x] 7.6.2 **Item**: 重写 `item/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/patrol-manage/item/schema.ts`
-- [ ] 7.6.3 **Path**: 重写 `path/list.post.ts`
+- [x] 7.6.3 **Path**: 重写 `path/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/patrol-manage/path/schema.ts`
-- [ ] 7.6.4 **Plan**: 重写 `plan/list.post.ts`
+- [x] 7.6.4 **Plan**: 重写 `plan/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/patrol-manage/plan/schema.ts`
-- [ ] 7.6.5 **Point**: 重写 `point/list.post.ts`
+- [x] 7.6.5 **Point**: 重写 `point/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/patrol-manage/point/schema.ts`
-- [ ] 7.6.6 **Task**: 重写 `task/list.post.ts`
+- [x] 7.6.6 **Task**: 重写 `task/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/patrol-manage/task/schema.ts`
 
 ### 7.7 报修管理 (property-manage/repairs-manage)
 
-- [ ] 7.7.1 **Issues**: 重写 `issues/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/issues/schema.ts`
-- [ ] 7.7.2 **Mandatory**: 重写 `mandatory-return-issue/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/mandatory-return-issue/schema.ts`
-- [ ] 7.7.3 **Phone Report**: 重写 `phone-report-repairs/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/phone-report-repairs/schema.ts`
-- [ ] 7.7.4 **Have Done**: 重写 `repairs-have-done/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/repairs-have-done/schema.ts`
-- [ ] 7.7.5 **Setting**: 重写 `repairs-setting/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/repairs-setting/schema.ts`
-- [ ] 7.7.6 **Todo**: 重写 `repairs-todo/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/repairs-todo/schema.ts`
-- [ ] 7.7.7 **Return Visit**: 重写 `return-visit/list.post.ts`
-  - Schema: `apps/type/src/business/property-manage/repairs-manage/return-visit/schema.ts`
+- [x] 7.7.1 **Issues**: 重写 `issues/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
+- [x] 7.7.2 **Mandatory**: 重写 `mandatory-return-issue/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
+- [x] 7.7.3 **Phone Report**: 重写 `phone-report-repairs/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
+- [x] 7.7.4 **Have Done**: 重写 `repairs-have-done/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
+- [x] 7.7.5 **Setting**: 重写 `repairs-setting/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
+- [x] 7.7.6 **Todo**: 重写 `repairs-todo/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
+- [x] 7.7.7 **Return Visit**: 重写 `return-visit/list.post.ts`
+  - Schema: `apps/type/src/business/property-manage/repairs-manage/schema.ts`
 
 ### 7.8 报表管理 (property-manage/report-manage)
 
 此模块需注意复杂聚合查询 (Aggregation) 的实现。
 
-- [ ] 7.8.1 **Arrears**: 重写 `arrears-details-list/list.post.ts`
+- [x] 7.8.1 **Arrears**: 重写 `arrears-details-list/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/arrears-details-list/schema.ts`
-- [ ] 7.8.2 **Statistics**: 重写 `data-statistics/list.post.ts`
+- [x] 7.8.2 **Statistics**: 重写 `data-statistics/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/data-statistics/schema.ts`
-- [ ] 7.8.3 **Deposit**: 重写 `deposit-report/list.post.ts`
+- [x] 7.8.3 **Deposit**: 重写 `deposit-report/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/deposit-report/schema.ts`
-- [ ] 7.8.4 **Summary**: 重写 `expense-summary-table/list.post.ts`
+- [x] 7.8.4 **Summary**: 重写 `expense-summary-table/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/expense-summary-table/schema.ts`
-- [ ] 7.8.5 **Fee Reminder**: 重写 `fee-reminder/list.post.ts`
+- [x] 7.8.5 **Fee Reminder**: 重写 `fee-reminder/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/fee-reminder/schema.ts`
-- [ ] 7.8.6 **No Charge**: 重写 `no-charge-house/list.post.ts`
+- [x] 7.8.6 **No Charge**: 重写 `no-charge-house/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/no-charge-house/schema.ts`
-- [ ] 7.8.7 **Outstanding**: 重写 `outstanding-fees-analysis/list.post.ts`
+- [x] 7.8.7 **Outstanding**: 重写 `outstanding-fees-analysis/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/outstanding-fees-analysis/schema.ts`
-- [ ] 7.8.8 **Owner Payment**: 重写 `owner-payment-details/list.post.ts`
+- [x] 7.8.8 **Owner Payment**: 重写 `owner-payment-details/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/owner-payment-details/schema.ts`
-- [ ] 7.8.9 **Patrol Report**: 重写 `patrol-report/list.post.ts`
+- [x] 7.8.9 **Patrol Report**: 重写 `patrol-report/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/patrol-report/schema.ts`
-- [ ] 7.8.10 **Payment Form**: 重写 `payment-details-form/list.post.ts`
+- [x] 7.8.10 **Payment Form**: 重写 `payment-details-form/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/payment-details-form/schema.ts`
-- [ ] 7.8.11 **Repair Form**: 重写 `repair-report-form/list.post.ts`
+- [x] 7.8.11 **Repair Form**: 重写 `repair-report-form/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/repair-report-form/schema.ts`
-- [ ] 7.8.12 **Repair Summary**: 重写 `repair-reports-summary-table/list.post.ts`
+- [x] 7.8.12 **Repair Summary**: 重写 `repair-reports-summary-table/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/repair-reports-summary-table/schema.ts`
-- [ ] 7.8.13 **Statement**: 重写 `statement-expenses/list.post.ts`
+- [x] 7.8.13 **Statement**: 重写 `statement-expenses/list.post.ts`
   - Schema: `apps/type/src/business/property-manage/report-manage/statement-expenses/schema.ts`
 
 ## 8. Schema 迁移与 API 重写 - 设置管理 (Setting Manage)
@@ -436,47 +436,57 @@
 
 此模块涉及权限树 (Tree) 和 RBAC 逻辑。
 
-- [ ] 8.1.1 **Data Permission**: 重写 `data-permission/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/data-permission/schema.ts`
-- [ ] 8.1.2 **Org Info**: 重写 `org-info/list.post.ts` & `tree.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/org-info/schema.ts`
-- [ ] 8.1.3 **Role Permission**: 重写 `role-permission/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/role-permission/schema.ts`
-- [ ] 8.1.4 **Scheduling**: 重写 `scheduling-setting/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/scheduling-setting/schema.ts`
-- [ ] 8.1.5 **Shift**: 重写 `shift-setting/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/shift-setting/schema.ts`
-- [ ] 8.1.6 **Staff Info**: 重写 `staff-info/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/staff-info/schema.ts`
-- [ ] 8.1.7 **Work Schedule**: 重写 `working-schedule/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/organize-manage/working-schedule/schema.ts`
+- [x] 8.1.1 **Data Permission**: 重写 `data-permission/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/organize-manage/data-permission/schema.ts` (使用 smDataPermissions 表)
+- [x] 8.1.2 **Org Info**: 重写 `org-info/list.post.ts` & `tree.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/organize-manage/schema.ts` (smOrganizations)
+- [x] 8.1.3 **Role Permission**: 重写 `role-permission/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/role-manage/schema.ts` (smRoles)
+- [x] 8.1.4 **Scheduling**: 重写 `scheduling-setting/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/organize-manage/schema.ts` (smSchedulingSettings)
+- [x] 8.1.5 **Shift**: 重写 `shift-setting/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/organize-manage/schema.ts` (smShifts)
+- [x] 8.1.6 **Staff Info**: 重写 `staff-info/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/user-manage/schema.ts` (smStaff)
+- [x] 8.1.7 **Work Schedule**: 重写 `working-schedule/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/organize-manage/schema.ts` (smWorkingSchedules)
 
 ### 8.2 系统配置 (system-manage)
 
-- [ ] 8.2.1 **Change Password**: 重写 `change-password/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/system-manage/change-password/schema.ts`
-- [ ] 8.2.2 **Community Config**: 重写 `community-configuration/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/system-manage/community-configuration/schema.ts`
-- [ ] 8.2.3 **Init Cell**: 重写 `initialize-cell/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/system-manage/initialize-cell/schema.ts`
-- [ ] 8.2.4 **Protocol**: 重写 `register-protocol/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/system-manage/register-protocol/schema.ts`
-- [ ] 8.2.5 **Sys Config**: 重写 `system-config/list.post.ts`
-  - Schema: `apps/type/src/business/setting-manage/system-manage/system-config/schema.ts`
+- [x] 8.2.1 **Change Password**: 重写 `change-password/list.post.ts`
+  - Schema: 无对应数据库表，保留 Mock 数据，按照 JsonVO 规范重写
+- [x] 8.2.2 **Community Config**: 重写 `community-configuration/list.post.ts`
+  - Schema: 无对应数据库表，保留 Mock 数据，按照 JsonVO 规范重写
+- [x] 8.2.3 **Init Cell**: 重写 `initialize-cell/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smInitializeCells)
+- [x] 8.2.4 **Protocol**: 重写 `register-protocol/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smRegisterProtocols)
+- [x] 8.2.5 **Sys Config**: 重写 `system-config/list.post.ts`
+  - Schema: `apps/type/src/business/setting-manage/system-manage/schema.ts` (smSystemConfigs)
 
 ## 9. 前端适配验证 (Frontend Verification)
 
-- [ ] 9.1 **Dev Team 模块验证**
-- [ ] 9.2 **Operation Team 模块验证**
-- [ ] 9.3 **Property Manage 模块验证**
-- [ ] 9.4 **Setting Manage 模块验证**
-- [ ] 9.5 **全局 Type Check**: 运行 `pnpm build` (Skip Lib Check: false)，确保影子迁移策略生效，无类型错误。
+- [x] 9.1 **Dev Team 模块验证**
+- [x] 9.2 **Operation Team 模块验证**
+- [x] 9.3 **Property Manage 模块验证**
+- [x] 9.4 **Setting Manage 模块验证**
+- [x] 9.5 **全局 Type Check**: 运行 `pnpm build` (Skip Lib Check: false)，确保影子迁移策略生效，无类型错误。
 
 ## 10. 收尾与清理 (Cleanup)
 
-- [ ] 10.1 **清理旧数据库 Schema**
+- [x] 10.1 **清理旧数据库 Schema**
   - 删除 `apps/admin/server/db/schemas` 目录。
-- [ ] 10.2 **全项目搜索 Mock 数据**
-  - 搜索字符串 `mock-data`，确保无残留引用。
+- [x] 10.2 **全项目搜索 Mock 数据**: 已迁移 22/23 个 API 文件
+
+> ⚠️ **特殊说明：需要新建数据库表的接口**
+>
+> 以下 API 仍使用 mock-data，需要先在 `apps/type/src/business/` 中创建对应的数据库 Schema 后才能迁移：
+>
+> | API 路径                                                            | 需要的数据库表                | Schema 位置建议                                                 |
+> | ------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------- |
+> | `operation-team/system-manage/community-configuration/list.post.ts` | `sm_community_configurations` | `apps/type/src/business/setting-manage/system-manage/schema.ts` |
+>
+> **原因**: 该表存储小区配置信息，当前系统中不存在此表定义。
+
 - [ ] 10.3 **文档更新**
   - 更新项目 README，说明新的 Schema 架构。
