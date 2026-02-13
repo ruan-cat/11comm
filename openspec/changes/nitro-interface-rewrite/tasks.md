@@ -68,23 +68,23 @@
 
 ## 2. 基础设施与环境准备 (Infrastructure)
 
-- [ ] 2.1 **升级 `apps/type` 运行时依赖**
+- [x] 2.1 **升级 `apps/type` 运行时依赖**
   - 进入 `apps/type` 目录。
   - 运行命令：`pnpm add drizzle-orm zod drizzle-zod`。
   - 运行命令：`pnpm add -D typescript @types/node` (确保开发环境正常)。
   - 检查 `package.json`，确保 `main` 指向 `src/index.ts` (或构建后的 dist)，且 `exports` 配置正确支持 ESM 导入。
-- [ ] 2.2 **配置 `apps/admin` 消费端环境**
+- [x] 2.2 **配置 `apps/admin` 消费端环境**
   - 进入 `apps/admin` 目录。
   - 运行命令：`pnpm add zod`（确保前端有明确的 Zod 依赖）。
   - 修改 `apps/admin/drizzle.config.ts`：更新 `schema` 字段，指向 `../../apps/type/src/**/*.ts`（跨项目引用源码）。
-- [ ] 2.3 **构建服务端核心工具**
+- [x] 2.3 **构建服务端核心工具**
   - 创建文件 `apps/admin/server/utils/handle-db-error.ts`。
   - 实现 `handleDbError` 函数，包含 Postgres 错误码 (23505, 23503) 的映射逻辑。
   - 创建文件 `apps/admin/server/utils/zod.ts` (可选)，封装 `h3-zod` 或类似的验证辅助函数（如果决定不使用 h3 内置的 readValidatedBody）。
 
 ## 3. 单元测试与验证 (Unit Testing)
 
-- [ ] 3.1 **测试错误处理工具**
+- [x] 3.1 **测试错误处理工具**
   - 创建 `apps/admin/server/utils/handle-db-error.test.ts`。
   - 使用 Vitest 编写测试用例。
   - 模拟 Postgres Error 23505，断言 `handleDbError` 抛出了状态码 409 的 H3Error。
