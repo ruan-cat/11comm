@@ -28,6 +28,8 @@ export * from "./enums";
  * 这个类型是经过拓展后的类型 增加了 nitro 的字段
  *
  * - timestamp
+ * - error
+ * - stack
  */
 export interface JsonVO<T> {
 	/** 状态码 */
@@ -44,6 +46,12 @@ export interface JsonVO<T> {
 
 	/** 请求是否成功 */
 	success?: boolean;
+
+	/** 错误信息（仅在请求失败时返回） */
+	error?: string;
+
+	/** 错误堆栈（仅在开发环境下返回，生产环境不暴露） */
+	stack?: string;
 }
 
 /**
