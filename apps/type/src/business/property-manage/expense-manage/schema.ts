@@ -541,6 +541,34 @@ export const hpInvoiceTitles = pgTable(
 	(table) => [index("hp_invoice_titles_owner_id_idx").on(table.ownerId)],
 );
 
+/** 费用汇总表 */
+export const exExpenseSummaryTables = pgTable(
+	"ex_expense_summary_tables",
+	{
+		id: primaryId(),
+		/** 时间（月份） */
+		time: varchar("time", { length: 20 }).notNull(),
+		/** 费用项ID */
+		expenseItemId: varchar("expense_item_id", { length: 50 }),
+		/** 费用项名称 */
+		expenseItemName: varchar("expense_item_name", { length: 100 }).notNull(),
+		/** 应收金额 */
+		receivableAmount: decimal("receivable_amount", { precision: 12, scale: 2 }).notNull(),
+		/** 实收金额 */
+		actualAmount: decimal("actual_amount", { precision: 12, scale: 2 }).notNull(),
+		/** 状态 */
+		status: statusEnum("status").default("enabled"),
+		/** 备注 */
+		remark: remarkField(),
+		...timestamps,
+	},
+	(table) => [
+		index("ex_expense_summary_tables_time_idx").on(table.time),
+		index("ex_expense_summary_tables_expense_item_name_idx").on(table.expenseItemName),
+		index("ex_expense_summary_tables_status_idx").on(table.status),
+	],
+);
+
 // ==========================================
 // Part B: Zod Runtime Schemas
 // ==========================================
@@ -938,6 +966,29 @@ export const updateHpInvoiceTitleSchema = z.object({
 	remark: z.string().optional().nullable(),
 });
 
+// --- exExpenseSummaryTables ---
+export const insertExExpenseSummaryTableSchema = createInsertSchema(exExpenseSummaryTables, {
+	time: (schema) => schema.min(1, "时间不能为空").max(20),
+	expenseItemName: (schema) => schema.min(1, "费用项名称不能为空").max(100),
+}).omit({
+	id: true,
+	createdAt: true,
+	updatedAt: true,
+});
+
+export const selectExExpenseSummaryTableSchema = createSelectSchema(exExpenseSummaryTables);
+
+export const updateExExpenseSummaryTableSchema = z.object({
+	id: z.string().uuid(),
+	time: z.string().min(1).max(20).optional(),
+	expenseItemId: z.string().max(50).optional().nullable(),
+	expenseItemName: z.string().min(1).max(100).optional(),
+	receivableAmount: z.string().optional(),
+	actualAmount: z.string().optional(),
+	status: z.enum(["enabled", "disabled"]).optional(),
+	remark: z.string().optional().nullable(),
+});
+
 // ==========================================
 // Part C: TypeScript Types
 // ==========================================
@@ -1009,3 +1060,7 @@ export type UpdateHpInvoice = z.infer<typeof updateHpInvoiceSchema>;
 export type HpInvoiceTitle = typeof hpInvoiceTitles.$inferSelect;
 export type NewHpInvoiceTitle = typeof hpInvoiceTitles.$inferInsert;
 export type UpdateHpInvoiceTitle = z.infer<typeof updateHpInvoiceTitleSchema>;
+
+export type ExExpenseSummaryTable = typeof exExpenseSummaryTables.$inferSelect;
+export type NewExExpenseSummaryTable = typeof exExpenseSummaryTables.$inferInsert;
+export type UpdateExExpenseSummaryTable = z.infer<typeof updateExExpenseSummaryTableSchema>;

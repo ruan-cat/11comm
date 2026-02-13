@@ -142,6 +142,37 @@ export const updateSmInitializeCellSchema = z.object({
 	configParams: z.any().optional().nullable(),
 });
 
+/** 密码修改记录表 */
+export const smChangePasswordRecords = pgTable(
+	"sm_change_password_records",
+	{
+		id: primaryId(),
+		/** 用户名 */
+		username: varchar("username", { length: 100 }).notNull(),
+		/** 真实姓名 */
+		realName: varchar("real_name", { length: 100 }),
+		/** 所属部门 */
+		department: varchar("department", { length: 100 }),
+		/** 修改时间 */
+		changeTime: varchar("change_time", { length: 50 }),
+		/** 修改IP */
+		changeIp: varchar("change_ip", { length: 50 }),
+		/** 修改类型 */
+		changeType: varchar("change_type", { length: 50 }),
+		/** 操作人 */
+		operator: varchar("operator", { length: 100 }),
+		/** 状态 */
+		status: varchar("status", { length: 50 }),
+		/** 备注 */
+		remark: text("remark"),
+		...timestamps,
+	},
+	(table) => [
+		index("sm_change_password_records_username_idx").on(table.username),
+		index("sm_change_password_records_change_time_idx").on(table.changeTime),
+	],
+);
+
 // ==========================================
 // Part C: TypeScript Types
 // ==========================================
@@ -157,3 +188,17 @@ export type UpdateSmRegisterProtocol = z.infer<typeof updateSmRegisterProtocolSc
 export type SmInitializeCell = typeof smInitializeCells.$inferSelect;
 export type NewSmInitializeCell = typeof smInitializeCells.$inferInsert;
 export type UpdateSmInitializeCell = z.infer<typeof updateSmInitializeCellSchema>;
+
+// --- smChangePasswordRecords ---
+export const insertSmChangePasswordRecordSchema = createInsertSchema(smChangePasswordRecords, {
+	username: (schema) => schema.min(1, "用户名不能为空").max(100),
+}).omit({
+	id: true,
+	createdAt: true,
+	updatedAt: true,
+});
+
+export const selectSmChangePasswordRecordSchema = createSelectSchema(smChangePasswordRecords);
+
+export type SmChangePasswordRecord = typeof smChangePasswordRecords.$inferSelect;
+export type NewSmChangePasswordRecord = typeof smChangePasswordRecords.$inferInsert;
