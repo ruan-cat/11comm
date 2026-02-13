@@ -182,18 +182,31 @@
 
 ### 5.4 缓存管理 (dev-team/cache-manage)
 
-- [ ] 5.4.1 **Schema define**: 创建 `apps/type/src/business/dev-team/cache-manage/refresh-cache/schema.ts`
-- [ ] 5.4.2 **Schema export**: 更新 `apps/type/src/business/dev-team/cache-manage/refresh-cache/index.ts`
-- [ ] 5.4.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
-  - 删除 `mock-data.ts`。
+- [x] 5.4.1 **Schema define**: `dtCacheConfigs` 表已定义于 `apps/type/src/business/setting-manage/dictionary-manage/schema.ts`
+  - 注: Schema 实际位于 setting-manage/dictionary-manage，而非 dev-team/cache-manage（因为缓存配置与字典管理共用 schema 文件）。
+  - [x] 已新增 5 个字段: `cacheCode`, `cacheName`, `cacheGroup`, `description`, `status`。
+  - [x] Zod Schemas (insert/select/update) 已同步更新。
+- [x] 5.4.2 **Schema export**: 导出链已通过 `setting-manage/dictionary-manage/index.ts` 正常导出，无需额外操作。
+- [x] 5.4.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/cache-manage/refresh-cache/list.post.ts`
+  - [x] 实现 Drizzle ORM 真实查询。
+  - [x] 添加 `mapDtCacheConfigsToRefreshCacheListItems` 映射函数，处理 DB→前端字段名差异。
+  - [x] mock-data.ts 未被引用（已废弃）。
+  - [x] 种子数据已补充至 `apps/admin/server/db/seed-sql/dev.ts`。
+  - [x] 前端 index.vue 表格列从 3 列扩展为 9 列；form.ts/form.vue 新增 cacheCode 表单项。
 
 ### 5.5 菜单管理 (dev-team/menu-manage)
 
-- [ ] 5.5.1 **Catalog**: 重写 `catalog/list.post.ts`
+- [x] 5.5.1 **Catalog**: 重写 `catalog/list.post.ts`
+  - [x] 已从 Mock JSON 数据迁移为 Drizzle ORM 真实查询。
+  - [x] 使用 Zod 参数校验与 try-catch 错误处理。
   - Schema: `apps/type/src/business/dev-team/menu-manage/catalog/schema.ts`
-- [ ] 5.5.2 **Group**: 重写 `group/list.post.ts`
+- [x] 5.5.2 **Group**: 重写 `group/list.post.ts`
+  - [x] 已从 Mock JSON 数据迁移为 Drizzle ORM 真实查询。
+  - [x] 使用 Zod 参数校验与 try-catch 错误处理。
   - Schema: `apps/type/src/business/dev-team/menu-manage/group/schema.ts`
-- [ ] 5.5.3 **Item**: 重写 `item/list.post.ts`
+- [x] 5.5.3 **Item**: 重写 `item/list.post.ts`
+  - [x] 已从 Mock JSON 数据迁移为 Drizzle ORM 真实查询。
+  - [x] 使用 Zod 参数校验与 try-catch 错误处理。
   - Schema: `apps/type/src/business/dev-team/menu-manage/item/schema.ts`
 
 ### 5.6 配置中心 (dev-team/config-manage/center)
