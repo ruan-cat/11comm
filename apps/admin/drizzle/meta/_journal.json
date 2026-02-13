@@ -1,54 +1,12 @@
 {
-	"version": "7",
+	"version": "0",
 	"dialect": "postgresql",
 	"entries": [
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1770109327617,
-			"tag": "0000_smiling_vampiro",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1770265998311,
-			"tag": "0001_petite_luke_cage",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1770289208602,
-			"tag": "0002_spicy_scarlet_spider",
-			"breakpoints": true
-		},
-		{
-			"idx": 3,
-			"version": "7",
-			"when": 1770388017963,
-			"tag": "0003_woozy_paladin",
-			"breakpoints": true
-		},
-		{
-			"idx": 4,
-			"version": "7",
-			"when": 1770819932364,
-			"tag": "0004_flimsy_clint_barton",
-			"breakpoints": true
-		},
-		{
-			"idx": 5,
-			"version": "7",
-			"when": 1770820031804,
-			"tag": "0005_luxuriant_hairball",
-			"breakpoints": true
-		},
-		{
-			"idx": 6,
-			"version": "7",
-			"when": 1770990495309,
-			"tag": "0006_big_hannibal_king",
+			"when": 1770994406832,
+			"tag": "0000_chunky_morg",
 			"breakpoints": true
 		}
 	]
