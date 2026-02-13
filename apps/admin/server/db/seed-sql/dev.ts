@@ -11,9 +11,39 @@ import {
 } from "@01s-11comm/type";
 
 import { mockDictionaryTypeData } from "../../api/dev-team/config-manage/type/mock-data";
+import { mockRefreshCacheData } from "../../api/dev-team/cache-manage/refresh-cache/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { db } from "../index";
+
+/** 缓存状态值映射：中文标签 -> 英文枚举值 */
+const cacheStatusMap: Record<string, string> = {
+	启用: "enabled",
+	禁用: "disabled",
+	维护中: "maintenance",
+};
+
+/** 刷新策略值映射：中文标签 -> 英文枚举值 */
+const refreshPolicyMap: Record<string, string> = {
+	定时刷新: "scheduled",
+	手动刷新: "manual",
+	懒加载刷新: "lazy",
+	事件触发刷新: "event",
+	TTL过期刷新: "ttl",
+	LRU淘汰刷新: "lru",
+};
+
+/** 缓存类型值映射：标签 -> 小写值 */
+const cacheTypeMap: Record<string, string> = {
+	Redis: "redis",
+	Memory: "memory",
+	Memcached: "memcached",
+	Ehcache: "ehcache",
+	Caffeine: "caffeine",
+	"Guava Cache": "guava",
+	Hazelcast: "hazelcast",
+	Infinispan: "infinispan",
+};
 
 /**
  * 生成开发配置模块的 SQL
@@ -32,7 +62,7 @@ export function generateDevSql(idMap: IdMapRegistry): SqlStatement[] {
 			dictionaryCode: item.dictionaryNumber,
 			dictionaryName: item.dictionaryName,
 			dictionaryType: item.dictionaryType,
-			status: statusMap[item.status] || "enabled",
+			dictionaryDescription: item.remark || null,
 			remark: item.remark,
 			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
 			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
@@ -45,6 +75,37 @@ export function generateDevSql(idMap: IdMapRegistry): SqlStatement[] {
 			table: "dt_dictionaries",
 			sql: toFullSql(query.sql, query.params),
 			recordCount: dictionaryRecords.length,
+		});
+	}
+
+	// ==========================================
+	// 2. 生成 dt_cache_configs (缓存配置)
+	// ==========================================
+	console.log("正在生成 dt_cache_configs SQL...");
+	const cacheConfigRecords = mockRefreshCacheData.map((item) => {
+		const id = idMap.register("dt_cache_configs", item.cacheCode);
+		return {
+			id,
+			cacheCode: item.cacheCode,
+			cacheName: item.cacheName,
+			cacheKey: item.cacheKey,
+			cacheType: cacheTypeMap[item.cacheType] || item.cacheType.toLowerCase(),
+			cacheGroup: item.cacheGroup,
+			expireTime: item.expireTime,
+			description: item.description,
+			refreshStrategy: refreshPolicyMap[item.refreshPolicy] || item.refreshPolicy,
+			status: cacheStatusMap[item.status] || "enabled",
+			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
+			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+		};
+	});
+
+	if (cacheConfigRecords.length > 0) {
+		const query = db.insert(dtCacheConfigs).values(cacheConfigRecords).toSQL();
+		statements.push({
+			table: "dt_cache_configs",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: cacheConfigRecords.length,
 		});
 	}
 
