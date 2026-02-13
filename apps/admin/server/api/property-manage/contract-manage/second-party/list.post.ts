@@ -3,54 +3,128 @@
  * @description Second party list API
  */
 
-import { defineEventHandler, readBody } from "h3";
-import type { JsonVO, PageDTO, SecondPartyListItem, SecondPartyQueryParams } from "@01s-11comm/type";
-import { mockSecondPartyData } from "./mock-data";
+import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { ctSecondParties } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, eq, like, sql } from "drizzle-orm";
+
+/** 乙方查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(10),
+	partyB: z.string().optional(),
+	contactPerson: z.string().optional(),
+	contactPhone: z.string().optional(),
+	legalRepresentative: z.string().optional(),
+	status: z.string().optional(),
+});
 
 /**
  * 合同乙方列表 POST API
  * Second party list POST API
  */
-export default defineEventHandler(async (event): Promise<JsonVO<PageDTO<SecondPartyListItem>>> => {
-	const body = await readBody<SecondPartyQueryParams>(event);
-	const { pageIndex = 1, pageSize = 10, partyB, contactPerson, contactPhone, legalRepresentative, status } = body;
+export default defineHandler(async (event) => {
+	try {
+		const body = (await readBody(event)) as any;
 
-	let filteredData = [...mockSecondPartyData];
+		/** 预处理参数 */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			partyB: body.partyB === "" ? undefined : body.partyB,
+			contactPerson: body.contactPerson === "" ? undefined : body.contactPerson,
+			contactPhone: body.contactPhone === "" ? undefined : body.contactPhone,
+			legalRepresentative: body.legalRepresentative === "" ? undefined : body.legalRepresentative,
+			status: body.status === "" ? undefined : body.status,
+		};
 
-	/** 数据筛选 */
-	if (partyB) {
-		filteredData = filteredData.filter((item) => item.partyB.includes(partyB));
-	}
-	if (contactPerson) {
-		filteredData = filteredData.filter((item) => item.contactPerson.includes(contactPerson));
-	}
-	if (contactPhone) {
-		filteredData = filteredData.filter((item) => item.contactPhone.includes(contactPhone));
-	}
-	if (legalRepresentative) {
-		filteredData = filteredData.filter((item) => item.legalRepresentative.includes(legalRepresentative));
-	}
-	if (status) {
-		filteredData = filteredData.filter((item) => item.status === status);
-	}
+		const query = querySchema.parse(rawQuery);
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		/** 构建查询条件 */
+		const conditions = [];
 
-	/** 返回标准格式 */
-	return {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-		timestamp: Date.now(),
-	};
+		if (query.partyB) {
+			conditions.push(like(ctSecondParties.name, `%${query.partyB}%`));
+		}
+
+		if (query.contactPerson) {
+			conditions.push(like(ctSecondParties.contactPerson, `%${query.contactPerson}%`));
+		}
+
+		if (query.contactPhone) {
+			conditions.push(like(ctSecondParties.contactPhone, `%${query.contactPhone}%`));
+		}
+
+		if (query.legalRepresentative) {
+			// ctSecondParties 表中没有 legalRepresentative 字段，跳过
+		}
+
+		if (query.status) {
+			// ctSecondParties 表中没有 status 字段，跳过
+		}
+
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
+
+		/** 查询总数 */
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(ctSecondParties)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: ctSecondParties.id,
+				partyB: ctSecondParties.name,
+				contactPerson: ctSecondParties.contactPerson,
+				contactPhone: ctSecondParties.contactPhone,
+				address: ctSecondParties.address,
+				creditCode: sql<string>`null`, // 简化处理
+				establishmentDate: sql<string>`null`, // 简化处理
+				legalRepresentative: sql<string>`null`, // ctSecondParties 表中没有此字段
+				businessScope: sql<string>`null`, // ctSecondParties 表中没有此字段
+				status: sql<string>`'启用'`, // ctSecondParties 表中没有此字段
+				createTime: ctSecondParties.createdAt,
+				updateTime: ctSecondParties.updatedAt,
+				remark: ctSecondParties.remark,
+			})
+			.from(ctSecondParties)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(ctSecondParties.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages,
+			},
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Second Party List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

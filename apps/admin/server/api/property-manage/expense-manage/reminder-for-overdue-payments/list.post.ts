@@ -5,46 +5,122 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type {
-	JsonVO,
-	PageDTO,
-	ReminderForOverduePaymentsListItem,
-	ReminderForOverduePaymentsQueryParams,
-} from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockReminderForOverduePaymentsData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { exOverdueReminders } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, like, asc, sql, eq } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReminderForOverduePaymentsListItem>>> => {
-	const body = await readBody<ReminderForOverduePaymentsQueryParams>(event);
-	const defaultParams: ReminderForOverduePaymentsQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	name: z.string().optional(),
+	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+});
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockReminderForOverduePaymentsData, filters);
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		/** 预处理参数 */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			name: body.name === "" ? undefined : body.name,
+		};
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ReminderForOverduePaymentsListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const query = querySchema.parse(rawQuery);
 
-	return response;
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
+
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.name) {
+			conditions.push(like(exOverdueReminders.reminderName, `%${query.name}%`));
+		}
+
+		/** 构建排序 */
+		const sortBy = query.sortBy || "createdAt";
+		const sortOrder = query.sortOrder || "desc";
+
+		const sortFields: Record<string, any> = {
+			createdAt: exOverdueReminders.createdAt,
+			updatedAt: exOverdueReminders.updatedAt,
+		};
+
+		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		/** 查询总数 */
+		const countResult = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(exOverdueReminders)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: exOverdueReminders.id,
+				chargeId: exOverdueReminders.chargeId,
+				chargeType: exOverdueReminders.chargeType,
+				reminderMethod: exOverdueReminders.reminderMethod,
+				reminderTime: exOverdueReminders.reminderTime,
+				reminderResult: exOverdueReminders.reminderResult,
+				reminderName: exOverdueReminders.reminderName,
+				contactPhone: exOverdueReminders.contactPhone,
+				remark: exOverdueReminders.remark,
+				createdAt: exOverdueReminders.createdAt,
+				updatedAt: exOverdueReminders.updatedAt,
+			})
+			.from(exOverdueReminders)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(orderBy)
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 转换数据格式 */
+		const list = data.map((item) => ({
+			id: item.id,
+			name: item.reminderName || "",
+			status: "enabled",
+			remark: item.remark || "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+		}));
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<any>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Reminder For Overdue Payments List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
