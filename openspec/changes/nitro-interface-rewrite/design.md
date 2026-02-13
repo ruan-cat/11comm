@@ -791,3 +791,342 @@ const rules = useZodRules(insertDictionarySchema);
 通过将 Schema 提升为"一等公民"，我们消除了前后端的沟通成本，消除了手写校验规则的繁琐，更消除了"假数据"带来的自欺欺人。这是一次痛苦但必要的蜕变。
 
 **v2.0 更新重点**：强制 JsonVO 类型注解约束，使得 TypeScript 编译器能够在编译期捕获字段名拼写错误、类型不匹配等常见问题，极大提升代码质量。
+
+## 10. 任务执行规范与 Schema 检索能力指南
+
+> **版本**: v2.1 (针对任务执行错误的修复)
+> **更新日期**: 2026-02-13
+
+### 10.1 任务执行前的必须校验清单
+
+在执行任何 API 重写任务之前，必须完成以下校验：
+
+> **【重要】在开始任务前，必须先阅读以下 skills 文档确保遵循正确规范：**
+>
+> - `nitro-api-development` - API 开发规范
+> - `project-schema-registry` - Schema 编写标准 (Trinity Pattern)
+> - `type-project-organization` - 类型项目组织规范（禁止 @/ 路径别名）
+> - `fix-type-error` - 类型错误修复方法
+> - `schema-and-seed-guardian` - Schema 变更规范
+
+#### 10.1.1 Schema 存在性校验（最重要！）
+
+**错误做法**：
+
+- 直接创建新的 schema.ts 文件
+- 假设某个表的 schema 不存在
+- 删除已有的 schema 目录
+- 从 `drizzle-orm` 导入 `db` 实例
+
+**正确做法**：
+
+1. **首先检索现有 Schema**：使用 Grep 工具搜索 `@01s-11comm/type` 中是否已导出该表
+   ```bash
+   grep -r "export const.*TableName" apps/type/src/business/
+   ```
+2. **使用 neon-db-list 技能**：确认表是否存在于数据库
+   ```bash
+   # 使用 Grep 搜索 .claude/skills/neon-db-list/SKILL.md
+   grep -i "表名" .claude/skills/neon-db-list/SKILL.md
+   ```
+3. **复用已有定义**：如果表已存在于 `setting-manage/` 或其他模块，通过重新导出使用，不要重复定义
+
+#### 10.1.2 正确的 Schema 导出路径
+
+**已有表定义的正确位置**（必须严格遵循）：
+
+- `apps/type/src/business/setting-manage/menu-manage/schema.ts` - 菜单管理表：
+  - `dtMenuGroups` (菜单组)
+  - `dtMenuCatalogs` (菜单目录)
+  - `dtMenuItems` (菜单项)
+- `apps/type/src/business/setting-manage/dictionary-manage/schema.ts` - 字典/缓存配置表：
+  - `dtDictionaries` (字典)
+  - `dtDictionaryItems` (字典项)
+  - `dtCacheConfigs` (缓存配置)
+- `apps/type/src/business/setting-manage/` - 其他系统管理表（user-manage, role-manage, organize-manage 等）
+- `apps/type/src/business/operation-team/schema.ts` - 运营团队表（opMerchants, opPropertyCompanies 等）
+- `apps/type/src/business/dev-team/` - 开发团队表（dtConfigs 等）
+
+**检索命令**：
+
+```bash
+# 搜索特定表的 Schema 定义
+grep -r "export const dtMenuGroups\|export const dtMenuCatalogs\|export const dtMenuItems\|export const dtCacheConfigs" apps/type/src/business/
+
+# 或者使用 Grep 工具直接搜索
+```
+
+#### 10.1.3 已完成 API 参考（正确的导入模式）
+
+在修改任何 API 之前，**必须**先查看已完成的正确实现作为参考：
+
+- `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts`
+- `apps/admin/server/api/dev-team/config-manage/dictionary/create.post.ts`
+
+这些文件展示了**正确的导入分层模式**，是任务执行的唯一标准参考。
+
+### 10.2 任务执行过程中的安全规范
+
+#### 10.2.1 代码修改安全原则
+
+1. **禁止删除原则**：
+   - 不要删除任何已有的 schema 目录或 index.ts 文件
+   - 不要删除已有的导出语句
+   - 如果需要新增，先备份再修改
+
+2. **最小修改原则**：
+   - 只修改明确要求的文件
+   - 不要"顺便"修改其他文件
+   - 每次修改后运行 `pnpm typecheck` 验证
+
+3. **回滚优先原则**：
+   - 如果类型检查失败，立即回滚更改
+   - 使用 `git checkout --` 恢复文件
+
+#### 10.2.2 正确的 API 导入方式（关键！）
+
+**正确的导入示例**（来自已完成的 dictionary API）：
+
+```typescript
+import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+
+// 【重要】db 必须从 server/db 导入，而不是从 drizzle-orm 导入！
+import { db } from "server/db";
+
+// SQL 操作符必须从 drizzle-orm 导入
+import { and, desc, eq, like, asc, sql } from "drizzle-orm";
+
+// 表定义和 Zod Schema 从 @01s-11comm/type 导入
+import { dtDictionaries, insertDtDictionarySchema } from "@01s-11comm/type";
+
+// 类型从 @01s-11comm/type 导入
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+```
+
+**【禁止的错误写法】**：
+
+```typescript
+// 错误 1：db 不能从 drizzle-orm 导入
+import { db, like, eq } from "drizzle-orm"; // 严重错误！
+
+// 错误 2：SQL 操作符不能从 server/db 导入
+import { like, eq } from "server/db"; // 错误！server/db 不导出这些
+```
+
+**导入分层原则**：
+| 导入内容 | 导入来源 |
+|---------|---------|
+| `db` (Drizzle 实例) | `server/db` |
+| SQL 操作符 (`eq`, `like`, `and`, `desc`, `asc`, `sql`, `inArray`) | `drizzle-orm` |
+| 表定义 (`dtDictionaries`, `dtMenuGroups`) | `@01s-11comm/type` |
+| Zod Schema (`insertDtDictionarySchema`) | `@01s-11comm/type` |
+| 类型 (`JsonVO`, `PageDTO`) | `@01s-11comm/type` |
+
+> **【关键警告】禁止使用 `@/` 路径别名**
+>
+> 根据 `type-project-organization` 技能规范：
+>
+> - `apps/type` 项目中**禁止使用** `@/` 路径别名
+> - 必须使用**相对路径**（如 `../../common`）
+> - 原因：`@/` 在被 `apps/admin` 消费时会被错误解析为 admin 的 src 目录
+
+### 10.3 类型检查验证流程
+
+每次修改后**必须**执行以下验证步骤：
+
+```bash
+# 1. 先检查 type 项目
+pnpm -F @01s-11comm/type typecheck
+
+# 2. 再检查 admin 项目
+pnpm -F @01s-11comm/admin typecheck
+```
+
+**如果类型检查失败**，必须：
+
+1. 立即停止当前操作
+2. 分析错误原因（常见错误见下方）
+3. 回滚更改：
+   ```bash
+   git checkout -- apps/type/
+   git checkout -- apps/admin/server/api/
+   ```
+4. 对比已完成的正确 API 实现（如 `dictionary/list.post.ts`）
+5. 修复后重新验证
+
+**常见类型错误排查**（参考 `fix-type-error` 技能）：
+
+| 错误类型                                               | 原因                         | 解决方案                           |
+| ------------------------------------------------------ | ---------------------------- | ---------------------------------- |
+| `Module not found: Error: Can't resolve 'drizzle-orm'` | 错误地从 drizzle-orm 导入 db | 改为从 `server/db` 导入 db         |
+| `export not found`                                     | 表名拼写错误或未导出         | 检查 `@01s-11comm/type` 实际导出   |
+| `type annotation required`                             | 未使用 JsonVO 类型注解       | 添加 `const response: JsonVO<...>` |
+| `Property 'xxx' does not exist`                        | 字段名拼写错误               | 对比 schema 定义确认正确字段名     |
+| `Import declaration conflicts with local declaration`  | 重复导入同名类型             | 检查是否重复导入了相同的类型或接口 |
+| `Type 'xxx' is not assignable to type 'yyy'`           | 类型不匹配                   | 确认期望的类型定义，检查实际值类型 |
+| `ENOENT: Cannot find module '@/common'`                | 使用了 @/ 路径别名           | 改用相对路径如 `../../common`      |
+
+### 10.4 任务规划能力定义
+
+#### 10.4.1 子任务拆分原则
+
+当任务包含多个 API 重写时：
+
+1. **按模块拆分**：每个子模块一个任务
+2. **逐个验证**：完成一个 API 重写后立即运行类型检查
+3. **不并行执行**：避免多任务同时修改导致冲突
+
+#### 10.4.2 任务执行优先级
+
+1. **第一优先级**：确保类型检查通过
+2. **第二优先级**：遵循 v2.0 规范（JsonVO 类型注解）
+3. **第三优先级**：完成功能实现
+
+#### 10.4.3 OpenSpec 任务执行规范（来自 CLAUDE.md Section 7）
+
+根据 CLAUDE.md 的要求，执行 openspec 长任务时必须遵循：
+
+1. **及时更新任务进度文件**：
+   - 每完成一个任务，必须更新 `tasks.md` 中的进度
+   - 格式：`- [ ]` → `- [x]`
+   - 避免大批量完成任务后没有更新进度文件
+
+2. **使用子代理并行完成任务**：
+   - 根据业务路径的三级路由做任务划分
+   - 每个子代理只负责 2~3 个具体的三级路由
+   - 至少同时启用 4 个子代理并行执行
+
+3. **禁止编写批处理脚本**：
+   - 不允许使用 Python/JS/Bash 脚本批量修改代码
+   - 必须通过子代理逐个完成任务
+
+4. **openspec validate 命令**：
+   - 修改规范文件后，必须运行校验命令
+   - ```bash
+     openspec validate nitro-interface-rewrite --strict
+     ```
+
+### 10.5 故障恢复流程
+
+当遇到类型错误时：
+
+1. **立即停止当前操作**
+2. **回滚所有更改**：
+   ```bash
+   git checkout -- apps/
+   ```
+3. **分析错误原因**：
+   - 是导入路径错误？
+   - 是缺少 schema 定义？
+   - 是重复导出冲突？
+4. **修复后重新验证类型检查**
+5. **再继续执行任务**
+
+### 10.6 本次错误的根因分析
+
+**错误 1：重复创建 Schema**
+
+- 误以为 `dtMenuGroups` 等表需要新建
+- 实际上这些表已在 `setting-manage/menu-manage/schema.ts` 中定义
+- 正确做法：通过重新导出使用，而非新建
+
+**错误 2：从错误的模块导入 db（最严重！）**
+
+- 误以为 `drizzle-orm` 导出 `db` 实例
+- 实际上 `db` 必须从 `server/db` 导入
+- 这是导致类型检查失败的最主要原因
+
+**错误 3：混淆了 server/db 和 drizzle-orm 的职责**
+
+- `server/db`：导出 `db` (Drizzle 实例) 和 schema 定义
+- `drizzle-orm`：导出 SQL 操作符 (`eq`, `like`, `and`, `desc`, `asc`, `sql`, `inArray`)
+
+**错误 4：未验证类型检查**
+
+- 盲目修改多个文件后再检查类型
+- 正确做法：每次修改后立即运行 `pnpm typecheck` 验证
+
+**错误 5：未参考已完成实现**
+
+- 未查看已完成的 `dictionary/list.post.ts` 等文件作为标准参考
+- 正确做法：修改前先对比正确实现的导入模式
+
+### 10.7 总结
+
+本章节定义的规范旨在确保：
+
+1. **不重复造轮子**：充分利用已有的 Schema 定义，使用 `neon-db-list` 技能确认表位置
+2. **导入分层清晰**：
+   - `db` ← `server/db`
+   - SQL 操作符 ← `drizzle-orm`
+   - 表/Schema/类型 ← `@01s-11comm/type`
+3. **参考已完成实现**：修改前先查看 `dictionary/list.post.ts` 等正确示例
+4. **修改可回滚**：小步快跑，及时验证
+5. **类型安全优先**：类型检查是最高优先级
+
+遵循以上规范，可以避免之前的严重错误，确保任务顺利执行。
+
+---
+
+## 附录：参考资源
+
+### 核心技能文档
+
+| 资源                           | 位置                                                          | 用途                              |
+| ------------------------------ | ------------------------------------------------------------- | --------------------------------- |
+| neon-db-list 技能              | `.claude/skills/neon-db-list/SKILL.md`                        | 检索数据库表清单                  |
+| nitro-api-development 技能     | `.claude/skills/nitro-api-development/SKILL.md`               | API 开发规范                      |
+| nitro-api-development 示例     | `.claude/skills/nitro-api-development/references/examples.md` | CRUD 模板                         |
+| project-schema-registry 技能   | `.claude/skills/project-schema-registry/SKILL.md`             | Schema 编写标准 (Trinity Pattern) |
+| type-project-organization 技能 | `.claude/skills/type-project-organization/SKILL.md`           | 类型项目组织规范                  |
+| fix-type-error 技能            | `.claude/skills/fix-type-error/SKILL.md`                      | 类型错误修复方法                  |
+| schema-and-seed-guardian 技能  | `.claude/skills/schema-and-seed-guardian/SKILL.md`            | Schema 变更规范                   |
+| project-migration-guide 技能   | `.claude/skills/project-migration-guide/SKILL.md`             | 影子迁移策略                      |
+
+### 代码参考
+
+| 资源            | 位置                                                                | 用途            |
+| --------------- | ------------------------------------------------------------------- | --------------- |
+| 正确实现参考    | `apps/admin/server/api/dev-team/config-manage/dictionary/*.ts`      | 标准导入模式    |
+| Schema 正确位置 | `apps/type/src/business/setting-manage/menu-manage/schema.ts`       | 菜单管理 Schema |
+| Schema 正确位置 | `apps/type/src/business/setting-manage/dictionary-manage/schema.ts` | 字典管理 Schema |
+| db 实例         | `apps/admin/server/db/index.ts`                                     | 数据库连接配置  |
+
+### CLI 命令速查
+
+```bash
+# 类型检查
+pnpm -F @01s-11comm/type typecheck
+pnpm -F @01s-11comm/admin typecheck
+
+# OpenSpec 校验
+openspec validate nitro-interface-rewrite --strict
+
+# 回滚更改
+git checkout -- apps/type/
+git checkout -- apps/admin/server/api/
+```
+
+### 附录 B：Trinity Pattern（Schema 编写标准）
+
+根据 `project-schema-registry` 技能，每个 schema.ts 必须导出三种产物：
+
+```typescript
+// apps/type/src/business/xxx/schema.ts
+
+// 1. Drizzle Table - 数据库表定义
+export const dtMenuGroups = pgTable("dt_menu_groups", {
+	id: uuid("id").primaryKey(),
+	// ...
+});
+
+// 2. Zod Schemas - 运行时验证
+export const insertDtMenuGroupSchema = createInsertSchema(dtMenuGroups, {
+	// 业务约束
+});
+
+// 3. TypeScript Types - 静态类型
+export type DtMenuGroup = typeof dtMenuGroups.$inferSelect;
+export type NewDtMenuGroup = typeof dtMenuGroups.$inferInsert;
+```

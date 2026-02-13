@@ -95,7 +95,7 @@ API 层 MUST 以“可用性优先”选择校验 helper，禁止调用不可用
 
 ### Requirement: readValidatedBody 类型回填 (Validated Body Type Recovery)
 
-当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，必须显式回填类型，避免出现 `Record<string, never>` 或 `unknown` 导致的插入类型报错。
+当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，MUST 显式回填类型，避免出现 `Record<string, never>` 或 `unknown` 导致的插入类型报错。
 
 #### Scenario: Insert 类型回填 (Insert Type Recovery)
 
