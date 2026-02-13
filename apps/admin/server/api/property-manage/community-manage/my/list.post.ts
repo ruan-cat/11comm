@@ -5,41 +5,141 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, MyCommunityListItem, MyCommunityQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockMyData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { cmCommunities } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, eq, like, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<MyCommunityListItem>>> => {
-	const body = await readBody<MyCommunityQueryParams>(event);
-	const defaultParams: MyCommunityQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	province: z.string().optional(),
+	city: z.string().optional(),
+	district: z.string().optional(),
+	communityName: z.string().optional(),
+	communityCode: z.string().optional(),
+	status: z.string().optional(),
+});
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockMyData, filters);
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		/** 预处理参数：映射 pageIndex，空字符串清洗为 undefined */
+		const rawQuery = {
+			...body,
+			pageIndex: body.pageIndex || 1,
+			province: body.province === "" ? undefined : body.province,
+			city: body.city === "" ? undefined : body.city,
+			district: body.district === "" ? undefined : body.district,
+			communityName: body.communityName === "" ? undefined : body.communityName,
+			communityCode: body.communityCode === "" ? undefined : body.communityCode,
+			status: body.status === "" ? undefined : body.status,
+		};
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<MyCommunityListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const query = querySchema.parse(rawQuery);
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.province) {
+			conditions.push(eq(cmCommunities.province, query.province));
+		}
+
+		if (query.city) {
+			conditions.push(eq(cmCommunities.city, query.city));
+		}
+
+		if (query.district) {
+			conditions.push(eq(cmCommunities.district, query.district));
+		}
+
+		if (query.communityName) {
+			conditions.push(like(cmCommunities.name, `%${query.communityName}%`));
+		}
+
+		if (query.communityCode) {
+			conditions.push(like(cmCommunities.code, `%${query.communityCode}%`));
+		}
+
+		if (query.status) {
+			conditions.push(eq(cmCommunities.status, query.status as any));
+		}
+
+		/** 计算分页参数 */
+		const offset = (query.pageIndex - 1) * query.pageSize;
+
+		/** 查询总数 */
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(cmCommunities)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: cmCommunities.id,
+				communityName: cmCommunities.name,
+				communityCode: cmCommunities.code,
+				address: cmCommunities.address,
+				phone: cmCommunities.phone,
+				province: cmCommunities.province,
+				city: cmCommunities.city,
+				district: cmCommunities.district,
+				landArea: cmCommunities.landArea,
+				buildingArea: cmCommunities.buildingArea,
+				buildingCount: cmCommunities.buildingCount,
+				unitCount: cmCommunities.unitCount,
+				householdCount: cmCommunities.householdCount,
+				parkingCount: cmCommunities.parkingCount,
+				greenRate: cmCommunities.greenRate,
+				plotRatio: cmCommunities.plotRatio,
+				developer: cmCommunities.developer,
+				propertyCompany: cmCommunities.propertyCompany,
+				establishedDate: cmCommunities.establishedDate,
+				status: cmCommunities.status,
+				remark: cmCommunities.remark,
+				createdAt: cmCommunities.createdAt,
+				updatedAt: cmCommunities.updatedAt,
+			})
+			.from(cmCommunities)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(cmCommunities.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[My Community List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

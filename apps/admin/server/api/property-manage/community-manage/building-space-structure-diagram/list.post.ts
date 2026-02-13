@@ -5,46 +5,115 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type {
-	JsonVO,
-	PageDTO,
-	BuildingSpaceStructureDiagramListItem,
-	BuildingSpaceStructureDiagramQueryParams,
-} from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockBuildingSpaceStructureDiagramData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { cmBuildingStructures } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, eq, like, asc, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<BuildingSpaceStructureDiagramListItem>>> => {
-	const body = await readBody<BuildingSpaceStructureDiagramQueryParams>(event);
-	const defaultParams: BuildingSpaceStructureDiagramQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	communityId: z.string().uuid().optional(),
+	buildingNo: z.string().optional(),
+	floorCount: z.coerce.number().int().optional(),
+	unitCount: z.coerce.number().int().optional(),
+});
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockBuildingSpaceStructureDiagramData, filters);
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		/** 预处理参数：映射 pageIndex，空字符串清洗为 undefined */
+		const rawQuery = {
+			...body,
+			pageIndex: body.pageIndex || 1,
+			communityId: body.communityId === "" ? undefined : body.communityId,
+			buildingNo: body.buildingNo === "" ? undefined : body.buildingNo,
+			floorCount: body.floorCount === "" ? undefined : body.floorCount,
+			unitCount: body.unitCount === "" ? undefined : body.unitCount,
+		};
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<BuildingSpaceStructureDiagramListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const query = querySchema.parse(rawQuery);
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.communityId) {
+			conditions.push(eq(cmBuildingStructures.communityId, query.communityId));
+		}
+
+		if (query.buildingNo) {
+			conditions.push(like(cmBuildingStructures.buildingNo, `%${query.buildingNo}%`));
+		}
+
+		if (query.floorCount) {
+			conditions.push(eq(cmBuildingStructures.floorCount, query.floorCount));
+		}
+
+		if (query.unitCount) {
+			conditions.push(eq(cmBuildingStructures.unitCount, query.unitCount));
+		}
+
+		/** 计算分页参数 */
+		const offset = (query.pageIndex - 1) * query.pageSize;
+
+		/** 查询总数 */
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(cmBuildingStructures)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: cmBuildingStructures.id,
+				communityId: cmBuildingStructures.communityId,
+				buildingNo: cmBuildingStructures.buildingNo,
+				floorCount: cmBuildingStructures.floorCount,
+				unitCount: cmBuildingStructures.unitCount,
+				roomLayout: cmBuildingStructures.roomLayout,
+				remark: cmBuildingStructures.remark,
+				createdAt: cmBuildingStructures.createdAt,
+				updatedAt: cmBuildingStructures.updatedAt,
+			})
+			.from(cmBuildingStructures)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(cmBuildingStructures.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Building Space Structure Diagram List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

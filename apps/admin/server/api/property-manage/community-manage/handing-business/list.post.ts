@@ -5,41 +5,115 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockHandingBusinessData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { cmHandingBusiness } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, eq, like, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<HandingBusinessListItem>>> => {
-	const body = await readBody<HandingBusinessQueryParams>(event);
-	const defaultParams: HandingBusinessQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	businessType: z.string().optional(),
+	applicant: z.string().optional(),
+	contactPhone: z.string().optional(),
+	status: z.string().optional(),
+});
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockHandingBusinessData, filters);
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		/** 预处理参数：映射 pageIndex，空字符串清洗为 undefined */
+		const rawQuery = {
+			...body,
+			pageIndex: body.pageIndex || 1,
+			businessType: body.businessType === "" ? undefined : body.businessType,
+			applicant: body.applicant === "" ? undefined : body.applicant,
+			contactPhone: body.contactPhone === "" ? undefined : body.contactPhone,
+			status: body.status === "" ? undefined : body.status,
+		};
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<HandingBusinessListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const query = querySchema.parse(rawQuery);
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.businessType) {
+			conditions.push(like(cmHandingBusiness.businessType, `%${query.businessType}%`));
+		}
+
+		if (query.applicant) {
+			conditions.push(like(cmHandingBusiness.applicant, `%${query.applicant}%`));
+		}
+
+		if (query.contactPhone) {
+			conditions.push(like(cmHandingBusiness.contactPhone, `%${query.contactPhone}%`));
+		}
+
+		if (query.status) {
+			conditions.push(eq(cmHandingBusiness.status, query.status));
+		}
+
+		/** 计算分页参数 */
+		const offset = (query.pageIndex - 1) * query.pageSize;
+
+		/** 查询总数 */
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(cmHandingBusiness)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: cmHandingBusiness.id,
+				businessType: cmHandingBusiness.businessType,
+				applicant: cmHandingBusiness.applicant,
+				contactPhone: cmHandingBusiness.contactPhone,
+				status: cmHandingBusiness.status,
+				handleTime: cmHandingBusiness.handleTime,
+				remark: cmHandingBusiness.remark,
+				createdAt: cmHandingBusiness.createdAt,
+				updatedAt: cmHandingBusiness.updatedAt,
+			})
+			.from(cmHandingBusiness)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(cmHandingBusiness.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Handing Business List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

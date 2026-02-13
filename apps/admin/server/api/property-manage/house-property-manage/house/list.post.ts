@@ -5,41 +5,159 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, HouseListItem, HouseQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockHouseData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { hpHouses } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { HouseListItem, HouseQueryParams } from "@01s-11comm/type";
+import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	houseCode: z.string().optional(),
+	houseStatus: z.string().optional(),
+	houseType: z.string().optional(),
+	buildingUnit: z.string().optional(),
+	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem>>> => {
-	const body = await readBody<HouseQueryParams>(event);
-	const defaultParams: HouseQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockHouseData, filters);
+		/** 预处理参数 */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			houseCode: body.houseCode === "" ? undefined : body.houseCode,
+			houseStatus: body.houseStatus === "" ? undefined : body.houseStatus,
+			houseType: body.houseType === "" ? undefined : body.houseType,
+			buildingUnit: body.buildingUnit === "" ? undefined : body.buildingUnit,
+		};
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<HouseListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.houseCode) {
+			conditions.push(like(hpHouses.houseNumber, `%${query.houseCode}%`));
+		}
+
+		if (query.houseStatus) {
+			conditions.push(eq(hpHouses.status, query.houseStatus as any));
+		}
+
+		if (query.houseType) {
+			conditions.push(eq(hpHouses.houseType, query.houseType as any));
+		}
+
+		/** 构建排序 */
+		const sortBy = query.sortBy || "createdAt";
+		const sortOrder = query.sortOrder || "desc";
+
+		const sortFields: Record<string, any> = {
+			createdAt: hpHouses.createdAt,
+			updatedAt: hpHouses.updatedAt,
+		};
+
+		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		/** 查询总数 */
+		const countResult = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(hpHouses)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: hpHouses.id,
+				communityId: hpHouses.communityId,
+				buildingNo: hpHouses.buildingNo,
+				unitNo: hpHouses.unitNo,
+				floor: hpHouses.floor,
+				roomNo: hpHouses.roomNo,
+				houseNumber: hpHouses.houseNumber,
+				buildingArea: hpHouses.buildingArea,
+				usableArea: hpHouses.usableArea,
+				houseType: hpHouses.houseType,
+				status: hpHouses.status,
+				remark: hpHouses.remark,
+				rent: hpHouses.rent,
+				validUntil: hpHouses.validUntil,
+				createdAt: hpHouses.createdAt,
+				updatedAt: hpHouses.updatedAt,
+			})
+			.from(hpHouses)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(orderBy)
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 转换数据格式 - 映射数据库字段到前端类型字段 */
+		const list: HouseListItem[] = data.map((item) => ({
+			houseCode: item.houseNumber || "",
+			floor: item.floor?.toString() || "",
+			owner: "", // 需要关联查询业主信息
+			houseType: item.houseType || "",
+			houseArea: item.buildingArea?.toString() || "",
+			rent: item.rent?.toString() || "",
+			houseStatus: item.status === "enabled" ? "occupied" : "vacant",
+			validUntil: item.validUntil?.toString() || "",
+			ownerMembers: "0",
+			ownerVehicles: "0",
+			ownerHouses: "0",
+			complaints: "0",
+			repairs: "0",
+			houseArrears: "0",
+			ownerArrears: "0",
+			houseContract: "无",
+			building: item.buildingNo || "",
+			unit: item.unitNo || "",
+			room: item.roomNo || "",
+			area: item.buildingArea?.toString() || "",
+			ownerName: "",
+			remark: item.remark || "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+		}));
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<HouseListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[House List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

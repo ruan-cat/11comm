@@ -5,41 +5,145 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ReserveVenueOrderListItem, ReserveVenueOrderQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockReserveVenueOrderData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { hpReserveVenueOrders, hpReserveVenues } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { ReserveVenueOrderListItem, ReserveVenueOrderQueryParams } from "@01s-11comm/type";
+import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	booker: z.string().optional(),
+	contactPhone: z.string().optional(),
+	status: z.string().optional(),
+	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueOrderListItem>>> => {
-	const body = await readBody<ReserveVenueOrderQueryParams>(event);
-	const defaultParams: ReserveVenueOrderQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockReserveVenueOrderData, filters);
+		/** 预处理参数 */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			booker: body.booker === "" ? undefined : body.booker,
+			contactPhone: body.contactPhone === "" ? undefined : body.contactPhone,
+			status: body.status === "" ? undefined : body.status,
+		};
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ReserveVenueOrderListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.booker) {
+			conditions.push(like(hpReserveVenueOrders.booker, `%${query.booker}%`));
+		}
+
+		if (query.contactPhone) {
+			conditions.push(like(hpReserveVenueOrders.contactPhone, `%${query.contactPhone}%`));
+		}
+
+		if (query.status) {
+			conditions.push(eq(hpReserveVenueOrders.status, query.status as any));
+		}
+
+		/** 构建排序 */
+		const sortBy = query.sortBy || "createdAt";
+		const sortOrder = query.sortOrder || "desc";
+
+		const sortFields: Record<string, any> = {
+			createdAt: hpReserveVenueOrders.createdAt,
+			updatedAt: hpReserveVenueOrders.updatedAt,
+		};
+
+		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		/** 查询总数 */
+		const countResult = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(hpReserveVenueOrders)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		/** 查询分页数据 - 关联场地表 */
+		const data = await db
+			.select({
+				id: hpReserveVenueOrders.id,
+				venueId: hpReserveVenueOrders.venueId,
+				booker: hpReserveVenueOrders.booker,
+				contactPhone: hpReserveVenueOrders.contactPhone,
+				timeSlot: hpReserveVenueOrders.timeSlot,
+				status: hpReserveVenueOrders.status,
+				remark: hpReserveVenueOrders.remark,
+				reservationTime: hpReserveVenueOrders.reservationTime,
+				startTime: hpReserveVenueOrders.startTime,
+				endTime: hpReserveVenueOrders.endTime,
+				numberOfUsers: hpReserveVenueOrders.numberOfUsers,
+				createdAt: hpReserveVenueOrders.createdAt,
+				updatedAt: hpReserveVenueOrders.updatedAt,
+			})
+			.from(hpReserveVenueOrders)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(orderBy)
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 转换数据格式 */
+		const list: ReserveVenueOrderListItem[] = data.map((item) => ({
+			id: item.id,
+			orderNumber: item.id?.substring(0, 8) || "",
+			venue: "",
+			site: item.timeSlot || "",
+			reserver: item.booker || "",
+			reservationPhone: item.contactPhone || "",
+			reservationDate: item.reservationTime ? new Date(item.reservationTime).toISOString().split("T")[0] : "",
+			reservationTime: item.timeSlot || "",
+			receivableAmount: "",
+			receivedAmount: "",
+			paymentMethod: "",
+			status: item.status || "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			remark: item.remark || "",
+		}));
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<ReserveVenueOrderListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Reserve Venue Order List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

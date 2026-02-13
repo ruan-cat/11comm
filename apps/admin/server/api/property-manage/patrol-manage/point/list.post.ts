@@ -5,41 +5,142 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, PatrolPointListData, PointQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockPointData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { ptPatrolPoints, ptPatrolPaths } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { PatrolPointListData, PointQueryParams } from "@01s-11comm/type";
+import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	pointName: z.string().optional(),
+	pathId: z.string().optional(),
+	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPointListData>>> => {
-	const body = await readBody<PointQueryParams>(event);
-	const defaultParams: PointQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockPointData, filters);
+		/** 预处理参数 */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			pointName: body.name === "" ? undefined : body.name,
+		};
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<PatrolPointListData>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.pointName) {
+			conditions.push(like(ptPatrolPoints.pointName, `%${query.pointName}%`));
+		}
+
+		if (query.pathId) {
+			conditions.push(eq(ptPatrolPoints.pathId, query.pathId));
+		}
+
+		/** 构建排序 */
+		const sortBy = query.sortBy || "createdAt";
+		const sortOrder = query.sortOrder || "desc";
+
+		const sortFields: Record<string, any> = {
+			createdAt: ptPatrolPoints.createdAt,
+			updatedAt: ptPatrolPoints.updatedAt,
+			sortOrder: ptPatrolPoints.sortOrder,
+		};
+
+		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		/** 查询总数 */
+		const countResult = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(ptPatrolPoints)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		/** 查询分页数据 - 关联查询路线信息 */
+		const data = await db
+			.select({
+				id: ptPatrolPoints.id,
+				pathId: ptPatrolPoints.pathId,
+				pointName: ptPatrolPoints.pointName,
+				location: ptPatrolPoints.location,
+				qrCodeOrNfc: ptPatrolPoints.qrCodeOrNfc,
+				sortOrder: ptPatrolPoints.sortOrder,
+				createdAt: ptPatrolPoints.createdAt,
+				updatedAt: ptPatrolPoints.updatedAt,
+			})
+			.from(ptPatrolPoints)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(orderBy)
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 转换数据格式 - 映射数据库字段到前端类型字段 */
+		const list: PatrolPointListData[] = data.map((item) => ({
+			id: item.id || "",
+			name: item.pointName || "",
+			status: "enabled",
+			remark: "",
+			taskDetailId: "",
+			patrolPointName: item.pointName || "",
+			patrolPlanName: "",
+			patrolRouteName: "",
+			patrolPersonTime: "",
+			patrolPointTime: "",
+			actualPatrolTime: "",
+			actualCheckInStatus: "",
+			planPatrolPerson: "",
+			actualPatrolPerson: "",
+			patrolMethod: "",
+			taskStatus: "",
+			patrolPointStatus: "",
+			patrolSituation: "",
+			patrolPhotos: "",
+			locationInfo: item.location || "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+		}));
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<PatrolPointListData>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[PatrolPoint List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
