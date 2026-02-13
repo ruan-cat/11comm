@@ -5,43 +5,133 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ReportGroup, ReportGroupListQuery } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockReportGroupData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { and, like, desc, sql } from "drizzle-orm";
+import { opReportGroups } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportGroup>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<ReportGroupListQuery>(event);
-	const defaultParams: ReportGroupListQuery = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 报表组列表查询参数 Schema */
+const searchReportGroupSchema = z.object({
+	page: z.coerce.number().min(1).default(1),
+	pageSize: z.coerce.number().min(1).max(100).default(10),
+	groupName: z.string().optional(),
+	groupCode: z.string().optional(),
+});
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockReportGroupData, filters);
+type SearchReportGroup = z.infer<typeof searchReportGroupSchema>;
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+/** 报表组列表项（兼容前端格式） */
+interface ReportGroupListItem {
+	id: string;
+	name: string;
+	groupCode: string;
+	description: string;
+	url: string;
+	remark: string;
+	sortOrder: number;
+	isEnabled: boolean;
+	reportCount: number;
+	createTime: string;
+	updateTime: string;
+	operator: string;
+}
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ReportGroup>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportGroupListItem>>> => {
+	try {
+		// 1. 读取并验证查询参数
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+		};
+		const query = searchReportGroupSchema.parse(rawQuery);
 
-	return response;
+		// 2. 构建动态查询条件
+		const conditions = [];
+
+		// 模糊搜索：分组名称
+		if (query.groupName) {
+			conditions.push(like(opReportGroups.groupName, `%${query.groupName}%`));
+		}
+
+		// 模糊搜索：分组编码
+		if (query.groupCode) {
+			conditions.push(like(opReportGroups.groupCode, `%${query.groupCode}%`));
+		}
+
+		// 3. 计算分页偏移
+		const offset = (query.page - 1) * query.pageSize;
+
+		// 4. 并行执行：查询数据 + 查询总数
+		const [data, countResult] = await Promise.all([
+			db
+				.select({
+					id: opReportGroups.id,
+					groupName: opReportGroups.groupName,
+					groupCode: opReportGroups.groupCode,
+					groupDescription: opReportGroups.groupDescription,
+					sortOrder: opReportGroups.sortOrder,
+					createdAt: sql<string>`${opReportGroups.createdAt}::text`,
+					updatedAt: sql<string>`${opReportGroups.updatedAt}::text`,
+				})
+				.from(opReportGroups)
+				.where(conditions.length > 0 ? and(...conditions) : undefined)
+				.orderBy(desc(opReportGroups.createdAt))
+				.limit(query.pageSize)
+				.offset(offset),
+
+			db
+				.select({ count: sql<number>`cast(count(${opReportGroups.id}) as int)` })
+				.from(opReportGroups)
+				.where(conditions.length > 0 ? and(...conditions) : undefined),
+		]);
+
+		// 5. 转换数据格式以匹配前端期望
+		const list: ReportGroupListItem[] = data.map((item) => ({
+			id: item.id,
+			name: item.groupName || "",
+			groupCode: item.groupCode || "",
+			description: item.groupDescription || "",
+			url: "",
+			remark: "",
+			sortOrder: item.sortOrder || 0,
+			isEnabled: true,
+			reportCount: 0,
+			createTime: item.createdAt || "",
+			updateTime: item.updatedAt || "",
+			operator: "",
+		}));
+
+		// 6. 返回标准分页结构
+		const total = Number(countResult[0]?.count || 0);
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<ReportGroupListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Report Group List] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

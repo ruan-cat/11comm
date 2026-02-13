@@ -5,43 +5,92 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, InitializeCell, InitializeCellListQuery } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockInitializeCellData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { smInitializeCells } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, like, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<InitializeCell>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<InitializeCellListQuery>(event);
-	const defaultParams: InitializeCellListQuery = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	initItem: z.string().optional(),
+	initStatus: z.string().optional(),
+});
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockInitializeCellData, filters);
+export default defineHandler(async (event) => {
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		/** 预处理参数：映射 pageIndex → page，空字符串清洗为 undefined */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			initItem: body.initItem === "" ? undefined : body.initItem,
+			initStatus: body.initStatus === "" ? undefined : body.initStatus,
+		};
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<InitializeCell>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const query = querySchema.parse(rawQuery);
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		if (query.initItem) {
+			conditions.push(like(smInitializeCells.initItem, `%${query.initItem}%`));
+		}
+
+		if (query.initStatus) {
+			conditions.push(like(smInitializeCells.initStatus, `%${query.initStatus}%`));
+		}
+
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
+
+		/** 查询总数 */
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(smInitializeCells)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select()
+			.from(smInitializeCells)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(smInitializeCells.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Initialize Cell List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

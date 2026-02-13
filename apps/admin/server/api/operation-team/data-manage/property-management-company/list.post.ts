@@ -5,43 +5,132 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockPropertyManagementCompanyData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { opPropertyCompanies } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { and, desc, like, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<PropertyCompanyListItem>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<PropertyCompanyQueryParams>(event);
-	const defaultParams: PropertyCompanyQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	companyId: z.string().optional(),
+	companyName: z.string().optional(),
+	phone: z.string().optional(),
+});
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockPropertyManagementCompanyData, filters);
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+	try {
+		// 1. 读取并验证查询参数
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			companyName: body.companyName === "" ? undefined : body.companyName,
+			companyId: body.companyId === "" ? undefined : body.companyId,
+			phone: body.phone === "" ? undefined : body.phone,
+		};
+		const query = querySchema.parse(rawQuery);
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		// 2. 构建查询条件
+		const conditions = [];
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<PropertyCompanyListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		if (query.companyName) {
+			conditions.push(like(opPropertyCompanies.companyName, `%${query.companyName}%`));
+		}
 
-	return response;
+		if (query.companyId) {
+			conditions.push(like(opPropertyCompanies.companyCode, `%${query.companyId}%`));
+		}
+
+		if (query.phone) {
+			conditions.push(like(opPropertyCompanies.contactPhone, `%${query.phone}%`));
+		}
+
+		// 3. 计算分页偏移
+		const offset = (query.page - 1) * query.pageSize;
+
+		// 4. 并行执行：查询数据 + 查询总数
+		const [data, countResult] = await Promise.all([
+			db
+				.select({
+					id: opPropertyCompanies.id,
+					companyId: opPropertyCompanies.companyCode,
+					companyName: opPropertyCompanies.companyName,
+					address: opPropertyCompanies.address,
+					administrator: opPropertyCompanies.contactPerson,
+					phone: opPropertyCompanies.contactPhone,
+					contactPerson: opPropertyCompanies.contactPerson,
+					contactPhone: opPropertyCompanies.contactPhone,
+					qualificationLevel: opPropertyCompanies.qualificationLevel,
+					remark: opPropertyCompanies.remark,
+					createdAt: opPropertyCompanies.createdAt,
+					updatedAt: opPropertyCompanies.updatedAt,
+				})
+				.from(opPropertyCompanies)
+				.where(conditions.length > 0 ? and(...conditions) : undefined)
+				.orderBy(desc(opPropertyCompanies.createdAt))
+				.limit(query.pageSize)
+				.offset(offset),
+
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(opPropertyCompanies)
+				.where(conditions.length > 0 ? and(...conditions) : undefined),
+		]);
+
+		// 5. 计算总页数
+		const total = Number(countResult[0]?.count || 0);
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		// 6. 转换数据格式以匹配前端期望
+		const list = data.map((item) => ({
+			companyId: item.companyId || "",
+			companyName: item.companyName || "",
+			address: item.address || "",
+			administrator: item.administrator || "",
+			phone: item.phone || "",
+			contactPerson: item.contactPerson || "",
+			contactPhone: item.contactPhone || "",
+			legalRepresentative: "",
+			establishmentDate: "",
+			landmark: "",
+			createTime: item.createdAt ? new Date(item.createdAt).toLocaleString("zh-CN") : "",
+			communityCount: 0,
+			companyType: "private",
+			serviceLevel: "level_1",
+			operationStatus: "operating",
+			remarks: item.remark || "",
+			qualificationLevel: item.qualificationLevel || "",
+		}));
+
+		/** 返回标准格式 */
+		const response: JsonVO<PageDTO<any>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Property Management Company List] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

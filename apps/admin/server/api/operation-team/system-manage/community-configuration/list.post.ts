@@ -2,6 +2,10 @@
  * @file community configuration-列表接口
  * @description community configuration list API
  * POST /api/operation-team/system-manage/community-configuration/list
+ *
+ * TODO: 当前没有对应的数据库表 sm_community_configurations，
+ * 需要先在 apps/type/src/business/setting-manage/system-manage/schema.ts 中定义表结构，
+ * 然后再迁移到 Drizzle 查询。
  */
 
 import { defineHandler, readBody } from "nitro/h3";
