@@ -7,47 +7,63 @@ import { defineHandler, getQuery } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtDictionaries } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
 
-// 查询参数验证 schema
+/** 查询参数验证 schema */
 const querySchema = z.object({
 	id: z.string().uuid(),
 });
 
 export default defineHandler(async (event) => {
-	// 1. 获取并验证查询参数
-	const rawQuery = getQuery(event);
-	const query = querySchema.parse(rawQuery);
+	try {
+		/** 获取并验证查询参数 */
+		const rawQuery = getQuery(event);
+		const query = querySchema.parse(rawQuery);
 
-	// 2. 查询详情数据
-	const [dictionary] = await db
-		.select({
-			id: dtDictionaries.id,
-			dictionaryName: dtDictionaries.dictionaryName,
-			dictionaryCode: dtDictionaries.dictionaryCode,
-			dictionaryType: dtDictionaries.dictionaryType,
-			dictionaryDescription: dtDictionaries.dictionaryDescription,
-			remark: dtDictionaries.remark,
-			createdAt: dtDictionaries.createdAt,
-			updatedAt: dtDictionaries.updatedAt,
-		})
-		.from(dtDictionaries)
-		.where(eq(dtDictionaries.id, query.id))
-		.limit(1);
+		/** 查询详情数据 */
+		const [dictionary] = await db
+			.select({
+				id: dtDictionaries.id,
+				dictionaryName: dtDictionaries.dictionaryName,
+				dictionaryCode: dtDictionaries.dictionaryCode,
+				dictionaryType: dtDictionaries.dictionaryType,
+				dictionaryDescription: dtDictionaries.dictionaryDescription,
+				remark: dtDictionaries.remark,
+				createdAt: dtDictionaries.createdAt,
+				updatedAt: dtDictionaries.updatedAt,
+			})
+			.from(dtDictionaries)
+			.where(eq(dtDictionaries.id, query.id))
+			.limit(1);
 
-	// 3. 检查是否找到记录
-	if (!dictionary) {
-		return {
-			code: 404,
-			msg: "字典不存在",
-			data: null,
+		if (!dictionary) {
+			const notFoundResponse: JsonVO<null> = {
+				success: false,
+				code: 404,
+				message: "字典不存在",
+				data: null,
+			};
+			return notFoundResponse;
+		}
+
+		const response: JsonVO<typeof dictionary> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: dictionary,
 		};
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary Detail] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
-
-	// 4. 返回标准响应格式
-	return {
-		code: 200,
-		msg: "查询成功",
-		data: dictionary,
-	};
 });

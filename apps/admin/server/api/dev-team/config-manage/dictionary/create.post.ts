@@ -6,17 +6,31 @@
 import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "server/db";
 import { dtDictionaries, insertDtDictionarySchema } from "@01s-11comm/type";
-import type { NewDtDictionary } from "@01s-11comm/type";
+import type { NewDtDictionary, JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	const body = (await readValidatedBody(event, insertDtDictionarySchema.parse)) as unknown as NewDtDictionary;
+	try {
+		const body = (await readValidatedBody(event, insertDtDictionarySchema.parse)) as unknown as NewDtDictionary;
 
-	const [newDictionary] = await db.insert(dtDictionaries).values(body).returning();
+		const [newDictionary] = await db.insert(dtDictionaries).values(body).returning();
 
-	// 3. 返回标准响应格式
-	return {
-		code: 200,
-		msg: "创建成功",
-		data: newDictionary,
-	};
+		const response: JsonVO<typeof newDictionary> = {
+			success: true,
+			code: 200,
+			message: "创建成功",
+			data: newDictionary,
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary Create] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "创建失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

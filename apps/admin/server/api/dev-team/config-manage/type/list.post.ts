@@ -3,13 +3,14 @@
  * @description 获取配置类型列表数据
  */
 
-import { defineHandler, getQuery } from "nitro/h3";
+import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtConfigTypes } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, asc, sql } from "drizzle-orm";
 
-// 查询参数验证 schema
+/** 查询参数验证 schema */
 const querySchema = z.object({
 	page: z.coerce.number().int().min(1).optional().default(1),
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
@@ -21,77 +22,104 @@ const querySchema = z.object({
 });
 
 export default defineHandler(async (event) => {
-	// 1. 获取并验证查询参数
-	const rawQuery = getQuery(event);
-	const query = querySchema.parse(rawQuery);
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	// 2. 构建查询条件
-	const conditions = [];
+		/** 预处理参数：映射 pageIndex → page，空字符串清洗为 undefined */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			typeName: body.typeName === "" ? undefined : body.typeName,
+			typeCode: body.typeCode === "" ? undefined : body.typeCode,
+			typeDescription: body.typeDescription === "" ? undefined : body.typeDescription,
+		};
 
-	if (query.typeName) {
-		conditions.push(like(dtConfigTypes.typeName, `%${query.typeName}%`));
-	}
+		const query = querySchema.parse(rawQuery);
 
-	if (query.typeCode) {
-		conditions.push(like(dtConfigTypes.typeCode, `%${query.typeCode}%`));
-	}
+		/** 构建查询条件 */
+		const conditions = [];
 
-	if (query.typeDescription) {
-		conditions.push(like(dtConfigTypes.typeDescription, `%${query.typeDescription}%`));
-	}
+		if (query.typeName) {
+			conditions.push(like(dtConfigTypes.typeName, `%${query.typeName}%`));
+		}
 
-	// 3. 计算分页参数
-	const offset = (query.page - 1) * query.pageSize;
+		if (query.typeCode) {
+			conditions.push(like(dtConfigTypes.typeCode, `%${query.typeCode}%`));
+		}
 
-	// 4. 构建排序条件
-	const sortBy = query.sortBy || "createdAt";
-	const sortOrder = query.sortOrder || "desc";
+		if (query.typeDescription) {
+			conditions.push(like(dtConfigTypes.typeDescription, `%${query.typeDescription}%`));
+		}
 
-	// 获取排序字段
-	const sortFields = {
-		createdAt: dtConfigTypes.createdAt,
-		updatedAt: dtConfigTypes.updatedAt,
-		typeName: dtConfigTypes.typeName,
-		typeCode: dtConfigTypes.typeCode,
-		sortOrder: dtConfigTypes.sortOrder,
-	};
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
 
-	const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+		/** 构建排序条件 */
+		const sortBy = query.sortBy || "createdAt";
+		const sortOrder = query.sortOrder || "desc";
 
-	// 5. 查询总数
-	const [countResult] = await db
-		.select({ total: sql<number>`count(*)` })
-		.from(dtConfigTypes)
-		.where(conditions.length > 0 ? and(...conditions) : undefined);
-
-	const total = countResult?.total || 0;
-
-	// 6. 查询分页数据
-	const data = await db
-		.select({
-			id: dtConfigTypes.id,
-			typeName: dtConfigTypes.typeName,
-			typeCode: dtConfigTypes.typeCode,
-			typeDescription: dtConfigTypes.typeDescription,
-			sortOrder: dtConfigTypes.sortOrder,
+		const sortFields = {
 			createdAt: dtConfigTypes.createdAt,
 			updatedAt: dtConfigTypes.updatedAt,
-		})
-		.from(dtConfigTypes)
-		.where(conditions.length > 0 ? and(...conditions) : undefined)
-		.orderBy(orderBy)
-		.limit(query.pageSize)
-		.offset(offset);
+			typeName: dtConfigTypes.typeName,
+			typeCode: dtConfigTypes.typeCode,
+			sortOrder: dtConfigTypes.sortOrder,
+		};
 
-	// 7. 返回标准响应格式
-	return {
-		code: 200,
-		msg: "查询成功",
-		data: {
-			list: data,
-			total,
-			pageSize: query.pageSize,
-			currentPage: query.page,
-		},
-	};
+		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		/** 查询总数 */
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(dtConfigTypes)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		/** 查询分页数据 */
+		const data = await db
+			.select({
+				id: dtConfigTypes.id,
+				typeName: dtConfigTypes.typeName,
+				typeCode: dtConfigTypes.typeCode,
+				typeDescription: dtConfigTypes.typeDescription,
+				sortOrder: dtConfigTypes.sortOrder,
+				createdAt: dtConfigTypes.createdAt,
+				updatedAt: dtConfigTypes.updatedAt,
+			})
+			.from(dtConfigTypes)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(orderBy)
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Config Type List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

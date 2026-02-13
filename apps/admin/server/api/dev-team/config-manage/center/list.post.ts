@@ -7,9 +7,10 @@ import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtConfigs } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, asc, sql } from "drizzle-orm";
 
-// 查询参数验证 schema
+/** 查询参数验证 schema */
 const querySchema = z.object({
 	page: z.coerce.number().int().min(1).optional().default(1),
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
@@ -23,13 +24,10 @@ const querySchema = z.object({
 
 export default defineHandler(async (event) => {
 	try {
-		// 1. 获取并验证查询参数
+		/** 获取并验证查询参数 */
 		const body = (await readBody(event)) as any;
-		console.log("[Config Center List] Raw Body:", body);
 
-		// 预处理参数：
-		// 1. 映射 pageIndex -> page
-		// 2. 将空字符串转换为 undefined，避免 Zod enum 校验失败或逻辑干扰
+		/** 预处理参数：映射 pageIndex → page，空字符串清洗为 undefined */
 		const rawQuery = {
 			...body,
 			page: body.page || body.pageIndex || 1,
@@ -40,9 +38,8 @@ export default defineHandler(async (event) => {
 		};
 
 		const query = querySchema.parse(rawQuery);
-		console.log("[Config Center List] Parsed Query:", query);
 
-		// 2. 构建查询条件
+		/** 构建查询条件 */
 		const conditions = [];
 
 		if (query.configName) {
@@ -61,14 +58,13 @@ export default defineHandler(async (event) => {
 			conditions.push(eq(dtConfigs.status, query.status));
 		}
 
-		// 3. 计算分页参数
+		/** 计算分页参数 */
 		const offset = (query.page - 1) * query.pageSize;
 
-		// 4. 构建排序条件
+		/** 构建排序条件 */
 		const sortBy = query.sortBy || "createdAt";
 		const sortOrder = query.sortOrder || "desc";
 
-		// 获取排序字段
 		const sortFields = {
 			createdAt: dtConfigs.createdAt,
 			updatedAt: dtConfigs.updatedAt,
@@ -79,15 +75,15 @@ export default defineHandler(async (event) => {
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
 
-		// 5. 查询总数
+		/** 查询总数 */
 		const [countResult] = await db
 			.select({ total: sql<number>`count(*)` })
 			.from(dtConfigs)
 			.where(conditions.length > 0 ? and(...conditions) : undefined);
 
-		const total = countResult?.total || 0;
+		const total = Number(countResult?.total || 0);
 
-		// 6. 查询分页数据
+		/** 查询分页数据 */
 		const data = await db
 			.select({
 				id: dtConfigs.id,
@@ -111,8 +107,17 @@ export default defineHandler(async (event) => {
 			.limit(query.pageSize)
 			.offset(offset);
 
-		// 7. 返回标准响应格式
-		return {
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		/**
+		 * 使用 JsonVO<PageDTO<...>> 类型注解约束成功响应
+		 * @description
+		 * (typeof data)[number] 自动推断 Drizzle 查询结果的行类型
+		 * 如果 data 字段结构不符合 PageDTO 的 list/total/pageIndex/pageSize/totalPages 约束，TypeScript 会报错
+		 * 如果外层结构不符合 JsonVO 的 code/message/data 约束，TypeScript 也会报错
+		 */
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
@@ -120,12 +125,19 @@ export default defineHandler(async (event) => {
 				list: data,
 				total,
 				pageSize: query.pageSize,
-				currentPage: query.page,
+				pageIndex: query.page,
+				totalPages,
 			},
 		};
+		return response;
 	} catch (error: any) {
 		console.error("[Config Center List] Error:", error);
-		return {
+
+		/**
+		 * 使用 JsonVO<null> 类型注解约束错误响应
+		 * @description error 携带错误信息，stack 仅在开发环境暴露
+		 */
+		const errorResponse: JsonVO<null> = {
 			success: false,
 			code: 500,
 			message: "查询失败",
@@ -133,5 +145,6 @@ export default defineHandler(async (event) => {
 			error: error.message || String(error),
 			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
 		};
+		return errorResponse;
 	}
 });

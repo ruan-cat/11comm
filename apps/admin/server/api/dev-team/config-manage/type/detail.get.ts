@@ -7,46 +7,62 @@ import { defineHandler, getQuery } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtConfigTypes } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
 
-// 查询参数验证 schema
+/** 查询参数验证 schema */
 const querySchema = z.object({
 	id: z.string().uuid(),
 });
 
 export default defineHandler(async (event) => {
-	// 1. 获取并验证查询参数
-	const rawQuery = getQuery(event);
-	const query = querySchema.parse(rawQuery);
+	try {
+		/** 获取并验证查询参数 */
+		const rawQuery = getQuery(event);
+		const query = querySchema.parse(rawQuery);
 
-	// 2. 查询详情数据
-	const [configType] = await db
-		.select({
-			id: dtConfigTypes.id,
-			typeName: dtConfigTypes.typeName,
-			typeCode: dtConfigTypes.typeCode,
-			typeDescription: dtConfigTypes.typeDescription,
-			sortOrder: dtConfigTypes.sortOrder,
-			createdAt: dtConfigTypes.createdAt,
-			updatedAt: dtConfigTypes.updatedAt,
-		})
-		.from(dtConfigTypes)
-		.where(eq(dtConfigTypes.id, query.id))
-		.limit(1);
+		/** 查询详情数据 */
+		const [configType] = await db
+			.select({
+				id: dtConfigTypes.id,
+				typeName: dtConfigTypes.typeName,
+				typeCode: dtConfigTypes.typeCode,
+				typeDescription: dtConfigTypes.typeDescription,
+				sortOrder: dtConfigTypes.sortOrder,
+				createdAt: dtConfigTypes.createdAt,
+				updatedAt: dtConfigTypes.updatedAt,
+			})
+			.from(dtConfigTypes)
+			.where(eq(dtConfigTypes.id, query.id))
+			.limit(1);
 
-	// 3. 检查是否找到记录
-	if (!configType) {
-		return {
-			code: 404,
-			msg: "配置类型不存在",
-			data: null,
+		if (!configType) {
+			const notFoundResponse: JsonVO<null> = {
+				success: false,
+				code: 404,
+				message: "配置类型不存在",
+				data: null,
+			};
+			return notFoundResponse;
+		}
+
+		const response: JsonVO<typeof configType> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: configType,
 		};
+		return response;
+	} catch (error: any) {
+		console.error("[Config Type Detail] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
-
-	// 4. 返回标准响应格式
-	return {
-		code: 200,
-		msg: "查询成功",
-		data: configType,
-	};
 });

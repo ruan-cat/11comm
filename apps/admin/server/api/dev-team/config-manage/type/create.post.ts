@@ -6,17 +6,31 @@
 import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "server/db";
 import { dtConfigTypes, insertDtConfigTypeSchema } from "@01s-11comm/type";
-import type { NewDtConfigType } from "@01s-11comm/type";
+import type { NewDtConfigType, JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	const body = (await readValidatedBody(event, insertDtConfigTypeSchema.parse)) as unknown as NewDtConfigType;
+	try {
+		const body = (await readValidatedBody(event, insertDtConfigTypeSchema.parse)) as unknown as NewDtConfigType;
 
-	const [newConfigType] = await db.insert(dtConfigTypes).values(body).returning();
+		const [newConfigType] = await db.insert(dtConfigTypes).values(body).returning();
 
-	// 3. 返回标准响应格式
-	return {
-		code: 200,
-		msg: "创建成功",
-		data: newConfigType,
-	};
+		const response: JsonVO<typeof newConfigType> = {
+			success: true,
+			code: 200,
+			message: "创建成功",
+			data: newConfigType,
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Config Type Create] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "创建失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
