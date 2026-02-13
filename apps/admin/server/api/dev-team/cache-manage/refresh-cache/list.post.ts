@@ -5,43 +5,167 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockRefreshCacheData } from "./mock-data";
+import { z } from "zod";
+import type { JsonVO, PageDTO, RefreshCacheListItem } from "@01s-11comm/type";
+import { dtCacheConfigs } from "@01s-11comm/type";
+import { db } from "server/db";
+import { and, desc, eq, like, or, sql } from "drizzle-orm";
+
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).default(20),
+	cacheId: z.string().optional(),
+	cacheCode: z.string().optional(),
+	cacheName: z.string().optional(),
+	cacheKey: z.string().optional(),
+	cacheType: z.string().optional(),
+	refreshPolicy: z.string().optional(),
+});
+
+/** 格式化日期为 YYYY-MM-DD HH:mm:ss */
+function formatDateTime(date: Date): string {
+	const pad = (n: number) => n.toString().padStart(2, "0");
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+/** 将数据库查询结果映射为前端列表项 */
+function mapDtCacheConfigsToRefreshCacheListItems(
+	data: Array<{
+		id: string;
+		cacheCode: string;
+		cacheName: string;
+		cacheKey: string;
+		cacheType: string | null;
+		cacheGroup: string | null;
+		expireTime: number | null;
+		description: string | null;
+		refreshStrategy: string | null;
+		status: string | null;
+		createdAt: Date | null;
+		updatedAt: Date | null;
+	}>,
+): RefreshCacheListItem[] {
+	return data.map((row) => ({
+		cacheId: row.id,
+		cacheCode: row.cacheCode,
+		cacheName: row.cacheName,
+		cacheKey: row.cacheKey,
+		cacheType: row.cacheType ?? "",
+		cacheGroup: row.cacheGroup ?? "",
+		expireTime: row.expireTime ?? 0,
+		description: row.description ?? "",
+		refreshPolicy: row.refreshStrategy ?? "",
+		status: row.status ?? "enabled",
+		createTime: row.createdAt ? formatDateTime(row.createdAt) : "",
+		updateTime: row.updatedAt ? formatDateTime(row.updatedAt) : "",
+	}));
+}
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<RefreshCacheListItem>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<RefreshCacheQueryParams>(event);
-	const defaultParams: RefreshCacheQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Record<string, unknown>;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockRefreshCacheData, filters);
+		const rawQuery = {
+			...body,
+			page: (body.page as number) || (body.pageIndex as number) || 1,
+			cacheId: body.cacheId === "" ? undefined : (body.cacheId as string | undefined),
+			cacheCode: body.cacheCode === "" ? undefined : (body.cacheCode as string | undefined),
+			cacheName: body.cacheName === "" ? undefined : (body.cacheName as string | undefined),
+			cacheKey: body.cacheKey === "" ? undefined : (body.cacheKey as string | undefined),
+			cacheType: body.cacheType === "" ? undefined : (body.cacheType as string | undefined),
+			refreshPolicy: body.refreshPolicy === "" ? undefined : (body.refreshPolicy as string | undefined),
+		};
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<RefreshCacheListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const conditions = [];
+		const keyword = query.cacheKey || query.cacheName || query.cacheCode;
 
-	return response;
+		if (query.cacheId) {
+			conditions.push(eq(dtCacheConfigs.id, query.cacheId));
+		}
+
+		if (keyword) {
+			conditions.push(
+				or(
+					like(dtCacheConfigs.cacheCode, `%${keyword}%`),
+					like(dtCacheConfigs.cacheName, `%${keyword}%`),
+					like(dtCacheConfigs.cacheKey, `%${keyword}%`),
+				),
+			);
+		}
+
+		if (query.cacheCode) {
+			conditions.push(like(dtCacheConfigs.cacheCode, `%${query.cacheCode}%`));
+		}
+
+		if (query.cacheName) {
+			conditions.push(like(dtCacheConfigs.cacheName, `%${query.cacheName}%`));
+		}
+
+		if (query.cacheType) {
+			conditions.push(eq(dtCacheConfigs.cacheType, query.cacheType));
+		}
+
+		if (query.refreshPolicy) {
+			conditions.push(eq(dtCacheConfigs.refreshStrategy, query.refreshPolicy));
+		}
+
+		const offset = (query.page - 1) * query.pageSize;
+
+		const [countResult] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(dtCacheConfigs)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult?.total || 0);
+
+		const data = await db
+			.select({
+				id: dtCacheConfigs.id,
+				cacheCode: dtCacheConfigs.cacheCode,
+				cacheName: dtCacheConfigs.cacheName,
+				cacheKey: dtCacheConfigs.cacheKey,
+				cacheType: dtCacheConfigs.cacheType,
+				cacheGroup: dtCacheConfigs.cacheGroup,
+				expireTime: dtCacheConfigs.expireTime,
+				description: dtCacheConfigs.description,
+				refreshStrategy: dtCacheConfigs.refreshStrategy,
+				status: dtCacheConfigs.status,
+				createdAt: dtCacheConfigs.createdAt,
+				updatedAt: dtCacheConfigs.updatedAt,
+			})
+			.from(dtCacheConfigs)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(dtCacheConfigs.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		const list: RefreshCacheListItem[] = mapDtCacheConfigsToRefreshCacheListItems(data);
+
+		const response: JsonVO<PageDTO<RefreshCacheListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages: Math.ceil(total / query.pageSize),
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
