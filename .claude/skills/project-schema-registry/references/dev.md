@@ -123,10 +123,20 @@ This reference documents the Development Team module (Configuration Center, etc.
 
 系统 SHALL 提供 `dt_cache_configs` 表存储缓存配置。
 
-### Scenario: Store cache config
+### Scenario: Store cache identity
 
-- **WHEN** 配置缓存
-- **THEN** 系统存储缓存键、缓存类型、过期时间、刷新策略
+- **WHEN** 创建缓存配置
+- **THEN** 系统存储缓存编码、缓存名称、缓存键
+
+### Scenario: Store cache config details
+
+- **WHEN** 配置缓存参数
+- **THEN** 系统存储缓存类型、缓存分组、过期时间、缓存描述、刷新策略
+
+### Scenario: Manage cache status
+
+- **WHEN** 管理缓存状态
+- **THEN** 系统支持启用/禁用/维护中状态
 
 ## Dev Module Indexes
 

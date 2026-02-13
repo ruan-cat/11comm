@@ -62,7 +62,8 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 
 ## Dev (dt)
 
-来源: `apps\admin\server\db\schemas\dev.ts`
+来源: `apps/type/src/business/setting-manage/dictionary-manage/schema.ts` (配置/字典/缓存表)
+来源: `apps/type/src/business/setting-manage/menu-manage/schema.ts` (菜单表)
 
 - `dtConfigTypes` ("dt_config_types")
 - `dtConfigs`
@@ -72,7 +73,7 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 - `dtMenuGroups` ("dt_menu_groups")
 - `dtMenuCatalogs` ("dt_menu_catalogs")
 - `dtMenuItems`
-- `dtCacheConfigs` ("dt_cache_configs")
+- `dtCacheConfigs` ("dt_cache_configs") — 含字段: cache_code, cache_name, cache_key, cache_type, cache_group, expire_time, description, refresh_strategy, status
 
 ## Expense (ex)
 
