@@ -10,7 +10,11 @@ definePage({
 
 import { ref, computed } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import { type DictionaryTypeListItem, type DictionaryTypeQueryParams, dictionaryTypeStatusOptions } from "@01s-11comm/type";
+import {
+	type DictionaryTypeListItem,
+	type DictionaryTypeQueryParams,
+	dictionaryTypeStatusOptions,
+} from "@01s-11comm/type";
 import { useDictionaryTypeListQuery } from "@/api/dev-team/config-manage/type";
 
 /**
@@ -173,6 +177,7 @@ function handleSearch() {
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
+					:loading="isFetching"
 					:columns="dynamicColumns"
 					:size="size"
 					@page-size-change="handlePageSizeChange"

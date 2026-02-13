@@ -12,7 +12,11 @@ import { ref, computed, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
 import type { HandingBusinessListItem, HandingBusinessQueryParams, HandingBusinessFormVO } from "@01s-11comm/type";
-import { feeTypeOptions, businessHandlingStatusOptions, handingBusinessListDataToFormData as listDataToFormData } from "@01s-11comm/type";
+import {
+	feeTypeOptions,
+	businessHandlingStatusOptions,
+	handingBusinessListDataToFormData as listDataToFormData,
+} from "@01s-11comm/type";
 import { useHandingBusinessListQuery } from "@/api/property-manage/community-manage/handing-business";
 import type { HandingBusinessFormProps } from "./components/form";
 import { defaultForm } from "./components/form";
@@ -327,6 +331,7 @@ onMounted(async () => {
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
+					:loading="isFetching"
 					:columns="dynamicColumns"
 					:size="size"
 					@page-size-change="handlePageSizeChange"

@@ -446,6 +446,7 @@ onMounted(async () => {
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
+					:loading="isFetching"
 					:columns="dynamicColumns"
 					:size="size"
 					@page-size-change="handlePageSizeChange"

@@ -301,6 +301,7 @@ onMounted(async () => {
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
+					:loading="isFetching"
 					:size="size"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"

@@ -19,10 +19,7 @@ import {
 	isMandatoryOptions,
 } from "@01s-11comm/type";
 import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage/register-protocol";
-import {
-	type RegisterProtocolFormProps,
-	defaultForm,
-} from "./components/form";
+import { type RegisterProtocolFormProps, defaultForm } from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 
@@ -342,6 +339,7 @@ onMounted(async () => {
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
+					:loading="isFetching"
 					:size="size"
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
