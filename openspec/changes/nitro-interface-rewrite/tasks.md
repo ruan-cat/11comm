@@ -4,7 +4,7 @@
 
 ### 1.1 必学技能清单与使用边界
 
-- nitro-api-development：所有 Nitro Handler 写法与返回结构必须以该技能为准。
+- nitro-api-development：所有 Nitro Handler 写法与返回结构必须以该技能为准。**[v2.0 更新：必须使用 JsonVO 类型注解约束]**
 - type-project-organization：所有 `apps/type` 组织与导出必须以该技能为准。
 - project-schema-registry：Schema 设计必须遵循 Trinity Pattern 与业务路径规范。
 - schema-and-seed-guardian：涉及 Schema 新增/修改时必须遵循该技能规则。
@@ -15,6 +15,9 @@
 ### 1.2 规范裁决与统一基线
 
 - API 编写规范裁决：以 nitro-api-development 的 defineHandler 与 nitro/h3 导入为唯一标准。
+- **[v2.0 更新] JsonVO 类型注解裁决**：所有 API 响应变量必须使用 `JsonVO<T>` 类型注解，TypeScript 编译器将严格检查字段结构。
+- **[v2.0 更新] 响应字段裁决**：统一使用 `message` 字段（不是 `msg`），统一使用 `success` 字段。
+- **[v2.0 更新] 错误响应裁决**：catch 块必须返回包含 `error` 和 `stack` 字段的 JsonVO<null> 格式。
 - Schema 与类型裁决：以 project-schema-registry 与 type-project-organization 为唯一标准。
 - 数据库表与依赖裁决：以 neon-db-list 为唯一参考清单。
 - 迁移策略裁决：以 project-migration-guide 的影子迁移策略为唯一标准。
@@ -37,17 +40,31 @@
 - 单表读写且无强一致性依赖的操作可不使用事务。
 - 返回结构统一为 JsonVO / PageDTO 风格，字段使用 `code`、`msg`、`data`。
 
-### 1.5 Handler 写法与验证基线
+### 1.5 Handler 写法与验证基线 (v2.0 更新)
 
 - 统一使用 `defineHandler` 与 `nitro/h3` 导入。
 - 禁止 `defineEventHandler` 与 `h3` 导入。
-- 所有入参必须通过 `readValidatedBody` 或 `getValidatedQuery` + Zod Schema 校验。
+- [v2.0 更新] 所有入参必须通过 `readBody + schema.parse` 或 `readValidatedBody` + Zod Schema 校验。
+- [v2.0 更新] **必须**使用 `JsonVO<T>` 类型注解约束响应变量。
+- [v2.0 更新] 响应必须使用 `message` 字段（不是 `msg`）。
+- [v2.0 更新] Insert 操作必须使用 `as unknown as NewX` 类型回填。
+- [v2.0 更新] catch 块必须返回包含 `error` 字段的 `JsonVO<null>` 格式错误响应。
 
 ### 1.6 规范与技能同步 (Docs & Skills Sync)
 
 - [x] nitro-db-integration 规范补充 readValidatedBody 类型回填指引。
 - [x] nitro-api-development 技能补充类型回填约束与示例。
 - [x] project-schema-registry 技能补充 Insert 类型回填提示。
+
+### 1.7 v2.0 新增验收标准 (v2.0 New Requirements)
+
+- [v2.0 新增] **JsonVO 类型注解**：所有 API Handler 的响应变量必须使用 `JsonVO<T>` 类型注解。
+  - 列表接口：`JsonVO<PageDTO<(typeof data)[number]>>`
+  - 单条数据接口：`JsonVO<typeof result>`
+  - 删除/错误响应：`JsonVO<null>`
+- [v2.0 新增] **响应字段规范**：统一使用 `message`（不是 `msg`）和 `success` 字段。
+- [v2.0 新增] **错误响应规范**：catch 块必须返回包含 `error` 字段的错误响应，生产环境可选择包含 `stack`。
+- [v2.0 新增] **类型回填规范**：Insert 操作必须使用 `as unknown as NewX` 模式回填类型。
 
 ## 2. 基础设施与环境准备 (Infrastructure)
 
@@ -82,6 +99,10 @@
 
 ### 4.2 试点验收标准
 
+- [v2.0 新增] 试点模块接口响应变量使用 `JsonVO<T>` 类型注解约束。
+- [v2.0 新增] 试点模块响应使用 `message` 字段（不是 `msg`）。
+- [v2.0 新增] 试点模块错误响应包含 `error` 和 `stack` 字段。
+- [v2.0 新增] 试点模块 Insert 操作使用 `as unknown as NewX` 类型回填。
 - 试点模块接口返回结构统一为 JsonVO/PageDTO。
 - 试点模块所有入参均通过 Zod 校验。
 - 试点模块能以真实数据库返回数据，不再读取 mock-data.ts。

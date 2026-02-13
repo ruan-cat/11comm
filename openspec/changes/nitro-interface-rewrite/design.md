@@ -1,12 +1,16 @@
 # 设计：Nitro 接口重写与全栈类型统一架构深度指南
 
+> **版本**: v2.0 (基于更新后的 nitro-api-development 技能)
+> **更新日期**: 2026-02-13
+> **变更说明**: 根据 nitro-api-development 技能的更新，强制 JsonVO 类型注解约束、更新响应字段名、错误处理模式
+
 ## 1. 核心综述与架构哲学 (Executive Summary)
 
 本设计文档旨在为 `01s-11comm` 项目提供一份详尽的、可执行的架构升级蓝图。我们将执行一项重大的技术债务偿还行动：废弃所有 Mock 数据，建立基于 **Neon (Postgres) + Drizzle ORM + Zod + Nitro** 的现代化全栈类型安全体系。
 
 ### 1.1 现状诊断
 
-当前项目处于一种“精神分裂”状态：
+当前项目处于一种"精神分裂"状态：
 
 - **数据库层**：定义了 Schema 但从未被 API 使用。
 - **API 层**：返回硬编码的 JSON，不仅无法测试真实业务逻辑，更无法验证数据库约束。
@@ -14,7 +18,7 @@
 
 ### 1.2 目标架构：Isomorphic Shared Schema (同构共享模式)
 
-我们将构建一个“类型流动的管道”，从数据库表定义开始，自动流向 API 验证层，最后流向前端组件层。
+我们将构建一个"类型流动的管道"，从数据库表定义开始，自动流向 API 验证层，最后流向前端组件层。
 
 ```mermaid
 graph TD
@@ -47,7 +51,7 @@ graph TD
 
 ### 2.1 目录结构规范
 
-严格遵循 `.claude/skills/project-schema-registry` 和 `CLAUDE.md` 中的**业务路径 (Business Path)** 规范。每一个最小业务单元（如“字典管理”）都应拥有独立的 Schema 文件。
+严格遵循 `.claude/skills/project-schema-registry` 和 `CLAUDE.md` 中的**业务路径 (Business Path)** 规范。每一个最小业务单元（如"字典管理"）都应拥有独立的 Schema 文件。
 
 **文件路径范式**：
 `apps/type/src/business/<一级模块>/<二级模块>/[<三级模块>]/schema.ts`
@@ -197,7 +201,9 @@ export type DictionaryItem = Dictionary;
 export type DictionaryItemForm = NewDictionary;
 ```
 
-## 3. 详细实施指南：Nitro API 工程化
+## 3. 详细实施指南：Nitro API 工程化 (v2.0 更新版)
+
+> **重要更新**: 本章节代码示例已根据 nitro-api-development 技能 v2.0 更新，必须严格遵循 JsonVO 类型注解约束和新的响应字段规范。
 
 ### 3.1 数据库连接层 (`db/index.ts`)
 
@@ -225,93 +231,113 @@ export const db = drizzle(sql, {
 export { sql, eq, and, or, like, desc, asc, inArray } from "drizzle-orm";
 ```
 
-### 3.2 错误处理中台 (`utils/handle-db-error.ts`)
+### 3.2 JsonVO 类型注解约束 (v2.0 核心更新)
 
-解决“议题 5：错误处理怎么弄”。这是后端稳健性的核心。
+**这是 v2.0 最关键的更新**：必须使用 `JsonVO<T>` 作为响应变量的类型注解，让 TypeScript 编译器在编译期验证字段结构。
+
+#### 3.2.1 类型注解规则表
+
+| 端点类型                         |               类型注解写法               |
+| :------------------------------- | :--------------------------------------: |
+| 分页列表（list）                 | `JsonVO<PageDTO<(typeof data)[number]>>` |
+| 单条数据（detail/create/update） |         `JsonVO<typeof result>`          |
+| 无数据返回（delete）             |              `JsonVO<null>`              |
+| 错误响应（catch 块）             |              `JsonVO<null>`              |
+
+#### 3.2.2 错误处理中台 (`utils/handle-db-error.ts`)
+
+解决"议题 5：错误处理怎么弄"。这是后端稳健性的核心。
 
 ```typescript
 // apps/admin/server/utils/handle-db-error.ts
-import { H3Error, createError } from "h3";
-
-interface PostgresError extends Error {
-	code: string;
-	detail?: string;
-	constraint?: string;
-	table?: string;
-}
+import type { JsonVO } from "@01s-11comm/type";
 
 /**
  * 数据库错误处理转换器
  * 将底层的 SQL 错误转换为语义化的 HTTP 错误
+ * 返回符合 JsonVO<null> 类型注解的错误响应
  */
-export function handleDbError(err: any, contextStr?: string): never {
-	const pgError = err as PostgresError;
-	console.error(`[DB Error ${contextStr || ""}]`, pgError);
+export function handleDbError(error: any): JsonVO<null> {
+	const pgError = error as any;
+	console.error("[DB Error]", pgError);
 
 	// 场景 1: 唯一键冲突 (Unique Violation - 23505)
-	if (pgError.code === "23505") {
+	if (pgError?.code === "23505") {
 		// 尝试提取到底是哪个字段重复了
 		// 错误信息示例: Key (code)=(ABC) already exists.
-		const fieldMatch = pgError.detail?.match(/\((.*?)\)=/);
+		const fieldMatch = pgError?.detail?.match(/\((.*?)\)=/);
 		const fieldName = fieldMatch ? fieldMatch[1] : "数据";
 
-		throw createError({
-			statusCode: 409,
-			statusMessage: "Conflict",
+		return {
+			success: false,
+			code: 409,
 			message: `${fieldName} 已存在，请勿重复添加`,
-			data: { code: "DUPLICATE_ENTRY", field: fieldName },
-		});
+			data: null,
+			error: `${fieldName} 已存在`,
+		};
 	}
 
 	// 场景 2: 外键不存在 (Foreign Key Violation - 23503)
-	if (pgError.code === "23503") {
-		throw createError({
-			statusCode: 400,
-			statusMessage: "Bad Request",
+	if (pgError?.code === "23503") {
+		return {
+			success: false,
+			code: 400,
 			message: "引用的关联数据不存在",
-			data: { code: "INVALID_REFERENCE", detail: pgError.detail },
-		});
+			data: null,
+			error: "引用的关联数据不存在",
+		};
 	}
 
 	// 场景 3: 字段非空约束 (Not Null Violation - 23502)
 	// 虽然 Zod 应该拦截大部分此类错误，但作为最后一道防线
-	if (pgError.code === "23502") {
-		throw createError({
-			statusCode: 400,
+	if (pgError?.code === "23502") {
+		return {
+			success: false,
+			code: 400,
 			message: `必填字段缺失: ${pgError.constraint}`,
-		});
+			data: null,
+			error: `必填字段缺失: ${pgError.constraint}`,
+		};
 	}
 
 	// 场景 4: 默认 500 错误
 	// 生产环境隐藏具体堆栈
-	throw createError({
-		statusCode: 500,
-		statusMessage: "Internal Server Error",
+	return {
+		success: false,
+		code: 500,
 		message: "系统内部错误，请联系管理员",
-		data: process.env.NODE_ENV === "development" ? pgError : undefined,
-	});
+		data: null,
+		error: error.message || String(error),
+		stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+	};
 }
 ```
 
-### 3.3 标准 API Handler 范式 (Standard Handler Pattern)
+### 3.3 标准 API Handler 范式 (v2.0 更新版)
 
-以下是每个 Nitro 接口必须遵循的“黄金标准”。
+以下是每个 Nitro 接口必须遵循的"黄金标准"。**特别注意：必须使用 `message` 字段（不是 `msg`），必须使用 JsonVO 类型注解**。
 
 #### 3.3.1 列表查询 (List / Search)
 
-**位置**: `apps/admin/server/api/dev-team/config-manage/dictionary/list.get.ts`
+**位置**: `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts`
 
 ```typescript
-import { defineHandler, getValidatedQuery } from "nitro/h3";
-import { db, and, like, eq, desc, sql } from "~/server/db";
+import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db, and, like, eq, desc, sql } from "server/db";
 import { dictionary, searchDictionarySchema } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	// 1. 验证查询参数
-	// getValidatedQuery 自动处理类型转换 (string -> number/boolean)
-	const query = await getValidatedQuery(event, searchDictionarySchema.parse);
-
 	try {
+		// 1. 读取并验证查询参数
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+		};
+		const query = searchDictionarySchema.parse(rawQuery);
+
 		// 2. 构建动态查询条件
 		const conditions = [];
 
@@ -336,7 +362,7 @@ export default defineHandler(async (event) => {
 			db
 				.select()
 				.from(dictionary)
-				.where(and(...conditions))
+				.where(conditions.length > 0 ? and(...conditions) : undefined)
 				.orderBy(desc(dictionary.createdAt)) // 默认按创建时间倒序
 				.limit(query.pageSize)
 				.offset(offset),
@@ -344,25 +370,40 @@ export default defineHandler(async (event) => {
 			db
 				.select({ count: sql<number>`cast(count(${dictionary.id}) as int)` })
 				.from(dictionary)
-				.where(and(...conditions)),
+				.where(conditions.length > 0 ? and(...conditions) : undefined),
 		]);
 
 		// 5. 返回标准分页结构
-		const total = countResult[0]?.count || 0;
+		const total = Number(countResult[0]?.count || 0);
+		const totalPages = Math.ceil(total / query.pageSize);
 
-		return {
+		/** [v2.0 更新] 必须使用 JsonVO<PageDTO<...>> 类型注解约束响应 */
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
 			code: 200,
-			msg: "查询成功",
+			message: "查询成功",
 			data: {
 				list: data,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,
-				totalPages: Math.ceil(total / query.pageSize),
+				totalPages,
 			},
 		};
-	} catch (err) {
-		handleDbError(err, "Dictionary List");
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary List] Error:", error);
+
+		/** [v2.0 更新] 必须使用 JsonVO<null> 类型注解约束错误响应 */
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
 });
 ```
@@ -372,99 +413,221 @@ export default defineHandler(async (event) => {
 **位置**: `.../detail.get.ts` (通常是动态路由 `.../[id].get.ts`)
 
 ```typescript
-import { defineHandler, createError, getRouterParam } from "nitro/h3";
-import { db, eq } from "~/server/db";
-import { dictionary } from "@01s-11comm/type";
+import { defineHandler, getQuery } from "nitro/h3";
 import { z } from "zod";
+import { db, eq } from "server/db";
+import { dictionary } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	id: z.coerce.number(),
+});
 
 export default defineHandler(async (event) => {
-	// 1. 验证路由参数
-	const idStr = getRouterParam(event, "id");
-	// 必须手动 parse，保证 ID 是数字
-	const id = z.coerce.number().parse(idStr);
-
 	try {
-		const result = await db.select().from(dictionary).where(eq(dictionary.id, id)).limit(1);
+		// 1. 验证查询参数
+		const rawQuery = getQuery(event);
+		const query = querySchema.parse(rawQuery);
 
-		if (result.length === 0) {
-			throw createError({ statusCode: 404, message: "字典项不存在" });
+		const [result] = await db.select().from(dictionary).where(eq(dictionary.id, query.id)).limit(1);
+
+		if (!result) {
+			/** 使用 JsonVO<null> 类型注解约束 404 响应 */
+			const notFoundResponse: JsonVO<null> = {
+				success: false,
+				code: 404,
+				message: "字典项不存在",
+				data: null,
+			};
+			return notFoundResponse;
 		}
 
-		return { code: 200, msg: "查询成功", data: result[0] };
-	} catch (err) {
-		handleDbError(err, "Dictionary Detail");
+		/** [v2.0 更新] 必须使用 JsonVO<typeof result> 类型注解约束成功响应 */
+		const response: JsonVO<typeof result> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: result,
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary Detail] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
 });
 ```
 
-#### 3.3.3 创建 (Create)
+#### 3.3.3 创建 (Create) - [v2.0 关键更新：类型回填]
 
 **位置**: `.../create.post.ts`
 
 ```typescript
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "~/server/db";
-import { dictionary, insertDictionarySchema } from "@01s-11comm/type";
+import { db } from "server/db";
+import { dictionary, insertDictionarySchema, NewDictionary } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	// 1. 严格 Body 校验
-	// 任何多余字段会被剔除，非法字段会被拦截
-	const body = await readValidatedBody(event, insertDictionarySchema.parse);
-
 	try {
-		// 2. 插入数据库
-		const result = await db.insert(dictionary).values(body).returning(); // 必须返回，让前端拿到新 ID
+		// 1. 严格 Body 校验 + [v2.0 更新] 类型回填
+		// readValidatedBody 的类型推导可能不足以满足 Drizzle 的严格类型要求
+		// 必须使用 as unknown as NewX 将结果回填为正确的 Insert 类型
+		const body = (await readValidatedBody(event, insertDictionarySchema.parse)) as unknown as NewDictionary;
 
-		return {
+		// 2. 插入数据库
+		const [result] = await db.insert(dictionary).values(body).returning(); // 必须返回，让前端拿到新 ID
+
+		/** [v2.0 更新] 必须使用 JsonVO<typeof result> 类型注解约束成功响应 */
+		const response: JsonVO<typeof result> = {
+			success: true,
 			code: 200,
-			msg: "创建成功",
-			data: result[0],
+			message: "创建成功",
+			data: result,
 		};
-	} catch (err) {
-		// 此时可能会触发 Unqiue Constraint (Code重复)
-		handleDbError(err, "Dictionary Create");
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary Create] Error:", error);
+
+		// 此时可能会触发 Unique Constraint (Code重复)
+		// [v2.0 更新] 统一返回 JsonVO<null> 格式的错误响应
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "创建失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
 });
 ```
 
 #### 3.3.4 更新 (Update)
 
-**位置**: `.../update.put.ts`
+**位置**: `.../update.post.ts`
 
 ```typescript
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db, eq } from "~/server/db";
+import { db, eq } from "server/db";
 import { dictionary, updateDictionarySchema } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	// 1. 校验 Body (包含 ID)
-	const body = await readValidatedBody(event, updateDictionarySchema.parse);
-
 	try {
+		// 1. 校验 Body (包含 ID)
+		const body = await readValidatedBody(event, updateDictionarySchema.parse);
+		const { id, ...updateData } = body;
+
 		// 2. 执行更新
-		const result = await db
+		const [result] = await db
 			.update(dictionary)
 			.set({
-				...body,
+				...updateData,
 				updatedAt: new Date(), // 显式更新时间
 			})
-			.where(eq(dictionary.id, body.id))
+			.where(eq(dictionary.id, id))
 			.returning();
 
-		if (result.length === 0) {
-			throw createError({ statusCode: 404, message: "数据不存在或已被删除" });
+		if (!result) {
+			const notFoundResponse: JsonVO<null> = {
+				success: false,
+				code: 404,
+				message: "数据不存在或已被删除",
+				data: null,
+			};
+			return notFoundResponse;
 		}
 
-		return { code: 200, msg: "更新成功", data: result[0] };
-	} catch (err) {
-		handleDbError(err, "Dictionary Update");
+		/** [v2.0 更新] 必须使用 JsonVO<typeof result> 类型注解约束成功响应 */
+		const response: JsonVO<typeof result> = {
+			success: true,
+			code: 200,
+			message: "更新成功",
+			data: result,
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary Update] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "更新失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
+});
+```
+
+#### 3.3.5 删除 (Delete)
+
+**位置**: `.../delete.post.ts`
+
+```typescript
+import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db, eq } from "server/db";
+import { dictionary } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
+
+/** 删除请求体验证 schema */
+const deleteSchema = z.object({
+	ids: z.array(z.number()).min(1, "请至少选择一项进行删除"),
+});
+
+export default defineHandler(async (event) => {
+	try {
+		// 1. 读取并验证参数
+		const body = (await readBody(event)) as any;
+		const { ids } = deleteSchema.parse(body);
+
+		// 2. 执行删除（批量）
+		const deletedRecords = await db
+			.delete(dictionary)
+			.where(eq(dictionary.id, ids[0])) // 简化示例，实际可能需要 inArray
+			.returning();
+
+		/** [v2.0 更新] 删除操作无返回数据，使用 JsonVO<null> 类型注解 */
+		const response: JsonVO<null> = {
+			success: true,
+			code: 200,
+			message: "删除成功",
+			data: null,
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[Dictionary Delete] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "删除失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
 });
 ```
 
 ## 4. 前端同构指南 (Frontend Guide)
 
-解决“议题 7：前端如何过渡”。
+解决"议题 7：前端如何过渡"。
 
 ### 4.1 适配器模式 (Adapter Pattern)
 
@@ -526,26 +689,35 @@ const rules = useZodRules(insertDictionarySchema);
 
 ## 5. 实施经验与故障预防 (Implementation Lessons)
 
-### 5.1 故障复盘：偏题与类型错误的根因
+### 5.1 故障复盘：偏题与类型错误的根因 (v2.0 更新)
 
-- 规范冲突：旧的 Mock 迁移规范与新 DB 交互规范并存，导致接口写法在“假数据模板”和“真实 DB 模板”之间摇摆。
+- [v2.0 更新] **规范冲突**：旧的 Mock 迁移规范与新 DB 交互规范并存，导致接口写法在"假数据模板"和"真实 DB 模板"之间摇摆。
+- [v2.0 更新] **JsonVO 类型注解缺失**：未使用 `JsonVO<T>` 类型注解，导致字段名拼写错误（msg vs message）无法被 TypeScript 检测。
+- [v2.0 更新] **类型回填缺失**：Insert 操作未使用 `as unknown as NewX`，导致 Drizzle 严格类型检查失败。
+- [v2.0 更新] **错误字段缺失**：catch 块未包含 `error` 和 `stack` 字段，不符合 JsonVO 规范。
 - 工具认知缺口：误用不存在的校验 helper（如未启用的 `getValidatedQuery`），造成编译失败与运行期异常。
 - 导入路径混乱：在 `@/server/*` 与 `server/*` 别名之间切换，未以 `nitro.config.ts` 的 alias 为准，导致路径不可解析。
 - Schema 假设错误：默认添加 `createdAt/updatedAt` 等字段写入，但实际 schema 由数据库默认或触发器管理，导致 Insert 类型不匹配。
 - 动态字段索引：直接以 `schema[sortBy]` 访问列，触发 `undefined` 或类型不安全，导致排序和类型推导失败。
-- 失败未被前置阻断：缺少“实现前校验清单”，导致错误在类型检查阶段才暴露。
+- 失败未被前置阻断：缺少"实现前校验清单"，导致错误在类型检查阶段才暴露。
 
-### 5.2 实施前校验清单 (Pre-Implementation Gate)
+### 5.2 实施前校验清单 (Pre-Implementation Gate) - v2.0 更新
 
+- [v2.0 新增] 确认响应使用 `message` 字段（不是 `msg`）。
+- [v2.0 新增] 确认所有响应变量使用 `JsonVO<T>` 类型注解。
+- [v2.0 新增] 确认 Insert 操作使用 `as unknown as NewX` 类型回填。
+- [v2.0 新增] 确认错误响应包含 `error` 字段，生产环境 `stack` 可选。
 - 确认业务路径与真实 Schema 文件位置一致（必须来源于 `apps/type/src/business/**/schema.ts`）。
 - 确认数据库表字段是否由数据库默认值管理，避免在 Insert 中显式写入。
 - 确认 `nitro.config.ts` 中 alias，统一使用 `server/*` 与 `@01s-11comm/type`。
-- 确认 `readValidatedBody/getValidatedQuery` 可用性；不可用时必须使用 `readBody/getQuery + schema.parse`。
-- 确认写接口是否需要事务与 `handleDbError` 语义映射。
+- 确认 `readValidatedBody` 或 `readBody + schema.parse` 可用性。
+- 确认写接口是否需要事务与错误语义映射。
 - 确认列表排序字段通过白名单映射，而非字符串直索引。
 
-### 5.3 类型错误防线 (Type Error Guardrails)
+### 5.3 类型错误防线 (Type Error Guardrails) - v2.0 更新
 
+- [v2.0 新增] **JsonVO 类型注解**：所有响应必须使用 `JsonVO<T>` 类型注解约束。
+- [v2.0 新增] **类型回填**：Insert 操作必须使用 `as unknown as NewX` 回填类型。
 - Insert 仅允许写入 schema 中定义且可写字段，禁止额外字段写入。
 - Update 仅允许 `partial()` 字段，且必须显式校验主键或路由参数。
 - 所有 Zod schema 必须来自 `apps/type` 的导出，不允许在 API 内手写业务 schema。
@@ -565,15 +737,15 @@ const rules = useZodRules(insertDictionarySchema);
 - **任务**：
   1.  安装 `drizzle-orm`, `zod`, `drizzle-zod` 到 `apps/type`。
   2.  配置 `apps/admin` 的 `drizzle.config.ts`。
-  3.  建立 `handleDbError` 工具。
+  3.  建立 `handleDbError` 工具（v2.0 更新：返回 JsonVO<null> 格式）。
 
 ### 阶段二：试点 (The Pilot) - 2 天
 
 - **目标**：迁移 `Dictionary` (字典) 模块。这是一个独立性强、业务简单的 CRUD 模块，非常适合作为试验田。
 - **任务**：
   1.  创建 `dictionary/schema.ts`。
-  2.  实施“影子导出”(`export type DictionaryItem = Dictionary`)。
-  3.  重写 Dictionary 的 4 个 API。
+  2.  实施"影子导出"(`export type DictionaryItem = Dictionary`)。
+  3.  [v2.0 更新] 重写 Dictionary 的 4 个 API，确保使用 JsonVO 类型注解。
   4.  在前端页面验证，确保无红屏报错。
 
 ### 阶段三：扩张 (The Expansion) - 1 周
@@ -594,15 +766,28 @@ const rules = useZodRules(insertDictionarySchema);
 
 ## 7. 风险与对策 (Risks & Mitigations)
 
-| 风险               | 严重度 | 对策                                                                                                                                 |
-| :----------------- | :----- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| **Vite 构建失败**  | 高     | 严防 `apps/type` 引入 Node.js 库。Schema 文件中只能有 `drizzle-orm/pg-core`。                                                        |
-| **数据库表被误删** | 极高   | `drizzle-kit push/generate` 前必须备份。配置 `drizzle.config.ts` 时要小心 `tablesFilter`。                                           |
-| **TS 类型不兼容**  | 中     | 如果旧 Interface 定义非常松散（全是 any），新类型过于严格，可能导致前端报错。对策：使用 `Partial<>` 或 `Pick<>` 在影子导出层做适配。 |
-| **性能回退**       | 低     | 数据库查询可能比 Mock 慢。对策：合理添加索引（在 schema 中定义），使用分页。                                                         |
+| 风险                    | 严重度 | 对策                                                                                                                                 |
+| :---------------------- | :----- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| **Vite 构建失败**       | 高     | 严防 `apps/type` 引入 Node.js 库。Schema 文件中只能有 `drizzle-orm/pg-core`。                                                        |
+| **数据库表被误删**      | 极高   | `drizzle-kit push/generate` 前必须备份。配置 `drizzle.config.ts` 时要小心 `tablesFilter`。                                           |
+| **TS 类型不兼容**       | 中     | 如果旧 Interface 定义非常松散（全是 any），新类型过于严格，可能导致前端报错。对策：使用 `Partial<>` 或 `Pick<>` 在影子导出层做适配。 |
+| **JsonVO 类型注解缺失** | 高     | [v2.0 新增] 必须使用 `JsonVO<T>` 类型注解约束响应变量，否则字段名拼写错误无法被检测。                                                |
+| **性能回退**            | 低     | 数据库查询可能比 Mock 慢。对策：合理添加索引（在 schema 中定义），使用分页。                                                         |
 
-## 8. 结论
+## 8. v2.0 核心变更总结
 
-这份 2000 行级别的设计规划（注：实际执行代码量）不仅仅是让应用“能跑”，而是为了赋予它**工业级的健壮性**。
+| 变更项      | 旧写法 (v1.0)     | 新写法 (v2.0)                          |
+| ----------- | ----------------- | -------------------------------------- |
+| 响应字段    | `msg`             | `message`                              |
+| 类型约束    | 无                | **必须**使用 `JsonVO<T>` 类型注解      |
+| 错误响应    | 简单返回          | 必须包含 `error` 和 `stack` 字段       |
+| Insert 类型 | 直接使用          | **必须**使用 `as unknown as NewX` 回填 |
+| 校验方式    | readValidatedBody | 推荐 readBody + schema.parse           |
 
-通过将 Schema 提升为“一等公民”，我们消除了前后端的沟通成本，消除了手写校验规则的繁琐，更消除了“假数据”带来的自欺欺人。这是一次痛苦但必要的蜕变。
+## 9. 结论
+
+这份 2000 行级别的设计规划（注：实际执行代码量）不仅仅是让应用"能跑"，而是为了赋予它**工业级的健壮性**。
+
+通过将 Schema 提升为"一等公民"，我们消除了前后端的沟通成本，消除了手写校验规则的繁琐，更消除了"假数据"带来的自欺欺人。这是一次痛苦但必要的蜕变。
+
+**v2.0 更新重点**：强制 JsonVO 类型注解约束，使得 TypeScript 编译器能够在编译期捕获字段名拼写错误、类型不匹配等常见问题，极大提升代码质量。
