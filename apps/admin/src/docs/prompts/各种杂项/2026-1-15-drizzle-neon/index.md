@@ -342,4 +342,10 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 我列举的内容可能有缺省，你需要认真阅读 `schema-change-sync` 的要求，去确定需要修改的范围，然后补充对应的修改。
 
-### 04 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
+### 04 <!-- TODO: --> 根据报告提及到的特殊情况，继续完成对应 nitro 接口的改造
+
+阅读以下报告的要求，根据特殊情况，继续完成 `nitro-interface-rewrite` 任务。
+
+- apps\admin\src\docs\reports\2026-02-14-nitro-interface-rewrite-completion-report.md
+
+### 05 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
