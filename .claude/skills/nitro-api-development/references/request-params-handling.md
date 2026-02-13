@@ -93,53 +93,62 @@ export default defineHandler(async (event) => {
 
 ## 3. 错误处理与响应 (Error Handling)
 
-为了方便前端调试和生产环境监控，接口必须具备鲁棒的错误捕获机制。
+为了方便前端调试和生产环境监控，接口**必须**具备鲁棒的错误捕获机制。所有响应**必须**符合 `JsonVO` 类型结构。
 
-### 3.1 全局异常捕获模式
+### 3.1 强制 try-catch 异常捕获模式
 
-建议在 Handler 顶层包裹 `try-catch`。
+**所有** Handler **必须**在顶层包裹 `try-catch`。成功和失败响应均**必须**使用 `JsonVO` 类型注解标注响应变量（不是仅导入不使用）。
 
 ```typescript
+import { defineHandler, readBody } from "nitro/h3";
+import { db } from "server/db";
+import { users } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
+import { eq } from "drizzle-orm";
+
 export default defineHandler(async (event) => {
 	try {
-		// ... 业务逻辑 ...
+		const body = (await readBody(event)) as any;
+		const [result] = await db.select().from(users).where(eq(users.id, body.id));
 
-		// 成功响应
-		return {
+		/** 使用 JsonVO<typeof result> 类型注解约束成功响应 */
+		const response: JsonVO<typeof result> = {
 			success: true,
 			code: 200,
 			message: "操作成功",
 			data: result,
 		};
+		return response;
 	} catch (error: any) {
-		// 1. 记录错误日志 (便于服务端排查)
-		console.error("[API Error]", event.path, error);
+		console.error("[API Error]", error);
 
-		// 2. 返回标准错误响应
-		return {
-			success: false, // 标记失败
-			code: 500, // 或 error.statusCode
-			message: "服务器内部错误", // 生产环境通常不直接展示 raw error message
+		/** 使用 JsonVO<null> 类型注解约束错误响应 */
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "操作失败",
 			data: null,
-			// 开发模式下返回详细错误栈，生产环境隐藏
 			error: error.message || String(error),
 			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
 		};
+		return errorResponse;
 	}
 });
 ```
 
-### 3.2 业务逻辑异常
+### 3.2 业务逻辑异常 (404 等)
 
-对于可预见的业务错误（如 ID 不存在），使用 `h3` 的 `createError` 抛出，由 catch 块捕获或 Nitro 全局处理。
+对于可预见的业务错误（如 ID 不存在），使用 `JsonVO<null>` 类型注解约束：
 
 ```typescript
-import { createError } from "nitro/h3";
-
 if (!record) {
-	throw createError({
-		statusCode: 404,
-		message: "记录未找到",
-	});
+	/** 使用 JsonVO<null> 类型注解约束 404 响应 */
+	const notFoundResponse: JsonVO<null> = {
+		success: false,
+		code: 404,
+		message: "记录不存在",
+		data: null,
+	};
+	return notFoundResponse;
 }
 ```

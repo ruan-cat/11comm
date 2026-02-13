@@ -96,45 +96,100 @@ export default defineConfig({
 
 ```typescript
 import { defineHandler, readBody } from "nitro/h3";
+import { db } from "server/db";
+import { users } from "@01s-11comm/type";
+import type { JsonVO } from "@01s-11comm/type";
+import { eq } from "drizzle-orm";
 
 export default defineHandler(async (event) => {
-	// 读取请求体 (必须使用 await，且建议断言为 any 以便后续清洗)
-	const body = (await readBody(event)) as any;
-
-	// 建议包裹 try-catch 处理业务逻辑错误
 	try {
-		// 处理逻辑...
-		return { success: true, code: 200, message: "OK", data: {} };
+		/** 读取请求体 (必须使用 await，且建议断言为 any 以便后续清洗) */
+		const body = (await readBody(event)) as any;
+
+		/** 处理逻辑... */
+		const [result] = await db.select().from(users).where(eq(users.id, body.id));
+
+		/** 使用 JsonVO 类型注解约束成功响应 */
+		const response: JsonVO<typeof result> = {
+			success: true,
+			code: 200,
+			message: "操作成功",
+			data: result,
+		};
+		return response;
 	} catch (error: any) {
-		console.error(error);
-		return { success: false, code: 500, message: "Internal Error", data: null, error: error.message };
+		console.error("[API Error]", error);
+
+		/** 使用 JsonVO<null> 类型注解约束错误响应 */
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "操作失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
 });
 ```
 
-### 3.2 带类型约束的接口结构
+### 3.2 列表接口的类型约束结构
 
 ```typescript
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ListItem, QueryParams } from "@01s-11comm/type";
+import { db } from "server/db";
+import { dtConfigs } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { desc, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ListItem>>> => {
-	const body = await readBody<QueryParams>(event);
+export default defineHandler(async (event) => {
+	try {
+		const body = (await readBody(event)) as any;
 
-	const response: JsonVO<PageDTO<ListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: [],
-			total: 0,
-			pageIndex: 1,
-			pageSize: 10,
-			totalPages: 0,
-		},
-	};
+		/** 查询分页数据 */
+		const data = await db
+			.select()
+			.from(dtConfigs)
+			.orderBy(desc(dtConfigs.createdAt))
+			.limit(body.pageSize || 10)
+			.offset(((body.page || 1) - 1) * (body.pageSize || 10));
 
-	return response;
+		/** 查询总数 */
+		const [countResult] = await db.select({ total: sql<number>`count(*)` }).from(dtConfigs);
+		const total = Number(countResult?.total || 0);
+		const totalPages = Math.ceil(total / (body.pageSize || 10));
+
+		/**
+		 * 使用 JsonVO<PageDTO<...>> 类型注解约束列表响应
+		 * (typeof data)[number] 自动推断 Drizzle 查询结果的行类型
+		 */
+		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list: data,
+				total,
+				pageIndex: body.page || 1,
+				pageSize: body.pageSize || 10,
+				totalPages,
+			},
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[List] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
 ```
 
@@ -142,26 +197,65 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ListItem>>> =
 
 ```typescript
 import { defineHandler, getQuery } from "nitro/h3";
+import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	const query = getQuery(event);
-	const id = query.id;
-	const name = query.name;
+	try {
+		const query = getQuery(event);
+		const id = query.id;
 
-	return { id, name };
+		/** 注意: 实际接口必须返回 JsonVO 格式 */
+		return {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: { id },
+		};
+	} catch (error: any) {
+		console.error("[API Error]", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
 ```
 
 ### 3.4 获取路由参数
 
 ```typescript
-// 文件: [id].get.ts
+/** 文件: [id].get.ts */
 import { defineHandler, getRouterParam } from "nitro/h3";
+import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	const id = getRouterParam(event, "id");
+	try {
+		const id = getRouterParam(event, "id");
 
-	return { id };
+		/** 注意: 实际接口必须返回 JsonVO 格式 */
+		return {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: { id },
+		};
+	} catch (error: any) {
+		console.error("[API Error]", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
 ```
 
@@ -211,34 +305,80 @@ export default defineHandler((event) => {
 
 ## 5. 错误处理速查
 
-### 5.1 创建错误响应
+### 5.1 参数校验失败时的错误响应
 
 ```typescript
-import { defineHandler, createError, readBody } from "nitro/h3";
+import { defineHandler, readBody } from "nitro/h3";
+import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
-	const body = await readBody(event);
+	try {
+		const body = (await readBody(event)) as any;
 
-	if (!body.id) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: "Bad Request",
-			message: "缺少必要参数 id",
-		});
+		if (!body.id) {
+			/** 使用 JsonVO<null> 类型注解约束参数错误响应 */
+			const badRequestResponse: JsonVO<null> = {
+				success: false,
+				code: 400,
+				message: "缺少必要参数 id",
+				data: null,
+			};
+			return badRequestResponse;
+		}
+
+		/** 使用 JsonVO<null> 类型注解约束成功响应 */
+		const response: JsonVO<null> = {
+			success: true,
+			code: 200,
+			message: "操作成功",
+			data: null,
+		};
+		return response;
+	} catch (error: any) {
+		console.error("[API Error]", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "操作失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
 	}
-
-	return { success: true };
 });
 ```
 
 ### 5.2 标准错误响应格式
 
+所有错误响应 **必须** 使用 `JsonVO<null>` 类型注解标注变量，确保编译期检查字段结构。catch 块中**必须**包含 `error` 和 `stack` 字段：
+
 ```typescript
-const errorResponse: JsonVO<null> = {
+/** 参数校验错误（业务逻辑异常，无需 error/stack） */
+const badRequestResponse: JsonVO<null> = {
 	success: false,
 	code: 400,
 	message: "请求参数错误",
 	data: null,
+};
+
+/** 资源不存在（业务逻辑异常，无需 error/stack） */
+const notFoundResponse: JsonVO<null> = {
+	success: false,
+	code: 404,
+	message: "记录不存在",
+	data: null,
+};
+
+/** 服务器内部错误（catch 块中，必须携带 error 和 stack） */
+const errorResponse: JsonVO<null> = {
+	success: false,
+	code: 500,
+	message: "操作失败",
+	data: null,
+	error: error.message || String(error),
+	stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
 };
 ```
 
@@ -256,24 +396,42 @@ const errorResponse: JsonVO<null> = {
 
 ### 7.1 JsonVO 响应包装类型
 
+**来源**: `apps/type/src/common/index.ts` - **唯一事实来源 (Single Source of Truth)**
+
 ```typescript
 interface JsonVO<T> {
-	success: boolean;
+	/** 状态码 */
 	code: number;
+	/** 提示消息 */
 	message: string;
+	/** 数据对象 */
 	data: T;
+	/** 时间戳 */
 	timestamp?: number;
+	/** 请求是否成功 (建议始终显式设置) */
+	success?: boolean;
+	/** 错误信息（仅在请求失败时返回） */
+	error?: string;
+	/** 错误堆栈（仅在开发环境下返回，生产环境不暴露） */
+	stack?: string;
 }
 ```
 
 ### 7.2 PageDTO 分页数据类型
 
+**来源**: `apps/type/src/common/index.ts` - **唯一事实来源 (Single Source of Truth)**
+
 ```typescript
 interface PageDTO<T> {
+	/** 数据列表 */
 	list: T[];
+	/** 总记录数 */
 	total: number;
+	/** 当前页码 (1-based) */
 	pageIndex: number;
+	/** 每页大小 */
 	pageSize: number;
+	/** 总页数 */
 	totalPages: number;
 }
 ```
@@ -333,7 +491,8 @@ export default defineHandler(async (event) => {
 	consola.warn("警告信息");
 	consola.error("错误信息");
 
-	return { success: true };
+	/** 注意: 实际接口必须返回完整的 JsonVO 格式 */
+	return { success: true, code: 200, message: "操作成功", data: null };
 });
 ```
 
@@ -351,6 +510,7 @@ export default defineHandler(async (event) => {
 	console.log("Query:", query);
 	console.log("Headers:", headers);
 
-	return { body, query };
+	/** 注意: 实际接口必须返回完整的 JsonVO 格式 */
+	return { success: true, code: 200, message: "调试成功", data: { body, query } };
 });
 ```
