@@ -915,13 +915,14 @@ import { like, eq } from "server/db"; // 错误！server/db 不导出这些
 ```
 
 **导入分层原则**：
-| 导入内容 | 导入来源 |
-|---------|---------|
-| `db` (Drizzle 实例) | `server/db` |
-| SQL 操作符 (`eq`, `like`, `and`, `desc`, `asc`, `sql`, `inArray`) | `drizzle-orm` |
-| 表定义 (`dtDictionaries`, `dtMenuGroups`) | `@01s-11comm/type` |
-| Zod Schema (`insertDtDictionarySchema`) | `@01s-11comm/type` |
-| 类型 (`JsonVO`, `PageDTO`) | `@01s-11comm/type` |
+
+| 导入内容                                                          | 导入来源           |
+| ----------------------------------------------------------------- | ------------------ |
+| `db` (Drizzle 实例)                                               | `server/db`        |
+| SQL 操作符 (`eq`, `like`, `and`, `desc`, `asc`, `sql`, `inArray`) | `drizzle-orm`      |
+| 表定义 (`dtDictionaries`, `dtMenuGroups`)                         | `@01s-11comm/type` |
+| Zod Schema (`insertDtDictionarySchema`)                           | `@01s-11comm/type` |
+| 类型 (`JsonVO`, `PageDTO`)                                        | `@01s-11comm/type` |
 
 > **【关键警告】禁止使用 `@/` 路径别名**
 >
