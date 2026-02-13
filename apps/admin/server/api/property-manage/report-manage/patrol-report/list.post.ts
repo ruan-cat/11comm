@@ -5,41 +5,125 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptPatrolReports } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, PatrolReportListItem, PatrolReportQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockPatrolReportData } from "./mock-data";
+import { desc, like, sql, and } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	patrolName: z.string().optional(),
+	patrolType: z.string().optional(),
+	patrolLevel: z.string().optional(),
+	responsiblePerson: z.string().optional(),
+	status: z.string().optional(),
+	community: z.string().optional(),
+	patrolTimeStart: z.string().optional(),
+	patrolTimeEnd: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolReportListItem>>> => {
-	const body = await readBody<PatrolReportQueryParams>(event);
-	const defaultParams: PatrolReportQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<PatrolReportQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			patrolName: body.patrolName,
+			patrolType: body.patrolType,
+			patrolLevel: body.patrolLevel,
+			responsiblePerson: body.responsiblePerson,
+			status: body.status,
+			community: body.community,
+			patrolTimeStart: body.patrolTimeStart,
+			patrolTimeEnd: body.patrolTimeEnd,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockPatrolReportData, filters);
+		// 构建查询条件
+		const conditions = [];
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		if (query.patrolType) {
+			conditions.push(like(rptPatrolReports.dimension, `%${query.patrolType}%`));
+		}
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<PatrolReportListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		if (query.patrolLevel) {
+			conditions.push(like(rptPatrolReports.period, `%${query.patrolLevel}%`));
+		}
 
-	return response;
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptPatrolReports);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptPatrolReports.id,
+				plannedTasks: rptPatrolReports.plannedTasks,
+				completedTasks: rptPatrolReports.completedTasks,
+				abnormalTasks: rptPatrolReports.abnormalTasks,
+				onTimeCompletionRate: rptPatrolReports.onTimeCompletionRate,
+				period: rptPatrolReports.period,
+				dimension: rptPatrolReports.dimension,
+				remark: rptPatrolReports.remark,
+				createdAt: rptPatrolReports.createdAt,
+				updatedAt: rptPatrolReports.updatedAt,
+			})
+			.from(rptPatrolReports)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(rptPatrolReports.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		// 映射数据
+		const list: PatrolReportListItem[] = data.map((item) => ({
+			id: item.id || "",
+			community: "",
+			patrolNumber: item.id || "",
+			patrolName: item.dimension || "",
+			patrolType: item.period || "",
+			patrolLevel: item.dimension || "",
+			responsiblePerson: "",
+			patrolTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			status: item.completedTasks ? "已完成" : "未完成",
+			abnormalCount: item.abnormalTasks || 0,
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<PatrolReportListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Patrol Report List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

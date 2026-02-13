@@ -5,41 +5,120 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptExpenseSummaries } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockExpenseSummaryTableData } from "./mock-data";
+import { desc, like, sql, and, eq } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	time: z.string().optional(),
+	expenseItemId: z.string().optional(),
+	expenseItemName: z.string().optional(),
+	status: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseSummaryTableListItem>>> => {
-	const body = await readBody<ExpenseSummaryTableQueryParams>(event);
-	const defaultParams: ExpenseSummaryTableQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<ExpenseSummaryTableQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			time: body.time,
+			expenseItemId: body.expenseItemId,
+			expenseItemName: body.expenseItemName,
+			status: body.status,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockExpenseSummaryTableData, filters);
+		// 构建查询条件
+		const conditions = [];
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		if (query.expenseItemName) {
+			conditions.push(like(rptExpenseSummaries.expenseItem, `%${query.expenseItemName}%`));
+		}
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ExpenseSummaryTableListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		if (query.time) {
+			conditions.push(eq(rptExpenseSummaries.periodStart, query.time));
+		}
 
-	return response;
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptExpenseSummaries);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptExpenseSummaries.id,
+				communityId: rptExpenseSummaries.communityId,
+				periodStart: rptExpenseSummaries.periodStart,
+				periodEnd: rptExpenseSummaries.periodEnd,
+				expenseType: rptExpenseSummaries.expenseType,
+				receivableTotal: rptExpenseSummaries.receivableTotal,
+				receivedTotal: rptExpenseSummaries.receivedTotal,
+				outstandingTotal: rptExpenseSummaries.outstandingTotal,
+				building: rptExpenseSummaries.building,
+				expenseItem: rptExpenseSummaries.expenseItem,
+				remark: rptExpenseSummaries.remark,
+				createdAt: rptExpenseSummaries.createdAt,
+				updatedAt: rptExpenseSummaries.updatedAt,
+			})
+			.from(rptExpenseSummaries)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(rptExpenseSummaries.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		// 映射数据
+		const list: ExpenseSummaryTableListItem[] = data.map((item) => ({
+			id: item.id || "",
+			time: item.periodStart || "",
+			expenseItemId: "",
+			expenseItemName: item.expenseItem || "",
+			receivableAmount: item.receivableTotal || "0",
+			actualAmount: item.receivedTotal || "0",
+			status: item.receivableTotal ? "正常" : "无数据",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			remark: item.remark || "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<ExpenseSummaryTableListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Expense Summary Table List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

@@ -5,6 +5,9 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptOutstandingFees } from "@01s-11comm/type";
 import type {
 	JsonVO,
 	PageDTO,
@@ -12,39 +15,125 @@ import type {
 	OutstandingFeesAnalysisQueryParams,
 } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockOutstandingFeesAnalysisData } from "./mock-data";
+import { desc, like, sql, and } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	houseNumberContractName: z.string().optional(),
+	ownerName: z.string().optional(),
+	ownerPhone: z.string().optional(),
+	feeItem: z.string().optional(),
+	community: z.string().optional(),
+	building: z.string().optional(),
+	unit: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFeesAnalysisListItem>>> => {
-	const body = await readBody<OutstandingFeesAnalysisQueryParams>(event);
-	const defaultParams: OutstandingFeesAnalysisQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<OutstandingFeesAnalysisQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			houseNumberContractName: body.houseNumberContractName,
+			ownerName: body.ownerName,
+			ownerPhone: body.ownerPhone,
+			feeItem: body.feeItem,
+			community: body.community,
+			building: body.building,
+			unit: body.unit,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockOutstandingFeesAnalysisData, filters);
+		// 构建查询条件
+		const conditions = [];
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		if (query.feeItem) {
+			conditions.push(like(rptOutstandingFees.expenseItem, `%${query.feeItem}%`));
+		}
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<OutstandingFeesAnalysisListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		if (query.community) {
+			conditions.push(like(rptOutstandingFees.community, `%${query.community}%`));
+		}
 
-	return response;
+		if (query.building) {
+			conditions.push(like(rptOutstandingFees.building, `%${query.building}%`));
+		}
+
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptOutstandingFees);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptOutstandingFees.id,
+				agingBucket: rptOutstandingFees.agingBucket,
+				outstandingAmount: rptOutstandingFees.outstandingAmount,
+				householdCount: rptOutstandingFees.householdCount,
+				community: rptOutstandingFees.community,
+				building: rptOutstandingFees.building,
+				expenseItem: rptOutstandingFees.expenseItem,
+				remark: rptOutstandingFees.remark,
+				createdAt: rptOutstandingFees.createdAt,
+				updatedAt: rptOutstandingFees.updatedAt,
+			})
+			.from(rptOutstandingFees)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(desc(rptOutstandingFees.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		// 映射数据
+		const list: OutstandingFeesAnalysisListItem[] = data.map((item) => ({
+			id: item.id || "",
+			community: item.community || "",
+			building: item.building || "",
+			unit: "",
+			houseNumberContractName: "",
+			ownerName: "",
+			ownerPhone: "",
+			feeItem: item.expenseItem || "",
+			totalUncollectedAmount: item.outstandingAmount || "0",
+			currentUncollectedAmount: "",
+			historicalUncollectedAmount: "",
+			latestReceivableMonth: item.agingBucket || "",
+			statisticsTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<OutstandingFeesAnalysisListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Outstanding Fees Analysis List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

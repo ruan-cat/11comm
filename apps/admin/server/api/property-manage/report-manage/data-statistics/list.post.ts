@@ -5,41 +5,103 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptDataStatistics } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, DataStatisticsListItem, DataStatisticsQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockDataStatisticsData } from "./mock-data";
+import { desc, like, sql } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	name: z.string().optional(),
+	status: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<DataStatisticsListItem>>> => {
-	const body = await readBody<DataStatisticsQueryParams>(event);
-	const defaultParams: DataStatisticsQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<DataStatisticsQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			name: body.name,
+			status: body.status,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockDataStatisticsData, filters);
+		// 构建查询条件
+		const conditions = [];
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		if (query.name) {
+			conditions.push(like(rptDataStatistics.statisticIndicator, `%${query.name}%`));
+		}
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<DataStatisticsListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptDataStatistics);
 
-	return response;
+		const total = Number(countResult[0]?.total || 0);
+
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptDataStatistics.id,
+				statisticIndicator: rptDataStatistics.statisticIndicator,
+				statisticValue: rptDataStatistics.statisticValue,
+				statisticTime: rptDataStatistics.statisticTime,
+				comparisonBaseline: rptDataStatistics.comparisonBaseline,
+				remark: rptDataStatistics.remark,
+				createdAt: rptDataStatistics.createdAt,
+				updatedAt: rptDataStatistics.updatedAt,
+			})
+			.from(rptDataStatistics)
+			.where(conditions.length > 0 ? conditions[0] : undefined)
+			.orderBy(desc(rptDataStatistics.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		// 映射数据
+		const list: DataStatisticsListItem[] = data.map((item) => ({
+			id: item.id || "",
+			name: item.statisticIndicator || "",
+			status: item.comparisonBaseline ? "已设置基准" : "未设置基准",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			remark: item.remark || "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<DataStatisticsListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Data Statistics List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

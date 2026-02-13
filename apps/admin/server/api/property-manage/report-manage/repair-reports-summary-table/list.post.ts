@@ -5,6 +5,9 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptRepairSummaries } from "@01s-11comm/type";
 import type {
 	JsonVO,
 	PageDTO,
@@ -12,39 +15,104 @@ import type {
 	RepairReportsSummaryTableQueryParams,
 } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockRepairReportsSummaryTableData } from "./mock-data";
+import { desc, like, sql, and } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	repairType: z.string().optional(),
+	repairStatus: z.string().optional(),
+	urgencyLevel: z.string().optional(),
+	community: z.string().optional(),
+	statisticsStartTime: z.string().optional(),
+	statisticsEndTime: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReportsSummaryTableListItem>>> => {
-	const body = await readBody<RepairReportsSummaryTableQueryParams>(event);
-	const defaultParams: RepairReportsSummaryTableQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<RepairReportsSummaryTableQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			repairType: body.repairType,
+			repairStatus: body.repairStatus,
+			urgencyLevel: body.urgencyLevel,
+			community: body.community,
+			statisticsStartTime: body.statisticsStartTime,
+			statisticsEndTime: body.statisticsEndTime,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockRepairReportsSummaryTableData, filters);
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptRepairSummaries);
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const total = Number(countResult[0]?.total || 0);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<RepairReportsSummaryTableListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptRepairSummaries.id,
+				repairTypeDistribution: rptRepairSummaries.repairTypeDistribution,
+				workerWorkload: rptRepairSummaries.workerWorkload,
+				repairCostStatistics: rptRepairSummaries.repairCostStatistics,
+				remark: rptRepairSummaries.remark,
+				createdAt: rptRepairSummaries.createdAt,
+				updatedAt: rptRepairSummaries.updatedAt,
+			})
+			.from(rptRepairSummaries)
+			.orderBy(desc(rptRepairSummaries.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
 
-	return response;
+		// 映射数据
+		const list: RepairReportsSummaryTableListItem[] = data.map((item) => ({
+			id: item.id || "",
+			community: "",
+			repairType: "",
+			repairCount: 0,
+			processingCount: 0,
+			completedCount: 0,
+			unfinishedCount: 0,
+			pendingRevisitCount: 0,
+			dissatisfiedCount: 0,
+			emergencyCount: 0,
+			statisticsTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<RepairReportsSummaryTableListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Repair Reports Summary Table List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

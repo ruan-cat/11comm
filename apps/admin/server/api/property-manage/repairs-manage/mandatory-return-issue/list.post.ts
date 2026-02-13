@@ -5,41 +5,139 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockMandatoryReturnIssueData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { rpMandatoryReturnIssues, rpRepairOrders } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams } from "@01s-11comm/type";
+import { and, desc, like, asc, sql, eq, isNull } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	workOrderNumber: z.string().optional(),
+	reporter: z.string().optional(),
+	contactPhone: z.string().optional(),
+	repairType: z.string().optional(),
+	status: z.string().optional(),
+	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<MandatoryReturnIssueListItem>>> => {
-	const body = await readBody<MandatoryReturnIssueQueryParams>(event);
-	const defaultParams: MandatoryReturnIssueQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		/** 获取并验证查询参数 */
+		const body = (await readBody(event)) as any;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockMandatoryReturnIssueData, filters);
+		/** 预处理参数 */
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+			workOrderNumber: body.workOrderNumber === "" ? undefined : body.workOrderNumber,
+			reporter: body.reporter === "" ? undefined : body.reporter,
+			contactPhone: body.contactPhone === "" ? undefined : body.contactPhone,
+			repairType: body.repairType === "" ? undefined : body.repairType,
+			status: body.status === "" ? undefined : body.status,
+		};
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const query = querySchema.parse(rawQuery);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<MandatoryReturnIssueListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		/** 计算分页参数 */
+		const offset = (query.page - 1) * query.pageSize;
 
-	return response;
+		/** 构建查询条件 */
+		const conditions = [];
+
+		// 移除 deletedAt 检查，因为表结构可能没有此字段
+
+		if (query.workOrderNumber) {
+			conditions.push(like(rpMandatoryReturnIssues.workOrderNumber, `%${query.workOrderNumber}%`));
+		}
+
+		if (query.status) {
+			conditions.push(eq(rpMandatoryReturnIssues.returnStatus, query.status as any));
+		}
+
+		/** 构建排序 */
+		const sortBy = query.sortBy || "createdAt";
+		const sortOrder = query.sortOrder || "desc";
+
+		const sortFields: Record<string, any> = {
+			createdAt: rpMandatoryReturnIssues.createdAt,
+			updatedAt: rpMandatoryReturnIssues.updatedAt,
+		};
+
+		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		/** 查询总数 */
+		const countResult = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(rpMandatoryReturnIssues)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		/** 查询分页数据 - 关联报修工单表 */
+		const data = await db
+			.select({
+				id: rpMandatoryReturnIssues.id,
+				workOrderNumber: rpMandatoryReturnIssues.workOrderNumber,
+				mandatoryReason: rpMandatoryReturnIssues.mandatoryReason,
+				mandatoryTime: rpMandatoryReturnIssues.mandatoryTime,
+				returnStatus: rpMandatoryReturnIssues.returnStatus,
+				createdAt: rpMandatoryReturnIssues.createdAt,
+				updatedAt: rpMandatoryReturnIssues.updatedAt,
+			})
+			.from(rpMandatoryReturnIssues)
+			.where(conditions.length > 0 ? and(...conditions) : undefined)
+			.orderBy(orderBy)
+			.limit(query.pageSize)
+			.offset(offset);
+
+		/** 转换数据格式 */
+		const list: MandatoryReturnIssueListItem[] = data.map((item) => ({
+			id: item.id || "",
+			workOrderNumber: item.workOrderNumber || "",
+			location: "",
+			repairType: "",
+			reporter: "",
+			contactInfo: "",
+			appointmentTime: "",
+			submitTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			status: item.returnStatus || "pending_return",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			remark: item.mandatoryReason || "",
+		}));
+
+		/** 计算总页数 */
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<MandatoryReturnIssueListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[MandatoryReturnIssue List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

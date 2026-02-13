@@ -5,41 +5,118 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptRepairReports } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, RepairReportFormListItem, RepairReportFormQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockRepairReportFormData } from "./mock-data";
+import { desc, like, sql, and } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	repairType: z.string().optional(),
+	repairStatus: z.string().optional(),
+	urgencyLevel: z.string().optional(),
+	reporter: z.string().optional(),
+	reporterPhone: z.string().optional(),
+	community: z.string().optional(),
+	reportTimeStart: z.string().optional(),
+	reportTimeEnd: z.string().optional(),
+	feeStatus: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReportFormListItem>>> => {
-	const body = await readBody<RepairReportFormQueryParams>(event);
-	const defaultParams: RepairReportFormQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<RepairReportFormQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			repairType: body.repairType,
+			repairStatus: body.repairStatus,
+			urgencyLevel: body.urgencyLevel,
+			reporter: body.reporter,
+			reporterPhone: body.reporterPhone,
+			community: body.community,
+			reportTimeStart: body.reportTimeStart,
+			reportTimeEnd: body.reportTimeEnd,
+			feeStatus: body.feeStatus,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockRepairReportFormData, filters);
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptRepairReports);
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const total = Number(countResult[0]?.total || 0);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<RepairReportFormListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptRepairReports.id,
+				totalRepairs: rptRepairReports.totalRepairs,
+				completedCount: rptRepairReports.completedCount,
+				pendingCount: rptRepairReports.pendingCount,
+				avgProcessingTime: rptRepairReports.avgProcessingTime,
+				satisfactionRate: rptRepairReports.satisfactionRate,
+				dissatisfactionReasons: rptRepairReports.dissatisfactionReasons,
+				remark: rptRepairReports.remark,
+				createdAt: rptRepairReports.createdAt,
+				updatedAt: rptRepairReports.updatedAt,
+			})
+			.from(rptRepairReports)
+			.orderBy(desc(rptRepairReports.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
 
-	return response;
+		// 映射数据
+		const list: RepairReportFormListItem[] = data.map((item) => ({
+			id: item.id || "",
+			community: "",
+			repairOrderNumber: item.id || "",
+			repairType: "",
+			urgencyLevel: "",
+			reporter: "",
+			reporterPhone: "",
+			repairAddress: "",
+			reportTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			handler: "",
+			processor: "",
+			feeStatus: "",
+			repairStatus: item.pendingCount ? "待处理" : "已完成",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<RepairReportFormListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Repair Report Form List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

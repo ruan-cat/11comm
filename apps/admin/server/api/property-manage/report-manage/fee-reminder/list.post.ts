@@ -5,41 +5,97 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { rptFeeReminders } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, FeeReminderListItem, FeeReminderQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockFeeReminderData } from "./mock-data";
+import { desc, like, sql, and } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+	name: z.string().optional(),
+	status: z.string().optional(),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<FeeReminderListItem>>> => {
-	const body = await readBody<FeeReminderQueryParams>(event);
-	const defaultParams: FeeReminderQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as Partial<FeeReminderQueryParams>;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+			name: body.name,
+			status: body.status,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	/** 数据筛选 */
-	const filteredData = filterDataByQuery(mockFeeReminderData, filters);
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(rptFeeReminders);
 
-	/** 分页处理 */
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const total = Number(countResult[0]?.total || 0);
 
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<FeeReminderListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: rptFeeReminders.id,
+				ownerInfo: rptFeeReminders.ownerInfo,
+				outstandingAmount: rptFeeReminders.outstandingAmount,
+				reminderMethod: rptFeeReminders.reminderMethod,
+				reminderTime: rptFeeReminders.reminderTime,
+				isDelivered: rptFeeReminders.isDelivered,
+				ownerFeedback: rptFeeReminders.ownerFeedback,
+				remark: rptFeeReminders.remark,
+				createdAt: rptFeeReminders.createdAt,
+				updatedAt: rptFeeReminders.updatedAt,
+			})
+			.from(rptFeeReminders)
+			.orderBy(desc(rptFeeReminders.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
 
-	return response;
+		// 映射数据
+		const list: FeeReminderListItem[] = data.map((item) => ({
+			id: item.id || "",
+			name: item.ownerInfo || "",
+			status: item.isDelivered ? "已送达" : "未送达",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			remark: item.remark || "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<FeeReminderListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Fee Reminder List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
