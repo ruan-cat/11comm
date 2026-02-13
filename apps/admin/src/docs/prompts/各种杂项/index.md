@@ -275,3 +275,15 @@ overrides:
 ## 022 删除 stylelint
 
 检查整个项目关于 `lint:stylelint` 字符串的内容，全部删掉。不提供这个东西。本项目不使用任何形式的 stylelint 。
+
+## 023 <!-- TODO: 一次性任务 长任务 --> 为全部的 index.vue 列表页文件，补全 `:loading="isFetching"` 的组件 props 使用
+
+请你全面的检查后台项目内，全部 index.vue 文件的列表页。注意检查 `PureTable` 组件对 loading 这个 props 的使用。现在的情况是，有绝大多数的文件，都缺少缺失了这个配置。没有及时的使用来自组合式 api 提供的 `isFetching` 响应式变量。
+
+这不符合 `.claude\skills\frontend-development\references\api-data-fetching.md` 文档的规范。大多数的 index.vue 组件，应该充分的满足 `frontend-development` 技能的要求。
+
+请你设计一个 openspec 任务，完成这个批量的代码补全任务，为 `PureTable` 组件补全 `:loading="isFetching"` 的使用。
+
+这是一个简单的任务。但是涉及的组件非常多，你绝对不能遗漏文件。
+
+你在设计 tasks.md 任务列表时，务必根据 `apps\admin\src\router\rank\rank-route-keys.ts` 业务路由文件的设计，去设计一个全面的，齐全的，细致的 tasks.md 任务列表文件。必须非常细致，细化到每一个业务路由对应的文件。
