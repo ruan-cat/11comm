@@ -8,6 +8,7 @@ import type { RefreshCacheFormVO } from "@01s-11comm/type";
 
 /** 默认表单 Default form */
 export const defaultForm: RefreshCacheFormVO = {
+	cacheCode: "",
 	cacheName: "",
 	cacheKey: "",
 	cacheType: "Redis",

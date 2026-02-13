@@ -47,19 +47,45 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "缓存ID",
-		prop: "cacheId",
+		label: "缓存编码",
+		prop: "cacheCode",
+		minWidth: 140,
+	},
+	{
+		label: "缓存名称",
+		prop: "cacheName",
+		minWidth: 150,
+	},
+	{
+		label: "缓存键名",
+		prop: "cacheKey",
+		minWidth: 200,
+		showOverflowTooltip: true,
+	},
+	{
+		label: "缓存类型",
+		prop: "cacheType",
+		minWidth: 110,
+	},
+	{
+		label: "缓存分组",
+		prop: "cacheGroup",
+		minWidth: 110,
+	},
+	{
+		label: "过期时间(秒)",
+		prop: "expireTime",
 		minWidth: 120,
 	},
 	{
-		label: "缓存编码",
-		prop: "cacheCode",
-		minWidth: 150,
+		label: "状态",
+		prop: "status",
+		minWidth: 90,
 	},
 	{
-		label: "名称",
-		prop: "cacheName",
-		minWidth: 150,
+		label: "刷新策略",
+		prop: "refreshPolicy",
+		minWidth: 120,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */

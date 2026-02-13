@@ -7,10 +7,7 @@ import { ref, computed, useTemplateRef } from "vue";
 import type { RefreshCacheFormVO } from "@01s-11comm/type";
 import { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions } from "@01s-11comm/type";
 
-import {
-	RefreshCacheFormProps,
-	defaultForm,
-} from "./form";
+import { RefreshCacheFormProps, defaultForm } from "./form";
 
 const props = defineProps<RefreshCacheFormProps>();
 
@@ -38,6 +35,17 @@ const formComputed = computed(() => {
 
 /** 表单项配置 Form columns configuration */
 const plusFormColumns = ref<PlusColumn[]>([
+	{
+		label: "缓存编码",
+		prop: "cacheCode",
+		valueType: "input",
+		required: true,
+		width: "200px",
+		fieldProps: {
+			clearable: true,
+			placeholder: "请输入缓存编码，如 REDIS_001",
+		},
+	},
 	{
 		label: "缓存名称",
 		prop: "cacheName",
@@ -142,6 +150,15 @@ const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 Form validation rules */
 const plusFormRules = ref<PlusFormRules>({
+	cacheCode: [
+		{ required: true, message: "请输入缓存编码", trigger: "blur" },
+		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			pattern: /^[A-Z0-9_]+$/,
+			message: "缓存编码只能包含大写字母、数字和下划线",
+			trigger: "blur",
+		},
+	],
 	cacheName: [
 		{ required: true, message: "请输入缓存名称", trigger: "blur" },
 		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
