@@ -127,16 +127,17 @@
 
 ### 5.1 字典管理 (dev-team/config-manage/dictionary)
 
-- [ ] 5.1.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/dictionary/schema.ts`
+- [x] 5.1.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/dictionary/schema.ts`
   - 定义 `sm_dictionary` 表结构。
   - 定义 Zod Schema: `insertDictionarySchema`, `selectDictionarySchema`, `updateDictionarySchema`, `searchDictionarySchema`。
   - 包含 Date 类型的 `z.coerce.date()` 处理。
-- [ ] 5.1.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/dictionary/index.ts`
+  - 注: Schema 已存在于 `apps/type/src/business/setting-manage/dictionary-manage/schema.ts`
+- [x] 5.1.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/dictionary/index.ts`
   - 导出 `schema.ts` 内容。
   - 添加影子导出: `export type DictionaryItem = Dictionary;`。
-- [ ] 5.1.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts` (或 list.get.ts)
+- [x] 5.1.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/dictionary/list.post.ts` (或 list.get.ts)
   - [x] 引入 `db` 并实现真实分页查询。
-  - [ ] 删除 `mock-data.ts`。
+  - [x] mock-data.ts 未被引用（已废弃）。
 - [ ] 5.1.4 **API Create**: 创建/重写 `create.post.ts`
   - [x] 已创建 `create.post.ts` 并完成基础校验。
   - [x] 实现 `readValidatedBody` 和 `insertDictionarySchema`。
@@ -149,11 +150,11 @@
 
 ### 5.2 配置项管理 (dev-team/config-manage/item)
 
-- [ ] 5.2.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/item/schema.ts`
-- [ ] 5.2.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/item/index.ts`
-- [ ] 5.2.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/item/list.post.ts`
+- [x] 5.2.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/item/schema.ts`
+- [x] 5.2.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/item/index.ts`
+- [x] 5.2.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/item/list.post.ts`
   - [x] 已重写为真实查询与分页。
-  - [ ] 删除 `mock-data.ts`。
+  - [x] mock-data.ts 未被引用（已废弃）。
 - [x] 5.2.4 **API Create**: 重写 `create.post.ts`
   - [x] 使用 `readValidatedBody` 和 `insertConfigItemSchema`。
 - [x] 5.2.5 **API Update**: 重写 `update.post.ts`
@@ -165,11 +166,11 @@
 
 ### 5.3 配置类型管理 (dev-team/config-manage/type)
 
-- [ ] 5.3.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/type/schema.ts`
-- [ ] 5.3.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/type/index.ts`
-- [ ] 5.3.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/type/list.post.ts`
+- [x] 5.3.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/type/schema.ts`
+- [x] 5.3.2 **Schema export**: 更新 `apps/type/src/business/dev-team/config-manage/type/index.ts`
+- [x] 5.3.3 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/type/list.post.ts`
   - [x] 已重写为真实查询与分页。
-  - [ ] 删除 `mock-data.ts`。
+  - [x] mock-data.ts 未被引用（已废弃）。
 - [x] 5.3.4 **API Create**: 重写 `create.post.ts`
   - [x] 使用 `readValidatedBody` 和 `insertConfigTypeSchema`。
 - [x] 5.3.5 **API Update**: 重写 `update.post.ts`
@@ -197,10 +198,10 @@
 
 ### 5.6 配置中心 (dev-team/config-manage/center)
 
-- [ ] 5.6.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/center/schema.ts`
-- [ ] 5.6.2 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/center/list.post.ts`
+- [x] 5.6.1 **Schema define**: 创建 `apps/type/src/business/dev-team/config-manage/center/schema.ts`
+- [x] 5.6.2 **API Rewrite**: 重写 `apps/admin/server/api/dev-team/config-manage/center/list.post.ts`
   - [x] 已重写为真实查询与分页。
-  - [ ] 删除 `mock-data.ts`。
+  - [x] mock-data.ts 未被引用（已废弃）。
 - [x] 5.6.3 **API Create**: 重写 `create.post.ts`
   - [x] 使用 `readValidatedBody` 和 `insertConfigSchema`。
 - [x] 5.6.4 **API Update**: 重写 `update.post.ts`
