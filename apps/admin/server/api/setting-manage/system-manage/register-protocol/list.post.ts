@@ -4,32 +4,93 @@
  * POST /api/setting-manage/system-manage/register-protocol/list
  */
 
-import { defineHandler } from "nitro/h3";
+import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { smRegisterProtocols } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, SettingManagementRegisterProtocolDisplay } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { mockRegisterProtocolData } from "./mock-data";
+import { desc, sql } from "drizzle-orm";
 
-export default defineHandler(async (): Promise<JsonVO<PageDTO<SettingManagementRegisterProtocolDisplay>>> => {
-	// 注册协议只有一个，直接返回
-	const pageData = mockRegisterProtocolData;
-	const total = pageData.length;
-	const pageIndex = DEFAULT_PAGE_INDEX;
-	const pageSize = DEFAULT_PAGE_SIZE;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+});
 
-	// 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<SettingManagementRegisterProtocolDisplay>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: 1,
-		},
-	};
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<SettingManagementRegisterProtocolDisplay>>> => {
+	try {
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	return response;
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(smRegisterProtocols);
+
+		const total = Number(countResult[0]?.total || 0);
+
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: smRegisterProtocols.id,
+				protocolType: smRegisterProtocols.protocolType,
+				protocolTitle: smRegisterProtocols.protocolTitle,
+				protocolContent: smRegisterProtocols.protocolContent,
+				version: smRegisterProtocols.version,
+				status: smRegisterProtocols.status,
+				createdAt: smRegisterProtocols.createdAt,
+				updatedAt: smRegisterProtocols.updatedAt,
+			})
+			.from(smRegisterProtocols)
+			.orderBy(desc(smRegisterProtocols.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		// 映射到前端类型 - 数据库表字段与前端类型字段不一致，需要适配
+		const list: SettingManagementRegisterProtocolDisplay[] = data.map((item) => ({
+			id: item.id,
+			title: item.protocolTitle || "",
+			content: item.protocolContent || "",
+			version: item.version || "",
+			status: item.status || "enabled",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<SettingManagementRegisterProtocolDisplay>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Register Protocol List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

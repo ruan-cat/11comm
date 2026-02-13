@@ -5,43 +5,105 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
+import { z } from "zod";
+import { db } from "server/db";
+import { smSystemConfigs } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, SystemConfigListItem, SystemConfigQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockSystemConfigData } from "./mock-data";
+import { desc, sql } from "drizzle-orm";
+
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(DEFAULT_PAGE_SIZE),
+});
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<SystemConfigListItem>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<SystemConfigQueryParams>(event);
-	const defaultParams: SystemConfigQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+	try {
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			pageIndex: body.pageIndex || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.pageIndex - 1) * query.pageSize;
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockSystemConfigData, filters);
+		// 查询总数
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(smSystemConfigs);
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const total = Number(countResult[0]?.total || 0);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<SystemConfigListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		// 查询列表数据
+		const data = await db
+			.select({
+				id: smSystemConfigs.id,
+				configKey: smSystemConfigs.configKey,
+				configValue: smSystemConfigs.configValue,
+				configType: smSystemConfigs.configType,
+				configDescription: smSystemConfigs.configDescription,
+				status: smSystemConfigs.status,
+				createdAt: smSystemConfigs.createdAt,
+				updatedAt: smSystemConfigs.updatedAt,
+			})
+			.from(smSystemConfigs)
+			.orderBy(desc(smSystemConfigs.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
 
-	return response;
+		// 映射到前端类型 - 数据库表字段与前端类型字段不一致，需要适配
+		const list: SystemConfigListItem[] = data.map((item) => ({
+			id: item.id,
+			configId: item.id || "",
+			title: item.configKey || "",
+			subtitle: item.configDescription || "",
+			shortName: "",
+			companyName: "",
+			logoUrl: "",
+			staticUrl: "",
+			defaultCommunityCode: "",
+			ownerTitle: "",
+			propertyMobileTitle: "",
+			qqMapKey: "",
+			mallUrl: "",
+			configKey: item.configKey || "",
+			configValue: item.configValue || "",
+			description: item.configDescription || "",
+			category: item.configType || "",
+			isSystem: true,
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<SystemConfigListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.pageIndex,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[System Config List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });

@@ -5,43 +5,92 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, ShiftSettingListItem, ShiftSettingQueryParams } from "@01s-11comm/type";
+import { z } from "zod";
+import { db } from "server/db";
+import { smShifts } from "@01s-11comm/type";
+import type { JsonVO, PageDTO, ShiftSettingQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockShiftSettingData } from "./mock-data";
+import { desc, like, sql } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<ShiftSettingListItem>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<ShiftSettingQueryParams>(event);
-	const defaultParams: ShiftSettingQueryParams = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 查询参数验证 schema */
+const querySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+	name: z.string().optional(),
+});
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockShiftSettingData, filters);
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+	try {
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			page: body.pageIndex || body.page || DEFAULT_PAGE_INDEX,
+			pageSize: body.pageSize || DEFAULT_PAGE_SIZE,
+		};
+		const query = querySchema.parse(rawQuery);
+		const offset = (query.page - 1) * query.pageSize;
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+		const countResult = await db
+			.select({
+				total: sql<number>`count(*)`,
+			})
+			.from(smShifts);
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<ShiftSettingListItem>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+		const total = Number(countResult[0]?.total || 0);
 
-	return response;
+		const data = await db
+			.select({
+				id: smShifts.id,
+				shiftName: smShifts.shiftName,
+				startTime: smShifts.startTime,
+				endTime: smShifts.endTime,
+				workDuration: smShifts.workDuration,
+				createdAt: smShifts.createdAt,
+				updatedAt: smShifts.updatedAt,
+			})
+			.from(smShifts)
+			.orderBy(desc(smShifts.createdAt))
+			.limit(query.pageSize)
+			.offset(offset);
+
+		const list = data.map((item) => ({
+			id: item.id,
+			name: item.shiftName || "",
+			shiftName: item.shiftName || "",
+			type: "",
+			startTime: item.startTime || "",
+			endTime: item.endTime || "",
+			enabled: true,
+			description: "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+		}));
+
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<any>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageSize: query.pageSize,
+				pageIndex: query.page,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Shift Setting List] Error:", error);
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
