@@ -1,60 +1,52 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams } from "../../../common";
+import type { SmInitializeCell, NewSmInitializeCell } from "./schema";
 
 /**
- * @description 初始化小区表单VO
- * Initialize community form VO
+ * @description 初始化配置项列表项
+ * Initialize configuration item list item
+ * 直接使用 schema 生成的类型，确保与数据库字段一致
+ *
+ * 注意：此类型用于"系统初始化配置项"（如"是否初始化楼栋"、"是否初始化房屋"等配置开关）
+ * 不要与 operation-team 的 InitializeCellListItem（小区单元格初始化）混淆
  */
-export interface InitializeCommunityFormVO {
-	/** 小区ID Community ID */
-	communityId: string;
-	/** 小区名称 Community name */
-	communityName: string;
-	/** 附近地标 Nearby landmark */
-	nearbyLandmark: string;
-	/** 城市编码 City code */
-	cityCode: string;
-	/** 状态 Status */
-	status: string;
+export type InitializeConfigItemListItem = SmInitializeCell;
+
+/**
+ * @description 初始化配置项查询参数
+ * Initialize configuration item query parameters
+ */
+export interface InitializeConfigItemQueryParams extends BaseListQueryParams {
+	/** 初始化项目 Init item */
+	initItem?: string;
+	/** 初始化状态 Init status */
+	initStatus?: string;
 }
 
 /**
- * @description 初始化小区列表数据
- * Initialize community list item
+ * @description 初始化配置项表单VO
+ * Initialize configuration item form VO
+ * 基于 schema 的 insert 类型，用于新增/编辑表单
  */
-export interface InitializeCommunityListItem {
-	/** 小区ID Community ID */
-	communityId: string;
-	/** 记录ID Record ID (用于seed脚本) */
-	id?: string;
-	/** 小区名称 Community name */
-	communityName: string;
-	/** 附近地标 Nearby landmark */
-	nearbyLandmark: string;
-	/** 城市编码 City code */
-	cityCode: string;
-	/** 状态 Status */
-	status: string;
-	/** 单元名称 Cell name */
-	cellName?: string;
-	/** 编码 Code */
-	code?: string;
-	/** 备注 Remark */
-	remark?: string;
-	/** 创建时间 Create time */
-	createTime?: string;
-}
+export type InitializeConfigItemFormVO = NewSmInitializeCell;
+
+// ==========================================
+// 向后兼容的类型别名（逐步废弃）
+// ==========================================
 
 /**
- * @description 初始化小区列表查询参数
- * Initialize community list query parameters
+ * @deprecated 请使用 InitializeConfigItemListItem，避免与 operation-team 的 InitializeCellListItem 混淆
+ * @description 初始化小区列表数据（向后兼容）
  */
-export interface InitializeCommunityQueryParams {
-	/** 小区ID Community ID */
-	communityId?: string;
-	/** 小区名称 Community name */
-	communityName?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
-}
+export type InitializeCommunityListItem = InitializeConfigItemListItem;
+
+/**
+ * @deprecated 请使用 InitializeConfigItemQueryParams
+ * @description 初始化小区列表查询参数（向后兼容）
+ */
+export type InitializeCommunityQueryParams = InitializeConfigItemQueryParams;
+
+/**
+ * @deprecated 请使用 InitializeConfigItemFormVO
+ * @description 初始化小区表单VO（向后兼容）
+ */
+export type InitializeCommunityFormVO = InitializeConfigItemFormVO;
