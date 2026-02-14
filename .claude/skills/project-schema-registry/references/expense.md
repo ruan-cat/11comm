@@ -187,6 +187,25 @@ This reference documents the Expense Management module.
 - **WHEN** 重打缴费凭证
 - **THEN** 系统存储原凭证号、重打原因、重打时间、操作人
 
+## Expense Summary Tables Table
+
+系统 SHALL 提供 `ex_expense_summary_tables` 表存储费用汇总数据。
+
+### Scenario: Store expense summary
+
+- **WHEN** 生成费用汇总报表
+- **THEN** 系统存储时间（月份）、费用项 ID、费用项名称、应收金额、实收金额
+
+### Scenario: Track summary status
+
+- **WHEN** 管理汇总数据状态
+- **THEN** 系统支持启用/禁用状态
+
+### Scenario: Query by time period
+
+- **WHEN** 按月份查询费用汇总
+- **THEN** 系统通过 `time` 字段索引快速检索
+
 ## Expense Module Indexes
 
 系统 SHALL 为费用管理模块表创建必要的索引。

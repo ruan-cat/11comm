@@ -164,6 +164,30 @@ This reference documents the System Settings module (Staff, Roles, Permissions).
 - **WHEN** 初始化小区配置
 - **THEN** 系统存储初始化项目、初始化状态、配置参数
 
+## Change Password Records Table
+
+系统 SHALL 提供 `sm_change_password_records` 表存储密码修改记录。
+
+### Scenario: Store password change record
+
+- **WHEN** 用户修改密码
+- **THEN** 系统存储用户名、真实姓名、所属部门、修改时间、修改 IP
+
+### Scenario: Track change type
+
+- **WHEN** 记录密码修改类型
+- **THEN** 系统存储修改类型（自主修改/管理员重置/强制修改）、操作人
+
+### Scenario: Query by username
+
+- **WHEN** 按用户名查询修改记录
+- **THEN** 系统通过 `username` 字段索引快速检索
+
+### Scenario: Query by time
+
+- **WHEN** 按时间范围查询修改记录
+- **THEN** 系统通过 `change_time` 字段索引快速检索
+
 ## Setting Module Indexes
 
 系统 SHALL 为设置管理模块表创建必要的索引。

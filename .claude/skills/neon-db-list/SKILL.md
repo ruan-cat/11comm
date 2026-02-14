@@ -77,7 +77,7 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 
 ## Expense (ex)
 
-来源: `apps\admin\server\db\schemas\expense.ts`
+来源: `apps/type/src/business/property-manage/expense-manage/schema.ts`
 
 - `exExpenseItems`
 - `exHouseCharges`
@@ -94,6 +94,7 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 - `exCancelFees`
 - `exOverdueReminders`
 - `exReprintVouchers`
+- `exExpenseSummaryTables` ("ex_expense_summary_tables") — 费用汇总表，含字段: time, expense_item_id, expense_item_name, receivable_amount, actual_amount, status
 
 ## House Property (hp)
 
@@ -177,6 +178,7 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 ## Setting (sm)
 
 来源: `apps\admin\server\db\schemas\setting.ts`
+来源: `apps/type/src/business/setting-manage/system-manage/schema.ts` (系统配置/注册协议/初始化表)
 
 - `smOrganizations` ("sm_organizations")
 - `smStaff` ("sm_staff")
@@ -190,4 +192,5 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 - `smWorkingSchedules` ("sm_working_schedules")
 - `smSystemConfigs` ("sm_system_configs")
 - `smRegisterProtocols` ("sm_register_protocols")
-- `smInitializeCells` ("sm_initialize_cells")
+- `smInitializeCells` ("sm_initialize_cells") — 小区初始化配置表，含字段: init_item, init_status, config_params
+- `smChangePasswordRecords` ("sm_change_password_records") — 密码修改记录表，含字段: username, real_name, department, change_time, change_ip, change_type, operator, status
