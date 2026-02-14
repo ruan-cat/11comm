@@ -1,62 +1,6 @@
 import type { BaseListQueryParams } from "./index";
 
 /**
- * 密码修改记录
- */
-export interface ChangePasswordRecord {
-	/** 记录ID */
-	id: string;
-	/** 用户名 */
-	username: string;
-	/** 真实姓名 */
-	realName: string;
-	/** 所属部门 */
-	department: string;
-	/** 修改时间 */
-	changeTime: string;
-	/** 修改IP */
-	changeIp: string;
-	/** 修改类型 */
-	changeType: string;
-	/** 操作人 */
-	operator: string;
-	/** 状态 */
-	status: string;
-	/** 备注 */
-	remark: string;
-}
-
-/**
- * 密码修改记录列表查询参数
- */
-export interface ChangePasswordRecordListQuery extends BaseListQueryParams {
-	/** 用户名 */
-	username?: string;
-	/** 真实姓名 */
-	realName?: string;
-	/** 所属部门 */
-	department?: string;
-	/** 修改时间 */
-	changeTime?: string;
-	/** 修改类型 */
-	changeType?: string;
-	/** 状态 */
-	status?: string;
-	/** 修改时间范围 */
-	changeTimeRange?: [string, string];
-}
-
-/**
- * 密码修改记录列表项
- */
-export type ChangePasswordRecordListItem = ChangePasswordRecord;
-
-/**
- * 密码修改记录列表查询参数
- */
-export type ChangePasswordRecordQueryParams = ChangePasswordRecordListQuery;
-
-/**
  * 运营团队小区配置
  */
 export interface OperationTeamCommunityConfiguration {
