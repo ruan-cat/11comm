@@ -3,11 +3,16 @@ import { expenseItemNameOptions } from "../../../common/business-options";
 import type { ExExpenseSummaryTable, NewExExpenseSummaryTable } from "./schema";
 
 /**
- * @description expense-summary-table列表数据
+ * @description expense-summary-table列表数据（前端类型）
  * ExpenseSummaryTable list item
- * 直接使用 schema 生成的类型，确保与数据库字段一致
+ * 从 Schema 类型推导，转换时间字段为字符串格式
  */
-export type ExpenseSummaryTableListItem = ExExpenseSummaryTable;
+export type ExpenseSummaryTableListItem = Omit<ExExpenseSummaryTable, "createdAt" | "updatedAt"> & {
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+};
 
 /**
  * @description expense-summary-table列表查询参数

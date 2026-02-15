@@ -2,14 +2,19 @@ import type { BaseListQueryParams } from "../../../common";
 import type { SmInitializeCell, NewSmInitializeCell } from "./schema";
 
 /**
- * @description 初始化配置项列表项
+ * @description 初始化配置项列表项（前端类型）
  * Initialize configuration item list item
- * 直接使用 schema 生成的类型，确保与数据库字段一致
+ * 从 Schema 类型推导，转换时间字段为字符串格式
  *
  * 注意：此类型用于"系统初始化配置项"（如"是否初始化楼栋"、"是否初始化房屋"等配置开关）
  * 不要与 operation-team 的 InitializeCellListItem（小区单元格初始化）混淆
  */
-export type InitializeConfigItemListItem = SmInitializeCell;
+export type InitializeConfigItemListItem = Omit<SmInitializeCell, "createdAt" | "updatedAt"> & {
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+};
 
 /**
  * @description 初始化配置项查询参数
