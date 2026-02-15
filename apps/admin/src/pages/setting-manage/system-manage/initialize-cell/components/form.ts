@@ -5,11 +5,7 @@ import type { InitializeCommunityFormVO } from "@01s-11comm/type";
  * @description 对外导出用于其他场景使用
  */
 export const defaultForm: InitializeCommunityFormVO = {
-	communityId: "",
-	communityName: "",
-	nearbyLandmark: "",
-	cityCode: "",
-	status: "",
+	initItem: "",
 };
 
 /**

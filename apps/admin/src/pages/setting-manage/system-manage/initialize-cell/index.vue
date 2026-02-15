@@ -34,8 +34,8 @@ const formatFormInstance = ref<InstanceType<typeof FormatForm> | null>(null);
  * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<InitializeCommunityQueryParams> = {
-	communityId: "",
-	communityName: "",
+	initItem: "",
+	initStatus: "",
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
@@ -60,29 +60,19 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "小区ID",
-		prop: "communityId",
-		width: 120,
-	},
-	{
-		label: "小区名称",
-		prop: "communityName",
+		label: "初始化项目",
+		prop: "initItem",
 		minWidth: 150,
 	},
 	{
-		label: "附近地标",
-		prop: "nearbyLandmark",
-		width: 150,
+		label: "初始化状态",
+		prop: "initStatus",
+		width: 120,
 	},
 	{
-		label: "城市编码",
-		prop: "cityCode",
+		label: "配置参数",
+		prop: "configParams",
 		width: 200,
-	},
-	{
-		label: "状态",
-		prop: "status",
-		width: 100,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
@@ -104,17 +94,17 @@ const pureTableBarProps = ref<PureTableBarProps>({
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 小区ID
+	// 初始化项目
 	{
-		label: "小区ID",
-		prop: "communityId",
+		label: "初始化项目",
+		prop: "initItem",
 		valueType: "input",
 	},
 
-	// 小区名称
+	// 初始化状态
 	{
-		label: "小区名称",
-		prop: "communityName",
+		label: "初始化状态",
+		prop: "initStatus",
 		valueType: "input",
 	},
 ]);
@@ -168,19 +158,15 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					communityId: row?.communityId || "",
-					communityName: row?.communityName || "",
-					nearbyLandmark: row?.nearbyLandmark || "",
-					cityCode: row?.cityCode || "",
-					status: row?.status || "",
+					initItem: row?.initItem || "",
+					initStatus: row?.initStatus || "",
+					configParams: row?.configParams,
 				})
 			: structuredClone({
 					...defaultForm,
-					communityId: row?.communityId || "",
-					communityName: row?.communityName || "",
-					nearbyLandmark: row?.nearbyLandmark || "",
-					cityCode: row?.cityCode || "",
-					status: row?.status || "",
+					initItem: row?.initItem || "",
+					initStatus: row?.initStatus || "",
+					configParams: row?.configParams,
 				});
 	/** 表单组件需要的props */
 	const formProps: InitializeCommunityFormProps = {
@@ -254,8 +240,8 @@ function openFormatDialog(row: InitializeCommunityListItem) {
 	const formProps: FormatFormProps = {
 		form: structuredClone(formatDefaultForm),
 		defaultValues: structuredClone(formatDefaultForm),
-		communityId: row.communityId,
-		communityName: row.communityName,
+		initItem: row.initItem,
+		initStatus: row.initStatus,
 	};
 
 	/** 弹框组件所需的变量 */

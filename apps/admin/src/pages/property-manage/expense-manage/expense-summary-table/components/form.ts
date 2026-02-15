@@ -3,7 +3,6 @@ import type { ExpenseItemNameType, ExpenseSummaryTableFormVO } from "@01s-11comm
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: ExpenseSummaryTableFormVO = {
 	time: "",
-	expenseItemId: "",
 	expenseItemName: "物业费",
 	receivableAmount: "",
 	actualAmount: "",

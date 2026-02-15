@@ -24,8 +24,8 @@ export interface FormatFormProps {
 	form: FormatConfirmationFormVO;
 	/** Default values for form reset */
 	defaultValues: FormatConfirmationFormVO;
-	/** Community ID */
-	communityId: string;
-	/** Community name */
-	communityName: string;
+	/** Initialize item */
+	initItem: string;
+	/** Initialize status */
+	initStatus: string;
 }

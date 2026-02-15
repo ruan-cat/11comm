@@ -96,8 +96,8 @@ defineExpose({
 		<div class="warning-text">
 			<p style="color: #e74c3c; font-size: 14px; line-height: 1.6; margin-bottom: 20px">
 				<span style="color: #e74c3c">• </span>
-				请谨慎操作，此操作将清空所有 <strong>【{{ props.communityName }}】</strong> 小区数据，小区编码为
-				<strong>【{{ props.communityId }}】</strong> ，连错期间，请再次跟相关人员核实确认！
+				请谨慎操作，此操作将处理初始化项目 <strong>【{{ props.initItem }}】</strong>，当前状态为
+				<strong>【{{ props.initStatus }}】</strong> ，操作期间，请再次跟相关人员核实确认！
 			</p>
 		</div>
 

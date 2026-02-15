@@ -1,4 +1,4 @@
-import type { ChangePasswordRecord } from "@01s-11comm/type";
+import type { ChangePasswordRecordFormVO } from "@01s-11comm/type";
 import { type Mode } from "@/composables/use-mode";
 
 // ==================== 表单类型定义 ====================
@@ -6,8 +6,7 @@ import { type Mode } from "@/composables/use-mode";
 // ==================== 默认表单值 ====================
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: ChangePasswordRecord = {
-	id: "",
+export const defaultForm: ChangePasswordRecordFormVO = {
 	username: "",
 	realName: "",
 	department: "",
@@ -28,9 +27,9 @@ export const defaultForm: ChangePasswordRecord = {
  */
 export interface ChangePasswordRecordFormProps {
 	/** 表单数据 */
-	form: ChangePasswordRecord;
+	form: ChangePasswordRecordFormVO;
 	/** 表单组件重置时默认使用的对象 */
-	defaultValues: ChangePasswordRecord;
+	defaultValues: ChangePasswordRecordFormVO;
 	/** 表单模式 */
 	mode?: Mode;
 }
