@@ -10,6 +10,8 @@ import { db } from "server/db";
 import { exExpenseSummaryTables } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import type { ExpenseSummaryTableListItem } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -82,13 +84,27 @@ export default defineHandler(async (event) => {
 		const total = Number(countResult[0]?.count || 0);
 		const totalPages = Math.ceil(total / query.pageSize);
 
+		// 映射到前端类型 - 转换时间字段格式
+		const list: ExpenseSummaryTableListItem[] = data.map((item) => ({
+			id: item.id,
+			time: item.time,
+			expenseItemId: item.expenseItemId || "",
+			expenseItemName: item.expenseItemName,
+			receivableAmount: item.receivableAmount,
+			actualAmount: item.actualAmount,
+			status: item.status || "enabled",
+			remark: item.remark || "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+		}));
+
 		/** 必须使用 JsonVO<PageDTO<...>> 类型注解约束响应 */
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<ExpenseSummaryTableListItem>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

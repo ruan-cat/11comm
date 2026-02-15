@@ -10,6 +10,7 @@ import type { JsonVO, PageDTO, RefreshCacheListItem } from "@01s-11comm/type";
 import { dtCacheConfigs } from "@01s-11comm/type";
 import { db } from "server/db";
 import { and, desc, eq, like, or, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 const querySchema = z.object({
 	page: z.coerce.number().int().min(1).default(1),
@@ -21,12 +22,6 @@ const querySchema = z.object({
 	cacheType: z.string().optional(),
 	refreshPolicy: z.string().optional(),
 });
-
-/** 格式化日期为 YYYY-MM-DD HH:mm:ss */
-function formatDateTime(date: Date): string {
-	const pad = (n: number) => n.toString().padStart(2, "0");
-	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-}
 
 /** 将数据库查询结果映射为前端列表项 */
 function mapDtCacheConfigsToRefreshCacheListItems(

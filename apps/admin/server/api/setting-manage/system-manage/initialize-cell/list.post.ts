@@ -11,6 +11,7 @@ import { smInitializeCells } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, InitializeCommunityListItem, InitializeCommunityQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -54,15 +55,14 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InitializeCom
 			.limit(query.pageSize)
 			.offset(offset);
 
-		// 映射到前端类型 - 数据库表字段与前端类型字段不一致，需要适配
+		// 映射到前端类型 - 转换时间字段格式
 		const list: InitializeCommunityListItem[] = data.map((item) => ({
 			id: item.id,
-			communityId: item.id || "",
-			communityName: item.initItem || "",
-			nearbyLandmark: "",
-			cityCode: "",
-			status: item.initStatus || "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			initItem: item.initItem || "",
+			initStatus: item.initStatus || "",
+			configParams: item.configParams,
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

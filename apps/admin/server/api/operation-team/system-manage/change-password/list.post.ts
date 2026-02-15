@@ -10,6 +10,8 @@ import { db } from "server/db";
 import { smChangePasswordRecords } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql } from "drizzle-orm";
+import type { ChangePasswordRecord } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -102,19 +104,31 @@ export default defineHandler(async (event) => {
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
+		// 映射到前端类型 - 转换时间字段格式
+		const list: ChangePasswordRecord[] = data.map((item) => ({
+			id: item.id,
+			username: item.username,
+			realName: item.realName || "",
+			department: item.department || "",
+			changeTime: item.changeTime || "",
+			changeIp: item.changeIp || "",
+			changeType: item.changeType || "",
+			operator: item.operator || "",
+			status: item.status || "",
+			remark: item.remark || "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+		}));
+
 		/**
 		 * 使用 JsonVO<PageDTO<...>> 类型注解约束成功响应
-		 * @description
-		 * (typeof data)[number] 自动推断 Drizzle 查询结果的行类型
-		 * 如果 data 字段结构不符合 PageDTO 的 list/total/pageIndex/pageSize/totalPages 约束，TypeScript 会报错
-		 * 如果外层结构不符合 JsonVO 的 code/message/data 约束，TypeScript 也会报错
 		 */
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<ChangePasswordRecord>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageSize: query.pageSize,
 				pageIndex: query.page,
