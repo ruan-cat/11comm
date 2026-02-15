@@ -1,9 +1,10 @@
-import type { ChangePasswordRecord } from "@01s-11comm/type";
+import type { SmChangePasswordRecord } from "@01s-11comm/type";
 
 /**
  * 密码修改记录模拟数据
+ * 使用 DB 层类型（包含 Date 类型的时间字段）
  */
-export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
+export const mockChangePasswordRecordData: SmChangePasswordRecord[] = [
 	{
 		id: "REC001",
 		username: "admin",
@@ -15,6 +16,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "super_admin",
 		status: "成功",
 		remark: "定期安全更新",
+		createdAt: new Date("2024-01-15T14:30:00"),
+		updatedAt: new Date("2024-01-15T14:30:00"),
 	},
 	{
 		id: "REC002",
@@ -27,6 +30,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "zhangsan",
 		status: "成功",
 		remark: "用户主动修改密码",
+		createdAt: new Date("2024-01-16T09:15:00"),
+		updatedAt: new Date("2024-01-16T09:15:00"),
 	},
 	{
 		id: "REC003",
@@ -39,6 +44,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "security_admin",
 		status: "成功",
 		remark: "安全策略要求强制修改",
+		createdAt: new Date("2024-01-16T10:45:00"),
+		updatedAt: new Date("2024-01-16T10:45:00"),
 	},
 	{
 		id: "REC004",
@@ -51,6 +58,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "wangwu",
 		status: "成功",
 		remark: "新用户首次登录设置密码",
+		createdAt: new Date("2024-01-17T08:20:00"),
+		updatedAt: new Date("2024-01-17T08:20:00"),
 	},
 	{
 		id: "REC005",
@@ -63,6 +72,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "zhaoliu",
 		status: "失败",
 		remark: "新密码不符合复杂度要求",
+		createdAt: new Date("2024-01-17T11:30:00"),
+		updatedAt: new Date("2024-01-17T11:30:00"),
 	},
 	{
 		id: "REC006",
@@ -75,6 +86,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "admin",
 		status: "成功",
 		remark: "用户忘记密码，管理员重置",
+		createdAt: new Date("2024-01-18T13:15:00"),
+		updatedAt: new Date("2024-01-18T13:15:00"),
 	},
 	{
 		id: "REC007",
@@ -87,6 +100,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "security_admin",
 		status: "成功",
 		remark: "检测到密码泄露风险",
+		createdAt: new Date("2024-01-18T15:40:00"),
+		updatedAt: new Date("2024-01-18T15:40:00"),
 	},
 	{
 		id: "REC008",
@@ -99,6 +114,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "zhoujiu",
 		status: "成功",
 		remark: "定期密码更新",
+		createdAt: new Date("2024-01-19T09:50:00"),
+		updatedAt: new Date("2024-01-19T09:50:00"),
 	},
 	{
 		id: "REC009",
@@ -111,6 +128,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "admin",
 		status: "待审核",
 		remark: "特殊情况需要重置密码，等待审核",
+		createdAt: new Date("2024-01-19T14:20:00"),
+		updatedAt: new Date("2024-01-19T14:20:00"),
 	},
 	{
 		id: "REC010",
@@ -123,6 +142,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "chenyi",
 		status: "成功",
 		remark: "新开发人员入职",
+		createdAt: new Date("2024-01-20T10:10:00"),
+		updatedAt: new Date("2024-01-20T10:10:00"),
 	},
 	{
 		id: "REC011",
@@ -135,6 +156,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "dengyi",
 		status: "成功",
 		remark: "定期密码更新",
+		createdAt: new Date("2024-01-21T09:25:00"),
+		updatedAt: new Date("2024-01-21T09:25:00"),
 	},
 	{
 		id: "REC012",
@@ -147,6 +170,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "admin",
 		status: "成功",
 		remark: "用户忘记密码",
+		createdAt: new Date("2024-01-21T14:45:00"),
+		updatedAt: new Date("2024-01-21T14:45:00"),
 	},
 	{
 		id: "REC013",
@@ -159,6 +184,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "security_admin",
 		status: "成功",
 		remark: "安全策略要求",
+		createdAt: new Date("2024-01-22T11:30:00"),
+		updatedAt: new Date("2024-01-22T11:30:00"),
 	},
 	{
 		id: "REC014",
@@ -171,6 +198,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "husi",
 		status: "失败",
 		remark: "新密码不符合要求",
+		createdAt: new Date("2024-01-22T16:20:00"),
+		updatedAt: new Date("2024-01-22T16:20:00"),
 	},
 	{
 		id: "REC015",
@@ -183,6 +212,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "jiuwu",
 		status: "成功",
 		remark: "主动更新密码",
+		createdAt: new Date("2024-01-23T08:55:00"),
+		updatedAt: new Date("2024-01-23T08:55:00"),
 	},
 	{
 		id: "REC016",
@@ -195,6 +226,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "admin",
 		status: "成功",
 		remark: "账户安全重置",
+		createdAt: new Date("2024-01-23T13:40:00"),
+		updatedAt: new Date("2024-01-23T13:40:00"),
 	},
 	{
 		id: "REC017",
@@ -207,6 +240,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "security_admin",
 		status: "成功",
 		remark: "密码过期强制修改",
+		createdAt: new Date("2024-01-24T10:15:00"),
+		updatedAt: new Date("2024-01-24T10:15:00"),
 	},
 	{
 		id: "REC018",
@@ -219,6 +254,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "maba",
 		status: "成功",
 		remark: "周期性更新",
+		createdAt: new Date("2024-01-24T15:50:00"),
+		updatedAt: new Date("2024-01-24T15:50:00"),
 	},
 	{
 		id: "REC019",
@@ -231,6 +268,8 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "niujiu",
 		status: "待审核",
 		remark: "新员工待审批",
+		createdAt: new Date("2024-01-25T09:30:00"),
+		updatedAt: new Date("2024-01-25T09:30:00"),
 	},
 	{
 		id: "REC020",
@@ -243,5 +282,7 @@ export const mockChangePasswordRecordData: ChangePasswordRecord[] = [
 		operator: "admin",
 		status: "成功",
 		remark: "账户异常重置",
+		createdAt: new Date("2024-01-25T14:00:00"),
+		updatedAt: new Date("2024-01-25T14:00:00"),
 	},
 ];
