@@ -1,4 +1,4 @@
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams } from "../../../common";
 
 /**
  * @description expense-summary-table列表数据
@@ -7,10 +7,18 @@ import type { OptionsType } from "../../../common";
 export interface ExpenseSummaryTableListItem {
 	/** ID */
 	id: string;
-	/** 名称 Name */
-	name: string;
-	/** 状态 Status */
-	status: string;
+	/** 时间 */
+	time: string;
+	/** 费用项ID */
+	expenseItemId: string;
+	/** 费用项名称 */
+	expenseItemName: string;
+	/** 应收金额 */
+	receivableAmount: string;
+	/** 实收金额 */
+	actualAmount: string;
+	/** 状态 */
+	status: "enabled" | "disabled";
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
@@ -23,22 +31,22 @@ export interface ExpenseSummaryTableListItem {
  * @description expense-summary-table列表查询参数
  * ExpenseSummaryTable list query parameters
  */
-export interface ExpenseSummaryTableQueryParams {
-	/** 名称 Name */
-	name?: string;
-	/** 状态 Status */
+export interface ExpenseSummaryTableQueryParams extends BaseListQueryParams {
+	/** 时间 */
+	time?: string;
+	/** 费用项ID */
+	expenseItemId?: string;
+	/** 费用项名称 */
+	expenseItemName?: string;
+	/** 状态 */
 	status?: string;
-	/** 当前页码 Current page (1-based) */
-	pageIndex: number;
-	/** 每页大小 Page size */
-	pageSize: number;
 }
 
 /**
  * @description 状态选项
  * Status options
  */
-export const expenseSummaryTableStatusOptions: OptionsType = [
-	{ label: "启用", value: "启用" },
-	{ label: "禁用", value: "禁用" },
-];
+export const expenseSummaryTableStatusOptions = [
+	{ label: "启用", value: "enabled" },
+	{ label: "禁用", value: "disabled" },
+] as const;

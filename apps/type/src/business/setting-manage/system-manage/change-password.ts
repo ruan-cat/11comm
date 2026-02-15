@@ -2,17 +2,28 @@ import type { BaseListQueryParams } from "../../../common";
 import type { SmChangePasswordRecord, NewSmChangePasswordRecord } from "./schema";
 
 /**
- * @description 密码修改记录列表项
+ * @description 密码修改记录列表项（前端类型）
  * Change password record list item
- * 直接使用 schema 生成的类型，确保与数据库字段一致
+ * 从 Schema 类型推导，转换时间字段为字符串格式
  */
-export type ChangePasswordRecordListItem = SmChangePasswordRecord;
+export type ChangePasswordRecordListItem = Omit<SmChangePasswordRecord, "createdAt" | "updatedAt"> & {
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+};
 
 /**
- * @description 密码修改记录
+ * @description 密码修改记录（前端类型）
  * Change password record
+ * 从 Schema 类型推导，转换时间字段为字符串格式
  */
-export type ChangePasswordRecord = SmChangePasswordRecord;
+export type ChangePasswordRecord = Omit<SmChangePasswordRecord, "createdAt" | "updatedAt"> & {
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+};
 
 /**
  * @description 密码修改记录列表查询参数
@@ -44,9 +55,28 @@ export type ChangePasswordRecordQueryParams = ChangePasswordRecordListQuery;
 /**
  * @description 密码修改记录表单VO
  * Change password record form VO
- * 基于 schema 的 insert 类型，用于新增表单
+ * 用于新增/编辑表单，不包含自动生成的字段
  */
-export type ChangePasswordRecordFormVO = NewSmChangePasswordRecord;
+export interface ChangePasswordRecordFormVO {
+	/** 用户名 */
+	username: string;
+	/** 真实姓名 */
+	realName?: string | null;
+	/** 所属部门 */
+	department?: string | null;
+	/** 修改时间 */
+	changeTime?: string | null;
+	/** 修改IP */
+	changeIp?: string | null;
+	/** 修改类型 */
+	changeType?: string | null;
+	/** 操作人 */
+	operator?: string | null;
+	/** 状态 */
+	status?: string | null;
+	/** 备注 */
+	remark?: string | null;
+}
 
 // 从公共选项文件导入
 export {
