@@ -359,17 +359,14 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 	// ==========================================
 	console.log("正在生成 sm_initialize_cells SQL...");
 	const cellRecords: InsertSmInitializeCell[] = mockInitializeCommunityData.map((item) => {
-		const id = idMap.register("sm_initialize_cells", item.id ?? item.communityId);
+		const id = idMap.register("sm_initialize_cells", item.id);
 		return {
 			id: id,
-			initItem: item.communityName ?? item.nearbyLandmark ?? "默认初始化项",
-			initStatus: "completed",
-			configParams: {
-				communityId: item.communityId,
-				cellName: item.cellName ?? item.nearbyLandmark,
-				code: item.code ?? item.communityId,
-				remark: item.remark ?? item.cityCode,
-			},
+			initItem: item.initItem,
+			initStatus: item.initStatus,
+			configParams: item.configParams,
+			createdAt: item.createdAt,
+			updatedAt: item.updatedAt,
 		};
 	});
 
