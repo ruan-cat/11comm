@@ -100,7 +100,71 @@ const errorResponse: JsonVO<null> = {
 return errorResponse;
 ```
 
-## 5. 常见陷阱 (Common Pitfalls)
+## 5. 时间字段格式化 (Timestamp Formatting)
+
+### 5.1 核心原则
+
+数据库 Schema 中的时间字段使用 Drizzle `timestamp` 类型，TypeScript 推断为 `Date` 类型。前端展示需要 `string` 类型。
+
+**API Handler 负责时间字段的格式化转换**。
+
+### 5.2 字段映射规范
+
+| DB 字段 (Drizzle) | 前端字段 (ListItem) | 转换规则                                |
+| :---------------- | :------------------ | :-------------------------------------- |
+| `createdAt`       | `createTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
+| `updatedAt`       | `updateTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
+| `deletedAt`       | -                   | **移除**（不展示）                      |
+
+### 5.3 使用 formatDateTime 工具函数
+
+**必须**从 `server/utils/format-date` 导入 `formatDateTime` 函数，**禁止**在 Handler 内重复定义格式化函数。
+
+```typescript
+// ✅ 正确：导入工具函数
+import { formatDateTime } from "server/utils/format-date";
+
+// ❌ 错误：在 Handler 内定义重复的格式化函数
+function formatDateTime(date: Date): string {
+	const pad = (n: number) => n.toString().padStart(2, "0");
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}...`;
+}
+```
+
+### 5.4 列表接口数据映射示例
+
+```typescript
+import { formatDateTime } from "server/utils/format-date";
+
+// 查询数据库（返回 Date 类型）
+const data = await db
+	.select({
+		id: table.id,
+		name: table.name,
+		createdAt: table.createdAt,
+		updatedAt: table.updatedAt,
+	})
+	.from(table);
+
+// 映射到前端类型（转换为 string 类型）
+const list: XxxListItem[] = data.map((item) => ({
+	id: item.id,
+	name: item.name,
+	createTime: formatDateTime(item.createdAt),
+	updateTime: formatDateTime(item.updatedAt),
+}));
+```
+
+### 5.5 工具函数 API
+
+| 函数             | 参数                                                                     | 返回值   | 用途                           |
+| :--------------- | :----------------------------------------------------------------------- | :------- | :----------------------------- |
+| `formatDateTime` | `date: Date \| string \| number \| null \| undefined, fallback?: string` | `string` | 格式化为 `YYYY-MM-DD HH:mm:ss` |
+| `formatDate`     | 同上                                                                     | `string` | 格式化为 `YYYY-MM-DD`          |
+
+**工具函数源码**: `apps/admin/server/utils/format-date.ts`
+
+## 6. 常见陷阱 (Common Pitfalls)
 
 - **缺失类型导入**: 必须始终导入 `import type { JsonVO } from "@01s-11comm/type"` 约束返回值结构。
 - **错误的路径别名导入**: 必须始终使用别名 `@/server/db` 和 `@/server/db/schema`。
@@ -108,8 +172,9 @@ return errorResponse;
 - **缺失 try-catch**: 所有 Handler **必须**使用 `try-catch` 包裹，catch 块返回标准化错误响应。
 - **遗漏 Await**: 数据库操作是异步的，必须使用 `await`。
 - **使用原始 SQL**: 除非万不得已，禁止使用 `sql` 模板字符串。请使用 Drizzle 的查询构建器 (Query Builder)。
+- **重复定义格式化函数**: 必须使用 `server/utils/format-date` 中的工具函数，禁止在 Handler 内重复定义 `formatDateTime`。
 
-## 6. 类型回填 (Type Recovery)
+## 7. 类型回填 (Type Recovery)
 
 当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，必须显式回填 Insert 类型。
 
