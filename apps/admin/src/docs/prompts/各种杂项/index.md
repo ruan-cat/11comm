@@ -287,3 +287,15 @@ overrides:
 这是一个简单的任务。但是涉及的组件非常多，你绝对不能遗漏文件。
 
 你在设计 tasks.md 任务列表时，务必根据 `apps\admin\src\router\rank\rank-route-keys.ts` 业务路由文件的设计，去设计一个全面的，齐全的，细致的 tasks.md 任务列表文件。必须非常细致，细化到每一个业务路由对应的文件。
+
+## 024 <!-- TODO: --> 更新关于 seed 的命令使用说明，和相关的文档
+
+我读不懂 `"db:reseed": "npx tsx scripts/run-seed-sql.ts --clean",` 这一行命令的作用。请你阅读相关的 git 提交记录，告诉我这个命令的作用。
+
+1. 请你更新 `apps\admin\README.md` 文档，说明清楚需要补全的命令。
+2. 更新 `apps\admin\src\docs\guides\seed-commands.md` 文档，说明清楚这几个关于 seed 的命令。
+3. 请你充分的阅读现在的 `.claude\skills` 技能，找到和 schema 新增、维护、修改相关的技能文档。然后去及时更新 `apps\admin\src\docs\guides\seed-commands.md` 文档。
+   - 更新 `guides\seed-commands.md` 文档内关于 schema 的存储路径。
+   - 说明清楚在更新 schema 数据库表后，应该按照顺序，运行那些命令，才能够及时的更新 neon 云数据库。
+
+在你更新 `guides\seed-commands.md` 文档时，请你确保文档内已经有的知识点，不被你删除掉，遗漏掉，确保不要出现文档核心内容的遗忘。除非遇到冲突的，过时的内容，否则其他核心的指导能力的文本，都不要删除修改。
