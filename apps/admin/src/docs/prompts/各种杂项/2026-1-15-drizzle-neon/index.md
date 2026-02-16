@@ -348,7 +348,20 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 - apps\admin\src\docs\reports\2026-02-14-nitro-interface-rewrite-completion-report.md
 
-### 05 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
+### 05 <!-- TODO: --> 为 nitro 接口补全格式化函数
+
+在 `.claude\skills\nitro-api-development\SKILL.md` 技能内，增加了新的代码编写要求，提供 `formatDateTime` 格式化函数，处理接口返回值的日期格式化问题。
+
+请你对现在的 nitro 接口，补全这个日期格式化函数，务必遵循 `nitro-api-development` 的严格要求。
+
+这是一个简单的改造任务，但是涉及的文件众多，你在遵循 skill 技能的时候，可能会出现严重的偏差和失忆，请按照我的步骤，来新建 agent team 子代理团队，避免主代理的上下文窗口过大，导致失忆。
+
+1. 阅读 `apps\admin\src\router\rank\rank-route-keys.ts` 文件，明确清楚全部 nitro 接口文件，他们都按照路由 key 的目录层级来组织 nitro 接口文件。这帮助你定位 nitro 接口文件。
+2. 注意按照业务模块，和处理接口的数目，合理的新建，划分 agent team 子代理需要处理的文件数目。不要出现某个子代理处理过多 nitro 接口的情况。你应该新建多个专门改写 nitro 接口的子代理成员。
+3. 当你的其中一个 agent team 子代理，发现所处理的文件，已经使用了 `formatDateTime` 格式化函数。那么就应该去通知其他全部的子代理，通知整个 agent 团队的成员，以这个 `apps\admin\server\api\dev-team\cache-manage\refresh-cache\list.post.ts` 对 `formatDateTime` 格式化函数的使用为参考，认真学习代码用法。
+4. 新建一个独立的 agent，用来独立检查 nitro 接口是否都使用上 `formatDateTime` 格式化函数了。使用 glob 语法检索文件目录的方式，独立查询并检验。如果发现有缺漏，就把缺省的文件地址，发给对应的子代理成员，要求其补全。避免缺漏。
+
+### 06 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
 
 ## 011 <!-- TODO: --> 设计面向 nitro 接口的 vitest 测试文件
 
