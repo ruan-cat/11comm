@@ -11,23 +11,12 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": [
-				"src/*"
-			]
+			"@/*": ["src/*"]
 		},
 		"resolveJsonModule": true,
-		"lib": [
-			"ESNext"
-		],
-		"types": [
-			"node"
-		]
+		"lib": ["ESNext"],
+		"types": ["node"]
 	},
-	"include": [
-		"src/**/*.ts"
-	],
-	"exclude": [
-		"dist",
-		"node_modules"
-	]
+	"include": ["src/**/*.ts"],
+	"exclude": ["dist", "node_modules"]
 }

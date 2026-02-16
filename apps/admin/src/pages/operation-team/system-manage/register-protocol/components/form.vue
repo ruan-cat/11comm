@@ -5,12 +5,13 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import type { RegisterProtocolFormVO } from "@01s-11comm/type";
-import { protocolTypeOptions, isMandatoryOptions, registerProtocolStatusOptions as statusOptions } from "@01s-11comm/type";
-
 import {
-	RegisterProtocolFormProps,
-	defaultForm,
-} from "./form";
+	protocolTypeOptions,
+	isMandatoryOptions,
+	registerProtocolStatusOptions as statusOptions,
+} from "@01s-11comm/type";
+
+import { RegisterProtocolFormProps, defaultForm } from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
 

@@ -11,12 +11,7 @@ definePage({
 import { transformI18n } from "@/plugins/i18n";
 import type { OutstandingFeesAnalysisListItem, OutstandingFeesAnalysisQueryParams } from "@01s-11comm/type";
 import { useOutstandingFeesAnalysisListQuery } from "@/api/property-manage/report-manage/outstanding-fees-analysis";
-import {
-	feeItemOptions,
-	communityOptions,
-	buildingOptions,
-	unitOptions,
-} from "@01s-11comm/type";
+import { feeItemOptions, communityOptions, buildingOptions, unitOptions } from "@01s-11comm/type";
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([

@@ -10,10 +10,7 @@ import { transformI18n } from "@/plugins/i18n";
 import type { CommunityNoticeFormVO } from "@01s-11comm/type";
 import { noticeTypeOptions, noticeStatusOptions } from "@01s-11comm/type";
 
-import {
-	CommunityNoticeFormProps,
-	defaultForm,
-} from "./form";
+import { CommunityNoticeFormProps, defaultForm } from "./form";
 
 const props = defineProps<CommunityNoticeFormProps>();
 

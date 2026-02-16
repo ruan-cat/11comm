@@ -4,9 +4,7 @@ import { useTemplateRef } from "vue";
 import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import { buildingStructureOptions, buildingStatusOptions } from "@01s-11comm/type";
 
-import {
-	BuildingSpaceStructureDiagramFormProps,
-} from "./form";
+import { BuildingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();
 

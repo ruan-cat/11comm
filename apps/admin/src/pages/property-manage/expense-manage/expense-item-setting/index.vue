@@ -10,10 +10,7 @@ definePage({
 
 import { ref, computed, onMounted } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type ExpenseItemSettingFormProps,
-	defaultForm,
-} from "./components/form";
+import { type ExpenseItemSettingFormProps, defaultForm } from "./components/form";
 import type {
 	ExpenseItemSettingFormVO,
 	ExpenseItemFeeType as FeeType,

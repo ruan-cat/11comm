@@ -18,10 +18,7 @@ import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
-import {
-	HouseChargeFormProps,
-	defaultForm,
-} from "./form";
+import { HouseChargeFormProps, defaultForm } from "./form";
 
 const props = defineProps<HouseChargeFormProps>();
 

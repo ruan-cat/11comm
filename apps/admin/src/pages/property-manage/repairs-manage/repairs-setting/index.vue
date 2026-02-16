@@ -13,10 +13,7 @@ import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type RepairsSettingFormProps,
-	defaultForm,
-} from "./components/form";
+import { type RepairsSettingFormProps, defaultForm } from "./components/form";
 import RepairsSettingForm from "./components/form.vue";
 import { useRepairsSettingListQuery } from "@/api/property-manage/repairs-manage/repairs-setting";
 import {
@@ -259,8 +256,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					dispatchMethod: (row?.dispatchMethod as DispatchMethodType | undefined) || defaultForm.dispatchMethod,
 					publicArea: (row?.publicArea as AreaType | undefined) || defaultForm.publicArea,
 					ownerDisplay: (row?.ownerDisplay as OwnerDisplayType | undefined) || defaultForm.ownerDisplay,
-					notificationMethod: (row?.notificationMethod as NotificationMethodType | undefined) || defaultForm.notificationMethod,
-					returnVisitSetting: (row?.returnVisitSetting as ReturnVisitSettingType | undefined) || defaultForm.returnVisitSetting,
+					notificationMethod:
+						(row?.notificationMethod as NotificationMethodType | undefined) || defaultForm.notificationMethod,
+					returnVisitSetting:
+						(row?.returnVisitSetting as ReturnVisitSettingType | undefined) || defaultForm.returnVisitSetting,
 					description: row?.remark || "",
 				})
 			: structuredClone(defaultForm);

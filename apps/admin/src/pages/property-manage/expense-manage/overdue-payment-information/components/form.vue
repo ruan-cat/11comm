@@ -3,9 +3,7 @@ import { useTemplateRef, ref, computed } from "vue";
 import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
 import { chargeObjectOptions, overduePaymentStatusOptions } from "@01s-11comm/type";
 
-import {
-	OverduePaymentInformationFormProps,
-} from "./form";
+import { OverduePaymentInformationFormProps } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<OverduePaymentInformationFormProps>();

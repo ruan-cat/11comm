@@ -9,7 +9,10 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { title } from "process";
-import type { DataStatisticsMonthlyActualCollectionDetailsListItem, DataStatisticsMonthlyActualCollectionDetailsQueryParams } from "@01s-11comm/type";
+import type {
+	DataStatisticsMonthlyActualCollectionDetailsListItem,
+	DataStatisticsMonthlyActualCollectionDetailsQueryParams,
+} from "@01s-11comm/type";
 
 const outstandingTotal = ref<number>(114514);
 

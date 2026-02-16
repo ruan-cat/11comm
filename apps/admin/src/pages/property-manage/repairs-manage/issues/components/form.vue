@@ -2,7 +2,12 @@
 import { computed, ref, useTemplateRef } from "vue";
 
 import { IssuesSettingFormProps } from "./form";
-import { type IssuesFormVO, repairTypeOptions, repairCategoryOptions, repairsIssuesStatusOptions } from "@01s-11comm/type";
+import {
+	type IssuesFormVO,
+	repairTypeOptions,
+	repairCategoryOptions,
+	repairsIssuesStatusOptions,
+} from "@01s-11comm/type";
 
 const props = defineProps<IssuesSettingFormProps>();
 

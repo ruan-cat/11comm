@@ -10,10 +10,7 @@ definePage({
 
 import { ref, computed, onMounted, h } from "vue";
 import { transformI18n } from "@/plugins/i18n";
-import {
-	type OverduePaymentInformationFormProps,
-	defaultForm,
-} from "./components/form";
+import { type OverduePaymentInformationFormProps, defaultForm } from "./components/form";
 import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
 import OverduePaymentInformationForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";

@@ -11,11 +11,7 @@ definePage({
 import { transformI18n } from "@/plugins/i18n";
 import type { NoChargeHouseListItem, NoChargeHouseQueryParams } from "@01s-11comm/type";
 import { useNoChargeHouseListQuery } from "@/api/property-manage/report-manage/no-charge-house";
-import {
-	communityOptions,
-	buildingOptions,
-	unitOptions,
-} from "@01s-11comm/type";
+import { communityOptions, buildingOptions, unitOptions } from "@01s-11comm/type";
 
 /** 表格列配置 */
 const columns = ref<TableColumnList>([

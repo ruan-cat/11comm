@@ -5,16 +5,9 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
 import type { SystemConfigFormVO } from "@01s-11comm/type";
-import {
-	systemConfigTypeOptions,
-	systemConfigSystemOptions,
-	systemConfigEnabledOptions,
-} from "@01s-11comm/type";
+import { systemConfigTypeOptions, systemConfigSystemOptions, systemConfigEnabledOptions } from "@01s-11comm/type";
 
-import {
-	SystemConfigFormProps,
-	defaultForm,
-} from "./form";
+import { SystemConfigFormProps, defaultForm } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
 

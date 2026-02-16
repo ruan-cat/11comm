@@ -19,10 +19,7 @@ import {
 	businessStatusOptions,
 } from "@01s-11comm/type";
 import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
-import {
-	type MerchantInfoFormProps,
-	defaultForm,
-} from "./components/form";
+import { type MerchantInfoFormProps, defaultForm } from "./components/form";
 import type { MerchantInfoFormVO, MerchantType, BusinessStatus } from "@01s-11comm/type";
 import MerchantInfoForm from "./components/form.vue";
 const merchantInfoFormInstance = ref<InstanceType<typeof MerchantInfoForm> | null>(null);

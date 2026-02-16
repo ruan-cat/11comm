@@ -9,7 +9,10 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { title } from "process";
-import type { DataStatisticsActualCollectionDetailsListItem, DataStatisticsActualCollectionDetailsQueryParams } from "@01s-11comm/type";
+import type {
+	DataStatisticsActualCollectionDetailsListItem,
+	DataStatisticsActualCollectionDetailsQueryParams,
+} from "@01s-11comm/type";
 
 const tableDataItem: DataStatisticsActualCollectionDetailsListItem = {
 	house: "11-0-07",

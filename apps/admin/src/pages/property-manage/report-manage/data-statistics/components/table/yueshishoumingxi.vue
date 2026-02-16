@@ -9,7 +9,10 @@ definePage({
 import { ref, computed, watch } from "vue";
 import { transformI18n } from "@/plugins/i18n";
 import { title } from "process";
-import type { DataStatisticsMonthlyArrearsDetailsListItem, DataStatisticsMonthlyArrearsDetailsQueryParams } from "@01s-11comm/type";
+import type {
+	DataStatisticsMonthlyArrearsDetailsListItem,
+	DataStatisticsMonthlyArrearsDetailsQueryParams,
+} from "@01s-11comm/type";
 
 const realTotal = ref<number>(0);
 

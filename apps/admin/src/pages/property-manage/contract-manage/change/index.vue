@@ -14,7 +14,13 @@ import { defaultAddDialogParams } from "@/config/constant";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
-import { type ContractChangeFormVO, type ChangeListItem, type ChangeQueryParams, changeStatusOptions, contractTypeOptions } from "@01s-11comm/type";
+import {
+	type ContractChangeFormVO,
+	type ChangeListItem,
+	type ChangeQueryParams,
+	changeStatusOptions,
+	contractTypeOptions,
+} from "@01s-11comm/type";
 import { type ContractChangeFormProps, defaultForm } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
 import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";

@@ -7,10 +7,7 @@ import { ref, computed, useTemplateRef } from "vue";
 import type { MenuItemFormVO } from "@01s-11comm/type";
 import { menuTypeOptions, menuItemStatusOptions, booleanOptions } from "@01s-11comm/type";
 
-import {
-	MenuItemFormProps,
-	defaultForm,
-} from "./form";
+import { MenuItemFormProps, defaultForm } from "./form";
 
 const props = defineProps<MenuItemFormProps>();
 
