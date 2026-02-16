@@ -288,7 +288,7 @@ overrides:
 
 你在设计 tasks.md 任务列表时，务必根据 `apps\admin\src\router\rank\rank-route-keys.ts` 业务路由文件的设计，去设计一个全面的，齐全的，细致的 tasks.md 任务列表文件。必须非常细致，细化到每一个业务路由对应的文件。
 
-## 024 <!-- TODO: --> 更新关于 seed 的命令使用说明，和相关的文档
+## 024 更新关于 seed 的命令使用说明，和相关的文档
 
 我读不懂 `"db:reseed": "npx tsx scripts/run-seed-sql.ts --clean",` 这一行命令的作用。请你阅读相关的 git 提交记录，告诉我这个命令的作用。
 
