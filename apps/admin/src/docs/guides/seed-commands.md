@@ -15,6 +15,7 @@
 
 ### 1.2. 文件位置
 
+- **Schema 定义**: `apps/type/src/business/{domain}/{module}/schema.ts`
 - **生成脚本**: `apps/admin/scripts/generate-seed-sql.ts`
 - **执行脚本**: `apps/admin/scripts/run-seed-sql.ts`
 - **模块定义**: `apps/admin/server/db/seed-sql/`
@@ -294,3 +295,89 @@ DATABASE_URL=postgresql://...
 - [数据库 Schema 设计](../reports/2026-02-03-analyze-mock-data-and-create-db-seed-inspection.md)
 - [Drizzle ORM 官方文档](https://orm.drizzle.team/)
 - [Neon 数据库文档](https://neon.tech/docs)
+
+## 9. Schema 变更与数据库同步
+
+当修改 `apps/type/src/business/{domain}/{module}/schema.ts` 文件中的数据库表定义后，需要按顺序执行以下命令来同步变更到 Neon 云数据库。
+
+### 9.1. Schema 存储位置
+
+项目的数据库 Schema 定义位于 `apps/type/src/business/{domain}/{module}/schema.ts` 文件中。每个 schema 文件必须遵循 **Trinity Pattern**，同时导出：
+
+- **Drizzle Table** - 数据库表定义
+- **Zod Schemas** - 运行时验证
+- **TypeScript Types** - 静态类型
+
+### 9.2. 更新 Schema 后的命令执行顺序
+
+#### 步骤 1: 生成数据库迁移文件
+
+```bash
+# 在 type 项目中生成迁移文件
+pnpm -F @01s-11comm/type db:generate
+```
+
+此命令会根据 schema.ts 中的表定义变更，在 `apps/admin/drizzle/` 目录下生成新的迁移 SQL 文件。
+
+#### 步骤 2: 推送 Schema 变更到数据库
+
+```bash
+# 开发环境快速同步（推荐）
+pnpm db:push
+
+# 或者执行迁移文件（生产环境推荐）
+pnpm db:migrate
+```
+
+- `db:push`: 适用于开发环境，直接将 schema 变更推送到数据库
+- `db:migrate`: 适用于生产环境，执行迁移文件，更安全
+
+#### 步骤 3: 重新生成种子数据
+
+```bash
+# 生成全部模块的种子 SQL
+pnpm db:generate-seed
+```
+
+如果只是修改了现有表的字段，通常需要重新生成相关模块的种子数据。
+
+#### 步骤 4: 导入种子数据到数据库
+
+```bash
+# 方式一：直接导入（保留现有数据）
+pnpm db:seed
+
+# 方式二：清理后重新导入（完全重置）
+pnpm db:reseed
+```
+
+- `db:seed`: 在现有数据基础上导入新种子数据
+- `db:reseed`: 先清理数据库中的现有数据，再导入新种子数据（等效于 `db:seed --clean`）
+
+### 9.3. 完整命令序列示例
+
+```bash
+# 完整的 Schema 更新流程
+# 1. 修改 schema.ts 文件后...
+
+# 2. 生成迁移文件
+pnpm -F @01s-11comm/type db:generate
+
+# 3. 推送到数据库
+pnpm db:push
+
+# 4. 重新生成种子数据
+pnpm db:generate-seed
+
+# 5. 导入种子数据
+pnpm db:reseed
+```
+
+### 9.4. 相关 Skills 技能文档
+
+更多关于 Schema 变更同步的详细规范，请参考以下技能文档：
+
+- **Schema 变更同步**: `.claude/skills/schema-change-sync/SKILL.md` - 数据库 Schema 变更时的全项目同步检查清单
+- **Schema 与 Seed 守护**: `.claude/skills/schema-and-seed-guardian/SKILL.md` - 数据库架构变更和种子数据生成的规范
+- **项目 Schema 注册表**: `.claude/skills/project-schema-registry/SKILL.md` - Schema 编写标准和 Trinity Pattern
+- **Neon 数据库表清单**: `.claude/skills/neon-db-list/SKILL.md` - 项目中所有数据库表的完整列表
