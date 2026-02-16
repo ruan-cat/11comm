@@ -7,6 +7,8 @@
 	},
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
+		// 折叠 AI大模型记忆文件
+		"CLAUDE.md": "GEMINI.md,AGENTS.md",
 		// 折叠 typescript类型文件
 		"tsconfig.json": "tsconfig.*.json, env.d.ts",
 		// 折叠 vite配置文件
@@ -163,10 +165,10 @@
 			"uploader": "github",
 			"github": {
 				/**
-					图片上传到专门的嵌套子文件夹
-					这个上传路径是专门用于阮喵喵的github图床的 绝大多数人员几乎不会使用 vs-picgo 插件
-					故该配置属于专属配置
-					图床信息将用于为大家展示文档。
+				图片上传到专门的嵌套子文件夹
+				这个上传路径是专门用于阮喵喵的github图床的 绝大多数人员几乎不会使用 vs-picgo 插件
+				故该配置属于专属配置
+				图床信息将用于为大家展示文档。
 				*/
 				"path": "01s-docs/11comm/"
 			}
