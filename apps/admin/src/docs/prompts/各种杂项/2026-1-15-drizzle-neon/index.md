@@ -342,7 +342,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 我列举的内容可能有缺省，你需要认真阅读 `schema-change-sync` 的要求，去确定需要修改的范围，然后补充对应的修改。
 
-### 04 <!-- TODO: --> 根据报告提及到的特殊情况，继续完成对应 nitro 接口的改造
+### 04 根据报告提及到的特殊情况，继续完成对应 nitro 接口的改造
 
 阅读以下报告的要求，根据特殊情况，继续完成 `nitro-interface-rewrite` 任务。
 
