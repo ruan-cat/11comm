@@ -65,12 +65,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 					contactPhone: opPropertyCompanies.contactPhone,
 					qualificationLevel: opPropertyCompanies.qualificationLevel,
 					remark: opPropertyCompanies.remark,
-					createdAt: opPropertyCompanies.createdAt,
-					updatedAt: opPropertyCompanies.updatedAt,
+					createTime: opPropertyCompanies.createTime,
+					updateTime: opPropertyCompanies.updateTime,
 				})
 				.from(opPropertyCompanies)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(opPropertyCompanies.createdAt))
+				.orderBy(desc(opPropertyCompanies.createTime))
 				.limit(query.pageSize)
 				.offset(offset),
 
@@ -96,7 +96,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			legalRepresentative: "",
 			establishmentDate: "",
 			landmark: "",
-			createTime: item.createdAt ? new Date(item.createdAt).toLocaleString("zh-CN") : "",
+			createTime: item.createTime ? new Date(item.createTime).toLocaleString("zh-CN") : "",
 			communityCount: 0,
 			companyType: "private",
 			serviceLevel: "level_1",

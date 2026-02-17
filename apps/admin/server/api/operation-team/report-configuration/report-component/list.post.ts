@@ -85,12 +85,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportCompone
 					componentType: opReportComponents.componentType,
 					componentConfig: sql<string>`COALESCE(${opReportComponents.componentConfig}::text, '')`,
 					reportId: opReportComponents.reportId,
-					createdAt: sql<string>`${opReportComponents.createdAt}::text`,
-					updatedAt: sql<string>`${opReportComponents.updatedAt}::text`,
+					createTime: sql<string>`${opReportComponents.createTime}::text`,
+					updateTime: sql<string>`${opReportComponents.updateTime}::text`,
 				})
 				.from(opReportComponents)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(opReportComponents.createdAt))
+				.orderBy(desc(opReportComponents.createTime))
 				.limit(query.pageSize)
 				.offset(offset),
 
@@ -118,8 +118,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportCompone
 			description: "",
 			sortOrder: 0,
 			isEnabled: true,
-			createTime: item.createdAt || "",
-			updateTime: item.updatedAt || "",
+			createTime: item.createTime || "",
+			updateTime: item.updateTime || "",
 			operator: "",
 		}));
 

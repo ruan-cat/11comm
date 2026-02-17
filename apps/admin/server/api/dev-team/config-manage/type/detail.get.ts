@@ -29,8 +29,8 @@ export default defineHandler(async (event) => {
 				typeCode: dtConfigTypes.typeCode,
 				typeDescription: dtConfigTypes.typeDescription,
 				sortOrder: dtConfigTypes.sortOrder,
-				createdAt: dtConfigTypes.createdAt,
-				updatedAt: dtConfigTypes.updatedAt,
+				createTime: dtConfigTypes.createTime,
+				updateTime: dtConfigTypes.updateTime,
 			})
 			.from(dtConfigTypes)
 			.where(eq(dtConfigTypes.id, query.id))

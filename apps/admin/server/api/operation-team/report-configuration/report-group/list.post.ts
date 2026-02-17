@@ -72,12 +72,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportGroupLi
 					groupCode: opReportGroups.groupCode,
 					groupDescription: opReportGroups.groupDescription,
 					sortOrder: opReportGroups.sortOrder,
-					createdAt: sql<string>`${opReportGroups.createdAt}::text`,
-					updatedAt: sql<string>`${opReportGroups.updatedAt}::text`,
+					createTime: sql<string>`${opReportGroups.createTime}::text`,
+					updateTime: sql<string>`${opReportGroups.updateTime}::text`,
 				})
 				.from(opReportGroups)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(opReportGroups.createdAt))
+				.orderBy(desc(opReportGroups.createTime))
 				.limit(query.pageSize)
 				.offset(offset),
 
@@ -98,8 +98,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportGroupLi
 			sortOrder: item.sortOrder || 0,
 			isEnabled: true,
 			reportCount: 0,
-			createTime: item.createdAt || "",
-			updateTime: item.updatedAt || "",
+			createTime: item.createTime || "",
+			updateTime: item.updateTime || "",
 			operator: "",
 		}));
 

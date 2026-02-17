@@ -18,7 +18,7 @@ const querySchema = z.object({
 	typeName: z.string().optional(),
 	typeCode: z.string().optional(),
 	typeDescription: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "typeName", "typeCode", "sortOrder"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "typeName", "typeCode", "sortOrder"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -57,12 +57,12 @@ export default defineHandler(async (event) => {
 		const offset = (query.page - 1) * query.pageSize;
 
 		/** 构建排序条件 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields = {
-			createdAt: dtConfigTypes.createdAt,
-			updatedAt: dtConfigTypes.updatedAt,
+			createTime: dtConfigTypes.createTime,
+			updateTime: dtConfigTypes.updateTime,
 			typeName: dtConfigTypes.typeName,
 			typeCode: dtConfigTypes.typeCode,
 			sortOrder: dtConfigTypes.sortOrder,
@@ -86,8 +86,8 @@ export default defineHandler(async (event) => {
 				typeCode: dtConfigTypes.typeCode,
 				typeDescription: dtConfigTypes.typeDescription,
 				sortOrder: dtConfigTypes.sortOrder,
-				createdAt: dtConfigTypes.createdAt,
-				updatedAt: dtConfigTypes.updatedAt,
+				createTime: dtConfigTypes.createTime,
+				updateTime: dtConfigTypes.updateTime,
 			})
 			.from(dtConfigTypes)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -105,8 +105,8 @@ export default defineHandler(async (event) => {
 			data: {
 				list: data.map((item) => ({
 					...item,
-					createTime: formatDateTime(item.createdAt),
-					updateTime: formatDateTime(item.updatedAt),
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
 				})),
 				total,
 				pageSize: query.pageSize,

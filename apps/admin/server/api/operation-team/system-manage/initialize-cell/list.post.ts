@@ -62,15 +62,15 @@ export default defineHandler(async (event) => {
 			.select()
 			.from(smInitializeCells)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(smInitializeCells.createdAt))
+			.orderBy(desc(smInitializeCells.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
 		/** 转换数据格式以匹配前端期望 */
 		const list = data.map((item) => ({
 			...item,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

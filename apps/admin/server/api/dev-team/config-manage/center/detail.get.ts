@@ -34,8 +34,8 @@ export default defineHandler(async (event) => {
 				status: dtConfigs.status,
 				sortOrder: dtConfigs.sortOrder,
 				remark: dtConfigs.remark,
-				createdAt: dtConfigs.createdAt,
-				updatedAt: dtConfigs.updatedAt,
+				createTime: dtConfigs.createTime,
+				updateTime: dtConfigs.updateTime,
 				createdBy: dtConfigs.createdBy,
 				updatedBy: dtConfigs.updatedBy,
 			})

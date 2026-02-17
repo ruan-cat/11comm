@@ -19,7 +19,7 @@ const querySchema = z.object({
 	configType: z.string().optional(),
 	configKey: z.string().optional(),
 	status: z.enum(["enabled", "disabled"]).optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "configName", "configKey", "sortOrder"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "configName", "configKey", "sortOrder"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -63,12 +63,12 @@ export default defineHandler(async (event) => {
 		const offset = (query.page - 1) * query.pageSize;
 
 		/** 构建排序条件 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields = {
-			createdAt: dtConfigs.createdAt,
-			updatedAt: dtConfigs.updatedAt,
+			createTime: dtConfigs.createTime,
+			updateTime: dtConfigs.updateTime,
 			configName: dtConfigs.configName,
 			configKey: dtConfigs.configKey,
 			sortOrder: dtConfigs.sortOrder,
@@ -97,8 +97,8 @@ export default defineHandler(async (event) => {
 				status: dtConfigs.status,
 				sortOrder: dtConfigs.sortOrder,
 				remark: dtConfigs.remark,
-				createdAt: dtConfigs.createdAt,
-				updatedAt: dtConfigs.updatedAt,
+				createTime: dtConfigs.createTime,
+				updateTime: dtConfigs.updateTime,
 				createdBy: dtConfigs.createdBy,
 				updatedBy: dtConfigs.updatedBy,
 			})
@@ -125,8 +125,8 @@ export default defineHandler(async (event) => {
 			data: {
 				list: data.map((item) => ({
 					...item,
-					createTime: formatDateTime(item.createdAt),
-					updateTime: formatDateTime(item.updatedAt),
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
 				})),
 				total,
 				pageSize: query.pageSize,

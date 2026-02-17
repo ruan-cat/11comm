@@ -70,7 +70,7 @@ export default defineHandler(async (event) => {
 				.select()
 				.from(opMerchants)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(opMerchants.createdAt))
+				.orderBy(desc(opMerchants.createTime))
 				.limit(pageSize)
 				.offset(offset),
 
@@ -87,8 +87,8 @@ export default defineHandler(async (event) => {
 		/** 转换数据格式以匹配前端期望 */
 		const list = data.map((item) => ({
 			...item,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** [v2.0 更新] 必须使用 JsonVO<PageDTO<...>> 类型注解约束响应 */

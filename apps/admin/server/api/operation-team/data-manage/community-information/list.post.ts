@@ -80,8 +80,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 					establishedTime: cmCommunities.establishedDate,
 					contactPhone: cmCommunities.phone,
 					status: cmCommunities.status,
-					createTime: cmCommunities.createdAt,
-					updateTime: cmCommunities.updatedAt,
+					createTime: cmCommunities.createTime,
+					updateTime: cmCommunities.updateTime,
 					operator: cmCommunities.phone,
 					province: cmCommunities.province,
 					city: cmCommunities.city,
@@ -92,7 +92,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				})
 				.from(cmCommunities)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(cmCommunities.createdAt))
+				.orderBy(desc(cmCommunities.createTime))
 				.limit(query.pageSize)
 				.offset(offset),
 

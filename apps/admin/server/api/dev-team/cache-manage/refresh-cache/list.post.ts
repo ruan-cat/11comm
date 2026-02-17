@@ -36,8 +36,8 @@ function mapDtCacheConfigsToRefreshCacheListItems(
 		description: string | null;
 		refreshStrategy: string | null;
 		status: string | null;
-		createdAt: Date | null;
-		updatedAt: Date | null;
+		createTime: Date | null;
+		updateTime: Date | null;
 	}>,
 ): RefreshCacheListItem[] {
 	return data.map((row) => ({
@@ -51,8 +51,8 @@ function mapDtCacheConfigsToRefreshCacheListItems(
 		description: row.description ?? "",
 		refreshPolicy: row.refreshStrategy ?? "",
 		status: row.status ?? "enabled",
-		createTime: row.createdAt ? formatDateTime(row.createdAt) : "",
-		updateTime: row.updatedAt ? formatDateTime(row.updatedAt) : "",
+		createTime: row.createTime ? formatDateTime(row.createTime) : "",
+		updateTime: row.updateTime ? formatDateTime(row.updateTime) : "",
 	}));
 }
 
@@ -127,12 +127,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RefreshCacheL
 				description: dtCacheConfigs.description,
 				refreshStrategy: dtCacheConfigs.refreshStrategy,
 				status: dtCacheConfigs.status,
-				createdAt: dtCacheConfigs.createdAt,
-				updatedAt: dtCacheConfigs.updatedAt,
+				createTime: dtCacheConfigs.createTime,
+				updateTime: dtCacheConfigs.updateTime,
 			})
 			.from(dtCacheConfigs)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(dtCacheConfigs.createdAt))
+			.orderBy(desc(dtCacheConfigs.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 

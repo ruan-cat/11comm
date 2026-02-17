@@ -18,7 +18,7 @@ const querySchema = z.object({
 	dictionaryName: z.string().optional(),
 	dictionaryCode: z.string().optional(),
 	dictionaryType: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "dictionaryName", "dictionaryCode"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "dictionaryName", "dictionaryCode"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -57,12 +57,12 @@ export default defineHandler(async (event) => {
 		const offset = (query.page - 1) * query.pageSize;
 
 		/** 构建排序条件 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields = {
-			createdAt: dtDictionaries.createdAt,
-			updatedAt: dtDictionaries.updatedAt,
+			createTime: dtDictionaries.createTime,
+			updateTime: dtDictionaries.updateTime,
 			dictionaryName: dtDictionaries.dictionaryName,
 			dictionaryCode: dtDictionaries.dictionaryCode,
 		};
@@ -86,8 +86,8 @@ export default defineHandler(async (event) => {
 				dictionaryType: dtDictionaries.dictionaryType,
 				dictionaryDescription: dtDictionaries.dictionaryDescription,
 				remark: dtDictionaries.remark,
-				createdAt: dtDictionaries.createdAt,
-				updatedAt: dtDictionaries.updatedAt,
+				createTime: dtDictionaries.createTime,
+				updateTime: dtDictionaries.updateTime,
 			})
 			.from(dtDictionaries)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -105,8 +105,8 @@ export default defineHandler(async (event) => {
 			data: {
 				list: data.map((item) => ({
 					...item,
-					createTime: formatDateTime(item.createdAt),
-					updateTime: formatDateTime(item.updatedAt),
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
 				})),
 				total,
 				pageSize: query.pageSize,

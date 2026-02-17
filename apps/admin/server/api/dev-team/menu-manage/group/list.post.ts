@@ -65,12 +65,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuGroupList
 				groupCode: dtMenuGroups.groupCode,
 				groupIcon: dtMenuGroups.groupIcon,
 				sortOrder: dtMenuGroups.sortOrder,
-				createdAt: dtMenuGroups.createdAt,
-				updatedAt: dtMenuGroups.updatedAt,
+				createTime: dtMenuGroups.createTime,
+				updateTime: dtMenuGroups.updateTime,
 			})
 			.from(dtMenuGroups)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(dtMenuGroups.createdAt))
+			.orderBy(desc(dtMenuGroups.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -84,8 +84,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuGroupList
 			icon: item.groupIcon ?? "",
 			status: "enabled",
 			description: "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		const response: JsonVO<PageDTO<MenuGroupListItem>> = {

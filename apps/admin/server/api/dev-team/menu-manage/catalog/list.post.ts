@@ -54,12 +54,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuCatalogLi
 				catalogName: dtMenuCatalogs.catalogName,
 				catalogIcon: dtMenuCatalogs.catalogIcon,
 				sortOrder: dtMenuCatalogs.sortOrder,
-				createdAt: dtMenuCatalogs.createdAt,
-				updatedAt: dtMenuCatalogs.updatedAt,
+				createTime: dtMenuCatalogs.createTime,
+				updateTime: dtMenuCatalogs.updateTime,
 			})
 			.from(dtMenuCatalogs)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(dtMenuCatalogs.createdAt))
+			.orderBy(desc(dtMenuCatalogs.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -73,8 +73,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuCatalogLi
 			storeType: "property",
 			typeText: "",
 			storeTypeText: "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		const response: JsonVO<PageDTO<MenuCatalogListItem>> = {

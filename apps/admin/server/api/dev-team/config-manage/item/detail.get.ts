@@ -30,8 +30,8 @@ export default defineHandler(async (event) => {
 				typeId: dtConfigItems.typeId,
 				dataType: dtConfigItems.dataType,
 				validationRule: dtConfigItems.validationRule,
-				createdAt: dtConfigItems.createdAt,
-				updatedAt: dtConfigItems.updatedAt,
+				createTime: dtConfigItems.createTime,
+				updateTime: dtConfigItems.updateTime,
 				typeName: dtConfigTypes.typeName,
 				typeCode: dtConfigTypes.typeCode,
 			})

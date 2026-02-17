@@ -89,11 +89,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuItemListI
 				isVisible: dtMenuItems.isVisible,
 				isCache: dtMenuItems.isCache,
 				isExternal: dtMenuItems.isExternal,
-				createdAt: dtMenuItems.createdAt,
+				createTime: dtMenuItems.createTime,
 			})
 			.from(dtMenuItems)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(dtMenuItems.createdAt))
+			.orderBy(desc(dtMenuItems.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -110,7 +110,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuItemListI
 			isExternal: item.isExternal ? "true" : "false",
 			isCached: item.isCache ? "true" : "false",
 			isHidden: item.isVisible ? "false" : "true",
-			createTime: formatDateTime(item.createdAt),
+			createTime: formatDateTime(item.createTime),
 			icon: item.menuIcon ?? "",
 		}));
 

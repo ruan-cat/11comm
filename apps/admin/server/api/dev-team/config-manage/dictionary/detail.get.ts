@@ -30,8 +30,8 @@ export default defineHandler(async (event) => {
 				dictionaryType: dtDictionaries.dictionaryType,
 				dictionaryDescription: dtDictionaries.dictionaryDescription,
 				remark: dtDictionaries.remark,
-				createdAt: dtDictionaries.createdAt,
-				updatedAt: dtDictionaries.updatedAt,
+				createTime: dtDictionaries.createTime,
+				updateTime: dtDictionaries.updateTime,
 			})
 			.from(dtDictionaries)
 			.where(eq(dtDictionaries.id, query.id))

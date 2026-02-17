@@ -19,7 +19,7 @@ const querySchema = z.object({
 	itemKey: z.string().optional(),
 	typeId: z.string().uuid().optional(),
 	dataType: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "itemName", "itemKey", "typeId"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "itemName", "itemKey", "typeId"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -63,12 +63,12 @@ export default defineHandler(async (event) => {
 		const offset = (query.page - 1) * query.pageSize;
 
 		/** 构建排序条件 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields = {
-			createdAt: dtConfigItems.createdAt,
-			updatedAt: dtConfigItems.updatedAt,
+			createTime: dtConfigItems.createTime,
+			updateTime: dtConfigItems.updateTime,
 			itemName: dtConfigItems.itemName,
 			itemKey: dtConfigItems.itemKey,
 			typeId: dtConfigItems.typeId,
@@ -93,8 +93,8 @@ export default defineHandler(async (event) => {
 				typeId: dtConfigItems.typeId,
 				dataType: dtConfigItems.dataType,
 				validationRule: dtConfigItems.validationRule,
-				createdAt: dtConfigItems.createdAt,
-				updatedAt: dtConfigItems.updatedAt,
+				createTime: dtConfigItems.createTime,
+				updateTime: dtConfigItems.updateTime,
 				typeName: dtConfigTypes.typeName,
 				typeCode: dtConfigTypes.typeCode,
 			})
@@ -115,8 +115,8 @@ export default defineHandler(async (event) => {
 			data: {
 				list: data.map((item) => ({
 					...item,
-					createTime: formatDateTime(item.createdAt),
-					updateTime: formatDateTime(item.updatedAt),
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
 				})),
 				total,
 				pageSize: query.pageSize,
