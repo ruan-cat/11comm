@@ -13,6 +13,41 @@ import { primaryId, timestamps, statusEnum } from "../../../common";
 // Part A: Database Table Definitions
 // ==========================================
 
+/** 小区配置表 */
+export const smCommunityConfigurations = pgTable(
+	"sm_community_configurations",
+	{
+		id: primaryId(),
+		/** 配置ID */
+		csId: varchar("cs_id", { length: 50 }).notNull(),
+		/** 小区ID */
+		communityId: varchar("community_id", { length: 50 }).notNull(),
+		/** 小区名称 */
+		communityName: varchar("community_name", { length: 100 }).notNull(),
+		/** 设置名称 */
+		settingName: varchar("setting_name", { length: 100 }).notNull(),
+		/** 设置值 */
+		settingValue: text("setting_value"),
+		/** 设置类型 */
+		settingType: varchar("setting_type", { length: 50 }).notNull(),
+		/** 状态编码 */
+		statusCd: varchar("status_cd", { length: 10 }).notNull(),
+		/** 备注 */
+		remark: text("remark"),
+		/** 创建时间 */
+		createTime: varchar("create_time", { length: 50 }),
+		/** 更新时间 */
+		updateTime: varchar("update_time", { length: 50 }),
+		/** 操作人 */
+		operator: varchar("operator", { length: 100 }),
+	},
+	(table) => [
+		index("sm_community_configurations_cs_id_idx").on(table.csId),
+		index("sm_community_configurations_community_id_idx").on(table.communityId),
+		index("sm_community_configurations_setting_name_idx").on(table.settingName),
+	],
+);
+
 /** 系统配置表 */
 export const smSystemConfigs = pgTable(
 	"sm_system_configs",
@@ -83,6 +118,35 @@ export const smInitializeCells = pgTable(
 // ==========================================
 // Part B: Zod Runtime Schemas
 // ==========================================
+
+// --- smCommunityConfigurations ---
+export const insertSmCommunityConfigurationSchema = createInsertSchema(smCommunityConfigurations, {
+	csId: (schema) => schema.min(1).max(50),
+	communityId: (schema) => schema.min(1).max(50),
+	communityName: (schema) => schema.min(1).max(100),
+	settingName: (schema) => schema.min(1).max(100),
+	settingType: (schema) => schema.min(1).max(50),
+	statusCd: (schema) => schema.min(1).max(10),
+}).omit({
+	id: true,
+});
+
+export const selectSmCommunityConfigurationSchema = createSelectSchema(smCommunityConfigurations);
+
+export const updateSmCommunityConfigurationSchema = z.object({
+	id: z.string().uuid(),
+	csId: z.string().max(50).optional().nullable(),
+	communityId: z.string().max(50).optional().nullable(),
+	communityName: z.string().max(100).optional().nullable(),
+	settingName: z.string().max(100).optional().nullable(),
+	settingValue: z.string().optional().nullable(),
+	settingType: z.string().max(50).optional().nullable(),
+	statusCd: z.string().max(10).optional().nullable(),
+	remark: z.string().optional().nullable(),
+	createTime: z.string().max(50).optional().nullable(),
+	updateTime: z.string().max(50).optional().nullable(),
+	operator: z.string().max(100).optional().nullable(),
+});
 
 // --- smSystemConfigs ---
 export const insertSmSystemConfigSchema = createInsertSchema(smSystemConfigs, {
@@ -177,6 +241,10 @@ export const smChangePasswordRecords = pgTable(
 // Part C: TypeScript Types
 // ==========================================
 
+export type SmCommunityConfiguration = typeof smCommunityConfigurations.$inferSelect;
+export type NewSmCommunityConfiguration = typeof smCommunityConfigurations.$inferInsert;
+export type UpdateSmCommunityConfiguration = z.infer<typeof updateSmCommunityConfigurationSchema>;
+
 export type SmSystemConfig = typeof smSystemConfigs.$inferSelect;
 export type NewSmSystemConfig = typeof smSystemConfigs.$inferInsert;
 export type UpdateSmSystemConfig = z.infer<typeof updateSmSystemConfigSchema>;
@@ -200,5 +268,19 @@ export const insertSmChangePasswordRecordSchema = createInsertSchema(smChangePas
 
 export const selectSmChangePasswordRecordSchema = createSelectSchema(smChangePasswordRecords);
 
+export const updateSmChangePasswordRecordSchema = z.object({
+	id: z.string().uuid(),
+	username: z.string().min(1, "用户名不能为空").max(100).optional(),
+	realName: z.string().max(100).optional().nullable(),
+	department: z.string().max(100).optional().nullable(),
+	changeTime: z.string().max(50).optional().nullable(),
+	changeIp: z.string().max(50).optional().nullable(),
+	changeType: z.string().max(50).optional().nullable(),
+	operator: z.string().max(100).optional().nullable(),
+	status: z.string().max(50).optional().nullable(),
+	remark: z.string().optional().nullable(),
+});
+
 export type SmChangePasswordRecord = typeof smChangePasswordRecords.$inferSelect;
 export type NewSmChangePasswordRecord = typeof smChangePasswordRecords.$inferInsert;
+export type UpdateSmChangePasswordRecord = z.infer<typeof updateSmChangePasswordRecordSchema>;
