@@ -56,14 +56,14 @@ export function generateDevSql(idMap: IdMapRegistry): SqlStatement[] {
 	// ==========================================
 	console.log("正在生成 dt_dictionaries SQL...");
 	const dictionaryRecords = mockDictionaryTypeData.map((item) => {
-		const id = idMap.register("dt_dictionaries", item.dictionaryNumber);
+		const id = idMap.register("dt_dictionaries", item.typeCode);
 		return {
 			id,
-			dictionaryCode: item.dictionaryNumber,
-			dictionaryName: item.dictionaryName,
-			dictionaryType: item.dictionaryType,
-			dictionaryDescription: item.remark || null,
-			remark: item.remark,
+			dictionaryCode: item.typeCode,
+			dictionaryName: item.typeName,
+			dictionaryType: item.typeCode,
+			dictionaryDescription: item.typeDescription || null,
+			remark: item.typeDescription,
 			createTime: item.createTime ? new Date(item.createTime) : new Date(),
 			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};

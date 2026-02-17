@@ -203,8 +203,7 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 					dictionaryName: row?.dictionaryName || "",
 					dictionaryCode: row?.dictionaryCode || "",
 					dictionaryType: row?.dictionaryType || "",
-					dictionaryDescription: row?.description || "",
-					isEnabled: row?.isEnabled || "",
+					dictionaryDescription: row?.dictionaryDescription || "",
 					remark: row?.remark || "",
 				})
 			: structuredClone(defaultForm);

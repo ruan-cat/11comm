@@ -201,13 +201,13 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
-					configItemName: row?.configName || "",
-					configItemCode: row?.configCode || "",
-					configItemType: row?.configType || "",
-					configItemValue: row?.configValue || "",
-					configItemDescription: row?.description || "",
-					isEnabled: row?.isEnabled || "",
-					remark: row?.remark || "",
+					configItemName: row?.itemName || "",
+					configItemCode: row?.itemKey || "",
+					configItemType: row?.dataType || "",
+					configItemValue: row?.validationRule || "",
+					configItemDescription: "",
+					isEnabled: "",
+					remark: "",
 				})
 			: structuredClone(defaultForm);
 

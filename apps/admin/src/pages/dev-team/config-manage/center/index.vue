@@ -204,7 +204,7 @@ function toggleStatus(row: ConfigCenterListItem) {
 	console.log("切换状态", row);
 	// TODO: 实现状态切换功能
 	// 可以直接调用API或打开确认弹框
-	const newStatus = row.status === "启用" ? "禁用" : "启用";
+	const newStatus = row.status === "enabled" ? "disabled" : "enabled";
 	console.log(`将配置 ${row.configName} 状态从 ${row.status} 切换为 ${newStatus}`);
 }
 
@@ -268,8 +268,8 @@ function importConfig() {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info" @click="copyConfig(row)"> 复制 </ElButton>
-						<ElButton :type="row.status === '启用' ? 'warning' : 'success'" @click="toggleStatus(row)">
-							{{ row.status === "启用" ? "禁用" : "启用" }}
+						<ElButton :type="row.status === 'enabled' ? 'warning' : 'success'" @click="toggleStatus(row)">
+							{{ row.status === "enabled" ? "disabled" : "enabled" }}
 						</ElButton>
 						<ElButton type="danger" @click="deleteConfig(row)">
 							{{ transformI18n($t("common.buttons.del")) }}

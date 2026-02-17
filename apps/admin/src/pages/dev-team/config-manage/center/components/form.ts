@@ -14,7 +14,7 @@ export const defaultForm: ConfigCenterFormVO = {
 	configValue: "",
 	defaultValue: "",
 	configDescription: "",
-	status: "启用",
+	status: "enabled",
 	sortOrder: 0,
 	remark: "",
 };

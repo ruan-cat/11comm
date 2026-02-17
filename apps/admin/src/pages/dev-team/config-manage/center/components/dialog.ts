@@ -53,7 +53,7 @@ function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 					configValue: row?.configValue || "",
 					defaultValue: row?.defaultValue || "",
 					configDescription: row?.configDescription || "",
-					status: row?.status || "启用",
+					status: row?.status || "enabled",
 					sortOrder: row?.sortOrder || 0,
 					remark: row?.remark || "",
 				}
