@@ -348,7 +348,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 - apps\admin\src\docs\reports\2026-02-14-nitro-interface-rewrite-completion-report.md
 
-### 05 <!-- TODO: --> 为 nitro 接口补全格式化函数
+### 05 为 nitro 接口补全格式化函数
 
 在 `.claude\skills\nitro-api-development\SKILL.md` 技能内，增加了新的代码编写要求，提供 `formatDateTime` 格式化函数，处理接口返回值的日期格式化问题。
 
@@ -361,7 +361,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 3. 当你的其中一个 agent team 子代理，发现所处理的文件，已经使用了 `formatDateTime` 格式化函数。那么就应该去通知其他全部的子代理，通知整个 agent 团队的成员，以这个 `apps\admin\server\api\dev-team\cache-manage\refresh-cache\list.post.ts` 对 `formatDateTime` 格式化函数的使用为参考，认真学习代码用法。
 4. 新建一个独立的 agent，用来独立检查 nitro 接口是否都使用上 `formatDateTime` 格式化函数了。使用 glob 语法检索文件目录的方式，独立查询并检验。如果发现有缺漏，就把缺省的文件地址，发给对应的子代理成员，要求其补全。避免缺漏。
 
-### 06 更新迭代 createdAt 和 updatedAt 的字段设计差异
+### 06 <!-- TODO: --> 更新迭代 createdAt 和 updatedAt 的字段设计差异
 
 在现在的 schema 表字段设计，和前端字段中，出现了一个明显巨大的差异项。时间字段差异。
 
@@ -376,11 +376,16 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
    > `nitro-api-development` 对日期的使用就是错误的。
    - .claude\skills\nitro-api-development\SKILL.md
 
-### 06 <!-- TODO: -->
+### 07 <!-- TODO: --> 文本差异查询并统一写法
 
 ```txt
 createTime: formatDateTime(item.createdAt),
 updateTime: formatDateTime(item.updatedAt),
+```
+
+```txt
+JsonVO<PageDTO<(typeof list)[number]>>
+JsonVO<PageDTO<(typeof data)[number]>>
 ```
 
 ### 06 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
