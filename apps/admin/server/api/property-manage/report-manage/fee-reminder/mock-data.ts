@@ -5,7 +5,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "1",
 		name: "2024年1月物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 09:00:00",
 		updateTime: "2024-02-01 09:00:00",
 		remark: "2024年1月份物业费催缴通知",
@@ -13,7 +13,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "2",
 		name: "2024年1月水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-05 10:00:00",
 		updateTime: "2024-02-05 10:00:00",
 		remark: "2024年1月份水电费催缴通知",
@@ -21,7 +21,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "3",
 		name: "2024年1月停车费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-10 11:00:00",
 		updateTime: "2024-02-10 11:00:00",
 		remark: "2024年1月份停车费催缴通知",
@@ -29,7 +29,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "4",
 		name: "2024年2月物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-03-01 09:00:00",
 		updateTime: "2024-03-01 09:00:00",
 		remark: "2024年2月份物业费催缴通知",
@@ -37,7 +37,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "5",
 		name: "2024年2月水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-03-05 10:00:00",
 		updateTime: "2024-03-05 10:00:00",
 		remark: "2024年2月份水电费催缴通知",
@@ -45,7 +45,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "6",
 		name: "2024年2月停车费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-03-10 11:00:00",
 		updateTime: "2024-03-10 11:00:00",
 		remark: "2024年2月份停车费催缴通知",
@@ -53,7 +53,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "7",
 		name: "2024年3月物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-04-01 09:00:00",
 		updateTime: "2024-04-01 09:00:00",
 		remark: "2024年3月份物业费催缴通知",
@@ -61,7 +61,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "8",
 		name: "2024年3月水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-04-05 10:00:00",
 		updateTime: "2024-04-05 10:00:00",
 		remark: "2024年3月份水电费催缴通知",
@@ -69,7 +69,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "9",
 		name: "2024年3月停车费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-04-10 11:00:00",
 		updateTime: "2024-04-10 11:00:00",
 		remark: "2024年3月份停车费催缴通知",
@@ -77,7 +77,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "10",
 		name: "季度物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-04-01 09:00:00",
 		updateTime: "2024-04-01 09:00:00",
 		remark: "2024年第一季度物业费催缴通知",
@@ -85,7 +85,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "11",
 		name: "季度水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-04-05 10:00:00",
 		updateTime: "2024-04-05 10:00:00",
 		remark: "2024年第一季度水电费催缴通知",
@@ -93,7 +93,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "12",
 		name: "季度停车费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-04-10 11:00:00",
 		updateTime: "2024-04-10 11:00:00",
 		remark: "2024年第一季度停车费催缴通知",
@@ -101,7 +101,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "13",
 		name: "2024年4月物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-05-01 09:00:00",
 		updateTime: "2024-05-01 09:00:00",
 		remark: "2024年4月份物业费催缴通知",
@@ -109,7 +109,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "14",
 		name: "2024年4月水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-05-05 10:00:00",
 		updateTime: "2024-05-05 10:00:00",
 		remark: "2024年4月份水电费催缴通知",
@@ -117,7 +117,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "15",
 		name: "2024年4月停车费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-05-10 11:00:00",
 		updateTime: "2024-05-10 11:00:00",
 		remark: "2024年4月份停车费催缴通知",
@@ -125,7 +125,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "16",
 		name: "2024年5月物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-06-01 09:00:00",
 		updateTime: "2024-06-01 09:00:00",
 		remark: "2024年5月份物业费催缴通知",
@@ -133,7 +133,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "17",
 		name: "2024年5月水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-06-05 10:00:00",
 		updateTime: "2024-06-05 10:00:00",
 		remark: "2024年5月份水电费催缴通知",
@@ -141,7 +141,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "18",
 		name: "2024年5月停车费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-06-10 11:00:00",
 		updateTime: "2024-06-10 11:00:00",
 		remark: "2024年5月份停车费催缴通知",
@@ -149,7 +149,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "19",
 		name: "2024年6月物业费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-07-01 09:00:00",
 		updateTime: "2024-07-01 09:00:00",
 		remark: "2024年6月份物业费催缴通知",
@@ -157,7 +157,7 @@ export const mockFeeReminderData: FeeReminderListItem[] = [
 	{
 		id: "20",
 		name: "2024年6月水电费催缴通知",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-07-05 10:00:00",
 		updateTime: "2024-07-05 10:00:00",
 		remark: "2024年6月份水电费催缴通知",

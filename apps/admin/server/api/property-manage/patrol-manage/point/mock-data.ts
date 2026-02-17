@@ -5,7 +5,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "1",
 		name: "北区大门巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "北区大门巡检点",
@@ -29,7 +29,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "2",
 		name: "停车场入口巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "停车场入口巡检点",
@@ -53,7 +53,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "3",
 		name: "配电房巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "配电房巡检点",
@@ -77,7 +77,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "4",
 		name: "消防通道巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "消防通道巡检点",
@@ -101,7 +101,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "5",
 		name: "电梯机房巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 09:30:00",
 		updateTime: "2024-01-19 09:30:00",
 		remark: "电梯机房巡检点",
@@ -125,7 +125,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "6",
 		name: "地下车库巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 14:00:00",
 		updateTime: "2024-01-20 14:00:00",
 		remark: "地下车库巡检点",
@@ -149,7 +149,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "7",
 		name: "游泳池巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 15:30:00",
 		updateTime: "2024-01-21 15:30:00",
 		remark: "游泳池巡检点",
@@ -173,7 +173,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "8",
 		name: "垃圾处理站巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 16:00:00",
 		updateTime: "2024-01-22 16:00:00",
 		remark: "垃圾处理站巡检点",
@@ -197,7 +197,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "9",
 		name: "儿童游乐区巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:00:00",
 		updateTime: "2024-01-23 10:00:00",
 		remark: "儿童游乐区巡检点",
@@ -221,7 +221,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "10",
 		name: "小区主入口巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 08:30:00",
 		updateTime: "2024-01-24 08:30:00",
 		remark: "小区主入口巡检点",
@@ -245,7 +245,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "11",
 		name: "楼顶天台巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 11:00:00",
 		updateTime: "2024-01-25 11:00:00",
 		remark: "楼顶天台巡检点",
@@ -269,7 +269,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "12",
 		name: "地下室入口巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 09:15:00",
 		updateTime: "2024-01-26 09:15:00",
 		remark: "地下室入口巡检点",
@@ -293,7 +293,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "13",
 		name: "监控室巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 10:45:00",
 		updateTime: "2024-01-27 10:45:00",
 		remark: "监控室巡检点",
@@ -317,7 +317,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "14",
 		name: "绿化带巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 14:30:00",
 		updateTime: "2024-01-28 14:30:00",
 		remark: "绿化带巡检点",
@@ -341,7 +341,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "15",
 		name: "自行车停放区巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:00:00",
 		updateTime: "2024-01-29 15:00:00",
 		remark: "自行车停放区巡检点",
@@ -365,7 +365,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "16",
 		name: "信报箱区巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 11:30:00",
 		updateTime: "2024-01-30 11:30:00",
 		remark: "信报箱区巡检点",
@@ -389,7 +389,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "17",
 		name: "楼道巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 08:45:00",
 		updateTime: "2024-01-31 08:45:00",
 		remark: "楼道巡检点",
@@ -413,7 +413,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "18",
 		name: "围墙巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 09:00:00",
 		updateTime: "2024-02-01 09:00:00",
 		remark: "围墙巡检点",
@@ -437,7 +437,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "19",
 		name: "凉亭巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 10:15:00",
 		updateTime: "2024-02-02 10:15:00",
 		remark: "凉亭巡检点",
@@ -461,7 +461,7 @@ export const mockPointData: PatrolPointListData[] = [
 	{
 		id: "20",
 		name: "健身区巡检点",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:00:00",
 		updateTime: "2024-02-03 14:00:00",
 		remark: "健身区巡检点",

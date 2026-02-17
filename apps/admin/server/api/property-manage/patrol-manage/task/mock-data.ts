@@ -5,7 +5,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "1",
 		name: "日常巡检任务-北区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "日常巡检任务-北区",
@@ -22,7 +22,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "2",
 		name: "日常巡检任务-南区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 10:30:00",
 		updateTime: "2024-01-15 10:30:00",
 		remark: "日常巡检任务-南区",
@@ -39,7 +39,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "3",
 		name: "设备巡检任务-西区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 11:45:00",
 		updateTime: "2024-01-16 11:45:00",
 		remark: "设备巡检任务-西区",
@@ -56,7 +56,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "4",
 		name: "安全巡检任务-消防",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 08:20:00",
 		updateTime: "2024-01-17 08:20:00",
 		remark: "安全巡检任务-消防",
@@ -73,7 +73,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "5",
 		name: "夜间巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 09:30:00",
 		updateTime: "2024-01-18 09:30:00",
 		remark: "夜间巡检任务",
@@ -90,7 +90,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "6",
 		name: "周末巡检任务-全小区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 14:00:00",
 		updateTime: "2024-01-19 14:00:00",
 		remark: "周末巡检任务-全小区",
@@ -107,7 +107,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "7",
 		name: "专项安全巡检-消防",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 15:30:00",
 		updateTime: "2024-01-20 15:30:00",
 		remark: "专项安全巡检-消防",
@@ -124,7 +124,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "8",
 		name: "设施设备巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 16:00:00",
 		updateTime: "2024-01-21 16:00:00",
 		remark: "设施设备巡检",
@@ -141,7 +141,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "9",
 		name: "环境卫生巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 10:00:00",
 		updateTime: "2024-01-22 10:00:00",
 		remark: "环境卫生巡检",
@@ -158,7 +158,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "10",
 		name: "绿化养护巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 08:30:00",
 		updateTime: "2024-01-23 08:30:00",
 		remark: "绿化养护巡检",
@@ -175,7 +175,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "11",
 		name: "秩序维护巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 11:00:00",
 		updateTime: "2024-01-24 11:00:00",
 		remark: "秩序维护巡检",
@@ -192,7 +192,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "12",
 		name: "消防演练巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 09:15:00",
 		updateTime: "2024-01-25 09:15:00",
 		remark: "消防演练巡检",
@@ -209,7 +209,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "13",
 		name: "地下车库巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 10:45:00",
 		updateTime: "2024-01-26 10:45:00",
 		remark: "地下车库巡检任务",
@@ -226,7 +226,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "14",
 		name: "楼顶天台巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 14:30:00",
 		updateTime: "2024-01-27 14:30:00",
 		remark: "楼顶天台巡检任务",
@@ -243,7 +243,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "15",
 		name: "公共区域巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 15:00:00",
 		updateTime: "2024-01-28 15:00:00",
 		remark: "公共区域巡检任务",
@@ -260,7 +260,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "16",
 		name: "出入口巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 11:30:00",
 		updateTime: "2024-01-29 11:30:00",
 		remark: "出入口巡检任务",
@@ -277,7 +277,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "17",
 		name: "监控设备巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 08:45:00",
 		updateTime: "2024-01-30 08:45:00",
 		remark: "监控设备巡检任务",
@@ -294,7 +294,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "18",
 		name: "电梯巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 09:00:00",
 		updateTime: "2024-01-31 09:00:00",
 		remark: "电梯巡检任务",
@@ -311,7 +311,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "19",
 		name: "水系统巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 10:15:00",
 		updateTime: "2024-02-01 10:15:00",
 		remark: "水系统巡检任务",
@@ -328,7 +328,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "20",
 		name: "电力系统巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 14:00:00",
 		updateTime: "2024-02-02 14:00:00",
 		remark: "电力系统巡检任务",
@@ -345,7 +345,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "21",
 		name: "节假日前巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 09:30:00",
 		updateTime: "2024-02-03 09:30:00",
 		remark: "节假日前巡检任务",
@@ -362,7 +362,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "22",
 		name: "月度安全巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-04 10:00:00",
 		updateTime: "2024-02-04 10:00:00",
 		remark: "月度安全巡检任务",
@@ -379,7 +379,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "23",
 		name: "季度设备巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-05 11:30:00",
 		updateTime: "2024-02-05 11:30:00",
 		remark: "季度设备巡检任务",
@@ -396,7 +396,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "24",
 		name: "专项检查任务-消防",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-06 08:45:00",
 		updateTime: "2024-02-06 08:45:00",
 		remark: "专项检查任务-消防",
@@ -413,7 +413,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "25",
 		name: "日常巡检任务-东区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-07 14:15:00",
 		updateTime: "2024-02-07 14:15:00",
 		remark: "日常巡检任务-东区",
@@ -430,7 +430,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "26",
 		name: "日常巡检任务-西区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-08 15:30:00",
 		updateTime: "2024-02-08 15:30:00",
 		remark: "日常巡检任务-西区",
@@ -447,7 +447,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "27",
 		name: "安防巡查任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-09 09:00:00",
 		updateTime: "2024-02-09 09:00:00",
 		remark: "安防巡查任务",
@@ -464,7 +464,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "28",
 		name: "重点区域巡查任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-10 10:30:00",
 		updateTime: "2024-02-10 10:30:00",
 		remark: "重点区域巡查任务",
@@ -481,7 +481,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "29",
 		name: "晚间巡查任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-11 11:45:00",
 		updateTime: "2024-02-11 11:45:00",
 		remark: "晚间巡查任务",
@@ -498,7 +498,7 @@ export const mockTaskData: PatrolTaskListItem[] = [
 	{
 		id: "30",
 		name: "特殊区域巡检任务",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-12 08:30:00",
 		updateTime: "2024-02-12 08:30:00",
 		remark: "特殊区域巡检任务",

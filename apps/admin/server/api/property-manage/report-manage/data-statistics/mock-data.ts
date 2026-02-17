@@ -5,7 +5,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "1",
 		name: "物业费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "2024年1月份物业费统计报表",
@@ -13,7 +13,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "2",
 		name: "水电费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "2024年1月份水电费统计报表",
@@ -21,7 +21,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "3",
 		name: "停车费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "2024年1月份停车费统计报表",
@@ -29,7 +29,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "4",
 		name: "维修费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 14:20:00",
 		updateTime: "2024-01-18 14:20:00",
 		remark: "2024年1月份维修费统计报表",
@@ -37,7 +37,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "5",
 		name: "绿化费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 16:00:00",
 		updateTime: "2024-01-19 16:00:00",
 		remark: "2024年1月份绿化费统计报表",
@@ -45,7 +45,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "6",
 		name: "保洁费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 09:30:00",
 		updateTime: "2024-01-20 09:30:00",
 		remark: "2024年1月份保洁费统计报表",
@@ -53,7 +53,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "7",
 		name: "电梯费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 11:15:00",
 		updateTime: "2024-01-21 11:15:00",
 		remark: "2024年1月份电梯费统计报表",
@@ -61,7 +61,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "8",
 		name: "安防费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 13:45:00",
 		updateTime: "2024-01-22 13:45:00",
 		remark: "2024年1月份安防费统计报表",
@@ -69,7 +69,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "9",
 		name: "垃圾处理费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 15:30:00",
 		updateTime: "2024-01-23 15:30:00",
 		remark: "2024年1月份垃圾处理费统计报表",
@@ -77,7 +77,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "10",
 		name: "公共照明费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 10:00:00",
 		updateTime: "2024-01-24 10:00:00",
 		remark: "2024年1月份公共照明费统计报表",
@@ -85,7 +85,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "11",
 		name: "消防设施费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 12:30:00",
 		updateTime: "2024-01-25 12:30:00",
 		remark: "2024年1月份消防设施费统计报表",
@@ -93,7 +93,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "12",
 		name: "二次供水费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 14:50:00",
 		updateTime: "2024-01-26 14:50:00",
 		remark: "2024年1月份二次供水费统计报表",
@@ -101,7 +101,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "13",
 		name: "电梯维保费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 16:20:00",
 		updateTime: "2024-01-27 16:20:00",
 		remark: "2024年1月份电梯维保费统计报表",
@@ -109,7 +109,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "14",
 		name: "门禁系统费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 09:45:00",
 		updateTime: "2024-01-28 09:45:00",
 		remark: "2024年1月份门禁系统费统计报表",
@@ -117,7 +117,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "15",
 		name: "监控系统费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 11:10:00",
 		updateTime: "2024-01-29 11:10:00",
 		remark: "2024年1月份监控系统费统计报表",
@@ -125,7 +125,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "16",
 		name: "停车场管理费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 13:25:00",
 		updateTime: "2024-01-30 13:25:00",
 		remark: "2024年1月份停车场管理费统计报表",
@@ -133,7 +133,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "17",
 		name: "游泳池费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 15:40:00",
 		updateTime: "2024-01-31 15:40:00",
 		remark: "2024年1月份游泳池费统计报表",
@@ -141,7 +141,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "18",
 		name: "健身房费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 10:15:00",
 		updateTime: "2024-02-01 10:15:00",
 		remark: "2024年2月份健身房费统计报表",
@@ -149,7 +149,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "19",
 		name: "活动中心费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 12:40:00",
 		updateTime: "2024-02-02 12:40:00",
 		remark: "2024年2月份活动中心费统计报表",
@@ -157,7 +157,7 @@ export const mockDataStatisticsData: DataStatisticsListItem[] = [
 	{
 		id: "20",
 		name: "社区服务费统计",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:55:00",
 		updateTime: "2024-02-03 14:55:00",
 		remark: "2024年2月份社区服务费统计报表",

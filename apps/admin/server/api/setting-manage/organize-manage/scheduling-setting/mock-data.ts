@@ -11,7 +11,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-01 00:00:00",
 		staff: "张三、李四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-01 00:00:00",
 	},
 	{
@@ -21,7 +21,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-01 00:00:00",
 		staff: "王五、赵六",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-02 00:00:00",
 	},
 	{
@@ -31,7 +31,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每月",
 		effectiveTime: "2024-01-01 00:00:00",
 		staff: "钱七、孙八",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-03 00:00:00",
 	},
 	{
@@ -41,7 +41,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-01 00:00:00",
 		staff: "周九、吴十",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-04 00:00:00",
 	},
 	{
@@ -51,7 +51,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-05 00:00:00",
 		staff: "陈十一、赵十二",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-05 00:00:00",
 	},
 	{
@@ -61,7 +61,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每月",
 		effectiveTime: "2024-01-06 00:00:00",
 		staff: "钱十三、孙十四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-06 00:00:00",
 	},
 	{
@@ -71,7 +71,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-07 00:00:00",
 		staff: "周十五、吴十六",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-07 00:00:00",
 	},
 	{
@@ -81,7 +81,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-08 00:00:00",
 		staff: "陈十七、赵十八",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-08 00:00:00",
 	},
 	{
@@ -91,7 +91,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每月",
 		effectiveTime: "2024-01-09 00:00:00",
 		staff: "钱十九、孙二十",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-09 00:00:00",
 	},
 	{
@@ -101,7 +101,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-10 00:00:00",
 		staff: "周廿一、吴廿二",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-10 00:00:00",
 	},
 	{
@@ -111,7 +111,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-11 00:00:00",
 		staff: "陈廿三、赵廿四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-11 00:00:00",
 	},
 	{
@@ -121,7 +121,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-12 00:00:00",
 		staff: "钱廿五、孙廿六",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-12 00:00:00",
 	},
 	{
@@ -131,7 +131,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每月",
 		effectiveTime: "2024-01-13 00:00:00",
 		staff: "周廿七、吴廿八",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-13 00:00:00",
 	},
 	{
@@ -141,7 +141,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-14 00:00:00",
 		staff: "陈廿九、赵三十",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-14 00:00:00",
 	},
 	{
@@ -151,7 +151,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每月",
 		effectiveTime: "2024-01-15 00:00:00",
 		staff: "钱卅一、孙卅二",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 00:00:00",
 	},
 	{
@@ -161,7 +161,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-16 00:00:00",
 		staff: "周卅三、吴卅四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 00:00:00",
 	},
 	{
@@ -171,7 +171,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每周",
 		effectiveTime: "2024-01-17 00:00:00",
 		staff: "陈卅五、赵卅六",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-17 00:00:00",
 	},
 	{
@@ -181,7 +181,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-18 00:00:00",
 		staff: "钱卅七、孙卅八",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 00:00:00",
 	},
 	{
@@ -191,7 +191,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每月",
 		effectiveTime: "2024-01-19 00:00:00",
 		staff: "周卅九、吴四十",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 00:00:00",
 	},
 	{
@@ -201,7 +201,7 @@ export const mockSchedulingSettingData: SchedulingSetting[] = [
 		cycle: "每天",
 		effectiveTime: "2024-01-20 00:00:00",
 		staff: "陈卌一、赵卌二",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 00:00:00",
 	},
 ];

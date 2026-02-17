@@ -5,7 +5,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "1",
 		name: "检查门禁系统",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "检查门禁系统",
@@ -15,7 +15,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "2",
 		name: "检查消防设施",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "检查消防设施",
@@ -25,7 +25,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "3",
 		name: "检查电梯运行",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "检查电梯运行",
@@ -35,7 +35,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "4",
 		name: "检查照明设施",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "检查照明设施",
@@ -45,7 +45,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "5",
 		name: "检查卫生状况",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 09:30:00",
 		updateTime: "2024-01-19 09:30:00",
 		remark: "检查卫生状况",
@@ -55,7 +55,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "6",
 		name: "检查监控系统",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 14:00:00",
 		updateTime: "2024-01-20 14:00:00",
 		remark: "检查监控系统",
@@ -65,7 +65,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "7",
 		name: "检查排水系统",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 15:30:00",
 		updateTime: "2024-01-21 15:30:00",
 		remark: "检查排水系统",
@@ -75,7 +75,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "8",
 		name: "检查绿化状况",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 16:00:00",
 		updateTime: "2024-01-22 16:00:00",
 		remark: "检查绿化状况",
@@ -85,7 +85,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "9",
 		name: "检查公共设施",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:00:00",
 		updateTime: "2024-01-23 10:00:00",
 		remark: "检查公共设施",
@@ -95,7 +95,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "10",
 		name: "检查停车秩序",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 08:30:00",
 		updateTime: "2024-01-24 08:30:00",
 		remark: "检查停车秩序",
@@ -105,7 +105,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "11",
 		name: "检查楼道安全",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 11:00:00",
 		updateTime: "2024-01-25 11:00:00",
 		remark: "检查楼道安全",
@@ -115,7 +115,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "12",
 		name: "检查外围墙",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 09:15:00",
 		updateTime: "2024-01-26 09:15:00",
 		remark: "检查外围墙",
@@ -125,7 +125,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "13",
 		name: "检查配电房",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 10:45:00",
 		updateTime: "2024-01-27 10:45:00",
 		remark: "检查配电房",
@@ -135,7 +135,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "14",
 		name: "检查水泵房",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 14:30:00",
 		updateTime: "2024-01-28 14:30:00",
 		remark: "检查水泵房",
@@ -145,7 +145,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "15",
 		name: "检查地下室",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:00:00",
 		updateTime: "2024-01-29 15:00:00",
 		remark: "检查地下室",
@@ -155,7 +155,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "16",
 		name: "检查天台",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 11:30:00",
 		updateTime: "2024-01-30 11:30:00",
 		remark: "检查天台",
@@ -165,7 +165,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "17",
 		name: "检查游乐设施",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 08:45:00",
 		updateTime: "2024-01-31 08:45:00",
 		remark: "检查游乐设施",
@@ -175,7 +175,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "18",
 		name: "检查健身器材",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 09:00:00",
 		updateTime: "2024-02-01 09:00:00",
 		remark: "检查健身器材",
@@ -185,7 +185,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "19",
 		name: "检查垃圾处理",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 10:15:00",
 		updateTime: "2024-02-02 10:15:00",
 		remark: "检查垃圾处理",
@@ -195,7 +195,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "20",
 		name: "检查公告设施",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:00:00",
 		updateTime: "2024-02-03 14:00:00",
 		remark: "检查公告设施",
@@ -205,7 +205,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "21",
 		name: "检查信报箱",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-04 09:30:00",
 		updateTime: "2024-02-04 09:30:00",
 		remark: "检查信报箱",
@@ -215,7 +215,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "22",
 		name: "检查单元门",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-05 10:00:00",
 		updateTime: "2024-02-05 10:00:00",
 		remark: "检查单元门",
@@ -225,7 +225,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "23",
 		name: "检查楼梯间",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-06 11:30:00",
 		updateTime: "2024-02-06 11:30:00",
 		remark: "检查楼梯间",
@@ -235,7 +235,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "24",
 		name: "检查电梯机房",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-07 08:45:00",
 		updateTime: "2024-02-07 08:45:00",
 		remark: "检查电梯机房",
@@ -245,7 +245,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "25",
 		name: "检查新风系统",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-08 14:15:00",
 		updateTime: "2024-02-08 14:15:00",
 		remark: "检查新风系统",
@@ -255,7 +255,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "26",
 		name: "检查空调系统",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-09 15:30:00",
 		updateTime: "2024-02-09 15:30:00",
 		remark: "检查空调系统",
@@ -265,7 +265,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "27",
 		name: "检查安防系统",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-10 09:00:00",
 		updateTime: "2024-02-10 09:00:00",
 		remark: "检查安防系统",
@@ -275,7 +275,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "28",
 		name: "检查门岗",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-11 10:30:00",
 		updateTime: "2024-02-11 10:30:00",
 		remark: "检查门岗",
@@ -285,7 +285,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "29",
 		name: "检查岗亭",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-12 11:45:00",
 		updateTime: "2024-02-12 11:45:00",
 		remark: "检查岗亭",
@@ -295,7 +295,7 @@ export const mockItemData: PatrolItemListItem[] = [
 	{
 		id: "30",
 		name: "检查地库出入口",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-13 08:30:00",
 		updateTime: "2024-02-13 08:30:00",
 		remark: "检查地库出入口",

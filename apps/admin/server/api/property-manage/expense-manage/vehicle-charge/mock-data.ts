@@ -5,7 +5,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "1",
 		name: "车位租赁费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "模拟数据 1",
@@ -13,7 +13,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "2",
 		name: "临时停车费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "模拟数据 2",
@@ -21,7 +21,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "3",
 		name: "车位管理费",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "模拟数据 3",
@@ -29,7 +29,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "4",
 		name: "地下车库费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "模拟数据 4",
@@ -37,7 +37,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "5",
 		name: "地面停车费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 14:10:00",
 		updateTime: "2024-01-19 14:10:00",
 		remark: "模拟数据 5",
@@ -45,7 +45,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "6",
 		name: "立体车库费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 09:30:00",
 		updateTime: "2024-01-20 09:30:00",
 		remark: "模拟数据 6",
@@ -53,7 +53,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "7",
 		name: "访客停车费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 11:00:00",
 		updateTime: "2024-01-21 11:00:00",
 		remark: "模拟数据 7",
@@ -61,7 +61,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "8",
 		name: "充电桩使用费",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-22 16:40:00",
 		updateTime: "2024-01-22 16:40:00",
 		remark: "模拟数据 8",
@@ -69,7 +69,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "9",
 		name: "洗车服务费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:15:00",
 		updateTime: "2024-01-23 10:15:00",
 		remark: "模拟数据 9",
@@ -77,7 +77,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "10",
 		name: "车险代理费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 13:25:00",
 		updateTime: "2024-01-24 13:25:00",
 		remark: "模拟数据 10",
@@ -85,7 +85,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "11",
 		name: "年检代办费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 09:45:00",
 		updateTime: "2024-01-25 09:45:00",
 		remark: "模拟数据 11",
@@ -93,7 +93,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "12",
 		name: "违章代办费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 14:35:00",
 		updateTime: "2024-01-26 14:35:00",
 		remark: "模拟数据 12",
@@ -101,7 +101,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "13",
 		name: "道路救援费",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-27 11:20:00",
 		updateTime: "2024-01-27 11:20:00",
 		remark: "模拟数据 13",
@@ -109,7 +109,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "14",
 		name: "汽车美容费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 08:50:00",
 		updateTime: "2024-01-28 08:50:00",
 		remark: "模拟数据 14",
@@ -117,7 +117,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "15",
 		name: "维修保养费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:10:00",
 		updateTime: "2024-01-29 15:10:00",
 		remark: "模拟数据 15",
@@ -125,7 +125,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "16",
 		name: "保险代理费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 10:00:00",
 		updateTime: "2024-01-30 10:00:00",
 		remark: "模拟数据 16",
@@ -133,7 +133,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "17",
 		name: "租赁代理费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 13:40:00",
 		updateTime: "2024-01-31 13:40:00",
 		remark: "模拟数据 17",
@@ -141,7 +141,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "18",
 		name: "二手车交易费",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-02-01 09:25:00",
 		updateTime: "2024-02-01 09:25:00",
 		remark: "模拟数据 18",
@@ -149,7 +149,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "19",
 		name: "陪练服务费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 14:55:00",
 		updateTime: "2024-02-02 14:55:00",
 		remark: "模拟数据 19",
@@ -157,7 +157,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "20",
 		name: "代驾服务费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 11:35:00",
 		updateTime: "2024-02-03 11:35:00",
 		remark: "模拟数据 20",
@@ -165,7 +165,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "21",
 		name: "机场接送费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-04 08:15:00",
 		updateTime: "2024-02-04 08:15:00",
 		remark: "模拟数据 21",
@@ -173,7 +173,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "22",
 		name: "商务接送费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-05 16:20:00",
 		updateTime: "2024-02-05 16:20:00",
 		remark: "模拟数据 22",
@@ -181,7 +181,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "23",
 		name: "婚车租赁费",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-02-06 10:50:00",
 		updateTime: "2024-02-06 10:50:00",
 		remark: "模拟数据 23",
@@ -189,7 +189,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "24",
 		name: "大巴租赁费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-07 15:30:00",
 		updateTime: "2024-02-07 15:30:00",
 		remark: "模拟数据 24",
@@ -197,7 +197,7 @@ export const mockVehicleChargeData: VehicleChargeListItem[] = [
 	{
 		id: "25",
 		name: "中巴租赁费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-08 12:10:00",
 		updateTime: "2024-02-08 12:10:00",
 		remark: "模拟数据 25",

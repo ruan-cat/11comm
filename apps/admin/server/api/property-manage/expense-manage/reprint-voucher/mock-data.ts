@@ -5,7 +5,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "1",
 		name: "收据补打申请1",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "模拟数据 1",
@@ -13,7 +13,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "2",
 		name: "发票补打申请2",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "模拟数据 2",
@@ -21,7 +21,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "3",
 		name: "收据重印申请3",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "模拟数据 3",
@@ -29,7 +29,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "4",
 		name: "发票重印申请4",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "模拟数据 4",
@@ -37,7 +37,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "5",
 		name: "物业费收据补打5",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 14:10:00",
 		updateTime: "2024-01-19 14:10:00",
 		remark: "模拟数据 5",
@@ -45,7 +45,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "6",
 		name: "水费发票补打6",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 09:30:00",
 		updateTime: "2024-01-20 09:30:00",
 		remark: "模拟数据 6",
@@ -53,7 +53,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "7",
 		name: "电费收据补打7",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 11:00:00",
 		updateTime: "2024-01-21 11:00:00",
 		remark: "模拟数据 7",
@@ -61,7 +61,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "8",
 		name: "停车费发票补打8",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-22 16:40:00",
 		updateTime: "2024-01-22 16:40:00",
 		remark: "模拟数据 8",
@@ -69,7 +69,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "9",
 		name: "燃气费收据补打9",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:15:00",
 		updateTime: "2024-01-23 10:15:00",
 		remark: "模拟数据 9",
@@ -77,7 +77,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "10",
 		name: "取暖费发票补打10",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 13:25:00",
 		updateTime: "2024-01-24 13:25:00",
 		remark: "模拟数据 10",
@@ -85,7 +85,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "11",
 		name: "年度收据汇总补打11",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 09:45:00",
 		updateTime: "2024-01-25 09:45:00",
 		remark: "模拟数据 11",
@@ -93,7 +93,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "12",
 		name: "月度发票汇总补打12",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 14:35:00",
 		updateTime: "2024-01-26 14:35:00",
 		remark: "模拟数据 12",
@@ -101,7 +101,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "13",
 		name: "押金收据补打13",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-27 11:20:00",
 		updateTime: "2024-01-27 11:20:00",
 		remark: "模拟数据 13",
@@ -109,7 +109,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "14",
 		name: "租金发票补打14",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 08:50:00",
 		updateTime: "2024-01-28 08:50:00",
 		remark: "模拟数据 14",
@@ -117,7 +117,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "15",
 		name: "维修费收据补打15",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:10:00",
 		updateTime: "2024-01-29 15:10:00",
 		remark: "模拟数据 15",
@@ -125,7 +125,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "16",
 		name: "服务费发票补打16",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 10:00:00",
 		updateTime: "2024-01-30 10:00:00",
 		remark: "模拟数据 16",
@@ -133,7 +133,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "17",
 		name: "公摊费收据补打17",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 13:40:00",
 		updateTime: "2024-01-31 13:40:00",
 		remark: "模拟数据 17",
@@ -141,7 +141,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "18",
 		name: "多费用汇总补打18",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-02-01 09:25:00",
 		updateTime: "2024-02-01 09:25:00",
 		remark: "模拟数据 18",
@@ -149,7 +149,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "19",
 		name: "历史收据查询补打19",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 14:55:00",
 		updateTime: "2024-02-02 14:55:00",
 		remark: "模拟数据 19",
@@ -157,7 +157,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "20",
 		name: "电子收据补发20",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 11:35:00",
 		updateTime: "2024-02-03 11:35:00",
 		remark: "模拟数据 20",
@@ -165,7 +165,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "21",
 		name: "纸质收据补打21",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-04 08:15:00",
 		updateTime: "2024-02-04 08:15:00",
 		remark: "模拟数据 21",
@@ -173,7 +173,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "22",
 		name: "增值税发票补开22",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-05 16:20:00",
 		updateTime: "2024-02-05 16:20:00",
 		remark: "模拟数据 22",
@@ -181,7 +181,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "23",
 		name: "普通发票补开23",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-02-06 10:50:00",
 		updateTime: "2024-02-06 10:50:00",
 		remark: "模拟数据 23",
@@ -189,7 +189,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "24",
 		name: "专用发票补开24",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-07 15:30:00",
 		updateTime: "2024-02-07 15:30:00",
 		remark: "模拟数据 24",
@@ -197,7 +197,7 @@ export const mockReprintVoucherData: ReprintVoucherListItem[] = [
 	{
 		id: "25",
 		name: "财务收据补开25",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-08 12:10:00",
 		updateTime: "2024-02-08 12:10:00",
 		remark: "模拟数据 25",

@@ -5,7 +5,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "1",
 		name: "张三",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "业主信息登记",
@@ -13,7 +13,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "2",
 		name: "李四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "",
@@ -21,7 +21,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "3",
 		name: "王五",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "",
@@ -29,7 +29,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "4",
 		name: "赵六",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 14:00:00",
 		updateTime: "2024-01-18 14:00:00",
 		remark: "",
@@ -37,7 +37,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "5",
 		name: "钱七",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 08:30:00",
 		updateTime: "2024-01-19 08:30:00",
 		remark: "",
@@ -45,7 +45,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "6",
 		name: "孙八",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 10:00:00",
 		updateTime: "2024-01-20 10:00:00",
 		remark: "",
@@ -53,7 +53,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "7",
 		name: "周九",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 13:20:00",
 		updateTime: "2024-01-21 13:20:00",
 		remark: "",
@@ -61,7 +61,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "8",
 		name: "吴十",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 09:45:00",
 		updateTime: "2024-01-22 09:45:00",
 		remark: "",
@@ -69,7 +69,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "9",
 		name: "郑十一",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 16:10:00",
 		updateTime: "2024-01-23 16:10:00",
 		remark: "",
@@ -77,7 +77,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "10",
 		name: "冯十二",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-01-24 11:30:00",
 		updateTime: "2024-01-24 11:30:00",
 		remark: "信息变更",
@@ -85,7 +85,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "11",
 		name: "陈十三",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 08:00:00",
 		updateTime: "2024-01-25 08:00:00",
 		remark: "",
@@ -93,7 +93,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "12",
 		name: "楚十四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 14:50:00",
 		updateTime: "2024-01-26 14:50:00",
 		remark: "",
@@ -101,7 +101,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "13",
 		name: "魏十五",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 10:20:00",
 		updateTime: "2024-01-27 10:20:00",
 		remark: "",
@@ -109,7 +109,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "14",
 		name: "蒋十六",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 09:10:00",
 		updateTime: "2024-01-28 09:10:00",
 		remark: "",
@@ -117,7 +117,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "15",
 		name: "沈十七",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:40:00",
 		updateTime: "2024-01-29 15:40:00",
 		remark: "",
@@ -125,7 +125,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "16",
 		name: "韩十八",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 11:00:00",
 		updateTime: "2024-01-30 11:00:00",
 		remark: "",
@@ -133,7 +133,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "17",
 		name: "杨十九",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 08:30:00",
 		updateTime: "2024-01-31 08:30:00",
 		remark: "",
@@ -141,7 +141,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "18",
 		name: "朱二十",
-		status: "禁用",
+		status: "disabled",
 		createTime: "2024-02-01 13:15:00",
 		updateTime: "2024-02-01 13:15:00",
 		remark: "房屋已售",
@@ -149,7 +149,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "19",
 		name: "秦二十一",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 10:45:00",
 		updateTime: "2024-02-02 10:45:00",
 		remark: "",
@@ -157,7 +157,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "20",
 		name: "许二十二",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 09:00:00",
 		updateTime: "2024-02-03 09:00:00",
 		remark: "",
@@ -165,7 +165,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "21",
 		name: "何二十三",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-04 14:20:00",
 		updateTime: "2024-02-04 14:20:00",
 		remark: "",
@@ -173,7 +173,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "22",
 		name: "吕二十四",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-05 11:35:00",
 		updateTime: "2024-02-05 11:35:00",
 		remark: "",
@@ -181,7 +181,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "23",
 		name: "施二十五",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-06 08:45:00",
 		updateTime: "2024-02-06 08:45:00",
 		remark: "",
@@ -189,7 +189,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "24",
 		name: "张二十六",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-07 15:55:00",
 		updateTime: "2024-02-07 15:55:00",
 		remark: "",
@@ -197,7 +197,7 @@ export const mockOwnerInformationData: OwnerInformationListItem[] = [
 	{
 		id: "25",
 		name: "孔二十七",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-08 12:10:00",
 		updateTime: "2024-02-08 12:10:00",
 		remark: "",

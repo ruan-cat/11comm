@@ -5,7 +5,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "1",
 		name: "巡检点A-北区大门",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "巡检点A-北区大门",
@@ -29,7 +29,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "2",
 		name: "巡检点B-停车场入口",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "巡检点B-停车场入口",
@@ -53,7 +53,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "3",
 		name: "巡检点C-配电房",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "巡检点C-配电房",
@@ -77,7 +77,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "4",
 		name: "巡检点D-消防通道",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "巡检点D-消防通道",
@@ -101,7 +101,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "5",
 		name: "巡检点E-电梯机房",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 09:30:00",
 		updateTime: "2024-01-19 09:30:00",
 		remark: "巡检点E-电梯机房",
@@ -125,7 +125,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "6",
 		name: "巡检点F-地下车库",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 14:00:00",
 		updateTime: "2024-01-20 14:00:00",
 		remark: "巡检点F-地下车库",
@@ -149,7 +149,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "7",
 		name: "巡检点G-游泳池",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 15:30:00",
 		updateTime: "2024-01-21 15:30:00",
 		remark: "巡检点G-游泳池",
@@ -173,7 +173,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "8",
 		name: "巡检点H-垃圾处理站",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 16:00:00",
 		updateTime: "2024-01-22 16:00:00",
 		remark: "巡检点H-垃圾处理站",
@@ -197,7 +197,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "9",
 		name: "巡检点I-儿童游乐区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:00:00",
 		updateTime: "2024-01-23 10:00:00",
 		remark: "巡检点I-儿童游乐区",
@@ -221,7 +221,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "10",
 		name: "巡检点J-小区主入口",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 08:30:00",
 		updateTime: "2024-01-24 08:30:00",
 		remark: "巡检点J-小区主入口",
@@ -245,7 +245,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "11",
 		name: "巡检点K-楼顶天台",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 11:00:00",
 		updateTime: "2024-01-25 11:00:00",
 		remark: "巡检点K-楼顶天台",
@@ -269,7 +269,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "12",
 		name: "巡检点L-地下室入口",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 09:15:00",
 		updateTime: "2024-01-26 09:15:00",
 		remark: "巡检点L-地下室入口",
@@ -293,7 +293,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "13",
 		name: "巡检点M-监控室",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 10:45:00",
 		updateTime: "2024-01-27 10:45:00",
 		remark: "巡检点M-监控室",
@@ -317,7 +317,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "14",
 		name: "巡检点N-绿化带",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 14:30:00",
 		updateTime: "2024-01-28 14:30:00",
 		remark: "巡检点N-绿化带",
@@ -341,7 +341,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "15",
 		name: "巡检点O-自行车停放区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:00:00",
 		updateTime: "2024-01-29 15:00:00",
 		remark: "巡检点O-自行车停放区",
@@ -365,7 +365,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "16",
 		name: "巡检点P-信报箱区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 11:30:00",
 		updateTime: "2024-01-30 11:30:00",
 		remark: "巡检点P-信报箱区",
@@ -389,7 +389,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "17",
 		name: "巡检点Q-楼道",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 08:45:00",
 		updateTime: "2024-01-31 08:45:00",
 		remark: "巡检点Q-楼道",
@@ -413,7 +413,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "18",
 		name: "巡检点R-围墙",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 09:00:00",
 		updateTime: "2024-02-01 09:00:00",
 		remark: "巡检点R-围墙",
@@ -437,7 +437,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "19",
 		name: "巡检点S-凉亭",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 10:15:00",
 		updateTime: "2024-02-02 10:15:00",
 		remark: "巡检点S-凉亭",
@@ -461,7 +461,7 @@ export const mockDetailData: PatrolDetailListItem[] = [
 	{
 		id: "20",
 		name: "巡检点T-健身区",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:00:00",
 		updateTime: "2024-02-03 14:00:00",
 		remark: "巡检点T-健身区",

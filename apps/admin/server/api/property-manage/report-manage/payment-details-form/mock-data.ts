@@ -5,7 +5,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "1",
 		name: "物业费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "2024年1月份物业费支付明细表",
@@ -13,7 +13,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "2",
 		name: "水电费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "2024年1月份水电费支付明细表",
@@ -21,7 +21,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "3",
 		name: "停车费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "2024年1月份停车费支付明细表",
@@ -29,7 +29,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "4",
 		name: "维修费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 14:20:00",
 		updateTime: "2024-01-18 14:20:00",
 		remark: "2024年1月份维修费支付明细表",
@@ -37,7 +37,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "5",
 		name: "绿化费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 16:00:00",
 		updateTime: "2024-01-19 16:00:00",
 		remark: "2024年1月份绿化费支付明细表",
@@ -45,7 +45,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "6",
 		name: "保洁费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 09:30:00",
 		updateTime: "2024-01-20 09:30:00",
 		remark: "2024年1月份保洁费支付明细表",
@@ -53,7 +53,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "7",
 		name: "电梯费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 11:15:00",
 		updateTime: "2024-01-21 11:15:00",
 		remark: "2024年1月份电梯费支付明细表",
@@ -61,7 +61,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "8",
 		name: "安防费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 13:45:00",
 		updateTime: "2024-01-22 13:45:00",
 		remark: "2024年1月份安防费支付明细表",
@@ -69,7 +69,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "9",
 		name: "垃圾处理费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 15:30:00",
 		updateTime: "2024-01-23 15:30:00",
 		remark: "2024年1月份垃圾处理费支付明细表",
@@ -77,7 +77,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "10",
 		name: "公共照明费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 10:00:00",
 		updateTime: "2024-01-24 10:00:00",
 		remark: "2024年1月份公共照明费支付明细表",
@@ -85,7 +85,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "11",
 		name: "消防设施费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 12:30:00",
 		updateTime: "2024-01-25 12:30:00",
 		remark: "2024年1月份消防设施费支付明细表",
@@ -93,7 +93,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "12",
 		name: "二次供水费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 14:50:00",
 		updateTime: "2024-01-26 14:50:00",
 		remark: "2024年1月份二次供水费支付明细表",
@@ -101,7 +101,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "13",
 		name: "电梯维保费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 16:20:00",
 		updateTime: "2024-01-27 16:20:00",
 		remark: "2024年1月份电梯维保费支付明细表",
@@ -109,7 +109,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "14",
 		name: "门禁系统费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 09:45:00",
 		updateTime: "2024-01-28 09:45:00",
 		remark: "2024年1月份门禁系统费支付明细表",
@@ -117,7 +117,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "15",
 		name: "监控系统费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 11:10:00",
 		updateTime: "2024-01-29 11:10:00",
 		remark: "2024年1月份监控系统费支付明细表",
@@ -125,7 +125,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "16",
 		name: "停车场管理费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 13:25:00",
 		updateTime: "2024-01-30 13:25:00",
 		remark: "2024年1月份停车场管理费支付明细表",
@@ -133,7 +133,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "17",
 		name: "游泳池费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 15:40:00",
 		updateTime: "2024-01-31 15:40:00",
 		remark: "2024年1月份游泳池费支付明细表",
@@ -141,7 +141,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "18",
 		name: "健身房费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 10:15:00",
 		updateTime: "2024-02-01 10:15:00",
 		remark: "2024年2月份健身房费支付明细表",
@@ -149,7 +149,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "19",
 		name: "活动中心费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 12:40:00",
 		updateTime: "2024-02-02 12:40:00",
 		remark: "2024年2月份活动中心费支付明细表",
@@ -157,7 +157,7 @@ export const mockPaymentDetailsFormData: PaymentDetailsFormListItem[] = [
 	{
 		id: "20",
 		name: "社区服务费支付明细",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:55:00",
 		updateTime: "2024-02-03 14:55:00",
 		remark: "2024年2月份社区服务费支付明细表",

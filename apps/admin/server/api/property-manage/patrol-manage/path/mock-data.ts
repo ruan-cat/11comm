@@ -5,7 +5,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "1",
 		name: "北区巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "北区巡检路线",
@@ -20,7 +20,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "2",
 		name: "南区巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "南区巡检路线",
@@ -35,7 +35,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "3",
 		name: "西区巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "西区巡检路线",
@@ -50,7 +50,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "4",
 		name: "东区巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "东区巡检路线",
@@ -65,7 +65,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "5",
 		name: "中央广场巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 09:30:00",
 		updateTime: "2024-01-19 09:30:00",
 		remark: "中央广场巡检路线",
@@ -80,7 +80,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "6",
 		name: "南门巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 14:00:00",
 		updateTime: "2024-01-20 14:00:00",
 		remark: "南门巡检路线",
@@ -95,7 +95,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "7",
 		name: "西门巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 15:30:00",
 		updateTime: "2024-01-21 15:30:00",
 		remark: "西门巡检路线",
@@ -110,7 +110,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "8",
 		name: "东门巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 16:00:00",
 		updateTime: "2024-01-22 16:00:00",
 		remark: "东门巡检路线",
@@ -125,7 +125,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "9",
 		name: "北门巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:00:00",
 		updateTime: "2024-01-23 10:00:00",
 		remark: "北门巡检路线",
@@ -140,7 +140,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "10",
 		name: "地下车库巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 08:30:00",
 		updateTime: "2024-01-24 08:30:00",
 		remark: "地下车库巡检路线",
@@ -155,7 +155,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "11",
 		name: "A栋巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 11:00:00",
 		updateTime: "2024-01-25 11:00:00",
 		remark: "A栋巡检路线",
@@ -170,7 +170,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "12",
 		name: "B栋巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 09:15:00",
 		updateTime: "2024-01-26 09:15:00",
 		remark: "B栋巡检路线",
@@ -185,7 +185,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "13",
 		name: "C栋巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 10:45:00",
 		updateTime: "2024-01-27 10:45:00",
 		remark: "C栋巡检路线",
@@ -200,7 +200,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "14",
 		name: "D栋巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 14:30:00",
 		updateTime: "2024-01-28 14:30:00",
 		remark: "D栋巡检路线",
@@ -215,7 +215,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "15",
 		name: "儿童游乐区巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:00:00",
 		updateTime: "2024-01-29 15:00:00",
 		remark: "儿童游乐区巡检路线",
@@ -230,7 +230,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "16",
 		name: "健身区巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 11:30:00",
 		updateTime: "2024-01-30 11:30:00",
 		remark: "健身区巡检路线",
@@ -245,7 +245,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "17",
 		name: "游泳池巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 08:45:00",
 		updateTime: "2024-01-31 08:45:00",
 		remark: "游泳池巡检路线",
@@ -260,7 +260,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "18",
 		name: "网球场巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 09:00:00",
 		updateTime: "2024-02-01 09:00:00",
 		remark: "网球场巡检路线",
@@ -275,7 +275,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "19",
 		name: "篮球场巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 10:15:00",
 		updateTime: "2024-02-02 10:15:00",
 		remark: "篮球场巡检路线",
@@ -290,7 +290,7 @@ export const mockPathData: PatrolPathListItem[] = [
 	{
 		id: "20",
 		name: "垃圾处理站巡检路线",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:00:00",
 		updateTime: "2024-02-03 14:00:00",
 		remark: "垃圾处理站巡检路线",

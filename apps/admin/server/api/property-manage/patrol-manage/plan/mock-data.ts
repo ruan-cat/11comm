@@ -5,7 +5,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "1",
 		name: "日常巡检计划",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "日常巡检计划",
@@ -23,7 +23,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "2",
 		name: "设备巡检计划",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "设备巡检计划",
@@ -41,7 +41,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "3",
 		name: "安全巡检计划",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "安全巡检计划",
@@ -59,7 +59,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "4",
 		name: "夜间巡检计划",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 08:20:00",
 		updateTime: "2024-01-18 08:20:00",
 		remark: "夜间巡检计划",
@@ -77,7 +77,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "5",
 		name: "周末巡检计划",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 09:30:00",
 		updateTime: "2024-01-19 09:30:00",
 		remark: "周末巡检计划",
@@ -95,7 +95,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "6",
 		name: "节假日前巡检计划",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 14:00:00",
 		updateTime: "2024-01-20 14:00:00",
 		remark: "节假日前巡检计划",
@@ -113,7 +113,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "7",
 		name: "专项安全巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 15:30:00",
 		updateTime: "2024-01-21 15:30:00",
 		remark: "专项安全巡检",
@@ -131,7 +131,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "8",
 		name: "设施设备巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 16:00:00",
 		updateTime: "2024-01-22 16:00:00",
 		remark: "设施设备巡检",
@@ -149,7 +149,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "9",
 		name: "环境卫生巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 10:00:00",
 		updateTime: "2024-01-23 10:00:00",
 		remark: "环境卫生巡检",
@@ -167,7 +167,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "10",
 		name: "绿化养护巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 08:30:00",
 		updateTime: "2024-01-24 08:30:00",
 		remark: "绿化养护巡检",
@@ -185,7 +185,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "11",
 		name: "秩序维护巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 11:00:00",
 		updateTime: "2024-01-25 11:00:00",
 		remark: "秩序维护巡检",
@@ -203,7 +203,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "12",
 		name: "消防演练巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 09:15:00",
 		updateTime: "2024-01-26 09:15:00",
 		remark: "消防演练巡检",
@@ -221,7 +221,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "13",
 		name: "地下车库巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 10:45:00",
 		updateTime: "2024-01-27 10:45:00",
 		remark: "地下车库巡检",
@@ -239,7 +239,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "14",
 		name: "楼顶天台巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 14:30:00",
 		updateTime: "2024-01-28 14:30:00",
 		remark: "楼顶天台巡检",
@@ -257,7 +257,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "15",
 		name: "公共区域巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 15:00:00",
 		updateTime: "2024-01-29 15:00:00",
 		remark: "公共区域巡检",
@@ -275,7 +275,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "16",
 		name: "出入口巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 11:30:00",
 		updateTime: "2024-01-30 11:30:00",
 		remark: "出入口巡检",
@@ -293,7 +293,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "17",
 		name: "监控设备巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 08:45:00",
 		updateTime: "2024-01-31 08:45:00",
 		remark: "监控设备巡检",
@@ -311,7 +311,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "18",
 		name: "电梯巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 09:00:00",
 		updateTime: "2024-02-01 09:00:00",
 		remark: "电梯巡检",
@@ -329,7 +329,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "19",
 		name: "水系统巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 10:15:00",
 		updateTime: "2024-02-02 10:15:00",
 		remark: "水系统巡检",
@@ -347,7 +347,7 @@ export const mockPlanData: PatrolPlanListItem[] = [
 	{
 		id: "20",
 		name: "电力系统巡检",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:00:00",
 		updateTime: "2024-02-03 14:00:00",
 		remark: "电力系统巡检",

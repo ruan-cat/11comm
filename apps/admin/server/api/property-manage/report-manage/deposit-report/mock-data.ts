@@ -5,7 +5,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "1",
 		name: "物业费押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-15 09:00:00",
 		updateTime: "2024-01-15 09:00:00",
 		remark: "业主入住时缴纳的物业费押金",
@@ -13,7 +13,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "2",
 		name: "水电费押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-16 10:30:00",
 		updateTime: "2024-01-16 10:30:00",
 		remark: "业主入住时缴纳的水电费押金",
@@ -21,7 +21,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "3",
 		name: "装修押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-17 11:45:00",
 		updateTime: "2024-01-17 11:45:00",
 		remark: "业主装修时缴纳的装修押金",
@@ -29,7 +29,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "4",
 		name: "停车位押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-18 14:20:00",
 		updateTime: "2024-01-18 14:20:00",
 		remark: "业主租用停车位时缴纳的押金",
@@ -37,7 +37,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "5",
 		name: "门禁卡押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-19 16:00:00",
 		updateTime: "2024-01-19 16:00:00",
 		remark: "业主领取门禁卡时缴纳的押金",
@@ -45,7 +45,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "6",
 		name: "钥匙押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-20 09:30:00",
 		updateTime: "2024-01-20 09:30:00",
 		remark: "业主领取钥匙时缴纳的押金",
@@ -53,7 +53,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "7",
 		name: "电梯使用押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-21 11:15:00",
 		updateTime: "2024-01-21 11:15:00",
 		remark: "装修工人使用电梯时缴纳的押金",
@@ -61,7 +61,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "8",
 		name: "宠物押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-22 13:45:00",
 		updateTime: "2024-01-22 13:45:00",
 		remark: "业主饲养宠物时缴纳的押金",
@@ -69,7 +69,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "9",
 		name: "广告位押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-23 15:30:00",
 		updateTime: "2024-01-23 15:30:00",
 		remark: "商家在小区投放广告时缴纳的押金",
@@ -77,7 +77,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "10",
 		name: "场地使用押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-24 10:00:00",
 		updateTime: "2024-01-24 10:00:00",
 		remark: "业主使用公共场地时缴纳的押金",
@@ -85,7 +85,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "11",
 		name: "临时停车押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-25 12:30:00",
 		updateTime: "2024-01-25 12:30:00",
 		remark: "临时访客停车时缴纳的押金",
@@ -93,7 +93,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "12",
 		name: "装修垃圾清运费",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-26 14:50:00",
 		updateTime: "2024-01-26 14:50:00",
 		remark: "业主装修时缴纳的垃圾清运押金",
@@ -101,7 +101,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "13",
 		name: "公共设施押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-27 16:20:00",
 		updateTime: "2024-01-27 16:20:00",
 		remark: "使用公共设施时缴纳的押金",
@@ -109,7 +109,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "14",
 		name: "泳池使用押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-28 09:45:00",
 		updateTime: "2024-01-28 09:45:00",
 		remark: "业主使用游泳池时缴纳的押金",
@@ -117,7 +117,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "15",
 		name: "健身房押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-29 11:10:00",
 		updateTime: "2024-01-29 11:10:00",
 		remark: "业主使用健身房时缴纳的押金",
@@ -125,7 +125,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "16",
 		name: "活动室押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-30 13:25:00",
 		updateTime: "2024-01-30 13:25:00",
 		remark: "业主使用活动室时缴纳的押金",
@@ -133,7 +133,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "17",
 		name: "儿童游乐区押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-01-31 15:40:00",
 		updateTime: "2024-01-31 15:40:00",
 		remark: "业主使用儿童游乐设施时缴纳的押金",
@@ -141,7 +141,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "18",
 		name: "老年活动中心押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-01 10:15:00",
 		updateTime: "2024-02-01 10:15:00",
 		remark: "老年活动中心使用押金",
@@ -149,7 +149,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "19",
 		name: "图书室押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-02 12:40:00",
 		updateTime: "2024-02-02 12:40:00",
 		remark: "业主借阅图书时缴纳的押金",
@@ -157,7 +157,7 @@ export const mockDepositReportData: DepositReportListItem[] = [
 	{
 		id: "20",
 		name: "棋牌室押金",
-		status: "启用",
+		status: "enabled",
 		createTime: "2024-02-03 14:55:00",
 		updateTime: "2024-02-03 14:55:00",
 		remark: "业主使用棋牌室时缴纳的押金",
