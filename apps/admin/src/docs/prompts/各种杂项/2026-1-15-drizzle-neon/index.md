@@ -376,17 +376,21 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
    > `nitro-api-development` 对日期的使用就是错误的。
    - .claude\skills\nitro-api-development\SKILL.md
 
-### 07 <!-- TODO: --> 文本差异查询并统一写法
+### 07 <!-- TODO: --> 全面检查 nitro 接口对各项技能的执行程度和落实程度
 
-```txt
-createTime: formatDateTime(item.createdAt),
-updateTime: formatDateTime(item.updatedAt),
-```
+我们的 nitro 接口经过了很多轮的迭代，其行为标准都参差不齐。效果很差。
 
-```txt
-JsonVO<PageDTO<(typeof list)[number]>>
-JsonVO<PageDTO<(typeof data)[number]>>
-```
+我需要你实现对全体 nitro 接口的对比。要求你对全部的 nitro 接口，逐个的对比现行的 skills 标准，检查这些接口写法是否充分的满足 skills 的要求。检查结果编写到一个公共的、统一的报告文档内。供我进行下一个阶段的研判。
+
+你的工作模式是新建一个多个并行运行的子代理团队，即一个 agent team。不允许主代理亲自参与具体的任务。
+
+1. 新建 agent team 子代理成员，专门负责检索清楚全部和 nitro 相关的 skill 文档，包括 `CLAUDE.md` 文档。明确清楚 nitro 接口的检查核实标准。
+2. 阅读 `apps\admin\src\router\rank\rank-route-keys.ts` ，明确清楚 nitro 接口是基于业务路由的形式做文件目录层级的。确保你可以检索到全部的 nitro 接口。
+3. 根据模块，接口数目，做对比任务的划分。确保每一个独立并行的 agent team 团队成员，能够分配到足够数目的 nitro 接口。并执行后续的对比任务。确保每一个 agent team 子代理成员不会出现任务过多，过载的情况。
+4. 每一个 agent team 子代理成员，必须写入到同一个报告文档内，对每一个检查的 nitro 接口文件做详细的说明。包括符合 skill 规范，和缺漏的，不符合规范的部分。允许这个报告文档变得很长。
+5. 最后，主代理将优雅地逐个关闭已经完成任务的 agent team 子代理成员。
+
+务必确保每一个 agent team 成员都能够并发的开始任务，节约时间。避免出子代理之间现串行执行任务，和单一子代理过载执行任务的情况。
 
 ### 06 <!-- TODO: --> 预先排查 nitro 编写时的规范冲突、类型导入路径等冲突项和风险项
 
