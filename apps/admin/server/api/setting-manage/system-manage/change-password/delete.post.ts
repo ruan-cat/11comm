@@ -12,7 +12,7 @@ import { eq } from "drizzle-orm";
 
 export default defineHandler(async (event): Promise<JsonVO<null>> => {
 	try {
-		const body = await readBody(event);
+		const body = (await readBody(event)) as any;
 		const { id } = body;
 
 		if (!id) {
