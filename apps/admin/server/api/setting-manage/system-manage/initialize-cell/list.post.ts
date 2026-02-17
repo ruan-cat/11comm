@@ -47,11 +47,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InitializeCom
 				initItem: smInitializeCells.initItem,
 				initStatus: smInitializeCells.initStatus,
 				configParams: smInitializeCells.configParams,
-				createdAt: smInitializeCells.createdAt,
-				updatedAt: smInitializeCells.updatedAt,
+				createTime: smInitializeCells.createTime,
+				updateTime: smInitializeCells.updateTime,
 			})
 			.from(smInitializeCells)
-			.orderBy(desc(smInitializeCells.createdAt))
+			.orderBy(desc(smInitializeCells.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -61,8 +61,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InitializeCom
 			initItem: item.initItem || "",
 			initStatus: item.initStatus || "",
 			configParams: item.configParams,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

@@ -94,12 +94,12 @@ export default defineHandler(async (event) => {
 				operator: smChangePasswordRecords.operator,
 				status: smChangePasswordRecords.status,
 				remark: smChangePasswordRecords.remark,
-				createdAt: smChangePasswordRecords.createdAt,
-				updatedAt: smChangePasswordRecords.updatedAt,
+				createTime: smChangePasswordRecords.createTime,
+				updateTime: smChangePasswordRecords.updateTime,
 			})
 			.from(smChangePasswordRecords)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(smChangePasswordRecords.createdAt))
+			.orderBy(desc(smChangePasswordRecords.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -118,8 +118,8 @@ export default defineHandler(async (event) => {
 			operator: item.operator || "",
 			status: item.status || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const response: JsonVO<PageDTO<ChangePasswordRecord>> = {

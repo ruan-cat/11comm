@@ -55,12 +55,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				code: smRoles.code,
 				description: smRoles.description,
 				isEnabled: smRoles.isEnabled,
-				createdAt: smRoles.createdAt,
-				updatedAt: smRoles.updatedAt,
+				createTime: smRoles.createTime,
+				updateTime: smRoles.updateTime,
 			})
 			.from(smRoles)
 			.where(conditions.length > 0 ? like(smRoles.roleName, `%${query.name || ""}%`) : undefined)
-			.orderBy(desc(smRoles.createdAt))
+			.orderBy(desc(smRoles.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -70,8 +70,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			code: item.code || "",
 			description: item.description || "",
 			enabled: item.isEnabled ?? true,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

@@ -54,12 +54,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				avatarUrl: smStaff.avatarUrl,
 				orgId: smStaff.orgId,
 				orgName: smOrganizations.orgName,
-				createdAt: smStaff.createdAt,
-				updatedAt: smStaff.updatedAt,
+				createTime: smStaff.createTime,
+				updateTime: smStaff.updateTime,
 			})
 			.from(smStaff)
 			.leftJoin(smOrganizations, eq(smStaff.orgId, smOrganizations.id))
-			.orderBy(desc(smStaff.createdAt))
+			.orderBy(desc(smStaff.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -75,8 +75,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			orgId: item.orgId || "",
 			orgName: item.orgName || "",
 			avatar: item.avatarUrl || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

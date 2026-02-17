@@ -47,11 +47,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SystemConfigL
 				configType: smSystemConfigs.configType,
 				configDescription: smSystemConfigs.configDescription,
 				status: smSystemConfigs.status,
-				createdAt: smSystemConfigs.createdAt,
-				updatedAt: smSystemConfigs.updatedAt,
+				createTime: smSystemConfigs.createTime,
+				updateTime: smSystemConfigs.updateTime,
 			})
 			.from(smSystemConfigs)
-			.orderBy(desc(smSystemConfigs.createdAt))
+			.orderBy(desc(smSystemConfigs.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -75,8 +75,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SystemConfigL
 			description: item.configDescription || "",
 			category: item.configType || "",
 			isSystem: true,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

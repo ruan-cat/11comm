@@ -38,8 +38,8 @@ export default defineHandler(async (event): Promise<JsonVO<SmRegisterProtocolLis
 		/** 映射时间字段 Date -> string */
 		const responseData: SmRegisterProtocolListItem = {
 			...updatedRecord,
-			createTime: updatedRecord.createdAt ? formatDateTime(updatedRecord.createdAt) : "",
-			updateTime: updatedRecord.updatedAt ? formatDateTime(updatedRecord.updatedAt) : "",
+			createTime: updatedRecord.createTime ? formatDateTime(updatedRecord.createTime) : "",
+			updateTime: updatedRecord.updateTime ? formatDateTime(updatedRecord.updateTime) : "",
 		};
 
 		const response: JsonVO<SmRegisterProtocolListItem> = {

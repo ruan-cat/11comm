@@ -22,8 +22,8 @@ export default defineHandler(async (event): Promise<JsonVO<SmChangePasswordRecor
 		/** 映射时间字段 Date -> string */
 		const responseData: SmChangePasswordRecord = {
 			...newRecord,
-			createdAt: formatDateTime(newRecord.createdAt),
-			updatedAt: formatDateTime(newRecord.updatedAt),
+			createTime: formatDateTime(newRecord.createTime),
+			updateTime: formatDateTime(newRecord.updateTime),
 		};
 
 		const response: JsonVO<SmChangePasswordRecord> = {

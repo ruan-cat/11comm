@@ -54,12 +54,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				sortOrder: smOrganizations.sortOrder,
 				parentId: smOrganizations.parentId,
 				remark: smOrganizations.remark,
-				createdAt: smOrganizations.createdAt,
-				updatedAt: smOrganizations.updatedAt,
+				createTime: smOrganizations.createTime,
+				updateTime: smOrganizations.updateTime,
 			})
 			.from(smOrganizations)
 			.where(query.keyword ? like(smOrganizations.orgName, `%${query.keyword}%`) : undefined)
-			.orderBy(desc(smOrganizations.createdAt))
+			.orderBy(desc(smOrganizations.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -71,8 +71,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			sort: item.sortOrder || 0,
 			parentId: item.parentId || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

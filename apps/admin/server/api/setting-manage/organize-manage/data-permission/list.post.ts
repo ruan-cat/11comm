@@ -51,12 +51,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				scope: smDataPermissions.scope,
 				permissionRule: smDataPermissions.permissionRule,
 				dataFilter: smDataPermissions.dataFilter,
-				createdAt: smDataPermissions.createdAt,
-				updatedAt: smDataPermissions.updatedAt,
+				createTime: smDataPermissions.createTime,
+				updateTime: smDataPermissions.updateTime,
 			})
 			.from(smDataPermissions)
 			.leftJoin(smRoles, eq(smDataPermissions.roleId, smRoles.id))
-			.orderBy(desc(smDataPermissions.createdAt))
+			.orderBy(desc(smDataPermissions.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -67,8 +67,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			scope: item.scope || "",
 			permissionRule: item.permissionRule || "",
 			dataFilter: item.dataFilter,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

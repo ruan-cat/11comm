@@ -59,8 +59,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				description: smWorkingSchedules.description,
 				workDate: smWorkingSchedules.workDate,
 				status: smWorkingSchedules.status,
-				createdAt: smWorkingSchedules.createdAt,
-				updatedAt: smWorkingSchedules.updatedAt,
+				createTime: smWorkingSchedules.createTime,
+				updateTime: smWorkingSchedules.updateTime,
 				// 关联字段
 				staffName: smStaff.name,
 				shiftName: smShifts.shiftName,
@@ -68,7 +68,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			.from(smWorkingSchedules)
 			.leftJoin(smStaff, eq(smWorkingSchedules.staffId, smStaff.id))
 			.leftJoin(smShifts, eq(smWorkingSchedules.shiftId, smShifts.id))
-			.orderBy(desc(smWorkingSchedules.createdAt))
+			.orderBy(desc(smWorkingSchedules.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -88,8 +88,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			workDate: item.workDate || "",
 			status: item.status || "",
 			remark: "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

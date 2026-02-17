@@ -45,11 +45,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				schedulingMode: smSchedulingSettings.schedulingMode,
 				applicablePosition: smSchedulingSettings.applicablePosition,
 				rotationCycle: smSchedulingSettings.rotationCycle,
-				createdAt: smSchedulingSettings.createdAt,
-				updatedAt: smSchedulingSettings.updatedAt,
+				createTime: smSchedulingSettings.createTime,
+				updateTime: smSchedulingSettings.updateTime,
 			})
 			.from(smSchedulingSettings)
-			.orderBy(desc(smSchedulingSettings.createdAt))
+			.orderBy(desc(smSchedulingSettings.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -58,11 +58,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			name: item.applicablePosition || "",
 			type: item.schedulingMode || "",
 			cycle: item.rotationCycle || "",
-			effectiveTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			effectiveTime: item.createTime ? new Date(item.createTime).toISOString() : "",
 			staff: "",
 			status: "enabled",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);
