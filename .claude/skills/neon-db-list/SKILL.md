@@ -194,3 +194,4 @@ description: 项目中所有数据库表的完整列表。当你需要验证表�
 - `smRegisterProtocols` ("sm_register_protocols")
 - `smInitializeCells` ("sm_initialize_cells") — 小区初始化配置表，含字段: init_item, init_status, config_params
 - `smChangePasswordRecords` ("sm_change_password_records") — 密码修改记录表，含字段: username, real_name, department, change_time, change_ip, change_type, operator, status
+- `smCommunityConfigurations` ("sm_community_configurations") — 小区配置表，含字段: cs_id, community_id, community_name, setting_name, setting_value, setting_type, status_cd, remark, create_time, update_time, operator
