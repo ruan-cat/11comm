@@ -2,50 +2,156 @@
  * @file community configuration-列表接口
  * @description community configuration list API
  * POST /api/operation-team/system-manage/community-configuration/list
- *
- * TODO: 当前没有对应的数据库表 sm_community_configurations，
- * 需要先在 apps/type/src/business/setting-manage/system-manage/schema.ts 中定义表结构，
- * 然后再迁移到 Drizzle 查询。
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import type { JsonVO, PageDTO, CommunityConfiguration, CommunityConfigurationListQuery } from "@01s-11comm/type";
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { filterDataByQuery } from "server/utils/filter-data";
-import { mockCommunityConfigurationData } from "./mock-data";
+import { z } from "zod";
+import { db } from "server/db";
+import { and, eq, like, desc, sql } from "drizzle-orm";
+import { smCommunityConfigurations } from "@01s-11comm/type";
+import type { JsonVO, PageDTO } from "@01s-11comm/type";
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityConfiguration>>> => {
-	// 1. 读取请求参数
-	const body = await readBody<CommunityConfigurationListQuery>(event);
-	const defaultParams: CommunityConfigurationListQuery = {
-		pageIndex: DEFAULT_PAGE_INDEX,
-		pageSize: DEFAULT_PAGE_SIZE,
-	};
-	const mergedParams = { ...defaultParams, ...body };
-	const { pageIndex, pageSize, ...filters } = mergedParams;
+/** 小区配置列表查询参数 Schema */
+const searchCommunityConfigurationSchema = z.object({
+	page: z.coerce.number().min(1).default(1),
+	pageSize: z.coerce.number().min(1).max(100).default(10),
+	communityId: z.string().optional(),
+	communityName: z.string().optional(),
+	settingName: z.string().optional(),
+	settingType: z.string().optional(),
+	status: z.string().optional(),
+});
 
-	// 2. 数据筛选 - 使用通用筛选工具函数
-	const filteredData = filterDataByQuery(mockCommunityConfigurationData, filters);
+type SearchCommunityConfiguration = z.infer<typeof searchCommunityConfigurationSchema>;
 
-	// 3. 分页处理
-	const total = filteredData.length;
-	const startIndex = (pageIndex - 1) * pageSize;
-	const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+/** 小区配置列表项 */
+interface CommunityConfigurationListItem {
+	csId: string;
+	communityId: string;
+	communityName: string;
+	settingName: string;
+	settingValue: string;
+	settingType: string;
+	statusCd: string;
+	remark: string;
+	createTime: string;
+	updateTime: string;
+	operator: string;
+}
 
-	// 4. 返回标准格式 - 必须要用完整的对象来约束返回的数据格式
-	/** 返回标准格式 */
-	const response: JsonVO<PageDTO<CommunityConfiguration>> = {
-		success: true,
-		code: 200,
-		message: "查询成功",
-		data: {
-			list: pageData,
-			total,
-			pageIndex,
-			pageSize,
-			totalPages: Math.ceil(total / pageSize),
-		},
-	};
+export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityConfigurationListItem>>> => {
+	try {
+		// 1. 读取并验证查询参数
+		const body = (await readBody(event)) as any;
+		const rawQuery = {
+			...body,
+			page: body.page || body.pageIndex || 1,
+		};
+		const query = searchCommunityConfigurationSchema.parse(rawQuery);
 
-	return response;
+		// 2. 构建动态查询条件
+		const conditions = [];
+
+		// 精确查询：小区ID
+		if (query.communityId) {
+			conditions.push(eq(smCommunityConfigurations.communityId, query.communityId));
+		}
+
+		// 模糊搜索：小区名称
+		if (query.communityName) {
+			conditions.push(like(smCommunityConfigurations.communityName, `%${query.communityName}%`));
+		}
+
+		// 模糊搜索：设置名称
+		if (query.settingName) {
+			conditions.push(like(smCommunityConfigurations.settingName, `%${query.settingName}%`));
+		}
+
+		// 精确查询：设置类型
+		if (query.settingType) {
+			conditions.push(eq(smCommunityConfigurations.settingType, query.settingType));
+		}
+
+		// 精确查询：状态
+		if (query.status) {
+			conditions.push(eq(smCommunityConfigurations.statusCd, query.status));
+		}
+
+		// 3. 计算分页偏移
+		const offset = (query.page - 1) * query.pageSize;
+
+		// 4. 并行执行：查询数据 + 查询总数
+		const [data, countResult] = await Promise.all([
+			db
+				.select({
+					csId: smCommunityConfigurations.csId,
+					communityId: smCommunityConfigurations.communityId,
+					communityName: smCommunityConfigurations.communityName,
+					settingName: smCommunityConfigurations.settingName,
+					settingValue: smCommunityConfigurations.settingValue,
+					settingType: smCommunityConfigurations.settingType,
+					statusCd: smCommunityConfigurations.statusCd,
+					remark: smCommunityConfigurations.remark,
+					createTime: smCommunityConfigurations.createTime,
+					updateTime: smCommunityConfigurations.updateTime,
+					operator: smCommunityConfigurations.operator,
+				})
+				.from(smCommunityConfigurations)
+				.where(conditions.length > 0 ? and(...conditions) : undefined)
+				.orderBy(desc(smCommunityConfigurations.createTime))
+				.limit(query.pageSize)
+				.offset(offset),
+
+			db
+				.select({ count: sql<number>`cast(count(${smCommunityConfigurations.id}) as int)` })
+				.from(smCommunityConfigurations)
+				.where(conditions.length > 0 ? and(...conditions) : undefined),
+		]);
+
+		// 5. 转换数据格式以匹配前端期望
+		const list: CommunityConfigurationListItem[] = data.map((item) => ({
+			csId: item.csId || "",
+			communityId: item.communityId || "",
+			communityName: item.communityName || "",
+			settingName: item.settingName || "",
+			settingValue: item.settingValue || "",
+			settingType: item.settingType || "",
+			statusCd: item.statusCd || "",
+			remark: item.remark || "",
+			createTime: item.createTime || "",
+			updateTime: item.updateTime || "",
+			operator: item.operator || "",
+		}));
+
+		// 6. 返回标准分页结构
+		const total = Number(countResult[0]?.count || 0);
+		const totalPages = Math.ceil(total / query.pageSize);
+
+		const response: JsonVO<PageDTO<CommunityConfigurationListItem>> = {
+			success: true,
+			code: 200,
+			message: "查询成功",
+			data: {
+				list,
+				total,
+				pageIndex: query.page,
+				pageSize: query.pageSize,
+				totalPages,
+			},
+		};
+
+		return response;
+	} catch (error: any) {
+		console.error("[Community Configuration List] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "查询失败",
+			data: null,
+			error: error.message || String(error),
+			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		};
+		return errorResponse;
+	}
 });
