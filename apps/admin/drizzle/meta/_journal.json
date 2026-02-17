@@ -15,6 +15,13 @@
 			"when": 1771070131074,
 			"tag": "0001_square_lily_hollister",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1771311791392,
+			"tag": "0002_slippery_wild_child",
+			"breakpoints": true
 		}
 	]
 }
