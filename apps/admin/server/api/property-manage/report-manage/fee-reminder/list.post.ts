@@ -12,8 +12,6 @@ import type { JsonVO, PageDTO, FeeReminderListItem, FeeReminderQueryParams } fro
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql, and } from "drizzle-orm";
 
-import { formatDateTime } from "server/utils/format-date";
-
 /** 查询参数验证 schema */
 const querySchema = z.object({
 	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
@@ -67,8 +65,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<FeeReminderLi
 			id: item.id || "",
 			name: item.ownerInfo || "",
 			status: item.isDelivered ? "已送达" : "未送达",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
 			remark: item.remark || "",
 		}));
 

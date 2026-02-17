@@ -11,6 +11,7 @@ import { hpInvoices } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { InvoiceListItem, InvoiceQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -126,8 +127,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListIt
 			invoiceNumber: item.invoiceNo || "",
 			auditStatus: item.auditStatus || "",
 			applicationTime: item.applicationTime ? new Date(item.applicationTime).toISOString() : "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 			remark: item.remark || "",
 		}));
 

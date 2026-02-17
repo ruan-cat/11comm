@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { exRefundReviews } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 const querySchema = z.object({
 	page: z.coerce.number().int().min(1).optional().default(1),
@@ -74,15 +75,15 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			chargeType: item.chargeType || "",
 			refundReason: item.refundReason || "",
 			refundAmount: item.refundAmount || "",
-			applyTime: item.applyTime ? new Date(item.applyTime).toISOString() : "",
+			applyTime: formatDateTime(item.applyTime),
 			applicant: item.applicant || "",
 			status: item.status || "pending",
 			reviewer: item.reviewer || "",
-			reviewTime: item.reviewTime ? new Date(item.reviewTime).toISOString() : "",
+			reviewTime: formatDateTime(item.reviewTime),
 			reviewOpinion: item.reviewOpinion || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 		}));
 		const totalPages = Math.ceil(total / query.pageSize);
 		const response: JsonVO<PageDTO<any>> = {

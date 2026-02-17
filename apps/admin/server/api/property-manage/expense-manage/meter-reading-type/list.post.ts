@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { exMeterReadingTypes } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -75,8 +76,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			billingMethod: item.billingMethod || "",
 			status: item.status || "enabled",
 			remark: item.remark || "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 		}));
 		const totalPages = Math.ceil(total / query.pageSize);
 		const response: JsonVO<PageDTO<any>> = {

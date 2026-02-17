@@ -17,8 +17,6 @@ import type {
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql, and } from "drizzle-orm";
 
-import { formatDateTime } from "server/utils/format-date";
-
 /** 查询参数验证 schema */
 const querySchema = z.object({
 	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
@@ -85,8 +83,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReports
 			dissatisfiedCount: 0,
 			emergencyCount: 0,
 			statisticsTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

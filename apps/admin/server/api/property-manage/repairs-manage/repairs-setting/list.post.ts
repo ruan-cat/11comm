@@ -11,7 +11,6 @@ import { rpRepairSettings } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { RepairsSettingListItem, RepairsSettingQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq, isNull } from "drizzle-orm";
-import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -118,8 +117,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsSettin
 			notificationMethod: "",
 			returnVisitSetting: item.returnVisitTimeLimit ? "visit" : "no_visit",
 			status: "enabled",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
 			remark: "",
 		}));
 

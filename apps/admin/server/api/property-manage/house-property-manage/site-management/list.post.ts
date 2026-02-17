@@ -11,6 +11,7 @@ import { hpSiteManagements } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { SiteManagementListItem, SiteManagementQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -105,7 +106,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SiteManagemen
 			administrator: item.manager || "",
 			administratorPhone: "",
 			status: "启用",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
 			remark: item.remark || "",
 		}));
 

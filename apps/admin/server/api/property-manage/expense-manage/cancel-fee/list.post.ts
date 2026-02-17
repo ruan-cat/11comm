@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { exCancelFees } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -75,17 +76,29 @@ export default defineHandler(async (event) => {
 				.where(conditions.length > 0 ? and(...conditions) : undefined),
 		]);
 
-		// 5. 返回标准分页结构
+		// 5. 转换数据格式
+		const list = data.map((item) => ({
+			id: item.id,
+			batchNumber: item.batchNumber || "",
+			operator: item.operator || "",
+			cancelReason: item.cancelReason || "",
+			auditStatus: item.auditStatus || "pending",
+			remark: item.remark || "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
+		}));
+
+		// 6. 返回标准分页结构
 		const total = Number(countResult[0]?.count || 0);
 		const totalPages = Math.ceil(total / query.pageSize);
 
 		/** 必须使用 JsonVO<PageDTO<...>> 类型注解约束响应 */
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<(typeof list)[number]>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

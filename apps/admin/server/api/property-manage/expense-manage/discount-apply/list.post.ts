@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { exDiscountApplications } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -108,11 +109,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			applicationAmount: item.applicationAmount || "",
 			auditStatus: item.auditStatus || "pending",
 			auditor: item.auditor || "",
-			auditTime: item.auditTime ? new Date(item.auditTime).toISOString() : "",
+			auditTime: formatDateTime(item.auditTime),
 			auditOpinion: item.auditOpinion || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 		}));
 
 		/** 计算总页数 */

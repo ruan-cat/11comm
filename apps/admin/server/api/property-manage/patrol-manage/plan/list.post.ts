@@ -11,7 +11,6 @@ import { ptPatrolPlans } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PatrolPlanListItem, PatrolPlanQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
-import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -108,10 +107,10 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPlanLis
 			timeRange: item.executionTimeSlot || "",
 			taskAdvanceMinutes: "30",
 			planner: "",
-			planTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			planTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
 			patrolStaff: "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
 		}));
 
 		/** 计算总页数 */

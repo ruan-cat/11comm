@@ -11,6 +11,7 @@ import { hpReserveVenueOrders, hpReserveVenues } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { ReserveVenueOrderListItem, ReserveVenueOrderQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -113,7 +114,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueO
 			receivedAmount: "",
 			paymentMethod: "",
 			status: item.status || "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
 			remark: item.remark || "",
 		}));
 

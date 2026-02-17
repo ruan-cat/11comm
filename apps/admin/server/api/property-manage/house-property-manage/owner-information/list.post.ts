@@ -11,6 +11,7 @@ import { hpOwners } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { OwnerInformationListItem, OwnerInformationQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -106,8 +107,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformat
 			id: item.id,
 			name: item.name || "",
 			status: "启用",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 			remark: item.remark || "",
 			gender: item.gender || "",
 			phone: item.phone || "",
