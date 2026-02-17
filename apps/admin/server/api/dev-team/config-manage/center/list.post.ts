@@ -7,7 +7,7 @@ import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtConfigs } from "@01s-11comm/type";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { ConfigCenterListItem, JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, asc, sql } from "drizzle-orm";
 import { formatDateTime } from "server/utils/format-date";
 
@@ -118,7 +118,7 @@ export default defineHandler(async (event) => {
 		 * 如果 data 字段结构不符合 PageDTO 的 list/total/pageIndex/pageSize/totalPages 约束，TypeScript 会报错
 		 * 如果外层结构不符合 JsonVO 的 code/message/data 约束，TypeScript 也会报错
 		 */
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<ConfigCenterListItem>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",

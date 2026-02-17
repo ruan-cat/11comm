@@ -7,10 +7,10 @@
 import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "server/db";
 import { smChangePasswordRecords, insertSmChangePasswordRecordSchema } from "@01s-11comm/type";
-import type { NewSmChangePasswordRecord, SmChangePasswordRecord, JsonVO } from "@01s-11comm/type";
+import type { ChangePasswordRecord, NewSmChangePasswordRecord, JsonVO } from "@01s-11comm/type";
 import { formatDateTime } from "server/utils/format-date";
 
-export default defineHandler(async (event): Promise<JsonVO<SmChangePasswordRecord>> => {
+export default defineHandler(async (event): Promise<JsonVO<ChangePasswordRecord>> => {
 	try {
 		const body = (await readValidatedBody(
 			event,
@@ -20,13 +20,14 @@ export default defineHandler(async (event): Promise<JsonVO<SmChangePasswordRecor
 		const [newRecord] = await db.insert(smChangePasswordRecords).values(body).returning();
 
 		/** 映射时间字段 Date -> string */
-		const responseData: SmChangePasswordRecord = {
+		const responseData: ChangePasswordRecord = {
 			...newRecord,
+			changeTime: formatDateTime(newRecord.changeTime),
 			createTime: formatDateTime(newRecord.createTime),
 			updateTime: formatDateTime(newRecord.updateTime),
 		};
 
-		const response: JsonVO<SmChangePasswordRecord> = {
+		const response: JsonVO<ChangePasswordRecord> = {
 			success: true,
 			code: 200,
 			message: "创建成功",

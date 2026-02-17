@@ -7,11 +7,11 @@
 import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "server/db";
 import { smChangePasswordRecords, updateSmChangePasswordRecordSchema } from "@01s-11comm/type";
-import type { SmChangePasswordRecord, JsonVO } from "@01s-11comm/type";
+import type { ChangePasswordRecord, JsonVO } from "@01s-11comm/type";
 import { formatDateTime } from "server/utils/format-date";
 import { eq } from "drizzle-orm";
 
-export default defineHandler(async (event): Promise<JsonVO<SmChangePasswordRecord>> => {
+export default defineHandler(async (event): Promise<JsonVO<ChangePasswordRecord>> => {
 	try {
 		const body = await readValidatedBody(event, updateSmChangePasswordRecordSchema.parse);
 		const { id, ...updateData } = body;
@@ -34,13 +34,14 @@ export default defineHandler(async (event): Promise<JsonVO<SmChangePasswordRecor
 		}
 
 		/** 映射时间字段 Date -> string */
-		const responseData: SmChangePasswordRecord = {
+		const responseData: ChangePasswordRecord = {
 			...updatedRecord,
+			changeTime: formatDateTime(updatedRecord.changeTime),
 			createTime: formatDateTime(updatedRecord.createTime),
 			updateTime: formatDateTime(updatedRecord.updateTime),
 		};
 
-		const response: JsonVO<SmChangePasswordRecord> = {
+		const response: JsonVO<ChangePasswordRecord> = {
 			success: true,
 			code: 200,
 			message: "更新成功",

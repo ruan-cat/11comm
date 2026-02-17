@@ -106,7 +106,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformat
 		const list: OwnerInformationListItem[] = data.map((item) => ({
 			id: item.id,
 			name: item.name || "",
-			status: "启用",
+			status: "enabled",
 			createTime: formatDateTime(item.createTime),
 			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",

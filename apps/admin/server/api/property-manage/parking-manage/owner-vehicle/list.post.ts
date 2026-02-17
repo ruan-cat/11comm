@@ -119,7 +119,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerVehicleL
 			owner: "", // 需要关联查询业主信息
 			parkingSpace: item.carportId ? "已绑定" : "未绑定",
 			validityPeriod: item.validityStart && item.validityEnd ? `${item.validityStart} ~ ${item.validityEnd}` : "",
-			status: "启用",
+			status: "enabled",
 			createTime: item.createTime ? formatDateTime(item.createTime) : "",
 			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));

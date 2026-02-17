@@ -7,12 +7,12 @@
 import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "server/db";
 import { smSystemConfigs } from "@01s-11comm/type";
-import { updateSmSystemConfigSchema, type SmSystemConfig } from "@01s-11comm/type";
+import { updateSmSystemConfigSchema, type SmSystemConfigVO } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
 import { formatDateTime } from "server/utils/format-date";
 
-export default defineHandler(async (event): Promise<JsonVO<SmSystemConfig>> => {
+export default defineHandler(async (event): Promise<JsonVO<SmSystemConfigVO>> => {
 	try {
 		const body = (await readValidatedBody(event, updateSmSystemConfigSchema.parse)) as unknown as {
 			id: string;
@@ -37,13 +37,13 @@ export default defineHandler(async (event): Promise<JsonVO<SmSystemConfig>> => {
 		}
 
 		/** 映射 createTime/updateTime (Date -> string) */
-		const mappedData: SmSystemConfig = {
+		const mappedData: SmSystemConfigVO = {
 			...result[0],
 			createTime: formatDateTime(result[0].createTime),
 			updateTime: formatDateTime(result[0].updateTime),
 		};
 
-		const response: JsonVO<SmSystemConfig> = {
+		const response: JsonVO<SmSystemConfigVO> = {
 			success: true,
 			code: 200,
 			message: "更新成功",

@@ -7,7 +7,7 @@ import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtConfigItems, dtConfigTypes } from "@01s-11comm/type";
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { ConfigItemListItem, JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, asc, sql } from "drizzle-orm";
 import { formatDateTime } from "server/utils/format-date";
 
@@ -108,7 +108,7 @@ export default defineHandler(async (event) => {
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<ConfigItemListItem>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",

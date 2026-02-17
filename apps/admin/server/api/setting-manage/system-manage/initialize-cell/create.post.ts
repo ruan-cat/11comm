@@ -7,11 +7,11 @@
 import { defineHandler, readValidatedBody } from "nitro/h3";
 import { db } from "server/db";
 import { smInitializeCells } from "@01s-11comm/type";
-import { insertSmInitializeCellSchema, type NewSmInitializeCell, type SmInitializeCell } from "@01s-11comm/type";
+import { insertSmInitializeCellSchema, type NewSmInitializeCell, type SmInitializeCellVO } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
 import { formatDateTime } from "server/utils/format-date";
 
-export default defineHandler(async (event): Promise<JsonVO<SmInitializeCell>> => {
+export default defineHandler(async (event): Promise<JsonVO<SmInitializeCellVO>> => {
 	try {
 		const body = (await readValidatedBody(event, insertSmInitializeCellSchema.parse)) as unknown as NewSmInitializeCell;
 
@@ -19,13 +19,13 @@ export default defineHandler(async (event): Promise<JsonVO<SmInitializeCell>> =>
 		const result = await db.insert(smInitializeCells).values(body).returning();
 
 		/** 映射 createTime/updateTime (Date -> string) */
-		const mappedData: SmInitializeCell = {
+		const mappedData: SmInitializeCellVO = {
 			...result[0],
 			createTime: formatDateTime(result[0].createTime),
 			updateTime: formatDateTime(result[0].updateTime),
 		};
 
-		const response: JsonVO<SmInitializeCell> = {
+		const response: JsonVO<SmInitializeCellVO> = {
 			success: true,
 			code: 200,
 			message: "创建成功",
