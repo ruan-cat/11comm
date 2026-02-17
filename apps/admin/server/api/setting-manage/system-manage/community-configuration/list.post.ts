@@ -7,7 +7,7 @@
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
-import { smSystemConfigs } from "@01s-11comm/type";
+import { smCommunityConfigurations } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, sql } from "drizzle-orm";
 
@@ -43,12 +43,12 @@ export default defineHandler(async (event) => {
 
 		// 模糊搜索设置名称
 		if (query.settingName) {
-			conditions.push(like(smSystemConfigs.configKey, `%${query.settingName}%`));
+			conditions.push(like(smCommunityConfigurations.settingName, `%${query.settingName}%`));
 		}
 
-		// 匹配配置类型
+		// 匹配设置类型
 		if (query.settingType) {
-			conditions.push(like(smSystemConfigs.configType, `%${query.settingType}%`));
+			conditions.push(like(smCommunityConfigurations.settingType, `%${query.settingType}%`));
 		}
 
 		/** 计算分页参数 */
@@ -57,7 +57,7 @@ export default defineHandler(async (event) => {
 		/** 查询总数 */
 		const [countResult] = await db
 			.select({ total: sql<number>`count(*)` })
-			.from(smSystemConfigs)
+			.from(smCommunityConfigurations)
 			.where(conditions.length > 0 ? and(...conditions) : undefined);
 
 		const total = Number(countResult?.total || 0);
@@ -65,18 +65,22 @@ export default defineHandler(async (event) => {
 		/** 查询分页数据 */
 		const data = await db
 			.select({
-				id: smSystemConfigs.id,
-				configKey: smSystemConfigs.configKey,
-				configValue: smSystemConfigs.configValue,
-				configType: smSystemConfigs.configType,
-				configDescription: smSystemConfigs.configDescription,
-				status: smSystemConfigs.status,
-				createdAt: smSystemConfigs.createdAt,
-				updatedAt: smSystemConfigs.updatedAt,
+				id: smCommunityConfigurations.id,
+				csId: smCommunityConfigurations.csId,
+				communityId: smCommunityConfigurations.communityId,
+				communityName: smCommunityConfigurations.communityName,
+				settingName: smCommunityConfigurations.settingName,
+				settingValue: smCommunityConfigurations.settingValue,
+				settingType: smCommunityConfigurations.settingType,
+				statusCd: smCommunityConfigurations.statusCd,
+				remark: smCommunityConfigurations.remark,
+				createTime: smCommunityConfigurations.createTime,
+				updateTime: smCommunityConfigurations.updateTime,
+				operator: smCommunityConfigurations.operator,
 			})
-			.from(smSystemConfigs)
+			.from(smCommunityConfigurations)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(smSystemConfigs.createdAt))
+			.orderBy(desc(smCommunityConfigurations.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
