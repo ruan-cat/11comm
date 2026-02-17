@@ -7,7 +7,7 @@ import type { ExExpenseSummaryTable, NewExExpenseSummaryTable } from "./schema";
  * ExpenseSummaryTable list item
  * 从 Schema 类型推导，转换时间字段为字符串格式
  */
-export type ExpenseSummaryTableListItem = Omit<ExExpenseSummaryTable, "createdAt" | "updatedAt"> & {
+export type ExpenseSummaryTableListItem = Omit<ExExpenseSummaryTable, "createTime" | "updateTime"> & {
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */

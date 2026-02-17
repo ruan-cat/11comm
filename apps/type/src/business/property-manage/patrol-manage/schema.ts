@@ -200,8 +200,8 @@ export const insertPtPatrolPlanSchema = createInsertSchema(ptPatrolPlans, {
 	planName: (schema) => schema.min(1, "计划名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPtPatrolPlanSchema = createSelectSchema(ptPatrolPlans);
@@ -225,8 +225,8 @@ export const insertPtPatrolPathSchema = createInsertSchema(ptPatrolPaths, {
 	pathName: (schema) => schema.min(1, "路线名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPtPatrolPathSchema = createSelectSchema(ptPatrolPaths);
@@ -244,8 +244,8 @@ export const insertPtPatrolPointSchema = createInsertSchema(ptPatrolPoints, {
 	pointName: (schema) => schema.min(1, "巡检点名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPtPatrolPointSchema = createSelectSchema(ptPatrolPoints);
@@ -264,8 +264,8 @@ export const insertPtPatrolItemSchema = createInsertSchema(ptPatrolItems, {
 	itemName: (schema) => schema.min(1, "巡检项目名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPtPatrolItemSchema = createSelectSchema(ptPatrolItems);
@@ -284,8 +284,8 @@ export const insertPtPatrolTaskSchema = createInsertSchema(ptPatrolTasks, {
 	taskName: (schema) => schema.min(1, "任务名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPtPatrolTaskSchema = createSelectSchema(ptPatrolTasks);
@@ -310,8 +310,8 @@ export const updatePtPatrolTaskSchema = z.object({
 // --- ptPatrolTaskDetails ---
 export const insertPtPatrolTaskDetailSchema = createInsertSchema(ptPatrolTaskDetails).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPtPatrolTaskDetailSchema = createSelectSchema(ptPatrolTaskDetails);

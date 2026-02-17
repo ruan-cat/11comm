@@ -241,8 +241,8 @@ export const insertHpHouseSchema = createInsertSchema(hpHouses, {
 	houseNumber: (schema) => schema.min(1, "房屋编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpHouseSchema = createSelectSchema(hpHouses);
@@ -269,8 +269,8 @@ export const insertHpOwnerSchema = createInsertSchema(hpOwners, {
 	name: (schema) => schema.min(1, "业主姓名不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -293,8 +293,8 @@ export const insertHpOwnerMemberSchema = createInsertSchema(hpOwnerMembers, {
 	name: (schema) => schema.min(1, "成员姓名不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpOwnerMemberSchema = createSelectSchema(hpOwnerMembers);
@@ -318,8 +318,8 @@ export const insertHpOwnerAccountSchema = createInsertSchema(hpOwnerAccounts, {
 	accountNo: (schema) => schema.min(1, "账户编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpOwnerAccountSchema = createSelectSchema(hpOwnerAccounts);
@@ -340,8 +340,8 @@ export const insertHpReserveVenueSchema = createInsertSchema(hpReserveVenues, {
 	venueName: (schema) => schema.min(1, "场地名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpReserveVenueSchema = createSelectSchema(hpReserveVenues);
@@ -362,8 +362,8 @@ export const insertHpReserveVenueOrderSchema = createInsertSchema(hpReserveVenue
 	booker: (schema) => schema.min(1, "预约人不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpReserveVenueOrderSchema = createSelectSchema(hpReserveVenueOrders);
@@ -387,8 +387,8 @@ export const insertHpSiteManagementSchema = createInsertSchema(hpSiteManagements
 	siteName: (schema) => schema.min(1, "场地名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpSiteManagementSchema = createSelectSchema(hpSiteManagements);
@@ -407,8 +407,8 @@ export const insertHpOwnersCommitteeSchema = createInsertSchema(hpOwnersCommitte
 	committeeName: (schema) => schema.min(1, "委员会名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpOwnersCommitteeSchema = createSelectSchema(hpOwnersCommittees);

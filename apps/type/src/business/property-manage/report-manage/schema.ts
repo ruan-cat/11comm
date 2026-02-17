@@ -379,8 +379,8 @@ export const insertRptExpenseSummarySchema = createInsertSchema(rptExpenseSummar
 	periodEnd: (schema) => schema.min(1, "结束时间不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptExpenseSummarySchema = createSelectSchema(rptExpenseSummaries);
@@ -402,8 +402,8 @@ export const updateRptExpenseSummarySchema = z.object({
 // --- rptDepositReports ---
 export const insertRptDepositReportSchema = createInsertSchema(rptDepositReports).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptDepositReportSchema = createSelectSchema(rptDepositReports);
@@ -422,8 +422,8 @@ export const updateRptDepositReportSchema = z.object({
 // --- rptPaymentDetails ---
 export const insertRptPaymentDetailSchema = createInsertSchema(rptPaymentDetails).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptPaymentDetailSchema = createSelectSchema(rptPaymentDetails);
@@ -444,8 +444,8 @@ export const updateRptPaymentDetailSchema = z.object({
 // --- rptOwnerPaymentDetails ---
 export const insertRptOwnerPaymentDetailSchema = createInsertSchema(rptOwnerPaymentDetails).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptOwnerPaymentDetailSchema = createSelectSchema(rptOwnerPaymentDetails);
@@ -463,8 +463,8 @@ export const updateRptOwnerPaymentDetailSchema = z.object({
 // --- rptFeeReminders ---
 export const insertRptFeeReminderSchema = createInsertSchema(rptFeeReminders).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptFeeReminderSchema = createSelectSchema(rptFeeReminders);
@@ -483,8 +483,8 @@ export const updateRptFeeReminderSchema = z.object({
 // --- rptNoChargeHouses ---
 export const insertRptNoChargeHouseSchema = createInsertSchema(rptNoChargeHouses).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptNoChargeHouseSchema = createSelectSchema(rptNoChargeHouses);
@@ -501,8 +501,8 @@ export const updateRptNoChargeHouseSchema = z.object({
 // --- rptOutstandingFees ---
 export const insertRptOutstandingFeeSchema = createInsertSchema(rptOutstandingFees).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptOutstandingFeeSchema = createSelectSchema(rptOutstandingFees);
@@ -521,8 +521,8 @@ export const updateRptOutstandingFeeSchema = z.object({
 // --- rptPatrolReports ---
 export const insertRptPatrolReportSchema = createInsertSchema(rptPatrolReports).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptPatrolReportSchema = createSelectSchema(rptPatrolReports);
@@ -541,8 +541,8 @@ export const updateRptPatrolReportSchema = z.object({
 // --- rptRepairReports ---
 export const insertRptRepairReportSchema = createInsertSchema(rptRepairReports).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptRepairReportSchema = createSelectSchema(rptRepairReports);
@@ -561,8 +561,8 @@ export const updateRptRepairReportSchema = z.object({
 // --- rptRepairSummaries ---
 export const insertRptRepairSummarySchema = createInsertSchema(rptRepairSummaries).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptRepairSummarySchema = createSelectSchema(rptRepairSummaries);
@@ -578,8 +578,8 @@ export const updateRptRepairSummarySchema = z.object({
 // --- rptStatementExpenses ---
 export const insertRptStatementExpenseSchema = createInsertSchema(rptStatementExpenses).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptStatementExpenseSchema = createSelectSchema(rptStatementExpenses);
@@ -595,8 +595,8 @@ export const updateRptStatementExpenseSchema = z.object({
 // --- rptDataStatistics ---
 export const insertRptDataStatisticSchema = createInsertSchema(rptDataStatistics).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRptDataStatisticSchema = createSelectSchema(rptDataStatistics);

@@ -149,8 +149,8 @@ export const insertDtConfigTypeSchema = createInsertSchema(dtConfigTypes, {
 	typeCode: (schema) => schema.min(1, "类型编码不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtConfigTypeSchema = createSelectSchema(dtConfigTypes);
@@ -169,8 +169,8 @@ export const insertDtConfigSchema = createInsertSchema(dtConfigs, {
 	configKey: (schema) => schema.min(1, "配置键不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtConfigSchema = createSelectSchema(dtConfigs);
@@ -196,8 +196,8 @@ export const insertDtConfigItemSchema = createInsertSchema(dtConfigItems, {
 	itemKey: (schema) => schema.min(1, "配置项键不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtConfigItemSchema = createSelectSchema(dtConfigItems);
@@ -217,8 +217,8 @@ export const insertDtDictionarySchema = createInsertSchema(dtDictionaries, {
 	dictionaryCode: (schema) => schema.min(1, "字典编码不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtDictionarySchema = createSelectSchema(dtDictionaries);
@@ -238,8 +238,8 @@ export const insertDtDictionaryItemSchema = createInsertSchema(dtDictionaryItems
 	itemValue: (schema) => schema.min(1, "字典项值不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtDictionaryItemSchema = createSelectSchema(dtDictionaryItems);
@@ -260,8 +260,8 @@ export const insertDtCacheConfigSchema = createInsertSchema(dtCacheConfigs, {
 	cacheKey: (schema) => schema.min(1, "缓存键不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtCacheConfigSchema = createSelectSchema(dtCacheConfigs);

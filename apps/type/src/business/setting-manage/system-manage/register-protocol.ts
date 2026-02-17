@@ -30,7 +30,7 @@ export interface SmRegisterProtocolQueryParams extends BaseListQueryParams {
 /**
  * 设置管理注册协议列表项
  */
-export type SmRegisterProtocolListItem = Omit<SmRegisterProtocol, "createdAt" | "updatedAt"> & {
+export type SmRegisterProtocolListItem = Omit<SmRegisterProtocol, "createTime" | "updateTime"> & {
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */

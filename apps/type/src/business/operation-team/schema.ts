@@ -233,8 +233,8 @@ export const insertOpMerchantSchema = createInsertSchema(opMerchants, {
 	merchantCode: (schema) => schema.min(1, "商户编码不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpMerchantSchema = createSelectSchema(opMerchants);
@@ -275,8 +275,8 @@ export const insertOpMerchantAdminSchema = createInsertSchema(opMerchantAdmins, 
 	adminName: (schema) => schema.min(1, "管理员姓名不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpMerchantAdminSchema = createSelectSchema(opMerchantAdmins);
@@ -296,8 +296,8 @@ export const insertOpPropertyCompanySchema = createInsertSchema(opPropertyCompan
 	companyName: (schema) => schema.min(1, "公司名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpPropertyCompanySchema = createSelectSchema(opPropertyCompanies);
@@ -318,8 +318,8 @@ export const updateOpPropertyCompanySchema = z.object({
 // B4. opCommunityInfo Schemas
 export const insertOpCommunityInfoSchema = createInsertSchema(opCommunityInfo).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpCommunityInfoSchema = createSelectSchema(opCommunityInfo);
@@ -337,8 +337,8 @@ export const insertOpCommunityConfigSchema = createInsertSchema(opCommunityConfi
 	configKey: (schema) => schema.min(1, "配置键不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpCommunityConfigSchema = createSelectSchema(opCommunityConfigs);
@@ -357,8 +357,8 @@ export const insertOpReportGroupSchema = createInsertSchema(opReportGroups, {
 	groupName: (schema) => schema.min(1, "分组名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpReportGroupSchema = createSelectSchema(opReportGroups);
@@ -376,8 +376,8 @@ export const insertOpReportInfoSchema = createInsertSchema(opReportInfos, {
 	reportName: (schema) => schema.min(1, "报表名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpReportInfoSchema = createSelectSchema(opReportInfos);
@@ -396,8 +396,8 @@ export const insertOpReportComponentSchema = createInsertSchema(opReportComponen
 	componentName: (schema) => schema.min(1, "组件名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpReportComponentSchema = createSelectSchema(opReportComponents);
@@ -415,8 +415,8 @@ export const insertOpRegisterProtocolSchema = createInsertSchema(opRegisterProto
 	protocolTitle: (schema) => schema.min(1, "协议标题不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectOpRegisterProtocolSchema = createSelectSchema(opRegisterProtocols);

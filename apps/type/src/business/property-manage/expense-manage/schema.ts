@@ -578,8 +578,8 @@ export const insertExExpenseItemSchema = createInsertSchema(exExpenseItems, {
 	itemName: (schema) => schema.min(1, "收费项目名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExExpenseItemSchema = createSelectSchema(exExpenseItems);
@@ -607,8 +607,8 @@ export const insertExHouseChargeSchema = createInsertSchema(exHouseCharges, {
 	expenseItem: (schema) => schema.min(1, "费用项目不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExHouseChargeSchema = createSelectSchema(exHouseCharges);
@@ -631,8 +631,8 @@ export const insertExVehicleChargeSchema = createInsertSchema(exVehicleCharges, 
 	licensePlate: (schema) => schema.min(1, "车牌号不能为空").max(20),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExVehicleChargeSchema = createSelectSchema(exVehicleCharges);
@@ -657,8 +657,8 @@ export const insertExContractChargeSchema = createInsertSchema(exContractCharges
 	expenseItem: (schema) => schema.min(1, "费用项目不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExContractChargeSchema = createSelectSchema(exContractCharges);
@@ -678,8 +678,8 @@ export const updateExContractChargeSchema = z.object({
 // --- exPayments ---
 export const insertExPaymentSchema = createInsertSchema(exPayments).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -700,8 +700,8 @@ export const updateExPaymentSchema = z.object({
 // --- exPaymentReviews ---
 export const insertExPaymentReviewSchema = createInsertSchema(exPaymentReviews).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExPaymentReviewSchema = createSelectSchema(exPaymentReviews);
@@ -719,8 +719,8 @@ export const updateExPaymentReviewSchema = z.object({
 // --- exRefundReviews ---
 export const insertExRefundReviewSchema = createInsertSchema(exRefundReviews).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExRefundReviewSchema = createSelectSchema(exRefundReviews);
@@ -745,8 +745,8 @@ export const insertExDiscountTypeSchema = createInsertSchema(exDiscountTypes, {
 	discountName: (schema) => schema.min(1, "折扣名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExDiscountTypeSchema = createSelectSchema(exDiscountTypes);
@@ -763,8 +763,8 @@ export const updateExDiscountTypeSchema = z.object({
 // --- exDiscountSettings ---
 export const insertExDiscountSettingSchema = createInsertSchema(exDiscountSettings).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExDiscountSettingSchema = createSelectSchema(exDiscountSettings);
@@ -785,8 +785,8 @@ export const updateExDiscountSettingSchema = z.object({
 // --- exDiscountApplications ---
 export const insertExDiscountApplicationSchema = createInsertSchema(exDiscountApplications).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExDiscountApplicationSchema = createSelectSchema(exDiscountApplications);
@@ -810,8 +810,8 @@ export const insertExMeterReadingTypeSchema = createInsertSchema(exMeterReadingT
 	typeName: (schema) => schema.min(1, "类型名称不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExMeterReadingTypeSchema = createSelectSchema(exMeterReadingTypes);
@@ -831,8 +831,8 @@ export const insertExMeterReadingSchema = createInsertSchema(exMeterReadings, {
 	meterNo: (schema) => schema.min(1, "表计编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExMeterReadingSchema = createSelectSchema(exMeterReadings);
@@ -853,8 +853,8 @@ export const updateExMeterReadingSchema = z.object({
 // --- exCancelFees ---
 export const insertExCancelFeeSchema = createInsertSchema(exCancelFees).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExCancelFeeSchema = createSelectSchema(exCancelFees);
@@ -876,8 +876,8 @@ export const updateExCancelFeeSchema = z.object({
 // --- exOverdueReminders ---
 export const insertExOverdueReminderSchema = createInsertSchema(exOverdueReminders).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExOverdueReminderSchema = createSelectSchema(exOverdueReminders);
@@ -900,8 +900,8 @@ export const insertExReprintVoucherSchema = createInsertSchema(exReprintVouchers
 	originalVoucherNo: (schema) => schema.min(1, "原凭证号不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExReprintVoucherSchema = createSelectSchema(exReprintVouchers);
@@ -922,8 +922,8 @@ export const insertHpInvoiceSchema = createInsertSchema(hpInvoices, {
 	invoiceNo: (schema) => schema.min(1, "发票号码不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpInvoiceSchema = createSelectSchema(hpInvoices);
@@ -950,8 +950,8 @@ export const insertHpInvoiceTitleSchema = createInsertSchema(hpInvoiceTitles, {
 	titleName: (schema) => schema.min(1, "抬头名称不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectHpInvoiceTitleSchema = createSelectSchema(hpInvoiceTitles);
@@ -972,8 +972,8 @@ export const insertExExpenseSummaryTableSchema = createInsertSchema(exExpenseSum
 	expenseItemName: (schema) => schema.min(1, "费用项名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectExExpenseSummaryTableSchema = createSelectSchema(exExpenseSummaryTables);

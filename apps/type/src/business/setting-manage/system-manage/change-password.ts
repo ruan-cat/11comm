@@ -6,7 +6,7 @@ import type { SmChangePasswordRecord, NewSmChangePasswordRecord } from "./schema
  * Change password record list item
  * 从 Schema 类型推导，转换时间字段为字符串格式
  */
-export type ChangePasswordRecordListItem = Omit<SmChangePasswordRecord, "createdAt" | "updatedAt"> & {
+export type ChangePasswordRecordListItem = Omit<SmChangePasswordRecord, "createTime" | "updateTime"> & {
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */
@@ -18,7 +18,7 @@ export type ChangePasswordRecordListItem = Omit<SmChangePasswordRecord, "created
  * Change password record
  * 从 Schema 类型推导，转换时间字段为字符串格式
  */
-export type ChangePasswordRecord = Omit<SmChangePasswordRecord, "createdAt" | "updatedAt"> & {
+export type ChangePasswordRecord = Omit<SmChangePasswordRecord, "createTime" | "updateTime"> & {
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */

@@ -128,8 +128,8 @@ export const insertSmRoleSchema = createInsertSchema(smRoles, {
 	code: (schema) => schema.min(1, "角色编码不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmRoleSchema = createSelectSchema(smRoles);
@@ -148,8 +148,8 @@ export const insertSmPermissionSchema = createInsertSchema(smPermissions, {
 	permissionCode: (schema) => schema.min(1, "权限编码不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmPermissionSchema = createSelectSchema(smPermissions);
@@ -165,8 +165,8 @@ export const updateSmPermissionSchema = z.object({
 // --- smRolePermissions ---
 export const insertSmRolePermissionSchema = createInsertSchema(smRolePermissions).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmRolePermissionSchema = createSelectSchema(smRolePermissions);
@@ -180,8 +180,8 @@ export const updateSmRolePermissionSchema = z.object({
 // --- smStaffRoles ---
 export const insertSmStaffRoleSchema = createInsertSchema(smStaffRoles).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmStaffRoleSchema = createSelectSchema(smStaffRoles);
@@ -195,8 +195,8 @@ export const updateSmStaffRoleSchema = z.object({
 // --- smDataPermissions ---
 export const insertSmDataPermissionSchema = createInsertSchema(smDataPermissions).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmDataPermissionSchema = createSelectSchema(smDataPermissions);

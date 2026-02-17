@@ -124,8 +124,8 @@ export const insertSmOrganizationSchema = createInsertSchema(smOrganizations, {
 	orgCode: (schema) => schema.min(1, "组织编码不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmOrganizationSchema = createSelectSchema(smOrganizations);
@@ -145,8 +145,8 @@ export const insertSmShiftSchema = createInsertSchema(smShifts, {
 	shiftName: (schema) => schema.min(1, "班次名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmShiftSchema = createSelectSchema(smShifts);
@@ -162,8 +162,8 @@ export const updateSmShiftSchema = z.object({
 // --- smSchedulingSettings ---
 export const insertSmSchedulingSettingSchema = createInsertSchema(smSchedulingSettings).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmSchedulingSettingSchema = createSelectSchema(smSchedulingSettings);
@@ -178,8 +178,8 @@ export const updateSmSchedulingSettingSchema = z.object({
 // --- smWorkingSchedules ---
 export const insertSmWorkingScheduleSchema = createInsertSchema(smWorkingSchedules).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmWorkingScheduleSchema = createSelectSchema(smWorkingSchedules);

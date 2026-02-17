@@ -9,7 +9,7 @@ import type { SmInitializeCell, NewSmInitializeCell } from "./schema";
  * 注意：此类型用于"系统初始化配置项"（如"是否初始化楼栋"、"是否初始化房屋"等配置开关）
  * 不要与 operation-team 的 InitializeCellListItem（小区单元格初始化）混淆
  */
-export type InitializeConfigItemListItem = Omit<SmInitializeCell, "createdAt" | "updatedAt"> & {
+export type InitializeConfigItemListItem = Omit<SmInitializeCell, "createTime" | "updateTime"> & {
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */

@@ -85,8 +85,8 @@ export const insertDtMenuGroupSchema = createInsertSchema(dtMenuGroups, {
 	groupCode: (schema) => schema.min(1, "分组编码不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtMenuGroupSchema = createSelectSchema(dtMenuGroups);
@@ -104,8 +104,8 @@ export const insertDtMenuCatalogSchema = createInsertSchema(dtMenuCatalogs, {
 	catalogName: (schema) => schema.min(1, "目录名称不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtMenuCatalogSchema = createSelectSchema(dtMenuCatalogs);
@@ -126,8 +126,8 @@ export const insertDtMenuItemSchema = createInsertSchema(dtMenuItems, {
 	path: (schema) => schema.min(1, "路由路径不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectDtMenuItemSchema = createSelectSchema(dtMenuItems);

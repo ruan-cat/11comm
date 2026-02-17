@@ -83,7 +83,7 @@ export const rpRepairOrders = pgTable(
 	(table) => [
 		uniqueIndex("rp_repair_orders_work_order_number_idx").on(table.workOrderNumber).where(isNull(table.deletedAt)),
 		index("rp_repair_orders_status_idx").on(table.status),
-		index("rp_repair_orders_created_at_idx").on(table.createdAt),
+		index("rp_repair_orders_created_at_idx").on(table.createTime),
 	],
 );
 
@@ -245,8 +245,8 @@ export const insertRpRepairOrderSchema = createInsertSchema(rpRepairOrders, {
 	workOrderNumber: (schema) => schema.min(1, "工单编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -279,8 +279,8 @@ export const insertRpRepairOrderHistorySchema = createInsertSchema(rpRepairOrder
 	operationType: (schema) => schema.min(1, "操作类型不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRpRepairOrderHistorySchema = createSelectSchema(rpRepairOrderHistories);
@@ -297,8 +297,8 @@ export const updateRpRepairOrderHistorySchema = z.object({
 // --- rpReturnVisits ---
 export const insertRpReturnVisitSchema = createInsertSchema(rpReturnVisits).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRpReturnVisitSchema = createSelectSchema(rpReturnVisits);
@@ -318,8 +318,8 @@ export const updateRpReturnVisitSchema = z.object({
 // --- rpRepairSettings ---
 export const insertRpRepairSettingSchema = createInsertSchema(rpRepairSettings).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRpRepairSettingSchema = createSelectSchema(rpRepairSettings);
@@ -338,8 +338,8 @@ export const insertRpRepairTypeSchema = createInsertSchema(rpRepairTypes, {
 	typeName: (schema) => schema.min(1, "类型名称不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRpRepairTypeSchema = createSelectSchema(rpRepairTypes);
@@ -356,8 +356,8 @@ export const insertRpMandatoryReturnIssueSchema = createInsertSchema(rpMandatory
 	workOrderNumber: (schema) => schema.min(1, "工单编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRpMandatoryReturnIssueSchema = createSelectSchema(rpMandatoryReturnIssues);
@@ -375,8 +375,8 @@ export const insertRpPhoneRepairReportSchema = createInsertSchema(rpPhoneRepairR
 	callerPhone: (schema) => schema.min(1, "来电号码不能为空").max(20),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectRpPhoneRepairReportSchema = createSelectSchema(rpPhoneRepairReports);

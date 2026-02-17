@@ -257,8 +257,8 @@ export const insertCmCommunitySchema = createInsertSchema(cmCommunities, {
 	code: (schema) => schema.min(1, "小区编码不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -293,8 +293,8 @@ export const insertCmNoticeSchema = createInsertSchema(cmNotices, {
 	title: (schema) => schema.min(1, "公告标题不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -317,8 +317,8 @@ export const insertCmHandingBusinessSchema = createInsertSchema(cmHandingBusines
 	applicant: (schema) => schema.min(1, "申请人不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -339,8 +339,8 @@ export const insertCmHouseDecorationSchema = createInsertSchema(cmHouseDecoratio
 	houseNumber: (schema) => schema.min(1, "房屋编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -362,8 +362,8 @@ export const updateCmHouseDecorationSchema = z.object({
 // --- cmPropertyRegisters ---
 export const insertCmPropertyRegisterSchema = createInsertSchema(cmPropertyRegisters).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -389,8 +389,8 @@ export const insertCmBuildingStructureSchema = createInsertSchema(cmBuildingStru
 	buildingNo: (schema) => schema.min(1, "楼栋编号不能为空").max(20),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 

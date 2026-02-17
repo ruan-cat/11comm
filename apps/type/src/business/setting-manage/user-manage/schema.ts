@@ -58,8 +58,8 @@ export const insertSmStaffSchema = createInsertSchema(smStaff, {
 	name: (schema) => schema.min(1, "姓名不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmStaffSchema = createSelectSchema(smStaff);

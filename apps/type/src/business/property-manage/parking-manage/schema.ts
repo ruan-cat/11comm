@@ -191,8 +191,8 @@ export const insertPkParkingLotSchema = createInsertSchema(pkParkingLots, {
 	lotName: (schema) => schema.min(1, "停车场名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPkParkingLotSchema = createSelectSchema(pkParkingLots);
@@ -214,8 +214,8 @@ export const insertPkCarportSchema = createInsertSchema(pkCarports, {
 	carportNumber: (schema) => schema.min(1, "车位编号不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPkCarportSchema = createSelectSchema(pkCarports);
@@ -241,8 +241,8 @@ export const insertPkOwnerVehicleSchema = createInsertSchema(pkOwnerVehicles, {
 	licensePlate: (schema) => schema.min(1, "车牌号不能为空").max(20),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -267,8 +267,8 @@ export const insertPkCarportApplicationSchema = createInsertSchema(pkCarportAppl
 	applicant: (schema) => schema.min(1, "申请人不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPkCarportApplicationSchema = createSelectSchema(pkCarportApplications);
@@ -291,8 +291,8 @@ export const insertPkParkingStructureSchema = createInsertSchema(pkParkingStruct
 	regionName: (schema) => schema.min(1, "区域名称不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectPkParkingStructureSchema = createSelectSchema(pkParkingStructures);

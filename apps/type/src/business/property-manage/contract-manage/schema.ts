@@ -324,8 +324,8 @@ export const insertCtFirstPartySchema = createInsertSchema(ctFirstParties, {
 	name: (schema) => schema.min(1, "甲方名称不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtFirstPartySchema = createSelectSchema(ctFirstParties);
@@ -349,8 +349,8 @@ export const insertCtSecondPartySchema = createInsertSchema(ctSecondParties, {
 	name: (schema) => schema.min(1, "乙方名称不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtSecondPartySchema = createSelectSchema(ctSecondParties);
@@ -371,8 +371,8 @@ export const insertCtTemplateSchema = createInsertSchema(ctTemplates, {
 	templateName: (schema) => schema.min(1, "模板名称不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtTemplateSchema = createSelectSchema(ctTemplates);
@@ -392,8 +392,8 @@ export const insertCtClauseSchema = createInsertSchema(ctClauses, {
 	clauseName: (schema) => schema.min(1, "条款名称不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtClauseSchema = createSelectSchema(ctClauses);
@@ -413,8 +413,8 @@ export const insertCtTypeSchema = createInsertSchema(ctTypes, {
 	typeName: (schema) => schema.min(1, "类型名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtTypeSchema = createSelectSchema(ctTypes);
@@ -433,8 +433,8 @@ export const insertCtContractSchema = createInsertSchema(ctContracts, {
 	contractNumber: (schema) => schema.min(1, "合同编号不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 	deletedAt: true,
 });
 
@@ -460,8 +460,8 @@ export const insertCtAttachmentSchema = createInsertSchema(ctAttachments, {
 	attachmentName: (schema) => schema.min(1, "附件名称不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtAttachmentSchema = createSelectSchema(ctAttachments);
@@ -479,8 +479,8 @@ export const updateCtAttachmentSchema = z.object({
 // --- ctChanges ---
 export const insertCtChangeSchema = createInsertSchema(ctChanges).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtChangeSchema = createSelectSchema(ctChanges);
@@ -501,8 +501,8 @@ export const updateCtChangeSchema = z.object({
 // --- ctReviews ---
 export const insertCtReviewSchema = createInsertSchema(ctReviews).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtReviewSchema = createSelectSchema(ctReviews);
@@ -520,8 +520,8 @@ export const updateCtReviewSchema = z.object({
 // --- ctArchives ---
 export const insertCtArchiveSchema = createInsertSchema(ctArchives).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtArchiveSchema = createSelectSchema(ctArchives);
@@ -539,8 +539,8 @@ export const updateCtArchiveSchema = z.object({
 // --- ctPrints ---
 export const insertCtPrintSchema = createInsertSchema(ctPrints).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectCtPrintSchema = createSelectSchema(ctPrints);

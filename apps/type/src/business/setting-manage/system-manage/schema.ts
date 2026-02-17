@@ -153,8 +153,8 @@ export const insertSmSystemConfigSchema = createInsertSchema(smSystemConfigs, {
 	configKey: (schema) => schema.min(1, "配置键不能为空"),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmSystemConfigSchema = createSelectSchema(smSystemConfigs);
@@ -173,8 +173,8 @@ export const insertSmRegisterProtocolSchema = createInsertSchema(smRegisterProto
 	protocolTitle: (schema) => schema.min(1, "协议标题不能为空").max(200),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmRegisterProtocolSchema = createSelectSchema(smRegisterProtocols);
@@ -193,8 +193,8 @@ export const insertSmInitializeCellSchema = createInsertSchema(smInitializeCells
 	initItem: (schema) => schema.min(1, "初始化项目不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmInitializeCellSchema = createSelectSchema(smInitializeCells);
@@ -262,8 +262,8 @@ export const insertSmChangePasswordRecordSchema = createInsertSchema(smChangePas
 	username: (schema) => schema.min(1, "用户名不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectSmChangePasswordRecordSchema = createSelectSchema(smChangePasswordRecords);
