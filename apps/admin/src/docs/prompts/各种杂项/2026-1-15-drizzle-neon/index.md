@@ -361,7 +361,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 3. 当你的其中一个 agent team 子代理，发现所处理的文件，已经使用了 `formatDateTime` 格式化函数。那么就应该去通知其他全部的子代理，通知整个 agent 团队的成员，以这个 `apps\admin\server\api\dev-team\cache-manage\refresh-cache\list.post.ts` 对 `formatDateTime` 格式化函数的使用为参考，认真学习代码用法。
 4. 新建一个独立的 agent，用来独立检查 nitro 接口是否都使用上 `formatDateTime` 格式化函数了。使用 glob 语法检索文件目录的方式，独立查询并检验。如果发现有缺漏，就把缺省的文件地址，发给对应的子代理成员，要求其补全。避免缺漏。
 
-### 06 <!-- TODO: --> 更新迭代 createdAt 和 updatedAt 的字段设计差异
+### 06 更新迭代 createdAt 和 updatedAt 的字段设计差异
 
 在现在的 schema 表字段设计，和前端字段中，出现了一个明显巨大的差异项。时间字段差异。
 
