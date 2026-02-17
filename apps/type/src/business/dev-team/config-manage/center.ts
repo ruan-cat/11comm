@@ -4,41 +4,18 @@
  */
 
 import type { OptionsType, BaseListQueryParams } from "../../../common";
+import type { DtConfig } from "../../setting-manage/dictionary-manage/schema";
 
 /**
  * 配置中心列表数据
  * Configuration center list item
  */
-export interface ConfigCenterListItem {
-	/** 配置项ID Config item ID */
-	configId: string;
-	/** 配置项名称 Config item name */
-	configName: string;
-	/** 配置类型 Config type */
-	configType: string;
-	/** 配置键名 Config key */
-	configKey: string;
-	/** 配置值 Config value */
-	configValue: string;
-	/** 默认值 Default value */
-	defaultValue: string;
-	/** 配置描述 Config description */
-	configDescription: string;
-	/** 状态 Status */
-	status: string;
-	/** 排序号 Sort order */
-	sortOrder: number;
-	/** 备注 Remark */
-	remark: string;
+export type ConfigCenterListItem = Omit<DtConfig, "createTime" | "updateTime" | "deletedAt"> & {
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
 	updateTime: string;
-	/** 创建人 Creator */
-	creator: string;
-	/** 更新人 Updater */
-	updater: string;
-}
+};
 
 /**
  * 配置中心查询参数

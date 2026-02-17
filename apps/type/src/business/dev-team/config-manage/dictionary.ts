@@ -4,35 +4,18 @@
  */
 
 import type { OptionsType, BaseListQueryParams } from "../../../common";
+import type { DtDictionary } from "../../setting-manage/dictionary-manage/schema";
 
 /**
  * 字典列表数据
  * Dictionary list item
  */
-export interface DictionaryListItem {
-	/** 字典ID Dictionary ID */
-	id: number;
-	/** 字典名称 Dictionary name */
-	dictionaryName: string;
-	/** 字典编码 Dictionary code */
-	dictionaryCode: string;
-	/** 字典类型 Dictionary type */
-	dictionaryType: string;
-	/** 字典项数量 Dictionary item count */
-	itemCount: number;
-	/** 字典描述 Dictionary description */
-	description: string;
-	/** 是否启用 Is enabled */
-	isEnabled: string;
+export type DictionaryListItem = Omit<DtDictionary, "createTime" | "updateTime" | "deletedAt"> & {
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
 	updateTime: string;
-	/** 创建人 Creator */
-	creator: string;
-	/** 备注 Remark */
-	remark: string;
-}
+};
 
 /**
  * 字典查询参数

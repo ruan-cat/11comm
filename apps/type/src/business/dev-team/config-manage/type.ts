@@ -4,27 +4,18 @@
  */
 
 import type { OptionsType, BaseListQueryParams } from "../../../common";
+import type { DtConfigType } from "../../setting-manage/dictionary-manage/schema";
 
 /**
- * 字典类型列表数据
- * Dictionary type list item
+ * 配置类型列表数据
+ * Config type list item
  */
-export interface DictionaryTypeListItem {
-	/** 字典编号 Dictionary number */
-	dictionaryNumber: string;
-	/** 字典名称 Dictionary name */
-	dictionaryName: string;
-	/** 字典类型 Dictionary type */
-	dictionaryType: string;
-	/** 状态 Status */
-	status: string;
-	/** 备注 Remark */
-	remark: string;
+export type DictionaryTypeListItem = Omit<DtConfigType, "createTime" | "updateTime" | "deletedAt"> & {
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
 	updateTime: string;
-}
+};
 
 /**
  * 字典类型查询参数

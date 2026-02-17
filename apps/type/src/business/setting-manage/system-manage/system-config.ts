@@ -1,4 +1,16 @@
 import type { BaseListQueryParams } from "../../../common";
+import type { SmSystemConfig, NewSmSystemConfig } from "./schema";
+
+/**
+ * @description 系统配置响应 VO（前端展示用）
+ * 从 Schema 类型推导，转换时间字段为字符串格式
+ */
+export type SmSystemConfigVO = Omit<SmSystemConfig, "createTime" | "updateTime"> & {
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+};
 
 /**
  * 系统配置列表数据

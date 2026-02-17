@@ -4,35 +4,22 @@
  */
 
 import type { OptionsType, BaseListQueryParams } from "../../../common";
+import type { DtConfigItem } from "../../setting-manage/dictionary-manage/schema";
 
 /**
  * 配置项列表数据
  * Config item list item
  */
-export interface ConfigItemListItem {
-	/** 配置项ID Config item ID */
-	id: number;
-	/** 配置项名称 Config item name */
-	configName: string;
-	/** 配置项编码 Config item code */
-	configCode: string;
-	/** 配置项类型 Config item type */
-	configType: string;
-	/** 配置项值 Config item value */
-	configValue: string;
-	/** 配置项描述 Config item description */
-	description: string;
-	/** 是否启用 Is enabled */
-	isEnabled: string;
+export type ConfigItemListItem = Omit<DtConfigItem, "createTime" | "updateTime" | "deletedAt"> & {
 	/** 创建时间 Create time */
 	createTime: string;
 	/** 更新时间 Update time */
 	updateTime: string;
-	/** 创建人 Creator */
-	creator: string;
-	/** 备注 Remark */
-	remark: string;
-}
+	/** 配置类型名称 Config type name */
+	typeName?: string | null;
+	/** 配置类型编码 Config type code */
+	typeCode?: string | null;
+};
 
 /**
  * 配置项查询参数

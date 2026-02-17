@@ -2,6 +2,18 @@ import type { BaseListQueryParams } from "../../../common";
 import type { SmInitializeCell, NewSmInitializeCell } from "./schema";
 
 /**
+ * @description 初始化小区 VO（前端展示用）
+ * Initialize cell VO for frontend display
+ * 从 Schema 类型推导，转换时间字段为字符串格式
+ */
+export type SmInitializeCellVO = Omit<SmInitializeCell, "createTime" | "updateTime"> & {
+	/** 创建时间 */
+	createTime: string;
+	/** 更新时间 */
+	updateTime: string;
+};
+
+/**
  * @description 初始化配置项列表项（前端类型）
  * Initialize configuration item list item
  * 从 Schema 类型推导，转换时间字段为字符串格式
