@@ -14,8 +14,10 @@ import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
-	/** 批次号 Batch Number */
-	batchNumber: z.string().optional(),
+	/** 费用ID Charge ID */
+	chargeId: z.string().optional(),
+	/** 费用类型 Charge Type */
+	chargeType: z.string().optional(),
 	/** 员工 Employee */
 	employee: z.string().optional(),
 	/** 时间 Time */
@@ -41,6 +43,16 @@ export default defineHandler(async (event) => {
 
 		// 2. 构建动态查询条件
 		const conditions = [];
+
+		// 模糊搜索：费用ID
+		if (query.chargeId) {
+			conditions.push(like(exCancelFees.chargeId, `%${query.chargeId}%`));
+		}
+
+		// 模糊搜索：费用类型
+		if (query.chargeType) {
+			conditions.push(like(exCancelFees.chargeType, `%${query.chargeType}%`));
+		}
 
 		// 模糊搜索：取消原因
 		if (query.cancelReason) {
@@ -79,7 +91,8 @@ export default defineHandler(async (event) => {
 		// 5. 转换数据格式
 		const list = data.map((item) => ({
 			id: item.id,
-			batchNumber: item.batchNumber || "",
+			chargeId: item.chargeId || "",
+			chargeType: item.chargeType || "",
 			operator: item.operator || "",
 			cancelReason: item.cancelReason || "",
 			auditStatus: item.auditStatus || "pending",
