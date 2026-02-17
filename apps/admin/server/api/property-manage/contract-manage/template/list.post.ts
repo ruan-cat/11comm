@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { ctTemplates } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 模板查询参数验证 schema */
 const querySchema = z.object({
@@ -82,8 +83,8 @@ export default defineHandler(async (event) => {
 				templateVersion: ctTemplates.version,
 				templateDescription: ctTemplates.templateContent,
 				status: ctTemplates.status,
-				createTime: ctTemplates.createdAt,
-				updateTime: ctTemplates.updatedAt,
+				createdAt: ctTemplates.createdAt,
+				updatedAt: ctTemplates.updatedAt,
 				creator: ctTemplates.createdAt, // 简化处理
 				usageCount: sql<number>`0`, // 简化处理，暂无使用次数字段
 			})
@@ -93,15 +94,30 @@ export default defineHandler(async (event) => {
 			.limit(query.pageSize)
 			.offset(offset);
 
+		/** 转换数据格式 */
+		const list = data.map((item) => ({
+			id: item.id,
+			templateName: item.templateName || "",
+			templateNumber: item.templateNumber || "",
+			applicableContractType: item.applicableContractType || "",
+			templateVersion: item.templateVersion || "",
+			templateDescription: item.templateDescription || "",
+			status: item.status || "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			creator: item.creator || "",
+			usageCount: item.usageCount || 0,
+		}));
+
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<typeof list>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { ctChanges, ctContracts, ctFirstParties, ctSecondParties } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -127,8 +128,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			applyTime: item.changeDate || "",
 			description: item.changeContent || "",
 			status: item.approvalStatus || "pending",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
 			remark: item.remark || "",
 		}));
 

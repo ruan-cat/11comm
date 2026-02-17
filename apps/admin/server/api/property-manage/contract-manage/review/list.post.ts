@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { ctReviews, ctContracts, ctFirstParties, ctSecondParties } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 审核查询参数验证 schema */
 const querySchema = z.object({
@@ -98,6 +99,8 @@ export default defineHandler(async (event) => {
 				reviewStatus: ctReviews.reviewResult,
 				reviewOpinion: ctReviews.reviewOpinion,
 				currentNode: sql<string>`'审核中'`, // 简化处理
+				createdAt: ctReviews.createdAt,
+				updatedAt: ctReviews.updatedAt,
 			})
 			.from(ctReviews)
 			.leftJoin(ctContracts, eq(ctReviews.contractId, ctContracts.id))
@@ -108,15 +111,35 @@ export default defineHandler(async (event) => {
 			.limit(query.pageSize)
 			.offset(offset);
 
+		/** 转换数据格式 */
+		const list = data.map((item) => ({
+			id: item.id,
+			contractName: item.contractName || "",
+			contractNumber: item.contractNumber || "",
+			contractType: item.contractType || "",
+			partyA: item.partyA || "",
+			partyB: item.partyB || "",
+			contractAmount: item.contractAmount || "",
+			submitter: item.submitter || "",
+			submitTime: item.submitTime || "",
+			reviewer: item.reviewer || "",
+			reviewTime: item.reviewTime || "",
+			reviewStatus: item.reviewStatus || "",
+			reviewOpinion: item.reviewOpinion || "",
+			currentNode: item.currentNode || "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+		}));
+
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<typeof list>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

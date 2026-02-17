@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { ctAttachments, ctContracts } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 附件查询参数验证 schema */
 const querySchema = z.object({
@@ -96,6 +97,8 @@ export default defineHandler(async (event) => {
 				uploadTime: ctAttachments.createdAt,
 				status: sql<string>`'正常'`, // 简化处理
 				remark: ctAttachments.remark,
+				createdAt: ctAttachments.createdAt,
+				updatedAt: ctAttachments.updatedAt,
 			})
 			.from(ctAttachments)
 			.leftJoin(ctContracts, eq(ctAttachments.contractId, ctContracts.id))
@@ -104,15 +107,34 @@ export default defineHandler(async (event) => {
 			.limit(query.pageSize)
 			.offset(offset);
 
+		/** 转换数据格式 */
+		const list = data.map((item) => ({
+			id: item.id,
+			attachmentName: item.attachmentName || "",
+			fileName: item.fileName || "",
+			contractNumber: item.contractNumber || "",
+			contractName: item.contractName || "",
+			attachmentType: item.attachmentType || "",
+			fileType: item.fileType || "",
+			fileSize: item.fileSize || "",
+			fileFormat: item.fileFormat || "",
+			uploader: item.uploader || "",
+			uploadTime: item.uploadTime || "",
+			status: item.status || "",
+			remark: item.remark || "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+		}));
+
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<typeof list>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

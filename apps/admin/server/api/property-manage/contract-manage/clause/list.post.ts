@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { ctClauses, ctTemplates } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 条款查询参数验证 schema */
 const querySchema = z.object({
@@ -89,8 +90,8 @@ export default defineHandler(async (event) => {
 				applicableContractType: ctTemplates.templateType,
 				status: sql<string>`'启用'`, // 简化处理
 				sortOrder: ctClauses.sortOrder,
-				createTime: ctClauses.createdAt,
-				updateTime: ctClauses.updatedAt,
+				createdAt: ctClauses.createdAt,
+				updatedAt: ctClauses.updatedAt,
 				creator: ctClauses.createdAt, // 简化处理
 				remark: ctClauses.remark,
 			})
@@ -101,15 +102,31 @@ export default defineHandler(async (event) => {
 			.limit(query.pageSize)
 			.offset(offset);
 
+		/** 转换数据格式 */
+		const list = data.map((item) => ({
+			id: item.id,
+			clauseName: item.clauseName || "",
+			clauseNumber: item.clauseNumber || "",
+			clauseType: item.clauseType || "",
+			clauseContent: item.clauseContent || "",
+			applicableContractType: item.applicableContractType || "",
+			status: item.status || "",
+			sortOrder: item.sortOrder || 0,
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			creator: item.creator || "",
+			remark: item.remark || "",
+		}));
+
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<typeof list>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { ctSecondParties } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 乙方查询参数验证 schema */
 const querySchema = z.object({
@@ -89,8 +90,8 @@ export default defineHandler(async (event) => {
 				legalRepresentative: sql<string>`null`, // ctSecondParties 表中没有此字段
 				businessScope: sql<string>`null`, // ctSecondParties 表中没有此字段
 				status: sql<string>`'启用'`, // ctSecondParties 表中没有此字段
-				createTime: ctSecondParties.createdAt,
-				updateTime: ctSecondParties.updatedAt,
+				createdAt: ctSecondParties.createdAt,
+				updatedAt: ctSecondParties.updatedAt,
 				remark: ctSecondParties.remark,
 			})
 			.from(ctSecondParties)
@@ -99,15 +100,32 @@ export default defineHandler(async (event) => {
 			.limit(query.pageSize)
 			.offset(offset);
 
+		/** 转换数据格式 */
+		const list = data.map((item) => ({
+			id: item.id,
+			partyB: item.partyB || "",
+			contactPerson: item.contactPerson || "",
+			contactPhone: item.contactPhone || "",
+			address: item.address || "",
+			creditCode: item.creditCode || "",
+			establishmentDate: item.establishmentDate || "",
+			legalRepresentative: item.legalRepresentative || "",
+			businessScope: item.businessScope || "",
+			status: item.status || "",
+			remark: item.remark || "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+		}));
+
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<typeof list>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: query.page,
 				pageSize: query.pageSize,

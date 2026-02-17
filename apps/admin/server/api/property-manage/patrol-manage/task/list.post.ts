@@ -11,6 +11,7 @@ import { ptPatrolTasks, ptPatrolPlans } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PatrolTaskListItem, PatrolTaskQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -125,14 +126,14 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolTaskLis
 			patrolPlan: item.planId ? "巡检计划" : "",
 			patrolPersonTimeRange:
 				item.plannedStartTime && item.plannedEndTime ? `${item.plannedStartTime} ~ ${item.plannedEndTime}` : "",
-			actualPatrolTime: item.actualPatrolTime ? new Date(item.actualPatrolTime).toISOString() : "",
+			actualPatrolTime: item.actualPatrolTime ? formatDateTime(item.actualPatrolTime) : "",
 			plannedPatrolPerson: item.plannedPatroller || "",
 			currentPatrolPerson: item.currentPatrolPerson || "",
 			transferDescription: item.transferDescription || "",
 			patrolMethod: item.patrolMethod || "",
 			patrolStatus: item.status || "pending",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
 		}));
 
 		/** 计算总页数 */
