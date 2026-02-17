@@ -20,7 +20,7 @@ const querySchema = z.object({
 	booker: z.string().optional(),
 	contactPhone: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -59,12 +59,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueO
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpReserveVenueOrders.createdAt,
-			updatedAt: hpReserveVenueOrders.updatedAt,
+			createTime: hpReserveVenueOrders.createTime,
+			updateTime: hpReserveVenueOrders.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -91,8 +91,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueO
 				startTime: hpReserveVenueOrders.startTime,
 				endTime: hpReserveVenueOrders.endTime,
 				numberOfUsers: hpReserveVenueOrders.numberOfUsers,
-				createdAt: hpReserveVenueOrders.createdAt,
-				updatedAt: hpReserveVenueOrders.updatedAt,
+				createTime: hpReserveVenueOrders.createTime,
+				updateTime: hpReserveVenueOrders.updateTime,
 			})
 			.from(hpReserveVenueOrders)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -114,7 +114,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueO
 			receivedAmount: "",
 			paymentMethod: "",
 			status: item.status || "",
-			createTime: formatDateTime(item.createdAt),
+			createTime: formatDateTime(item.createTime),
 			remark: item.remark || "",
 		}));
 

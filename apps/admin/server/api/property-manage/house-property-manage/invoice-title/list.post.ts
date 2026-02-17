@@ -21,7 +21,7 @@ const querySchema = z.object({
 	ownerName: z.string().optional(),
 	invoiceType: z.string().optional(),
 	invoiceTitle: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -53,12 +53,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceTitleL
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpInvoiceTitles.createdAt,
-			updatedAt: hpInvoiceTitles.updatedAt,
+			createTime: hpInvoiceTitles.createTime,
+			updateTime: hpInvoiceTitles.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -92,8 +92,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceTitleL
 					phone: hpInvoiceTitles.addressPhone,
 					bankAccount: hpInvoiceTitles.bankAccount,
 					remark: hpInvoiceTitles.remark,
-					createdAt: hpInvoiceTitles.createdAt,
-					updatedAt: hpInvoiceTitles.updatedAt,
+					createTime: hpInvoiceTitles.createTime,
+					updateTime: hpInvoiceTitles.updateTime,
 				})
 				.from(hpInvoiceTitles)
 				.innerJoin(hpOwners, eq(hpInvoiceTitles.ownerId, hpOwners.id))
@@ -114,8 +114,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceTitleL
 					phone: hpInvoiceTitles.addressPhone,
 					bankAccount: hpInvoiceTitles.bankAccount,
 					remark: hpInvoiceTitles.remark,
-					createdAt: hpInvoiceTitles.createdAt,
-					updatedAt: hpInvoiceTitles.updatedAt,
+					createTime: hpInvoiceTitles.createTime,
+					updateTime: hpInvoiceTitles.updateTime,
 				})
 				.from(hpInvoiceTitles)
 				.leftJoin(hpOwners, eq(hpInvoiceTitles.ownerId, hpOwners.id))
@@ -135,8 +135,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceTitleL
 			address: item.address || "",
 			phone: item.phone || "",
 			bankAccount: item.bankAccount || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 		}));
 

@@ -21,7 +21,7 @@ const querySchema = z.object({
 	houseStatus: z.string().optional(),
 	houseType: z.string().optional(),
 	buildingUnit: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -61,12 +61,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpHouses.createdAt,
-			updatedAt: hpHouses.updatedAt,
+			createTime: hpHouses.createTime,
+			updateTime: hpHouses.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -96,8 +96,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem
 				remark: hpHouses.remark,
 				rent: hpHouses.rent,
 				validUntil: hpHouses.validUntil,
-				createdAt: hpHouses.createdAt,
-				updatedAt: hpHouses.updatedAt,
+				createTime: hpHouses.createTime,
+				updateTime: hpHouses.updateTime,
 			})
 			.from(hpHouses)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -129,7 +129,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem
 			area: item.buildingArea?.toString() || "",
 			ownerName: "",
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
+			createTime: formatDateTime(item.createTime),
 		}));
 
 		/** 计算总页数 */

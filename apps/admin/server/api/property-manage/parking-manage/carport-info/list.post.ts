@@ -22,7 +22,7 @@ const querySchema = z.object({
 	status: z.string().optional(),
 	ownerName: z.string().optional(),
 	contactPhone: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -71,12 +71,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportInfoLi
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: pkCarports.createdAt,
-			updatedAt: pkCarports.updatedAt,
+			createTime: pkCarports.createTime,
+			updateTime: pkCarports.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -104,8 +104,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportInfoLi
 				monthlyRent: pkCarports.monthlyRent,
 				purchaseDate: pkCarports.purchaseDate,
 				expiryDate: pkCarports.expiryDate,
-				createdAt: pkCarports.createdAt,
-				updatedAt: pkCarports.updatedAt,
+				createTime: pkCarports.createTime,
+				updateTime: pkCarports.updateTime,
 			})
 			.from(pkCarports)
 			.leftJoin(pkParkingLots, eq(pkCarports.parkingLotId, pkParkingLots.id))
@@ -127,8 +127,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportInfoLi
 			purchaseDate: item.purchaseDate || "",
 			expiryDate: item.expiryDate || "",
 			monthlyRent: Number(item.monthlyRent) || 0,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

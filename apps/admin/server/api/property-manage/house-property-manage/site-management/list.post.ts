@@ -20,7 +20,7 @@ const querySchema = z.object({
 	siteName: z.string().optional(),
 	location: z.string().optional(),
 	manager: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -59,12 +59,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SiteManagemen
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpSiteManagements.createdAt,
-			updatedAt: hpSiteManagements.updatedAt,
+			createTime: hpSiteManagements.createTime,
+			updateTime: hpSiteManagements.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -86,8 +86,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SiteManagemen
 				manager: hpSiteManagements.manager,
 				maintenanceRecord: hpSiteManagements.maintenanceRecord,
 				remark: hpSiteManagements.remark,
-				createdAt: hpSiteManagements.createdAt,
-				updatedAt: hpSiteManagements.updatedAt,
+				createTime: hpSiteManagements.createTime,
+				updateTime: hpSiteManagements.updateTime,
 			})
 			.from(hpSiteManagements)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -106,7 +106,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SiteManagemen
 			administrator: item.manager || "",
 			administratorPhone: "",
 			status: "启用",
-			createTime: formatDateTime(item.createdAt),
+			createTime: formatDateTime(item.createTime),
 			remark: item.remark || "",
 		}));
 

@@ -20,7 +20,7 @@ const querySchema = z.object({
 	applicant: z.string().optional(),
 	carportType: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "applyTime"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "applyTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -59,12 +59,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportApplyL
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: pkCarportApplications.createdAt,
-			updatedAt: pkCarportApplications.updatedAt,
+			createTime: pkCarportApplications.createTime,
+			updateTime: pkCarportApplications.updateTime,
 			applyTime: pkCarportApplications.applyTime,
 		};
 
@@ -91,8 +91,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportApplyL
 				approvalTime: pkCarportApplications.approvalTime,
 				approvalOpinion: pkCarportApplications.approvalOpinion,
 				allocatedCarport: pkCarportApplications.allocatedCarport,
-				createdAt: pkCarportApplications.createdAt,
-				updatedAt: pkCarportApplications.updatedAt,
+				createTime: pkCarportApplications.createTime,
+				updateTime: pkCarportApplications.updateTime,
 			})
 			.from(pkCarportApplications)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -113,8 +113,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CarportApplyL
 			applicant: item.applicant || "",
 			phoneNumber: "",
 			reviewResult: item.status || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

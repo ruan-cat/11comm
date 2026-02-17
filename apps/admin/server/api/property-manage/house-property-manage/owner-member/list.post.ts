@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	name: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -49,12 +49,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerMemberLi
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpOwnerMembers.createdAt,
-			updatedAt: hpOwnerMembers.updatedAt,
+			createTime: hpOwnerMembers.createTime,
+			updateTime: hpOwnerMembers.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -81,8 +81,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerMemberLi
 				facePhotoUrl: hpOwnerMembers.facePhotoUrl,
 				accessKey: hpOwnerMembers.accessKey,
 				remark: hpOwnerMembers.remark,
-				createdAt: hpOwnerMembers.createdAt,
-				updatedAt: hpOwnerMembers.updatedAt,
+				createTime: hpOwnerMembers.createTime,
+				updateTime: hpOwnerMembers.updateTime,
 			})
 			.from(hpOwnerMembers)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -101,8 +101,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerMemberLi
 			contact: item.phone || "",
 			homeAddress: item.homeAddress || "",
 			accessKey: item.accessKey || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 			relation: item.memberType || "",
 			phone: item.phone || "",

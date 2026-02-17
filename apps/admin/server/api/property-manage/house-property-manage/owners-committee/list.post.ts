@@ -21,7 +21,7 @@ const querySchema = z.object({
 	term: z.string().optional(),
 	chairman: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -65,12 +65,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnersCommitt
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpOwnersCommittees.createdAt,
-			updatedAt: hpOwnersCommittees.updatedAt,
+			createTime: hpOwnersCommittees.createTime,
+			updateTime: hpOwnersCommittees.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -102,8 +102,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnersCommitt
 				address: hpOwnersCommittees.address,
 				post: hpOwnersCommittees.post,
 				status: hpOwnersCommittees.status,
-				createdAt: hpOwnersCommittees.createdAt,
-				updatedAt: hpOwnersCommittees.updatedAt,
+				createTime: hpOwnersCommittees.createTime,
+				updateTime: hpOwnersCommittees.updateTime,
 			})
 			.from(hpOwnersCommittees)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -123,8 +123,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnersCommitt
 			post: item.post || "",
 			tenure: item.tenure || "",
 			status: item.status || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 			term: item.term || "",
 			termStart: item.establishedDate?.toString() || "",

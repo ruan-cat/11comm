@@ -21,7 +21,7 @@ const querySchema = z.object({
 	idCard: z.string().optional(),
 	phone: z.string().optional(),
 	accountType: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -57,12 +57,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerAccountL
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpOwnerAccounts.createdAt,
-			updatedAt: hpOwnerAccounts.updatedAt,
+			createTime: hpOwnerAccounts.createTime,
+			updateTime: hpOwnerAccounts.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -86,8 +86,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerAccountL
 				balance: hpOwnerAccounts.balance,
 				deductionHouse: hpOwnerAccounts.deductionHouse,
 				remark: hpOwnerAccounts.remark,
-				createdAt: hpOwnerAccounts.createdAt,
-				updatedAt: hpOwnerAccounts.updatedAt,
+				createTime: hpOwnerAccounts.createTime,
+				updateTime: hpOwnerAccounts.updateTime,
 			})
 			.from(hpOwnerAccounts)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -104,7 +104,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerAccountL
 			accountType: item.accountType || "",
 			accountBalance: item.balance?.toString() || "0",
 			deductHouseNo: item.deductionHouse || "",
-			createTime: formatDateTime(item.createdAt),
+			createTime: formatDateTime(item.createTime),
 			remark: item.remark || "",
 		}));
 

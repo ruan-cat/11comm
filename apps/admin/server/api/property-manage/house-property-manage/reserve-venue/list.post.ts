@@ -21,7 +21,7 @@ const querySchema = z.object({
 	contactPhone: z.string().optional(),
 	venueType: z.string().optional(),
 	reservationStatus: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -57,12 +57,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueL
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpReserveVenues.createdAt,
-			updatedAt: hpReserveVenues.updatedAt,
+			createTime: hpReserveVenues.createTime,
+			updateTime: hpReserveVenues.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -86,8 +86,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueL
 				chargeStandard: hpReserveVenues.chargeStandard,
 				status: hpReserveVenues.status,
 				remark: hpReserveVenues.remark,
-				createdAt: hpReserveVenues.createdAt,
-				updatedAt: hpReserveVenues.updatedAt,
+				createTime: hpReserveVenues.createTime,
+				updateTime: hpReserveVenues.updateTime,
 			})
 			.from(hpReserveVenues)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -107,8 +107,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueL
 			reservationStatus: item.status || "",
 			numberOfUsers: item.capacity || 0,
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		/** 计算总页数 */

@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	lotName: z.string().optional(),
 	lotType: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -53,12 +53,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ParkingLotLis
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: pkParkingLots.createdAt,
-			updatedAt: pkParkingLots.updatedAt,
+			createTime: pkParkingLots.createTime,
+			updateTime: pkParkingLots.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -83,8 +83,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ParkingLotLis
 				floorArea: pkParkingLots.floorArea,
 				locationDescription: pkParkingLots.locationDescription,
 				remark: pkParkingLots.remark,
-				createdAt: pkParkingLots.createdAt,
-				updatedAt: pkParkingLots.updatedAt,
+				createTime: pkParkingLots.createTime,
+				updateTime: pkParkingLots.updateTime,
 			})
 			.from(pkParkingLots)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -99,8 +99,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ParkingLotLis
 			parkingSpaceType: "standard",
 			externalCode: item.id || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

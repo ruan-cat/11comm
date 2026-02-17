@@ -22,7 +22,7 @@ const querySchema = z.object({
 	ownerName: z.string().optional(),
 	applicant: z.string().optional(),
 	auditStatus: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "applicationTime"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "applicationTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -71,12 +71,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListIt
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpInvoices.createdAt,
-			updatedAt: hpInvoices.updatedAt,
+			createTime: hpInvoices.createTime,
+			updateTime: hpInvoices.updateTime,
 			applicationTime: hpInvoices.applicationTime,
 		};
 
@@ -105,8 +105,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListIt
 				auditStatus: hpInvoices.auditStatus,
 				applicationTime: hpInvoices.applicationTime,
 				remark: hpInvoices.remark,
-				createdAt: hpInvoices.createdAt,
-				updatedAt: hpInvoices.updatedAt,
+				createTime: hpInvoices.createTime,
+				updateTime: hpInvoices.updateTime,
 			})
 			.from(hpInvoices)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -127,8 +127,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListIt
 			invoiceNumber: item.invoiceNo || "",
 			auditStatus: item.auditStatus || "",
 			applicationTime: item.applicationTime ? new Date(item.applicationTime).toISOString() : "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 		}));
 

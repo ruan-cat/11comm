@@ -22,7 +22,7 @@ const querySchema = z.object({
 	houseNo: z.string().optional(),
 	phone: z.string().optional(),
 	idCard: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -63,12 +63,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformat
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: hpOwners.createdAt,
-			updatedAt: hpOwners.updatedAt,
+			createTime: hpOwners.createTime,
+			updateTime: hpOwners.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -93,8 +93,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformat
 				address: hpOwners.address,
 				emergencyContact: hpOwners.emergencyContact,
 				remark: hpOwners.remark,
-				createdAt: hpOwners.createdAt,
-				updatedAt: hpOwners.updatedAt,
+				createTime: hpOwners.createTime,
+				updateTime: hpOwners.updateTime,
 			})
 			.from(hpOwners)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -107,8 +107,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformat
 			id: item.id,
 			name: item.name || "",
 			status: "启用",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 			gender: item.gender || "",
 			phone: item.phone || "",
