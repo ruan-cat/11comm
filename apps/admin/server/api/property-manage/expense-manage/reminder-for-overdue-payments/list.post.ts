@@ -17,7 +17,7 @@ const querySchema = z.object({
 	page: z.coerce.number().int().min(1).optional().default(1),
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	name: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -46,12 +46,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: exOverdueReminders.createdAt,
-			updatedAt: exOverdueReminders.updatedAt,
+			createTime: exOverdueReminders.createTime,
+			updateTime: exOverdueReminders.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -76,8 +76,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				reminderName: exOverdueReminders.reminderName,
 				contactPhone: exOverdueReminders.contactPhone,
 				remark: exOverdueReminders.remark,
-				createdAt: exOverdueReminders.createdAt,
-				updatedAt: exOverdueReminders.updatedAt,
+				createTime: exOverdueReminders.createTime,
+				updateTime: exOverdueReminders.updateTime,
 			})
 			.from(exOverdueReminders)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -91,8 +91,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			name: item.reminderName || "",
 			status: "enabled",
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		/** 计算总页数 */

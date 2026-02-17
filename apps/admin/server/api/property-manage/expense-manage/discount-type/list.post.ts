@@ -19,7 +19,7 @@ const querySchema = z.object({
 	discountName: z.string().optional(),
 	discountType: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -58,12 +58,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: exDiscountTypes.createdAt,
-			updatedAt: exDiscountTypes.updatedAt,
+			createTime: exDiscountTypes.createTime,
+			updateTime: exDiscountTypes.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -85,8 +85,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				discountValue: exDiscountTypes.discountValue,
 				status: exDiscountTypes.status,
 				remark: exDiscountTypes.remark,
-				createdAt: exDiscountTypes.createdAt,
-				updatedAt: exDiscountTypes.updatedAt,
+				createTime: exDiscountTypes.createTime,
+				updateTime: exDiscountTypes.updateTime,
 			})
 			.from(exDiscountTypes)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -102,8 +102,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			discountValue: item.discountValue || "",
 			status: item.status || "enabled",
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		/** 计算总页数 */

@@ -70,7 +70,7 @@ export default defineHandler(async (event) => {
 				.select()
 				.from(exExpenseSummaryTables)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(exExpenseSummaryTables.createdAt))
+				.orderBy(desc(exExpenseSummaryTables.createTime))
 				.limit(query.pageSize)
 				.offset(offset),
 
@@ -94,8 +94,8 @@ export default defineHandler(async (event) => {
 			actualAmount: item.actualAmount,
 			status: item.status || "enabled",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 必须使用 JsonVO<PageDTO<...>> 类型注解约束响应 */

@@ -17,7 +17,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	reviewer: z.string().optional(),
 	reviewResult: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -35,11 +35,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		const conditions = [];
 		if (query.reviewer) conditions.push(like(exPaymentReviews.reviewer, `%${query.reviewer}%`));
 		if (query.reviewResult) conditions.push(eq(exPaymentReviews.reviewResult, query.reviewResult as any));
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 		const sortFields: Record<string, any> = {
-			createdAt: exPaymentReviews.createdAt,
-			updatedAt: exPaymentReviews.updatedAt,
+			createTime: exPaymentReviews.createTime,
+			updateTime: exPaymentReviews.updateTime,
 		};
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
 		const countResult = await db
@@ -56,8 +56,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				reviewResult: exPaymentReviews.reviewResult,
 				reviewTime: exPaymentReviews.reviewTime,
 				remark: exPaymentReviews.remark,
-				createdAt: exPaymentReviews.createdAt,
-				updatedAt: exPaymentReviews.updatedAt,
+				createTime: exPaymentReviews.createTime,
+				updateTime: exPaymentReviews.updateTime,
 			})
 			.from(exPaymentReviews)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -72,8 +72,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			reviewResult: item.reviewResult || "pending",
 			reviewTime: formatDateTime(item.reviewTime),
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 		const totalPages = Math.ceil(total / query.pageSize);
 		const response: JsonVO<PageDTO<any>> = {

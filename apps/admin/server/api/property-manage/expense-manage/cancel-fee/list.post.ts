@@ -66,7 +66,7 @@ export default defineHandler(async (event) => {
 				.select()
 				.from(exCancelFees)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(exCancelFees.createdAt))
+				.orderBy(desc(exCancelFees.createTime))
 				.limit(query.pageSize)
 				.offset(offset),
 
@@ -84,8 +84,8 @@ export default defineHandler(async (event) => {
 			cancelReason: item.cancelReason || "",
 			auditStatus: item.auditStatus || "pending",
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		// 6. 返回标准分页结构

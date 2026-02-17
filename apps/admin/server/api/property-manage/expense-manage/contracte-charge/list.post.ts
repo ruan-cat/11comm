@@ -19,7 +19,7 @@ const querySchema = z.object({
 	contractNumber: z.string().optional(),
 	expenseItem: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -58,12 +58,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: exContractCharges.createdAt,
-			updatedAt: exContractCharges.updatedAt,
+			createTime: exContractCharges.createTime,
+			updateTime: exContractCharges.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -88,8 +88,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				chargeCycle: exContractCharges.chargeCycle,
 				status: exContractCharges.status,
 				remark: exContractCharges.remark,
-				createdAt: exContractCharges.createdAt,
-				updatedAt: exContractCharges.updatedAt,
+				createTime: exContractCharges.createTime,
+				updateTime: exContractCharges.updateTime,
 			})
 			.from(exContractCharges)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -108,8 +108,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			chargeCycle: item.chargeCycle || "",
 			status: item.status || "unpaid",
 			remark: item.remark || "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		/** 计算总页数 */
