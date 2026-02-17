@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	name: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -58,12 +58,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsTodoLi
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: rpRepairOrders.createdAt,
-			updatedAt: rpRepairOrders.updatedAt,
+			createTime: rpRepairOrders.createTime,
+			updateTime: rpRepairOrders.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -88,8 +88,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsTodoLi
 				repairLocation: rpRepairOrders.repairLocation,
 				appointmentTime: rpRepairOrders.appointmentTime,
 				status: rpRepairOrders.status,
-				createdAt: rpRepairOrders.createdAt,
-				updatedAt: rpRepairOrders.updatedAt,
+				createTime: rpRepairOrders.createTime,
+				updateTime: rpRepairOrders.updateTime,
 				remark: rpRepairOrders.remark,
 			})
 			.from(rpRepairOrders)
@@ -109,8 +109,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsTodoLi
 			contactInfo: item.contactPhone || "",
 			appointmentTime: item.appointmentTime ? formatDateTime(item.appointmentTime) : "",
 			status: item.status || "pending",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

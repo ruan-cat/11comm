@@ -26,7 +26,7 @@ const querySchema = z.object({
 	status: z.string().optional(),
 	startTime: z.string().optional(),
 	endTime: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -87,20 +87,20 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<IssuesListIte
 		}
 
 		if (query.startTime) {
-			conditions.push(sql`${rpRepairOrders.createdAt} >= ${new Date(query.startTime)}`);
+			conditions.push(sql`${rpRepairOrders.createTime} >= ${new Date(query.startTime)}`);
 		}
 
 		if (query.endTime) {
-			conditions.push(sql`${rpRepairOrders.createdAt} <= ${new Date(query.endTime)}`);
+			conditions.push(sql`${rpRepairOrders.createTime} <= ${new Date(query.endTime)}`);
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: rpRepairOrders.createdAt,
-			updatedAt: rpRepairOrders.updatedAt,
+			createTime: rpRepairOrders.createTime,
+			updateTime: rpRepairOrders.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -129,8 +129,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<IssuesListIte
 				assigner: rpRepairOrders.assigner,
 				repairPerson: rpRepairOrders.repairPerson,
 				plannedCompletionTime: rpRepairOrders.plannedCompletionTime,
-				createdAt: rpRepairOrders.createdAt,
-				updatedAt: rpRepairOrders.updatedAt,
+				createTime: rpRepairOrders.createTime,
+				updateTime: rpRepairOrders.updateTime,
 				remark: rpRepairOrders.remark,
 			})
 			.from(rpRepairOrders)
@@ -149,11 +149,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<IssuesListIte
 			reporter: item.reporterName || "",
 			contactInfo: item.contactPhone || "",
 			appointmentTimeRange: item.appointmentTime ? formatDateTime(item.appointmentTime) : "",
-			submitTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			submitTime: item.createTime ? formatDateTime(item.createTime) : "",
 			completeTime: item.plannedCompletionTime ? formatDateTime(item.plannedCompletionTime) : "",
 			status: item.status || "pending",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

@@ -22,7 +22,7 @@ const querySchema = z.object({
 	contactPhone: z.string().optional(),
 	repairType: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -61,12 +61,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MandatoryRetu
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: rpMandatoryReturnIssues.createdAt,
-			updatedAt: rpMandatoryReturnIssues.updatedAt,
+			createTime: rpMandatoryReturnIssues.createTime,
+			updateTime: rpMandatoryReturnIssues.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -87,8 +87,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MandatoryRetu
 				mandatoryReason: rpMandatoryReturnIssues.mandatoryReason,
 				mandatoryTime: rpMandatoryReturnIssues.mandatoryTime,
 				returnStatus: rpMandatoryReturnIssues.returnStatus,
-				createdAt: rpMandatoryReturnIssues.createdAt,
-				updatedAt: rpMandatoryReturnIssues.updatedAt,
+				createTime: rpMandatoryReturnIssues.createTime,
+				updateTime: rpMandatoryReturnIssues.updateTime,
 			})
 			.from(rpMandatoryReturnIssues)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -105,10 +105,10 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MandatoryRetu
 			reporter: "",
 			contactInfo: "",
 			appointmentTime: "",
-			submitTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			submitTime: item.createTime ? formatDateTime(item.createTime) : "",
 			status: item.returnStatus || "pending_return",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.mandatoryReason || "",
 		}));
 

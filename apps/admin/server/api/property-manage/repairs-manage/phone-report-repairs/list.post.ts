@@ -22,7 +22,7 @@ const querySchema = z.object({
 	contactPhone: z.string().optional(),
 	repairType: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -61,12 +61,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PhoneReportRe
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: rpPhoneRepairReports.createdAt,
-			updatedAt: rpPhoneRepairReports.updatedAt,
+			createTime: rpPhoneRepairReports.createTime,
+			updateTime: rpPhoneRepairReports.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -88,8 +88,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PhoneReportRe
 				callTime: rpPhoneRepairReports.callTime,
 				receiver: rpPhoneRepairReports.receiver,
 				repairSummary: rpPhoneRepairReports.repairSummary,
-				createdAt: rpPhoneRepairReports.createdAt,
-				updatedAt: rpPhoneRepairReports.updatedAt,
+				createTime: rpPhoneRepairReports.createTime,
+				updateTime: rpPhoneRepairReports.updateTime,
 			})
 			.from(rpPhoneRepairReports)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -107,10 +107,10 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PhoneReportRe
 			contactInfo: item.callerPhone || "",
 			appointmentTime: item.callTime ? formatDateTime(item.callTime) : "",
 			overtimeTime: "",
-			submitTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			submitTime: item.createTime ? formatDateTime(item.createTime) : "",
 			status: item.orderId ? "processed" : "pending",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.repairSummary || "",
 		}));
 

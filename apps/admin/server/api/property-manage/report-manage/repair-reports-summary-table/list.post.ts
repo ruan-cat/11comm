@@ -64,11 +64,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReports
 				workerWorkload: rptRepairSummaries.workerWorkload,
 				repairCostStatistics: rptRepairSummaries.repairCostStatistics,
 				remark: rptRepairSummaries.remark,
-				createdAt: rptRepairSummaries.createdAt,
-				updatedAt: rptRepairSummaries.updatedAt,
+				createTime: rptRepairSummaries.createTime,
+				updateTime: rptRepairSummaries.updateTime,
 			})
 			.from(rptRepairSummaries)
-			.orderBy(desc(rptRepairSummaries.createdAt))
+			.orderBy(desc(rptRepairSummaries.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -84,9 +84,9 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReports
 			pendingRevisitCount: 0,
 			dissatisfiedCount: 0,
 			emergencyCount: 0,
-			statisticsTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			statisticsTime: item.createTime ? new Date(item.createTime).toISOString() : "",
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

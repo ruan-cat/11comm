@@ -59,12 +59,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<DataStatistic
 				statisticTime: rptDataStatistics.statisticTime,
 				comparisonBaseline: rptDataStatistics.comparisonBaseline,
 				remark: rptDataStatistics.remark,
-				createdAt: rptDataStatistics.createdAt,
-				updatedAt: rptDataStatistics.updatedAt,
+				createTime: rptDataStatistics.createTime,
+				updateTime: rptDataStatistics.updateTime,
 			})
 			.from(rptDataStatistics)
 			.where(conditions.length > 0 ? conditions[0] : undefined)
-			.orderBy(desc(rptDataStatistics.createdAt))
+			.orderBy(desc(rptDataStatistics.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -73,8 +73,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<DataStatistic
 			id: item.id || "",
 			name: item.statisticIndicator || "",
 			status: item.comparisonBaseline ? "已设置基准" : "未设置基准",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 		}));
 

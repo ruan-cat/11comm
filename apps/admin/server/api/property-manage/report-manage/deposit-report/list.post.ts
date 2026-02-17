@@ -54,11 +54,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<DepositReport
 				periodStart: rptDepositReports.periodStart,
 				periodEnd: rptDepositReports.periodEnd,
 				remark: rptDepositReports.remark,
-				createdAt: rptDepositReports.createdAt,
-				updatedAt: rptDepositReports.updatedAt,
+				createTime: rptDepositReports.createTime,
+				updateTime: rptDepositReports.updateTime,
 			})
 			.from(rptDepositReports)
-			.orderBy(desc(rptDepositReports.createdAt))
+			.orderBy(desc(rptDepositReports.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -67,8 +67,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<DepositReport
 			id: item.id || "",
 			name: item.depositType || "",
 			status: item.collectedTotal ? "正常" : "无数据",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 		}));
 

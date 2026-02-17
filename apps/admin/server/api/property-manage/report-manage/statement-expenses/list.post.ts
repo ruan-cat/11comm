@@ -74,12 +74,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<StatementExpe
 				reportPeriod: rptStatementExpenses.reportPeriod,
 				dataSnapshot: rptStatementExpenses.dataSnapshot,
 				remark: rptStatementExpenses.remark,
-				createdAt: rptStatementExpenses.createdAt,
-				updatedAt: rptStatementExpenses.updatedAt,
+				createTime: rptStatementExpenses.createTime,
+				updateTime: rptStatementExpenses.updateTime,
 			})
 			.from(rptStatementExpenses)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptStatementExpenses.createdAt))
+			.orderBy(desc(rptStatementExpenses.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -101,8 +101,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<StatementExpe
 			endDate: "",
 			billingArea: 0,
 			parkingSpace: "",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

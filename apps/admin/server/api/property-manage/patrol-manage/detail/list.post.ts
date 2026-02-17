@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	taskStatus: z.string().optional(),
 	patrolMethod: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -53,12 +53,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolDetailL
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ptPatrolTaskDetails.createdAt,
-			updatedAt: ptPatrolTaskDetails.updatedAt,
+			createTime: ptPatrolTaskDetails.createTime,
+			updateTime: ptPatrolTaskDetails.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -83,8 +83,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolDetailL
 				patrolPhotoUrl: ptPatrolTaskDetails.patrolPhotoUrl,
 				checkInTime: ptPatrolTaskDetails.checkInTime,
 				gpsCoordinates: ptPatrolTaskDetails.gpsCoordinates,
-				detailCreatedAt: ptPatrolTaskDetails.createdAt,
-				detailUpdatedAt: ptPatrolTaskDetails.updatedAt,
+				detailCreatedAt: ptPatrolTaskDetails.createTime,
+				detailUpdatedAt: ptPatrolTaskDetails.updateTime,
 				// 任务信息
 				taskCode: ptPatrolTasks.taskCode,
 				taskName: ptPatrolTasks.taskName,

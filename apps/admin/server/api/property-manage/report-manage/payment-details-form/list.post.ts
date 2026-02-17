@@ -56,11 +56,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PaymentDetail
 				transactionNo: rptPaymentDetails.transactionNo,
 				collector: rptPaymentDetails.collector,
 				remark: rptPaymentDetails.remark,
-				createdAt: rptPaymentDetails.createdAt,
-				updatedAt: rptPaymentDetails.updatedAt,
+				createTime: rptPaymentDetails.createTime,
+				updateTime: rptPaymentDetails.updateTime,
 			})
 			.from(rptPaymentDetails)
-			.orderBy(desc(rptPaymentDetails.createdAt))
+			.orderBy(desc(rptPaymentDetails.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -69,8 +69,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PaymentDetail
 			id: item.id || "",
 			name: item.expenseItem || "",
 			status: item.paymentAmount ? "已支付" : "未支付",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 		}));
 

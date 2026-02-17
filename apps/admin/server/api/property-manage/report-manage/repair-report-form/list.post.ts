@@ -66,11 +66,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReportF
 				satisfactionRate: rptRepairReports.satisfactionRate,
 				dissatisfactionReasons: rptRepairReports.dissatisfactionReasons,
 				remark: rptRepairReports.remark,
-				createdAt: rptRepairReports.createdAt,
-				updatedAt: rptRepairReports.updatedAt,
+				createTime: rptRepairReports.createTime,
+				updateTime: rptRepairReports.updateTime,
 			})
 			.from(rptRepairReports)
-			.orderBy(desc(rptRepairReports.createdAt))
+			.orderBy(desc(rptRepairReports.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -84,7 +84,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReportF
 			reporter: "",
 			reporterPhone: "",
 			repairAddress: "",
-			reportTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			reportTime: item.createTime ? new Date(item.createTime).toISOString() : "",
 			handler: "",
 			processor: "",
 			feeStatus: "",

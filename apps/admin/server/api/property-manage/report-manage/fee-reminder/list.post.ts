@@ -54,11 +54,11 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<FeeReminderLi
 				isDelivered: rptFeeReminders.isDelivered,
 				ownerFeedback: rptFeeReminders.ownerFeedback,
 				remark: rptFeeReminders.remark,
-				createdAt: rptFeeReminders.createdAt,
-				updatedAt: rptFeeReminders.updatedAt,
+				createTime: rptFeeReminders.createTime,
+				updateTime: rptFeeReminders.updateTime,
 			})
 			.from(rptFeeReminders)
-			.orderBy(desc(rptFeeReminders.createdAt))
+			.orderBy(desc(rptFeeReminders.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -67,8 +67,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<FeeReminderLi
 			id: item.id || "",
 			name: item.ownerInfo || "",
 			status: item.isDelivered ? "已送达" : "未送达",
-			createTime: formatDateTime(item.createdAt),
-			updateTime: formatDateTime(item.updatedAt),
+			createTime: formatDateTime(item.createTime),
+			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",
 		}));
 

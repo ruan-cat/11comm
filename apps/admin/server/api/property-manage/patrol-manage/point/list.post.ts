@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	pointName: z.string().optional(),
 	pathId: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -52,12 +52,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPointLi
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ptPatrolPoints.createdAt,
-			updatedAt: ptPatrolPoints.updatedAt,
+			createTime: ptPatrolPoints.createTime,
+			updateTime: ptPatrolPoints.updateTime,
 			sortOrder: ptPatrolPoints.sortOrder,
 		};
 
@@ -80,8 +80,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPointLi
 				location: ptPatrolPoints.location,
 				qrCodeOrNfc: ptPatrolPoints.qrCodeOrNfc,
 				sortOrder: ptPatrolPoints.sortOrder,
-				createdAt: ptPatrolPoints.createdAt,
-				updatedAt: ptPatrolPoints.updatedAt,
+				createTime: ptPatrolPoints.createTime,
+				updateTime: ptPatrolPoints.updateTime,
 			})
 			.from(ptPatrolPoints)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -111,8 +111,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPointLi
 			patrolSituation: "",
 			patrolPhotos: "",
 			locationInfo: item.location || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

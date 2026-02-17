@@ -71,12 +71,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseSummar
 				building: rptExpenseSummaries.building,
 				expenseItem: rptExpenseSummaries.expenseItem,
 				remark: rptExpenseSummaries.remark,
-				createdAt: rptExpenseSummaries.createdAt,
-				updatedAt: rptExpenseSummaries.updatedAt,
+				createTime: rptExpenseSummaries.createTime,
+				updateTime: rptExpenseSummaries.updateTime,
 			})
 			.from(rptExpenseSummaries)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptExpenseSummaries.createdAt))
+			.orderBy(desc(rptExpenseSummaries.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -90,8 +90,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ExpenseSummar
 			actualAmount: item.receivedTotal || "0",
 			status: item.receivableTotal ? "enabled" : "disabled",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

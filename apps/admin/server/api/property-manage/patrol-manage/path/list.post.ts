@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	pathName: z.string().optional(),
 	planId: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -52,12 +52,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPathLis
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ptPatrolPaths.createdAt,
-			updatedAt: ptPatrolPaths.updatedAt,
+			createTime: ptPatrolPaths.createTime,
+			updateTime: ptPatrolPaths.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -78,8 +78,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPathLis
 				pathName: ptPatrolPaths.pathName,
 				pathDescription: ptPatrolPaths.pathDescription,
 				estimatedDuration: ptPatrolPaths.estimatedDuration,
-				createdAt: ptPatrolPaths.createdAt,
-				updatedAt: ptPatrolPaths.updatedAt,
+				createTime: ptPatrolPaths.createTime,
+				updateTime: ptPatrolPaths.updateTime,
 			})
 			.from(ptPatrolPaths)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -100,8 +100,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPathLis
 			startTime: "",
 			endTime: "",
 			sortOrder: item.estimatedDuration?.toString() || "0",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

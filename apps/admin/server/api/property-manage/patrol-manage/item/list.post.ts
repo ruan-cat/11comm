@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	itemName: z.string().optional(),
 	projectCode: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -48,12 +48,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolItemLis
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ptPatrolItems.createdAt,
-			updatedAt: ptPatrolItems.updatedAt,
+			createTime: ptPatrolItems.createTime,
+			updateTime: ptPatrolItems.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -74,8 +74,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolItemLis
 				itemName: ptPatrolItems.itemName,
 				checkStandard: ptPatrolItems.checkStandard,
 				checkMethod: ptPatrolItems.checkMethod,
-				createdAt: ptPatrolItems.createdAt,
-				updatedAt: ptPatrolItems.updatedAt,
+				createTime: ptPatrolItems.createTime,
+				updateTime: ptPatrolItems.updateTime,
 			})
 			.from(ptPatrolItems)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -91,8 +91,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolItemLis
 			remark: "",
 			code: item.id?.substring(0, 8) || "",
 			patrolItem: item.itemName || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

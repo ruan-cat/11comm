@@ -19,7 +19,7 @@ const querySchema = z.object({
 	pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 	name: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -47,12 +47,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitLi
 		// 移除 deletedAt 检查，因为表结构可能没有此字段
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: rpReturnVisits.createdAt,
-			updatedAt: rpReturnVisits.updatedAt,
+			createTime: rpReturnVisits.createTime,
+			updateTime: rpReturnVisits.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -76,8 +76,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitLi
 				satisfactionRating: rpReturnVisits.satisfactionRating,
 				visitStatus: rpReturnVisits.visitStatus,
 				visitNote: rpReturnVisits.visitNote,
-				createdAt: rpReturnVisits.createdAt,
-				updatedAt: rpReturnVisits.updatedAt,
+				createTime: rpReturnVisits.createTime,
+				updateTime: rpReturnVisits.updateTime,
 			})
 			.from(rpReturnVisits)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -90,8 +90,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReturnVisitLi
 			id: item.id || "",
 			name: item.visitor || "",
 			status: item.visitStatus || "not_visited",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.visitNote || "",
 			workOrderNumber: item.orderId || "",
 			location: "",

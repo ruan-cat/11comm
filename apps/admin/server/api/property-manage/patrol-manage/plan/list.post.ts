@@ -20,7 +20,7 @@ const querySchema = z.object({
 	planName: z.string().optional(),
 	patrolType: z.string().optional(),
 	patrolPerson: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -53,12 +53,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPlanLis
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ptPatrolPlans.createdAt,
-			updatedAt: ptPatrolPlans.updatedAt,
+			createTime: ptPatrolPlans.createTime,
+			updateTime: ptPatrolPlans.updateTime,
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
@@ -85,8 +85,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPlanLis
 				endDate: ptPatrolPlans.endDate,
 				executionTimeSlot: ptPatrolPlans.executionTimeSlot,
 				remark: ptPatrolPlans.remark,
-				createdAt: ptPatrolPlans.createdAt,
-				updatedAt: ptPatrolPlans.updatedAt,
+				createTime: ptPatrolPlans.createTime,
+				updateTime: ptPatrolPlans.updateTime,
 			})
 			.from(ptPatrolPlans)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -108,10 +108,10 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPlanLis
 			timeRange: item.executionTimeSlot || "",
 			taskAdvanceMinutes: "30",
 			planner: "",
-			planTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			planTime: item.createTime ? formatDateTime(item.createTime) : "",
 			patrolStaff: "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

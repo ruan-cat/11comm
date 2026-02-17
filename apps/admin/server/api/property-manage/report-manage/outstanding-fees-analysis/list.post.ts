@@ -84,12 +84,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFe
 				building: rptOutstandingFees.building,
 				expenseItem: rptOutstandingFees.expenseItem,
 				remark: rptOutstandingFees.remark,
-				createdAt: rptOutstandingFees.createdAt,
-				updatedAt: rptOutstandingFees.updatedAt,
+				createTime: rptOutstandingFees.createTime,
+				updateTime: rptOutstandingFees.updateTime,
 			})
 			.from(rptOutstandingFees)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptOutstandingFees.createdAt))
+			.orderBy(desc(rptOutstandingFees.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -107,7 +107,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OutstandingFe
 			currentUncollectedAmount: "",
 			historicalUncollectedAmount: "",
 			latestReceivableMonth: item.agingBucket || "",
-			statisticsTime: formatDateTime(item.createdAt),
+			statisticsTime: formatDateTime(item.createTime),
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

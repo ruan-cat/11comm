@@ -75,12 +75,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolReportL
 				period: rptPatrolReports.period,
 				dimension: rptPatrolReports.dimension,
 				remark: rptPatrolReports.remark,
-				createdAt: rptPatrolReports.createdAt,
-				updatedAt: rptPatrolReports.updatedAt,
+				createTime: rptPatrolReports.createTime,
+				updateTime: rptPatrolReports.updateTime,
 			})
 			.from(rptPatrolReports)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptPatrolReports.createdAt))
+			.orderBy(desc(rptPatrolReports.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -93,7 +93,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolReportL
 			patrolType: item.period || "",
 			patrolLevel: item.dimension || "",
 			responsiblePerson: "",
-			patrolTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			patrolTime: item.createTime ? new Date(item.createTime).toISOString() : "",
 			status: item.completedTasks ? "已完成" : "未完成",
 			abnormalCount: item.abnormalTasks || 0,
 		}));

@@ -22,7 +22,7 @@ const querySchema = z.object({
 	status: z.string().optional(),
 	patrolMethod: z.string().optional(),
 	currentPatrolPerson: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "plannedStartTime"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "plannedStartTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -70,12 +70,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolTaskLis
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ptPatrolTasks.createdAt,
-			updatedAt: ptPatrolTasks.updatedAt,
+			createTime: ptPatrolTasks.createTime,
+			updateTime: ptPatrolTasks.updateTime,
 			plannedStartTime: ptPatrolTasks.plannedStartTime,
 		};
 
@@ -106,8 +106,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolTaskLis
 				currentPatrolPerson: ptPatrolTasks.currentPatrolPerson,
 				currentPatrolPersonId: ptPatrolTasks.currentPatrolPersonId,
 				transferDescription: ptPatrolTasks.transferDescription,
-				createdAt: ptPatrolTasks.createdAt,
-				updatedAt: ptPatrolTasks.updatedAt,
+				createTime: ptPatrolTasks.createTime,
+				updateTime: ptPatrolTasks.updateTime,
 			})
 			.from(ptPatrolTasks)
 			.leftJoin(ptPatrolPlans, eq(ptPatrolTasks.planId, ptPatrolPlans.id))
@@ -132,8 +132,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolTaskLis
 			transferDescription: item.transferDescription || "",
 			patrolMethod: item.patrolMethod || "",
 			patrolStatus: item.status || "pending",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

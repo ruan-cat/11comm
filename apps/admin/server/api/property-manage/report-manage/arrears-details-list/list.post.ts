@@ -77,12 +77,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ArrearsDetail
 				outstandingTotal: rptExpenseSummaries.outstandingTotal,
 				building: rptExpenseSummaries.building,
 				expenseItem: rptExpenseSummaries.expenseItem,
-				createdAt: rptExpenseSummaries.createdAt,
-				updatedAt: rptExpenseSummaries.updatedAt,
+				createTime: rptExpenseSummaries.createTime,
+				updateTime: rptExpenseSummaries.updateTime,
 			})
 			.from(rptExpenseSummaries)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptExpenseSummaries.createdAt))
+			.orderBy(desc(rptExpenseSummaries.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 

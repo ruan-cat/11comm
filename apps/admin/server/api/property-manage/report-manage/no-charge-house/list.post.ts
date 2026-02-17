@@ -69,12 +69,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<NoChargeHouse
 				noChargeReason: rptNoChargeHouses.noChargeReason,
 				lastChargeDate: rptNoChargeHouses.lastChargeDate,
 				remark: rptNoChargeHouses.remark,
-				createdAt: rptNoChargeHouses.createdAt,
-				updatedAt: rptNoChargeHouses.updatedAt,
+				createTime: rptNoChargeHouses.createTime,
+				updateTime: rptNoChargeHouses.updateTime,
 			})
 			.from(rptNoChargeHouses)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptNoChargeHouses.createdAt))
+			.orderBy(desc(rptNoChargeHouses.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 

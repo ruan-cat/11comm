@@ -68,12 +68,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerPaymentD
 				totalPaid: rptOwnerPaymentDetails.totalPaid,
 				totalOutstanding: rptOwnerPaymentDetails.totalOutstanding,
 				remark: rptOwnerPaymentDetails.remark,
-				createdAt: rptOwnerPaymentDetails.createdAt,
-				updatedAt: rptOwnerPaymentDetails.updatedAt,
+				createTime: rptOwnerPaymentDetails.createTime,
+				updateTime: rptOwnerPaymentDetails.updateTime,
 			})
 			.from(rptOwnerPaymentDetails)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(rptOwnerPaymentDetails.createdAt))
+			.orderBy(desc(rptOwnerPaymentDetails.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
