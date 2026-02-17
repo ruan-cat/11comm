@@ -17,8 +17,8 @@ export const baseListQueryParamsSchema = z.object({
 
 /** 通用时间戳字段 - 包含创建时间和更新时间 */
 export const timestamps = {
-	createTime: timestamp("created_at").notNull().defaultNow(),
-	updateTime: timestamp("updated_at")
+	createTime: timestamp("create_time").notNull().defaultNow(),
+	updateTime: timestamp("update_time")
 		.notNull()
 		.defaultNow()
 		.$onUpdate(() => new Date()),
