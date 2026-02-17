@@ -5,22 +5,8 @@
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1770994406832,
-			"tag": "0000_chunky_morg",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1771070131074,
-			"tag": "0001_square_lily_hollister",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1771311791392,
-			"tag": "0002_slippery_wild_child",
+			"when": 1771357814560,
+			"tag": "0000_cheerful_sersi",
 			"breakpoints": true
 		}
 	]

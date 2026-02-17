@@ -1,5 +1,5 @@
 {
-	"id": "9202215d-4485-4b4d-96e2-b84d8fd48312",
+	"id": "07986f3d-86fa-4b73-a1a5-be9c3b984552",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
@@ -3397,6 +3397,130 @@
 				},
 				"ex_expense_items_status_idx": {
 					"name": "ex_expense_items_status_idx",
+					"columns": [
+						{
+							"expression": "status",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.ex_expense_summary_tables": {
+			"name": "ex_expense_summary_tables",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"time": {
+					"name": "time",
+					"type": "varchar(20)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"expense_item_id": {
+					"name": "expense_item_id",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"expense_item_name": {
+					"name": "expense_item_name",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"receivable_amount": {
+					"name": "receivable_amount",
+					"type": "numeric(12, 2)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"actual_amount": {
+					"name": "actual_amount",
+					"type": "numeric(12, 2)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"status": {
+					"name": "status",
+					"type": "status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": false,
+					"default": "'enabled'"
+				},
+				"remark": {
+					"name": "remark",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"create_time": {
+					"name": "create_time",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"update_time": {
+					"name": "update_time",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"ex_expense_summary_tables_time_idx": {
+					"name": "ex_expense_summary_tables_time_idx",
+					"columns": [
+						{
+							"expression": "time",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"ex_expense_summary_tables_expense_item_name_idx": {
+					"name": "ex_expense_summary_tables_expense_item_name_idx",
+					"columns": [
+						{
+							"expression": "expense_item_name",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"ex_expense_summary_tables_status_idx": {
+					"name": "ex_expense_summary_tables_status_idx",
 					"columns": [
 						{
 							"expression": "status",
@@ -10474,6 +10598,257 @@
 					"onUpdate": "no action"
 				}
 			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.sm_change_password_records": {
+			"name": "sm_change_password_records",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"username": {
+					"name": "username",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"real_name": {
+					"name": "real_name",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"department": {
+					"name": "department",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"change_time": {
+					"name": "change_time",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"change_ip": {
+					"name": "change_ip",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"change_type": {
+					"name": "change_type",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"operator": {
+					"name": "operator",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"status": {
+					"name": "status",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"remark": {
+					"name": "remark",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"create_time": {
+					"name": "create_time",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"update_time": {
+					"name": "update_time",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {
+				"sm_change_password_records_username_idx": {
+					"name": "sm_change_password_records_username_idx",
+					"columns": [
+						{
+							"expression": "username",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"sm_change_password_records_change_time_idx": {
+					"name": "sm_change_password_records_change_time_idx",
+					"columns": [
+						{
+							"expression": "change_time",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.sm_community_configurations": {
+			"name": "sm_community_configurations",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"cs_id": {
+					"name": "cs_id",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"community_id": {
+					"name": "community_id",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"community_name": {
+					"name": "community_name",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"setting_name": {
+					"name": "setting_name",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"setting_value": {
+					"name": "setting_value",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"setting_type": {
+					"name": "setting_type",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"status_cd": {
+					"name": "status_cd",
+					"type": "varchar(10)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"remark": {
+					"name": "remark",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"create_time": {
+					"name": "create_time",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"update_time": {
+					"name": "update_time",
+					"type": "varchar(50)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"operator": {
+					"name": "operator",
+					"type": "varchar(100)",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"sm_community_configurations_cs_id_idx": {
+					"name": "sm_community_configurations_cs_id_idx",
+					"columns": [
+						{
+							"expression": "cs_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"sm_community_configurations_community_id_idx": {
+					"name": "sm_community_configurations_community_id_idx",
+					"columns": [
+						{
+							"expression": "community_id",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"sm_community_configurations_setting_name_idx": {
+					"name": "sm_community_configurations_setting_name_idx",
+					"columns": [
+						{
+							"expression": "setting_name",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last"
+						}
+					],
+					"isUnique": false,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {},
 			"policies": {},
