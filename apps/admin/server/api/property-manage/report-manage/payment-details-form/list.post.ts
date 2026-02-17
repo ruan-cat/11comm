@@ -12,6 +12,8 @@ import type { JsonVO, PageDTO, PaymentDetailsFormListItem, PaymentDetailsFormQue
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql } from "drizzle-orm";
 
+import { formatDateTime } from "server/utils/format-date";
+
 /** 查询参数验证 schema */
 const querySchema = z.object({
 	pageIndex: z.coerce.number().int().min(1).optional().default(DEFAULT_PAGE_INDEX),
@@ -67,8 +69,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PaymentDetail
 			id: item.id || "",
 			name: item.expenseItem || "",
 			status: item.paymentAmount ? "已支付" : "未支付",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 			remark: item.remark || "",
 		}));
 

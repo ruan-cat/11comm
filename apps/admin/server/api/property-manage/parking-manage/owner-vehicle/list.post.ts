@@ -11,6 +11,7 @@ import { pkOwnerVehicles, pkCarports, hpOwners } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { OwnerVehicleListItem, OwnerVehicleQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq, isNull } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -119,8 +120,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerVehicleL
 			parkingSpace: item.carportId ? "已绑定" : "未绑定",
 			validityPeriod: item.validityStart && item.validityEnd ? `${item.validityStart} ~ ${item.validityEnd}` : "",
 			status: "启用",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
 		}));
 
 		/** 计算总页数 */

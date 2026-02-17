@@ -11,6 +11,7 @@ import { rpPhoneRepairReports, rpRepairOrders } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PhoneReportRepairsListItem, PhoneReportRepairsQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq, isNull } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -104,12 +105,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PhoneReportRe
 			repairType: item.repairSummary || "",
 			reporter: item.receiver || "",
 			contactInfo: item.callerPhone || "",
-			appointmentTime: item.callTime ? new Date(item.callTime).toISOString() : "",
+			appointmentTime: item.callTime ? formatDateTime(item.callTime) : "",
 			overtimeTime: "",
-			submitTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+			submitTime: item.createdAt ? formatDateTime(item.createdAt) : "",
 			status: item.orderId ? "processed" : "pending",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
 			remark: item.repairSummary || "",
 		}));
 

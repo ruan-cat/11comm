@@ -11,6 +11,7 @@ import { ptPatrolTaskDetails, ptPatrolTasks, ptPatrolPoints, ptPatrolPlans, ptPa
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PatrolDetailListItem, PatrolDetailQueryParams } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -115,7 +116,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolDetailL
 			patrolPersonStartEndTime:
 				item.plannedStartTime && item.plannedEndTime ? `${item.plannedStartTime} ~ ${item.plannedEndTime}` : "",
 			patrolPointStartEndTime: "",
-			actualPatrolTime: item.actualPatrolTime ? new Date(item.actualPatrolTime).toISOString() : "",
+			actualPatrolTime: item.actualPatrolTime ? formatDateTime(item.actualPatrolTime) : "",
 			actualCheckInStatus: item.checkInStatus || "not_checked",
 			plannedPatrolPerson: item.plannedPatroller || "",
 			actualPatrolPerson: item.currentPatrolPerson || "",
@@ -126,8 +127,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolDetailL
 			patrolSituation: item.patrolSituation || "",
 			patrolPhotos: item.patrolPhotoUrl || "",
 			locationInfo: item.gpsCoordinates || "",
-			createTime: item.detailCreatedAt ? new Date(item.detailCreatedAt).toISOString() : "",
-			updateTime: item.detailUpdatedAt ? new Date(item.detailUpdatedAt).toISOString() : "",
+			createTime: item.detailCreatedAt ? formatDateTime(item.detailCreatedAt) : "",
+			updateTime: item.detailUpdatedAt ? formatDateTime(item.detailUpdatedAt) : "",
 		}));
 
 		/** 计算总页数 */
