@@ -10,6 +10,7 @@ import type { JsonVO, PageDTO, MenuGroupListItem } from "@01s-11comm/type";
 import { dtMenuGroups } from "@01s-11comm/type";
 import { db } from "server/db";
 import { and, desc, eq, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 const querySchema = z.object({
 	page: z.coerce.number().int().min(1).default(1),
@@ -83,8 +84,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuGroupList
 			icon: item.groupIcon ?? "",
 			status: "enabled",
 			description: "",
-			createTime: item.createdAt ? item.createdAt.toISOString() : "",
-			updateTime: item.updatedAt ? item.updatedAt.toISOString() : "",
+			createTime: formatDateTime(item.createdAt),
+			updateTime: formatDateTime(item.updatedAt),
 		}));
 
 		const response: JsonVO<PageDTO<MenuGroupListItem>> = {

@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { and, like, desc, eq, sql } from "drizzle-orm";
 import { opMerchants, selectOpMerchantListQuerySchema, selectOpMerchantSchema } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 商户信息列表查询参数 Schema */
 const merchantInfoQuerySchema = selectOpMerchantListQuerySchema.extend({
@@ -83,13 +84,20 @@ export default defineHandler(async (event) => {
 		const total = Number(countResult[0]?.count || 0);
 		const totalPages = Math.ceil(total / pageSize);
 
+		/** 转换数据格式以匹配前端期望 */
+		const list = data.map((item) => ({
+			...item,
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+		}));
+
 		/** [v2.0 更新] 必须使用 JsonVO<PageDTO<...>> 类型注解约束响应 */
-		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
+		const response: JsonVO<PageDTO<(typeof list)[number]>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageIndex: pageIndex,
 				pageSize,

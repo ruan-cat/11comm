@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { cmCommunities } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -126,8 +127,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			establishedTime: item.establishedTime ? new Date(item.establishedTime).toLocaleDateString("zh-CN") : "",
 			contactPhone: item.contactPhone || "",
 			status: item.status || "正常",
-			createTime: item.createTime ? new Date(item.createTime).toLocaleString("zh-CN") : "",
-			updateTime: item.updateTime ? new Date(item.updateTime).toLocaleString("zh-CN") : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			operator: item.operator || "",
 			province: item.province || "",
 			city: item.city || "",

@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { dtConfigItems, dtConfigTypes } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, asc, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -112,7 +113,11 @@ export default defineHandler(async (event) => {
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list: data.map((item) => ({
+					...item,
+					createTime: formatDateTime(item.createdAt),
+					updateTime: formatDateTime(item.updatedAt),
+				})),
 				total,
 				pageSize: query.pageSize,
 				pageIndex: query.page,

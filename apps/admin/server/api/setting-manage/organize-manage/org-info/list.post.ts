@@ -11,6 +11,7 @@ import { smOrganizations } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, OrganizationListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -70,8 +71,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			sort: item.sortOrder || 0,
 			parentId: item.parentId || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? new Date(item.createdAt).toISOString() : "",
-			updateTime: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
+			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
+			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);
