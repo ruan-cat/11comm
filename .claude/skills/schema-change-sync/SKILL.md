@@ -135,12 +135,12 @@ pnpm -F @01s-11comm/admin db:generate
 
 后端 API 的映射函数需处理以下差异：
 
-|  差异类型  | DB 字段 (Drizzle)  |  前端字段 (ListItem)   |
-| :--------: | :----------------: | :--------------------: |
-|    主键    |        `id`        | `xxxId` (如 `cacheId`) |
-|  创建时间  | `createdAt` (Date) | `createTime` (string)  |
-|  更新时间  | `updatedAt` (Date) | `updateTime` (string)  |
-| 语义重命名 | `refreshStrategy`  |    `refreshPolicy`     |
+|  差异类型  |  DB 字段 (Drizzle)  |  前端字段 (ListItem)   |
+| :--------: | :-----------------: | :--------------------: |
+|    主键    |        `id`         | `xxxId` (如 `cacheId`) |
+|  创建时间  | `createTime` (Date) | `createTime` (string)  |
+|  更新时间  | `updateTime` (Date) | `updateTime` (string)  |
+| 语义重命名 |  `refreshStrategy`  |    `refreshPolicy`     |
 
 日期格式化统一为 `YYYY-MM-DD HH:mm:ss`。
 
@@ -233,7 +233,7 @@ export type { DtCacheConfig, NewDtCacheConfig, UpdateDtCacheConfig } from "./sch
 // --- 前端层类型 ---
 
 /** 缓存配置列表数据 */
-export type DtCacheConfigListItem = Omit<DtCacheConfig, "createdAt" | "updatedAt" | "deletedAt"> & {
+export type DtCacheConfigListItem = Omit<DtCacheConfig, "createTime " | "updateTime" | "deletedAt"> & {
 	/** 创建时间 */
 	createTime: string;
 	/** 更新时间 */
@@ -279,17 +279,17 @@ export interface DtCacheConfigFormVO {
 
 ```typescript
 // 从 Select 类型推导，移除系统字段，转换时间格式
-export type DtCacheConfigListItem = Omit<DtCacheConfig, "createdAt" | "updatedAt" | "deletedAt"> & {
-	createTime: string; // 从 createdAt 转换
-	updateTime: string; // 从 updatedAt 转换
+export type DtCacheConfigListItem = Omit<DtCacheConfig, "createTime " | "updateTime" | "deletedAt"> & {
+	createTime: string; // 从 createTime  转换
+	updateTime: string; // 从 updateTime 转换
 };
 ```
 
 **推导规则**：
 
 - 移除 `deletedAt`（软删除字段不展示）
-- 将 `createdAt: Date` 转换为 `createTime: string`
-- 将 `updatedAt: Date` 转换为 `updateTime: string`
+- 将 `createTime : Date` 转换为 `createTime: string`
+- 将 `updateTime: Date` 转换为 `updateTime: string`
 - 主键 `id` 保留（无需转换为 `xxxId`，除非业务需要）
 
 #### 6.3.2. QueryParams 类型推导
@@ -343,19 +343,19 @@ export interface DtCacheConfigFormVO {
 - 基于 `NewXxx` 类型
 - 必填字段保留原类型
 - 可选字段使用 `?`
-- 不包含 `id`, `createdAt`, `updatedAt`
+- 不包含 `id`, `createTime`, `updateTime`
 
 ### 6.4. 字段映射规范
 
 #### 6.4.1. 系统字段映射表
 
-| DB 字段     | 前端字段     | 转换规则                                        |
-| :---------- | :----------- | :---------------------------------------------- |
-| `id`        | `id`         | 保持不变                                        |
-| `createdAt` | `createTime` | `Date` → `string` (格式: `YYYY-MM-DD HH:mm:ss`) |
-| `updatedAt` | `updateTime` | `Date` → `string` (格式: `YYYY-MM-DD HH:mm:ss`) |
-| `deletedAt` | -            | **移除**（不展示）                              |
-| `remark`    | `remark`     | 保持不变                                        |
+| DB 字段      | 前端字段     | 转换规则                                        |
+| :----------- | :----------- | :---------------------------------------------- |
+| `id`         | `id`         | 保持不变                                        |
+| `createTime` | `createTime` | `Date` → `string` (格式: `YYYY-MM-DD HH:mm:ss`) |
+| `updateTime` | `updateTime` | `Date` → `string` (格式: `YYYY-MM-DD HH:mm:ss`) |
+| `deletedAt`  | -            | **移除**（不展示）                              |
+| `remark`     | `remark`     | 保持不变                                        |
 
 #### 6.4.2. 自定义字段映射
 
@@ -424,7 +424,7 @@ export type UpdateDtCacheConfig = z.infer<typeof updateDtCacheConfigSchema>;
 // index.ts - 前端层类型
 
 // ListItem: 移除系统字段，转换时间格式
-export type DtCacheConfigListItem = Omit<DtCacheConfig, "createdAt" | "updatedAt" | "deletedAt"> & {
+export type DtCacheConfigListItem = Omit<DtCacheConfig, "createTime " | "updateTime" | "deletedAt"> & {
 	createTime: string;
 	updateTime: string;
 };
@@ -639,8 +639,8 @@ export function noticeListDataToFormData(listData: CmNoticeListItem): CmNoticeFo
 function mapToListItem(row: CmNotice): CmNoticeListItem {
 	return {
 		...row,
-		createTime: row.createdAt ? format(row.createdAt, "yyyy-MM-dd HH:mm:ss") : "",
-		updateTime: row.updatedAt ? format(row.updatedAt, "yyyy-MM-dd HH:mm:ss") : "",
+		createTime: row.createTime ? format(row.createTime, "yyyy-MM-dd HH:mm:ss") : "",
+		updateTime: row.updateTime ? format(row.updateTime, "yyyy-MM-dd HH:mm:ss") : "",
 	};
 }
 ```
@@ -698,8 +698,8 @@ export interface CmNoticeFormVO extends Omit<NewCmNotice, "communityId"> {
 function mapToListItem(row: CmNotice): CmNoticeListItem {
 	return {
 		...row,
-		createTime: row.createdAt ? format(row.createdAt, "yyyy-MM-dd HH:mm:ss") : "",
-		updateTime: row.updatedAt ? format(row.updatedAt, "yyyy-MM-dd HH:mm:ss") : "",
+		createTime: row.createTime ? format(row.createTime, "yyyy-MM-dd HH:mm:ss") : "",
+		updateTime: row.updateTime ? format(row.updateTime, "yyyy-MM-dd HH:mm:ss") : "",
 	};
 }
 ```
@@ -739,7 +739,7 @@ export type { DtCacheConfig, NewDtCacheConfig, UpdateDtCacheConfig } from "./sch
 // --- 前端层类型 ---
 
 /** 缓存配置列表数据 */
-export type DtCacheConfigListItem = Omit<DtCacheConfig, "createdAt" | "updatedAt" | "deletedAt"> & {
+export type DtCacheConfigListItem = Omit<DtCacheConfig, "createTime " | "updateTime" | "deletedAt"> & {
 	createTime: string;
 	updateTime: string;
 };

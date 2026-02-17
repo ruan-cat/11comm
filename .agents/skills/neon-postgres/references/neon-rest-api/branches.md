@@ -70,8 +70,8 @@ Example response
 		"active_time_seconds": 0,
 		"written_data_bytes": 0,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T16:45:52Z",
-		"updated_at": "2025-09-10T16:45:52Z",
+		"create_time": "2025-09-10T16:45:52Z",
+		"update_time": "2025-09-10T16:45:52Z",
 		"created_by": {
 			"name": "<USER_NAME>",
 			"image": "<USER_IMAGE_URL>"
@@ -96,8 +96,8 @@ Example response
 			"disabled": false,
 			"passwordless_access": true,
 			"creation_source": "console",
-			"created_at": "2025-09-10T16:45:52Z",
-			"updated_at": "2025-09-10T16:45:52Z",
+			"create_time": "2025-09-10T16:45:52Z",
+			"update_time": "2025-09-10T16:45:52Z",
 			"proxy_host": "c-2.us-east-1.aws.neon.tech",
 			"suspend_timeout_seconds": 0,
 			"provisioner": "k8s-neonvm"
@@ -111,8 +111,8 @@ Example response
 			"action": "create_branch",
 			"status": "running",
 			"failures_count": 0,
-			"created_at": "2025-09-10T16:45:52Z",
-			"updated_at": "2025-09-10T16:45:52Z",
+			"create_time": "2025-09-10T16:45:52Z",
+			"update_time": "2025-09-10T16:45:52Z",
 			"total_duration_ms": 0
 		},
 		{
@@ -123,8 +123,8 @@ Example response
 			"action": "start_compute",
 			"status": "scheduling",
 			"failures_count": 0,
-			"created_at": "2025-09-10T16:45:52Z",
-			"updated_at": "2025-09-10T16:45:52Z",
+			"create_time": "2025-09-10T16:45:52Z",
+			"update_time": "2025-09-10T16:45:52Z",
 			"total_duration_ms": 0
 		}
 	],
@@ -133,8 +133,8 @@ Example response
 			"branch_id": "br-damp-glitter-adqd4hk5",
 			"name": "neondb_owner",
 			"protected": false,
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:14:58Z"
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:14:58Z"
 		}
 	],
 	"databases": [
@@ -143,8 +143,8 @@ Example response
 			"branch_id": "br-damp-glitter-adqd4hk5",
 			"name": "neondb",
 			"owner_name": "neondb_owner",
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:14:58Z"
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:14:58Z"
 		}
 	],
 	"connection_uris": [
@@ -170,7 +170,7 @@ Example response
     - `project_id` (string, required): The unique identifier of the project.
 4.  Query Parameters:
     - `search` (string, optional): Filters branches by a partial match on name or ID.
-    - `sort_by` (string, optional): The field to sort by. Allowed values: `name`, `created_at`, `updated_at`. Defaults to `updated_at`.
+    - `sort_by` (string, optional): The field to sort by. Allowed values: `name`, `create_time`, `update_time`. Defaults to `update_time`.
     - `sort_order` (string, optional): The sort order. Allowed values: `asc`, `desc`. Defaults to `desc`.
     - `limit` (integer, optional): The number of branches to return (1 to 10000).
     - `cursor` (string, optional): The cursor from a previous response for pagination.
@@ -178,7 +178,7 @@ Example response
 Example: List all branches sorted by creation date
 
 ```bash
-curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?sort_by=created_at&sort_order=asc' \
+curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?sort_by=create_time&sort_order=asc' \
   -H 'accept: application/json' \
   -H "Authorization: Bearer $NEON_API_KEY"
 ```
@@ -204,8 +204,8 @@ Example response
 			"active_time_seconds": 316,
 			"written_data_bytes": 29060360,
 			"data_transfer_bytes": 0,
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:35:33Z",
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:35:33Z",
 			"created_by": {
 				"name": "<USER_NAME>",
 				"image": "<USER_IMAGE_URL>"
@@ -231,8 +231,8 @@ Example response
 			"active_time_seconds": 312,
 			"written_data_bytes": 310120,
 			"data_transfer_bytes": 0,
-			"created_at": "2025-09-10T12:15:04Z",
-			"updated_at": "2025-09-10T12:35:33Z",
+			"create_time": "2025-09-10T12:15:04Z",
+			"update_time": "2025-09-10T12:35:33Z",
 			"created_by": {
 				"name": "<USER_NAME>",
 				"image": "<USER_IMAGE_URL>"
@@ -249,12 +249,12 @@ Example response
 			"value": {
 				"environment": "production"
 			},
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:14:58Z"
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:14:58Z"
 		}
 	},
 	"pagination": {
-		"sort_by": "created_at",
+		"sort_by": "create_time",
 		"sort_order": "ASC"
 	}
 }
@@ -299,8 +299,8 @@ Example Response:
 		"active_time_seconds": 312,
 		"written_data_bytes": 310120,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T12:15:04Z",
-		"updated_at": "2025-09-10T12:35:33Z",
+		"create_time": "2025-09-10T12:15:04Z",
+		"update_time": "2025-09-10T12:35:33Z",
 		"created_by": {
 			"name": "<USER_NAME>",
 			"image": "<USER_IMAGE_URL>"
@@ -315,8 +315,8 @@ Example Response:
 		"value": {
 			"environment": "development"
 		},
-		"created_at": "2025-09-10T12:15:04Z",
-		"updated_at": "2025-09-10T12:15:04Z"
+		"create_time": "2025-09-10T12:15:04Z",
+		"update_time": "2025-09-10T12:15:04Z"
 	}
 }
 ```
@@ -372,8 +372,8 @@ Example response:
 		"active_time_seconds": 268,
 		"written_data_bytes": 0,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T16:45:52Z",
-		"updated_at": "2025-09-10T16:55:30Z",
+		"create_time": "2025-09-10T16:45:52Z",
+		"update_time": "2025-09-10T16:55:30Z",
 		"created_by": {
 			"name": "<USER_NAME>",
 			"image": "<USER_IMAGE_URL>"

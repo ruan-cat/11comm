@@ -31,7 +31,7 @@ description: 项目数据库schema架构综合指南，包含架构原则、编�
 
 - 使用 `pgTable` 定义表。
 - 使用 `primaryId()` 定义 UUID 主键。
-- 使用 `...timestamps` 添加标准的 `created_at` / `updated_at` 字段。
+- 使用 `...timestamps` 添加标准的 `create_time` / `update_time` 字段。
 - 使用 `.references(() => otherTable.id)` 定义外键。
 - **命名规范**: 变量名必须是复数形式（例如 `opMerchants`）。
 
@@ -39,7 +39,7 @@ description: 项目数据库schema架构综合指南，包含架构原则、编�
 
 - **Insert Schema**: 使用 `createInsertSchema(table)`。
   - 使用回调细化字段：`(schema) => schema.min(1)`。
-  - 省略自动管理的字段：`.omit({ id: true, createdAt: true, updatedAt: true })`。
+  - 省略自动管理的字段：`.omit({ id: true, createTime : true, updateTime: true })`。
   - **命名规范**: `insert<Entity>Schema`（例如 `insertOpMerchantSchema`）。
 - **Select Schema**: 使用 `createSelectSchema(table)`。
   - **不要**使用 `.extend()` 覆盖字段（避免类型不兼容）。

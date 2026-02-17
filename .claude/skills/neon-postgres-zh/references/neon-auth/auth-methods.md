@@ -57,15 +57,15 @@ interface Session {
 		email: string;
 		image: string | null;
 		emailVerified: boolean;
-		createdAt: Date;
-		updatedAt: Date;
+		createTime: Date;
+		updateTime: Date;
 	};
 	session: {
 		id: string;
 		expiresAt: Date;
 		token: string;
-		createdAt: Date;
-		updatedAt: Date;
+		createTime: Date;
+		updateTime: Date;
 		userId: string;
 	};
 }

@@ -131,7 +131,7 @@ interface PageDTO<T> {
 	"success": true,
 	"code": 200,
 	"message": "查询成功",
-	"data": { "id": "uuid-1", "name": "Admin", "createdAt": "2025-01-01T00:00:00Z" }
+	"data": { "id": "uuid-1", "name": "Admin", "createTime ": "2025-01-01T00:00:00Z" }
 }
 ```
 
@@ -201,7 +201,7 @@ export default defineHandler(async (event) => {
 			.select()
 			.from(dtConfigs)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(dtConfigs.createdAt))
+			.orderBy(desc(dtConfigs.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 

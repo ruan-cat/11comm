@@ -41,8 +41,8 @@ Example response
 			"action": "apply_config",
 			"status": "finished",
 			"failures_count": 0,
-			"created_at": "2025-09-10T12:15:23Z",
-			"updated_at": "2025-09-10T12:15:23Z",
+			"create_time": "2025-09-10T12:15:23Z",
+			"update_time": "2025-09-10T12:15:23Z",
 			"total_duration_ms": 87
 		},
 		{
@@ -53,8 +53,8 @@ Example response
 			"action": "apply_config",
 			"status": "finished",
 			"failures_count": 0,
-			"created_at": "2025-09-10T12:15:23Z",
-			"updated_at": "2025-09-10T12:15:23Z",
+			"create_time": "2025-09-10T12:15:23Z",
+			"update_time": "2025-09-10T12:15:23Z",
 			"total_duration_ms": 49
 		},
 		{
@@ -65,8 +65,8 @@ Example response
 			"action": "start_compute",
 			"status": "finished",
 			"failures_count": 0,
-			"created_at": "2025-09-10T12:15:04Z",
-			"updated_at": "2025-09-10T12:15:05Z",
+			"create_time": "2025-09-10T12:15:04Z",
+			"update_time": "2025-09-10T12:15:05Z",
 			"total_duration_ms": 913
 		},
 		{
@@ -76,8 +76,8 @@ Example response
 			"action": "create_branch",
 			"status": "finished",
 			"failures_count": 0,
-			"created_at": "2025-09-10T12:15:04Z",
-			"updated_at": "2025-09-10T12:15:04Z",
+			"create_time": "2025-09-10T12:15:04Z",
+			"update_time": "2025-09-10T12:15:04Z",
 			"total_duration_ms": 136
 		},
 		{
@@ -88,8 +88,8 @@ Example response
 			"action": "start_compute",
 			"status": "finished",
 			"failures_count": 0,
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:15:03Z",
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:15:03Z",
 			"total_duration_ms": 4843
 		},
 		{
@@ -99,8 +99,8 @@ Example response
 			"action": "create_timeline",
 			"status": "finished",
 			"failures_count": 0,
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:15:01Z",
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:15:01Z",
 			"total_duration_ms": 3096
 		}
 	],
@@ -138,8 +138,8 @@ Example response:
 		"action": "start_compute",
 		"status": "finished",
 		"failures_count": 0,
-		"created_at": "2025-09-10T12:14:58Z",
-		"updated_at": "2025-09-10T12:15:03Z",
+		"create_time": "2025-09-10T12:14:58Z",
+		"update_time": "2025-09-10T12:15:03Z",
 		"total_duration_ms": 4843
 	}
 }

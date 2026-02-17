@@ -112,8 +112,8 @@ return errorResponse;
 
 | DB 字段 (Drizzle) | 前端字段 (ListItem) | 转换规则                                |
 | :---------------- | :------------------ | :-------------------------------------- |
-| `createdAt`       | `createTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
-| `updatedAt`       | `updateTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
+| `createTime`      | `createTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
+| `updateTime`      | `updateTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
 | `deletedAt`       | -                   | **移除**（不展示）                      |
 
 ### 5.3 使用 formatDateTime 工具函数
@@ -141,8 +141,8 @@ const data = await db
 	.select({
 		id: table.id,
 		name: table.name,
-		createdAt: table.createdAt,
-		updatedAt: table.updatedAt,
+		createTime: table.createTime,
+		updateTime: table.updateTime,
 	})
 	.from(table);
 
@@ -150,8 +150,8 @@ const data = await db
 const list: XxxListItem[] = data.map((item) => ({
 	id: item.id,
 	name: item.name,
-	createTime: formatDateTime(item.createdAt),
-	updateTime: formatDateTime(item.updatedAt),
+	createTime: formatDateTime(item.createTime),
+	updateTime: formatDateTime(item.updateTime),
 }));
 ```
 

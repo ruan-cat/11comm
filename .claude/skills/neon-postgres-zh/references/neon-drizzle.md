@@ -138,7 +138,7 @@ export const usersTable = pgTable("users", {
 	name: text("name").notNull(),
 	email: text("email").notNull().unique(),
 	role: text("role").default("user").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
+	createTime: timestamp("create_time").defaultNow().notNull(),
 });
 
 export type User = typeof usersTable.$inferSelect;
@@ -151,7 +151,7 @@ export const postsTable = pgTable("posts", {
 	userId: integer("user_id")
 		.notNull()
 		.references(() => usersTable.id, { onDelete: "cascade" }),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
+	createTime: timestamp("create_time").defaultNow().notNull(),
 });
 
 export type Post = typeof postsTable.$inferSelect;

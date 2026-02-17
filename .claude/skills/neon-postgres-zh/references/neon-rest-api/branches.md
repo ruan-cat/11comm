@@ -70,8 +70,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 		"active_time_seconds": 0,
 		"written_data_bytes": 0,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T16:45:52Z",
-		"updated_at": "2025-09-10T16:45:52Z",
+		"create_time": "2025-09-10T16:45:52Z",
+		"update_time": "2025-09-10T16:45:52Z",
 		"created_by": {
 			"name": "<USER_NAME>",
 			"image": "<USER_IMAGE_URL>"
@@ -96,8 +96,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 			"disabled": false,
 			"passwordless_access": true,
 			"creation_source": "console",
-			"created_at": "2025-09-10T16:45:52Z",
-			"updated_at": "2025-09-10T16:45:52Z",
+			"create_time": "2025-09-10T16:45:52Z",
+			"update_time": "2025-09-10T16:45:52Z",
 			"proxy_host": "c-2.us-east-1.aws.neon.tech",
 			"suspend_timeout_seconds": 0,
 			"provisioner": "k8s-neonvm"
@@ -111,8 +111,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 			"action": "create_branch",
 			"status": "running",
 			"failures_count": 0,
-			"created_at": "2025-09-10T16:45:52Z",
-			"updated_at": "2025-09-10T16:45:52Z",
+			"create_time": "2025-09-10T16:45:52Z",
+			"update_time": "2025-09-10T16:45:52Z",
 			"total_duration_ms": 0
 		},
 		{
@@ -123,8 +123,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 			"action": "start_compute",
 			"status": "scheduling",
 			"failures_count": 0,
-			"created_at": "2025-09-10T16:45:52Z",
-			"updated_at": "2025-09-10T16:45:52Z",
+			"create_time": "2025-09-10T16:45:52Z",
+			"update_time": "2025-09-10T16:45:52Z",
 			"total_duration_ms": 0
 		}
 	],
@@ -133,8 +133,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 			"branch_id": "br-damp-glitter-adqd4hk5",
 			"name": "neondb_owner",
 			"protected": false,
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:14:58Z"
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:14:58Z"
 		}
 	],
 	"databases": [
@@ -143,8 +143,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 			"branch_id": "br-damp-glitter-adqd4hk5",
 			"name": "neondb",
 			"owner_name": "neondb_owner",
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:14:58Z"
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:14:58Z"
 		}
 	],
 	"connection_uris": [
@@ -170,7 +170,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
     - `project_id` (string, required): 项目的唯一标识符。
 4.  查询参数：
     - `search` (string, optional): 按名称或 ID 的部分匹配过滤分支。
-    - `sort_by` (string, optional): 排序字段。允许值：`name`, `created_at`, `updated_at`。默认为 `updated_at`。
+    - `sort_by` (string, optional): 排序字段。允许值：`name`, `create_time`, `update_time`。默认为 `update_time`。
     - `sort_order` (string, optional): 排序顺序。允许值：`asc`, `desc`。默认为 `desc`。
     - `limit` (integer, optional): 返回的分支数量（1 到 10000）。
     - `cursor` (string, optional): 用于分页的上一个响应的游标。
@@ -178,7 +178,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches' 
 示例：列出所有按创建日期排序的分支
 
 ```bash
-curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?sort_by=created_at&sort_order=asc' \
+curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?sort_by=create_time&sort_order=asc' \
   -H 'accept: application/json' \
   -H "Authorization: Bearer $NEON_API_KEY"
 ```
@@ -204,8 +204,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?s
 			"active_time_seconds": 316,
 			"written_data_bytes": 29060360,
 			"data_transfer_bytes": 0,
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:35:33Z",
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:35:33Z",
 			"created_by": {
 				"name": "<USER_NAME>",
 				"image": "<USER_IMAGE_URL>"
@@ -231,8 +231,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?s
 			"active_time_seconds": 312,
 			"written_data_bytes": 310120,
 			"data_transfer_bytes": 0,
-			"created_at": "2025-09-10T12:15:04Z",
-			"updated_at": "2025-09-10T12:35:33Z",
+			"create_time": "2025-09-10T12:15:04Z",
+			"update_time": "2025-09-10T12:35:33Z",
 			"created_by": {
 				"name": "<USER_NAME>",
 				"image": "<USER_IMAGE_URL>"
@@ -249,12 +249,12 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches?s
 			"value": {
 				"environment": "production"
 			},
-			"created_at": "2025-09-10T12:14:58Z",
-			"updated_at": "2025-09-10T12:14:58Z"
+			"create_time": "2025-09-10T12:14:58Z",
+			"update_time": "2025-09-10T12:14:58Z"
 		}
 	},
 	"pagination": {
-		"sort_by": "created_at",
+		"sort_by": "create_time",
 		"sort_order": "ASC"
 	}
 }
@@ -299,8 +299,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches/b
 		"active_time_seconds": 312,
 		"written_data_bytes": 310120,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T12:15:04Z",
-		"updated_at": "2025-09-10T12:35:33Z",
+		"create_time": "2025-09-10T12:15:04Z",
+		"update_time": "2025-09-10T12:35:33Z",
 		"created_by": {
 			"name": "<USER_NAME>",
 			"image": "<USER_IMAGE_URL>"
@@ -315,8 +315,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/branches/b
 		"value": {
 			"environment": "development"
 		},
-		"created_at": "2025-09-10T12:15:04Z",
-		"updated_at": "2025-09-10T12:15:04Z"
+		"create_time": "2025-09-10T12:15:04Z",
+		"update_time": "2025-09-10T12:15:04Z"
 	}
 }
 ```
@@ -372,8 +372,8 @@ curl -X 'PATCH' \
 		"active_time_seconds": 268,
 		"written_data_bytes": 0,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T16:45:52Z",
-		"updated_at": "2025-09-10T16:55:30Z",
+		"create_time": "2025-09-10T16:45:52Z",
+		"update_time": "2025-09-10T16:55:30Z",
 		"created_by": {
 			"name": "<USER_NAME>",
 			"image": "<USER_IMAGE_URL>"

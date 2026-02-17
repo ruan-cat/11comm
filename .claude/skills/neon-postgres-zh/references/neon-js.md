@@ -106,7 +106,7 @@ const { data } = await client
 	.from("items")
 	.select("id, name, status")
 	.eq("status", "active")
-	.order("created_at", { ascending: false })
+	.order("create_time", { ascending: false })
 	.limit(10);
 
 // 插入

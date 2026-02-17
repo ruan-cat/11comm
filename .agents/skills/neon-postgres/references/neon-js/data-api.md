@@ -70,7 +70,7 @@ const { data } = await client
 	.from("items")
 	.select("id, name, status")
 	.eq("status", "active")
-	.order("created_at", { ascending: false })
+	.order("create_time", { ascending: false })
 	.limit(10);
 ```
 
@@ -196,14 +196,14 @@ await client.from("items").upsert({ id: 1, name: "Updated Item", status: "active
 
 ```typescript
 // Ascending
-.order("created_at", { ascending: true })
+.order("create_time", { ascending: true })
 
 // Descending
-.order("created_at", { ascending: false })
+.order("create_time", { ascending: false })
 
 // Multiple columns
 .order("status", { ascending: true })
-.order("created_at", { ascending: false })
+.order("create_time", { ascending: false })
 ```
 
 ### Pagination
@@ -327,8 +327,8 @@ import { dbClient } from "@/lib/db/client";
 export default async function PostsPage() {
   const { data: posts, error } = await dbClient
     .from("posts")
-    .select("id, title, created_at, author:users(name)")
-    .order("created_at", { ascending: false })
+    .select("id, title, create_time, author:users(name)")
+    .order("create_time", { ascending: false })
     .limit(10);
 
   if (error) return <div>Error loading posts</div>;

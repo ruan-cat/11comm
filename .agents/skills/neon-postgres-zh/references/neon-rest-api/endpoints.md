@@ -57,8 +57,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/endpoints'
 		"disabled": false,
 		"passwordless_access": true,
 		"creation_source": "console",
-		"created_at": "2025-09-11T06:25:12Z",
-		"updated_at": "2025-09-11T06:25:12Z",
+		"create_time": "2025-09-11T06:25:12Z",
+		"update_time": "2025-09-11T06:25:12Z",
 		"proxy_host": "c-2.us-east-1.aws.neon.tech",
 		"suspend_timeout_seconds": 0,
 		"provisioner": "k8s-neonvm"
@@ -72,8 +72,8 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-river-50598307/endpoints'
 			"action": "start_compute",
 			"status": "running",
 			"failures_count": 0,
-			"created_at": "2025-09-11T06:25:12Z",
-			"updated_at": "2025-09-11T06:25:12Z",
+			"create_time": "2025-09-11T06:25:12Z",
+			"update_time": "2025-09-11T06:25:12Z",
 			"total_duration_ms": 0
 		}
 	]

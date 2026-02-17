@@ -63,8 +63,8 @@ Example response:
 			"active_time": 0,
 			"cpu_used_sec": 0,
 			"creation_source": "console",
-			"created_at": "2025-09-10T06:58:33Z",
-			"updated_at": "2025-09-10T06:58:39Z",
+			"create_time": "2025-09-10T06:58:33Z",
+			"update_time": "2025-09-10T06:58:39Z",
 			"synthetic_storage_size": 0,
 			"quota_reset_at": "2025-10-01T00:00:00Z",
 			"owner_id": "org-royal-sun-91776391",
@@ -177,8 +177,8 @@ Example response
 		"store_passwords": true,
 		"creation_source": "console",
 		"history_retention_seconds": 86400,
-		"created_at": "2025-09-10T07:58:16Z",
-		"updated_at": "2025-09-10T07:58:16Z",
+		"create_time": "2025-09-10T07:58:16Z",
+		"update_time": "2025-09-10T07:58:16Z",
 		"consumption_period_start": "0001-01-01T00:00:00Z",
 		"consumption_period_end": "0001-01-01T00:00:00Z",
 		"owner_id": "org-royal-sun-91776391",
@@ -202,8 +202,8 @@ Example response
 			"name": "neondb_owner",
 			"password": "npg_N67FDMtGvJke",
 			"protected": false,
-			"created_at": "2025-09-10T07:58:16Z",
-			"updated_at": "2025-09-10T07:58:16Z"
+			"create_time": "2025-09-10T07:58:16Z",
+			"update_time": "2025-09-10T07:58:16Z"
 		}
 	],
 	"databases": [
@@ -212,8 +212,8 @@ Example response
 			"branch_id": "br-green-mode-afe3fl9y",
 			"name": "neondb",
 			"owner_name": "neondb_owner",
-			"created_at": "2025-09-10T07:58:16Z",
-			"updated_at": "2025-09-10T07:58:16Z"
+			"create_time": "2025-09-10T07:58:16Z",
+			"update_time": "2025-09-10T07:58:16Z"
 		}
 	],
 	"operations": [
@@ -224,8 +224,8 @@ Example response
 			"action": "create_timeline",
 			"status": "running",
 			"failures_count": 0,
-			"created_at": "2025-09-10T07:58:16Z",
-			"updated_at": "2025-09-10T07:58:16Z",
+			"create_time": "2025-09-10T07:58:16Z",
+			"update_time": "2025-09-10T07:58:16Z",
 			"total_duration_ms": 0
 		},
 		{
@@ -236,8 +236,8 @@ Example response
 			"action": "start_compute",
 			"status": "scheduling",
 			"failures_count": 0,
-			"created_at": "2025-09-10T07:58:16Z",
-			"updated_at": "2025-09-10T07:58:16Z",
+			"create_time": "2025-09-10T07:58:16Z",
+			"update_time": "2025-09-10T07:58:16Z",
 			"total_duration_ms": 0
 		}
 	],
@@ -257,8 +257,8 @@ Example response
 		"active_time_seconds": 0,
 		"written_data_bytes": 0,
 		"data_transfer_bytes": 0,
-		"created_at": "2025-09-10T07:58:16Z",
-		"updated_at": "2025-09-10T07:58:16Z",
+		"create_time": "2025-09-10T07:58:16Z",
+		"update_time": "2025-09-10T07:58:16Z",
 		"init_source": "parent-data"
 	},
 	"endpoints": [
@@ -279,8 +279,8 @@ Example response
 			"disabled": false,
 			"passwordless_access": true,
 			"creation_source": "console",
-			"created_at": "2025-09-10T07:58:16Z",
-			"updated_at": "2025-09-10T07:58:16Z",
+			"create_time": "2025-09-10T07:58:16Z",
+			"update_time": "2025-09-10T07:58:16Z",
 			"proxy_host": "c-2.us-west-2.aws.neon.tech",
 			"suspend_timeout_seconds": 0,
 			"provisioner": "k8s-neonvm"
@@ -348,8 +348,8 @@ Example response
 		"store_passwords": true,
 		"creation_source": "console",
 		"history_retention_seconds": 86400,
-		"created_at": "2025-09-10T07:58:16Z",
-		"updated_at": "2025-09-10T07:58:25Z",
+		"create_time": "2025-09-10T07:58:16Z",
+		"update_time": "2025-09-10T07:58:25Z",
 		"synthetic_storage_size": 0,
 		"consumption_period_start": "2025-09-10T06:58:15Z",
 		"consumption_period_end": "2025-10-01T00:00:00Z",
@@ -461,8 +461,8 @@ Example response
 		"store_passwords": true,
 		"creation_source": "console",
 		"history_retention_seconds": 86400,
-		"created_at": "2025-09-10T07:58:16Z",
-		"updated_at": "2025-09-10T08:08:23Z",
+		"create_time": "2025-09-10T07:58:16Z",
+		"update_time": "2025-09-10T08:08:23Z",
 		"synthetic_storage_size": 0,
 		"consumption_period_start": "0001-01-01T00:00:00Z",
 		"consumption_period_end": "0001-01-01T00:00:00Z",
@@ -534,8 +534,8 @@ Example response:
 		"store_passwords": true,
 		"creation_source": "console",
 		"history_retention_seconds": 86400,
-		"created_at": "2025-09-10T07:58:16Z",
-		"updated_at": "2025-09-10T08:08:23Z",
+		"create_time": "2025-09-10T07:58:16Z",
+		"update_time": "2025-09-10T08:08:23Z",
 		"synthetic_storage_size": 0,
 		"consumption_period_start": "0001-01-01T00:00:00Z",
 		"consumption_period_end": "0001-01-01T00:00:00Z",

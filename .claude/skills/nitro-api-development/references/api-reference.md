@@ -151,7 +151,7 @@ export default defineHandler(async (event) => {
 		const data = await db
 			.select()
 			.from(dtConfigs)
-			.orderBy(desc(dtConfigs.createdAt))
+			.orderBy(desc(dtConfigs.createTime))
 			.limit(body.pageSize || 10)
 			.offset(((body.page || 1) - 1) * (body.pageSize || 10));
 
