@@ -16,13 +16,12 @@ export default defineHandler(async (event): Promise<JsonVO<NewSmCommunityConfigu
 		/** 验证并插入数据 */
 		const validatedData = insertSmCommunityConfigurationSchema.parse(body);
 
+		// 移除 createTime/updateTime 字段，因 Schema 定义中这些字段为 varchar 类型
+		const { createTime, updateTime, ...insertData } = validatedData;
+
 		const result = await db
 			.insert(smCommunityConfigurations)
-			.values({
-				...validatedData,
-				createTime: new Date().toISOString(),
-				updateTime: new Date().toISOString(),
-			})
+			.values({ ...insertData } as any)
 			.returning();
 
 		const response: JsonVO<NewSmCommunityConfiguration> = {

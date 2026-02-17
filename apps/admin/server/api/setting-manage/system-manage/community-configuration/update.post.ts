@@ -16,15 +16,12 @@ export default defineHandler(async (event): Promise<JsonVO<SmCommunityConfigurat
 
 		/** 验证数据 */
 		const validatedData = updateSmCommunityConfigurationSchema.parse(body);
-		const { id, ...updateData } = validatedData;
+		const { id, updateTime, ...updateData } = validatedData;
 
 		/** 更新数据 */
 		const result = await db
 			.update(smCommunityConfigurations)
-			.set({
-				...updateData,
-				updateTime: new Date().toISOString(),
-			})
+			.set(updateData)
 			.where(eq(smCommunityConfigurations.id, id))
 			.returning();
 
