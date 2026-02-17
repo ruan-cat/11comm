@@ -87,7 +87,7 @@ export const community = pgTable("community", {
 	name: text("name").notNull(),
 	address: text("address"),
 	// 必须确保字段定义尽可能精确，例如 text 对应 string
-	createdAt: timestamp("created_at").defaultNow(),
+	createTime: timestamp("create_time").defaultNow(),
 });
 
 // ==========================================
@@ -101,8 +101,8 @@ export const insertCommunitySchema = createInsertSchema(community, {
 	// 可以在这里覆盖自动生成的规则
 }).omit({
 	id: true,
-	createdAt: true,
-}); // 插入时通常不需要 id 和 createdAt
+	createTime: true,
+}); // 插入时通常不需要 id 和 createTime
 
 // B2. 查询/更新时的校验 (API -> Client)
 export const selectCommunitySchema = createSelectSchema(community);

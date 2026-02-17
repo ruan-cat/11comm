@@ -12,7 +12,7 @@
 #### Scenario: Export timestamp fields
 
 - **WHEN** 开发者需要为表添加时间戳字段
-- **THEN** 系统提供 `timestamps` 对象包含 `createdAt` 和 `updatedAt` 字段定义
+- **THEN** 系统提供 `timestamps` 对象包含 `createTime` 和 `updateTime` 字段定义
 
 #### Scenario: Export soft delete field
 
@@ -92,12 +92,12 @@
 #### Scenario: Created at field
 
 - **WHEN** 新建任何数据库表
-- **THEN** 表包含 `created_at` 字段，类型为 timestamp，默认值为当前时间，不可为空
+- **THEN** 表包含 `create_time` 字段，类型为 timestamp，默认值为当前时间，不可为空
 
 #### Scenario: Updated at field
 
 - **WHEN** 新建任何数据库表
-- **THEN** 表包含 `updated_at` 字段，类型为 timestamp，默认值为当前时间，更新时自动刷新
+- **THEN** 表包含 `update_time` 字段，类型为 timestamp，默认值为当前时间，更新时自动刷新
 
 ### Requirement: Naming Convention Compliance
 

@@ -9,7 +9,7 @@
   - **目标文件**: `apps/admin/server/db/schemas/common.ts`
   - **任务详情**:
     - 实现 `primaryId` (UUID 主键)
-    - 实现 `timestamps` (createdAt, updatedAt)
+    - 实现 `timestamps` (createTime , updateTime)
     - 实现 `softDelete` (deletedAt)
     - 实现 `remarkField` (备注字段)
     - 定义通用枚举: `statusEnum` (enabled/disabled), `genderEnum`, `auditStatusEnum` 等

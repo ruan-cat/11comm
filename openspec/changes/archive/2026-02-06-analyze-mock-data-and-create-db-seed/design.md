@@ -430,8 +430,8 @@ COMMIT;
 | :-----------: | :-----------: | :--------------: |
 |   `address`   | `homeAddress` | 员工表字段名不同 |
 |   `orgName`   |     (无)      | 冗余字段，不入库 |
-| `createTime`  | `created_at`  | 时间戳字段名不同 |
-| `updateTime`  | `updated_at`  | 时间戳字段名不同 |
+| `createTime`  | `create_time` | 时间戳字段名不同 |
+| `updateTime`  | `update_time` | 时间戳字段名不同 |
 
 **缓解措施**:
 

@@ -52,7 +52,7 @@
 **数据库表结构设计原则：**
 
 1. 所有表统一使用 `id` 作为主键（UUID 或序列号）
-2. 所有表包含 `createdAt` 和 `updatedAt` 时间戳字段
+2. 所有表包含 `createTime` 和 `updateTime` 时间戳字段
 3. 支持软删除的表包含 `deletedAt` 字段
 4. 外键关系明确定义，支持级联操作
 5. 字段命名采用 snake_case（数据库列）与 camelCase（TypeScript）的映射

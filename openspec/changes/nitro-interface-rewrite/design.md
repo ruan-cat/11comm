@@ -94,8 +94,8 @@ export const dictionary = pgTable("sm_dictionary", {
 	isActive: boolean("is_active").default(true),
 
 	// 标准审计字段
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
+	createTime: timestamp("create_time").defaultNow().notNull(),
+	updateTime: timestamp("update_time")
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 	deletedAt: timestamp("deleted_at"), // 用于软删除逻辑
@@ -129,8 +129,8 @@ export const insertDictionarySchema = createInsertSchema(dictionary, {
 	orderNum: (schema) => schema.min(0, "排序号不能为负数").default(0),
 	description: (schema) => schema.max(500, "描述过长").optional(),
 	// [关键修复] 日期字段序列化处理：允许前端传入 ISO 字符串，自动转为 Date 对象
-	createdAt: z.coerce.date().optional(),
-	updatedAt: z.coerce.date().optional(),
+	createTime: z.coerce.date().optional(),
+	updateTime: z.coerce.date().optional(),
 }).omit({
 	// 插入时不需要提供的字段
 	id: true,
@@ -162,8 +162,8 @@ export const searchDictionarySchema = z.object({
 // [关键修复] JSON 序列化处理：Date 对象在网络传输中会被转为字符串
 // 因此前端接收到的数据类型实际上是 string，而非 Date
 export const selectDictionarySchema = createSelectSchema(dictionary, {
-	createdAt: z.string(), // 覆盖为 string，匹配 JSON 行为
-	updatedAt: z.string().nullable(), // 处理 nullable
+	createTime: z.string(), // 覆盖为 string，匹配 JSON 行为
+	updateTime: z.string().nullable(), // 处理 nullable
 	deletedAt: z.string().nullable(),
 });
 
@@ -363,7 +363,7 @@ export default defineHandler(async (event) => {
 				.select()
 				.from(dictionary)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
-				.orderBy(desc(dictionary.createdAt)) // 默认按创建时间倒序
+				.orderBy(desc(dictionary.createTime)) // 默认按创建时间倒序
 				.limit(query.pageSize)
 				.offset(offset),
 
@@ -534,7 +534,7 @@ export default defineHandler(async (event) => {
 			.update(dictionary)
 			.set({
 				...updateData,
-				updatedAt: new Date(), // 显式更新时间
+				updateTime: new Date(), // 显式更新时间
 			})
 			.where(eq(dictionary.id, id))
 			.returning();
@@ -697,7 +697,7 @@ const rules = useZodRules(insertDictionarySchema);
 - [v2.0 更新] **错误字段缺失**：catch 块未包含 `error` 和 `stack` 字段，不符合 JsonVO 规范。
 - 工具认知缺口：误用不存在的校验 helper（如未启用的 `getValidatedQuery`），造成编译失败与运行期异常。
 - 导入路径混乱：在 `@/server/*` 与 `server/*` 别名之间切换，未以 `nitro.config.ts` 的 alias 为准，导致路径不可解析。
-- Schema 假设错误：默认添加 `createdAt/updatedAt` 等字段写入，但实际 schema 由数据库默认或触发器管理，导致 Insert 类型不匹配。
+- Schema 假设错误：默认添加 `createTime /updateTime` 等字段写入，但实际 schema 由数据库默认或触发器管理，导致 Insert 类型不匹配。
 - 动态字段索引：直接以 `schema[sortBy]` 访问列，触发 `undefined` 或类型不安全，导致排序和类型推导失败。
 - 失败未被前置阻断：缺少"实现前校验清单"，导致错误在类型检查阶段才暴露。
 

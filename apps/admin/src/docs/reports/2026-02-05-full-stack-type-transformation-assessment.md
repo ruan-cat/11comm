@@ -215,7 +215,7 @@ export default defineEventHandler(async (event) => {
       ```typescript
       // 在 apps/type 中通过 z.preprocess 或 transform 处理
       export const StaffResponseSchema = createSelectSchema(smStaff, {
-      	createdAt: z.string(), // 覆盖默认的 Date 类型，因为经过了 JSON 传输
+      	createTime: z.string(), // 覆盖默认的 Date 类型，因为经过了 JSON 传输
       });
       ```
 

@@ -93,12 +93,12 @@
 #### Scenario: 转换 createTime 字段
 
 - **WHEN** mock 数据包含 "createTime" 字段
-- **THEN** 系统 SHALL 映射到数据库的 "created_at" 字段
+- **THEN** 系统 SHALL 映射到数据库的 "create_time" 字段
 
 #### Scenario: 转换 updateTime 字段
 
 - **WHEN** mock 数据包含 "updateTime" 字段
-- **THEN** 系统 SHALL 映射到数据库的 "updated_at" 字段
+- **THEN** 系统 SHALL 映射到数据库的 "update_time" 字段
 
 #### Scenario: 转换 address 字段到 homeAddress
 

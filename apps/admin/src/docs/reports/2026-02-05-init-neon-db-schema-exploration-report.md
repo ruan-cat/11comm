@@ -28,7 +28,7 @@
 - **模块化文件组织**：摒弃了单一大文件的做法，将 60+ 张表定义按业务领域拆解为 `schemas/*.ts` 子文件。这种扁平化的组织方式极大地提升了代码的可读性和可维护性，降低了团队协作时的冲突概率。
 - **标准化公共基建**：通过 `common.ts` 模块，统一了所有数据表的核心字段规范：
   - **UUID 主键**：适应分布式架构，支持前端生成 ID。
-  - **自动时间戳**：`createdAt` 和 `updatedAt` 自动管理，无需手动维护。
+  - **自动时间戳**：`createTime` 和 `updateTime` 自动管理，无需手动维护。
   - **软删除机制**：核心业务表预置 `deletedAt` 字段，不仅防止数据意外丢失，也符合企业级审计要求。
 
 ## 3. 未来维护指南 (Maintenance Guide)
@@ -50,7 +50,7 @@
     export const cmVisitors = pgTable("cm_visitors", {
     	id: primaryId(), // 自动处理 UUID 主键
     	name: varchar("name", { length: 50 }),
-    	...timestamps, // 自动添加 createdAt, updatedAt
+    	...timestamps, // 自动添加 createTime , updateTime
     });
     ```
 

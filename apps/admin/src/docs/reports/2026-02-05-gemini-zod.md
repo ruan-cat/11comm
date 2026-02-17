@@ -98,14 +98,14 @@ export const community = pgTable("community", {
 	name: text("name").notNull(), // 数据库层面非空
 	address: text("address"),
 	contactPhone: text("contact_phone"),
-	createdAt: timestamp("created_at").defaultNow(),
+	createTime: timestamp("create_time").defaultNow(),
 });
 
 // ==========================================
 // 2. Zod Schemas (验证层 - 运行时)
 // ==========================================
 
-// 用于【创建】时的验证：自动去除 id, createdAt 等由数据库生成的字段
+// 用于【创建】时的验证：自动去除 id, createTime  等由数据库生成的字段
 export const insertCommunitySchema = createInsertSchema(community, {
 	// 可以在这里扩展更细致的校验逻辑，覆盖默认推导
 	name: (schema) => schema.min(2, "小区名称至少需要2个字符").max(50, "名称太长"),

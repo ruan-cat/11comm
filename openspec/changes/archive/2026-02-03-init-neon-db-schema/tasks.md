@@ -6,7 +6,7 @@
 
 - [x] 创建 `apps/admin/server/db/schemas/common.ts` 文件
 - [x] 定义 `primaryId()` 辅助函数，返回 UUID 主键
-- [x] 定义 `timestamps` 对象，包含 `createdAt` 和 `updatedAt` 字段
+- [x] 定义 `timestamps` 对象，包含 `createTime` 和 `updateTime` 字段
 - [x] 定义 `softDelete` 对象，包含 `deletedAt` 字段
 - [x] 定义 `remarkField()` 辅助函数
 - [x] 定义 `statusEnum` 枚举类型（enabled/disabled）
@@ -187,7 +187,7 @@
 - [x] 定义 `rp_mandatory_return_issues` 表（强制回单）
 - [x] 定义 `rp_phone_repair_reports` 表（电话报修）
   - 外键：order_id → rp_repair_orders（可选）
-- [x] 创建必要的索引（work_order_number 唯一索引, status, created_at）
+- [x] 创建必要的索引（work_order_number 唯一索引, status, create_time）
 
 ---
 

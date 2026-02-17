@@ -121,14 +121,14 @@ export const opMerchants = pgTable(
 
 ### Requirement: Part B - Insert Schema 规范
 
-Insert Schema MUST 使用 `createInsertSchema()` 生成。字段细化 MUST 使用函数回调形式 `(schema) => schema.min(...)` 。MUST 使用 `.omit()` 排除 `id`、`createdAt`、`updatedAt` 等自动管理字段。
+Insert Schema MUST 使用 `createInsertSchema()` 生成。字段细化 MUST 使用函数回调形式 `(schema) => schema.min(...)` 。MUST 使用 `.omit()` 排除 `id`、`createTime`、`updateTime` 等自动管理字段。
 
 #### Scenario: 标准 Insert Schema
 
 - **WHEN** 创建 Insert Schema 时
 - **THEN** 使用 `createInsertSchema(table, { field: (schema) => schema.min(1) })` 形式
 - **AND** MUST NOT 使用 `{ field: z.string().min(1) }` 直接传 Zod 对象形式（会导致类型不兼容）
-- **AND** 使用 `.omit({ id: true, createdAt: true, updatedAt: true })` 排除自动管理字段
+- **AND** 使用 `.omit({ id: true, createTime : true, updateTime: true })` 排除自动管理字段
 
 示例:
 
@@ -138,8 +138,8 @@ export const insertOpMerchantSchema = createInsertSchema(opMerchants, {
 	merchantCode: (schema) => schema.min(1, "商户编码不能为空").max(50),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 ```
 
@@ -304,8 +304,8 @@ export const insertXxItemSchema = createInsertSchema(xxItems, {
 	name: (schema) => schema.min(1, "名称不能为空").max(100),
 }).omit({
 	id: true,
-	createdAt: true,
-	updatedAt: true,
+	createTime: true,
+	updateTime: true,
 });
 
 export const selectXxItemSchema = createSelectSchema(xxItems);

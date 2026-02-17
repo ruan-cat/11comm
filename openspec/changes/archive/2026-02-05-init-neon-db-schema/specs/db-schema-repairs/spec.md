@@ -140,4 +140,4 @@
 #### Scenario: Time range optimization
 
 - **WHEN** 按时间范围查询
-- **THEN** `rp_repair_orders` 表的 `created_at` 字段有索引
+- **THEN** `rp_repair_orders` 表的 `create_time` 字段有索引

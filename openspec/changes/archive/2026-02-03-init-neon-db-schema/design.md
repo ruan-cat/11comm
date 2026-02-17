@@ -23,7 +23,7 @@
 1. 定义完整的数据库 schema，使 `db:generate` 命令可正常工作
 2. 按业务模块扁平化拆分 schema 文件，提升可维护性
 3. 建立 TypeScript 业务类型与数据库表结构的对应关系
-4. 提供统一的通用字段（id, createdAt, updatedAt, remark）
+4. 提供统一的通用字段（id, createTime , updateTime, remark）
 5. 支持软删除机制（deletedAt 字段）
 6. 定义合理的索引和外键约束
 
@@ -95,15 +95,15 @@ id: uuid("id").defaultRandom().primaryKey();
 
 ### 3. 时间戳字段
 
-**决策：** 所有表统一包含 `createdAt` 和 `updatedAt` 字段。
+**决策：** 所有表统一包含 `createTime` 和 `updateTime` 字段。
 
 **实现：**
 
 ```typescript
 import { timestamp } from "drizzle-orm/pg-core";
 
-createdAt: timestamp("created_at").notNull().defaultNow(),
-updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date())
+createTime : timestamp("create_time").notNull().defaultNow(),
+updateTime: timestamp("update_time").notNull().defaultNow().$onUpdate(() => new Date())
 ```
 
 ### 4. 软删除机制
@@ -197,7 +197,7 @@ import { index } from "drizzle-orm/pg-core";
 // 在表定义中
 (table) => ({
 	statusIdx: index("idx_status").on(table.status),
-	createdAtIdx: index("idx_created_at").on(table.createdAt),
+	createdAtIdx: index("idx_created_at").on(table.createTime),
 });
 ```
 
@@ -233,8 +233,8 @@ export const primaryId = () => uuid("id").defaultRandom().primaryKey();
 
 /** 通用时间戳字段 */
 export const timestamps = {
-	createdAt: timestamp("created_at").notNull().defaultNow(),
-	updatedAt: timestamp("updated_at")
+	createTime: timestamp("create_time").notNull().defaultNow(),
+	updateTime: timestamp("update_time")
 		.notNull()
 		.defaultNow()
 		.$onUpdate(() => new Date()),
