@@ -28,8 +28,8 @@ export function generateOperationSql(idMap: IdMapRegistry): SqlStatement[] {
 			address: item.address,
 			qualificationLevel: item.qualificationLevel ?? item.serviceLevel,
 			// Mapping dates...
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -58,8 +58,8 @@ export function generateOperationSql(idMap: IdMapRegistry): SqlStatement[] {
 			businessLicense: item.businessLicense ?? item.businessLicenseNo,
 			status: statusMap[item.status] || "enabled",
 			remark: item.remark ?? item.remarks,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -88,8 +88,8 @@ export function generateOperationSql(idMap: IdMapRegistry): SqlStatement[] {
 			communityId: communityId,
 			operationStatus: "operating",
 			administrator: "admin",
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 

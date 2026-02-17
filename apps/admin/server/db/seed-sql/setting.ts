@@ -58,8 +58,8 @@ function processOrgTree(nodes: OrganizationTreeNode[], idMap: IdMapRegistry, fla
 			orgCode: node.id,
 			orgType: "department",
 			parentId: parentUuid,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createTime: new Date(),
+			updateTime: new Date(),
 		});
 
 		if (node.children && node.children.length > 0) {
@@ -103,8 +103,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			code: item.code,
 			description: item.description,
 			isEnabled: item.enabled,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createTime: new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -141,8 +141,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			email: item.email,
 			phone: item.phone,
 			homeAddress: item.address,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createTime: new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -183,8 +183,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 				permissionRule: null, // item.rule // Mock lacking fields
 				scope: "all", // default
 				dataFilter: null,
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createTime: new Date(),
+				updateTime: new Date(),
 			};
 		})
 		.filter((x) => x !== null) as InsertSmDataPermission[];
@@ -211,8 +211,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			startTime: item.startTime,
 			endTime: item.endTime,
 			workDuration: null, // Default
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -240,8 +240,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			schedulingMode: null, // Default
 			applicablePosition: null, // Default
 			rotationCycle: null, // Default
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -314,8 +314,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			configType: null, // Default
 			configDescription: item.description ?? item.title,
 			status: "enabled",
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -365,8 +365,8 @@ export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
 			initItem: item.initItem,
 			initStatus: item.initStatus,
 			configParams: item.configParams,
-			createdAt: item.createdAt,
-			updatedAt: item.updatedAt,
+			createTime: item.createTime,
+			updateTime: item.updateTime,
 		};
 	});
 

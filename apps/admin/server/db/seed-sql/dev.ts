@@ -64,8 +64,8 @@ export function generateDevSql(idMap: IdMapRegistry): SqlStatement[] {
 			dictionaryType: item.dictionaryType,
 			dictionaryDescription: item.remark || null,
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -95,8 +95,8 @@ export function generateDevSql(idMap: IdMapRegistry): SqlStatement[] {
 			description: item.description,
 			refreshStrategy: refreshPolicyMap[item.refreshPolicy] || item.refreshPolicy,
 			status: cacheStatusMap[item.status] || "enabled",
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 

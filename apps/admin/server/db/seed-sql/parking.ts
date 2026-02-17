@@ -36,8 +36,8 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 			totalSpaces: 100, // Mock
 			availableSpaces: 50, // Mock
 			remark: `External Code: ${item.externalCode}`,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -86,8 +86,8 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 			monthlyRent: item.monthlyRent ? String(item.monthlyRent) : null,
 			purchaseDate: item.purchaseDate ? new Date(item.purchaseDate) : null,
 			expiryDate: item.expiryDate ? new Date(item.expiryDate) : null,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -131,8 +131,8 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 			validityStart: item.validityPeriod ? new Date(item.validityPeriod.split(" 至 ")[0]) : null,
 			validityEnd: item.validityPeriod ? new Date(item.validityPeriod.split(" 至 ")[1]) : null,
 
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -159,8 +159,8 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 				carportType: "标准车位", // Mock data missing this field, using default
 				status: item.reviewResult || "待审核",
 				// Mapping other fields if mock data has them
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
 			};
 		});
 
@@ -198,8 +198,8 @@ export function generateParkingSql(idMap: IdMapRegistry): SqlStatement[] {
 					}),
 					sortOrder: index + 1,
 					remark: "System generated structure mock data",
-					createdAt: new Date(),
-					updatedAt: new Date(),
+					createTime: new Date(),
+					updateTime: new Date(),
 				});
 			});
 		});

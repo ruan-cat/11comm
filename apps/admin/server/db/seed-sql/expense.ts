@@ -47,8 +47,8 @@ export function generateExpenseSql(idMap: IdMapRegistry): SqlStatement[] {
 			billingCycle: item.paymentCycle,
 			status: statusMap[item.status] || "enabled",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -75,8 +75,8 @@ export function generateExpenseSql(idMap: IdMapRegistry): SqlStatement[] {
 			billingMethod: "usage", // Defaulting
 			status: statusMap[item.status] || "enabled",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -115,8 +115,8 @@ export function generateExpenseSql(idMap: IdMapRegistry): SqlStatement[] {
 				readingDate: item.currentReadingTime ? new Date(item.currentReadingTime) : new Date(),
 				reader: "System",
 				remark: "Auto generated",
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
 			};
 		})
 		.filter(Boolean);
@@ -162,8 +162,8 @@ export function generateExpenseSql(idMap: IdMapRegistry): SqlStatement[] {
 				chargeCycle: "monthly",
 				status: statusMap[item.status] || "enabled", // Map 'Enable'/'Disable' to status
 				remark: item.remark,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter(Boolean); // Filter out nulls

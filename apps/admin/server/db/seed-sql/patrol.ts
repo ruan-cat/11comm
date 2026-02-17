@@ -65,8 +65,8 @@ export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
 			endDate: endD,
 			executionTimeSlot: item.timeRange,
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -131,8 +131,8 @@ export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
 			pathName: name,
 			pathDescription: item.remark,
 			estimatedDuration: 60, // Mock default
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		} as InsertPtPatrolPath);
 	}
 
@@ -169,8 +169,8 @@ export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
 				location: item.patrolLocation,
 				qrCodeOrNfc: `QR-${index}`,
 				sortOrder: index,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter((x) => x !== null) as InsertPtPatrolPoint[];
@@ -206,8 +206,8 @@ export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
 					itemName: itemData.name,
 					checkStandard: "正常",
 					checkMethod: "目视",
-					createdAt: new Date(),
-					updatedAt: new Date(),
+					createTime: new Date(),
+					updateTime: new Date(),
 				} as InsertPtPatrolItem);
 			}
 		}
@@ -247,8 +247,8 @@ export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
 				status: "completed" as const, // Mock data says completed
 				currentPatrolPerson: item.currentPatrolPerson,
 				transferDescription: item.transferDescription,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter((x) => x !== null) as InsertPtPatrolTask[];
@@ -306,8 +306,8 @@ export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
 				patrolPhotoUrl: item.patrolPhotos,
 				checkInTime: item.actualPatrolTime ? new Date(item.actualPatrolTime) : new Date(),
 				gpsCoordinates: item.locationInfo,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter((x) => x !== null) as InsertPtPatrolTaskDetail[];

@@ -60,8 +60,8 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			city: item.city,
 			district: item.district,
 
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -97,8 +97,8 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			publisher: item.publisher,
 			status: "enabled", // Default
 			remark: item.noticeType, // Use type as remark/category
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createTime: new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -138,8 +138,8 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			auditor: null,
 			auditTime: null,
 			remark: item.remarks,
-			createdAt: item.applicationTime ? new Date(item.applicationTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.applicationTime ? new Date(item.applicationTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -182,8 +182,8 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			registerDate: item.createTime ? String(item.createTime).split(" ")[0] : null,
 			status: statusMap[item.status] || "enabled",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -212,8 +212,8 @@ export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
 			unitCount: item.totalHouseholds, // Using totalHouseholds as proxy for unitCount/capacity
 			roomLayout: null,
 			remark: item.remarks,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createTime: new Date(),
+			updateTime: new Date(),
 		};
 	});
 

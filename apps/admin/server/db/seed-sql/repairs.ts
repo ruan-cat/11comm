@@ -45,8 +45,8 @@ export function generateRepairsSql(idMap: IdMapRegistry): SqlStatement[] {
 			assigner: null,
 			assignTime: null,
 			repairPerson: null,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 

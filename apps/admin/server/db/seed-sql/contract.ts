@@ -61,8 +61,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 			businessScope: item.businessScope,
 			status: statusMap[item.status] || "enabled",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -91,8 +91,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 			ownerId: null,
 			status: statusMap[item.status] || "enabled",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -119,8 +119,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 			version: item.templateVersion,
 			status: templateStatusMap[item.status] || "draft",
 			remark: item.templateDescription,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -156,8 +156,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 				clauseType: "general",
 				sortOrder: index,
 				remark: item.remark,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter(Boolean);
@@ -183,8 +183,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 			typeCode: `CT-${idx + 1}`, // Generate code
 			typeDescription: item.description,
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -220,8 +220,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 			signDate: item.startTime ? new Date(item.startTime) : null,
 			status: contractStatusMap[item.status] || "draft",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -276,8 +276,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 				filePath: "/uploads/mock/" + fileName,
 				fileSize: Math.round(fileSizeBytes),
 				remark: item.remark,
-				createdAt: item.uploadTime ? new Date(item.uploadTime) : new Date(),
-				updatedAt: new Date(),
+				createTime: item.uploadTime ? new Date(item.uploadTime) : new Date(),
+				updateTime: new Date(),
 			};
 		})
 		.filter(Boolean);
@@ -315,8 +315,8 @@ export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
 				approver: "Administrator",
 				approvalTime: null,
 				remark: item.remark,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
 			};
 		})
 		.filter(Boolean);

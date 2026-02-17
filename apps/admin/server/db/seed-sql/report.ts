@@ -55,8 +55,8 @@ export function generateReportSql(idMap: IdMapRegistry): SqlStatement[] {
 			receivedTotal: item.actualAmount,
 			outstandingTotal: String(Number(item.receivableAmount) - Number(item.actualAmount)),
 			expenseItem: item.expenseItemName,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createTime: new Date(),
+			updateTime: new Date(),
 		};
 	});
 

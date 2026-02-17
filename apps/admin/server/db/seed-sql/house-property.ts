@@ -65,8 +65,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 			emergencyPhone: item.emergencyContactPhone,
 			address: item.address, // Mapping address to address
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 		};
 	});
 
@@ -110,8 +110,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 				item.tenure ||
 				(item.termStart ? String(item.termStart) : "") + "-" + (item.termEnd ? String(item.termEnd) : ""),
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -160,8 +160,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 			houseType: item.houseType,
 			status: "enabled",
 			remark: item.remark,
-			createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-			updatedAt: new Date(),
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
 		};
 	});
 
@@ -240,8 +240,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 				gender: item.gender === "男" ? "male" : "female",
 				idCard: item.idCard,
 				remark: item.remark,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
 			};
 		})
 		.filter(Boolean) as InsertHpOwnerMember[];
@@ -277,8 +277,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 				balance: item.accountBalance ? String(item.accountBalance) : "0",
 				status: "enabled", // Default
 				remark: item.remark,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
 			};
 		})
 		.filter(Boolean) as InsertHpOwnerAccount[];
@@ -314,8 +314,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 				addressPhone: item.address + " " + item.phone,
 				bankAccount: item.bankAccount,
 				isDefault: false,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter(Boolean) as InsertHpInvoiceTitle[];
@@ -354,8 +354,8 @@ export function generateHousePropertySql(idMap: IdMapRegistry): SqlStatement[] {
 				// drawer: item.applicant, // Schema missing drawer
 				invoiceDate: item.applicationTime ? new Date(item.applicationTime) : null,
 				remark: item.remark,
-				createdAt: item.createTime ? new Date(item.createTime) : new Date(),
-				updatedAt: item.updateTime ? new Date(item.updateTime) : new Date(),
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
 		.filter(Boolean) as InsertHpInvoice[];
