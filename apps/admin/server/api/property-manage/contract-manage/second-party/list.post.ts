@@ -120,7 +120,7 @@ export default defineHandler(async (event) => {
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
-		const response: JsonVO<PageDTO<typeof list>> = {
+		const response: JsonVO<PageDTO<(typeof list)[number]>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
