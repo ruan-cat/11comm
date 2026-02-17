@@ -90,15 +90,15 @@ export default defineHandler(async (event) => {
 				applicableContractType: ctTemplates.templateType,
 				status: sql<string>`'启用'`, // 简化处理
 				sortOrder: ctClauses.sortOrder,
-				createdAt: ctClauses.createdAt,
-				updatedAt: ctClauses.updatedAt,
-				creator: ctClauses.createdAt, // 简化处理
+				createTime: ctClauses.createTime,
+				updateTime: ctClauses.updateTime,
+				creator: ctClauses.createTime, // 简化处理
 				remark: ctClauses.remark,
 			})
 			.from(ctClauses)
 			.leftJoin(ctTemplates, eq(ctClauses.templateId, ctTemplates.id))
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctClauses.createdAt))
+			.orderBy(desc(ctClauses.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -112,8 +112,8 @@ export default defineHandler(async (event) => {
 			applicableContractType: item.applicableContractType || "",
 			status: item.status || "",
 			sortOrder: item.sortOrder || 0,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			creator: item.creator || "",
 			remark: item.remark || "",
 		}));

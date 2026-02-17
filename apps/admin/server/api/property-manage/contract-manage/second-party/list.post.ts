@@ -90,13 +90,13 @@ export default defineHandler(async (event) => {
 				legalRepresentative: sql<string>`null`, // ctSecondParties 表中没有此字段
 				businessScope: sql<string>`null`, // ctSecondParties 表中没有此字段
 				status: sql<string>`'启用'`, // ctSecondParties 表中没有此字段
-				createdAt: ctSecondParties.createdAt,
-				updatedAt: ctSecondParties.updatedAt,
+				createTime: ctSecondParties.createTime,
+				updateTime: ctSecondParties.updateTime,
 				remark: ctSecondParties.remark,
 			})
 			.from(ctSecondParties)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctSecondParties.createdAt))
+			.orderBy(desc(ctSecondParties.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -113,8 +113,8 @@ export default defineHandler(async (event) => {
 			businessScope: item.businessScope || "",
 			status: item.status || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

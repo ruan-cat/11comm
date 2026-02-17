@@ -86,12 +86,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				auditor: cmHouseDecorations.auditor,
 				auditTime: cmHouseDecorations.auditTime,
 				remark: cmHouseDecorations.remark,
-				createdAt: cmHouseDecorations.createdAt,
-				updatedAt: cmHouseDecorations.updatedAt,
+				createTime: cmHouseDecorations.createTime,
+				updateTime: cmHouseDecorations.updateTime,
 			})
 			.from(cmHouseDecorations)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(cmHouseDecorations.createdAt))
+			.orderBy(desc(cmHouseDecorations.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -101,8 +101,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		/** 格式化时间字段 */
 		const list = data.map((item) => ({
 			...item,
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const response: JsonVO<PageDTO<(typeof list)[number]>> = {

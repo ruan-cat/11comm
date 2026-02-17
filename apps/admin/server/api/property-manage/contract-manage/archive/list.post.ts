@@ -105,15 +105,15 @@ export default defineHandler(async (event) => {
 				storageLocation: ctArchives.archiveLocation,
 				status: ctContracts.status,
 				remark: ctArchives.remark,
-				createdAt: ctArchives.createdAt,
-				updatedAt: ctArchives.updatedAt,
+				createTime: ctArchives.createTime,
+				updateTime: ctArchives.updateTime,
 			})
 			.from(ctArchives)
 			.leftJoin(ctContracts, eq(ctArchives.contractId, ctContracts.id))
 			.leftJoin(ctFirstParties, eq(ctContracts.firstPartyId, ctFirstParties.id))
 			.leftJoin(ctSecondParties, eq(ctContracts.secondPartyId, ctSecondParties.id))
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctArchives.createdAt))
+			.orderBy(desc(ctArchives.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -134,8 +134,8 @@ export default defineHandler(async (event) => {
 			storageLocation: item.storageLocation || "",
 			status: item.status || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

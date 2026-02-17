@@ -19,7 +19,7 @@ const querySchema = z.object({
 	contractName: z.string().optional(),
 	contractNumber: z.string().optional(),
 	contractType: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "endTime"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "endTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -63,8 +63,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 
 		/** 构建排序 */
 		const sortFields: Record<string, any> = {
-			createdAt: ctContracts.createdAt,
-			updatedAt: ctContracts.updatedAt,
+			createTime: ctContracts.createTime,
+			updateTime: ctContracts.updateTime,
 			endTime: ctContracts.endTime,
 		};
 
@@ -91,8 +91,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				signDate: ctContracts.signDate,
 				status: ctContracts.status,
 				remark: ctContracts.remark,
-				createdAt: ctContracts.createdAt,
-				updatedAt: ctContracts.updatedAt,
+				createTime: ctContracts.createTime,
+				updateTime: ctContracts.updateTime,
 			})
 			.from(ctContracts)
 			.where(and(...conditions))
@@ -111,8 +111,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			endTime: item.endTime ? new Date(item.endTime).toISOString().split("T")[0] : "",
 			signDate: item.signDate || "",
 			status: item.status || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

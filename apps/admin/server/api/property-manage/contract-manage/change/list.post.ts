@@ -20,7 +20,7 @@ const querySchema = z.object({
 	contractNumber: z.string().optional(),
 	contractType: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "applyTime"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "applyTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -45,7 +45,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		const offset = (query.page - 1) * query.pageSize;
 
 		/** 构建排序条件 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		/** 构建查询 - 使用联表查询获取完整信息 */
@@ -61,8 +61,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				approver: ctChanges.approver,
 				approvalTime: ctChanges.approvalTime,
 				remark: ctChanges.remark,
-				createdAt: ctChanges.createdAt,
-				updatedAt: ctChanges.updatedAt,
+				createTime: ctChanges.createTime,
+				updateTime: ctChanges.updateTime,
 				// 关联字段
 				contractName: ctContracts.contractName,
 				contractNumber: ctContracts.contractNumber,
@@ -92,8 +92,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 
 		/** 构建排序 */
 		const sortFields: Record<string, any> = {
-			createdAt: ctChanges.createdAt,
-			updatedAt: ctChanges.updatedAt,
+			createTime: ctChanges.createTime,
+			updateTime: ctChanges.updateTime,
 			applyTime: ctChanges.changeDate,
 		};
 
@@ -128,8 +128,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			applyTime: item.changeDate || "",
 			description: item.changeContent || "",
 			status: item.approvalStatus || "pending",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

@@ -20,7 +20,7 @@ const querySchema = z.object({
 	contactPerson: z.string().optional(),
 	contactPhone: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "name"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "name"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -64,12 +64,12 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		}
 
 		/** 构建排序 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		const sortFields: Record<string, any> = {
-			createdAt: ctFirstParties.createdAt,
-			updatedAt: ctFirstParties.updatedAt,
+			createTime: ctFirstParties.createTime,
+			updateTime: ctFirstParties.updateTime,
 			name: ctFirstParties.name,
 		};
 
@@ -97,8 +97,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				businessScope: ctFirstParties.businessScope,
 				status: ctFirstParties.status,
 				remark: ctFirstParties.remark,
-				createdAt: ctFirstParties.createdAt,
-				updatedAt: ctFirstParties.updatedAt,
+				createTime: ctFirstParties.createTime,
+				updateTime: ctFirstParties.updateTime,
 			})
 			.from(ctFirstParties)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -119,8 +119,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			businessScope: item.businessScope || "",
 			status: item.status || "enabled",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

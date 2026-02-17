@@ -83,14 +83,14 @@ export default defineHandler(async (event) => {
 				templateVersion: ctTemplates.version,
 				templateDescription: ctTemplates.templateContent,
 				status: ctTemplates.status,
-				createdAt: ctTemplates.createdAt,
-				updatedAt: ctTemplates.updatedAt,
-				creator: ctTemplates.createdAt, // 简化处理
+				createTime: ctTemplates.createTime,
+				updateTime: ctTemplates.updateTime,
+				creator: ctTemplates.createTime, // 简化处理
 				usageCount: sql<number>`0`, // 简化处理，暂无使用次数字段
 			})
 			.from(ctTemplates)
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctTemplates.createdAt))
+			.orderBy(desc(ctTemplates.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -103,8 +103,8 @@ export default defineHandler(async (event) => {
 			templateVersion: item.templateVersion || "",
 			templateDescription: item.templateDescription || "",
 			status: item.status || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			creator: item.creator || "",
 			usageCount: item.usageCount || 0,
 		}));

@@ -20,7 +20,7 @@ const querySchema = z.object({
 	contractNumber: z.string().optional(),
 	contractType: z.string().optional(),
 	status: z.string().optional(),
-	sortBy: z.enum(["createdAt", "updatedAt", "startTime"]).optional(),
+	sortBy: z.enum(["createTime", "updateTime", "startTime"]).optional(),
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
@@ -45,7 +45,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		const offset = (query.page - 1) * query.pageSize;
 
 		/** 构建排序条件 */
-		const sortBy = query.sortBy || "createdAt";
+		const sortBy = query.sortBy || "createTime";
 		const sortOrder = query.sortOrder || "desc";
 
 		/** 构建查询条件 */
@@ -69,8 +69,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 
 		/** 构建排序 */
 		const sortFields: Record<string, any> = {
-			createdAt: ctContracts.createdAt,
-			updatedAt: ctContracts.updatedAt,
+			createTime: ctContracts.createTime,
+			updateTime: ctContracts.updateTime,
 			startTime: ctContracts.startTime,
 		};
 
@@ -96,8 +96,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 				endTime: ctContracts.endTime,
 				status: ctContracts.status,
 				remark: ctContracts.remark,
-				createdAt: ctContracts.createdAt,
-				updatedAt: ctContracts.updatedAt,
+				createTime: ctContracts.createTime,
+				updateTime: ctContracts.updateTime,
 			})
 			.from(ctContracts)
 			.where(and(...conditions))
@@ -119,8 +119,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			startTime: item.startTime ? new Date(item.startTime).toISOString().split("T")[0] : "",
 			endTime: item.endTime ? new Date(item.endTime).toISOString().split("T")[0] : "",
 			status: item.status || "draft",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

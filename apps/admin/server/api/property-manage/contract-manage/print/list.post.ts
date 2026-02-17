@@ -88,15 +88,15 @@ export default defineHandler(async (event) => {
 				lastPrintTime: ctPrints.printTime,
 				lastPrinter: ctPrints.printer,
 				printStatus: sql<string>`'未打印'`, // 简化处理
-				createdAt: ctPrints.createdAt,
-				updatedAt: ctPrints.updatedAt,
+				createTime: ctPrints.createTime,
+				updateTime: ctPrints.updateTime,
 			})
 			.from(ctPrints)
 			.leftJoin(ctContracts, eq(ctPrints.contractId, ctContracts.id))
 			.leftJoin(ctFirstParties, eq(ctContracts.firstPartyId, ctFirstParties.id))
 			.leftJoin(ctSecondParties, eq(ctContracts.secondPartyId, ctSecondParties.id))
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctPrints.createdAt))
+			.orderBy(desc(ctPrints.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -112,8 +112,8 @@ export default defineHandler(async (event) => {
 			lastPrintTime: item.lastPrintTime || "",
 			lastPrinter: item.lastPrinter || "",
 			printStatus: item.printStatus || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

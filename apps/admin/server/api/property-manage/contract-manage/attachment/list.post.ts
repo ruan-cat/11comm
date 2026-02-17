@@ -93,17 +93,17 @@ export default defineHandler(async (event) => {
 				fileType: ctAttachments.attachmentType,
 				fileSize: ctAttachments.fileSize,
 				fileFormat: sql<string>`null`, // 简化处理
-				uploader: ctAttachments.createdAt, // 简化处理
-				uploadTime: ctAttachments.createdAt,
+				uploader: ctAttachments.createTime, // 简化处理
+				uploadTime: ctAttachments.createTime,
 				status: sql<string>`'正常'`, // 简化处理
 				remark: ctAttachments.remark,
-				createdAt: ctAttachments.createdAt,
-				updatedAt: ctAttachments.updatedAt,
+				createTime: ctAttachments.createTime,
+				updateTime: ctAttachments.updateTime,
 			})
 			.from(ctAttachments)
 			.leftJoin(ctContracts, eq(ctAttachments.contractId, ctContracts.id))
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctAttachments.createdAt))
+			.orderBy(desc(ctAttachments.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -122,8 +122,8 @@ export default defineHandler(async (event) => {
 			uploadTime: item.uploadTime || "",
 			status: item.status || "",
 			remark: item.remark || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

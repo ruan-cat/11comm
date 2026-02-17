@@ -92,22 +92,22 @@ export default defineHandler(async (event) => {
 				partyA: ctFirstParties.name,
 				partyB: ctSecondParties.name,
 				contractAmount: ctContracts.amount,
-				submitter: ctContracts.createdAt, // 简化处理
-				submitTime: ctContracts.createdAt,
+				submitter: ctContracts.createTime, // 简化处理
+				submitTime: ctContracts.createTime,
 				reviewer: ctReviews.reviewer,
 				reviewTime: ctReviews.reviewTime,
 				reviewStatus: ctReviews.reviewResult,
 				reviewOpinion: ctReviews.reviewOpinion,
 				currentNode: sql<string>`'审核中'`, // 简化处理
-				createdAt: ctReviews.createdAt,
-				updatedAt: ctReviews.updatedAt,
+				createTime: ctReviews.createTime,
+				updateTime: ctReviews.updateTime,
 			})
 			.from(ctReviews)
 			.leftJoin(ctContracts, eq(ctReviews.contractId, ctContracts.id))
 			.leftJoin(ctFirstParties, eq(ctContracts.firstPartyId, ctFirstParties.id))
 			.leftJoin(ctSecondParties, eq(ctContracts.secondPartyId, ctSecondParties.id))
 			.where(conditions.length > 0 ? and(...conditions) : undefined)
-			.orderBy(desc(ctReviews.createdAt))
+			.orderBy(desc(ctReviews.createTime))
 			.limit(query.pageSize)
 			.offset(offset);
 
@@ -127,8 +127,8 @@ export default defineHandler(async (event) => {
 			reviewStatus: item.reviewStatus || "",
 			reviewOpinion: item.reviewOpinion || "",
 			currentNode: item.currentNode || "",
-			createTime: item.createdAt ? formatDateTime(item.createdAt) : "",
-			updateTime: item.updatedAt ? formatDateTime(item.updatedAt) : "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */
