@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { exMeterReadingTypes } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
@@ -46,12 +46,12 @@ export default defineHandler(async (event) => {
 			updateTime: exMeterReadingTypes.updateTime,
 		};
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
-		const countResult = await db
+		const countResult = await useDb(event)
 			.select({ total: sql<number>`count(*)` })
 			.from(exMeterReadingTypes)
 			.where(conditions.length > 0 ? and(...conditions) : undefined);
 		const total = Number(countResult[0]?.total || 0);
-		const data = await db
+		const data = await useDb(event)
 			.select({
 				id: exMeterReadingTypes.id,
 				typeName: exMeterReadingTypes.typeName,

@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { exExpenseSummaryTables } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
@@ -66,7 +66,7 @@ export default defineHandler(async (event) => {
 
 		// 4. 并行执行：查询数据 + 查询总数
 		const [data, countResult] = await Promise.all([
-			db
+			useDb(event)
 				.select()
 				.from(exExpenseSummaryTables)
 				.where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -74,7 +74,7 @@ export default defineHandler(async (event) => {
 				.limit(query.pageSize)
 				.offset(offset),
 
-			db
+			useDb(event)
 				.select({ count: sql<number>`cast(count(${exExpenseSummaryTables.id}) as int)` })
 				.from(exExpenseSummaryTables)
 				.where(conditions.length > 0 ? and(...conditions) : undefined),

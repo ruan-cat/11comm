@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { exOverdueReminders } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql, eq } from "drizzle-orm";
@@ -69,7 +69,7 @@ export default defineHandler(async (event) => {
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
 
 		/** 查询总数 */
-		const countResult = await db
+		const countResult = await useDb(event)
 			.select({ total: sql<number>`count(*)` })
 			.from(exOverdueReminders)
 			.where(conditions.length > 0 ? and(...conditions) : undefined);
@@ -77,7 +77,7 @@ export default defineHandler(async (event) => {
 		const total = Number(countResult[0]?.total || 0);
 
 		/** 查询分页数据 */
-		const data = await db
+		const data = await useDb(event)
 			.select({
 				id: exOverdueReminders.id,
 				chargeId: exOverdueReminders.chargeId,
