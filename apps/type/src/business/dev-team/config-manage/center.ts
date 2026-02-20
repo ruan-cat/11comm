@@ -82,3 +82,18 @@ export interface ConfigCenterFormVO {
 	/** 备注 Remark */
 	remark?: string;
 }
+
+/**
+ * 配置中心详情数据
+ * Configuration center detail item
+ */
+export type ConfigCenterDetailItem = Omit<DtConfig, "createTime" | "updateTime" | "deletedAt"> & {
+	/** 创建时间 Create time */
+	createTime: string;
+	/** 更新时间 Update time */
+	updateTime: string;
+	/** 创建人 Created by */
+	createdBy: string;
+	/** 更新人 Updated by */
+	updatedBy: string;
+};

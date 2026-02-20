@@ -79,3 +79,18 @@ export interface ConfigItemFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
+
+/**
+ * 配置项详情数据
+ * Config item detail item
+ */
+export type ConfigItemDetailItem = Omit<DtConfigItem, "createTime" | "updateTime" | "deletedAt"> & {
+	/** 创建时间 Create time */
+	createTime: string;
+	/** 更新时间 Update time */
+	updateTime: string;
+	/** 类型名称 Type name (关联查询) */
+	typeName?: string;
+	/** 类型编码 Type code (关联查询) */
+	typeCode?: string;
+};

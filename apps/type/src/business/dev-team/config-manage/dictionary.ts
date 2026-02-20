@@ -71,3 +71,14 @@ export interface DictionaryFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
+
+/**
+ * 字典详情数据
+ * Dictionary detail item
+ */
+export type DictionaryDetailItem = Omit<DtDictionary, "createTime" | "updateTime" | "deletedAt"> & {
+	/** 创建时间 Create time */
+	createTime: string;
+	/** 更新时间 Update time */
+	updateTime: string;
+};

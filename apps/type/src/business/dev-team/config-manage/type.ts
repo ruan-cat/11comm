@@ -109,3 +109,14 @@ export interface DictionaryTypeFormVO {
 	/** 备注 Remark */
 	remark: string;
 }
+
+/**
+ * 配置类型详情数据
+ * Dictionary type detail item
+ */
+export type DictionaryTypeDetailItem = Omit<DtConfigType, "createTime" | "updateTime" | "deletedAt"> & {
+	/** 创建时间 Create time */
+	createTime: string;
+	/** 更新时间 Update time */
+	updateTime: string;
+};
