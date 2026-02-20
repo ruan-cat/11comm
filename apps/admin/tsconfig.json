@@ -44,7 +44,8 @@
 			"tools/*": ["src/tools/*"],
 			"views/*": ["src/views/*"],
 			"@build/*": ["build/*"],
-			"server/*": ["server/*"]
+			"server/*": ["server/*"],
+			"setup-neon": ["./tests/setup-neon.ts"]
 		},
 		"types": [
 			"node",
@@ -74,6 +75,8 @@
 		"src/**/*.vue",
 		"types/*.d.ts",
 		"vite.config.ts",
+		// 测试文件
+		"tests/**/*.ts",
 		// vitepress 全部的文件
 		"**/.vitepress/**/*.ts",
 		"**/.vitepress/**/*.mts",

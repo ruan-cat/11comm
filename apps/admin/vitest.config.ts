@@ -4,9 +4,10 @@ import tsAlias from "./build/plugins/vite-plugin-ts-alias";
 import AutoImport from "./build/plugins/unplugin-auto-import";
 
 import { configDefaults, defineConfig } from "vitest/config";
+import { loadEnv } from "vite";
 
 // 定义测试配置
-const testConfig = defineConfig({
+const jsdomConfig = defineConfig({
 	test: {
 		environment: "jsdom",
 		// 只排除必要的文件
@@ -16,6 +17,7 @@ const testConfig = defineConfig({
 		env: {
 			VITE_ROUTER_HISTORY: "html5,/", // 提供路由历史模式，避免 undefined 错误
 			VITE_PUBLIC_PATH: "/",
+			...loadEnv("test", process.cwd(), ""),
 		},
 		// 添加全局设置来模拟必要的依赖
 		globals: true,
@@ -50,7 +52,38 @@ const testConfig = defineConfig({
 	},
 });
 
+// Nitro 接口测试配置（node 环境）
+const nitroNodeConfig = defineConfig({
+	test: {
+		environment: "node",
+		include: ["tests/nitro/**/*.test.ts"],
+		exclude: [...configDefaults.exclude, "e2e/**", "src/**/*.test.ts"],
+		root: fileURLToPath(new URL("./", import.meta.url)),
+		env: {
+			NODE_ENV: "test",
+			...loadEnv("test", process.cwd(), ""),
+		},
+		globals: true,
+		setupFiles: ["./tests/setup-neon.ts"],
+		pool: "forks",
+	},
+	resolve: {
+		alias: {
+			"@": fileURLToPath(new URL("./src", import.meta.url)),
+			"setup-neon": fileURLToPath(new URL("./tests/setup-neon.ts", import.meta.url)),
+		},
+	},
+});
+
 // 导出合并后的配置
 export default defineConfig(({ mode }) => {
-	return testConfig;
+	// 如果是 node 环境（nitro 接口测试），使用 nitro 配置
+	const isNodeTest = process.argv.includes("--node");
+
+	if (isNodeTest) {
+		return nitroNodeConfig;
+	}
+
+	// 默认使用 jsdom 配置
+	return jsdomConfig;
 });

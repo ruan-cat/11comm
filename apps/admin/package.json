@@ -15,6 +15,7 @@
 		"docs:dev": "vitepress dev src --port 3000",
 		"docs:build": "vitepress build src",
 		"test": "vitest --ui --watch --api.port=4000",
+		"test:nitro": "vitest run --ui --api.port=4000 -- --node",
 		"build:staging": "turbo vite:build:staging",
 		"build:prod": "turbo vite:build:prod",
 		"report": "pnpm build",
