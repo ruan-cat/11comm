@@ -2,10 +2,11 @@
  * @file 环境变量拉取脚本
  * @description 先执行 vercel link 链接项目，再执行 vercel env pull 拉取环境变量
  *
- * 使用方式：
- * 1. 确保根目录 .env 文件中包含 VERCEL_TOKEN
- * 2. 确保根目录 .env.vercel 文件中包含 VERCEL_PROJECT_NAME
- * 3. 运行 pnpm env:pull
+ * 使用方式（优先从环境变量获取）：
+ * 1. 优先使用环境变量中的 VERCEL_TOKEN（如 Cloudflare Worker 内置环境变量）
+ * 2. 环境变量不存在时，回退到从根目录 .env 文件读取
+ * 3. 确保根目录 .env.vercel 文件中包含 VERCEL_PROJECT_NAME（或使用环境变量）
+ * 4. 运行 pnpm env:pull
  *
  * 注意：拉取的环境变量将存储在 .env.vercel.local 文件中，
  * 该文件已被 .gitignore 忽略，不会覆盖项目的 .env 文件
@@ -21,12 +22,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const adminDir = resolve(__dirname, "..");
 
-/** 加载根目录的环境变量文件 */
-config({ path: resolve(adminDir, "../../.env.vercel") });
-config({ path: resolve(adminDir, "../../.env") });
+/** 优先从环境变量获取，失败时才尝试本地文件 */
+let VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+let VERCEL_PROJECT_NAME = process.env.VERCEL_PROJECT_NAME;
 
-const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
-const VERCEL_PROJECT_NAME = process.env.VERCEL_PROJECT_NAME;
+// 调试输出：检查环境变量是否已加载
+console.log("检查环境变量加载情况:");
+console.log(`  VERCEL_TOKEN: ${VERCEL_TOKEN ? "已获取 (长度: " + VERCEL_TOKEN.length + ")" : "未获取"}`);
+console.log(`  VERCEL_PROJECT_NAME: ${VERCEL_PROJECT_NAME || "未获取"}`);
+
+// 如果环境变量不存在，尝试从本地文件加载
+if (!VERCEL_TOKEN) {
+	console.log("环境变量 VERCEL_TOKEN 不存在，尝试从本地 .env 文件加载...");
+	config({ path: resolve(adminDir, "../../.env") });
+	VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+}
+
+if (!VERCEL_PROJECT_NAME) {
+	console.log("环境变量 VERCEL_PROJECT_NAME 不存在，尝试从 .env.vercel 文件加载...");
+	config({ path: resolve(adminDir, "../../.env.vercel") });
+	VERCEL_PROJECT_NAME = process.env.VERCEL_PROJECT_NAME;
+}
+
+console.log(`最终结果 - VERCEL_TOKEN: ${VERCEL_TOKEN ? "已获取 (长度: " + VERCEL_TOKEN.length + ")" : "未获取"}`);
+console.log(`最终结果 - VERCEL_PROJECT_NAME: ${VERCEL_PROJECT_NAME || "未获取"}`);
 
 /** 检查必要的环境变量 */
 function checkEnvVariables() {
