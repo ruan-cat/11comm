@@ -5,13 +5,14 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smChangePasswordRecords, updateSmChangePasswordRecordSchema } from "@01s-11comm/type";
 import type { ChangePasswordRecord, JsonVO } from "@01s-11comm/type";
 import { formatDateTime } from "server/utils/format-date";
 import { eq } from "drizzle-orm";
 
 export default defineHandler(async (event): Promise<JsonVO<ChangePasswordRecord>> => {
+	const db = useDb(event);
 	try {
 		const body = await readValidatedBody(event, updateSmChangePasswordRecordSchema.parse);
 		const { id, ...updateData } = body;

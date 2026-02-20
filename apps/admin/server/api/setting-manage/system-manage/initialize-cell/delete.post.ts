@@ -5,12 +5,13 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smInitializeCells } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
 
 export default defineHandler(async (event): Promise<JsonVO<null>> => {
+	const db = useDb(event);
 	try {
 		const body = (await readBody(event)) as any;
 		const { id } = body;

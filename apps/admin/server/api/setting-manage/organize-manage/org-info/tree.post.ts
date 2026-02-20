@@ -5,13 +5,15 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smOrganizations } from "@01s-11comm/type";
 import type { JsonVO, OrganizationTreeNode } from "@01s-11comm/type";
 import { asc } from "drizzle-orm";
 
 export default defineHandler(async (event): Promise<JsonVO<OrganizationTreeNode[]>> => {
 	try {
+		const db = useDb(event);
+
 		// 查询所有组织数据
 		const data = await db
 			.select({

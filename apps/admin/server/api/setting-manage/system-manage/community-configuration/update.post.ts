@@ -5,13 +5,14 @@
  */
 
 import { defineHandler, readBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smCommunityConfigurations, updateSmCommunityConfigurationSchema } from "@01s-11comm/type";
 import type { JsonVO, SmCommunityConfiguration } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
 import { formatDateTime } from "server/utils/format-date";
 
 export default defineHandler(async (event): Promise<JsonVO<SmCommunityConfiguration>> => {
+	const db = useDb(event);
 	try {
 		const body = await readBody(event);
 

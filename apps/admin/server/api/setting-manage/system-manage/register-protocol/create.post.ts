@@ -5,12 +5,13 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smRegisterProtocols, insertSmRegisterProtocolSchema } from "@01s-11comm/type";
 import type { JsonVO, NewSmRegisterProtocol, SmRegisterProtocolListItem } from "@01s-11comm/type";
 import { formatDateTime } from "server/utils/format-date";
 
 export default defineHandler(async (event): Promise<JsonVO<SmRegisterProtocolListItem>> => {
+	const db = useDb(event);
 	try {
 		const body = (await readValidatedBody(
 			event,

@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smInitializeCells } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, InitializeCommunityListItem, InitializeCommunityQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
@@ -22,6 +22,7 @@ const querySchema = z.object({
 });
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<InitializeCommunityListItem>>> => {
+	const db = useDb(event);
 	try {
 		const body = (await readBody(event)) as any;
 		const rawQuery = {

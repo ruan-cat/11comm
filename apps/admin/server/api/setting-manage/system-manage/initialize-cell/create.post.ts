@@ -5,13 +5,14 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smInitializeCells } from "@01s-11comm/type";
 import { insertSmInitializeCellSchema, type NewSmInitializeCell, type SmInitializeCellVO } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
 import { formatDateTime } from "server/utils/format-date";
 
 export default defineHandler(async (event): Promise<JsonVO<SmInitializeCellVO>> => {
+	const db = useDb(event);
 	try {
 		const body = (await readValidatedBody(event, insertSmInitializeCellSchema.parse)) as unknown as NewSmInitializeCell;
 

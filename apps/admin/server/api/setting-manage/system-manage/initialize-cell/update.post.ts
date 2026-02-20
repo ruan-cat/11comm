@@ -5,7 +5,7 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smInitializeCells } from "@01s-11comm/type";
 import { updateSmInitializeCellSchema, type SmInitializeCellVO } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
@@ -13,6 +13,7 @@ import { eq } from "drizzle-orm";
 import { formatDateTime } from "server/utils/format-date";
 
 export default defineHandler(async (event): Promise<JsonVO<SmInitializeCellVO>> => {
+	const db = useDb(event);
 	try {
 		const body = (await readValidatedBody(event, updateSmInitializeCellSchema.parse)) as unknown as Parameters<
 			typeof updateSmInitializeCellSchema.parse

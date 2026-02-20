@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smWorkingSchedules, smStaff, smShifts } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, WorkingScheduleListQuery } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
@@ -30,6 +30,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 		};
 		const query = querySchema.parse(rawQuery);
 		const offset = (query.page - 1) * query.pageSize;
+
+		const db = useDb(event);
 
 		// 关联查询员工表和班次表
 		const countResult = await db
