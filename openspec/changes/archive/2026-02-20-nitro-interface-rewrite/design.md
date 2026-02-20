@@ -308,7 +308,7 @@ export function handleDbError(error: any): JsonVO<null> {
 		message: "系统内部错误，请联系管理员",
 		data: null,
 		error: error.message || String(error),
-		stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+		stack: error.stack,
 	};
 }
 ```
@@ -401,7 +401,7 @@ export default defineHandler(async (event) => {
 			message: "查询失败",
 			data: null,
 			error: error.message || String(error),
-			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+			stack: error.stack,
 		};
 		return errorResponse;
 	}
@@ -460,7 +460,7 @@ export default defineHandler(async (event) => {
 			message: "查询失败",
 			data: null,
 			error: error.message || String(error),
-			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+			stack: error.stack,
 		};
 		return errorResponse;
 	}
@@ -506,7 +506,7 @@ export default defineHandler(async (event) => {
 			message: "创建失败",
 			data: null,
 			error: error.message || String(error),
-			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+			stack: error.stack,
 		};
 		return errorResponse;
 	}
@@ -566,7 +566,7 @@ export default defineHandler(async (event) => {
 			message: "更新失败",
 			data: null,
 			error: error.message || String(error),
-			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+			stack: error.stack,
 		};
 		return errorResponse;
 	}
@@ -618,7 +618,7 @@ export default defineHandler(async (event) => {
 			message: "删除失败",
 			data: null,
 			error: error.message || String(error),
-			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+			stack: error.stack,
 		};
 		return errorResponse;
 	}

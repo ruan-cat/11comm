@@ -267,7 +267,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 3. 认真评估本项目的 schema 数据库表相关的文件，为了给 AI 大模型给予清晰的记忆项，请你总结一条简短的，清晰的记忆项，在 CLAUDE.md 写入相关的 schema 知识，告知大模型如何对待本项目出现的 schema 。
 4. 认真评估关于 `openspec\specs` 的概念。我希望 AI 大模型能够学会看情况读取 openspec\specs 目录的规范，了解清楚本项目能够使用的，遵守的规范文档。
 
-## 010 <!-- TODO: 一次性 长任务 未完成 --> 完成 nitro 接口改写任务 `nitro-interface-rewrite`
+## 010 完成 nitro 接口改写任务 `nitro-interface-rewrite`
 
 我需要你设计，并完成一次重大的代码写法改造改写任务。
 
@@ -401,6 +401,8 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 ### vitest 新建统一的配置钩子，来完成 neon 环境变量的获取
 
 为了测试 nitro 接口，测试真实的 neon 数据库连接。为了确保在 github action 这样的云环境内仍旧可以完成测试任务，你肯定是需要做好拉取远程 vercel 环境变量的步骤的。我希望你用 context7 MCP 工具，或者是其他联网查询的工具，看看在这样的场景下，怎么去给整个 vitest 配置一个集中式的获取环境变量的步骤。看看 vitest 的官方文档。
+
+## 012 <!-- TODO: --> 处理 nitro 接口的生产环境故障
 
 ---
 
