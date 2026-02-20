@@ -126,7 +126,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<InvoiceListIt
 			applicationAmount: item.amount?.toString() || "",
 			invoiceNumber: item.invoiceNo || "",
 			auditStatus: item.auditStatus || "",
-			applicationTime: item.applicationTime ? new Date(item.applicationTime).toISOString() : "",
+			applicationTime: item.applicationTime ? formatDateTime(item.applicationTime) : "",
 			createTime: formatDateTime(item.createTime),
 			updateTime: formatDateTime(item.updateTime),
 			remark: item.remark || "",

@@ -108,7 +108,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReserveVenueO
 			site: item.timeSlot || "",
 			reserver: item.booker || "",
 			reservationPhone: item.contactPhone || "",
-			reservationDate: item.reservationTime ? new Date(item.reservationTime).toISOString().split("T")[0] : "",
+			reservationDate: item.reservationTime ? formatDateTime(item.reservationTime).split(" ")[0] : "",
 			reservationTime: item.timeSlot || "",
 			receivableAmount: "",
 			receivedAmount: "",

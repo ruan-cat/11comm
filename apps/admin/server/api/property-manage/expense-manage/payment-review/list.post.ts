@@ -21,7 +21,7 @@ const querySchema = z.object({
 	sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 
-export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
+export default defineHandler(async (event) => {
 	try {
 		const body = (await readBody(event)) as any;
 		const rawQuery = {
@@ -76,7 +76,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			updateTime: formatDateTime(item.updateTime),
 		}));
 		const totalPages = Math.ceil(total / query.pageSize);
-		const response: JsonVO<PageDTO<any>> = {
+		const response: JsonVO<PageDTO<(typeof list)[number]>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",

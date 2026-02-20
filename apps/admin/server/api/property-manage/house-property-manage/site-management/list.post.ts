@@ -107,6 +107,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<SiteManagemen
 			administratorPhone: "",
 			status: "enabled",
 			createTime: formatDateTime(item.createTime),
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

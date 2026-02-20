@@ -10,7 +10,8 @@ import { db } from "server/db";
 import { rptExpenseSummaries } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, ArrearsDetailsListItem, ArrearsDetailsListQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
-import { desc, like, sql, eq, and, or } from "drizzle-orm";
+import { desc, like, sql, eq, and } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -98,6 +99,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ArrearsDetail
 			endTime: item.periodEnd || "",
 			arrearsDuration: "",
 			arrearsAmount: item.outstandingTotal || "0",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

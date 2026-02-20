@@ -11,6 +11,7 @@ import { rptNoChargeHouses } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, NoChargeHouseListItem, NoChargeHouseQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql, and } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -87,6 +88,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<NoChargeHouse
 			houseNumberContractName: item.houseNumber || "",
 			ownerName: item.ownerInfo || "",
 			ownerPhone: "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		const totalPages = Math.ceil(total / query.pageSize);

@@ -10,7 +10,8 @@ import { db } from "server/db";
 import { rpRepairOrders } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { RepairsHaveDoneListItem, RepairsHaveDoneQueryParams } from "@01s-11comm/type";
-import { and, desc, like, asc, sql, eq, isNull } from "drizzle-orm";
+import { and, desc, like, asc, sql, eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -126,7 +127,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairsHaveDo
 			maintenanceType: item.maintenanceType || "",
 			reporter: item.reporterName || "",
 			contactInfo: item.contactPhone || "",
-			appointmentTime: item.appointmentTime ? new Date(item.appointmentTime).toISOString() : "",
+			appointmentTime: item.appointmentTime ? formatDateTime(item.appointmentTime) : "",
 			status: item.status || "completed",
 			remark: item.remark || "",
 		}));

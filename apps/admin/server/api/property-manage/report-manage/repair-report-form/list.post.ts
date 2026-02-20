@@ -11,6 +11,7 @@ import { rptRepairReports } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, RepairReportFormListItem, RepairReportFormQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql, and } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -84,7 +85,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReportF
 			reporter: "",
 			reporterPhone: "",
 			repairAddress: "",
-			reportTime: item.createTime ? new Date(item.createTime).toISOString() : "",
+			reportTime: item.createTime ? formatDateTime(item.createTime) : "",
 			handler: "",
 			processor: "",
 			feeStatus: "",

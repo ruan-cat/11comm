@@ -130,6 +130,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<HouseListItem
 			ownerName: "",
 			remark: item.remark || "",
 			createTime: formatDateTime(item.createTime),
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 		}));
 
 		/** 计算总页数 */

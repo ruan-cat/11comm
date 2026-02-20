@@ -105,6 +105,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerAccountL
 			accountBalance: item.balance?.toString() || "0",
 			deductHouseNo: item.deductionHouse || "",
 			createTime: formatDateTime(item.createTime),
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			remark: item.remark || "",
 		}));
 

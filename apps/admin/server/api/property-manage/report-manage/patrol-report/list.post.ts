@@ -11,6 +11,7 @@ import { rptPatrolReports } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, PatrolReportListItem, PatrolReportQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
 import { desc, like, sql, and } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -93,7 +94,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolReportL
 			patrolType: item.period || "",
 			patrolLevel: item.dimension || "",
 			responsiblePerson: "",
-			patrolTime: item.createTime ? new Date(item.createTime).toISOString() : "",
+			patrolTime: item.createTime ? formatDateTime(item.createTime) : "",
 			status: item.completedTasks ? "已完成" : "未完成",
 			abnormalCount: item.abnormalTasks || 0,
 		}));

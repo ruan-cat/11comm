@@ -84,7 +84,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReports
 			pendingRevisitCount: 0,
 			dissatisfiedCount: 0,
 			emergencyCount: 0,
-			statisticsTime: item.createTime ? new Date(item.createTime).toISOString() : "",
+			statisticsTime: item.createTime ? formatDateTime(item.createTime) : "",
 			createTime: formatDateTime(item.createTime),
 			updateTime: formatDateTime(item.updateTime),
 		}));
