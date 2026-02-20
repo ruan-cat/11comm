@@ -17,7 +17,7 @@ detail: Key columns "owner_id" and "id" are of incompatible types: text and uuid
 
 ## 3. 根因分析
 
-1.  **初始迁移文件错误**：初始迁移文件 `0000_careful_thunderball.sql` 包含了错误的列类型定义。虽然 Schema 定义文件 (`apps/admin/server/db/schemas/contract.ts`) 可能已经被修改，但 Drizzle Kit 在生成初始迁移时捕获了当时的状态，其中 `ownerId` 被定义为 `text` 类型。
+1.  **初始迁移文件错误**：初始迁移文件 `0000_careful_thunderball.sql` 包含了错误的列类型定义。虽然 Schema 定义文件 (`apps/type/src/business/contract-manage/schema.ts`) 可能已经被修改，但 Drizzle Kit 在生成初始迁移时捕获了当时的状态，其中 `ownerId` 被定义为 `text` 类型。
 2.  **约束冲突**：同一个迁移文件（或同一个事务中）试图在 `text` 类型的列上建立指向 `uuid` 类型列的外键约束，这是 PostgreSQL 不允许的。
 3.  **迁移应用失败**：由于初始迁移文件本身包含逻辑错误，导致第一次迁移就未能成功应用。因此，后续试图通过新的迁移文件（`0001_...`）来修复类型问题的尝试也无法执行，因为 Drizzle 要求迁移必须按顺序应用。
 4.  **数据库状态不一致**：虽然 `db:generate` 成功生成了修复后的 `0001` 迁移文件，但由于 `0000` 迁移从未成功应用，数据库中没有任何业务表，导致系统处于一种“已有迁移文件但无对应数据库表”的不一致状态。
@@ -25,7 +25,7 @@ detail: Key columns "owner_id" and "id" are of incompatible types: text and uuid
 ## 4. 解决过程
 
 1.  **Schema 修正**：
-    - 确认并修正 `apps/admin/server/db/schemas/contract.ts` 中的 `ownerId` 字段类型为 `uuid`。
+    - 确认并修正 `apps/type/src/business/contract-manage/schema.ts` 中的 `ownerId` 字段类型为 `uuid`。
 
     ```typescript
     // 修正前

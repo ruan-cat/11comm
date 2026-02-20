@@ -110,13 +110,65 @@ const neonProjectId = getVercelEnvRequired("NEON_PROJECT_ID");
 
 ### 6.1. 数据库连接（server/db/index.ts）
 
+#### 懒加载模式（推荐用于 Nitro API）
+
+````typescript
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import type { H3Event } from "h3";
+import { getVercelEnvRequired } from "../utils/vercel-env";
+import * as schema from "./schema";
+
+/**
+ * 获取数据库实例（懒加载模式）
+ *
+ * 在 Cloudflare Worker 环境中，环境变量只在请求处理时可用
+ * 因此需要在每个请求时动态初始化数据库连接
+ *
+ * @param event - H3 事件对象
+ * @returns Drizzle 数据库实例
+ *
+ * @example
+ * ```typescript
+ * // 在 API 路由中使用
+ * export default defineEventHandler(async (event) => {
+ *   const db = useDb(event);
+ *   return await db.select().from(users);
+ * });
+ * ```
+ */
+export function useDb(event: H3Event) {
+	// 如果事件上下文中已有数据库实例，直接返回（单例模式）
+	if (event.context.db) {
+		return event.context.db;
+	}
+
+	// 从环境变量获取数据库 URL（使用 Vercel 前缀）
+	const envDatabaseUrl = getVercelEnvRequired("DATABASE_URL");
+
+	// 创建新的数据库连接并缓存到事件上下文中
+	const envSql = neon(envDatabaseUrl);
+	const envDbInstance = drizzle(envSql, { schema });
+	event.context.db = envDbInstance;
+
+	return envDbInstance;
+}
+````
+
+#### Seed 脚本模式
+
 ```typescript
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { getDatabaseUrl } from "../utils/vercel-env";
+import * as schema from "./schema";
 
-const sql = neon(getDatabaseUrl());
-export const db = drizzle(sql, { schema });
+// 使用 getDatabaseUrl 获取数据库连接（seed 脚本使用）
+const databaseUrl = getDatabaseUrl();
+const sql = databaseUrl && databaseUrl !== "postgres://dummy:dummy@localhost:5432/dummy" ? neon(databaseUrl) : null;
+const dbInstance = sql ? drizzle(sql, { schema }) : null;
+
+export const db = dbInstance;
 ```
 
 ### 6.2. Drizzle 配置（drizzle.config.ts）

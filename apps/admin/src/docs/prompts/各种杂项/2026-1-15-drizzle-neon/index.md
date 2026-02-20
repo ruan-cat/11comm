@@ -62,10 +62,10 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 ## 004 初始化 neon 数据库的数据库表字段定义 `init-neon-db-schema`
 
-1. 目前，`apps\admin\server\db\schema.ts` 是空的。因此 admin 项目的 package.json 的 `db:generate` 命令无法使用。因为没有具体的表设置，所以无法生成数据库迁移 sql。
+1. 目前，`apps/type/src/business` 目录是空的（刚开始时）。因此 type 项目的 `db:generate` 命令无法使用。因为没有具体的表设置，所以无法生成数据库迁移 sql。
 2. 我需要你全面的阅读全部类型项目内出现的文件。了解清楚涉及到的业务类型有哪些。
 3. 你需要全面的阅读 `apps\admin\server\api` 内出现的 nitro 接口，了解清楚涉及到那些数据内容。
-4. 根据你阅读的内容，在 `apps\admin\server\db` 目录内，设计，并新建数据库表。做好扁平化的文件拆分。避免出现单个过长的 `apps\admin\server\db\schema.ts` 文件。
+4. 根据你阅读的内容，在 `apps/type/src/business/{domain}/{module}` 目录内，设计，并新建数据库表。每个模块对应一个 `schema.ts` 文件。
 5. 这是一个上下文繁重的任务，文件非常多，但是迁移改造难度简单的任务。请你适当的使用 MCP 或者是 skills 技能，使用和 gemini 相关的工具或技能，辅助你完成大量上下文的阅读任务。
 6. 这是一个多文件任务，请你设计多个并行运行的子代理，批量的，高效率完成代码修改任务。
 
@@ -73,7 +73,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 ### 01 检查任务并自我复查是否有缺漏缺省的内容
 
-请你仔细检查一下，是否有缺漏的模块没有新建 `apps\admin\server\db\schemas` 数据库表字段设计。
+请你仔细检查一下，是否有缺漏的模块没有新建 `apps/type/src/business/{domain}/{module}/schema.ts` 数据库表字段设计。
 
 为 openspec 的 `init-neon-db-schema` 任务，重新检查，完成全部类型项目、nitro 接口涉及到的全部模块的表设计。
 
@@ -81,7 +81,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 ### 02 列举说明清楚 schema 目录内全部的数据库表，便于查询了解
 
-现在 `apps\admin\server\db\schemas` 目录内有很多数据库表。我也能在 neon 内看到这些新建的数据库表了，但是我直接去阅读 neon 时，看到那么多表名，还是搞不清这些表。
+现在 `apps/type/src/business` 目录内有很多数据库表。我也能在 neon 内看到这些新建的数据库表了，但是我直接去阅读 neon 时，看到那么多表名，还是搞不清这些表。
 
 1. 新建本地技能 `neon-db-list` ： 请你帮我新建一个本地级别的 skills 技能，这个技能本质上就是一个清单表，全部数据库表名的清单表。在 `.claude\skills\neon-db-list` 内新建这款技能。
    - 新建技能时，请务必满足 skills 的要求。请你使用全局提供的 `skill-creator` 技能，来新建这款本地项目级别的技能 `neon-db-list` 。
@@ -95,7 +95,7 @@ comm_admin_11__NEON_PROJECT_ID="xxx"
 
 ### 04 排查现有的 schema 是否存在冲突配置
 
-我很怀疑 `apps\admin\server\db\schemas` 目录内设计的数据库表之间的关系很混乱。是否会出现键关联冲突的问题。
+我很怀疑 `apps/type/src/business` 目录内设计的数据库表之间的关系很混乱。是否会出现键关联冲突的问题。
 
 请你帮我深度检查以下隐患，避免出现故障。
 
@@ -401,3 +401,20 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 ### vitest 新建统一的配置钩子，来完成 neon 环境变量的获取
 
 为了测试 nitro 接口，测试真实的 neon 数据库连接。为了确保在 github action 这样的云环境内仍旧可以完成测试任务，你肯定是需要做好拉取远程 vercel 环境变量的步骤的。我希望你用 context7 MCP 工具，或者是其他联网查询的工具，看看在这样的场景下，怎么去给整个 vitest 配置一个集中式的获取环境变量的步骤。看看 vitest 的官方文档。
+
+---
+
+1. 及时关闭掉你开启的 Background 任务。
+2. 不要在环境变量内写死敏感的值，apps\admin.env.development 不应该这样。
+3. 你的本次更改属于非常巨大的破坏性变更，请你认真检查现在的后台项目提供的文档教程，肯定有过时的内容，请更改。
+4. 另外，我们的 skills 技能，关于 neon drizzle 链接数据库的内容，肯定是差异很大的，请你认真检查现在过时的 skills 内容，完成更改。
+5. 务必确保你编写的计划，能够使用 agent team，新建多个并发运行的子代理，完成修改任务。确保教程文档，和 skills 指导技能，都能够及时的完成更新。确保不会过时。
+6. 确保不要继续占用主代理的上下文窗口。
+
+---
+
+/git-commit 本次更改非常多，我需要你制定一个非常详细的计划，实现对本次大批量更改的提交。应该分为多个 git commit 提交。务必按照业务类型，修改内容，修改范围，划分出多个细致的 git commit 提交信息。
+
+务必使用 agent team 来实现计划的生成，避免占用主代理的上下文窗口。
+
+---

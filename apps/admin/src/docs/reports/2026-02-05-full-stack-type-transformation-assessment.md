@@ -14,7 +14,7 @@
 本报告基于 `2026-02-05-init-neon-db-schema-exploration-report.md` 及当前项目架构，深度评估了将 `apps/type` 改造为全栈统一类型源（Single Source of Truth, SSOT）的可行性与实施路径。
 
 **核心结论**：
-建议实施**"Schema 迁移与类型左移"**策略。将目前位于 `apps/admin/server/db/schemas` 的数据库定义（Drizzle Schemas）完全迁移至 `apps/type` 项目中。使 `apps/type` 升级为**业务核心定义包**，同时提供运行时 Schema 对象（给服务端使用）和静态类型/验证规则（给前后端使用）。
+建议实施**"Schema 迁移与类型左移"**策略。将目前位于 `apps/type/src/business` 的数据库定义（Drizzle Schemas）完全升级为 `apps/type` 项目中。使 `apps/type` 升级为**业务核心定义包**，同时提供运行时 Schema 对象（给服务端使用）和静态类型/验证规则（给前后端使用）。
 
 ---
 
@@ -57,7 +57,7 @@
 
 #### 阶段二：Schema 物理迁移 (Physical Migration)
 
-1.  将 `apps/admin/server/db/schemas/*.ts` 移动到 `apps/type/src/schemas/`。
+1.  直接在 `apps/type/src/business/{domain}/{module}/schema.ts` 中使用 Schema 定义。
 2.  在 `apps/type` 内部配置 Drizzle 字段定义。
 3.  **关键步骤**：在 `apps/type` 中保留原有的 `src/business` 目录结构。
 4.  修改 `apps/admin` 中的引用，将其指向 `@01s-11comm/type` 导出的 Schemas。

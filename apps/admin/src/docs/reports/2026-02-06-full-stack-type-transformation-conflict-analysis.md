@@ -33,7 +33,7 @@
 
 ### 3.1 Schema 存储位置
 
-- **旧路径**: `apps/admin/server/db/schemas/**/*.ts`
+- **旧路径**: `apps/admin/server/db/schemas/**/*.ts` (已废弃)
 - **新路径**: `apps/type/src/business/**/schema.ts` (遵循 Business Path First)
 
 **冲突文件清单**:

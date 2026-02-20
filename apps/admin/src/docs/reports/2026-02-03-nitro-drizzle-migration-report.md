@@ -30,7 +30,7 @@
 
 ### 2.3 Type System 与 DB Schema 的映射关系
 
-**分析**：我们对比了 `apps/type` (前端业务类型) 和 `apps/admin/server/db/schemas` (数据库定义)。
+**分析**：我们对比了 `apps/type` (前端业务类型) 和 `apps/type/src/business` (数据库定义)。
 
 - **一致性**：对于大多数实体表（如 `sm_staff` 员工表、`sm_roles` 角色表），数据库的 `snake_case` 列名通过 Drizzle 定义可以自动映射为 JS 对象的 `camelCase` 属性，与前端类型高度一致。
 - **差异点**：对于部分特殊模块，如 `SystemConfig` (系统配置)，数据库采用了 Key-Value (`config_key`, `config_value`) 的通用存储结构，而前端类型定义的是结构化的对象 (`{ title: string, logoUrl: string }`)。

@@ -39,7 +39,7 @@
 
 当业务发展需要新增数据表时：
 
-1.  **定位模块**：在 `apps/admin/server/db/schemas/` 目录下找到对应的业务模块文件（例如 `community.ts`）。
+1.  **定位模块**：在 `apps/type/src/business/{domain}/{module}/schema.ts` 目录下找到对应的业务模块文件。
 2.  **编写定义**：引入公共工具函数，编写 Drizzle 表定义。
 
     ```typescript
@@ -71,10 +71,10 @@
 
 当系统扩展全新领域（如物联网模块）时：
 
-1.  **创建文件**：在 `schemas/` 目录下新建模块文件，例如 `iot.ts`。
-2.  **统一导出**：在 `apps/admin/server/db/schema.ts` 入口文件中注册新模块：
+1.  **创建文件**：在 `apps/type/src/business/` 目录下新建模块文件，例如 `iot/schema.ts`。
+2.  **统一导出**：在 `apps/type/src/business/index.ts` 入口文件中注册新模块：
     ```typescript
-    export * from "./schemas/iot";
+    export * from "./iot";
     ```
 3.  **同步变更**：运行上述的同步命令即可。
 
@@ -89,10 +89,12 @@
 │                                                             │
 │   1. Write Code (The Truth)                                 │
 │   ┌───────────────────────────────┐                         │
-│   │ apps/admin/server/db/schemas/ │                         │
-│   │ ├── community.ts              │                         │
-│   │ ├── parking.ts                │                         │
-│   │ └── ... (TypeScript)          │                         │
+│   │ apps/type/src/business/     │                         │
+│   │ ├── community-manage/       │                         │
+│   │ │   └── schema.ts           │                         │
+│   │ ├── parking-manage/         │                         │
+│   │ │   └── schema.ts           │                         │
+│   │ └── ... (TypeScript)        │                         │
 │   └──────────────┬────────────────┘                         │
 │                  │                                          │
 │                  ▼                                          │
