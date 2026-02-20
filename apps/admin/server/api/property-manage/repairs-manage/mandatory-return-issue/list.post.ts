@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { rpMandatoryReturnIssues, rpRepairOrders } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { MandatoryReturnIssueListItem, MandatoryReturnIssueQueryParams } from "@01s-11comm/type";
@@ -43,6 +43,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<MandatoryRetu
 		};
 
 		const query = querySchema.parse(rawQuery);
+
+		const db = useDb(event);
 
 		/** 计算分页参数 */
 		const offset = (query.page - 1) * query.pageSize;
