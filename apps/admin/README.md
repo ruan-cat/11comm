@@ -1,6 +1,78 @@
 # 11comm 智慧社区项目
 
-<!-- TODO: 待补全说明 -->
+## 项目技术架构
+
+本项目是一个基于 **Vue 3 + TypeScript** 的全栈管理后台，采用 **Monorepo** 结构管理多个子项目。
+
+### 核心技术栈
+
+| 层级      | 技术选型                           |
+| :-------- | :--------------------------------- |
+| 前端框架  | Vue 3 + Vite + TypeScript          |
+| UI 组件库 | Element Plus + Plus Pro Components |
+| 状态管理  | Pinia                              |
+| 后端框架  | Nitro v3 (Nitro v3 + H3)           |
+| 数据库    | Neon Serverless Postgres           |
+| ORM       | Drizzle ORM                        |
+| 类型库    | @01s-11comm/type (同构运行时库)    |
+
+### Schema 架构 (Trinity Pattern)
+
+项目采用 **Schema 驱动开发**模式，所有数据库表定义遵循 **Trinity Pattern**：
+
+1. **Drizzle Table** - 数据库表定义
+2. **Zod Schemas** - 运行时验证（`insertXxxSchema`, `selectXxxSchema`, `updateXxxSchema`）
+3. **TypeScript Types** - 静态类型（`NewXxx`, `Xxx`, `UpdateXxx`）
+
+**Schema 文件位置**：`apps/type/src/business/{domain}/{module}/schema.ts`
+
+例如：
+
+- 字典管理：`apps/type/src/business/dev-team/config-manage/dictionary/schema.ts`
+- 房产管理：`apps/type/src/business/property-manage/house-property-manage/schema.ts`
+- 费用管理：`apps/type/src/business/property-manage/expense-manage/house-charge/schema.ts`
+
+### API 开发规范
+
+所有 Nitro 接口遵循统一的开发规范：
+
+- 使用 `defineHandler` 与 `nitro/h3` 导入
+- 响应必须使用 `JsonVO<T>` 类型注解约束
+- 统一使用 `message` 字段（不是 `msg`）
+- 入参通过 `readValidatedBody` + Zod Schema 校验
+- Insert 操作使用 `as unknown as NewX` 类型回填
+- 错误响应包含 `error` 和 `stack` 字段
+
+详见：[Nitro API 开发技能](../.claude/skills/nitro-api-development/SKILL.md)
+
+### 类型共享架构
+
+项目使用 `@01s-11comm/type` 作为前后端共享的类型库：
+
+- **位置**：`apps/type/src/`
+- **导出方式**：按业务路径组织，使用 `index.ts` 统一导出
+- **依赖**：被 `apps/admin` 和 `apps/type` 自身引用
+
+### 数据库迁移
+
+使用 Drizzle ORM 进行数据库版本管理：
+
+```bash
+# 生成迁移文件
+pnpm db:generate
+
+# 执行迁移
+pnpm db:migrate
+
+# 推送 schema 变更（开发环境）
+pnpm db:push
+
+# 生成种子数据
+pnpm db:generate-seed
+pnpm db:seed
+```
+
+详见：[Schema 开发规范](./src/docs/guides/db-schema.md)
 
 ## 套用的模板
 
