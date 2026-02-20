@@ -3,15 +3,14 @@ import { drizzle } from "drizzle-orm/neon-http";
 import type { H3Event } from "h3";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
-import { getDatabaseUrl, getVercelEnvRequired } from "server/utils/vercel-env";
 
 /**
  * 创建 Neon 数据库连接（用于 seed 脚本）
- * 使用环境变量直接创建连接，不依赖运行时配置
- * 使用 Vercel 前缀获取环境变量
+ * 注意：Cloudflare Worker 环境下 process.env 在模块顶层不可用
+ * seed 脚本需要在运行时通过 useDb(event) 获取数据库连接
  */
-const databaseUrl = getDatabaseUrl();
-const sql = databaseUrl && databaseUrl !== "postgres://dummy:dummy@localhost:5432/dummy" ? neon(databaseUrl) : null;
+const databaseUrl = process.env.COMM_ADMIN_11__DATABASE_URL;
+const sql = databaseUrl ? neon(databaseUrl) : null;
 const dbInstance = sql ? drizzle(sql, { schema }) : null;
 
 /**
@@ -49,11 +48,19 @@ export function useDb(event: H3Event): DbType {
 		return event.context.db as DbType;
 	}
 
-	// 从环境变量获取数据库 URL（使用 Vercel 前缀）
-	const envDatabaseUrl = getVercelEnvRequired("DATABASE_URL");
+	// 直接使用 process.env 在运行时获取带 Vercel 前缀的环境变量
+	// 环境变量名称: comm_admin_11__DATABASE_URL (在 .env.vercel.local 中定义)
+	// 注意：process.env 会自动将环境变量名转为大写
+	const databaseUrl = process.env.COMM_ADMIN_11__DATABASE_URL;
+
+	if (!databaseUrl) {
+		throw new Error(
+			"DATABASE_URL is not configured. Please set COMM_ADMIN_11__DATABASE_URL environment variable in Cloudflare Workers.",
+		);
+	}
 
 	// 创建新的数据库连接并缓存到事件上下文中
-	const envSql = neon(envDatabaseUrl);
+	const envSql = neon(databaseUrl);
 	const envDbInstance = drizzle(envSql, { schema }) as DbType;
 	event.context.db = envDbInstance;
 
