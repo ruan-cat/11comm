@@ -35,6 +35,8 @@
 
 - `schema-and-seed-guardian` ：`.claude\skills\schema-and-seed-guardian\SKILL.md` `Schema与Seed守护技能` ，用于预防数据库 schema 定义和 seed 数据生成中的常见错误。
 
+- `schema-change-sync` ：`.claude\skills\schema-change-sync\SKILL.md` `Schema变更同步技能` ，数据库 Schema 变更时的全项目同步检查清单。当修改表字段或新增数据库表时，确保类型项目、数据库迁移、后端接口、前端页面、种子数据和技能文档全部同步更新。
+
 - `neon-db-list` ：`.claude\skills\neon-db-list\SKILL.md` `Neon数据库表清单技能` ，维护项目所有数据库表的清单，便于快速查询和理解表结构。
 
 - `neon-postgres-zh` ：`.claude\skills\neon-postgres-zh\SKILL.md` `Neon Postgres中文文档技能` ，Neon PostgreSQL 数据库服务的中文参考文档。
