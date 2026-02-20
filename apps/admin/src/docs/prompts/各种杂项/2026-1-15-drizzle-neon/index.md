@@ -376,7 +376,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
    > `nitro-api-development` 对日期的使用就是错误的。
    - .claude\skills\nitro-api-development\SKILL.md
 
-### 07 <!-- TODO: --> 全面检查 nitro 接口对各项技能的执行程度和落实程度
+### 07 全面检查 nitro 接口对各项技能的执行程度和落实程度
 
 我们的 nitro 接口经过了很多轮的迭代，其行为标准都参差不齐。效果很差。
 
