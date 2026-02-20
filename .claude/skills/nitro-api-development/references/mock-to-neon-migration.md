@@ -6,7 +6,7 @@
 
 ### Step 1: 准备数据库 Schema
 
-1.  在 `apps/admin/server/db/schemas/` (或 `apps/type`，视迁移阶段而定) 下创建对应的 Schema 定义文件。
+1.  在 `apps/type/src/business/{domain}/{module}/schema.ts` 下创建对应的 Schema 定义文件。
 2.  确保导出 Drizzle Table 对象 (例如 `export const smSystemConfigs = pgTable(...)`)。
 3.  运行 `pnpm db:generate` 和 `pnpm db:migrate` (或 `drizzle-kit push`) 更新数据库结构。
 

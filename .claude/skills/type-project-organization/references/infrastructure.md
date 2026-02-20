@@ -23,7 +23,7 @@
 ## 数据库 Schema 配置 (Drizzle)
 
 - **配置文件**：位于 `apps/admin` 目录下的 `drizzle.config.ts`。
-- **Schema 路径**：指向 `apps/admin/server/db/schema.ts`。
+- **Schema 路径**：指向 `apps/type/src/index.ts`。
 - **输出目录**：迁移文件生成到 `apps/admin/server/db/migrations`。
 
 ## 环境一致性 (Environment Consistency)

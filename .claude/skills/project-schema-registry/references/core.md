@@ -4,7 +4,7 @@ This reference documents the technical core infrastructure tables.
 
 ## Common Schema Module
 
-系统 SHALL 在 `apps/admin/server/db/schemas/common.ts` 提供公共的 schema 基础设施模块。
+系统 SHALL 在 `apps/type/src/business/{domain}/{module}/schema.ts` 提供公共的 schema 基础设施模块。
 
 ### Scenario: Export primary key helper
 
@@ -47,7 +47,7 @@ This reference documents the technical core infrastructure tables.
 
 ## Schema Entry Point
 
-系统 SHALL 在 `apps/admin/server/db/schema.ts` 提供统一的 schema 导出入口。
+系统 SHALL 在 `apps/type/src/index.ts` 提供统一的 schema 导出入口。
 
 ### Scenario: Export all module schemas
 
@@ -61,7 +61,7 @@ This reference documents the technical core infrastructure tables.
 
 ## Database Connection Module
 
-系统 SHALL 在 `apps/admin/server/db/index.ts` 提供数据库连接实例。
+系统 SHALL 在 `apps/type/src/index.ts` 提供数据库连接实例。
 
 ### Scenario: Create Neon database connection
 

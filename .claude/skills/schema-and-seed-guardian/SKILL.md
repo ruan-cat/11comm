@@ -7,10 +7,10 @@ description: 当你修改数据库结构或种子生成脚本时，请务必阅�
 
 > **[MIGRATION NOTICE]** Schema 定义位置正在迁移中:
 >
-> - **旧位置 (Legacy)**: `apps/admin/server/db/schemas` - 仅供只读参考，不要添加新 Schema
+> - **旧位置 (Legacy)**: `apps/admin/server/db/schemas` - 仅供只读参考，新 Schema 应在 `apps/type/src/business/{domain}/{module}/schema.ts` 中创建
 > - **新位置 (Active)**: `apps/type/src/business/**/schema.ts` - **所有新 Schema 必须在此创建**
 >
-> **重要**: 当你需要添加新列或新表时，应在 `apps/type` 项目中创建 Zod Schema + Drizzle Table，而非在 `apps/admin/server/db/schemas` 中。
+> **重要**: 当你需要添加新列或新表时，应在 `apps/type/src/business/{domain}/{module}/schema.ts` 中创建 Zod Schema + Drizzle Table。
 
 本技能总结了项目在数据库架构变更和种子数据生成方面的血泪经验。请在进行相关开发时严格查阅以下 Checklist。
 
@@ -19,7 +19,7 @@ description: 当你修改数据库结构或种子生成脚本时，请务必阅�
 **在修改或新增 Schema 定义时**:
 
 - **新 Schema**: 在 `apps/type/src/business/**/schema.ts` 中创建
-- **现有 Schema (Legacy)**: 在 `apps/admin/server/db/schemas/*.ts` 中维护（仅限已存在的表）
+- **现有 Schema (Legacy)**: 在 `apps/type/src/business/{domain}/{module}/schema.ts` 中维护（仅限已存在的表）
 
 ### 1. 软删除与唯一索引 (Critical)
 

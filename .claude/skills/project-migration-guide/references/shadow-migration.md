@@ -18,7 +18,7 @@ The migration MUST follow this sequence:
 
 ### Single Module Migration
 
-1.  **Source**: `apps/admin/server/db/schemas/<module>.ts`
+1.  **Source**: `apps/type/src/business/{domain}/{module}/schema.ts` (legacy path: `apps/admin/server/db/schemas/<module>.ts`)
 2.  **Target**: `apps/type/src/business/<domain>/<module>/schema.ts`
 3.  **Action**: Copy `pgTable`, add Zod Schemas (`createInsertSchema`, etc.), inferred Types.
 4.  **Export**: Add to `index.ts`.
@@ -36,5 +36,5 @@ Triggered when **ALL** modules are migrated.
 
 ### Cleanup Phase
 
-1.  **Delete**: Remove `apps/admin/server/db/schemas/`.
+1.  **Delete**: Remove legacy `apps/admin/server/db/schemas/` directory if it still exists.
 2.  **Search & Replace**: Replace all imports of old paths with `@01s-11comm/type`.
