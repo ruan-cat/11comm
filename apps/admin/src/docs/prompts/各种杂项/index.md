@@ -299,3 +299,14 @@ overrides:
    - 说明清楚在更新 schema 数据库表后，应该按照顺序，运行那些命令，才能够及时的更新 neon 云数据库。
 
 在你更新 `guides\seed-commands.md` 文档时，请你确保文档内已经有的知识点，不被你删除掉，遗漏掉，确保不要出现文档核心内容的遗忘。除非遇到冲突的，过时的内容，否则其他核心的指导能力的文本，都不要删除修改。
+
+## 025 拓展 cloudflare worker 的部署命令，确保能够获取到来自 vercel 的环境变量
+
+编写一个 turbo 命令，确保我在运行 `vite:build:prod:cloudflare` 这个命令时，可以在 cloudflare worker 内按照以下流程执行：
+
+1. env:pull 拉取环境变量。
+2. `NITRO_PRESET=cloudflare_module NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner` 针对 cloudflare worker 环境完成部署。
+
+需要你适当的重写 `vite:build:prod:cloudflare` 命令，在 admin 后台项目内编写合适的 turbo 命令，确保完成链式任务调度。
+
+确保运行的命令，在 cloudflare worker 内，能够得到全局的 vercel 和 turbo 这两个全局包，确保运行顺利安全。
