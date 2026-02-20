@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { and, like, desc, sql } from "drizzle-orm";
 import { opReportComponents, opReportInfos, selectOpReportComponentSchema } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 报表组件列表查询参数 Schema */
 const searchReportComponentSchema = z.object({
@@ -118,8 +119,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportCompone
 			description: "",
 			sortOrder: 0,
 			isEnabled: true,
-			createTime: item.createTime || "",
-			updateTime: item.updateTime || "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			operator: "",
 		}));
 

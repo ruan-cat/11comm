@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { and, eq, like, desc, sql } from "drizzle-orm";
 import { smCommunityConfigurations } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 小区配置列表查询参数 Schema */
 const searchCommunityConfigurationSchema = z.object({
@@ -118,8 +119,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<CommunityConf
 			settingType: item.settingType || "",
 			statusCd: item.statusCd || "",
 			remark: item.remark || "",
-			createTime: item.createTime || "",
-			updateTime: item.updateTime || "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			operator: item.operator || "",
 		}));
 

@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { and, like, desc, sql } from "drizzle-orm";
 import { opReportGroups } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 报表组列表查询参数 Schema */
 const searchReportGroupSchema = z.object({
@@ -98,8 +99,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<ReportGroupLi
 			sortOrder: item.sortOrder || 0,
 			isEnabled: true,
 			reportCount: 0,
-			createTime: item.createTime || "",
-			updateTime: item.updateTime || "",
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 			operator: "",
 		}));
 
