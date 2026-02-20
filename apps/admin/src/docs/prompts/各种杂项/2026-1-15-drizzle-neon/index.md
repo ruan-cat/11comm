@@ -456,3 +456,23 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 另外，我记得在 .output 目录内，在 `NITRO_PRESET=cloudflare_module` 构建用途的环境变量设置下，运行 `vite:build:prod:cloudflare` 命令会在 .output 目录内，生成有效的 `wrangler.toml` 配置文件。只要你检查到本地的 `wrangler.toml` 内最终提供了目标环境变量，带有前缀的 neon 数据库环境变量，那么就认定为改造成功。
 
 我给你说明清楚了实现链路，请你查询资料，并实现我给你的思路。
+
+请你适当的更改 `docs\plans\2026-02-20-cloudflare-worker-neon-fix.md` 这份计划文档，并且最后也希望你统筹整理好代码。
+
+### 03 避免 `apps\admin\nitro.config.ts` 文件出现重复冗余的代码
+
+我不喜欢你在 `apps\admin\nitro.config.ts` 内重复编写 `apps\admin\server\utils\vercel-env.ts` 内已经实现好的代码，请你优化 `apps\admin\nitro.config.ts` 配置文件，确保不要出现明显的代码冗余情况。
+
+请你使用相对路径的方式，使用这些配置。
+
+并且，请你运行后台项目提供的 `vite:build:prod:cloudflare` 命令，以便确保修改后的 nitro 配置文件，仍旧可以正常实现为了 cloudflare worker 环境下的 build 构建行为。
+
+另外，请告诉我，你是通过查询 `apps\admin\.output\**\wrangler.json` 还是通过查询 `apps\admin\.output\**\wrangler.toml` 文件来确定你成功的让 nitro 实现写入 vercel 且带有特定前缀的环境变量的？
+
+### 04 更新文档
+
+1. 请你将这一套 nitro 接口如何获取环境变量的流程，写到 `apps\admin\src\docs` 内，便于其他人维护本项目时，能够轻松阅读清楚这一整套的逻辑链路。搞懂数据流转的方式。内容包括：
+   - 获取环境变量的命令运作链路。
+   - 数据存储特点。
+   - 本地验证方式。
+2. 移动你的文件 `2026-02-20-cloudflare-worker-neon-fix` 到本项目专门的报告文档目录内。统一报告类文档的存储位置。
