@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 const adminDir = process.cwd();
 
 /**
- * 加载 Vercel Neon 环境变量
+ * 加载 Neon 环境变量（用于 Nitro 接口测试）
  *
  * 使用 @dotenvx/dotenvx 加载环境变量，确保测试可以访问 Neon 数据库连接
  */
@@ -18,12 +18,6 @@ function loadVercelEnv() {
 
 // 在测试环境加载环境变量
 loadVercelEnv();
-
-// 模拟环境变量
-Object.assign(process.env, {
-	VITE_ROUTER_HISTORY: "html5,/",
-	VITE_PUBLIC_PATH: "/",
-});
 
 /**
  * Nitro 服务器地址配置
@@ -42,10 +36,10 @@ Object.assign(process.env, {
  *
  * 测试代码中可以这样使用:
  * ```typescript
- * import { fetchNitroApi } from './tests/setup'
+ * import { fetchNitroApi } from './tests/setup-neon'
  *
  * // 在测试中调用 Nitro 接口
- * const response = await fetchNitroApi('/api/your-endpoint')
+ * const response = await fetchNitroApi('/api/dev-team/menu-manage/catalog/list')
  * ```
  */
 const NITRO_PORT = process.env.VITE_PORT || "8080";
@@ -72,8 +66,22 @@ export async function fetchNitroApi(path: string, options: RequestInit = {}): Pr
 	return response;
 }
 
+/**
+ * 检查 Nitro 服务器是否运行
+ */
+export async function checkNitroServer(): Promise<boolean> {
+	try {
+		const response = await fetch(`${NITRO_BASE_URL}/api/health`, {
+			method: "GET",
+		});
+		return response.ok;
+	} catch {
+		return false;
+	}
+}
+
 console.log("=".repeat(50));
-console.log("🧪 测试环境配置加载完成");
+console.log("🧪 Nitro 测试环境配置加载完成");
 console.log("=".repeat(50));
 console.log(`📡 Nitro 服务器地址: ${NITRO_BASE_URL}`);
 console.log("💡 如需测试真实 Nitro 接口，请先运行: pnpm dev");
