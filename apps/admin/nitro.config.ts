@@ -5,6 +5,17 @@ export default defineConfig({
 	serverDir: "./server",
 
 	/**
+	 * 运行时配置
+	 * @description
+	 * 在 Cloudflare Worker 环境中，环境变量只在请求处理时可用
+	 * 因此使用 runtimeConfig 让 Nitro 在运行时注入环境变量
+	 */
+	runtimeConfig: {
+		// 数据库连接 URL - Nitro 会自动从 NITRO_DATABASE_URL 或 DATABASE_URL 环境变量读取
+		databaseUrl: process.env.DATABASE_URL || "",
+	},
+
+	/**
 	 * 配置 Nitro 扫描目录
 	 * @description
 	 * 明确指定 Nitro 只扫描服务端目录，避免扫描客户端代码
