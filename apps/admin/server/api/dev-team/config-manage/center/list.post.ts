@@ -5,7 +5,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { dtConfigs } from "@01s-11comm/type";
 import type { ConfigCenterListItem, JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, asc, sql } from "drizzle-orm";
@@ -24,6 +24,7 @@ const querySchema = z.object({
 });
 
 export default defineHandler(async (event) => {
+	const db = useDb(event);
 	try {
 		/** 获取并验证查询参数 */
 		const body = (await readBody(event)) as any;

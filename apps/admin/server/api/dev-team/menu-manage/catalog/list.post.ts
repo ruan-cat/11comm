@@ -8,7 +8,7 @@ import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
 import type { JsonVO, PageDTO, MenuCatalogListItem } from "@01s-11comm/type";
 import { dtMenuCatalogs } from "@01s-11comm/type";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { and, desc, like, sql } from "drizzle-orm";
 import { formatDateTime } from "server/utils/format-date";
 
@@ -21,6 +21,7 @@ const querySchema = z.object({
 });
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<MenuCatalogListItem>>> => {
+	const db = useDb(event);
 	try {
 		const body = (await readBody(event)) as Record<string, unknown>;
 

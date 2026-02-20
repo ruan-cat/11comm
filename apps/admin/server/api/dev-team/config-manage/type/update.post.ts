@@ -4,12 +4,13 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { dtConfigTypes, updateDtConfigTypeSchema } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
 
 export default defineHandler(async (event) => {
+	const db = useDb(event);
 	try {
 		const body = await readValidatedBody(event, updateDtConfigTypeSchema.parse);
 		const { id, ...updateData } = body;

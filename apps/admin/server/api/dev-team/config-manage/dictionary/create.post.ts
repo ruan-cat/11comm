@@ -4,11 +4,12 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { dtDictionaries, insertDtDictionarySchema } from "@01s-11comm/type";
 import type { NewDtDictionary, JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
+	const db = useDb(event);
 	try {
 		const body = (await readValidatedBody(event, insertDtDictionarySchema.parse)) as unknown as NewDtDictionary;
 

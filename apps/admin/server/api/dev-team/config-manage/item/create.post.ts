@@ -4,11 +4,12 @@
  */
 
 import { defineHandler, readValidatedBody } from "nitro/h3";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { dtConfigItems, insertDtConfigItemSchema } from "@01s-11comm/type";
 import type { NewDtConfigItem, JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
+	const db = useDb(event);
 	try {
 		const body = (await readValidatedBody(event, insertDtConfigItemSchema.parse)) as unknown as NewDtConfigItem;
 

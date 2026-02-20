@@ -5,7 +5,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { dtConfigItems } from "@01s-11comm/type";
 import type { JsonVO } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
@@ -16,6 +16,7 @@ const bodySchema = z.object({
 });
 
 export default defineHandler(async (event) => {
+	const db = useDb(event);
 	try {
 		/** 获取并验证请求体参数 */
 		const body = (await readBody(event)) as any;
