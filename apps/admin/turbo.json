@@ -1,6 +1,9 @@
 {
 	"extends": ["//"],
 	"tasks": {
+		"env:pull": {
+			"cache": false
+		},
 		"rm:types": {
 			"cache": false
 		},
@@ -16,6 +19,11 @@
 		"vite:build:prod": {
 			"cache": true,
 			"outputs": ["dist/**"]
+		},
+		"vite:build:prod:cloudflare": {
+			"cache": true,
+			"outputs": [".output/**"],
+			"dependsOn": ["env:pull"]
 		},
 		"typedoc": {
 			"cache": false

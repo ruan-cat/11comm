@@ -18,6 +18,7 @@
 		"test:nitro": "vitest run --ui --api.port=4000 -- --node",
 		"build:staging": "turbo vite:build:staging",
 		"build:prod": "turbo vite:build:prod",
+		"build:prod:cloudflare": "turbo vite:build:prod:cloudflare",
 		"report": "pnpm build",
 		"preview": "pnpm vite:preview",
 		"preview:build": "pnpm build && pnpm preview",
