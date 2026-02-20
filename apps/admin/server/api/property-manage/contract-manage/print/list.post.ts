@@ -5,7 +5,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { ctPrints, ctContracts, ctFirstParties, ctSecondParties } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, eq, like, sql } from "drizzle-orm";
@@ -27,6 +27,7 @@ const querySchema = z.object({
  */
 export default defineHandler(async (event) => {
 	try {
+		const db = useDb(event);
 		const body = (await readBody(event)) as any;
 
 		/** 预处理参数 */
