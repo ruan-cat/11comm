@@ -7,8 +7,9 @@ import { defineHandler, getQuery } from "nitro/h3";
 import { z } from "zod";
 import { db } from "server/db";
 import { dtConfigs } from "@01s-11comm/type";
-import type { JsonVO } from "@01s-11comm/type";
+import type { JsonVO, ConfigCenterDetailItem } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -53,11 +54,15 @@ export default defineHandler(async (event) => {
 			return notFoundResponse;
 		}
 
-		const response: JsonVO<typeof config> = {
+		const response: JsonVO<ConfigCenterDetailItem> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
-			data: config,
+			data: {
+				...config,
+				createTime: config.createTime ? formatDateTime(config.createTime) : null,
+				updateTime: config.updateTime ? formatDateTime(config.updateTime) : null,
+			},
 		};
 		return response;
 	} catch (error: any) {
