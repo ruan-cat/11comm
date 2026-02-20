@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { smChangePasswordRecords } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, asc, sql } from "drizzle-orm";
@@ -44,6 +44,8 @@ export default defineHandler(async (event) => {
 		};
 
 		const query = querySchema.parse(rawQuery);
+
+		const db = useDb(event);
 
 		/** 构建查询条件 */
 		const conditions = [];

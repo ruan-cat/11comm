@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { and, like, desc, eq, sql } from "drizzle-orm";
 import { opMerchantAdmins, opMerchants } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
@@ -33,6 +33,8 @@ export default defineHandler(async (event) => {
 			page: body.page || body.pageIndex || 1,
 		};
 		const query = merchantAdminQuerySchema.parse(rawQuery);
+
+		const db = useDb(event);
 
 		// 2. 构建动态查询条件
 		const conditions = [];

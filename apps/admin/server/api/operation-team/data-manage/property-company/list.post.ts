@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { opPropertyCompanies } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, sql } from "drizzle-orm";
@@ -33,6 +33,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			phone: body.phone === "" ? undefined : body.phone,
 		};
 		const query = querySchema.parse(rawQuery);
+
+		const db = useDb(event);
 
 		// 2. 构建查询条件
 		const conditions = [];
