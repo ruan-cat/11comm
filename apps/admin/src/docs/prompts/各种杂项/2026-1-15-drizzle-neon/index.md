@@ -476,3 +476,15 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
    - 数据存储特点。
    - 本地验证方式。
 2. 移动你的文件 `2026-02-20-cloudflare-worker-neon-fix` 到本项目专门的报告文档目录内。统一报告类文档的存储位置。
+
+## 013 使用 `"h3"` 路径来导入是错误的，应该用 `nitro/h3` 路径来导入
+
+注意 `apps\admin\server\db\index.ts` 文件。这个文件竟然直接使用 `h3` 作为路径来导入。这个是不对的。
+
+我们项目已经是 nitro v3 了，这是 v3 版本的破坏性变更。
+
+请你检查除了 `apps\admin\server\db\index.ts` 以外，还有那些报告文档，markdown 文档，错误的误导我们使用错误的 `h3` 路径导入，而不是 `nitro/h3` 路径来导入。将这些错误的误导内容，改成正确的写法。
+
+更改这个 typescript 文件后，我希望你构建面向 cloudflare worker 的后台项目 build 构建命令，运行这个构建命令，并且检查是否可以正常构建。
+
+运行后台项目的 nitro 接口测试命令，确保本地接口仍旧正常连接 neon 数据库。
