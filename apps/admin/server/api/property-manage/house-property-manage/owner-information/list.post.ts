@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { hpOwners } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { OwnerInformationListItem, OwnerInformationQueryParams } from "@01s-11comm/type";
@@ -28,6 +28,7 @@ const querySchema = z.object({
 
 export default defineHandler(async (event): Promise<JsonVO<PageDTO<OwnerInformationListItem>>> => {
 	try {
+		const db = useDb(event);
 		/** 获取并验证查询参数 */
 		const body = (await readBody(event)) as any;
 
