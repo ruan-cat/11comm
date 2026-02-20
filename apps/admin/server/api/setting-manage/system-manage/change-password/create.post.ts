@@ -43,7 +43,7 @@ export default defineHandler(async (event): Promise<JsonVO<ChangePasswordRecord>
 			message: "创建失败",
 			data: null,
 			error: error.message || String(error),
-			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+			stack: error.stack,
 		};
 		return errorResponse;
 	}
