@@ -115,7 +115,7 @@ const neonProjectId = getVercelEnvRequired("NEON_PROJECT_ID");
 ````typescript
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import type { H3Event } from "h3";
+import type { H3Event } from "nitro/h3";
 import { getVercelEnvRequired } from "../utils/vercel-env";
 import * as schema from "./schema";
 
