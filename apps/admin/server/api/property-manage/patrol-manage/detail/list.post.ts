@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { ptPatrolTaskDetails, ptPatrolTasks, ptPatrolPoints, ptPatrolPlans, ptPatrolPaths } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PatrolDetailListItem, PatrolDetailQueryParams } from "@01s-11comm/type";
@@ -62,6 +62,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolDetailL
 		};
 
 		const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+		const db = useDb(event);
 
 		/** 查询总数 */
 		const countResult = await db

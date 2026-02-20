@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { ptPatrolPlans } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type { PatrolPlanListItem, PatrolPlanQueryParams } from "@01s-11comm/type";
@@ -37,6 +37,8 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolPlanLis
 		};
 
 		const query = querySchema.parse(rawQuery);
+
+		const db = useDb(event);
 
 		/** 计算分页参数 */
 		const offset = (query.page - 1) * query.pageSize;
