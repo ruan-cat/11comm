@@ -488,3 +488,17 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 更改这个 typescript 文件后，我希望你构建面向 cloudflare worker 的后台项目 build 构建命令，运行这个构建命令，并且检查是否可以正常构建。
 
 运行后台项目的 nitro 接口测试命令，确保本地接口仍旧正常连接 neon 数据库。
+
+## 014 <!-- TODO: --> 解决 nitro 接口没有严格鉴权的风险项问题
+
+设计了 openspec 任务 `nitro-api-authentication`
+
+---
+
+根据 `apps\admin\src\docs\reports\2026-02-20-fullstack-project-risk-analysis.md` 报告，我们现在的 nitro 接口存在严重的鉴权缺失的风险项。我们需要解决这个风险项目。
+
+注意这个风险项： `Nitro 接口安全 | 🔴 极高 | **无认证授权机制，所有 API 可被任意访问**`
+
+1. 请你找到关于 neon、drizzle、nitro、相关的接口鉴权与验证方案。
+2. 新建多个 agent team 来完成并发的调研，给出解决方案。
+3. 主动使用网络搜索，和 context7 MCP 来完成调研。
