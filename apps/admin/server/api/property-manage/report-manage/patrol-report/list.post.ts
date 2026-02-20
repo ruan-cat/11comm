@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { rptPatrolReports } from "@01s-11comm/type";
 import type { JsonVO, PageDTO, PatrolReportListItem, PatrolReportQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@01s-11comm/type";
@@ -57,7 +57,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolReportL
 		}
 
 		// 查询总数
-		const countResult = await db
+		const countResult = await useDb(event)
 			.select({
 				total: sql<number>`count(*)`,
 			})
@@ -66,7 +66,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<PatrolReportL
 		const total = Number(countResult[0]?.total || 0);
 
 		// 查询列表数据
-		const data = await db
+		const data = await useDb(event)
 			.select({
 				id: rptPatrolReports.id,
 				plannedTasks: rptPatrolReports.plannedTasks,

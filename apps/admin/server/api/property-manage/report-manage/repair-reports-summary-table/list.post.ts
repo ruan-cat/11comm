@@ -6,7 +6,7 @@
 
 import { defineHandler, readBody } from "nitro/h3";
 import { z } from "zod";
-import { db } from "server/db";
+import { useDb } from "server/db";
 import { rptRepairSummaries } from "@01s-11comm/type";
 import type {
 	JsonVO,
@@ -48,7 +48,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReports
 		const offset = (query.pageIndex - 1) * query.pageSize;
 
 		// 查询总数
-		const countResult = await db
+		const countResult = await useDb(event)
 			.select({
 				total: sql<number>`count(*)`,
 			})
@@ -57,7 +57,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<RepairReports
 		const total = Number(countResult[0]?.total || 0);
 
 		// 查询列表数据
-		const data = await db
+		const data = await useDb(event)
 			.select({
 				id: rptRepairSummaries.id,
 				repairTypeDistribution: rptRepairSummaries.repairTypeDistribution,
