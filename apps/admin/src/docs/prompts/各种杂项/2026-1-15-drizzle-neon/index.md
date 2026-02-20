@@ -392,7 +392,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 务必确保每一个 agent team 成员都能够并发的开始任务，节约时间。避免出子代理之间现串行执行任务，和单一子代理过载执行任务的情况。
 
-## 011 <!-- TODO: --> 设计面向 nitro 接口的 vitest 测试文件
+## 011 设计面向 nitro 接口的 vitest 测试文件
 
 现在 nitro 接口逐步的开始获取到 neon 数据库数据了。但是我不清楚这一整套流程是否正常，需要使用测试工具来完成接口调用以便实现接口测试。
 
@@ -401,5 +401,3 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 ### vitest 新建统一的配置钩子，来完成 neon 环境变量的获取
 
 为了测试 nitro 接口，测试真实的 neon 数据库连接。为了确保在 github action 这样的云环境内仍旧可以完成测试任务，你肯定是需要做好拉取远程 vercel 环境变量的步骤的。我希望你用 context7 MCP 工具，或者是其他联网查询的工具，看看在这样的场景下，怎么去给整个 vitest 配置一个集中式的获取环境变量的步骤。看看 vitest 的官方文档。
-
-## 01 <!-- TODO: --> 找到合适的 vitest 和 nitro 编写测试用例的技能文件
