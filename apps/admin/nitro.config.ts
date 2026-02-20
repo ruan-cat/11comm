@@ -1,5 +1,34 @@
 import { defineConfig } from "nitro";
 import { pathResolve } from "./build/utils";
+import { config } from "dotenv";
+import { resolve } from "node:path";
+
+const adminDir = process.cwd();
+
+/**
+ * 加载环境变量文件
+ *
+ * 在 Nitro 构建时加载 .env 和 .env.vercel.local 文件
+ * 以便在 cloudflare.wrangler.vars 中使用这些环境变量
+ */
+function loadEnvFiles() {
+	// 加载 .env 文件
+	config({ path: resolve(adminDir, ".env") });
+	// 加载 .env.vercel.local 文件
+	config({ path: resolve(adminDir, ".env.vercel.local") });
+}
+
+// 加载环境变量
+loadEnvFiles();
+
+// 复用 server/utils/vercel-env.ts 中的 getVercelEnv 逻辑
+// 注意：这里不能直接导入，因为 vercel-env.ts 使用 @dotenvx/dotenvx
+// 而在构建时使用标准 dotenv 加载环境变量，所以需要保持相同的逻辑
+function getVercelEnv(envName: string): string | undefined {
+	const prefix = process.env.VERCEL_ENV_PREFIX || "comm_admin_11_";
+	const fullEnvName = `${prefix}_${envName}`;
+	return process.env[fullEnvName];
+}
 
 export default defineConfig({
 	serverDir: "./server",
@@ -69,12 +98,36 @@ export default defineConfig({
 			// 部署到 cloudflare worker 的名称。 与 cloudflare worker 云端设置保持一致
 			name: "01s-11comm-admin",
 			vars: {
-				// 将包锁文件上传 即可更改构建流为 pnpm 了 以下环境变量失效
-				/** @see https://developers.cloudflare.com/workers/ci-cd/builds/build-image/ */
-				// SKIP_DEPENDENCY_INSTALL: 1,
-				// NPM_CONFIG_PACKAGE_MANAGER: "pnpm",
-				/** @see https://github.com/cloudflare/workers-sdk/pull/1427 */
-				// npm_config_user_agent: "pnpm",
+				// 从 .env.vercel.local 读取的 Vercel 前缀环境变量
+				// 这些变量会被写入 wrangler.toml 并在运行时可用
+				// 前缀默认为 comm_admin_11_
+				...(getVercelEnv("DATABASE_URL") && {
+					comm_admin_11__DATABASE_URL: getVercelEnv("DATABASE_URL"),
+				}),
+				...(getVercelEnv("DATABASE_URL_UNPOOLED") && {
+					comm_admin_11__DATABASE_URL_UNPOOLED: getVercelEnv("DATABASE_URL_UNPOOLED"),
+				}),
+				...(getVercelEnv("NEON_AUTH_BASE_URL") && {
+					comm_admin_11__NEON_AUTH_BASE_URL: getVercelEnv("NEON_AUTH_BASE_URL"),
+				}),
+				...(getVercelEnv("NEON_PROJECT_ID") && {
+					comm_admin_11__NEON_PROJECT_ID: getVercelEnv("NEON_PROJECT_ID"),
+				}),
+				...(getVercelEnv("PGDATABASE") && {
+					comm_admin_11__PGDATABASE: getVercelEnv("PGDATABASE"),
+				}),
+				...(getVercelEnv("PGHOST") && {
+					comm_admin_11__PGHOST: getVercelEnv("PGHOST"),
+				}),
+				...(getVercelEnv("PGHOST_UNPOOLED") && {
+					comm_admin_11__PGHOST_UNPOOLED: getVercelEnv("PGHOST_UNPOOLED"),
+				}),
+				...(getVercelEnv("PGPASSWORD") && {
+					comm_admin_11__PGPASSWORD: getVercelEnv("PGPASSWORD"),
+				}),
+				...(getVercelEnv("PGUSER") && {
+					comm_admin_11__PGUSER: getVercelEnv("PGUSER"),
+				}),
 			},
 			// cloudflare 开启可观察日志
 			observability: {
