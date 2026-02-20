@@ -10,6 +10,7 @@ import { db } from "server/db";
 import { smCommunityConfigurations } from "@01s-11comm/type";
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { and, desc, like, sql } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 /** 查询参数验证 schema */
 const querySchema = z.object({
@@ -87,12 +88,18 @@ export default defineHandler(async (event) => {
 		/** 计算总页数 */
 		const totalPages = Math.ceil(total / query.pageSize);
 
+		const list = data.map((item) => ({
+			...item,
+			createTime: item.createTime ? formatDateTime(item.createTime) : "",
+			updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
+		}));
+
 		const response: JsonVO<PageDTO<(typeof data)[number]>> = {
 			success: true,
 			code: 200,
 			message: "查询成功",
 			data: {
-				list: data,
+				list,
 				total,
 				pageSize: query.pageSize,
 				pageIndex: query.page,

@@ -8,6 +8,7 @@ import { defineHandler, readBody } from "nitro/h3";
 import { db } from "server/db";
 import { smCommunityConfigurations, insertSmCommunityConfigurationSchema } from "@01s-11comm/type";
 import type { JsonVO, NewSmCommunityConfiguration } from "@01s-11comm/type";
+import { formatDateTime } from "server/utils/format-date";
 
 export default defineHandler(async (event): Promise<JsonVO<NewSmCommunityConfiguration>> => {
 	try {
@@ -24,11 +25,24 @@ export default defineHandler(async (event): Promise<JsonVO<NewSmCommunityConfigu
 			.values({ ...insertData } as any)
 			.returning();
 
-		const response: JsonVO<NewSmCommunityConfiguration> = {
+		const response: JsonVO<{
+			communityId: string;
+			statusCd: string;
+			communityName: string;
+			settingType: string;
+			csId: string;
+			settingName: string;
+			createTime: string;
+			updateTime: string;
+		}> = {
 			success: true,
 			code: 200,
 			message: "创建成功",
-			data: result[0],
+			data: {
+				...result[0],
+				createTime: result[0].createTime ? formatDateTime(result[0].createTime) : null,
+				updateTime: result[0].updateTime ? formatDateTime(result[0].updateTime) : null,
+			},
 		};
 		return response;
 	} catch (error: any) {

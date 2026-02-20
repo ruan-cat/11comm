@@ -58,7 +58,7 @@ export default defineHandler(async (event): Promise<JsonVO<PageDTO<any>>> => {
 			name: item.applicablePosition || "",
 			type: item.schedulingMode || "",
 			cycle: item.rotationCycle || "",
-			effectiveTime: item.createTime ? new Date(item.createTime).toISOString() : "",
+			effectiveTime: item.createTime ? formatDateTime(item.createTime) : "",
 			staff: "",
 			status: "enabled",
 			createTime: item.createTime ? formatDateTime(item.createTime) : "",

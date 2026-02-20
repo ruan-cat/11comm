@@ -9,6 +9,7 @@ import { db } from "server/db";
 import { smCommunityConfigurations, updateSmCommunityConfigurationSchema } from "@01s-11comm/type";
 import type { JsonVO, SmCommunityConfiguration } from "@01s-11comm/type";
 import { eq } from "drizzle-orm";
+import { formatDateTime } from "server/utils/format-date";
 
 export default defineHandler(async (event): Promise<JsonVO<SmCommunityConfiguration>> => {
 	try {
@@ -39,7 +40,11 @@ export default defineHandler(async (event): Promise<JsonVO<SmCommunityConfigurat
 			success: true,
 			code: 200,
 			message: "更新成功",
-			data: result[0],
+			data: {
+				...result[0],
+				createTime: result[0].createTime ? formatDateTime(result[0].createTime) : null,
+				updateTime: result[0].updateTime ? formatDateTime(result[0].updateTime) : null,
+			},
 		};
 		return response;
 	} catch (error: any) {
