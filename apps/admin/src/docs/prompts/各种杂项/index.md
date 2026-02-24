@@ -311,7 +311,7 @@ overrides:
 
 确保运行的命令，在 cloudflare worker 内，能够得到全局的 vercel 和 turbo 这两个全局包，确保运行顺利安全。
 
-## 026 <!-- TODO: --> 以常见全栈项目的视角来检查，审视本项目存在的风险项
+## 026 以常见全栈项目的视角来检查，审视本项目存在的风险项
 
 已完成，已生成 `apps\admin\src\docs\reports\2026-02-20-fullstack-project-risk-analysis.md` 报告，等待阅读和思考。
 
