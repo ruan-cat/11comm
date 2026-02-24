@@ -30,6 +30,7 @@
 		"vite:build:prod:vercel": "NITRO_PRESET=vercel NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:staging": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode staging --configLoader runner",
 		"vite:preview": "vite preview --configLoader runner",
+		"nitro:build:vercel": "NITRO_PRESET=vercel nitro build",
 		"svgo": "svgo -f . -r",
 		"clean:cache": "rimraf .eslintcache && rimraf pnpm-lock.yaml && rimraf node_modules && pnpm store prune && pnpm install",
 		"lint:eslint": "eslint --cache --max-warnings 0  \"{src,mock,build}/**/*.{vue,js,ts,tsx}\" --fix",
