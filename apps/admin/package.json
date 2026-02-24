@@ -26,6 +26,7 @@
 		"vite:build:prod": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:prod:cloudflare": "NITRO_PRESET=cloudflare_module NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:prod:github": "NITRO_PRESET=github_pages NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
+		"vite:build:prod:vercel": "NITRO_PRESET=vercel NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:staging": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode staging --configLoader runner",
 		"vite:preview": "vite preview --configLoader runner",
 		"svgo": "svgo -f . -r",
