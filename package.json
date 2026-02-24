@@ -78,6 +78,7 @@
 		"js-yaml": "^4.1.1",
 		"lint-staged": "^16.2.7",
 		"lodash-es": "^4.17.23",
+		"nitro": "3.0.1-alpha.2",
 		"only-allow": "^1.2.2",
 		"pkg-types": "^2.3.0",
 		"prettier": "^3.8.1",
