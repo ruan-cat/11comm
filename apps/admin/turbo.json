@@ -25,6 +25,10 @@
 			"outputs": [".output/**"],
 			"dependsOn": ["env:pull"]
 		},
+		"vite:build:prod:vercel": {
+			"cache": true,
+			"outputs": [".vercel/output/**"]
+		},
 		"typedoc": {
 			"cache": false
 		},

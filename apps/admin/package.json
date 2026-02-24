@@ -19,6 +19,7 @@
 		"build:staging": "turbo vite:build:staging",
 		"build:prod": "turbo vite:build:prod",
 		"build:prod:cloudflare": "turbo vite:build:prod:cloudflare",
+		"build:prod:vercel": "turbo vite:build:prod:vercel",
 		"report": "pnpm build",
 		"preview": "pnpm vite:preview",
 		"preview:build": "pnpm build && pnpm preview",
