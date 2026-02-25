@@ -90,7 +90,7 @@ graph LR
 在 Cloudflare Worker 运行时：
 
 1. Nitro 自动将 `wrangler.json` 中的 `vars` 注入到 Worker 环境
-2. 代码中使用 `process.env.COMM_ADMIN_11__DATABASE_URL` 访问环境变量
+2. 代码中使用 `process.env.comm_admin_11__DATABASE_URL` 访问环境变量
 
 ### 3.3 本地开发存储
 
@@ -156,11 +156,11 @@ curl https://01s-11.ruan-cat.com/api/dev-team/config-manage/center/list
 
 ### 5.1 server/db/index.ts
 
-数据库连接使用 `process.env.COMM_ADMIN_11__DATABASE_URL`：
+数据库连接使用 `process.env.comm_admin_11__DATABASE_URL`：
 
 ```typescript
 export function useDb(event: H3Event): DbType {
-	const databaseUrl = process.env.COMM_ADMIN_11__DATABASE_URL;
+	const databaseUrl = process.env.comm_admin_11__DATABASE_URL;
 
 	if (!databaseUrl) {
 		throw new Error("DATABASE_URL is not configured...");

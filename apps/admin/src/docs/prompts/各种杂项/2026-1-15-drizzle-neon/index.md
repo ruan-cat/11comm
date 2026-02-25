@@ -427,7 +427,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 不行，这有问题。请你认真看看 `apps\admin\.env.vercel.local` 文件。
 
-我说的环境变量是从 vercel 这里获得的，且前缀是 `comm_admin_11` ，你让我在 wrangler 内设置的环境变量是 `COMM_ADMIN_11__DATABASE_URL` 。我对你的大小写很有疑惑。
+我说的环境变量是从 vercel 这里获得的，且前缀是 `comm_admin_11` ，你让我在 wrangler 内设置的环境变量是 `comm_admin_11__DATABASE_URL` 。我对你的大小写很有疑惑。
 
 `apps/admin/.env` 文件不可能存放任何 neon 环境变量。相反，neon 的环境变量都来自 `apps\admin\.env.vercel.local` 文件，且该文件来自于后台项目提供的 `env:pull` 命令。
 

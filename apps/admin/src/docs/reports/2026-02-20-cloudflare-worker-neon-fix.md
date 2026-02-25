@@ -108,7 +108,7 @@ npx wrangler deploy
        └─> Vite 调用 Nitro 插件
        └─> Nitro 加载 nitro.config.ts
        └─> dotenv 加载 .env.vercel.local 文件
-       └─> getVercelEnv("DATABASE_URL") 读取 process.env.COMM_ADMIN_11__DATABASE_URL
+       └─> getVercelEnv("DATABASE_URL") 读取 process.env.comm_admin_11__DATABASE_URL
        └─> 将环境变量写入 cloudflare.wrangler.vars
        └─> 生成 .output/server/wrangler.json
 
@@ -123,7 +123,7 @@ npx wrangler deploy
 
 | 文件                            | 操作 | 说明                                                          |
 | ------------------------------- | ---- | ------------------------------------------------------------- |
-| `apps/admin/server/db/index.ts` | 修改 | 使用 `process.env.COMM_ADMIN_11__DATABASE_URL` 获取数据库连接 |
+| `apps/admin/server/db/index.ts` | 修改 | 使用 `process.env.comm_admin_11__DATABASE_URL` 获取数据库连接 |
 | `apps/admin/nitro.config.ts`    | 修改 | 添加 `dotenv` 加载环境变量，配置 `cloudflare.wrangler.vars`   |
 
 ---
