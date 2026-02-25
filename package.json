@@ -36,7 +36,7 @@
 		"postbuild:vercel:admin": "pnpm run rm && pnpm run mk && pnpm run cp",
 		"rm": "shx rm -rf .vercel/output",
 		"mk": "shx mkdir -p .vercel/output",
-		"cp": "shx cp -r apps/admin/.vercel/output .vercel/output",
+		"cp": "shx cp -r apps/admin/.vercel/output .vercel",
 		"changelog:conventional-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"changelog:commit-and-tag-version": "commit-and-tag-version",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
