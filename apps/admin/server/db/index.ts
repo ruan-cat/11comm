@@ -9,7 +9,7 @@ import * as schema from "./schema";
  * 注意：Cloudflare Worker 环境下 process.env 在模块顶层不可用
  * seed 脚本需要在运行时通过 useDb(event) 获取数据库连接
  */
-const databaseUrl = process.env.COMM_ADMIN_11__DATABASE_URL;
+const databaseUrl = process.env.comm_admin_11__DATABASE_URL;
 const sql = databaseUrl ? neon(databaseUrl) : null;
 const dbInstance = sql ? drizzle(sql, { schema }) : null;
 
@@ -50,12 +50,11 @@ export function useDb(event: H3Event): DbType {
 
 	// 直接使用 process.env 在运行时获取带 Vercel 前缀的环境变量
 	// 环境变量名称: comm_admin_11__DATABASE_URL (在 .env.vercel.local 中定义)
-	// 注意：process.env 会自动将环境变量名转为大写
-	const databaseUrl = process.env.COMM_ADMIN_11__DATABASE_URL;
+	const databaseUrl = process.env.comm_admin_11__DATABASE_URL;
 
 	if (!databaseUrl) {
 		throw new Error(
-			"DATABASE_URL is not configured. Please set COMM_ADMIN_11__DATABASE_URL environment variable in Cloudflare Workers.",
+			"DATABASE_URL is not configured. Please set comm_admin_11__DATABASE_URL environment variable in Cloudflare Workers.",
 		);
 	}
 
