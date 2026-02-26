@@ -33,6 +33,13 @@ function getVercelEnv(envName: string): string | undefined {
 export default defineConfig({
 	serverDir: "./server",
 
+	compatibilityDate: {
+		// https://v3.nitro.build/deploy/providers/cloudflare
+		cloudflare: "2024-09-19",
+		// https://nitro.build/deploy/providers/vercel#observability
+		vercel: "2024-09-19",
+	},
+
 	/**
 	 * 运行时配置
 	 * @description
@@ -83,7 +90,6 @@ export default defineConfig({
 		server: pathResolve("./server", import.meta.url),
 	},
 
-	compatibilityDate: "2024-09-19",
 	// 不提供任何写死的预设了 需要在运行命令的环境变量 NITRO_PRESET 内传入
 	// preset: "cloudflare_module",
 	typescript: {

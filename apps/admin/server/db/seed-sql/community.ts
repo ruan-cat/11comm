@@ -10,12 +10,12 @@ import {
 	type NewCmPropertyRegister as InsertCmPropertyRegister,
 	type NewCmBuildingStructure as InsertCmBuildingStructure,
 } from "@01s-11comm/type";
-import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
-import { mockNoticeData } from "../../api/property-manage/community-manage/notice/mock-data";
+import { mockCommunityInformationData } from "../../c/operation-team/data-manage/community-information/mock-data";
+import { mockNoticeData } from "../../c/property-manage/community-manage/notice/mock-data";
 // import { mockHandingBusinessData } from "../../api/property-manage/community-manage/handing-business/mock-data"; // Mismatch data type (looks like Fees)
-import { mockHouseDecorationData } from "../../api/property-manage/community-manage/house-decoration/mock-data";
-import { mockPropertyRegisterData } from "../../api/property-manage/community-manage/property-register/mock-data";
-import { mockBuildingSpaceStructureDiagramData } from "../../api/property-manage/community-manage/building-space-structure-diagram/mock-data";
+import { mockHouseDecorationData } from "../../c/property-manage/community-manage/house-decoration/mock-data";
+import { mockPropertyRegisterData } from "../../c/property-manage/community-manage/property-register/mock-data";
+import { mockBuildingSpaceStructureDiagramData } from "../../c/property-manage/community-manage/building-space-structure-diagram/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, toStatusEnum, toAuditStatusEnum } from "./index";
 import { db } from "../index";

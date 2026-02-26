@@ -13,7 +13,7 @@ import {
 	rptDataStatistics,
 } from "@01s-11comm/type";
 
-import { mockExpenseSummaryTableData } from "../../api/property-manage/report-manage/expense-summary-table/mock-data";
+import { mockExpenseSummaryTableData } from "../../c/property-manage/report-manage/expense-summary-table/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";

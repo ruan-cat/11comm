@@ -12,11 +12,11 @@ import {
 	type NewPtPatrolTask as InsertPtPatrolTask,
 	type NewPtPatrolTaskDetail as InsertPtPatrolTaskDetail,
 } from "@01s-11comm/type";
-import { mockPlanData } from "../../api/property-manage/patrol-manage/plan/mock-data";
-import { mockPathData } from "../../api/property-manage/patrol-manage/path/mock-data";
-import { mockItemData } from "../../api/property-manage/patrol-manage/item/mock-data";
-import { mockTaskData } from "../../api/property-manage/patrol-manage/task/mock-data";
-import { mockDetailData } from "../../api/property-manage/patrol-manage/detail/mock-data";
+import { mockPlanData } from "../../c/property-manage/patrol-manage/plan/mock-data";
+import { mockPathData } from "../../c/property-manage/patrol-manage/path/mock-data";
+import { mockItemData } from "../../c/property-manage/patrol-manage/item/mock-data";
+import { mockTaskData } from "../../c/property-manage/patrol-manage/task/mock-data";
+import { mockDetailData } from "../../c/property-manage/patrol-manage/detail/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";

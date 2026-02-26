@@ -14,13 +14,13 @@ import {
 	type NewHpInvoiceTitle as InsertHpInvoiceTitle,
 	type NewHpInvoice as InsertHpInvoice,
 } from "@01s-11comm/type";
-import { mockHouseData } from "../../api/property-manage/house-property-manage/house/mock-data";
-import { mockOwnerInformationData as mockOwnerData } from "../../api/property-manage/house-property-manage/owner-information/mock-data";
-import { mockOwnersCommitteeData } from "../../api/property-manage/house-property-manage/owners-committee/mock-data";
-import { mockOwnerMemberData } from "../../api/property-manage/house-property-manage/owner-member/mock-data";
-import { mockOwnerAccountData } from "../../api/property-manage/house-property-manage/owner-account/mock-data";
-import { mockInvoiceTitleData } from "../../api/property-manage/house-property-manage/invoice-title/mock-data";
-import { mockInvoiceData } from "../../api/property-manage/house-property-manage/invoice/mock-data";
+import { mockHouseData } from "../../c/property-manage/house-property-manage/house/mock-data";
+import { mockOwnerInformationData as mockOwnerData } from "../../c/property-manage/house-property-manage/owner-information/mock-data";
+import { mockOwnersCommitteeData } from "../../c/property-manage/house-property-manage/owners-committee/mock-data";
+import { mockOwnerMemberData } from "../../c/property-manage/house-property-manage/owner-member/mock-data";
+import { mockOwnerAccountData } from "../../c/property-manage/house-property-manage/owner-account/mock-data";
+import { mockInvoiceTitleData } from "../../c/property-manage/house-property-manage/invoice-title/mock-data";
+import { mockInvoiceData } from "../../c/property-manage/house-property-manage/invoice/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";
