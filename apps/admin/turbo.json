@@ -1,9 +1,6 @@
 {
 	"extends": ["//"],
 	"tasks": {
-		"env:pull": {
-			"cache": false
-		},
 		"rm:types": {
 			"cache": false
 		},
@@ -22,8 +19,7 @@
 		},
 		"vite:build:prod:cloudflare": {
 			"cache": true,
-			"outputs": [".output/**"],
-			"dependsOn": ["env:pull"]
+			"outputs": [".output/**"]
 		},
 		"vite:build:prod:vercel": {
 			"cache": true,
