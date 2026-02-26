@@ -2,6 +2,8 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import type { H3Event } from "nitro/h3";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import consola from "consola";
+import { isEmpty } from "lodash-es";
 import * as schema from "./schema";
 
 /**
@@ -43,19 +45,42 @@ export type DbType = NeonHttpDatabase<typeof schema>;
  * ```
  */
 export function useDb(event: H3Event): DbType {
+	/** 数据库链接地址 URL */
+	let databaseUrl: string | undefined = undefined;
+
+	/** 从事件上下文中获取 Cloudflare 环境变量 */
+	const cloudflareEnv: Record<string, unknown> = (event.context?.cloudflare as any)?.env ?? {};
+
 	// 如果事件上下文中已有数据库实例，直接返回（单例模式）
 	if (event.context.db) {
 		return event.context.db as DbType;
 	}
 
-	// 直接使用 process.env 在运行时获取带 Vercel 前缀的环境变量
-	// 环境变量名称: comm_admin_11__DATABASE_URL (在 .env.vercel.local 中定义)
-	const databaseUrl = process.env.comm_admin_11__DATABASE_URL;
+	if (isEmpty(cloudflareEnv)) {
+		consola.info("当前 Cloudflare 环境变量为空");
+	} else {
+		if (cloudflareEnv.comm_admin_11__DATABASE_URL) {
+			consola.success("设置了cloudflare环境变量: comm_admin_11__DATABASE_URL");
+			databaseUrl = cloudflareEnv.comm_admin_11__DATABASE_URL as string;
+		}
+		if (cloudflareEnv.DATABASE_URL) {
+			consola.success("设置了cloudflare环境变量: DATABASE_URL");
+			databaseUrl = cloudflareEnv.DATABASE_URL as string;
+		}
+	}
+
+	if (process.env.comm_admin_11__DATABASE_URL) {
+		consola.success("设置了process环境变量: comm_admin_11__DATABASE_URL");
+		databaseUrl = process.env.comm_admin_11__DATABASE_URL as string;
+	}
 
 	if (!databaseUrl) {
-		throw new Error(
-			"DATABASE_URL is not configured. Please set comm_admin_11__DATABASE_URL environment variable in Cloudflare Workers.",
-		);
+		throw new Error("未设置数据库连接地址 URL", {
+			cause: {
+				cloudflareEnv,
+				processEnv: process.env,
+			},
+		});
 	}
 
 	// 创建新的数据库连接并缓存到事件上下文中
