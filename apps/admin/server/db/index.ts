@@ -36,27 +36,50 @@ export type DbType = NeonHttpDatabase<typeof schema>;
  *
  * @description
  * 获取优先级（从高到低）：
- * 1. process.env.comm_admin_11__DATABASE_URL — Nitro 在 Cloudflare Worker handler 内
- *    会将 wrangler.vars 自动 polyfill 到 process.env，这是最可靠的来源
- * 2. process.env.DATABASE_URL — 标准环境变量名，用于 Vercel 等平台
- * 3. Nitro runtimeConfig.databaseUrl — 通过 nitro.config.ts 的 runtimeConfig 配置
+ * 1. event.context.cloudflare.env — Cloudflare Dashboard 设置的 Secrets/变量，
+ *    运行时通过 Cloudflare Bindings 注入，这是 Cloudflare Worker 部署的首选来源
+ * 2. process.env.comm_admin_11__DATABASE_URL — Nitro 将 wrangler.vars 在构建时
+ *    polyfill 到 process.env（handler 内可用）
+ * 3. process.env.DATABASE_URL — 标准环境变量名，用于 Vercel 等平台
+ * 4. Nitro runtimeConfig.databaseUrl — 通过 nitro.config.ts 的 runtimeConfig 配置
  *
  * @remarks
- * 根据 Nitro v3 官方文档：
- * - cloudflare.wrangler.vars 中配置的变量在运行时可通过 process.env 在 handler 内访问
- * - event.context.cloudflare.env 仅用于 Cloudflare Bindings（KV、D1 等），不含普通环境变量
- * - process.env 在模块顶层（全局作用域）不可用，但在 handler 内可用
+ * Cloudflare Worker 环境变量有两种来源，获取方式不同：
+ * - **Cloudflare Dashboard Secrets** → 运行时通过 `event.context.cloudflare.env` 访问
+ * - **nitro.config.ts wrangler.vars** → 构建时 polyfill 到 `process.env`
+ * 两种来源都需要检查，确保无论哪种配置方式都能正确获取。
  *
+ * @param event - H3 事件对象，用于访问 Cloudflare Bindings
  * @returns 数据库连接 URL，未找到时返回 undefined
  */
-function resolveDatabaseUrl(): string | undefined {
-	/** 优先检查带前缀的 Vercel/Neon 环境变量 */
+function resolveDatabaseUrl(event: H3Event): string | undefined {
+	/**
+	 * 最高优先级：Cloudflare Dashboard 设置的 Secrets/变量
+	 * 通过 Cloudflare Bindings 在运行时注入到 event.context.cloudflare.env
+	 */
+	try {
+		const cfEnv = (event.context as any).cloudflare?.env;
+		if (cfEnv) {
+			if (cfEnv.comm_admin_11__DATABASE_URL) {
+				consola.success("从 cloudflare.env 获取到环境变量: comm_admin_11__DATABASE_URL");
+				return cfEnv.comm_admin_11__DATABASE_URL as string;
+			}
+			if (cfEnv.DATABASE_URL) {
+				consola.success("从 cloudflare.env 获取到环境变量: DATABASE_URL");
+				return cfEnv.DATABASE_URL as string;
+			}
+		}
+	} catch {
+		/** 非 Cloudflare 环境，静默忽略 */
+	}
+
+	/** 其次检查 process.env（wrangler.vars 构建时 polyfill） */
 	if (process.env.comm_admin_11__DATABASE_URL) {
 		consola.success("从 process.env 获取到环境变量: comm_admin_11__DATABASE_URL");
 		return process.env.comm_admin_11__DATABASE_URL;
 	}
 
-	/** 其次检查标准的 DATABASE_URL 环境变量 */
+	/** 再检查标准的 DATABASE_URL 环境变量 */
 	if (process.env.DATABASE_URL) {
 		consola.success("从 process.env 获取到环境变量: DATABASE_URL");
 		return process.env.DATABASE_URL;
@@ -104,11 +127,13 @@ export function useDb(event: H3Event): DbType {
 		return event.context.db as DbType;
 	}
 
-	/** 从多个来源解析数据库连接 URL */
-	const url = resolveDatabaseUrl();
+	/** 从多个来源解析数据库连接 URL（传入 event 以访问 Cloudflare Bindings） */
+	const url = resolveDatabaseUrl(event);
 
 	if (!url) {
 		consola.error("未能获取数据库连接 URL，已检查以下来源：");
+		consola.error("  - event.context.cloudflare.env.comm_admin_11__DATABASE_URL");
+		consola.error("  - event.context.cloudflare.env.DATABASE_URL");
 		consola.error("  - process.env.comm_admin_11__DATABASE_URL");
 		consola.error("  - process.env.DATABASE_URL");
 		consola.error("  - Nitro runtimeConfig.databaseUrl");
@@ -116,6 +141,8 @@ export function useDb(event: H3Event): DbType {
 		throw new Error("未设置数据库连接地址 URL。请确保环境变量已正确配置。", {
 			cause: {
 				checkedSources: [
+					"event.context.cloudflare.env.comm_admin_11__DATABASE_URL",
+					"event.context.cloudflare.env.DATABASE_URL",
 					"process.env.comm_admin_11__DATABASE_URL",
 					"process.env.DATABASE_URL",
 					"Nitro runtimeConfig.databaseUrl",
