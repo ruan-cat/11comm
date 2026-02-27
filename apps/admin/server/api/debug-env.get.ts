@@ -1,78 +1,86 @@
 /**
- * 临时调试端点 — 排查 Cloudflare Worker 环境变量获取问题
+ * 临时调试端点 — 深入排查 Cloudflare Worker 环境变量路径
  *
- * @description
- * 此端点仅用于临时调试，确认环境变量在运行时的实际可访问路径。
- * 问题排查完毕后必须删除此文件。
- *
- * 安全说明：仅返回变量键名和值的前6字符，不暴露完整的数据库连接字符串。
+ * @description 调试完成后必须删除此文件。
  */
 import { defineHandler } from "nitro/h3";
 import { useRuntimeConfig } from "nitro/runtime-config";
 
 export default defineHandler(async (event) => {
-	/** 安全截断：仅显示值的前6个字符 */
 	const mask = (val: unknown): string => {
 		if (val === undefined) return "[undefined]";
 		if (val === null) return "[null]";
-		if (typeof val === "string") return val.length > 0 ? `${val.substring(0, 6)}...` : "[empty string]";
+		if (typeof val === "string") return val.length > 0 ? `${val.substring(0, 6)}...` : "[empty]";
+		if (typeof val === "object") return `[object: ${Object.keys(val as Record<string, unknown>).join(", ")}]`;
 		return `[${typeof val}]`;
 	};
 
 	const results: Record<string, unknown> = {};
 
-	/** 1. 检查 event.context 的全部顶层 key */
-	try {
-		results["event.context keys"] = Object.keys(event.context || {});
-	} catch {
-		results["event.context keys"] = "[error]";
-	}
+	/** 1. event.context 全部 key */
+	results["context keys"] = Object.keys(event.context || {});
 
-	/** 2. 检查 event.context.cloudflare */
+	/** 2. event.context.nitro 深入探查 */
 	try {
-		const cf = (event.context as Record<string, unknown>).cloudflare as Record<string, unknown> | undefined;
-		results["cloudflare exists"] = cf !== undefined;
-		if (cf) {
-			results["cloudflare keys"] = Object.keys(cf);
-			const cfEnv = cf.env as Record<string, unknown> | undefined;
-			if (cfEnv) {
-				results["cloudflare.env keys"] = Object.keys(cfEnv);
-				results["cf.env.comm_admin_11__DATABASE_URL"] = mask(cfEnv.comm_admin_11__DATABASE_URL);
-				results["cf.env.DATABASE_URL"] = mask(cfEnv.DATABASE_URL);
-			} else {
-				results["cloudflare.env"] = "[undefined]";
+		const nitroCtx = (event.context as Record<string, unknown>).nitro;
+		if (nitroCtx && typeof nitroCtx === "object") {
+			const nitroKeys = Object.keys(nitroCtx as Record<string, unknown>);
+			results["nitro keys"] = nitroKeys;
+			for (const key of nitroKeys) {
+				const val = (nitroCtx as Record<string, unknown>)[key];
+				if (val && typeof val === "object") {
+					const subKeys = Object.keys(val as Record<string, unknown>);
+					results[`nitro.${key} keys`] = subKeys.length > 20 ? `[${subKeys.length} keys]` : subKeys;
+					/** 检查是否包含数据库相关 key */
+					const dbKeys = subKeys.filter(
+						(k) => k.includes("DATABASE") || k.includes("comm_admin") || k.includes("NITRO") || k.includes("NEON"),
+					);
+					if (dbKeys.length > 0) {
+						results[`nitro.${key} DB keys`] = dbKeys;
+						for (const dk of dbKeys) {
+							results[`nitro.${key}.${dk}`] = mask((val as Record<string, unknown>)[dk]);
+						}
+					}
+				} else {
+					results[`nitro.${key}`] = mask(val);
+				}
 			}
 		}
 	} catch {
-		results["cloudflare check"] = "[error]";
+		results["nitro check"] = "[error]";
 	}
 
-	/** 3. 检查 process.env 相关 key */
+	/** 3. globalThis 探查 */
 	try {
-		const allKeys = Object.keys(process.env || {});
-		results["process.env total keys"] = allKeys.length;
-		results["process.env relevant keys"] = allKeys.filter(
-			(k) => k.includes("DATABASE") || k.includes("comm_admin") || k.includes("NITRO") || k.includes("NEON"),
+		const globalKeys = Object.keys(globalThis).filter(
+			(k) => k.includes("env") || k.includes("ENV") || k.includes("__") || k.includes("cloudflare") || k.includes("cf"),
 		);
-		results["process.env.comm_admin_11__DATABASE_URL"] = mask(process.env.comm_admin_11__DATABASE_URL);
-		results["process.env.DATABASE_URL"] = mask(process.env.DATABASE_URL);
+		results["globalThis env-related keys"] = globalKeys;
 	} catch {
-		results["process.env check"] = "[error]";
+		results["globalThis check"] = "[error]";
 	}
 
-	/** 4. 检查 useRuntimeConfig */
+	/** 4. 尝试 Cloudflare Workers 原生 env API */
 	try {
-		const config = useRuntimeConfig();
-		results["runtimeConfig keys"] = Object.keys(config);
-		results["runtimeConfig.databaseUrl"] = mask((config as Record<string, unknown>).databaseUrl);
-	} catch {
-		results["runtimeConfig check"] = "[error]";
+		// @ts-ignore — cloudflare:workers 是 Cloudflare Worker 运行时模块，TypeScript 无类型定义
+		const cfModule = await import("cloudflare:workers");
+		if (cfModule && cfModule.env) {
+			const envKeys = Object.keys(cfModule.env);
+			results["cloudflare:workers env keys"] = envKeys;
+			const dbKeys = envKeys.filter(
+				(k) => k.includes("DATABASE") || k.includes("comm_admin") || k.includes("NITRO") || k.includes("NEON"),
+			);
+			for (const dk of dbKeys) {
+				results[`cf:workers.env.${dk}`] = mask((cfModule.env as Record<string, unknown>)[dk]);
+			}
+		}
+	} catch (e: unknown) {
+		results["cloudflare:workers"] = e instanceof Error ? e.message : "[import failed]";
 	}
 
-	return {
-		success: true,
-		code: 200,
-		message: "环境变量调试信息",
-		data: results,
-	};
+	/** 5. process.env 和 runtimeConfig（保留之前的检查） */
+	results["process.env total keys"] = Object.keys(process.env || {}).length;
+	results["runtimeConfig.databaseUrl"] = mask((useRuntimeConfig() as Record<string, unknown>).databaseUrl);
+
+	return { success: true, code: 200, message: "深度调试 v2", data: results };
 });
