@@ -1,0 +1,10 @@
+{
+	"version": 1,
+	"skills": {
+		"git-commit": {
+			"source": "ruan-cat/monorepo",
+			"sourceType": "github",
+			"computedHash": "b0bee9dcbb82c7d27cde3a1023a145dfb6fa499b9443f79e8d0b46fc83ffae9d"
+		}
+	}
+}
