@@ -36,50 +36,79 @@ export type DbType = NeonHttpDatabase<typeof schema>;
  *
  * @description
  * 获取优先级（从高到低）：
- * 1. event.context.cloudflare.env — Cloudflare Dashboard 设置的 Secrets/变量，
- *    运行时通过 Cloudflare Bindings 注入，这是 Cloudflare Worker 部署的首选来源
- * 2. process.env.comm_admin_11__DATABASE_URL — Nitro 将 wrangler.vars 在构建时
- *    polyfill 到 process.env（handler 内可用）
- * 3. process.env.DATABASE_URL — 标准环境变量名，用于 Vercel 等平台
- * 4. Nitro runtimeConfig.databaseUrl — 通过 nitro.config.ts 的 runtimeConfig 配置
+ * 1. event.req.runtime.cloudflare.env — Nitro v3 在 Cloudflare Worker 预设下
+ *    的官方挂载路径，Dashboard Secrets 和 Worker Bindings 均通过此路径注入
+ * 2. event.context.cloudflare.env — 旧版/部分预设下的兼容挂载路径，作为降级保底
+ * 3. process.env.comm_admin_11__DATABASE_URL — Nitro 将 wrangler.vars 在构建时
+ *    polyfill 到 process.env（handler 内可用，本地 Node 开发环境）
+ * 4. process.env.DATABASE_URL — 标准环境变量名，用于 Vercel 等平台
+ * 5. Nitro runtimeConfig.databaseUrl — 通过 nitro.config.ts 的 runtimeConfig 配置
  *
  * @remarks
- * Cloudflare Worker 环境变量有两种来源，获取方式不同：
- * - **Cloudflare Dashboard Secrets** → 运行时通过 `event.context.cloudflare.env` 访问
- * - **nitro.config.ts wrangler.vars** → 构建时 polyfill 到 `process.env`
- * 两种来源都需要检查，确保无论哪种配置方式都能正确获取。
+ * **重要发现**：Nitro v3 官方仓库确认，Cloudflare Worker 环境变量通过
+ * `event.req.runtime.cloudflare.env` 而非 `event.context.cloudflare.env` 注入。
+ * 正确访问方式：`event.req.runtime?.cloudflare?.env?.MY_VAR`
  *
  * @param event - H3 事件对象，用于访问 Cloudflare Bindings
  * @returns 数据库连接 URL，未找到时返回 undefined
  */
 function resolveDatabaseUrl(event: H3Event): string | undefined {
 	/**
-	 * 最高优先级：Cloudflare Dashboard 设置的 Secrets/变量
-	 * 通过 Cloudflare Bindings 在运行时注入到 event.context.cloudflare.env
+	 * 最高优先级：Nitro v3 官方 Cloudflare Worker 环境变量挂载路径
+	 * 来源：Nitro 官方仓库确认路径 event.req.runtime?.cloudflare?.env?.MY_VAR
 	 */
 	try {
-		const cfEnv = (event.context as any).cloudflare?.env;
-		if (cfEnv) {
-			if (cfEnv.comm_admin_11__DATABASE_URL) {
-				consola.success("从 cloudflare.env 获取到环境变量: comm_admin_11__DATABASE_URL");
-				return cfEnv.comm_admin_11__DATABASE_URL as string;
+		// @ts-ignore — event.req.runtime 是 Nitro v3 Cloudflare 预设的运行时注入，TypeScript 无类型定义
+		const cfRuntimeEnv = (event.req as any)?.runtime?.cloudflare?.env;
+		if (cfRuntimeEnv) {
+			if (cfRuntimeEnv.comm_admin_11__DATABASE_URL) {
+				consola.success("从 req.runtime.cloudflare.env 获取到: comm_admin_11__DATABASE_URL");
+				return cfRuntimeEnv.comm_admin_11__DATABASE_URL as string;
 			}
-			if (cfEnv.DATABASE_URL) {
-				consola.success("从 cloudflare.env 获取到环境变量: DATABASE_URL");
-				return cfEnv.DATABASE_URL as string;
+			if (cfRuntimeEnv.NITRO_DATABASE_URL) {
+				consola.success("从 req.runtime.cloudflare.env 获取到: NITRO_DATABASE_URL");
+				return cfRuntimeEnv.NITRO_DATABASE_URL as string;
+			}
+			if (cfRuntimeEnv.DATABASE_URL) {
+				consola.success("从 req.runtime.cloudflare.env 获取到: DATABASE_URL");
+				return cfRuntimeEnv.DATABASE_URL as string;
+			}
+		}
+	} catch {
+		/** 非 Cloudflare 环境或路径不存在，静默忽略 */
+	}
+
+	/**
+	 * 次高优先级：旧版 Cloudflare 兼容路径（部分 Nitro 预设版本）
+	 * 作为 event.req.runtime 路径的降级保底
+	 */
+	try {
+		const cfCtxEnv = (event.context as any).cloudflare?.env;
+		if (cfCtxEnv) {
+			if (cfCtxEnv.comm_admin_11__DATABASE_URL) {
+				consola.success("从 context.cloudflare.env 获取到: comm_admin_11__DATABASE_URL");
+				return cfCtxEnv.comm_admin_11__DATABASE_URL as string;
+			}
+			if (cfCtxEnv.NITRO_DATABASE_URL) {
+				consola.success("从 context.cloudflare.env 获取到: NITRO_DATABASE_URL");
+				return cfCtxEnv.NITRO_DATABASE_URL as string;
+			}
+			if (cfCtxEnv.DATABASE_URL) {
+				consola.success("从 context.cloudflare.env 获取到: DATABASE_URL");
+				return cfCtxEnv.DATABASE_URL as string;
 			}
 		}
 	} catch {
 		/** 非 Cloudflare 环境，静默忽略 */
 	}
 
-	/** 其次检查 process.env（wrangler.vars 构建时 polyfill） */
+	/** 检查 process.env（wrangler.vars 构建时 polyfill，适用于本地 Node 开发） */
 	if (process.env.comm_admin_11__DATABASE_URL) {
 		consola.success("从 process.env 获取到环境变量: comm_admin_11__DATABASE_URL");
 		return process.env.comm_admin_11__DATABASE_URL;
 	}
 
-	/** 再检查标准的 DATABASE_URL 环境变量 */
+	/** 检查标准的 DATABASE_URL 环境变量（Vercel 等平台） */
 	if (process.env.DATABASE_URL) {
 		consola.success("从 process.env 获取到环境变量: DATABASE_URL");
 		return process.env.DATABASE_URL;
