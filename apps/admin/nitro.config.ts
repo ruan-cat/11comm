@@ -92,6 +92,21 @@ export default defineConfig({
 
 	// 不提供任何写死的预设了 需要在运行命令的环境变量 NITRO_PRESET 内传入
 	// preset: "cloudflare_module",
+
+	/**
+	 * Rollup 外部模块声明
+	 *
+	 * @description
+	 * cloudflare:workers 是 Cloudflare Worker 运行时专属模块，仅在 CF 环境可用。
+	 * 若不声明为 external，Vite/Rollup 在非 CF 构建阶段会尝试静态解析此模块，
+	 * 导致 "Rollup failed to resolve import" 构建错误。
+	 *
+	 * @see https://nitro.build/config#rollupconfig
+	 */
+	rollupConfig: {
+		external: ["cloudflare:workers"],
+	},
+
 	typescript: {
 		// typeCheck: true,
 		// generatedTypesDir: pathResolve("./src/types"),
