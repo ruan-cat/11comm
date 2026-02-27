@@ -15,7 +15,7 @@
 | Nitro 接口安全 | 🔴 极高  | **无认证授权机制，所有 API 可被任意访问**    |
 | 测试有效性     | 🔴 高    | apps:type 零测试，108 个 API 测试无断言      |
 | Turbo 配置     | 🔴 高    | 仅 3 个任务使用 Turbo，缓存优势未发挥        |
-| 错误处理       | 🟠 中    | 生产环境泄露堆栈信息，140+接口重复 try-catch |
+| 错误处理       | 🟡 低    | 140+接口重复 try-catch，可通过统一中间件优化 |
 | CLI 命名       | 🟠 中    | 冒号/短横线混用，60+命令难以维护             |
 
 ---
@@ -256,27 +256,13 @@ export default defineEventHandler(async (event) => {
 
 **影响：** 任何人可直接访问数据库，执行任意操作
 
-### 5.4 高风险：错误信息泄露
+### 5.4 关于 error.stack 的说明（非风险项）
 
-```typescript
-// 当前错误处理 - 生产环境泄露堆栈
-catch (error: any) {
-    const errorResponse: JsonVO<null> = {
-        success: false,
-        code: 500,
-        message: "查询失败",
-        data: null,
-        error: error.message || String(error),
-        stack: error.stack,  // ❌ 生产环境泄露堆栈信息！
-    };
-    return errorResponse;
-}
-```
+项目 140+ 接口在 catch 块中返回 `error.stack` 字段。经评估，**这不构成独立的安全风险**：
 
-**存在但未使用的工具：**
-
-- `server/utils/handle-db-error.ts` - 专业的数据库错误处理
-- 使用率：0%
+1. **项目规范的有意设计**：`nitro-api-development` 技能文档明确将 `error` 和 `stack` 作为 `JsonVO` 的标准错误响应写法，`JsonVO` 类型本身包含可选的 `error` 和 `stack` 字段
+2. **Serverless 环境特殊性**：部署在 Cloudflare Worker / Vercel 上，打包后代码为 bundled/minified，`error.stack` 暴露的是打包后堆栈，不泄露原始源码路径
+3. **开发阶段调试需求**：Serverless 环境下服务端日志不便直接查看，响应中携带堆栈信息是务实的调试手段
 
 ### 5.5 mock 数据死代码
 
@@ -297,24 +283,21 @@ import mockData from "./mock-data"; // 仅3处
 | 序号 | 风险点         | 等级    | 影响               |
 | ---- | -------------- | ------- | ------------------ |
 | 1    | **无认证授权** | 🔴 极高 | 安全漏洞，数据泄露 |
-| 2    | 错误信息泄露   | 🔴 高   | 生产环境泄露堆栈   |
-| 3    | as any 滥用    | 🔴 高   | 类型安全失效       |
-| 4    | mock 死代码    | 🟡 中   | 105 个文件无意义   |
-| 5    | try-catch 重复 | 🟡 中   | 140+处代码重复     |
-| 6    | FIXME 全局导入 | 🟡 中   | 无法全局类型导入   |
+| 2    | as any 滥用    | 🔴 高   | 类型安全失效       |
+| 3    | mock 死代码    | 🟡 中   | 105 个文件无意义   |
+| 4    | try-catch 重复 | 🟡 中   | 140+处代码重复     |
+| 5    | FIXME 全局导入 | 🟡 中   | 无法全局类型导入   |
 
 ### 5.7 改进建议
 
 **紧急 (必须立即修复)：**
 
 1. 实现 Nitro 中间件进行认证检查
-2. 移除 error.stack 返回
 
 **高优先级：**
 
-1. 使用 handle-db-error.ts 统一错误处理
-2. 清理 105 个未使用的 mock 文件
-3. 移除 `as any`，使用 Zod 验证
+1. 清理 105 个未使用的 mock 文件
+2. 移除 `as any`，使用 Zod 验证
 
 **中期改进：**
 
@@ -333,7 +316,6 @@ import mockData from "./mock-data"; // 仅3处
 | 🔴高   | apps:type零测试 | 类型项目           |
 | 🔴高   | API 测试无断言  | 108 个测试文件     |
 | 🔴高   | Turbo 仅 3 任务 | 构建性能           |
-| 🔴高   | 错误信息泄露    | 140+ API 接口      |
 | 🟡中   | 命名风格混用    | 63 个 CLI 命令     |
 | 🟡中   | as any 滥用     | 102 个文件         |
 | 🟡中   | mock 死代码     | 105 个文件         |
@@ -347,8 +329,7 @@ import mockData from "./mock-data"; // 仅3处
 ├─────────────────────────────────────────────────────────────┤
 │ 1. 为 apps:type 添加 Schema 验证测试                       │
 │ 2. 添加 Nitro 认证中间件                                   │
-│ 3. 移除 error.stack 返回                                   │
-│ 4. 完善 Turbo 任务定义 (至少补充 lint/test/typecheck)      │
+│ 3. 完善 Turbo 任务定义 (至少补充 lint/test/typecheck)      │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐

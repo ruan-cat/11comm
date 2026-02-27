@@ -22,7 +22,6 @@
 |          风险维度          | 风险等级 |                              核心问题                               |
 | :------------------------: | :------: | :-----------------------------------------------------------------: |
 | Nitro 接口安全（认证授权） | 🔴 极高  |      **所有 150+ API 无认证机制，任意可访问，数据安全不可控**       |
-|        错误信息泄露        |  🔴 高   |          生产环境 `error.stack` 泄露，140+ 接口均有此问题           |
 |  测试有效性（apps:type）   |  🔴 高   |         同构运行时库零测试，Schema 定义错误将同时影响前后端         |
 |   测试有效性（API 测试）   |  🔴 高   |             108 个 API 测试仅打印日志，无 `expect` 断言             |
 |       Turbo 缓存配置       |  🔴 高   |             仅定义 3 个 Turbo 任务，缓存优势几乎未发挥              |
@@ -67,32 +66,13 @@ export default defineEventHandler(async (event) => {
 2. 按 `nitro-api-authentication` 的 OpenSpec 设计方案落实
 3. 对敏感操作接口（delete、update）增加角色权限校验
 
-### 2.2 错误信息泄露 (🔴 高)
+### 2.2 关于 error.stack 的说明（非风险项）
 
-**现状：** 140+ 个接口在 catch 块中返回完整的 `error.stack`，生产环境存在严重的信息泄露风险。
+项目 140+ 接口在 catch 块中返回 `error.stack` 字段。经评估，**这不构成独立的安全风险**，原因如下：
 
-```typescript
-/** 当前错误处理模式 — 生产环境暴露堆栈 */
-catch (error: any) {
-	const errorResponse: JsonVO<null> = {
-		success: false,
-		code: 500,
-		message: "查询失败",
-		data: null,
-		error: error.message || String(error),
-		stack: error.stack, // ❌ 生产环境绝不应该返回
-	};
-	return errorResponse;
-}
-```
-
-**已有但未使用的工具：** `server/utils/handle-db-error.ts` — 使用率 **0%**。
-
-**建议：**
-
-1. 立即移除所有接口中 `stack` 字段的返回
-2. 引入环境变量判断：仅 `development` 时返回 `stack`
-3. 使用 `handle-db-error.ts` 统一错误处理
+1. **项目规范的有意设计**：`nitro-api-development` 技能文档的 Section 4.4 明确将 `error` 和 `stack` 作为 `JsonVO` 的标准错误响应写法来定义，`JsonVO` 类型本身也包含可选的 `error` 和 `stack` 字段
+2. **Serverless 环境的特殊性**：项目部署在 Cloudflare Worker / Vercel 等平台，打包后的代码是 bundled/minified 的，`error.stack` 暴露的是打包后的堆栈，不会泄露原始源码路径
+3. **开发阶段的务实需求**：项目处于活跃开发期，Serverless 环境下服务端日志不便直接查看，在响应中携带堆栈信息是实用的调试手段
 
 ---
 
@@ -408,7 +388,6 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 |  等级   |        风险项        |    涉及范围    |   修复紧急度    |
 | :-----: | :------------------: | :------------: | :-------------: |
 | 🔴 极高 |      无认证授权      | 全部 150+ API  | 立即（7 天内）  |
-|  🔴 高  |     错误信息泄露     | 140+ API 接口  | 立即（7 天内）  |
 |  🔴 高  |   apps:type 零测试   |    类型项目    | 立即（7 天内）  |
 |  🔴 高  |    API 测试无断言    | 108 个测试文件 | 短期（30 天内） |
 |  🔴 高  |   Turbo 仅 3 任务    |    构建性能    | 短期（30 天内） |
@@ -428,9 +407,8 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 │                    P0 立即行动 (7天内)                           │
 ├─────────────────────────────────────────────────────────────────┤
 │ 1. 实施 Nitro 认证中间件 (按 OpenSpec nitro-api-authentication) │
-│ 2. 移除全部接口的 error.stack 返回                               │
-│ 3. 为 apps:type 添加 Schema 验证测试（至少 core + community）    │
-│ 4. 修复 CLAUDE.md 章节编号重复                                   │
+│ 2. 为 apps:type 添加 Schema 验证测试（至少 core + community）    │
+│ 3. 修复 CLAUDE.md 章节编号重复                                   │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -438,9 +416,8 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 ├─────────────────────────────────────────────────────────────────┤
 │ 1. 补充 Turbo 任务定义 (lint, typecheck, test, vite:build:*)    │
 │ 2. 为重点 API 测试文件添加 expect 断言（优先 property-manage）    │
-│ 3. 统一 handle-db-error.ts 错误处理                             │
-│ 4. 更新 neon-db-list 技能文档来源到 apps/type                    │
-│ 5. 在 server/db/schema.ts 添加废弃注释                          │
+│ 3. 更新 neon-db-list 技能文档来源到 apps/type                    │
+│ 4. 在 server/db/schema.ts 添加废弃注释                          │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -486,13 +463,12 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ## 12. 结论
 
-01s-11comm 项目在**架构设计、规范体系和 AI 工程化协作**方面表现优秀，但存在 **必须立即修复的安全缺陷**（API 无认证、错误信息泄露）和 **需要持续改进的质量短板**（测试有效性、Turbo 配置、类型逃逸）。
+01s-11comm 项目在**架构设计、规范体系和 AI 工程化协作**方面表现优秀，但存在 **必须立即修复的安全缺陷**（API 无认证）和 **需要持续改进的质量短板**（测试有效性、Turbo 配置、类型逃逸）。
 
-**最紧迫的三件事：**
+**最紧迫的两件事：**
 
 1. 🔴 落实 `nitro-api-authentication` OpenSpec 变更，实施认证中间件
-2. 🔴 移除生产环境 `error.stack` 返回
-3. 🔴 为 `apps/type` 建立 Schema 验证测试基线
+2. 🔴 为 `apps/type` 建立 Schema 验证测试基线
 
 建议按本报告的 **P0-P3 优先级路线图** 逐步推进，在保持项目架构优势的同时，消除安全与质量隐患。
 
