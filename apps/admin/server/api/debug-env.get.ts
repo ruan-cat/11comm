@@ -8,6 +8,7 @@
  * 安全说明：仅返回变量键名和值的前6字符，不暴露完整的数据库连接字符串。
  */
 import { defineHandler } from "nitro/h3";
+import { useRuntimeConfig } from "nitro/runtime-config";
 
 export default defineHandler(async (event) => {
 	/** 安全截断：仅显示值的前6个字符 */
@@ -21,48 +22,51 @@ export default defineHandler(async (event) => {
 	const results: Record<string, unknown> = {};
 
 	/** 1. 检查 event.context 的全部顶层 key */
-	results["event.context keys"] = Object.keys(event.context || {});
+	try {
+		results["event.context keys"] = Object.keys(event.context || {});
+	} catch {
+		results["event.context keys"] = "[error]";
+	}
 
 	/** 2. 检查 event.context.cloudflare */
-	const cf = (event.context as any).cloudflare;
-	results["event.context.cloudflare exists"] = cf !== undefined;
-	if (cf) {
-		results["event.context.cloudflare keys"] = Object.keys(cf);
-		if (cf.env) {
-			const envKeys = Object.keys(cf.env);
-			results["cloudflare.env keys"] = envKeys;
-			results["cloudflare.env.comm_admin_11__DATABASE_URL"] = mask(cf.env.comm_admin_11__DATABASE_URL);
-			results["cloudflare.env.DATABASE_URL"] = mask(cf.env.DATABASE_URL);
+	try {
+		const cf = (event.context as Record<string, unknown>).cloudflare as Record<string, unknown> | undefined;
+		results["cloudflare exists"] = cf !== undefined;
+		if (cf) {
+			results["cloudflare keys"] = Object.keys(cf);
+			const cfEnv = cf.env as Record<string, unknown> | undefined;
+			if (cfEnv) {
+				results["cloudflare.env keys"] = Object.keys(cfEnv);
+				results["cf.env.comm_admin_11__DATABASE_URL"] = mask(cfEnv.comm_admin_11__DATABASE_URL);
+				results["cf.env.DATABASE_URL"] = mask(cfEnv.DATABASE_URL);
+			} else {
+				results["cloudflare.env"] = "[undefined]";
+			}
 		}
+	} catch {
+		results["cloudflare check"] = "[error]";
 	}
 
 	/** 3. 检查 process.env 相关 key */
-	const relevantProcessEnvKeys = Object.keys(process.env || {}).filter(
-		(k) => k.includes("DATABASE") || k.includes("comm_admin") || k.includes("NITRO") || k.includes("NEON"),
-	);
-	results["process.env relevant keys"] = relevantProcessEnvKeys;
-	results["process.env.comm_admin_11__DATABASE_URL"] = mask(process.env.comm_admin_11__DATABASE_URL);
-	results["process.env.DATABASE_URL"] = mask(process.env.DATABASE_URL);
+	try {
+		const allKeys = Object.keys(process.env || {});
+		results["process.env total keys"] = allKeys.length;
+		results["process.env relevant keys"] = allKeys.filter(
+			(k) => k.includes("DATABASE") || k.includes("comm_admin") || k.includes("NITRO") || k.includes("NEON"),
+		);
+		results["process.env.comm_admin_11__DATABASE_URL"] = mask(process.env.comm_admin_11__DATABASE_URL);
+		results["process.env.DATABASE_URL"] = mask(process.env.DATABASE_URL);
+	} catch {
+		results["process.env check"] = "[error]";
+	}
 
 	/** 4. 检查 useRuntimeConfig */
 	try {
-		const { useRuntimeConfig } = await import("nitro/runtime-config");
 		const config = useRuntimeConfig();
 		results["runtimeConfig keys"] = Object.keys(config);
-		results["runtimeConfig.databaseUrl"] = mask(config.databaseUrl);
-	} catch (e: any) {
-		results["runtimeConfig error"] = e.message;
-	}
-
-	/** 5. 检查 import.meta.env */
-	try {
-		const metaEnv = import.meta.env || {};
-		const relevantMetaKeys = Object.keys(metaEnv).filter(
-			(k) => k.includes("DATABASE") || k.includes("comm_admin") || k.includes("NITRO"),
-		);
-		results["import.meta.env relevant keys"] = relevantMetaKeys;
+		results["runtimeConfig.databaseUrl"] = mask((config as Record<string, unknown>).databaseUrl);
 	} catch {
-		results["import.meta.env"] = "[not available]";
+		results["runtimeConfig check"] = "[error]";
 	}
 
 	return {
