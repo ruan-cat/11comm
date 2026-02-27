@@ -31,6 +31,7 @@ license: MIT
 - **参数处理**: [request-params-handling.md](references/request-params-handling.md) - **[New]** 详解 `readBody` 使用、参数清洗 (空字符串/pageIndex 映射) 及错误捕获模式。
 - **迁移指南**: [mock-to-neon-migration.md](references/mock-to-neon-migration.md) - 如何将旧的 Mock 接口迁移到真实的 Neon 数据库。
 - **Mock 模式参考** (Legacy): [mock-mode.md](references/mock-mode.md) - Legacy Mock 模式的完整开发规范（仅用于维护现有接口）。
+- **多平台数据库连接**: [cloudflare-env-database.md](references/cloudflare-env-database.md) - **[关键]** Cloudflare Worker 与 Vercel 平台下的环境变量获取机制、Drizzle+Neon 数据库连接模式，以及 `event.req.runtime.cloudflare.env` 的正确使用方式。
 
 ## 4. 返回值类型约束 (Response Type Constraint)
 
@@ -189,3 +190,51 @@ const list: XxxListItem[] = data.map((item) => ({
 const body = (await readValidatedBody(event, insertSchema.parse)) as unknown as NewX;
 const result = await db.insert(table).values(body).returning();
 ```
+
+## 8. 多平台数据库连接 (Multi-Platform Database Connection)
+
+> **本节是本项目在 Cloudflare Worker 环境下排查真实严重 Bug 后沉淀的核心经验。所有涉及数据库连接的代码都必须遵守本节规范。**
+
+### 8.1. 核心原则：永远通过 `useDb(event)` 获取数据库实例
+
+**严禁**在模块顶层或全局作用域直接创建 Drizzle 数据库连接实例：
+
+```typescript
+// ❌ 错误：模块顶层创建，Cloudflare Worker 环境下 process.env 为空
+const db = drizzle(neon(process.env.DATABASE_URL!));
+
+// ✅ 正确：在每个 handler 内通过 event 动态获取
+export default defineHandler(async (event) => {
+	const db = useDb(event); // 内部自动处理多平台环境变量
+	return await db.select().from(table);
+});
+```
+
+### 8.2. Cloudflare Worker 的核心陷阱
+
+在 Nitro v3 + Cloudflare Worker 环境中，**`event.context.cloudflare.env` 不存在**。
+正确路径必须是 **`event.req.runtime?.cloudflare?.env`**（Nitro v3 官方确认路径）。
+
+生产环境真实日志验证：
+
+```log
+"req.runtime exists": true,
+"req.runtime keys": ["name", "cloudflare"],
+"req.runtime.cloudflare.env keys": ["NITRO_DATABASE_URL", "comm_admin_11__DATABASE_URL", "ASSETS"]
+```
+
+### 8.3. 关键构建配置
+
+使用 `cloudflare:workers` 动态导入时，**必须**在 `nitro.config.ts` 中声明 external，
+否则 Vite 在 `vite:build:prod` 阶段会因无法解析该 CF 专属运行时模块而构建失败：
+
+```typescript
+// nitro.config.ts
+export default defineConfig({
+	rollupConfig: {
+		external: ["cloudflare:workers"],
+	},
+});
+```
+
+**详细内容请参考**：[cloudflare-env-database.md](references/cloudflare-env-database.md)
