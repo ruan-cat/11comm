@@ -294,45 +294,86 @@
 
 #### 11.2 Neon Auth OAuth SDK 集成
 
+> **⚠️ Cloudflare Worker 兼容性**：模块顶层 `process.env` 在 Cloudflare Worker 中不可用，
+> 必须使用懒加载模式（与 `useDb` 保持一致）。
+
 ```typescript
 // server/utils/auth-client.ts
 import { createAuthClient } from "@neondatabase/auth";
+import { useRuntimeConfig } from "nitro/runtime-config";
+import consola from "consola";
 
-const authClient = createAuthClient(process.env.NEON_AUTH_BASE_URL!);
+/**
+ * 获取 Neon Auth 认证客户端（懒加载）
+ *
+ * @description
+ * 在 Cloudflare Worker 环境中，process.env 仅在 handler 内可用，
+ * 因此必须在请求处理时动态创建客户端实例。
+ * 设计参考 server/db/index.ts 的 useDb 懒加载模式。
+ */
+export function useAuthClient() {
+	/** 优先使用 Nitro runtimeConfig */
+	const config = useRuntimeConfig();
+	const baseUrl = (config.neonAuthBaseUrl as string) || process.env.NEON_AUTH_BASE_URL;
 
-export { authClient };
+	if (!baseUrl) {
+		consola.error("未配置 NEON_AUTH_BASE_URL 环境变量");
+		throw new Error("未配置 NEON_AUTH_BASE_URL 环境变量");
+	}
+
+	return createAuthClient(baseUrl);
+}
 ```
 
 #### 11.3 OAuth 登录端点实现
 
 ```typescript
 // server/api/auth/oauth/[provider].get.ts
-import { authClient } from "@/server/utils/auth-client";
+import { defineHandler, getRouterParam, sendRedirect } from "nitro/h3";
+import { useAuthClient } from "server/utils/auth-client";
+import type { JsonVO } from "@01s-11comm/type";
 
-export default defineEventHandler(async (event) => {
-	const provider = getRouterParam(event, "provider");
+export default defineHandler(async (event) => {
+	try {
+		const provider = getRouterParam(event, "provider");
 
-	// 验证 provider 是否支持
-	const supportedProviders = ["google", "github", "vercel"];
-	if (!supportedProviders.includes(provider)) {
-		throw createError({
-			statusCode: 400,
-			message: `不支持的 OAuth 提供商: ${provider}`,
+		/** 验证 provider 是否支持 */
+		const supportedProviders = ["google", "github", "vercel"];
+		if (!provider || !supportedProviders.includes(provider)) {
+			const badRequestResponse: JsonVO<null> = {
+				success: false,
+				code: 400,
+				message: `不支持的 OAuth 提供商: ${provider}`,
+				data: null,
+			};
+			return badRequestResponse;
+		}
+
+		/** 构建回调 URL */
+		const baseUrl = getRequestURL(event).origin;
+		const callbackURL = `${baseUrl}/api/auth/callback/${provider}`;
+
+		/** 发起 OAuth 登录（懒加载获取认证客户端） */
+		const authClient = useAuthClient();
+		const { url } = await authClient.authorizeOAuth2(provider, {
+			redirectTo: callbackURL,
 		});
+
+		/** 重定向到 OAuth 提供商 */
+		return sendRedirect(event, url);
+	} catch (error: any) {
+		console.error("[OAuth] Error:", error);
+
+		const errorResponse: JsonVO<null> = {
+			success: false,
+			code: 500,
+			message: "OAuth 登录发起失败",
+			data: null,
+			error: error.message || String(error),
+			stack: error.stack,
+		};
+		return errorResponse;
 	}
-
-	// 构建回调 URL
-	const baseUrl = getRequestURL(event).origin;
-	const callbackURL = `${baseUrl}/api/auth/callback/${provider}`;
-
-	// 发起 OAuth 登录
-	// 注意：前端需要监听 Neon Auth 的重定向
-	const { url } = await authClient.authorizeOAuth2(provider, {
-		redirectTo: callbackURL,
-	});
-
-	// 重定向到 OAuth 提供商
-	return sendRedirect(event, url);
 });
 ```
 
@@ -340,13 +381,17 @@ export default defineEventHandler(async (event) => {
 
 ```typescript
 // server/api/auth/callback/[provider].get.ts
-import { authClient } from "@/server/utils/auth-client";
+import { defineHandler, getRouterParam, sendRedirect } from "nitro/h3";
+import { useAuthClient } from "server/utils/auth-client";
 
-export default defineEventHandler(async (event) => {
-	const provider = getRouterParam(event, "provider");
-
+export default defineHandler(async (event) => {
 	try {
-		// 交换 code 获取会话
+		const provider = getRouterParam(event, "provider");
+
+		/** 懒加载获取认证客户端 */
+		const authClient = useAuthClient();
+
+		/** 交换 code 获取会话 */
 		const { data, error } = await authClient.exchangeOAuth2Code(provider);
 
 		if (error) {
@@ -354,18 +399,18 @@ export default defineEventHandler(async (event) => {
 			return sendRedirect(event, `/login?error=oauth_failed`);
 		}
 
-		// 获取会话信息
+		/** 获取会话信息 */
 		const session = await authClient.getSession();
 
 		if (session.data?.session) {
-			// 登录成功，重定向到首页或仪表盘
+			/** 登录成功，重定向到首页或仪表盘 */
 			return sendRedirect(event, "/");
 		} else {
-			// 会话创建失败
+			/** 会话创建失败 */
 			return sendRedirect(event, "/login?error=session_failed");
 		}
-	} catch (error) {
-		console.error("OAuth 回调异常:", error);
+	} catch (error: any) {
+		console.error("[OAuth Callback] Error:", error);
 		return sendRedirect(event, "/login?error=unknown");
 	}
 });
@@ -436,7 +481,7 @@ if (storedState !== requestedState) {
 }
 ```
 
-### Decision 8: 用户角色系统 - 6 层角色体系
+### Decision 12: 用户角色系统 - 6 层角色体系
 
 **选择：基于业务场景的 6 层角色体系**
 
@@ -472,7 +517,7 @@ if (storedState !== requestedState) {
 - 使用 Neon Auth 的 `user.metadata` 存储自定义用户属性
 - 或在业务表中维护用户角色映射（如 `staffs`, `owners` 表）
 
-### Decision 9: 数据权限模型 - 4 维权限控制
+### Decision 13: 数据权限模型 - 4 维权限控制
 
 **选择：组织+房产+职位+数据范围的 4 维权限模型**
 
@@ -496,7 +541,7 @@ if (storedState !== requestedState) {
 
 **权限优先级**：Organization > Community > Property
 
-### Decision 10: API 权限码标准 - module:action 格式
+### Decision 14: API 权限码标准 - module:action 格式
 
 **选择：统一的 API 权限码命名规范**
 
@@ -530,7 +575,7 @@ if (storedState !== requestedState) {
 - 存储在用户角色的 `permissions` 字段（JSON 数组）
 - 或存储在独立的权限配置表中
 
-### Decision 11: 单租户数据架构 - Organization + Community 两层结构
+### Decision 15: 单租户数据架构 - Organization + Community 两层结构
 
 **选择：Organization → Community 的两层嵌套架构（单租户模式）**
 
