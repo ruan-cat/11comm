@@ -333,3 +333,7 @@ overrides:
 后台项目运行项目时的命令运行顺序，需要被记录。
 
 运行后台项目的测试命令 `test:nitro` 时，应该先运行 `dev` 命令，即整个项目，确保先提供本地的，可运行的 nitro 接口，然后才能运行 `test:nitro` 命令。让以后的 AI 模型都记得这个规定，以后需要经常运行 `test:nitro` 命令来测试本地的 nitro 接口在连接 neon 数据库的前提下，是否能正常工作。
+
+## 028 修复 cloudflare worker 内的 nitro 数据库连接故障
+
+在 `apps\admin\server\db\index.ts` 内，我期望实现 nitro 接口在 context 上下文内，获取到来自 cloudflare worker 提供改的环境变量文件，但是实际执行的时候，出现未获取环境变量的错误。请你检查 `apps\admin\server\db\index.ts` 和相关的 nitro 接口。解决故障

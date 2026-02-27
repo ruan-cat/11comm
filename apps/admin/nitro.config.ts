@@ -47,8 +47,8 @@ export default defineConfig({
 	 * 因此使用 runtimeConfig 让 Nitro 在运行时注入环境变量
 	 */
 	runtimeConfig: {
-		// 数据库连接 URL - Nitro 会自动从 NITRO_DATABASE_URL 或 DATABASE_URL 环境变量读取
-		databaseUrl: process.env.DATABASE_URL || "",
+		/** 数据库连接 URL — Nitro 会在运行时注入到 useRuntimeConfig().databaseUrl */
+		databaseUrl: getVercelEnv("DATABASE_URL") || process.env.DATABASE_URL || "",
 	},
 
 	/**
