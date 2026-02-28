@@ -58,6 +58,8 @@ export const hpOwners = pgTable(
 	"hp_owners",
 	{
 		id: primaryId(),
+		/** Neon Auth 用户 ID（关联 auth_user_mapping） */
+		neonAuthId: uuid("neon_auth_id"),
 		/** 业主姓名 */
 		name: varchar("name", { length: 50 }).notNull(),
 		/** 身份证号 */
@@ -78,7 +80,11 @@ export const hpOwners = pgTable(
 		...timestamps,
 		...softDelete,
 	},
-	(table) => [index("hp_owners_name_idx").on(table.name), index("hp_owners_phone_idx").on(table.phone)],
+	(table) => [
+		index("hp_owners_name_idx").on(table.name),
+		index("hp_owners_phone_idx").on(table.phone),
+		index("hp_owners_neon_auth_id_idx").on(table.neonAuthId),
+	],
 );
 
 /** 业主家庭成员表 */

@@ -19,8 +19,12 @@ export const smStaff = pgTable(
 	"sm_staff",
 	{
 		id: primaryId(),
+		/** Neon Auth 用户 ID（关联 auth_user_mapping） */
+		neonAuthId: uuid("neon_auth_id"),
 		/** 关联组织 ID */
 		orgId: uuid("org_id").references(() => smOrganizations.id),
+		/** 关联小区 ID（员工所属小区，用于数据隔离） */
+		communityId: uuid("community_id"),
 		/** 员工编号 */
 		employeeNumber: varchar("employee_number", { length: 50 }).notNull(),
 		/** 姓名 */
@@ -45,6 +49,8 @@ export const smStaff = pgTable(
 		index("sm_staff_employee_number_idx").on(table.employeeNumber),
 		index("sm_staff_name_idx").on(table.name),
 		index("sm_staff_org_id_idx").on(table.orgId),
+		index("sm_staff_community_id_idx").on(table.communityId),
+		index("sm_staff_neon_auth_id_idx").on(table.neonAuthId),
 	],
 );
 
@@ -67,6 +73,7 @@ export const selectSmStaffSchema = createSelectSchema(smStaff);
 export const updateSmStaffSchema = z.object({
 	id: z.string().uuid(),
 	orgId: z.string().uuid().optional().nullable(),
+	communityId: z.string().uuid().optional().nullable(),
 	employeeNumber: z.string().min(1, "员工编号不能为空").max(50).optional(),
 	name: z.string().min(1, "姓名不能为空").max(50).optional(),
 	gender: z.enum(["male", "female"]).optional().nullable(),

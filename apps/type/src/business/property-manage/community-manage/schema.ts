@@ -8,6 +8,7 @@ import { index, pgTable, text, timestamp, varchar, integer, decimal, date, uuid 
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { primaryId, timestamps, softDelete, remarkField, statusEnum, auditStatusEnum } from "../../../common";
+// 注意：与 organize-manage 的关联通过外键约束在迁移时配置，避免循环依赖
 
 // ==========================================
 // Part A: Database Table Definitions
@@ -32,6 +33,8 @@ export const cmCommunities = pgTable(
 		phone: varchar("phone", { length: 20 }),
 		/** 状态 */
 		status: statusEnum("status").default("enabled"),
+		/** 关联组织 ID（小区所属的物业公司/组织，通过外键约束关联 sm_organizations） */
+		organizationId: uuid("organization_id"),
 
 		/** 占地面积（平方米） */
 		landArea: decimal("land_area", { precision: 12, scale: 2 }),
@@ -74,6 +77,7 @@ export const cmCommunities = pgTable(
 		index("cm_communities_name_idx").on(table.name),
 		index("cm_communities_code_idx").on(table.code),
 		index("cm_communities_status_idx").on(table.status),
+		index("cm_communities_organization_id_idx").on(table.organizationId),
 	],
 );
 
@@ -271,6 +275,7 @@ export const updateCmCommunitySchema = z.object({
 	address: z.string().optional().nullable(),
 	phone: z.string().max(20).optional().nullable(),
 	status: z.enum(["enabled", "disabled"]).optional(),
+	organizationId: z.string().uuid().optional().nullable(),
 	landArea: z.string().optional().nullable(),
 	buildingArea: z.string().optional().nullable(),
 	buildingCount: z.number().int().optional().nullable(),

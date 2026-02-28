@@ -9,6 +9,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { primaryId, timestamps, remarkField } from "../../../common";
 import { smStaff } from "../user-manage/schema";
+// 注意：与 community-manage 的关联通过外键约束在迁移时配置，避免循环依赖
 
 // ==========================================
 // Part A: Database Table Definitions
@@ -29,6 +30,12 @@ export const smOrganizations = pgTable(
 		sortOrder: integer("sort_order").default(0),
 		/** 父级组织 ID（自引用） */
 		parentId: uuid("parent_id"),
+		/** 关联小区 ID（一个组织可以管理多个小区，通过外键约束关联 cm_communities） */
+		communityId: uuid("community_id"),
+		/** 组织层级（用于多级组织） */
+		level: integer("level").default(1),
+		/** 组织路径（如：/org1/org2 用于快速查询子组织） */
+		orgPath: varchar("org_path", { length: 500 }),
 		/** 备注 */
 		remark: remarkField(),
 		...timestamps,
@@ -37,6 +44,8 @@ export const smOrganizations = pgTable(
 		index("sm_organizations_org_name_idx").on(table.orgName),
 		index("sm_organizations_org_code_idx").on(table.orgCode),
 		index("sm_organizations_parent_id_idx").on(table.parentId),
+		index("sm_organizations_community_id_idx").on(table.communityId),
+		index("sm_organizations_org_path_idx").on(table.orgPath),
 	],
 );
 
@@ -137,6 +146,9 @@ export const updateSmOrganizationSchema = z.object({
 	orgType: z.string().max(50).optional().nullable(),
 	sortOrder: z.number().int().optional(),
 	parentId: z.string().uuid().optional().nullable(),
+	communityId: z.string().uuid().optional().nullable(),
+	level: z.number().int().optional(),
+	orgPath: z.string().max(500).optional().nullable(),
 	remark: z.string().optional().nullable(),
 });
 

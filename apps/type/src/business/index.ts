@@ -3,6 +3,7 @@
  * @description 导出所有业务模块的类型定义
  */
 
+export * from "./auth";
 export * from "./dev-team";
 export * from "./property-manage";
 export * from "./setting-manage";
