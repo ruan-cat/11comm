@@ -20,9 +20,11 @@ import LoginQrCode from "./components/LoginQrCode.vue";
 import { bg, avatar, illustration } from "./utils/static";
 import { ReImageVerify } from "@/components/ReImageVerify";
 import { ref, toRaw, reactive, watch, computed, onMounted, useTemplateRef } from "vue";
+import { useAuth } from "@/composables/use-auth";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
+import { ElMessage } from "element-plus";
 
 /** @see https://pure-admin.cn/pages/routerMenu/#如何只要静态路由 */
 // import { initRouter, getTopMenu } from "@/router/utils";
@@ -56,6 +58,31 @@ const [loading, setLoading] = useToggle(false);
 const checked = ref(false);
 const disabled = ref(false);
 const ruleFormRef = ref<FormInstance>();
+const emailFormRef = ref<FormInstance>();
+
+/** 邮箱登录校验规则 */
+const emailLoginRules = {
+	email: [
+		{
+			required: true,
+			message: "请输入邮箱地址",
+			trigger: "blur",
+		},
+		{
+			type: "email",
+			message: "请输入正确的邮箱地址",
+			trigger: "blur",
+		},
+	],
+	password: [
+		{
+			required: true,
+			message: "请输入密码",
+			trigger: "blur",
+		},
+	],
+};
+
 const currentPage = computed(() => {
 	return useUserStoreHook().currentPage;
 });
@@ -79,7 +106,13 @@ const ruleForm = reactive({
 	username: "admin",
 	password: "123456",
 	verifyCode: "",
+	// 邮箱登录相关
+	email: "",
 });
+
+/** 登录方式：username=用户名登录, email=邮箱登录 */
+const loginMethod = ref<"username" | "email">("username");
+const { login: neonLogin } = useAuth();
 
 /** 验证码相关数据 */
 const captchaInfo = ref<CaptchaResult | null>(null);
@@ -219,6 +252,54 @@ async function onLogin(formEl: FormInstance | undefined) {
 }
 
 const immediateDebounce: any = debounce((formRef) => onLogin(formRef), 1000, true);
+
+/** Neon Auth OAuth 登录 */
+const { loginWithOAuth } = useAuth();
+
+/**
+ * 处理 OAuth 第三方登录
+ * @param provider OAuth 提供商 (google, github)
+ */
+function handleOAuthLogin(provider: "google" | "github") {
+	loginWithOAuth(provider);
+}
+
+/**
+ * 切换登录方式
+ */
+function switchLoginMethod(method: "username" | "email") {
+	loginMethod.value = method;
+}
+
+/**
+ * 使用邮箱密码登录
+ */
+async function onEmailLogin(formEl: FormInstance | undefined) {
+	if (!formEl) return;
+	await formEl.validate(async (valid) => {
+		if (valid) {
+			setLoading(true);
+			try {
+				const success = await neonLogin({
+					email: ruleForm.email,
+					password: ruleForm.password,
+				});
+				if (success) {
+					// 登录成功，跳转到首页
+					usePermissionStoreHook().handleWholeMenus([]);
+					addPathMatch();
+					router.push(getTopMenu(true).path);
+					ElMessage.success("登录成功");
+				}
+			} catch (error) {
+				console.error("邮箱登录失败:", error);
+				ElMessage.error("登录失败，请检查邮箱和密码");
+			} finally {
+				setLoading(false);
+			}
+		}
+	});
+}
 
 useEventListener(document, "keydown", ({ code }) => {
 	if (["Enter", "NumpadEnter"].includes(code) && !disabled.value && !loading.value)
@@ -441,6 +522,81 @@ onMounted(async () => {});
 						</Motion>
 					</el-form>
 
+					<!-- 邮箱登录切换选项 -->
+					<Motion v-if="currentPage === 0" :delay="300">
+						<el-form-item>
+							<div class="w-full flex justify-center">
+								<el-button v-if="loginMethod === 'username'" link type="primary" @click="switchLoginMethod('email')">
+									使用邮箱密码登录
+								</el-button>
+								<el-button v-else link type="primary" @click="switchLoginMethod('username')">
+									使用用户名登录
+								</el-button>
+							</div>
+						</el-form-item>
+					</Motion>
+
+					<!-- 邮箱登录表单 -->
+					<el-form
+						v-if="currentPage === 0 && loginMethod === 'email'"
+						ref="emailFormRef"
+						:model="ruleForm"
+						:rules="emailLoginRules"
+						size="large"
+					>
+						<Motion :delay="100">
+							<el-form-item
+								:rules="[
+									{
+										required: true,
+										message: '请输入邮箱地址',
+										trigger: 'blur',
+									},
+									{
+										type: 'email',
+										message: '请输入正确的邮箱地址',
+										trigger: 'blur',
+									},
+								]"
+								prop="email"
+							>
+								<el-input
+									v-model="ruleForm.email"
+									clearable
+									placeholder="邮箱地址"
+									:prefix-icon="useRenderIcon(User)"
+								/>
+							</el-form-item>
+						</Motion>
+
+						<Motion :delay="150">
+							<el-form-item prop="password">
+								<el-input
+									v-model="ruleForm.password"
+									clearable
+									show-password
+									placeholder="密码"
+									:prefix-icon="useRenderIcon(Lock)"
+								/>
+							</el-form-item>
+						</Motion>
+
+						<Motion :delay="200">
+							<el-form-item>
+								<el-button
+									class="w-full mt-4!"
+									size="default"
+									type="primary"
+									:loading="loading"
+									:disabled="disabled"
+									@click="onEmailLogin(emailFormRef)"
+								>
+									{{ t("common.login.pureLogin") }}
+								</el-button>
+							</el-form-item>
+						</Motion>
+					</el-form>
+
 					<Motion v-if="currentPage === 0" :delay="350">
 						<el-form-item>
 							<el-divider>
@@ -449,12 +605,22 @@ onMounted(async () => {});
 								</p>
 							</el-divider>
 							<div class="w-full flex justify-evenly">
-								<span v-for="(item, index) in thirdParty" :key="index" :title="t(item.title)">
+								<span
+									v-for="(item, index) in thirdParty"
+									:key="index"
+									:title="item.title"
+									:class="[
+										'cursor-pointer text-gray-500 hover:text-blue-400',
+										item.provider ? 'flex flex-col items-center cursor-pointer' : '',
+									]"
+									@click="item.provider && handleOAuthLogin(item.provider)"
+								>
 									<IconifyIconOnline
 										:icon="`ri:${item.icon}-fill`"
 										width="20"
-										class="cursor-pointer text-gray-500 hover:text-blue-400"
+										:class="item.provider ? 'hover:scale-110 transition-transform' : ''"
 									/>
+									<span v-if="item.provider" class="text-[10px] mt-1">{{ item.title }}</span>
 								</span>
 							</div>
 						</el-form-item>

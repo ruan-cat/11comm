@@ -14,6 +14,16 @@ const operates = [
 
 const thirdParty = [
 	{
+		title: "Google 登录",
+		icon: "google",
+		provider: "google",
+	},
+	{
+		title: "GitHub 登录",
+		icon: "github",
+		provider: "github",
+	},
+	{
 		title: $t("common.login.pureWeChatLogin"),
 		icon: "wechat",
 	},
