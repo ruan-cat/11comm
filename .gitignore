@@ -90,3 +90,6 @@ vite.config.ts.*.mjs
 # 忽略wrangler部署配置文件
 .wrangler
 
+# 忽略本地缓存目录
+local_cache
+
