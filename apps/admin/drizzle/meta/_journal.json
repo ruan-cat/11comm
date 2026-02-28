@@ -8,6 +8,13 @@
 			"when": 1771357814560,
 			"tag": "0000_cheerful_sersi",
 			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1772297106794,
+			"tag": "0001_wandering_frog_thor",
+			"breakpoints": true
 		}
 	]
 }
