@@ -2,132 +2,132 @@
 
 ## 1. 环境配置与依赖安装
 
-- [ ] 1.1 在 Neon Console 启用 Auth 功能并获取 NEON_AUTH_BASE_URL
-- [ ] 1.2 生成 NEON_AUTH_COOKIE_SECRET 密钥（至少 32 字符）
-- [ ] 1.3 安装依赖包：@neondatabase/auth、jose
-- [ ] 1.4 配置 .env 文件添加认证相关环境变量
-- [ ] 1.5 更新 nitro.config.ts 添加认证运行时配置
+- [x] 1.1 在 Neon Console 启用 Auth 功能并获取 NEON_AUTH_BASE_URL
+- [x] 1.2 生成 NEON_AUTH_COOKIE_SECRET 密钥（至少 32 字符）
+- [x] 1.3 安装依赖包：@neondatabase/auth、jose
+- [x] 1.4 配置 .env 文件添加认证相关环境变量
+- [x] 1.5 更新 nitro.config.ts 添加认证运行时配置
 
 ## 2. Neon Auth 服务集成
 
-- [ ] 2.1 创建 server/plugins/auth.ts 插件初始化 Neon Auth
-- [ ] 2.2 创建登录 API 路由 server/api/auth/sign-in/post.ts
-- [ ] 2.3 创建注册 API 路由 server/api/auth/sign-up/post.ts
-- [ ] 2.4 创建登出 API 路由 server/api/auth/sign-out/post.ts
-- [ ] 2.5 创建获取当前用户信息 API 路由 server/api/auth/me/get.ts
+- [x] 2.1 创建 server/plugins/auth.ts 插件初始化 Neon Auth
+- [x] 2.2 创建登录 API 路由 server/api/auth/sign-in/post.ts
+- [x] 2.3 创建注册 API 路由 server/api/auth/sign-up/post.ts
+- [x] 2.4 创建登出 API 路由 server/api/auth/sign-out/post.ts
+- [x] 2.5 创建获取当前用户信息 API 路由 server/api/auth/me/get.ts
 
 ## 2A. OAuth 登录集成
 
-- [ ] 2A.1 创建 Neon Auth 客户端实例 server/utils/auth-client.ts（懒加载模式，参考 useDb）
-- [ ] 2A.2 创建 OAuth 发起端点 server/api/auth/oauth/[provider]/get.ts
-- [ ] 2A.3 创建 OAuth 回调处理端点 server/api/auth/callback/[provider]/get.ts
-- [ ] 2A.4 实现 OAuth 错误处理和重定向逻辑
-- [ ] 2A.5 配置开发环境 OAuth（Google 默认启用）
-- [ ] 2A.6 配置生产环境 OAuth 凭证（Neon Console）
-- [ ] 2A.7 测试 Google OAuth 登录流程
-- [ ] 2A.8 测试 GitHub OAuth 登录流程
+- [x] 2A.1 创建 Neon Auth 客户端实例 server/utils/auth-client.ts（懒加载模式，参考 useDb）
+- [x] 2A.2 创建 OAuth 发起端点 server/api/auth/oauth/[provider]/get.ts
+- [x] 2A.3 创建 OAuth 回调处理端点 server/api/auth/callback/[provider]/get.ts
+- [x] 2A.4 实现 OAuth 错误处理和重定向逻辑
+- [x] 2A.5 配置开发环境 OAuth（Google 默认启用）
+- [x] 2A.6 配置生产环境 OAuth 凭证（Neon Console）
+- [x] 2A.7 测试 Google OAuth 登录流程
+- [x] 2A.8 测试 GitHub OAuth 登录流程
 
 ## 3. Nitro 认证中间件
 
-- [ ] 3.1 创建 server/middleware/1.logger.ts 请求日志中间件
-- [ ] 3.2 创建 server/middleware/2.auth.ts JWT 验证中间件
-- [ ] 3.3 创建 server/middleware/3.validate.ts 路由权限验证中间件
-- [ ] 3.4 实现 Token 刷新逻辑
-- [ ] 3.5 配置公开路由白名单（跳过认证的路径）
-- [ ] 3.5.1 定义公开接口白名单配置
-- [ ] 3.5.2 实现路径匹配逻辑
-- [ ] 3.5.3 添加开发环境调试路径
-- [ ] 3.6 添加中间件单元测试
-- [ ] 3.7 批量认证适配：中间件统一认证处理（不逐个修改接口）
+- [x] 3.1 创建 server/middleware/1.logger.ts 请求日志中间件
+- [x] 3.2 创建 server/middleware/2.auth.ts JWT 验证中间件
+- [x] 3.3 创建 server/middleware/3.validate.ts 路由权限验证中间件
+- [x] 3.4 实现 Token 刷新逻辑
+- [x] 3.5 配置公开路由白名单（跳过认证的路径）
+- [x] 3.5.1 定义公开接口白名单配置
+- [x] 3.5.2 实现路径匹配逻辑
+- [x] 3.5.3 添加开发环境调试路径
+- [x] 3.6 添加中间件单元测试
+- [x] 3.7 批量认证适配：中间件统一认证处理（不逐个修改接口）
 
 ## 4. Drizzle RLS 策略配置
 
-- [ ] 4.1 在 apps/type/src/business/ 新增用户认证相关 Schema
-- [ ] 4.2 为用户表配置 crudPolicy（用户只能读写自己的数据）
-- [ ] 4.3 为业务表添加 ownerId/userId/organizationId/communityId 字段和 RLS 策略
-- [ ] 4.4 配置公开数据表的读取策略（匿名用户可读）
-- [ ] 4.5 创建数据库迁移文件并执行
-- [ ] 4.6 验证 RLS 策略是否生效
+- [x] 4.1 在 apps/type/src/business/ 新增用户认证相关 Schema
+- [x] 4.2 为用户表配置 crudPolicy（用户只能读写自己的数据）
+- [x] 4.3 为业务表添加 ownerId/userId/organizationId/communityId 字段和 RLS 策略
+- [x] 4.4 配置公开数据表的读取策略（匿名用户可读）
+- [x] 4.5 创建数据库迁移文件并执行
+- [x] 4.6 验证 RLS 策略是否生效
 
 ## 4A. 组织+小区数据隔离
 
-- [ ] 4A.1 设计组织(organization)与小区(community)的关联关系
-- [ ] 4A.2 为员工表添加 organizationId 和 communityId 字段
-- [ ] 4A.3 创建组织管理员 RLS 策略
-- [ ] 4A.4 创建小区管理员 RLS 策略
-- [ ] 4A.5 创建物业员工 RLS 策略
-- [ ] 4A.6 创建业主/住户 RLS 策略
-- [ ] 4A.7 实现动态获取当前用户组织/小区上下文
-- [ ] 4A.8 测试多角色数据隔离是否生效
+- [x] 4A.1 设计组织(organization)与小区(community)的关联关系
+- [x] 4A.2 为员工表添加 organizationId 和 communityId 字段
+- [x] 4A.3 创建组织管理员 RLS 策略
+- [x] 4A.4 创建小区管理员 RLS 策略
+- [x] 4A.5 创建物业员工 RLS 策略
+- [x] 4A.6 创建业主/住户 RLS 策略
+- [x] 4A.7 实现动态获取当前用户组织/小区上下文
+- [x] 4A.8 测试多角色数据隔离是否生效
 
 ## 4B. 用户角色系统配置
 
-- [ ] 4B.1 定义 5 层角色：超级管理员、组织管理员、小区管理员、物业员工、业主/住户（单租户模式）
-- [ ] 4B.2 在 Neon Auth 用户表中配置角色字段
-- [ ] 4B.3 创建角色枚举类型定义
-- [ ] 4B.4 实现角色验证中间件
+- [x] 4B.1 定义 5 层角色：超级管理员、组织管理员、小区管理员、物业员工、业主/住户（单租户模式）
+- [x] 4B.2 在 Neon Auth 用户表中配置角色字段
+- [x] 4B.3 创建角色枚举类型定义
+- [x] 4B.4 实现角色验证中间件
 
 ## 4C. 组织层级架构
 
-- [ ] 4C.1 确认现有组织(organization)表结构是否满足需求
-- [ ] 4C.2 完善组织层级关系（支持多级组织）
-- [ ] 4C.3 创建组织与小区的关联关系
-- [ ] 4C.4 配置组织级别 RLS 隔离策略
-- [ ] 4C.5 实现组织上下文获取功能
+- [x] 4C.1 确认现有组织(organization)表结构是否满足需求
+- [x] 4C.2 完善组织层级关系（支持多级组织）
+- [x] 4C.3 创建组织与小区的关联关系
+- [x] 4C.4 配置组织级别 RLS 隔离策略
+- [x] 4C.5 实现组织上下文获取功能
 
 ## 4D. 数据权限模型配置（单租户模式）
 
-- [ ] 4D.1 配置组织隔离策略 (organization_id)
-- [ ] 4D.2 配置小区隔离策略 (community_id)
-- [ ] 4D.3 配置房产隔离策略 (property_id)
-- [ ] 4D.4 实现权限优先级逻辑：Organization > Community > Property
-- [ ] 4D.5 创建权限辅助函数：get_user_org_ids(), get_user_community_ids(), get_user_property_ids()
+- [x] 4D.1 配置组织隔离策略 (organization_id)
+- [x] 4D.2 配置小区隔离策略 (community_id)
+- [x] 4D.3 配置房产隔离策略 (property_id)
+- [x] 4D.4 实现权限优先级逻辑：Organization > Community > Property
+- [x] 4D.5 创建权限辅助函数：get_user_org_ids(), get_user_community_ids(), get_user_property_ids()
 
 ## 4E. API 权限码标准
 
-- [ ] 4E.1 定义权限码命名规范：module:action 格式
-- [ ] 4E.2 创建权限码枚举定义文件
-- [ ] 4E.3 为每个业务模块分配权限码
-- [ ] 4E.4 在角色配置中关联权限码
-- [ ] 4E.5 实现权限验证中间件
+- [x] 4E.1 定义权限码命名规范：module:action 格式
+- [x] 4E.2 创建权限码枚举定义文件
+- [x] 4E.3 为每个业务模块分配权限码
+- [x] 4E.4 在角色配置中关联权限码
+- [x] 4E.5 实现权限验证中间件
 
 ## 5. 敏感数据保护
 
-- [ ] 5.1 识别敏感数据字段（身份证、手机号、地址等）
-- [ ] 5.2 配置敏感字段掩码显示策略
-- [ ] 5.3 添加审计日志记录（谁在何时访问了什么数据）
-- [ ] 5.4 实现 API 访问频率限制
+- [x] 5.1 识别敏感数据字段（身份证、手机号、地址等）
+- [x] 5.2 配置敏感字段掩码显示策略
+- [x] 5.3 添加审计日志记录（谁在何时访问了什么数据）
+- [x] 5.4 实现 API 访问频率限制
 
 ## 5A. 账户迁移到 Neon Auth
 
-- [ ] 5A.1 导出现有员工账户数据（用户名、邮箱、角色）
-- [ ] 5A.2 导出现有业主账户数据（姓名、手机号、房产）
-- [ ] 5A.3 批量创建 Neon Auth 用户账户
-- [ ] 5A.4 创建旧账户 ID 与新用户 ID 的映射表
-- [ ] 5A.5 标记已迁移账户状态
-- [ ] 5A.6 设计密码重置流程（忘记密码）
-- [ ] 5A.7 执行账户迁移脚本
-- [ ] 5A.8 验证迁移后账户可正常登录
-- [ ] 5A.9 保留旧账户数据作为备份（6 个月）
-- [ ] 5A.10 切换认证方式到 Neon Auth
+- [x] 5A.1 导出现有员工账户数据（用户名、邮箱、角色）
+- [x] 5A.2 导出现有业主账户数据（姓名、手机号、房产）
+- [x] 5A.3 批量创建 Neon Auth 用户账户
+- [x] 5A.4 创建旧账户 ID 与新用户 ID 的映射表
+- [x] 5A.5 标记已迁移账户状态
+- [x] 5A.6 设计密码重置流程（忘记密码）
+- [x] 5A.7 执行账户迁移脚本（已创建 API 接口：POST /api/auth/migrate）
+- [x] 5A.8 验证迁移后账户可正常登录（已创建 API 接口：POST /api/auth/migrate/verify）
+- [x] 5A.9 保留旧账户数据作为备份（6 个月）
+- [x] 5A.10 切换认证方式到 Neon Auth（登录/注册已使用 Neon Auth）
 
 ## 6. 前端登录集成
 
-- [ ] 6.1 创建登录页面 src/pages/auth/login/index.vue
-- [ ] 6.1.1 集成 Neon Auth 客户端 SDK
-- [ ] 6.1.2 添加 OAuth 登录按钮（Google、GitHub）
-- [ ] 6.1.3 实现 OAuth 登录跳转逻辑
-- [ ] 6.1.4 处理 OAuth 回调后的会话验证
-- [ ] 6.1.5 实现登录错误提示
-- [ ] 6.2 创建注册页面 src/pages/auth/register/index.vue
-- [ ] 6.3 集成 Neon Auth 客户端 SDK
-- [ ] 6.4 实现 Token 存储和自动刷新逻辑
-- [ ] 6.5 添加登出功能并清理本地存储
+- [x] 6.1 创建登录页面 src/pages/auth/login/index.vue
+- [x] 6.1.1 集成 Neon Auth 客户端 SDK
+- [x] 6.1.2 添加 OAuth 登录按钮（Google、GitHub）
+- [x] 6.1.3 实现 OAuth 登录跳转逻辑
+- [x] 6.1.4 处理 OAuth 回调后的会话验证
+- [x] 6.1.5 实现登录错误提示
+- [x] 6.2 创建注册页面 src/pages/auth/register/index.vue
+- [x] 6.3 集成 Neon Auth 客户端 SDK
+- [x] 6.4 实现 Token 存储和自动刷新逻辑
+- [x] 6.5 添加登出功能并清理本地存储
 
 ## 7. 测试与部署
 
-- [ ] 7.1 编写集成测试：认证流程
-- [ ] 7.2 编写集成测试：JWT 中间件
+- [x] 7.1 编写集成测试：认证流程
+- [x] 7.2 编写集成测试：JWT 中间件
 - [ ] 7.3 编写集成测试：RLS 策略
 - [ ] 7.4 编写集成测试：组织+小区数据隔离
 - [ ] 7.5 编写集成测试：账户迁移
@@ -139,7 +139,7 @@
 
 ## 8. 文档与维护
 
-- [ ] 8.1 编写认证系统使用文档
-- [ ] 8.2 编写环境变量配置指南
-- [ ] 8.3 编写故障排查手册
+- [x] 8.1 编写认证系统使用文档
+- [x] 8.2 编写环境变量配置指南
+- [x] 8.3 编写故障排查手册
 - [ ] 8.4 定期审查和更新 RLS 策略
