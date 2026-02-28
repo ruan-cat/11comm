@@ -41,6 +41,17 @@ export default defineConfig({
 	},
 
 	/**
+	 * 中间件配置
+	 * @description
+	 * Nitro v3 中间件，按文件名顺序执行（1.logger -> 2.auth -> 3.validate）
+	 */
+	middleware: {
+		"1.logger": "./server/middleware/1.logger",
+		"2.auth": "./server/middleware/2.auth",
+		"3.validate": "./server/middleware/3.validate",
+	},
+
+	/**
 	 * 运行时配置
 	 * @description
 	 * 在 Cloudflare Worker 环境中，环境变量只在请求处理时可用
@@ -49,6 +60,13 @@ export default defineConfig({
 	runtimeConfig: {
 		/** 数据库连接 URL — Nitro 会在运行时注入到 useRuntimeConfig().databaseUrl */
 		databaseUrl: getVercelEnv("DATABASE_URL") || process.env.DATABASE_URL || "",
+
+		/** Neon Auth 服务基础 URL */
+		neonAuthBaseUrl: getVercelEnv("NEON_AUTH_BASE_URL") || process.env.NEON_AUTH_BASE_URL || "",
+		/** Neon Auth Cookie 密钥（至少 32 字符） */
+		neonAuthCookieSecret: getVercelEnv("NEON_AUTH_COOKIE_SECRET") || process.env.NEON_AUTH_COOKIE_SECRET || "",
+		/** 前端基础 URL，用于 OAuth 回调 */
+		publicBaseUrl: process.env.PUBLIC_BASE_URL || "http://localhost:8080",
 	},
 
 	/**
@@ -130,6 +148,12 @@ export default defineConfig({
 				}),
 				...(getVercelEnv("NEON_AUTH_BASE_URL") && {
 					comm_admin_11__NEON_AUTH_BASE_URL: getVercelEnv("NEON_AUTH_BASE_URL"),
+				}),
+				...(getVercelEnv("NEON_AUTH_COOKIE_SECRET") && {
+					comm_admin_11__NEON_AUTH_COOKIE_SECRET: getVercelEnv("NEON_AUTH_COOKIE_SECRET"),
+				}),
+				...(getVercelEnv("PUBLIC_BASE_URL") && {
+					comm_admin_11__PUBLIC_BASE_URL: getVercelEnv("PUBLIC_BASE_URL"),
 				}),
 				...(getVercelEnv("NEON_PROJECT_ID") && {
 					comm_admin_11__NEON_PROJECT_ID: getVercelEnv("NEON_PROJECT_ID"),

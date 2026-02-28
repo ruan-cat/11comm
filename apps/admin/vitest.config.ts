@@ -78,7 +78,9 @@ const nitroNodeConfig = defineConfig({
 // 导出合并后的配置
 export default defineConfig(({ mode }) => {
 	// 如果是 node 环境（nitro 接口测试），使用 nitro 配置
-	const isNodeTest = process.argv.includes("--node");
+	// 检查 --node 参数（在 -- 之后）
+	const args = process.argv.slice(2);
+	const isNodeTest = args.includes("--node");
 
 	if (isNodeTest) {
 		return nitroNodeConfig;
