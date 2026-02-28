@@ -18,6 +18,9 @@ export * from "./business-options";
 export * from "./helpers";
 export * from "./enums";
 
+// 导出权限码定义
+export * from "./permission-codes";
+
 /**
  * 前后端数据对接数据对象
  * @description
