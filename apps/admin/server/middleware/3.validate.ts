@@ -1,4 +1,4 @@
-import { defineMiddleware, createError } from "h3";
+import { defineMiddleware, createError } from "nitro/h3";
 import type { H3Event } from "nitro/h3";
 
 /**
@@ -113,7 +113,7 @@ function getRequiredPermissions(method: string, path: string): string[] | null {
 	return PERMISSION_MAP[key] || null;
 }
 
-export const validateMiddleware = defineMiddleware(async (event: H3Event) => {
+export default defineMiddleware(async (event: H3Event) => {
 	/** 如果用户未认证，跳过权限验证 */
 	if (!event.context.authenticated) {
 		return;

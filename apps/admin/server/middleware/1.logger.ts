@@ -1,4 +1,4 @@
-import { defineMiddleware } from "h3";
+import { defineMiddleware } from "nitro/h3";
 import { randomUUID } from "node:crypto";
 import type { H3Event } from "nitro/h3";
 
@@ -8,7 +8,7 @@ import type { H3Event } from "nitro/h3";
  * @description
  * 为每个请求生成唯一 requestId，记录请求方法、路径、耗时等信息
  */
-export const loggerMiddleware = defineMiddleware(async (event: H3Event) => {
+export default defineMiddleware(async (event: H3Event) => {
 	/** 生成或获取 requestId */
 	const existingRequestId = event.request.headers.get("x-request-id");
 	const requestId = existingRequestId || randomUUID();

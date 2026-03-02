@@ -1,4 +1,4 @@
-import { defineMiddleware, getCookie, createError } from "h3";
+import { defineMiddleware, getCookie, createError } from "nitro/h3";
 import type { H3Event } from "nitro/h3";
 import * as jose from "jose";
 
@@ -51,7 +51,7 @@ function isPublicRoute(path: string): boolean {
  * @description
  * 验证请求中的 JWT Token，提取用户信息并注入到事件上下文中
  */
-export const authMiddleware = defineMiddleware(async (event: H3Event) => {
+export default defineMiddleware(async (event: H3Event) => {
 	/** 获取请求路径 */
 	const path = event.path;
 
