@@ -355,7 +355,7 @@ import { createError } from "h3";
 2. 请你修改 `.claude\skills\nitro-api-development` 技能，确保这个技能提供足够的说明，避免继续使用容易出错的导入路径。
 3. 修改 CLAUDE.md 文档，增加这个易错项。请注意编写精简的写法，避免过于滥用 CLAUDE.md ，避免对后续 AI 对话造成上下文窗口负担。
 
-## 031 <!-- TODO: --> 更新 `fix-type-error` 和 `nitro-api-development` 技能
+## 031 更新 `fix-type-error` 和 `nitro-api-development` 技能
 
 针对 apps\admin\src\docs\reports\2026-03-02-typescript-type-error-fix-retrospective.md 出现的改进建议，去改进 `.claude\skills\fix-type-error` 这款技能，避免以后还出现类型错误
 
