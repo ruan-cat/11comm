@@ -338,7 +338,7 @@ overrides:
 
 在 `apps\admin\server\db\index.ts` 内，我期望实现 nitro 接口在 context 上下文内，获取到来自 cloudflare worker 提供改的环境变量文件，但是实际执行的时候，出现未获取环境变量的错误。请你检查 `apps\admin\server\db\index.ts` 和相关的 nitro 接口。解决故障
 
-## 029 <!-- TODO: --> 优化精简 `CLAUDE.md` 文档
+## 029 优化精简 `CLAUDE.md` 文档
 
 CLAUDE.md 文档太冗长了，占用了很多上下文窗口。请你思考并设计一个合适的方案，实现大幅度精简 CLAUDE.md 文档。
 
@@ -354,3 +354,11 @@ import { createError } from "h3";
 1. 请你全局检查设计到错误导入路径的 nitro 接口写法和 markdown 文档。并修改成正确的写法。
 2. 请你修改 `.claude\skills\nitro-api-development` 技能，确保这个技能提供足够的说明，避免继续使用容易出错的导入路径。
 3. 修改 CLAUDE.md 文档，增加这个易错项。请注意编写精简的写法，避免过于滥用 CLAUDE.md ，避免对后续 AI 对话造成上下文窗口负担。
+
+## 031 <!-- TODO: --> 更新 `fix-type-error` 和 `nitro-api-development` 技能
+
+针对 apps\admin\src\docs\reports\2026-03-02-typescript-type-error-fix-retrospective.md 出现的改进建议，去改进 `.claude\skills\fix-type-error` 这款技能，避免以后还出现类型错误
+
+同样的，去修改 .claude\skills\nitro-api-development 技能，避免以后编写 nitro 接口出现明显的错误。
+
+首先使用 MCP 提供的记忆工具，读取本项目的错误记忆，然后再开始继续任务。
