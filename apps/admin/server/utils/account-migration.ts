@@ -6,7 +6,7 @@
 import { useDb } from "server/db";
 import { authUserMapping, smStaff, hpOwners } from "@01s-11comm/type";
 import { eq, and, isNull } from "drizzle-orm";
-import { createError } from "h3";
+import { createError } from "nitro/h3";
 import consola from "consola";
 import type { H3Event } from "nitro/h3";
 import { useAuthClient } from "./auth-client";

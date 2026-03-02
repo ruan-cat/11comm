@@ -3,7 +3,7 @@
  * @description 基于角色的权限验证中间件
  */
 
-import { createError } from "h3";
+import { createError } from "nitro/h3";
 import type { H3Event } from "nitro/h3";
 import type { UserContext } from "./rls-helpers";
 
