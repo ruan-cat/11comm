@@ -400,56 +400,9 @@ export * from "./constant";
 - 报告编写任务。
 - 进度文件更新与编写任务。
 
-### 6.3. 基于`业务路径`做任务划分时的主代理与子代理任务划分规范
+### 6.3. 基于`业务路径`做任务划分时的子代理规范
 
-根据业务路径的`三级路由`，做出细致的子代理任务划分，避免子代理一次性完成过多任务。
-
-有部分`业务路径`的`二级路由`，包含了数量较多的模块，在你划分子代理任务时，你首先应该要全面深刻的阅读 `apps\admin\src\router\rank\rank-route-keys.ts` 所提供的二级路由和三级路由，让子代理只负责 2~3 个具体的三级路由，而不是把一整块三级路由的全部路径对应的修改任务，都交给一个子代理来完成。这很容易出现子代理执行失败的故障。
-
-一个具体的子代理任务划分例子如下：
-
-假定我们要对 `propertyManage.expenseManage` 这款`二级路由`下面全部的`三级路由`对应的`后台项目`的 `form.ts` 文件做处理，统一增加固定的类型导入代码段 `import type { Mode } from "@/composables/use-mode";` ，你作为主代理，面对如下数目的`三级路由`。
-
-```txt
-	// propertyManage.expenseManage 三级路由
-	"propertyManage.expenseManage.waterAndElectricityMeterReading",
-	"propertyManage.expenseManage.vehicleCharge",
-	"propertyManage.expenseManage.reminderForOverduePayments",
-	"propertyManage.expenseManage.reprintVoucher",
-	"propertyManage.expenseManage.overduePaymentInformation",
-	"propertyManage.expenseManage.paymentReview",
-	"propertyManage.expenseManage.refundReview",
-	"propertyManage.expenseManage.houseCharge",
-	"propertyManage.expenseManage.meterReadingType",
-	"propertyManage.expenseManage.discountType",
-	"propertyManage.expenseManage.expenseSummaryTable",
-	"propertyManage.expenseManage.discountApply",
-	"propertyManage.expenseManage.discountSetting",
-	"propertyManage.expenseManage.contracteCharge",
-	"propertyManage.expenseManage.expenseItemSetting",
-	"propertyManage.expenseManage.cancelFee",
-```
-
-很明显，根据业务路径的三级路由，所映射的全部 `form.ts` 文件路径大致如下：
-
-```txt
-apps\admin\src\pages\property-manage\expense-manage\water-and-electricity-meter-reading\components\form.ts
-apps\admin\src\pages\property-manage\expense-manage\vehicle-charge\components\form.ts
-apps\admin\src\pages\property-manage\expense-manage\reminder-for-overdue-payments\components\form.ts
-...剩余的form.ts路径
-```
-
-那么你应该划分 6 个子代理，去完成这些任务：
-
-1. 1 号子代理
-   - waterAndElectricityMeterReading
-   - vehicleCharge
-   - reminderForOverduePayments
-2. 2 号子代理
-   - reprintVoucher
-   - overduePaymentInformation
-   - paymentReview
-3. 以此类推...
+根据 `rank-route-keys.ts` 提供的三级路由做细粒度任务划分，每个子代理只负责 **2~3 个具体三级路由**，避免单个子代理负责过多导致执行失败。
 
 ### 6.4. 主从代理`调度设计`、`职责说明`与`通信反馈`规范
 
