@@ -491,7 +491,7 @@ openspec 的 `analyze-mock-data-and-create-db-seed` 任务，增加了新的 pac
 
 运行后台项目的 nitro 接口测试命令，确保本地接口仍旧正常连接 neon 数据库。
 
-## 014 <!-- TODO: --> 解决 nitro 接口没有严格鉴权的风险项问题
+## 014 解决 nitro 接口没有严格鉴权的风险项问题
 
 设计了 openspec 任务 `nitro-api-authentication`
 
