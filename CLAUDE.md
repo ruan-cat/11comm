@@ -878,6 +878,8 @@ Use types: `decision`, `problem-solution`, `gotcha`, `what-changed`, `discovery`
 
 #### 16.2.1. 编写接口需要导入正确的模块
 
+**H3 函数必须从 `"nitro/h3"` 导入**（如 `createError`、`defineHandler` 等），**严禁**从 `"h3"` 直接导入。
+
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
 
 #### 16.2.2. 配置文件格式没有 vite 配置对象
