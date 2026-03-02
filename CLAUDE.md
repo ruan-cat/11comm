@@ -798,6 +798,48 @@ pnpm test:nitro
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
+## 16. 获取技术栈对应的上下文
+
+以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
+
+### 16.1. taskmaster-ai
+
+- [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
+
+我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
+
+### 16.2. nitro
+
+- https://github.com/unjs/nitro
+- https://v3.nitro.build/
+
+这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
+
+#### 16.2.1. 编写接口需要导入正确的模块
+
+**H3 函数必须从 `"nitro/h3"` 导入**（如 `createError`、`defineHandler` 等），**严禁**从 `"h3"` 直接导入。
+
+请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
+
+#### 16.2.2. 配置文件格式没有 vite 配置对象
+
+请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取配置相关信息。
+
+### 16.3. pure-admin 后台框架模板
+
+`apps\admin` 项目套用是 `pure-admin` 模板。
+
+- pure-admin 模板仓库 ： https://github.com/pure-admin/vue-pure-admin
+- pure-admin 在线预览界面 ： https://pure-admin.github.io/vue-pure-admin/#/login
+- pure-admin 文档 ： https://pure-admin.cn/
+- pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
+- pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
+
+### 16.4. claude code skill
+
+- 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
+- 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
+
 ## Memorix — 自动记忆规则
 
 1. **会话开始**：调用 `memorix_search` 加载相关历史记忆，再响应用户
