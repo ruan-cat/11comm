@@ -199,16 +199,16 @@ openspec validate {任务名称} --strict
 
 **使用 Gemini 前**：必须要求 Gemini 首先无条件阅读 `CLAUDE.md` 及 `.claude` 目录全部文件。
 
-## 11. 编写测试用例规范
+## 9. 编写测试用例规范
 
 1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
 2. 测试用例的文件格式为 `*.test.ts` 。
 3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
 4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
 
-## 12. 数据库 Schema 开发规范
+## 10. 数据库 Schema 开发规范
 
-### 12.1. Schema 定义的唯一事实来源
+### 10.1. Schema 定义的唯一事实来源
 
 **核心原则**：`apps/type/src/business/{domain}/{module}/schema.ts` 是数据库表定义的**唯一事实来源（Single Source of Truth）**。
 
@@ -220,12 +220,12 @@ openspec validate {任务名称} --strict
 
 **详细规范**请参考：`.claude/skills/project-schema-registry/SKILL.md`
 
-### 12.2. Schema 文件位置规范
+### 10.2. Schema 文件位置规范
 
 - **正确位置**：`apps/type/src/business/{domain}/{module}/schema.ts`
 - **错误位置**：`apps/admin/server/db/schemas/` (已废弃，仅作临时过渡)
 
-### 12.3. 数据库变更维护清单
+### 10.3. 数据库变更维护清单
 
 当你在 `apps/type/src/business/` 目录内**新增、修改或删除**schema 时：
 
@@ -233,7 +233,7 @@ openspec validate {任务名称} --strict
 2. 确保该清单与实际代码保持一致
 3. 如有 schema 结构变更，需要运行 `pnpm -F @01s-11comm/type db:generate` 生成迁移文件
 
-### 12.4. Schema 编写标准
+### 10.4. Schema 编写标准
 
 必须严格遵循**Trinity Pattern**，详见 `project-schema-registry` 技能：
 
@@ -241,7 +241,7 @@ openspec validate {任务名称} --strict
 - Part B：使用 `createInsertSchema`, `createSelectSchema` 创建 Zod schemas
 - Part C：使用 `$inferSelect`, `$inferInsert` 推断 TypeScript 类型
 
-### 12.5. 常见错误预防
+### 10.5. 常见错误预防
 
 参考 `schema-and-seed-guardian` 技能避免：
 
@@ -250,7 +250,7 @@ openspec validate {任务名称} --strict
 - Zod schema 与 Drizzle table 不一致
 - Seed 数据生成器函数（应使用字面量数组）
 
-## 15. 开发工作流
+## 11. 开发工作流
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
@@ -261,34 +261,34 @@ openspec validate {任务名称} --strict
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 16. 获取技术栈对应的上下文
+## 12. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
 
-### 16.1. taskmaster-ai
+### 12.1. taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
 
-### 16.2. nitro
+### 12.2. nitro
 
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 16.2.1. 编写接口需要导入正确的模块
+#### 12.2.1. 编写接口需要导入正确的模块
 
 **H3 函数必须从 `"nitro/h3"` 导入**（如 `createError`、`defineHandler` 等），**严禁**从 `"h3"` 直接导入。
 
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
 
-#### 16.2.2. 配置文件格式没有 vite 配置对象
+#### 12.2.2. 配置文件格式没有 vite 配置对象
 
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取配置相关信息。
 
-### 16.3. pure-admin 后台框架模板
+### 12.3. pure-admin 后台框架模板
 
 `apps\admin` 项目套用是 `pure-admin` 模板。
 
@@ -298,7 +298,7 @@ openspec validate {任务名称} --strict
 - pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
 - pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
 
-### 16.4. claude code skill
+### 12.4. claude code skill
 
 - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
 - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
