@@ -3,12 +3,8 @@
  * @description 处理用户密码重置请求
  */
 
-import { defineHandler } from "~/server/handlers/common";
-import { useDb } from "~/server/db";
-import { authUserMapping } from "@ruan-cat/01s-type";
-import { eq } from "drizzle-orm";
-import { createError, sendRedirect } from "h3";
-import { useAuthClient } from "~/server/utils/auth-client";
+import { defineHandler, readBody, createError } from "nitro/h3";
+import { useAuthClient } from "server/utils/auth-client";
 import type { H3Event } from "nitro/h3";
 
 /**
