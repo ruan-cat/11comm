@@ -20,8 +20,8 @@
     - 删除本地定义的 `mock-data.ts` 文件引用。
 
 2.  **导入 DB 依赖**：
-    - 添加 `import { db } from "@/server/db"`
-    - 添加 `import { yourTable } from "@/server/db/schema"`
+    - 添加 `import { db } from "server/db"`
+    - 添加 `import { yourTable } from "@01s-11comm/type"`
     - 添加 Drizzle 操作符 `import { count, eq, like, ... } from "drizzle-orm"`
 
 3.  **重写查询逻辑**：

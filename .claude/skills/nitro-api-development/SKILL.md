@@ -167,8 +167,13 @@ const list: XxxListItem[] = data.map((item) => ({
 
 ## 6. 常见陷阱 (Common Pitfalls)
 
+- **错误的 H3 导入路径（⚠️ 高频错误）**: 所有 H3 函数（`createError`、`defineHandler`、`defineMiddleware`、`readBody`、`getQuery` 等）**必须**从 `"nitro/h3"` 导入，**严禁**从 `"h3"` 直接导入。从 `"h3"` 导入将导致运行时模块解析失败。
+  ```typescript
+  import { createError } from "nitro/h3"; // ✅ 正确
+  import { createError } from "h3"; // ❌ 运行时报错
+  ```
 - **缺失类型导入**: 必须始终导入 `import type { JsonVO } from "@01s-11comm/type"` 约束返回值结构。
-- **错误的路径别名导入**: 必须始终使用别名 `@/server/db` 和 `@/server/db/schema`。
+- **错误的路径别名导入**: 必须始终使用 `server/db` 和 `server/db/schema`（项目未配置 `@/server` 别名）。
 - **错误的响应字段**: 前端组件依赖 `{ success, code, message, data }` 结构（即 `JsonVO`）。使用 `msg` 而非 `message`，或缺失 `success` 字段，会导致前端解析异常。
 - **缺失 try-catch**: 所有 Handler **必须**使用 `try-catch` 包裹，catch 块返回标准化错误响应。
 - **遗漏 Await**: 数据库操作是异步的，必须使用 `await`。
