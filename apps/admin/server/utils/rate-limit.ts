@@ -4,7 +4,7 @@
  */
 
 import type { H3Event } from "nitro/h3";
-import { createError } from "nitro/h3";
+import { createError, getRequestHeader, setResponseHeader } from "nitro/h3";
 
 /**
  * 频率限制配置
@@ -56,11 +56,11 @@ const defaultConfig: RateLimitConfig = {
  * 获取客户端IP
  */
 function getClientIp(event: H3Event): string {
-	const forwarded = event.request.headers.get("x-forwarded-for");
+	const forwarded = getRequestHeader(event, "x-forwarded-for");
 	if (forwarded) {
 		return forwarded.split(",")[0].trim();
 	}
-	const realIp = event.request.headers.get("x-real-ip");
+	const realIp = getRequestHeader(event, "x-real-ip");
 	if (realIp) {
 		return realIp;
 	}
@@ -137,13 +137,13 @@ export function rateLimitMiddleware(config: Partial<RateLimitConfig> = {}) {
 		const result = checkRateLimit(event, config);
 
 		// 设置响应头
-		event.response.headers.set("X-RateLimit-Limit", String(config.maxRequests || defaultConfig.maxRequests));
-		event.response.headers.set("X-RateLimit-Remaining", String(result.remaining));
-		event.response.headers.set("X-RateLimit-Reset", String(Math.ceil(result.resetTime / 1000)));
+		setResponseHeader(event, "X-RateLimit-Limit", String(config.maxRequests || defaultConfig.maxRequests));
+		setResponseHeader(event, "X-RateLimit-Remaining", String(result.remaining));
+		setResponseHeader(event, "X-RateLimit-Reset", String(Math.ceil(result.resetTime / 1000)));
 
 		if (!result.allowed) {
 			const retryAfter = Math.ceil((result.resetTime - Date.now()) / 1000);
-			event.response.headers.set("Retry-After", String(retryAfter));
+			setResponseHeader(event, "Retry-After", String(retryAfter));
 
 			throw createError({
 				statusCode: 429,

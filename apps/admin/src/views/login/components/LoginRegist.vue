@@ -62,7 +62,7 @@ const emailRegisterRules = {
 			trigger: "blur",
 		},
 		{
-			type: "email",
+			type: "email" as const,
 			message: "请输入正确的邮箱地址",
 			trigger: "blur",
 		},

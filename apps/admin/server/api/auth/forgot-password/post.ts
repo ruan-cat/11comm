@@ -152,11 +152,7 @@ async function handleSetNewPassword(event: H3Event, input: { token: string; pass
 	}
 }
 
-export default defineHandler({
-	/**
-	 * POST 忘记密码 - 发送重置邮件
-	 */
-	async post(event, body: ForgotPasswordInput) {
-		return handleForgotPassword(event, body);
-	},
+export default defineHandler(async (event) => {
+	const body = await readBody<ForgotPasswordInput>(event);
+	return handleForgotPassword(event, body);
 });

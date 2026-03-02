@@ -4,7 +4,7 @@
  */
 
 import { http } from "@/utils/http";
-import type { JsonVO } from "@ruan-cat/utils/vueuse";
+import type { JsonVO } from "@01s-11comm/type";
 
 /**
  * 登录请求参数

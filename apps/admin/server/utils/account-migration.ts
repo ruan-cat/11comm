@@ -41,11 +41,11 @@ export interface MigrationRecord {
 
 /**
  * 导出员工账户数据
- * @param event - H3 事件对象，用于获取 Auth 客户端
+ * @param event - H3 事件对象
  * @returns 员工账户列表
  */
-export async function exportStaffAccounts(event?: H3Event) {
-	const db = useDb();
+export async function exportStaffAccounts(event: H3Event) {
+	const db = useDb(event);
 
 	// 查询所有员工账户（已迁移和未迁移）
 	const staffAccounts = await db.query.smStaff.findMany({
@@ -65,10 +65,11 @@ export async function exportStaffAccounts(event?: H3Event) {
 
 /**
  * 导出未迁移的员工账户数据
+ * @param event - H3 事件对象
  * @returns 未迁移的员工账户列表
  */
-export async function exportUnmigratedStaffAccounts() {
-	const db = useDb();
+export async function exportUnmigratedStaffAccounts(event: H3Event) {
+	const db = useDb(event);
 
 	// 查询未迁移的员工账户（neon_auth_id 为空）
 	const staffAccounts = await db.query.smStaff.findMany({
@@ -88,10 +89,11 @@ export async function exportUnmigratedStaffAccounts() {
 
 /**
  * 导出业主账户数据
+ * @param event - H3 事件对象
  * @returns 业主账户列表
  */
-export async function exportOwnerAccounts() {
-	const db = useDb();
+export async function exportOwnerAccounts(event: H3Event) {
+	const db = useDb(event);
 
 	// 查询所有业主账户
 	const ownerAccounts = await db.query.hpOwners.findMany({
@@ -110,10 +112,11 @@ export async function exportOwnerAccounts() {
 
 /**
  * 导出未迁移的业主账户数据
+ * @param event - H3 事件对象
  * @returns 未迁移的业主账户列表
  */
-export async function exportUnmigratedOwnerAccounts() {
-	const db = useDb();
+export async function exportUnmigratedOwnerAccounts(event: H3Event) {
+	const db = useDb(event);
 
 	// 查询未迁移的业主账户（neon_auth_id 为空）
 	const ownerAccounts = await db.query.hpOwners.findMany({
@@ -146,7 +149,7 @@ export async function createNeonAuthUser(
 	userType: "staff" | "owner",
 	metadata?: Record<string, any>,
 ): Promise<string> {
-	const db = useDb();
+	const db = useDb(event);
 
 	try {
 		// 使用 Neon Auth API 创建用户
@@ -181,13 +184,19 @@ export async function createNeonAuthUser(
 			...(metadata?.ownerId ? { ownerId: metadata.ownerId } : {}),
 			migrated: true,
 			migratedAt: new Date(),
-		});
+		} as any);
 
 		// 更新员工或业主表的 neon_auth_id 字段
 		if (userType === "staff" && metadata?.staffId) {
-			await db.update(smStaff).set({ neonAuthId: neonAuthId }).where(eq(smStaff.id, metadata.staffId));
+			await db
+				.update(smStaff)
+				.set({ neonAuthId } as any)
+				.where(eq(smStaff.id, metadata.staffId));
 		} else if (userType === "owner" && metadata?.ownerId) {
-			await db.update(hpOwners).set({ neonAuthId: neonAuthId }).where(eq(hpOwners.id, metadata.ownerId));
+			await db
+				.update(hpOwners)
+				.set({ neonAuthId } as any)
+				.where(eq(hpOwners.id, metadata.ownerId));
 		}
 
 		consola.success(`[Migration] Created Neon Auth user: ${neonAuthId} for ${email}`);
@@ -250,9 +259,11 @@ export async function batchMigrateAccounts(
 
 /**
  * 获取迁移状态
+ * @param event - H3 事件对象
+ * @param oldUserId - 旧系统用户 ID
  */
-export async function getMigrationStatus(oldUserId: string): Promise<MigrationRecord | null> {
-	const db = useDb();
+export async function getMigrationStatus(event: H3Event, oldUserId: string): Promise<MigrationRecord | null> {
+	const db = useDb(event);
 
 	const mapping = await db.query.authUserMapping.findFirst({
 		where: eq(authUserMapping.staffId, oldUserId),
@@ -312,9 +323,10 @@ export async function verifyMigratedAccount(
 
 /**
  * 创建旧账户 ID 与新用户 ID 的映射
+ * @param event - H3 事件对象
  */
-export async function createIdMapping(oldId: string, neonAuthId: string, userType: "staff" | "owner") {
-	const db = useDb();
+export async function createIdMapping(event: H3Event, oldId: string, neonAuthId: string, userType: "staff" | "owner") {
+	const db = useDb(event);
 
 	await db.insert(authUserMapping).values({
 		neonAuthId,
@@ -323,14 +335,18 @@ export async function createIdMapping(oldId: string, neonAuthId: string, userTyp
 		userType,
 		migrated: true,
 		migratedAt: new Date(),
-	});
+	} as any);
 }
 
 /**
  * 根据 Neon Auth ID 获取旧系统用户 ID
+ * @param event - H3 事件对象
  */
-export async function getOldUserId(neonAuthId: string): Promise<{ oldId: string; userType: "staff" | "owner" } | null> {
-	const db = useDb();
+export async function getOldUserId(
+	event: H3Event,
+	neonAuthId: string,
+): Promise<{ oldId: string; userType: "staff" | "owner" } | null> {
+	const db = useDb(event);
 
 	const mapping = await db.query.authUserMapping.findFirst({
 		where: eq(authUserMapping.neonAuthId, neonAuthId),
@@ -348,9 +364,10 @@ export async function getOldUserId(neonAuthId: string): Promise<{ oldId: string;
 
 /**
  * 检查账户是否已迁移
+ * @param event - H3 事件对象
  */
-export async function isAccountMigrated(oldUserId: string): Promise<boolean> {
-	const db = useDb();
+export async function isAccountMigrated(event: H3Event, oldUserId: string): Promise<boolean> {
+	const db = useDb(event);
 
 	const mapping = await db.query.authUserMapping.findFirst({
 		where: eq(authUserMapping.staffId, oldUserId),
@@ -361,15 +378,16 @@ export async function isAccountMigrated(oldUserId: string): Promise<boolean> {
 
 /**
  * 获取迁移统计信息
+ * @param event - H3 事件对象
  * @returns 迁移统计信息
  */
-export async function getMigrationStats(): Promise<{
+export async function getMigrationStats(event: H3Event): Promise<{
 	totalStaff: number;
 	migratedStaff: number;
 	totalOwners: number;
 	migratedOwners: number;
 }> {
-	const db = useDb();
+	const db = useDb(event);
 
 	// 统计员工账户
 	const allStaff = await db.query.smStaff.findMany({

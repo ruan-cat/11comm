@@ -1017,7 +1017,7 @@ export const BUSINESS_TABLE_GROUPS = {
  * @returns 是否属于该分组
  */
 export function isTableInGroup(tableName: string, group: keyof typeof BUSINESS_TABLE_GROUPS): boolean {
-	return BUSINESS_TABLE_GROUPS[group].includes(tableName as any);
+	return (BUSINESS_TABLE_GROUPS[group] as unknown as string[]).includes(tableName);
 }
 
 // ==========================================

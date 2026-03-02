@@ -1,4 +1,5 @@
 import { definePlugin } from "nitro";
+import type { H3Event } from "nitro/h3";
 
 /**
  * Neon Auth 认证插件
@@ -9,7 +10,8 @@ import { definePlugin } from "nitro";
  */
 export default definePlugin((nitroApp) => {
 	/** 在请求时验证会话并注入用户信息 */
-	nitroApp.hooks.hook("request", async (event) => {
+	nitroApp.hooks.hook("request", async (rawEvent) => {
+		const event = rawEvent as H3Event;
 		/** 跳过静态资源和公开路径 */
 		const path = event.path;
 		if (path.startsWith("/_nuxt") || path.startsWith("/favicon")) {

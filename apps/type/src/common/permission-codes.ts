@@ -72,6 +72,7 @@ export enum PermissionAction {
 	EXPORT = "export",
 	IMPORT = "import",
 	MANAGE = "manage",
+	PUBLISH = "publish",
 }
 
 /**

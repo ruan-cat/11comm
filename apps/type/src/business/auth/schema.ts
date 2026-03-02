@@ -228,9 +228,9 @@ export const systemRoleEnum = [
 export type SystemRole = (typeof systemRoleEnum)[number];
 
 /**
- * 角色权限码定义
+ * 角色权限码定义（各系统角色所拥有的权限列表）
  */
-export const rolePermissions: Record<SystemRole, string[]> = {
+export const systemRolePermissions: Record<SystemRole, string[]> = {
 	super_admin: ["*"], // 拥有所有权限
 	org_admin: [
 		"community:read",

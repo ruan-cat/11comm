@@ -1,4 +1,5 @@
-import { createAuthClient, NeonAuth } from "@neondatabase/auth";
+import { createAuthClient } from "@neondatabase/auth";
+import type { NeonAuthPublicApi } from "@neondatabase/auth";
 import type { H3Event } from "nitro/h3";
 import { useRuntimeConfig } from "nitro/runtime-config";
 import consola from "consola";
@@ -6,7 +7,7 @@ import consola from "consola";
 /**
  * Neon Auth 客户端类型
  */
-export type AuthClientType = NeonAuth;
+export type AuthClientType = NeonAuthPublicApi<any>;
 
 /**
  * 从多个来源解析 Neon Auth 基础 URL

@@ -4,6 +4,7 @@
  */
 
 import type { H3Event } from "nitro/h3";
+import { getRequestHeader } from "nitro/h3";
 import type { UserContext } from "./rls-helpers";
 
 /**
@@ -89,13 +90,13 @@ export interface AuditLogEntry {
  */
 function getClientIp(event: H3Event): string {
 	// 检查 X-Forwarded-For 头（反向代理）
-	const forwarded = event.request.headers.get("x-forwarded-for");
+	const forwarded = getRequestHeader(event, "x-forwarded-for");
 	if (forwarded) {
 		return forwarded.split(",")[0].trim();
 	}
 
 	// 检查 X-Real-IP 头
-	const realIp = event.request.headers.get("x-real-ip");
+	const realIp = getRequestHeader(event, "x-real-ip");
 	if (realIp) {
 		return realIp;
 	}
@@ -108,7 +109,7 @@ function getClientIp(event: H3Event): string {
  * 获取用户代理
  */
 function getUserAgent(event: H3Event): string {
-	return event.request.headers.get("user-agent") || "unknown";
+	return getRequestHeader(event, "user-agent") || "unknown";
 }
 
 /**
@@ -125,7 +126,7 @@ function createAuditEntry(
 
 	const entry: AuditLogEntry = {
 		timestamp: new Date().toISOString(),
-		requestId: event.context.requestId,
+		requestId: event.context.requestId as string | undefined,
 		action,
 		level,
 		message,

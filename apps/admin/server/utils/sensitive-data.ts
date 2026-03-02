@@ -126,7 +126,7 @@ export function maskSensitiveFields<T extends Record<string, any>>(data: T, fiel
 
 	for (const [field, type] of Object.entries(fields)) {
 		if (field in result && result[field]) {
-			result[field] = maskByType(result[field], type);
+			(result as Record<string, any>)[field] = maskByType(result[field], type);
 		}
 	}
 

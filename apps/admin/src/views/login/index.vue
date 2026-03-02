@@ -69,7 +69,7 @@ const emailLoginRules = {
 			trigger: "blur",
 		},
 		{
-			type: "email",
+			type: "email" as const,
 			message: "请输入正确的邮箱地址",
 			trigger: "blur",
 		},
@@ -260,8 +260,8 @@ const { loginWithOAuth } = useAuth();
  * 处理 OAuth 第三方登录
  * @param provider OAuth 提供商 (google, github)
  */
-function handleOAuthLogin(provider: "google" | "github") {
-	loginWithOAuth(provider);
+function handleOAuthLogin(provider: string) {
+	loginWithOAuth(provider as "google" | "github" | "vercel");
 }
 
 /**

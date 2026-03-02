@@ -1,4 +1,4 @@
-import { defineMiddleware } from "nitro/h3";
+import { defineMiddleware, getRequestHeader, setResponseHeader } from "nitro/h3";
 import { randomUUID } from "node:crypto";
 import type { H3Event } from "nitro/h3";
 
@@ -10,14 +10,14 @@ import type { H3Event } from "nitro/h3";
  */
 export default defineMiddleware(async (event: H3Event) => {
 	/** 生成或获取 requestId */
-	const existingRequestId = event.request.headers.get("x-request-id");
+	const existingRequestId = getRequestHeader(event, "x-request-id");
 	const requestId = existingRequestId || randomUUID();
 
 	/** 将 requestId 注入到事件上下文 */
 	event.context.requestId = requestId;
 
 	/** 设置响应头中的 requestId */
-	event.response.headers.set("x-request-id", requestId);
+	setResponseHeader(event, "x-request-id", requestId);
 
 	/** 记录请求开始时间 */
 	const startTime = Date.now();

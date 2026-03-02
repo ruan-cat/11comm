@@ -1,4 +1,4 @@
-import { defineMiddleware, getCookie, createError } from "nitro/h3";
+import { defineMiddleware, getCookie, createError, getRequestHeader } from "nitro/h3";
 import type { H3Event } from "nitro/h3";
 import * as jose from "jose";
 
@@ -62,7 +62,7 @@ export default defineMiddleware(async (event: H3Event) => {
 
 	/** 从 Cookie 或 Header 获取 Token */
 	const token =
-		getCookie(event, "authorized-token") || event.request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+		getCookie(event, "authorized-token") || getRequestHeader(event, "authorization")?.replace(/^Bearer\s+/i, "");
 
 	/** 如果没有 Token，返回 401 */
 	if (!token) {
