@@ -342,7 +342,7 @@ overrides:
 
 CLAUDE.md 文档太冗长了，占用了很多上下文窗口。请你思考并设计一个合适的方案，实现大幅度精简 CLAUDE.md 文档。
 
-## 030 <!-- TODO: --> 本项目的 `import { createError }` 应该来自于 `nitro/h3` 模块
+## 030 本项目的 `import { createError }` 应该来自于 `nitro/h3` 模块
 
 ```ts
 // 正确
