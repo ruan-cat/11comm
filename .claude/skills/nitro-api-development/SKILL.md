@@ -180,6 +180,107 @@ const list: XxxListItem[] = data.map((item) => ({
 - **使用原始 SQL**: 除非万不得已，禁止使用 `sql` 模板字符串。请使用 Drizzle 的查询构建器 (Query Builder)。
 - **重复定义格式化函数**: 必须使用 `server/utils/format-date` 中的工具函数，禁止在 Handler 内重复定义 `formatDateTime`。
 
+### 6.1. defineHandler 不支持 HTTP 方法对象格式
+
+Nitro v3 文件路由中，文件名已经代表了 HTTP 方法，**不支持** H3 某些旧版本的对象格式写法：
+
+```typescript
+// ❌ 错误（文件名虽然是 post.ts，但这种写法在 Nitro v3 不支持）
+export default defineHandler({
+  async post(event, body) { ... },
+});
+
+// ✅ 正确（文件名 post.ts 已代表 POST 方法，直接在 handler 内读取 body）
+export default defineHandler(async (event) => {
+  const body = await readBody<MyInput>(event);
+  return handleXxx(event, body);
+});
+```
+
+### 6.2. useDb(event: H3Event) 必须传 event
+
+**所有需要调用数据库的服务端工具函数**，必须将 `event: H3Event` 作为第一个参数，并透传给 `useDb(event)`。
+
+这是 Cloudflare Worker 环境的强制约束——`process.env` 在 Worker 顶层作用域为空，必须通过 event 透传获取：
+
+```typescript
+// ❌ 错误
+export async function getMigrationStats(): Promise<...> {
+  const db = useDb(); // 类型错误，Cloudflare 环境无法获取 DATABASE_URL
+}
+
+// ✅ 正确（透传 event）
+export async function getMigrationStats(event: H3Event): Promise<...> {
+  const db = useDb(event);
+  // ...
+}
+
+// 调用时
+export default defineHandler(async (event) => {
+  const result = await getMigrationStats(event);
+});
+```
+
+**设计原则**：所有 `server/utils/` 下的工具函数，只要涉及数据库操作，必须接收 `event: H3Event` 参数。
+
+### 6.3. H3 v2 彻底废弃 event.request / event.response
+
+Nitro v3 使用的 H3 v2 **移除了** `event.request` 和 `event.response`，必须使用 `nitro/h3` 提供的函数：
+
+```typescript
+// ❌ 旧写法（H3 v1）
+const ip = event.request.headers.get("x-forwarded-for");
+event.response.headers.set("X-RateLimit-Limit", "100");
+
+// ✅ 新写法（H3 v2）
+import { getRequestHeader, setResponseHeader } from "nitro/h3";
+const ip = getRequestHeader(event, "x-forwarded-for");
+setResponseHeader(event, "X-RateLimit-Limit", "100");
+```
+
+### 6.4. Nitro plugin hooks 回调参数是 HTTPEvent
+
+Nitro 插件的 hook 回调接收的是原始 `HTTPEvent`，需要强制转换为 `H3Event`：
+
+```typescript
+import type { H3Event } from "nitro/h3";
+
+nitroApp.hooks.hook("request", async (rawEvent) => {
+	const event = rawEvent as H3Event; // 必须强制转换
+	const path = event.path;
+});
+```
+
+### 6.5. Drizzle ORM 跨包 schema 类型问题
+
+当 `update().set()` 遇到跨包类型不匹配时，可接受使用 `as any` 进行类型断言：
+
+```typescript
+// 可接受
+await db
+	.update(smStaff)
+	.set({ neonAuthId } as any)
+	.where(eq(smStaff.id, id));
+```
+
+### 6.6. JsonVO 必须从 @01s-11comm/type 导入
+
+```typescript
+// ✅ 正确
+import type { JsonVO } from "@01s-11comm/type";
+
+// ❌ 错误 - 会缺少 success 字段，导致前端解析异常
+import type { JsonVO } from "@ruan-cat/utils/vueuse";
+```
+
+### 6.7. Neon Auth 客户端类型
+
+```typescript
+import { createAuthClient } from "@neondatabase/auth";
+import type { NeonAuthPublicApi } from "@neondatabase/auth";
+export type AuthClientType = NeonAuthPublicApi<any>;
+```
+
 ## 7. 类型回填 (Type Recovery)
 
 当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，必须显式回填 Insert 类型。

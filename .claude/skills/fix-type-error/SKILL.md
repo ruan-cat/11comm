@@ -329,6 +329,180 @@ export interface RepairReportsSummaryTableFormProps {
 - `Mode` 类型是客户端代码内全局导入的类型，直接使用即可
 - 避免在类型项目中出现业务无关的表单组件类型
 
+### 2.16 H3 v2 (Nitro v3) 彻底废弃 event.request / event.response
+
+**现象：** `Property 'request' does not exist on type 'H3Event'`
+
+**根因：** Nitro v3 升级到 H3 v2，H3Event 不再暴露底层的 request / response 对象
+
+**正确写法：**
+
+```typescript
+// ❌ 旧写法（H3 v1）
+const ip = event.request.headers.get("x-forwarded-for");
+event.response.headers.set("X-RateLimit-Limit", "100");
+
+// ✅ 新写法（H3 v2）
+import { getRequestHeader, setResponseHeader } from "nitro/h3";
+const ip = getRequestHeader(event, "x-forwarded-for");
+setResponseHeader(event, "X-RateLimit-Limit", "100");
+```
+
+### 2.17 Neon Auth 类型 - createAuthClient 返回 NeonAuthPublicApi<T>
+
+**现象：** NeonAuth 不接受无参数，导致类型报错
+
+**正确写法：**
+
+```typescript
+// ❌ 错误
+import type { NeonAuth } from "@neondatabase/auth";
+export type AuthClientType = NeonAuth;
+
+// ✅ 正确
+import { createAuthClient } from "@neondatabase/auth";
+import type { NeonAuthPublicApi } from "@neondatabase/auth";
+export type AuthClientType = NeonAuthPublicApi<any>;
+```
+
+### 2.18 JsonVO 类型来源必须统一用 @01s-11comm/type
+
+**现象：** `res.success` 报 "Property 'success' does not exist"
+
+**根因：** 错误地从 `@ruan-cat/utils/vueuse` 导入 JsonVO（无 success 字段）
+
+**两个 JsonVO 的对比：**
+
+| 来源                   | 字段                                                      |
+| ---------------------- | --------------------------------------------------------- |
+| @ruan-cat/utils/vueuse | code, message, data                                       |
+| @01s-11comm/type       | code, message, data, success?, error?, stack?, timestamp? |
+
+**正确写法：**
+
+```typescript
+// ❌ 错误
+import type { JsonVO } from "@ruan-cat/utils/vueuse";
+
+// ✅ 正确
+import type { JsonVO } from "@01s-11comm/type";
+```
+
+### 2.19 pure-admin setToken 不接受 string，需要 DataInfo<number> 对象
+
+**现象：** `Argument of type 'string' is not assignable to parameter of type 'DataInfo<number>'`
+
+**字段映射（Neon Auth → DataInfo）：**
+
+| Neon Auth 响应字段 | DataInfo 字段 |
+| ------------------ | ------------- |
+| data.token         | accessToken   |
+| data.refreshToken  | refreshToken  |
+| data.expiresIn     | expires       |
+
+**正确写法：**
+
+```typescript
+// ❌ 错误
+setToken(data.token);
+
+// ✅ 正确
+setToken({
+	accessToken: data.token,
+	refreshToken: data.refreshToken,
+	expires: data.expiresIn,
+} as DataInfo<number>);
+```
+
+### 2.20 defineHandler 不支持 HTTP 方法对象格式
+
+**现象：** `Object literal may only specify known properties, and 'post' does not exist in type 'EventHandlerObject'`
+
+**根因：** Nitro v3 文件路由通过文件名区分 HTTP 方法
+
+**正确写法：**
+
+```typescript
+// ❌ 错误
+export default defineHandler({
+  async post(event, body) { ... },
+});
+
+// ✅ 正确
+export default defineHandler(async (event) => {
+  const body = await readBody<MyInput>(event);
+  return handleXxx(event, body);
+});
+```
+
+### 2.21 useDb(event: H3Event) 必须传 event
+
+**现象：** `Expected 1 arguments, but got 0`
+
+**根因：** Cloudflare Worker 环境中，环境变量只在 request handler 内部可用
+
+**设计原则：** 所有需要调用数据库的服务端工具函数，必须将 `event: H3Event` 作为第一个参数
+
+**正确写法：**
+
+```typescript
+// ❌ 错误
+export async function getMigrationStats() {
+	const db = useDb();
+}
+
+// ✅ 正确
+export async function getMigrationStats(event: H3Event) {
+	const db = useDb(event);
+}
+```
+
+### 2.22 Nitro plugin hooks 回调参数是 HTTPEvent，需强制转为 H3Event
+
+**现象：** `Property 'path' does not exist on type 'HTTPEvent'`
+
+**正确写法：**
+
+```typescript
+import type { H3Event } from "nitro/h3";
+
+nitroApp.hooks.hook("request", async (rawEvent) => {
+	const event = rawEvent as H3Event;
+	const path = event.path;
+});
+```
+
+### 2.23 Element Plus 表单规则 type: "email" 需要 as const
+
+**现象：** `Type 'string' is not assignable to type 'RuleType'`
+
+**正确写法：**
+
+```typescript
+// ❌ 类型推断为 string
+{ type: "email", message: "请输入正确邮箱", trigger: "blur" }
+
+// ✅ 使用 as const
+{ type: "email" as const, message: "请输入正确邮箱", trigger: "blur" }
+```
+
+### 2.24 readonly 数组不能直接 as string[]
+
+**现象：** `TS2352: Conversion of type 'readonly [...]' to type 'string[]' may be a mistake`
+
+**正确写法：**
+
+```typescript
+// ❌ TypeScript 认为不安全
+(BUSINESS_TABLE_GROUPS[group] as string[])
+	.includes(tableName)
+	(
+		// ✅ 双重 as
+		BUSINESS_TABLE_GROUPS[group] as unknown as string[],
+	)
+	.includes(tableName);
+```
+
 ## 3. 项目特定的类型处理策略
 
 ### 3.1 利用自动导入配置
