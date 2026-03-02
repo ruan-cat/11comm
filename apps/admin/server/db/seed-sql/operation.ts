@@ -1,8 +1,8 @@
 import { opMerchants, opPropertyCompanies, opCommunityInfo } from "@01s-11comm/type";
 
-import { mockPropertyCompanyData } from "../../c/operation-team/data-manage/property-company/mock-data";
-import { mockMerchantInfoData } from "../../c/operation-team/merchant-manage/merchant-info/mock-data";
-import { mockCommunityInformationData } from "../../c/operation-team/data-manage/community-information/mock-data";
+import { mockPropertyCompanyData } from "../../api/operation-team/data-manage/property-company/mock-data";
+import { mockMerchantInfoData } from "../../api/operation-team/merchant-manage/merchant-info/mock-data";
+import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
 import { db } from "../index";

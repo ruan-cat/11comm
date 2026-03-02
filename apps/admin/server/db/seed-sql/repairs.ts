@@ -15,7 +15,7 @@ import {
 	type NewRpPhoneRepairReport as InsertRpPhoneRepairReport,
 } from "@01s-11comm/type";
 
-import { mockRepairsTodoData } from "../../c/property-manage/repairs-manage/repairs-todo/mock-data";
+import { mockRepairsTodoData } from "../../api/property-manage/repairs-manage/repairs-todo/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql } from "./index";
 import { db } from "../index";

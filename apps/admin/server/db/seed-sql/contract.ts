@@ -9,14 +9,14 @@ import {
 	ctChanges,
 } from "@01s-11comm/type";
 
-import { mockFirstPartyData } from "../../c/property-manage/contract-manage/first-party/mock-data";
-import { mockSecondPartyData } from "../../c/property-manage/contract-manage/second-party/mock-data";
-import { mockTemplateData } from "../../c/property-manage/contract-manage/template/mock-data";
-import { mockClauseData } from "../../c/property-manage/contract-manage/clause/mock-data";
-import { mockTypeData as mockContractTypeData } from "../../c/property-manage/contract-manage/type/mock-data";
-import { mockDraftContractData } from "../../c/property-manage/contract-manage/draft-contract/mock-data";
-import { mockAttachmentData } from "../../c/property-manage/contract-manage/attachment/mock-data";
-import { mockChangeData } from "../../c/property-manage/contract-manage/change/mock-data";
+import { mockFirstPartyData } from "../../api/property-manage/contract-manage/first-party/mock-data";
+import { mockSecondPartyData } from "../../api/property-manage/contract-manage/second-party/mock-data";
+import { mockTemplateData } from "../../api/property-manage/contract-manage/template/mock-data";
+import { mockClauseData } from "../../api/property-manage/contract-manage/clause/mock-data";
+import { mockTypeData as mockContractTypeData } from "../../api/property-manage/contract-manage/type/mock-data";
+import { mockDraftContractData } from "../../api/property-manage/contract-manage/draft-contract/mock-data";
+import { mockAttachmentData } from "../../api/property-manage/contract-manage/attachment/mock-data";
+import { mockChangeData } from "../../api/property-manage/contract-manage/change/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
 import { db } from "../index";

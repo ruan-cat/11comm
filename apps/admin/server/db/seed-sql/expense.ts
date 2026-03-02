@@ -16,12 +16,12 @@ import {
 	exReprintVouchers,
 } from "@01s-11comm/type";
 
-import { mockExpenseItemSettingData as mockExpenseItemData } from "../../c/property-manage/expense-manage/expense-item-setting/mock-data";
-import { mockHouseChargeData } from "../../c/property-manage/expense-manage/house-charge/mock-data";
-import { mockVehicleChargeData } from "../../c/property-manage/expense-manage/vehicle-charge/mock-data";
-import { mockContracteChargeData as mockContractChargeData } from "../../c/property-manage/expense-manage/contracte-charge/mock-data";
-import { mockMeterReadingTypeData } from "../../c/property-manage/expense-manage/meter-reading-type/mock-data";
-import { mockWaterAndElectricityMeterReadingData as mockMeterReadingData } from "../../c/property-manage/expense-manage/water-and-electricity-meter-reading/mock-data";
+import { mockExpenseItemSettingData as mockExpenseItemData } from "../../api/property-manage/expense-manage/expense-item-setting/mock-data";
+import { mockHouseChargeData } from "../../api/property-manage/expense-manage/house-charge/mock-data";
+import { mockVehicleChargeData } from "../../api/property-manage/expense-manage/vehicle-charge/mock-data";
+import { mockContracteChargeData as mockContractChargeData } from "../../api/property-manage/expense-manage/contracte-charge/mock-data";
+import { mockMeterReadingTypeData } from "../../api/property-manage/expense-manage/meter-reading-type/mock-data";
+import { mockWaterAndElectricityMeterReadingData as mockMeterReadingData } from "../../api/property-manage/expense-manage/water-and-electricity-meter-reading/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { db } from "../index";

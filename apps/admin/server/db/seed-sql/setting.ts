@@ -20,15 +20,18 @@ import {
 	type NewSmRegisterProtocol as InsertSmRegisterProtocol,
 	type NewSmInitializeCell as InsertSmInitializeCell,
 } from "@01s-11comm/type";
-import { mockOrganizationTreeData, mockEmployeeData } from "../../c/setting-manage/organize-manage/org-info/mock-data";
-import { mockRolePermissionData } from "../../c/setting-manage/organize-manage/role-permission/mock-data";
-import { mockDataPermissionData } from "../../c/setting-manage/organize-manage/data-permission/mock-data";
-import { mockShiftSettingData } from "../../c/setting-manage/organize-manage/shift-setting/mock-data";
-import { mockSchedulingSettingData } from "../../c/setting-manage/organize-manage/scheduling-setting/mock-data";
-import { mockWorkingScheduleData } from "../../c/setting-manage/organize-manage/working-schedule/mock-data";
-import { mockSystemConfigData } from "../../c/setting-manage/system-manage/system-config/mock-data";
-import { mockRegisterProtocolData } from "../../c/setting-manage/system-manage/register-protocol/mock-data";
-import { mockInitializeCommunityData } from "../../c/setting-manage/system-manage/initialize-cell/mock-data";
+import {
+	mockOrganizationTreeData,
+	mockEmployeeData,
+} from "../../api/setting-manage/organize-manage/org-info/mock-data";
+import { mockRolePermissionData } from "../../api/setting-manage/organize-manage/role-permission/mock-data";
+import { mockDataPermissionData } from "../../api/setting-manage/organize-manage/data-permission/mock-data";
+import { mockShiftSettingData } from "../../api/setting-manage/organize-manage/shift-setting/mock-data";
+import { mockSchedulingSettingData } from "../../api/setting-manage/organize-manage/scheduling-setting/mock-data";
+import { mockWorkingScheduleData } from "../../api/setting-manage/organize-manage/working-schedule/mock-data";
+import { mockSystemConfigData } from "../../api/setting-manage/system-manage/system-config/mock-data";
+import { mockRegisterProtocolData } from "../../api/setting-manage/system-manage/register-protocol/mock-data";
+import { mockInitializeCommunityData } from "../../api/setting-manage/system-manage/initialize-cell/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { db } from "../index";

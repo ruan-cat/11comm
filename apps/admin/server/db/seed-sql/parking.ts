@@ -6,10 +6,10 @@ import {
 	pkParkingStructures,
 } from "@01s-11comm/type";
 
-import { mockParkingLotData } from "../../c/property-manage/parking-manage/parking-lot/mock-data";
-import { mockCarportInfoData } from "../../c/property-manage/parking-manage/carport-info/mock-data";
-import { mockOwnerVehicleData } from "../../c/property-manage/parking-manage/owner-vehicle/mock-data";
-import { mockCarportApplyData } from "../../c/property-manage/parking-manage/carport-apply/mock-data";
+import { mockParkingLotData } from "../../api/property-manage/parking-manage/parking-lot/mock-data";
+import { mockCarportInfoData } from "../../api/property-manage/parking-manage/carport-info/mock-data";
+import { mockOwnerVehicleData } from "../../api/property-manage/parking-manage/owner-vehicle/mock-data";
+import { mockCarportApplyData } from "../../api/property-manage/parking-manage/carport-apply/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { db } from "../index";

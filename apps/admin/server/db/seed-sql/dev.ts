@@ -10,8 +10,8 @@ import {
 	dtCacheConfigs,
 } from "@01s-11comm/type";
 
-import { mockDictionaryTypeData } from "../../c/dev-team/config-manage/type/mock-data";
-import { mockRefreshCacheData } from "../../c/dev-team/cache-manage/refresh-cache/mock-data";
+import { mockDictionaryTypeData } from "../../api/dev-team/config-manage/type/mock-data";
+import { mockRefreshCacheData } from "../../api/dev-team/cache-manage/refresh-cache/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { db } from "../index";
