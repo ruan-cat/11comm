@@ -4,23 +4,23 @@
 
 - [x] 1.1 在 Neon Console 启用 Auth 功能并获取 NEON_AUTH_BASE_URL
 - [x] 1.2 生成 NEON_AUTH_COOKIE_SECRET 密钥（至少 32 字符）
-- [x] 1.3 安装依赖包：@neondatabase/auth、jose
-- [x] 1.4 配置 .env 文件添加认证相关环境变量
-- [x] 1.5 更新 nitro.config.ts 添加认证运行时配置
+- [x] 1.3 在 apps/admin 安装依赖包：@neondatabase/auth、jose
+- [x] 1.4 配置 apps/admin/.env 文件添加认证相关环境变量
+- [x] 1.5 更新 apps/admin/nitro.config.ts 添加认证运行时配置
 
 ## 2. Neon Auth 服务集成
 
-- [x] 2.1 创建 server/plugins/auth.ts 插件初始化 Neon Auth
-- [x] 2.2 创建登录 API 路由 server/api/auth/sign-in/post.ts
-- [x] 2.3 创建注册 API 路由 server/api/auth/sign-up/post.ts
-- [x] 2.4 创建登出 API 路由 server/api/auth/sign-out/post.ts
-- [x] 2.5 创建获取当前用户信息 API 路由 server/api/auth/me/get.ts
+- [x] 2.1 创建 apps/admin/server/plugins/auth.ts 插件初始化 Neon Auth
+- [x] 2.2 创建登录 API 路由 apps/admin/server/api/auth/sign-in/post.ts
+- [x] 2.3 创建注册 API 路由 apps/admin/server/api/auth/sign-up/post.ts
+- [x] 2.4 创建登出 API 路由 apps/admin/server/api/auth/sign-out/post.ts
+- [x] 2.5 创建获取当前用户信息 API 路由 apps/admin/server/api/auth/me/get.ts （规范格式，为超管下发 `*:*:*` 权限码）
 
 ## 2A. OAuth 登录集成
 
-- [x] 2A.1 创建 Neon Auth 客户端实例 server/utils/auth-client.ts（懒加载模式，参考 useDb）
-- [x] 2A.2 创建 OAuth 发起端点 server/api/auth/oauth/[provider]/get.ts
-- [x] 2A.3 创建 OAuth 回调处理端点 server/api/auth/callback/[provider]/get.ts
+- [x] 2A.1 创建 Neon Auth 客户端实例 apps/admin/server/utils/auth-client.ts（懒加载模式，确保传入 H3Event 获取 Cloudflare 环境变量）
+- [x] 2A.2 创建 OAuth 发起端点 apps/admin/server/api/auth/oauth/[provider]/get.ts
+- [x] 2A.3 创建 OAuth 回调处理端点 apps/admin/server/api/auth/callback/[provider]/get.ts
 - [x] 2A.4 实现 OAuth 错误处理和重定向逻辑
 - [x] 2A.5 配置开发环境 OAuth（Google 默认启用）
 - [x] 2A.6 配置生产环境 OAuth 凭证（Neon Console）
@@ -29,9 +29,9 @@
 
 ## 3. Nitro 认证中间件
 
-- [x] 3.1 创建 server/middleware/1.logger.ts 请求日志中间件
-- [x] 3.2 创建 server/middleware/2.auth.ts JWT 验证中间件
-- [x] 3.3 创建 server/middleware/3.validate.ts 路由权限验证中间件
+- [x] 3.1 创建 apps/admin/server/middleware/1.logger.ts 请求日志中间件
+- [x] 3.2 创建 apps/admin/server/middleware/2.auth.ts JWT 验证中间件
+- [x] 3.3 创建 apps/admin/server/middleware/3.validate.ts 路由权限验证中间件（返回标准 JsonVO 以无缝连接前端）
 - [x] 3.4 实现 Token 刷新逻辑
 - [x] 3.5 配置公开路由白名单（跳过认证的路径）
 - [x] 3.5.1 定义公开接口白名单配置
@@ -40,14 +40,14 @@
 - [x] 3.6 添加中间件单元测试
 - [x] 3.7 批量认证适配：中间件统一认证处理（不逐个修改接口）
 
-## 4. Drizzle RLS 策略配置
+## 4. Drizzle RLS 策略配置 (原生 JWT Claims 模式)
 
 - [x] 4.1 在 apps/type/src/business/ 新增用户认证相关 Schema
 - [x] 4.2 为用户表配置 crudPolicy（用户只能读写自己的数据）
-- [x] 4.3 为业务表添加 ownerId/userId/organizationId/communityId 字段和 RLS 策略
+- [x] 4.3 为业务表添加 ownerId/userId/organizationId/communityId 字段和通过读取 `request.jwt.claims` 匹配的 RLS 策略
 - [x] 4.4 配置公开数据表的读取策略（匿名用户可读）
 - [x] 4.5 创建数据库迁移文件并执行
-- [x] 4.6 验证 RLS 策略是否生效
+- [x] 4.6 验证 RLS 策略在 Serverless HTTP 并发环境下的绝对安全性
 
 ## 4A. 组织+小区数据隔离
 
@@ -65,7 +65,8 @@
 - [x] 4B.1 定义 5 层角色：超级管理员、组织管理员、小区管理员、物业员工、业主/住户（单租户模式）
 - [x] 4B.2 在 Neon Auth 用户表中配置角色字段
 - [x] 4B.3 创建角色枚举类型定义
-- [x] 4B.4 实现角色验证中间件
+- [x] 4B.4 实现角色验证中间件，抛出标准 403 JsonVO 错误适配 PureAdmin 拦截器
+- [x] 4B.5 集成 Neon Management API：实现修改业务层表结构时，同步向对应的 Auth User metadata 中注入组织/小区 ID
 
 ## 4C. 组织层级架构
 
@@ -113,13 +114,13 @@
 
 ## 6. 前端登录集成
 
-- [x] 6.1 创建登录页面 src/pages/auth/login/index.vue
+- [x] 6.1 创建登录页面 apps/admin/src/views/login/index.vue
 - [x] 6.1.1 集成 Neon Auth 客户端 SDK
 - [x] 6.1.2 添加 OAuth 登录按钮（Google、GitHub）
 - [x] 6.1.3 实现 OAuth 登录跳转逻辑
 - [x] 6.1.4 处理 OAuth 回调后的会话验证
 - [x] 6.1.5 实现登录错误提示
-- [x] 6.2 创建注册页面 src/pages/auth/register/index.vue
+- [x] 6.2 创建注册页面 apps/admin/src/views/register/index.vue
 - [x] 6.3 集成 Neon Auth 客户端 SDK
 - [x] 6.4 实现 Token 存储和自动刷新逻辑
 - [x] 6.5 添加登出功能并清理本地存储

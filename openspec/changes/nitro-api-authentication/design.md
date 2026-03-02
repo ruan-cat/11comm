@@ -75,9 +75,9 @@
 - `jsonwebtoken`: 更流行但依赖较多
 - `fast-jwt`: 性能更好但功能较少
 
-### Decision 3: RLS 实现方式 - Drizzle crudPolicy
+### Decision 3: RLS 实现方式 - Drizzle crudPolicy + 原生 JWT Claims
 
-**选择：Drizzle ORM 的 crudPolicy 辅助函数**
+**选择：Drizzle ORM 的 crudPolicy 辅助函数 + 原生 JWT Claims 读取**
 
 **理由**：
 
@@ -85,6 +85,7 @@
 2. 自动生成标准 RLS 策略
 3. 支持常见访问模式（用户私有数据、角色访问）
 4. 可与 pgPolicy 混合使用实现复杂场景
+5. **适配 Serverless**: 强行采用读取 Neon 自动从 Token 中注入的 `request.jwt.claims` 配置，彻底解决 `drizzle-orm/neon-http` 连接无状态导致的 `SET LOCAL` 会话丢失的严重风险。
 
 ### Decision 4: 中间件架构 - 分层设计
 
@@ -154,10 +155,12 @@
 
 **RLS 策略设计**：
 
+- 采用 **原生 Auth Claims 注入 (无状态 HTTP 安全模式)**，摒弃 `current_setting('app.xxx')`。
+- 将用户的组织、小区、角色等信息在登录/分配时，通过 Neon Management API 写入用户的 `user_metadata`。
+- 在发出查询时，Neon Proxy 会自动将 Token 数据注入 PG 上下文的 `request.jwt.claims` 中。
 - `authenticate` 角色：所有已认证用户
 - `staff` 角色：物业员工（关联组织 ID）
 - `owner` 角色：业主（关联房产 ID）
-- 动态策略：使用 `current_setting()` 获取当前用户上下文
 
 ### Decision 7: 账户迁移策略 - 迁移到 Neon Auth
 
@@ -298,23 +301,56 @@
 > 必须使用懒加载模式（与 `useDb` 保持一致）。
 
 ```typescript
-// server/utils/auth-client.ts
+// apps/admin/server/utils/auth-client.ts
 import { createAuthClient } from "@neondatabase/auth";
+import type { H3Event } from "nitro/h3";
 import { useRuntimeConfig } from "nitro/runtime-config";
 import consola from "consola";
+
+/**
+ * 尝试从多个来源获取 Neon Auth URL
+ */
+function resolveNeonAuthUrl(event: H3Event): string | undefined {
+	try {
+		// @ts-ignore
+		const cfRuntimeEnv = (event.req as any)?.runtime?.cloudflare?.env;
+		if (cfRuntimeEnv?.NEON_AUTH_BASE_URL) {
+			return cfRuntimeEnv.NEON_AUTH_BASE_URL as string;
+		}
+	} catch {}
+
+	try {
+		const cfCtxEnv = (event.context as any).cloudflare?.env;
+		if (cfCtxEnv?.NEON_AUTH_BASE_URL) {
+			return cfCtxEnv.NEON_AUTH_BASE_URL as string;
+		}
+	} catch {}
+
+	if (process.env.NEON_AUTH_BASE_URL) {
+		return process.env.NEON_AUTH_BASE_URL;
+	}
+
+	try {
+		const config = useRuntimeConfig();
+		if (config?.neonAuthBaseUrl) {
+			return config.neonAuthBaseUrl as string;
+		}
+	} catch {}
+
+	return undefined;
+}
 
 /**
  * 获取 Neon Auth 认证客户端（懒加载）
  *
  * @description
  * 在 Cloudflare Worker 环境中，process.env 仅在 handler 内可用，
- * 因此必须在请求处理时动态创建客户端实例。
+ * 必须使用 `event.req.runtime?.cloudflare?.env`
  * 设计参考 server/db/index.ts 的 useDb 懒加载模式。
  */
-export function useAuthClient() {
-	/** 优先使用 Nitro runtimeConfig */
-	const config = useRuntimeConfig();
-	const baseUrl = (config.neonAuthBaseUrl as string) || process.env.NEON_AUTH_BASE_URL;
+export function useAuthClient(event: H3Event) {
+	/** 优先使用 CF Runtime 和兼容的环境变量寻找逻辑 */
+	const baseUrl = resolveNeonAuthUrl(event);
 
 	if (!baseUrl) {
 		consola.error("未配置 NEON_AUTH_BASE_URL 环境变量");
@@ -328,9 +364,9 @@ export function useAuthClient() {
 #### 11.3 OAuth 登录端点实现
 
 ```typescript
-// server/api/auth/oauth/[provider].get.ts
+// apps/admin/server/api/auth/oauth/[provider].get.ts
 import { defineHandler, getRouterParam, sendRedirect } from "nitro/h3";
-import { useAuthClient } from "server/utils/auth-client";
+import { useAuthClient } from "@/server/utils/auth-client";
 import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
@@ -354,7 +390,7 @@ export default defineHandler(async (event) => {
 		const callbackURL = `${baseUrl}/api/auth/callback/${provider}`;
 
 		/** 发起 OAuth 登录（懒加载获取认证客户端） */
-		const authClient = useAuthClient();
+		const authClient = useAuthClient(event);
 		const { url } = await authClient.authorizeOAuth2(provider, {
 			redirectTo: callbackURL,
 		});
@@ -380,16 +416,16 @@ export default defineHandler(async (event) => {
 #### 11.4 OAuth 回调端点实现
 
 ```typescript
-// server/api/auth/callback/[provider].get.ts
+// apps/admin/server/api/auth/callback/[provider].get.ts
 import { defineHandler, getRouterParam, sendRedirect } from "nitro/h3";
-import { useAuthClient } from "server/utils/auth-client";
+import { useAuthClient } from "@/server/utils/auth-client";
 
 export default defineHandler(async (event) => {
 	try {
 		const provider = getRouterParam(event, "provider");
 
 		/** 懒加载获取认证客户端 */
-		const authClient = useAuthClient();
+		const authClient = useAuthClient(event);
 
 		/** 交换 code 获取会话 */
 		const { data, error } = await authClient.exchangeOAuth2Code(provider);
@@ -541,6 +577,8 @@ if (storedState !== requestedState) {
 
 **权限优先级**：Organization > Community > Property
 
+（由于转换为 JWT Claims 直接注入，权限数据将被打平塞在当前用户的 `user_metadata` 中，避免产生多次查询开销即可处理这些层级关系）
+
 ### Decision 14: API 权限码标准 - module:action 格式
 
 **选择：统一的 API 权限码命名规范**
@@ -570,10 +608,14 @@ if (storedState !== requestedState) {
 - repair:update      - 处理报修
 ```
 
-**权限码存储**：
+**权限码存储与前后端闭环协作策略**：
 
-- 存储在用户角色的 `permissions` 字段（JSON 数组）
-- 或存储在独立的权限配置表中
+- **权限管理**: 将角色和对应权限码存储在独立的配置表中，或直接在 Auth Metadata 中缓存。
+- **`/api/auth/me` 下卷策略**: 该接口返回用户信息时必须包含 `permissions` 数组。
+  - 对于 **超级管理员 (Super Admin)**，直接硬编码返回 `permissions: ["*:*:*"]`。PureAdmin 前端会自动放行所有被 `v-auth` 或路由 `auths` 包含的界面元素。
+- **`3.validate.ts` 短路设计**:
+  - 该中间件检测到要求拦截的 `module:action`，用户却没有该权限（且不是 `*:*:*`）时。
+  - **必须**抛出 H3 Exception 的同时，由 errorHandler 处理或直接返回统一的 `JsonVO`（`code: 403`, `success: false`）。**切忌**只返回原生 403 Status Code，这会导致前端 Axios 相应拦截器 (`apps/admin/src/utils/http/index.ts`) 报错并弹出版面不一的异常错误，导致用户体验不佳。
 
 ### Decision 15: 单租户数据架构 - Organization + Community 两层结构
 
@@ -614,21 +656,21 @@ if (storedState !== requestedState) {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**RLS 策略示例**：
+**RLS 策略示例（原生 claims 模式，适配 Serverless HTTP 驱动）**：
 
 ```sql
--- 组织级别隔离策略
+-- 组织级别隔离策略 (从 JWT 中的 metadata 获取)
 CREATE POLICY "organization_isolation_policy" ON communities
   FOR ALL
   USING (
-    organization_id = current_setting('app.current_organization_id', true)::uuid
+    organization_id = (current_setting('request.jwt.claims', true)::jsonb -> 'user_metadata' ->> 'organization_id')::uuid
   );
 
 -- 小区级别隔离策略
 CREATE POLICY "community_isolation_policy" ON expenses
   FOR ALL
   USING (
-    community_id = current_setting('app.current_community_id', true)::uuid
+    community_id = (current_setting('request.jwt.claims', true)::jsonb -> 'user_metadata' ->> 'community_id')::uuid
   );
 ```
 
