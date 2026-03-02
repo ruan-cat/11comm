@@ -120,7 +120,7 @@
 - [x] 6.1.3 实现 OAuth 登录跳转逻辑
 - [x] 6.1.4 处理 OAuth 回调后的会话验证
 - [x] 6.1.5 实现登录错误提示
-- [x] 6.2 创建注册页面 apps/admin/src/views/register/index.vue
+- [x] 6.2 创建注册页面/组件 apps/admin/src/views/login/components/LoginRegist.vue（集成在登录页面中，而非独立页面）
 - [x] 6.3 集成 Neon Auth 客户端 SDK
 - [x] 6.4 实现 Token 存储和自动刷新逻辑
 - [x] 6.5 添加登出功能并清理本地存储

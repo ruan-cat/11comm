@@ -364,9 +364,9 @@ export function useAuthClient(event: H3Event) {
 #### 11.3 OAuth 登录端点实现
 
 ```typescript
-// apps/admin/server/api/auth/oauth/[provider].get.ts
+// apps/admin/server/api/auth/oauth/[provider]/get.ts
 import { defineHandler, getRouterParam, sendRedirect } from "nitro/h3";
-import { useAuthClient } from "@/server/utils/auth-client";
+import { useAuthClient } from "server/utils/auth-client";
 import type { JsonVO } from "@01s-11comm/type";
 
 export default defineHandler(async (event) => {
@@ -416,9 +416,9 @@ export default defineHandler(async (event) => {
 #### 11.4 OAuth 回调端点实现
 
 ```typescript
-// apps/admin/server/api/auth/callback/[provider].get.ts
+// apps/admin/server/api/auth/callback/[provider]/get.ts
 import { defineHandler, getRouterParam, sendRedirect } from "nitro/h3";
-import { useAuthClient } from "@/server/utils/auth-client";
+import { useAuthClient } from "server/utils/auth-client";
 
 export default defineHandler(async (event) => {
 	try {
