@@ -2,6 +2,56 @@ import { definePlugin } from "nitro";
 import type { H3Event } from "nitro/h3";
 
 /**
+ * 公开路由白名单
+ * @description 这些路径不需要认证即可访问
+ */
+const PUBLIC_ROUTES = [
+	// 前端页面路由（不需要认证）
+	"/",
+	"/login",
+	"/register",
+	"/forgot-password",
+	"/oauth/callback",
+	// 静态资源
+	/^\/public\//,
+	/^\/assets\//,
+	/^\/favicon/,
+	/^\/__/,
+	/^\/_nuxt\//,
+	// 认证相关 API
+	"/api/auth/sign-in",
+	"/api/auth/sign-up",
+	"/api/auth/sign-out",
+	"/api/auth/me",
+	"/api/auth/oauth",
+	"/api/auth/callback",
+	"/api/auth/refresh",
+	"/api/auth/forgot-password",
+	"/api/auth/migrate",
+	// 健康检查
+	"/health",
+	"/_health",
+];
+
+/**
+ * 检查路径是否在白名单中
+ */
+function isPublicRoute(path: string): boolean {
+	for (const route of PUBLIC_ROUTES) {
+		if (typeof route === "string") {
+			if (path.startsWith(route)) {
+				return true;
+			}
+		} else if (route instanceof RegExp) {
+			if (route.test(path)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
  * Neon Auth 认证插件
  *
  * @description
@@ -14,7 +64,9 @@ export default definePlugin((nitroApp) => {
 		const event = rawEvent as H3Event;
 		/** 跳过静态资源和公开路径 */
 		const path = event.path;
-		if (path.startsWith("/_nuxt") || path.startsWith("/favicon")) {
+
+		/** 检查是否是公开路由 */
+		if (isPublicRoute(path)) {
 			return;
 		}
 

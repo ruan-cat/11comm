@@ -78,18 +78,22 @@ function resolveNeonAuthBaseUrl(event: H3Event): string | undefined {
  * 设计参考 server/db/index.ts 的 useDb 懒加载模式。
  *
  * @param event - H3 事件对象
- * @returns Neon Auth 客户端实例
+ * @returns Neon Auth 客户端实例，如果无法获取基础 URL 则返回 null
  *
  * @example
  * ```typescript
  * // 在 API 路由中使用
  * export default defineHandler(async (event) => {
  *   const authClient = useAuthClient(event);
+ *   if (!authClient) {
+ *     // 处理 Auth 服务不可用的情况
+ *     return { success: false, message: "Auth 服务暂不可用" };
+ *   }
  *   const { data } = await authClient.signIn.email(...);
  * });
  * ```
  */
-export function useAuthClient(event: H3Event): AuthClientType {
+export function useAuthClient(event: H3Event): AuthClientType | null {
 	/** 如果事件上下文中已有 Auth 客户端实例，直接返回（单例模式） */
 	if (event.context.authClient) {
 		return event.context.authClient as AuthClientType;
@@ -99,22 +103,15 @@ export function useAuthClient(event: H3Event): AuthClientType {
 	const baseUrl = resolveNeonAuthBaseUrl(event);
 
 	if (!baseUrl) {
-		consola.error("未能获取 Neon Auth 基础 URL，已检查以下来源：");
-		consola.error("  - event.context.cloudflare.env.comm_admin_11__NEON_AUTH_BASE_URL");
-		consola.error("  - process.env.comm_admin_11__NEON_AUTH_BASE_URL");
-		consola.error("  - process.env.NEON_AUTH_BASE_URL");
-		consola.error("  - Nitro runtimeConfig.neonAuthBaseUrl");
+		consola.warn("未能获取 Neon Auth 基础 URL，已检查以下来源：");
+		consola.warn("  - event.context.cloudflare.env.comm_admin_11__NEON_AUTH_BASE_URL");
+		consola.warn("  - process.env.comm_admin_11__NEON_AUTH_BASE_URL");
+		consola.warn("  - process.env.NEON_AUTH_BASE_URL");
+		consola.warn("  - Nitro runtimeConfig.neonAuthBaseUrl");
+		consola.warn("Auth 服务将不可用，请确保 NEON_AUTH_BASE_URL 环境变量已正确配置。");
 
-		throw new Error("未设置 Neon Auth 基础 URL。请确保 NEON_AUTH_BASE_URL 环境变量已正确配置。", {
-			cause: {
-				checkedSources: [
-					"event.context.cloudflare.env.comm_admin_11__NEON_AUTH_BASE_URL",
-					"process.env.comm_admin_11__NEON_AUTH_BASE_URL",
-					"process.env.NEON_AUTH_BASE_URL",
-					"Nitro runtimeConfig.neonAuthBaseUrl",
-				],
-			},
-		});
+		/** 返回 null 而不是抛出错误，避免阻塞请求 */
+		return null;
 	}
 
 	/** 创建新的 Auth 客户端实例并缓存到事件上下文中 */
