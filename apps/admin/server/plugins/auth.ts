@@ -76,6 +76,11 @@ export default definePlugin((nitroApp) => {
 			const { useAuthClient } = await import("../utils/auth-client");
 			const authClient = useAuthClient(event);
 
+			/** 如果无法获取 Auth 客户端，跳过会话验证 */
+			if (!authClient) {
+				return;
+			}
+
 			/** 获取当前会话 */
 			const { data: sessionData } = await authClient.getSession();
 

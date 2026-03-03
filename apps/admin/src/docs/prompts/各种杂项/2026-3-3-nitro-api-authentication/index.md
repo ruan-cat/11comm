@@ -35,3 +35,18 @@ HTTPError {▼
 ```
 
 请问是我缺少配置什么了么？我需要在 neon 内配置什么么？
+
+## 002 <!-- TODO: --> 生产环境出现严重的 500 错误
+
+我们项目搭建了 neon 鉴权功能，但是出现严重错误。访问生产环境 `https://01s-11comm.ruan-cat.com/` 时，出现以下错误：
+
+```log
+{
+  "error": true,
+  "url": "https://01s-11comm.ruan-cat.com/",
+  "status": 500,
+  "message": "Server Error"
+}
+```
+
+自从搭建了 neon 鉴权功能以来，就无法访问了。请你解决这个故障。
