@@ -7,7 +7,18 @@ import * as jose from "jose";
  * @description 这些路径不需要认证即可访问
  */
 const PUBLIC_ROUTES = [
-	// 认证相关
+	// 前端页面路由（不需要认证）
+	"/",
+	"/login",
+	"/register",
+	"/forgot-password",
+	"/oauth/callback",
+	// 静态资源
+	/^\/public\//,
+	/^\/assets\//,
+	/^\/favicon/,
+	/^\/__/,
+	// 认证相关 API
 	"/api/auth/sign-in",
 	"/api/auth/sign-up",
 	"/api/auth/sign-out",
@@ -67,8 +78,22 @@ export default defineMiddleware(async (event: H3Event) => {
 	}
 
 	/** 从 Cookie 或 Header 获取 Token */
-	const token =
-		getCookie(event, "authorized-token") || getRequestHeader(event, "authorization")?.replace(/^Bearer\s+/i, "");
+	const cookieToken = getCookie(event, "authorized-token");
+	const headerToken = getRequestHeader(event, "authorization")?.replace(/^Bearer\s+/i, "");
+
+	// 从 Cookie 中提取 accessToken（Cookie 存储的是 JSON 字符串）
+	let token: string | undefined;
+	if (cookieToken) {
+		try {
+			const tokenData = JSON.parse(cookieToken);
+			token = tokenData.accessToken;
+		} catch {
+			// 如果不是 JSON 格式，直接使用（向后兼容）
+			token = cookieToken;
+		}
+	} else {
+		token = headerToken;
+	}
 
 	/** 如果没有 Token，返回 401 */
 	if (!token) {
