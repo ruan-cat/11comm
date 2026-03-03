@@ -4,7 +4,7 @@
 
 - 鉴权集成方案报告： apps\admin\src\docs\reports\2026-02-21-nitro-neon-auth-integration-research.md
 
-## 001 <!-- TODO: --> 处理接口出现 token 过期错误
+## 001 处理接口出现 token 过期错误
 
 `openspec\changes\nitro-api-authentication` 任务说已经完成了接口鉴权的工作，但是我访问本地时，出现这个错误。
 
