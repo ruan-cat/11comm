@@ -82,4 +82,6 @@ HTTPError {▼
 
 你可以本地构建，然后对 nitro 的构建结果，使用本地运行和 preview 的手段，对打包构建的产物工件做检查。实现对生产环境的检查。
 
+产生的报告存储在 `apps\admin\src\docs\reports\2026-03-03-500-error-fix` 目录内。
+
 主动使用谷歌浏览器 MCP 完成任务。

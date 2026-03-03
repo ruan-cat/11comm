@@ -98,13 +98,44 @@ pnpm db:seed
 
 ### 2. 构建命令
 
-|         命令         |               说明                |
-| :------------------: | :-------------------------------: |
-|     `pnpm build`     | 构建生产环境（等同于 build:prod） |
-|  `pnpm build:prod`   |         构建生产环境版本          |
-| `pnpm build:staging` |        构建预发布环境版本         |
-| `pnpm build:github`  |    构建 GitHub Pages 部署版本     |
-|  `pnpm docs:build`   |        构建 VitePress 文档        |
+#### 2.1 构建模式说明
+
+本项目支持两种构建模式：
+
+1. **纯客户端构建（SPA）** - 构建纯前端单页应用，不包含服务端代码
+2. **Nitro 全栈构建** - 构建包含 Nitro 服务端的全栈应用
+
+#### 2.2 构建命令列表
+
+|             命令             |                       说明                        |       构建模式        |
+| :--------------------------: | :-----------------------------------------------: | :-------------------: |
+|         `pnpm build`         |        构建生产环境（等同于 `build:prod`）        |  纯客户端构建（SPA）  |
+|      `pnpm build:prod`       |              构建生产环境客户端版本               |  纯客户端构建（SPA）  |
+| `pnpm build:prod:cloudflare` | **构建 Cloudflare 部署版本（包含 Nitro 服务端）** | **Nitro 全栈构建** ⭐ |
+|   `pnpm build:prod:vercel`   |   **构建 Vercel 部署版本（包含 Nitro 服务端）**   | **Nitro 全栈构建** ⭐ |
+|     `pnpm build:staging`     |             构建预发布环境客户端版本              |  纯客户端构建（SPA）  |
+|     `pnpm build:github`      |         构建 GitHub Pages 部署客户端版本          |  纯客户端构建（SPA）  |
+|      `pnpm docs:build`       |                构建 VitePress 文档                |           -           |
+
+#### 2.3 重要说明
+
+⚠️ **生产环境部署必须使用 Nitro 全栈构建命令**
+
+- **Cloudflare 部署**：使用 `pnpm build:prod:cloudflare`
+- **Vercel 部署**：使用 `pnpm build:prod:vercel`
+
+**区别**：
+
+- **纯客户端构建**：只生成 `.output/public/` 目录，包含静态 HTML/CSS/JS 文件
+- **Nitro 全栈构建**：生成 `.output/server/` 和 `.output/public/` 目录，包含服务端 API 和客户端文件
+
+**验证方法**：
+
+```bash
+# Nitro 全栈构建成功后，应该存在以下文件：
+ls .output/nitro.json        # Nitro 配置文件
+ls .output/server/index.mjs  # 服务端入口文件
+```
 
 ### 3. 预览和测试命令
 
