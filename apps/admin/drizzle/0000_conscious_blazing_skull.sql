@@ -15,6 +15,40 @@ CREATE TYPE "public"."rounding_mode" AS ENUM('round', 'ceil', 'floor');--> state
 CREATE TYPE "public"."service_area" AS ENUM('house', 'public_area', 'garage', 'non_house');--> statement-breakpoint
 CREATE TYPE "public"."status" AS ENUM('enabled', 'disabled');--> statement-breakpoint
 CREATE TYPE "public"."template_status" AS ENUM('draft', 'published', 'disabled');--> statement-breakpoint
+CREATE TABLE "auth_roles" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"role_name" varchar(50) NOT NULL,
+	"role_code" varchar(50) NOT NULL,
+	"description" text,
+	"permissions" text DEFAULT '[]',
+	"is_system" boolean DEFAULT false,
+	"enabled" boolean DEFAULT true,
+	"create_time" timestamp DEFAULT now() NOT NULL,
+	"update_time" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "auth_roles_role_code_unique" UNIQUE("role_code")
+);
+--> statement-breakpoint
+CREATE TABLE "auth_user_mapping" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"neon_auth_id" uuid NOT NULL,
+	"staff_id" uuid,
+	"owner_id" uuid,
+	"user_type" varchar(20) NOT NULL,
+	"migrated" boolean DEFAULT false,
+	"migrated_at" timestamp,
+	"create_time" timestamp DEFAULT now() NOT NULL,
+	"update_time" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "auth_user_mapping_neon_auth_id_unique" UNIQUE("neon_auth_id")
+);
+--> statement-breakpoint
+CREATE TABLE "auth_user_roles" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_mapping_id" uuid NOT NULL,
+	"role_id" uuid NOT NULL,
+	"create_time" timestamp DEFAULT now() NOT NULL,
+	"update_time" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "op_community_configs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"community_id" uuid NOT NULL,
@@ -151,6 +185,7 @@ CREATE TABLE "cm_communities" (
 	"address" text,
 	"phone" varchar(20),
 	"status" "status" DEFAULT 'enabled',
+	"organization_id" uuid,
 	"land_area" numeric(12, 2),
 	"building_area" numeric(12, 2),
 	"building_count" integer,
@@ -692,6 +727,7 @@ CREATE TABLE "hp_owner_members" (
 --> statement-breakpoint
 CREATE TABLE "hp_owners" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"neon_auth_id" uuid,
 	"name" varchar(50) NOT NULL,
 	"id_card" varchar(18),
 	"phone" varchar(20),
@@ -1281,6 +1317,9 @@ CREATE TABLE "sm_organizations" (
 	"org_type" varchar(50),
 	"sort_order" integer DEFAULT 0,
 	"parent_id" uuid,
+	"community_id" uuid,
+	"level" integer DEFAULT 1,
+	"org_path" varchar(500),
 	"remark" text,
 	"create_time" timestamp DEFAULT now() NOT NULL,
 	"update_time" timestamp DEFAULT now() NOT NULL
@@ -1434,7 +1473,9 @@ CREATE TABLE "sm_system_configs" (
 --> statement-breakpoint
 CREATE TABLE "sm_staff" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"neon_auth_id" uuid,
 	"org_id" uuid,
+	"community_id" uuid,
 	"employee_number" varchar(50) NOT NULL,
 	"name" varchar(50) NOT NULL,
 	"gender" "gender",
@@ -1448,6 +1489,8 @@ CREATE TABLE "sm_staff" (
 	"update_time" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+ALTER TABLE "auth_user_roles" ADD CONSTRAINT "auth_user_roles_user_mapping_id_auth_user_mapping_id_fk" FOREIGN KEY ("user_mapping_id") REFERENCES "public"."auth_user_mapping"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "auth_user_roles" ADD CONSTRAINT "auth_user_roles_role_id_auth_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."auth_roles"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "op_community_configs" ADD CONSTRAINT "op_community_configs_community_id_cm_communities_id_fk" FOREIGN KEY ("community_id") REFERENCES "public"."cm_communities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "op_community_info" ADD CONSTRAINT "op_community_info_community_id_cm_communities_id_fk" FOREIGN KEY ("community_id") REFERENCES "public"."cm_communities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "op_merchant_admins" ADD CONSTRAINT "op_merchant_admins_merchant_id_op_merchants_id_fk" FOREIGN KEY ("merchant_id") REFERENCES "public"."op_merchants"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -1515,6 +1558,12 @@ ALTER TABLE "sm_role_permissions" ADD CONSTRAINT "sm_role_permissions_permission
 ALTER TABLE "sm_staff_roles" ADD CONSTRAINT "sm_staff_roles_staff_id_sm_staff_id_fk" FOREIGN KEY ("staff_id") REFERENCES "public"."sm_staff"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sm_staff_roles" ADD CONSTRAINT "sm_staff_roles_role_id_sm_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."sm_roles"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sm_staff" ADD CONSTRAINT "sm_staff_org_id_sm_organizations_id_fk" FOREIGN KEY ("org_id") REFERENCES "public"."sm_organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "auth_roles_role_code_idx" ON "auth_roles" USING btree ("role_code");--> statement-breakpoint
+CREATE INDEX "auth_user_mapping_neon_auth_id_idx" ON "auth_user_mapping" USING btree ("neon_auth_id");--> statement-breakpoint
+CREATE INDEX "auth_user_mapping_staff_id_idx" ON "auth_user_mapping" USING btree ("staff_id");--> statement-breakpoint
+CREATE INDEX "auth_user_mapping_owner_id_idx" ON "auth_user_mapping" USING btree ("owner_id");--> statement-breakpoint
+CREATE INDEX "auth_user_roles_user_mapping_id_idx" ON "auth_user_roles" USING btree ("user_mapping_id");--> statement-breakpoint
+CREATE INDEX "auth_user_roles_role_id_idx" ON "auth_user_roles" USING btree ("role_id");--> statement-breakpoint
 CREATE INDEX "op_merchants_name_idx" ON "op_merchants" USING btree ("merchant_name");--> statement-breakpoint
 CREATE INDEX "op_merchants_code_idx" ON "op_merchants" USING btree ("merchant_code");--> statement-breakpoint
 CREATE INDEX "op_property_companies_name_idx" ON "op_property_companies" USING btree ("company_name");--> statement-breakpoint
@@ -1522,6 +1571,7 @@ CREATE INDEX "cm_building_structures_community_id_idx" ON "cm_building_structure
 CREATE INDEX "cm_communities_name_idx" ON "cm_communities" USING btree ("name");--> statement-breakpoint
 CREATE INDEX "cm_communities_code_idx" ON "cm_communities" USING btree ("code");--> statement-breakpoint
 CREATE INDEX "cm_communities_status_idx" ON "cm_communities" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "cm_communities_organization_id_idx" ON "cm_communities" USING btree ("organization_id");--> statement-breakpoint
 CREATE INDEX "cm_handing_business_status_idx" ON "cm_handing_business" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "cm_house_decorations_audit_status_idx" ON "cm_house_decorations" USING btree ("audit_status");--> statement-breakpoint
 CREATE INDEX "cm_notices_community_id_idx" ON "cm_notices" USING btree ("community_id");--> statement-breakpoint
@@ -1576,6 +1626,7 @@ CREATE INDEX "hp_houses_house_number_idx" ON "hp_houses" USING btree ("house_num
 CREATE INDEX "hp_houses_community_id_idx" ON "hp_houses" USING btree ("community_id");--> statement-breakpoint
 CREATE INDEX "hp_owners_name_idx" ON "hp_owners" USING btree ("name");--> statement-breakpoint
 CREATE INDEX "hp_owners_phone_idx" ON "hp_owners" USING btree ("phone");--> statement-breakpoint
+CREATE INDEX "hp_owners_neon_auth_id_idx" ON "hp_owners" USING btree ("neon_auth_id");--> statement-breakpoint
 CREATE INDEX "pk_carport_applications_status_idx" ON "pk_carport_applications" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "pk_carport_applications_applicant_idx" ON "pk_carport_applications" USING btree ("applicant");--> statement-breakpoint
 CREATE INDEX "pk_carports_carport_number_idx" ON "pk_carports" USING btree ("carport_number");--> statement-breakpoint
@@ -1625,6 +1676,8 @@ CREATE INDEX "dt_menu_items_path_idx" ON "dt_menu_items" USING btree ("path");--
 CREATE INDEX "sm_organizations_org_name_idx" ON "sm_organizations" USING btree ("org_name");--> statement-breakpoint
 CREATE INDEX "sm_organizations_org_code_idx" ON "sm_organizations" USING btree ("org_code");--> statement-breakpoint
 CREATE INDEX "sm_organizations_parent_id_idx" ON "sm_organizations" USING btree ("parent_id");--> statement-breakpoint
+CREATE INDEX "sm_organizations_community_id_idx" ON "sm_organizations" USING btree ("community_id");--> statement-breakpoint
+CREATE INDEX "sm_organizations_org_path_idx" ON "sm_organizations" USING btree ("org_path");--> statement-breakpoint
 CREATE INDEX "sm_working_schedules_staff_id_idx" ON "sm_working_schedules" USING btree ("staff_id");--> statement-breakpoint
 CREATE INDEX "sm_working_schedules_shift_id_idx" ON "sm_working_schedules" USING btree ("shift_id");--> statement-breakpoint
 CREATE INDEX "sm_working_schedules_schedule_date_idx" ON "sm_working_schedules" USING btree ("schedule_date");--> statement-breakpoint
@@ -1650,4 +1703,6 @@ CREATE UNIQUE INDEX "sm_system_configs_config_key_idx" ON "sm_system_configs" US
 CREATE INDEX "sm_system_configs_config_type_idx" ON "sm_system_configs" USING btree ("config_type");--> statement-breakpoint
 CREATE INDEX "sm_staff_employee_number_idx" ON "sm_staff" USING btree ("employee_number");--> statement-breakpoint
 CREATE INDEX "sm_staff_name_idx" ON "sm_staff" USING btree ("name");--> statement-breakpoint
-CREATE INDEX "sm_staff_org_id_idx" ON "sm_staff" USING btree ("org_id");
+CREATE INDEX "sm_staff_org_id_idx" ON "sm_staff" USING btree ("org_id");--> statement-breakpoint
+CREATE INDEX "sm_staff_community_id_idx" ON "sm_staff" USING btree ("community_id");--> statement-breakpoint
+CREATE INDEX "sm_staff_neon_auth_id_idx" ON "sm_staff" USING btree ("neon_auth_id");
