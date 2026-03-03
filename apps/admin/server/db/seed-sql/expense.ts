@@ -24,12 +24,13 @@ import { mockMeterReadingTypeData } from "../../api/property-manage/expense-mana
 import { mockWaterAndElectricityMeterReadingData as mockMeterReadingData } from "../../api/property-manage/expense-manage/water-and-electricity-meter-reading/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /**
  * 生成费用管理模块的 SQL
  */
-export function generateExpenseSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateExpenseSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================

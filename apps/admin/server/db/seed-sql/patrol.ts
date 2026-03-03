@@ -19,12 +19,13 @@ import { mockTaskData } from "../../api/property-manage/patrol-manage/task/mock-
 import { mockDetailData } from "../../api/property-manage/patrol-manage/detail/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /**
  * 生成巡检管理模块的 SQL
  */
-export function generatePatrolSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 	const defaultCommunityId = idMap.get("cm_communities", "COMM001") || generateUuid("cm_communities", "COMM001");
 

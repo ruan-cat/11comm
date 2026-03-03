@@ -1,7 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { config } from "@dotenvx/dotenvx";
 import { IdMapRegistry, seedModuleConfigs, SeedModuleConfig, SqlStatement } from "../server/db/seed-sql";
+
+// 加载环境变量（与 drizzle.config.ts 保持一致）
+config({ path: ".env" });
+config({ path: ".env.vercel.local" });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

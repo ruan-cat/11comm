@@ -18,12 +18,13 @@ import {
 import { mockRepairsTodoData } from "../../api/property-manage/repairs-manage/repairs-todo/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /**
  * 生成报修管理模块的 SQL
  */
-export function generateRepairsSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateRepairsSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================

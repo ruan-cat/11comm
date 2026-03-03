@@ -18,12 +18,13 @@ import { mockPropertyRegisterData } from "../../api/property-manage/community-ma
 import { mockBuildingSpaceStructureDiagramData } from "../../api/property-manage/community-manage/building-space-structure-diagram/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, toStatusEnum, toAuditStatusEnum } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /**
  * 生成社区管理模块的 SQL
  */
-export function generateCommunitySql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================

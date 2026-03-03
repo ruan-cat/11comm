@@ -19,7 +19,7 @@ import { mockAttachmentData } from "../../api/property-manage/contract-manage/at
 import { mockChangeData } from "../../api/property-manage/contract-manage/change/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 const contractStatusMap: Record<string, "draft" | "pending_review" | "effective" | "expired" | "terminated"> = {
 	草稿: "draft",
@@ -40,7 +40,8 @@ const templateStatusMap: Record<string, "draft" | "published" | "disabled"> = {
 /**
  * 生成合同管理模块的 SQL
  */
-export function generateContractSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================

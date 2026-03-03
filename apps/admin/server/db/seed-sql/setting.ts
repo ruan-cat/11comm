@@ -34,7 +34,7 @@ import { mockRegisterProtocolData } from "../../api/setting-manage/system-manage
 import { mockInitializeCommunityData } from "../../api/setting-manage/system-manage/initialize-cell/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 import { OrganizationTreeNode } from "@01s-11comm/type";
 
 /**
@@ -71,7 +71,8 @@ function processOrgTree(nodes: OrganizationTreeNode[], idMap: IdMapRegistry, fla
 /**
  * 生成设置管理模块的 SQL
  */
-export function generateSettingSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================

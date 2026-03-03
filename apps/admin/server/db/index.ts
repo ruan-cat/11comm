@@ -6,25 +6,65 @@ import { useRuntimeConfig } from "nitro/runtime-config";
 import consola from "consola";
 import * as schema from "./schema";
 
+// 懒加载数据库实例
+let _db: NeonHttpDatabase<typeof schema> | null = null;
+let _envLoaded = false;
+
 /**
- * Drizzle ORM 数据库实例（仅用于 seed 脚本等 Node.js 环境）
+ * 加载环境变量（支持 dotenvx）
+ */
+async function loadEnv(): Promise<void> {
+	if (_envLoaded) return;
+
+	try {
+		const { config } = await import("@dotenvx/dotenvx");
+		config({ path: ".env" });
+		config({ path: ".env.vercel.local" });
+	} catch {
+		try {
+			const { config } = await import("dotenv");
+			config({ path: ".env" });
+			config({ path: ".env.vercel.local" });
+		} catch {
+			// 环境变量加载失败，忽略
+		}
+	}
+	_envLoaded = true;
+}
+
+/**
+ * 获取数据库实例（懒加载）
  *
  * @description
- * 在 Cloudflare Worker 环境下，模块顶层的 process.env 不可用，
- * 此实例可能为 null。seed 脚本等 Node.js 环境下可正常使用。
- * Nitro API 路由中请始终使用 useDb(event) 获取数据库连接。
+ * 首次调用时加载环境变量并创建数据库连接。
+ * 用于 seed 脚本等 Node.js 环境。
  */
-function createSeedDb(): NeonHttpDatabase<typeof schema> | null {
+export async function getDb(): Promise<NeonHttpDatabase<typeof schema> | null> {
+	if (_db) return _db;
+
+	await loadEnv();
+
 	try {
-		const url = process.env.comm_admin_11__DATABASE_URL;
-		if (!url) return null;
-		return drizzle(neon(url), { schema });
-	} catch {
+		// 优先使用 comm_admin_11__DATABASE_URL（Vercel/生产环境）
+		// 其次使用 DATABASE_URL（本地开发环境）
+		const url = process.env.comm_admin_11__DATABASE_URL || process.env.DATABASE_URL;
+		if (!url || url.includes("username:password@host")) {
+			return null;
+		}
+		_db = drizzle(neon(url), { schema });
+		return _db;
+	} catch (e) {
+		consola.error("创建数据库实例失败:", e);
 		return null;
 	}
 }
 
-export const db = createSeedDb();
+/**
+ * Drizzle ORM 数据库实例（同步版本，仅用于向后兼容）
+ *
+ * @deprecated 请使用 getDb() 异步获取
+ */
+export const db: NeonHttpDatabase<typeof schema> | null = null;
 
 /**
  * 数据库连接类型

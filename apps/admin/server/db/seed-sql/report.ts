@@ -16,12 +16,13 @@ import {
 import { mockExpenseSummaryTableData } from "../../api/property-manage/report-manage/expense-summary-table/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /**
  * 生成报表管理模块的 SQL
  */
-export function generateReportSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateReportSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 	const defaultCommunityId = idMap.get("cm_communities", "COMM001") || generateUuid("cm_communities", "COMM001");
 

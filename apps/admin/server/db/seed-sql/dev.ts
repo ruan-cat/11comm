@@ -14,7 +14,7 @@ import { mockDictionaryTypeData } from "../../api/dev-team/config-manage/type/mo
 import { mockRefreshCacheData } from "../../api/dev-team/cache-manage/refresh-cache/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /** 缓存状态值映射：中文标签 -> 英文枚举值 */
 const cacheStatusMap: Record<string, string> = {
@@ -48,7 +48,8 @@ const cacheTypeMap: Record<string, string> = {
 /**
  * 生成开发配置模块的 SQL
  */
-export function generateDevSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateDevSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================

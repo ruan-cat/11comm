@@ -5,12 +5,13 @@ import { mockMerchantInfoData } from "../../api/operation-team/merchant-manage/m
 import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
-import { db } from "../index";
+import { getDb } from "../index";
 
 /**
  * 生成运营团队模块的 SQL
  */
-export function generateOperationSql(idMap: IdMapRegistry): SqlStatement[] {
+export async function generateOperationSql(idMap: IdMapRegistry): Promise<SqlStatement[]> {
+	const db = await getDb();
 	const statements: SqlStatement[] = [];
 
 	// ==========================================
