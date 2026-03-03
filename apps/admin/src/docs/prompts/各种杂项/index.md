@@ -362,3 +362,15 @@ import { createError } from "h3";
 同样的，去修改 .claude\skills\nitro-api-development 技能，避免以后编写 nitro 接口出现明显的错误。
 
 首先使用 MCP 提供的记忆工具，读取本项目的错误记忆，然后再开始继续任务。
+
+## 032 <!-- TODO: --> 填充项目数据库
+
+现在本项目大部分的数据库表，都是空的。我需要你确保现在 `apps\admin\scripts\generate-seed-sql.ts` 的逻辑，能够对全部的数据库表都填充 mock 数据。
+
+1. 使用 neon MCP，查询数据库表，搞清楚有哪些数据库表没有任何一条数据。
+2. 搞清楚本项目的 mock 数据库存储规则。
+3. 修改 `apps\admin\scripts\generate-seed-sql.ts` ，确保以后执行改脚本时，能够实现全部数据库表读取本项目的 mock 数据，确保 neon 数据库的全部数据库都能够有数据。
+
+这个任务很艰巨，需要查询很多内容，容易出现缺漏。我不要求你现在就完成这个任务，我要求你新建一个 openspec 任务。用 openspec 来罗列出全部的任务列表，处理目标的列表，然后我亲自执行 openspec 任务。
+
+你的任务时全面的探索并调研，罗列出全部需要填充的数据库表和需要使用到的 mock 数据文件。以 openspec 的格式来整理出任务清单。
