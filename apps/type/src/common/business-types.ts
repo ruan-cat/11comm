@@ -259,3 +259,17 @@ export interface SettingManagementSystemBasicInfoQueryParams extends BaseListQue
 	/** 默认小区编号 Default community code */
 	defaultCommunityCode?: string;
 }
+
+/**
+ * 首页常用菜单信息
+ */
+export interface CommonMenuInfo {
+	/** 图标id */
+	icon: string;
+	/** 菜单编号 */
+	muId: string;
+	/** 菜单名称 */
+	name: string;
+	/** 列顺序 */
+	seq: string;
+}
