@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { db } from "../server/db";
+import { getDb } from "../server/db";
 import { sql } from "drizzle-orm";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,6 +39,12 @@ async function executeSqlContent(content: string, sourceName: string) {
 	}
 
 	if (statements.length === 0) return;
+
+	// 获取数据库实例
+	const db = await getDb();
+	if (!db) {
+		throw new Error("无法获取数据库连接，请检查环境变量配置");
+	}
 
 	// Execute sequentially
 	for (const stmt of statements) {
