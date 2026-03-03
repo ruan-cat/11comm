@@ -278,13 +278,22 @@ openspec validate {任务名称} --strict
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 12.2.1. 编写接口需要导入正确的模块
+#### 12.2.1. 本项目不做任何接口鉴权
+
+> **[重要项目特性]** 本项目的 Nitro 接口**不做任何鉴权**。
+>
+> - **禁止**为 Nitro 接口添加 JWT 认证、Token 验证、Neon Auth 鉴权等任何鉴权逻辑。
+> - **禁止**引入 `@neondatabase/auth` 包。
+> - 所有接口均公开访问，无需登录或 Token。
+> - `server/middleware/`、`server/plugins/` 中**不应存在**任何鉴权中间件或插件。
+
+#### 12.2.2. 编写接口需要导入正确的模块
 
 **H3 函数必须从 `"nitro/h3"` 导入**（如 `createError`、`defineHandler` 等），**严禁**从 `"h3"` 直接导入。
 
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
 
-#### 12.2.2. 配置文件格式没有 vite 配置对象
+#### 12.2.3. 配置文件格式没有 vite 配置对象
 
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取配置相关信息。
 

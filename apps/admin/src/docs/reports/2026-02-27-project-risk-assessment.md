@@ -21,7 +21,6 @@
 
 |          风险维度          | 风险等级 |                              核心问题                               |
 | :------------------------: | :------: | :-----------------------------------------------------------------: |
-| Nitro 接口安全（认证授权） | 🔴 极高  |      **所有 150+ API 无认证机制，任意可访问，数据安全不可控**       |
 |  测试有效性（apps:type）   |  🔴 高   |         同构运行时库零测试，Schema 定义错误将同时影响前后端         |
 |   测试有效性（API 测试）   |  🔴 高   |             108 个 API 测试仅打印日志，无 `expect` 断言             |
 |       Turbo 缓存配置       |  🔴 高   |             仅定义 3 个 Turbo 任务，缓存优势几乎未发挥              |
@@ -36,49 +35,9 @@
 
 ---
 
-## 2. 安全风险评估
+## 2. 架构风险评估
 
-### 2.1 API 认证授权缺失 (🔴 极高)
-
-**现状：** 项目全部 150+ Nitro API 接口 **完全没有认证和授权机制**。
-
-```typescript
-/** 当前接口示例 — 任何人可直接访问 */
-export default defineEventHandler(async (event) => {
-	// ❌ 没有认证检查
-	// ❌ 没有权限验证
-	const db = useDb(event);
-	const result = await db.query.cmNotices.findMany();
-	return result;
-});
-```
-
-**影响范围：**
-
-- 全部 `apps/admin/server/api/` 目录，涉及 5 个业务域：`dev-team`, `operation-team`, `property-manage`, `setting-manage`, `center`
-- 数据库 CRUD 全部暴露
-
-**OpenSpec 进度：** 已创建 `nitro-api-authentication` 变更，包含 `proposal.md`、`design.md`、`tasks.md`，但 **尚未实施**。
-
-**建议：**
-
-1. 立即实施 Nitro 中间件，至少加入 Bearer Token / Session 校验
-2. 按 `nitro-api-authentication` 的 OpenSpec 设计方案落实
-3. 对敏感操作接口（delete、update）增加角色权限校验
-
-### 2.2 关于 error.stack 的说明（非风险项）
-
-项目 140+ 接口在 catch 块中返回 `error.stack` 字段。经评估，**这不构成独立的安全风险**，原因如下：
-
-1. **项目规范的有意设计**：`nitro-api-development` 技能文档的 Section 4.4 明确将 `error` 和 `stack` 作为 `JsonVO` 的标准错误响应写法来定义，`JsonVO` 类型本身也包含可选的 `error` 和 `stack` 字段
-2. **Serverless 环境的特殊性**：项目部署在 Cloudflare Worker / Vercel 等平台，打包后的代码是 bundled/minified 的，`error.stack` 暴露的是打包后的堆栈，不会泄露原始源码路径
-3. **开发阶段的务实需求**：项目处于活跃开发期，Serverless 环境下服务端日志不便直接查看，在响应中携带堆栈信息是实用的调试手段
-
----
-
-## 3. 架构风险评估
-
-### 3.1 Nitro Alpha 版本依赖 (🟠 中)
+### 2.1 Nitro Alpha 版本依赖 (🟠 中)
 
 **现状：** 项目锁定使用 `nitro: 3.0.1-alpha.2`，同时在根 `package.json` 和 `apps/admin/package.json` 中声明。
 
@@ -99,7 +58,7 @@ export default defineEventHandler(async (event) => {
 2. 在 `nitro-api-development` 技能文档中标注当前使用 alpha 版本的注意事项
 3. 建立升级测试清单，确保升级不影响现有业务
 
-### 3.2 Schema 迁移过渡态 (🟠 中)
+### 2.2 Schema 迁移过渡态 (🟠 中)
 
 **现状：** 项目正在执行从 `apps/admin/server/db/schemas/` 到 `apps/type/src/business/**/schema.ts` 的影子迁移（Shadow Migration），两个位置并存。
 
@@ -121,7 +80,7 @@ export default defineEventHandler(async (event) => {
 2. 及时更新 `neon-db-list` 技能，使来源信息全部指向 `apps/type`
 3. 当全部 Schema 已迁移后，评估移除 `server/db/schemas` 旧目录的可行性
 
-### 3.3 类型项目导出链复杂度 (🟡 低)
+### 2.3 类型项目导出链复杂度 (🟡 低)
 
 **现状：** `apps/type` 作为 Single Source of Truth，通过多层嵌套 `index.ts` 实现全量 `export *`：
 
@@ -142,9 +101,9 @@ src/index.ts → business/index.ts → property-manage/index.ts → patrol-manag
 
 ---
 
-## 4. 测试与质量保障风险
+## 3. 测试与质量保障风险
 
-### 4.1 apps:type 零测试 (🔴 高)
+### 3.1 apps:type 零测试 (🔴 高)
 
 **现状：** 作为全栈 Single Source of Truth 的类型项目，**没有任何测试覆盖**。
 
@@ -165,7 +124,7 @@ src/index.ts → business/index.ts → property-manage/index.ts → patrol-manag
 2. 测试 insert/select/update schema 的字段覆盖度
 3. 测试外键关系的正确性
 
-### 4.2 API 测试无断言 (🔴 高)
+### 3.2 API 测试无断言 (🔴 高)
 
 **现状：** `apps/admin/src/api/` 目录下 108 个测试文件全部使用相同的"仅打印"模式，无 `expect` 断言。
 
@@ -187,7 +146,7 @@ console.warn("结果", printFormat(data.value));
 2. 至少验证 `data.value` 符合 `JsonVO` 结构
 3. 建立 `tests/fixtures/` 集中管理测试数据
 
-### 4.3 Nitro 接口测试不充分 (🟡 中)
+### 3.3 Nitro 接口测试不充分 (🟡 中)
 
 **现状：** `tests/nitro/` 目录下 104 个测试仅验证 `response.ok`，未深入验证返回数据结构和业务逻辑。
 
@@ -198,9 +157,9 @@ console.warn("结果", printFormat(data.value));
 
 ---
 
-## 5. 构建与 DevOps 风险
+## 4. 构建与 DevOps 风险
 
-### 5.1 Turbo 缓存配置严重不足 (🔴 高)
+### 4.1 Turbo 缓存配置严重不足 (🔴 高)
 
 **现状：** `turbo.json` 仅定义 3 个任务：
 
@@ -221,7 +180,7 @@ tasks: build, docs:build, //#deploy
 
 **建议：** 补充 `turbo.json` 任务定义，至少覆盖 `lint`, `typecheck`, `test` 三类及产物型任务。
 
-### 5.2 NODE_OPTIONS 重复配置 (🟡 低)
+### 4.2 NODE_OPTIONS 重复配置 (🟡 低)
 
 **现状：** 4 个 vite 构建命令重复声明 `--max-old-space-size=8192`：
 
@@ -231,7 +190,7 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 **建议：** 提取到 `.env` 或 `turbo.json` 的全局环境变量配置中。
 
-### 5.3 Vite 版本不一致 (🟡 低)
+### 4.3 Vite 版本不一致 (🟡 低)
 
 |           位置            |   版本   |
 | :-----------------------: | :------: |
@@ -244,9 +203,9 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 6. 依赖管理风险
+## 5. 依赖管理风险
 
-### 6.1 大型依赖清单
+### 5.1 大型依赖清单
 
 `apps/admin/package.json` 拥有 **84 个 dependencies** 和 **77 个 devDependencies**。以下是需特别关注的依赖：
 
@@ -258,7 +217,7 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 |         `vxe-table@4.13.49`         |   非锁范围   |  精确版本锁定，需要手动升级  |
 |            `xlsx@0.18.5`            |  社区版限制  | SheetJS 社区版功能和支持受限 |
 
-### 6.2 pnpm-workspace.yaml 废弃包容忍
+### 5.2 pnpm-workspace.yaml 废弃包容忍
 
 `allowedDeprecatedVersions` 已声明 **12 个** 废弃包的容忍规则，说明依赖树中仍存在老旧包节点。
 
@@ -269,9 +228,9 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 7. 规范体系与工程化评估
+## 6. 规范体系与工程化评估
 
-### 7.1 CLAUDE.md / GEMINI.md 规范体系 (✅ 优秀)
+### 6.1 CLAUDE.md / GEMINI.md 规范体系 (✅ 优秀)
 
 项目建立了极为详尽的 AI 协作规范：
 
@@ -290,17 +249,17 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 - `CLAUDE.md` 的章节编号有重复（两个 Section 3），需要修正
 - 部分技能文档（如 `neon-db-list`）的表来源信息 **未同步到新位置 `apps/type`**
 
-### 7.2 OpenSpec 工作流 (✅ 优秀)
+### 6.2 OpenSpec 工作流 (✅ 优秀)
 
-|     维度     |                                 状态                                 |
-| :----------: | :------------------------------------------------------------------: |
-| 已归档变更数 |                        17 个（archive 目录）                         |
-|  活跃变更数  | 1 个（`nitro-api-authentication`，含完整 proposal + design + tasks） |
-|   技能覆盖   | 10 个 OpenSpec 技能（new/continue/ff/apply/verify/sync/archive 等）  |
+|     维度     |                                状态                                 |
+| :----------: | :-----------------------------------------------------------------: |
+| 已归档变更数 |                        17 个（archive 目录）                        |
+|  活跃变更数  |                     0 个（所有变更已归档完成）                      |
+|   技能覆盖   | 10 个 OpenSpec 技能（new/continue/ff/apply/verify/sync/archive 等） |
 
 **评价：** OpenSpec 工作流成熟度高，变更管理有序，提案→设计→实施→归档流程完整。
 
-### 7.3 报告编写规范 (✅ 遵循)
+### 6.3 报告编写规范 (✅ 遵循)
 
 |     规范项     |             当前状态              |
 | :------------: | :-------------------------------: |
@@ -312,9 +271,9 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 8. 代码质量风险
+## 7. 代码质量风险
 
-### 8.1 `as any` 类型逃逸 (🟠 中)
+### 7.1 `as any` 类型逃逸 (🟠 中)
 
 **现状：** 102 个文件使用 `as any`，主要分布在：
 
@@ -328,7 +287,7 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 2. JSX 文件优先使用 `ts-nocheck` 兜底，后续渐进移除
 3. 建立 `as any` 使用的审查机制
 
-### 8.2 Mock 死代码 (🟠 中)
+### 7.2 Mock 死代码 (🟠 中)
 
 **现状：** 108 个 `mock-data.ts` 中仅 3 个被引用，**105 个属于死代码**。
 
@@ -346,9 +305,9 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 9. 部署与运维风险
+## 8. 部署与运维风险
 
-### 9.1 多平台部署适配
+### 8.1 多平台部署适配
 
 项目同时支持 **Cloudflare Worker**、**Vercel** 和 **GitHub Pages** 部署：
 
@@ -364,7 +323,7 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 - Worker 打包体积限制（1MB free / 10MB paid），需持续监控
 - 不同平台部署命令分散在 `package.json`，缺少统一的 CI/CD 流水线定义
 
-### 9.2 环境变量管理
+### 8.2 环境变量管理
 
 **现状：**
 
@@ -381,34 +340,32 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 10. 综合风险矩阵
+## 9. 综合风险矩阵
 
-### 10.1 按风险等级排序
+### 9.1 按风险等级排序
 
-|  等级   |        风险项        |    涉及范围    |   修复紧急度    |
-| :-----: | :------------------: | :------------: | :-------------: |
-| 🔴 极高 |      无认证授权      | 全部 150+ API  | 立即（7 天内）  |
-|  🔴 高  |   apps:type 零测试   |    类型项目    | 立即（7 天内）  |
-|  🔴 高  |    API 测试无断言    | 108 个测试文件 | 短期（30 天内） |
-|  🔴 高  |   Turbo 仅 3 任务    |    构建性能    | 短期（30 天内） |
-|  🟠 中  | Nitro Alpha 版本锁定 |  全栈引擎依赖  |    跟踪关注     |
-|  🟠 中  |  Schema 迁移过渡态   |   双位置并存   | 短期（30 天内） |
-|  🟠 中  |  `as any` 类型逃逸   |   102 个文件   | 中期（90 天内） |
-|  🟠 中  |     mock 死代码      |   105 个文件   | 中期（90 天内） |
-|  🟠 中  |     CLI 命名混乱     |   63 个命令    | 中期（90 天内） |
-|  🟡 低  |   Vite 版本不一致    | 根/admin 差异  |    择机修复     |
-|  🟡 低  |  CLAUDE.md 章节编号  |    文档维护    |    择机修复     |
-|  🟡 低  | 前端层类型迁移未完成 |    类型项目    |     渐进式      |
+| 等级  |        风险项        |    涉及范围    |   修复紧急度    |
+| :---: | :------------------: | :------------: | :-------------: |
+| 🔴 高 |   apps:type 零测试   |    类型项目    | 立即（7 天内）  |
+| 🔴 高 |    API 测试无断言    | 108 个测试文件 | 短期（30 天内） |
+| 🔴 高 |   Turbo 仅 3 任务    |    构建性能    | 短期（30 天内） |
+| 🟠 中 | Nitro Alpha 版本锁定 |  全栈引擎依赖  |    跟踪关注     |
+| 🟠 中 |  Schema 迁移过渡态   |   双位置并存   | 短期（30 天内） |
+| 🟠 中 |  `as any` 类型逃逸   |   102 个文件   | 中期（90 天内） |
+| 🟠 中 |     mock 死代码      |   105 个文件   | 中期（90 天内） |
+| 🟠 中 |     CLI 命名混乱     |   63 个命令    | 中期（90 天内） |
+| 🟡 低 |   Vite 版本不一致    | 根/admin 差异  |    择机修复     |
+| 🟡 低 |  CLAUDE.md 章节编号  |    文档维护    |    择机修复     |
+| 🟡 低 | 前端层类型迁移未完成 |    类型项目    |     渐进式      |
 
-### 10.2 改进优先级路线图
+### 9.2 改进优先级路线图
 
 ```log
 ┌─────────────────────────────────────────────────────────────────┐
 │                    P0 立即行动 (7天内)                           │
 ├─────────────────────────────────────────────────────────────────┤
-│ 1. 实施 Nitro 认证中间件 (按 OpenSpec nitro-api-authentication) │
-│ 2. 为 apps:type 添加 Schema 验证测试（至少 core + community）    │
-│ 3. 修复 CLAUDE.md 章节编号重复                                   │
+│ 1. 为 apps:type 添加 Schema 验证测试（至少 core + community）    │
+│ 2. 修复 CLAUDE.md 章节编号重复                                   │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -444,7 +401,7 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 11. 项目优势总结
+## 10. 项目优势总结
 
 在识别风险的同时，也应公正地指出本项目的显著优势：
 
@@ -461,19 +418,19 @@ vite:build:prod, vite:build:prod:cloudflare, vite:build:prod:github, vite:build:
 
 ---
 
-## 12. 结论
+## 11. 结论
 
-01s-11comm 项目在**架构设计、规范体系和 AI 工程化协作**方面表现优秀，但存在 **必须立即修复的安全缺陷**（API 无认证）和 **需要持续改进的质量短板**（测试有效性、Turbo 配置、类型逃逸）。
+01s-11comm 项目在**架构设计、规范体系和 AI 工程化协作**方面表现优秀，但存在 **需要持续改进的质量短板**（测试有效性、Turbo 配置、类型逃逸）。
 
-**最紧迫的两件事：**
+**最紧迫的事项：**
 
-1. 🔴 落实 `nitro-api-authentication` OpenSpec 变更，实施认证中间件
-2. 🔴 为 `apps/type` 建立 Schema 验证测试基线
+1. 🔴 为 `apps/type` 建立 Schema 验证测试基线
+2. 🔴 补充 Turbo 任务定义，发挥 monorepo 缓存优势
 
-建议按本报告的 **P0-P3 优先级路线图** 逐步推进，在保持项目架构优势的同时，消除安全与质量隐患。
+建议按本报告的 **P0-P3 优先级路线图** 逐步推进，在保持项目架构优势的同时，消除质量隐患。
 
 ---
 
 _报告生成时间：2026-02-27_
-_分析范围：全项目 15 个维度，参考 21 个 Skills 文档 + 17 个归档变更 + 1 个活跃变更_
+_分析范围：全项目 14 个维度，参考 21 个 Skills 文档 + 17 个归档变更_
 _分析基础：2026-02-20 全栈项目风险分析报告 + 全面增补_
