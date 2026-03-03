@@ -51,13 +51,6 @@ export default defineConfig({
 	runtimeConfig: {
 		/** 数据库连接 URL — Nitro 会在运行时注入到 useRuntimeConfig().databaseUrl */
 		databaseUrl: getVercelEnv("DATABASE_URL") || process.env.DATABASE_URL || "",
-
-		/** Neon Auth 服务基础 URL */
-		neonAuthBaseUrl: getVercelEnv("NEON_AUTH_BASE_URL") || process.env.NEON_AUTH_BASE_URL || "",
-		/** Neon Auth Cookie 密钥（至少 32 字符） */
-		neonAuthCookieSecret: getVercelEnv("NEON_AUTH_COOKIE_SECRET") || process.env.NEON_AUTH_COOKIE_SECRET || "",
-		/** 前端基础 URL，用于 OAuth 回调 */
-		publicBaseUrl: process.env.PUBLIC_BASE_URL || "http://localhost:8080",
 	},
 
 	/**
@@ -136,15 +129,6 @@ export default defineConfig({
 				}),
 				...(getVercelEnv("DATABASE_URL_UNPOOLED") && {
 					comm_admin_11__DATABASE_URL_UNPOOLED: getVercelEnv("DATABASE_URL_UNPOOLED"),
-				}),
-				...(getVercelEnv("NEON_AUTH_BASE_URL") && {
-					comm_admin_11__NEON_AUTH_BASE_URL: getVercelEnv("NEON_AUTH_BASE_URL"),
-				}),
-				...(getVercelEnv("NEON_AUTH_COOKIE_SECRET") && {
-					comm_admin_11__NEON_AUTH_COOKIE_SECRET: getVercelEnv("NEON_AUTH_COOKIE_SECRET"),
-				}),
-				...(getVercelEnv("PUBLIC_BASE_URL") && {
-					comm_admin_11__PUBLIC_BASE_URL: getVercelEnv("PUBLIC_BASE_URL"),
 				}),
 				...(getVercelEnv("NEON_PROJECT_ID") && {
 					comm_admin_11__NEON_PROJECT_ID: getVercelEnv("NEON_PROJECT_ID"),
