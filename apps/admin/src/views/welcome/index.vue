@@ -9,12 +9,15 @@ import { ChartBar, ChartLine, ChartRound } from "./components/charts";
 import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { chartData, barChartData, progressData, latestNewsData } from "./data";
 import { getCenterCommonMenu } from "@/api/j1/home/development-center/development-center";
+import { useAuth } from "@/composables/use-auth";
 
 // 测试接口
 const { execute, data } = getCenterCommonMenu({});
 onMounted(async () => {
-	await execute();
-	console.log(" 查看返回结构： ", data.value.data);
+	if (isLoggedIn.value) {
+		await execute();
+		console.log(" 查看返回结构： ", data.value.data);
+	}
 });
 
 defineOptions({
@@ -22,6 +25,7 @@ defineOptions({
 });
 
 const { isDark } = useDark();
+const { isLoggedIn } = useAuth();
 
 let curWeek = ref(1); // 0上周、1本周
 const optionsBasis: Array<OptionsType> = [
@@ -36,6 +40,8 @@ const optionsBasis: Array<OptionsType> = [
 
 <template>
 	<div>
+		<!-- 未登录提示 -->
+		<el-alert v-if="!isLoggedIn" title="登录后查看更多数据" type="info" :closable="false" class="mb-4" show-icon />
 		<el-row :gutter="24" justify="space-around">
 			<re-col
 				v-for="(item, index) in chartData"

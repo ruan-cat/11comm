@@ -14,6 +14,12 @@ const PUBLIC_ROUTES = [
 	"/api/auth/me",
 	"/api/auth/oauth",
 	"/api/auth/callback",
+	"/api/auth/refresh",
+	"/api/auth/forgot-password",
+	"/api/auth/migrate",
+	// 开发测试用 API（无需认证）
+	/^\/api\/j1-/,
+	/^\/api\/dev-/,
 	// 通知公告
 	/^\/api\/.*\/notice\//,
 	// 公共数据
