@@ -41,21 +41,12 @@ export default defineConfig({
 	},
 
 	/**
-	 * 中间件配置
-	 * @description
-	 * Nitro v3 中间件，按文件名顺序执行（1.logger -> 2.auth -> 3.validate）
-	 */
-	middleware: {
-		"1.logger": "./server/middleware/1.logger",
-		"2.auth": "./server/middleware/2.auth",
-		"3.validate": "./server/middleware/3.validate",
-	},
-
-	/**
 	 * 运行时配置
 	 * @description
 	 * 在 Cloudflare Worker 环境中，环境变量只在请求处理时可用
 	 * 因此使用 runtimeConfig 让 Nitro 在运行时注入环境变量
+	 *
+	 * 注意：中间件应放在 server/middleware 目录中，Nitro 会自动加载
 	 */
 	runtimeConfig: {
 		/** 数据库连接 URL — Nitro 会在运行时注入到 useRuntimeConfig().databaseUrl */
