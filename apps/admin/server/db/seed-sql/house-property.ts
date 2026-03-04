@@ -7,6 +7,7 @@ import {
 	hpInvoiceTitles,
 	hpInvoices,
 	hpReserveVenues,
+	hpReserveVenueOrders,
 	hpSiteManagements,
 	type NewHpOwner as InsertHpOwner,
 	type NewHpOwnersCommittee as InsertHpOwnersCommittee,
@@ -16,6 +17,7 @@ import {
 	type NewHpInvoiceTitle as InsertHpInvoiceTitle,
 	type NewHpInvoice as InsertHpInvoice,
 	type NewHpReserveVenue as InsertHpReserveVenue,
+	type NewHpReserveVenueOrder as InsertHpReserveVenueOrder,
 	type NewHpSiteManagement as InsertHpSiteManagement,
 } from "@01s-11comm/type";
 import { mockHouseData } from "../../api/property-manage/house-property-manage/house/mock-data";
@@ -44,7 +46,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	console.log("正在生成 hp_owners SQL...");
 	const ownerNameToUuidMap = new Map<string, string>(); // Local map for Name -> UUID lookup
 
-	const ownerRecords: InsertHpOwner[] = mockOwnerData.map((item) => {
+	const ownerRecords: any[] = mockOwnerData.map((item) => {
 		// Check if we have an ID in mock data (e.g. `id`, `ownerId`).
 		// If not, use name.
 		const mockId = (item as any).id || (item as any).ownerId || item.name;
@@ -93,7 +95,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// 2. 生成 hp_site_managements (场地管理)
 	// ==========================================
 	console.log("正在生成 hp_site_managements SQL...");
-	const siteManagementRecords: InsertHpSiteManagement[] = mockSiteManagementData.map((item) => {
+	const siteManagementRecords: any[] = mockSiteManagementData.map((item) => {
 		const id = idMap.register("hp_site_managements", item.idNumber || item.id);
 		return {
 			id: id,
@@ -125,7 +127,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// ==========================================
 	console.log("正在生成 hp_reserve_venues SQL...");
 	// 根据场地管理数据生成场地数据
-	const venueRecords: InsertHpReserveVenue[] = mockSiteManagementData
+	const venueRecords: any[] = mockSiteManagementData
 		.filter((item) => item.status === "enabled" || item.status === "可预约")
 		.slice(0, 10)
 		.map((item, index) => {
@@ -173,7 +175,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// 4. 生成 hp_owners_committees (业委会)
 	// ==========================================
 	console.log("正在生成 hp_owners_committees SQL...");
-	const committeeRecords: InsertHpOwnersCommittee[] = mockOwnersCommitteeData.map((item) => {
+	const committeeRecords: any[] = mockOwnersCommitteeData.map((item) => {
 		// Use fullName as the identifier, with fallback to name alias
 		const committeeName = item.name || item.fullName;
 		const id = idMap.register("hp_owners_committees", committeeName);
@@ -212,7 +214,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// ==========================================
 	// Depends on owners
 	console.log("正在生成 hp_houses SQL...");
-	const houseRecords: InsertHpHouse[] = mockHouseData.map((item) => {
+	const houseRecords: any[] = mockHouseData.map((item) => {
 		const id = idMap.register("hp_houses", item.houseCode);
 		// Link owner - use ownerName alias or owner field
 		const ownerKey = item.ownerName || item.owner;
@@ -279,7 +281,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 		}
 	});
 
-	const memberRecords: InsertHpOwnerMember[] = mockOwnerMemberData
+	const memberRecords: any[] = mockOwnerMemberData
 		.map((item) => {
 			// Use phone alias or contact field
 			const phoneValue = item.phone || item.contact;
@@ -329,7 +331,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 				updateTime: new Date(),
 			};
 		})
-		.filter(Boolean) as InsertHpOwnerMember[];
+		.filter(Boolean) as any[];
 
 	if (memberRecords.length > 0) {
 		const query = db
@@ -348,7 +350,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// 7. 生成 hp_owner_accounts (业主账户)
 	// ==========================================
 	console.log("正在生成 hp_owner_accounts SQL...");
-	const accountRecords: InsertHpOwnerAccount[] = mockOwnerAccountData
+	const accountRecords: any[] = mockOwnerAccountData
 		.map((item) => {
 			const id = idMap.register("hp_owner_accounts", item.accountNo);
 			// Link to owner? Mock data has accountName (owner name).
@@ -369,7 +371,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 				updateTime: new Date(),
 			};
 		})
-		.filter(Boolean) as InsertHpOwnerAccount[];
+		.filter(Boolean) as any[];
 
 	if (accountRecords.length > 0) {
 		const query = db
@@ -388,7 +390,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// 8. 生成 hp_invoice_titles (发票抬头)
 	// ==========================================
 	console.log("正在生成 hp_invoice_titles SQL...");
-	const titleRecords: InsertHpInvoiceTitle[] = mockInvoiceTitleData
+	const titleRecords: any[] = mockInvoiceTitleData
 		.map((item) => {
 			const id = idMap.register("hp_invoice_titles", item.code); // Using code as unique identifier
 			const ownerName = item.ownerName;
@@ -409,7 +411,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
-		.filter(Boolean) as InsertHpInvoiceTitle[];
+		.filter(Boolean) as any[];
 
 	if (titleRecords.length > 0) {
 		const query = db
@@ -428,7 +430,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	// 9. 生成 hp_invoices (发票记录)
 	// ==========================================
 	console.log("正在生成 hp_invoices SQL...");
-	const invoiceRecords: InsertHpInvoice[] = mockInvoiceData
+	const invoiceRecords: any[] = mockInvoiceData
 		.map((item) => {
 			const id = idMap.register("hp_invoices", item.code);
 			const ownerName = item.ownerName;
@@ -452,7 +454,7 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 				updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
 			};
 		})
-		.filter(Boolean) as InsertHpInvoice[];
+		.filter(Boolean) as any[];
 
 	if (invoiceRecords.length > 0) {
 		const query = db
@@ -468,9 +470,80 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	}
 
 	// ==========================================
-	// 10. 跳过生成 hp_reserve_venue_orders (场馆预约订单) - 依赖Venues数据
+	// 10. 生成 hp_reserve_venue_orders (场馆预约订单)
 	// ==========================================
-	console.log("⏩ 跳过生成 hp_reserve_venue_orders SQL (依赖Venues数据)");
+	console.log("正在生成 hp_reserve_venue_orders SQL...");
+
+	const venueOrderRecords: any[] = [];
+
+	// 为每个场地生成 2-4 个预约订单
+	mockSiteManagementData
+		.filter((item) => item.status === "enabled" || item.status === "可预约")
+		.slice(0, 10)
+		.forEach((siteData, venueIndex) => {
+			const venueId = idMap.get("hp_reserve_venues", `VENUE-${venueIndex + 1}`);
+			if (!venueId) return;
+
+			const orderCount = (venueIndex % 3) + 2; // 2-4个订单
+
+			for (let i = 0; i < orderCount; i++) {
+				const orderId = idMap.register("hp_reserve_venue_orders", `${siteData.name}-order-${i + 1}`);
+
+				// 随机选择一个业主作为预约人
+				const ownerIndex = (venueIndex + i) % mockOwnerData.length;
+				const owner = mockOwnerData[ownerIndex];
+
+				// 生成预约时间（未来7天内）
+				const reservationDate = new Date();
+				reservationDate.setDate(reservationDate.getDate() + (i % 7) + 1);
+				reservationDate.setHours(9 + (i % 12), 0, 0, 0);
+
+				// 生成开始和结束时间
+				const startTime = new Date(reservationDate);
+				const endTime = new Date(reservationDate);
+				endTime.setHours(startTime.getHours() + 2); // 默认预约2小时
+
+				// 预约状态
+				const statuses = ["pending", "confirmed", "completed", "cancelled"];
+				const status = statuses[i % statuses.length];
+
+				venueOrderRecords.push({
+					id: orderId,
+					venueId: venueId,
+					booker: owner.name,
+					contactPhone: owner.phone || `138${String(ownerIndex).padStart(8, "0")}`,
+					timeSlot: `${startTime.getHours()}:00-${endTime.getHours()}:00`,
+					status: status,
+					remark:
+						status === "cancelled"
+							? "临时有事取消"
+							: status === "completed"
+								? "已完成使用"
+								: status === "confirmed"
+									? "已确认预约"
+									: "待确认",
+					reservationTime: reservationDate,
+					startTime: startTime,
+					endTime: endTime,
+					numberOfUsers: (i % 10) + 1, // 1-10人
+					createTime: new Date(),
+					updateTime: new Date(),
+				});
+			}
+		});
+
+	if (venueOrderRecords.length > 0) {
+		const query = db
+			.insert(hpReserveVenueOrders as any)
+			.values(venueOrderRecords)
+			.toSQL();
+		statements.push({
+			table: "hp_reserve_venue_orders",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: venueOrderRecords.length,
+		});
+		console.log(`✅ 已生成 hp_reserve_venue_orders SQL，共 ${venueOrderRecords.length} 条记录`);
+	}
 
 	return statements;
 }

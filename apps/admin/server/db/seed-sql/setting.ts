@@ -12,6 +12,8 @@ import {
 	smSystemConfigs,
 	smRegisterProtocols,
 	smInitializeCells,
+	smChangePasswordRecords,
+	smCommunityConfigurations,
 	type NewSmOrganization as InsertSmOrganization,
 	type NewSmRole as InsertSmRole,
 	type NewSmStaff as InsertSmStaff,
@@ -25,6 +27,8 @@ import {
 	type NewSmSystemConfig as InsertSmSystemConfig,
 	type NewSmRegisterProtocol as InsertSmRegisterProtocol,
 	type NewSmInitializeCell as InsertSmInitializeCell,
+	type NewSmChangePasswordRecord as InsertSmChangePasswordRecord,
+	type NewSmCommunityConfiguration as InsertSmCommunityConfiguration,
 } from "@01s-11comm/type";
 import {
 	mockOrganizationTreeData,
@@ -85,7 +89,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 1. 生成 sm_organizations (组织架构)
 	// ==========================================
 	console.log("正在生成 sm_organizations SQL...");
-	const orgRecords: InsertSmOrganization[] = [];
+	const orgRecords: any[] = [];
 	processOrgTree(mockOrganizationTreeData, idMap, orgRecords);
 
 	if (orgRecords.length > 0) {
@@ -105,7 +109,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 2. 生成 sm_roles (角色)
 	// ==========================================
 	console.log("正在生成 sm_roles SQL...");
-	const roleRecords: InsertSmRole[] = mockRolePermissionData.map((item) => {
+	const roleRecords: any[] = mockRolePermissionData.map((item) => {
 		const id = idMap.register("sm_roles", item.id);
 		return {
 			id: id,
@@ -135,7 +139,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 3. 生成 sm_staff (员工)
 	// ==========================================
 	console.log("正在生成 sm_staff SQL...");
-	const staffRecords: InsertSmStaff[] = mockEmployeeData.map((item) => {
+	const staffRecords: any[] = mockEmployeeData.map((item) => {
 		const id = idMap.register("sm_staff", item.id);
 		const orgUuid = idMap.get("sm_organizations", item.orgId);
 
@@ -176,7 +180,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 4. 生成 sm_data_permissions (数据权限)
 	// ==========================================
 	console.log("正在生成 sm_data_permissions SQL...");
-	const dataPermRecords: InsertSmDataPermission[] = mockDataPermissionData
+	const dataPermRecords: any[] = mockDataPermissionData
 		.map((item, index) => {
 			const id = idMap.register("sm_data_permissions", item.id);
 
@@ -203,7 +207,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 				updateTime: new Date(),
 			};
 		})
-		.filter((x) => x !== null) as InsertSmDataPermission[];
+		.filter((x) => x !== null) as any[];
 
 	if (dataPermRecords.length > 0) {
 		const query = db
@@ -244,7 +248,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 		{ name: "导出数据", code: "data:export", type: "button" },
 		{ name: "导入数据", code: "data:import", type: "button" },
 	];
-	const permissionRecords: InsertSmPermission[] = permissionList.map((item) => {
+	const permissionRecords: any[] = permissionList.map((item) => {
 		const id = idMap.register("sm_permissions", item.code);
 		return {
 			id,
@@ -366,7 +370,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 5. 生成 sm_shifts (班次)
 	// ==========================================
 	console.log("正在生成 sm_shifts SQL...");
-	const shiftRecords: InsertSmShift[] = mockShiftSettingData.map((item) => {
+	const shiftRecords: any[] = mockShiftSettingData.map((item) => {
 		const id = idMap.register("sm_shifts", item.id);
 		return {
 			id: id,
@@ -396,7 +400,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 6. 生成 sm_scheduling_settings (排班规则)
 	// ==========================================
 	console.log("正在生成 sm_scheduling_settings SQL...");
-	const schedulingRecords: InsertSmSchedulingSetting[] = mockSchedulingSettingData.map((item) => {
+	const schedulingRecords: any[] = mockSchedulingSettingData.map((item) => {
 		const id = idMap.register("sm_scheduling_settings", item.id);
 		// Link to orgId if available, otherwise null
 		const orgUuid = item.orgId ? idMap.get("sm_organizations", item.orgId) : null;
@@ -428,7 +432,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 7. 生成 sm_working_schedules (排班记录)
 	// ==========================================
 	console.log("正在生成 sm_working_schedules SQL...");
-	const workingRecords: InsertSmWorkingSchedule[] = mockWorkingScheduleData
+	const workingRecords: any[] = mockWorkingScheduleData
 		.map((item) => {
 			const id = idMap.register("sm_working_schedules", item.id);
 			const staffIdVal = item.staffId ? idMap.get("sm_staff", item.staffId) : null;
@@ -444,7 +448,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 				scheduleDate: item.workDate ? String(item.workDate) : new Date().toISOString().split("T")[0],
 			};
 		})
-		.filter((x) => x !== null) as InsertSmWorkingSchedule[];
+		.filter((x) => x !== null) as any[];
 
 	if (workingRecords.length > 0) {
 		const query = db
@@ -463,7 +467,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 8. 生成 sm_system_configs (系统配置)
 	// ==========================================
 	console.log("正在生成 sm_system_configs SQL...");
-	const configRecords: InsertSmSystemConfig[] = mockSystemConfigData.map((item) => {
+	const configRecords: any[] = mockSystemConfigData.map((item) => {
 		const id = idMap.register("sm_system_configs", item.id ?? item.configId);
 		return {
 			id: id,
@@ -508,7 +512,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 9. 生成 sm_register_protocols (注册协议)
 	// ==========================================
 	console.log("正在生成 sm_register_protocols SQL...");
-	const protocolRecords: InsertSmRegisterProtocol[] = mockRegisterProtocolData.map((item) => {
+	const protocolRecords: any[] = mockRegisterProtocolData.map((item) => {
 		const id = idMap.register("sm_register_protocols", item.id);
 		return {
 			id: id,
@@ -536,7 +540,7 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	// 10. 生成 sm_initialize_cells (初始化单元)
 	// ==========================================
 	console.log("正在生成 sm_initialize_cells SQL...");
-	const cellRecords: InsertSmInitializeCell[] = mockInitializeCommunityData.map((item) => {
+	const cellRecords: any[] = mockInitializeCommunityData.map((item) => {
 		const id = idMap.register("sm_initialize_cells", item.id);
 		return {
 			id: id,
@@ -559,6 +563,213 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 			recordCount: cellRecords.length,
 		});
 		console.log(`✅ 已生成 sm_initialize_cells SQL，共 ${cellRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 11. 生成 sm_change_password_records (修改密码记录)
+	// ==========================================
+	console.log("正在生成 sm_change_password_records SQL...");
+	const passwordRecordData: any[] = [];
+
+	// 为每个员工生成 1-3 条密码修改记录
+	mockEmployeeData.forEach((employee, index) => {
+		const recordCount = (index % 3) + 1; // 1-3条记录
+		const orgName = mockOrganizationTreeData.find((org) => org.id === employee.orgId)?.name || "未知部门";
+
+		for (let i = 0; i < recordCount; i++) {
+			const recordId = idMap.register("sm_change_password_records", `${employee.id}-pwd-${i + 1}`);
+			const daysAgo = (i + 1) * 30 + index; // 每条记录间隔约30天
+			const changeDate = new Date();
+			changeDate.setDate(changeDate.getDate() - daysAgo);
+
+			passwordRecordData.push({
+				id: recordId,
+				username: employee.id,
+				realName: employee.name,
+				department: orgName,
+				changeTime: changeDate.toISOString(),
+				changeIp: `192.168.1.${(index % 254) + 1}`,
+				changeType: i === 0 ? "首次设置" : index % 2 === 0 ? "主动修改" : "强制修改",
+				operator: employee.name,
+				status: "success",
+				remark: i === 0 ? "首次登录设置密码" : index % 3 === 0 ? "定期修改密码" : "密码到期修改",
+				createTime: changeDate,
+				updateTime: changeDate,
+			});
+		}
+	});
+
+	if (passwordRecordData.length > 0) {
+		const query = db
+			.insert(smChangePasswordRecords as any)
+			.values(passwordRecordData)
+			.toSQL();
+		statements.push({
+			table: "sm_change_password_records",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: passwordRecordData.length,
+		});
+		console.log(`✅ 已生成 sm_change_password_records SQL，共 ${passwordRecordData.length} 条记录`);
+	}
+
+	// ==========================================
+	// 12. 生成 sm_community_configurations (社区配置)
+	// ==========================================
+	console.log("正在生成 sm_community_configurations SQL...");
+	const defaultCommunityId = idMap.get("cm_communities", "COMM001") || generateUuid("cm_communities", "COMM001");
+
+	const communityConfigData = [
+		{
+			csId: "CS001",
+			name: "阳光花园",
+			settingName: "物业费标准",
+			settingValue: "2.5元/平米/月",
+			settingType: "费用设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS002",
+			name: "阳光花园",
+			settingName: "停车费标准",
+			settingValue: "300元/月",
+			settingType: "费用设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS003",
+			name: "阳光花园",
+			settingName: "水费单价",
+			settingValue: "5.5元/吨",
+			settingType: "费用设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS004",
+			name: "阳光花园",
+			settingName: "电费单价",
+			settingValue: "0.6元/度",
+			settingType: "费用设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS005",
+			name: "阳光花园",
+			settingName: "门禁开放时间",
+			settingValue: "06:00-22:00",
+			settingType: "安全设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS006",
+			name: "阳光花园",
+			settingName: "访客登记要求",
+			settingValue: "必须登记",
+			settingType: "安全设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS007",
+			name: "阳光花园",
+			settingName: "投诉处理时限",
+			settingValue: "24小时",
+			settingType: "服务设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS008",
+			name: "阳光花园",
+			settingName: "报修响应时限",
+			settingValue: "2小时",
+			settingType: "服务设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS009",
+			name: "阳光花园",
+			settingName: "公共区域清洁频率",
+			settingValue: "每日2次",
+			settingType: "服务设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS010",
+			name: "阳光花园",
+			settingName: "绿化养护周期",
+			settingValue: "每周1次",
+			settingType: "服务设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS011",
+			name: "阳光花园",
+			settingName: "电梯维保周期",
+			settingValue: "每月1次",
+			settingType: "设备设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS012",
+			name: "阳光花园",
+			settingName: "消防检查周期",
+			settingValue: "每季度1次",
+			settingType: "安全设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS013",
+			name: "阳光花园",
+			settingName: "业主满意度调查",
+			settingValue: "每半年1次",
+			settingType: "服务设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS014",
+			name: "阳光花园",
+			settingName: "公共设施预约",
+			settingValue: "提前3天",
+			settingType: "服务设置",
+			statusCd: "1",
+		},
+		{
+			csId: "CS015",
+			name: "阳光花园",
+			settingName: "装修管理费",
+			settingValue: "500元/户",
+			settingType: "费用设置",
+			statusCd: "1",
+		},
+	];
+
+	const communityConfigRecords: any[] = communityConfigData.map((item) => {
+		const id = idMap.register("sm_community_configurations", item.csId);
+		return {
+			id,
+			csId: item.csId,
+			communityId: defaultCommunityId,
+			communityName: item.name,
+			settingName: item.settingName,
+			settingValue: item.settingValue,
+			settingType: item.settingType,
+			statusCd: item.statusCd,
+			remark: `${item.name}的${item.settingName}配置`,
+			createTime: new Date().toISOString(),
+			updateTime: new Date().toISOString(),
+			operator: "系统管理员",
+		};
+	});
+
+	if (communityConfigRecords.length > 0) {
+		const query = db
+			.insert(smCommunityConfigurations as any)
+			.values(communityConfigRecords)
+			.toSQL();
+		statements.push({
+			table: "sm_community_configurations",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: communityConfigRecords.length,
+		});
+		console.log(`✅ 已生成 sm_community_configurations SQL，共 ${communityConfigRecords.length} 条记录`);
 	}
 
 	return statements;

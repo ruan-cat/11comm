@@ -14,6 +14,7 @@ import {
 	exCancelFees,
 	exOverdueReminders,
 	exReprintVouchers,
+	exExpenseSummaryTables,
 	type NewExPayment as InsertExPayment,
 	type NewExHouseCharge as InsertExHouseCharge,
 	type NewExVehicleCharge as InsertExVehicleCharge,
@@ -319,6 +320,366 @@ export async function generateExpenseSql(idMap: IdMapRegistry): Promise<SqlState
 			recordCount: paymentRecords.length,
 		});
 		console.log(`✅ 已生成 ex_payments SQL，共 ${paymentRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 6. 生成 ex_discount_types (折扣类型)
+	// ==========================================
+	console.log("正在生成 ex_discount_types SQL...");
+	const discountTypeRecords = [
+		{ name: "物业费折扣", type: "percentage", value: "10.00" },
+		{ name: "停车费折扣", type: "percentage", value: "15.00" },
+		{ name: "水电费折扣", type: "fixed", value: "50.00" },
+		{ name: "新业主优惠", type: "percentage", value: "20.00" },
+		{ name: "长期租户优惠", type: "percentage", value: "12.00" },
+		{ name: "一次性减免", type: "fixed", value: "100.00" },
+		{ name: "季度优惠", type: "percentage", value: "8.00" },
+		{ name: "年度优惠", type: "percentage", value: "18.00" },
+		{ name: "节日优惠", type: "fixed", value: "80.00" },
+		{ name: "推荐优惠", type: "percentage", value: "5.00" },
+	].map((item) => {
+		const id = idMap.register("ex_discount_types", item.name);
+		return {
+			id,
+			discountName: item.name,
+			discountType: item.type as "percentage" | "fixed" | "period",
+			discountValue: item.value,
+			status: "enabled" as const,
+			remark: `${item.name}说明`,
+			createTime: new Date(),
+			updateTime: new Date(),
+		};
+	});
+
+	if (discountTypeRecords.length > 0) {
+		const query = db
+			.insert(exDiscountTypes as any)
+			.values(discountTypeRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_discount_types",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: discountTypeRecords.length,
+		});
+		console.log(`✅ 已生成 ex_discount_types SQL，共 ${discountTypeRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 7. 生成 ex_discount_settings (折扣设置)
+	// ==========================================
+	console.log("正在生成 ex_discount_settings SQL...");
+	const discountSettingRecords = discountTypeRecords.slice(0, 12).map((_, index) => {
+		const id = idMap.register("ex_discount_settings", `SETTING-${index + 1}`);
+		const discountTypeId = discountTypeRecords[index % discountTypeRecords.length].id;
+		const items = ["物业费", "停车费", "水费", "电费", "燃气费"];
+		const now = new Date();
+		const validityStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+		const validityEnd = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+
+		return {
+			id,
+			discountTypeId,
+			applicableItem: items[index % items.length],
+			discountType: index % 2 === 0 ? "percentage" : "fixed",
+			validityStart: validityStart.toISOString().split("T")[0],
+			validityEnd: validityEnd.toISOString().split("T")[0],
+			validityPeriod: "3个月",
+			conditions: `适用于${items[index % items.length]}的优惠条件`,
+			status: index % 5 === 0 ? ("disabled" as const) : ("enabled" as const),
+			remark: `折扣设置 ${index + 1}`,
+			createTime: new Date(),
+			updateTime: new Date(),
+		};
+	});
+
+	if (discountSettingRecords.length > 0) {
+		const query = db
+			.insert(exDiscountSettings as any)
+			.values(discountSettingRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_discount_settings",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: discountSettingRecords.length,
+		});
+		console.log(`✅ 已生成 ex_discount_settings SQL，共 ${discountSettingRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 8. 生成 ex_discount_applications (折扣申请)
+	// ==========================================
+	console.log("正在生成 ex_discount_applications SQL...");
+	const discountApplicationRecords = discountSettingRecords.slice(0, 15).map((_, index) => {
+		const id = idMap.register("ex_discount_applications", `APP-${index + 1}`);
+		const discountSettingId = discountSettingRecords[index % discountSettingRecords.length].id;
+		const applicants = ["张三", "李四", "王五", "赵六", "钱七"];
+		const types = ["物业费优惠", "停车费优惠", "水电费优惠"];
+		const statuses: Array<"pending" | "approved" | "rejected"> = ["pending", "approved", "rejected"];
+		const auditStatus = statuses[index % statuses.length];
+
+		return {
+			id,
+			discountSettingId,
+			applicant: applicants[index % applicants.length],
+			applicationType: types[index % types.length],
+			applicationReason: `申请${types[index % types.length]}的原因说明`,
+			applicationAmount: (Math.random() * 200 + 50).toFixed(2),
+			auditStatus,
+			auditor: auditStatus !== "pending" ? "审核员" : null,
+			auditTime: auditStatus !== "pending" ? new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000) : null,
+			auditOpinion: auditStatus !== "pending" ? `审核意见：${auditStatus === "approved" ? "同意" : "拒绝"}` : null,
+			remark: `折扣申请 ${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 20 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (discountApplicationRecords.length > 0) {
+		const query = db
+			.insert(exDiscountApplications as any)
+			.values(discountApplicationRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_discount_applications",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: discountApplicationRecords.length,
+		});
+		console.log(`✅ 已生成 ex_discount_applications SQL，共 ${discountApplicationRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 9. 生成 ex_payment_reviews (支付审核)
+	// ==========================================
+	console.log("正在生成 ex_payment_reviews SQL...");
+	const paymentReviewRecords = paymentRecords.slice(0, 10).map((payment, index) => {
+		const id = idMap.register("ex_payment_reviews", `REVIEW-${index + 1}`);
+		const reviewResults: Array<"pending" | "approved" | "rejected"> = ["pending", "approved", "rejected"];
+		const reviewResult = reviewResults[index % reviewResults.length];
+
+		return {
+			id,
+			paymentId: payment.id,
+			reviewer: reviewResult !== "pending" ? "审核员" : null,
+			reviewOpinion: reviewResult !== "pending" ? `审核意见：${reviewResult === "approved" ? "通过" : "不通过"}` : null,
+			reviewResult,
+			reviewTime: reviewResult !== "pending" ? new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000) : null,
+			remark: `支付审核 ${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (paymentReviewRecords.length > 0) {
+		const query = db
+			.insert(exPaymentReviews as any)
+			.values(paymentReviewRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_payment_reviews",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: paymentReviewRecords.length,
+		});
+		console.log(`✅ 已生成 ex_payment_reviews SQL，共 ${paymentReviewRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 10. 生成 ex_refund_reviews (退款审核)
+	// ==========================================
+	console.log("正在生成 ex_refund_reviews SQL...");
+	const refundReviewRecords = chargeIds.slice(0, 12).map((chargeId, index) => {
+		const id = idMap.register("ex_refund_reviews", `REFUND-${index + 1}`);
+		const statuses: Array<"pending" | "approved" | "rejected" | "refunded"> = [
+			"pending",
+			"approved",
+			"rejected",
+			"refunded",
+		];
+		const status = statuses[index % statuses.length];
+		const applicants = ["张三", "李四", "王五", "赵六"];
+
+		return {
+			id,
+			chargeId,
+			chargeType: index < houseChargeIds.length ? "house" : "vehicle",
+			refundReason: `退款原因说明 ${index + 1}`,
+			refundAmount: (Math.random() * 300 + 100).toFixed(2),
+			applyTime: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
+			applicant: applicants[index % applicants.length],
+			status,
+			reviewer: status !== "pending" ? "审核员" : null,
+			reviewTime: status !== "pending" ? new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000) : null,
+			reviewOpinion: status !== "pending" ? `审核意见：${status}` : null,
+			remark: `退款审核 ${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 20 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (refundReviewRecords.length > 0) {
+		const query = db
+			.insert(exRefundReviews as any)
+			.values(refundReviewRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_refund_reviews",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: refundReviewRecords.length,
+		});
+		console.log(`✅ 已生成 ex_refund_reviews SQL，共 ${refundReviewRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 11. 生成 ex_cancel_fees (取消费用)
+	// ==========================================
+	console.log("正在生成 ex_cancel_fees SQL...");
+	const cancelFeeRecords = chargeIds.slice(0, 10).map((chargeId, index) => {
+		const id = idMap.register("ex_cancel_fees", `CANCEL-${index + 1}`);
+		const auditStatuses: Array<"pending" | "approved" | "rejected"> = ["pending", "approved", "rejected"];
+		const auditStatus = auditStatuses[index % auditStatuses.length];
+		const operators = ["操作员A", "操作员B", "操作员C"];
+
+		return {
+			id,
+			chargeId,
+			chargeType: index < houseChargeIds.length ? "house" : "vehicle",
+			cancelAmount: (Math.random() * 200 + 50).toFixed(2),
+			cancelReason: `核销原因说明 ${index + 1}`,
+			cancelDate: new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+			operator: operators[index % operators.length],
+			auditStatus,
+			auditor: auditStatus !== "pending" ? "审核员" : null,
+			auditTime: auditStatus !== "pending" ? new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000) : null,
+			remark: `费用核销 ${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (cancelFeeRecords.length > 0) {
+		const query = db
+			.insert(exCancelFees as any)
+			.values(cancelFeeRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_cancel_fees",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: cancelFeeRecords.length,
+		});
+		console.log(`✅ 已生成 ex_cancel_fees SQL，共 ${cancelFeeRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 12. 生成 ex_overdue_reminders (逾期提醒)
+	// ==========================================
+	console.log("正在生成 ex_overdue_reminders SQL...");
+	const overdueReminderRecords = chargeIds.slice(0, 15).map((chargeId, index) => {
+		const id = idMap.register("ex_overdue_reminders", `REMINDER-${index + 1}`);
+		const methods = ["短信", "电话", "邮件", "上门"];
+		const results = ["已联系", "未接通", "已承诺缴费", "拒绝缴费"];
+		const reminderNames = ["催缴员A", "催缴员B", "催缴员C"];
+
+		return {
+			id,
+			chargeId,
+			chargeType: index < houseChargeIds.length ? "house" : "vehicle",
+			reminderMethod: methods[index % methods.length],
+			reminderTime: new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000),
+			reminderResult: results[index % results.length],
+			reminderId: generateUuid("ex_overdue_reminders", `REMINDER-USER-${index + 1}`),
+			reminderName: reminderNames[index % reminderNames.length],
+			contactPhone: `138${Math.floor(Math.random() * 100000000)
+				.toString()
+				.padStart(8, "0")}`,
+			remark: `逾期催缴 ${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (overdueReminderRecords.length > 0) {
+		const query = db
+			.insert(exOverdueReminders as any)
+			.values(overdueReminderRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_overdue_reminders",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: overdueReminderRecords.length,
+		});
+		console.log(`✅ 已生成 ex_overdue_reminders SQL，共 ${overdueReminderRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 13. 生成 ex_reprint_vouchers (重打凭证)
+	// ==========================================
+	console.log("正在生成 ex_reprint_vouchers SQL...");
+	const reprintVoucherRecords = paymentRecords.slice(0, 8).map((payment, index) => {
+		const id = idMap.register("ex_reprint_vouchers", `REPRINT-${index + 1}`);
+		const operators = ["操作员A", "操作员B", "操作员C"];
+
+		return {
+			id,
+			paymentId: payment.id,
+			originalVoucherNo: `VO${Date.now() - index * 1000}`,
+			newVoucherNo: `VO${Date.now() + index * 1000}`,
+			reprintReason: `重打原因说明 ${index + 1}`,
+			reprintTime: new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000),
+			operator: operators[index % operators.length],
+			remark: `凭证重打 ${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (reprintVoucherRecords.length > 0) {
+		const query = db
+			.insert(exReprintVouchers as any)
+			.values(reprintVoucherRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_reprint_vouchers",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: reprintVoucherRecords.length,
+		});
+		console.log(`✅ 已生成 ex_reprint_vouchers SQL，共 ${reprintVoucherRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 14. 生成 ex_expense_summary_tables (费用汇总表)
+	// ==========================================
+	console.log("正在生成 ex_expense_summary_tables SQL...");
+	const expenseSummaryRecords = itemRecords.slice(0, 12).map((item, index) => {
+		const id = idMap.register("ex_expense_summary_tables", `SUMMARY-${index + 1}`);
+		const now = new Date();
+		const month = now.getMonth() - (index % 6);
+		const year = now.getFullYear() - Math.floor(index / 12);
+		const time = `${year}-${String(month + 1).padStart(2, "0")}`;
+
+		return {
+			id,
+			time,
+			expenseItemId: item.id,
+			expenseItemName: item.itemName,
+			receivableAmount: (Math.random() * 50000 + 10000).toFixed(2),
+			actualAmount: (Math.random() * 45000 + 8000).toFixed(2),
+			status: index % 4 === 0 ? ("disabled" as const) : ("enabled" as const),
+			remark: `${time} ${item.itemName}汇总`,
+			createTime: new Date(year, month, 1),
+			updateTime: new Date(),
+		};
+	});
+
+	if (expenseSummaryRecords.length > 0) {
+		const query = db
+			.insert(exExpenseSummaryTables as any)
+			.values(expenseSummaryRecords)
+			.toSQL();
+		statements.push({
+			table: "ex_expense_summary_tables",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: expenseSummaryRecords.length,
+		});
+		console.log(`✅ 已生成 ex_expense_summary_tables SQL，共 ${expenseSummaryRecords.length} 条记录`);
 	}
 
 	return statements;
