@@ -4,11 +4,13 @@ import {
 	cmHouseDecorations,
 	cmPropertyRegisters,
 	cmBuildingStructures,
+	cmHandingBusiness,
 	type NewCmCommunity as InsertCmCommunity,
 	type NewCmNotice as InsertCmNotice,
 	type NewCmHouseDecoration as InsertCmHouseDecoration,
 	type NewCmPropertyRegister as InsertCmPropertyRegister,
 	type NewCmBuildingStructure as InsertCmBuildingStructure,
+	type NewCmHandingBusiness as InsertCmHandingBusiness,
 } from "@01s-11comm/type";
 import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
 import { mockNoticeData } from "../../api/property-manage/community-manage/notice/mock-data";
@@ -67,7 +69,10 @@ export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (communityRecords.length > 0) {
-		const query = db.insert(cmCommunities).values(communityRecords).toSQL();
+		const query = db
+			.insert(cmCommunities as any)
+			.values(communityRecords)
+			.toSQL();
 		statements.push({
 			table: "cm_communities",
 			sql: toFullSql(query.sql, query.params),
@@ -104,7 +109,10 @@ export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (noticeRecords.length > 0) {
-		const query = db.insert(cmNotices).values(noticeRecords).toSQL();
+		const query = db
+			.insert(cmNotices as any)
+			.values(noticeRecords)
+			.toSQL();
 		statements.push({
 			table: "cm_notices",
 			sql: toFullSql(query.sql, query.params),
@@ -116,8 +124,39 @@ export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlSta
 	// ==========================================
 	// 3. 生成 cm_handing_business (业务受理)
 	// ==========================================
-	// NOTE: Mock data for handing-business contains "Fees" data, not business requests. Skipping.
-	console.log("⏩ 跳过生成 cm_handing_business SQL (Mock数据类型不匹配)");
+	console.log("正在生成 cm_handing_business SQL...");
+	const businessTypes = ["开户", "更名", "过户", "退户", "挂失", "咨询", "投诉", "建议"];
+	const statuses = ["待缴费", "已缴费", "已取消", "处理中", "已完成"];
+	const applicants = ["张三", "李四", "王五", "赵六", "钱七", "孙八", "周九", "吴十"];
+
+	const handingBusinessRecords: InsertCmHandingBusiness[] = Array.from({ length: 20 }, (_, index) => {
+		const id = idMap.register("cm_handing_business", `BIZ-${index + 1}`);
+		const status = statuses[Math.floor(Math.random() * statuses.length)];
+		return {
+			id,
+			businessType: businessTypes[Math.floor(Math.random() * businessTypes.length)],
+			applicant: applicants[Math.floor(Math.random() * applicants.length)],
+			contactPhone: `138${String(Math.floor(Math.random() * 100000000)).padStart(8, "0")}`,
+			status,
+			handleTime: status === "已完成" || status === "已缴费" ? new Date() : null,
+			remark: `业务办理备注${index + 1}`,
+			createTime: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000),
+			updateTime: new Date(),
+		};
+	});
+
+	if (handingBusinessRecords.length > 0) {
+		const query = db
+			.insert(cmHandingBusiness as any)
+			.values(handingBusinessRecords)
+			.toSQL();
+		statements.push({
+			table: "cm_handing_business",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: handingBusinessRecords.length,
+		});
+		console.log(`✅ 已生成 cm_handing_business SQL，共 ${handingBusinessRecords.length} 条记录`);
+	}
 
 	// ==========================================
 	// 4. 生成 cm_house_decorations (装修登记)
@@ -145,7 +184,10 @@ export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (decorationRecords.length > 0) {
-		const query = db.insert(cmHouseDecorations).values(decorationRecords).toSQL();
+		const query = db
+			.insert(cmHouseDecorations as any)
+			.values(decorationRecords)
+			.toSQL();
 		statements.push({
 			table: "cm_house_decorations",
 			sql: toFullSql(query.sql, query.params),
@@ -189,7 +231,10 @@ export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (registerRecords.length > 0) {
-		const query = db.insert(cmPropertyRegisters).values(registerRecords).toSQL();
+		const query = db
+			.insert(cmPropertyRegisters as any)
+			.values(registerRecords)
+			.toSQL();
 		statements.push({
 			table: "cm_property_registers",
 			sql: toFullSql(query.sql, query.params),
@@ -219,7 +264,10 @@ export async function generateCommunitySql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (buildingRecords.length > 0) {
-		const query = db.insert(cmBuildingStructures).values(buildingRecords).toSQL();
+		const query = db
+			.insert(cmBuildingStructures as any)
+			.values(buildingRecords)
+			.toSQL();
 		statements.push({
 			table: "cm_building_structures",
 			sql: toFullSql(query.sql, query.params),

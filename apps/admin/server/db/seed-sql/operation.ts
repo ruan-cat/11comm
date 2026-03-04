@@ -1,8 +1,18 @@
-import { opMerchants, opPropertyCompanies, opCommunityInfo } from "@01s-11comm/type";
+import {
+	opMerchants,
+	opPropertyCompanies,
+	opCommunityInfo,
+	opCommunityConfigs,
+	opRegisterProtocols,
+	type NewOpCommunityConfig,
+	type NewOpRegisterProtocol,
+} from "@01s-11comm/type";
 
 import { mockPropertyCompanyData } from "../../api/operation-team/data-manage/property-company/mock-data";
 import { mockMerchantInfoData } from "../../api/operation-team/merchant-manage/merchant-info/mock-data";
 import { mockCommunityInformationData } from "../../api/operation-team/data-manage/community-information/mock-data";
+import { mockCommunityConfigurationData as mockOpCommunityConfigData } from "../../api/operation-team/system-manage/community-configuration/mock-data";
+import { mockRegisterProtocolData as mockOpRegisterProtocolData } from "../../api/operation-team/system-manage/register-protocol/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
 import { getDb } from "../index";
@@ -35,7 +45,10 @@ export async function generateOperationSql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (companyRecords.length > 0) {
-		const query = db.insert(opPropertyCompanies).values(companyRecords).toSQL();
+		const query = db
+			.insert(opPropertyCompanies as any)
+			.values(companyRecords)
+			.toSQL();
 		statements.push({
 			table: "op_property_companies",
 			sql: toFullSql(query.sql, query.params),
@@ -65,7 +78,10 @@ export async function generateOperationSql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (merchantRecords.length > 0) {
-		const query = db.insert(opMerchants).values(merchantRecords).toSQL();
+		const query = db
+			.insert(opMerchants as any)
+			.values(merchantRecords)
+			.toSQL();
 		statements.push({
 			table: "op_merchants",
 			sql: toFullSql(query.sql, query.params),
@@ -95,12 +111,77 @@ export async function generateOperationSql(idMap: IdMapRegistry): Promise<SqlSta
 	});
 
 	if (infoRecords.length > 0) {
-		const query = db.insert(opCommunityInfo).values(infoRecords).toSQL();
+		const query = db
+			.insert(opCommunityInfo as any)
+			.values(infoRecords)
+			.toSQL();
 		statements.push({
 			table: "op_community_info",
 			sql: toFullSql(query.sql, query.params),
 			recordCount: infoRecords.length,
 		});
+	}
+
+	// ==========================================
+	// 4. 生成 op_community_configs (社区配置)
+	// ==========================================
+	console.log("正在生成 op_community_configs SQL...");
+	const communityConfigRecords: NewOpCommunityConfig[] = mockOpCommunityConfigData.map((item) => {
+		const id = idMap.register("op_community_configs", item.csId);
+		const communityUuid = idMap.get("cm_communities", item.communityId);
+		return {
+			id,
+			communityId: communityUuid,
+			configType: item.settingType,
+			configKey: item.settingName,
+			configValue: item.settingValue,
+			configGroup: item.settingType,
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: item.updateTime ? new Date(item.updateTime) : new Date(),
+		};
+	});
+
+	if (communityConfigRecords.length > 0) {
+		const query = db
+			.insert(opCommunityConfigs as any)
+			.values(communityConfigRecords)
+			.toSQL();
+		statements.push({
+			table: "op_community_configs",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: communityConfigRecords.length,
+		});
+		console.log(`✅ 已生成 op_community_configs SQL，共 ${communityConfigRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 5. 生成 op_register_protocols (注册协议)
+	// ==========================================
+	console.log("正在生成 op_register_protocols SQL...");
+	const protocolRecords: NewOpRegisterProtocol[] = mockOpRegisterProtocolData.map((item) => {
+		const id = idMap.register("op_register_protocols", item.id);
+		return {
+			id,
+			protocolType: "register",
+			protocolTitle: item.title,
+			protocolContent: item.content,
+			isRequired: true,
+			createTime: new Date(),
+			updateTime: new Date(),
+		};
+	});
+
+	if (protocolRecords.length > 0) {
+		const query = db
+			.insert(opRegisterProtocols as any)
+			.values(protocolRecords)
+			.toSQL();
+		statements.push({
+			table: "op_register_protocols",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: protocolRecords.length,
+		});
+		console.log(`✅ 已生成 op_register_protocols SQL，共 ${protocolRecords.length} 条记录`);
 	}
 
 	return statements;

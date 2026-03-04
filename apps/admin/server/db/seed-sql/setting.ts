@@ -2,6 +2,9 @@ import {
 	smOrganizations,
 	smStaff,
 	smRoles,
+	smPermissions,
+	smRolePermissions,
+	smStaffRoles,
 	smDataPermissions,
 	smShifts,
 	smSchedulingSettings,
@@ -12,6 +15,9 @@ import {
 	type NewSmOrganization as InsertSmOrganization,
 	type NewSmRole as InsertSmRole,
 	type NewSmStaff as InsertSmStaff,
+	type NewSmPermission as InsertSmPermission,
+	type NewSmRolePermission as InsertSmRolePermission,
+	type NewSmStaffRole as InsertSmStaffRole,
 	type NewSmDataPermission as InsertSmDataPermission,
 	type NewSmShift as InsertSmShift,
 	type NewSmSchedulingSetting as InsertSmSchedulingSetting,
@@ -83,7 +89,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	processOrgTree(mockOrganizationTreeData, idMap, orgRecords);
 
 	if (orgRecords.length > 0) {
-		const query = db.insert(smOrganizations).values(orgRecords).toSQL();
+		const query = db
+			.insert(smOrganizations as any)
+			.values(orgRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_organizations",
 			sql: toFullSql(query.sql, query.params),
@@ -110,7 +119,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (roleRecords.length > 0) {
-		const query = db.insert(smRoles).values(roleRecords).toSQL();
+		const query = db
+			.insert(smRoles as any)
+			.values(roleRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_roles",
 			sql: toFullSql(query.sql, query.params),
@@ -148,7 +160,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (staffRecords.length > 0) {
-		const query = db.insert(smStaff).values(staffRecords).toSQL();
+		const query = db
+			.insert(smStaff as any)
+			.values(staffRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_staff",
 			sql: toFullSql(query.sql, query.params),
@@ -191,13 +206,160 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 		.filter((x) => x !== null) as InsertSmDataPermission[];
 
 	if (dataPermRecords.length > 0) {
-		const query = db.insert(smDataPermissions).values(dataPermRecords).toSQL();
+		const query = db
+			.insert(smDataPermissions as any)
+			.values(dataPermRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_data_permissions",
 			sql: toFullSql(query.sql, query.params),
 			recordCount: dataPermRecords.length,
 		});
 		console.log(`✅ 已生成 sm_data_permissions SQL，共 ${dataPermRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 5. 生成 sm_permissions (权限)
+	// ==========================================
+	console.log("正在生成 sm_permissions SQL...");
+	const permissionList = [
+		{ name: "系统管理", code: "system", type: "menu" },
+		{ name: "用户管理", code: "system:user", type: "menu" },
+		{ name: "角色管理", code: "system:role", type: "menu" },
+		{ name: "权限管理", code: "system:permission", type: "menu" },
+		{ name: "社区管理", code: "community", type: "menu" },
+		{ name: "房产管理", code: "property", type: "menu" },
+		{ name: "费用管理", code: "expense", type: "menu" },
+		{ name: "停车管理", code: "parking", type: "menu" },
+		{ name: "巡检管理", code: "patrol", type: "menu" },
+		{ name: "报修管理", code: "repairs", type: "menu" },
+		{ name: "合同管理", code: "contract", type: "menu" },
+		{ name: "报表管理", code: "report", type: "menu" },
+		{ name: "运营管理", code: "operation", type: "menu" },
+		{ name: "数据配置", code: "data:config", type: "button" },
+		{ name: "数据新增", code: "data:create", type: "button" },
+		{ name: "数据编辑", code: "data:edit", type: "button" },
+		{ name: "数据删除", code: "data:delete", type: "button" },
+		{ name: "数据查看", code: "data:view", type: "button" },
+		{ name: "导出数据", code: "data:export", type: "button" },
+		{ name: "导入数据", code: "data:import", type: "button" },
+	];
+	const permissionRecords: InsertSmPermission[] = permissionList.map((item) => {
+		const id = idMap.register("sm_permissions", item.code);
+		return {
+			id,
+			permissionName: item.name,
+			permissionCode: item.code,
+			permissionType: item.type,
+			resourcePath: `/${item.code.replace(/:/g, "/")}`,
+			createTime: new Date(),
+			updateTime: new Date(),
+		};
+	});
+
+	if (permissionRecords.length > 0) {
+		const query = db
+			.insert(smPermissions as any)
+			.values(permissionRecords)
+			.toSQL();
+		statements.push({
+			table: "sm_permissions",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: permissionRecords.length,
+		});
+		console.log(`✅ 已生成 sm_permissions SQL，共 ${permissionRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 6. 生成 sm_role_permissions (角色权限关联)
+	// ==========================================
+	console.log("正在生成 sm_role_permissions SQL...");
+	// 获取所有角色ID
+	const roleIds = Array.from(
+		new Set([
+			...(mockRolePermissionData || []).map((r) => idMap.get("sm_roles", r.id)).filter(Boolean),
+			idMap.get("sm_roles", "1"),
+		]),
+	).filter(Boolean) as string[];
+
+	// 获取权限ID列表
+	const permissionCodes = permissionList.map((p) => p.code);
+	const permissionIds = permissionCodes.map((code) => idMap.get("sm_permissions", code)).filter(Boolean) as string[];
+
+	const rolePermissionRecords: any[] = [];
+	// 为每个角色分配权限
+	roleIds.forEach((roleId) => {
+		permissionIds.forEach((permissionId) => {
+			rolePermissionRecords.push({
+				id: idMap.register("sm_role_permissions", `${roleId}-${permissionId}`),
+				roleId,
+				permissionId,
+				createTime: new Date(),
+				updateTime: new Date(),
+			});
+		});
+	});
+
+	if (rolePermissionRecords.length > 0) {
+		const query = db
+			.insert(smRolePermissions as any)
+			.values(rolePermissionRecords)
+			.toSQL();
+		statements.push({
+			table: "sm_role_permissions",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: rolePermissionRecords.length,
+		});
+		console.log(`✅ 已生成 sm_role_permissions SQL，共 ${rolePermissionRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 7. 生成 sm_staff_roles (员工角色关联)
+	// ==========================================
+	console.log("正在生成 sm_staff_roles SQL...");
+	const staffRoleRecords: any[] = [];
+
+	// 为每个员工分配角色（第一个员工分配所有角色，其他员工分配普通角色）
+	const staffIds = mockEmployeeData.map((e) => idMap.get("sm_staff", e.id)).filter(Boolean) as string[];
+
+	staffIds.forEach((staffId, index) => {
+		if (index === 0) {
+			// 第一个员工（管理员）分配所有角色
+			roleIds.forEach((roleId) => {
+				staffRoleRecords.push({
+					id: idMap.register("sm_staff_roles", `${staffId}-${roleId}`),
+					staffId,
+					roleId,
+					createTime: new Date(),
+					updateTime: new Date(),
+				});
+			});
+		} else {
+			// 其他员工分配普通角色
+			const normalRoleId = idMap.get("sm_roles", "2"); // 假设 "2" 是普通角色
+			if (normalRoleId) {
+				staffRoleRecords.push({
+					id: idMap.register("sm_staff_roles", `${staffId}-${normalRoleId}`),
+					staffId,
+					roleId: normalRoleId,
+					createTime: new Date(),
+					updateTime: new Date(),
+				});
+			}
+		}
+	});
+
+	if (staffRoleRecords.length > 0) {
+		const query = db
+			.insert(smStaffRoles as any)
+			.values(staffRoleRecords)
+			.toSQL();
+		statements.push({
+			table: "sm_staff_roles",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: staffRoleRecords.length,
+		});
+		console.log(`✅ 已生成 sm_staff_roles SQL，共 ${staffRoleRecords.length} 条记录`);
 	}
 
 	// ==========================================
@@ -218,7 +380,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (shiftRecords.length > 0) {
-		const query = db.insert(smShifts).values(shiftRecords).toSQL();
+		const query = db
+			.insert(smShifts as any)
+			.values(shiftRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_shifts",
 			sql: toFullSql(query.sql, query.params),
@@ -247,7 +412,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (schedulingRecords.length > 0) {
-		const query = db.insert(smSchedulingSettings).values(schedulingRecords).toSQL();
+		const query = db
+			.insert(smSchedulingSettings as any)
+			.values(schedulingRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_scheduling_settings",
 			sql: toFullSql(query.sql, query.params),
@@ -279,7 +447,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 		.filter((x) => x !== null) as InsertSmWorkingSchedule[];
 
 	if (workingRecords.length > 0) {
-		const query = db.insert(smWorkingSchedules).values(workingRecords).toSQL();
+		const query = db
+			.insert(smWorkingSchedules as any)
+			.values(workingRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_working_schedules",
 			sql: toFullSql(query.sql, query.params),
@@ -321,7 +492,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (configRecords.length > 0) {
-		const query = db.insert(smSystemConfigs).values(configRecords).toSQL();
+		const query = db
+			.insert(smSystemConfigs as any)
+			.values(configRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_system_configs",
 			sql: toFullSql(query.sql, query.params),
@@ -346,7 +520,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (protocolRecords.length > 0) {
-		const query = db.insert(smRegisterProtocols).values(protocolRecords).toSQL();
+		const query = db
+			.insert(smRegisterProtocols as any)
+			.values(protocolRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_register_protocols",
 			sql: toFullSql(query.sql, query.params),
@@ -372,7 +549,10 @@ export async function generateSettingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (cellRecords.length > 0) {
-		const query = db.insert(smInitializeCells).values(cellRecords).toSQL();
+		const query = db
+			.insert(smInitializeCells as any)
+			.values(cellRecords)
+			.toSQL();
 		statements.push({
 			table: "sm_initialize_cells",
 			sql: toFullSql(query.sql, query.params),

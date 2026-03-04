@@ -62,7 +62,10 @@ export async function generateReportSql(idMap: IdMapRegistry): Promise<SqlStatem
 	});
 
 	if (expenseRecords.length > 0) {
-		const query = db.insert(rptExpenseSummaries).values(expenseRecords).toSQL();
+		const query = db
+			.insert(rptExpenseSummaries as any)
+			.values(expenseRecords)
+			.toSQL();
 		statements.push({
 			table: "rpt_expense_summaries",
 			sql: toFullSql(query.sql, query.params),

@@ -6,6 +6,8 @@ import {
 	hpOwnerAccounts,
 	hpInvoiceTitles,
 	hpInvoices,
+	hpReserveVenues,
+	hpSiteManagements,
 	type NewHpOwner as InsertHpOwner,
 	type NewHpOwnersCommittee as InsertHpOwnersCommittee,
 	type NewHpHouse as InsertHpHouse,
@@ -13,6 +15,8 @@ import {
 	type NewHpOwnerAccount as InsertHpOwnerAccount,
 	type NewHpInvoiceTitle as InsertHpInvoiceTitle,
 	type NewHpInvoice as InsertHpInvoice,
+	type NewHpReserveVenue as InsertHpReserveVenue,
+	type NewHpSiteManagement as InsertHpSiteManagement,
 } from "@01s-11comm/type";
 import { mockHouseData } from "../../api/property-manage/house-property-manage/house/mock-data";
 import { mockOwnerInformationData as mockOwnerData } from "../../api/property-manage/house-property-manage/owner-information/mock-data";
@@ -21,6 +25,7 @@ import { mockOwnerMemberData } from "../../api/property-manage/house-property-ma
 import { mockOwnerAccountData } from "../../api/property-manage/house-property-manage/owner-account/mock-data";
 import { mockInvoiceTitleData } from "../../api/property-manage/house-property-manage/invoice-title/mock-data";
 import { mockInvoiceData } from "../../api/property-manage/house-property-manage/invoice/mock-data";
+import { mockSiteManagementData } from "../../api/property-manage/house-property-manage/site-management/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, generateUuid } from "./index";
 import { getDb } from "../index";
@@ -72,7 +77,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	});
 
 	if (ownerRecords.length > 0) {
-		const query = db.insert(hpOwners).values(ownerRecords).toSQL();
+		const query = db
+			.insert(hpOwners as any)
+			.values(ownerRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_owners",
 			sql: toFullSql(query.sql, query.params),
@@ -82,14 +90,84 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	}
 
 	// ==========================================
-	// 2. 跳过生成 hp_reserve_venues (预约场地) - Mock数据缺失/类型不匹配
+	// 2. 生成 hp_site_managements (场地管理)
 	// ==========================================
-	console.log("⏩ 跳过生成 hp_reserve_venues SQL (Mock数据缺失/类型不匹配)");
+	console.log("正在生成 hp_site_managements SQL...");
+	const siteManagementRecords: InsertHpSiteManagement[] = mockSiteManagementData.map((item) => {
+		const id = idMap.register("hp_site_managements", item.idNumber || item.id);
+		return {
+			id: id,
+			siteName: item.name,
+			location: item.name,
+			manager: item.administrator,
+			maintenanceRecord: item.remark,
+			remark: item.remark,
+			createTime: item.createTime ? new Date(item.createTime) : new Date(),
+			updateTime: new Date(),
+		};
+	});
+
+	if (siteManagementRecords.length > 0) {
+		const query = db
+			.insert(hpSiteManagements as any)
+			.values(siteManagementRecords)
+			.toSQL();
+		statements.push({
+			table: "hp_site_managements",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: siteManagementRecords.length,
+		});
+		console.log(`✅ 已生成 hp_site_managements SQL，共 ${siteManagementRecords.length} 条记录`);
+	}
 
 	// ==========================================
-	// 3. 跳过生成 hp_site_managements (场地管理) - 依赖Venues数据
+	// 3. 生成 hp_reserve_venues (预约场地)
 	// ==========================================
-	console.log("⏩ 跳过生成 hp_site_managements SQL (依赖Venues数据)");
+	console.log("正在生成 hp_reserve_venues SQL...");
+	// 根据场地管理数据生成场地数据
+	const venueRecords: InsertHpReserveVenue[] = mockSiteManagementData
+		.filter((item) => item.status === "enabled" || item.status === "可预约")
+		.slice(0, 10)
+		.map((item, index) => {
+			const id = idMap.register("hp_reserve_venues", `VENUE-${index + 1}`);
+			return {
+				id: id,
+				venueName: item.name,
+				venueType: item.name.includes("会议室")
+					? "会议室"
+					: item.name.includes("健身")
+						? "健身房"
+						: item.name.includes("泳")
+							? "游泳池"
+							: item.name.includes("羽毛")
+								? "羽毛球场"
+								: item.name.includes("网球")
+									? "网球场"
+									: item.name.includes("篮球")
+										? "篮球场"
+										: "其他",
+				capacity: item.remark?.includes("容纳") ? parseInt(item.remark.match(/\d+/)?.[0] || "10") : 10,
+				openTime: `${item.openingTime || "08:00"}-${item.closingTime || "22:00"}`,
+				chargeStandard: item.hourlyFee ? `${item.hourlyFee}元/小时` : "免费",
+				status: "enabled",
+				remark: item.remark,
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
+			};
+		});
+
+	if (venueRecords.length > 0) {
+		const query = db
+			.insert(hpReserveVenues as any)
+			.values(venueRecords)
+			.toSQL();
+		statements.push({
+			table: "hp_reserve_venues",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: venueRecords.length,
+		});
+		console.log(`✅ 已生成 hp_reserve_venues SQL，共 ${venueRecords.length} 条记录`);
+	}
 
 	// ==========================================
 	// 4. 生成 hp_owners_committees (业委会)
@@ -117,7 +195,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	});
 
 	if (committeeRecords.length > 0) {
-		const query = db.insert(hpOwnersCommittees).values(committeeRecords).toSQL();
+		const query = db
+			.insert(hpOwnersCommittees as any)
+			.values(committeeRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_owners_committees",
 			sql: toFullSql(query.sql, query.params),
@@ -167,7 +248,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 	});
 
 	if (houseRecords.length > 0) {
-		const query = db.insert(hpHouses).values(houseRecords).toSQL();
+		const query = db
+			.insert(hpHouses as any)
+			.values(houseRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_houses",
 			sql: toFullSql(query.sql, query.params),
@@ -248,7 +332,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 		.filter(Boolean) as InsertHpOwnerMember[];
 
 	if (memberRecords.length > 0) {
-		const query = db.insert(hpOwnerMembers).values(memberRecords).toSQL();
+		const query = db
+			.insert(hpOwnerMembers as any)
+			.values(memberRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_owner_members",
 			sql: toFullSql(query.sql, query.params),
@@ -285,7 +372,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 		.filter(Boolean) as InsertHpOwnerAccount[];
 
 	if (accountRecords.length > 0) {
-		const query = db.insert(hpOwnerAccounts).values(accountRecords).toSQL();
+		const query = db
+			.insert(hpOwnerAccounts as any)
+			.values(accountRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_owner_accounts",
 			sql: toFullSql(query.sql, query.params),
@@ -322,7 +412,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 		.filter(Boolean) as InsertHpInvoiceTitle[];
 
 	if (titleRecords.length > 0) {
-		const query = db.insert(hpInvoiceTitles).values(titleRecords).toSQL();
+		const query = db
+			.insert(hpInvoiceTitles as any)
+			.values(titleRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_invoice_titles",
 			sql: toFullSql(query.sql, query.params),
@@ -362,7 +455,10 @@ export async function generateHousePropertySql(idMap: IdMapRegistry): Promise<Sq
 		.filter(Boolean) as InsertHpInvoice[];
 
 	if (invoiceRecords.length > 0) {
-		const query = db.insert(hpInvoices).values(invoiceRecords).toSQL();
+		const query = db
+			.insert(hpInvoices as any)
+			.values(invoiceRecords)
+			.toSQL();
 		statements.push({
 			table: "hp_invoices",
 			sql: toFullSql(query.sql, query.params),

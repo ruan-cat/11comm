@@ -52,7 +52,10 @@ export async function generateRepairsSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (orderRecords.length > 0) {
-		const query = db.insert(rpRepairOrders).values(orderRecords).toSQL();
+		const query = db
+			.insert(rpRepairOrders as any)
+			.values(orderRecords)
+			.toSQL();
 		statements.push({
 			table: "rp_repair_orders",
 			sql: toFullSql(query.sql, query.params),

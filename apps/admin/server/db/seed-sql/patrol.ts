@@ -75,7 +75,10 @@ export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatem
 	const defaultPlanId = planRecords.length > 0 ? planIdMap.values().next().value : null;
 
 	if (planRecords.length > 0) {
-		const query = db.insert(ptPatrolPlans).values(planRecords).toSQL();
+		const query = db
+			.insert(ptPatrolPlans as any)
+			.values(planRecords)
+			.toSQL();
 		statements.push({
 			table: "pt_patrol_plans",
 			sql: toFullSql(query.sql, query.params),
@@ -138,7 +141,10 @@ export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatem
 	}
 
 	if (pathRecords.length > 0) {
-		const query = db.insert(ptPatrolPaths).values(pathRecords).toSQL();
+		const query = db
+			.insert(ptPatrolPaths as any)
+			.values(pathRecords)
+			.toSQL();
 		statements.push({
 			table: "pt_patrol_paths",
 			sql: toFullSql(query.sql, query.params),
@@ -177,7 +183,10 @@ export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatem
 		.filter((x) => x !== null) as InsertPtPatrolPoint[];
 
 	if (pointRecords.length > 0) {
-		const query = db.insert(ptPatrolPoints).values(pointRecords).toSQL();
+		const query = db
+			.insert(ptPatrolPoints as any)
+			.values(pointRecords)
+			.toSQL();
 		statements.push({
 			table: "pt_patrol_points",
 			sql: toFullSql(query.sql, query.params),
@@ -215,7 +224,10 @@ export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatem
 	}
 
 	if (itemRecords.length > 0) {
-		const query = db.insert(ptPatrolItems).values(itemRecords).toSQL();
+		const query = db
+			.insert(ptPatrolItems as any)
+			.values(itemRecords)
+			.toSQL();
 		statements.push({
 			table: "pt_patrol_items",
 			sql: toFullSql(query.sql, query.params),
@@ -255,7 +267,10 @@ export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatem
 		.filter((x) => x !== null) as InsertPtPatrolTask[];
 
 	if (taskRecords.length > 0) {
-		const query = db.insert(ptPatrolTasks).values(taskRecords).toSQL();
+		const query = db
+			.insert(ptPatrolTasks as any)
+			.values(taskRecords)
+			.toSQL();
 		statements.push({
 			table: "pt_patrol_tasks",
 			sql: toFullSql(query.sql, query.params),
@@ -314,7 +329,10 @@ export async function generatePatrolSql(idMap: IdMapRegistry): Promise<SqlStatem
 		.filter((x) => x !== null) as InsertPtPatrolTaskDetail[];
 
 	if (detailRecords.length > 0) {
-		const query = db.insert(ptPatrolTaskDetails).values(detailRecords).toSQL();
+		const query = db
+			.insert(ptPatrolTaskDetails as any)
+			.values(detailRecords)
+			.toSQL();
 		statements.push({
 			table: "pt_patrol_task_details",
 			sql: toFullSql(query.sql, query.params),

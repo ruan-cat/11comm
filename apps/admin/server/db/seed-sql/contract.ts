@@ -7,6 +7,12 @@ import {
 	ctContracts,
 	ctAttachments,
 	ctChanges,
+	ctArchives,
+	ctPrints,
+	ctReviews,
+	type NewCtArchive,
+	type NewCtPrint,
+	type NewCtReview,
 } from "@01s-11comm/type";
 
 import { mockFirstPartyData } from "../../api/property-manage/contract-manage/first-party/mock-data";
@@ -17,6 +23,9 @@ import { mockTypeData as mockContractTypeData } from "../../api/property-manage/
 import { mockDraftContractData } from "../../api/property-manage/contract-manage/draft-contract/mock-data";
 import { mockAttachmentData } from "../../api/property-manage/contract-manage/attachment/mock-data";
 import { mockChangeData } from "../../api/property-manage/contract-manage/change/mock-data";
+import { mockArchiveData } from "../../api/property-manage/contract-manage/archive/mock-data";
+import { mockPrintData } from "../../api/property-manage/contract-manage/print/mock-data";
+import { mockReviewData } from "../../api/property-manage/contract-manage/review/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap } from "./index";
 import { getDb } from "../index";
@@ -68,7 +77,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 	});
 
 	if (firstPartyRecords.length > 0) {
-		const query = db.insert(ctFirstParties).values(firstPartyRecords).toSQL();
+		const query = db
+			.insert(ctFirstParties as any)
+			.values(firstPartyRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_first_parties",
 			sql: toFullSql(query.sql, query.params),
@@ -98,7 +110,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 	});
 
 	if (secondPartyRecords.length > 0) {
-		const query = db.insert(ctSecondParties).values(secondPartyRecords).toSQL();
+		const query = db
+			.insert(ctSecondParties as any)
+			.values(secondPartyRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_second_parties",
 			sql: toFullSql(query.sql, query.params),
@@ -126,7 +141,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 	});
 
 	if (templateRecords.length > 0) {
-		const query = db.insert(ctTemplates).values(templateRecords).toSQL();
+		const query = db
+			.insert(ctTemplates as any)
+			.values(templateRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_templates",
 			sql: toFullSql(query.sql, query.params),
@@ -164,7 +182,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 		.filter(Boolean);
 
 	if (clauseRecords.length > 0) {
-		const query = db.insert(ctClauses).values(clauseRecords).toSQL();
+		const query = db
+			.insert(ctClauses as any)
+			.values(clauseRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_clauses",
 			sql: toFullSql(query.sql, query.params),
@@ -190,7 +211,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 	});
 
 	if (typeRecords.length > 0) {
-		const query = db.insert(ctTypes).values(typeRecords).toSQL();
+		const query = db
+			.insert(ctTypes as any)
+			.values(typeRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_types",
 			sql: toFullSql(query.sql, query.params),
@@ -227,7 +251,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 	});
 
 	if (contractRecords.length > 0) {
-		const query = db.insert(ctContracts).values(contractRecords).toSQL();
+		const query = db
+			.insert(ctContracts as any)
+			.values(contractRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_contracts",
 			sql: toFullSql(query.sql, query.params),
@@ -284,7 +311,10 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 		.filter(Boolean);
 
 	if (attachmentRecords.length > 0) {
-		const query = db.insert(ctAttachments).values(attachmentRecords).toSQL();
+		const query = db
+			.insert(ctAttachments as any)
+			.values(attachmentRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_attachments",
 			sql: toFullSql(query.sql, query.params),
@@ -323,12 +353,160 @@ export async function generateContractSql(idMap: IdMapRegistry): Promise<SqlStat
 		.filter(Boolean);
 
 	if (changeRecords.length > 0) {
-		const query = db.insert(ctChanges).values(changeRecords).toSQL();
+		const query = db
+			.insert(ctChanges as any)
+			.values(changeRecords)
+			.toSQL();
 		statements.push({
 			table: "ct_changes",
 			sql: toFullSql(query.sql, query.params),
 			recordCount: changeRecords.length,
 		});
+	}
+
+	// ==========================================
+	// 9. 生成 ct_archives (合同归档)
+	// ==========================================
+	console.log("正在生成 ct_archives SQL...");
+	const archiveRecords: NewCtArchive[] = mockArchiveData
+		.map((item) => {
+			const id = idMap.register("ct_archives", item.id);
+			// 尝试获取对应的合同ID，尝试多种格式匹配
+			let contractId = idMap.get("ct_contracts", item.contractNumber);
+			if (!contractId) {
+				// 尝试去掉连字符匹配: HT-2024-001 -> HT2024001
+				const normalizedNumber = item.contractNumber.replace(/-/g, "");
+				contractId = idMap.get("ct_contracts", normalizedNumber);
+			}
+
+			// 如果仍然找不到，跳过此记录
+			if (!contractId) {
+				console.log(`⚠️ 跳过 ct_archives: 未找到合同 ${item.contractNumber}`);
+				return null;
+			}
+
+			return {
+				id,
+				contractId,
+				archiveNo: item.archiveNumber || null,
+				archiveDate: item.archiveTime ? new Date(item.archiveTime.split(" ")[0]) : null,
+				archiveLocation: item.storageLocation || null,
+				archiver: item.archivist || null,
+				remark: item.remark || null,
+				createTime: new Date(),
+				updateTime: new Date(),
+			};
+		})
+		.filter((x): x is NonNullable<typeof x> => x !== null);
+
+	if (archiveRecords.length > 0) {
+		const query = db
+			.insert(ctArchives as any)
+			.values(archiveRecords)
+			.toSQL();
+		statements.push({
+			table: "ct_archives",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: archiveRecords.length,
+		});
+		console.log(`✅ 已生成 ct_archives SQL，共 ${archiveRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 10. 生成 ct_prints (合同打印记录)
+	// ==========================================
+	console.log("正在生成 ct_prints SQL...");
+	const printRecords: NewCtPrint[] = mockPrintData
+		.map((item) => {
+			const id = idMap.register("ct_prints", item.id);
+			// 尝试获取对应的合同ID，尝试多种格式匹配
+			let contractId = idMap.get("ct_contracts", item.contractNumber);
+			if (!contractId) {
+				const normalizedNumber = item.contractNumber.replace(/-/g, "");
+				contractId = idMap.get("ct_contracts", normalizedNumber);
+			}
+
+			if (!contractId) {
+				console.log(`⚠️ 跳过 ct_prints: 未找到合同 ${item.contractNumber}`);
+				return null;
+			}
+
+			return {
+				id,
+				contractId,
+				printer: item.lastPrinter || null,
+				printTime: item.lastPrintTime ? new Date(item.lastPrintTime) : null,
+				printCount: item.printCount || 1,
+				remark: null,
+				createTime: item.createTime ? new Date(item.createTime) : new Date(),
+				updateTime: new Date(),
+			};
+		})
+		.filter((x): x is NonNullable<typeof x> => x !== null);
+
+	if (printRecords.length > 0) {
+		const query = db
+			.insert(ctPrints as any)
+			.values(printRecords)
+			.toSQL();
+		statements.push({
+			table: "ct_prints",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: printRecords.length,
+		});
+		console.log(`✅ 已生成 ct_prints SQL，共 ${printRecords.length} 条记录`);
+	}
+
+	// ==========================================
+	// 11. 生成 ct_reviews (合同审核)
+	// ==========================================
+	console.log("正在生成 ct_reviews SQL...");
+	const reviewRecords: NewCtReview[] = mockReviewData
+		.map((item) => {
+			const id = idMap.register("ct_reviews", item.id);
+			// 尝试获取对应的合同ID，尝试多种格式匹配
+			let contractId = idMap.get("ct_contracts", item.contractNumber);
+			if (!contractId) {
+				const normalizedNumber = item.contractNumber.replace(/-/g, "");
+				contractId = idMap.get("ct_contracts", normalizedNumber);
+			}
+
+			if (!contractId) {
+				console.log(`⚠️ 跳过 ct_reviews: 未找到合同 ${item.contractNumber}`);
+				return null;
+			}
+
+			// 映射审核状态
+			let reviewResult: "approved" | "rejected" | "pending" = "pending";
+			if (item.reviewStatus === "已通过") reviewResult = "approved";
+			else if (item.reviewStatus === "已驳回") reviewResult = "rejected";
+			else if (item.reviewStatus === "待审核" || item.reviewStatus === "审核中") reviewResult = "pending";
+
+			return {
+				id,
+				contractId,
+				reviewer: item.reviewer || null,
+				reviewOpinion: item.reviewOpinion || null,
+				reviewResult,
+				reviewTime: item.reviewTime ? new Date(item.reviewTime) : null,
+				remark: null,
+				createTime: new Date(),
+				updateTime: new Date(),
+			};
+		})
+		.filter((x): x is NonNullable<typeof x> => x !== null);
+
+	if (reviewRecords.length > 0) {
+		const query = db
+			.insert(ctReviews as any)
+			.values(reviewRecords)
+			.toSQL();
+		statements.push({
+			table: "ct_reviews",
+			sql: toFullSql(query.sql, query.params),
+			recordCount: reviewRecords.length,
+		});
+		console.log(`✅ 已生成 ct_reviews SQL，共 ${reviewRecords.length} 条记录`);
 	}
 
 	return statements;

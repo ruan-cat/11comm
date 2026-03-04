@@ -43,7 +43,10 @@ export async function generateParkingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (lotRecords.length > 0) {
-		const query = db.insert(pkParkingLots).values(lotRecords).toSQL();
+		const query = db
+			.insert(pkParkingLots as any)
+			.values(lotRecords)
+			.toSQL();
 		statements.push({
 			table: "pk_parking_lots",
 			sql: toFullSql(query.sql, query.params),
@@ -93,7 +96,10 @@ export async function generateParkingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (carportRecords.length > 0) {
-		const query = db.insert(pkCarports).values(carportRecords).toSQL();
+		const query = db
+			.insert(pkCarports as any)
+			.values(carportRecords)
+			.toSQL();
 		statements.push({
 			table: "pk_carports",
 			sql: toFullSql(query.sql, query.params),
@@ -138,7 +144,10 @@ export async function generateParkingSql(idMap: IdMapRegistry): Promise<SqlState
 	});
 
 	if (vehicleRecords.length > 0) {
-		const query = db.insert(pkOwnerVehicles).values(vehicleRecords).toSQL();
+		const query = db
+			.insert(pkOwnerVehicles as any)
+			.values(vehicleRecords)
+			.toSQL();
 		statements.push({
 			table: "pk_owner_vehicles",
 			sql: toFullSql(query.sql, query.params),
@@ -166,7 +175,10 @@ export async function generateParkingSql(idMap: IdMapRegistry): Promise<SqlState
 		});
 
 		if (applyRecords.length > 0) {
-			const query = db.insert(pkCarportApplications).values(applyRecords).toSQL();
+			const query = db
+				.insert(pkCarportApplications as any)
+				.values(applyRecords)
+				.toSQL();
 			statements.push({
 				table: "pk_carport_applications",
 				sql: toFullSql(query.sql, query.params),
@@ -207,7 +219,10 @@ export async function generateParkingSql(idMap: IdMapRegistry): Promise<SqlState
 	}
 
 	if (structureRecords.length > 0) {
-		const query = db.insert(pkParkingStructures).values(structureRecords).toSQL();
+		const query = db
+			.insert(pkParkingStructures as any)
+			.values(structureRecords)
+			.toSQL();
 		statements.push({
 			table: "pk_parking_structures",
 			sql: toFullSql(query.sql, query.params),
