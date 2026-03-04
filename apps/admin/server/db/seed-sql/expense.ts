@@ -26,6 +26,9 @@ import { mockVehicleChargeData } from "../../api/property-manage/expense-manage/
 import { mockContracteChargeData as mockContractChargeData } from "../../api/property-manage/expense-manage/contracte-charge/mock-data";
 import { mockMeterReadingTypeData } from "../../api/property-manage/expense-manage/meter-reading-type/mock-data";
 import { mockWaterAndElectricityMeterReadingData as mockMeterReadingData } from "../../api/property-manage/expense-manage/water-and-electricity-meter-reading/mock-data";
+import { mockHouseData } from "../../api/property-manage/house-property-manage/house/mock-data";
+import { mockOwnerVehicleData } from "../../api/property-manage/parking-manage/owner-vehicle/mock-data";
+import { mockDraftContractData } from "../../api/property-manage/contract-manage/draft-contract/mock-data";
 
 import { IdMapRegistry, SqlStatement, toFullSql, statusMap, generateUuid } from "./index";
 import { getDb } from "../index";
@@ -104,11 +107,14 @@ export async function generateExpenseSql(idMap: IdMapRegistry): Promise<SqlState
 	// 3. 生成 ex_house_charges (房屋收费)
 	// ==========================================
 	console.log("正在生成 ex_house_charges SQL...");
+	// 使用 mockHouseData 获取正确的 houseCode
+	const houseCodes = mockHouseData.slice(0, 20).map((h) => h.houseCode);
 	const houseChargeRecords = mockHouseChargeData
-		.map((item) => {
+		.map((item, index) => {
 			const id = idMap.register("ex_house_charges", item.id);
-			// 查找房屋ID - 使用 any 类型避免属性访问错误
-			const houseId = (idMap as any).get("hp_houses", (item as any).houseCode);
+			// 使用 mockHouseData 中的 houseCode
+			const houseCode = houseCodes[index % houseCodes.length];
+			const houseId = idMap.get("hp_houses", houseCode);
 			return {
 				id,
 				houseId: houseId || undefined,
@@ -141,11 +147,14 @@ export async function generateExpenseSql(idMap: IdMapRegistry): Promise<SqlState
 	// 4. 生成 ex_vehicle_charges (车辆收费)
 	// ==========================================
 	console.log("正在生成 ex_vehicle_charges SQL...");
+	// 使用 mockOwnerVehicleData 获取正确的 licensePlate
+	const vehiclePlates = mockOwnerVehicleData.slice(0, 18).map((v) => v.licensePlate);
 	const vehicleChargeRecords = mockVehicleChargeData
-		.map((item) => {
+		.map((item, index) => {
 			const id = idMap.register("ex_vehicle_charges", item.id);
-			// 查找车辆ID - 使用 any 类型避免属性访问错误
-			const vehicleId = (idMap as any).get("pk_owner_vehicles", (item as any).carNumber);
+			// 使用 mockOwnerVehicleData 中的 licensePlate
+			const licensePlate = vehiclePlates[index % vehiclePlates.length];
+			const vehicleId = idMap.get("pk_owner_vehicles", licensePlate);
 			return {
 				id,
 				vehicleId: vehicleId || undefined,
@@ -228,17 +237,15 @@ export async function generateExpenseSql(idMap: IdMapRegistry): Promise<SqlState
 	// 4. 生成 ex_contract_charges (合同收费)
 	// ==========================================
 	console.log("正在生成 ex_contract_charges SQL...");
+	// 使用 mockDraftContractData 获取正确的 contractNumber
+	const contractNumbers = mockDraftContractData.slice(0, 15).map((c) => c.contractNumber);
 	const contractChargeRecords = mockContractChargeData
-		.map((item) => {
+		.map((item, index) => {
 			const id = idMap.register("ex_contract_charges", item.id);
 
-			// Try to find contract by exact name match first
-			let contractId = idMap.get("ct_contracts", item.contractName);
-
-			// Fallback: Try matching by partial name or "name" field if exact match fails
-			if (!contractId && item.name) {
-				contractId = idMap.get("ct_contracts", item.name);
-			}
+			// 使用 mockDraftContractData 中的 contractNumber
+			const contractNumber = contractNumbers[index % contractNumbers.length];
+			const contractId = idMap.get("ct_contracts", contractNumber);
 
 			// If still not found, we must skip this record because contractId is NOT NULL
 			if (!contractId) {
@@ -249,7 +256,7 @@ export async function generateExpenseSql(idMap: IdMapRegistry): Promise<SqlState
 			return {
 				id,
 				contractId,
-				contractNumber: null, // Optional, can be updated if contract is found
+				contractNumber: contractNumber, // Use contractNumber from mockDraftContractData
 				expenseItem: item.name || "合同费用",
 				receivableAmount: "0", // Mock data missing amount, default to 0
 				receivedAmount: "0",

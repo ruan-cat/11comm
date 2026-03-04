@@ -162,7 +162,11 @@ export async function generateReportSql(idMap: IdMapRegistry): Promise<SqlStatem
 	// 4. 生成 rpt_owner_payment_details (业主缴费明细)
 	// ==========================================
 	console.log("正在生成 rpt_owner_payment_details SQL...");
-	const ownerIds = Array.from({ length: 20 }, (_, i) => idMap.get("hp_owners", `OWNER-${i + 1}`)).filter(Boolean);
+	// hp_owners 使用 name (如 "张三", "李四") 作为 ID key，直接使用 ownerNames
+	const ownerIds = ownerNames
+		.slice(0, 25)
+		.map((name) => idMap.get("hp_owners", name))
+		.filter(Boolean);
 
 	const ownerPaymentRecords = ownerIds.slice(0, 15).map((ownerId, idx) => {
 		const id = idMap.register("rpt_owner_payment_details", `OWN-PAY-${idx}`);
