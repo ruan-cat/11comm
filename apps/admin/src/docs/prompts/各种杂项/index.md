@@ -365,6 +365,10 @@ import { createError } from "h3";
 
 ## 032 <!-- TODO: --> 填充项目数据库
 
+对应任务 `fill-database-tables` 。
+
+---
+
 现在本项目大部分的数据库表，都是空的。我需要你确保现在 `apps\admin\scripts\generate-seed-sql.ts` 的逻辑，能够对全部的数据库表都填充 mock 数据。
 
 1. 使用 neon MCP，查询数据库表，搞清楚有哪些数据库表没有任何一条数据。
@@ -398,6 +402,6 @@ import { createError } from "h3";
 2. `代码编写子代理`： 这个子代理根据具体的任务清单，并且根据 `技能指导子代理` 的指导，完成迁移修改，或者是新建文件。
 3. `审核子代理`： 负责根据 `技能指导子代理` 和 `代码编写子代理` 的结果，完成
 
-### 02 <!-- TODO: --> 细粒化改造 `fill-database-tables\tasks.md` 任务清单
+### 02 细粒化改造 `fill-database-tables\tasks.md` 任务清单
 
 1. 我对 d:\code\github-desktop-store\01s-11comm\openspec\changes\fill-database-tables\tasks.md 的任务细粒度不满意。未来我会使用别的模型来完成任务。届时完成任务时，一定会缺斤少两。我要求你对 `fill-database-tables\tasks.md` 做非常细粒化的改造
