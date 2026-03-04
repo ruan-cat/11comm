@@ -374,3 +374,30 @@ import { createError } from "h3";
 这个任务很艰巨，需要查询很多内容，容易出现缺漏。我不要求你现在就完成这个任务，我要求你新建一个 openspec 任务。用 openspec 来罗列出全部的任务列表，处理目标的列表，然后我亲自执行 openspec 任务。
 
 你的任务时全面的探索并调研，罗列出全部需要填充的数据库表和需要使用到的 mock 数据文件。以 openspec 的格式来整理出任务清单。
+
+### 01 <!-- TODO: --> 优化改造 `fill-database-tables` 这款 openspec 长任务
+
+1. 在 `fill-database-tables` 内，在 `openspec\changes\fill-database-tables\design.md` 和 `openspec\changes\fill-database-tables\proposal.md` 内补充以下的执行任务细则，我希望执行这款 `fill-database-tables` 任务时，能够使用 agent team 来完成并行的大规模开发，避免出现串行运行的卡顿情况。
+
+以下是你要告诉给改 openspec 长任务的细则：
+
+### 工作模式
+
+你的工作模式如下：
+
+1. 检查任务清单，按照顺序清单完成修改。
+2. 一次只处理一个路径对应的文件。
+3. 新建一个 agent team 子代理团队，新建 3 个子代理成员。
+4. 完成任务后，删除掉一个具体的 `代码编写子代理` 成员。
+5. 标记一个路径对应的文件完成修改。
+6. 阅读下一个任务清单项目，在现有的 agent team 团队内，在团队内新建一个新的 `代码编写子代理` 成员，继续完成任务。
+
+### 需要新建的子代理以及子代理之间的关系
+
+1. `技能指导子代理`： 这个子代理负责全面的学习全部的 skills 文档，确保其清楚全部的代码编写规范。
+2. `代码编写子代理`： 这个子代理根据具体的任务清单，并且根据 `技能指导子代理` 的指导，完成迁移修改，或者是新建文件。
+3. `审核子代理`： 负责根据 `技能指导子代理` 和 `代码编写子代理` 的结果，完成
+
+### 02 <!-- TODO: --> 细粒化改造 `fill-database-tables\tasks.md` 任务清单
+
+1. 我对 d:\code\github-desktop-store\01s-11comm\openspec\changes\fill-database-tables\tasks.md 的任务细粒度不满意。未来我会使用别的模型来完成任务。届时完成任务时，一定会缺斤少两。我要求你对 `fill-database-tables\tasks.md` 做非常细粒化的改造
