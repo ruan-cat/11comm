@@ -375,7 +375,7 @@ import { createError } from "h3";
 
 你的任务时全面的探索并调研，罗列出全部需要填充的数据库表和需要使用到的 mock 数据文件。以 openspec 的格式来整理出任务清单。
 
-### 01 <!-- TODO: --> 优化改造 `fill-database-tables` 这款 openspec 长任务
+### 01 优化改造 `fill-database-tables` 这款 openspec 长任务
 
 1. 在 `fill-database-tables` 内，在 `openspec\changes\fill-database-tables\design.md` 和 `openspec\changes\fill-database-tables\proposal.md` 内补充以下的执行任务细则，我希望执行这款 `fill-database-tables` 任务时，能够使用 agent team 来完成并行的大规模开发，避免出现串行运行的卡顿情况。
 
