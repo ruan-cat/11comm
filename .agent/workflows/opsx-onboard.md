@@ -8,17 +8,19 @@ Guide the user through their first complete OpenSpec workflow cycle. This is a t
 
 ## Preflight
 
-Before starting, check if OpenSpec is initialized:
+Before starting, check if the OpenSpec CLI is installed:
 
 ```bash
-openspec status --json 2>&1 || echo "NOT_INITIALIZED"
+# Unix/macOS
+openspec --version 2>&1 || echo "CLI_NOT_INSTALLED"
+# Windows (PowerShell)
+# if (Get-Command openspec -ErrorAction SilentlyContinue) { openspec --version } else { echo "CLI_NOT_INSTALLED" }
 ```
 
-**If not initialized:**
+**If CLI not installed:**
+> OpenSpec CLI is not installed. Install it first, then come back to `/opsx:onboard`.
 
-> OpenSpec isn't set up in this project yet. Run `openspec init` first, then come back to `/opsx:onboard`.
-
-Stop here if not initialized.
+Stop here if not installed.
 
 ---
 
@@ -26,7 +28,7 @@ Stop here if not initialized.
 
 Display:
 
-```plain
+```
 ## Welcome to OpenSpec!
 
 I'll walk you through a complete change cycle—from idea to implementation—using a real task in your codebase. Along the way, you'll learn the workflow by doing it.
@@ -60,16 +62,18 @@ Scan the codebase for small improvement opportunities. Look for:
 6. **Missing validation** - User input handlers without validation
 
 Also check recent git activity:
-
 ```bash
+# Unix/macOS
 git log --oneline -10 2>/dev/null || echo "No git history"
+# Windows (PowerShell)
+# git log --oneline -10 2>$null; if ($LASTEXITCODE -ne 0) { echo "No git history" }
 ```
 
 ### Present Suggestions
 
 From your analysis, present 3-4 specific suggestions:
 
-```plain
+```
 ## Task Suggestions
 
 Based on scanning your codebase, here are some good starter tasks:
@@ -96,14 +100,13 @@ Which task interests you? (Pick a number or describe your own)
 ```
 
 **If nothing found:** Fall back to asking what the user wants to build:
-
 > I didn't find obvious quick wins in your codebase. What's something small you've been meaning to add or fix?
 
 ### Scope Guardrail
 
 If the user picks or describes something too large (major feature, multi-day work):
 
-```plain
+```
 That's a valuable task, but it's probably larger than ideal for your first OpenSpec run-through.
 
 For learning the workflow, smaller is better—it lets you see the full cycle without getting stuck in implementation details.
@@ -124,17 +127,16 @@ Let the user override if they insist—this is a soft guardrail.
 
 Once a task is selected, briefly demonstrate explore mode:
 
-```plain
+```
 Before we create a change, let me quickly show you **explore mode**—it's how you think through problems before committing to a direction.
 ```
 
 Spend 1-2 minutes investigating the relevant code:
-
 - Read the file(s) involved
 - Draw a quick ASCII diagram if it helps
 - Note any considerations
 
-```plain
+```
 ## Quick Exploration
 
 [Your brief analysis—what you found, any considerations]
@@ -155,8 +157,7 @@ Now let's create a change to hold our work.
 ## Phase 4: Create the Change
 
 **EXPLAIN:**
-
-```plain
+```
 ## Creating a Change
 
 A "change" in OpenSpec is a container for all the thinking and planning around a piece of work. It lives in `openspec/changes/<name>/` and holds your artifacts—proposal, specs, design, tasks.
@@ -165,26 +166,22 @@ Let me create one for our task.
 ```
 
 **DO:** Create the change with a derived kebab-case name:
-
 ```bash
 openspec new change "<derived-name>"
 ```
 
 **SHOW:**
-
-```plain
+```
 Created: `openspec/changes/<name>/`
 
 The folder structure:
 ```
-
 openspec/changes/<name>/
-├── proposal.md ← Why we're doing this (empty, we'll fill it)
-├── design.md ← How we'll build it (empty)
-├── specs/ ← Detailed requirements (empty)
-└── tasks.md ← Implementation checklist (empty)
-
-```plain
+├── proposal.md    ← Why we're doing this (empty, we'll fill it)
+├── design.md      ← How we'll build it (empty)
+├── specs/         ← Detailed requirements (empty)
+└── tasks.md       ← Implementation checklist (empty)
+```
 
 Now let's fill in the first artifact—the proposal.
 ```
@@ -194,8 +191,7 @@ Now let's fill in the first artifact—the proposal.
 ## Phase 5: Proposal
 
 **EXPLAIN:**
-
-```plain
+```
 ## The Proposal
 
 The proposal captures **why** we're making this change and **what** it involves at a high level. It's the "elevator pitch" for the work.
@@ -205,7 +201,7 @@ I'll draft one based on our task.
 
 **DO:** Draft the proposal content (don't save yet):
 
-```plain
+```
 Here's a draft proposal:
 
 ---
@@ -239,14 +235,12 @@ Does this capture the intent? I can adjust before we save it.
 **PAUSE** - Wait for user approval/feedback.
 
 After approval, save the proposal:
-
 ```bash
 openspec instructions proposal --change "<name>" --json
 ```
-
 Then write the content to `openspec/changes/<name>/proposal.md`.
 
-```plain
+```
 Proposal saved. This is your "why" document—you can always come back and refine it as understanding evolves.
 
 Next up: specs.
@@ -257,8 +251,7 @@ Next up: specs.
 ## Phase 6: Specs
 
 **EXPLAIN:**
-
-```plain
+```
 ## Specs
 
 Specs define **what** we're building in precise, testable terms. They use a requirement/scenario format that makes expected behavior crystal clear.
@@ -267,14 +260,16 @@ For a small task like this, we might only need one spec file.
 ```
 
 **DO:** Create the spec file:
-
 ```bash
+# Unix/macOS
 mkdir -p openspec/changes/<name>/specs/<capability-name>
+# Windows (PowerShell)
+# New-Item -ItemType Directory -Force -Path "openspec/changes/<name>/specs/<capability-name>"
 ```
 
 Draft the spec content:
 
-```plain
+```
 Here's the spec:
 
 ---
@@ -303,8 +298,7 @@ Save to `openspec/changes/<name>/specs/<capability>/spec.md`.
 ## Phase 7: Design
 
 **EXPLAIN:**
-
-```plain
+```
 ## Design
 
 The design captures **how** we'll build it—technical decisions, tradeoffs, approach.
@@ -314,7 +308,7 @@ For small changes, this might be brief. That's fine—not every change needs dee
 
 **DO:** Draft design.md:
 
-```plain
+```
 Here's the design:
 
 ---
@@ -349,8 +343,7 @@ Save to `openspec/changes/<name>/design.md`.
 ## Phase 8: Tasks
 
 **EXPLAIN:**
-
-```plain
+```
 ## Tasks
 
 Finally, we break the work into implementation tasks—checkboxes that drive the apply phase.
@@ -360,7 +353,7 @@ These should be small, clear, and in logical order.
 
 **DO:** Generate tasks based on specs and design:
 
-```plain
+```
 Here are the implementation tasks:
 
 ---
@@ -388,8 +381,7 @@ Save to `openspec/changes/<name>/tasks.md`.
 ## Phase 9: Apply (Implementation)
 
 **EXPLAIN:**
-
-```plain
+```
 ## Implementation
 
 Now we implement each task, checking them off as we go. I'll announce each one and occasionally note how the specs/design informed the approach.
@@ -407,7 +399,7 @@ Keep narration light—don't over-explain every line of code.
 
 After all tasks:
 
-```plain
+```
 ## Implementation Complete
 
 All tasks done:
@@ -423,8 +415,7 @@ The change is implemented! One more step—let's archive it.
 ## Phase 10: Archive
 
 **EXPLAIN:**
-
-```plain
+```
 ## Archiving
 
 When a change is complete, we archive it. This moves it from `openspec/changes/` to `openspec/changes/archive/YYYY-MM-DD-<name>/`.
@@ -433,14 +424,12 @@ Archived changes become your project's decision history—you can always find th
 ```
 
 **DO:**
-
 ```bash
 openspec archive "<name>"
 ```
 
 **SHOW:**
-
-```plain
+```
 Archived to: `openspec/changes/archive/YYYY-MM-DD-<name>/`
 
 The change is now part of your project's history. The code is in your codebase, the decision record is preserved.
@@ -450,7 +439,7 @@ The change is now part of your project's history. The code is in your codebase, 
 
 ## Phase 11: Recap & Next Steps
 
-```plain
+```
 ## Congratulations!
 
 You just completed a full OpenSpec cycle:
@@ -470,21 +459,29 @@ This same rhythm works for any size change—a small fix or a major feature.
 
 ## Command Reference
 
+**Core workflow:**
+
 | Command | What it does |
 |---------|--------------|
+| `/opsx:propose` | Create a change and generate all artifacts |
 | `/opsx:explore` | Think through problems before/during work |
-| `/opsx:new` | Start a new change, step through artifacts |
-| `/opsx:ff` | Fast-forward: create all artifacts at once |
-| `/opsx:continue` | Continue working on an existing change |
 | `/opsx:apply` | Implement tasks from a change |
-| `/opsx:verify` | Verify implementation matches artifacts |
 | `/opsx:archive` | Archive a completed change |
+
+**Additional commands:**
+
+| Command | What it does |
+|---------|--------------|
+| `/opsx:new` | Start a new change, step through artifacts one at a time |
+| `/opsx:continue` | Continue working on an existing change |
+| `/opsx:ff` | Fast-forward: create all artifacts at once |
+| `/opsx:verify` | Verify implementation matches artifacts |
 
 ---
 
 ## What's Next?
 
-Try `/opsx:new` or `/opsx:ff` on something you actually want to build. You've got the rhythm now!
+Try `/opsx:propose` on something you actually want to build. You've got the rhythm now!
 ```
 
 ---
@@ -495,7 +492,7 @@ Try `/opsx:new` or `/opsx:ff` on something you actually want to build. You've go
 
 If the user says they need to stop, want to pause, or seem disengaged:
 
-```plain
+```
 No problem! Your change is saved at `openspec/changes/<name>/`.
 
 To pick up where we left off later:
@@ -511,20 +508,28 @@ Exit gracefully without pressure.
 
 If the user says they just want to see the commands or skip the tutorial:
 
-```plain
+```
 ## OpenSpec Quick Reference
+
+**Core workflow:**
 
 | Command | What it does |
 |---------|--------------|
+| `/opsx:propose <name>` | Create a change and generate all artifacts |
 | `/opsx:explore` | Think through problems (no code changes) |
-| `/opsx:new <name>` | Start a new change, step by step |
-| `/opsx:ff <name>` | Fast-forward: all artifacts at once |
-| `/opsx:continue <name>` | Continue an existing change |
 | `/opsx:apply <name>` | Implement tasks |
-| `/opsx:verify <name>` | Verify implementation |
 | `/opsx:archive <name>` | Archive when done |
 
-Try `/opsx:new` to start your first change, or `/opsx:ff` if you want to move fast.
+**Additional commands:**
+
+| Command | What it does |
+|---------|--------------|
+| `/opsx:new <name>` | Start a new change, step by step |
+| `/opsx:continue <name>` | Continue an existing change |
+| `/opsx:ff <name>` | Fast-forward: all artifacts at once |
+| `/opsx:verify <name>` | Verify implementation |
+
+Try `/opsx:propose` to start your first change.
 ```
 
 Exit gracefully.
