@@ -219,172 +219,172 @@ mcp__Neon__describe_table_schema {tableName: "sm_staff", projectId: "snowy-base-
 
 ### Community (cm)
 
-| 表名 | 说明 |
-|------|------|
-| cm_communities | 社区信息 |
-| cm_notices | 公告通知 |
-| cm_handing_business | 办事业务 |
-| cm_house_decorations | 装修管理 |
-| cm_property_registers | 住户登记 |
+| 表名                   | 说明     |
+| ---------------------- | -------- |
+| cm_communities         | 社区信息 |
+| cm_notices             | 公告通知 |
+| cm_handing_business    | 办事业务 |
+| cm_house_decorations   | 装修管理 |
+| cm_property_registers  | 住户登记 |
 | cm_building_structures | 楼栋结构 |
 
 ### Contract (ct)
 
-| 表名 | 说明 |
-|------|------|
-| ct_first_parties | 合同甲方 |
+| 表名              | 说明     |
+| ----------------- | -------- |
+| ct_first_parties  | 合同甲方 |
 | ct_second_parties | 合同乙方 |
-| ct_templates | 合同模板 |
-| ct_clauses | 合同条款 |
-| ct_types | 合同类型 |
-| ct_contracts | 合同记录 |
-| ct_attachments | 合同附件 |
-| ct_changes | 合同变更 |
-| ct_reviews | 合同审批 |
-| ct_archives | 合同归档 |
-| ct_prints | 合同打印 |
+| ct_templates      | 合同模板 |
+| ct_clauses        | 合同条款 |
+| ct_types          | 合同类型 |
+| ct_contracts      | 合同记录 |
+| ct_attachments    | 合同附件 |
+| ct_changes        | 合同变更 |
+| ct_reviews        | 合同审批 |
+| ct_archives       | 合同归档 |
+| ct_prints         | 合同打印 |
 
 ### Dev (dt)
 
-| 表名 | 说明 |
-|------|------|
-| dt_config_types | 配置类型 |
-| dt_configs | 配置管理 |
-| dt_config_items | 配置项 |
-| dt_dictionaries | 字典表 |
-| dt_dictionary_items | 字典项 |
-| dt_menu_groups | 菜单分组 |
-| dt_menu_catalogs | 菜单目录 |
-| dt_menu_items | 菜单项 |
-| dt_cache_configs | 缓存配置 |
+| 表名                | 说明     |
+| ------------------- | -------- |
+| dt_config_types     | 配置类型 |
+| dt_configs          | 配置管理 |
+| dt_config_items     | 配置项   |
+| dt_dictionaries     | 字典表   |
+| dt_dictionary_items | 字典项   |
+| dt_menu_groups      | 菜单分组 |
+| dt_menu_catalogs    | 菜单目录 |
+| dt_menu_items       | 菜单项   |
+| dt_cache_configs    | 缓存配置 |
 
 ### Expense (ex)
 
-| 表名 | 说明 |
-|------|------|
-| ex_expense_items | 收费项目 |
-| ex_house_charges | 房屋收费 |
-| ex_vehicle_charges | 车辆收费 |
-| ex_contract_charges | 合同收费 |
-| ex_payments | 缴费记录 |
-| ex_payment_reviews | 缴费审批 |
-| ex_refund_reviews | 退款审批 |
-| ex_discount_types | 优惠类型 |
-| ex_discount_settings | 优惠配置 |
-| ex_discount_applications | 优惠申请 |
-| ex_meter_reading_types | 抄表类型 |
-| ex_meter_readings | 抄表记录 |
-| ex_cancel_fees | 费用取消 |
-| ex_overdue_reminders | 逾期提醒 |
-| ex_reprint_vouchers | 凭证重印 |
+| 表名                      | 说明     |
+| ------------------------- | -------- |
+| ex_expense_items          | 收费项目 |
+| ex_house_charges          | 房屋收费 |
+| ex_vehicle_charges        | 车辆收费 |
+| ex_contract_charges       | 合同收费 |
+| ex_payments               | 缴费记录 |
+| ex_payment_reviews        | 缴费审批 |
+| ex_refund_reviews         | 退款审批 |
+| ex_discount_types         | 优惠类型 |
+| ex_discount_settings      | 优惠配置 |
+| ex_discount_applications  | 优惠申请 |
+| ex_meter_reading_types    | 抄表类型 |
+| ex_meter_readings         | 抄表记录 |
+| ex_cancel_fees            | 费用取消 |
+| ex_overdue_reminders      | 逾期提醒 |
+| ex_reprint_vouchers       | 凭证重印 |
 | ex_expense_summary_tables | 费用汇总 |
 
 ### House Property (hp)
 
-| 表名 | 说明 |
-|------|------|
-| hp_houses | 房屋信息 |
-| hp_owners | 业主信息 |
-| hp_owner_members | 业主成员 |
-| hp_owner_accounts | 业主账户 |
-| hp_invoices | 发票记录 |
-| hp_invoice_titles | 发票抬头 |
-| hp_reserve_venues | 预约场地 |
-| hp_reserve_venue_orders | 场地订单 |
-| hp_site_managements | 场地管理 |
-| hp_owners_committees | 业主委员会 |
+| 表名                    | 说明       |
+| ----------------------- | ---------- |
+| hp_houses               | 房屋信息   |
+| hp_owners               | 业主信息   |
+| hp_owner_members        | 业主成员   |
+| hp_owner_accounts       | 业主账户   |
+| hp_invoices             | 发票记录   |
+| hp_invoice_titles       | 发票抬头   |
+| hp_reserve_venues       | 预约场地   |
+| hp_reserve_venue_orders | 场地订单   |
+| hp_site_managements     | 场地管理   |
+| hp_owners_committees    | 业主委员会 |
 
 ### Operation (op)
 
-| 表名 | 说明 |
-|------|------|
-| op_merchants | 商家信息 |
-| op_merchant_admins | 商户管理员 |
-| op_property_companies | 物业公司 |
-| op_community_info | 小区信息 |
-| op_community_configs | 小区配置 |
-| op_report_groups | 报表分组 |
-| op_report_infos | 报表信息 |
-| op_report_components | 报表组件 |
-| op_register_protocols | 注册协议 |
+| 表名                  | 说明       |
+| --------------------- | ---------- |
+| op_merchants          | 商家信息   |
+| op_merchant_admins    | 商户管理员 |
+| op_property_companies | 物业公司   |
+| op_community_info     | 小区信息   |
+| op_community_configs  | 小区配置   |
+| op_report_groups      | 报表分组   |
+| op_report_infos       | 报表信息   |
+| op_report_components  | 报表组件   |
+| op_register_protocols | 注册协议   |
 
 ### Parking (pk)
 
-| 表名 | 说明 |
-|------|------|
-| pk_parking_structures | 停车场结构 |
-| pk_parking_lots | 车位信息 |
-| pk_carports | 车库/车位 |
-| pk_owner_vehicles | 业主车辆 |
-| pk_carport_applications | 车位申请 |
+| 表名                    | 说明       |
+| ----------------------- | ---------- |
+| pk_parking_structures   | 停车场结构 |
+| pk_parking_lots         | 车位信息   |
+| pk_carports             | 车库/车位  |
+| pk_owner_vehicles       | 业主车辆   |
+| pk_carport_applications | 车位申请   |
 
 ### Patrol (pt)
 
-| 表名 | 说明 |
-|------|------|
-| pt_patrol_plans | 巡检计划 |
-| pt_patrol_paths | 巡检路线 |
-| pt_patrol_points | 巡检点位 |
-| pt_patrol_items | 巡检项目 |
-| pt_patrol_tasks | 巡检任务 |
+| 表名                   | 说明     |
+| ---------------------- | -------- |
+| pt_patrol_plans        | 巡检计划 |
+| pt_patrol_paths        | 巡检路线 |
+| pt_patrol_points       | 巡检点位 |
+| pt_patrol_items        | 巡检项目 |
+| pt_patrol_tasks        | 巡检任务 |
 | pt_patrol_task_details | 巡检详情 |
 
 ### Repairs (rp)
 
-| 表名 | 说明 |
-|------|------|
-| rp_repair_orders | 报修工单 |
-| rp_repair_order_histories | 报修历史 |
-| rp_return_visits | 回访记录 |
-| rp_repair_settings | 报修配置 |
-| rp_repair_types | 报修类型 |
+| 表名                       | 说明       |
+| -------------------------- | ---------- |
+| rp_repair_orders           | 报修工单   |
+| rp_repair_order_histories  | 报修历史   |
+| rp_return_visits           | 回访记录   |
+| rp_repair_settings         | 报修配置   |
+| rp_repair_types            | 报修类型   |
 | rp_mandatory_return_issues | 必回访问题 |
-| rp_phone_repair_reports | 电话报修 |
+| rp_phone_repair_reports    | 电话报修   |
 
 ### Report (rpt)
 
-| 表名 | 说明 |
-|------|------|
-| rpt_expense_summaries | 费用汇总表 |
-| rpt_deposit_reports | 押金报表 |
-| rpt_payment_details | 缴费明细 |
+| 表名                      | 说明         |
+| ------------------------- | ------------ |
+| rpt_expense_summaries     | 费用汇总表   |
+| rpt_deposit_reports       | 押金报表     |
+| rpt_payment_details       | 缴费明细     |
 | rpt_owner_payment_details | 业主缴费明细 |
-| rpt_fee_reminders | 欠费提醒 |
-| rpt_no_charge_houses | 未收费房屋 |
-| rpt_outstanding_fees | 欠费报表 |
-| rpt_patrol_reports | 巡检报表 |
-| rpt_repair_reports | 报修报表 |
-| rpt_repair_summaries | 报修汇总 |
-| rpt_statement_expenses | 对账单费用 |
-| rpt_data_statistics | 数据统计 |
+| rpt_fee_reminders         | 欠费提醒     |
+| rpt_no_charge_houses      | 未收费房屋   |
+| rpt_outstanding_fees      | 欠费报表     |
+| rpt_patrol_reports        | 巡检报表     |
+| rpt_repair_reports        | 报修报表     |
+| rpt_repair_summaries      | 报修汇总     |
+| rpt_statement_expenses    | 对账单费用   |
+| rpt_data_statistics       | 数据统计     |
 
 ### Setting (sm)
 
-| 表名 | 说明 |
-|------|------|
-| sm_organizations | 组织架构 |
-| sm_staff | 员工信息 |
-| sm_roles | 角色定义 |
-| sm_permissions | 权限定义 |
-| sm_role_permissions | 角色权限 |
-| sm_staff_roles | 员工角色 |
-| sm_data_permissions | 数据权限 |
-| sm_shifts | 班次管理 |
-| sm_scheduling_settings | 排班设置 |
-| sm_working_schedules | 工作日程 |
-| sm_system_configs | 系统配置 |
-| sm_register_protocols | 注册协议 |
-| sm_initialize_cells | 小区初始化 |
-| sm_change_password_records | 改密记录 |
-| sm_community_configurations | 小区配置 |
+| 表名                        | 说明       |
+| --------------------------- | ---------- |
+| sm_organizations            | 组织架构   |
+| sm_staff                    | 员工信息   |
+| sm_roles                    | 角色定义   |
+| sm_permissions              | 权限定义   |
+| sm_role_permissions         | 角色权限   |
+| sm_staff_roles              | 员工角色   |
+| sm_data_permissions         | 数据权限   |
+| sm_shifts                   | 班次管理   |
+| sm_scheduling_settings      | 排班设置   |
+| sm_working_schedules        | 工作日程   |
+| sm_system_configs           | 系统配置   |
+| sm_register_protocols       | 注册协议   |
+| sm_initialize_cells         | 小区初始化 |
+| sm_change_password_records  | 改密记录   |
+| sm_community_configurations | 小区配置   |
 
 ### Auth (系统表)
 
-| 表名 | 说明 |
-|------|------|
-| auth_roles | 角色表 |
+| 表名              | 说明     |
+| ----------------- | -------- |
+| auth_roles        | 角色表   |
 | auth_user_mapping | 用户映射 |
-| auth_user_roles | 用户角色 |
+| auth_user_roles   | 用户角色 |
 
 ---
 
@@ -452,11 +452,11 @@ WHERE tc.constraint_type = 'FOREIGN KEY'
 
 常见错误及解决方案：
 
-| 错误 | 原因 | 解决方案 |
-|------|------|----------|
-| 表不存在 | 表名拼写错误 | 检查表名是否正确，参考上方表清单 |
-| 权限不足 | Project ID 错误 | 确认使用的是正确的项目 ID |
-| 连接超时 | 网络问题 | 重试查询，确保网络通畅 |
+| 错误     | 原因            | 解决方案                         |
+| -------- | --------------- | -------------------------------- |
+| 表不存在 | 表名拼写错误    | 检查表名是否正确，参考上方表清单 |
+| 权限不足 | Project ID 错误 | 确认使用的是正确的项目 ID        |
+| 连接超时 | 网络问题        | 重试查询，确保网络通畅           |
 
 ---
 
