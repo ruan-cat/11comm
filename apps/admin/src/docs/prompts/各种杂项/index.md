@@ -363,7 +363,7 @@ import { createError } from "h3";
 
 首先使用 MCP 提供的记忆工具，读取本项目的错误记忆，然后再开始继续任务。
 
-## 032 <!-- TODO: --> 填充项目数据库
+## 032 填充项目数据库
 
 对应任务 `fill-database-tables` 。
 
