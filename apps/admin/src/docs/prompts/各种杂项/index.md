@@ -405,3 +405,13 @@ import { createError } from "h3";
 ### 02 细粒化改造 `fill-database-tables\tasks.md` 任务清单
 
 1. 我对 d:\code\github-desktop-store\01s-11comm\openspec\changes\fill-database-tables\tasks.md 的任务细粒度不满意。未来我会使用别的模型来完成任务。届时完成任务时，一定会缺斤少两。我要求你对 `fill-database-tables\tasks.md` 做非常细粒化的改造
+
+## 032 <!-- TODO: --> 更新风险项报告文档
+
+我只承认这几个问题，其他的问题都不考虑
+
+1. 108 个 API 测试无断言
+2. Schema 迁移过渡态
+3. 102 个文件使用 as any
+
+请你及时的更新 apps\admin\src\docs\reports\2026-02-20-fullstack-project-risk-analysis.md 和 apps\admin\src\docs\reports\2026-02-27-project-risk-assessment.md 这两个文档，标记其他的风险项均不属于有意义的风险项，不予考虑。
