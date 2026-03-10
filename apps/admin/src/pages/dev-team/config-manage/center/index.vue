@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "配置中心",
+		title: "devTeam.configManage.center.pageTitle",
 		icon: "mdi:cog",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.center"),
@@ -44,14 +44,14 @@ const plusSearchModel = ref(plusSearchModelRef);
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 配置项名称
 	{
-		label: "配置项名称",
+		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 	},
 
 	// 配置类型
 	{
-		label: "配置类型",
+		label: transformI18n($t("devTeam.configManage.center.fields.configType")),
 		prop: "configType",
 		valueType: "select",
 		options: configTypeOptions,
@@ -59,7 +59,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.configManage.center.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: configStatusOptions,
@@ -67,7 +67,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 配置键名
 	{
-		label: "配置键名",
+		label: transformI18n($t("devTeam.configManage.center.fields.configKey")),
 		prop: "configKey",
 		valueType: "input",
 	},
@@ -109,65 +109,65 @@ function handleSearch() {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "配置项名称",
+		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
 		width: 150,
 		fixed: true,
 	},
 	{
-		label: "配置类型",
+		label: transformI18n($t("devTeam.configManage.center.fields.configType")),
 		prop: "configType",
 		width: 120,
 	},
 	{
-		label: "配置键名",
+		label: transformI18n($t("devTeam.configManage.center.fields.configKey")),
 		prop: "configKey",
 		width: 200,
 	},
 	{
-		label: "配置值",
+		label: transformI18n($t("devTeam.configManage.center.fields.configValue")),
 		prop: "configValue",
 		width: 150,
 	},
 	{
-		label: "默认值",
+		label: transformI18n($t("devTeam.configManage.center.fields.defaultValue")),
 		prop: "defaultValue",
 		width: 150,
 	},
 	{
-		label: "配置描述",
+		label: transformI18n($t("devTeam.configManage.center.fields.configDescription")),
 		prop: "configDescription",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.configManage.center.fields.status")),
 		prop: "status",
 		width: 80,
 	},
 	{
-		label: "排序号",
+		label: transformI18n($t("devTeam.configManage.center.fields.sortOrder")),
 		prop: "sortOrder",
 		width: 80,
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("devTeam.configManage.center.fields.remark")),
 		prop: "remark",
 		minWidth: 150,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("devTeam.configManage.center.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		label: transformI18n($t("devTeam.configManage.center.fields.updateTime")),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		label: "创建人",
+		label: transformI18n($t("devTeam.configManage.center.fields.creator")),
 		prop: "creator",
 		width: 100,
 	},
@@ -182,50 +182,54 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "配置中心",
+	title: transformI18n($t("devTeam.configManage.center.pageTitle")),
 	columns: columns.value,
 });
 
 /** 查看详情 */
 function viewDetails(row: ConfigCenterListItem) {
-	console.log("查看详情", row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.viewDetails")), row);
 	// TODO: 实现查看详情功能，可以打开一个只读的弹框显示完整信息
 }
 
 /** 复制配置 */
 function copyConfig(row: ConfigCenterListItem) {
-	console.log("复制配置", row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.copyConfig")), row);
 	// TODO: 实现复制配置功能，可以基于当前配置创建新的配置
 	// 预填充表单数据，但修改配置键名等唯一字段
 }
 
 /** 切换状态 */
 function toggleStatus(row: ConfigCenterListItem) {
-	console.log("切换状态", row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.toggleStatusAction")), row);
 	// TODO: 实现状态切换功能
 	// 可以直接调用API或打开确认弹框
 	const newStatus = row.status === "enabled" ? "disabled" : "enabled";
-	console.log(`将配置 ${row.configName} 状态从 ${row.status} 切换为 ${newStatus}`);
+	console.log(
+		`${transformI18n($t("devTeam.configManage.center.logs.toggleStatus"))}: ${row.configName}, ${row.status} -> ${newStatus}`,
+	);
 }
 
 /** 删除配置 */
 function deleteConfig(row: ConfigCenterListItem) {
-	console.log("删除配置", row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.deleteConfig")), row);
 	// TODO: 实现删除功能，应该显示确认弹框
 	// 确认后调用删除API并刷新列表
-	console.log(`确认删除配置: ${row.configName} (${row.configKey})`);
+	console.log(
+		`${transformI18n($t("devTeam.configManage.center.logs.confirmDelete"))}: ${row.configName} (${row.configKey})`,
+	);
 }
 
 /** 导出配置 */
 function exportConfig() {
-	console.log("导出配置");
+	console.log(transformI18n($t("devTeam.configManage.center.logs.exportConfig")));
 	// TODO: 实现导出功能
 	// 可以导出当前搜索结果或全部配置
 }
 
 /** 导入配置 */
 function importConfig() {
-	console.log("导入配置");
+	console.log(transformI18n($t("devTeam.configManage.center.logs.importConfig")));
 	// TODO: 实现导入功能
 	// 可以打开文件选择弹框，支持Excel、JSON等格式
 }
@@ -246,8 +250,12 @@ function importConfig() {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
-				<ElButton type="success" @click="exportConfig"> 导出 </ElButton>
-				<ElButton type="warning" @click="importConfig"> 导入 </ElButton>
+				<ElButton type="info" @click="exportConfig">
+					{{ transformI18n($t("devTeam.configManage.center.buttons.export")) }}
+				</ElButton>
+				<ElButton type="info" @click="importConfig">
+					{{ transformI18n($t("devTeam.configManage.center.buttons.import")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -267,9 +275,15 @@ function importConfig() {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="copyConfig(row)"> 复制 </ElButton>
-						<ElButton :type="row.status === 'enabled' ? 'warning' : 'success'" @click="toggleStatus(row)">
-							{{ row.status === "enabled" ? "disabled" : "enabled" }}
+						<ElButton type="info" @click="copyConfig(row)">
+							{{ transformI18n($t("devTeam.configManage.center.buttons.copy")) }}
+						</ElButton>
+						<ElButton :type="row.status === 'enabled' ? 'warning' : 'info'" @click="toggleStatus(row)">
+							{{
+								row.status === "enabled"
+									? transformI18n($t("devTeam.configManage.center.buttons.disable"))
+									: transformI18n($t("devTeam.configManage.center.buttons.enable"))
+							}}
 						</ElButton>
 						<ElButton type="danger" @click="deleteConfig(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
