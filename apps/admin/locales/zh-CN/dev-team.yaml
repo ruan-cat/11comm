@@ -1,0 +1,265 @@
+devTeam:
+  pageTitle: 开发团队
+  menuManage:
+    pageTitle: 菜单管理
+    catalog:
+      pageTitle: 菜单目录
+      fields:
+        name: 菜单组名称
+        icon: 图标
+        label: 标签
+        seq: 序列
+        groupType: 组类型
+        storeType: 归属商户
+        description: 描述
+        createTime: 创建时间
+        updateTime: 更新时间
+      form:
+        options:
+          system: 系统菜单
+          merchant: 商户菜单
+          custom: 自定义菜单
+          temp: 临时菜单
+          property: 物业平台
+          merchantPlatform: 商户平台
+          owner: 业主平台
+          common: 通用平台
+        validation:
+          enterName: 请输入菜单组名称
+          nameLength: 长度在 2 到 50 个字符
+          enterIcon: 请输入图标
+          enterLabel: 请输入标签
+          enterSeq: 请输入序列
+          seqRange: 序列必须在0-999之间
+          selectGroupType: 请选择组类型
+          selectStoreType: 请选择归属商户
+    group:
+      pageTitle: 菜单组
+      fields:
+        groupId: 组编号
+        groupName: 组名称
+        groupCode: 组编码
+        sortNo: 排序
+        status: 状态
+        description: 描述
+        createTime: 创建时间
+        updateTime: 更新时间
+      form:
+        fields:
+          groupType: 组类型
+          storeName: 归属商户
+          icon: 图标
+        placeholders:
+          groupId: 请输入组编号，如：GROUP001
+          groupName: 请输入组名称
+          groupCode: 请输入组编码，如：SYSTEM_MANAGE
+          groupType: 请选择组类型
+          storeName: 请选择归属商户
+          sortNo: 请输入显示顺序
+          icon: 请选择图标
+          status: 请选择状态
+          description: 请输入菜单组描述信息
+        options:
+          groupTypes:
+            system: 系统菜单
+            merchant: 商户菜单
+            custom: 自定义菜单
+            temp: 临时菜单
+          stores:
+            systemDefault: 系统默认
+            vanke: 万科物业
+            countryGarden: 碧桂园服务
+            evergrande: 恒大物业
+            greentown: 绿城服务
+            poly: 保利物业
+            longfor: 龙湖物业
+            cohl: 中海物业
+            chinaResources: 华润置地
+            cmhk: 招商积余
+          icons:
+            menu: 菜单
+            setting: 设置
+            user: 用户
+            home: 首页
+            dashboard: 仪表盘
+            file: 文件
+            chart: 图表
+            report: 报表
+            system: 系统
+            security: 安全
+            monitor: 监控
+            log: 日志
+            permission: 权限
+            role: 角色
+            department: 部门
+            data: 数据
+            config: 配置
+            tool: 工具
+            help: 帮助
+            notice: 通知
+          status:
+            enabled: 启用
+            disabled: 禁用
+        validation:
+          enterGroupId: 请输入组编号
+          groupIdLength: 组编号长度在 3 到 20 个字符
+          groupIdPattern: 组编号只能包含大写字母、数字和下划线
+          enterGroupName: 请输入组名称
+          groupNameLength: 组名称长度在 2 到 50 个字符
+          enterGroupCode: 请输入组编码
+          groupCodeLength: 组编码长度在 3 到 50 个字符
+          groupCodePattern: 组编码只能包含大写字母和下划线
+          selectGroupType: 请选择组类型
+          selectStoreName: 请选择归属商户
+          enterSortNo: 请输入显示顺序
+          sortNoRange: 显示顺序必须在 1-9999 之间
+          selectIcon: 请选择图标
+          selectStatus: 请选择状态
+          descriptionMax: 描述长度不能超过 200 个字符
+    item:
+      pageTitle: 菜单项
+      fields:
+        menuId: 菜单编号
+        menuName: 菜单名称
+        parentMenu: 父级菜单
+        menuType: 菜单类型
+        icon: 菜单图标
+        routePath: 路由路径
+        componentPath: 组件路径
+        permissionKey: 权限标识
+        sortNo: 排序
+        status: 状态
+        isExternal: 是否外链
+        isCached: 是否缓存
+        isHidden: 是否隐藏
+        description: 描述
+        createTime: 创建时间
+      form:
+        parentMenus:
+          root: 根菜单
+          systemManage: 系统管理
+          monitorManage: 监控管理
+          systemTool: 系统工具
+          logManage: 日志管理
+          systemSetting: 系统设置
+        options:
+          catalog: 目录
+          menu: 菜单
+          button: 按钮
+          enabled: 启用
+          disabled: 禁用
+          yes: 是
+          no: 否
+        placeholders:
+          menuName: 请输入菜单名称
+          parentMenu: 请选择父级菜单
+          menuType: 请选择菜单类型
+          icon: 请输入图标类名，如：mdi:home
+          routePath: 请输入路由路径，如：/system/user
+          componentPath: 请输入组件路径，如：/pages/system/user/index
+          permissionKey: 请输入权限标识，如：system:user:list
+          sortNo: 请输入显示顺序
+          status: 请选择状态
+          isExternal: 请选择是否外链
+          isCached: 请选择是否缓存
+          isHidden: 请选择是否隐藏
+          description: 请输入菜单描述信息
+        validation:
+          enterMenuName: 请输入菜单名称
+          menuNameLength: 长度在 2 到 50 个字符
+          selectParentMenu: 请选择父级菜单
+          selectMenuType: 请选择菜单类型
+          enterRoutePath: 请输入路由路径
+          routePathPattern: 路由路径格式不正确，应以/开头
+          enterComponentPath: 请输入组件路径
+          componentPathPattern: 组件路径格式不正确，应以/开头
+          enterPermissionKey: 请输入权限标识
+          permissionKeyPattern: 权限标识格式不正确，只能包含字母、数字、冒号、下划线和连字符
+          enterSortNo: 请输入显示顺序
+          sortNoRange: 显示顺序应在1-999之间
+          selectStatus: 请选择状态
+  cacheManage:
+    pageTitle: 缓存管理
+    refreshCache:
+      pageTitle: 刷新缓存
+      tableTitle: 缓存信息
+      fields:
+        cacheId: 缓存ID
+        cacheCode: 缓存编码
+        cacheName: 缓存名称
+        cacheKey: 缓存键名
+        cacheType: 缓存类型
+        cacheGroup: 缓存分组
+        expireTimeSeconds: 过期时间(秒)
+        status: 状态
+        refreshPolicy: 刷新策略
+      buttons:
+        refresh: 刷新缓存
+  configManage:
+    pageTitle: 配置管理
+    center:
+      pageTitle: 配置中心
+      fields:
+        configName: 配置项名称
+        configType: 配置类型
+        status: 状态
+        configKey: 配置键名
+        configValue: 配置值
+        defaultValue: 默认值
+        configDescription: 配置描述
+        sortOrder: 排序号
+        remark: 备注
+        createTime: 创建时间
+        updateTime: 更新时间
+        creator: 创建人
+      buttons:
+        export: 导出
+        import: 导入
+        copy: 复制
+        disable: 禁用
+        enable: 启用
+      logs:
+        viewDetails: 查看详情
+        copyConfig: 复制配置
+        toggleStatusAction: 切换状态
+        toggleStatus: 切换配置状态
+        deleteConfig: 删除配置
+        confirmDelete: 确认删除配置
+        exportConfig: 导出配置
+        importConfig: 导入配置
+    dictionary:
+      pageTitle: 字典
+      fields:
+        dictionaryName: 字典名称
+        dictionaryCode: 字典编码
+        dictionaryType: 字典类型
+        itemCount: 字典项数量
+        description: 字典描述
+        isEnabled: 是否启用
+        createTime: 创建时间
+        updateTime: 更新时间
+        creator: 创建人
+      buttons:
+        manageItems: 字典项管理
+    item:
+      pageTitle: 配置项
+      fields:
+        configName: 配置项名称
+        configCode: 配置项编码
+        configType: 配置项类型
+        configValue: 配置项值
+        description: 配置项描述
+        isEnabled: 是否启用
+        createTime: 创建时间
+        updateTime: 更新时间
+        creator: 创建人
+    type:
+      pageTitle: 字典类型
+      fields:
+        dictionaryNumber: 字典编号
+        dictionaryName: 字典名称
+        dictionaryType: 字典类型
+        status: 状态
+        remark: 备注
+        createTime: 创建时间
+        updateTime: 更新时间

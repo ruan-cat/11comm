@@ -1,0 +1,265 @@
+devTeam:
+  pageTitle: Development Team
+  menuManage:
+    pageTitle: Menu Management
+    catalog:
+      pageTitle: Menu Catalog
+      fields:
+        name: Menu Group Name
+        icon: Icon
+        label: Label
+        seq: Sequence
+        groupType: Group Type
+        storeType: Merchant
+        description: Description
+        createTime: Created At
+        updateTime: Updated At
+      form:
+        options:
+          system: System Menu
+          merchant: Merchant Menu
+          custom: Custom Menu
+          temp: Temporary Menu
+          property: Property Platform
+          merchantPlatform: Merchant Platform
+          owner: Owner Platform
+          common: Common Platform
+        validation:
+          enterName: Please enter the menu group name
+          nameLength: Length must be between 2 and 50 characters
+          enterIcon: Please enter the icon
+          enterLabel: Please enter the label
+          enterSeq: Please enter the sequence
+          seqRange: Sequence must be between 0 and 999
+          selectGroupType: Please select the group type
+          selectStoreType: Please select the merchant
+    group:
+      pageTitle: Menu Group
+      fields:
+        groupId: Group ID
+        groupName: Group Name
+        groupCode: Group Code
+        sortNo: Sort Order
+        status: Status
+        description: Description
+        createTime: Created At
+        updateTime: Updated At
+      form:
+        fields:
+          groupType: Group Type
+          storeName: Merchant
+          icon: Icon
+        placeholders:
+          groupId: "Please enter the group ID, for example: GROUP001"
+          groupName: Please enter the group name
+          groupCode: "Please enter the group code, for example: SYSTEM_MANAGE"
+          groupType: Please select the group type
+          storeName: Please select the merchant
+          sortNo: Please enter the display order
+          icon: Please select the icon
+          status: Please select the status
+          description: Please enter the menu group description
+        options:
+          groupTypes:
+            system: System Menu
+            merchant: Merchant Menu
+            custom: Custom Menu
+            temp: Temporary Menu
+          stores:
+            systemDefault: System Default
+            vanke: Vanke Property
+            countryGarden: Country Garden Services
+            evergrande: Evergrande Property
+            greentown: Greentown Service
+            poly: Poly Property
+            longfor: Longfor Property
+            cohl: China Overseas Property
+            chinaResources: China Resources Land
+            cmhk: China Merchants Property
+          icons:
+            menu: Menu
+            setting: Settings
+            user: User
+            home: Home
+            dashboard: Dashboard
+            file: File
+            chart: Chart
+            report: Report
+            system: System
+            security: Security
+            monitor: Monitor
+            log: Log
+            permission: Permission
+            role: Role
+            department: Department
+            data: Data
+            config: Config
+            tool: Tool
+            help: Help
+            notice: Notice
+          status:
+            enabled: Enabled
+            disabled: Disabled
+        validation:
+          enterGroupId: Please enter the group ID
+          groupIdLength: Group ID length must be between 3 and 20 characters
+          groupIdPattern: Group ID can only contain uppercase letters, numbers, and underscores
+          enterGroupName: Please enter the group name
+          groupNameLength: Group name length must be between 2 and 50 characters
+          enterGroupCode: Please enter the group code
+          groupCodeLength: Group code length must be between 3 and 50 characters
+          groupCodePattern: Group code can only contain uppercase letters and underscores
+          selectGroupType: Please select the group type
+          selectStoreName: Please select the merchant
+          enterSortNo: Please enter the display order
+          sortNoRange: Display order must be between 1 and 9999
+          selectIcon: Please select the icon
+          selectStatus: Please select the status
+          descriptionMax: Description must not exceed 200 characters
+    item:
+      pageTitle: Menu Item
+      fields:
+        menuId: Menu ID
+        menuName: Menu Name
+        parentMenu: Parent Menu
+        menuType: Menu Type
+        icon: Menu Icon
+        routePath: Route Path
+        componentPath: Component Path
+        permissionKey: Permission Key
+        sortNo: Sort Order
+        status: Status
+        isExternal: External Link
+        isCached: Cached
+        isHidden: Hidden
+        description: Description
+        createTime: Created At
+      form:
+        parentMenus:
+          root: Root Menu
+          systemManage: System Management
+          monitorManage: Monitor Management
+          systemTool: System Tools
+          logManage: Log Management
+          systemSetting: System Settings
+        options:
+          catalog: Catalog
+          menu: Menu
+          button: Button
+          enabled: Enabled
+          disabled: Disabled
+          yes: Yes
+          no: No
+        placeholders:
+          menuName: Please enter the menu name
+          parentMenu: Please select the parent menu
+          menuType: Please select the menu type
+          icon: "Please enter the icon class, for example: mdi:home"
+          routePath: "Please enter the route path, for example: /system/user"
+          componentPath: "Please enter the component path, for example: /pages/system/user/index"
+          permissionKey: "Please enter the permission key, for example: system:user:list"
+          sortNo: Please enter the display order
+          status: Please select the status
+          isExternal: Please select whether it is an external link
+          isCached: Please select whether it is cached
+          isHidden: Please select whether it is hidden
+          description: Please enter the menu description
+        validation:
+          enterMenuName: Please enter the menu name
+          menuNameLength: Length must be between 2 and 50 characters
+          selectParentMenu: Please select the parent menu
+          selectMenuType: Please select the menu type
+          enterRoutePath: Please enter the route path
+          routePathPattern: Route path format is invalid and must start with /
+          enterComponentPath: Please enter the component path
+          componentPathPattern: Component path format is invalid and must start with /
+          enterPermissionKey: Please enter the permission key
+          permissionKeyPattern: Permission key format is invalid and can only contain letters, numbers, colons, underscores, and hyphens
+          enterSortNo: Please enter the display order
+          sortNoRange: Display order must be between 1 and 999
+          selectStatus: Please select the status
+  cacheManage:
+    pageTitle: Cache Management
+    refreshCache:
+      pageTitle: Refresh Cache
+      tableTitle: Cache Information
+      fields:
+        cacheId: Cache ID
+        cacheCode: Cache Code
+        cacheName: Cache Name
+        cacheKey: Cache Key
+        cacheType: Cache Type
+        cacheGroup: Cache Group
+        expireTimeSeconds: Expire Time (s)
+        status: Status
+        refreshPolicy: Refresh Policy
+      buttons:
+        refresh: Refresh Cache
+  configManage:
+    pageTitle: Configuration Management
+    center:
+      pageTitle: Configuration Center
+      fields:
+        configName: Config Name
+        configType: Config Type
+        status: Status
+        configKey: Config Key
+        configValue: Config Value
+        defaultValue: Default Value
+        configDescription: Config Description
+        sortOrder: Sort Order
+        remark: Remark
+        createTime: Created At
+        updateTime: Updated At
+        creator: Creator
+      buttons:
+        export: Export
+        import: Import
+        copy: Copy
+        disable: Disable
+        enable: Enable
+      logs:
+        viewDetails: View details
+        copyConfig: Copy config
+        toggleStatusAction: Toggle status
+        toggleStatus: Toggle config status
+        deleteConfig: Delete config
+        confirmDelete: Confirm delete config
+        exportConfig: Export config
+        importConfig: Import config
+    dictionary:
+      pageTitle: Dictionary
+      fields:
+        dictionaryName: Dictionary Name
+        dictionaryCode: Dictionary Code
+        dictionaryType: Dictionary Type
+        itemCount: Item Count
+        description: Dictionary Description
+        isEnabled: Enabled
+        createTime: Created At
+        updateTime: Updated At
+        creator: Creator
+      buttons:
+        manageItems: Manage Dictionary Items
+    item:
+      pageTitle: Config Item
+      fields:
+        configName: Config Item Name
+        configCode: Config Item Code
+        configType: Config Item Type
+        configValue: Config Item Value
+        description: Config Item Description
+        isEnabled: Enabled
+        createTime: Created At
+        updateTime: Updated At
+        creator: Creator
+    type:
+      pageTitle: Dictionary Type
+      fields:
+        dictionaryNumber: Dictionary Number
+        dictionaryName: Dictionary Name
+        dictionaryType: Dictionary Type
+        status: Status
+        remark: Remark
+        createTime: Created At
+        updateTime: Updated At
