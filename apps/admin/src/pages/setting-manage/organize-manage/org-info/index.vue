@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "组织信息",
+		// 组织信息
+		title: "settingManage.organizeManage.orgInfo.pageTitle",
 		icon: "mdi:domain",
 		roles: ["物业团队", "运营团队"],
 		rank: getRouteRank("settingManage.organizeManage.orgInfo"),
@@ -81,32 +82,32 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "姓名",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.name")),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: "手机号",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.phone")),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		label: "岗位",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.position")),
 		prop: "position",
 		width: 120,
 	},
 	{
-		label: "邮箱",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.email")),
 		prop: "email",
 		width: 200,
 	},
 	{
-		label: "地址",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.address")),
 		prop: "address",
 		width: 200,
 	},
 	{
-		label: "性别",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.gender")),
 		prop: "gender",
 		width: 80,
 	},
@@ -121,7 +122,7 @@ const columns = ref<TableColumnList>([
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "关联员工",
+	title: transformI18n($t("settingManage.organizeManage.orgInfo.tableTitle")),
 	columns: columns.value,
 });
 
@@ -136,7 +137,7 @@ interface EmployeeSearchForm {
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "员工名称",
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
 		prop: "employeeName",
 		valueType: "input",
 	},
@@ -154,7 +155,7 @@ const plusSearchProps = ref<PlusSearchProps>({
 // 树组件搜索配置
 const treeSearchOptions = {
 	searchable: true,
-	searchPlaceholder: "请输入组织名称",
+	searchPlaceholder: transformI18n($t("settingManage.organizeManage.orgInfo.search.orgNamePlaceholder")),
 };
 
 // 树组件展开折叠配置
@@ -231,7 +232,7 @@ function handleAddOrg() {
 
 function handleEditOrg() {
 	if (!localSelectedOrg.value) {
-		ElMessage.warning("请先选择一个组织");
+		ElMessage.warning(transformI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
 		return;
 	}
 	console.log("修改组织:", localSelectedOrg.value);
@@ -239,7 +240,7 @@ function handleEditOrg() {
 
 function handleDeleteOrg() {
 	if (!localSelectedOrg.value) {
-		ElMessage.warning("请先选择一个组织");
+		ElMessage.warning(transformI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
 		return;
 	}
 	console.log("删除组织:", localSelectedOrg.value);
@@ -281,7 +282,7 @@ onMounted(async () => {
 				<el-card shadow="never" class="h-full">
 					<template #header>
 						<div class="card-header flex items-center justify-between">
-							<span class="font-medium">组织结构</span>
+							<span class="font-medium">{{ transformI18n($t("settingManage.organizeManage.orgInfo.treeTitle")) }}</span>
 						</div>
 					</template>
 
@@ -328,7 +329,9 @@ onMounted(async () => {
 				<!-- 员工表格区域 -->
 				<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 					<template #buttons>
-						<ElButton type="info" @click="handleExportDoc"> 文档 </ElButton>
+						<ElButton type="info" @click="handleExportDoc">
+							{{ transformI18n($t("settingManage.organizeManage.common.buttons.document")) }}
+						</ElButton>
 						<ElButton type="primary" @click="handleAddEmployee">
 							{{ transformI18n($t("common.buttons.add")) }}
 						</ElButton>
