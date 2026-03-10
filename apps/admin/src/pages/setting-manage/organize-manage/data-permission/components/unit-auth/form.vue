@@ -52,12 +52,12 @@ const searchForm = ref<UnitSelectionSearchVO>({
 /** 搜索栏配置 */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "输入楼栋编号",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
 		prop: "buildingCode",
 		valueType: "input",
 	},
 	{
-		label: "输入单元编号",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
 		prop: "unitCode",
 		valueType: "input",
 	},
@@ -82,12 +82,12 @@ const columns = ref<TableColumnList>([
 		width: 55,
 	},
 	{
-		label: "楼栋编号",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
 		prop: "buildingCode",
 		minWidth: 200,
 	},
 	{
-		label: "单元编号",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
 		prop: "unitCode",
 		minWidth: 200,
 	},

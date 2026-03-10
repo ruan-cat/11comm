@@ -22,12 +22,12 @@ const tableData = ref<UnitAuthItem[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
-		label: "楼栋",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.building")),
 		prop: "building",
 		minWidth: 200,
 	},
 	{
-		label: "单元",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unit")),
 		prop: "unit",
 		minWidth: 200,
 	},
@@ -67,7 +67,7 @@ const pureTableProps = ref<PureTableProps>({
 
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "单元授权",
+	title: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.title")),
 	columns: columns.value,
 });
 
@@ -101,7 +101,7 @@ function openUnitAuthDialog() {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title: "楼栋单元",
+		title: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.dialogTitle")),
 		width: "900px",
 
 		contentRenderer: () =>
@@ -148,7 +148,9 @@ function openUnitAuthDialog() {
 					const selectedData = unitAuthFormInstance.value.getSelectedData();
 
 					if (!selectedData || selectedData.length === 0) {
-						message("请选择要关联的单元", { type: "warning" });
+						message(transformI18n($t("settingManage.organizeManage.common.messages.unitRequired")), {
+							type: "warning",
+						});
 						return;
 					}
 
@@ -165,7 +167,9 @@ function openUnitAuthDialog() {
 					tableData.value.push(...newData);
 					pagination.value.total = tableData.value.length;
 
-					message("关联单元成功", { type: "success" });
+					message(transformI18n($t("settingManage.organizeManage.common.messages.unitAssociateSuccess")), {
+						type: "success",
+					});
 					closeDialog(options, index);
 				},
 			},
@@ -180,7 +184,7 @@ function handleDelete(row: UnitAuthItem) {
 	if (index > -1) {
 		tableData.value.splice(index, 1);
 		pagination.value.total = tableData.value.length;
-		message("删除成功", { type: "success" });
+		message(transformI18n($t("settingManage.organizeManage.common.messages.deleteSuccess")), { type: "success" });
 	}
 }
 
@@ -195,7 +199,9 @@ async function doFetch() {
 	<section class="unit-auth-table-root">
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary" @click="openUnitAuthDialog"> 关联单元 </ElButton>
+				<ElButton type="primary" @click="openUnitAuthDialog">
+					{{ transformI18n($t("settingManage.organizeManage.common.buttons.associateUnit")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -208,7 +214,9 @@ async function doFetch() {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="danger" @click="handleDelete(row)"> 删除 </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>

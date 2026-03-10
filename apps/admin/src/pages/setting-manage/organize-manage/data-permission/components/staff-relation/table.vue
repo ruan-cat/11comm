@@ -20,27 +20,27 @@ const tableData = ref<StaffRelationItem[]>([]);
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
-		label: "名称",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.name")),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: "手机号",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.phone")),
 		prop: "phone",
 		width: 150,
 	},
 	{
-		label: "邮箱",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.email")),
 		prop: "email",
 		width: 200,
 	},
 	{
-		label: "地址",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.address")),
 		prop: "address",
 		minWidth: 150,
 	},
 	{
-		label: "性别",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.gender")),
 		prop: "gender",
 		width: 80,
 	},
@@ -80,7 +80,7 @@ const pureTableProps = ref<PureTableProps>({
 
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "员工关联",
+	title: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.title")),
 	columns: columns.value,
 });
 
@@ -104,12 +104,12 @@ const plusSearchModel = ref(plusSearchModelRef);
 /** 表格搜索栏组件表单配置 */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "员工名称",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "员工手机号",
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
 		prop: "phone",
 		valueType: "input",
 	},
@@ -172,7 +172,9 @@ onMounted(async () => {});
           TODO: 先完成 单元授权 tab列表页的表格多选弹框功能 然后再复用代码 实现此处的业务逻辑
           还需要完成表格弹框业务
         -->
-				<ElButton type="primary"> 关联员工 </ElButton>
+				<ElButton type="primary">
+					{{ transformI18n($t("settingManage.organizeManage.common.buttons.associateEmployee")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -186,8 +188,12 @@ onMounted(async () => {});
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="danger" @click="handleDelete(row)"> 删除 </ElButton>
-						<ElButton type="info" @click="handleDetail(row)"> 详情 </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
+						<ElButton type="info" @click="handleDetail(row)">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>

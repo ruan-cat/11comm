@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "数据权限",
+		// 数据权限
+		title: "settingManage.organizeManage.dataPermission.pageTitle",
 		icon: "mdi:shield-account",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.dataPermission"),
@@ -37,7 +38,7 @@ const selectedItem = ref<DataPermission | null>(null);
 
 /** 右侧动态标题 */
 const rightTitle = computed(() => {
-	return selectedItem.value?.name || "A级数据权限";
+	return selectedItem.value?.name || transformI18n($t("settingManage.organizeManage.dataPermission.defaultTitle"));
 });
 
 /** 当前激活的Tab标签页 */
@@ -103,12 +104,18 @@ async function handleTabClick(tab: any) {
 				<div class="content-tabs">
 					<ElTabs v-model="activeTab" type="card" @tab-click="handleTabClick">
 						<!-- 单元授权Tab -->
-						<ElTabPane label="单元授权" name="unitAuth">
+						<ElTabPane
+							:label="transformI18n($t('settingManage.organizeManage.dataPermission.tabs.unitAuth'))"
+							name="unitAuth"
+						>
 							<UnitAuthTable />
 						</ElTabPane>
 
 						<!-- 员工关联Tab -->
-						<ElTabPane label="员工关联" name="staffRelation">
+						<ElTabPane
+							:label="transformI18n($t('settingManage.organizeManage.dataPermission.tabs.staffRelation'))"
+							name="staffRelation"
+						>
 							<StaffRelationTable ref="staffRelationTableRef" />
 						</ElTabPane>
 					</ElTabs>
