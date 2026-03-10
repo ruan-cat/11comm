@@ -4,11 +4,14 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
-import type { StaffInfoFormVO } from "@01s-11comm/type";
+import { staffGenderOptions, type StaffInfoFormVO } from "@01s-11comm/type";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { type StaffInfoFormProps } from "./form.ts";
 
 const props = defineProps<StaffInfoFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & StaffInfoFormVO;
@@ -38,22 +41,120 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedGenderOptions = computed(() => {
+	const genderKeyMap: Record<string, string> = {
+		男: "male",
+		女: "female",
+	};
+
+	return staffGenderOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			t(`settingManage.organizeManage.staffInfo.form.options.gender.${genderKeyMap[String(option.value)]}`),
+		),
+	}));
+});
+
+const positionOptions = computed(() => [
+	{ label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.staff")), value: "普通员工" },
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.departmentManager")),
+		value: "部门经理",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.deputyManager")),
+		value: "部门副经理",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.teamLeader")),
+		value: "部门组长",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.branchGeneralManager")),
+		value: "分公司总经理",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.branchDeputyGeneralManager")),
+		value: "分公司副总经理",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.generalManagerAssistant")),
+		value: "总经理助理",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.positions.headquartersGeneralManager")),
+		value: "总公司总经理",
+	},
+	{
+		label: transformI18n(
+			t("settingManage.organizeManage.staffInfo.form.options.positions.headquartersDeputyGeneralManager"),
+		),
+		value: "总公司副总经理",
+	},
+]);
+
+const orgOptions = computed(() => [
+	{ label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.top")), value: "中航物业1" },
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.finance")),
+		value: "中航物业1/财务部",
+	},
+	{ label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.hr")), value: "中航物业1/人事部" },
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.engineering")),
+		value: "中航物业1/工程部",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.security")),
+		value: "中航物业1/安保部",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.service")),
+		value: "中航物业1/客服部",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.cleaning")),
+		value: "中航物业1/保洁部",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.greening")),
+		value: "中航物业1/绿化部",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.administration")),
+		value: "中航物业1/行政部",
+	},
+	{
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.form.options.orgs.external")),
+		value: "中航物业1/物业1外实员部门",
+	},
+]);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 员工名称
 	{
-		label: "员工名称",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请填写员工名称（2-10位）",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.name")),
 			maxlength: 10,
 			minlength: 2,
 		},
 		formItemProps: {
 			rules: [
-				{ required: true, message: "请填写员工名称", trigger: "blur" },
-				{ min: 2, max: 10, message: "员工名称长度为2-10位", trigger: "blur" },
+				{
+					required: true,
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.enterName")),
+					trigger: "blur",
+				},
+				{
+					min: 2,
+					max: 10,
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.nameLength")),
+					trigger: "blur",
+				},
 			],
 		},
 		required: true,
@@ -61,55 +162,42 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 员工性别
 	{
-		label: "员工性别",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.gender")),
 		prop: "gender",
 		valueType: "select",
-		options: [
-			{ label: "男", value: "男" },
-			{ label: "女", value: "女" },
-		],
+		options: translatedGenderOptions.value,
 		fieldProps: {
-			placeholder: "请选择员工性别",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.gender")),
 		},
 		required: true,
 	},
 
 	// 员工岗位
 	{
-		label: "员工岗位",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.position")),
 		prop: "position",
 		valueType: "select",
-		options: [
-			{ label: "普通员工", value: "普通员工" },
-			{ label: "部门经理", value: "部门经理" },
-			{ label: "部门副经理", value: "部门副经理" },
-			{ label: "部门组长", value: "部门组长" },
-			{ label: "分公司总经理", value: "分公司总经理" },
-			{ label: "分公司副总经理", value: "分公司副总经理" },
-			{ label: "总经理助理", value: "总经理助理" },
-			{ label: "总公司总经理", value: "总公司总经理" },
-			{ label: "总公司副总经理", value: "总公司副总经理" },
-		],
+		options: positionOptions.value,
 		fieldProps: {
-			placeholder: "请选择岗位",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.position")),
 		},
 		required: true,
 	},
 
 	// 员工邮箱
 	{
-		label: "员工邮箱",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.email")),
 		prop: "email",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请填写员工邮箱",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.email")),
 			type: "email",
 		},
 		formItemProps: {
 			rules: [
 				{
 					type: "email",
-					message: "请输入正确的邮箱格式",
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.invalidEmail")),
 					trigger: "blur",
 				},
 			],
@@ -118,19 +206,23 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 手机
 	{
-		label: "手机",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请填写手机",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.phone")),
 			maxlength: 11,
 		},
 		formItemProps: {
 			rules: [
-				{ required: true, message: "请填写手机", trigger: "blur" },
+				{
+					required: true,
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.enterPhone")),
+					trigger: "blur",
+				},
 				{
 					pattern: /^1[3-9]\d{9}$/,
-					message: "请输入正确的手机号格式",
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.invalidPhone")),
 					trigger: "blur",
 				},
 			],
@@ -140,47 +232,51 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 家庭住址
 	{
-		label: "家庭住址",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.address")),
 		prop: "address",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请填写家庭住址",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.address")),
+		},
+		formItemProps: {
+			rules: [
+				{
+					required: true,
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.enterAddress")),
+					trigger: "blur",
+				},
+			],
 		},
 		required: true,
 	},
 
 	// 关联组织
 	{
-		label: "关联组织",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.orgName")),
 		prop: "orgName",
 		valueType: "select",
-		options: [
-			{ label: "中航物业1", value: "中航物业1" },
-			{ label: "中航物业1/财务部", value: "中航物业1/财务部" },
-			{ label: "中航物业1/人事部", value: "中航物业1/人事部" },
-			{ label: "中航物业1/工程部", value: "中航物业1/工程部" },
-			{ label: "中航物业1/安保部", value: "中航物业1/安保部" },
-			{ label: "中航物业1/客服部", value: "中航物业1/客服部" },
-			{ label: "中航物业1/保洁部", value: "中航物业1/保洁部" },
-			{ label: "中航物业1/绿化部", value: "中航物业1/绿化部" },
-			{ label: "中航物业1/行政部", value: "中航物业1/行政部" },
-			{ label: "中航物业1/物业1外实员部门", value: "中航物业1/物业1外实员部门" },
-		],
+		options: orgOptions.value,
 		fieldProps: {
-			placeholder: "请选择关联组织",
+			placeholder: transformI18n(t("settingManage.organizeManage.staffInfo.form.placeholders.orgName")),
+		},
+		formItemProps: {
+			rules: [
+				{
+					required: true,
+					message: transformI18n(t("settingManage.organizeManage.staffInfo.form.validation.selectOrgName")),
+					trigger: "change",
+				},
+			],
 		},
 		required: true,
 	},
 
 	// 照片
 	{
-		label: "照片",
+		label: transformI18n(t("settingManage.organizeManage.staffInfo.fields.avatar")),
 		prop: "avatar",
 	},
 ]);
-
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
 const plusFormRules = ref<PlusFormRules>({});
@@ -198,7 +294,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:row-props="{ gutter: 20 }"
 			:col-props="{ span: 12 }"
@@ -207,6 +303,17 @@ defineExpose({
 		>
 			<!-- 照片上传插槽 -->
 			<template #plus-field-照片>
+				<div class="upload-container">
+					<el-upload class="avatar-uploader" action="#" :show-file-list="false" :auto-upload="false" accept="image/*">
+						<div class="upload-area">
+							<el-icon class="upload-icon">
+								<Plus />
+							</el-icon>
+						</div>
+					</el-upload>
+				</div>
+			</template>
+			<template #plus-field-avatar>
 				<div class="upload-container">
 					<el-upload class="avatar-uploader" action="#" :show-file-list="false" :auto-upload="false" accept="image/*">
 						<div class="upload-area">

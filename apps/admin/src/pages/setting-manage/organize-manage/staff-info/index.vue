@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "员工信息",
+		// 员工信息
+		title: "settingManage.organizeManage.staffInfo.pageTitle",
 		icon: "mdi:account-multiple",
 		roles: ["物业团队", "运营团队"],
 		rank: getRouteRank("settingManage.organizeManage.staffInfo"),
@@ -9,7 +10,7 @@ definePage({
 });
 
 import { ref, computed, watch } from "vue";
-import { transformI18n } from "plugins/i18n.ts";
+import { transformI18n } from "@/plugins/i18n";
 import { type StaffInfoFormProps, defaultForm } from "./components/form.ts";
 import type { StaffInfoFormVO } from "@01s-11comm/type";
 import StaffInfoForm from "./components/form.vue";
@@ -51,43 +52,43 @@ const {
 /** 表格列配置 */
 const columns = ref<TableColumnList>([
 	{
-		label: "员工编号",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeNumber")),
 		prop: "employeeNumber",
 		minWidth: 180,
 		fixed: true,
 	},
 	{
-		label: "姓名",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: "手机号",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		label: "关联组织",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.orgName")),
 		prop: "orgName",
 		width: 200,
 	},
 	{
-		label: "岗位",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.position")),
 		prop: "position",
 		width: 140,
 	},
 	{
-		label: "邮箱",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.email")),
 		prop: "email",
 		width: 180,
 	},
 	{
-		label: "地址",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.address")),
 		prop: "address",
 		minWidth: 160,
 	},
 	{
-		label: "性别",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.gender")),
 		prop: "gender",
 		width: 80,
 	},
@@ -102,7 +103,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "员工管理",
+	title: transformI18n($t("settingManage.organizeManage.staffInfo.tableTitle")),
 	columns: columns.value,
 });
 
@@ -113,31 +114,31 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 员工ID
 	{
-		label: "员工ID",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		prop: "id",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入员工ID",
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		},
 	},
 
 	// 员工姓名
 	{
-		label: "员工姓名",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入员工姓名",
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		},
 	},
 
 	// 手机号
 	{
-		label: "手机号",
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入手机号",
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		},
 	},
 ]);
@@ -184,7 +185,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}员工`;
+	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.staffInfo.dialogTitle"))}`;
 
 	/** 表单组件需要的props */
 	const formProps: StaffInfoFormProps = {
@@ -339,7 +340,9 @@ function handleDetail(row: StaffInfo) {
 						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="success" @click="handleResetPassword(row)"> 重置密码 </ElButton>
+						<ElButton type="success" @click="handleResetPassword(row)">
+							{{ transformI18n($t("settingManage.organizeManage.common.buttons.resetPassword")) }}
+						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
