@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useDark, useECharts } from "@pureadmin/utils";
+import { transformI18n } from "@/plugins/i18n";
 import { type PropType, ref, computed, watch, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
 	requireData: {
@@ -14,6 +16,7 @@ const props = defineProps({
 });
 
 const { isDark } = useDark();
+const { t } = useI18n();
 
 const theme = computed(() => (isDark.value ? "dark" : "light"));
 
@@ -41,7 +44,7 @@ watch(
 				right: 0,
 			},
 			legend: {
-				data: ["需求人数", "提问数量"],
+				data: [transformI18n($t("welcome.metrics.requiredPeople")), transformI18n($t("welcome.metrics.questionCount"))],
 				textStyle: {
 					color: "#606266",
 					fontSize: "0.875rem",
@@ -51,7 +54,15 @@ watch(
 			xAxis: [
 				{
 					type: "category",
-					data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+					data: [
+						transformI18n($t("welcome.weekdays.monday")),
+						transformI18n($t("welcome.weekdays.tuesday")),
+						transformI18n($t("welcome.weekdays.wednesday")),
+						transformI18n($t("welcome.weekdays.thursday")),
+						transformI18n($t("welcome.weekdays.friday")),
+						transformI18n($t("welcome.weekdays.saturday")),
+						transformI18n($t("welcome.weekdays.sunday")),
+					],
 					axisLabel: {
 						fontSize: "0.875rem",
 					},
@@ -74,7 +85,7 @@ watch(
 			],
 			series: [
 				{
-					name: "需求人数",
+					name: transformI18n($t("welcome.metrics.requiredPeople")),
 					type: "bar",
 					barWidth: 10,
 					itemStyle: {
@@ -84,7 +95,7 @@ watch(
 					data: props.requireData,
 				},
 				{
-					name: "提问数量",
+					name: transformI18n($t("welcome.metrics.questionCount")),
 					type: "bar",
 					barWidth: 10,
 					itemStyle: {
