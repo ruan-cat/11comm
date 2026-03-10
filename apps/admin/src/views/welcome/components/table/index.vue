@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useColumns } from "./columns";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
+const { t } = useI18n();
 const { loading, columns, dataList, pagination, Empty, onCurrentChange } = useColumns();
 </script>
 
@@ -20,7 +23,7 @@ const { loading, columns, dataList, pagination, Empty, onCurrentChange } = useCo
 		@page-current-change="onCurrentChange"
 	>
 		<template #empty>
-			<el-empty description="暂无数据" :image-size="60">
+			<el-empty :description="transformI18n($t('welcome.table.noData'))" :image-size="60">
 				<template #image>
 					<Empty />
 				</template>
@@ -31,7 +34,7 @@ const { loading, columns, dataList, pagination, Empty, onCurrentChange } = useCo
 				plain
 				circle
 				size="small"
-				:title="`查看序号为${row.id}的详情`"
+				:title="t('welcome.table.viewDetailTitle', { id: row.id })"
 				:icon="useRenderIcon('ri:search-line')"
 			/>
 		</template>
