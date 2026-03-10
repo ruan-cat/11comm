@@ -1,0 +1,32 @@
+dashboard:
+  loginHint: View more data after login
+  lastWeek: Last Week
+  thisWeek: This Week
+  overview: Analytics Overview
+  solveRate: Resolution Rate
+  dataStats: Data Statistics
+  latestNews: Latest Updates
+  latestNewsItem: "{required} new issues, {resolved} resolved"
+
+metrics:
+  requiredPeople: Required Users
+  questionCount: Questions
+  resolvedCount: Resolved
+  satisfaction: User Satisfaction
+
+weekdays:
+  sunday: Sunday
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
+
+table:
+  index: Index
+  date: Statistics Date
+  noData: No data
+  viewDetailTitle: "View details for item {id}"
+  filterMoreOrEqual16000: "≥16000"
+  filterLessThan16000: "<16000"
