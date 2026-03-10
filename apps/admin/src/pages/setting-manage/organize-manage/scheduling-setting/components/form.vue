@@ -4,11 +4,14 @@ import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { type SchedulingSettingFormProps } from "./form";
 import { type SchedulingSettingFormVO, schedulingTypeOptions, schedulingStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<SchedulingSettingFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & SchedulingSettingFormVO;
@@ -37,21 +40,41 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedSchedulingTypeOptions = computed(() =>
+	schedulingTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`settingManage.organizeManage.schedulingSetting.form.options.type.${option.value}`)),
+	})),
+);
+
+const translatedSchedulingStatusOptions = computed(() =>
+	schedulingStatusOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			t(
+				`settingManage.organizeManage.schedulingSetting.form.options.status.${
+					option.value === "enabled" ? "enabled" : "disabled"
+				}`,
+			),
+		),
+	})),
+);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "班次名称",
+		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "排班类型",
+		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.type")),
 		prop: "type",
 		valueType: "select",
-		options: schedulingTypeOptions,
+		options: translatedSchedulingTypeOptions.value,
 	},
 	{
-		label: "排班周期",
+		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
 		prop: "cycle",
 		valueType: "input-number",
 		fieldProps: {
@@ -59,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "生效时间",
+		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
 		prop: "effectiveTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -69,29 +92,62 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "人员",
+		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.staff")),
 		prop: "staff",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: schedulingStatusOptions,
+		options: translatedSchedulingStatusOptions.value,
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	name: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
-	type: [{ required: true, message: "请选择排班类型", trigger: "change" }],
-	cycle: [
-		{ required: true, message: "请输入排班周期", trigger: "blur" },
-		{ type: "number", min: 1, message: "排班周期必须大于0", trigger: "blur" },
+const plusFormRules = computed<PlusFormRules>(() => ({
+	name: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.enterName")),
+			trigger: "blur",
+		},
 	],
-	effectiveTime: [{ required: true, message: "请选择生效时间", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	type: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.selectType")),
+			trigger: "change",
+		},
+	],
+	cycle: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.enterCycle")),
+			trigger: "blur",
+		},
+		{
+			type: "number",
+			min: 1,
+			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.cyclePositive")),
+			trigger: "blur",
+		},
+	],
+	effectiveTime: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.selectEffectiveTime")),
+			trigger: "change",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+}));
 
 /** 对外导出 */
 defineExpose({

@@ -4,11 +4,14 @@ import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { WorkingScheduleFormProps } from "./form";
-import type { WorkingScheduleFormVO } from "@01s-11comm/type";
+import { scheduleTypeOptions, weekdayOptions, type WorkingScheduleFormVO } from "@01s-11comm/type";
 
 const props = defineProps<WorkingScheduleFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & WorkingScheduleFormVO;
@@ -37,84 +40,144 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedScheduleTypeOptions = computed(() =>
+	scheduleTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			t(
+				`settingManage.organizeManage.workingSchedule.options.${option.value === "full_day" ? "allDay" : option.value}`,
+			),
+		),
+	})),
+);
+
+const translatedWeekdayOptions = computed(() => {
+	const weekdayKeyMap: Record<number, string> = {
+		1: "monday",
+		2: "tuesday",
+		3: "wednesday",
+		4: "thursday",
+		5: "friday",
+		6: "saturday",
+		7: "sunday",
+	};
+
+	return weekdayOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			t(`settingManage.organizeManage.workingSchedule.options.${weekdayKeyMap[Number(option.value)]}`),
+		),
+	}));
+});
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "排班名称",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "排班类型",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.type")),
 		prop: "type",
 		valueType: "select",
-		options: [
-			{ label: "早班", value: "morning" },
-			{ label: "中班", value: "afternoon" },
-			{ label: "晚班", value: "evening" },
-			{ label: "夜班", value: "night" },
-			{ label: "全天", value: "全天" },
-		],
+		options: translatedScheduleTypeOptions.value,
 	},
 	{
-		label: "开始时间",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.startTime")),
 		prop: "startTime",
 		valueType: "time-picker",
 	},
 	{
-		label: "结束时间",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.endTime")),
 		prop: "endTime",
 		valueType: "time-picker",
 	},
 	{
-		label: "星期几",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.weekday")),
 		prop: "weekday",
 		valueType: "select",
-		options: [
-			{ label: "星期一", value: 1 },
-			{ label: "星期二", value: 2 },
-			{ label: "星期三", value: 3 },
-			{ label: "星期四", value: 4 },
-			{ label: "星期五", value: 5 },
-			{ label: "星期六", value: 6 },
-			{ label: "星期日", value: 7 },
-		],
+		options: translatedWeekdayOptions.value,
 	},
 	{
-		label: "负责人姓名",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.managerName")),
 		prop: "managerName",
 		valueType: "input",
 	},
 	{
-		label: "联系电话",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 	},
 	{
-		label: "排班描述",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 	},
 	{
-		label: "是否启用",
+		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.enabled")),
 		prop: "enabled",
 		valueType: "switch",
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	name: [{ required: true, message: "请输入排班名称", trigger: "blur" }],
-	type: [{ required: true, message: "请选择排班类型", trigger: "change" }],
-	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	weekday: [{ required: true, message: "请选择星期几", trigger: "change" }],
-	managerName: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
-	phone: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+const plusFormRules = computed<PlusFormRules>(() => ({
+	name: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.enterName")),
+			trigger: "blur",
+		},
 	],
-});
+	type: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectType")),
+			trigger: "change",
+		},
+	],
+	startTime: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectStartTime")),
+			trigger: "change",
+		},
+	],
+	endTime: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectEndTime")),
+			trigger: "change",
+		},
+	],
+	weekday: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectWeekday")),
+			trigger: "change",
+		},
+	],
+	managerName: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.enterManagerName")),
+			trigger: "blur",
+		},
+	],
+	phone: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.enterPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.invalidPhone")),
+			trigger: "blur",
+		},
+	],
+}));
 
 // 默认对外导出
 defineExpose({

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "排班表",
+		// 排班表
+		title: "settingManage.organizeManage.workingSchedule.pageTitle",
 		icon: "mdi:calendar",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.workingSchedule"),
@@ -61,42 +62,42 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "排班名称",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",
 		width: 150,
 	},
 	{
-		label: "排班类型",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
 		prop: "type",
 		width: 120,
 	},
 	{
-		label: "开始时间",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.startTime")),
 		prop: "startTime",
 		width: 120,
 	},
 	{
-		label: "结束时间",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.endTime")),
 		prop: "endTime",
 		width: 120,
 	},
 	{
-		label: "星期几",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.weekday")),
 		prop: "weekday",
 		width: 100,
 	},
 	{
-		label: "负责人",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.managerName")),
 		prop: "managerName",
 		width: 120,
 	},
 	{
-		label: "联系电话",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.phone")),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.status")),
 		prop: "enabled",
 		width: 80,
 	},
@@ -111,7 +112,7 @@ const columns = ref<TableColumnList>([
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "排班管理",
+	title: transformI18n($t("settingManage.organizeManage.workingSchedule.tableTitle")),
 	columns: columns.value,
 });
 
@@ -127,20 +128,23 @@ interface ScheduleSearchForm {
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "排班名称",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "排班类型",
+		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
 		prop: "type",
 		valueType: "select",
 		options: [
-			{ label: "早班", value: "morning" },
-			{ label: "中班", value: "afternoon" },
-			{ label: "晚班", value: "evening" },
-			{ label: "夜班", value: "night" },
-			{ label: "全天", value: "全天" },
+			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.morning")), value: "morning" },
+			{
+				label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.afternoon")),
+				value: "afternoon",
+			},
+			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.evening")), value: "evening" },
+			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.night")), value: "night" },
+			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.allDay")), value: "全天" },
 		],
 	},
 ]);
@@ -197,7 +201,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}排班`;
+	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.workingSchedule.dialogTitle"))}`;
 
 	/** 表单组件需要的props */
 	const formProps: WorkingScheduleFormProps = {
@@ -329,7 +333,9 @@ onMounted(async () => {
 		<!-- 排班表格区域 -->
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="info" @click="handleExportSchedule"> 导出 </ElButton>
+				<ElButton type="info" @click="handleExportSchedule">
+					{{ transformI18n($t("settingManage.organizeManage.common.buttons.export")) }}
+				</ElButton>
 				<ElButton type="primary" @click="handleAddSchedule">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>

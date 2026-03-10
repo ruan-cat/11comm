@@ -8,11 +8,14 @@ import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { type ShiftSettingFormProps } from "./form";
 import { type ShiftSettingFormVO, shiftTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<ShiftSettingFormProps & { mode: Mode }>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ShiftSettingFormVO;
@@ -42,10 +45,26 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedShiftTypeOptions = computed(() => {
+	const shiftTypeKeyMap: Record<string, string> = {
+		白班: "day",
+		夜班: "night",
+		中班: "middle",
+		全天: "allDay",
+	};
+
+	return shiftTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			t(`settingManage.organizeManage.shiftSetting.form.options.type.${shiftTypeKeyMap[String(option.value)]}`),
+		),
+	}));
+});
+
 /** 表单项配置 */
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "班次名称",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
 		required: true,
@@ -54,17 +73,17 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: "班次类型",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.type")),
 		prop: "type",
 		valueType: "select",
-		options: shiftTypeOptions,
+		options: translatedShiftTypeOptions.value,
 		required: true,
 		fieldProps: {
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "开始时间",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.startTime")),
 		prop: "startTime",
 		valueType: "time-picker",
 		required: true,
@@ -75,7 +94,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: "结束时间",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.endTime")),
 		prop: "endTime",
 		valueType: "time-picker",
 		required: true,
@@ -86,7 +105,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: "是否启用",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.enabled")),
 		prop: "enabled",
 		valueType: "switch",
 		fieldProps: {
@@ -94,7 +113,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: "描述",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
@@ -104,12 +123,36 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 ]);
 
 // 表单验证规则
-const plusFormRules = ref<PlusFormRules>({
-	name: [{ required: true, message: "请输入班次名称", trigger: "blur" }],
-	type: [{ required: true, message: "请选择班次类型", trigger: "change" }],
-	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-});
+const plusFormRules = computed<PlusFormRules>(() => ({
+	name: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.shiftSetting.form.validation.enterName")),
+			trigger: "blur",
+		},
+	],
+	type: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.shiftSetting.form.validation.selectType")),
+			trigger: "change",
+		},
+	],
+	startTime: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.shiftSetting.form.validation.selectStartTime")),
+			trigger: "change",
+		},
+	],
+	endTime: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.shiftSetting.form.validation.selectEndTime")),
+			trigger: "change",
+		},
+	],
+}));
 
 // 对外导出表单实例和表单对象
 defineExpose({

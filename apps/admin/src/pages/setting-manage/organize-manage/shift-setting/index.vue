@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "班次设置",
+		// 班次设置
+		title: "settingManage.organizeManage.shiftSetting.pageTitle",
 		icon: "mdi:clock-time-eight",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.shiftSetting"),
@@ -11,6 +12,7 @@ definePage({
 import { ref, computed, h } from "vue";
 import { ElMessageBox } from "element-plus";
 import { transformI18n } from "@/plugins/i18n";
+import { useI18n } from "vue-i18n";
 import { type ShiftSettingFormProps, defaultForm } from "./components/form";
 import type { ShiftSettingFormVO, ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
 import ShiftSettingForm from "./components/form.vue";
@@ -22,6 +24,8 @@ import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 
 import { message } from "@/utils/message";
+
+const { t } = useI18n();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -85,7 +89,7 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}班次设置`;
+	const title = `${modeText.value}${transformI18n(t("settingManage.organizeManage.shiftSetting.dialogTitle"))}`;
 
 	/** 业务对象 */
 	const formVO: ShiftSettingFormVO = isAdd.value
@@ -180,34 +184,37 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "班次名称",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.name")),
 		prop: "name",
 		width: 200,
 		fixed: true,
 	},
 	{
-		label: "开始时间",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.startTime")),
 		prop: "startTime",
 		width: 120,
 	},
 	{
-		label: "结束时间",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.endTime")),
 		prop: "endTime",
 		width: 120,
 	},
 	{
-		label: "班次类型",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.type")),
 		prop: "type",
 		width: 120,
 	},
 	{
-		label: "状态",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.status")),
 		prop: "enabled",
 		width: 100,
-		cellRenderer: ({ row }) => (row.enabled ? "启用" : "停用"),
+		cellRenderer: ({ row }) =>
+			row.enabled
+				? transformI18n(t("settingManage.organizeManage.shiftSetting.status.enabled"))
+				: transformI18n(t("settingManage.organizeManage.shiftSetting.status.disabled")),
 	},
 	{
-		label: "描述",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.description")),
 		prop: "description",
 		minWidth: 200,
 	},
@@ -222,7 +229,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "班次信息",
+	title: transformI18n(t("settingManage.organizeManage.shiftSetting.tableTitle")),
 	columns: columns.value,
 });
 
@@ -232,7 +239,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "班次名称",
+		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
@@ -276,15 +283,19 @@ function handleView(row: ShiftSetting) {
 /** 删除操作 */
 async function handleDelete(row: ShiftSetting) {
 	try {
-		await ElMessageBox.confirm(`确认删除班次 "${row.name}" 吗？`, "提示", {
-			confirmButtonText: "确认",
-			cancelButtonText: "取消",
-			type: "warning",
-		});
+		await ElMessageBox.confirm(
+			transformI18n(t("settingManage.organizeManage.shiftSetting.dialogs.confirmDelete", { name: row.name })),
+			transformI18n(t("settingManage.organizeManage.common.dialogs.confirmTitle")),
+			{
+				confirmButtonText: transformI18n(t("common.buttons.pureConfirm")),
+				cancelButtonText: transformI18n(t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
 
 		// 模拟删除操作
 		console.log("删除班次", row);
-		message("删除成功", { type: "success" });
+		message(transformI18n(t("settingManage.organizeManage.shiftSetting.messages.deleted")), { type: "success" });
 		doFetch();
 	} catch (error) {
 		// 用户取消删除操作
@@ -293,18 +304,26 @@ async function handleDelete(row: ShiftSetting) {
 
 /** 停用/启用操作 */
 async function handleToggleStatus(row: ShiftSetting) {
-	const action = row.enabled ? "停用" : "启用";
+	const action = row.enabled
+		? transformI18n(t("settingManage.organizeManage.common.buttons.disable"))
+		: transformI18n(t("settingManage.organizeManage.common.buttons.enable"));
 
 	try {
-		await ElMessageBox.confirm(`确认${action}班次 "${row.name}" 吗？`, "提示", {
-			confirmButtonText: "确认",
-			cancelButtonText: "取消",
-			type: "warning",
-		});
+		await ElMessageBox.confirm(
+			transformI18n(t("settingManage.organizeManage.shiftSetting.dialogs.confirmToggle", { action, name: row.name })),
+			transformI18n(t("settingManage.organizeManage.common.dialogs.confirmTitle")),
+			{
+				confirmButtonText: transformI18n(t("common.buttons.pureConfirm")),
+				cancelButtonText: transformI18n(t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
 
 		// 模拟更新状态
 		console.log(`${action}班次`, row);
-		message(`班次已${action}`, { type: "success" });
+		message(transformI18n(t("settingManage.organizeManage.shiftSetting.messages.statusUpdated", { action })), {
+			type: "success",
+		});
 		doFetch();
 	} catch (error) {
 		// 用户取消操作
@@ -313,7 +332,7 @@ async function handleToggleStatus(row: ShiftSetting) {
 
 /** 文件操作 */
 function handleFile() {
-	message("文件功能开发中", { type: "info" });
+	message(transformI18n(t("settingManage.organizeManage.common.messages.fileComingSoon")), { type: "info" });
 }
 
 /** 组件挂载时加载数据 */
@@ -335,7 +354,7 @@ onMounted(async () => {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="info" @click="handleFile">
-					{{ transformI18n($t("common.buttons.file")) }}
+					{{ transformI18n(t("settingManage.organizeManage.common.buttons.file")) }}
 				</ElButton>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -356,12 +375,18 @@ onMounted(async () => {
 						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="handleView(row)"> 查看 </ElButton>
+						<ElButton type="info" @click="handleView(row)">
+							{{ transformI18n(t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 						<ElButton :type="row.enabled ? 'info' : 'primary'" @click="handleToggleStatus(row)">
-							{{ row.enabled ? "停用" : "启用" }}
+							{{
+								row.enabled
+									? transformI18n(t("settingManage.organizeManage.common.buttons.disable"))
+									: transformI18n(t("settingManage.organizeManage.common.buttons.enable"))
+							}}
 						</ElButton>
 					</template>
 				</PureTable>

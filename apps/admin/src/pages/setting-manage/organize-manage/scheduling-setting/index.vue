@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "排班设置",
+		// 排班设置
+		title: "settingManage.organizeManage.schedulingSetting.pageTitle",
 		icon: "mdi:calendar-clock",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.organizeManage.schedulingSetting"),
@@ -60,33 +61,33 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "班次名称",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
 		minWidth: 200,
 		fixed: true,
 	},
 	{
-		label: "排班类型",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.type")),
 		prop: "type",
 		width: 120,
 	},
 	{
-		label: "排班周期",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
 		prop: "cycle",
 		width: 100,
 	},
 	{
-		label: "生效时间",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
 		prop: "effectiveTime",
 		width: 180,
 	},
 	{
-		label: "人员",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff")),
 		prop: "staff",
 		width: 120,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		prop: "status",
 		width: 100,
 	},
@@ -101,7 +102,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件配置 */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "排班设置",
+	title: transformI18n($t("settingManage.organizeManage.schedulingSetting.tableTitle")),
 	columns: columns.value,
 });
 
@@ -111,12 +112,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "排班名称",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: schedulingStatusOptions,
@@ -180,7 +181,7 @@ function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 	};
 
 	/** 弹框标题 */
-	const title = `${modeText.value}排班设置`;
+	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.schedulingSetting.dialogTitle"))}`;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -301,7 +302,11 @@ onMounted(async () => {
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 						<ElButton :type="row.状态 === '启用' ? 'info' : 'primary'" @click="handleToggleStatus(row)">
-							{{ row.状态 === "启用" ? "停用" : "启用" }}
+							{{
+								row.状态 === "启用"
+									? transformI18n($t("settingManage.organizeManage.common.buttons.disable"))
+									: transformI18n($t("settingManage.organizeManage.common.buttons.enable"))
+							}}
 						</ElButton>
 					</template>
 				</PureTable>
