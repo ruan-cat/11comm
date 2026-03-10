@@ -37,7 +37,7 @@
 
 - `schema-change-sync` ：`.claude\skills\schema-change-sync\SKILL.md` `Schema变更同步技能` ，数据库 Schema 变更时的全项目同步检查清单。当修改表字段或新增数据库表时，确保类型项目、数据库迁移、后端接口、前端页面、种子数据和技能文档全部同步更新。
 
-- `neon-db-list` ：`.claude\skills\neon-db-list\SKILL.md` `Neon数据库表清单技能` ，维护项目所有数据库表的清单，便于快速查询和理解表结构。
+- `neon-db-query` ：`.claude\skills\neon-db-query\SKILL.md` `Neon数据库表查询技能` ，提供项目所有数据库表的完整清单，并支持使用 Neon MCP 批量查询表结构信息，用于 seed 数据生成参考。
 
 - `neon-postgres-zh` ：`.claude\skills\neon-postgres-zh\SKILL.md` `Neon Postgres中文文档技能` ，Neon PostgreSQL 数据库服务的中文参考文档。
 
@@ -67,93 +67,6 @@ OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以�
 - `业务路径`： 即 `apps\admin\src\router\rank\rank-route-keys.ts` 文件的全部`三级路由`所体现出来的文件路径。被认定为`业务路径`。`类型项目`、`服务端代码`、`后台项目`、`客户端代码`等。都要依赖于`业务路径`来组织代码。是本项目**非常重要**的路径概念。
   - `业务路径`几乎不会新增。一旦新增了`业务路径`，都会在 `rank-route-keys.ts` 内新增。所以在你执行相关任务时，请不要凭空新建内容。一律在`业务路径`对应的目录和文件内做修改或新增。
 
-## 3. 代码/编码格式要求
-
-### 3.1. markdown 文档的 table 编写格式
-
-每当你在 markdown 文档内编写表格时，表格的格式一定是**居中对齐**的，必须满足**居中对齐**的格式要求。
-
-### 3.2. markdown 文档的 vue 组件代码片段编写格式
-
-错误写法：
-
-1. 代码块语言用 vue，且不带有 `<template>` 标签来包裹。
-
-```vue
-<wd-popup v-model="showModal">
-  <wd-cell-group>
-    <!-- 内容 -->
-  </wd-cell-group>
-</wd-popup>
-```
-
-2. 代码块语言用 html。
-
-```html
-<wd-popup v-model="showModal">
-	<wd-cell-group>
-		<!-- 内容 -->
-	</wd-cell-group>
-</wd-popup>
-```
-
-正确写法：代码块语言用 vue ，且带有 `<template>` 标签来包裹。
-
-```vue
-<template>
-	<wd-popup v-model="showModal">
-		<wd-cell-group>
-			<!-- 内容 -->
-		</wd-cell-group>
-	</wd-popup>
-</template>
-```
-
-### 3.3. javascript / typescript 的代码注释写法
-
-代码注释写法应该写成 jsdoc 格式。而不是单纯的双斜杠注释。比如：
-
-不合适的双斜线注释写法如下：
-
-```ts
-// 模拟成功响应
-export function successResponse<T>(data: T, message: string = "操作成功") {
-	return {
-		success: true,
-		code: ResultEnum.Success,
-		message,
-		data,
-		timestamp: Date.now(),
-	};
-}
-```
-
-合适的，满足期望的 jsdoc 注释写法如下：
-
-```ts
-/** 模拟成功响应 */
-export function successResponse<T>(data: T, message: string = "操作成功") {
-	return {
-		success: true,
-		code: ResultEnum.Success,
-		message,
-		data,
-		timestamp: Date.now(),
-	};
-}
-```
-
-### 3.4. markdown 的多级标题要主动提供序号
-
-对于每一份 markdown 文件的`二级标题`和`三级标题`，你都应该要：
-
-1. 主动添加**数字**序号，便于我阅读文档。
-2. 主动**维护正确的数字序号顺序**。如果你处理的 markdown 文档，其手动添加的序号顺序不对，请你及时的更新序号顺序。
-
-### 3.5. 禁止编写脚本完成批处理任务
-
-**不允许**你编写任何 Python、typescript、javascript，或 bash 脚本，完成大批量代码删改之类的任务。你应该阅读文件来完成更改，而不是使用不稳定的，容易带来语法错误的，删改不干净不合理的批处理脚本，来完成任务
-
 ## 3. 禁止全局安装工具包
 
 **严禁**使用 `npm install -g` 或 `pnpm add -g` 等命令进行工具的全局安装。
@@ -165,200 +78,19 @@ export function successResponse<T>(data: T, message: string = "操作成功") {
 1.  **优先使用 npx**：例如 `npx prettier --write .`
 2.  **或者使用本地开发依赖**：确保工具已添加到 `package.json` 的 `devDependencies` 中，然后通过 `pnpm exec` 或 npm scripts 运行。
 
-## 4. 类型项目的代码组织方式与导出规范
+## 4. 类型项目导出规范
 
-> **[ARCHITECTURE TRANSFORMATION NOTICE]**
->
-> `apps/type` 项目正在从"静态类型库"转型为"同构运行时库 (Isomorphic Runtime Library)"。
->
-> **新定义**: `apps/type` 不再仅仅是一个 TypeScript 类型定义包，而是一个包含运行时 Zod Schemas 和 Drizzle Tables 的业务核心定义包。
->
-> **豁免条款**: Full Stack Type Transformation 相关的重构活动豁免 Section 4.1 的"禁止修改"规则。在迁移 Schema 到 `apps/type` 期间，允许进行必要的类型重构和字段调整。
+> 详见 `type-project-organization` 技能（`.claude/skills/type-project-organization/SKILL.md`）。
 
-### 4.1. 对现有类型的处理规范
+> **[ARCHITECTURE TRANSFORMATION NOTICE]** `apps/type` 正在转型为**同构运行时库 (Isomorphic Runtime Library)**，包含 Zod Schemas + Drizzle Tables。Full Stack Type Transformation 完成前，§4.1 的"禁止修改"规则对 Schema 迁移活动豁免。
 
-> **[EXEMPTION FOR TRANSFORMATION]** 在 Full Stack Type Transformation 完成前，本规则对 Schema 迁移活动暂时豁免。允许进行必要的类型重构以支持新架构。
+核心规则（**必须遵守**）：
 
-1. **不允许反反复复**的对已经有的类型字段做增删。**不要突然**增加业务类型字段，不要对已经是英文字段命名的字段名又重写重命名。这非常容易导致其他部分出现类型故障，拖累整个项目开发进度。
-2. 除了中文命名的字段名需要被及时的修正，修改成纯英文的字段名以外，其他情况下均不允许你更改增删字段名。
-
-### 4.2. 在类型项目内，必须使用全量的导出语法
-
-不要去区分是单独导出全部的类型，还是全部的变量。全部都批量导出来。
-
-**错误写法：**
-
-不要单独的导出类型，直接导出全部的代码。包括类型和变量。
-
-```typescript
-export type * from "./expense-manage";
-```
-
-**正确写法：**
-
-直接导出全部内容即可。
-
-```typescript
-export * from "./expense-manage";
-```
-
-### 4.3. 不允许逐个罗列的导出
-
-**错误写法：**
-
-```typescript
-export type {
-	PatrolTaskFormVO,
-	PatrolTaskFormProps,
-	TaskListItem,
-	TaskQueryParams,
-	PatrolTaskListItem,
-	PatrolTaskQueryParams,
-} from "./task";
-```
-
-**正确写法：**
-
-直接全部导出即可。不要逐个罗列需要被导出的项目。
-
-```typescript
-export * from "./task";
-```
-
-### 4.4. 在类型项目，根据业务路径，统一使用 index.ts 来统一作为导出入口
-
-在类型项目内，使用了业务路径来依次组织代码的存放位置。为了逐级获取导出的项目，应该在每一个层级内编写 index.ts 来统一导出全部内容。包括类型和变量。
-
-**正确 index.ts 与业务路径的文件组织关系如下：**
-
-1. 路径 `src/index.ts`
-
-```typescript
-// apps/type/src/index.ts
-// 导出通用类型
-export * from "./common";
-// 导出业务类型
-export * from "./business";
-// 导出常量
-export * from "./constant";
-```
-
-2. 路径 `src/business/index.ts`
-
-```typescript
-// apps/type/src/business/index.ts
-/**
- * @file 业务类型统一导出
- * @description 导出所有业务模块的类型定义
- */
-export * from "./dev-team";
-export * from "./operation-team";
-export * from "./property-manage";
-export * from "./setting-manage";
-```
-
-3. 路径 `src/business/property-manage/index.ts`
-
-```typescript
-// apps/type/src/business/property-manage/index.ts
-// 社区管理模块
-export * from "./community-manage";
-// 房产管理模块
-export * from "./house-property-manage";
-// 合同管理模块
-export * from "./contract-manage";
-// 费用管理模块
-export * from "./expense-manage";
-// 停车管理模块
-export * from "./parking-manage";
-// 巡检管理模块
-export * from "./patrol-manage";
-// 报修管理模块
-export * from "./repairs-manage";
-// 报表管理模块
-export * from "./report-manage";
-```
-
-4. 路径 `src/business/property-manage/patrol-manage/index.ts`
-
-```typescript
-// apps/type/src/business/property-manage/patrol-manage/index.ts
-export * from "./detail";
-export * from "./item";
-export * from "./path";
-export * from "./plan";
-export * from "./point";
-export * from "./task";
-```
-
-### 4.5. 遇到类型错误时，重复的内容导出时的处理方式
-
-比如这种错误：
-
-```log
-模块 "./community-manage" 已导出一个名为"auditStatusOptions"的成员。请考虑重新显式导出以解决歧义。
-模块 "./community-manage" 已导出一个名为"feeTypeOptions"的成员。请考虑重新显式导出以解决歧义。
-```
-
-你不应该使用分散导出的方式来解决类型故障，你应该把这些公共的，相通的类型或变量，统一放在一个文件内导出。
-
-- 对于公共的下拉选项式的变量，应该放在 `apps/type/src/common/business-options.ts` 文件内统一整理，并导出。
-- 对于公共的，通用的业务类型，应该放在 `apps/type/src/common/business-types.ts` 文件内统一整理，并导出。
-
-**对于上述错误，正确的做法是统一放在 `apps/type/src/common/business-options.ts` 内并导出：**
-
-```typescript
-// apps/type/src/common/business-options.ts
-/**
- * @description 审核状态选项
- * Audit status options
- */
-export const auditStatusOptions: OptionsType = [
-	{ label: "待审核", value: "待审核" },
-	{ label: "已通过", value: "已通过" },
-	{ label: "已拒绝", value: "已拒绝" },
-];
-
-/** 费用项名称选项 Expense item name options */
-export const expenseItemNameOptions: OptionsType = [
-	{ label: "物业费", value: "物业费" },
-	{ label: "水电费", value: "水电费" },
-	{ label: "停车费", value: "停车费" },
-	{ label: "维修费", value: "维修费" },
-];
-
-/** 费用类型选项别名 Fee type options alias */
-export const feeTypeOptions = expenseTypeOptions;
-```
-
-**错误写法：**
-
-不要弄这种复杂的逐项导出，阅读很不美观，难以处理。
-
-```typescript
-// 导出通用类型 - 先导出 common
-export * from "./common";
-// 导出业务类型 - 后导出 business，避免冲突时使用命名导出
-export { patrolMethodOptions, patrolPointStatusOptions, returnVisitStatusOptions } from "./common";
-// 选择性导出业务模块，避免重复导出
-export * from "./business/dev-team";
-export * from "./business/operation-team";
-export * from "./business/property-manage";
-export * from "./business/setting-manage";
-// 导出常量
-export * from "./constant";
-```
-
-**正确写法：**
-
-```typescript
-// 导出通用类型
-export * from "./common";
-// 导出业务类型
-export * from "./business";
-// 导出常量
-export * from "./constant";
-```
+1. **禁止**反复增删现有类型字段；中文字段名可改为英文，其余情况禁止重命名。
+2. 始终使用 `export * from "./xxx"` 全量导出；**禁止** `export type *`。
+3. **禁止**逐个罗列导出的项目（`export type { A, B, C } from "./xxx"`）。
+4. 每层目录必须有 `index.ts` 统一导出所有内容（类型 + 变量）。
+5. 重复导出冲突时，将公共内容移至 `apps/type/src/common/business-options.ts` 或 `business-types.ts`。
 
 ## 5. 报告编写规范
 
@@ -400,56 +132,9 @@ export * from "./constant";
 - 报告编写任务。
 - 进度文件更新与编写任务。
 
-### 6.3. 基于`业务路径`做任务划分时的主代理与子代理任务划分规范
+### 6.3. 基于`业务路径`做任务划分时的子代理规范
 
-根据业务路径的`三级路由`，做出细致的子代理任务划分，避免子代理一次性完成过多任务。
-
-有部分`业务路径`的`二级路由`，包含了数量较多的模块，在你划分子代理任务时，你首先应该要全面深刻的阅读 `apps\admin\src\router\rank\rank-route-keys.ts` 所提供的二级路由和三级路由，让子代理只负责 2~3 个具体的三级路由，而不是把一整块三级路由的全部路径对应的修改任务，都交给一个子代理来完成。这很容易出现子代理执行失败的故障。
-
-一个具体的子代理任务划分例子如下：
-
-假定我们要对 `propertyManage.expenseManage` 这款`二级路由`下面全部的`三级路由`对应的`后台项目`的 `form.ts` 文件做处理，统一增加固定的类型导入代码段 `import type { Mode } from "@/composables/use-mode";` ，你作为主代理，面对如下数目的`三级路由`。
-
-```txt
-	// propertyManage.expenseManage 三级路由
-	"propertyManage.expenseManage.waterAndElectricityMeterReading",
-	"propertyManage.expenseManage.vehicleCharge",
-	"propertyManage.expenseManage.reminderForOverduePayments",
-	"propertyManage.expenseManage.reprintVoucher",
-	"propertyManage.expenseManage.overduePaymentInformation",
-	"propertyManage.expenseManage.paymentReview",
-	"propertyManage.expenseManage.refundReview",
-	"propertyManage.expenseManage.houseCharge",
-	"propertyManage.expenseManage.meterReadingType",
-	"propertyManage.expenseManage.discountType",
-	"propertyManage.expenseManage.expenseSummaryTable",
-	"propertyManage.expenseManage.discountApply",
-	"propertyManage.expenseManage.discountSetting",
-	"propertyManage.expenseManage.contracteCharge",
-	"propertyManage.expenseManage.expenseItemSetting",
-	"propertyManage.expenseManage.cancelFee",
-```
-
-很明显，根据业务路径的三级路由，所映射的全部 `form.ts` 文件路径大致如下：
-
-```txt
-apps\admin\src\pages\property-manage\expense-manage\water-and-electricity-meter-reading\components\form.ts
-apps\admin\src\pages\property-manage\expense-manage\vehicle-charge\components\form.ts
-apps\admin\src\pages\property-manage\expense-manage\reminder-for-overdue-payments\components\form.ts
-...剩余的form.ts路径
-```
-
-那么你应该划分 6 个子代理，去完成这些任务：
-
-1. 1 号子代理
-   - waterAndElectricityMeterReading
-   - vehicleCharge
-   - reminderForOverduePayments
-2. 2 号子代理
-   - reprintVoucher
-   - overduePaymentInformation
-   - paymentReview
-3. 以此类推...
+根据 `rank-route-keys.ts` 提供的三级路由做细粒度任务划分，每个子代理只负责 **2~3 个具体三级路由**，避免单个子代理负责过多导致执行失败。
 
 ### 6.4. 主从代理`调度设计`、`职责说明`与`通信反馈`规范
 
@@ -499,59 +184,16 @@ openspec validate {任务名称} --strict
    - 你应该阅读文件来完成更改，而不是使用不稳定的，容易带来语法错误的，删改不干净不合理的批处理脚本，来完成任务。
    - 你应该新建多个子代理，主代理用具体的子代理来完成大规模的修改任务。
 
-## 8. <!-- https://github.com/GuDaStudio/geminimcp --> Core Instruction for Gemini MCP
-
-在任何时刻，你必须思考当前过程可以如何与 gemini 进行协作，如何调用 gemini 为你提供的 MCP 工具作为你**客观全面分析**的保障。
-
-其中你**务必执行**以下几个步骤：
-
-**1** 在你对用户需求**形成初步分析后**，
-（1）首先将用户**原始需求（一字不差，严禁转述）**、以及你的初始思路告知 gemini；
-（2）与 gemini 进行**充分讨论、辩驳**，以完善需求分析和实施计划。这一步的结束标志为，**必须**确保对用户需求的透彻理解，并**生成切实可行的行动计划**。
-
-**2** 在实施具体编码任务前，你**必须向 gemini 索要代码实现原型**（要求 gemini 仅给出 unified diff patch，严禁对代码做任何真实修改）。在获取代码原型后，你**只能以此为逻辑参考，再次对代码修改进行重写**，形成企业生产级别、可读性极高、可维护性极高的代码后，才能实施具体编程修改任务。
-
-- **注意：** Gemini 十分擅长前端代码，并精通样式、UI 组件设计。在涉及前端代码时，你必须向其索要代码原型（CSS/React/Vue/HTML 等前端代码），任何时刻，你**必须以 gemini 的前端设计（原型代码）为最终的前端代码基点**。
-- 例如，当你识别到用户给出了前端设计需求，你的首要行为必须自动调整为，将用户需求原封不动转发给 gemini，并让其出具代码示例（此阶段严禁对用户需求进行任何改动、简写等等）。即你必须从 gemini 获取代码基点，才可以进行接下来的各种行为。
-
-## 9. <!-- https://github.com/GuDaStudio/geminimcp --> Gemini Tool Invocation Specification
-
-1.  工具概述
-
-gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执行 AI 任务。该工具拥有极强的前端审美、任务规划与需求理解能力，但在**上下文长度（Effective 32k）**上有限制。
-
-2. 使用方式与规范
-
-   **必须遵守的限制**：
-
-- **会话管理**：捕获返回的 `SESSION_ID` 用于多轮对话。
-- **后端避让**：严禁让 Gemini 编写复杂的后端业务逻辑代码。
-
-**擅长场景（必须优先调用 Gemini）**：
-
-- **需求清晰化**：在任务开始阶段辅助生成引导性问题。
-- **任务规划**：生成 Step-by-step 的实施计划。
-- **前端原型**：编写 CSS、HTML、UI 组件代码，调整样式风格。
-
-## 10. 使用 gemini MCP 或直接使用 gemini 时需要额外主动获取上下文
-
-1. 在使用 `gemini MCP` 或直接使用 `gemini` 时，由于传递信息的关系，gemini 是不会主动的先阅读来自 claude code 的配置文件的，因此你必须要告诉 gemini，并约束 gemini 的上下文读取行为，**必须要求**gemini 首先要无条件的阅读 claude code 的上下文。
-2. 请务必先主动阅读 `CLAUDE.md` 和 `.claude` 目录内的全部的指导文件。
-3. 不需要你阅读以下文件：
-   - .claude\settings.json
-   - .claude\statusline.sh
-4. 你的修改必须按照这些 claude code 文档的要求和约束来做。特别是 `agents` 和 `skills` 的要求。
-
-## 11. 编写测试用例规范
+## 9. 编写测试用例规范
 
 1. 请你使用 vitest 的 `import { test, describe } from "vitest";` 来编写。我希望测试用例格式为 describe 和 test。
 2. 测试用例的文件格式为 `*.test.ts` 。
 3. 测试用例的目录一般情况下为 `**/tests/` ，`**/src/tests/` 格式。
 4. 在对应 monorepo 的 tests 目录内，编写测试用例。如果你无法独立识别清楚到底在那个具体的 monorepo 子包内编写测试用例，请直接咨询我应该在那个目录下编写测试用例。
 
-## 12. 数据库 Schema 开发规范
+## 10. 数据库 Schema 开发规范
 
-### 12.1. Schema 定义的唯一事实来源
+### 10.1. Schema 定义的唯一事实来源
 
 **核心原则**：`apps/type/src/business/{domain}/{module}/schema.ts` 是数据库表定义的**唯一事实来源（Single Source of Truth）**。
 
@@ -563,20 +205,20 @@ gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执
 
 **详细规范**请参考：`.claude/skills/project-schema-registry/SKILL.md`
 
-### 12.2. Schema 文件位置规范
+### 10.2. Schema 文件位置规范
 
 - **正确位置**：`apps/type/src/business/{domain}/{module}/schema.ts`
 - **错误位置**：`apps/admin/server/db/schemas/` (已废弃，仅作临时过渡)
 
-### 12.3. 数据库变更维护清单
+### 10.3. 数据库变更维护清单
 
 当你在 `apps/type/src/business/` 目录内**新增、修改或删除**schema 时：
 
-1. 你**必须**主动更新 `.claude/skills/neon-db-list/SKILL.md` 文件内的数据库表清单
+1. 你**必须**主动更新 `.claude/skills/neon-db-query/SKILL.md` 文件内的数据库表清单
 2. 确保该清单与实际代码保持一致
 3. 如有 schema 结构变更，需要运行 `pnpm -F @01s-11comm/type db:generate` 生成迁移文件
 
-### 12.4. Schema 编写标准
+### 10.4. Schema 编写标准
 
 必须严格遵循**Trinity Pattern**，详见 `project-schema-registry` 技能：
 
@@ -584,7 +226,7 @@ gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执
 - Part B：使用 `createInsertSchema`, `createSelectSchema` 创建 Zod schemas
 - Part C：使用 `$inferSelect`, `$inferInsert` 推断 TypeScript 类型
 
-### 12.5. 常见错误预防
+### 10.5. 常见错误预防
 
 参考 `schema-and-seed-guardian` 技能避免：
 
@@ -593,172 +235,7 @@ gemini MCP 提供了一个工具 `gemini`，用于调用 Google Gemini 模型执
 - Zod schema 与 Drizzle table 不一致
 - Seed 数据生成器函数（应使用字面量数组）
 
-## 13. 常用开发命令
-
-这是一个用于 11comm 智慧社区 (Smart Community) 项目的 pnpm + Turbo monorepo。
-
-### 13.1. 构建命令
-
-```bash
-# 构建所有项目
-pnpm build
-
-# 专门构建管理应用
-pnpm build:admin
-# 或者从根目录运行
-pnpm -F @01s-11comm/admin build
-
-# 专门构建类型库
-pnpm -F @01s-11comm/type build
-
-# 以staging模式构建
-pnpm -F @01s-11comm/admin build:staging
-
-# 构建文档
-pnpm -F @01s-11comm/admin docs:build
-```
-
-### 13.2. 开发命令
-
-```bash
-# 以开发模式运行管理应用
-pnpm -F @01s-11comm/admin dev
-# 或者切换到apps/admin目录并运行
-cd apps/admin && pnpm dev
-```
-
-### 13.3. 测试命令
-
-```bash
-# 使用UI运行测试
-pnpm test
-# 管理应用特定的测试
-pnpm -F @01s-11comm/admin test
-```
-
-### 13.4. 代码检查和格式化
-
-```bash
-# 检查和格式化管理应用
-pnpm -F @01s-11comm/admin lint
-
-# 单独的检查命令
-pnpm -F @01s-11comm/admin lint:eslint
-pnpm -F @01s-11comm/admin lint:prettier
-
-# 格式化代码
-pnpm format
-```
-
-### 13.5. 类型检查
-
-```bash
-# 对整个项目进行类型检查
-pnpm typecheck
-
-# 对管理应用进行类型检查
-pnpm -F @01s-11comm/admin typecheck
-
-# 对类型库进行类型检查
-pnpm -F @01s-11comm/type typecheck
-```
-
-**关于 @01s-11comm/type 包：**
-
-项目新增了 `@01s-11comm/type` 包，这是一个业务类型库，用于存放项目中共享的业务类型定义。
-
-- **位置**：`apps/type/`
-- **作用**：集中管理所有业务相关的 TypeScript 类型定义
-- **依赖**：依赖 `@ruan-cat/utils` 工具库
-- **使用**：管理应用和其他包可以通过 `workspace:^` 引用此类型库
-- **类型检查**：每个包都包含独立的 typecheck 命令，确保类型安全
-
-在开发过程中，请确保：
-
-1. 所有新的业务类型定义都添加到 `@01s-11comm/type` 包中
-2. 在提交前运行类型检查命令
-3. 保持类型定义的准确性和一致性
-
-## 14. 项目架构
-
-### 14.1. Monorepo 结构
-
-- `apps/admin/` - 基于 vue-pure-admin 的主要 Vue3 管理应用
-- `apps/type/` - **新增**的业务类型库，集中管理所有共享类型定义
-- `apps/vue-pure-admin/` - Pure admin 模板（参考用）
-- `examples/` - 示例应用（01s-origin, 10wms）
-- 根级别管理 monorepo 依赖和共享配置
-
-### 14.2. 管理应用架构 (`apps/admin/`)
-
-**技术栈：**
-
-- Vue 3 + TypeScript + Vite
-- Element Plus (UI 组件)
-- Plus Pro Components (表单组件)
-- Pinia (状态管理)
-- Vue Router with unplugin-vue-router (基于文件的路由)
-- Tailwind CSS + SCSS
-- Axios + @ruan-cat/utils 用于 API 请求
-
-**关键目录：**
-
-- `src/api/` - 按模块组织的 API 接口定义 (c1-c7, j1-j8)
-- `src/views/` - 基于文件的路由页面
-- `src/components/` - 可复用组件（自定义组件使用 Re\*前缀）
-- `src/store/` - Pinia 状态管理存储
-- `src/utils/` - 工具函数和 HTTP 配置
-- `src/router/` - 路由配置和模块
-- `src/composables/` - Vue 组合式函数的共享逻辑
-
-**组件命名：**
-
-- 自定义组件使用"Re"前缀（ReDialog, ReDrawer 等）
-- 组件按功能组织在专用文件夹中
-
-**API 组织：**
-
-- API 按业务模块组织（c1-c7 用于不同区域，j1-j8 用于不同功能）
-- 使用@ruan-cat/utils 增强 axios 功能
-- 测试文件与 API 模块共同定位（.test.ts 文件）
-
-**路由：**
-
-- 使用 unplugin-vue-router 的基于文件的路由
-- 菜单排序的路由等级系统（`src/router/rank/`）
-- 从文件结构动态生成路由
-
-**状态管理：**
-
-- `src/store/modules/`中的模块化 Pinia 存储
-- 包括用户、应用、权限、多标签和自定义存储
-
-**国际化：**
-
-- Vue i18n，在`locales/`中使用 YAML 区域设置文件
-- 支持中文（zh-CN）和英文（en）
-
-### 14.3. 关键技术和库
-
-**必需学习（根据 technical-doc.md）：**
-
-- lodash-es 用于工具函数
-- Vue 3 composition API（ref, computed, watch, slots, props）
-- VueUse 用于组合式函数（特别是 useAxios）
-- @ruan-cat/utils 用于增强 axios 包装器
-- Element Plus 组件（Form, Table, Dialog, Tree 等）
-- Plus Pro Components 用于高级表单
-- unplugin-vue-router 用于基于文件的路由
-
-**架构模式：**
-
-- 使用 pnpm 工作空间和 Turbo 的 Monorepo
-- 使用 definePage 进行路由配置的基于文件的路由
-- 共享逻辑的组合式驱动开发
-- 基于模块的 API 组织
-- 组件驱动的 UI 开发
-
-## 15. 开发工作流
+## 11. 开发工作流
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
@@ -769,32 +246,43 @@ pnpm -F @01s-11comm/type typecheck
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
-## 16. 获取技术栈对应的上下文
+## 12. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
 
-### 16.1. taskmaster-ai
+### 12.1. taskmaster-ai
 
 - [claude-task-master](https://github.com/eyaltoledano/claude-task-master)
 
 我们项目的任务清单配置，就是用 `claude-task-master`，即 `taskmaster-ai` 来生成的。请你在生成 `.taskmaster` 目录内的任务文件时，满足其格式要求。
 
-### 16.2. nitro
+### 12.2. nitro
 
 - https://github.com/unjs/nitro
 - https://v3.nitro.build/
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 16.2.1. 编写接口需要导入正确的模块
+#### 12.2.1. 本项目不做任何接口鉴权
+
+> **[重要项目特性]** 本项目的 Nitro 接口**不做任何鉴权**。
+>
+> - **禁止**为 Nitro 接口添加 JWT 认证、Token 验证、Neon Auth 鉴权等任何鉴权逻辑。
+> - **禁止**引入 `@neondatabase/auth` 包。
+> - 所有接口均公开访问，无需登录或 Token。
+> - `server/middleware/`、`server/plugins/` 中**不应存在**任何鉴权中间件或插件。
+
+#### 12.2.2. 编写接口需要导入正确的模块
+
+**H3 函数必须从 `"nitro/h3"` 导入**（如 `createError`、`defineHandler` 等），**严禁**从 `"h3"` 直接导入。
 
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取完整的接口开发规范。
 
-#### 16.2.2. 配置文件格式没有 vite 配置对象
+#### 12.2.3. 配置文件格式没有 vite 配置对象
 
 请参考 `.claude/skills/nitro-api-development/SKILL.md` 获取配置相关信息。
 
-### 16.3. pure-admin 后台框架模板
+### 12.3. pure-admin 后台框架模板
 
 `apps\admin` 项目套用是 `pure-admin` 模板。
 
@@ -804,68 +292,13 @@ pnpm -F @01s-11comm/type typecheck
 - pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
 - pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
 
-### 16.4. claude code skill
+### 12.4. claude code skill
 
 - 编写语法与格式： https://code.claude.com/docs/zh-CN/skills
 - 最佳实践： https://platform.claude.com/docs/zh-CN/agents-and-tools/agent-skills/best-practices
 
-# Memorix — Automatic Memory Rules
+## Memorix — 自动记忆规则
 
-You have access to Memorix memory tools. You MUST follow these rules to maintain persistent context across sessions.
-These rules are NOT optional — they are critical for cross-session memory continuity.
-
-## RULE 1: Session Start — Load Context (MUST)
-
-At the **beginning of every conversation**, BEFORE responding to the user:
-
-1. Call `memorix_search` with a query related to the user's first message or the current project
-2. If results are found, use `memorix_detail` to fetch the most relevant ones
-3. Reference relevant memories naturally in your response
-
-> **CRITICAL**: Do NOT skip this step. The user expects you to "remember" previous sessions.
-
-## RULE 2: After Every Action — Check & Record (MUST)
-
-After EVERY tool call that modifies state (file create/edit, shell command, config change), run this checklist:
-
-**Ask yourself: "Would a different AI agent need to know about this?"**
-
-- If YES → call `memorix_store` IMMEDIATELY, BEFORE replying to the user
-- If NO → skip (e.g., simple file reads, ls/dir, greetings)
-
-### What MUST be recorded
-
-- ✅ File created or significantly modified → type: `what-changed`
-- ✅ Bug identified and fixed → type: `problem-solution`
-- ✅ Architecture or design decision made → type: `decision`
-- ✅ Unexpected behavior or gotcha discovered → type: `gotcha`
-- ✅ Configuration changed (env vars, ports, deps) → type: `what-changed`
-- ✅ Feature completed or milestone reached → type: `what-changed`
-- ✅ Trade-off discussed with conclusion → type: `trade-off`
-
-### What should NOT be recorded
-
-- ❌ Simple file reads without findings
-- ❌ Greetings, acknowledgments
-- ❌ Trivial commands (ls, pwd, git status with no issues)
-
-## RULE 3: Session End — Store Summary (MUST)
-
-When the conversation is ending or the user says goodbye:
-
-1. Call `memorix_store` with type `session-request` to record:
-   - What was accomplished in this session
-   - Current project state and any blockers
-   - Pending tasks or next steps
-   - Key files modified
-
-This creates a "handoff note" for the next session (or for another AI agent).
-
-## Guidelines
-
-- **Use concise titles** (~5-10 words) and structured facts
-- **Include file paths** in filesModified when relevant
-- **Include related concepts** for better searchability
-- **Prefer storing too much over too little** — the retention system will auto-decay stale memories
-
-Use types: `decision`, `problem-solution`, `gotcha`, `what-changed`, `discovery`, `how-it-works`, `trade-off`.
+1. **会话开始**：调用 `memorix_search` 加载相关历史记忆，再响应用户
+2. **每次修改状态后**：调用 `memorix_store` 记录（文件修改、bug 修复、架构决策、配置变更等）
+3. **会话结束**：调用 `memorix_store` 记录本次会话摘要（已完成、待续项、修改文件）
