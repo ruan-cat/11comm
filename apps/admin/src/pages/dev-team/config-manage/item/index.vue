@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "配置项",
+		title: "devTeam.configManage.item.pageTitle",
 		icon: "tabler:settings-2",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.item"),
@@ -57,50 +57,50 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "配置项名称",
+		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
 		prop: "configName",
 		width: 150,
 		fixed: true,
 	},
 	{
-		label: "配置项编码",
+		label: transformI18n($t("devTeam.configManage.item.fields.configCode")),
 		prop: "configCode",
 		width: 150,
 	},
 	{
-		label: "配置项类型",
+		label: transformI18n($t("devTeam.configManage.item.fields.configType")),
 		prop: "configType",
 		width: 120,
 	},
 	{
-		label: "配置项值",
+		label: transformI18n($t("devTeam.configManage.item.fields.configValue")),
 		prop: "configValue",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "配置项描述",
+		label: transformI18n($t("devTeam.configManage.item.fields.description")),
 		prop: "description",
 		width: 180,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "是否启用",
+		label: transformI18n($t("devTeam.configManage.item.fields.isEnabled")),
 		prop: "isEnabled",
 		width: 100,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("devTeam.configManage.item.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		label: transformI18n($t("devTeam.configManage.item.fields.updateTime")),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		label: "创建人",
+		label: transformI18n($t("devTeam.configManage.item.fields.creator")),
 		prop: "creator",
 		width: 100,
 	},
@@ -115,7 +115,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "配置项",
+	title: transformI18n($t("devTeam.configManage.item.pageTitle")),
 	columns: columns.value,
 });
 
@@ -126,21 +126,21 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 配置项名称
 	{
-		label: "配置项名称",
+		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 	},
 
 	// 配置项编码
 	{
-		label: "配置项编码",
+		label: transformI18n($t("devTeam.configManage.item.fields.configCode")),
 		prop: "configCode",
 		valueType: "input",
 	},
 
 	// 配置项类型
 	{
-		label: "配置项类型",
+		label: transformI18n($t("devTeam.configManage.item.fields.configType")),
 		prop: "configType",
 		valueType: "select",
 		options: configItemTypeOptions,
@@ -148,7 +148,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 是否启用
 	{
-		label: "是否启用",
+		label: transformI18n($t("devTeam.configManage.item.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
 		options: itemEnableStatusOptions,
@@ -193,7 +193,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}配置项`;
+	const title = `${modeText.value}${transformI18n($t("devTeam.configManage.item.pageTitle"))}`;
 
 	/** 业务对象 */
 	const formData: ConfigItemFormVO = isAdd.value
