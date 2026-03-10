@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "菜单组",
+		// 菜单组
+		title: "devTeam.menuManage.group.pageTitle",
 		icon: "mdi:group",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.menuManage.group"),
@@ -52,44 +53,44 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "组编号",
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupId")),
 		prop: "groupId",
 		width: 120,
 		fixed: true,
 	},
 	{
-		label: "组名称",
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupName")),
 		prop: "groupName",
 		width: 150,
 	},
 	{
-		label: "组编码",
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupCode")),
 		prop: "groupCode",
 		width: 150,
 	},
 	{
-		label: "排序",
+		label: transformI18n($t("devTeam.menuManage.group.fields.sortNo")),
 		prop: "sortNo",
 		width: 80,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.menuManage.group.fields.status")),
 		prop: "status",
 		width: 100,
 	},
 	{
-		label: "描述",
+		label: transformI18n($t("devTeam.menuManage.group.fields.description")),
 		prop: "description",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("devTeam.menuManage.group.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		label: transformI18n($t("devTeam.menuManage.group.fields.updateTime")),
 		prop: "updateTime",
 		width: 160,
 	},
@@ -104,7 +105,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "菜单组",
+	title: transformI18n($t("devTeam.menuManage.group.pageTitle")),
 	columns: columns.value,
 });
 
@@ -115,28 +116,28 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 组编号
 	{
-		label: "组编号",
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupId")),
 		prop: "groupId",
 		valueType: "input",
 	},
 
 	// 组名称
 	{
-		label: "组名称",
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupName")),
 		prop: "groupName",
 		valueType: "input",
 	},
 
 	// 组编码
 	{
-		label: "组编码",
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupCode")),
 		prop: "groupCode",
 		valueType: "input",
 	},
 
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.menuManage.group.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: menuGroupStatusOptions,

@@ -6,10 +6,13 @@
 import { ref, computed, useTemplateRef } from "vue";
 import type { MenuGroupFormVO } from "@01s-11comm/type";
 import { groupTypeOptions, storeOptions, iconOptions, menuGroupStatusOptions } from "@01s-11comm/type";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { MenuGroupFormProps, defaultForm } from "./form";
 
 const props = defineProps<MenuGroupFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 Default values for form reset */
 const defaultValues = props.defaultValues as FieldValues & MenuGroupFormVO;
@@ -33,69 +36,140 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedGroupTypeOptions = computed(() =>
+	groupTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.group.form.options.groupTypes.${option.value}`)),
+	})),
+);
+
+const translatedStoreOptions = computed(() => {
+	const storeKeyMap: Record<string, string> = {
+		系统默认: "systemDefault",
+		万科物业: "vanke",
+		碧桂园服务: "countryGarden",
+		恒大物业: "evergrande",
+		绿城服务: "greentown",
+		保利物业: "poly",
+		龙湖物业: "longfor",
+		中海物业: "cohl",
+		华润置地: "chinaResources",
+		招商积余: "cmhk",
+	};
+
+	return storeOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.group.form.options.stores.${storeKeyMap[option.value]}`)),
+	}));
+});
+
+const translatedIconOptions = computed(() => {
+	const iconKeyMap: Record<string, string> = {
+		"mdi:menu": "menu",
+		"mdi:cog": "setting",
+		"mdi:account": "user",
+		"mdi:home": "home",
+		"mdi:dashboard": "dashboard",
+		"mdi:file": "file",
+		"mdi:chart-bar": "chart",
+		"mdi:file-chart": "report",
+		"mdi:server": "system",
+		"mdi:shield": "security",
+		"mdi:monitor": "monitor",
+		"mdi:clipboard-text": "log",
+		"mdi:key": "permission",
+		"mdi:account-group": "role",
+		"mdi:domain": "department",
+		"mdi:database": "data",
+		"mdi:settings": "config",
+		"mdi:tools": "tool",
+		"mdi:help-circle": "help",
+		"mdi:bell": "notice",
+	};
+
+	return iconOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.group.form.options.icons.${iconKeyMap[option.value]}`)),
+	}));
+});
+
+const translatedStatusOptions = computed(() => {
+	const statusKeyMap: Record<string, string> = {
+		enabled: "enabled",
+		disabled: "disabled",
+		启用: "enabled",
+		禁用: "disabled",
+	};
+
+	return menuGroupStatusOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.group.form.options.status.${statusKeyMap[String(option.value)]}`)),
+	}));
+});
+
 /** 表单项配置 Form columns configuration */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "组编号",
+		label: transformI18n(t("devTeam.menuManage.group.fields.groupId")),
 		prop: "groupId",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入组编号，如：GROUP001",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.groupId")),
 		},
 	},
 	{
-		label: "组名称",
+		label: transformI18n(t("devTeam.menuManage.group.fields.groupName")),
 		prop: "groupName",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入组名称",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.groupName")),
 		},
 	},
 	{
-		label: "组编码",
+		label: transformI18n(t("devTeam.menuManage.group.fields.groupCode")),
 		prop: "groupCode",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入组编码，如：SYSTEM_MANAGE",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.groupCode")),
 		},
 	},
 	{
-		label: "组类型",
+		label: transformI18n(t("devTeam.menuManage.group.form.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
 		width: "180px",
 		required: true,
-		options: groupTypeOptions,
+		options: translatedGroupTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择组类型",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.groupType")),
 		},
 	},
 	{
-		label: "归属商户",
+		label: transformI18n(t("devTeam.menuManage.group.form.fields.storeName")),
 		prop: "storeName",
 		valueType: "select",
 		width: "180px",
 		required: true,
-		options: storeOptions,
+		options: translatedStoreOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择归属商户",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.storeName")),
 		},
 	},
 	{
-		label: "显示顺序",
+		label: transformI18n(t("devTeam.menuManage.group.fields.sortNo")),
 		prop: "sortNo",
 		valueType: "input-number",
 		width: "150px",
@@ -103,42 +177,42 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			min: 1,
 			max: 9999,
-			placeholder: "请输入显示顺序",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.sortNo")),
 		},
 	},
 	{
-		label: "图标",
+		label: transformI18n(t("devTeam.menuManage.group.form.fields.icon")),
 		prop: "icon",
 		valueType: "select",
 		width: "200px",
 		required: true,
-		options: iconOptions,
+		options: translatedIconOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择图标",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.icon")),
 		},
 	},
 	{
-		label: "状态",
+		label: transformI18n(t("devTeam.menuManage.group.fields.status")),
 		prop: "status",
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: menuGroupStatusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.status")),
 		},
 	},
 	{
-		label: "描述",
+		label: transformI18n(t("devTeam.menuManage.group.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入菜单组描述信息",
+			placeholder: transformI18n(t("devTeam.menuManage.group.form.placeholders.description")),
 			rows: 3,
 			maxlength: 200,
 			showWordLimit: true,
@@ -146,35 +220,103 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 Computed form columns */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 Form validation rules */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	groupId: [
-		{ required: true, message: "请输入组编号", trigger: "blur" },
-		{ min: 3, max: 20, message: "组编号长度在 3 到 20 个字符", trigger: "blur" },
-		{ pattern: /^[A-Z0-9_]+$/, message: "组编号只能包含大写字母、数字和下划线", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.enterGroupId")),
+			trigger: "blur",
+		},
+		{
+			min: 3,
+			max: 20,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.groupIdLength")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[A-Z0-9_]+$/,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.groupIdPattern")),
+			trigger: "blur",
+		},
 	],
 	groupName: [
-		{ required: true, message: "请输入组名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "组名称长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.enterGroupName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.groupNameLength")),
+			trigger: "blur",
+		},
 	],
 	groupCode: [
-		{ required: true, message: "请输入组编码", trigger: "blur" },
-		{ min: 3, max: 50, message: "组编码长度在 3 到 50 个字符", trigger: "blur" },
-		{ pattern: /^[A-Z_]+$/, message: "组编码只能包含大写字母和下划线", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.enterGroupCode")),
+			trigger: "blur",
+		},
+		{
+			min: 3,
+			max: 50,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.groupCodeLength")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[A-Z_]+$/,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.groupCodePattern")),
+			trigger: "blur",
+		},
 	],
-	groupType: [{ required: true, message: "请选择组类型", trigger: "change" }],
-	storeName: [{ required: true, message: "请选择归属商户", trigger: "change" }],
+	groupType: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.selectGroupType")),
+			trigger: "change",
+		},
+	],
+	storeName: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.selectStoreName")),
+			trigger: "change",
+		},
+	],
 	sortNo: [
-		{ required: true, message: "请输入显示顺序", trigger: "blur" },
-		{ type: "number", min: 1, max: 9999, message: "显示顺序必须在 1-9999 之间", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.enterSortNo")),
+			trigger: "blur",
+		},
+		{
+			type: "number",
+			min: 1,
+			max: 9999,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.sortNoRange")),
+			trigger: "blur",
+		},
 	],
-	icon: [{ required: true, message: "请选择图标", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-	description: [{ max: 200, message: "描述长度不能超过 200 个字符", trigger: "blur" }],
-});
+	icon: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.selectIcon")),
+			trigger: "change",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.group.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+	description: [
+		{ max: 200, message: transformI18n(t("devTeam.menuManage.group.form.validation.descriptionMax")), trigger: "blur" },
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -189,7 +331,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
