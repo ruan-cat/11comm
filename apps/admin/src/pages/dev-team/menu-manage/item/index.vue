@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "菜单项",
+		// 菜单项
+		title: "devTeam.menuManage.item.pageTitle",
 		icon: "mdi:format-list-text",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.menuManage.item"),
@@ -63,67 +64,67 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "菜单编号",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuId")),
 		prop: "menuId",
 		width: 120,
 	},
 	{
-		label: "菜单名称",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuName")),
 		prop: "menuName",
 		width: 150,
 	},
 	{
-		label: "父级菜单",
+		label: transformI18n(t("devTeam.menuManage.item.fields.parentMenu")),
 		prop: "parentMenu",
 		width: 120,
 	},
 	{
-		label: "菜单类型",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuType")),
 		prop: "menuType",
 		width: 100,
 	},
 	{
-		label: "路由路径",
+		label: transformI18n(t("devTeam.menuManage.item.fields.routePath")),
 		prop: "routePath",
 		minWidth: 200,
 	},
 	{
-		label: "组件路径",
+		label: transformI18n(t("devTeam.menuManage.item.fields.componentPath")),
 		prop: "componentPath",
 		minWidth: 200,
 	},
 	{
-		label: "权限标识",
+		label: transformI18n(t("devTeam.menuManage.item.fields.permissionKey")),
 		prop: "permissionKey",
 		width: 150,
 	},
 	{
-		label: "排序",
+		label: transformI18n(t("devTeam.menuManage.item.fields.sortNo")),
 		prop: "sortNo",
 		width: 80,
 	},
 	{
-		label: "状态",
+		label: transformI18n(t("devTeam.menuManage.item.fields.status")),
 		prop: "status",
 		width: 100,
 	},
 	{
-		label: "是否外链",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isExternal")),
 		prop: "isExternal",
 		width: 100,
 	},
 	{
-		label: "是否缓存",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isCached")),
 		prop: "isCached",
 		width: 100,
 	},
 	{
-		label: "是否隐藏",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isHidden")),
 		prop: "isHidden",
 		width: 100,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n(t("devTeam.menuManage.item.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
@@ -138,7 +139,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "菜单项",
+	title: transformI18n(t("devTeam.menuManage.item.pageTitle")),
 	columns: columns.value,
 });
 
@@ -149,28 +150,28 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 菜单编号
 	{
-		label: "菜单编号",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuId")),
 		prop: "menuId",
 		valueType: "input",
 	},
 
 	// 菜单名称
 	{
-		label: "菜单名称",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuName")),
 		prop: "menuName",
 		valueType: "input",
 	},
 
 	// 父级菜单
 	{
-		label: "父级菜单",
+		label: transformI18n(t("devTeam.menuManage.item.fields.parentMenu")),
 		prop: "parentMenu",
 		valueType: "input",
 	},
 
 	// 菜单类型
 	{
-		label: "菜单类型",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuType")),
 		prop: "menuType",
 		valueType: "select",
 		options: menuTypeOptions,
@@ -178,7 +179,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n(t("devTeam.menuManage.item.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: menuItemStatusOptions,
@@ -186,7 +187,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 是否外链
 	{
-		label: "是否外链",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isExternal")),
 		prop: "isExternal",
 		valueType: "select",
 		options: booleanOptions,
@@ -194,7 +195,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 是否缓存
 	{
-		label: "是否缓存",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isCached")),
 		prop: "isCached",
 		valueType: "select",
 		options: booleanOptions,
@@ -202,7 +203,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 是否隐藏
 	{
-		label: "是否隐藏",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isHidden")),
 		prop: "isHidden",
 		valueType: "select",
 		options: booleanOptions,

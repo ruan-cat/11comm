@@ -6,10 +6,13 @@
 import { ref, computed, useTemplateRef } from "vue";
 import type { MenuItemFormVO } from "@01s-11comm/type";
 import { menuTypeOptions, menuItemStatusOptions, booleanOptions } from "@01s-11comm/type";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { MenuItemFormProps, defaultForm } from "./form";
 
 const props = defineProps<MenuItemFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 Default values for form reset */
 const defaultValues = props.defaultValues as FieldValues & MenuItemFormVO;
@@ -34,158 +37,184 @@ const formComputed = computed(() => {
 });
 
 /** 父级菜单选项 Parent menu options */
-const parentMenuOptions = [
-	{ label: "根菜单", value: "根菜单" },
-	{ label: "系统管理", value: "系统管理" },
-	{ label: "监控管理", value: "监控管理" },
-	{ label: "系统工具", value: "系统工具" },
-	{ label: "日志管理", value: "日志管理" },
-	{ label: "系统设置", value: "系统设置" },
-];
+const parentMenuOptions = computed(() => [
+	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.root")), value: "根菜单" },
+	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.systemManage")), value: "系统管理" },
+	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.monitorManage")), value: "监控管理" },
+	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.systemTool")), value: "系统工具" },
+	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.logManage")), value: "日志管理" },
+	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.systemSetting")), value: "系统设置" },
+]);
+
+const translatedMenuTypeOptions = computed(() =>
+	menuTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.item.form.options.${option.value}`)),
+	})),
+);
+
+const translatedStatusOptions = computed(() =>
+	menuItemStatusOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.item.form.options.${option.value}`)),
+	})),
+);
+
+const translatedBooleanOptions = computed(() => {
+	const booleanKeyMap: Record<string, string> = {
+		true: "yes",
+		false: "no",
+	};
+
+	return booleanOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.item.form.options.${booleanKeyMap[String(option.value)]}`)),
+	}));
+});
 
 /** 表单项配置 Form columns configuration */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "菜单名称",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuName")),
 		prop: "menuName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
-			placeholder: "请输入菜单名称",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.menuName")),
 			clearable: true,
 		},
 		width: "200px",
 	},
 	{
-		label: "父级菜单",
+		label: transformI18n(t("devTeam.menuManage.item.fields.parentMenu")),
 		prop: "parentMenu",
 		valueType: "select",
 		required: true,
-		options: parentMenuOptions,
+		options: parentMenuOptions.value,
 		fieldProps: {
-			placeholder: "请选择父级菜单",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.parentMenu")),
 			clearable: true,
 		},
 		width: "200px",
 	},
 	{
-		label: "菜单类型",
+		label: transformI18n(t("devTeam.menuManage.item.fields.menuType")),
 		prop: "menuType",
 		valueType: "select",
 		required: true,
-		options: menuTypeOptions,
+		options: translatedMenuTypeOptions.value,
 		fieldProps: {
-			placeholder: "请选择菜单类型",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.menuType")),
 			clearable: true,
 		},
 		width: "150px",
 	},
 	{
-		label: "菜单图标",
+		label: transformI18n(t("devTeam.menuManage.item.fields.icon")),
 		prop: "icon",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入图标类名，如：mdi:home",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.icon")),
 			clearable: true,
 		},
 		width: "200px",
 	},
 	{
-		label: "路由路径",
+		label: transformI18n(t("devTeam.menuManage.item.fields.routePath")),
 		prop: "routePath",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入路由路径，如：/system/user",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.routePath")),
 			clearable: true,
 		},
 		width: "250px",
 		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口",
 	},
 	{
-		label: "组件路径",
+		label: transformI18n(t("devTeam.menuManage.item.fields.componentPath")),
 		prop: "componentPath",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入组件路径，如：/pages/system/user/index",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.componentPath")),
 			clearable: true,
 		},
 		width: "250px",
 		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口" || formData.menuType === "目录",
 	},
 	{
-		label: "权限标识",
+		label: transformI18n(t("devTeam.menuManage.item.fields.permissionKey")),
 		prop: "permissionKey",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入权限标识，如：system:user:list",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.permissionKey")),
 			clearable: true,
 		},
 		width: "250px",
 	},
 	{
-		label: "显示顺序",
+		label: transformI18n(t("devTeam.menuManage.item.fields.sortNo")),
 		prop: "sortNo",
 		valueType: "input-number",
 		fieldProps: {
-			placeholder: "请输入显示顺序",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.sortNo")),
 			min: 1,
 			max: 999,
 		},
 		width: "150px",
 	},
 	{
-		label: "状态",
+		label: transformI18n(t("devTeam.menuManage.item.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
-		options: menuItemStatusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
-			placeholder: "请选择状态",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.status")),
 			clearable: true,
 		},
 		width: "150px",
 	},
 	{
-		label: "是否外链",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isExternal")),
 		prop: "isExternal",
 		valueType: "select",
-		options: booleanOptions,
+		options: translatedBooleanOptions.value,
 		fieldProps: {
-			placeholder: "请选择是否外链",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.isExternal")),
 			clearable: true,
 		},
 		width: "150px",
 		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口",
 	},
 	{
-		label: "是否缓存",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isCached")),
 		prop: "isCached",
 		valueType: "select",
-		options: booleanOptions,
+		options: translatedBooleanOptions.value,
 		fieldProps: {
-			placeholder: "请选择是否缓存",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.isCached")),
 			clearable: true,
 		},
 		width: "150px",
 		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口" || formData.menuType === "目录",
 	},
 	{
-		label: "是否隐藏",
+		label: transformI18n(t("devTeam.menuManage.item.fields.isHidden")),
 		prop: "isHidden",
 		valueType: "select",
-		options: booleanOptions,
+		options: translatedBooleanOptions.value,
 		fieldProps: {
-			placeholder: "请选择是否隐藏",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.isHidden")),
 			clearable: true,
 		},
 		width: "150px",
 	},
 	{
-		label: "描述",
+		label: transformI18n(t("devTeam.menuManage.item.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
-			placeholder: "请输入菜单描述信息",
+			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.description")),
 			clearable: true,
 			rows: 3,
 		},
@@ -193,39 +222,93 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 Computed form columns */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 Form validation rules */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	menuName: [
-		{ required: true, message: "请输入菜单名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterMenuName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.menuNameLength")),
+			trigger: "blur",
+		},
 	],
-	parentMenu: [{ required: true, message: "请选择父级菜单", trigger: "change" }],
-	menuType: [{ required: true, message: "请选择菜单类型", trigger: "change" }],
+	parentMenu: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.selectParentMenu")),
+			trigger: "change",
+		},
+	],
+	menuType: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.selectMenuType")),
+			trigger: "change",
+		},
+	],
 	routePath: [
-		{ required: true, message: "请输入路由路径", trigger: "blur" },
-		{ pattern: /^\/[a-zA-Z0-9/-]*$/, message: "路由路径格式不正确，应以/开头", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterRoutePath")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^\/[a-zA-Z0-9/-]*$/,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.routePathPattern")),
+			trigger: "blur",
+		},
 	],
 	componentPath: [
-		{ required: true, message: "请输入组件路径", trigger: "blur" },
-		{ pattern: /^\/[a-zA-Z0-9/-]*$/, message: "组件路径格式不正确，应以/开头", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterComponentPath")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^\/[a-zA-Z0-9/-]*$/,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.componentPathPattern")),
+			trigger: "blur",
+		},
 	],
 	permissionKey: [
-		{ required: true, message: "请输入权限标识", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterPermissionKey")),
+			trigger: "blur",
+		},
 		{
 			pattern: /^[a-zA-Z0-9:_-]+$/,
-			message: "权限标识格式不正确，只能包含字母、数字、冒号、下划线和连字符",
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.permissionKeyPattern")),
 			trigger: "blur",
 		},
 	],
 	sortNo: [
-		{ required: true, message: "请输入显示顺序", trigger: "blur" },
-		{ type: "number", min: 1, max: 999, message: "显示顺序应在1-999之间", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterSortNo")),
+			trigger: "blur",
+		},
+		{
+			type: "number",
+			min: 1,
+			max: 999,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.sortNoRange")),
+			trigger: "blur",
+		},
 	],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	status: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.item.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -240,7 +323,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
