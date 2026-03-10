@@ -117,13 +117,7 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 
 	/** TanStack Query 查询 */
 	const tanStackQueryObject = useQuery({
-		queryKey: queryKey.value,
-		// queryKey: [
-		// 	queryKeyPrefix,
-		// 	JSON.stringify(queryParams.value),
-		// 	queryParams.value.pageIndex,
-		// 	queryParams.value.pageSize,
-		// ],
+		queryKey,
 		queryFn: async (): Promise<JsonVO<PageDTO<TItem>>> => {
 			const response = await http.post<JsonVO<PageDTO<TItem>>, TParams>(apiUrl, { data: queryParams.value });
 			return (
@@ -152,17 +146,6 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 			}
 		},
 		{ immediate: true, deep: true },
-	);
-
-	/** 监听参数变化时更新 queryKey */
-	// 根据 queryKey 完成自动监听与触发
-	watch(
-		[() => queryParams.value.pageIndex, () => queryParams.value.pageSize],
-		async () => {
-			consola.log(" 分页参数变化了 ", queryParams.value.pageIndex, queryParams.value.pageSize);
-			await doFetch();
-		},
-		{ deep: true },
 	);
 
 	/** 更新查询参数 */
