@@ -4,12 +4,15 @@ import { useTemplateRef } from "vue";
 import type { PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { RolePermissionFormProps } from "./form";
 import type { RolePermissionFormVO } from "@01s-11comm/type";
 
 /** 表单组件 props */
 const props = defineProps<RolePermissionFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & RolePermissionFormVO;
@@ -38,10 +41,15 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedStatusOptions = computed(() => [
+	{ label: transformI18n(t("settingManage.organizeManage.rolePermission.status.enabled")), value: true },
+	{ label: transformI18n(t("settingManage.organizeManage.rolePermission.status.disabled")), value: false },
+]);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "角色名称",
+		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
@@ -49,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "角色编码",
+		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.code")),
 		prop: "code",
 		valueType: "input",
 		fieldProps: {
@@ -57,19 +65,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "角色状态",
+		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.status")),
 		prop: "enabled",
 		valueType: "select",
-		options: [
-			{ label: "启用", value: true },
-			{ label: "禁用", value: false },
-		],
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			readonly: false,
 		},
 	},
 	{
-		label: "角色描述",
+		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
@@ -80,22 +85,47 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
-		{ required: true, message: "请输入角色名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "角色名称长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	code: [
-		{ required: true, message: "请输入角色编码", trigger: "blur" },
 		{
-			pattern: /^[A-Z][A-Z0-9_]*$/,
-			message: "角色编码只能包含大写字母、数字和下划线，且以大写字母开头",
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.enterName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.nameLength")),
 			trigger: "blur",
 		},
 	],
-	enabled: [{ required: true, message: "请选择角色状态", trigger: "change" }],
-	description: [{ max: 200, message: "角色描述不能超过 200 个字符", trigger: "blur" }],
-});
+	code: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.enterCode")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[A-Z][A-Z0-9_]*$/,
+			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.codePattern")),
+			trigger: "blur",
+		},
+	],
+	enabled: [
+		{
+			required: true,
+			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+	description: [
+		{
+			max: 200,
+			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.descriptionMax")),
+			trigger: "blur",
+		},
+	],
+}));
 
 // 默认导出表单实例和表单对象，供外部使用
 defineExpose({

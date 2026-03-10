@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "角色权限",
+		// 角色权限
+		title: "settingManage.organizeManage.rolePermission.pageTitle",
 		icon: "mdi:shield-key",
 		roles: ["物业团队", "运营团队"],
 		rank: getRouteRank("settingManage.organizeManage.rolePermission"),
@@ -58,23 +59,26 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "角色名称",
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
 		width: 150,
 	},
 	{
-		label: "角色编码",
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		prop: "code",
 		width: 150,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.status")),
 		prop: "enabled",
 		width: 100,
-		cellRenderer: ({ row }) => (row.enabled ? "启用" : "禁用"),
+		cellRenderer: ({ row }) =>
+			row.enabled
+				? transformI18n($t("settingManage.organizeManage.rolePermission.status.enabled"))
+				: transformI18n($t("settingManage.organizeManage.rolePermission.status.disabled")),
 	},
 	{
-		label: "描述",
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.description")),
 		prop: "description",
 		minWidth: 200,
 	},
@@ -89,7 +93,7 @@ const columns = ref<TableColumnList>([
 
 // 表格操作栏配置
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "角色权限管理",
+	title: transformI18n($t("settingManage.organizeManage.rolePermission.tableTitle")),
 	columns: columns.value,
 });
 
@@ -99,12 +103,12 @@ const pureTableBarProps = ref<PureTableBarProps>({
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "角色名称",
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "角色编码",
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		prop: "code",
 		valueType: "input",
 	},
@@ -169,7 +173,7 @@ function openDialog(params: { mode: Mode; row?: RolePermission }) {
 	};
 
 	/** 弹框标题 */
-	const title = `${modeText.value}角色权限`;
+	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.rolePermission.dialogTitle"))}`;
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -247,11 +251,15 @@ function handleEdit(row: RolePermission) {
 }
 
 function handleDelete(row: RolePermission) {
-	ElMessage.warning(`删除功能暂未实现: ${row.name}`);
+	ElMessage.warning(
+		transformI18n($t("settingManage.organizeManage.common.messages.deletePending", { name: row.name })),
+	);
 }
 
 function handleViewPermissions(row: RolePermission) {
-	ElMessage.info(`查看权限功能暂未实现: ${row.name}`);
+	ElMessage.info(
+		transformI18n($t("settingManage.organizeManage.common.messages.viewPermissionPending", { name: row.name })),
+	);
 }
 
 // ========== 生命周期 ==========
@@ -290,7 +298,9 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="handleViewPermissions(row)"> 权限配置 </ElButton>
+						<ElButton type="info" @click="handleViewPermissions(row)">
+							{{ transformI18n($t("settingManage.organizeManage.common.buttons.permissionConfig")) }}
+						</ElButton>
 						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
