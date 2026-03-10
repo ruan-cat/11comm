@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "菜单目录",
+		// 菜单目录
+		title: "devTeam.menuManage.catalog.pageTitle",
 		icon: "mdi:folder",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.menuManage.catalog"),
@@ -56,43 +57,43 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "菜单组名称",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		width: 150,
 		fixed: true,
 	},
 	{
-		label: "图标",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.icon")),
 		prop: "icon",
 		width: 120,
 	},
 	{
-		label: "标签",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.label")),
 		prop: "label",
 		width: 100,
 	},
 	{
-		label: "序列",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.seq")),
 		prop: "seq",
 		width: 80,
 	},
 	{
-		label: "组类型",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "typeText",
 		width: 120,
 	},
 	{
-		label: "归属商户",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeTypeText",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.updateTime")),
 		prop: "updateTime",
 		width: 160,
 	},
@@ -107,7 +108,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "菜单目录",
+	title: transformI18n($t("devTeam.menuManage.catalog.pageTitle")),
 	columns: columns.value,
 });
 
@@ -118,14 +119,14 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 菜单组名称
 	{
-		label: "菜单组名称",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 
 	// 组类型
 	{
-		label: "组类型",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
 		options: groupTypeOptions,
@@ -133,7 +134,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 归属商户
 	{
-		label: "归属商户",
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeType",
 		valueType: "select",
 		options: storeTypeOptions,
@@ -206,7 +207,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 	};
 
 	/** 弹框标题 */
-	const title = `${modeText.value}菜单目录`;
+	const title = `${modeText.value}${transformI18n($t("devTeam.menuManage.catalog.pageTitle"))}`;
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;

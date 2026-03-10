@@ -2,11 +2,14 @@
 import { ref, computed, useTemplateRef } from "vue";
 import type { MenuCatalogFormData } from "@01s-11comm/type";
 import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
+import { useI18n } from "vue-i18n";
+import { transformI18n } from "@/plugins/i18n";
 
 import { CatalogFormProps, defaultForm } from "./form";
 
 /** 表单组件的 props Form component props */
 const props = defineProps<CatalogFormProps>();
+const { t } = useI18n();
 
 /** 默认的表单重置变量 Default values for form reset */
 const defaultValues = props.defaultValues as FieldValues & MenuCatalogFormData;
@@ -29,10 +32,26 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedGroupTypeOptions = computed(() =>
+	groupTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(t(`devTeam.menuManage.catalog.form.options.${option.value}`)),
+	})),
+);
+
+const translatedStoreTypeOptions = computed(() =>
+	storeTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			t(`devTeam.menuManage.catalog.form.options.${option.value === "merchant" ? "merchantPlatform" : option.value}`),
+		),
+	})),
+);
+
 /** 表单项配置 Form columns configuration */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: "菜单组名称",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
@@ -40,7 +59,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "图标",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.icon")),
 		prop: "icon",
 		valueType: "input",
 		fieldProps: {
@@ -48,7 +67,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "标签",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.label")),
 		prop: "label",
 		valueType: "input",
 		fieldProps: {
@@ -56,7 +75,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "序列",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.seq")),
 		prop: "seq",
 		valueType: "input-number",
 		fieldProps: {
@@ -65,27 +84,27 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "组类型",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
-		options: groupTypeOptions,
+		options: translatedGroupTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 		},
 	},
 	{
-		label: "归属商户",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeType",
 		valueType: "select",
-		options: storeTypeOptions,
+		options: translatedStoreTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 		},
 	},
 	{
-		label: "描述",
+		label: transformI18n(t("devTeam.menuManage.catalog.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
@@ -96,20 +115,63 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 Form validation rules */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
-		{ required: true, message: "请输入菜单组名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.nameLength")),
+			trigger: "blur",
+		},
 	],
-	icon: [{ required: true, message: "请输入图标", trigger: "blur" }],
-	label: [{ required: true, message: "请输入标签", trigger: "blur" }],
+	icon: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterIcon")),
+			trigger: "blur",
+		},
+	],
+	label: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterLabel")),
+			trigger: "blur",
+		},
+	],
 	seq: [
-		{ required: true, message: "请输入序列", trigger: "blur" },
-		{ type: "number", min: 0, max: 999, message: "序列必须在0-999之间", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterSeq")),
+			trigger: "blur",
+		},
+		{
+			type: "number",
+			min: 0,
+			max: 999,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.seqRange")),
+			trigger: "blur",
+		},
 	],
-	groupType: [{ required: true, message: "请选择组类型", trigger: "change" }],
-	storeType: [{ required: true, message: "请选择归属商户", trigger: "change" }],
-});
+	groupType: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.selectGroupType")),
+			trigger: "change",
+		},
+	],
+	storeType: [
+		{
+			required: true,
+			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.selectStoreType")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
