@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "缓存管理",
+		// 缓存管理
+		title: "devTeam.cacheManage.pageTitle",
 		icon: "mdi:database",
 		rank: getRouteRank("devTeam.cacheManage"),
 	},
