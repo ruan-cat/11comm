@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "字典类型",
+		title: "devTeam.configManage.type.pageTitle",
 		icon: "lucide:book-open",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.type"),
@@ -51,39 +51,39 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "字典编号",
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",
 		width: 120,
 		fixed: true,
 	},
 	{
-		label: "字典名称",
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryName")),
 		prop: "dictionaryName",
 		width: 150,
 	},
 	{
-		label: "字典类型",
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryType")),
 		prop: "dictionaryType",
 		width: 150,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.configManage.type.fields.status")),
 		prop: "status",
 		width: 100,
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("devTeam.configManage.type.fields.remark")),
 		prop: "remark",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("devTeam.configManage.type.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		label: transformI18n($t("devTeam.configManage.type.fields.updateTime")),
 		prop: "updateTime",
 		width: 160,
 	},
@@ -98,7 +98,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "字典类型",
+	title: transformI18n($t("devTeam.configManage.type.pageTitle")),
 	columns: columns.value,
 });
 
@@ -109,28 +109,28 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 字典编号
 	{
-		label: "字典编号",
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",
 		valueType: "input",
 	},
 
 	// 字典名称
 	{
-		label: "字典名称",
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 	},
 
 	// 字典类型
 	{
-		label: "字典类型",
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "input",
 	},
 
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.configManage.type.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: dictionaryTypeStatusOptions,
