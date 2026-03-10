@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "刷新缓存",
+		// 刷新缓存
+		title: "devTeam.cacheManage.refreshCache.pageTitle",
 		icon: "mdi:refresh",
 		showParent: true,
 		roles: ["开发团队"],
@@ -47,43 +48,43 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "缓存编码",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode")),
 		prop: "cacheCode",
 		minWidth: 140,
 	},
 	{
-		label: "缓存名称",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName")),
 		prop: "cacheName",
 		minWidth: 150,
 	},
 	{
-		label: "缓存键名",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheKey")),
 		prop: "cacheKey",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "缓存类型",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheType")),
 		prop: "cacheType",
 		minWidth: 110,
 	},
 	{
-		label: "缓存分组",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheGroup")),
 		prop: "cacheGroup",
 		minWidth: 110,
 	},
 	{
-		label: "过期时间(秒)",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.expireTimeSeconds")),
 		prop: "expireTime",
 		minWidth: 120,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.status")),
 		prop: "status",
 		minWidth: 90,
 	},
 	{
-		label: "刷新策略",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.refreshPolicy")),
 		prop: "refreshPolicy",
 		minWidth: 120,
 	},
@@ -98,7 +99,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "缓存信息",
+	title: transformI18n($t("devTeam.cacheManage.refreshCache.tableTitle")),
 	columns: columns.value,
 });
 
@@ -109,21 +110,21 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 缓存ID
 	{
-		label: "缓存ID",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheId")),
 		prop: "cacheId",
 		valueType: "input",
 	},
 
 	// 缓存编码
 	{
-		label: "缓存编码",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode")),
 		prop: "cacheCode",
 		valueType: "input",
 	},
 
 	// 缓存名称
 	{
-		label: "缓存名称",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName")),
 		prop: "cacheName",
 		valueType: "input",
 	},
@@ -185,7 +186,9 @@ const handleClearCache = (row: RefreshCacheListItem) => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="handleClearCache(row)">刷新缓存</ElButton>
+						<ElButton type="info" @click="handleClearCache(row)">
+							{{ transformI18n($t("devTeam.cacheManage.refreshCache.buttons.refresh")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
