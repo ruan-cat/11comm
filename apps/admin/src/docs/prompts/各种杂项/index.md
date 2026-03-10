@@ -406,7 +406,7 @@ import { createError } from "h3";
 
 1. 我对 d:\code\github-desktop-store\01s-11comm\openspec\changes\fill-database-tables\tasks.md 的任务细粒度不满意。未来我会使用别的模型来完成任务。届时完成任务时，一定会缺斤少两。我要求你对 `fill-database-tables\tasks.md` 做非常细粒化的改造
 
-## 032 <!-- TODO: --> 更新风险项报告文档
+## 032 更新风险项报告文档
 
 我只承认这几个问题，其他的问题都不考虑
 
@@ -415,3 +415,87 @@ import { createError } from "h3";
 3. 102 个文件使用 as any
 
 请你及时的更新 apps\admin\src\docs\reports\2026-02-20-fullstack-project-risk-analysis.md 和 apps\admin\src\docs\reports\2026-02-27-project-risk-assessment.md 这两个文档，标记其他的风险项均不属于有意义的风险项，不予考虑。
+
+## 033 <!-- TODO: --> 全面更新本项目的 i18n 配置
+
+后台项目出现很多 i18n 配置使用不当的情况。请你使用谷歌浏览器 MCP，访问 https://01s-11.ruan-cat.com/ 生产环境，逐步的阅读清楚全部的页面。
+
+通过直接访问页面的方式，了解清楚到底有哪些页面没有正确的使用 i18n 。
+
+将这些没有正确使用的页面罗列出来，列举到明确的清单文件内。然后进入到这些页面的 vue 组件内。正确的使用 i18n，完成修复。
+
+这份 `apps\admin\src\docs\reports\2026-03-11-prod-i18n-audit-key-findings-and-fix-plan.md` 报告是上一次任务的进度，请你根据这一份报告，继续完成全面的 i18n 修复。
+
+请务必使用 `.claude\skills\code-style` 技能，使用本项目正确的 i18n 使用方式，在 vue 组件内正确使用 i18n 。
+
+### 只处理 i18n
+
+你只负责更改 i18n，不要删改掉其他的代码。
+
+比如这里：
+
+原来的代码：
+
+```vue
+<ElButton type="success" @click="exportConfig"> 导出 </ElButton>
+<ElButton type="warning" @click="importConfig"> 导入 </ElButton>
+```
+
+修改后的代码：
+
+```vue
+<ElButton type="info" @click="exportConfig">
+  {{ transformI18n($t("devTeam.configManage.center.buttons.export")) }}
+</ElButton>
+<ElButton type="info" @click="importConfig">
+  {{ transformI18n($t("devTeam.configManage.center.buttons.import")) }}
+</ElButton>
+```
+
+不要去添油加醋，不要多修改了组件的 type 类型。这不是本次 i18n 任务的要求！
+
+正确的修改是：
+
+```vue
+<ElButton type="success" @click="exportConfig">
+  {{ transformI18n($t("devTeam.configManage.center.buttons.export")) }}
+</ElButton>
+<ElButton type="warning" @click="importConfig">
+  {{ transformI18n($t("devTeam.configManage.center.buttons.import")) }}
+</ElButton>
+```
+
+只负责完成 i18n 的使用和替换。
+
+### 增加注释
+
+修改例子如下：
+
+旧代码：
+
+```ts
+definePage({
+	meta: {
+		title: "菜单组",
+		icon: "mdi:group",
+		roles: ["开发团队"],
+		rank: getRouteRank("devTeam.menuManage.group"),
+	},
+});
+```
+
+按照 i18n 要求修改后的代码：
+
+```ts
+definePage({
+	meta: {
+		// 菜单组
+		title: "devTeam.menuManage.group.pageTitle",
+		icon: "mdi:group",
+		roles: ["开发团队"],
+		rank: getRouteRank("devTeam.menuManage.group"),
+	},
+});
+```
+
+注意在 definePage 的 meta.title 内补全中文注释，便于我阅读。
