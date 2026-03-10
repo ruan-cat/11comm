@@ -39,7 +39,7 @@ function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 Dialog title */
-	const title = `${modeText.value}配置`;
+	const title = `${modeText.value}${transformI18n($t("devTeam.configManage.center.pageTitle"))}`;
 
 	/** 业务对象 Form data object */
 	const formData: ConfigCenterFormVO = isAdd.value
