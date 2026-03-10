@@ -4,7 +4,15 @@ import Question from "~icons/ri/question-answer-line";
 import CheckLine from "~icons/ri/chat-check-line";
 import Smile from "~icons/ri/star-smile-line";
 
-const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+const dayKeys = [
+	"welcome.weekdays.sunday",
+	"welcome.weekdays.monday",
+	"welcome.weekdays.tuesday",
+	"welcome.weekdays.wednesday",
+	"welcome.weekdays.thursday",
+	"welcome.weekdays.friday",
+	"welcome.weekdays.saturday",
+];
 
 /** 需求人数、提问数量、解决数量、用户满意度 */
 const chartData = [
@@ -13,7 +21,7 @@ const chartData = [
 		bgColor: "#effaff",
 		color: "#41b6ff",
 		duration: 2200,
-		name: "需求人数",
+		name: "welcome.metrics.requiredPeople",
 		value: 36000,
 		percent: "+88%",
 		data: [2101, 5288, 4239, 4962, 6752, 5208, 7450], // 平滑折线图数据
@@ -23,7 +31,7 @@ const chartData = [
 		bgColor: "#fff5f4",
 		color: "#e85f33",
 		duration: 1600,
-		name: "提问数量",
+		name: "welcome.metrics.questionCount",
 		value: 16580,
 		percent: "+70%",
 		data: [2216, 1148, 1255, 788, 4821, 1973, 4379],
@@ -33,7 +41,7 @@ const chartData = [
 		bgColor: "#eff8f4",
 		color: "#26ce83",
 		duration: 1500,
-		name: "解决数量",
+		name: "welcome.metrics.resolvedCount",
 		value: 16499,
 		percent: "+99%",
 		data: [861, 1002, 3195, 1715, 3666, 2415, 3645],
@@ -43,7 +51,7 @@ const chartData = [
 		bgColor: "#f6f4fe",
 		color: "#7846e5",
 		duration: 100,
-		name: "用户满意度",
+		name: "welcome.metrics.satisfaction",
 		value: 100,
 		percent: "+100%",
 		data: [100],
@@ -65,43 +73,43 @@ const barChartData = [
 /** 解决概率 */
 const progressData = [
 	{
-		week: "周一",
+		weekKey: "welcome.weekdays.monday",
 		percentage: 85,
 		duration: 110,
 		color: "#41b6ff",
 	},
 	{
-		week: "周二",
+		weekKey: "welcome.weekdays.tuesday",
 		percentage: 86,
 		duration: 105,
 		color: "#41b6ff",
 	},
 	{
-		week: "周三",
+		weekKey: "welcome.weekdays.wednesday",
 		percentage: 88,
 		duration: 100,
 		color: "#41b6ff",
 	},
 	{
-		week: "周四",
+		weekKey: "welcome.weekdays.thursday",
 		percentage: 89,
 		duration: 95,
 		color: "#41b6ff",
 	},
 	{
-		week: "周五",
+		weekKey: "welcome.weekdays.friday",
 		percentage: 94,
 		duration: 90,
 		color: "#26ce83",
 	},
 	{
-		week: "周六",
+		weekKey: "welcome.weekdays.saturday",
 		percentage: 96,
 		duration: 85,
 		color: "#26ce83",
 	},
 	{
-		week: "周日",
+		weekKey: "welcome.weekdays.sunday",
 		percentage: 100,
 		duration: 80,
 		color: "#26ce83",
@@ -125,7 +133,8 @@ const latestNewsData = cloneDeep(tableData)
 	.slice(0, 14)
 	.map((item, index) => {
 		return Object.assign(item, {
-			date: `${dayjs().subtract(index, "day").format("YYYY-MM-DD")} ${days[dayjs().subtract(index, "day").day()]}`,
+			date: dayjs().subtract(index, "day").format("YYYY-MM-DD"),
+			weekKey: dayKeys[dayjs().subtract(index, "day").day()],
 		});
 	});
 
