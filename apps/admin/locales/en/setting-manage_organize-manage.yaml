@@ -1,0 +1,257 @@
+settingManage:
+  pageTitle: Settings
+  organizeManage:
+    pageTitle: Organization Management
+    common:
+      buttons:
+        document: Document
+        export: Export
+        resetPassword: Reset Password
+        permissionConfig: Permission Config
+        associateUnit: Associate Unit
+        associateEmployee: Associate Employee
+        file: File
+        enable: Enable
+        disable: Disable
+      messages:
+        selectOrgFirst: Please select an organization first
+        deletePending: "Delete is not implemented yet: {name}"
+        viewPermissionPending: "Permission view is not implemented yet: {name}"
+        unitRequired: Please select units to associate
+        unitAssociateSuccess: Units associated successfully
+        deleteSuccess: Deleted successfully
+        fileComingSoon: File feature is under development
+      dialogs:
+        confirmTitle: Notice
+    orgInfo:
+      pageTitle: Organization Info
+      treeTitle: Organization Structure
+      tableTitle: Related Employees
+      search:
+        employeeName: Employee Name
+        orgNamePlaceholder: Please enter organization name
+      fields:
+        name: Name
+        phone: Phone
+        position: Position
+        email: Email
+        address: Address
+        gender: Gender
+        type: Organization Type
+        code: Organization Code
+        leaderName: Leader Name
+        description: Organization Description
+        enabled: Enabled
+      form:
+        options:
+          company: Company
+          department: Department
+          group: Group
+        validation:
+          enterName: Please enter the organization name
+          selectType: Please select the organization type
+          enterCode: Please enter the organization code
+          enterLeaderName: Please enter the leader name
+          enterPhone: Please enter the contact phone
+          invalidPhone: Please enter a valid phone number
+    staffInfo:
+      pageTitle: Staff Info
+      tableTitle: Staff Management
+      dialogTitle: Staff
+      fields:
+        employeeId: Staff ID
+        employeeNumber: Staff Number
+        name: Name
+        phone: Phone
+        orgName: Organization
+        position: Position
+        email: Email
+        address: Address
+        gender: Gender
+        avatar: Photo
+      form:
+        placeholders:
+          name: Please enter the staff name (2-10 characters)
+          gender: Please select the staff gender
+          position: Please select the position
+          email: Please enter the staff email
+          phone: Please enter the phone number
+          address: Please enter the home address
+          orgName: Please select the organization
+        options:
+          gender:
+            male: Male
+            female: Female
+          positions:
+            staff: General Staff
+            departmentManager: Department Manager
+            deputyManager: Deputy Department Manager
+            teamLeader: Team Leader
+            branchGeneralManager: Branch General Manager
+            branchDeputyGeneralManager: Branch Deputy General Manager
+            generalManagerAssistant: General Manager Assistant
+            headquartersGeneralManager: Headquarters General Manager
+            headquartersDeputyGeneralManager: Headquarters Deputy General Manager
+          orgs:
+            top: Zhonghang Property 1
+            finance: Zhonghang Property 1 / Finance Department
+            hr: Zhonghang Property 1 / HR Department
+            engineering: Zhonghang Property 1 / Engineering Department
+            security: Zhonghang Property 1 / Security Department
+            service: Zhonghang Property 1 / Customer Service Department
+            cleaning: Zhonghang Property 1 / Cleaning Department
+            greening: Zhonghang Property 1 / Greening Department
+            administration: Zhonghang Property 1 / Administration Department
+            external: Zhonghang Property 1 / External Staff Department
+        validation:
+          enterName: Please enter the staff name
+          nameLength: Staff name length must be between 2 and 10 characters
+          selectGender: Please select the staff gender
+          selectPosition: Please select the position
+          invalidEmail: Please enter a valid email address
+          enterPhone: Please enter the phone number
+          invalidPhone: Please enter a valid phone number
+          enterAddress: Please enter the home address
+          selectOrgName: Please select the organization
+    rolePermission:
+      pageTitle: Role Permission
+      tableTitle: Role Permission Management
+      dialogTitle: Role Permission
+      fields:
+        name: Role Name
+        code: Role Code
+        status: Status
+        description: Description
+      status:
+        enabled: Enabled
+        disabled: Disabled
+      form:
+        validation:
+          enterName: Please enter the role name
+          nameLength: Role name length must be between 2 and 50 characters
+          enterCode: Please enter the role code
+          codePattern: Role code can only contain uppercase letters, numbers, and underscores, and must start with an uppercase letter
+          selectStatus: Please select the role status
+          descriptionMax: Role description must not exceed 200 characters
+    dataPermission:
+      pageTitle: Data Permission
+      defaultTitle: Level A Data Permission
+      tabs:
+        unitAuth: Unit Authorization
+        staffRelation: Staff Association
+      unitAuth:
+        title: Unit Authorization
+        dialogTitle: Building Units
+        fields:
+          building: Building
+          unit: Unit
+          buildingCode: Building Code
+          unitCode: Unit Code
+      staffRelation:
+        title: Staff Association
+        fields:
+          name: Name
+          phone: Phone
+          email: Email
+          address: Address
+          gender: Gender
+          employeeName: Employee Name
+          employeePhone: Employee Phone
+    workingSchedule:
+      pageTitle: Work Schedule
+      tableTitle: Schedule Management
+      dialogTitle: Schedule
+      fields:
+        name: Schedule Name
+        type: Schedule Type
+        startTime: Start Time
+        endTime: End Time
+        weekday: Weekday
+        managerName: Manager
+        phone: Contact Phone
+        status: Status
+        description: Schedule Description
+        enabled: Enabled
+      options:
+        morning: Morning Shift
+        afternoon: Afternoon Shift
+        evening: Evening Shift
+        night: Night Shift
+        allDay: All Day
+        monday: Monday
+        tuesday: Tuesday
+        wednesday: Wednesday
+        thursday: Thursday
+        friday: Friday
+        saturday: Saturday
+        sunday: Sunday
+      form:
+        validation:
+          enterName: Please enter the schedule name
+          selectType: Please select the schedule type
+          selectStartTime: Please select the start time
+          selectEndTime: Please select the end time
+          selectWeekday: Please select the weekday
+          enterManagerName: Please enter the manager name
+          enterPhone: Please enter the contact phone
+          invalidPhone: Please enter a valid phone number
+    schedulingSetting:
+      pageTitle: Scheduling Settings
+      tableTitle: Scheduling Settings
+      dialogTitle: Scheduling Settings
+      fields:
+        name: Schedule Name
+        type: Schedule Type
+        cycle: Schedule Cycle
+        effectiveTime: Effective Time
+        staff: Staff
+        status: Status
+      form:
+        options:
+          type:
+            fixed: Fixed Scheduling
+            rotation: Rotation Scheduling
+            flexible: Flexible Scheduling
+          status:
+            enabled: Enabled
+            disabled: Disabled
+        validation:
+          enterName: Please enter the shift name
+          selectType: Please select the schedule type
+          enterCycle: Please enter the schedule cycle
+          cyclePositive: Schedule cycle must be greater than 0
+          selectEffectiveTime: Please select the effective time
+          selectStatus: Please select the status
+    shiftSetting:
+      pageTitle: Shift Settings
+      tableTitle: Shift Information
+      dialogTitle: Shift Settings
+      fields:
+        name: Shift Name
+        type: Shift Type
+        startTime: Start Time
+        endTime: End Time
+        status: Status
+        enabled: Enabled
+        description: Description
+      status:
+        enabled: Enabled
+        disabled: Disabled
+      form:
+        options:
+          type:
+            day: Day Shift
+            night: Night Shift
+            middle: Middle Shift
+            allDay: All Day
+        validation:
+          enterName: Please enter the shift name
+          selectType: Please select the shift type
+          selectStartTime: Please select the start time
+          selectEndTime: Please select the end time
+      dialogs:
+        confirmDelete: 'Are you sure you want to delete shift "{name}"?'
+        confirmToggle: 'Are you sure you want to {action} shift "{name}"?'
+      messages:
+        deleted: Deleted successfully
+        statusUpdated: "Shift has been {action}"

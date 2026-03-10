@@ -1,0 +1,257 @@
+settingManage:
+  pageTitle: 设置
+  organizeManage:
+    pageTitle: 组织管理
+    common:
+      buttons:
+        document: 文档
+        export: 导出
+        resetPassword: 重置密码
+        permissionConfig: 权限配置
+        associateUnit: 关联单元
+        associateEmployee: 关联员工
+        file: 文件
+        enable: 启用
+        disable: 停用
+      messages:
+        selectOrgFirst: 请先选择一个组织
+        deletePending: "删除功能暂未实现: {name}"
+        viewPermissionPending: "查看权限功能暂未实现: {name}"
+        unitRequired: 请选择要关联的单元
+        unitAssociateSuccess: 关联单元成功
+        deleteSuccess: 删除成功
+        fileComingSoon: 文件功能开发中
+      dialogs:
+        confirmTitle: 提示
+    orgInfo:
+      pageTitle: 组织信息
+      treeTitle: 组织结构
+      tableTitle: 关联员工
+      search:
+        employeeName: 员工名称
+        orgNamePlaceholder: 请输入组织名称
+      fields:
+        name: 姓名
+        phone: 手机号
+        position: 岗位
+        email: 邮箱
+        address: 地址
+        gender: 性别
+        type: 组织类型
+        code: 组织编码
+        leaderName: 负责人姓名
+        description: 组织描述
+        enabled: 是否启用
+      form:
+        options:
+          company: 公司
+          department: 部门
+          group: 小组
+        validation:
+          enterName: 请输入组织名称
+          selectType: 请选择组织类型
+          enterCode: 请输入组织编码
+          enterLeaderName: 请输入负责人姓名
+          enterPhone: 请输入联系电话
+          invalidPhone: 请输入正确的手机号码
+    staffInfo:
+      pageTitle: 员工信息
+      tableTitle: 员工管理
+      dialogTitle: 员工
+      fields:
+        employeeId: 员工ID
+        employeeNumber: 员工编号
+        name: 姓名
+        phone: 手机号
+        orgName: 关联组织
+        position: 岗位
+        email: 邮箱
+        address: 地址
+        gender: 性别
+        avatar: 照片
+      form:
+        placeholders:
+          name: 请输入员工名称（2-10位）
+          gender: 请选择员工性别
+          position: 请选择岗位
+          email: 请输入员工邮箱
+          phone: 请输入手机
+          address: 请输入家庭住址
+          orgName: 请选择关联组织
+        options:
+          gender:
+            male: 男
+            female: 女
+          positions:
+            staff: 普通员工
+            departmentManager: 部门经理
+            deputyManager: 部门副经理
+            teamLeader: 部门组长
+            branchGeneralManager: 分公司总经理
+            branchDeputyGeneralManager: 分公司副总经理
+            generalManagerAssistant: 总经理助理
+            headquartersGeneralManager: 总公司总经理
+            headquartersDeputyGeneralManager: 总公司副总经理
+          orgs:
+            top: 中航物业1
+            finance: 中航物业1/财务部
+            hr: 中航物业1/人事部
+            engineering: 中航物业1/工程部
+            security: 中航物业1/安保部
+            service: 中航物业1/客服部
+            cleaning: 中航物业1/保洁部
+            greening: 中航物业1/绿化部
+            administration: 中航物业1/行政部
+            external: 中航物业1/物业1外实员部门
+        validation:
+          enterName: 请输入员工名称
+          nameLength: 员工名称长度为2-10位
+          selectGender: 请选择员工性别
+          selectPosition: 请选择岗位
+          invalidEmail: 请输入正确的邮箱格式
+          enterPhone: 请输入手机
+          invalidPhone: 请输入正确的手机号码格式
+          enterAddress: 请输入家庭住址
+          selectOrgName: 请选择关联组织
+    rolePermission:
+      pageTitle: 角色权限
+      tableTitle: 角色权限管理
+      dialogTitle: 角色权限
+      fields:
+        name: 角色名称
+        code: 角色编码
+        status: 状态
+        description: 描述
+      status:
+        enabled: 启用
+        disabled: 禁用
+      form:
+        validation:
+          enterName: 请输入角色名称
+          nameLength: 角色名称长度在 2 到 50 个字符
+          enterCode: 请输入角色编码
+          codePattern: 角色编码只能包含大写字母、数字和下划线，且以大写字母开头
+          selectStatus: 请选择角色状态
+          descriptionMax: 角色描述不能超过 200 个字符
+    dataPermission:
+      pageTitle: 数据权限
+      defaultTitle: A级数据权限
+      tabs:
+        unitAuth: 单元授权
+        staffRelation: 员工关联
+      unitAuth:
+        title: 单元授权
+        dialogTitle: 楼栋单元
+        fields:
+          building: 楼栋
+          unit: 单元
+          buildingCode: 楼栋编号
+          unitCode: 单元编号
+      staffRelation:
+        title: 员工关联
+        fields:
+          name: 名称
+          phone: 手机号
+          email: 邮箱
+          address: 地址
+          gender: 性别
+          employeeName: 员工名称
+          employeePhone: 员工手机号
+    workingSchedule:
+      pageTitle: 排班表
+      tableTitle: 排班管理
+      dialogTitle: 排班
+      fields:
+        name: 排班名称
+        type: 排班类型
+        startTime: 开始时间
+        endTime: 结束时间
+        weekday: 星期几
+        managerName: 负责人
+        phone: 联系电话
+        status: 状态
+        description: 排班描述
+        enabled: 是否启用
+      options:
+        morning: 早班
+        afternoon: 中班
+        evening: 晚班
+        night: 夜班
+        allDay: 全天
+        monday: 星期一
+        tuesday: 星期二
+        wednesday: 星期三
+        thursday: 星期四
+        friday: 星期五
+        saturday: 星期六
+        sunday: 星期日
+      form:
+        validation:
+          enterName: 请输入排班名称
+          selectType: 请选择排班类型
+          selectStartTime: 请选择开始时间
+          selectEndTime: 请选择结束时间
+          selectWeekday: 请选择星期几
+          enterManagerName: 请输入负责人姓名
+          enterPhone: 请输入联系电话
+          invalidPhone: 请输入正确的手机号码
+    schedulingSetting:
+      pageTitle: 排班设置
+      tableTitle: 排班设置
+      dialogTitle: 排班设置
+      fields:
+        name: 排班名称
+        type: 排班类型
+        cycle: 排班周期
+        effectiveTime: 生效时间
+        staff: 人员
+        status: 状态
+      form:
+        options:
+          type:
+            fixed: 固定排班
+            rotation: 轮班排班
+            flexible: 自由排班
+          status:
+            enabled: 启用
+            disabled: 禁用
+        validation:
+          enterName: 请输入班次名称
+          selectType: 请选择排班类型
+          enterCycle: 请输入排班周期
+          cyclePositive: 排班周期必须大于0
+          selectEffectiveTime: 请选择生效时间
+          selectStatus: 请选择状态
+    shiftSetting:
+      pageTitle: 班次设置
+      tableTitle: 班次信息
+      dialogTitle: 班次设置
+      fields:
+        name: 班次名称
+        type: 班次类型
+        startTime: 开始时间
+        endTime: 结束时间
+        status: 状态
+        enabled: 是否启用
+        description: 描述
+      status:
+        enabled: 启用
+        disabled: 停用
+      form:
+        options:
+          type:
+            day: 白班
+            night: 夜班
+            middle: 中班
+            allDay: 全天
+        validation:
+          enterName: 请输入班次名称
+          selectType: 请选择班次类型
+          selectStartTime: 请选择开始时间
+          selectEndTime: 请选择结束时间
+      dialogs:
+        confirmDelete: 确认删除班次 "{name}" 吗？
+        confirmToggle: 确认{action}班次 "{name}" 吗？
+      messages:
+        deleted: 删除成功
+        statusUpdated: 班次已{action}
