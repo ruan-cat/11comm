@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "字典",
+		title: "devTeam.configManage.dictionary.pageTitle",
 		icon: "mdi:book",
 		roles: ["开发团队"],
 		rank: getRouteRank("devTeam.configManage.dictionary"),
@@ -57,49 +57,49 @@ const {
 const columns = ref<TableColumnList>([
 	defaultPureTableIndexColumn,
 	{
-		label: "字典名称",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
 		prop: "dictionaryName",
 		width: 180,
 		fixed: true,
 	},
 	{
-		label: "字典编码",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode")),
 		prop: "dictionaryCode",
 		width: 150,
 	},
 	{
-		label: "字典类型",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryType")),
 		prop: "dictionaryType",
 		width: 120,
 	},
 	{
-		label: "字典项数量",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.itemCount")),
 		prop: "itemCount",
 		width: 120,
 	},
 	{
-		label: "字典描述",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.description")),
 		prop: "description",
 		width: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "是否启用",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.isEnabled")),
 		prop: "isEnabled",
 		width: 100,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.createTime")),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.updateTime")),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		label: "创建人",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.creator")),
 		prop: "creator",
 		width: 100,
 	},
@@ -114,7 +114,7 @@ const columns = ref<TableColumnList>([
 
 /** 表格操作栏组件 配置  */
 const pureTableBarProps = ref<PureTableBarProps>({
-	title: "字典",
+	title: transformI18n($t("devTeam.configManage.dictionary.pageTitle")),
 	columns: columns.value,
 });
 
@@ -125,21 +125,21 @@ const pureTableBarProps = ref<PureTableBarProps>({
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	// 字典名称
 	{
-		label: "字典名称",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 	},
 
 	// 字典编码
 	{
-		label: "字典编码",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode")),
 		prop: "dictionaryCode",
 		valueType: "input",
 	},
 
 	// 字典类型
 	{
-		label: "字典类型",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "select",
 		options: dictionaryTypeOptions,
@@ -147,7 +147,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 是否启用
 	{
-		label: "是否启用",
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
 		options: enableStatusOptions,
@@ -192,7 +192,7 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}字典`;
+	const title = `${modeText.value}${transformI18n($t("devTeam.configManage.dictionary.pageTitle"))}`;
 
 	/** 业务对象 */
 	const formData: DictionaryFormVO = isAdd.value
@@ -320,7 +320,9 @@ function gotoDictionaryItemsPage(row: DictionaryListItem) {
 						</ElButton>
 						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
 						<ElButton type="info"> {{ transformI18n($t("common.buttons.info")) }} </ElButton>
-						<ElButton type="info" @click="gotoDictionaryItemsPage(row)"> 字典项管理 </ElButton>
+						<ElButton type="info" @click="gotoDictionaryItemsPage(row)">
+							{{ transformI18n($t("devTeam.configManage.dictionary.buttons.manageItems")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
