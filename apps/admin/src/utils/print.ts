@@ -104,14 +104,14 @@ Print.prototype = {
 
 		for (let k3 = 0; k3 < selects.length; k3++) {
 			if (selects[k3].type == "select-one") {
-				const child = selects[k3].children;
-				for (const i in child) {
-					if (child[i].tagName == "OPTION") {
-						if ((child[i] as any).selected == true) {
-							child[i].setAttribute("selected", "selected");
-						} else {
-							child[i].removeAttribute("selected");
-						}
+				const options = Array.from(selects[k3].children).filter((node): node is HTMLOptionElement => {
+					return node.tagName === "OPTION";
+				});
+				for (const option of options) {
+					if (option.selected) {
+						option.setAttribute("selected", "selected");
+					} else {
+						option.removeAttribute("selected");
 					}
 				}
 			}

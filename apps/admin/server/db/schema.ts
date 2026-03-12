@@ -1,9 +1,9 @@
 /**
- * @file Drizzle ORM Schema 统一导出入口
- * @description 重新导出自 @01s-11comm/type 的业务 Schema
+ * @file Drizzle ORM Schema 兼容导出入口
+ * @deprecated 迁移过渡层：请优先从 `@01s-11comm/type/business` 与 `@01s-11comm/type/common` 直接导入。
+ * @description
+ * 历史代码仍可通过本文件获取 schema，后续会逐步移除该代理层，降低迁移过渡态认知负担。
  */
 
 export * from "@01s-11comm/type/business";
-// 同时也导出 common 中的枚举和辅助函数，如果需要的话
-// 注意：@01s-11comm/type/business 已经导出了很多内容，但可能没导出 common
 export * from "@01s-11comm/type/common";

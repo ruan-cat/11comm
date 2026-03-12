@@ -1,14 +1,16 @@
-import { describe, it } from "vitest";
+import { describe, expect, test } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 import { queryPayDet } from "./index";
 
 describe("queryPayDet 接口测试", () => {
-	it("基础调用", async () => {
+	test("基础调用", async () => {
+		let hasError = false;
 		const { execute, data } = queryPayDet({
 			onSuccess(data) {
 				console.warn("queryPayDet onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryPayDet onError", error);
 			},
 		});
@@ -18,15 +20,19 @@ describe("queryPayDet 接口测试", () => {
 				pageSize: 10,
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("带参数调用", async () => {
+	test("带参数调用", async () => {
+		let hasError = false;
 		const { execute, data } = queryPayDet({
 			onSuccess(data) {
 				console.warn("queryPayDet onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryPayDet onError", error);
 			},
 		});
@@ -45,6 +51,8 @@ describe("queryPayDet 接口测试", () => {
 				chargeEndTime: "2024-01-31",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
