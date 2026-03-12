@@ -1,14 +1,16 @@
-import { describe, it } from "vitest";
+import { describe, expect, test } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 import { addDiscount, modifyDiscount, deleteDiscount, queryDiscount } from "./index";
 
 describe("c4/折扣管理", () => {
-	it("使用 body 接口 - 添加折扣", async () => {
+	test("使用 body 接口 - 添加折扣", async () => {
+		let hasError = false;
 		const { execute, data } = addDiscount({
 			onSuccess(data) {
 				console.warn("addDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("addDiscount onError", error);
 			},
 		});
@@ -22,15 +24,19 @@ describe("c4/折扣管理", () => {
 				spec_value: ["2024年1月-2月", "全体业主"],
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 修改折扣", async () => {
+	test("使用 body 接口 - 修改折扣", async () => {
+		let hasError = false;
 		const { execute, data } = modifyDiscount({
 			onSuccess(data) {
 				console.warn("modifyDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("modifyDiscount onError", error);
 			},
 		});
@@ -45,15 +51,19 @@ describe("c4/折扣管理", () => {
 				spec_value: ["2024年全年"],
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 删除折扣", async () => {
+	test("使用 body 接口 - 删除折扣", async () => {
+		let hasError = false;
 		const { execute, data } = deleteDiscount({
 			onSuccess(data) {
 				console.warn("deleteDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("deleteDiscount onError", error);
 			},
 		});
@@ -62,15 +72,19 @@ describe("c4/折扣管理", () => {
 				discount_id: "test_discount_id",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 查询折扣", async () => {
+	test("使用 query 接口 - 查询折扣", async () => {
+		let hasError = false;
 		const { execute, data } = queryDiscount({
 			onSuccess(data) {
 				console.warn("queryDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryDiscount onError", error);
 			},
 		});
@@ -83,6 +97,8 @@ describe("c4/折扣管理", () => {
 				discount_type: "百分比折扣",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

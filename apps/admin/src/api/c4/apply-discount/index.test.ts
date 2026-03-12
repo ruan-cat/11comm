@@ -1,4 +1,4 @@
-import { describe, it } from "vitest";
+import { describe, expect, test } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 import {
 	queryTrackRecordDetail,
@@ -13,12 +13,14 @@ import {
 } from "./index";
 
 describe("c4/优惠申请管理", () => {
-	it("使用 query 接口 - 查看跟踪记录详情", async () => {
+	test("使用 query 接口 - 查看跟踪记录详情", async () => {
+		let hasError = false;
 		const { execute, data } = queryTrackRecordDetail({
 			onSuccess(data) {
 				console.warn("queryTrackRecordDetail onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryTrackRecordDetail onError", error);
 			},
 		});
@@ -29,15 +31,19 @@ describe("c4/优惠申请管理", () => {
 				ardr_id: "test_record_id",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 添加跟踪记录", async () => {
+	test("使用 body 接口 - 添加跟踪记录", async () => {
+		let hasError = false;
 		const { execute, data } = addTrackRecord({
 			onSuccess(data) {
 				console.warn("addTrackRecord onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("addTrackRecord onError", error);
 			},
 		});
@@ -52,15 +58,19 @@ describe("c4/优惠申请管理", () => {
 				remark: "测试跟踪记录",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 删除跟踪记录", async () => {
+	test("使用 body 接口 - 删除跟踪记录", async () => {
+		let hasError = false;
 		const { execute, data } = deleteTrackRecord({
 			onSuccess(data) {
 				console.warn("deleteTrackRecord onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("deleteTrackRecord onError", error);
 			},
 		});
@@ -69,15 +79,19 @@ describe("c4/优惠申请管理", () => {
 				ardr_id: "test_record_id",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 优惠申请分页查询", async () => {
+	test("使用 query 接口 - 优惠申请分页查询", async () => {
+		let hasError = false;
 		const { execute, data } = queryAllApplyDiscount({
 			onSuccess(data) {
 				console.warn("queryAllApplyDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryAllApplyDiscount onError", error);
 			},
 		});
@@ -90,15 +104,19 @@ describe("c4/优惠申请管理", () => {
 				state: "待审核",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 添加优惠申请", async () => {
+	test("使用 body 接口 - 添加优惠申请", async () => {
+		let hasError = false;
 		const { execute, data } = addApplyDiscount({
 			onSuccess(data) {
 				console.warn("addApplyDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("addApplyDiscount onError", error);
 			},
 		});
@@ -113,15 +131,19 @@ describe("c4/优惠申请管理", () => {
 				createRemark: "房屋空置申请优惠",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 优惠申请修改", async () => {
+	test("使用 body 接口 - 优惠申请修改", async () => {
+		let hasError = false;
 		const { execute, data } = modifyApplyDiscount({
 			onSuccess(data) {
 				console.warn("modifyApplyDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("modifyApplyDiscount onError", error);
 			},
 		});
@@ -138,15 +160,19 @@ describe("c4/优惠申请管理", () => {
 				state: "已审核",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 获取跟踪记录（分页）", async () => {
+	test("使用 query 接口 - 获取跟踪记录（分页）", async () => {
+		let hasError = false;
 		const { execute, data } = queryRecord({
 			onSuccess(data) {
 				console.warn("queryRecord onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryRecord onError", error);
 			},
 		});
@@ -157,15 +183,19 @@ describe("c4/优惠申请管理", () => {
 				ard_id: "test_apply_id",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 删除优惠申请", async () => {
+	test("使用 body 接口 - 删除优惠申请", async () => {
+		let hasError = false;
 		const { execute, data } = removeApplyDiscount({
 			onSuccess(data) {
 				console.warn("removeApplyDiscount onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("removeApplyDiscount onError", error);
 			},
 		});
@@ -174,15 +204,19 @@ describe("c4/优惠申请管理", () => {
 				ard_id: "test_apply_id",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 修改优惠申请状态", async () => {
+	test("使用 body 接口 - 修改优惠申请状态", async () => {
+		let hasError = false;
 		const { execute, data } = modifyApplyDiscountState({
 			onSuccess(data) {
 				console.warn("modifyApplyDiscountState onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("modifyApplyDiscountState onError", error);
 			},
 		});
@@ -192,6 +226,8 @@ describe("c4/优惠申请管理", () => {
 				state: "已通过",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });

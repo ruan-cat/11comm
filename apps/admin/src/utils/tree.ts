@@ -87,8 +87,8 @@ export const getNodeByUniqueId = (tree: any[], uniqueId: number | string): any =
 	const childrenList = tree
 		.filter((node) => node.children)
 		.map((i) => i.children)
-		.flat(1) as unknown;
-	return getNodeByUniqueId(childrenList as any[], uniqueId);
+		.flat(1) as Array<Record<string, unknown>>;
+	return getNodeByUniqueId(childrenList, uniqueId);
 };
 
 /**

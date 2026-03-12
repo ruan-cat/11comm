@@ -1,14 +1,16 @@
-import { describe, it } from "vitest";
+import { describe, expect, test } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
 import { addDictType, deleteDictType, updateDictType, queryDictTypeList, queryDictTypeNameList } from "./index";
 
 describe("j2/配置管理/字典类型", () => {
-	it("使用 body 接口 - 添加字典类型", async () => {
+	test("使用 body 接口 - 添加字典类型", async () => {
+		let hasError = false;
 		const { execute, data } = addDictType({
 			onSuccess(data) {
 				console.warn("addDictType onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("addDictType onError", error);
 			},
 		});
@@ -18,15 +20,19 @@ describe("j2/配置管理/字典类型", () => {
 				statusCd: "0",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 删除字典类型", async () => {
+	test("使用 query 接口 - 删除字典类型", async () => {
+		let hasError = false;
 		const { execute, data } = deleteDictType({
 			onSuccess(data) {
 				console.warn("deleteDictType onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("deleteDictType onError", error);
 			},
 		});
@@ -35,15 +41,19 @@ describe("j2/配置管理/字典类型", () => {
 				id: "4",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 修改字典类型", async () => {
+	test("使用 body 接口 - 修改字典类型", async () => {
+		let hasError = false;
 		const { execute, data } = updateDictType({
 			onSuccess(data) {
 				console.warn("updateDictType onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("updateDictType onError", error);
 			},
 		});
@@ -54,15 +64,19 @@ describe("j2/配置管理/字典类型", () => {
 				statusCd: "0",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 query 接口 - 查询字典类型列表(条件+分页)", async () => {
+	test("使用 query 接口 - 查询字典类型列表(条件+分页)", async () => {
+		let hasError = false;
 		const { execute, data } = queryDictTypeList({
 			onSuccess(data) {
 				console.warn("queryDictTypeList onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryDictTypeList onError", error);
 			},
 		});
@@ -73,21 +87,27 @@ describe("j2/配置管理/字典类型", () => {
 				specName: "员工岗位",
 			},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 
-	it("使用 body 接口 - 查询字典类型名称列表", async () => {
+	test("使用 body 接口 - 查询字典类型名称列表", async () => {
+		let hasError = false;
 		const { execute, data } = queryDictTypeNameList({
 			onSuccess(data) {
 				console.warn("queryDictTypeNameList onSuccess", printFormat(data));
 			},
 			onError(error) {
+				hasError = true;
 				console.error("queryDictTypeNameList onError", error);
 			},
 		});
 		await execute({
 			data: {},
 		});
+		expect(hasError).toBe(false);
+		expect(data.value).toBeDefined();
 		console.warn("查看简单的 data.value ", printFormat(data.value));
 	});
 });
