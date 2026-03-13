@@ -1,28 +1,99 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "修改密码",
+		// 修改密码
+		title: "settingManage.systemManage.changePassword.pageTitle",
 		icon: "mdi:key",
 		rank: getRouteRank("settingManage.systemManage.changePassword"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useChangePasswordRecordListQuery } from "@/api/setting-manage/system-manage/change-password";
-import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { ChangePasswordRecordListQuery } from "@01s-11comm/type";
 import {
-	changePasswordRecordTypeOptions,
-	changePasswordRecordStatusOptions,
 	changePasswordRecordDepartmentOptions,
+	changePasswordRecordStatusOptions,
+	changePasswordRecordTypeOptions,
 } from "@01s-11comm/type";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+function translateFromRecord(record: Record<string, string>, value?: string | null) {
+	if (!value) {
+		return "";
+	}
+	return record[value] ?? value;
+}
+
+const departmentTextMap = withLocale(() => ({
+	物业团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.property")),
+	开发团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.development")),
+	运营团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.operation")),
+	财务部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.finance")),
+	客服部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.customer")),
+	维修部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.maintenance")),
+	安保部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.security")),
+	绿化部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.greening")),
+	未知部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.unknown")),
+}));
+
+const changeTypeTextMap = withLocale(() => ({
+	用户自行修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.selfService")),
+	管理员重置: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.adminReset")),
+	强制修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.forceChange")),
+	首次登录修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstLogin")),
+	首次设置: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstSetup")),
+	主动修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.activeChange")),
+}));
+
+const statusTextMap = withLocale(() => ({
+	成功: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.success")),
+	失败: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.failed")),
+	待审核: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.pending")),
+}));
+
+function translateDepartmentLabel(value?: string | null) {
+	return translateFromRecord(departmentTextMap.value, value);
+}
+
+function translateChangeTypeLabel(value?: string | null) {
+	return translateFromRecord(changeTypeTextMap.value, value);
+}
+
+function translateStatusLabel(value?: string | null) {
+	return translateFromRecord(statusTextMap.value, value);
+}
+
+const translatedDepartmentOptions = withLocale(() =>
+	changePasswordRecordDepartmentOptions.map((item) => ({
+		...item,
+		label: translateDepartmentLabel(String(item.value)),
+	})),
+);
+
+const translatedChangeTypeOptions = withLocale(() =>
+	changePasswordRecordTypeOptions.map((item) => ({
+		...item,
+		label: translateChangeTypeLabel(String(item.value)),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	changePasswordRecordStatusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
+
 const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordListQuery> = {
 	username: "",
 	realName: "",
@@ -33,13 +104,9 @@ const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordListQuery> =
 	changeTimeRange: ["", ""],
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-// 使用密码修改记录列表查询 Hook
 const {
 	tableData,
 	pureTableProps,
@@ -51,121 +118,106 @@ const {
 	handleCurrentPageChange,
 } = useChangePasswordRecordListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "记录ID",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.recordId"))),
 		prop: "id",
 		width: 120,
 		fixed: true,
 	},
 	{
-		label: "用户名",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.username"))),
 		prop: "username",
 		width: 120,
 	},
 	{
-		label: "真实姓名",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.realName"))),
 		prop: "realName",
 		width: 120,
 	},
 	{
-		label: "所属部门",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.department"))),
 		prop: "department",
 		width: 120,
+		cellRenderer: ({ row }) => translateDepartmentLabel(row.department),
 	},
 	{
-		label: "修改时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.changeTime"))),
 		prop: "changeTime",
 		width: 180,
 	},
 	{
-		label: "修改IP",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.changeIp"))),
 		prop: "changeIp",
 		width: 130,
 	},
 	{
-		label: "修改类型",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.changeType"))),
 		prop: "changeType",
 		width: 140,
+		cellRenderer: ({ row }) => translateChangeTypeLabel(row.changeType),
 	},
 	{
-		label: "操作人",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.operator"))),
 		prop: "operator",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.status"))),
 		prop: "status",
 		width: 100,
+		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.systemManage.changePassword.fields.remark"))),
 		prop: "remark",
 		minWidth: 200,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 160,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "密码修改记录",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.systemManage.changePassword.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 用户名
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "用户名",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.username")),
 		prop: "username",
 		valueType: "input",
 	},
-
-	// 真实姓名
 	{
-		label: "真实姓名",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.realName")),
 		prop: "realName",
 		valueType: "input",
 	},
-
-	// 所属部门
 	{
-		label: "所属部门",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.department")),
 		prop: "department",
 		valueType: "select",
-		options: changePasswordRecordDepartmentOptions,
+		options: translatedDepartmentOptions.value,
 	},
-
-	// 修改类型
 	{
-		label: "修改类型",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeType")),
 		prop: "changeType",
 		valueType: "select",
-		options: changePasswordRecordTypeOptions,
+		options: translatedChangeTypeOptions.value,
 	},
-
-	// 状态
 	{
-		label: "状态",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: changePasswordRecordStatusOptions,
+		options: translatedStatusOptions.value,
 	},
-
-	// 修改时间
 	{
-		label: "修改时间",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeTime")),
 		prop: "changeTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -174,9 +226,8 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD HH:mm:ss",
 		},
 	},
-
 	{
-		label: "修改时间范围",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeTimeRange")),
 		prop: "changeTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
@@ -187,34 +238,25 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
-
-onMounted(async () => {
-	// 数据自动加载
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -223,12 +265,7 @@ onMounted(async () => {
 		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
-			<template #buttons>
-				<!-- 仅展示列表，无新增按钮 -->
-			</template>
-
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -237,8 +274,10 @@ onMounted(async () => {
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
-					<template #operation="{ row }">
-						<ElButton type="info"> 详情 </ElButton>
+					<template #operation>
+						<ElButton type="info">
+							{{ transformI18n($t("common.buttons.detail")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
