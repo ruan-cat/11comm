@@ -9,29 +9,27 @@ definePage({
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { h, ref } from "vue";
 import { ElMessageBox } from "element-plus";
-import { transformI18n } from "@/plugins/i18n";
-import { useI18n } from "vue-i18n";
-import { type ShiftSettingFormProps, defaultForm } from "./components/form";
-import type { ShiftSettingFormVO, ShiftSetting, ShiftSettingListQuery } from "@01s-11comm/type";
-import ShiftSettingForm from "./components/form.vue";
-import { useShiftSettingListQuery } from "@/api/setting-manage/organize-manage/shift-setting";
-
-import { useMode, type Mode } from "@/composables/use-mode";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
+import { useShiftSettingListQuery } from "@/api/setting-manage/organize-manage/shift-setting";
 import { message } from "@/utils/message";
+import { defaultForm, type ShiftSettingFormProps } from "./components/form";
+import type { ShiftSetting, ShiftSettingFormVO, ShiftSettingListQuery } from "@01s-11comm/type";
+import ShiftSettingForm from "./components/form.vue";
 
-const { t } = useI18n();
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & Partial<ShiftSettingListQuery> = {
 	name: "",
 	type: "",
@@ -41,15 +39,10 @@ const plusSearchModelRef: FieldValues & Partial<ShiftSettingListQuery> = {
 	description: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-// 使用班次设置列表查询 Hook
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -59,82 +52,148 @@ const {
 	handleCurrentPageChange,
 } = useShiftSettingListQuery(plusSearchDefaultValues);
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 表单组件实例 */
+const { setMode, isAdd, isEdit } = useMode();
 const shiftSettingFormInstance = ref<InstanceType<typeof ShiftSettingForm> | null>(null);
 
-/** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-const defaultAddDialogParams = {
-	width: "50%",
-	draggable: true,
-	fullscreenIcon: true,
-	closeOnClickModal: false,
-	contentRenderer: () => h("div"),
-};
+const shiftTypeLabelMap = {
+	白班: "settingManage.organizeManage.shiftSetting.form.options.type.day",
+	夜班: "settingManage.organizeManage.shiftSetting.form.options.type.night",
+	中班: "settingManage.organizeManage.shiftSetting.form.options.type.middle",
+	全天: "settingManage.organizeManage.shiftSetting.form.options.type.allDay",
+	day: "settingManage.organizeManage.shiftSetting.form.options.type.day",
+	night: "settingManage.organizeManage.shiftSetting.form.options.type.night",
+	middle: "settingManage.organizeManage.shiftSetting.form.options.type.middle",
+	allDay: "settingManage.organizeManage.shiftSetting.form.options.type.allDay",
+} as const;
 
-/** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
-	const { mode, row } = params;
+function translateShiftTypeLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = shiftTypeLabelMap[value as keyof typeof shiftTypeLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateShiftStatusLabel(value?: boolean | null) {
+	return value
+		? renderI18n($t("settingManage.organizeManage.shiftSetting.status.enabled"))
+		: renderI18n($t("settingManage.organizeManage.shiftSetting.status.disabled"));
+}
+
+const columns = withLocale<TableColumnList>(() => [
+	{
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.name"))),
+		prop: "name",
+		width: 200,
+		fixed: true,
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.startTime"))),
+		prop: "startTime",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.endTime"))),
+		prop: "endTime",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.type"))),
+		prop: "type",
+		width: 120,
+		cellRenderer: ({ row }) => translateShiftTypeLabel(row.type),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.status"))),
+		prop: "enabled",
+		width: 100,
+		cellRenderer: ({ row }) => translateShiftStatusLabel(row.enabled),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.description"))),
+		prop: "description",
+		minWidth: 200,
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 360,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.shiftSetting.tableTitle")),
+	columns: columns.value,
+}));
+
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: renderI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
+		prop: "name",
+		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
+		},
+	},
+]);
+
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
+function openDialog({ mode, row }: { mode: Mode; row?: ShiftSetting }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n(t("settingManage.organizeManage.shiftSetting.dialogTitle"))}`;
-
-	/** 业务对象 */
 	const formVO: ShiftSettingFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: isEdit.value
-			? structuredClone({
-					...defaultForm,
-					name: row?.name || "",
-					type: row?.type || "",
-					startTime: row?.startTime || "",
-					endTime: row?.endTime || "",
-					enabled: row?.enabled ?? true,
-					description: row?.description || "",
-				})
-			: structuredClone({
-					...defaultForm,
-					name: row?.name || "",
-					type: row?.type || "",
-					startTime: row?.startTime || "",
-					endTime: row?.endTime || "",
-					enabled: row?.enabled ?? true,
-					description: row?.description || "",
-				});
+		? cloneDeep(defaultForm)
+		: cloneDeep({
+				...defaultForm,
+				name: row?.name || "",
+				type: row?.type || "",
+				startTime: row?.startTime || "",
+				endTime: row?.endTime || "",
+				enabled: row?.enabled ?? true,
+				description: row?.description || "",
+			});
 
-	/** 表单组件需要的props */
-	const formProps: ShiftSettingFormProps = {
+	const props: ShiftSettingFormProps = {
 		form: formVO,
 		defaultValues: formVO,
+		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = formProps.defaultValues;
+	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props: {
-			...formProps,
-			mode,
+		title: () => {
+			if (isAdd.value) {
+				return renderI18n($t("settingManage.organizeManage.shiftSetting.dialogs.addTitle"));
+			}
+
+			if (isEdit.value) {
+				return renderI18n($t("settingManage.organizeManage.shiftSetting.dialogs.editTitle"));
+			}
+
+			return renderI18n($t("settingManage.organizeManage.shiftSetting.dialogTitle"));
 		},
+		props,
 		contentRenderer: () =>
 			h(ShiftSettingForm, {
 				ref: shiftSettingFormInstance,
-				...formProps,
-				mode,
+				...props,
 			}),
 		async doBeforeClose({ options, index }) {
 			const formComputed = shiftSettingFormInstance.value?.formComputed;
@@ -144,7 +203,7 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = shiftSettingFormInstance.value?.formComputed;
@@ -154,25 +213,23 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index } }) => {
+				btnClick: () => {
 					shiftSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					if (shiftSettingFormInstance.value?.plusFormInstance) {
-						const res = await shiftSettingFormInstance.value.plusFormInstance.handleSubmit();
-						if (res) {
-							button.btn.loading = true;
-							await testAsync();
-							button.btn.loading = false;
-							closeDialog(options, index);
-							doFetch();
-						}
+					const res = await shiftSettingFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						doFetch();
 					}
 				},
 			},
@@ -180,173 +237,82 @@ function openDialog(params: { mode: Mode; row?: ShiftSetting }) {
 	});
 }
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.name")),
-		prop: "name",
-		width: 200,
-		fixed: true,
-	},
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.startTime")),
-		prop: "startTime",
-		width: 120,
-	},
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.endTime")),
-		prop: "endTime",
-		width: 120,
-	},
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.type")),
-		prop: "type",
-		width: 120,
-	},
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.status")),
-		prop: "enabled",
-		width: 100,
-		cellRenderer: ({ row }) =>
-			row.enabled
-				? transformI18n(t("settingManage.organizeManage.shiftSetting.status.enabled"))
-				: transformI18n(t("settingManage.organizeManage.shiftSetting.status.disabled")),
-	},
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.description")),
-		prop: "description",
-		minWidth: 200,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 360,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n(t("settingManage.organizeManage.shiftSetting.tableTitle")),
-	columns: columns.value,
-});
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: transformI18n(t("settingManage.organizeManage.shiftSetting.fields.name")),
-		prop: "name",
-		valueType: "input",
-	},
-]);
-
-/** 表格搜索栏组件 配置 */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 新增操作 */
 function handleAdd() {
 	openDialog({ mode: "add" });
 }
 
-/** 修改操作 */
 function handleEdit(row: ShiftSetting) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 查看操作 */
 function handleView(row: ShiftSetting) {
 	openDialog({ mode: "info", row });
 }
 
-/** 删除操作 */
 async function handleDelete(row: ShiftSetting) {
 	try {
 		await ElMessageBox.confirm(
-			transformI18n(t("settingManage.organizeManage.shiftSetting.dialogs.confirmDelete", { name: row.name })),
-			transformI18n(t("settingManage.organizeManage.common.dialogs.confirmTitle")),
+			i18n.global.t($t("settingManage.organizeManage.shiftSetting.dialogs.confirmDelete"), { name: row.name }),
+			renderI18n($t("settingManage.organizeManage.common.dialogs.confirmTitle")),
 			{
-				confirmButtonText: transformI18n(t("common.buttons.pureConfirm")),
-				cancelButtonText: transformI18n(t("common.buttons.cancel")),
+				confirmButtonText: renderI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: renderI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);
 
-		// 模拟删除操作
-		console.log("删除班次", row);
-		message(transformI18n(t("settingManage.organizeManage.shiftSetting.messages.deleted")), { type: "success" });
+		message(renderI18n($t("settingManage.organizeManage.shiftSetting.messages.deleted")), { type: "success" });
 		doFetch();
-	} catch (error) {
-		// 用户取消删除操作
-	}
+	} catch {}
 }
 
-/** 停用/启用操作 */
 async function handleToggleStatus(row: ShiftSetting) {
 	const action = row.enabled
-		? transformI18n(t("settingManage.organizeManage.common.buttons.disable"))
-		: transformI18n(t("settingManage.organizeManage.common.buttons.enable"));
+		? renderI18n($t("settingManage.organizeManage.common.buttons.disable"))
+		: renderI18n($t("settingManage.organizeManage.common.buttons.enable"));
 
 	try {
 		await ElMessageBox.confirm(
-			transformI18n(t("settingManage.organizeManage.shiftSetting.dialogs.confirmToggle", { action, name: row.name })),
-			transformI18n(t("settingManage.organizeManage.common.dialogs.confirmTitle")),
+			i18n.global.t($t("settingManage.organizeManage.shiftSetting.dialogs.confirmToggle"), { action, name: row.name }),
+			renderI18n($t("settingManage.organizeManage.common.dialogs.confirmTitle")),
 			{
-				confirmButtonText: transformI18n(t("common.buttons.pureConfirm")),
-				cancelButtonText: transformI18n(t("common.buttons.cancel")),
+				confirmButtonText: renderI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: renderI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);
 
-		// 模拟更新状态
-		console.log(`${action}班次`, row);
-		message(transformI18n(t("settingManage.organizeManage.shiftSetting.messages.statusUpdated", { action })), {
-			type: "success",
-		});
+		message(
+			i18n.global.t($t("settingManage.organizeManage.shiftSetting.messages.statusUpdated"), { action }),
+			{ type: "success" },
+		);
 		doFetch();
-	} catch (error) {
-		// 用户取消操作
-	}
+	} catch {}
 }
 
-/** 文件操作 */
 function handleFile() {
-	message(transformI18n(t("settingManage.organizeManage.common.messages.fileComingSoon")), { type: "info" });
+	message(renderI18n($t("settingManage.organizeManage.common.messages.fileComingSoon")), { type: "info" });
 }
-
-/** 组件挂载时加载数据 */
-onMounted(async () => {
-	// 数据已通过 TanStack Query 自动加载
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -354,7 +320,7 @@ onMounted(async () => {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="info" @click="handleFile">
-					{{ transformI18n(t("settingManage.organizeManage.common.buttons.file")) }}
+					{{ transformI18n($t("settingManage.organizeManage.common.buttons.file")) }}
 				</ElButton>
 				<ElButton type="primary" @click="handleAdd">
 					{{ transformI18n($t("common.buttons.add")) }}
@@ -376,7 +342,7 @@ onMounted(async () => {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info" @click="handleView(row)">
-							{{ transformI18n(t("common.buttons.info")) }}
+							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
@@ -384,8 +350,8 @@ onMounted(async () => {
 						<ElButton :type="row.enabled ? 'info' : 'primary'" @click="handleToggleStatus(row)">
 							{{
 								row.enabled
-									? transformI18n(t("settingManage.organizeManage.common.buttons.disable"))
-									: transformI18n(t("settingManage.organizeManage.common.buttons.enable"))
+									? transformI18n($t("settingManage.organizeManage.common.buttons.disable"))
+									: transformI18n($t("settingManage.organizeManage.common.buttons.enable"))
 							}}
 						</ElButton>
 					</template>
@@ -395,4 +361,7 @@ onMounted(async () => {
 	</section>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.index-root {
+}
+</style>
