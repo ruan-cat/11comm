@@ -1,57 +1,75 @@
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import type { MenuCatalogFormData } from "@01s-11comm/type";
 import { groupTypeOptions, storeTypeOptions } from "@01s-11comm/type";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type CatalogFormProps } from "./form";
 
-import { CatalogFormProps, defaultForm } from "./form";
-
-/** 表单组件的 props Form component props */
 const props = defineProps<CatalogFormProps>();
-const { t } = useI18n();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 Default values for form reset */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const groupTypeOptionLabelMap = {
+	system: $t("devTeam.menuManage.catalog.form.options.system"),
+	merchant: $t("devTeam.menuManage.catalog.form.options.merchant"),
+	custom: $t("devTeam.menuManage.catalog.form.options.custom"),
+	temp: $t("devTeam.menuManage.catalog.form.options.temp"),
+} as const;
+
+const storeTypeOptionLabelMap = {
+	property: $t("devTeam.menuManage.catalog.form.options.property"),
+	merchant: $t("devTeam.menuManage.catalog.form.options.merchantPlatform"),
+	owner: $t("devTeam.menuManage.catalog.form.options.owner"),
+	common: $t("devTeam.menuManage.catalog.form.options.common"),
+} as const;
+
+function translateGroupType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = groupTypeOptionLabelMap[value as keyof typeof groupTypeOptionLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateStoreType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = storeTypeOptionLabelMap[value as keyof typeof storeTypeOptionLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
 const defaultValues = props.defaultValues as FieldValues & MenuCatalogFormData;
-
-/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件实际使用的表单对象
- * @description Actual form object used by this component
- */
-const toRefForm = structuredClone(props.form) as FieldValues & MenuCatalogFormData;
+const form = ref(cloneDeep(props.form) as FieldValues & MenuCatalogFormData);
+const formComputed = computed(() => form.value);
 
-/** 表单对象 Form object */
-const form = ref(toRefForm);
-
-/** 只读的表单对象 Readonly form object */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-const translatedGroupTypeOptions = computed(() =>
+const translatedGroupTypeOptions = withLocale(() =>
 	groupTypeOptions.map((option) => ({
 		...option,
-		label: transformI18n(t(`devTeam.menuManage.catalog.form.options.${option.value}`)),
+		label: translateGroupType(String(option.value)),
 	})),
 );
 
-const translatedStoreTypeOptions = computed(() =>
+const translatedStoreTypeOptions = withLocale(() =>
 	storeTypeOptions.map((option) => ({
 		...option,
-		label: transformI18n(
-			t(`devTeam.menuManage.catalog.form.options.${option.value === "merchant" ? "merchantPlatform" : option.value}`),
-		),
+		label: translateStoreType(String(option.value)),
 	})),
 );
 
-/** 表单项配置 Form columns configuration */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.name")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
@@ -59,7 +77,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.icon")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.icon")),
 		prop: "icon",
 		valueType: "input",
 		fieldProps: {
@@ -67,7 +85,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.label")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.label")),
 		prop: "label",
 		valueType: "input",
 		fieldProps: {
@@ -75,7 +93,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.seq")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.seq")),
 		prop: "seq",
 		valueType: "input-number",
 		fieldProps: {
@@ -84,7 +102,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.groupType")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
 		options: translatedGroupTypeOptions.value,
@@ -94,7 +112,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.storeType")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeType",
 		valueType: "select",
 		options: translatedStoreTypeOptions.value,
@@ -104,7 +122,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.catalog.fields.description")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
@@ -114,60 +132,59 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表单校验规则 Form validation rules */
-const plusFormRules = computed<PlusFormRules>(() => ({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterName")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.nameLength")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.nameLength")),
 			trigger: "blur",
 		},
 	],
 	icon: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterIcon")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterIcon")),
 			trigger: "blur",
 		},
 	],
 	label: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterLabel")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterLabel")),
 			trigger: "blur",
 		},
 	],
 	seq: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.enterSeq")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterSeq")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 0,
 			max: 999,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.seqRange")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.seqRange")),
 			trigger: "blur",
 		},
 	],
 	groupType: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.selectGroupType")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.selectGroupType")),
 			trigger: "change",
 		},
 	],
 	storeType: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.catalog.form.validation.selectStoreType")),
+			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.selectStoreType")),
 			trigger: "change",
 		},
 	],
