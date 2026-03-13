@@ -1,49 +1,63 @@
-<!--
-  配置项表单
-  用于新增修改配置项
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-
+import { computed, ref, useTemplateRef } from "vue";
 import type { ConfigItemFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { ConfigItemFormProps } from "./form";
 import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const props = defineProps<ConfigItemFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+const configItemTypeLabelKeyMap = {
+	system: "devTeam.configManage.item.form.options.system",
+	business: "devTeam.configManage.item.form.options.business",
+	api: "devTeam.configManage.item.form.options.api",
+	database: "devTeam.configManage.item.form.options.database",
+	cache: "devTeam.configManage.item.form.options.cache",
+	log: "devTeam.configManage.item.form.options.log",
+	security: "devTeam.configManage.item.form.options.security",
+	notification: "devTeam.configManage.item.form.options.notification",
+} as const;
+
+const enableStatusLabelKeyMap = {
+	enabled: "devTeam.configManage.item.form.options.enabled",
+	disabled: "devTeam.configManage.item.form.options.disabled",
+} as const;
+
 const defaultValues = props.defaultValues as FieldValues & ConfigItemFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
 const toRefForm = cloneDeep(props.form) as FieldValues & ConfigItemFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
 const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
+
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 配置项名称
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const translatedConfigItemTypeOptions = withLocale(() =>
+	configItemTypeOptions.map((option) => ({
+		...option,
+		label: renderI18n($t(configItemTypeLabelKeyMap[String(option.value) as keyof typeof configItemTypeLabelKeyMap])),
+	})),
+);
+
+const translatedItemEnableStatusOptions = withLocale(() =>
+	itemEnableStatusOptions.map((option) => ({
+		...option,
+		label: renderI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "配置项名称",
+		label: renderI18n($t("devTeam.configManage.item.fields.configName")),
 		prop: "configItemName",
 		valueType: "input",
 		fieldProps: {
@@ -51,10 +65,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		required: true,
 	},
-
-	// 配置项编码
 	{
-		label: "配置项编码",
+		label: renderI18n($t("devTeam.configManage.item.fields.configCode")),
 		prop: "configItemCode",
 		valueType: "input",
 		fieldProps: {
@@ -62,23 +74,19 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		required: true,
 	},
-
-	// 配置项类型
 	{
-		label: "配置项类型",
+		label: renderI18n($t("devTeam.configManage.item.fields.configType")),
 		prop: "configItemType",
 		valueType: "select",
-		options: configItemTypeOptions,
+		options: translatedConfigItemTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 		},
 		required: true,
 	},
-
-	// 配置项值
 	{
-		label: "配置项值",
+		label: renderI18n($t("devTeam.configManage.item.fields.configValue")),
 		prop: "configItemValue",
 		valueType: "input",
 		fieldProps: {
@@ -86,32 +94,26 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		required: true,
 	},
-
-	// 配置项描述
 	{
-		label: "配置项描述",
+		label: renderI18n($t("devTeam.configManage.item.fields.description")),
 		prop: "configItemDescription",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
 		},
 	},
-
-	// 是否启用
 	{
-		label: "是否启用",
+		label: renderI18n($t("devTeam.configManage.item.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
-		options: itemEnableStatusOptions,
+		options: translatedItemEnableStatusOptions.value,
 		fieldProps: {
 			clearable: true,
 		},
 		required: true,
 	},
-
-	// 备注
 	{
-		label: "备注",
+		label: renderI18n($t("devTeam.configManage.center.fields.remark")),
 		prop: "remark",
 		valueType: "input",
 		fieldProps: {
@@ -120,31 +122,27 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	configItemName: [
-		{ required: true, message: "请输入配置项名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.enterConfigItemName")), trigger: "blur" },
+		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.item.form.validation.configItemNameLength")), trigger: "blur" },
 	],
 	configItemCode: [
-		{ required: true, message: "请输入配置项编码", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.enterConfigItemCode")), trigger: "blur" },
+		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.item.form.validation.configItemCodeLength")), trigger: "blur" },
 		{
 			pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
-			message: "编码只能包含字母、数字、下划线，且不能以数字开头",
+			message: renderI18n($t("devTeam.configManage.item.form.validation.configItemCodePattern")),
 			trigger: "blur",
 		},
 	],
-	configItemType: [{ required: true, message: "请选择配置项类型", trigger: "change" }],
+	configItemType: [{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.selectConfigItemType")), trigger: "change" }],
 	configItemValue: [
-		{ required: true, message: "请输入配置项值", trigger: "blur" },
-		{ min: 1, max: 500, message: "长度在 1 到 500 个字符", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.enterConfigItemValue")), trigger: "blur" },
+		{ min: 1, max: 500, message: renderI18n($t("devTeam.configManage.item.form.validation.configItemValueLength")), trigger: "blur" },
 	],
-	isEnabled: [{ required: true, message: "请选择是否启用", trigger: "change" }],
-});
+	isEnabled: [{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.selectIsEnabled")), trigger: "change" }],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -159,7 +157,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
