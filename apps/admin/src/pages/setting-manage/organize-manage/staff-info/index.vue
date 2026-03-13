@@ -9,37 +9,36 @@ definePage({
 	},
 });
 
-import { ref, computed, watch } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { type StaffInfoFormProps, defaultForm } from "./components/form.ts";
-import type { StaffInfoFormVO } from "@01s-11comm/type";
-import StaffInfoForm from "./components/form.vue";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type Mode } from "@/composables/use-mode";
+import { useMode } from "@/composables/use-mode";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { useStaffInfoListQuery } from "@/api/setting-manage/organize-manage/staff-info";
-import type { StaffInfo, StaffInfoListQuery } from "@01s-11comm/type";
+import type { StaffInfo, StaffInfoFormVO, StaffInfoListQuery } from "@01s-11comm/type";
+import { defaultForm, type StaffInfoFormProps } from "./components/form";
+import StaffInfoForm from "./components/form.vue";
 
-/** 表单组件实例引用 */
-const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<StaffInfoListQuery> = {
 	id: "",
 	name: "",
 	phone: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用列表查询 Hook */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -49,224 +48,215 @@ const {
 	handleCurrentPageChange,
 } = useStaffInfoListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const genderLabelMap = {
+	男: "settingManage.organizeManage.staffInfo.form.options.gender.male",
+	女: "settingManage.organizeManage.staffInfo.form.options.gender.female",
+	male: "settingManage.organizeManage.staffInfo.form.options.gender.male",
+	female: "settingManage.organizeManage.staffInfo.form.options.gender.female",
+} as const;
+
+function normalizeGenderValue(value?: string | null) {
+	if (!value) {
+		return "";
+	}
+
+	if (value === "男" || value === "male") {
+		return "male";
+	}
+
+	if (value === "女" || value === "female") {
+		return "female";
+	}
+
+	return value;
+}
+
+function translateGenderLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = genderLabelMap[value as keyof typeof genderLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeNumber")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.employeeNumber"))),
 		prop: "employeeNumber",
 		minWidth: 180,
 		fixed: true,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.name"))),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone"))),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.orgName")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.orgName"))),
 		prop: "orgName",
 		width: 200,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.position")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.position"))),
 		prop: "position",
 		width: 140,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.email")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.email"))),
 		prop: "email",
 		width: 180,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.address")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.address"))),
 		prop: "address",
 		minWidth: 160,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.gender")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.gender"))),
 		prop: "gender",
-		width: 80,
+		width: 100,
+		cellRenderer: ({ row }) => translateGenderLabel(row.gender),
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 330,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("settingManage.organizeManage.staffInfo.tableTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.staffInfo.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 员工ID
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
+		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		prop: "id",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
+			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		},
 	},
-
-	// 员工姓名
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
+			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		},
 	},
-
-	// 手机号
 	{
-		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
+		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
+			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
 	labelWidth: 100,
-	labelPosition: "right",
-	showNumber: 3,
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: StaffInfo;
-}
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-
+const { setMode, isAdd, isEdit } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: StaffInfo }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.staffInfo.dialogTitle"))}`;
+	const formVO: StaffInfoFormVO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					name: row?.name || "",
+					gender: normalizeGenderValue(row?.gender),
+					position: row?.position || "",
+					email: row?.email || "",
+					phone: row?.phone || "",
+					address: row?.address || "",
+					orgName: row?.orgName || "",
+					avatar: row?.avatar || "",
+				})
+			: cloneDeep(defaultForm);
 
-	/** 表单组件需要的props */
-	const formProps: StaffInfoFormProps = {
-		form: structuredClone(defaultForm),
-		defaultValues: structuredClone(defaultForm),
+	const props: StaffInfoFormProps = {
+		form: formVO,
+		defaultValues: formVO,
+		mode,
 	};
 
-	const testEditProps: StaffInfoFormProps = {
-		form: {
-			name: row?.name || "",
-			gender: row?.gender || "",
-			position: row?.position || "",
-			email: row?.email || "",
-			phone: row?.phone || "",
-			address: row?.address || "",
-			orgName: row?.orgName || "",
-			avatar: row?.avatar || "",
-		},
-		defaultValues: {
-			name: row?.name || "",
-			gender: row?.gender || "",
-			position: row?.position || "",
-			email: row?.email || "",
-			phone: row?.phone || "",
-			address: row?.address || "",
-			orgName: row?.orgName || "",
-			avatar: row?.avatar || "",
-		},
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value ? formProps : testEditProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("settingManage.organizeManage.staffInfo.dialogs.addTitle"))
+				: renderI18n($t("settingManage.organizeManage.staffInfo.dialogs.editTitle")),
 		width: "60%",
 		props,
-
 		contentRenderer: () =>
 			h(StaffInfoForm, {
 				ref: staffInfoFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = staffInfoFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = staffInfoFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
+				btnClick: () => {
 					staffInfoFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await staffInfoFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -280,48 +270,35 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-/** 新增员工 */
-function handleAdd() {
-	openDialog({ mode: "add" });
-}
-
-/** 编辑员工 */
-function handleEdit(row: StaffInfo) {
-	openDialog({ mode: "edit", row });
-}
-
-/** 重置密码 */
 function handleResetPassword(row: StaffInfo) {
 	console.log("重置密码", row);
-	// TODO: 实现重置密码功能
 }
 
-/** 删除员工 */
 function handleDelete(row: StaffInfo) {
 	console.log("删除员工", row);
-	// TODO: 实现删除员工功能
 }
 
-/** 查看详情 */
 function handleDetail(row: StaffInfo) {
 	console.log("查看详情", row);
-	// TODO: 实现查看员工详情
 }
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleAdd">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
@@ -337,7 +314,7 @@ function handleDetail(row: StaffInfo) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleEdit(row)">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="success" @click="handleResetPassword(row)">
