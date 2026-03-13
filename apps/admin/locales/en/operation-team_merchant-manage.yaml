@@ -1,41 +1,183 @@
 # Merchant Information Management
 merchant-info:
-  merchantNumber: Merchant Number
-  merchantName: Merchant Name
-  merchantAddress: Merchant Address
-  contactPhone: Contact Phone
-  merchantType: Merchant Type
-  enterpriseLegalPerson: Enterprise Legal Person
-  establishDate: Establish Date
-  operatingStatus: Operating Status
-  belongCommunity: Belong Community
-  businessHours: Business Hours
-  businessArea: Business Area
-  createTime: Create Time
+  # Merchant Information
+  pageTitle: Merchant Information
+  tableTitle: Merchant Management
 
-  # Merchant Type Options
-  merchantTypeOptions:
-    cateringService: Catering Service
-    retailStore: Retail Store
-    lifeService: Life Service
-    leisureEntertainment: Leisure Entertainment
-    educationTraining: Education Training
-    medicalHealth: Medical Health
-    other: Other
+  fields:
+    merchantId: Merchant ID
+    merchantName: Merchant Name
+    merchantAddress: Merchant Address
+    contactPhone: Contact Phone
+    merchantType: Merchant Type
+    legalRepresentative: Legal Representative
+    establishmentDate: Establishment Date
+    businessStatus: Business Status
+    affiliatedCommunity: Affiliated Community
+    businessHours: Business Hours
+    businessArea: Business Area
+    createTime: Created At
+    contactMobile: Contact Mobile
+    businessLicenseNo: Business License No.
+    bankName: Bank Name
+    bankAccount: Bank Account
+    remarks: Remarks
 
-  # Operating Status Options
-  operatingStatusOptions:
-    normalOperation: Normal Operation
-    suspendedOperation: Suspended Operation
-    preparingToOpen: Preparing to Open
-    closed: Closed
+  buttons:
+    viewDetails: View Details
 
-  # Operation Buttons
-  viewDetails: View Details
-  merchantManagement: Merchant Management
+  dialogs:
+    title: Merchant Information
+    addTitle: Add Merchant Information
+    editTitle: Edit Merchant Information
+    infoTitle: Merchant Information Details
+    confirmDelete: Are you sure you want to delete merchant "{name}"? This action cannot be undone.
+
+  messages:
+    deleted: Deleted successfully
+
+  options:
+    merchantType:
+      cateringService: Catering Service
+      retailStore: Retail Store
+      lifeService: Life Service
+      leisureEntertainment: Leisure Entertainment
+      educationTraining: Education Training
+      medicalHealth: Medical Health
+      other: Other
+    businessStatus:
+      normalOperation: Normal Operation
+      suspendedOperation: Suspended Operation
+      preparingToOpen: Preparing to Open
+      closed: Closed
+
+  form:
+    placeholders:
+      merchantId: Please enter merchant ID
+      merchantName: Please enter merchant name
+      merchantType: Please select merchant type
+      businessStatus: Please select business status
+      merchantAddress: Please enter merchant address
+      affiliatedCommunity: Please enter affiliated community / office building
+      contactPhone: Please enter contact phone
+      contactMobile: Please enter contact mobile
+      legalRepresentative: Please enter legal representative
+      establishmentDate: Please select establishment date
+      businessHours: Please enter daily business hours
+      businessArea: Please enter business area
+      businessLicenseNo: Please enter business license number
+      bankName: Please enter bank name
+      bankAccount: Please enter bank account
+      remarks: Please enter remarks
+
+    validation:
+      enterMerchantName: Please enter merchant name
+      merchantNameLength: Length must be between 2 and 50 characters
+      selectMerchantType: Please select merchant type
+      selectBusinessStatus: Please select business status
+      enterMerchantAddress: Please enter merchant address
+      merchantAddressLength: Length must be between 5 and 200 characters
+      enterAffiliatedCommunity: Please enter affiliated community
+      affiliatedCommunityLength: Length must be between 2 and 50 characters
+      enterContactPhone: Please enter contact phone
+      contactPhonePattern: Please enter a valid phone number
+      enterContactMobile: Please enter contact mobile
+      contactMobilePattern: Please enter a valid mobile number
+      enterLegalRepresentative: Please enter legal representative
+      legalRepresentativeLength: Length must be between 2 and 10 characters
+      selectEstablishmentDate: Please select establishment date
+      businessHoursPattern: "Please enter a valid time format, for example: 09:00-22:00"
+      businessAreaRange: Business area must be between 0 and 999999 square meters
+      enterBusinessLicenseNo: Please enter business license number
+      businessLicenseNoPattern: Please enter a valid 18-character business license number
+      bankNameMax: Bank name must not exceed 50 characters
+      bankAccountMax: Bank account must not exceed 30 characters
+      remarksMax: Remarks must not exceed 500 characters
+
+common:
+  dialogs:
+    confirmTitle: Confirmation
 
 # Merchant Administrator
 merchant-admin:
-  adminName: Admin Name
-  adminPhone: Admin Phone
-  adminRole: Admin Role
+  pageTitle: Merchant Administrator
+  tableTitle: Merchant Administrator
+
+  fields:
+    propertyName: Property Company
+    adminName: Administrator
+    adminPhone: Admin Phone
+    id: Admin ID
+    status: Status
+    affiliatedCommunityCount: Affiliated Communities
+    loginCount: Login Count
+    lastLoginTime: Last Login Time
+    createTime: Created At
+
+  buttons:
+    communities: Communities
+    login: Login
+    restrictLogin: Restrict Login
+
+  dialogs:
+    addTitle: Add Merchant Administrator
+    editTitle: Edit Merchant Administrator
+
+  messages:
+    communitiesComingSoon: Communities feature is not connected yet
+    loginComingSoon: Login feature is not connected yet
+    restrictLoginComingSoon: Restrict login feature is not connected yet
+
+  options:
+    status:
+      normal: Normal
+      disabled: Disabled
+      pending: Pending Review
+      resigned: Resigned
+    accountStatus:
+      enabled: Enabled
+      disabled: Disabled
+    propertyCompany:
+      company1: Sample Property Company 1
+      company2: Sample Property Company 2
+
+  form:
+    fields:
+      propertyCompany: Property Company
+      adminName: Admin Name
+      adminPhone: Admin Phone
+      adminEmail: Admin Email
+      idCardNo: ID Card Number
+      accountStatus: Account Status
+      loginPassword: Login Password
+      confirmPassword: Confirm Password
+      contactAddress: Contact Address
+      remarks: Remarks
+
+    placeholders:
+      status: Please select status
+      propertyCompany: Please select property company
+      adminName: Please enter admin name
+      adminPhone: Please enter admin phone
+      adminEmail: Please enter admin email
+      idCardNo: Please enter ID card number
+      accountStatus: Please select account status
+      loginPassword: Please enter login password
+      confirmPassword: Please confirm password
+      contactAddress: Please enter contact address
+      remarks: Please enter remarks
+
+    validation:
+      selectPropertyCompany: Please select property company
+      enterAdminName: Please enter admin name
+      adminNameLength: Length must be between 2 and 20 characters
+      enterAdminPhone: Please enter admin phone
+      adminPhonePattern: Please enter a valid mobile number
+      adminEmailPattern: Please enter a valid email address
+      enterIdCardNo: Please enter ID card number
+      idCardNoPattern: Please enter a valid ID card number
+      selectAccountStatus: Please select account status
+      enterLoginPassword: Please enter login password
+      loginPasswordLength: Password length must be between 6 and 20 characters
+      enterConfirmPassword: Please confirm password
+      passwordMismatch: The two passwords do not match
