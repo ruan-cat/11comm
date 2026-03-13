@@ -1,0 +1,18 @@
+propertyManage:
+  pageTitle: 物业菜单
+  communityManage:
+    pageTitle: 小区
+  contractManage:
+    pageTitle: 合同管理
+  expenseManage:
+    pageTitle: 费用管理
+  housePropertyManage:
+    pageTitle: 房产管理
+  parkingManage:
+    pageTitle: 停车管理
+  patrolManage:
+    pageTitle: 巡检管理
+  repairsManage:
+    pageTitle: 报修管理
+  reportManage:
+    pageTitle: 报表管理

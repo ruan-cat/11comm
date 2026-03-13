@@ -1,0 +1,18 @@
+propertyManage:
+  pageTitle: Property Menu
+  communityManage:
+    pageTitle: Community
+  contractManage:
+    pageTitle: Contract Manage
+  expenseManage:
+    pageTitle: Expense Manage
+  housePropertyManage:
+    pageTitle: Property Manage
+  parkingManage:
+    pageTitle: Parking Manage
+  patrolManage:
+    pageTitle: Patrol Manage
+  repairsManage:
+    pageTitle: Repairs Manage
+  reportManage:
+    pageTitle: Report Manage
