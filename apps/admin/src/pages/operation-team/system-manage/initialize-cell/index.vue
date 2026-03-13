@@ -1,29 +1,125 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "初始化单元格",
+		// 初始化单元格
+		title: "operationTeam.systemManage.initializeCell.pageTitle",
 		icon: "mdi:home-import-outline",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.systemManage.initializeCell"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type InitializeCellListItem,
-	type InitializeCellQueryParams,
-	cellTypeOptions,
-	initializeCellStatusOptions,
+import type {
+	CellStatus,
+	CellType,
+	InitializeCellFormVO,
+	InitializeCellListItem,
+	InitializeCellQueryParams,
 } from "@01s-11comm/type";
+import { cellTypeOptions, initializeCellStatusOptions } from "@01s-11comm/type";
 import { useInitializeCellListQuery } from "@/api/operation-team/system-manage/initialize-cell";
 import { type InitializeCellFormProps, defaultForm } from "./components/form";
-import type { InitializeCellFormVO } from "@01s-11comm/type";
 import InitializeCellForm from "./components/form.vue";
 
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+function translateFromRecord(record: Record<string, string>, value?: string | null) {
+	if (!value) {
+		return "";
+	}
+	return record[value] ?? value;
+}
+
+const cellTypeTextMap = withLocale(() => ({
+	住宅单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
+	商业单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
+	车库单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
+	办公单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.office")),
+	会所单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.club")),
+	物业单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.property")),
+	运动单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.sports")),
+	教育单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.education")),
+	医疗单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.medical")),
+	仓储单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.storage")),
+	文化单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
+}));
+
+const statusTextMap = withLocale(() => ({
+	待初始化: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
+	初始化中: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
+	已完成: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
+	初始化失败: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.failed")),
+}));
+
+const cellTypeValueMap = {
+	住宅单元: "ResidentialUnit",
+	商业单元: "CommercialUnit",
+	车库单元: "GarageUnit",
+	办公单元: "OfficeUnit",
+	会所单元: "ClubUnit",
+	物业单元: "PropertyUnit",
+	运动单元: "SportsUnit",
+	教育单元: "EducationUnit",
+	医疗单元: "MedicalUnit",
+	仓储单元: "StorageUnit",
+	文化单元: "CultureUnit",
+} as const satisfies Record<string, CellType>;
+
+const statusValueMap = {
+	待初始化: "Uninitialized",
+	未初始化: "Uninitialized",
+	初始化中: "Initializing",
+	已完成: "Initialized",
+	已初始化: "Initialized",
+	初始化失败: "InitializationFailed",
+} as const satisfies Record<string, CellStatus>;
+
+function translateCellTypeLabel(value?: string | null) {
+	return translateFromRecord(cellTypeTextMap.value, value);
+}
+
+function translateStatusLabel(value?: string | null) {
+	return translateFromRecord(statusTextMap.value, value);
+}
+
+function normalizeCellTypeValue(value?: string): CellType {
+	const mapped = value ? cellTypeValueMap[value as keyof typeof cellTypeValueMap] : undefined;
+	return mapped ?? "ResidentialUnit";
+}
+
+function normalizeStatusValue(value?: string): CellStatus {
+	const mapped = value ? statusValueMap[value as keyof typeof statusValueMap] : undefined;
+	return mapped ?? "Uninitialized";
+}
+
+const translatedSearchCellTypeOptions = withLocale(() =>
+	cellTypeOptions.map((item) => ({
+		...item,
+		label: translateCellTypeLabel(String(item.value)),
+	})),
+);
+
+const translatedSearchStatusOptions = withLocale(() =>
+	initializeCellStatusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
+
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
+
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
@@ -32,14 +128,8 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 弹框组件实例 */
 const initializeCellFormInstance = ref<InstanceType<typeof InitializeCellForm> | null>(null);
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<InitializeCellQueryParams> = {
 	cellName: "",
 	cellType: undefined,
@@ -47,15 +137,10 @@ const plusSearchModelRef: FieldValues & Partial<InitializeCellQueryParams> = {
 	status: undefined,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -65,134 +150,115 @@ const {
 	handleCurrentPageChange,
 } = useInitializeCellListQuery(plusSearchDefaultValues);
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "单元格ID",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellId"))),
 		prop: "cellId",
 		width: 120,
 	},
 	{
-		label: "单元格名称",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellName"))),
 		prop: "cellName",
 		minWidth: 160,
 	},
 	{
-		label: "单元格类型",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellType"))),
 		prop: "cellType",
 		width: 120,
+		cellRenderer: ({ row }) => translateCellTypeLabel(row.cellType),
 	},
 	{
-		label: "建筑物名称",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName"))),
 		prop: "buildingName",
 		minWidth: 140,
 	},
 	{
-		label: "楼层",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.floor"))),
 		prop: "floor",
 		width: 120,
 	},
 	{
-		label: "单元号",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.unitNumber"))),
 		prop: "unitNumber",
 		width: 100,
 	},
 	{
-		label: "户数",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.households"))),
 		prop: "houseCount",
 		width: 80,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.status"))),
 		prop: "status",
 		width: 100,
+		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		label: "描述",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.description"))),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "初始化单元格",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("operationTeam.systemManage.initializeCell.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 单元格名称 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "单元格名称",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
 		prop: "cellName",
 		valueType: "input",
 	},
-
-	/** 单元格类型 */
 	{
-		label: "单元格类型",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
 		prop: "cellType",
 		valueType: "select",
-		options: cellTypeOptions,
+		options: translatedSearchCellTypeOptions.value,
 	},
-
-	/** 建筑物名称 */
 	{
-		label: "建筑物名称",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 	},
-
-	/** 状态 */
 	{
-		label: "状态",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: initializeCellStatusOptions,
+		options: translatedSearchStatusOptions.value,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -200,54 +266,39 @@ function handleSearch() {
 	});
 }
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 业务对象 */
-	const 初始化单元格表单_VO = isAdd.value
-		? cloneDeep(defaultForm)
+	const formVO: InitializeCellFormVO = isAdd.value
+		? structuredClone(defaultForm)
 		: isEdit.value || isInfo.value
-			? cloneDeep({
+			? structuredClone({
 					...defaultForm,
-					单元格名称: row?.cellName || "",
-					单元格类型: (row?.cellType || "住宅单元") as
-						| "住宅单元"
-						| "商业单元"
-						| "车库单元"
-						| "办公单元"
-						| "会所单元"
-						| "物业单元"
-						| "运动单元"
-						| "教育单元"
-						| "医疗单元"
-						| "仓储单元"
-						| "文化单元",
-					建筑物ID: row?.buildingId || "",
-					建筑物名称: row?.buildingName || "",
-					楼层: row?.floor || "",
-					单元号: row?.unitNumber || "",
-					户数: row?.houseCount || 0,
-					状态: (row?.status || "未初始化") as "已初始化" | "未初始化" | "初始化中" | "初始化失败",
-					描述: row?.description || "",
+					cellName: row?.cellName || "",
+					cellType: normalizeCellTypeValue(row?.cellType),
+					buildingId: row?.buildingId || "",
+					buildingName: row?.buildingName || "",
+					floor: row?.floor ? String(row.floor) : "",
+					unitNumber: row?.unitNumber || "",
+					households: row?.houseCount || 0,
+					status: normalizeStatusValue(row?.status),
+					description: row?.description || "",
 				})
-			: cloneDeep(defaultForm);
+			: structuredClone(defaultForm);
 
-	/** 表单组件需要的props */
 	const formProps: InitializeCellFormProps = {
-		form: 初始化单元格表单_VO,
-		defaultValues: 初始化单元格表单_VO,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
+	const defaultValues = formProps.defaultValues;
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
-
-	/** 弹框标题 */
-	const title = `${modeText.value}初始化单元格`;
+	const title = isAdd.value
+		? () => renderI18n($t("operationTeam.systemManage.initializeCell.dialogs.addTitle"))
+		: isEdit.value
+			? () => renderI18n($t("operationTeam.systemManage.initializeCell.dialogs.editTitle"))
+			: () => renderI18n($t("operationTeam.systemManage.initializeCell.dialogs.infoTitle"));
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -259,30 +310,34 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = initializeCellFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = initializeCellFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = initializeCellFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = initializeCellFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					initializeCellFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					initializeCellFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await initializeCellFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await initializeCellFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -295,32 +350,21 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 	});
 }
 
-/** 删除初始化单元格 */
 async function handleDelete(row: InitializeCellListItem) {
 	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟删除操作 */
 		consola.log("删除初始化单元格:", row.cellId);
-
-		/** 模拟异步操作 */
 		await sleep(1000);
-
-		/** 重新加载数据 */
 		doFetch();
 	} catch (error) {
 		console.error("删除失败:", error);
-		/** TODO: 显示错误提示 */
 	}
 }
-
-onMounted(async () => {
-	// await loadTableData();
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -336,7 +380,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
