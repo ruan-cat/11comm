@@ -1,123 +1,134 @@
-<!--
-  注册协议表单
-  用于新增和编辑注册协议
--->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { RegisterProtocolFormVO } from "@01s-11comm/type";
-import {
-	protocolTypeOptions,
-	isMandatoryOptions,
-	registerProtocolStatusOptions as statusOptions,
-} from "@01s-11comm/type";
-
-import { RegisterProtocolFormProps, defaultForm } from "./form";
+import { protocolTypeOptions } from "@01s-11comm/type";
+import { RegisterProtocolFormProps } from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 表单组件所需的默认值 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & RegisterProtocolFormVO;
-
-/** 表单组件的 ref 引用，用于表单重置等操作 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-/**
- * 拷贝表单数据 避免直接修改 props 的 form 数据
- * @description
- * 为了满足表单组件的校验需求 这里需要额外拓展为索引类型
- *
- * 具体原因请看：https://pure-admin-utils.netlify.app/guide/form-plus.html#表单校验
- */
 const toRefForm = cloneDeep(props.form) as FieldValues & RegisterProtocolFormVO;
-
-/**
- * 表单数据
- * @description
- * 真正的表单数据，响应式数据
- */
 const form = ref(toRefForm);
-/** 计算属性表单数据（只读，用于表单重置时比较） */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单列配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 协议名称
+const protocolTypeLabelKeys = [
+	"operationTeam.systemManage.registerProtocol.options.protocolTypes.userRegistration",
+	"operationTeam.systemManage.registerProtocol.options.protocolTypes.privacyPolicy",
+	"operationTeam.systemManage.registerProtocol.options.protocolTypes.serviceTerms",
+	"operationTeam.systemManage.registerProtocol.options.protocolTypes.disclaimer",
+	"operationTeam.systemManage.registerProtocol.options.protocolTypes.copyright",
+] as const;
+
+const translatedProtocolTypeOptions = withLocale(() =>
+	protocolTypeOptions.map((item, index) => ({
+		...item,
+		label: renderI18n($t(protocolTypeLabelKeys[index] ?? protocolTypeLabelKeys[0])),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() => [
 	{
-		label: "协议名称",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.statuses.draft")),
+		value: "Draft",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.enabled")),
+		value: "Enabled",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.disabled")),
+		value: "Disabled",
+	},
+]);
+
+const translatedRequiredOptions = withLocale(() => [
+	{
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.yes")),
+		value: "Yes",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.no")),
+		value: "No",
+	},
+]);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName")),
 		prop: "protocolName",
 		valueType: "input",
 		required: true,
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入协议名称",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolName")),
 			maxlength: 100,
 		},
 	},
-
-	// 协议类型
 	{
-		label: "协议类型",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolType")),
 		prop: "protocolType",
 		valueType: "select",
 		required: true,
 		width: "200px",
-		options: protocolTypeOptions,
+		options: translatedProtocolTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择协议类型",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolType")),
 		},
 	},
-
-	// 协议版本
 	{
-		label: "协议版本",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolVersion")),
 		prop: "protocolVersion",
 		valueType: "input",
 		required: true,
 		width: "150px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "如v1.0.0",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolVersion")),
 		},
 	},
-
-	// 状态
 	{
-		label: "状态",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
 		width: "150px",
-		options: statusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.status")),
 		},
 	},
-
-	// 是否强制同意
 	{
-		label: "是否强制同意",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.isRequired")),
 		prop: "isMandatory",
 		valueType: "select",
 		required: true,
 		width: "150px",
-		options: isMandatoryOptions,
+		options: translatedRequiredOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择是否强制同意",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.isRequired")),
 		},
 	},
-
-	// 生效日期
 	{
-		label: "生效日期",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.effectiveDate")),
 		prop: "effectiveDate",
 		valueType: "date-picker",
 		required: true,
@@ -125,25 +136,23 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			clearable: true,
 			type: "date",
-			placeholder: "请选择生效日期",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.effectiveDate")),
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			disabledDate: (time: Date) => {
-				return time.getTime() < Date.now() - 8.64e7; // 不能选择今天之前的日期
+				return time.getTime() < Date.now() - 8.64e7;
 			},
 		},
 	},
-
-	// 失效日期
 	{
-		label: "失效日期",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.expirationDate")),
 		prop: "expirationDate",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
 			type: "date",
-			placeholder: "请选择或留空表示永久生效",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.expirationDate")),
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			disabledDate: (time: Date, formValues: any) => {
@@ -154,45 +163,39 @@ const plusFormColumns = ref<PlusColumn[]>([
 			},
 		},
 	},
-
-	// 排序权重
 	{
-		label: "排序权重",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.sortWeight")),
 		prop: "sortWeight",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
-			placeholder: "数字越小排序越靠前",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.sortWeight")),
 			min: 0,
 			max: 9999,
 			controls: true,
 		},
 	},
-
-	// 协议摘要
 	{
-		label: "协议摘要",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolSummary")),
 		prop: "protocolSummary",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
-			placeholder: "请输入协议摘要，最多500字",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolSummary")),
 			maxlength: 500,
 			showWordLimit: true,
 			rows: 3,
 			resize: "vertical",
 		},
 	},
-
-	// 协议内容
 	{
-		label: "协议内容",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolContent")),
 		prop: "protocolContent",
 		valueType: "textarea",
 		required: true,
 		width: "100%",
 		fieldProps: {
-			placeholder: "请输入协议内容，支持HTML格式，最少100字，最多50000字",
+			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolContent")),
 			maxlength: 50000,
 			showWordLimit: true,
 			rows: 15,
@@ -201,32 +204,73 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单列配置 计算属性，便于后续动态修改 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	protocolName: [
-		{ required: true, message: "请输入协议名称", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
-	],
-	protocolType: [{ required: true, message: "请选择协议类型", trigger: "change" }],
-	protocolVersion: [
-		{ required: true, message: "请输入协议版本", trigger: "blur" },
 		{
-			pattern: /^v?\d+\.\d+\.\d+$/,
-			message: "版本号格式不正确，请输入如 v1.0.0 的格式",
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolNameLength")),
 			trigger: "blur",
 		},
 	],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-	isMandatory: [{ required: true, message: "请选择是否强制同意", trigger: "change" }],
-	protocolContent: [
-		{ required: true, message: "请输入协议内容", trigger: "blur" },
-		{ min: 100, message: "协议内容至少100个字符", trigger: "blur" },
+	protocolType: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolTypeRequired")),
+			trigger: "change",
+		},
 	],
-	effectiveDate: [{ required: true, message: "请选择生效日期", trigger: "change" }],
-});
+	protocolVersion: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolVersionRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^v?\d+\.\d+\.\d+$/,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolVersionFormat")),
+			trigger: "blur",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+	isMandatory: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.isRequiredRequired")),
+			trigger: "change",
+		},
+	],
+	protocolContent: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolContentRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 100,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolContentLength")),
+			trigger: "blur",
+		},
+	],
+	effectiveDate: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.effectiveDateRequired")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -241,7 +285,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
