@@ -1,44 +1,47 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "商户管理员",
+		// 商户管理员
+		title: "operation-team_merchant-manage.merchant-admin.pageTitle",
 		icon: "mdi:account-tie",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.merchantManage.merchantAdmin"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type MerchantAdminListItem,
-	type MerchantAdminQueryParams,
-	merchantAdminStatusOptions,
-} from "@01s-11comm/type";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { merchantAdminStatusOptions, type MerchantAdminFormVO, type MerchantAdminListItem, type MerchantAdminQueryParams } from "@01s-11comm/type";
 import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
-import { type MerchantAdminFormProps, defaultForm } from "./components/form";
-import type { MerchantAdminFormVO } from "@01s-11comm/type";
+import { defaultForm, type MerchantAdminFormProps } from "./components/form";
 import MerchantAdminForm from "./components/form.vue";
 
-const MerchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const merchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
 
 const plusSearchModelRef: FieldValues & Partial<MerchantAdminQueryParams> = {
+	merchantName: "",
 	adminName: "",
-	adminPhone: "",
-	adminId: "",
+	phone: "",
 	status: undefined,
 };
 
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	isFetching,
 	updateParams,
 	resetParams,
@@ -48,120 +51,133 @@ const {
 	pureTableProps,
 } = useMerchantAdminListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const statusLabelKeyMap = {
+	normal: $t("operation-team_merchant-manage.merchant-admin.options.status.normal"),
+	disabled: $t("operation-team_merchant-manage.merchant-admin.options.status.disabled"),
+	pending: $t("operation-team_merchant-manage.merchant-admin.options.status.pending"),
+	resigned: $t("operation-team_merchant-manage.merchant-admin.options.status.resigned"),
+	正常: $t("operation-team_merchant-manage.merchant-admin.options.status.normal"),
+	禁用: $t("operation-team_merchant-manage.merchant-admin.options.status.disabled"),
+	待审核: $t("operation-team_merchant-manage.merchant-admin.options.status.pending"),
+	已离职: $t("operation-team_merchant-manage.merchant-admin.options.status.resigned"),
+} as const;
+
+function translateStatus(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+const translatedStatusOptions = withLocale(() =>
+	merchantAdminStatusOptions.map((option) => ({
+		...option,
+		label: translateStatus(String(option.value)),
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "物业公司",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.propertyName"))),
 		prop: "propertyName",
 		minWidth: 200,
 	},
 	{
-		label: "管理员",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminName"))),
 		prop: "adminName",
 		width: 120,
 	},
 	{
-		label: "管理员电话",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminPhone"))),
 		prop: "adminPhone",
 		width: 130,
 	},
 	{
-		label: "管理员ID",
-		prop: "adminId",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.id"))),
+		prop: "id",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.status"))),
 		prop: "status",
 		width: 100,
+		cellRenderer: ({ row }) => translateStatus(row.status),
 	},
 	{
-		label: "隶属小区数量",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.affiliatedCommunityCount")),
+		),
 		prop: "affiliatedCommunityCount",
 		width: 120,
 	},
 	{
-		label: "登录次数",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.loginCount"))),
 		prop: "loginCount",
 		width: 100,
 	},
 	{
-		label: "最后登录时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.lastLoginTime"))),
 		prop: "lastLoginTime",
 		width: 160,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 350,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "商户管理员",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("operation-team_merchant-manage.merchant-admin.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 物业名称
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "物业名称",
-		prop: "propertyName",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.propertyName")),
+		prop: "merchantName",
 		valueType: "input",
 	},
-
-	// 管理员
 	{
-		label: "管理员",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminName")),
 		prop: "adminName",
 		valueType: "input",
 	},
-
-	// 联系电话
 	{
-		label: "联系电话",
-		prop: "contactPhone",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminPhone")),
+		prop: "phone",
 		valueType: "input",
 	},
-
-	// 状态
 	{
-		label: "状态",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: merchantAdminStatusOptions,
+		options: translatedStatusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.status")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -169,104 +185,90 @@ function handleSearch() {
 	});
 }
 
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
+const { setMode, isAdd, isEdit } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}商户管理员`;
-
-	/** 业务对象 */
-	const formVO: MerchantAdminFormVO = isAdd.value
+	const formVO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					propertyCompany: row?.propertyName || "",
-					adminName: row?.adminName || "",
-					adminPhone: row?.adminPhone || "",
-					adminEmail: "",
-					idCardNo: "",
-					accountStatus: row?.status || "正常",
-					loginPassword: "",
-					confirmPassword: "",
-					contactAddress: "",
-					remarks: "",
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				propertyCompany: row?.propertyName || "",
+				adminName: row?.adminName || "",
+				adminPhone: row?.adminPhone || "",
+				adminEmail: "",
+				idCardNo: "",
+				accountStatus: row?.status || "正常",
+				loginPassword: "",
+				confirmPassword: "",
+				contactAddress: "",
+				remarks: "",
+			});
 
-	/** 表单组件需要的props */
 	const props: MerchantAdminFormProps = {
-		form: formVO,
-		defaultValues: formVO,
+		form: formVO as MerchantAdminFormVO,
+		defaultValues: cloneDeep(formVO) as MerchantAdminFormVO,
 		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("operation-team_merchant-manage.merchant-admin.dialogs.addTitle"))
+				: renderI18n($t("operation-team_merchant-manage.merchant-admin.dialogs.editTitle")),
 		props,
-
 		contentRenderer: () =>
 			h(MerchantAdminForm, {
-				ref: MerchantAdminFormInstance,
+				ref: merchantAdminFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = MerchantAdminFormInstance.value?.formComputed;
+			const formComputed = merchantAdminFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = MerchantAdminFormInstance.value?.formComputed;
+					const formComputed = merchantAdminFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options: _options, index: _index } }) => {
-					MerchantAdminFormInstance.value?.plusFormInstance?.handleReset();
+				btnClick: () => {
+					merchantAdminFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await MerchantAdminFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await merchantAdminFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						doFetch();
 					}
 				},
 			},
@@ -274,17 +276,28 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 	});
 }
 
-onMounted(async () => {
-	// await loadTableData(); // TanStack query handles this
-});
+function handleViewCommunities() {
+	ElMessage.info(renderI18n($t("operation-team_merchant-manage.merchant-admin.messages.communitiesComingSoon")));
+}
+
+function handleLogin() {
+	ElMessage.info(renderI18n($t("operation-team_merchant-manage.merchant-admin.messages.loginComingSoon")));
+}
+
+function handleRestrictLogin() {
+	ElMessage.info(renderI18n($t("operation-team_merchant-manage.merchant-admin.messages.restrictLoginComingSoon")));
+}
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -310,9 +323,15 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info">隶属小区</ElButton>
-						<ElButton type="info">登录</ElButton>
-						<ElButton type="warning">限制登录</ElButton>
+						<ElButton type="info" @click="handleViewCommunities">
+							{{ transformI18n($t("operation-team_merchant-manage.merchant-admin.buttons.communities")) }}
+						</ElButton>
+						<ElButton type="info" @click="handleLogin">
+							{{ transformI18n($t("operation-team_merchant-manage.merchant-admin.buttons.login")) }}
+						</ElButton>
+						<ElButton type="warning" @click="handleRestrictLogin">
+							{{ transformI18n($t("operation-team_merchant-manage.merchant-admin.buttons.restrictLogin")) }}
+						</ElButton>
 						<ElButton type="danger">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
