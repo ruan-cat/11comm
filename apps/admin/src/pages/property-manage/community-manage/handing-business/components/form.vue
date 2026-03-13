@@ -1,135 +1,214 @@
-<!--
-  业务受理表单
-  用于新增、修改业务受理
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-
-import type { HandingBusinessFormProps } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import type { HandingBusinessFormVO } from "@01s-11comm/type";
-import { businessHandlingStatusOptions, feeTypeOptions } from "@01s-11comm/type";
+import type { HandingBusinessFormProps } from "./form";
 
 const props = defineProps<HandingBusinessFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & HandingBusinessFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & HandingBusinessFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & HandingBusinessFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const feeTypeLabelKeyMap = {
+	periodic: "propertyManage_communityManage.handing-business.options.feeType.periodic",
+	temporary: "propertyManage_communityManage.handing-business.options.feeType.temporary",
+	deposit: "propertyManage_communityManage.handing-business.options.feeType.deposit",
+	penalty: "propertyManage_communityManage.handing-business.options.feeType.penalty",
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 费用项目
+const statusLabelKeyMap = {
+	pending: "propertyManage_communityManage.handing-business.options.status.pending",
+	paid: "propertyManage_communityManage.handing-business.options.status.paid",
+	overdue: "propertyManage_communityManage.handing-business.options.status.overdue",
+	reduced: "propertyManage_communityManage.handing-business.options.status.reduced",
+	voided: "propertyManage_communityManage.handing-business.options.status.voided",
+} as const;
+
+const feeTypeOptions = withLocale(() =>
+	Object.entries(feeTypeLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const statusOptions = withLocale(() =>
+	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "费用项目",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
 		prop: "feeItem",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeItem")),
+			disabled: props.mode === "info",
+		},
 	},
-
-	// 费用标识
 	{
-		label: "费用标识",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
 		prop: "feeId",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeId")),
+			disabled: props.mode === "info",
+		},
 	},
-
-	// 费用类型
 	{
-		label: "费用类型",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
 		prop: "feeType",
 		valueType: "select",
-		required: true,
-		options: feeTypeOptions,
+		options: feeTypeOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeType")),
+			disabled: props.mode === "info",
+		},
 	},
-
-	// 应收金额
 	{
-		label: "应收金额",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.amountReceivable")),
 		prop: "amountReceivable",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.placeholders.amountReceivable"),
+			),
+			disabled: props.mode === "info",
+		},
 	},
-
-	// 建账时间
 	{
-		label: "建账时间",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTime")),
 		prop: "accountCreationTime",
 		valueType: "date-picker",
-		required: true,
 		fieldProps: {
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.placeholders.accountCreationTime"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
-
-	// 应收时间段
 	{
-		label: "应收时间段",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.receivablePeriod")),
 		prop: "receivablePeriod",
 		valueType: "input",
-		required: true,
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.placeholders.receivablePeriod"),
+			),
+			disabled: props.mode === "info",
+		},
 	},
-
-	// 说明
 	{
-		label: "说明",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.description")),
 		prop: "description",
 		valueType: "textarea",
-		required: true,
+		fieldProps: {
+			rows: 3,
+			maxlength: 500,
+			showWordLimit: true,
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.description")),
+			disabled: props.mode === "info",
+		},
 	},
-
-	// 状态
 	{
-		label: "状态",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.status")),
 		prop: "status",
 		valueType: "select",
-		required: true,
-		options: businessHandlingStatusOptions,
+		options: statusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.status")),
+			disabled: props.mode === "info",
+		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	feeItem: [{ required: true, message: "请输入费用项目", trigger: "blur" }],
-	feeId: [{ required: true, message: "请输入费用标识", trigger: "blur" }],
-	feeType: [{ required: true, message: "请选择费用类型", trigger: "change" }],
-	amountReceivable: [
-		{ required: true, message: "请输入应收金额", trigger: "blur" },
-		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	feeItem: [
+		{
+			required: true,
+			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.enterFeeItem")),
+			trigger: "blur",
+		},
 	],
-	accountCreationTime: [{ required: true, message: "请选择建账时间", trigger: "change" }],
-	receivablePeriod: [{ required: true, message: "请输入应收时间段", trigger: "blur" }],
-	description: [{ required: true, message: "请输入说明", trigger: "blur" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	feeId: [
+		{
+			required: true,
+			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.enterFeeId")),
+			trigger: "blur",
+		},
+	],
+	feeType: [
+		{
+			required: true,
+			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.selectFeeType")),
+			trigger: "change",
+		},
+	],
+	amountReceivable: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.validation.enterAmountReceivable"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^\d+(\.\d{1,2})?$/,
+			message: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.validation.amountReceivablePattern"),
+			),
+			trigger: "blur",
+		},
+	],
+	accountCreationTime: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.validation.selectAccountCreationTime"),
+			),
+			trigger: "change",
+		},
+	],
+	receivablePeriod: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.validation.enterReceivablePeriod"),
+			),
+			trigger: "blur",
+		},
+	],
+	description: [
+		{
+			required: true,
+			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.enterDescription")),
+			trigger: "blur",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -144,7 +223,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
