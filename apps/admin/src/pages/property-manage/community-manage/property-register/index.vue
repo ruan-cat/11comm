@@ -1,38 +1,30 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "产权登记",
+		// 产权登记
+		title: "propertyManage_communityManage.property-register.pageTitle",
 		icon: "mdi:file-document",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.propertyRegister"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { h } from "vue";
+import { h, ref } from "vue";
 import { ElMessageBox, ElTag } from "element-plus";
-import { transformI18n } from "@/plugins/i18n";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
+import { usePropertyRegisterListQuery } from "@/api/property-manage/community-manage/property-register";
 import type { PropertyRegisterFormProps } from "./components/form";
-import type { PropertyRegisterFormVO } from "@01s-11comm/type";
+import type { PropertyRegisterFormVO, PropertyRegisterListItem, PropertyRegisterQueryParams } from "@01s-11comm/type";
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
-import { usePropertyRegisterListQuery } from "@/api/property-manage/community-manage/property-register";
-import {
-	type PropertyRegisterListItem,
-	type PropertyRegisterQueryParams,
-	auditStatusOptions,
-	buildingOptions,
-	unitOptions,
-} from "@01s-11comm/type";
-import { useMode, type Mode } from "@/composables/use-mode";
 
-const PropertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<PropertyRegisterQueryParams> = {
 	houseId: "",
 	houseNumber: "",
@@ -45,96 +37,10 @@ const plusSearchModelRef: FieldValues & Partial<PropertyRegisterQueryParams> = {
 	unit: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 房屋ID */
-	{
-		label: "房屋ID",
-		prop: "houseId",
-		valueType: "input",
-	},
-
-	/** 房屋编号 */
-	{
-		label: "房屋编号",
-		prop: "houseNumber",
-		valueType: "input",
-	},
-
-	/** 姓名 */
-	{
-		label: "姓名",
-		prop: "ownerName",
-		valueType: "input",
-	},
-
-	/** 联系方式 */
-	{
-		label: "联系方式",
-		prop: "contactInfo",
-		valueType: "input",
-	},
-
-	/** 身份证号 */
-	{
-		label: "身份证号",
-		prop: "idCardNumber",
-		valueType: "input",
-	},
-
-	/** 地址 */
-	{
-		label: "地址",
-		prop: "address",
-		valueType: "input",
-	},
-
-	/** 审核状态 */
-	{
-		label: "审核状态",
-		prop: "status",
-		valueType: "select",
-		options: auditStatusOptions,
-	},
-
-	/** 楼栋 */
-	{
-		label: "楼栋",
-		prop: "building",
-		valueType: "select",
-		options: buildingOptions,
-	},
-
-	/** 单元 */
-	{
-		label: "单元",
-		prop: "unit",
-		valueType: "select",
-		options: unitOptions,
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -144,174 +50,293 @@ const {
 	handleCurrentPageChange,
 } = usePropertyRegisterListQuery(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	resetParams();
+const propertyRegisterFormInstance = ref<InstanceType<typeof PropertyRegisterForm> | null>(null);
+const { setMode, isAdd, isEdit } = useMode();
+const [isFetchingT, setIsLoadingT] = useToggle(false);
+
+async function testAsync() {
+	setIsLoadingT(true);
+	await sleep(1300);
+	setIsLoadingT(false);
 }
 
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+const statusLabelKeyMap = {
+	启用: "propertyManage_communityManage.property-register.options.status.enabled",
+	禁用: "propertyManage_communityManage.property-register.options.status.disabled",
+	enabled: "propertyManage_communityManage.property-register.options.status.enabled",
+	disabled: "propertyManage_communityManage.property-register.options.status.disabled",
+} as const;
+
+const buildingLabelKeyMap = {
+	"1栋": "propertyManage_communityManage.property-register.options.building.building1",
+	"2栋": "propertyManage_communityManage.property-register.options.building.building2",
+	"3栋": "propertyManage_communityManage.property-register.options.building.building3",
+	"A栋": "propertyManage_communityManage.property-register.options.building.buildingA",
+	"B栋": "propertyManage_communityManage.property-register.options.building.buildingB",
+	"C栋": "propertyManage_communityManage.property-register.options.building.buildingC",
+} as const;
+
+const unitLabelKeyMap = {
+	"1单元": "propertyManage_communityManage.property-register.options.unit.unit1",
+	"2单元": "propertyManage_communityManage.property-register.options.unit.unit2",
+	"3单元": "propertyManage_communityManage.property-register.options.unit.unit3",
+} as const;
+
+function translateStatusLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
+	return key ? transformI18n($t(key)) : value;
 }
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const statusOptions = withLocale(() =>
+	(["enabled", "disabled"] as const).map((value) => ({
+		label: transformI18n($t(statusLabelKeyMap[value])),
+		value,
+	})),
+);
+
+const buildingOptions = withLocale(() =>
+	Object.entries(buildingLabelKeyMap).map(([value, key]) => ({
+		label: transformI18n($t(key)),
+		value,
+	})),
+);
+
+const unitOptions = withLocale(() =>
+	Object.entries(unitLabelKeyMap).map(([value, key]) => ({
+		label: transformI18n($t(key)),
+		value,
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "房屋产权ID",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.propertyRightId"))),
 		prop: "propertyRightId",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "房屋ID",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.houseId"))),
 		prop: "houseId",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "房屋编号",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.houseNumber"))),
 		prop: "houseNumber",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "姓名",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.ownerName"))),
 		prop: "ownerName",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "联系方式",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.contactInfo"))),
 		prop: "contactInfo",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "身份证号",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.idCardNumber"))),
 		prop: "idCardNumber",
-		width: 180,
+		minWidth: 180,
 	},
 	{
-		label: "地址",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.address"))),
 		prop: "address",
-		width: 200,
+		minWidth: 220,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.status"))),
 		prop: "status",
-		width: 100,
+		minWidth: 120,
 		cellRenderer: ({ row }) => {
-			const statusMap = {
-				启用: { type: "success", text: "启用" },
-				禁用: { type: "danger", text: "禁用" },
-			};
-			const statusInfo = statusMap[row.status] || { type: "info", text: row.status };
-			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
+			const type = row.status === "启用" || row.status === "enabled" ? "success" : "danger";
+			return h(ElTag, { type }, () => translateStatusLabel(row.status));
 		},
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
+		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "产权登记",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("propertyManage_communityManage.property-register.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: PropertyRegisterListItem;
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.houseId")),
+		prop: "houseId",
+		valueType: "input",
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.houseId")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.houseNumber")),
+		prop: "houseNumber",
+		valueType: "input",
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.houseNumber")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.ownerName")),
+		prop: "ownerName",
+		valueType: "input",
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.ownerName")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.contactInfo")),
+		prop: "contactInfo",
+		valueType: "input",
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.contactInfo")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.idCardNumber")),
+		prop: "idCardNumber",
+		valueType: "input",
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.idCardNumber")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.address")),
+		prop: "address",
+		valueType: "input",
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.address")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.status")),
+		prop: "status",
+		valueType: "select",
+		options: statusOptions.value,
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.status")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.building")),
+		prop: "building",
+		valueType: "select",
+		options: buildingOptions.value,
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.building")),
+		},
+	},
+	{
+		label: transformI18n($t("propertyManage_communityManage.property-register.fields.unit")),
+		prop: "unit",
+		valueType: "select",
+		options: unitOptions.value,
+		fieldProps: {
+			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.unit")),
+		},
+	},
+]);
+
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: PropertyRegisterListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}产权登记`;
+	const formVO: PropertyRegisterFormVO = isAdd.value
+		? cloneDeep(defaultForm)
+		: cloneDeep({
+				...defaultForm,
+				propertyRightId: row?.propertyRightId || "",
+				houseId: row?.houseId || "",
+				houseNumber: row?.houseNumber || "",
+				ownerName: row?.ownerName || "",
+				contactInfo: row?.contactInfo || "",
+				idCardNumber: row?.idCardNumber || "",
+				address: row?.address || "",
+				status: row?.status || "enabled",
+				remark: row?.remark || "",
+			});
 
-	/** 业务对象 */
-	const propertyRegisterFormVO: PropertyRegisterFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: isEdit.value
-			? structuredClone({
-					...defaultForm,
-					propertyRightId: row?.propertyRightId || "",
-					houseId: row?.houseId || "",
-					houseNumber: row?.houseNumber || "",
-					ownerName: row?.ownerName || "",
-					contactInfo: row?.contactInfo || "",
-					idCardNumber: row?.idCardNumber || "",
-					address: row?.address || "",
-					status: row?.status || "",
-				})
-			: structuredClone(defaultForm);
-
-	/** 表单组件需要的props */
 	const formProps: PropertyRegisterFormProps = {
-		form: propertyRegisterFormVO,
-		defaultValues: propertyRegisterFormVO,
+		form: formVO,
+		defaultValues: formVO,
+		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props: formProps,
+		title: () => {
+			if (isAdd.value) {
+				return transformI18n($t("propertyManage_communityManage.property-register.dialogs.addTitle"));
+			}
 
+			if (isEdit.value) {
+				return transformI18n($t("propertyManage_communityManage.property-register.dialogs.editTitle"));
+			}
+
+			return transformI18n($t("propertyManage_communityManage.property-register.dialogs.infoTitle"));
+		},
+		props: formProps,
 		contentRenderer: () =>
 			h(PropertyRegisterForm, {
-				ref: PropertyRegisterFormInstance,
+				ref: propertyRegisterFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = PropertyRegisterFormInstance.value?.formComputed;
+			const formComputed = propertyRegisterFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = PropertyRegisterFormInstance.value?.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = propertyRegisterFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					PropertyRegisterFormInstance.value?.plusFormInstance?.handleReset();
+				btnClick: () => {
+					propertyRegisterFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await PropertyRegisterFormInstance.value?.plusFormInstance?.handleSubmit();
+					const res = await propertyRegisterFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -325,32 +350,38 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-/** 删除单个产权登记 */
 async function handleDelete(row: PropertyRegisterListItem) {
 	try {
-		await ElMessageBox.confirm(`确认删除产权登记记录：${row.houseNumber} - ${row.ownerName}？`, "删除确认", {
-			confirmButtonText: transformI18n($t("common.buttons.del")),
-			cancelButtonText: transformI18n($t("common.buttons.cancel")),
-			type: "warning",
-		});
+		await ElMessageBox.confirm(
+			i18n.global.t($t("propertyManage_communityManage.property-register.dialogs.confirmDelete"), {
+				houseNumber: row.houseNumber,
+				ownerName: row.ownerName,
+			}),
+			transformI18n($t("propertyManage_communityManage.property-register.dialogs.deleteTitle")),
+			{
+				confirmButtonText: transformI18n($t("common.buttons.del")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
 
-		// TODO: 调用删除API
-		// 模拟删除操作
-		await new Promise((resolve) => setTimeout(resolve, 300));
-
-		// 刷新表格数据
 		await doFetch();
-	} catch (error) {
-		if (error !== "cancel") {
-			// TODO: 显示错误提示
-		}
-	}
+	} catch {}
 }
 </script>
 
 <template>
-	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+	<section :key="locale" class="index-root">
+		<PlusSearch
+			:key="locale"
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
@@ -360,7 +391,7 @@ async function handleDelete(row: PropertyRegisterListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需要的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"
