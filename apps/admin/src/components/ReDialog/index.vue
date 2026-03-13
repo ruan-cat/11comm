@@ -12,6 +12,44 @@ defineOptions({
 const sureBtnMap = ref({});
 const fullscreen = ref(false);
 
+function resolveText(text?: string | (() => string)) {
+	return typeof text === "function" ? text() : text;
+}
+
+function getButtonAttrs(btn: ButtonProps) {
+	const { label, btnClick, popconfirm, ...buttonAttrs } = btn;
+	return buttonAttrs;
+}
+
+function getDialogAttrs(options: DialogOptions) {
+	const {
+		props,
+		hideFooter,
+		popconfirm,
+		sureBtnLoading,
+		headerRenderer,
+		contentRenderer,
+		footerRenderer,
+		footerButtons,
+		open,
+		close,
+		doBeforeClose,
+		closeCallBack,
+		fullscreenCallBack,
+		openAutoFocus,
+		closeAutoFocus,
+		beforeCancel,
+		beforeSure,
+		title,
+		...dialogAttrs
+	} = options;
+
+	return {
+		...dialogAttrs,
+		title: typeof title === "function" ? undefined : title,
+	};
+}
+
 const footerButtons = computed(() => {
 	return (options: DialogOptions) => {
 		return options?.footerButtons?.length > 0
@@ -85,7 +123,7 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 	<el-dialog
 		v-for="(options, index) in dialogStore"
 		:key="index"
-		v-bind="options"
+		v-bind="getDialogAttrs(options)"
 		v-model="options.visible"
 		class="pure-dialog"
 		:fullscreen="fullscreen ? true : options?.fullscreen ? true : false"
@@ -100,11 +138,14 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 		@closeAutoFocus="eventsCallBack('closeAutoFocus', options, index)"
 	>
 		<!-- header -->
-		<template v-if="options?.fullscreenIcon || options?.headerRenderer" #header="{ close, titleId, titleClass }">
-			<div v-if="options?.fullscreenIcon" class="flex items-center justify-between">
-				<span :id="titleId" :class="titleClass">{{ options?.title }}</span>
+		<template
+			v-if="options?.fullscreenIcon || options?.headerRenderer || isFunction(options?.title)"
+			#header="{ close, titleId, titleClass }"
+		>
+			<div v-if="options?.fullscreenIcon || isFunction(options?.title)" class="flex items-center justify-between">
+				<span :id="titleId" :class="titleClass">{{ resolveText(options?.title) }}</span>
 				<i
-					v-if="!options?.fullscreen"
+					v-if="options?.fullscreenIcon && !options?.fullscreen"
 					:class="fullscreenClass"
 					@click="
 						() => {
@@ -144,14 +185,14 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 						"
 					>
 						<template #reference>
-							<el-button v-bind="btn">{{ btn?.label }}</el-button>
+							<el-button v-bind="getButtonAttrs(btn)">{{ resolveText(btn?.label) }}</el-button>
 						</template>
 					</el-popconfirm>
 
 					<!-- loading增加逻辑 只要按钮有加载等待配置 就使用 -->
 					<el-button
 						v-else
-						v-bind="btn"
+						v-bind="getButtonAttrs(btn)"
 						:loading="(key === 1 && sureBtnMap[index]?.loading) || btn?.loading"
 						@click="
 							btn.btnClick({
@@ -160,7 +201,7 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 							})
 						"
 					>
-						{{ btn?.label }}
+						{{ resolveText(btn?.label) }}
 					</el-button>
 				</template>
 			</span>

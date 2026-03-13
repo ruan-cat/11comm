@@ -2,6 +2,7 @@ import type { CSSProperties, VNode, Component } from "vue";
 
 type DoneFn = (cancel?: boolean) => void;
 type EventType = "open" | "close" | "openAutoFocus" | "closeAutoFocus" | "fullscreenCallBack" | "doBeforeClose";
+type DynamicText = string | (() => string);
 type ArgsType = {
 	/** `cancel` 点击取消按钮、`sure` 点击确定按钮、`close` 点击右上角关闭按钮或空白页或按下了esc键 */
 	command: "cancel" | "sure" | "close";
@@ -13,7 +14,7 @@ type DialogProps = {
 	/** `Dialog` 的显示与隐藏 */
 	visible?: boolean;
 	/** `Dialog` 的标题 */
-	title?: string;
+	title?: DynamicText;
 	/** `Dialog` 的宽度，默认 `50%` */
 	width?: string | number;
 	/** 是否为全屏 `Dialog`（会一直处于全屏状态，除非弹框关闭），默认 `false`，`fullscreen` 和 `fullscreenIcon` 都传时只有 `fullscreen` 会生效 */
@@ -93,7 +94,7 @@ type BtnClickButton = {
 /** https://element-plus.org/zh-CN/component/button.html#button-attributes */
 type ButtonProps = {
 	/** 按钮文字 */
-	label: string;
+	label: DynamicText;
 	/** 按钮尺寸 */
 	size?: "large" | "default" | "small";
 	/** 按钮类型 */
