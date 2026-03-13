@@ -1,155 +1,140 @@
 <script lang="ts" setup>
-import { useTemplateRef, computed, ref } from "vue";
-import { cloneDeep } from "@pureadmin/utils";
-import type { FieldValues, PlusColumn } from "plus-pro-components";
-import type { PlusFormRules } from "@/config/constant";
-import { usePlusFormReset } from "@/composables/use-plus-form-reset";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
-
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { type SchedulingSettingFormProps } from "./form";
-import { type SchedulingSettingFormVO, schedulingTypeOptions, schedulingStatusOptions } from "@01s-11comm/type";
+import { type SchedulingSettingFormVO, schedulingStatusOptions, schedulingTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<SchedulingSettingFormProps>();
-const { t } = useI18n();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & SchedulingSettingFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & SchedulingSettingFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & SchedulingSettingFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-const translatedSchedulingTypeOptions = computed(() =>
+const translatedSchedulingTypeOptions = withLocale(() =>
 	schedulingTypeOptions.map((option) => ({
 		...option,
-		label: transformI18n(t(`settingManage.organizeManage.schedulingSetting.form.options.type.${option.value}`)),
+		label: renderI18n($t(`settingManage.organizeManage.schedulingSetting.form.options.type.${option.value}`)),
 	})),
 );
 
-const translatedSchedulingStatusOptions = computed(() =>
+const translatedSchedulingStatusOptions = withLocale(() =>
 	schedulingStatusOptions.map((option) => ({
 		...option,
-		label: transformI18n(
-			t(
-				`settingManage.organizeManage.schedulingSetting.form.options.status.${
-					option.value === "enabled" ? "enabled" : "disabled"
-				}`,
-			),
-		),
+		label: renderI18n($t(`settingManage.organizeManage.schedulingSetting.form.options.status.${option.value}`)),
 	})),
 );
 
-/** 表单项配置 */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.type")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.type")),
 		prop: "type",
 		valueType: "select",
 		options: translatedSchedulingTypeOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.type")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
 		prop: "cycle",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
 		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
 		prop: "effectiveTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
 		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.staff")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff")),
 		prop: "staff",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedSchedulingStatusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = computed<PlusFormRules>(() => ({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.enterName")),
+			message: renderI18n($t("settingManage.organizeManage.schedulingSetting.form.validation.enterName")),
 			trigger: "blur",
 		},
 	],
 	type: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.selectType")),
+			message: renderI18n($t("settingManage.organizeManage.schedulingSetting.form.validation.selectType")),
 			trigger: "change",
 		},
 	],
 	cycle: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.enterCycle")),
+			message: renderI18n($t("settingManage.organizeManage.schedulingSetting.form.validation.enterCycle")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 1,
-			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.cyclePositive")),
+			message: renderI18n($t("settingManage.organizeManage.schedulingSetting.form.validation.cyclePositive")),
 			trigger: "blur",
 		},
 	],
 	effectiveTime: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.selectEffectiveTime")),
+			message: renderI18n($t("settingManage.organizeManage.schedulingSetting.form.validation.selectEffectiveTime")),
 			trigger: "change",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.schedulingSetting.form.validation.selectStatus")),
+			message: renderI18n($t("settingManage.organizeManage.schedulingSetting.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
 }));
 
-/** 对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
