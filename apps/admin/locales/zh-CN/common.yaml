@@ -25,9 +25,22 @@ buttons:
   del: 删除
   cancel: 取消
   reset: 重置
+  search: 搜索
   submit: 提交
   save: 保存
   back: 返回
+  detail: 详情
+  export: 导出
+  enable: 启用
+  disable: 停用
+  document: 文档
+  file: 文件
+  resetPassword: 重置密码
+  permissionConfig: 权限配置
+  associateUnit: 关联单元
+  associateEmployee: 关联员工
+  batchAudit: 批量审核
+  batchReprint: 批量补打
 
 cancel:
   title: 未提交更改
@@ -255,4 +268,5 @@ login:
   purePassWordDifferentReg: 两次密码不一致!
   purePassWordUpdateReg: 修改密码成功
 table:
+  index: 序号
   operation: 操作

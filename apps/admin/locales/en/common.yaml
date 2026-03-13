@@ -25,9 +25,22 @@ buttons:
   del: Delete
   cancel: Cancel
   reset: Reset
+  search: Search
   submit: Submit
   save: Save
   back: Back
+  detail: Detail
+  export: Export
+  enable: Enable
+  disable: Disable
+  document: Document
+  file: File
+  resetPassword: Reset Password
+  permissionConfig: Permission Config
+  associateUnit: Associate Unit
+  associateEmployee: Associate Employee
+  batchAudit: Batch Audit
+  batchReprint: Batch Reprint
 
 cancel:
   title: No changes have been submitted.
@@ -255,4 +268,5 @@ login:
   purePassWordDifferentReg: The two passwords do not match!
   purePassWordUpdateReg: Password has been updated
 table:
+  index: No.
   operation: Operation
