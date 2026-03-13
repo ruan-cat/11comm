@@ -1,0 +1,264 @@
+operationTeam:
+  systemManage:
+    pageTitle: 系统管理
+    changePassword:
+      pageTitle: 修改密码记录
+      tableTitle: 密码修改记录
+      fields:
+        username: 用户名
+        realName: 真实姓名
+        userRole: 用户角色
+        department: 所属部门
+        phone: 联系电话
+        changeTime: 修改时间
+        changeIpAddress: 修改IP地址
+        location: 修改地点
+        changeMethod: 修改方式
+        operationStatus: 操作状态
+        success: 是否成功
+        failureReason: 失败原因
+        operator: 操作人
+        changeTimeRange: 修改时间范围
+      options:
+        userRoles:
+          admin: 管理员
+          normal: 普通用户
+          visitor: 访客
+        departments:
+          property: 物业团队
+          development: 开发团队
+          operation: 运营团队
+          finance: 财务部门
+          customer: 客服部门
+          maintenance: 维修部门
+          security: 安保部门
+          greening: 绿化部门
+        changeMethods:
+          selfService: 用户自行修改
+          adminReset: 管理员重置
+          forceChange: 强制修改
+          firstLogin: 首次登录修改
+        statuses:
+          success: 成功
+          failed: 失败
+          pending: 待审核
+        successes:
+          yes: 是
+          no: 否
+    systemConfig:
+      pageTitle: 系统配置
+      tableTitle: 系统配置
+      dialogs:
+        addTitle: 新增系统配置
+        editTitle: 编辑系统配置
+        infoTitle: 系统配置详情
+      fields:
+        configId: 配置ID
+        configName: 配置名称
+        configValue: 配置值
+        configType: 配置类型
+        isSystem: 系统内置
+        isEnabled: 启用状态
+        status: 状态
+        description: 描述
+        createTime: 创建时间
+        updateTime: 更新时间
+        configKey: 配置键
+      placeholders:
+        configName: 请输入配置名称
+        configValue: 请输入配置值
+        configType: 请选择配置类型
+        configKey: 请输入配置键
+        isSystem: 请选择是否系统内置
+        status: 请选择状态
+        description: 请输入配置描述信息
+      validation:
+        configNameRequired: 请填写配置名称
+        configNameLength: 长度在 2 到 50 个字符
+        configKeyRequired: 请填写配置键
+        configKeyLength: 长度在 1 到 100 个字符
+        configValueRequired: 请填写配置值
+        configValueLength: 长度在 1 到 1000 个字符
+        configTypeRequired: 请选择配置类型
+        isSystemRequired: 请选择是否系统内置
+        statusRequired: 请选择状态
+        descriptionLength: 描述长度不能超过 200 个字符
+      options:
+        configTypes:
+          text: 文本
+          number: 数字
+          boolean: 布尔
+          json: JSON
+          url: URL
+        statuses:
+          enabled: 启用
+          disabled: 禁用
+        systems:
+          yes: 是
+          no: 否
+    registerProtocol:
+      pageTitle: 注册协议
+      tableTitle: 注册协议
+      dialogs:
+        addTitle: 新增注册协议
+        editTitle: 编辑注册协议
+        infoTitle: 注册协议详情
+      fields:
+        protocolId: 协议ID
+        protocolName: 协议名称
+        protocolType: 协议类型
+        protocolVersion: 协议版本
+        enabledStatus: 启用状态
+        isRequired: 是否必读
+        remark: 备注
+        effectiveTime: 生效日期
+        expireTime: 失效日期
+        operator: 操作人
+        createTime: 创建时间
+        updateTime: 更新时间
+        status: 状态
+        protocolSummary: 协议摘要
+        protocolContent: 协议内容
+        effectiveDate: 生效日期
+        expirationDate: 失效日期
+        sortWeight: 排序权重
+      placeholders:
+        protocolName: 请输入协议名称
+        protocolType: 请选择协议类型
+        protocolVersion: 如 v1.0.0
+        status: 请选择状态
+        isRequired: 请选择是否强制同意
+        effectiveDate: 请选择生效日期
+        expirationDate: 请选择或留空表示永久生效
+        sortWeight: 数字越小排序越靠前
+        protocolSummary: 请输入协议摘要，最多 500 字
+        protocolContent: 请输入协议内容，支持 HTML 格式，最少 100 字，最多 50000 字
+      validation:
+        protocolNameRequired: 请输入协议名称
+        protocolNameLength: 长度在 2 到 100 个字符
+        protocolTypeRequired: 请选择协议类型
+        protocolVersionRequired: 请输入协议版本
+        protocolVersionFormat: 版本号格式不正确，请输入如 v1.0.0 的格式
+        statusRequired: 请选择状态
+        isRequiredRequired: 请选择是否强制同意
+        protocolContentRequired: 请输入协议内容
+        protocolContentLength: 协议内容至少 100 个字符
+        effectiveDateRequired: 请选择生效日期
+      options:
+        protocolTypes:
+          userRegistration: 用户注册协议
+          privacyPolicy: 隐私政策
+          serviceTerms: 服务条款
+          disclaimer: 免责声明
+          copyright: 版权声明
+        enabledStatuses:
+          enabled: 启用
+          disabled: 禁用
+        requiredStatuses:
+          yes: 是
+          no: 否
+        statuses:
+          draft: 草稿
+          published: 已发布
+          disabled: 已停用
+    initializeCell:
+      pageTitle: 初始化单元格
+      tableTitle: 初始化单元格
+      dialogs:
+        addTitle: 新增初始化单元格
+        editTitle: 编辑初始化单元格
+        infoTitle: 初始化单元格详情
+      fields:
+        cellId: 单元格ID
+        cellName: 单元格名称
+        cellType: 单元格类型
+        buildingName: 建筑物名称
+        buildingId: 建筑物ID
+        floor: 楼层
+        unitNumber: 单元号
+        households: 户数
+        status: 状态
+        description: 描述
+        createTime: 创建时间
+        updateTime: 更新时间
+      placeholders:
+        cellName: 请输入单元格名称
+        cellType: 请选择单元格类型
+        buildingId: 请输入建筑物ID
+        buildingName: 请输入建筑物名称
+        floor: 请输入楼层信息，如：1-18层
+        unitNumber: 请输入单元号，如：1单元
+        households: 请输入户数
+        status: 请选择状态
+        description: 请输入描述信息
+      validation:
+        cellNameRequired: 请填写单元格名称
+        cellNameLength: 长度在 2 到 50 个字符
+        cellTypeRequired: 请选择单元格类型
+        buildingIdRequired: 请输入建筑物ID
+        buildingIdPattern: 建筑物ID只能包含大写字母和数字
+        buildingNameRequired: 请输入建筑物名称
+        buildingNameLength: 长度在 2 到 50 个字符
+        floorRequired: 请输入楼层信息
+        floorLength: 长度在 1 到 30 个字符
+        unitNumberRequired: 请输入单元号
+        unitNumberLength: 长度在 1 到 20 个字符
+        householdsRequired: 请输入户数
+        householdsRange: 户数必须在 1 到 1000 之间
+        statusRequired: 请选择状态
+        descriptionLength: 描述长度不能超过 200 个字符
+      options:
+        cellTypes:
+          residential: 住宅单元
+          commercial: 商业单元
+          garage: 车库单元
+          office: 办公单元
+          club: 会所单元
+          property: 物业单元
+          sports: 运动单元
+          education: 教育单元
+          medical: 医疗单元
+          storage: 仓储单元
+          culture: 文化单元
+        statuses:
+          pending: 待初始化
+          inProgress: 初始化中
+          completed: 已完成
+          failed: 初始化失败
+    communityConfiguration:
+      pageTitle: 小区配置
+      tableTitle: 小区配置
+      dialogs:
+        addTitle: 新增小区配置
+        editTitle: 编辑小区配置
+        infoTitle: 小区配置详情
+      fields:
+        communityName: 小区名称
+        settingName: 设置名称
+        settingValue: 设置值
+        settingType: 设置类型
+        status: 状态
+        dataStatus: 数据状态
+        remark: 备注
+        createTime: 创建时间
+        updateTime: 更新时间
+      validation:
+        communityNameRequired: 请输入小区名称
+        communityNameLength: 长度在 2 到 50 个字符
+        settingNameRequired: 请输入设置名称
+        settingNameLength: 长度在 2 到 100 个字符
+        settingValueRequired: 请输入设置值
+        settingValueLength: 长度在 1 到 200 个字符
+        settingTypeRequired: 请选择设置类型
+        dataStatusRequired: 请选择数据状态
+      options:
+        settingTypes:
+          system: 系统设置
+          business: 业务设置
+          ui: 界面设置
+          feature: 功能设置
+          security: 安全设置
+        statuses:
+          enabled: 启用
+          disabled: 禁用
+          pending: 待审核

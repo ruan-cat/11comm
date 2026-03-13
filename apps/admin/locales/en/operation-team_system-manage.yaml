@@ -1,0 +1,264 @@
+operationTeam:
+  systemManage:
+    pageTitle: System Manage
+    changePassword:
+      pageTitle: Password Change Records
+      tableTitle: Password Change Records
+      fields:
+        username: Username
+        realName: Real Name
+        userRole: User Role
+        department: Department
+        phone: Phone
+        changeTime: Change Time
+        changeIpAddress: Change IP Address
+        location: Location
+        changeMethod: Change Method
+        operationStatus: Operation Status
+        success: Successful
+        failureReason: Failure Reason
+        operator: Operator
+        changeTimeRange: Change Time Range
+      options:
+        userRoles:
+          admin: Administrator
+          normal: Regular User
+          visitor: Visitor
+        departments:
+          property: Property Team
+          development: Development Team
+          operation: Operations Team
+          finance: Finance Department
+          customer: Customer Service Department
+          maintenance: Maintenance Department
+          security: Security Department
+          greening: Landscaping Department
+        changeMethods:
+          selfService: Self-service Change
+          adminReset: Admin Reset
+          forceChange: Force Change
+          firstLogin: First Login Change
+        statuses:
+          success: Success
+          failed: Failed
+          pending: Pending Review
+        successes:
+          yes: Yes
+          no: No
+    systemConfig:
+      pageTitle: System Config
+      tableTitle: System Config
+      dialogs:
+        addTitle: Add System Config
+        editTitle: Edit System Config
+        infoTitle: System Config Detail
+      fields:
+        configId: Config ID
+        configName: Config Name
+        configValue: Config Value
+        configType: Config Type
+        isSystem: System Built-in
+        isEnabled: Enabled Status
+        status: Status
+        description: Description
+        createTime: Created Time
+        updateTime: Updated Time
+        configKey: Config Key
+      placeholders:
+        configName: Please enter config name
+        configValue: Please enter config value
+        configType: Please select config type
+        configKey: Please enter config key
+        isSystem: Please select whether it is system built-in
+        status: Please select status
+        description: Please enter config description
+      validation:
+        configNameRequired: Please enter config name
+        configNameLength: Length must be between 2 and 50 characters
+        configKeyRequired: Please enter config key
+        configKeyLength: Length must be between 1 and 100 characters
+        configValueRequired: Please enter config value
+        configValueLength: Length must be between 1 and 1000 characters
+        configTypeRequired: Please select config type
+        isSystemRequired: Please select whether it is system built-in
+        statusRequired: Please select status
+        descriptionLength: Description must not exceed 200 characters
+      options:
+        configTypes:
+          text: Text
+          number: Number
+          boolean: Boolean
+          json: JSON
+          url: URL
+        statuses:
+          enabled: Enabled
+          disabled: Disabled
+        systems:
+          yes: Yes
+          no: No
+    registerProtocol:
+      pageTitle: Registration Protocol
+      tableTitle: Registration Protocol
+      dialogs:
+        addTitle: Add Registration Protocol
+        editTitle: Edit Registration Protocol
+        infoTitle: Registration Protocol Detail
+      fields:
+        protocolId: Protocol ID
+        protocolName: Protocol Name
+        protocolType: Protocol Type
+        protocolVersion: Protocol Version
+        enabledStatus: Enabled Status
+        isRequired: Required
+        remark: Remark
+        effectiveTime: Effective Date
+        expireTime: Expiration Date
+        operator: Operator
+        createTime: Created Time
+        updateTime: Updated Time
+        status: Status
+        protocolSummary: Protocol Summary
+        protocolContent: Protocol Content
+        effectiveDate: Effective Date
+        expirationDate: Expiration Date
+        sortWeight: Sort Weight
+      placeholders:
+        protocolName: Please enter protocol name
+        protocolType: Please select protocol type
+        protocolVersion: E.g. v1.0.0
+        status: Please select status
+        isRequired: Please select whether agreement is mandatory
+        effectiveDate: Please select effective date
+        expirationDate: Please select or leave empty for permanent effect
+        sortWeight: Smaller numbers are sorted first
+        protocolSummary: Please enter protocol summary, up to 500 characters
+        protocolContent: Please enter protocol content. HTML is supported. Minimum 100 characters and maximum 50000 characters
+      validation:
+        protocolNameRequired: Please enter protocol name
+        protocolNameLength: Length must be between 2 and 100 characters
+        protocolTypeRequired: Please select protocol type
+        protocolVersionRequired: Please enter protocol version
+        protocolVersionFormat: Invalid version format. Please use a format like v1.0.0
+        statusRequired: Please select status
+        isRequiredRequired: Please select whether agreement is mandatory
+        protocolContentRequired: Please enter protocol content
+        protocolContentLength: Protocol content must be at least 100 characters
+        effectiveDateRequired: Please select effective date
+      options:
+        protocolTypes:
+          userRegistration: User Registration Agreement
+          privacyPolicy: Privacy Policy
+          serviceTerms: Terms of Service
+          disclaimer: Disclaimer
+          copyright: Copyright Notice
+        enabledStatuses:
+          enabled: Enabled
+          disabled: Disabled
+        requiredStatuses:
+          yes: Yes
+          no: No
+        statuses:
+          draft: Draft
+          published: Published
+          disabled: Disabled
+    initializeCell:
+      pageTitle: Initialize Cell
+      tableTitle: Initialize Cell
+      dialogs:
+        addTitle: Add Initialize Cell
+        editTitle: Edit Initialize Cell
+        infoTitle: Initialize Cell Detail
+      fields:
+        cellId: Cell ID
+        cellName: Cell Name
+        cellType: Cell Type
+        buildingName: Building Name
+        buildingId: Building ID
+        floor: Floor
+        unitNumber: Unit Number
+        households: Households
+        status: Status
+        description: Description
+        createTime: Created Time
+        updateTime: Updated Time
+      placeholders:
+        cellName: Please enter cell name
+        cellType: Please select cell type
+        buildingId: Please enter building ID
+        buildingName: Please enter building name
+        floor: Please enter floor information, for example 1-18F
+        unitNumber: Please enter unit number, for example Unit 1
+        households: Please enter households
+        status: Please select status
+        description: Please enter description
+      validation:
+        cellNameRequired: Please enter cell name
+        cellNameLength: Length must be between 2 and 50 characters
+        cellTypeRequired: Please select cell type
+        buildingIdRequired: Please enter building ID
+        buildingIdPattern: Building ID can only contain uppercase letters and numbers
+        buildingNameRequired: Please enter building name
+        buildingNameLength: Length must be between 2 and 50 characters
+        floorRequired: Please enter floor information
+        floorLength: Length must be between 1 and 30 characters
+        unitNumberRequired: Please enter unit number
+        unitNumberLength: Length must be between 1 and 20 characters
+        householdsRequired: Please enter households
+        householdsRange: Households must be between 1 and 1000
+        statusRequired: Please select status
+        descriptionLength: Description must not exceed 200 characters
+      options:
+        cellTypes:
+          residential: Residential Unit
+          commercial: Commercial Unit
+          garage: Garage Unit
+          office: Office Unit
+          club: Clubhouse Unit
+          property: Property Unit
+          sports: Sports Unit
+          education: Education Unit
+          medical: Medical Unit
+          storage: Storage Unit
+          culture: Culture Unit
+        statuses:
+          pending: Pending Initialization
+          inProgress: Initializing
+          completed: Completed
+          failed: Initialization Failed
+    communityConfiguration:
+      pageTitle: Community Config
+      tableTitle: Community Config
+      dialogs:
+        addTitle: Add Community Config
+        editTitle: Edit Community Config
+        infoTitle: Community Config Detail
+      fields:
+        communityName: Community Name
+        settingName: Setting Name
+        settingValue: Setting Value
+        settingType: Setting Type
+        status: Status
+        dataStatus: Data Status
+        remark: Remark
+        createTime: Created Time
+        updateTime: Updated Time
+      validation:
+        communityNameRequired: Please enter community name
+        communityNameLength: Length must be between 2 and 50 characters
+        settingNameRequired: Please enter setting name
+        settingNameLength: Length must be between 2 and 100 characters
+        settingValueRequired: Please enter setting value
+        settingValueLength: Length must be between 1 and 200 characters
+        settingTypeRequired: Please select setting type
+        dataStatusRequired: Please select data status
+      options:
+        settingTypes:
+          system: System Settings
+          business: Business Settings
+          ui: UI Settings
+          feature: Feature Settings
+          security: Security Settings
+        statuses:
+          enabled: Enabled
+          disabled: Disabled
+          pending: Pending Review
