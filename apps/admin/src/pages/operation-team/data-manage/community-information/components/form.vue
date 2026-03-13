@@ -1,230 +1,357 @@
 <script lang="ts" setup>
-import { useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import type { CommunityInformationFormVO } from "@01s-11comm/type";
-
+import { communityInformationStatusOptions, communitySearchOptions } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type CommunityInformationFormProps } from "./form";
 
-/** 表单组件 props */
 const props = defineProps<CommunityInformationFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & CommunityInformationFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
-/** 表单重设 */
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & CommunityInformationFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & CommunityInformationFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const provinceLabelMap = {
+	北京市: "operation-team_data-manage.community-information.options.provinces.beijing",
+	上海市: "operation-team_data-manage.community-information.options.provinces.shanghai",
+	广州市: "operation-team_data-manage.community-information.options.provinces.guangzhou",
+	深圳市: "operation-team_data-manage.community-information.options.provinces.shenzhen",
+	杭州市: "operation-team_data-manage.community-information.options.provinces.hangzhou",
+} as const;
 
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const cityLabelMap = {
+	北京市: "operation-team_data-manage.community-information.options.cities.beijing",
+	上海市: "operation-team_data-manage.community-information.options.cities.shanghai",
+	广州市: "operation-team_data-manage.community-information.options.cities.guangzhou",
+	深圳市: "operation-team_data-manage.community-information.options.cities.shenzhen",
+	杭州市: "operation-team_data-manage.community-information.options.cities.hangzhou",
+	南京市: "operation-team_data-manage.community-information.options.cities.nanjing",
+	武汉市: "operation-team_data-manage.community-information.options.cities.wuhan",
+	成都市: "operation-team_data-manage.community-information.options.cities.chengdu",
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const districtLabelMap = {
+	朝阳区: "operation-team_data-manage.community-information.options.districts.chaoyang",
+	海淀区: "operation-team_data-manage.community-information.options.districts.haidian",
+	东城区: "operation-team_data-manage.community-information.options.districts.dongcheng",
+	西城区: "operation-team_data-manage.community-information.options.districts.xicheng",
+	丰台区: "operation-team_data-manage.community-information.options.districts.fengtai",
+} as const;
+
+const statusLabelMap = {
+	正常: "operation-team_data-manage.community-information.options.statuses.normal",
+	停用: "operation-team_data-manage.community-information.options.statuses.disabled",
+	筹建中: "operation-team_data-manage.community-information.options.statuses.preparing",
+	已交付: "operation-team_data-manage.community-information.options.statuses.delivered",
+	enabled: "operation-team_data-manage.community-information.options.statuses.enabled",
+	disabled: "operation-team_data-manage.community-information.options.statuses.disabled",
+} as const;
+
+function translateProvinceLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = provinceLabelMap[value as keyof typeof provinceLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateCityLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = cityLabelMap[value as keyof typeof cityLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateDistrictLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = districtLabelMap[value as keyof typeof districtLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateStatusLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = statusLabelMap[value as keyof typeof statusLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const translatedProvinceOptions = withLocale(() =>
+	communitySearchOptions.provinces.map((item) => ({
+		...item,
+		label: translateProvinceLabel(String(item.value)),
+	})),
+);
+
+const translatedCityOptions = withLocale(() =>
+	communitySearchOptions.cities.map((item) => ({
+		...item,
+		label: translateCityLabel(String(item.value)),
+	})),
+);
+
+const translatedDistrictOptions = withLocale(() =>
+	communitySearchOptions.districts.map((item) => ({
+		...item,
+		label: translateDistrictLabel(String(item.value)),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	communityInformationStatusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "小区ID",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityId")),
 		prop: "communityId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入小区ID",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.communityId")),
 		},
 	},
 	{
-		label: "小区名称",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入小区名称",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.communityName")),
 		},
 	},
 	{
-		label: "物业公司",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.propertyCompany")),
 		prop: "propertyCompany",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入物业公司名称",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.propertyCompany")),
 		},
 	},
 	{
-		label: "附近地标",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.nearbyLandmark")),
 		prop: "nearbyLandmark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入附近地标",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.nearbyLandmark")),
 		},
 	},
 	{
-		label: "省份",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.province")),
 		prop: "province",
 		valueType: "select",
-		options: [
-			{ label: "福建省", value: "福建省" },
-			{ label: "浙江省", value: "浙江省" },
-			{ label: "江苏省", value: "江苏省" },
-			{ label: "广东省", value: "广东省" },
-		],
+		options: translatedProvinceOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择省份",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.province")),
 		},
 	},
 	{
-		label: "城市",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.city")),
 		prop: "city",
 		valueType: "select",
-		options: [
-			{ label: "福州市", value: "福州市" },
-			{ label: "厦门市", value: "厦门市" },
-			{ label: "漳州市", value: "漳州市" },
-			{ label: "泉州市", value: "泉州市" },
-		],
+		options: translatedCityOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择城市",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.city")),
 		},
 	},
 	{
-		label: "区县",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.district")),
 		prop: "district",
 		valueType: "select",
-		options: [
-			{ label: "仓山区", value: "仓山区" },
-			{ label: "鼓楼区", value: "鼓楼区" },
-			{ label: "台江区", value: "台江区" },
-			{ label: "晋安区", value: "晋安区" },
-			{ label: "马尾区", value: "马尾区" },
-			{ label: "长乐区", value: "长乐区" },
-			{ label: "闽侯县", value: "闽侯县" },
-		],
+		options: translatedDistrictOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择区县",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.district")),
 		},
 	},
 	{
-		label: "详细地址",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.detailedAddress")),
 		prop: "detailedAddress",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入详细地址",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.detailedAddress")),
 		},
 	},
 	{
-		label: "联系电话",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系电话",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.contactPhone")),
 		},
 	},
 	{
-		label: "管理员",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.administrator")),
 		prop: "administrator",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入管理员姓名",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.administrator")),
 		},
 	},
 	{
-		label: "状态",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: [
-			{ label: "正常运营", value: "正常运营" },
-			{ label: "暂停运营", value: "暂停运营" },
-			{ label: "装修中", value: "装修中" },
-		],
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.status")),
 		},
 	},
 	{
-		label: "社区编码",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityCode")),
 		prop: "communityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入社区编码",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.communityCode")),
 		},
 	},
 	{
-		label: "城市编码",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.cityCode")),
 		prop: "cityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入城市编码",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.cityCode")),
 		},
 	},
 	{
-		label: "创建时间",
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.createTime")),
 		prop: "createTime",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入创建时间",
+			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.createTime")),
 		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	communityName: [
-		{ required: true, message: "请输入小区名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.communityNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.communityNameLength")),
+			trigger: "blur",
+		},
 	],
 	propertyCompany: [
-		{ required: true, message: "请输入物业公司名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.propertyCompanyRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.propertyCompanyLength")),
+			trigger: "blur",
+		},
 	],
-	province: [{ required: true, message: "请选择省份", trigger: "change" }],
-	city: [{ required: true, message: "请选择城市", trigger: "change" }],
-	district: [{ required: true, message: "请选择区县", trigger: "change" }],
+	province: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.provinceRequired")),
+			trigger: "change",
+		},
+	],
+	city: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.cityRequired")),
+			trigger: "change",
+		},
+	],
+	district: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.districtRequired")),
+			trigger: "change",
+		},
+	],
 	detailedAddress: [
-		{ required: true, message: "请输入详细地址", trigger: "blur" },
-		{ min: 5, max: 100, message: "长度在 5 到 100 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.detailedAddressRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 5,
+			max: 100,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.detailedAddressLength")),
+			trigger: "blur",
+		},
 	],
 	contactPhone: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.contactPhoneRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.contactPhoneInvalid")),
+			trigger: "blur",
+		},
 	],
 	administrator: [
-		{ required: true, message: "请输入管理员姓名", trigger: "blur" },
-		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.administratorRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 20,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.administratorLength")),
+			trigger: "blur",
+		},
 	],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	status: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_data-manage.community-information.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+}));
 
-/** 默认对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -240,6 +367,7 @@ defineExpose({
 			:default-values="defaultValues"
 			:columns="plusFormColumns"
 			:rules="plusFormRules"
+			:label-width="120"
 		/>
 	</section>
 </template>
