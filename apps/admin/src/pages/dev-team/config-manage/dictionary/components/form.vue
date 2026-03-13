@@ -1,49 +1,60 @@
-<!--
-  字典表单
-  用于新增修改字典
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import type { DictionaryFormVO } from "@01s-11comm/type";
-
+import { $t, transformI18n } from "@/plugins/i18n";
 import { DictionaryFormProps } from "./form";
 import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const props = defineProps<DictionaryFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+const dictionaryTypeLabelKeyMap = {
+	system: "devTeam.configManage.dictionary.form.options.system",
+	business: "devTeam.configManage.dictionary.form.options.business",
+	region: "devTeam.configManage.dictionary.form.options.region",
+	status: "devTeam.configManage.dictionary.form.options.status",
+	config: "devTeam.configManage.dictionary.form.options.config",
+} as const;
+
+const enableStatusLabelKeyMap = {
+	enabled: "devTeam.configManage.dictionary.form.options.enabled",
+	disabled: "devTeam.configManage.dictionary.form.options.disabled",
+} as const;
+
 const defaultValues = props.defaultValues as FieldValues & DictionaryFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
 const toRefForm = cloneDeep(props.form) as FieldValues & DictionaryFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
 const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
+
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 字典名称
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const translatedDictionaryTypeOptions = withLocale(() =>
+	dictionaryTypeOptions.map((option) => ({
+		...option,
+		label: renderI18n($t(dictionaryTypeLabelKeyMap[String(option.value) as keyof typeof dictionaryTypeLabelKeyMap])),
+	})),
+);
+
+const translatedEnableStatusOptions = withLocale(() =>
+	enableStatusOptions.map((option) => ({
+		...option,
+		label: renderI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "字典名称",
+		label: renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 		fieldProps: {
@@ -51,10 +62,8 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		required: true,
 	},
-
-	// 字典编码
 	{
-		label: "字典编码",
+		label: renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode")),
 		prop: "dictionaryCode",
 		valueType: "input",
 		fieldProps: {
@@ -62,45 +71,37 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 		required: true,
 	},
-
-	// 字典类型
 	{
-		label: "字典类型",
+		label: renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "select",
-		options: dictionaryTypeOptions,
+		options: translatedDictionaryTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
 		},
 		required: true,
 	},
-
-	// 字典描述
 	{
-		label: "字典描述",
+		label: renderI18n($t("devTeam.configManage.dictionary.fields.description")),
 		prop: "dictionaryDescription",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
 		},
 	},
-
-	// 是否启用
 	{
-		label: "是否启用",
+		label: renderI18n($t("devTeam.configManage.dictionary.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
-		options: enableStatusOptions,
+		options: translatedEnableStatusOptions.value,
 		fieldProps: {
 			clearable: true,
 		},
 		required: true,
 	},
-
-	// 备注
 	{
-		label: "备注",
+		label: renderI18n($t("devTeam.configManage.center.fields.remark")),
 		prop: "remark",
 		valueType: "input",
 		fieldProps: {
@@ -109,27 +110,23 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	dictionaryName: [
-		{ required: true, message: "请输入字典名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.dictionary.form.validation.enterDictionaryName")), trigger: "blur" },
+		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.dictionary.form.validation.dictionaryNameLength")), trigger: "blur" },
 	],
 	dictionaryCode: [
-		{ required: true, message: "请输入字典编码", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.dictionary.form.validation.enterDictionaryCode")), trigger: "blur" },
+		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.dictionary.form.validation.dictionaryCodeLength")), trigger: "blur" },
 		{
 			pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
-			message: "编码只能包含字母、数字、下划线，且不能以数字开头",
+			message: renderI18n($t("devTeam.configManage.dictionary.form.validation.dictionaryCodePattern")),
 			trigger: "blur",
 		},
 	],
-	dictionaryType: [{ required: true, message: "请选择字典类型", trigger: "change" }],
-	isEnabled: [{ required: true, message: "请选择是否启用", trigger: "change" }],
-});
+	dictionaryType: [{ required: true, message: renderI18n($t("devTeam.configManage.dictionary.form.validation.selectDictionaryType")), trigger: "change" }],
+	isEnabled: [{ required: true, message: renderI18n($t("devTeam.configManage.dictionary.form.validation.selectIsEnabled")), trigger: "change" }],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -144,7 +141,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
