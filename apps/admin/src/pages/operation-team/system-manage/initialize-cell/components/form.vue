@@ -1,163 +1,283 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { InitializeCellFormVO } from "@01s-11comm/type";
-import { cellTypeOptions, initializeCellStatusOptions } from "@01s-11comm/type";
+import { type InitializeCellFormProps } from "./form";
 
-import { InitializeCellFormProps } from "./form";
-
-/** 表单组件的 props */
 const props = defineProps<InitializeCellFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as unknown as FieldValues & InitializeCellFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
+
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as unknown as FieldValues & InitializeCellFormVO;
+const form = ref(cloneDeep(props.form) as unknown as FieldValues & InitializeCellFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const translatedCellTypeOptions = withLocale(() => [
 	{
-		label: "单元格名称",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
+		value: "ResidentialUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
+		value: "CommercialUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
+		value: "GarageUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.office")),
+		value: "OfficeUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.club")),
+		value: "ClubUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.property")),
+		value: "PropertyUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.sports")),
+		value: "SportsUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.education")),
+		value: "EducationUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.medical")),
+		value: "MedicalUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.storage")),
+		value: "StorageUnit",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
+		value: "CultureUnit",
+	},
+]);
+
+const translatedStatusOptions = withLocale(() => [
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
+		value: "Uninitialized",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
+		value: "Initializing",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
+		value: "Initialized",
+	},
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.failed")),
+		value: "InitializationFailed",
+	},
+]);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
 		prop: "cellName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入单元格名称",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.cellName")),
 		},
 	},
 	{
-		label: "单元格类型",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
 		prop: "cellType",
 		valueType: "select",
-		options: cellTypeOptions,
+		options: translatedCellTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择单元格类型",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.cellType")),
 		},
 	},
 	{
-		label: "建筑物ID",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingId")),
 		prop: "buildingId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入建筑物ID",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.buildingId")),
 		},
 	},
 	{
-		label: "建筑物名称",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入建筑物名称",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.buildingName")),
 		},
 	},
 	{
-		label: "楼层",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.floor")),
 		prop: "floor",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入楼层信息，如：1-18层",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.floor")),
 		},
 	},
 	{
-		label: "单元号",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.unitNumber")),
 		prop: "unitNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入单元号，如：1单元",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.unitNumber")),
 		},
 	},
 	{
-		label: "户数",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.households")),
 		prop: "households",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			max: 1000,
-			placeholder: "请输入户数",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.households")),
 		},
 	},
 	{
-		label: "状态",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: initializeCellStatusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.status")),
 		},
 	},
 	{
-		label: "描述",
+		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入描述信息",
+			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.description")),
 			rows: 3,
 		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	cellName: [
-		{ required: true, message: "请填写单元格名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.cellNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.cellNameLength")),
+			trigger: "blur",
+		},
 	],
-	cellType: [{ required: true, message: "请选择单元格类型", trigger: "change" }],
+	cellType: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.cellTypeRequired")),
+			trigger: "change",
+		},
+	],
 	buildingId: [
-		{ required: true, message: "请输入建筑物ID", trigger: "blur" },
-		{ pattern: /^[A-Z0-9]+$/, message: "建筑物ID只能包含大写字母和数字", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingIdRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[A-Z0-9]+$/,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingIdPattern")),
+			trigger: "blur",
+		},
 	],
 	buildingName: [
-		{ required: true, message: "请输入建筑物名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingNameLength")),
+			trigger: "blur",
+		},
 	],
 	floor: [
-		{ required: true, message: "请输入楼层信息", trigger: "blur" },
-		{ min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.floorRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 1,
+			max: 30,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.floorLength")),
+			trigger: "blur",
+		},
 	],
 	unitNumber: [
-		{ required: true, message: "请输入单元号", trigger: "blur" },
-		{ min: 1, max: 20, message: "长度在 1 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.unitNumberRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 1,
+			max: 20,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.unitNumberLength")),
+			trigger: "blur",
+		},
 	],
 	households: [
-		{ required: true, message: "请输入户数", trigger: "blur" },
-		{ type: "number", min: 1, max: 1000, message: "户数必须在 1 到 1000 之间", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.householdsRequired")),
+			trigger: "blur",
+		},
+		{
+			type: "number",
+			min: 1,
+			max: 1000,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.householdsRange")),
+			trigger: "blur",
+		},
 	],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-	description: [{ max: 200, message: "描述长度不能超过 200 个字符", trigger: "blur" }],
-});
+	status: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+	description: [
+		{
+			max: 200,
+			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.descriptionLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
-// 默认对外导出
 defineExpose({
 	plusFormInstance,
 	formComputed,
