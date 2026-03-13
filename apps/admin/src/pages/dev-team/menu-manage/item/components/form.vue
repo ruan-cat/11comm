@@ -1,220 +1,240 @@
-<!--
-  菜单项表单
-  用于新增、修改菜单项
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-import type { MenuItemFormVO } from "@01s-11comm/type";
-import { menuTypeOptions, menuItemStatusOptions, booleanOptions } from "@01s-11comm/type";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
-
-import { MenuItemFormProps, defaultForm } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { booleanOptions, menuItemStatusOptions, menuTypeOptions, type MenuItemFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type MenuItemFormProps } from "./form";
 
 const props = defineProps<MenuItemFormProps>();
-const { t } = useI18n();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 Default values for form reset */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & MenuItemFormVO;
-
-/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件实际使用的表单对象
- * @description Actual form object used by this component
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & MenuItemFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & MenuItemFormVO);
+const formComputed = computed(() => form.value);
 
-/** 表单对象 Form object */
-const form = ref(toRefForm);
-
-/** 只读的表单对象 Readonly form object */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/** 父级菜单选项 Parent menu options */
-const parentMenuOptions = computed(() => [
-	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.root")), value: "根菜单" },
-	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.systemManage")), value: "系统管理" },
-	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.monitorManage")), value: "监控管理" },
-	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.systemTool")), value: "系统工具" },
-	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.logManage")), value: "日志管理" },
-	{ label: transformI18n(t("devTeam.menuManage.item.form.parentMenus.systemSetting")), value: "系统设置" },
+const parentMenuOptions = withLocale(() => [
+	{ label: renderI18n($t("devTeam.menuManage.item.form.parentMenus.root")), value: "根菜单" },
+	{ label: renderI18n($t("devTeam.menuManage.item.form.parentMenus.systemManage")), value: "系统管理" },
+	{ label: renderI18n($t("devTeam.menuManage.item.form.parentMenus.monitorManage")), value: "监控管理" },
+	{ label: renderI18n($t("devTeam.menuManage.item.form.parentMenus.systemTool")), value: "系统工具" },
+	{ label: renderI18n($t("devTeam.menuManage.item.form.parentMenus.logManage")), value: "日志管理" },
+	{ label: renderI18n($t("devTeam.menuManage.item.form.parentMenus.systemSetting")), value: "系统设置" },
 ]);
 
-const translatedMenuTypeOptions = computed(() =>
+const menuTypeLabelKeyMap = {
+	catalog: $t("devTeam.menuManage.item.form.options.catalog"),
+	menu: $t("devTeam.menuManage.item.form.options.menu"),
+	button: $t("devTeam.menuManage.item.form.options.button"),
+} as const;
+
+const statusLabelKeyMap = {
+	enabled: $t("devTeam.menuManage.item.form.options.enabled"),
+	disabled: $t("devTeam.menuManage.item.form.options.disabled"),
+} as const;
+
+const booleanLabelKeyMap = {
+	true: $t("devTeam.menuManage.item.form.options.yes"),
+	false: $t("devTeam.menuManage.item.form.options.no"),
+} as const;
+
+function translateMenuType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = menuTypeLabelKeyMap[value as keyof typeof menuTypeLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateStatus(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateBoolean(value?: string | number | boolean | null) {
+	if (value === null || value === undefined) {
+		return "";
+	}
+
+	const key = booleanLabelKeyMap[String(value) as keyof typeof booleanLabelKeyMap];
+	return key ? renderI18n(key) : String(value);
+}
+
+const translatedMenuTypeOptions = withLocale(() =>
 	menuTypeOptions.map((option) => ({
 		...option,
-		label: transformI18n(t(`devTeam.menuManage.item.form.options.${option.value}`)),
+		label: translateMenuType(String(option.value)),
 	})),
 );
 
-const translatedStatusOptions = computed(() =>
+const translatedStatusOptions = withLocale(() =>
 	menuItemStatusOptions.map((option) => ({
 		...option,
-		label: transformI18n(t(`devTeam.menuManage.item.form.options.${option.value}`)),
+		label: translateStatus(String(option.value)),
 	})),
 );
 
-const translatedBooleanOptions = computed(() => {
-	const booleanKeyMap: Record<string, string> = {
-		true: "yes",
-		false: "no",
-	};
-
-	return booleanOptions.map((option) => ({
+const translatedBooleanOptions = withLocale(() =>
+	booleanOptions.map((option) => ({
 		...option,
-		label: transformI18n(t(`devTeam.menuManage.item.form.options.${booleanKeyMap[String(option.value)]}`)),
-	}));
-});
+		label: translateBoolean(option.value),
+	})),
+);
 
-/** 表单项配置 Form columns configuration */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.menuName")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.menuName")),
 		prop: "menuName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.menuName")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.menuName")),
 			clearable: true,
 		},
 		width: "200px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.parentMenu")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.parentMenu")),
 		prop: "parentMenu",
 		valueType: "select",
 		required: true,
 		options: parentMenuOptions.value,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.parentMenu")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.parentMenu")),
 			clearable: true,
 		},
 		width: "200px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.menuType")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.menuType")),
 		prop: "menuType",
 		valueType: "select",
 		required: true,
 		options: translatedMenuTypeOptions.value,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.menuType")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.menuType")),
 			clearable: true,
 		},
 		width: "150px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.icon")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.icon")),
 		prop: "icon",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.icon")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.icon")),
 			clearable: true,
 		},
 		width: "200px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.routePath")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.routePath")),
 		prop: "routePath",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.routePath")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.routePath")),
 			clearable: true,
 		},
 		width: "250px",
-		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口",
+		hidden: (formData) => formData.menuType === "button",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.componentPath")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.componentPath")),
 		prop: "componentPath",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.componentPath")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.componentPath")),
 			clearable: true,
 		},
 		width: "250px",
-		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口" || formData.menuType === "目录",
+		hidden: (formData) => ["button", "catalog"].includes(String(formData.menuType)),
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.permissionKey")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.permissionKey")),
 		prop: "permissionKey",
 		valueType: "input",
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.permissionKey")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.permissionKey")),
 			clearable: true,
 		},
 		width: "250px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.sortNo")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.sortNo")),
 		prop: "sortNo",
 		valueType: "input-number",
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.sortNo")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.sortNo")),
 			min: 1,
 			max: 999,
 		},
 		width: "150px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.status")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
 		options: translatedStatusOptions.value,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.status")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.status")),
 			clearable: true,
 		},
 		width: "150px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.isExternal")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.isExternal")),
 		prop: "isExternal",
 		valueType: "select",
 		options: translatedBooleanOptions.value,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.isExternal")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.isExternal")),
 			clearable: true,
 		},
 		width: "150px",
-		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口",
+		hidden: (formData) => formData.menuType === "button",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.isCached")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.isCached")),
 		prop: "isCached",
 		valueType: "select",
 		options: translatedBooleanOptions.value,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.isCached")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.isCached")),
 			clearable: true,
 		},
 		width: "150px",
-		hidden: (formData) => formData.menuType === "按钮" || formData.menuType === "接口" || formData.menuType === "目录",
+		hidden: (formData) => ["button", "catalog"].includes(String(formData.menuType)),
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.isHidden")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.isHidden")),
 		prop: "isHidden",
 		valueType: "select",
 		options: translatedBooleanOptions.value,
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.isHidden")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.isHidden")),
 			clearable: true,
 		},
 		width: "150px",
 	},
 	{
-		label: transformI18n(t("devTeam.menuManage.item.fields.description")),
+		label: renderI18n($t("devTeam.menuManage.item.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
-			placeholder: transformI18n(t("devTeam.menuManage.item.form.placeholders.description")),
+			placeholder: renderI18n($t("devTeam.menuManage.item.form.placeholders.description")),
 			clearable: true,
 			rows: 3,
 		},
@@ -222,89 +242,88 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表单校验规则 Form validation rules */
-const plusFormRules = computed<PlusFormRules>(() => ({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	menuName: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterMenuName")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.enterMenuName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.menuNameLength")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.menuNameLength")),
 			trigger: "blur",
 		},
 	],
 	parentMenu: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.selectParentMenu")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.selectParentMenu")),
 			trigger: "change",
 		},
 	],
 	menuType: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.selectMenuType")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.selectMenuType")),
 			trigger: "change",
 		},
 	],
 	routePath: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterRoutePath")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.enterRoutePath")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^\/[a-zA-Z0-9/-]*$/,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.routePathPattern")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.routePathPattern")),
 			trigger: "blur",
 		},
 	],
 	componentPath: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterComponentPath")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.enterComponentPath")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^\/[a-zA-Z0-9/-]*$/,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.componentPathPattern")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.componentPathPattern")),
 			trigger: "blur",
 		},
 	],
 	permissionKey: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterPermissionKey")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.enterPermissionKey")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[a-zA-Z0-9:_-]+$/,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.permissionKeyPattern")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.permissionKeyPattern")),
 			trigger: "blur",
 		},
 	],
 	sortNo: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.enterSortNo")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.enterSortNo")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 1,
 			max: 999,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.sortNoRange")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.sortNoRange")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: transformI18n(t("devTeam.menuManage.item.form.validation.selectStatus")),
+			message: renderI18n($t("devTeam.menuManage.item.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
