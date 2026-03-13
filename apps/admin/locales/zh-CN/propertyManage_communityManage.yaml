@@ -1,5 +1,6 @@
-# 房屋装修
 house-decoration:
+  pageTitle: 房屋装修
+  tableTitle: 房屋装修
   houseNumber: 房屋编号
   contacts: 联系人
   phone: 联系电话
@@ -10,10 +11,77 @@ house-decoration:
   endTimeForDecorationApplication: 装修申请结束时间
   decorationOk: 装修完成
   trackingRecord: 跟踪记录
+  fields:
+    houseNumber: 房屋编号
+    contactName: 联系人
+    contactPhone: 联系电话
+    decorationTime: 装修时间
+    applicationTime: 申请时间
+    applicationTimeRange: 申请时间范围
+    decorationCompany: 装修单位
+    managerPhone: 负责人电话
+    status: 状态
+    isDelayed: 是否延期
+    delayTime: 延期时间
+    isViolated: 是否违规
+    violationDescription: 违规说明
+    remarks: 备注
+  buttons:
+    decorationDone: 装修完成
+    trackingRecord: 跟踪记录
+  dialogs:
+    addTitle: 新增房屋装修
+    editTitle: 编辑房屋装修
+    infoTitle: 查看房屋装修
+  options:
+    status:
+      pending: 待审核
+      rejected: 审核不通过
+      inProgress: 装修中
+      pendingAcceptance: 待验收
+      accepted: 验收成功
+      failed: 验收失败
+    boolean:
+      yes: 是
+      no: 否
+  form:
+    placeholders:
+      houseNumber: 请输入房屋编号
+      contactName: 请输入联系人姓名
+      contactPhone: 请输入联系电话
+      applicationTime: 请选择申请时间
+      decorationTime: 请选择装修时间
+      decorationCompany: 请输入装修单位
+      managerPhone: 请输入负责人电话
+      status: 请选择装修状态
+      isDelayed: 请选择是否延期
+      delayTime: 请选择延期时间
+      isViolated: 请选择是否违规
+      violationDescription: 请输入违规说明
+      remarks: 请输入备注信息
+      applicationStartTime: 开始日期
+      applicationEndTime: 结束日期
+    validation:
+      enterHouseNumber: 请输入房屋编号
+      enterContactName: 请输入联系人姓名
+      enterContactPhone: 请输入联系电话
+      contactPhonePattern: 请输入正确的手机号
+      selectApplicationTime: 请选择申请时间
+      selectDecorationTime: 请选择装修时间
+      enterDecorationCompany: 请输入装修单位
+      enterManagerPhone: 请输入负责人电话
+      managerPhonePattern: 请输入正确的手机号
+      selectStatus: 请选择装修状态
+      selectIsDelayed: 请选择是否延期
+      selectDelayTime: 请选择延期时间
+      selectIsViolated: 请选择是否违规
+      violationDescriptionMaxLength: 违规说明长度不能超过 500 个字符
+      remarksMaxLength: 备注长度不能超过 500 个字符
 
-# 产权登记
 property-register:
-  houseID: 房屋ID
+  pageTitle: 产权登记
+  tableTitle: 产权登记
+  houseID: 房屋 ID
   houseNumber: 房屋编号
   name: 姓名
   contactWay: 联系方式
@@ -22,11 +90,65 @@ property-register:
   auditStatus: 审核状态
   building: 楼栋
   unit: 单元
+  fields:
+    propertyRightId: 房屋产权 ID
+    houseId: 房屋 ID
+    houseNumber: 房屋编号
+    ownerName: 姓名
+    contactInfo: 联系方式
+    idCardNumber: 身份证号
+    address: 地址
+    status: 状态
+    building: 楼栋
+    unit: 单元
+    remark: 备注
+  dialogs:
+    addTitle: 新增产权登记
+    editTitle: 编辑产权登记
+    infoTitle: 查看产权登记
+    deleteTitle: 删除确认
+    confirmDelete: 确认删除产权登记“{houseNumber} - {ownerName}”吗？
+  options:
+    status:
+      enabled: 启用
+      disabled: 禁用
+    building:
+      building1: 1栋
+      building2: 2栋
+      building3: 3栋
+      buildingA: A栋
+      buildingB: B栋
+      buildingC: C栋
+    unit:
+      unit1: 1单元
+      unit2: 2单元
+      unit3: 3单元
+  form:
+    placeholders:
+      propertyRightId: 系统自动生成
+      houseId: 请输入房屋 ID
+      houseNumber: 请输入房屋编号
+      ownerName: 请输入姓名
+      contactInfo: 请输入联系方式
+      idCardNumber: 请输入身份证号
+      address: 请输入地址
+      status: 请选择状态
+      building: 请选择楼栋
+      unit: 请选择单元
+      remark: 请输入备注
+    validation:
+      enterHouseId: 请输入房屋 ID
+      enterHouseNumber: 请输入房屋编号
+      enterOwnerName: 请输入姓名
+      enterContactInfo: 请输入联系方式
+      contactInfoPattern: 请输入正确的手机号
+      enterIdCardNumber: 请输入身份证号
+      idCardNumberPattern: 请输入正确的身份证号
+      enterAddress: 请输入地址
+      selectStatus: 请选择状态
 
-# 小区公示
 notice:
   pageTitle: 小区公示
-  # 表格字段
   publicityId: 公示编号
   publicityTitle: 公示标题
   publicityType: 公示类型
@@ -36,26 +158,18 @@ notice:
   publisher: 发布人
   viewCount: 浏览次数
   contentSummary: 内容摘要
-
-  # 搜索字段
   publicityIdPlaceholder: 请输入公示编号
   publicityTitlePlaceholder: 请输入公示标题
   publishTimeRange: 发布时间范围
-
-  # 操作按钮（使用通用按钮，此处仅保留业务特定按钮）
   batchPublish: 批量发布
   batchDelete: 批量删除
   view: 查看
   publish: 发布
   unpublish: 取消发布
   clearSelection: 清空选择
-
-  # 提示信息
   selectedCount: 已选择 {count} 条数据
   noSelection: 请先选择要操作的数据
   noDraftData: 选中的数据中没有草稿状态的公示
-
-  # 消息提示
   loadFailed: 加载数据失败，请稍后重试
   deleteSuccess: 删除成功
   deleteFailed: 删除失败，请稍后重试
@@ -67,20 +181,16 @@ notice:
   operationFailed: "{operation}失败，请稍后重试"
   saveSuccess: 保存成功
   saveFailed: 保存失败，请稍后重试
-
-  # 确认对话框
   batchDeleteConfirm: 确定要删除选中的 {count} 条公示信息吗？此操作不可恢复！
   batchDeleteTitle: 批量删除确认
   batchPublishConfirm: 确定要发布选中的 {count} 条草稿公示吗？
   batchPublishTitle: 批量发布确认
-  deleteConfirm: 确定要删除公示"{title}"吗？此操作不可恢复！
+  deleteConfirm: 确定要删除公示“{title}”吗？此操作不可恢复！
   deleteTitle: 删除确认
-  publishConfirm: 确定要发布公示"{title}"吗？
+  publishConfirm: 确定要发布公示“{title}”吗？
   publishTitle: 发布确认
-  unpublishConfirm: 确定要取消发布公示"{title}"吗？
+  unpublishConfirm: 确定要取消发布公示“{title}”吗？
   unpublishTitle: 取消发布确认
-
-  # 表单字段
   form:
     title: 公示标题
     titlePlaceholder: 请输入公示标题
@@ -94,50 +204,337 @@ notice:
     statusPlaceholder: 请选择公示状态
     contentSummary: 内容摘要
     contentSummaryPlaceholder: 请输入内容摘要，将在列表中显示
-
-    # 表单验证
     titleRequired: 请输入公示标题
-    titleLength: 标题长度应在{min}-{max}个字符之间
+    titleLength: 标题长度应在 {min}-{max} 个字符之间
     typeRequired: 请选择公示类型
     validityStartRequired: 请选择开始日期
     validityEndRequired: 请选择结束日期
     statusRequired: 请选择公示状态
     contentSummaryRequired: 请输入内容摘要
-    contentSummaryLength: 摘要长度应在{min}-{max}个字符之间
+    contentSummaryLength: 摘要长度应在 {min}-{max} 个字符之间
     endBeforeStart: 结束日期不能早于开始日期
-
-    # 表单提示
     titleTip: 标题将作为公示的主要识别信息
     summaryTip: 内容摘要将在公示列表中显示，建议简洁明了
-    titleCharCount: 标题字数：
-    summaryCharCount: 摘要字数：
+    titleCharCount: "标题字数:"
+    summaryCharCount: "摘要字数:"
     previewEffect: 预览效果
     backToEdit: 返回编辑
-
-    # 预览模式
     preview:
       titlePreview: 公示标题预览
       type: 类型
       status: 状态
-      contentSummary: 内容摘要：
+      contentSummary: "内容摘要:"
       noSummary: 暂无内容摘要
-      validityPeriod: 有效期：
+      validityPeriod: "有效期:"
       startDate: 开始日期
       endDate: 结束日期
-      publisher: 发布人：
+      publisher: "发布人:"
       systemAdmin: 系统管理员
-
-  # 状态值
   statusOptions:
     draft: 草稿
     published: 已发布
     expired: 已过期
-
-  # 类型值
   typeOptions:
     notice: 通知
     announcement: 公告
     reminder: 提醒
     activity: 活动
     maintenance: 维修
-    security: 安全
+    security: 安防
+
+building-space-structure-diagram:
+  pageTitle: 楼栋结构图
+  tableTitle: 楼栋结构图
+  fields:
+    buildingId: 楼栋编号
+    buildingName: 楼栋名称
+    totalFloors: 总楼层
+    totalHouseholds: 总户数
+    buildingArea: 建筑面积
+    buildingStructure: 建筑结构
+    constructionYear: 建成年份
+    drawingPath: 图纸路径
+    status: 状态
+    lastUpdateTime: 最后更新时间
+    personInCharge: 负责人
+    contactPhone: 联系电话
+    remarks: 备注
+  buttons:
+    viewDrawing: 查看图纸
+    downloadDrawing: 下载图纸
+  dialogs:
+    addTitle: 新增楼栋结构图
+    editTitle: 编辑楼栋结构图
+    deleteTitle: 删除确认
+    confirmDelete: 确认删除楼栋“{buildingId} - {buildingName}”吗？
+  options:
+    structure:
+      reinforcedConcrete: 钢筋混凝土结构
+      steel: 钢结构
+      brickConcrete: 砖混结构
+      frame: 框架结构
+      shearWall: 剪力墙结构
+    status:
+      normal: 正常使用
+      renovating: 装修中
+      repairing: 维修中
+      pendingAcceptance: 待验收
+      disabled: 已停用
+  form:
+    placeholders:
+      buildingId: 请输入楼栋编号
+      buildingName: 请输入楼栋名称
+      totalFloors: 请输入总楼层
+      totalHouseholds: 请输入总户数
+      buildingArea: 请输入建筑面积
+      buildingStructure: 请选择建筑结构
+      constructionYear: 请输入建成年份
+      drawingPath: 请输入图纸路径
+      status: 请选择状态
+      personInCharge: 请输入负责人
+      contactPhone: 请输入联系电话
+      remarks: 请输入备注
+    validation:
+      enterBuildingId: 请输入楼栋编号
+      enterBuildingName: 请输入楼栋名称
+      enterTotalFloors: 请输入总楼层
+      enterTotalHouseholds: 请输入总户数
+      enterBuildingArea: 请输入建筑面积
+      selectBuildingStructure: 请选择建筑结构
+      enterConstructionYear: 请输入建成年份
+      enterDrawingPath: 请输入图纸路径
+      selectStatus: 请选择状态
+      enterPersonInCharge: 请输入负责人
+      enterContactPhone: 请输入联系电话
+      contactPhonePattern: 请输入正确的手机号
+
+handing-business:
+  pageTitle: 业务受理
+  tableTitle: 业务受理
+  fields:
+    feeItem: 费用项目
+    feeId: 费用编号
+    feeType: 费用类型
+    amountReceivable: 应收金额
+    accountCreationTime: 建账时间
+    accountCreationTimeRange: 建账时间范围
+    receivablePeriod: 应收时间段
+    description: 说明
+    status: 状态
+  dialogs:
+    addTitle: 新增业务受理
+    editTitle: 编辑业务受理
+    infoTitle: 查看业务受理
+    deleteTitle: 删除确认
+    confirmDelete: 确认删除记录“{feeId} - {feeItem}”吗？
+  options:
+    feeType:
+      periodic: 周期费用
+      temporary: 临时费用
+      deposit: 押金
+      penalty: 违约金
+    status:
+      pending: 待处理
+      paid: 已支付
+      overdue: 已逾期
+      reduced: 已减免
+      voided: 已作废
+  form:
+    placeholders:
+      feeItem: 请输入费用项目
+      feeId: 请输入费用编号
+      feeType: 请选择费用类型
+      amountReceivable: 请输入应收金额
+      accountCreationTime: 请选择建账时间
+      accountCreationStartTime: 开始日期
+      accountCreationEndTime: 结束日期
+      receivablePeriod: 请输入应收时间段
+      description: 请输入说明
+      status: 请选择状态
+    validation:
+      enterFeeItem: 请输入费用项目
+      enterFeeId: 请输入费用编号
+      selectFeeType: 请选择费用类型
+      enterAmountReceivable: 请输入应收金额
+      amountReceivablePattern: 请输入正确的金额
+      selectAccountCreationTime: 请选择建账时间
+      enterReceivablePeriod: 请输入应收时间段
+      enterDescription: 请输入说明
+      selectStatus: 请选择状态
+
+my:
+  pageTitle: 我的小区
+  tableTitle: 我的小区
+  fields:
+    province: 省份
+    city: 城市
+    district: 区县
+    communityName: 小区名称
+    communityCode: 小区编码
+    createTime: 创建时间
+    updateTime: 更新时间
+    status: 状态
+    name: 小区名称
+    code: 小区编码
+    servicePhone: 客服电话
+    area: 面积
+    startTime: 开始时间
+    endTime: 结束时间
+  dialogs:
+    addTitle: 新增小区
+    editTitle: 编辑小区
+    infoTitle: 查看小区
+    deleteTitle: 删除确认
+    confirmDelete: 确认删除小区“{communityName}”吗？
+  messages:
+    deleteSuccess: 删除成功
+    deleteFailed: 删除失败
+  options:
+    province:
+      fujian: 福建省
+      guangdong: 广东省
+      zhejiang: 浙江省
+      jiangsu: 江苏省
+      beijing: 北京市
+      shanghai: 上海市
+      sichuan: 四川省
+      hubei: 湖北省
+      shandong: 山东省
+      hunan: 湖南省
+      hebei: 河北省
+      henan: 河南省
+      jiangxi: 江西省
+      anhui: 安徽省
+    status:
+      operating: 正常运营
+      preparing: 筹备中
+      maintenance: 维护中
+      disabled: 已停用
+  form:
+    placeholders:
+      name: 请输入小区名称
+      code: 请输入小区编码
+      province: 请选择省份
+      city: 请输入城市
+      district: 请输入区县
+      servicePhone: 请输入客服电话
+      area: 请输入面积
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      status: 请选择状态
+    validation:
+      enterName: 请输入小区名称
+      enterCode: 请输入小区编码
+      codePattern: 请输入正确的小区编码
+      selectProvince: 请选择省份
+      enterCity: 请输入城市
+      enterDistrict: 请输入区县
+      enterServicePhone: 请输入客服电话
+      servicePhonePattern: 请输入正确的手机号
+      enterArea: 请输入面积
+      selectStartTime: 请选择开始时间
+      selectEndTime: 请选择结束时间
+      endTimeAfterStartTime: 结束时间必须晚于开始时间
+      selectStatus: 请选择状态
+
+parking-space-structure-diagram:
+  pageTitle: 车位结构图
+  tableTitle: 车位结构图
+  fields:
+    parkingSpaceNumber: 车位编号
+    parkingSpaceType: 车位类型
+    parkingSpaceLocation: 车位位置
+    parkingSpaceArea: 车位面积
+    parkingSpaceStatus: 车位状态
+    ownerName: 业主姓名
+    contactPhone: 联系电话
+    licensePlateNumber: 车牌号码
+    vehicleBrand: 车辆品牌
+    purchaseTime: 购买时间
+    expiryTime: 到期时间
+    monthlyRent: 月租金
+    managementFee: 管理费
+    parkingSpaceOrientation: 车位朝向
+    floorArea: 楼层区域
+    hasEvChargingPile: 是否充电桩
+    chargingPilePower: 充电桩功率
+    remark: 备注
+  buttons:
+    refreshStatus: 刷新状态
+    exportStructure: 导出结构图
+    viewDetail: 查看详情
+  dialogs:
+    addTitle: 新增车位结构图
+    editTitle: 编辑车位结构图
+  options:
+    type:
+      underground: 地下车位
+      ground: 地面车位
+      childMother: 子母车位
+      accessible: 无障碍车位
+      mechanical: 机械车位
+    status:
+      idle: 空闲
+      sold: 已售
+      rented: 已租
+      maintaining: 维修中
+      other: 其他
+    orientation:
+      wall: 靠墙
+      middle: 中间
+      column: 靠柱
+      outdoor: 露天
+      mechanical: 机械车位
+    floorArea:
+      b1: 地下1层
+      b2: 地下2层
+      b3: 地下3层
+      ground: 地面层
+      elevated: 架空层
+    boolean:
+      yes: 是
+      no: 否
+    chargingPower:
+      kw35: 3.5kW
+      kw7: 7kW
+      kw11: 11kW
+      kw20: 20kW
+      kw22: 22kW
+      kw7_35: 7kW/3.5kW
+      kw11_7: 11kW/7kW
+      other: 其他
+  form:
+    placeholders:
+      parkingSpaceNumber: 请输入车位编号
+      parkingSpaceType: 请选择车位类型
+      parkingSpaceStatus: 请选择车位状态
+      parkingSpaceLocation: 请输入车位位置
+      parkingSpaceArea: 请输入车位面积
+      parkingSpaceOrientation: 请选择车位朝向
+      floorArea: 请选择楼层区域
+      ownerName: 请输入业主姓名
+      contactPhone: 请输入联系电话
+      licensePlateNumber: 请输入车牌号码
+      vehicleBrand: 请输入车辆品牌
+      purchaseTime: 请选择购买时间
+      expiryTime: 请选择到期时间
+      monthlyRent: 请输入月租金
+      managementFee: 请输入管理费
+      hasEvChargingPile: 请选择是否配置充电桩
+      chargingPilePower: 请选择充电桩功率
+      remark: 请输入备注
+    validation:
+      enterParkingSpaceNumber: 请输入车位编号
+      selectParkingSpaceType: 请选择车位类型
+      selectParkingSpaceStatus: 请选择车位状态
+      enterParkingSpaceLocation: 请输入车位位置
+      enterParkingSpaceArea: 请输入车位面积
+      selectParkingSpaceOrientation: 请选择车位朝向
+      selectFloorArea: 请选择楼层区域
+      contactPhonePattern: 请输入正确的手机号
+      licensePlateNumberPattern: 请输入正确的车牌号码
+      selectExpiryTime: 请选择到期时间
+      enterMonthlyRent: 请输入月租金
+      enterManagementFee: 请输入管理费
+      selectHasEvChargingPile: 请选择是否配置充电桩
+      selectChargingPilePower: 请选择充电桩功率
