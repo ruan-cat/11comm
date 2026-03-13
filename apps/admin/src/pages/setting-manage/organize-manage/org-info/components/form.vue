@@ -1,132 +1,114 @@
 <script lang="ts" setup>
-import { useTemplateRef } from "vue";
-import { OrganizationInfoFormProps, defaultForm } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
 import { organizationTypeOptions, type OrganizationInfoFormVO } from "@01s-11comm/type";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { OrganizationInfoFormProps } from "./form";
 
 const props = defineProps<OrganizationInfoFormProps>();
-const { t } = useI18n();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & OrganizationInfoFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & OrganizationInfoFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & OrganizationInfoFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-const translatedOrganizationTypeOptions = computed(() =>
+const translatedOrganizationTypeOptions = withLocale(() =>
 	organizationTypeOptions.map((option) => ({
 		...option,
-		label: transformI18n(t(`settingManage.organizeManage.orgInfo.form.options.${option.value}`)),
+		label: renderI18n($t(`settingManage.organizeManage.orgInfo.form.options.${option.value}`)),
 	})),
 );
 
-/** 表单项配置 */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.type")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.type")),
 		prop: "type",
 		valueType: "select",
 		options: translatedOrganizationTypeOptions.value,
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.code")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.code")),
 		prop: "code",
 		valueType: "input",
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.leaderName")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.leaderName")),
 		prop: "leaderName",
 		valueType: "input",
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.phone")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.description")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.orgInfo.fields.enabled")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.fields.enabled")),
 		prop: "enabled",
 		valueType: "switch",
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = computed<PlusFormRules>(() => ({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.orgInfo.form.validation.enterName")),
+			message: renderI18n($t("settingManage.organizeManage.orgInfo.form.validation.enterName")),
 			trigger: "blur",
 		},
 	],
 	type: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.orgInfo.form.validation.selectType")),
+			message: renderI18n($t("settingManage.organizeManage.orgInfo.form.validation.selectType")),
 			trigger: "change",
 		},
 	],
 	code: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.orgInfo.form.validation.enterCode")),
+			message: renderI18n($t("settingManage.organizeManage.orgInfo.form.validation.enterCode")),
 			trigger: "blur",
 		},
 	],
 	leaderName: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.orgInfo.form.validation.enterLeaderName")),
+			message: renderI18n($t("settingManage.organizeManage.orgInfo.form.validation.enterLeaderName")),
 			trigger: "blur",
 		},
 	],
 	phone: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.orgInfo.form.validation.enterPhone")),
+			message: renderI18n($t("settingManage.organizeManage.orgInfo.form.validation.enterPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: transformI18n(t("settingManage.organizeManage.orgInfo.form.validation.invalidPhone")),
+			message: renderI18n($t("settingManage.organizeManage.orgInfo.form.validation.invalidPhone")),
 			trigger: "blur",
 		},
 	],
 }));
 
-// 默认对外导出
 defineExpose({
 	plusFormInstance,
 	formComputed,
