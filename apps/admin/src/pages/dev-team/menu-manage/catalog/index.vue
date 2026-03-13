@@ -9,41 +9,88 @@ definePage({
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import {
+	type MenuCatalogFormData,
 	type MenuCatalogListItem,
 	type MenuCatalogQueryParams,
-	type MenuCatalogFormData,
 	groupTypeOptions,
 	storeTypeOptions,
 } from "@01s-11comm/type";
 import { useMenuCatalogListQuery } from "@/api/dev-team/menu-manage/catalog";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";
 import { type CatalogFormProps, defaultForm } from "./components/form";
 import CatalogForm from "./components/form.vue";
-import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const groupTypeOptionLabelMap = {
+	system: $t("devTeam.menuManage.catalog.form.options.system"),
+	merchant: $t("devTeam.menuManage.catalog.form.options.merchant"),
+	custom: $t("devTeam.menuManage.catalog.form.options.custom"),
+	temp: $t("devTeam.menuManage.catalog.form.options.temp"),
+} as const;
+
+const storeTypeOptionLabelMap = {
+	property: $t("devTeam.menuManage.catalog.form.options.property"),
+	merchant: $t("devTeam.menuManage.catalog.form.options.merchantPlatform"),
+	owner: $t("devTeam.menuManage.catalog.form.options.owner"),
+	common: $t("devTeam.menuManage.catalog.form.options.common"),
+} as const;
+
+function translateGroupType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = groupTypeOptionLabelMap[value as keyof typeof groupTypeOptionLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateStoreType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = storeTypeOptionLabelMap[value as keyof typeof storeTypeOptionLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+const translatedGroupTypeOptions = withLocale(() =>
+	groupTypeOptions.map((option) => ({
+		...option,
+		label: translateGroupType(String(option.value)),
+	})),
+);
+
+const translatedStoreTypeOptions = withLocale(() =>
+	storeTypeOptions.map((option) => ({
+		...option,
+		label: translateStoreType(String(option.value)),
+	})),
+);
+
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<MenuCatalogQueryParams> = {
 	name: "",
 	type: "",
 	status: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -53,137 +100,112 @@ const {
 	handleCurrentPageChange,
 } = useMenuCatalogListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.name"))),
 		prop: "name",
 		width: 150,
 		fixed: true,
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.icon")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.icon"))),
 		prop: "icon",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.label")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.label"))),
 		prop: "label",
 		width: 100,
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.seq")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.seq"))),
 		prop: "seq",
 		width: 80,
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.groupType")),
-		prop: "typeText",
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.groupType"))),
+		prop: "groupType",
 		width: 120,
+		cellRenderer: ({ row }) => translateGroupType(row.groupType ?? row.typeText),
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.storeType")),
-		prop: "storeTypeText",
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.storeType"))),
+		prop: "storeType",
 		width: 120,
+		cellRenderer: ({ row }) => translateStoreType(row.storeType ?? row.storeTypeText),
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.createTime")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.updateTime")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("devTeam.menuManage.catalog.pageTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("devTeam.menuManage.catalog.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 菜单组名称
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
-
-	// 组类型
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.groupType")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
-		options: groupTypeOptions,
+		options: translatedGroupTypeOptions.value,
 	},
-
-	// 归属商户
 	{
-		label: transformI18n($t("devTeam.menuManage.catalog.fields.storeType")),
+		label: renderI18n($t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeType",
 		valueType: "select",
-		options: storeTypeOptions,
+		options: translatedStoreTypeOptions.value,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 表单组件实例 */
+const { setMode, isAdd, isEdit } = useMode();
 const catalogFormInstance = ref<InstanceType<typeof CatalogForm> | null>(null);
-
 const [isLoadingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isLoadingT ", isLoadingT.value);
 }
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 业务对象 */
 	const menuCatalogFormData: MenuCatalogFormData = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
@@ -200,21 +222,18 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 				})
 			: structuredClone(defaultForm);
 
-	/** 表单组件需要的props */
 	const formProps: CatalogFormProps = {
 		form: menuCatalogFormData,
-		defaultValues: menuCatalogFormData,
+		defaultValues: structuredClone(menuCatalogFormData),
 	};
-
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("devTeam.menuManage.catalog.pageTitle"))}`;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("devTeam.menuManage.catalog.dialogs.addTitle"))
+				: renderI18n($t("devTeam.menuManage.catalog.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(CatalogForm, {
@@ -222,35 +241,34 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = catalogFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = catalogFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** console.log(options, index, button); */
-					const formComputed = catalogFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = catalogFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					catalogFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					catalogFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await catalogFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await catalogFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -266,8 +284,9 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -283,7 +302,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -299,7 +318,9 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
