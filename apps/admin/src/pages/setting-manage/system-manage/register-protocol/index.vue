@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "注册协议",
+		// 注册协议
+		title: "settingManage.systemManage.registerProtocol.pageTitle",
 		icon: "mdi:file-document",
 		roles: ["开发团队"],
 		rank: getRouteRank("settingManage.systemManage.registerProtocol"),
@@ -9,6 +10,7 @@ definePage({
 });
 
 import { computed } from "vue";
+import { transformI18n } from "@/plugins/i18n";
 import { useRegisterProtocolListQuery } from "@/api/setting-manage/system-manage/register-protocol";
 import type { SettingManagementRegisterProtocolDisplay } from "@01s-11comm/type";
 
@@ -38,7 +40,9 @@ const registerProtocol = computed<SettingManagementRegisterProtocolDisplay>(() =
 		<ElCard class="box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
-					<span class="font-medium">注册协议</span>
+					<span class="font-medium">
+						{{ transformI18n($t("settingManage.systemManage.registerProtocol.cardTitle")) }}
+					</span>
 				</div>
 			</template>
 			<div class="protocol-content">
