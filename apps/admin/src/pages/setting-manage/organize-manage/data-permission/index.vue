@@ -9,58 +9,66 @@ definePage({
 	},
 });
 
-import { ref, computed, useTemplateRef } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { computed, ref, useTemplateRef, watch } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import UnitAuthTable from "./components/unit-auth/table.vue";
 import StaffRelationTable from "./components/staff-relation/table.vue";
 import type { DataPermission } from "@01s-11comm/type";
 import { useDataPermissionListQuery } from "@/api/setting-manage/organize-manage/data-permission";
 
-const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
+const { locale, withLocale } = useI18nConfig();
 
-// 使用数据权限列表查询 Hook
-const {
-	tableData,
-	pureTableProps,
-	isFetching,
-	updateParams,
-	resetParams,
-	doFetch,
-	handlePageSizeChange,
-	handleCurrentPageChange,
-} = useDataPermissionListQuery({});
-
-/** 左侧数据权限列表数据 */
-const dataPermissionList = computed<DataPermission[]>(() => tableData.value);
-
-/** 当前选中的数据权限项 */
-const selectedItem = ref<DataPermission | null>(null);
-
-/** 右侧动态标题 */
-const rightTitle = computed(() => {
-	return selectedItem.value?.name || transformI18n($t("settingManage.organizeManage.dataPermission.defaultTitle"));
-});
-
-/** 当前激活的Tab标签页 */
-const activeTab = ref("unitAuth");
-
-/** 处理左侧列表项点击 */
-function handleItemClick(item: DataPermission) {
-	selectedItem.value = item;
-	console.log("选中项:", item);
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
 }
 
-/** 处理Tab切换 */
+const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
+
+const { tableData, isFetching } = useDataPermissionListQuery({});
+
+const dataPermissionList = computed<DataPermission[]>(() => tableData.value);
+const selectedItem = ref<DataPermission | null>(null);
+const activeTab = ref("unitAuth");
+
+watch(
+	dataPermissionList,
+	(list) => {
+		if (!selectedItem.value && list.length > 0) {
+			selectedItem.value = list[0];
+		}
+	},
+	{ immediate: true },
+);
+
+const rightTitle = withLocale(() => {
+	if (selectedItem.value?.name) {
+		return selectedItem.value.name;
+	}
+
+	return renderI18n($t("settingManage.organizeManage.dataPermission.defaultTitle"));
+});
+
+const tabLabels = withLocale(() => ({
+	unitAuth: renderI18n($t("settingManage.organizeManage.dataPermission.tabs.unitAuth")),
+	staffRelation: renderI18n($t("settingManage.organizeManage.dataPermission.tabs.staffRelation")),
+}));
+
+function handleItemClick(item: DataPermission) {
+	selectedItem.value = item;
+}
+
 async function handleTabClick(tab: any) {
-	console.log("切换Tab:", tab.props.name);
-	await staffRelationTableRef.value.doResetTableAdaptive();
+	if (tab.props.name === "staffRelation") {
+		await staffRelationTableRef.value?.doResetTableAdaptive?.();
+	}
 }
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<div class="data-permission-container">
-			<!-- 左侧组织结构树 -->
 			<div class="left-tree-panel" v-loading="isFetching">
 				<div class="tree-header">
 					<div class="tree-actions">
@@ -93,29 +101,17 @@ async function handleTabClick(tab: any) {
 				</div>
 			</div>
 
-			<!-- 右侧内容区域 -->
 			<div class="right-content-panel">
-				<!-- 动态标题 -->
 				<div class="content-header">
 					<h2 class="dynamic-title">{{ rightTitle }}</h2>
 				</div>
 
-				<!-- Tab标签页 -->
 				<div class="content-tabs">
 					<ElTabs v-model="activeTab" type="card" @tab-click="handleTabClick">
-						<!-- 单元授权Tab -->
-						<ElTabPane
-							:label="transformI18n($t('settingManage.organizeManage.dataPermission.tabs.unitAuth'))"
-							name="unitAuth"
-						>
+						<ElTabPane :label="tabLabels.unitAuth" name="unitAuth">
 							<UnitAuthTable />
 						</ElTabPane>
-
-						<!-- 员工关联Tab -->
-						<ElTabPane
-							:label="transformI18n($t('settingManage.organizeManage.dataPermission.tabs.staffRelation'))"
-							name="staffRelation"
-						>
+						<ElTabPane :label="tabLabels.staffRelation" name="staffRelation">
 							<StaffRelationTable ref="staffRelationTableRef" />
 						</ElTabPane>
 					</ElTabs>
@@ -127,7 +123,6 @@ async function handleTabClick(tab: any) {
 
 <style lang="scss" scoped>
 .index-root {
-	// 待优化 高度计算 使用统一的工具实现页面高度计算 避免滚动组件撑开页面高度
 	height: calc(100vh - 140px);
 	overflow: hidden;
 
