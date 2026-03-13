@@ -119,7 +119,7 @@ export function getPluginsList(
 						// TODO: 做出自定义配置
 						...[
 							// 全部的components文件夹都不需要生成路由
-							"**/components",
+							"**/components/**",
 							// status菜单栏下面的全部页面 不生成自动路由
 							"src/views/status/**",
 						],
