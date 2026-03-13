@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "报表组件",
+		// 报表组件
+		title: "operationTeam.reportConfiguration.reportComponent.pageTitle",
 		icon: "mdi:chart-pie",
-		roles: ["开发团队"],
+		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.reportConfiguration.reportComponent"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { computed, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type ReportComponentListItem,
@@ -18,15 +21,79 @@ import {
 	queryMethodOptions,
 	type ComponentType,
 	type QueryMethod,
+	type ReportComponentFormVO,
 } from "@01s-11comm/type";
 import { useReportComponentListQuery } from "@/api/operation-team/report-configuration/report-component";
 import { type ReportComponentFormProps, defaultForm } from "./components/form";
-import type { ReportComponentFormVO } from "@01s-11comm/type";
 import ReportComponentForm from "./components/form.vue";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
 
-/** 搜索栏双向绑定变量 */
+const componentTypeLabelKeyMap: Record<string, string> = {
+	表格: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
+	table: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
+	图表: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.chart"),
+	chart: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.chart"),
+	摘要: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.summary"),
+	summary: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.summary"),
+	文本: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.text"),
+	text: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.text"),
+	图片: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.image"),
+	image: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.image"),
+	按钮: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.button"),
+	button: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.button"),
+	输入框: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.input"),
+	input: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.input"),
+	下拉框: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.select"),
+	select: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.select"),
+	日期选择器: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.datePicker"),
+	datePicker: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.datePicker"),
+};
+
+const queryMethodLabelKeyMap = {
+	sql: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.sql"),
+	api: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.api"),
+	local: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.local"),
+} as const;
+
+const locale = computed(() => i18n.global.locale.value);
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+function translateComponentType(value?: string) {
+	if (!value) {
+		return value;
+	}
+	return renderI18n(componentTypeLabelKeyMap[value] ?? value);
+}
+
+function translateQueryMethod(value?: string) {
+	if (!value) {
+		return value;
+	}
+	return renderI18n(queryMethodLabelKeyMap[value as keyof typeof queryMethodLabelKeyMap] ?? value);
+}
+
+const translatedComponentTypeOptions = computed(() => {
+	void locale.value;
+	return componentTypeOptions.map((option) => ({
+		...option,
+		label: renderI18n(componentTypeLabelKeyMap[String(option.value)]),
+	}));
+});
+
+const translatedQueryMethodOptions = computed(() => {
+	void locale.value;
+	return queryMethodOptions.map((option) => ({
+		...option,
+		label: renderI18n(queryMethodLabelKeyMap[String(option.value) as keyof typeof queryMethodLabelKeyMap]),
+	}));
+});
+
 const plusSearchModelRef: FieldValues & Partial<ReportComponentQueryParams> = {
 	componentId: "",
 	componentName: "",
@@ -34,15 +101,10 @@ const plusSearchModelRef: FieldValues & Partial<ReportComponentQueryParams> = {
 	queryMethod: undefined,
 };
 
-/** 重置功能用的默认值 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 响应式搜索变量 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	isFetching,
 	updateParams,
 	resetParams,
@@ -52,99 +114,94 @@ const {
 	pureTableProps,
 } = useReportComponentListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "组件ID",
-		prop: "componentId",
+		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
+		prop: "id",
 		width: 120,
 	},
 	{
-		label: "组件名称",
+		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentName")),
 		prop: "componentName",
 		width: 150,
 	},
 	{
-		label: "组件类型",
+		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentType")),
 		prop: "componentType",
 		width: 120,
+		cellRenderer: ({ row }) => translateComponentType(row.componentType),
 	},
 	{
-		label: "查询方式",
+		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.queryMethod")),
 		prop: "queryMethod",
 		width: 120,
+		cellRenderer: ({ row }) => translateQueryMethod(row.queryMethod),
 	},
 	{
-		label: "描述",
+		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.description")),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: () => renderI18n($t("common.table.operation")),
 		width: 160,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格组件 配置 */
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报表组件",
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
+	title: renderI18n($t("operationTeam.reportConfiguration.reportComponent.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 组件ID
 	{
-		label: "组件ID",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
 		prop: "componentId",
 		valueType: "input",
 	},
-	// 组件名称
 	{
-		label: "组件名称",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentName")),
 		prop: "componentName",
 		valueType: "input",
 	},
-	// 组件类型
 	{
-		label: "组件类型",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentType")),
 		prop: "componentType",
 		valueType: "select",
-		options: componentTypeOptions,
+		options: translatedComponentTypeOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.componentType")),
+		},
 	},
-	// 查询方式
 	{
-		label: "查询方式",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.queryMethod")),
 		prop: "queryMethod",
 		valueType: "select",
-		options: queryMethodOptions,
+		options: translatedQueryMethodOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.queryMethod")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
+const plusSearchProps = computed<PlusSearchProps>(() => ({
 	defaultValues: plusSearchDefaultValues,
 	columns: [],
 	labelWidth: 140,
 	labelPosition: "right",
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 	showNumber: 3,
-});
+}));
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -152,44 +209,39 @@ function handleSearch() {
 	});
 }
 
-/** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: ReportComponentListItem;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-
+const { setMode, isAdd, isEdit } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+	consola.log("simulate async submit", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+	consola.log("simulate async submit", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
-	const title = `${modeText.value}报表组件`;
 
-	/** 业务对象 */
 	const reportComponentFormVO: ReportComponentFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
 			? structuredClone({
 					...defaultForm,
 					componentName: row?.componentName || "",
-					componentType: (row?.componentType || "数据卡片") as ComponentType,
-					queryMethod: (row?.queryMethod || "sql") as QueryMethod,
+					componentType: (row?.componentType || defaultForm.componentType) as ComponentType,
+					queryMethod: (row?.queryMethod || defaultForm.queryMethod) as QueryMethod,
 					sql: row?.sql || "",
 					java: row?.java || "",
 					description: row?.description || "",
 				})
 			: structuredClone(defaultForm);
 
-	/** 表单组件需要的props */
 	const props: ReportComponentFormProps = {
 		form: reportComponentFormVO,
 		defaultValues: reportComponentFormVO,
@@ -199,41 +251,45 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("operationTeam.reportConfiguration.reportComponent.dialogs.addTitle"))
+				: transformI18n($t("operationTeam.reportConfiguration.reportComponent.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(ReportComponentForm, {
 				ref: reportComponentFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = reportComponentFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = reportComponentFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = reportComponentFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = reportComponentFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
-					reportComponentFormInstance.value.plusFormInstance.handleReset();
+					reportComponentFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await reportComponentFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await reportComponentFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -245,10 +301,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// await loadTableData();
-});
 </script>
 
 <template>
@@ -269,7 +321,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
