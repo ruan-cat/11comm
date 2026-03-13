@@ -1,185 +1,186 @@
 <script lang="ts" setup>
-import { useTemplateRef, reactive, ref, computed } from "vue";
-import { cloneDeep } from "@pureadmin/utils";
-import type { FieldValues, PlusColumn } from "plus-pro-components";
-import type { PlusFormRules } from "@/config/constant";
-import { usePlusFormReset } from "@/composables/use-plus-form-reset";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
-
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { WorkingScheduleFormProps } from "./form";
 import { scheduleTypeOptions, weekdayOptions, type WorkingScheduleFormVO } from "@01s-11comm/type";
 
 const props = defineProps<WorkingScheduleFormProps>();
-const { t } = useI18n();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & WorkingScheduleFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & WorkingScheduleFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & WorkingScheduleFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-const translatedScheduleTypeOptions = computed(() =>
+const translatedScheduleTypeOptions = withLocale(() =>
 	scheduleTypeOptions.map((option) => ({
 		...option,
-		label: transformI18n(
-			t(
+		label: renderI18n(
+			$t(
 				`settingManage.organizeManage.workingSchedule.options.${option.value === "full_day" ? "allDay" : option.value}`,
 			),
 		),
 	})),
 );
 
-const translatedWeekdayOptions = computed(() => {
-	const weekdayKeyMap: Record<number, string> = {
-		1: "monday",
-		2: "tuesday",
-		3: "wednesday",
-		4: "thursday",
-		5: "friday",
-		6: "saturday",
-		7: "sunday",
-	};
+const weekdayKeyMap = {
+	1: "monday",
+	2: "tuesday",
+	3: "wednesday",
+	4: "thursday",
+	5: "friday",
+	6: "saturday",
+	7: "sunday",
+} as const;
 
-	return weekdayOptions.map((option) => ({
+const translatedWeekdayOptions = withLocale(() =>
+	weekdayOptions.map((option) => ({
 		...option,
-		label: transformI18n(
-			t(`settingManage.organizeManage.workingSchedule.options.${weekdayKeyMap[Number(option.value)]}`),
+		label: renderI18n(
+			$t(`settingManage.organizeManage.workingSchedule.options.${weekdayKeyMap[Number(option.value) as keyof typeof weekdayKeyMap]}`),
 		),
-	}));
-});
+	})),
+);
 
-/** 表单项配置 */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.type")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
 		prop: "type",
 		valueType: "select",
 		options: translatedScheduleTypeOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.startTime")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.startTime")),
 		prop: "startTime",
 		valueType: "time-picker",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.startTime")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.endTime")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.endTime")),
 		prop: "endTime",
 		valueType: "time-picker",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.endTime")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.weekday")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.weekday")),
 		prop: "weekday",
 		valueType: "select",
 		options: translatedWeekdayOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.weekday")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.managerName")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.managerName")),
 		prop: "managerName",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.managerName")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.phone")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.phone")),
 		prop: "phone",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.phone")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.description")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.description")),
 		prop: "description",
 		valueType: "textarea",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.description")),
+		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.workingSchedule.fields.enabled")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.enabled")),
 		prop: "enabled",
 		valueType: "switch",
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = computed<PlusFormRules>(() => ({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.enterName")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.enterName")),
 			trigger: "blur",
 		},
 	],
 	type: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectType")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.selectType")),
 			trigger: "change",
 		},
 	],
 	startTime: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectStartTime")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.selectStartTime")),
 			trigger: "change",
 		},
 	],
 	endTime: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectEndTime")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.selectEndTime")),
 			trigger: "change",
 		},
 	],
 	weekday: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.selectWeekday")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.selectWeekday")),
 			trigger: "change",
 		},
 	],
 	managerName: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.enterManagerName")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.enterManagerName")),
 			trigger: "blur",
 		},
 	],
 	phone: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.enterPhone")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.enterPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: transformI18n(t("settingManage.organizeManage.workingSchedule.form.validation.invalidPhone")),
+			message: renderI18n($t("settingManage.organizeManage.workingSchedule.form.validation.invalidPhone")),
 			trigger: "blur",
 		},
 	],
 }));
 
-// 默认对外导出
 defineExpose({
 	plusFormInstance,
 	formComputed,
