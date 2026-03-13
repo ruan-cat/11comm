@@ -1,30 +1,89 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "系统配置",
+		// 系统配置
+		title: "operationTeam.systemManage.systemConfig.pageTitle",
 		icon: "mdi:cog",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.systemManage.systemConfig"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { computed, h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
+import type { SystemConfigFormVO, OperationTeamSystemConfig, OperationTeamSystemConfigListQuery } from "@01s-11comm/type";
 import {
-	type OperationTeamSystemConfig,
-	type OperationTeamSystemConfigListQuery,
-	systemConfigTypeOptions,
 	systemConfigEnabledOptions,
 	systemConfigSystemOptions,
+	systemConfigTypeOptions,
 } from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
 import { type SystemConfigFormProps, defaultForm } from "./components/form";
-import type { SystemConfigFormVO } from "@01s-11comm/type";
 import SystemConfigForm from "./components/form.vue";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+const configTypeLabelMap = {
+	文本: "operationTeam.systemManage.systemConfig.options.configTypes.text",
+	数字: "operationTeam.systemManage.systemConfig.options.configTypes.number",
+	布尔: "operationTeam.systemManage.systemConfig.options.configTypes.boolean",
+	JSON: "operationTeam.systemManage.systemConfig.options.configTypes.json",
+	URL: "operationTeam.systemManage.systemConfig.options.configTypes.url",
+} as const;
+
+function translateConfigTypeLabel(value?: string) {
+	const key = value ? configTypeLabelMap[value as keyof typeof configTypeLabelMap] : undefined;
+	return key ? transformI18n($t(key)) : value;
+}
+
+function translateEnabledLabel(value?: boolean | number | string) {
+	if (value === true || value === "启用" || value === "Enabled") {
+		return transformI18n($t("operationTeam.systemManage.systemConfig.options.statuses.enabled"));
+	}
+	if (value === false || value === "禁用" || value === "Disabled") {
+		return transformI18n($t("operationTeam.systemManage.systemConfig.options.statuses.disabled"));
+	}
+	return value === undefined || value === null ? "" : String(value);
+}
+
+function translateSystemLabel(value?: boolean | number | string) {
+	if (value === true || value === "是" || value === "Yes") {
+		return transformI18n($t("operationTeam.systemManage.systemConfig.options.systems.yes"));
+	}
+	if (value === false || value === "否" || value === "No") {
+		return transformI18n($t("operationTeam.systemManage.systemConfig.options.systems.no"));
+	}
+	return value === undefined || value === null ? "" : String(value);
+}
+
+const translatedConfigTypeOptions = withLocale(() =>
+	systemConfigTypeOptions.map((item) => ({
+		...item,
+		label: translateConfigTypeLabel(String(item.value)),
+	})),
+);
+
+const translatedEnabledOptions = withLocale(() =>
+	systemConfigEnabledOptions.map((item) => ({
+		...item,
+		label: translateEnabledLabel(item.value),
+	})),
+);
+
+const translatedSystemOptions = withLocale(() =>
+	systemConfigSystemOptions.map((item) => ({
+		...item,
+		label: translateSystemLabel(item.value),
+	})),
+);
+
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
+
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
@@ -33,14 +92,8 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 弹框组件实例 */
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigForm> | null>(null);
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<OperationTeamSystemConfigListQuery> = {
 	configName: "",
 	configType: undefined,
@@ -48,13 +101,9 @@ const plusSearchModelRef: FieldValues & Partial<OperationTeamSystemConfigListQue
 	isSystem: undefined,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -66,124 +115,103 @@ const {
 	handleCurrentPageChange,
 } = useSystemConfigListQuery(plusSearchDefaultValues);
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "配置ID",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configId"))),
 		prop: "id",
 		width: 120,
 	},
 	{
-		label: "配置名称",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName"))),
 		prop: "configName",
 		minWidth: 200,
 	},
 	{
-		label: "配置值",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configValue"))),
 		prop: "configValue",
 		minWidth: 180,
 	},
 	{
-		label: "配置类型",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configType"))),
 		prop: "configType",
 		width: 100,
+		cellRenderer: ({ row }) => translateConfigTypeLabel(row.configType),
 	},
 	{
-		label: "系统内置",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.isSystem"))),
 		prop: "isSystem",
 		width: 100,
+		cellRenderer: ({ row }) => translateSystemLabel(row.isSystem),
 	},
 	{
-		label: "启用状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.isEnabled"))),
 		prop: "isEnabled",
-		width: 80,
+		width: 100,
+		cellRenderer: ({ row }) => translateEnabledLabel(row.isEnabled),
 	},
 	{
-		label: "描述",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.description"))),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "系统配置",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("operationTeam.systemManage.systemConfig.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 配置名称 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "配置名称",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 	},
-
-	/** 配置类型 */
 	{
-		label: "配置类型",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configType")),
 		prop: "configType",
 		valueType: "select",
-		options: systemConfigTypeOptions,
+		options: translatedConfigTypeOptions.value,
 	},
-
-	/** 是否启用 */
 	{
-		label: "是否启用",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
-		options: systemConfigEnabledOptions,
+		options: translatedEnabledOptions.value,
 	},
-
-	/** 是否系统内置 */
 	{
-		label: "是否系统内置",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.isSystem")),
 		prop: "isSystem",
 		valueType: "select",
-		options: systemConfigSystemOptions,
+		options: translatedSystemOptions.value,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: OperationTeamSystemConfig }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 业务对象 */
 	const formVO: SystemConfigFormVO = isAdd.value
 		? cloneDeep(defaultForm)
 		: isEdit.value || isInfo.value
@@ -192,32 +220,25 @@ function openDialog(params: { mode: Mode; row?: OperationTeamSystemConfig }) {
 					configName: row?.configName || "",
 					configValue: row?.configValue || "",
 					configKey: row?.configKey || "",
-					configType: (row?.configType || "文本") as
-						| "文本"
-						| "数字"
-						| "布尔值"
-						| "JSON"
-						| "日期时间"
-						| "文件路径"
-						| "URL",
+					configType: row?.configType || "文本",
 					description: row?.description || "",
+					isSystem: row?.isSystem ?? false,
+					status: row?.isEnabled ? "Enabled" : "Disabled",
 				})
 			: cloneDeep(defaultForm);
 
-	/** 表单组件需要的props */
 	const formProps: SystemConfigFormProps = {
 		form: formVO,
 		defaultValues: formVO,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
+	const defaultValues = formProps.defaultValues;
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
-
-	/** 弹框标题 */
-	const title = `${modeText.value}系统配置`;
+	const title = isAdd.value
+		? () => transformI18n($t("operationTeam.systemManage.systemConfig.dialogs.addTitle"))
+		: isEdit.value
+			? () => transformI18n($t("operationTeam.systemManage.systemConfig.dialogs.editTitle"))
+			: () => transformI18n($t("operationTeam.systemManage.systemConfig.dialogs.infoTitle"));
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -229,30 +250,34 @@ function openDialog(params: { mode: Mode; row?: OperationTeamSystemConfig }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = systemConfigFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = systemConfigFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = systemConfigFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = systemConfigFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					systemConfigFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					systemConfigFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await systemConfigFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await systemConfigFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -265,13 +290,11 @@ function openDialog(params: { mode: Mode; row?: OperationTeamSystemConfig }) {
 	});
 }
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -279,35 +302,26 @@ function handleSearch() {
 	});
 }
 
-/** 删除系统配置 */
 async function handleDelete(row: OperationTeamSystemConfig) {
 	try {
-		/** TODO: 替换为真实的API调用 */
-		/** 当前使用模拟删除操作 */
 		consola.log("删除系统配置:", row.id);
-
-		/** 模拟异步操作 */
 		await sleep(1000);
-
-		/** 重新加载数据 */
 		doFetch();
 	} catch (error) {
 		console.error("删除失败:", error);
-		/** TODO: 显示错误提示 */
 	}
 }
-
-onMounted(async () => {
-	// await loadTableData();
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -320,9 +334,10 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
+					:data="tableData"
 					:columns="dynamicColumns"
 					:loading="isFetching"
 					:size="size"
