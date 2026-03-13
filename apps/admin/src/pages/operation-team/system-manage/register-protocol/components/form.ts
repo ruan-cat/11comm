@@ -3,7 +3,7 @@ import type { RegisterProtocolFormVO } from "@01s-11comm/type";
 /** 默认表单 @description 用于初始化表单数据 */
 export const defaultForm: RegisterProtocolFormVO = {
 	protocolName: "",
-	protocolType: "UserRegistrationProtocol",
+	protocolType: "用户注册协议",
 	protocolVersion: "v1.0.0",
 	status: "Draft",
 	isMandatory: "Yes",
