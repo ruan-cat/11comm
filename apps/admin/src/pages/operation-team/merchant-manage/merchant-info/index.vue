@@ -1,30 +1,44 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "商户信息",
+		// 商户信息
+		title: "operation-team_merchant-manage.merchant-info.pageTitle",
 		icon: "mdi:storefront",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.merchantManage.merchantInfo"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
 import {
+	businessStatusOptions,
+	merchantTypeOptions,
+	type BusinessStatus,
+	type MerchantInfoFormVO,
 	type MerchantInfoListItem,
 	type MerchantInfoQueryParams,
-	merchantTypeOptions,
-	businessStatusOptions,
+	type MerchantType,
 } from "@01s-11comm/type";
 import { useMerchantInfoListQuery } from "@/api/operation-team/merchant-manage/merchant-info";
-import { type MerchantInfoFormProps, defaultForm } from "./components/form";
-import type { MerchantInfoFormVO, MerchantType, BusinessStatus } from "@01s-11comm/type";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { defaultForm, type MerchantInfoFormProps } from "./components/form";
 import MerchantInfoForm from "./components/form.vue";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const merchantInfoFormInstance = ref<InstanceType<typeof MerchantInfoForm> | null>(null);
 
-/** 搜索栏双向绑定变量 */
 const plusSearchModelRef: FieldValues & Partial<MerchantInfoQueryParams> = {
 	merchantName: "",
 	merchantType: undefined,
@@ -33,15 +47,10 @@ const plusSearchModelRef: FieldValues & Partial<MerchantInfoQueryParams> = {
 	affiliatedCommunity: "",
 };
 
-/** 重置功能用的默认值 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 响应式搜索变量 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	isFetching,
 	updateParams,
 	resetParams,
@@ -51,144 +60,199 @@ const {
 	pureTableProps,
 } = useMerchantInfoListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const merchantTypeLabelKeyMap = {
+	餐饮服务: $t("operation-team_merchant-manage.merchant-info.options.merchantType.cateringService"),
+	零售商店: $t("operation-team_merchant-manage.merchant-info.options.merchantType.retailStore"),
+	生活服务: $t("operation-team_merchant-manage.merchant-info.options.merchantType.lifeService"),
+	休闲娱乐: $t("operation-team_merchant-manage.merchant-info.options.merchantType.leisureEntertainment"),
+	教育培训: $t("operation-team_merchant-manage.merchant-info.options.merchantType.educationTraining"),
+	医疗健康: $t("operation-team_merchant-manage.merchant-info.options.merchantType.medicalHealth"),
+	其他: $t("operation-team_merchant-manage.merchant-info.options.merchantType.other"),
+	cateringService: $t("operation-team_merchant-manage.merchant-info.options.merchantType.cateringService"),
+	retailStore: $t("operation-team_merchant-manage.merchant-info.options.merchantType.retailStore"),
+	lifeService: $t("operation-team_merchant-manage.merchant-info.options.merchantType.lifeService"),
+	leisureEntertainment: $t("operation-team_merchant-manage.merchant-info.options.merchantType.leisureEntertainment"),
+	educationTraining: $t("operation-team_merchant-manage.merchant-info.options.merchantType.educationTraining"),
+	medicalHealth: $t("operation-team_merchant-manage.merchant-info.options.merchantType.medicalHealth"),
+	other: $t("operation-team_merchant-manage.merchant-info.options.merchantType.other"),
+} as const;
+
+const businessStatusLabelKeyMap = {
+	正常营业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.normalOperation"),
+	暂停营业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.suspendedOperation"),
+	准备开业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.preparingToOpen"),
+	已停业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.closed"),
+	normalOperation: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.normalOperation"),
+	suspendedOperation: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.suspendedOperation"),
+	preparingToOpen: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.preparingToOpen"),
+	closed: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.closed"),
+} as const;
+
+function translateMerchantType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = merchantTypeLabelKeyMap[value as keyof typeof merchantTypeLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateBusinessStatus(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = businessStatusLabelKeyMap[value as keyof typeof businessStatusLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+const translatedMerchantTypeOptions = withLocale(() =>
+	merchantTypeOptions.map((option) => ({
+		...option,
+		label: translateMerchantType(String(option.value)),
+	})),
+);
+
+const translatedBusinessStatusOptions = withLocale(() =>
+	businessStatusOptions.map((option) => ({
+		...option,
+		label: translateBusinessStatus(String(option.value)),
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "商户编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantId"))),
 		prop: "merchantId",
 		width: 120,
 	},
 	{
-		label: "商户名称",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantName"))),
 		prop: "merchantName",
 		minWidth: 150,
 	},
 	{
-		label: "商户地址",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantAddress")),
+		),
 		prop: "merchantAddress",
 		minWidth: 200,
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.contactPhone"))),
 		prop: "contactPhone",
 		width: 130,
 	},
 	{
-		label: "商户类型",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantType"))),
 		prop: "merchantType",
 		width: 100,
+		cellRenderer: ({ row }) => translateMerchantType(row.merchantType),
 	},
 	{
-		label: "企业法人",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operation-team_merchant-manage.merchant-info.fields.legalRepresentative")),
+		),
 		prop: "legalRepresentative",
 		width: 100,
 	},
 	{
-		label: "成立日期",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operation-team_merchant-manage.merchant-info.fields.establishmentDate")),
+		),
 		prop: "establishmentDate",
 		width: 110,
 	},
 	{
-		label: "经营状态",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessStatus")),
+		),
 		prop: "businessStatus",
 		width: 100,
+		cellRenderer: ({ row }) => translateBusinessStatus(row.businessStatus),
 	},
 	{
-		label: "所属小区",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operation-team_merchant-manage.merchant-info.fields.affiliatedCommunity")),
+		),
 		prop: "affiliatedCommunity",
 		width: 150,
 	},
 	{
-		label: "营业时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessHours"))),
 		prop: "businessHours",
 		width: 120,
 	},
 	{
-		label: "经营面积(㎡)",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessArea"))),
 		prop: "businessArea",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-info.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格组件 配置 */
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "商户管理",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("operation-team_merchant-manage.merchant-info.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 商户名称
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantName")),
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantName")),
 		prop: "merchantName",
 		valueType: "input",
 	},
-
-	// 商户类型
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.merchantType")),
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantType")),
 		prop: "merchantType",
 		valueType: "select",
-		options: merchantTypeOptions,
+		options: translatedMerchantTypeOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantType")),
+		},
 	},
-
-	// 联系电话
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.contactPhone")),
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 	},
-
-	// 经营状态
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.operatingStatus")),
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessStatus")),
 		prop: "businessStatus",
 		valueType: "select",
-		options: businessStatusOptions,
+		options: translatedBusinessStatusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessStatus")),
+		},
 	},
-
-	// 所属小区
 	{
-		label: transformI18n($t("operation-team_merchant-manage.merchant-info.belongCommunity")),
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.affiliatedCommunity")),
 		prop: "affiliatedCommunity",
 		valueType: "input",
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -196,84 +260,81 @@ function handleSearch() {
 	});
 }
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}商户信息`;
-
-	/** 业务对象 */
 	const formVO: MerchantInfoFormVO = isAdd.value
 		? structuredClone(defaultForm)
-		: isEdit.value
-			? ({
-					...defaultForm,
-					merchantId: row?.merchantId || "",
-					merchantName: row?.merchantName || "",
-					merchantAddress: row?.merchantAddress || "",
-					contactPhone: row?.contactPhone || "",
-					merchantType: (row?.merchantType || "餐饮服务") as MerchantType,
-					legalRepresentative: row?.legalRepresentative || "",
-					establishmentDate: row?.establishmentDate || "",
-					businessStatus: (row?.businessStatus || "正常营业") as BusinessStatus,
-					affiliatedCommunity: row?.affiliatedCommunity || "",
-					businessHours: row?.businessHours || "",
-					businessArea: row?.businessArea || "",
-					businessLicenseNo: row?.businessLicenseNo || "",
-					bankName: row?.bankName || "",
-					bankAccount: row?.bankAccount || "",
-					contactMobile: row?.contactMobile || "",
-					remarks: row?.remarks || "",
-				} as MerchantInfoFormVO)
-			: structuredClone(defaultForm);
+		: cloneDeep({
+				...defaultForm,
+				merchantId: row?.merchantId || "",
+				merchantName: row?.merchantName || "",
+				merchantAddress: row?.merchantAddress || "",
+				contactPhone: row?.contactPhone || "",
+				merchantType: (row?.merchantType || "餐饮服务") as MerchantType,
+				legalRepresentative: row?.legalRepresentative || "",
+				establishmentDate: row?.establishmentDate || "",
+				businessStatus: (row?.businessStatus || "正常营业") as BusinessStatus,
+				affiliatedCommunity: row?.affiliatedCommunity || "",
+				businessHours: row?.businessHours || "",
+				businessArea: row?.businessArea || "",
+				businessLicenseNo: row?.businessLicenseNo || "",
+				bankName: row?.bankName || "",
+				bankAccount: row?.bankAccount || "",
+				contactMobile: row?.contactMobile || "",
+				remarks: row?.remarks || "",
+			});
 
-	/** 表单组件需要的props */
 	const formProps: MerchantInfoFormProps = {
 		form: formVO,
-		defaultValues: formVO,
+		defaultValues: cloneDeep(formVO),
 		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props: formProps,
+		title: () => {
+			if (isAdd.value) {
+				return renderI18n($t("operation-team_merchant-manage.merchant-info.dialogs.addTitle"));
+			}
 
+			if (isEdit.value) {
+				return renderI18n($t("operation-team_merchant-manage.merchant-info.dialogs.editTitle"));
+			}
+
+			if (isInfo.value) {
+				return renderI18n($t("operation-team_merchant-manage.merchant-info.dialogs.infoTitle"));
+			}
+
+			return renderI18n($t("operation-team_merchant-manage.merchant-info.dialogs.title"));
+		},
+		props: formProps,
 		contentRenderer: () =>
 			h(MerchantInfoForm, {
 				ref: merchantInfoFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = merchantInfoFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = merchantInfoFormInstance.value?.formComputed;
@@ -282,17 +343,15 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options: _options, index: _index } }) => {
+				btnClick: () => {
 					merchantInfoFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await merchantInfoFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -301,6 +360,7 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						doFetch();
 					}
 				},
 			},
@@ -308,49 +368,47 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 	});
 }
 
-/** 处理新增商户 */
 function handleAdd() {
 	openDialog({ mode: "add" });
 }
 
-/** 处理编辑商户 */
 function handleEdit(row: MerchantInfoListItem) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 处理查看详情 */
 function handleViewDetails(row: MerchantInfoListItem) {
 	openDialog({ mode: "info", row });
 }
 
-/** 处理删除商户 */
-function handleDelete(row: MerchantInfoListItem) {
-	ElMessageBox.confirm(`确定要删除商户"${row.merchantName}"吗？此操作不可撤销。`, "删除确认", {
-		confirmButtonText: "确定",
-		cancelButtonText: "取消",
-		type: "warning",
-	})
-		.then(async () => {
-			/** TODO: 调用删除API */
-			ElMessage.success("删除成功");
-			doFetch();
-		})
-		.catch(() => {
-			ElMessage.info("已取消删除");
-		});
-}
+async function handleDelete(row: MerchantInfoListItem) {
+	try {
+		await ElMessageBox.confirm(
+			i18n.global.t($t("operation-team_merchant-manage.merchant-info.dialogs.confirmDelete"), {
+				name: row.merchantName,
+			}),
+			renderI18n($t("operation-team_merchant-manage.common.dialogs.confirmTitle")),
+			{
+				confirmButtonText: renderI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
 
-onMounted(async () => {
-	// await loadTableData();
-});
+		ElMessage.success(renderI18n($t("operation-team_merchant-manage.merchant-info.messages.deleted")));
+		doFetch();
+	} catch {}
+}
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -377,7 +435,7 @@ onMounted(async () => {
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info" @click="handleViewDetails(row)">
-							{{ transformI18n($t("operation-team_merchant-manage.merchant-info.viewDetails")) }}
+							{{ transformI18n($t("operation-team_merchant-manage.merchant-info.buttons.viewDetails")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
