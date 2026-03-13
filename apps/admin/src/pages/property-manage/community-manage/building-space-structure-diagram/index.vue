@@ -1,54 +1,51 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "楼栋结构图",
+		// 楼栋结构图
+		title: "propertyManage_communityManage.building-space-structure-diagram.pageTitle",
 		icon: "mdi:domain",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.buildingSpaceStructureDiagram"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import {
-	type BuildingSpaceStructureDiagramListItem,
-	type BuildingSpaceStructureDiagramQueryParams,
-	buildingStructureOptions,
-	buildingStatusOptions,
-} from "@01s-11comm/type";
-import { useBuildingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/building-space-structure-diagram";
-import { type BuildingSpaceStructureDiagramFormProps, defaultForm } from "./components/form";
-import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
-import BuildingSpaceStructureDiagramForm from "./components/form.vue";
+import { h, ref } from "vue";
+import { ElMessageBox } from "element-plus";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
+import { useBuildingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/building-space-structure-diagram";
+import type { BuildingSpaceStructureDiagramFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import type {
+	BuildingSpaceStructureDiagramFormVO,
+	BuildingSpaceStructureDiagramListItem,
+	BuildingSpaceStructureDiagramQueryParams,
+} from "@01s-11comm/type";
+import BuildingSpaceStructureDiagramForm from "./components/form.vue";
 
-/** 表单组件实例 */
-const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(
-	null,
-);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & Partial<BuildingSpaceStructureDiagramQueryParams> = {
 	buildingId: "",
 	buildingName: "",
-	buildingStructure: undefined,
-	status: undefined,
+	buildingStructure: "",
+	status: "",
 	constructionYear: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -58,138 +55,220 @@ const {
 	handleCurrentPageChange,
 } = useBuildingSpaceStructureDiagramListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(null);
+const { setMode, isAdd, isEdit } = useMode();
+const [isFetchingT, setIsLoadingT] = useToggle(false);
+
+async function testAsync() {
+	setIsLoadingT(true);
+	await sleep(1300);
+	setIsLoadingT(false);
+}
+
+const buildingStructureLabelKeyMap = {
+	"钢筋混凝土结构":
+		"propertyManage_communityManage.building-space-structure-diagram.options.structure.reinforcedConcrete",
+	钢结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.steel",
+	砖混结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.brickConcrete",
+	框架结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.frame",
+	剪力墙结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.shearWall",
+} as const;
+
+const buildingStatusLabelKeyMap = {
+	正常使用: "propertyManage_communityManage.building-space-structure-diagram.options.status.normal",
+	装修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.renovating",
+	维修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.repairing",
+	待验收:
+		"propertyManage_communityManage.building-space-structure-diagram.options.status.pendingAcceptance",
+	已停用: "propertyManage_communityManage.building-space-structure-diagram.options.status.disabled",
+} as const;
+
+function translateOptionLabel<T extends Record<string, string>>(value: string | undefined | null, labelMap: T) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = labelMap[value as keyof T];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const buildingStructureOptions = withLocale(() =>
+	Object.entries(buildingStructureLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const buildingStatusOptions = withLocale(() =>
+	Object.entries(buildingStatusLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "楼栋编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
+		),
 		prop: "buildingId",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "楼栋名称",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
+		),
 		prop: "buildingName",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "总楼层",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalFloors")),
+		),
 		prop: "totalFloors",
-		width: 100,
+		minWidth: 110,
 	},
 	{
-		label: "总户数",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalHouseholds")),
+		),
 		prop: "totalHouseholds",
-		width: 100,
+		minWidth: 120,
 	},
 	{
-		label: "建筑面积",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingArea")),
+		),
 		prop: "buildingArea",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "建筑结构",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure")),
+		),
 		prop: "buildingStructure",
-		width: 140,
+		minWidth: 150,
+		cellRenderer: ({ row }) => translateOptionLabel(row.buildingStructure, buildingStructureLabelKeyMap),
 	},
 	{
-		label: "建成年份",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear")),
+		),
 		prop: "constructionYear",
-		width: 100,
+		minWidth: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
+		),
 		prop: "status",
-		width: 100,
+		minWidth: 120,
+		cellRenderer: ({ row }) => translateOptionLabel(row.status, buildingStatusLabelKeyMap),
 	},
 	{
-		label: "最后更新时间",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.lastUpdateTime")),
+		),
 		prop: "lastUpdateTime",
-		width: 160,
+		minWidth: 170,
 	},
 	{
-		label: "负责人",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.personInCharge")),
+		),
 		prop: "personInCharge",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.contactPhone")),
+		),
 		prop: "contactPhone",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 300,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "楼栋结构图",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 楼栋编号 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "楼栋编号",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
 		prop: "buildingId",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingId"),
+			),
+		},
 	},
-
-	/** 楼栋名称 */
 	{
-		label: "楼栋名称",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingName"),
+			),
+		},
 	},
-
-	/** 建筑结构 */
 	{
-		label: "建筑结构",
+		label: renderI18n(
+			$t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure"),
+		),
 		prop: "buildingStructure",
 		valueType: "select",
-		options: buildingStructureOptions,
+		options: buildingStructureOptions.value,
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingStructure"),
+			),
+		},
 	},
-
-	/** 状态 */
 	{
-		label: "状态",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: buildingStatusOptions,
+		options: buildingStatusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.status"),
+			),
+		},
 	},
-
-	/** 建成年份 */
 	{
-		label: "建成年份",
+		label: renderI18n(
+			$t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear"),
+		),
 		prop: "constructionYear",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.constructionYear"),
+			),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -197,107 +276,76 @@ function handleSearch() {
 	});
 }
 
-const { gotoDetailPage } = useGotoDetailsPage();
-
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: BuildingSpaceStructureDiagramListItem;
-}
-
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 测试异步函数 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-
-/** 模拟异步操作函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-}
-
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: BuildingSpaceStructureDiagramListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}楼栋结构图`;
+	const formVO: BuildingSpaceStructureDiagramFormVO = isAdd.value
+		? cloneDeep(defaultForm)
+		: cloneDeep({
+				...defaultForm,
+				buildingId: row?.buildingId || "",
+				buildingName: row?.buildingName || "",
+				totalFloors: row?.totalFloors || 0,
+				totalHouseholds: row?.totalHouseholds || 0,
+				buildingArea: row?.buildingArea || 0,
+				buildingStructure: row?.buildingStructure || "",
+				constructionYear: row?.constructionYear || "",
+				drawingPath: row?.drawingPath || "",
+				status: row?.status || "正常使用",
+				personInCharge: row?.personInCharge || "",
+				contactPhone: row?.contactPhone || "",
+				remarks: row?.remarks || "",
+			});
 
-	/** 业务对象 */
-	const buildingSpaceStructureDiagramFormVO: BuildingSpaceStructureDiagramFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: isEdit.value
-			? {
-					...defaultForm,
-					buildingId: row?.buildingId || "",
-					buildingName: row?.buildingName || "",
-					totalFloors: row?.totalFloors || 0,
-					totalHouseholds: row?.totalHouseholds || 0,
-					buildingArea: row?.buildingArea || 0,
-					buildingStructure: row?.buildingStructure || "",
-					constructionYear: row?.constructionYear || "",
-					drawingPath: row?.drawingPath || "",
-					status: row?.status || "正常使用",
-					personInCharge: row?.personInCharge || "",
-					contactPhone: row?.contactPhone || "",
-					remarks: row?.remarks || "",
-				}
-			: structuredClone(defaultForm);
-
-	/** 表单组件需要的props */
 	const props: BuildingSpaceStructureDiagramFormProps = {
-		form: buildingSpaceStructureDiagramFormVO,
-		defaultValues: buildingSpaceStructureDiagramFormVO,
+		form: formVO,
+		defaultValues: formVO,
+		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.addTitle"))
+				: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.editTitle")),
 		props,
-
 		contentRenderer: () =>
 			h(BuildingSpaceStructureDiagramForm, {
 				ref: buildingSpaceStructureDiagramFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = buildingSpaceStructureDiagramFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = buildingSpaceStructureDiagramFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					// console.log(options, index);
-					const formComputed = buildingSpaceStructureDiagramFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = buildingSpaceStructureDiagramFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
-					// 手动重置表单
-					buildingSpaceStructureDiagramFormInstance.value.plusFormInstance.handleReset();
+					buildingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await buildingSpaceStructureDiagramFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await buildingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -310,29 +358,43 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-/** 查看图纸 */
+async function handleDelete(row: BuildingSpaceStructureDiagramListItem) {
+	try {
+		await ElMessageBox.confirm(
+			i18n.global.t($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.confirmDelete"), {
+				buildingId: row.buildingId,
+				buildingName: row.buildingName,
+			}),
+			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.deleteTitle")),
+			{
+				confirmButtonText: renderI18n($t("common.buttons.del")),
+				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
+
+		await doFetch();
+	} catch {}
+}
+
 function viewDrawing(row: BuildingSpaceStructureDiagramListItem) {
-	console.log("查看图纸:", row.drawingPath);
-	// TODO: 实现查看图纸的逻辑
+	console.log("view drawing", row.drawingPath);
 }
 
-/** 下载图纸 */
 function downloadDrawing(row: BuildingSpaceStructureDiagramListItem) {
-	console.log("下载图纸:", row.drawingPath);
-	// TODO: 实现下载图纸的逻辑
+	console.log("download drawing", row.drawingPath);
 }
-
-onMounted(async () => {
-	// await loadTableData();
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -345,7 +407,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需要的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"
@@ -355,12 +417,20 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="viewDrawing(row)"> 查看图纸 </ElButton>
-						<ElButton type="info" @click="downloadDrawing(row)"> 下载图纸 </ElButton>
+						<ElButton type="info" @click="viewDrawing(row)">
+							{{ transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.buttons.viewDrawing")) }}
+						</ElButton>
+						<ElButton type="info" @click="downloadDrawing(row)">
+							{{
+								transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.buttons.downloadDrawing"))
+							}}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
