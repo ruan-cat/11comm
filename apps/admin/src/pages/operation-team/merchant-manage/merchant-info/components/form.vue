@@ -3,164 +3,208 @@
   用于新增 修改商户信息
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-import type { MerchantInfoFormVO } from "@01s-11comm/type";
-import { merchantTypeOptions, businessStatusOptions } from "@01s-11comm/type";
+import { computed, ref, useTemplateRef } from "vue";
 import type { PlusColumn } from "plus-pro-components";
-
+import { businessStatusOptions, merchantTypeOptions, type MerchantInfoFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { MerchantInfoFormProps } from "./form";
 
 const props = defineProps<MerchantInfoFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & MerchantInfoFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & MerchantInfoFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & MerchantInfoFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const merchantTypeLabelKeyMap = {
+	餐饮服务: $t("operation-team_merchant-manage.merchant-info.options.merchantType.cateringService"),
+	零售商店: $t("operation-team_merchant-manage.merchant-info.options.merchantType.retailStore"),
+	生活服务: $t("operation-team_merchant-manage.merchant-info.options.merchantType.lifeService"),
+	休闲娱乐: $t("operation-team_merchant-manage.merchant-info.options.merchantType.leisureEntertainment"),
+	教育培训: $t("operation-team_merchant-manage.merchant-info.options.merchantType.educationTraining"),
+	医疗健康: $t("operation-team_merchant-manage.merchant-info.options.merchantType.medicalHealth"),
+	其他: $t("operation-team_merchant-manage.merchant-info.options.merchantType.other"),
+	cateringService: $t("operation-team_merchant-manage.merchant-info.options.merchantType.cateringService"),
+	retailStore: $t("operation-team_merchant-manage.merchant-info.options.merchantType.retailStore"),
+	lifeService: $t("operation-team_merchant-manage.merchant-info.options.merchantType.lifeService"),
+	leisureEntertainment: $t("operation-team_merchant-manage.merchant-info.options.merchantType.leisureEntertainment"),
+	educationTraining: $t("operation-team_merchant-manage.merchant-info.options.merchantType.educationTraining"),
+	medicalHealth: $t("operation-team_merchant-manage.merchant-info.options.merchantType.medicalHealth"),
+	other: $t("operation-team_merchant-manage.merchant-info.options.merchantType.other"),
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const businessStatusLabelKeyMap = {
+	正常营业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.normalOperation"),
+	暂停营业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.suspendedOperation"),
+	准备开业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.preparingToOpen"),
+	已停业: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.closed"),
+	normalOperation: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.normalOperation"),
+	suspendedOperation: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.suspendedOperation"),
+	preparingToOpen: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.preparingToOpen"),
+	closed: $t("operation-team_merchant-manage.merchant-info.options.businessStatus.closed"),
+} as const;
+
+function translateMerchantType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = merchantTypeLabelKeyMap[value as keyof typeof merchantTypeLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateBusinessStatus(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = businessStatusLabelKeyMap[value as keyof typeof businessStatusLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+const translatedMerchantTypeOptions = withLocale(() =>
+	merchantTypeOptions.map((option) => ({
+		...option,
+		label: translateMerchantType(String(option.value)),
+	})),
+);
+
+const translatedBusinessStatusOptions = withLocale(() =>
+	businessStatusOptions.map((option) => ({
+		...option,
+		label: translateBusinessStatus(String(option.value)),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "商户编号",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantId")),
 		prop: "merchantId",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入商户编号",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantId")),
 			disabled: true,
 		},
 	},
 	{
-		label: "商户名称",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantName")),
 		prop: "merchantName",
 		valueType: "input",
 		width: "240px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入商户名称",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantName")),
 		},
 	},
 	{
-		label: "商户类型",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantType")),
 		prop: "merchantType",
 		valueType: "select",
 		width: "160px",
-		options: merchantTypeOptions,
+		options: translatedMerchantTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择商户类型",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantType")),
 		},
 	},
 	{
-		label: "经营状态",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessStatus")),
 		prop: "businessStatus",
 		valueType: "select",
 		width: "140px",
-		options: businessStatusOptions,
+		options: translatedBusinessStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择经营状态",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessStatus")),
 		},
 	},
 	{
-		label: "商户地址",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantAddress")),
 		prop: "merchantAddress",
 		valueType: "input",
 		width: "320px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入商户详细地址",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantAddress")),
 		},
 	},
 	{
-		label: "所属小区",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.affiliatedCommunity")),
 		prop: "affiliatedCommunity",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入所属小区/写字楼",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.affiliatedCommunity")),
 		},
 	},
 	{
-		label: "联系电话",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系电话",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.contactPhone")),
 		},
 	},
 	{
-		label: "联系人手机",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.contactMobile")),
 		prop: "contactMobile",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系人手机号",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.contactMobile")),
 		},
 	},
 	{
-		label: "企业法人",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.legalRepresentative")),
 		prop: "legalRepresentative",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入企业法人姓名",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.legalRepresentative")),
 		},
 	},
 	{
-		label: "成立日期",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.establishmentDate")),
 		prop: "establishmentDate",
 		valueType: "date-picker",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择成立日期",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.establishmentDate")),
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 		},
 	},
 	{
-		label: "营业时间",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessHours")),
 		prop: "businessHours",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入每日营业时间段",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessHours")),
 		},
 	},
 	{
-		label: "经营面积",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessArea")),
 		prop: "businessArea",
 		valueType: "input-number",
 		width: "160px",
@@ -168,47 +212,47 @@ const plusFormColumns = ref<PlusColumn[]>([
 			min: 0,
 			max: 999999,
 			precision: 2,
-			placeholder: "请输入经营面积",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessArea")),
 		},
 	},
 	{
-		label: "营业执照号",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessLicenseNo")),
 		prop: "businessLicenseNo",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入营业执照号",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessLicenseNo")),
 		},
 	},
 	{
-		label: "开户银行",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.bankName")),
 		prop: "bankName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入开户银行",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.bankName")),
 		},
 	},
 	{
-		label: "银行账号",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.bankAccount")),
 		prop: "bankAccount",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入银行账号",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.bankAccount")),
 		},
 	},
 	{
-		label: "备注",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入备注信息",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.remarks")),
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
@@ -216,56 +260,155 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	merchantName: [
-		{ required: true, message: "请输入商户名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	merchantType: [{ required: true, message: "请选择商户类型", trigger: "change" }],
-	businessStatus: [{ required: true, message: "请选择经营状态", trigger: "change" }],
-	merchantAddress: [
-		{ required: true, message: "请输入商户地址", trigger: "blur" },
-		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
-	],
-	affiliatedCommunity: [
-		{ required: true, message: "请输入所属小区", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	contactPhone: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" },
-		{ pattern: /^((0\d{2,3}-\d{7,8})|(1[3-9]\d{9}))$/, message: "请输入正确的电话号码", trigger: "blur" },
-	],
-	contactMobile: [
-		{ required: true, message: "请输入联系人手机", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
-	],
-	legalRepresentative: [
-		{ required: true, message: "请输入企业法人姓名", trigger: "blur" },
-		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
-	],
-	establishmentDate: [{ required: true, message: "请选择成立日期", trigger: "change" }],
-	businessHours: [
 		{
-			pattern: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])-([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/,
-			message: "请输入正确的时间格式，如：09:00-22:00",
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterMerchantName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.merchantNameLength")),
 			trigger: "blur",
 		},
 	],
-	businessArea: [{ type: "number", min: 0, max: 999999, message: "经营面积范围 0-999999 平方米", trigger: "blur" }],
-	businessLicenseNo: [
-		{ required: true, message: "请输入营业执照号", trigger: "blur" },
-		{ pattern: /^[0-9A-Z]{18}$/, message: "请输入正确的18位营业执照号", trigger: "blur" },
+	merchantType: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectMerchantType")),
+			trigger: "change",
+		},
 	],
-	bankName: [{ max: 50, message: "开户银行长度不能超过 50 个字符", trigger: "blur" }],
-	bankAccount: [{ max: 30, message: "银行账号长度不能超过 30 个字符", trigger: "blur" }],
-	remarks: [{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" }],
-});
+	businessStatus: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectBusinessStatus")),
+			trigger: "change",
+		},
+	],
+	merchantAddress: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterMerchantAddress")),
+			trigger: "blur",
+		},
+		{
+			min: 5,
+			max: 200,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.merchantAddressLength")),
+			trigger: "blur",
+		},
+	],
+	affiliatedCommunity: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterAffiliatedCommunity")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.affiliatedCommunityLength")),
+			trigger: "blur",
+		},
+	],
+	contactPhone: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterContactPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^((0\d{2,3}-\d{7,8})|(1[3-9]\d{9}))$/,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.contactPhonePattern")),
+			trigger: "blur",
+		},
+	],
+	contactMobile: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterContactMobile")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.contactMobilePattern")),
+			trigger: "blur",
+		},
+	],
+	legalRepresentative: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterLegalRepresentative")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 10,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.legalRepresentativeLength")),
+			trigger: "blur",
+		},
+	],
+	establishmentDate: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectEstablishmentDate")),
+			trigger: "change",
+		},
+	],
+	businessHours: [
+		{
+			pattern: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])-([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessHoursPattern")),
+			trigger: "blur",
+		},
+	],
+	businessArea: [
+		{
+			type: "number",
+			min: 0,
+			max: 999999,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessAreaRange")),
+			trigger: "blur",
+		},
+	],
+	businessLicenseNo: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterBusinessLicenseNo")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[0-9A-Z]{18}$/,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessLicenseNoPattern")),
+			trigger: "blur",
+		},
+	],
+	bankName: [
+		{
+			max: 50,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.bankNameMax")),
+			trigger: "blur",
+		},
+	],
+	bankAccount: [
+		{
+			max: 30,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.bankAccountMax")),
+			trigger: "blur",
+		},
+	],
+	remarks: [
+		{
+			max: 500,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.remarksMax")),
+			trigger: "blur",
+		},
+	],
+}));
 
-/** 默认对外导出函数 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -279,7 +422,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:label-width="120"
 		/>
