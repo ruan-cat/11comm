@@ -4,6 +4,9 @@ devTeam:
     pageTitle: 菜单管理
     catalog:
       pageTitle: 菜单目录
+      dialogs:
+        addTitle: 新增菜单目录
+        editTitle: 修改菜单目录
       fields:
         name: 菜单组名称
         icon: 图标
@@ -199,6 +202,9 @@ devTeam:
     pageTitle: 配置管理
     center:
       pageTitle: 配置中心
+      dialogs:
+        addTitle: 新增配置中心
+        editTitle: 修改配置中心
       fields:
         configName: 配置项名称
         configType: 配置类型
@@ -227,8 +233,41 @@ devTeam:
         confirmDelete: 确认删除配置
         exportConfig: 导出配置
         importConfig: 导入配置
+      form:
+        options:
+          system: 系统配置
+          business: 业务配置
+          api: 接口配置
+          database: 数据库配置
+          cache: 缓存配置
+          security: 安全配置
+          email: 邮件配置
+          file: 文件配置
+          enabled: 启用
+          disabled: 禁用
+        placeholders:
+          configName: 请输入配置项名称
+          configType: 请选择配置类型
+          configKey: "请输入配置键名，例如：system.name"
+          configValue: 请输入配置值
+          defaultValue: 请输入默认值
+          configDescription: 请输入配置描述信息
+          status: 请选择状态
+          sortOrder: 请输入排序号
+          remark: 请输入备注信息
+        validation:
+          configNameRequired: 请输入配置项名称
+          configNameLength: 长度在 2 到 50 个字符
+          configTypeRequired: 请选择配置类型
+          configKeyRequired: 请输入配置键名
+          configKeyPattern: 配置键名格式不正确，应为字母、数字、点、下划线组合
+          configValueRequired: 请输入配置值
+          statusRequired: 请选择状态
     dictionary:
       pageTitle: 字典
+      dialogs:
+        addTitle: 新增字典
+        editTitle: 修改字典
       fields:
         dictionaryName: 字典名称
         dictionaryCode: 字典编码
@@ -241,8 +280,28 @@ devTeam:
         creator: 创建人
       buttons:
         manageItems: 字典项管理
+      form:
+        options:
+          system: 系统字典
+          business: 业务字典
+          region: 地区字典
+          status: 状态字典
+          config: 配置字典
+          enabled: 启用
+          disabled: 禁用
+        validation:
+          enterDictionaryName: 请输入字典名称
+          dictionaryNameLength: 长度在 2 到 50 个字符
+          enterDictionaryCode: 请输入字典编码
+          dictionaryCodeLength: 长度在 2 到 50 个字符
+          dictionaryCodePattern: 编码只能包含字母、数字、下划线，且不能以数字开头
+          selectDictionaryType: 请选择字典类型
+          selectIsEnabled: 请选择是否启用
     item:
       pageTitle: 配置项
+      dialogs:
+        addTitle: 新增配置项
+        editTitle: 修改配置项
       fields:
         configName: 配置项名称
         configCode: 配置项编码
@@ -253,13 +312,95 @@ devTeam:
         createTime: 创建时间
         updateTime: 更新时间
         creator: 创建人
+      form:
+        options:
+          system: 系统配置
+          business: 业务配置
+          api: 接口配置
+          database: 数据库配置
+          cache: 缓存配置
+          log: 日志配置
+          security: 安全配置
+          notification: 通知配置
+          enabled: 启用
+          disabled: 禁用
+        validation:
+          enterConfigItemName: 请输入配置项名称
+          configItemNameLength: 长度在 2 到 50 个字符
+          enterConfigItemCode: 请输入配置项编码
+          configItemCodeLength: 长度在 2 到 50 个字符
+          configItemCodePattern: 编码只能包含字母、数字、下划线，且不能以数字开头
+          selectConfigItemType: 请选择配置项类型
+          enterConfigItemValue: 请输入配置项值
+          configItemValueLength: 长度在 1 到 500 个字符
+          selectIsEnabled: 请选择是否启用
     type:
       pageTitle: 字典类型
       fields:
         dictionaryNumber: 字典编号
         dictionaryName: 字典名称
         dictionaryType: 字典类型
+        dictionaryCategory: 字典分类
+        dataType: 数据类型
+        defaultValue: 默认值
+        isRequired: 是否必填
+        validationRule: 验证规则
+        displayOrder: 显示顺序
         status: 状态
         remark: 备注
         createTime: 创建时间
         updateTime: 更新时间
+      options:
+        status:
+          enabled: 启用
+          disabled: 禁用
+      form:
+        options:
+          categories:
+            system: 系统字典
+            business: 业务字典
+            custom: 自定义字典
+            thirdParty: 第三方字典
+          dataTypes:
+            string: 字符串
+            number: 数字
+            boolean: 布尔值
+            date: 日期
+            time: 时间
+            datetime: 日期时间
+            json: JSON对象
+            array: 数组
+            file: 文件
+            email: 邮箱
+            phone: 手机号
+            url: URL
+          required:
+            true: 是
+            false: 否
+        placeholders:
+          dictionaryNumber: 请输入字典编号
+          dictionaryName: 请输入字典名称
+          dictionaryType: 请输入字典类型标识
+          dictionaryCategory: 请选择字典分类
+          dataType: 请选择数据类型
+          defaultValue: 请输入默认值
+          isRequired: 请选择是否必填
+          validationRule: 请输入验证规则（正则表达式或验证函数）
+          displayOrder: 请输入显示顺序
+          status: 请选择字典状态
+          remark: 请输入备注信息
+        validation:
+          dictionaryNumberRequired: 请输入字典编号
+          dictionaryNumberLength: 长度在 2 到 50 个字符
+          dictionaryNumberPattern: 只能包含字母、数字和下划线
+          dictionaryNameRequired: 请输入字典名称
+          dictionaryNameLength: 长度在 2 到 100 个字符
+          dictionaryTypeRequired: 请输入字典类型
+          dictionaryTypeLength: 长度在 2 到 100 个字符
+          dictionaryTypePattern: 必须以字母开头，只能包含字母、数字和下划线
+          dictionaryCategoryRequired: 请选择字典分类
+          dataTypeRequired: 请选择数据类型
+          isRequiredRequired: 请选择是否必填
+          displayOrderRequired: 请输入显示顺序
+          displayOrderRange: 显示顺序必须在 0 到 9999 之间
+          statusRequired: 请选择字典状态

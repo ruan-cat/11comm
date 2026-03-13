@@ -4,6 +4,9 @@ devTeam:
     pageTitle: Menu Management
     catalog:
       pageTitle: Menu Catalog
+      dialogs:
+        addTitle: Add Menu Catalog
+        editTitle: Edit Menu Catalog
       fields:
         name: Menu Group Name
         icon: Icon
@@ -199,6 +202,9 @@ devTeam:
     pageTitle: Configuration Management
     center:
       pageTitle: Configuration Center
+      dialogs:
+        addTitle: Add Configuration Center
+        editTitle: Edit Configuration Center
       fields:
         configName: Config Name
         configType: Config Type
@@ -227,8 +233,41 @@ devTeam:
         confirmDelete: Confirm delete config
         exportConfig: Export config
         importConfig: Import config
+      form:
+        options:
+          system: System Config
+          business: Business Config
+          api: API Config
+          database: Database Config
+          cache: Cache Config
+          security: Security Config
+          email: Email Config
+          file: File Config
+          enabled: Enabled
+          disabled: Disabled
+        placeholders:
+          configName: Please enter the config name
+          configType: Please select the config type
+          configKey: "Please enter the config key, for example: system.name"
+          configValue: Please enter the config value
+          defaultValue: Please enter the default value
+          configDescription: Please enter the config description
+          status: Please select the status
+          sortOrder: Please enter the sort order
+          remark: Please enter the remark
+        validation:
+          configNameRequired: Please enter the config name
+          configNameLength: Length must be between 2 and 50 characters
+          configTypeRequired: Please select the config type
+          configKeyRequired: Please enter the config key
+          configKeyPattern: Config key format is invalid and should use letters, numbers, dots, and underscores
+          configValueRequired: Please enter the config value
+          statusRequired: Please select the status
     dictionary:
       pageTitle: Dictionary
+      dialogs:
+        addTitle: Add Dictionary
+        editTitle: Edit Dictionary
       fields:
         dictionaryName: Dictionary Name
         dictionaryCode: Dictionary Code
@@ -241,8 +280,28 @@ devTeam:
         creator: Creator
       buttons:
         manageItems: Manage Dictionary Items
+      form:
+        options:
+          system: System Dictionary
+          business: Business Dictionary
+          region: Region Dictionary
+          status: Status Dictionary
+          config: Config Dictionary
+          enabled: Enabled
+          disabled: Disabled
+        validation:
+          enterDictionaryName: Please enter the dictionary name
+          dictionaryNameLength: Length must be between 2 and 50 characters
+          enterDictionaryCode: Please enter the dictionary code
+          dictionaryCodeLength: Length must be between 2 and 50 characters
+          dictionaryCodePattern: Code can only contain letters, numbers, and underscores, and cannot start with a number
+          selectDictionaryType: Please select the dictionary type
+          selectIsEnabled: Please select whether to enable it
     item:
       pageTitle: Config Item
+      dialogs:
+        addTitle: Add Config Item
+        editTitle: Edit Config Item
       fields:
         configName: Config Item Name
         configCode: Config Item Code
@@ -253,13 +312,95 @@ devTeam:
         createTime: Created At
         updateTime: Updated At
         creator: Creator
+      form:
+        options:
+          system: System Config
+          business: Business Config
+          api: API Config
+          database: Database Config
+          cache: Cache Config
+          log: Log Config
+          security: Security Config
+          notification: Notification Config
+          enabled: Enabled
+          disabled: Disabled
+        validation:
+          enterConfigItemName: Please enter the config item name
+          configItemNameLength: Length must be between 2 and 50 characters
+          enterConfigItemCode: Please enter the config item code
+          configItemCodeLength: Length must be between 2 and 50 characters
+          configItemCodePattern: Code can only contain letters, numbers, and underscores, and cannot start with a number
+          selectConfigItemType: Please select the config item type
+          enterConfigItemValue: Please enter the config item value
+          configItemValueLength: Length must be between 1 and 500 characters
+          selectIsEnabled: Please select whether to enable it
     type:
       pageTitle: Dictionary Type
       fields:
         dictionaryNumber: Dictionary Number
         dictionaryName: Dictionary Name
         dictionaryType: Dictionary Type
+        dictionaryCategory: Dictionary Category
+        dataType: Data Type
+        defaultValue: Default Value
+        isRequired: Required
+        validationRule: Validation Rule
+        displayOrder: Display Order
         status: Status
         remark: Remark
         createTime: Created At
         updateTime: Updated At
+      options:
+        status:
+          enabled: Enabled
+          disabled: Disabled
+      form:
+        options:
+          categories:
+            system: System Dictionary
+            business: Business Dictionary
+            custom: Custom Dictionary
+            thirdParty: Third-party Dictionary
+          dataTypes:
+            string: String
+            number: Number
+            boolean: Boolean
+            date: Date
+            time: Time
+            datetime: DateTime
+            json: JSON Object
+            array: Array
+            file: File
+            email: Email
+            phone: Phone Number
+            url: URL
+          required:
+            true: Yes
+            false: No
+        placeholders:
+          dictionaryNumber: Please enter the dictionary number
+          dictionaryName: Please enter the dictionary name
+          dictionaryType: Please enter the dictionary type key
+          dictionaryCategory: Please select the dictionary category
+          dataType: Please select the data type
+          defaultValue: Please enter the default value
+          isRequired: Please select whether it is required
+          validationRule: Please enter the validation rule (regex or validator function)
+          displayOrder: Please enter the display order
+          status: Please select the dictionary status
+          remark: Please enter the remark
+        validation:
+          dictionaryNumberRequired: Please enter the dictionary number
+          dictionaryNumberLength: Length must be between 2 and 50 characters
+          dictionaryNumberPattern: Only letters, numbers, and underscores are allowed
+          dictionaryNameRequired: Please enter the dictionary name
+          dictionaryNameLength: Length must be between 2 and 100 characters
+          dictionaryTypeRequired: Please enter the dictionary type
+          dictionaryTypeLength: Length must be between 2 and 100 characters
+          dictionaryTypePattern: Must start with a letter and contain only letters, numbers, and underscores
+          dictionaryCategoryRequired: Please select the dictionary category
+          dataTypeRequired: Please select the data type
+          isRequiredRequired: Please select whether it is required
+          displayOrderRequired: Please enter the display order
+          displayOrderRange: Display order must be between 0 and 9999
+          statusRequired: Please select the dictionary status
