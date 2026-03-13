@@ -1,0 +1,118 @@
+operationTeam:
+  pageTitle: Operations Team
+  systemManage:
+    pageTitle: System Manage
+  dataManage:
+    pageTitle: Data Manage
+  merchantManage:
+    pageTitle: Merchant Manage
+  reportConfiguration:
+    pageTitle: Report Config
+    reportGroup:
+      pageTitle: Report Group
+      dialogs:
+        addTitle: Add Report Group
+        editTitle: Edit Report Group
+      fields:
+        groupId: Group ID
+        groupName: Group Name
+        url: Group URL
+        description: Description
+      form:
+        fields:
+          groupName: Group Name
+          groupUrl: Group URL
+          description: Description
+        placeholders:
+          groupName: Please enter the group name
+          groupUrl: Please enter the group URL
+          description: Please enter the description
+        validation:
+          groupNameRequired: Please enter the group name
+          groupNameLength: Length must be between 2 and 50 characters
+          groupUrlRequired: Please enter the group URL
+          groupUrlLength: Length must be between 2 and 200 characters
+          descriptionRequired: Please enter the description
+          descriptionLength: Length must be between 2 and 200 characters
+    reportInfo:
+      pageTitle: Report Info
+      dialogs:
+        addTitle: Add Report Info
+        editTitle: Edit Report Info
+      fields:
+        reportCode: Report Code
+        groupId: Group ID
+        groupName: Group Name
+        reportName: Report Name
+        description: Description
+      form:
+        fields:
+          reportGroup: Report Group
+          optionTitle: Report Name
+          sort: Sort Order
+          description: Description
+        options:
+          groups:
+            test: Test Report Group
+            inspection: Inspection Report
+            business: Business Report
+            repair: Repair Report
+        placeholders:
+          reportGroup: Please select the report group
+          optionTitle: Please enter the report name
+          sort: Please enter the sort order
+          description: Please enter the description
+        validation:
+          reportGroupRequired: Please select the report group
+          optionTitleRequired: Please enter the report name
+          optionTitleLength: Length must be between 2 and 100 characters
+          sortRequired: Please enter the sort order
+          sortPattern: Sort order must be a positive integer
+          descriptionRequired: Please enter the description
+          descriptionLength: Length must be between 2 and 200 characters
+    reportComponent:
+      pageTitle: Report Component
+      dialogs:
+        addTitle: Add Report Component
+        editTitle: Edit Report Component
+      fields:
+        componentId: Component ID
+        componentName: Component Name
+        componentType: Component Type
+        queryMethod: Query Method
+        description: Description
+      form:
+        fields:
+          componentName: Component Name
+          componentType: Component Type
+          queryMethod: Query Method
+          sql: SQL
+          java: Java Code
+          description: Description
+        options:
+          componentTypes:
+            table: Table
+            chart: Chart
+            summary: Summary
+            text: Text
+            image: Image
+            button: Button
+            input: Input
+            select: Select
+            datePicker: Date Picker
+          queryMethods:
+            sql: SQL Query
+            api: API Call
+            local: Local Compute
+        placeholders:
+          componentName: Please enter the component name
+          componentType: Please select the component type
+          queryMethod: Please select the query method
+          sql: Please enter the SQL statement
+          java: Please enter the Java code
+          description: Please enter the description
+        validation:
+          componentNameRequired: Please enter the component name
+          componentNameLength: Length must be between 2 and 100 characters
+          componentTypeRequired: Please select the component type
+          queryMethodRequired: Please select the query method

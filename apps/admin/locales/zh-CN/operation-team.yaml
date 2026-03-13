@@ -1,0 +1,118 @@
+operationTeam:
+  pageTitle: 运营团队
+  systemManage:
+    pageTitle: 系统管理
+  dataManage:
+    pageTitle: 数据管理
+  merchantManage:
+    pageTitle: 商户管理
+  reportConfiguration:
+    pageTitle: 报表配置
+    reportGroup:
+      pageTitle: 报表组
+      dialogs:
+        addTitle: 新增报表组
+        editTitle: 修改报表组
+      fields:
+        groupId: 组ID
+        groupName: 组名称
+        url: 组URL
+        description: 描述
+      form:
+        fields:
+          groupName: 组名称
+          groupUrl: 组URL
+          description: 描述
+        placeholders:
+          groupName: 请输入组名称
+          groupUrl: 请输入组URL
+          description: 请输入描述信息
+        validation:
+          groupNameRequired: 请输入组名称
+          groupNameLength: 长度在 2 到 50 个字符
+          groupUrlRequired: 请输入组URL
+          groupUrlLength: 长度在 2 到 200 个字符
+          descriptionRequired: 请输入描述信息
+          descriptionLength: 长度在 2 到 200 个字符
+    reportInfo:
+      pageTitle: 报表信息
+      dialogs:
+        addTitle: 新增报表信息
+        editTitle: 修改报表信息
+      fields:
+        reportCode: 报表编码
+        groupId: 所属组ID
+        groupName: 所属组名称
+        reportName: 报表名称
+        description: 描述
+      form:
+        fields:
+          reportGroup: 所属组
+          optionTitle: 报表名称
+          sort: 排序
+          description: 描述
+        options:
+          groups:
+            test: 测试报表组
+            inspection: 巡检报表
+            business: 营业报表
+            repair: 报修报表
+        placeholders:
+          reportGroup: 请选择所属组
+          optionTitle: 请输入报表名称
+          sort: 请输入排序
+          description: 请输入描述信息
+        validation:
+          reportGroupRequired: 请选择所属组
+          optionTitleRequired: 请输入报表名称
+          optionTitleLength: 长度在 2 到 100 个字符
+          sortRequired: 请输入排序
+          sortPattern: 排序必须为正整数
+          descriptionRequired: 请输入描述信息
+          descriptionLength: 长度在 2 到 200 个字符
+    reportComponent:
+      pageTitle: 报表组件
+      dialogs:
+        addTitle: 新增报表组件
+        editTitle: 修改报表组件
+      fields:
+        componentId: 组件ID
+        componentName: 组件名称
+        componentType: 组件类型
+        queryMethod: 查询方式
+        description: 描述
+      form:
+        fields:
+          componentName: 组件名称
+          componentType: 组件类型
+          queryMethod: 查询方式
+          sql: SQL
+          java: Java代码
+          description: 描述
+        options:
+          componentTypes:
+            table: 表格
+            chart: 图表
+            summary: 摘要
+            text: 文本
+            image: 图片
+            button: 按钮
+            input: 输入框
+            select: 下拉框
+            datePicker: 日期选择器
+          queryMethods:
+            sql: SQL查询
+            api: API调用
+            local: 本地计算
+        placeholders:
+          componentName: 请输入组件名称
+          componentType: 请选择组件类型
+          queryMethod: 请选择查询方式
+          sql: 请输入SQL语句
+          java: 请输入Java代码
+          description: 请输入描述信息
+        validation:
+          componentNameRequired: 请输入组件名称
+          componentNameLength: 长度在 2 到 100 个字符
+          componentTypeRequired: 请选择组件类型
+          queryMethodRequired: 请选择查询方式
