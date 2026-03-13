@@ -1,164 +1,225 @@
-<!--
-  配置中心表单
-  用于新增、修改配置中心数据
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-import type { ConfigCenterFormVO } from "@01s-11comm/type";
-import { configTypeOptions, configStatusOptions } from "@01s-11comm/type";
-
-import { ConfigCenterFormProps, defaultForm } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { configStatusOptions, configTypeOptions, type ConfigCenterFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type ConfigCenterFormProps } from "./form";
 
 const props = defineProps<ConfigCenterFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 Default values for form reset */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const configTypeLabelKeyMap = {
+	system: $t("devTeam.configManage.center.form.options.system"),
+	business: $t("devTeam.configManage.center.form.options.business"),
+	api: $t("devTeam.configManage.center.form.options.api"),
+	database: $t("devTeam.configManage.center.form.options.database"),
+	cache: $t("devTeam.configManage.center.form.options.cache"),
+	security: $t("devTeam.configManage.center.form.options.security"),
+	email: $t("devTeam.configManage.center.form.options.email"),
+	file: $t("devTeam.configManage.center.form.options.file"),
+} as const;
+
+const statusLabelKeyMap = {
+	enabled: $t("devTeam.configManage.center.form.options.enabled"),
+	disabled: $t("devTeam.configManage.center.form.options.disabled"),
+} as const;
+
+function translateConfigType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = configTypeLabelKeyMap[value as keyof typeof configTypeLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateStatus(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
 const defaultValues = props.defaultValues as FieldValues & ConfigCenterFormVO;
-
-/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件实际使用的表单对象
- * @description Actual form object used by this component
- */
-const toRefForm = structuredClone(props.form) as FieldValues & ConfigCenterFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ConfigCenterFormVO);
+const formComputed = computed(() => form.value);
 
-/** 表单对象 Form object */
-const form = ref(toRefForm);
+const translatedConfigTypeOptions = withLocale(() =>
+	configTypeOptions.map((option) => ({
+		...option,
+		label: translateConfigType(String(option.value)),
+	})),
+);
 
-/** 只读的表单对象 Readonly form object */
-const formComputed = computed(() => {
-	return form.value;
-});
+const translatedStatusOptions = withLocale(() =>
+	configStatusOptions.map((option) => ({
+		...option,
+		label: translateStatus(String(option.value)),
+	})),
+);
 
-/** 表单项配置 Form columns configuration */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "配置项名称",
+		label: renderI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置项名称",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configName")),
 		},
 	},
 	{
-		label: "配置类型",
+		label: renderI18n($t("devTeam.configManage.center.fields.configType")),
 		prop: "configType",
 		valueType: "select",
 		required: true,
 		width: "180px",
-		options: configTypeOptions,
+		options: translatedConfigTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择配置类型",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configType")),
 		},
 	},
 	{
-		label: "配置键名",
+		label: renderI18n($t("devTeam.configManage.center.fields.configKey")),
 		prop: "configKey",
 		valueType: "input",
 		required: true,
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置键名（如：system.name）",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configKey")),
 		},
 	},
 	{
-		label: "配置值",
+		label: renderI18n($t("devTeam.configManage.center.fields.configValue")),
 		prop: "configValue",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置值",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configValue")),
 		},
 	},
 	{
-		label: "默认值",
+		label: renderI18n($t("devTeam.configManage.center.fields.defaultValue")),
 		prop: "defaultValue",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入默认值",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.defaultValue")),
 		},
 	},
 	{
-		label: "配置描述",
+		label: renderI18n($t("devTeam.configManage.center.fields.configDescription")),
 		prop: "configDescription",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置描述信息",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configDescription")),
 			rows: 3,
 		},
 	},
 	{
-		label: "状态",
+		label: renderI18n($t("devTeam.configManage.center.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
 		width: "120px",
-		options: configStatusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.status")),
 		},
 	},
 	{
-		label: "排序号",
+		label: renderI18n($t("devTeam.configManage.center.fields.sortOrder")),
 		prop: "sortOrder",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
-			placeholder: "请输入排序号",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.sortOrder")),
 			min: 0,
 			max: 9999,
 		},
 	},
 	{
-		label: "备注",
+		label: renderI18n($t("devTeam.configManage.center.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入备注信息",
+			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.remark")),
 			rows: 2,
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 Computed form columns */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 Form validation rules */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	configName: [
-		{ required: true, message: "请输入配置项名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
-	configKey: [
-		{ required: true, message: "请输入配置键名", trigger: "blur" },
 		{
-			pattern: /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)*$/,
-			message: "配置键名格式不正确，应为字母、数字、点、下划线组合",
+			required: true,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.configNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.configNameLength")),
 			trigger: "blur",
 		},
 	],
-	configValue: [{ required: true, message: "请输入配置值", trigger: "blur" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	configType: [
+		{
+			required: true,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.configTypeRequired")),
+			trigger: "change",
+		},
+	],
+	configKey: [
+		{
+			required: true,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.configKeyRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)*$/,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.configKeyPattern")),
+			trigger: "blur",
+		},
+	],
+	configValue: [
+		{
+			required: true,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.configValueRequired")),
+			trigger: "blur",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: renderI18n($t("devTeam.configManage.center.form.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -173,7 +234,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
