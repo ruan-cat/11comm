@@ -9,45 +9,37 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { type SchedulingSettingFormProps, defaultForm } from "./components/form";
-import type { SchedulingSettingFormVO } from "@01s-11comm/type";
-import SchedulingSettingForm from "./components/form.vue";
-import type { SchedulingSetting, SchedulingSettingListQuery } from "@01s-11comm/type";
-import { schedulingStatusOptions } from "@01s-11comm/type";
-import { useSchedulingSettingListQuery } from "@/api/setting-manage/organize-manage/scheduling-setting";
-
-import { useMode, type Mode } from "@/composables/use-mode";
+import { h, ref } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { message } from "@/utils/message";
+import { useSchedulingSettingListQuery } from "@/api/setting-manage/organize-manage/scheduling-setting";
+import type { SchedulingSetting, SchedulingSettingFormVO, SchedulingSettingListQuery } from "@01s-11comm/type";
+import { schedulingStatusOptions } from "@01s-11comm/type";
+import { defaultForm, type SchedulingSettingFormProps } from "./components/form";
+import SchedulingSettingForm from "./components/form.vue";
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<SchedulingSettingListQuery> = {
 	name: "",
 	type: "",
 	cycle: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-// 使用排班设置列表查询 Hook
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -57,113 +49,139 @@ const {
 	handleCurrentPageChange,
 } = useSchedulingSettingListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const schedulingTypeLabelMap = {
+	fixed: "settingManage.organizeManage.schedulingSetting.form.options.type.fixed",
+	rotation: "settingManage.organizeManage.schedulingSetting.form.options.type.rotation",
+	flexible: "settingManage.organizeManage.schedulingSetting.form.options.type.flexible",
+} as const;
+
+const schedulingStatusLabelMap = {
+	enabled: "settingManage.organizeManage.schedulingSetting.form.options.status.enabled",
+	disabled: "settingManage.organizeManage.schedulingSetting.form.options.status.disabled",
+} as const;
+
+function translateSchedulingTypeLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = schedulingTypeLabelMap[value as keyof typeof schedulingTypeLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateSchedulingStatusLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = schedulingStatusLabelMap[value as keyof typeof schedulingStatusLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const translatedSchedulingStatusOptions = withLocale(() =>
+	schedulingStatusOptions.map((option) => ({
+		...option,
+		label: translateSchedulingStatusLabel(String(option.value)),
+	})),
+);
+
+const schedulingSettingFormInstance = ref<InstanceType<typeof SchedulingSettingForm> | null>(null);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name"))),
 		prop: "name",
 		minWidth: 200,
 		fixed: true,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.type")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.type"))),
 		prop: "type",
 		width: 120,
+		cellRenderer: ({ row }) => translateSchedulingTypeLabel(row.type),
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle"))),
 		prop: "cycle",
 		width: 100,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime"))),
 		prop: "effectiveTime",
 		width: 180,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff"))),
 		prop: "staff",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status"))),
 		prop: "status",
 		width: 100,
+		cellRenderer: ({ row }) => translateSchedulingStatusLabel(row.status),
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("settingManage.organizeManage.schedulingSetting.tableTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.schedulingSetting.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		},
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: schedulingStatusOptions,
+		options: translatedSchedulingStatusOptions.value,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
 	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 弹框组件实例 */
-const schedulingSettingFormInstance = ref<InstanceType<typeof SchedulingSettingForm> | null>(null);
-
-/** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-const defaultAddDialogParams = {
-	width: "50%",
-	draggable: true,
-	fullscreenIcon: true,
-	closeOnClickModal: false,
-	contentRenderer: () => h("div"),
-};
+const { setMode, isAdd, isEdit } = useMode();
 
-/** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
-	const { mode, row } = params;
+function openDialog({ mode, row }: { mode: Mode; row?: SchedulingSetting }) {
 	setMode(mode);
 
-	/** 业务对象 */
 	const formVO: SchedulingSettingFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					name: row?.name || "",
 					type: row?.type || "",
@@ -172,52 +190,54 @@ function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 					staff: row?.staff || "",
 					status: row?.status || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
-	/** 表单组件需要的props */
-	const formProps: SchedulingSettingFormProps = {
+	const props: SchedulingSettingFormProps = {
 		form: formVO,
 		defaultValues: formVO,
+		mode,
 	};
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.schedulingSetting.dialogTitle"))}`;
+	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props: formProps,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("settingManage.organizeManage.schedulingSetting.dialogs.addTitle"))
+				: renderI18n($t("settingManage.organizeManage.schedulingSetting.dialogs.editTitle")),
+		props,
 		contentRenderer: () =>
 			h(SchedulingSettingForm, {
 				ref: schedulingSettingFormInstance,
-				...formProps,
+				...props,
 			}),
 		async doBeforeClose({ options, index }) {
 			const formComputed = schedulingSettingFormInstance.value?.formComputed;
 			if (formComputed) {
-				await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = schedulingSettingFormInstance.value?.formComputed;
 					if (formComputed) {
-						await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
+				btnClick: () => {
 					schedulingSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await schedulingSettingFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -233,46 +253,44 @@ function openDialog(params: { mode: Mode; row?: SchedulingSetting }) {
 	});
 }
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 修改操作 */
 function handleEdit(row: SchedulingSetting) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 删除操作 */
 function handleDelete(row: SchedulingSetting) {
 	console.log("删除排班", row);
 }
 
-/** 停用/启用操作 */
 function handleToggleStatus(row: SchedulingSetting) {
 	const newStatus = row.status === "enabled" ? "disabled" : "enabled";
-	// 这里只是模拟，实际应该调用API
 	console.log(`${row.status === "enabled" ? "停用" : "启用"}排班`, row);
-	message(`排班已${newStatus === "enabled" ? "启用" : "停用"}`, { type: "success" });
+	message(
+		newStatus === "enabled"
+			? renderI18n($t("settingManage.organizeManage.common.buttons.enable"))
+			: renderI18n($t("settingManage.organizeManage.common.buttons.disable")),
+		{ type: "success" },
+	);
 }
-
-onMounted(async () => {
-	// 数据自动加载
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -301,9 +319,9 @@ onMounted(async () => {
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
-						<ElButton :type="row.状态 === '启用' ? 'info' : 'primary'" @click="handleToggleStatus(row)">
+						<ElButton :type="row.status === 'enabled' ? 'info' : 'primary'" @click="handleToggleStatus(row)">
 							{{
-								row.状态 === "启用"
+								row.status === "enabled"
 									? transformI18n($t("settingManage.organizeManage.common.buttons.disable"))
 									: transformI18n($t("settingManage.organizeManage.common.buttons.enable"))
 							}}
