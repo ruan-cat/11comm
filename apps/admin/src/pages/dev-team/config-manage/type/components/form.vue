@@ -1,9 +1,5 @@
-<!--
-  字典类型表单
-  用于新增、修改字典类型
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import type { DictionaryTypeFormVO } from "@01s-11comm/type";
 import {
 	dictionaryTypeStatusOptions,
@@ -11,129 +7,181 @@ import {
 	dataTypeOptions,
 	requiredOptions,
 } from "@01s-11comm/type";
-
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { DictionaryTypeFormProps } from "./form";
 
 const props = defineProps<DictionaryTypeFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 Default values for form reset */
+const dictionaryCategoryLabelKeyMap = {
+	system: "devTeam.configManage.type.form.options.categories.system",
+	business: "devTeam.configManage.type.form.options.categories.business",
+	custom: "devTeam.configManage.type.form.options.categories.custom",
+	thirdParty: "devTeam.configManage.type.form.options.categories.thirdParty",
+} as const;
+
+const dataTypeLabelKeyMap = {
+	string: "devTeam.configManage.type.form.options.dataTypes.string",
+	number: "devTeam.configManage.type.form.options.dataTypes.number",
+	boolean: "devTeam.configManage.type.form.options.dataTypes.boolean",
+	date: "devTeam.configManage.type.form.options.dataTypes.date",
+	time: "devTeam.configManage.type.form.options.dataTypes.time",
+	datetime: "devTeam.configManage.type.form.options.dataTypes.datetime",
+	json: "devTeam.configManage.type.form.options.dataTypes.json",
+	array: "devTeam.configManage.type.form.options.dataTypes.array",
+	file: "devTeam.configManage.type.form.options.dataTypes.file",
+	email: "devTeam.configManage.type.form.options.dataTypes.email",
+	phone: "devTeam.configManage.type.form.options.dataTypes.phone",
+	url: "devTeam.configManage.type.form.options.dataTypes.url",
+} as const;
+
+const requiredLabelKeyMap = {
+	true: "devTeam.configManage.type.form.options.required.true",
+	false: "devTeam.configManage.type.form.options.required.false",
+} as const;
+
+const statusLabelKeyMap = {
+	enabled: "devTeam.configManage.type.options.status.enabled",
+	disabled: "devTeam.configManage.type.options.status.disabled",
+} as const;
+
 const defaultValues = props.defaultValues as unknown as FieldValues & DictionaryTypeFormVO;
-
-/** 表单组件实例 Form component instance */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件实际使用的表单对象
- * @description Actual form object used by this component
- */
 const toRefForm = cloneDeep(props.form) as unknown as FieldValues & DictionaryTypeFormVO;
-
-/** 表单对象 Form object */
 const form = ref(toRefForm);
+const formComputed = computed(() => form.value);
 
-/** 只读的表单对象 Readonly form object */
-const formComputed = computed(() => {
-	return form.value;
-});
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
 
-/** 表单项配置 Form columns configuration */
-const plusFormColumns = ref<PlusColumn[]>([
+const translatedDictionaryCategoryOptions = withLocale(() =>
+	dictionaryCategoryOptions.map(option => ({
+		...option,
+		label: renderI18n($t(dictionaryCategoryLabelKeyMap[String(option.value) as keyof typeof dictionaryCategoryLabelKeyMap])),
+	})),
+);
+
+const translatedDataTypeOptions = withLocale(() =>
+	dataTypeOptions.map(option => ({
+		...option,
+		label: renderI18n($t(dataTypeLabelKeyMap[String(option.value) as keyof typeof dataTypeLabelKeyMap])),
+	})),
+);
+
+const translatedRequiredOptions = withLocale(() =>
+	requiredOptions.map(option => ({
+		...option,
+		label: renderI18n($t(requiredLabelKeyMap[String(option.value) as keyof typeof requiredLabelKeyMap])),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	dictionaryTypeStatusOptions.map(option => ({
+		...option,
+		label: renderI18n($t(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap])),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "字典编号",
+		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入字典编号",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryNumber")),
 		},
 	},
 	{
-		label: "字典名称",
+		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入字典名称",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryName")),
 		},
 	},
 	{
-		label: "字典类型",
+		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入字典类型标识",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryType")),
 		},
 	},
 	{
-		label: "字典分类",
+		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryCategory")),
 		prop: "dictionaryCategory",
 		valueType: "select",
 		width: "180px",
 		required: true,
-		options: dictionaryCategoryOptions,
+		options: translatedDictionaryCategoryOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择字典分类",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryCategory")),
 		},
 	},
 	{
-		label: "数据类型",
+		label: renderI18n($t("devTeam.configManage.type.fields.dataType")),
 		prop: "dataType",
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: dataTypeOptions,
+		options: translatedDataTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择数据类型",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dataType")),
 		},
 	},
 	{
-		label: "默认值",
+		label: renderI18n($t("devTeam.configManage.type.fields.defaultValue")),
 		prop: "defaultValue",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入默认值",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.defaultValue")),
 		},
 	},
 	{
-		label: "是否必填",
+		label: renderI18n($t("devTeam.configManage.type.fields.isRequired")),
 		prop: "isRequired",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: requiredOptions,
+		options: translatedRequiredOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择是否必填",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.isRequired")),
 		},
 	},
 	{
-		label: "验证规则",
+		label: renderI18n($t("devTeam.configManage.type.fields.validationRule")),
 		prop: "validationRule",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入验证规则（正则表达式或验证函数）",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.validationRule")),
 			rows: 3,
 		},
 	},
 	{
-		label: "显示顺序",
+		label: renderI18n($t("devTeam.configManage.type.fields.displayOrder")),
 		prop: "displayOrder",
 		valueType: "input-number",
 		width: "150px",
@@ -142,62 +190,74 @@ const plusFormColumns = ref<PlusColumn[]>([
 			min: 0,
 			max: 9999,
 			precision: 0,
-			placeholder: "请输入显示顺序",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.displayOrder")),
 		},
 	},
 	{
-		label: "字典状态",
+		label: renderI18n($t("devTeam.configManage.type.fields.status")),
 		prop: "status",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: dictionaryTypeStatusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择字典状态",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.status")),
 		},
 	},
 	{
-		label: "备注",
+		label: renderI18n($t("devTeam.configManage.type.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入备注信息",
+			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.remark")),
 			rows: 3,
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 Computed form columns */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 Form validation rules */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	dictionaryNumber: [
-		{ required: true, message: "请输入字典编号", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-		{ pattern: /^[A-Za-z0-9_]+$/, message: "只能包含字母、数字和下划线", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberRequired")), trigger: "blur" },
+		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberLength")), trigger: "blur" },
+		{
+			pattern: /^[A-Za-z0-9_]+$/,
+			message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberPattern")),
+			trigger: "blur",
+		},
 	],
 	dictionaryName: [
-		{ required: true, message: "请输入字典名称", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNameRequired")), trigger: "blur" },
+		{ min: 2, max: 100, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNameLength")), trigger: "blur" },
 	],
 	dictionaryType: [
-		{ required: true, message: "请输入字典类型", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
-		{ pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/, message: "必须以字母开头，只能包含字母、数字和下划线", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryTypeRequired")), trigger: "blur" },
+		{ min: 2, max: 100, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryTypeLength")), trigger: "blur" },
+		{
+			pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+			message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryTypePattern")),
+			trigger: "blur",
+		},
 	],
-	dictionaryCategory: [{ required: true, message: "请选择字典分类", trigger: "change" }],
-	dataType: [{ required: true, message: "请选择数据类型", trigger: "change" }],
-	isRequired: [{ required: true, message: "请选择是否必填", trigger: "change" }],
+	dictionaryCategory: [
+		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryCategoryRequired")), trigger: "change" },
+	],
+	dataType: [{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dataTypeRequired")), trigger: "change" }],
+	isRequired: [{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.isRequiredRequired")), trigger: "change" }],
 	displayOrder: [
-		{ required: true, message: "请输入显示顺序", trigger: "blur" },
-		{ type: "number", min: 0, max: 9999, message: "显示顺序必须在 0 到 9999 之间", trigger: "blur" },
+		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.displayOrderRequired")), trigger: "blur" },
+		{
+			type: "number",
+			min: 0,
+			max: 9999,
+			message: renderI18n($t("devTeam.configManage.type.form.validation.displayOrderRange")),
+			trigger: "blur",
+		},
 	],
-	status: [{ required: true, message: "请选择字典状态", trigger: "change" }],
-});
+	status: [{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.statusRequired")), trigger: "change" }],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -212,7 +272,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
