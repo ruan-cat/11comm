@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type SystemConfigFormProps, defaultForm } from "./form";
 import type { SystemConfigListItem } from "@01s-11comm/type";
-// import { cloneDeep } from "@pureadmin/utils"; // 已迁移到 structuredClone
+import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 const props = defineProps<SystemConfigFormProps>();
+const { withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & SystemConfigListItem;
@@ -24,7 +27,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & SystemConfigListItem;
+const toRefForm = cloneDeep(props.form) as FieldValues & SystemConfigListItem;
 
 /**
  * 表单对象
@@ -39,69 +42,68 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "标题名称",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.title")),
 		prop: "title",
 		valueType: "input",
 	},
 	{
-		label: "副标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.subtitle")),
 		prop: "subtitle",
 		valueType: "input",
 	},
 	{
-		label: "简写标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.shortName")),
 		prop: "shortName",
 		valueType: "input",
 	},
 	{
-		label: "公司名称",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.companyName")),
 		prop: "companyName",
 		valueType: "input",
 	},
 	{
-		label: "logo地址",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.logoUrl")),
 		prop: "logoUrl",
 		valueType: "input",
 	},
 	{
-		label: "静态url",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.staticUrl")),
 		prop: "staticUrl",
 		valueType: "input",
 	},
 	{
-		label: "默认小区编号",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.defaultCommunityCode")),
 		prop: "defaultCommunityCode",
 		valueType: "input",
 	},
 	{
-		label: "业主标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.ownerTitle")),
 		prop: "ownerTitle",
 		valueType: "input",
 	},
 	{
-		label: "物业手机标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.propertyMobileTitle")),
 		prop: "propertyMobileTitle",
 		valueType: "input",
 	},
 	{
-		label: "qq地图key",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.qqMapKey")),
 		prop: "qqMapKey",
 		valueType: "input",
 	},
 	{
-		label: "商城地址",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.mallUrl")),
 		prop: "mallUrl",
 		valueType: "input",
 	},
 ]);
 
 /** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = computed<PlusFormRules>(() => ({}));
 
 defineExpose({
 	plusFormInstance,
@@ -116,7 +118,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			label-width="120px"
 		/>
