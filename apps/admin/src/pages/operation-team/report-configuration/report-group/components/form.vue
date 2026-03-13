@@ -1,69 +1,100 @@
-<!--
-  报表组表单
-  用于新增 修改报表组信息
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import type { ReportGroupFormVO } from "@01s-11comm/type";
-import { ReportGroupFormProps, defaultForm } from "./form";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type ReportGroupFormProps } from "./form";
 
 const props = defineProps<ReportGroupFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & ReportGroupFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & ReportGroupFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ReportGroupFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "组名称",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.fields.groupName")),
 		prop: "groupName",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.placeholders.groupName")),
+		},
 	},
 	{
-		label: "组url",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.fields.groupUrl")),
 		prop: "groupUrl",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.placeholders.groupUrl")),
+		},
 	},
 	{
-		label: "描述",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.fields.description")),
 		prop: "description",
-		valueType: "input",
+		valueType: "textarea",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			rows: 3,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.placeholders.description")),
+		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	groupName: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.validation.groupNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.validation.groupNameLength")),
+			trigger: "blur",
+		},
+	],
+	groupUrl: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.validation.groupUrlRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 200,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.validation.groupUrlLength")),
+			trigger: "blur",
+		},
+	],
+	description: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.validation.descriptionRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 200,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportGroup.form.validation.descriptionLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -78,7 +109,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
