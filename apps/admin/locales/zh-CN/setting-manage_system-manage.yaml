@@ -1,0 +1,157 @@
+settingManage:
+  systemManage:
+    pageTitle: 系统管理
+    changePassword:
+      pageTitle: 修改密码
+      tableTitle: 密码修改记录
+      fields:
+        recordId: 记录ID
+        username: 用户名
+        realName: 真实姓名
+        department: 所属部门
+        changeTime: 修改时间
+        changeIp: 修改IP
+        changeType: 修改类型
+        operator: 操作人
+        status: 状态
+        remark: 备注
+        changeTimeRange: 修改时间范围
+      options:
+        departments:
+          property: 物业团队
+          development: 开发团队
+          operation: 运营团队
+          finance: 财务部门
+          customer: 客服部门
+          maintenance: 维修部门
+          security: 安保部门
+          greening: 绿化部门
+          unknown: 未知部门
+        changeTypes:
+          selfService: 用户自行修改
+          adminReset: 管理员重置
+          forceChange: 强制修改
+          firstLogin: 首次登录修改
+          firstSetup: 首次设置
+          activeChange: 主动修改
+        statuses:
+          success: 成功
+          failed: 失败
+          pending: 待审核
+    systemConfig:
+      pageTitle: 系统配置
+      dialogs:
+        editTitle: 修改系统配置
+      sections:
+        basicInfo: 系统基本信息
+        urlConfig: 系统地址配置
+        businessConfig: 业务配置
+      fields:
+        title: 标题名称
+        subtitle: 副标题
+        shortName: 简写标题
+        companyName: 公司名称
+        logoUrl: logo地址
+        staticUrl: 静态url
+        mallUrl: 商城地址
+        defaultCommunityCode: 默认小区编号
+        ownerTitle: 业主标题
+        propertyMobileTitle: 物业手机标题
+        qqMapKey: qq地图key
+    registerProtocol:
+      pageTitle: 注册协议
+      cardTitle: 注册协议
+    initializeCell:
+      pageTitle: 初始化小区
+      tableTitle: 初始化小区
+      dialogs:
+        addTitle: 添加初始化小区
+        editTitle: 编辑初始化小区
+        infoTitle: 初始化小区详情
+        formatTitle: 温馨提示！
+      buttons:
+        view: 查看
+        format: 格式化
+        confirmFormat: 确认格式化
+        mistake: 点错了
+      messages:
+        operateSuccess: 操作成功！
+        formatSuccess: 格式化操作完成！
+      warningText: 请谨慎操作，此操作将处理初始化项目【{item}】，当前状态为【{status}】，操作期间，请再次跟相关人员核实确认！
+      fields:
+        initItem: 初始化项目
+        initStatus: 初始化状态
+        configParams: 配置参数
+        communityId: 小区ID
+        communityName: 小区名称
+        nearbyLandmark: 附近地标
+        cityCode: 城市编码
+        status: 状态
+        developerPassword: 开发者密码
+      placeholders:
+        communityId: 请输入小区ID
+        communityName: 请输入小区名称
+        nearbyLandmark: 请输入附近地标
+        cityCode: 请输入城市编码
+        status: 请选择状态
+        developerPassword: 请输入开发者密码
+      validation:
+        communityIdRequired: 请输入小区ID
+        communityIdLength: 长度在 2 到 50 个字符
+        communityNameRequired: 请输入小区名称
+        communityNameLength: 长度在 2 到 100 个字符
+        nearbyLandmarkRequired: 请输入附近地标
+        nearbyLandmarkLength: 长度在 2 到 100 个字符
+        cityCodeRequired: 请输入城市编码
+        cityCodeLength: 长度在 2 到 100 个字符
+        statusRequired: 请选择状态
+        developerPasswordRequired: 请输入开发者密码
+        developerPasswordLength: 长度在 6 到 50 个字符
+      options:
+        items:
+          building: 初始化楼栋
+          house: 初始化房屋
+          parking: 初始化车位
+        statuses:
+          completed: 已完成
+          inProgress: 初始化中
+          pending: 待初始化
+          enabled: 启用
+          disabled: 禁用
+    communityConfiguration:
+      pageTitle: 小区配置
+      tableTitle: 小区配置
+      dialogs:
+        addTitle: 添加小区配置
+        editTitle: 编辑小区配置
+        infoTitle: 小区配置详情
+      fields:
+        communityName: 小区名称
+        settingName: 设置名称
+        settingValue: 设置值
+        settingType: 设置类型
+        status: 状态
+        dataStatus: 数据状态
+        remark: 备注
+        createTime: 创建时间
+        updateTime: 更新时间
+      validation:
+        communityNameRequired: 请输入小区名称
+        communityNameLength: 长度在 2 到 50 个字符
+        settingNameRequired: 请输入设置名称
+        settingNameLength: 长度在 2 到 100 个字符
+        settingValueRequired: 请输入设置值
+        settingValueLength: 长度在 1 到 200 个字符
+        settingTypeRequired: 请选择设置类型
+        dataStatusRequired: 请选择数据状态
+      options:
+        settingTypes:
+          system: 系统设置
+          business: 业务设置
+          ui: 界面设置
+          feature: 功能设置
+          security: 安全设置
+        statuses:
+          enabled: 启用
+          disabled: 禁用
+          pending: 待审核

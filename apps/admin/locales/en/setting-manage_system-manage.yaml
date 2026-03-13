@@ -1,0 +1,157 @@
+settingManage:
+  systemManage:
+    pageTitle: System Manage
+    changePassword:
+      pageTitle: Change Password
+      tableTitle: Password Change Records
+      fields:
+        recordId: Record ID
+        username: Username
+        realName: Real Name
+        department: Department
+        changeTime: Change Time
+        changeIp: Change IP
+        changeType: Change Type
+        operator: Operator
+        status: Status
+        remark: Remark
+        changeTimeRange: Change Time Range
+      options:
+        departments:
+          property: Property Team
+          development: Development Team
+          operation: Operations Team
+          finance: Finance Department
+          customer: Customer Service Department
+          maintenance: Maintenance Department
+          security: Security Department
+          greening: Landscaping Department
+          unknown: Unknown Department
+        changeTypes:
+          selfService: Self-service Change
+          adminReset: Admin Reset
+          forceChange: Force Change
+          firstLogin: First Login Change
+          firstSetup: First-time Setup
+          activeChange: Active Change
+        statuses:
+          success: Success
+          failed: Failed
+          pending: Pending Review
+    systemConfig:
+      pageTitle: System Config
+      dialogs:
+        editTitle: Edit System Config
+      sections:
+        basicInfo: Basic System Info
+        urlConfig: System URL Config
+        businessConfig: Business Config
+      fields:
+        title: Title
+        subtitle: Subtitle
+        shortName: Short Title
+        companyName: Company Name
+        logoUrl: Logo URL
+        staticUrl: Static URL
+        mallUrl: Mall URL
+        defaultCommunityCode: Default Community Code
+        ownerTitle: Owner Title
+        propertyMobileTitle: Property Mobile Title
+        qqMapKey: QQ Map Key
+    registerProtocol:
+      pageTitle: Registration Protocol
+      cardTitle: Registration Protocol
+    initializeCell:
+      pageTitle: Initialize Community
+      tableTitle: Initialize Community
+      dialogs:
+        addTitle: Add Initialize Community
+        editTitle: Edit Initialize Community
+        infoTitle: Initialize Community Detail
+        formatTitle: Friendly Reminder
+      buttons:
+        view: View
+        format: Format
+        confirmFormat: Confirm Format
+        mistake: Wrong Click
+      messages:
+        operateSuccess: Operation completed successfully.
+        formatSuccess: Format operation completed.
+      warningText: Please proceed carefully. This action will process initialization item [{item}] with current status [{status}]. Please reconfirm with relevant staff before continuing.
+      fields:
+        initItem: Initialization Item
+        initStatus: Initialization Status
+        configParams: Config Params
+        communityId: Community ID
+        communityName: Community Name
+        nearbyLandmark: Nearby Landmark
+        cityCode: City Code
+        status: Status
+        developerPassword: Developer Password
+      placeholders:
+        communityId: Please enter community ID
+        communityName: Please enter community name
+        nearbyLandmark: Please enter nearby landmark
+        cityCode: Please enter city code
+        status: Please select status
+        developerPassword: Please enter developer password
+      validation:
+        communityIdRequired: Please enter community ID
+        communityIdLength: Length must be between 2 and 50 characters
+        communityNameRequired: Please enter community name
+        communityNameLength: Length must be between 2 and 100 characters
+        nearbyLandmarkRequired: Please enter nearby landmark
+        nearbyLandmarkLength: Length must be between 2 and 100 characters
+        cityCodeRequired: Please enter city code
+        cityCodeLength: Length must be between 2 and 100 characters
+        statusRequired: Please select status
+        developerPasswordRequired: Please enter developer password
+        developerPasswordLength: Length must be between 6 and 50 characters
+      options:
+        items:
+          building: Initialize Building
+          house: Initialize House
+          parking: Initialize Parking Space
+        statuses:
+          completed: Completed
+          inProgress: In Progress
+          pending: Pending
+          enabled: Enabled
+          disabled: Disabled
+    communityConfiguration:
+      pageTitle: Community Config
+      tableTitle: Community Config
+      dialogs:
+        addTitle: Add Community Config
+        editTitle: Edit Community Config
+        infoTitle: Community Config Detail
+      fields:
+        communityName: Community Name
+        settingName: Setting Name
+        settingValue: Setting Value
+        settingType: Setting Type
+        status: Status
+        dataStatus: Data Status
+        remark: Remark
+        createTime: Created Time
+        updateTime: Updated Time
+      validation:
+        communityNameRequired: Please enter community name
+        communityNameLength: Length must be between 2 and 50 characters
+        settingNameRequired: Please enter setting name
+        settingNameLength: Length must be between 2 and 100 characters
+        settingValueRequired: Please enter setting value
+        settingValueLength: Length must be between 1 and 200 characters
+        settingTypeRequired: Please select setting type
+        dataStatusRequired: Please select data status
+      options:
+        settingTypes:
+          system: System Settings
+          business: Business Settings
+          ui: UI Settings
+          feature: Feature Settings
+          security: Security Settings
+        statuses:
+          enabled: Enabled
+          disabled: Disabled
+          pending: Pending Review
