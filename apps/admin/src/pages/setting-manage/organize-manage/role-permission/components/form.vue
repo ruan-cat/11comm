@@ -1,133 +1,109 @@
 <script lang="ts" setup>
-import { computed, reactive, ref } from "vue";
-import { useTemplateRef } from "vue";
-import type { PlusColumn } from "plus-pro-components";
-import type { PlusFormRules } from "@/config/constant";
-import { usePlusFormReset } from "@/composables/use-plus-form-reset";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
-
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { RolePermissionFormProps } from "./form";
 import type { RolePermissionFormVO } from "@01s-11comm/type";
 
-/** 表单组件 props */
 const props = defineProps<RolePermissionFormProps>();
-const { t } = useI18n();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & RolePermissionFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & RolePermissionFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & RolePermissionFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-const translatedStatusOptions = computed(() => [
-	{ label: transformI18n(t("settingManage.organizeManage.rolePermission.status.enabled")), value: true },
-	{ label: transformI18n(t("settingManage.organizeManage.rolePermission.status.disabled")), value: false },
+const translatedStatusOptions = withLocale(() => [
+	{ label: renderI18n($t("settingManage.organizeManage.rolePermission.status.enabled")), value: true },
+	{ label: renderI18n($t("settingManage.organizeManage.rolePermission.status.disabled")), value: false },
 ]);
 
-/** 表单项配置 */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			readonly: false,
+			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.code")),
+		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		prop: "code",
 		valueType: "input",
 		fieldProps: {
-			readonly: false,
+			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.status")),
+		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.status")),
 		prop: "enabled",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		fieldProps: {
-			readonly: false,
+			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.status")),
 		},
 	},
 	{
-		label: transformI18n(t("settingManage.organizeManage.rolePermission.fields.description")),
+		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
-			readonly: false,
 			rows: 4,
+			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.description")),
 		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = computed<PlusFormRules>(() => ({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.enterName")),
+			message: renderI18n($t("settingManage.organizeManage.rolePermission.form.validation.enterName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.nameLength")),
+			message: renderI18n($t("settingManage.organizeManage.rolePermission.form.validation.nameLength")),
 			trigger: "blur",
 		},
 	],
 	code: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.enterCode")),
+			message: renderI18n($t("settingManage.organizeManage.rolePermission.form.validation.enterCode")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[A-Z][A-Z0-9_]*$/,
-			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.codePattern")),
+			message: renderI18n($t("settingManage.organizeManage.rolePermission.form.validation.codePattern")),
 			trigger: "blur",
 		},
 	],
 	enabled: [
 		{
 			required: true,
-			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.selectStatus")),
+			message: renderI18n($t("settingManage.organizeManage.rolePermission.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
 	description: [
 		{
 			max: 200,
-			message: transformI18n(t("settingManage.organizeManage.rolePermission.form.validation.descriptionMax")),
+			message: renderI18n($t("settingManage.organizeManage.rolePermission.form.validation.descriptionMax")),
 			trigger: "blur",
 		},
 	],
 }));
 
-// 默认导出表单实例和表单对象，供外部使用
 defineExpose({
 	plusFormInstance,
 	formComputed,
