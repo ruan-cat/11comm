@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "物业菜单",
+		// 物业菜单
+		title: "propertyManage.pageTitle",
 		icon: "mdi:home",
 		rank: getRouteRank("propertyManage"),
 	},

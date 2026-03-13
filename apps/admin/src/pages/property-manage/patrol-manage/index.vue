@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "巡检管理",
+		// 巡检管理
+		title: "propertyManage.patrolManage.pageTitle",
 		icon: "mdi:map-search",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage"),
