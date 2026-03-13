@@ -1,26 +1,39 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "小区信息",
+		// 小区信息
+		title: "operation-team_data-manage.community-information.pageTitle",
 		icon: "mdi:home-city",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.dataManage.communityInformation"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { type CommunityInfoListItem, type CommunityInfoQueryParams, communitySearchOptions } from "@01s-11comm/type";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
+import {
+	communityInformationStatusOptions,
+	communitySearchOptions,
+	type CommunityInformationFormVO,
+	type CommunityInfoListItem,
+	type CommunityInfoQueryParams,
+} from "@01s-11comm/type";
 import { useCommunityInfoListQuery } from "@/api/operation-team/data-manage/community-information";
 import { type CommunityInformationFormProps, defaultForm } from "./components/form";
-import type { CommunityInformationFormVO } from "@01s-11comm/type";
 import CommunityInformationForm from "./components/form.vue";
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & Partial<CommunityInfoQueryParams> = {
 	communityId: "",
 	communityName: "",
@@ -29,15 +42,10 @@ const plusSearchModelRef: FieldValues & Partial<CommunityInfoQueryParams> = {
 	district: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	isFetching,
 	updateParams,
 	resetParams,
@@ -47,157 +55,229 @@ const {
 	pureTableProps,
 } = useCommunityInfoListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const provinceLabelMap = {
+	北京市: $t("operation-team_data-manage.community-information.options.provinces.beijing"),
+	上海市: $t("operation-team_data-manage.community-information.options.provinces.shanghai"),
+	广州市: $t("operation-team_data-manage.community-information.options.provinces.guangzhou"),
+	深圳市: $t("operation-team_data-manage.community-information.options.provinces.shenzhen"),
+	杭州市: $t("operation-team_data-manage.community-information.options.provinces.hangzhou"),
+} as const;
+
+const cityLabelMap = {
+	北京市: $t("operation-team_data-manage.community-information.options.cities.beijing"),
+	上海市: $t("operation-team_data-manage.community-information.options.cities.shanghai"),
+	广州市: $t("operation-team_data-manage.community-information.options.cities.guangzhou"),
+	深圳市: $t("operation-team_data-manage.community-information.options.cities.shenzhen"),
+	杭州市: $t("operation-team_data-manage.community-information.options.cities.hangzhou"),
+	南京市: $t("operation-team_data-manage.community-information.options.cities.nanjing"),
+	武汉市: $t("operation-team_data-manage.community-information.options.cities.wuhan"),
+	成都市: $t("operation-team_data-manage.community-information.options.cities.chengdu"),
+} as const;
+
+const districtLabelMap = {
+	朝阳区: $t("operation-team_data-manage.community-information.options.districts.chaoyang"),
+	海淀区: $t("operation-team_data-manage.community-information.options.districts.haidian"),
+	东城区: $t("operation-team_data-manage.community-information.options.districts.dongcheng"),
+	西城区: $t("operation-team_data-manage.community-information.options.districts.xicheng"),
+	丰台区: $t("operation-team_data-manage.community-information.options.districts.fengtai"),
+} as const;
+
+const statusLabelMap = {
+	正常: $t("operation-team_data-manage.community-information.options.statuses.normal"),
+	停用: $t("operation-team_data-manage.community-information.options.statuses.disabled"),
+	筹建中: $t("operation-team_data-manage.community-information.options.statuses.preparing"),
+	已交付: $t("operation-team_data-manage.community-information.options.statuses.delivered"),
+	enabled: $t("operation-team_data-manage.community-information.options.statuses.enabled"),
+	disabled: $t("operation-team_data-manage.community-information.options.statuses.disabled"),
+} as const;
+
+function translateProvinceLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+	const key = provinceLabelMap[value as keyof typeof provinceLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateCityLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+	const key = cityLabelMap[value as keyof typeof cityLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateDistrictLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+	const key = districtLabelMap[value as keyof typeof districtLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateStatusLabel(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+	const key = statusLabelMap[value as keyof typeof statusLabelMap];
+	return key ? renderI18n(key) : value;
+}
+
+const translatedProvinceOptions = withLocale(() =>
+	communitySearchOptions.provinces.map((item) => ({
+		...item,
+		label: translateProvinceLabel(String(item.value)),
+	})),
+);
+
+const translatedCityOptions = withLocale(() =>
+	communitySearchOptions.cities.map((item) => ({
+		...item,
+		label: translateCityLabel(String(item.value)),
+	})),
+);
+
+const translatedDistrictOptions = withLocale(() =>
+	communitySearchOptions.districts.map((item) => ({
+		...item,
+		label: translateDistrictLabel(String(item.value)),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	communityInformationStatusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "小区ID",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.communityId"))),
 		prop: "communityId",
 		width: 120,
 	},
 	{
-		label: "小区名称",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.communityName"))),
 		prop: "communityName",
 		minWidth: 150,
 	},
 	{
-		label: "物业公司",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.propertyCompany"))),
 		prop: "propertyCompany",
 		minWidth: 200,
 	},
 	{
-		label: "附近地标",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.nearbyLandmark"))),
 		prop: "nearbyLandmark",
 		width: 150,
 	},
 	{
-		label: "省份",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.province"))),
 		prop: "province",
 		width: 100,
+		cellRenderer: ({ row }) => translateProvinceLabel(row.province),
 	},
 	{
-		label: "城市",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.city"))),
 		prop: "city",
 		width: 100,
+		cellRenderer: ({ row }) => translateCityLabel(row.city),
 	},
 	{
-		label: "区县",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.district"))),
 		prop: "district",
 		width: 100,
+		cellRenderer: ({ row }) => translateDistrictLabel(row.district),
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.contactPhone"))),
 		prop: "contactPhone",
 		width: 120,
 	},
 	{
-		label: "管理员",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.administrator"))),
 		prop: "administrator",
 		width: 100,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.status"))),
 		prop: "status",
 		width: 100,
+		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "小区信息",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("operation-team_data-manage.community-information.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 小区ID
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("operation-team_data-manage.community-information.communityID")),
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityId")),
 		prop: "communityId",
 		valueType: "input",
 	},
-
-	// 小区名称
 	{
-		label: transformI18n($t("operation-team_data-manage.community-information.communityName")),
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 	},
-
-	// 省
 	{
-		label: transformI18n($t("operation-team_data-manage.community-information.province")),
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.province")),
 		prop: "province",
 		valueType: "select",
-		options: communitySearchOptions.provinces,
+		options: translatedProvinceOptions.value,
 	},
-
-	// 城市
 	{
-		label: transformI18n($t("operation-team_data-manage.community-information.city")),
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.city")),
 		prop: "city",
 		valueType: "select",
-		options: communitySearchOptions.cities,
+		options: translatedCityOptions.value,
 	},
-
-	// 区县
 	{
-		label: transformI18n($t("operation-team_data-manage.community-information.district")),
+		label: renderI18n($t("operation-team_data-manage.community-information.fields.district")),
 		prop: "district",
 		valueType: "select",
-		options: communitySearchOptions.districts,
+		options: translatedDistrictOptions.value,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 表单组件实例 */
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 const communityInformationFormInstance = ref<InstanceType<typeof CommunityInformationForm> | null>(null);
-
-/** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 业务对象 */
 	const formVO: CommunityInformationFormVO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
+		: isEdit.value || isInfo.value
 			? cloneDeep({
 					...defaultForm,
 					communityId: row?.communityId || "",
@@ -205,33 +285,44 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 					propertyCompany: row?.propertyCompany || "",
 					nearbyLandmark: row?.nearbyLandmark || "",
 					cityCode: row?.cityCode || "",
-					createTime: row?.createTime || "",
 					communityCode: row?.communityCode || "",
-					status: row?.status || "正常运营",
+					status: String(row?.status || translatedStatusOptions.value[0]?.value || ""),
 					province: row?.province || "",
 					city: row?.city || "",
 					district: row?.district || "",
-					detailedAddress: row?.detailedAddress || "",
+					detailedAddress: row?.detailedAddress || row?.address || "",
 					contactPhone: row?.contactPhone || "",
 					administrator: row?.administrator || "",
+					region: row?.region || "",
+					address: row?.address || "",
+					landArea: row?.landArea || 0,
+					buildingArea: row?.buildingArea || 0,
+					buildingCount: row?.buildingCount || 0,
+					unitCount: row?.unitCount || 0,
+					houseCount: row?.houseCount || 0,
+					parkingCount: row?.parkingCount || 0,
+					greenRate: row?.greenRate || 0,
+					plotRatio: row?.plotRatio || 0,
+					developer: row?.developer || "",
+					establishedTime: row?.establishedTime || "",
 				})
 			: cloneDeep(defaultForm);
 
-	/** 表单组件需要的props */
 	const formProps: CommunityInformationFormProps = {
 		form: formVO,
 		defaultValues: formVO,
+		mode,
 	};
-
-	/** 弹框标题 */
-	const title = `${modeText.value}小区信息`;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("operation-team_data-manage.community-information.dialogs.addTitle"))
+				: isEdit.value
+					? renderI18n($t("operation-team_data-manage.community-information.dialogs.editTitle"))
+					: renderI18n($t("operation-team_data-manage.community-information.dialogs.infoTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(CommunityInformationForm, {
@@ -239,30 +330,34 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = communityInformationFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = communityInformationFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = communityInformationFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = communityInformationFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					communityInformationFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					communityInformationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await communityInformationFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await communityInformationFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -275,13 +370,11 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 	});
 }
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -291,8 +384,9 @@ function handleSearch() {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -308,7 +402,7 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
