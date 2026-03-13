@@ -1,187 +1,328 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
-import { buildingStructureOptions, buildingStatusOptions } from "@01s-11comm/type";
-
-import { BuildingSpaceStructureDiagramFormProps } from "./form";
+import type { BuildingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & BuildingSpaceStructureDiagramFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & BuildingSpaceStructureDiagramFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & BuildingSpaceStructureDiagramFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const buildingStructureLabelKeyMap = {
+	"钢筋混凝土结构":
+		"propertyManage_communityManage.building-space-structure-diagram.options.structure.reinforcedConcrete",
+	钢结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.steel",
+	砖混结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.brickConcrete",
+	框架结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.frame",
+	剪力墙结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.shearWall",
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const buildingStatusLabelKeyMap = {
+	正常使用: "propertyManage_communityManage.building-space-structure-diagram.options.status.normal",
+	装修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.renovating",
+	维修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.repairing",
+	待验收:
+		"propertyManage_communityManage.building-space-structure-diagram.options.status.pendingAcceptance",
+	已停用: "propertyManage_communityManage.building-space-structure-diagram.options.status.disabled",
+} as const;
+
+const buildingStructureOptions = withLocale(() =>
+	Object.entries(buildingStructureLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const buildingStatusOptions = withLocale(() =>
+	Object.entries(buildingStatusLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "楼栋编号",
-		prop: "buildingNumber",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
+		prop: "buildingId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入楼栋编号",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingId"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "楼栋名称",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入楼栋名称",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingName"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "总楼层",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalFloors")),
 		prop: "totalFloors",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
 			max: 100,
-			placeholder: "请输入总楼层数",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.totalFloors"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "总户数",
-		prop: "totalUnits",
+		label: renderI18n(
+			$t("propertyManage_communityManage.building-space-structure-diagram.fields.totalHouseholds"),
+		),
+		prop: "totalHouseholds",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
 			max: 1000,
-			placeholder: "请输入总户数",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.totalHouseholds"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "建筑面积",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingArea")),
 		prop: "buildingArea",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			precision: 1,
-			placeholder: "请输入建筑面积（平方米）",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingArea"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "建筑结构",
+		label: renderI18n(
+			$t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure"),
+		),
 		prop: "buildingStructure",
 		valueType: "select",
-		options: buildingStructureOptions,
+		options: buildingStructureOptions.value,
 		fieldProps: {
 			clearable: true,
-			filterable: true,
-			placeholder: "请选择建筑结构",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingStructure"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "建成年份",
+		label: renderI18n(
+			$t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear"),
+		),
 		prop: "constructionYear",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入建成年份",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.constructionYear"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "图纸路径",
-		prop: "blueprintPath",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.drawingPath")),
+		prop: "drawingPath",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入图纸路径",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.drawingPath"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "状态",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: buildingStatusOptions,
+		options: buildingStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择楼栋状态",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.status"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "负责人",
-		prop: "responsiblePerson",
+		label: renderI18n(
+			$t("propertyManage_communityManage.building-space-structure-diagram.fields.personInCharge"),
+		),
+		prop: "personInCharge",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入负责人姓名",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.personInCharge"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "联系电话",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系电话",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.contactPhone"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "备注",
+		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请输入备注信息",
 			rows: 3,
+			maxlength: 500,
+			showWordLimit: true,
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.remarks"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	buildingNumber: [{ required: true, message: "请输入楼栋编号", trigger: "blur" }],
-	buildingName: [{ required: true, message: "请输入楼栋名称", trigger: "blur" }],
-	totalFloors: [
-		{ required: true, message: "请输入总楼层数", trigger: "blur" },
-		{ type: "number", min: 1, message: "楼层数不能小于1", trigger: "blur" },
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	buildingId: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterBuildingId"),
+			),
+			trigger: "blur",
+		},
 	],
-	totalUnits: [
-		{ required: true, message: "请输入总户数", trigger: "blur" },
-		{ type: "number", min: 1, message: "总户数不能小于1", trigger: "blur" },
+	buildingName: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterBuildingName"),
+			),
+			trigger: "blur",
+		},
+	],
+	totalFloors: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterTotalFloors"),
+			),
+			trigger: "blur",
+		},
+	],
+	totalHouseholds: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterTotalHouseholds"),
+			),
+			trigger: "blur",
+		},
 	],
 	buildingArea: [
-		{ required: true, message: "请输入建筑面积", trigger: "blur" },
-		{ type: "number", min: 0, message: "建筑面积不能小于0", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterBuildingArea"),
+			),
+			trigger: "blur",
+		},
 	],
-	buildingStructure: [{ required: true, message: "请选择建筑结构", trigger: "change" }],
-	constructionYear: [{ required: true, message: "请输入建成年份", trigger: "blur" }],
-	blueprintPath: [{ required: true, message: "请输入图纸路径", trigger: "blur" }],
-	status: [{ required: true, message: "请选择楼栋状态", trigger: "change" }],
-	responsiblePerson: [{ required: true, message: "请输入负责人姓名", trigger: "blur" }],
+	buildingStructure: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.selectBuildingStructure"),
+			),
+			trigger: "change",
+		},
+	],
+	constructionYear: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterConstructionYear"),
+			),
+			trigger: "blur",
+		},
+	],
+	drawingPath: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterDrawingPath"),
+			),
+			trigger: "blur",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.selectStatus"),
+			),
+			trigger: "change",
+		},
+	],
+	personInCharge: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterPersonInCharge"),
+			),
+			trigger: "blur",
+		},
+	],
 	contactPhone: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterContactPhone"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: renderI18n(
+				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.contactPhonePattern"),
+			),
+			trigger: "blur",
+		},
 	],
-});
+}));
 
-// 默认对外导出
 defineExpose({
 	plusFormInstance,
 	formComputed,
