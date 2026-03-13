@@ -1,36 +1,40 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "我的小区",
+		// 我的小区
+		title: "propertyManage_communityManage.my.pageTitle",
 		icon: "mdi:home-account",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.my"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { ElTag, ElMessage, ElMessageBox } from "element-plus";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { ElMessage, ElMessageBox, ElTag } from "element-plus";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
-import {
-	type MyCommunityListItem,
-	type MyCommunityQueryParams,
-	type CommunityManageMyFormVO,
-	myStatusOptions,
-	provinceOptions,
-} from "@01s-11comm/type";
-import { CommunityManageMyFormProps, defaultForm } from "./components/form";
-import CommunityManageForm from "./components/form.vue";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
 import { useMyListQuery } from "@/api/property-manage/community-manage/my";
+import type { CommunityManageMyFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import type {
+	CommunityManageMyFormVO,
+	CommunityStatusType,
+	MyCommunityListItem,
+	MyCommunityQueryParams,
+} from "@01s-11comm/type";
+import CommunityManageForm from "./components/form.vue";
 
-/** 表单组件实例 */
-const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
 	province: "",
 	city: "",
@@ -40,15 +44,10 @@ const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
 	status: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -58,152 +57,191 @@ const {
 	handleCurrentPageChange,
 } = useMyListQuery(plusSearchDefaultValues);
 
-/** 模拟异步操作函数 */
+const communityManageFormInstance = ref<InstanceType<typeof CommunityManageForm> | null>(null);
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const provinceLabelKeyMap = {
+	福建省: "propertyManage_communityManage.my.options.province.fujian",
+	广东省: "propertyManage_communityManage.my.options.province.guangdong",
+	浙江省: "propertyManage_communityManage.my.options.province.zhejiang",
+	江苏省: "propertyManage_communityManage.my.options.province.jiangsu",
+	北京市: "propertyManage_communityManage.my.options.province.beijing",
+	上海市: "propertyManage_communityManage.my.options.province.shanghai",
+	四川省: "propertyManage_communityManage.my.options.province.sichuan",
+	湖北省: "propertyManage_communityManage.my.options.province.hubei",
+	山东省: "propertyManage_communityManage.my.options.province.shandong",
+	湖南省: "propertyManage_communityManage.my.options.province.hunan",
+	河北省: "propertyManage_communityManage.my.options.province.hebei",
+	河南省: "propertyManage_communityManage.my.options.province.henan",
+	江西省: "propertyManage_communityManage.my.options.province.jiangxi",
+	安徽省: "propertyManage_communityManage.my.options.province.anhui",
+} as const;
+
+const statusLabelKeyMap = {
+	operating: "propertyManage_communityManage.my.options.status.operating",
+	preparing: "propertyManage_communityManage.my.options.status.preparing",
+	maintenance: "propertyManage_communityManage.my.options.status.maintenance",
+	disabled: "propertyManage_communityManage.my.options.status.disabled",
+} as const;
+
+function translateOptionLabel<T extends Record<string, string>>(value: string | undefined | null, labelMap: T) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = labelMap[value as keyof T];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const provinceOptions = withLocale(() =>
+	Object.entries(provinceLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const statusOptions = withLocale(() =>
+	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "省份",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.province"))),
 		prop: "province",
-		width: 100,
+		minWidth: 120,
+		cellRenderer: ({ row }) => translateOptionLabel(row.province, provinceLabelKeyMap),
 	},
 	{
-		label: "市州",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.city"))),
 		prop: "city",
-		width: 100,
+		minWidth: 120,
 	},
 	{
-		label: "区县",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.district"))),
 		prop: "district",
-		width: 100,
+		minWidth: 120,
 	},
 	{
-		label: "小区名称",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.communityName"))),
 		prop: "communityName",
-		width: 160,
+		minWidth: 180,
 	},
 	{
-		label: "小区编码",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.communityCode"))),
 		prop: "communityCode",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.createTime"))),
 		prop: "createTime",
-		width: 160,
+		minWidth: 170,
 	},
 	{
-		label: "更新时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.updateTime"))),
 		prop: "updateTime",
-		width: 160,
+		minWidth: 170,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.status"))),
 		prop: "status",
-		width: 100,
+		minWidth: 120,
 		cellRenderer: ({ row }) => {
-			const statusMap = {
-				正常运营: { type: "success", text: "正常运营" },
-				筹备中: { type: "warning", text: "筹备中" },
-				维护中: { type: "info", text: "维护中" },
-				已停用: { type: "danger", text: "已停用" },
+			const typeMap: Record<string, "success" | "warning" | "info" | "danger"> = {
+				operating: "success",
+				preparing: "warning",
+				maintenance: "info",
+				disabled: "danger",
 			};
-			const statusInfo = statusMap[row.status] || { type: "info", text: row.status };
-			return h(ElTag, { type: statusInfo.type }, () => statusInfo.text);
+			return h(ElTag, { type: typeMap[row.status] ?? "info" }, () => translateOptionLabel(row.status, statusLabelKeyMap));
 		},
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "我的小区",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("propertyManage_communityManage.my.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 省份 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "省份",
+		label: renderI18n($t("propertyManage_communityManage.my.fields.province")),
 		prop: "province",
 		valueType: "select",
-		options: provinceOptions,
+		options: provinceOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.province")),
+		},
 	},
-
-	/** 市州 */
 	{
-		label: "市州",
+		label: renderI18n($t("propertyManage_communityManage.my.fields.city")),
 		prop: "city",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.city")),
+		},
 	},
-
-	/** 区县 */
 	{
-		label: "区县",
+		label: renderI18n($t("propertyManage_communityManage.my.fields.district")),
 		prop: "district",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.district")),
+		},
 	},
-
-	/** 小区名称 */
 	{
-		label: "小区名称",
+		label: renderI18n($t("propertyManage_communityManage.my.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.name")),
+		},
 	},
-
-	/** 小区编码 */
 	{
-		label: "小区编码",
+		label: renderI18n($t("propertyManage_communityManage.my.fields.communityCode")),
 		prop: "communityCode",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.code")),
+		},
 	},
-
-	/** 状态 */
 	{
-		label: "状态",
+		label: renderI18n($t("propertyManage_communityManage.my.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: myStatusOptions,
+		options: statusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.status")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -211,91 +249,78 @@ function handleSearch() {
 	});
 }
 
-/** 打开弹框参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: MyCommunityListItem;
-}
-
-const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
-
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: MyCommunityListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}小区`;
-
-	/** 业务对象 */
-	const formData: CommunityManageMyFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: isEdit.value
-			? structuredClone({
+	const formData: CommunityManageMyFormVO =
+		isAdd.value || !row
+			? cloneDeep(defaultForm)
+			: cloneDeep({
 					...defaultForm,
-					province: (row?.province as CommunityManageMyFormVO["province"]) || "福建省",
-					city: row?.city || "",
-					district: row?.district || "",
-					name: row?.communityName || "",
-					code: row?.communityCode || "",
-					servicePhone: "", // MyCommunityListItem doesn't have phone? Check API
-					area: "", // MyCommunityListItem doesn't have area?
-					startTime: "", // MyCommunityListItem doesn't have startTime?
-					endTime: "", // MyCommunityListItem doesn't have endTime?
-					status: (row?.status as CommunityManageMyFormVO["status"]) || "operating",
-				})
-			: structuredClone(defaultForm);
+					province: (row.province as CommunityManageMyFormVO["province"]) || "福建省",
+					city: row.city || "",
+					district: row.district || "",
+					name: row.communityName || "",
+					code: row.communityCode || "",
+					status: (row.status as CommunityStatusType) || "operating",
+				});
 
-	/** 表单组件需要的props */
 	const props: CommunityManageMyFormProps = {
 		form: formData,
 		defaultValues: formData,
 		mode,
 	};
 
-	/** 根据不同模式下变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props,
+		title: () => {
+			if (isAdd.value) {
+				return renderI18n($t("propertyManage_communityManage.my.dialogs.addTitle"));
+			}
 
+			if (isEdit.value) {
+				return renderI18n($t("propertyManage_communityManage.my.dialogs.editTitle"));
+			}
+
+			return renderI18n($t("propertyManage_communityManage.my.dialogs.infoTitle"));
+		},
+		props,
 		contentRenderer: () =>
 			h(CommunityManageForm, {
 				ref: communityManageFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = communityManageFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = communityManageFormInstance.value?.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
-
 			...(isInfo.value
 				? []
 				: ([
 						{
-							label: transformI18n($t("common.buttons.reset")),
+							label: () => renderI18n($t("common.buttons.reset")),
 							type: "warning",
-							btnClick: ({ dialog: { options, index }, button }) => {
+							btnClick: () => {
 								communityManageFormInstance.value?.plusFormInstance?.handleReset();
 							},
-						} as any,
-
+						},
 						{
-							label: transformI18n($t("common.buttons.submit")),
+							label: () => renderI18n($t("common.buttons.submit")),
 							type: "success",
 							btnClick: async ({ dialog: { options, index }, button }) => {
 								const res = await communityManageFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -307,51 +332,54 @@ function openDialog({ mode, row }: OpenDialogParams) {
 									await doFetch();
 								}
 							},
-						} as any,
+						},
 					] as any)),
 		],
 	});
 }
 
-/** 处理操作 */
 function handleEdit(row: MyCommunityListItem) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 处理查看操作 */
 function handleView(row: MyCommunityListItem) {
 	openDialog({ mode: "info", row });
 }
 
-/** 处理删除操作 */
-function handleDelete(row: MyCommunityListItem) {
-	ElMessageBox.confirm("确认删除该小区信息吗？", "提示", {
-		confirmButtonText: "确定",
-		cancelButtonText: "取消",
-		type: "warning",
-	}).then(async () => {
-		try {
-			await testAsync();
-			ElMessage.success("删除成功");
-			/** 刷新列表 */
-			await doFetch();
-		} catch (error) {
-			ElMessage.error("删除失败");
-		}
-	});
-}
+async function handleDelete(row: MyCommunityListItem) {
+	try {
+		await ElMessageBox.confirm(
+			i18n.global.t($t("propertyManage_communityManage.my.dialogs.confirmDelete"), {
+				communityName: row.communityName,
+			}),
+			renderI18n($t("propertyManage_communityManage.my.dialogs.deleteTitle")),
+			{
+				confirmButtonText: renderI18n($t("common.buttons.del")),
+				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
 
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
+		await testAsync();
+		ElMessage.success(renderI18n($t("propertyManage_communityManage.my.messages.deleteSuccess")));
+		await doFetch();
+	} catch (error) {
+		if (error !== "cancel") {
+			ElMessage.error(renderI18n($t("propertyManage_communityManage.my.messages.deleteFailed")));
+		}
+	}
+}
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -364,7 +392,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需要的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"
