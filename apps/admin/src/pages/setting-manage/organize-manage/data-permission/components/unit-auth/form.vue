@@ -3,146 +3,115 @@
   用于在弹框中选择楼栋单元
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import {
-	UnitAuthFormProps,
 	type UnitSelectionFormVO,
 	type UnitSelectionItemVO,
-	unitSelectionMockData,
 	type UnitSelectionSearchVO,
+	type UnitAuthFormProps,
+	unitSelectionMockData,
 } from "./form";
 
 const props = defineProps<UnitAuthFormProps>();
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & UnitSelectionFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef<any>("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & UnitSelectionFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & UnitSelectionFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/** 搜索表单 */
 const searchForm = ref<UnitSelectionSearchVO>({
 	buildingCode: "",
 	unitCode: "",
 });
 
-/** 搜索栏配置 */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
+		label: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
 		prop: "buildingCode",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
+		},
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
+		label: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
 		prop: "unitCode",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
+		},
 	},
 ]);
 
-/** 表格数据 */
+const plusSearchProps = searchProps(searchForm.value, { showNumber: 2 });
+
 const tableData = ref<UnitSelectionItemVO[]>(unitSelectionMockData);
 
-/** 过滤后的表格数据 */
-const filteredTableData = computed(() => {
-	return tableData.value.filter((item) => {
-		const buildingMatch = !searchForm.value.buildingCode || item.buildingCode.includes(searchForm.value.buildingCode);
+const filteredTableData = computed(() =>
+	tableData.value.filter((item) => {
+		const buildingMatch =
+			!searchForm.value.buildingCode || item.buildingCode.includes(searchForm.value.buildingCode);
 		const unitMatch = !searchForm.value.unitCode || item.unitCode.includes(searchForm.value.unitCode);
 		return buildingMatch && unitMatch;
-	});
-});
+	}),
+);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	{
 		type: "selection",
 		width: 55,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode"))),
 		prop: "buildingCode",
 		minWidth: 200,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode"))),
 		prop: "unitCode",
 		minWidth: 200,
 	},
 ]);
 
-/** 选中的表格行 */
 const selectedRows = ref<UnitSelectionItemVO[]>([]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
 	total: filteredTableData.value.length,
-});
+}));
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-}
-
-/** 处理页码变化 */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-}
-
-/** 表格组件配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: filteredTableData.value,
 	columns: [],
 	pagination: pagination.value,
-});
+}));
 
-/** 搜索操作 */
-function handleSearch() {
-	pagination.value.total = filteredTableData.value.length;
-	pagination.value.currentPage = 1;
-}
+function handleSearch() {}
 
-/** 重置搜索 */
 function handleReset() {
 	searchForm.value = {
 		buildingCode: "",
 		unitCode: "",
 	};
-	handleSearch();
 }
 
-/** 表格选择变化 */
 function handleSelectionChange(selection: UnitSelectionItemVO[]) {
 	selectedRows.value = selection;
 }
 
-/** 获取选中的数据 */
 function getSelectedData() {
 	return selectedRows.value;
 }
@@ -155,28 +124,26 @@ defineExpose({
 </script>
 
 <template>
-	<div class="form-root">
-		<!-- 搜索栏 -->
+	<div :key="locale" class="form-root">
 		<PlusSearch
+			:key="locale"
 			v-model="searchForm"
+			:="plusSearchProps"
 			:columns="plusSearchColumns"
-			:show-number="2"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReset"
 		/>
 
-		<!-- 表格 -->
 		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 		<PureTable
 			:="pureTableProps"
 			:columns="columns"
 			:data="filteredTableData"
 			@selection-change="handleSelectionChange"
-			@page-size-change="handlePageSizeChange"
-			@page-current-change="handleCurrentPageChange"
 		/>
 
-		<!-- 隐藏的PlusForm组件，用于满足表单规范 -->
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
