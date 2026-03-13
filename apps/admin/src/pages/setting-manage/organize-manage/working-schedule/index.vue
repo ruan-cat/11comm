@@ -9,46 +9,34 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { useMode, type Mode } from "@/composables/use-mode";
-
-import { cloneDeep } from "@pureadmin/utils";
+import { h, ref } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-
-import type { WorkingSchedule, WorkingScheduleListQuery, ScheduleType } from "@01s-11comm/type";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { useWorkingScheduleListQuery } from "@/api/setting-manage/organize-manage/working-schedule";
-
+import type { ScheduleType, WorkingSchedule, WorkingScheduleFormVO, WorkingScheduleListQuery } from "@01s-11comm/type";
 import { WorkingScheduleFormProps, defaultForm } from "./components/form";
 import WorkingScheduleForm from "./components/form.vue";
 
-/** 表单组件实例引用 */
-const workingScheduleFormInstance = ref<InstanceType<typeof WorkingScheduleForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<WorkingScheduleListQuery> = {
 	name: "",
 	type: "morning",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-// 使用排班表列表查询 Hook
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -58,232 +46,231 @@ const {
 	handleCurrentPageChange,
 } = useWorkingScheduleListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const scheduleTypeLabelMap = {
+	morning: "settingManage.organizeManage.workingSchedule.options.morning",
+	afternoon: "settingManage.organizeManage.workingSchedule.options.afternoon",
+	evening: "settingManage.organizeManage.workingSchedule.options.evening",
+	night: "settingManage.organizeManage.workingSchedule.options.night",
+	full_day: "settingManage.organizeManage.workingSchedule.options.allDay",
+} as const;
+
+const weekdayLabelMap = {
+	1: "settingManage.organizeManage.workingSchedule.options.monday",
+	2: "settingManage.organizeManage.workingSchedule.options.tuesday",
+	3: "settingManage.organizeManage.workingSchedule.options.wednesday",
+	4: "settingManage.organizeManage.workingSchedule.options.thursday",
+	5: "settingManage.organizeManage.workingSchedule.options.friday",
+	6: "settingManage.organizeManage.workingSchedule.options.saturday",
+	7: "settingManage.organizeManage.workingSchedule.options.sunday",
+} as const;
+
+function translateScheduleTypeLabel(value?: ScheduleType | string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = scheduleTypeLabelMap[value as keyof typeof scheduleTypeLabelMap];
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateWeekdayLabel(value?: number | string | null) {
+	if (value === null || value === undefined || value === "" || Number(value) === 0) {
+		return "";
+	}
+
+	const key = weekdayLabelMap[Number(value) as keyof typeof weekdayLabelMap];
+	return key ? renderI18n($t(key)) : String(value);
+}
+
+function translateEnabledLabel(value?: boolean | null) {
+	return value
+		? renderI18n($t("settingManage.organizeManage.workingSchedule.status.enabled"))
+		: renderI18n($t("settingManage.organizeManage.workingSchedule.status.disabled"));
+}
+
+const translatedScheduleTypeOptions = withLocale(() => [
+	{ label: renderI18n($t("settingManage.organizeManage.workingSchedule.options.morning")), value: "morning" },
+	{ label: renderI18n($t("settingManage.organizeManage.workingSchedule.options.afternoon")), value: "afternoon" },
+	{ label: renderI18n($t("settingManage.organizeManage.workingSchedule.options.evening")), value: "evening" },
+	{ label: renderI18n($t("settingManage.organizeManage.workingSchedule.options.night")), value: "night" },
+	{ label: renderI18n($t("settingManage.organizeManage.workingSchedule.options.allDay")), value: "full_day" },
+]);
+
+const workingScheduleFormInstance = ref<InstanceType<typeof WorkingScheduleForm> | null>(null);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.name"))),
 		prop: "name",
 		width: 150,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.type"))),
 		prop: "type",
 		width: 120,
+		cellRenderer: ({ row }) => translateScheduleTypeLabel(row.type),
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.startTime")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.startTime"))),
 		prop: "startTime",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.endTime")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.endTime"))),
 		prop: "endTime",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.weekday")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.weekday"))),
 		prop: "weekday",
 		width: 100,
+		cellRenderer: ({ row }) => translateWeekdayLabel(row.weekday),
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.managerName")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.managerName"))),
 		prop: "managerName",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.phone")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.phone"))),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.status")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.workingSchedule.fields.status"))),
 		prop: "enabled",
-		width: 80,
+		width: 100,
+		cellRenderer: ({ row }) => translateEnabledLabel(row.enabled),
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-// 表格操作栏配置
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("settingManage.organizeManage.workingSchedule.tableTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.workingSchedule.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-// PlusSearch 搜索表单数据接口
-interface ScheduleSearchForm {
-	name?: string;
-	type?: string;
-}
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
+		},
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
+		label: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
 		prop: "type",
 		valueType: "select",
-		options: [
-			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.morning")), value: "morning" },
-			{
-				label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.afternoon")),
-				value: "afternoon",
-			},
-			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.evening")), value: "evening" },
-			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.night")), value: "night" },
-			{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.allDay")), value: "全天" },
-		],
+		options: translatedScheduleTypeOptions.value,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("settingManage.organizeManage.workingSchedule.fields.type")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
 	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-// ========== 事件处理函数 ==========
-
-// 测试异步函数
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: WorkingSchedule;
-}
-
-const defaultAddDialogParams = {
-	width: "50%",
-	draggable: true,
-	fullscreenIcon: true,
-	closeOnClickModal: false,
-	contentRenderer: () => h("div"),
-};
-
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: WorkingSchedule }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.workingSchedule.dialogTitle"))}`;
+	const formVO: WorkingScheduleFormVO = isAdd.value
+		? cloneDeep(defaultForm)
+		: isEdit.value
+			? cloneDeep({
+					...defaultForm,
+					name: row?.name || "",
+					type: row?.type || "morning",
+					startTime: row?.startTime || "",
+					endTime: row?.endTime || "",
+					weekday: row?.weekday || 1,
+					managerName: row?.managerName || "",
+					phone: row?.phone || "",
+					description: row?.description || "",
+					enabled: row?.enabled ?? true,
+				})
+			: cloneDeep(defaultForm);
 
-	/** 表单组件需要的props */
-	const formProps: WorkingScheduleFormProps = {
-		form: cloneDeep(defaultForm),
-		defaultValues: cloneDeep(defaultForm),
+	const props: WorkingScheduleFormProps = {
+		form: formVO,
+		defaultValues: formVO,
+		mode,
 	};
 
-	const editProps: WorkingScheduleFormProps = {
-		form: {
-			name: row?.name || "",
-			type: row?.type || "morning",
-			startTime: row?.startTime || "",
-			endTime: row?.endTime || "",
-			weekday: row?.weekday || 1,
-			managerName: row?.managerName || "",
-			phone: row?.phone || "",
-			description: row?.description || "",
-			enabled: row?.enabled ?? true,
-		},
-		defaultValues: {
-			name: row?.name || "",
-			type: row?.type || "morning",
-			startTime: row?.startTime || "",
-			endTime: row?.endTime || "",
-			weekday: row?.weekday || 1,
-			managerName: row?.managerName || "",
-			phone: row?.phone || "",
-			description: row?.description || "",
-			enabled: row?.enabled ?? true,
-		},
-	};
-
-	/** 弹框组件所需的变量 */
-	const props = isAdd.value ? formProps : editProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("settingManage.organizeManage.workingSchedule.dialogs.addTitle"))
+				: renderI18n($t("settingManage.organizeManage.workingSchedule.dialogs.editTitle")),
 		props,
-
 		contentRenderer: () =>
 			h(WorkingScheduleForm, {
 				ref: workingScheduleFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = workingScheduleFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = workingScheduleFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
+				btnClick: () => {
 					workingScheduleFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await workingScheduleFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -297,9 +284,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-function handleAddSchedule() {
-	openDialog({ mode: "add" });
-}
+const { setMode, isAdd, isEdit } = useMode();
 
 function handleEditSchedule(row: WorkingSchedule) {
 	openDialog({ mode: "edit", row });
@@ -312,31 +297,27 @@ function handleDeleteSchedule(row: WorkingSchedule) {
 function handleExportSchedule() {
 	console.log("导出排班表");
 }
-
-// ========== 生命周期 ==========
-onMounted(async () => {
-	// 数据由 useWorkingScheduleListQuery 自动加载
-});
 </script>
 
 <template>
-	<section class="working-schedule-container">
-		<!-- PlusSearch 搜索栏 -->
+	<section :key="locale" class="working-schedule-container">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
 
-		<!-- 排班表格区域 -->
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="info" @click="handleExportSchedule">
 					{{ transformI18n($t("settingManage.organizeManage.common.buttons.export")) }}
 				</ElButton>
-				<ElButton type="primary" @click="handleAddSchedule">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
