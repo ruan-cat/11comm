@@ -1,35 +1,77 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "小区配置",
+		// 小区配置
+		title: "settingManage.systemManage.communityConfiguration.pageTitle",
 		icon: "mdi:cog",
 		roles: ["物业团队"],
 		rank: getRouteRank("settingManage.systemManage.communityConfiguration"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { computed, h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
-import CommunityConfigurationForm from "./components/form.vue";
 import type {
 	CommunityConfiguration,
 	CommunityConfigurationListQuery,
 	SettingCommunityConfigFormVO,
 } from "@01s-11comm/type";
-import { settingTypeOptions, communityConfigStatusOptions } from "@01s-11comm/type";
+import { communityConfigStatusOptions, settingTypeOptions } from "@01s-11comm/type";
 import { useCommunityConfigurationListQuery } from "@/api/setting-manage/system-manage/community-configuration";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
-import { useToggle } from "@vueuse/core";
-import { sleep } from "@antfu/utils";
-import { addDialog, closeDialog } from "@/components/ReDialog";
+import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
+import CommunityConfigurationForm from "./components/form.vue";
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+function translateFromRecord(record: Record<string, string>, value?: string | null) {
+	if (!value) {
+		return "";
+	}
+	return record[value] ?? value;
+}
+
+const settingTypeTextMap = withLocale(() => ({
+	系统设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.system")),
+	业务设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.business")),
+	界面设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.ui")),
+	功能设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.feature")),
+	安全设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.security")),
+}));
+
+const statusTextMap = withLocale(() => ({
+	启用: transformI18n($t("settingManage.systemManage.communityConfiguration.options.statuses.enabled")),
+	禁用: transformI18n($t("settingManage.systemManage.communityConfiguration.options.statuses.disabled")),
+	待审核: transformI18n($t("settingManage.systemManage.communityConfiguration.options.statuses.pending")),
+}));
+
+function translateSettingTypeLabel(value?: string | null) {
+	return translateFromRecord(settingTypeTextMap.value, value);
+}
+
+function translateCommunityStatusLabel(value?: string | null) {
+	return translateFromRecord(statusTextMap.value, value);
+}
+
+const translatedSettingTypeOptions = withLocale(() =>
+	settingTypeOptions.map((item) => ({
+		...item,
+		label: translateSettingTypeLabel(String(item.value)),
+	})),
+);
+
+const translatedCommunityStatusOptions = withLocale(() =>
+	communityConfigStatusOptions.map((item) => ({
+		...item,
+		label: translateCommunityStatusLabel(String(item.label)),
+	})),
+);
+
 const plusSearchModelRef: FieldValues & Partial<CommunityConfigurationListQuery> = {
 	communityName: "",
 	settingName: "",
@@ -37,58 +79,9 @@ const plusSearchModelRef: FieldValues & Partial<CommunityConfigurationListQuery>
 	statusCd: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 小区名称 */
-	{
-		label: "小区名称",
-		prop: "communityName",
-		valueType: "input",
-	},
-
-	/** 设置名称 */
-	{
-		label: "设置名称",
-		prop: "settingName",
-		valueType: "input",
-	},
-
-	/** 设置类型 */
-	{
-		label: "设置类型",
-		prop: "settingType",
-		valueType: "select",
-		options: settingTypeOptions,
-	},
-
-	/** 数据状态 */
-	{
-		label: "数据状态",
-		prop: "statusCd",
-		valueType: "select",
-		options: communityConfigStatusOptions,
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -100,85 +93,116 @@ const {
 	handleCurrentPageChange,
 } = useCommunityConfigurationListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "小区名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.communityName")),
+		),
 		prop: "communityName",
 		width: 150,
 		fixed: true,
 	},
 	{
-		label: "设置名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.settingName")),
+		),
 		prop: "settingName",
 		width: 150,
 	},
 	{
-		label: "设置值",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.settingValue")),
+		),
 		prop: "settingValue",
 		width: 120,
 	},
 	{
-		label: "设置类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.settingType")),
+		),
 		prop: "settingType",
 		width: 120,
+		cellRenderer: ({ row }) => translateSettingTypeLabel(row.settingType),
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.communityConfiguration.fields.status"))),
 		prop: "statusText",
 		width: 100,
+		cellRenderer: ({ row }) => translateCommunityStatusLabel(row.statusText),
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.communityConfiguration.fields.remark"))),
 		prop: "remark",
 		minWidth: 200,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.updateTime")),
+		),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "小区配置",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("settingManage.systemManage.communityConfiguration.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/** 重置搜索条件并重新加载数据 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("settingManage.systemManage.communityConfiguration.fields.communityName")),
+		prop: "communityName",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("settingManage.systemManage.communityConfiguration.fields.settingName")),
+		prop: "settingName",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("settingManage.systemManage.communityConfiguration.fields.settingType")),
+		prop: "settingType",
+		valueType: "select",
+		options: translatedSettingTypeOptions.value,
+	},
+	{
+		label: transformI18n($t("settingManage.systemManage.communityConfiguration.fields.dataStatus")),
+		prop: "statusCd",
+		valueType: "select",
+		options: translatedCommunityStatusOptions.value,
+	},
+]);
+
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 表单组件实例 */
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 const communityConfigurationFormInstance = ref<InstanceType<typeof CommunityConfigurationForm> | null>(null);
-
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
@@ -195,15 +219,13 @@ const defaultAddDialogParams = {
 	contentRenderer: () => h("div"),
 };
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 业务对象 */
 	const formVO: SettingCommunityConfigFormVO = isAdd.value
 		? structuredClone(defaultForm)
-		: isEdit.value
+		: isEdit.value || isInfo.value
 			? structuredClone({
 					...defaultForm,
 					csId: row?.csId || "",
@@ -217,16 +239,17 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 				})
 			: structuredClone(defaultForm);
 
-	/** 表单组件需要的props */
 	const formProps: CommunityConfigurationFormProps = {
 		form: formVO,
 		defaultValues: formVO,
 	};
 
-	/** 弹框标题 */
-	const title = `${modeText.value}小区配置`;
+	const title = isAdd.value
+		? () => transformI18n($t("settingManage.systemManage.communityConfiguration.dialogs.addTitle"))
+		: isEdit.value
+			? () => transformI18n($t("settingManage.systemManage.communityConfiguration.dialogs.editTitle"))
+			: () => transformI18n($t("settingManage.systemManage.communityConfiguration.dialogs.infoTitle"));
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
@@ -246,58 +269,50 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** console.log(options, index, button); */
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = communityConfigurationFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
+				btnClick: () => {
 					communityConfigurationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					if (communityConfigurationFormInstance.value?.plusFormInstance) {
-						const res = await communityConfigurationFormInstance.value.plusFormInstance.handleSubmit();
-						if (res) {
-							button.btn.loading = true;
-							await testAsync();
-							button.btn.loading = false;
-							closeDialog(options, index);
-							doFetch();
-						}
+					const res = await communityConfigurationFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						doFetch();
 					}
 				},
 			},
 		],
 	});
 }
-
-onMounted(async () => {
-	// 数据自动加载
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -310,7 +325,6 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -326,7 +340,9 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
