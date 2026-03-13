@@ -1,40 +1,52 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "业务受理",
+		// 业务受理
+		title: "propertyManage_communityManage.handing-business.pageTitle",
 		icon: "mdi:briefcase",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.handingBusiness"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { ElMessageBox } from "element-plus";
-import { transformI18n } from "@/plugins/i18n";
-import type { HandingBusinessListItem, HandingBusinessQueryParams, HandingBusinessFormVO } from "@01s-11comm/type";
-import {
-	feeTypeOptions,
-	businessHandlingStatusOptions,
-	handingBusinessListDataToFormData as listDataToFormData,
-} from "@01s-11comm/type";
+import { h, ref } from "vue";
+import { ElMessageBox, ElTag } from "element-plus";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
 import { useHandingBusinessListQuery } from "@/api/property-manage/community-manage/handing-business";
 import type { HandingBusinessFormProps } from "./components/form";
 import { defaultForm } from "./components/form";
+import type { HandingBusinessFormVO, HandingBusinessListItem, HandingBusinessQueryParams } from "@01s-11comm/type";
+import { handingBusinessListDataToFormData as listDataToFormData } from "@01s-11comm/type";
 import HandingBusinessForm from "./components/form.vue";
 
-const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/** 使用 TanStack Query 获取数据 */
-const plusSearchModelRef: FieldValues & Partial<HandingBusinessQueryParams> = {
-	feeItem: "",
-	feeType: undefined,
-	status: undefined,
-};
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const plusSearchModelRef: FieldValues &
+	Partial<HandingBusinessQueryParams> & {
+		accountCreationTimeRange?: string[];
+	} = {
+		feeItem: "",
+		feeId: "",
+		feeType: undefined,
+		status: undefined,
+		accountCreationStartTime: "",
+		accountCreationEndTime: "",
+	};
 
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchModel = ref(plusSearchModelRef);
 
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -44,115 +56,182 @@ const {
 	handleCurrentPageChange,
 } = useHandingBusinessListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const handingBusinessFormInstance = ref<InstanceType<typeof HandingBusinessForm> | null>(null);
+const { setMode, isAdd, isEdit } = useMode();
+const [isFetchingT, setIsLoadingT] = useToggle(false);
+
+async function testAsync() {
+	setIsLoadingT(true);
+	await sleep(1300);
+	setIsLoadingT(false);
+}
+
+const feeTypeLabelKeyMap = {
+	periodic: "propertyManage_communityManage.handing-business.options.feeType.periodic",
+	temporary: "propertyManage_communityManage.handing-business.options.feeType.temporary",
+	deposit: "propertyManage_communityManage.handing-business.options.feeType.deposit",
+	penalty: "propertyManage_communityManage.handing-business.options.feeType.penalty",
+} as const;
+
+const statusLabelKeyMap = {
+	pending: "propertyManage_communityManage.handing-business.options.status.pending",
+	paid: "propertyManage_communityManage.handing-business.options.status.paid",
+	overdue: "propertyManage_communityManage.handing-business.options.status.overdue",
+	reduced: "propertyManage_communityManage.handing-business.options.status.reduced",
+	voided: "propertyManage_communityManage.handing-business.options.status.voided",
+} as const;
+
+function translateOptionLabel<T extends Record<string, string>>(value: string | undefined | null, labelMap: T) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = labelMap[value as keyof T];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const feeTypeOptions = withLocale(() =>
+	Object.entries(feeTypeLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const statusOptions = withLocale(() =>
+	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "费用项目",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.feeItem"))),
 		prop: "feeItem",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "费用标识",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.feeId"))),
 		prop: "feeId",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "费用类型",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.feeType"))),
 		prop: "feeType",
-		width: 120,
+		minWidth: 130,
+		cellRenderer: ({ row }) => translateOptionLabel(row.feeType, feeTypeLabelKeyMap),
 	},
 	{
-		label: "应收金额",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.handing-business.fields.amountReceivable")),
+		),
 		prop: "amountReceivable",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "建账时间",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTime")),
+		),
 		prop: "accountCreationTime",
-		width: 160,
+		minWidth: 160,
 	},
 	{
-		label: "应收时间段",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.handing-business.fields.receivablePeriod")),
+		),
 		prop: "receivablePeriod",
-		width: 180,
+		minWidth: 160,
 	},
 	{
-		label: "说明",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.description"))),
 		prop: "description",
-		width: 120,
+		minWidth: 220,
+		showOverflowTooltip: true,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.status"))),
 		prop: "status",
-		width: 120,
+		minWidth: 120,
+		cellRenderer: ({ row }) => {
+			const statusTypeMap: Record<string, "warning" | "success" | "danger" | "info"> = {
+				pending: "warning",
+				paid: "success",
+				overdue: "danger",
+				reduced: "info",
+				voided: "info",
+			};
+
+			return h(ElTag, { type: statusTypeMap[row.status] ?? "info" }, () =>
+				translateOptionLabel(row.status, statusLabelKeyMap),
+			);
+		},
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 240,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业务受理",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("propertyManage_communityManage.handing-business.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
-const plusSearchModel = ref(plusSearchModelRef);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 费用项目 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "费用项目",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
 		prop: "feeItem",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeItem")),
+		},
 	},
-
-	/** 费用标识 */
 	{
-		label: "费用标识",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
 		prop: "feeId",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeId")),
+		},
 	},
-
-	/** 费用类型 */
 	{
-		label: "费用类型",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
 		prop: "feeType",
 		valueType: "select",
-		options: feeTypeOptions,
+		options: feeTypeOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeType")),
+		},
 	},
-
-	/** 状态 */
 	{
-		label: "状态",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: businessHandlingStatusOptions,
+		options: statusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.status")),
+		},
 	},
-
-	/** 建账时间范围 */
 	{
-		label: "建账时间范围",
-		prop: "建账时间范围",
+		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTimeRange")),
+		prop: "accountCreationTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "daterange",
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
+			startPlaceholder: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.placeholders.accountCreationStartTime"),
+			),
+			endPlaceholder: renderI18n(
+				$t("propertyManage_communityManage.handing-business.form.placeholders.accountCreationEndTime"),
+			),
 			onChange(value: string[] | null) {
 				plusSearchModel.value.accountCreationStartTime = value?.[0] ?? "";
 				plusSearchModel.value.accountCreationEndTime = value?.[1] ?? "";
@@ -165,22 +244,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -188,134 +258,114 @@ function handleSearch() {
 	});
 }
 
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: HandingBusinessListItem;
-}
-
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 测试异步函数 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-
-/** 模拟异步操作函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-}
-
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: HandingBusinessListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}业务受理`;
+	const formVO: HandingBusinessFormVO =
+		isAdd.value || !row ? cloneDeep(defaultForm) : cloneDeep(listDataToFormData(row));
 
-	/** 业务对象 */
-	const handingBusinessFormVO: HandingBusinessFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: isEdit.value && row
-			? listDataToFormData(row)
-			: structuredClone(defaultForm);
-
-	/** 表单组件需要的props */
 	const formProps: HandingBusinessFormProps = {
-		form: handingBusinessFormVO,
-		defaultValues: handingBusinessFormVO,
+		form: formVO,
+		defaultValues: formVO,
+		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props: formProps,
+		title: () => {
+			if (isAdd.value) {
+				return renderI18n($t("propertyManage_communityManage.handing-business.dialogs.addTitle"));
+			}
 
+			if (isEdit.value) {
+				return renderI18n($t("propertyManage_communityManage.handing-business.dialogs.editTitle"));
+			}
+
+			return renderI18n($t("propertyManage_communityManage.handing-business.dialogs.infoTitle"));
+		},
+		props: formProps,
 		contentRenderer: () =>
 			h(HandingBusinessForm, {
 				ref: handingBusinessFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = handingBusinessFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = handingBusinessFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = handingBusinessFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					handingBusinessFormInstance.value.plusFormInstance.handleReset();
-				},
-			},
-
-			{
-				label: transformI18n($t("common.buttons.submit")),
-				type: "success",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await handingBusinessFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-						await doFetch();
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = handingBusinessFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
+			...(mode === "info"
+				? []
+				: ([
+						{
+							label: () => renderI18n($t("common.buttons.reset")),
+							type: "warning",
+							btnClick: () => {
+								handingBusinessFormInstance.value?.plusFormInstance?.handleReset();
+							},
+						},
+						{
+							label: () => renderI18n($t("common.buttons.submit")),
+							type: "success",
+							btnClick: async ({ dialog: { options, index }, button }) => {
+								const res = await handingBusinessFormInstance.value?.plusFormInstance?.handleSubmit();
+								if (res) {
+									button.btn.loading = true;
+									await testAsync();
+									button.btn.loading = false;
+									closeDialog(options, index);
+									await doFetch();
+								}
+							},
+						},
+					] as any)),
 		],
 	});
 }
 
-/** 删除单个业务受理 */
 async function handleDelete(row: HandingBusinessListItem) {
 	try {
-		await ElMessageBox.confirm(`确认删除业务受理记录：${row.feeId} - ${row.feeItem}？`, "删除确认", {
-			confirmButtonText: transformI18n($t("common.buttons.del")),
-			cancelButtonText: transformI18n($t("common.buttons.cancel")),
-			type: "warning",
-		});
+		await ElMessageBox.confirm(
+			i18n.global.t($t("propertyManage_communityManage.handing-business.dialogs.confirmDelete"), {
+				feeId: row.feeId,
+				feeItem: row.feeItem,
+			}),
+			renderI18n($t("propertyManage_communityManage.handing-business.dialogs.deleteTitle")),
+			{
+				confirmButtonText: renderI18n($t("common.buttons.del")),
+				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				type: "warning",
+			},
+		);
 
-		// TODO: 调用删除API
-		// 模拟删除操作
-		await new Promise((resolve) => setTimeout(resolve, 300));
-
-		// 刷新表格数据
 		await doFetch();
-	} catch (error) {
-		if (error !== "cancel") {
-			// TODO: 显示错误提示
-		}
-	}
+	} catch {}
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -328,7 +378,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需要的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"
