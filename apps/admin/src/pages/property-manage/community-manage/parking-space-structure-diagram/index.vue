@@ -1,54 +1,47 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "车位结构图",
+		// 车位结构图
+		title: "propertyManage_communityManage.parking-space-structure-diagram.pageTitle",
 		icon: "mdi:garage",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.parkingSpaceStructureDiagram"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { type ParkingSpaceStructureDiagramFormProps, defaultForm } from "./components/form";
-import type { ParkingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
-import ParkingSpaceStructureDiagramForm from "./components/form.vue";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { useParkingSpaceStructureDiagramListQuery } from "@/api/property-manage/community-manage/parking-space-structure-diagram";
-import {
-	type ParkingSpaceStructureDiagramListItem,
-	type ParkingSpaceStructureDiagramQueryParams,
-	parkingSpaceTypeOptions,
-	parkingSpaceStatusOptions,
-	floorAreaOptions,
-	isChargingPileOptions,
+import type { ParkingSpaceStructureDiagramFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import type {
+	ParkingSpaceStructureDiagramFormVO,
+	ParkingSpaceStructureDiagramListItem,
+	ParkingSpaceStructureDiagramQueryParams,
 } from "@01s-11comm/type";
+import ParkingSpaceStructureDiagramForm from "./components/form.vue";
 
-/** 表单组件实例 */
-const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(
-	null,
-);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & Partial<ParkingSpaceStructureDiagramQueryParams> = {
-	name: "",
-	status: "",
+	parkingSpaceNumber: "",
+	parkingSpaceStatus: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -58,147 +51,247 @@ const {
 	handleCurrentPageChange,
 } = useParkingSpaceStructureDiagramListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(null);
+const { gotoDetailPage } = useGotoDetailsPage();
+const { setMode, isAdd } = useMode();
+const [isFetchingT, setIsLoadingT] = useToggle(false);
+
+async function testAsync() {
+	setIsLoadingT(true);
+	await sleep(1300);
+	setIsLoadingT(false);
+}
+
+const parkingSpaceTypeLabelKeyMap = {
+	地下车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.underground",
+	地面车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.ground",
+	子母车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.childMother",
+	无障碍车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.accessible",
+	机械车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.mechanical",
+} as const;
+
+const parkingSpaceStatusLabelKeyMap = {
+	空闲: "propertyManage_communityManage.parking-space-structure-diagram.options.status.idle",
+	已售: "propertyManage_communityManage.parking-space-structure-diagram.options.status.sold",
+	已租: "propertyManage_communityManage.parking-space-structure-diagram.options.status.rented",
+	维修中: "propertyManage_communityManage.parking-space-structure-diagram.options.status.maintaining",
+	其他: "propertyManage_communityManage.parking-space-structure-diagram.options.status.other",
+} as const;
+
+const orientationLabelKeyMap = {
+	靠墙: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.wall",
+	中间: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.middle",
+	靠柱: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.column",
+	露天: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.outdoor",
+	机械车位: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.mechanical",
+} as const;
+
+const floorAreaLabelKeyMap = {
+	地下1层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.b1",
+	地下2层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.b2",
+	地下3层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.b3",
+	地面层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.ground",
+	架空层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.elevated",
+} as const;
+
+const booleanLabelKeyMap = {
+	是: "propertyManage_communityManage.parking-space-structure-diagram.options.boolean.yes",
+	否: "propertyManage_communityManage.parking-space-structure-diagram.options.boolean.no",
+} as const;
+
+function translateOptionLabel<T extends Record<string, string>>(value: string | undefined | null, labelMap: T) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = labelMap[value as keyof T];
+	return key ? renderI18n($t(key)) : value;
+}
+
+const parkingSpaceStatusOptions = withLocale(() =>
+	Object.entries(parkingSpaceStatusLabelKeyMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "车位编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber")),
+		),
 		prop: "parkingSpaceNumber",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "车位类型",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceType")),
+		),
 		prop: "parkingSpaceType",
-		width: 100,
+		minWidth: 130,
+		cellRenderer: ({ row }) => translateOptionLabel(row.parkingSpaceType, parkingSpaceTypeLabelKeyMap),
 	},
 	{
-		label: "车位位置",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceLocation")),
+		),
 		prop: "parkingSpaceLocation",
-		width: 150,
+		minWidth: 170,
 	},
 	{
-		label: "车位面积",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceArea")),
+		),
 		prop: "parkingSpaceArea",
-		width: 100,
+		minWidth: 110,
 	},
 	{
-		label: "车位状态",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus")),
+		),
 		prop: "parkingSpaceStatus",
-		width: 100,
+		minWidth: 120,
+		cellRenderer: ({ row }) => translateOptionLabel(row.parkingSpaceStatus, parkingSpaceStatusLabelKeyMap),
 	},
 	{
-		label: "业主姓名",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.ownerName")),
+		),
 		prop: "ownerName",
-		width: 100,
+		minWidth: 120,
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.contactPhone")),
+		),
 		prop: "contactPhone",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "车牌号码",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.licensePlateNumber")),
+		),
 		prop: "licensePlateNumber",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "车辆品牌",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.vehicleBrand")),
+		),
 		prop: "vehicleBrand",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		label: "购买时间",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.purchaseTime")),
+		),
 		prop: "purchaseTime",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "到期时间",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.expiryTime")),
+		),
 		prop: "expiryTime",
-		width: 120,
+		minWidth: 120,
 	},
 	{
-		label: "月租金",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.monthlyRent")),
+		),
 		prop: "monthlyRent",
-		width: 100,
+		minWidth: 100,
 	},
 	{
-		label: "管理费",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.managementFee")),
+		),
 		prop: "managementFee",
-		width: 100,
+		minWidth: 100,
 	},
 	{
-		label: "车位朝向",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceOrientation")),
+		),
 		prop: "parkingSpaceOrientation",
-		width: 100,
+		minWidth: 120,
+		cellRenderer: ({ row }) => translateOptionLabel(row.parkingSpaceOrientation, orientationLabelKeyMap),
 	},
 	{
-		label: "楼层区域",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.floorArea")),
+		),
 		prop: "floorArea",
-		width: 100,
+		minWidth: 120,
+		cellRenderer: ({ row }) => translateOptionLabel(row.floorArea, floorAreaLabelKeyMap),
 	},
 	{
-		label: "是否充电桩",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.hasEvChargingPile")),
+		),
 		prop: "hasEvChargingPile",
-		width: 120,
-		formatter: ({ hasEvChargingPile }) => (hasEvChargingPile ? "是" : "否"),
+		minWidth: 120,
+		cellRenderer: ({ row }) => translateOptionLabel(row.hasEvChargingPile ? "是" : "否", booleanLabelKeyMap),
 	},
 	{
-		label: "充电桩功率",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.chargingPilePower")),
+		),
 		prop: "chargingPilePower",
-		width: 120,
+		minWidth: 140,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "车位结构图",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 车位编号 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "车位编号",
-		prop: "name",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber"),
+		),
+		prop: "parkingSpaceNumber",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceNumber"),
+			),
+		},
 	},
-
-	/** 车位状态 */
 	{
-		label: "车位状态",
-		prop: "status",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus"),
+		),
+		prop: "parkingSpaceStatus",
 		valueType: "select",
-		options: parkingSpaceStatusOptions,
+		options: parkingSpaceStatusOptions.value,
+		fieldProps: {
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceStatus"),
+			),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -206,92 +299,63 @@ function handleSearch() {
 	});
 }
 
-const { gotoDetailPage } = useGotoDetailsPage();
-
-/** 打开弹框 参数 */
-interface OpenDialogParams {
-	mode: Mode;
-	row?: ParkingSpaceStructureDiagramListItem;
-}
-
-const { modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 测试异步函数 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-
-/** 模拟异步操作函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-}
-
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: ParkingSpaceStructureDiagramListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}车位结构图`;
-
-	/** 业务对象 */
-	const formData: ParkingSpaceStructureDiagramFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: isEdit.value
-			? {
+	const formData: ParkingSpaceStructureDiagramFormVO =
+		isAdd.value || !row
+			? cloneDeep(defaultForm)
+			: cloneDeep({
 					...defaultForm,
-					parkingSpaceNumber: row?.parkingSpaceNumber || "",
-					parkingSpaceType: row?.parkingSpaceType || "",
-					parkingSpaceLocation: row?.parkingSpaceLocation || "",
-					parkingSpaceArea: row?.parkingSpaceArea || "",
-					parkingSpaceStatus: row?.parkingSpaceStatus || "",
-					ownerName: row?.ownerName || "",
-					contactPhone: row?.contactPhone || "",
-					licensePlateNumber: row?.licensePlateNumber || "",
-					vehicleBrand: row?.vehicleBrand || "",
-					purchaseTime: row?.purchaseTime || "",
-					expiryTime: row?.expiryTime || "",
-					monthlyRent: row?.monthlyRent || 0,
-					managementFee: row?.managementFee || 0,
-					parkingSpaceOrientation: row?.parkingSpaceOrientation || "",
-					floorArea: row?.floorArea || "",
-					hasEvChargingPile: row?.hasEvChargingPile ? "是" : "否",
-					chargingPilePower: row?.chargingPilePower || "",
-					remark: row?.remark || "",
-				}
-			: structuredClone(defaultForm);
+					parkingSpaceNumber: row.parkingSpaceNumber || "",
+					parkingSpaceType: row.parkingSpaceType || "",
+					parkingSpaceLocation: row.parkingSpaceLocation || "",
+					parkingSpaceArea: row.parkingSpaceArea || "",
+					parkingSpaceStatus: row.parkingSpaceStatus || "",
+					ownerName: row.ownerName || "",
+					contactPhone: row.contactPhone || "",
+					licensePlateNumber: row.licensePlateNumber || "",
+					vehicleBrand: row.vehicleBrand || "",
+					purchaseTime: row.purchaseTime || "",
+					expiryTime: row.expiryTime || "",
+					monthlyRent: row.monthlyRent || 0,
+					managementFee: row.managementFee || 0,
+					parkingSpaceOrientation: row.parkingSpaceOrientation || "",
+					floorArea: row.floorArea || "",
+					hasEvChargingPile: row.hasEvChargingPile ? "是" : "否",
+					chargingPilePower: row.chargingPilePower || "",
+					remark: row.remark || "",
+				});
 
-	/** 表单组件需要的props */
 	const props: ParkingSpaceStructureDiagramFormProps = {
 		form: formData,
 		defaultValues: formData,
+		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.dialogs.addTitle"))
+				: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.dialogs.editTitle")),
 		props,
-
 		contentRenderer: () =>
 			h(ParkingSpaceStructureDiagramForm, {
 				ref: parkingSpaceStructureDiagramFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = parkingSpaceStructureDiagramFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = parkingSpaceStructureDiagramFormInstance.value?.formComputed;
@@ -300,17 +364,15 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options: _options, index: _index } }) => {
+				btnClick: () => {
 					parkingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await parkingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -327,9 +389,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-/** 跳转到 车位详情页面 */
 function gotoParkingSpaceDetailPage(row: ParkingSpaceStructureDiagramListItem) {
-	console.log("row", row);
 	gotoDetailPage({
 		name: "property-manage-community-manage--detail-page",
 		params: {
@@ -338,29 +398,24 @@ function gotoParkingSpaceDetailPage(row: ParkingSpaceStructureDiagramListItem) {
 	});
 }
 
-/** 导出车位结构图 */
 function exportParkingSpaceStructure() {
-	console.log("导出车位结构图");
-	/** TODO: 实现导出功能 */
+	console.log("export parking structure");
 }
 
-/** 刷新车位状态 */
 function refreshParkingSpaceStatus() {
-	console.log("刷新车位状态");
-	/** TODO: 实现刷新功能 */
+	console.log("refresh parking status");
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -370,12 +425,16 @@ onMounted(async () => {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
-				<ElButton type="info" @click="refreshParkingSpaceStatus"> 刷新状态 </ElButton>
-				<ElButton type="warning" @click="exportParkingSpaceStructure"> 导出结构图 </ElButton>
+				<ElButton type="info" @click="refreshParkingSpaceStatus">
+					{{ transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.refreshStatus")) }}
+				</ElButton>
+				<ElButton type="warning" @click="exportParkingSpaceStructure">
+					{{ transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.exportStructure")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需要的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"
@@ -385,11 +444,15 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info" @click="gotoParkingSpaceDetailPage(row)"> 查看详情 </ElButton>
+						<ElButton type="info" @click="gotoParkingSpaceDetailPage(row)">
+							{{ transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.viewDetail")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
