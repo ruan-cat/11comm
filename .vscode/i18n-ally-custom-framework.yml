@@ -1,0 +1,7 @@
+languageIds:
+  - javascript
+  - typescript
+  - vue
+usageMatchRegex:
+  - "[^\\w\\d]\\$t\\(['\"`]({key})['\"`]"
+  - "transformI18n\\(\\s*\\$t\\(['\"`]({key})['\"`]\\s*\\)"
