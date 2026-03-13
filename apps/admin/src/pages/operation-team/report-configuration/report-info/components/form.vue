@@ -1,86 +1,124 @@
-<!--
-  报表信息表单
-  用于新增 修改报表信息
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import type { ReportInfoFormVO } from "@01s-11comm/type";
-
-import { ReportInfoFormProps, defaultForm } from "./form";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type ReportInfoFormProps } from "./form";
 
 const props = defineProps<ReportInfoFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & ReportInfoFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & ReportInfoFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ReportInfoFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const reportGroupOptions = withLocale(() => [
+	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.test")), value: "测试报表组" },
+	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.inspection")), value: "巡检报表" },
+	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.business")), value: "营业报表" },
+	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.repair")), value: "报修报表" },
+]);
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 报表组
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "组编号",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.reportGroup")),
 		prop: "reportGroup",
 		valueType: "select",
-		options: [
-			{ label: "测试报表组", value: "测试报表组" },
-			{ label: "巡检报表", value: "巡检报表" },
-			{ label: "营业报表", value: "营业报表" },
-			{ label: "报修报表", value: "报修报表" },
-		],
+		options: reportGroupOptions.value,
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.reportGroup")),
+		},
 	},
-	// 选项标题
 	{
-		label: "选项标题",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.optionTitle")),
 		prop: "optionTitle",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.optionTitle")),
+		},
 	},
-	// 排序
 	{
-		label: "排序",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.sort")),
 		prop: "sort",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.sort")),
+		},
 	},
-	// 描述
 	{
-		label: "描述",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.description")),
 		prop: "description",
-		valueType: "input",
+		valueType: "textarea",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			rows: 3,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.description")),
+		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	reportGroup: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.reportGroupRequired")),
+			trigger: "change",
+		},
+	],
+	optionTitle: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.optionTitleRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.optionTitleLength")),
+			trigger: "blur",
+		},
+	],
+	sort: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.sortRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[1-9]\d*$/,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.sortPattern")),
+			trigger: "blur",
+		},
+	],
+	description: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.descriptionRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 200,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.descriptionLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -95,7 +133,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
