@@ -9,43 +9,35 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { useMode, type Mode } from "@/composables/use-mode";
+import { h, ref } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
-import { h } from "vue";
-
-import { type RolePermissionFormProps, defaultForm } from "./components/form";
-import type { RolePermissionFormVO } from "@01s-11comm/type";
-import RolePermissionForm from "./components/form.vue";
-import type { RolePermission, RolePermissionListQuery } from "@01s-11comm/type";
-import { useRolePermissionListQuery } from "@/api/setting-manage/organize-manage/role-permission";
 import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
+import { useRolePermissionListQuery } from "@/api/setting-manage/organize-manage/role-permission";
+import type { RolePermission, RolePermissionFormVO, RolePermissionListQuery } from "@01s-11comm/type";
+import { defaultForm, type RolePermissionFormProps } from "./components/form";
+import RolePermissionForm from "./components/form.vue";
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const plusSearchModelRef: FieldValues & Partial<RolePermissionListQuery> = {
 	name: "",
 	code: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-// 使用角色权限列表查询 Hook
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -55,108 +47,90 @@ const {
 	handleCurrentPageChange,
 } = useRolePermissionListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const rolePermissionFormInstance = ref<InstanceType<typeof RolePermissionForm> | null>(null);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.name"))),
 		prop: "name",
 		width: 150,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.code"))),
 		prop: "code",
 		width: 150,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.status")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.status"))),
 		prop: "enabled",
 		width: 100,
 		cellRenderer: ({ row }) =>
 			row.enabled
-				? transformI18n($t("settingManage.organizeManage.rolePermission.status.enabled"))
-				: transformI18n($t("settingManage.organizeManage.rolePermission.status.disabled")),
+				? renderI18n($t("settingManage.organizeManage.rolePermission.status.enabled"))
+				: renderI18n($t("settingManage.organizeManage.rolePermission.status.disabled")),
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.description")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.description"))),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-// 表格操作栏配置
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("settingManage.organizeManage.rolePermission.tableTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.rolePermission.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
+		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
+		},
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
+		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		prop: "code",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-// ========== 命令式弹框相关 ==========
-
-// 表单组件实例
-const rolePermissionFormInstance = ref<InstanceType<typeof RolePermissionForm> | null>(null);
-
-// 测试异步函数
+const { setMode, isAdd, isEdit } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
+
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-const defaultAddDialogParams = {
-	width: "50%",
-	draggable: true,
-	fullscreenIcon: true,
-	closeOnClickModal: false,
-	contentRenderer: () => h("div"),
-};
-
-/** 打开弹框 */
-function openDialog(params: { mode: Mode; row?: RolePermission }) {
-	const { mode, row } = params;
+function openDialog({ mode, row }: { mode: Mode; row?: RolePermission }) {
 	setMode(mode);
 
-	/** 业务对象 */
 	const formVO: RolePermissionFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					id: row?.id || "",
 					name: row?.name || "",
@@ -164,63 +138,63 @@ function openDialog(params: { mode: Mode; row?: RolePermission }) {
 					enabled: row?.enabled ?? true,
 					description: row?.description || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
-	/** 表单组件需要的props */
-	const formProps: RolePermissionFormProps = {
+	const props: RolePermissionFormProps = {
 		form: formVO,
 		defaultValues: formVO,
+		mode,
 	};
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("settingManage.organizeManage.rolePermission.dialogTitle"))}`;
+	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props: formProps,
+		title: () =>
+			isAdd.value
+				? renderI18n($t("settingManage.organizeManage.rolePermission.dialogs.addTitle"))
+				: renderI18n($t("settingManage.organizeManage.rolePermission.dialogs.editTitle")),
+		props,
 		contentRenderer: () =>
 			h(RolePermissionForm, {
 				ref: rolePermissionFormInstance,
-				...formProps,
+				...props,
 			}),
 		async doBeforeClose({ options, index }) {
 			const formComputed = rolePermissionFormInstance.value?.formComputed;
 			if (formComputed) {
-				await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = rolePermissionFormInstance.value?.formComputed;
 					if (formComputed) {
-						await useDoBeforeClose({ defaultValues: formProps.defaultValues, formComputed, index, options });
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index } }) => {
+				btnClick: () => {
 					rolePermissionFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => renderI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					if (rolePermissionFormInstance.value?.plusFormInstance) {
-						const res = await rolePermissionFormInstance.value.plusFormInstance.handleSubmit();
-						if (res) {
-							button.btn.loading = true;
-							await testAsync();
-							button.btn.loading = false;
-							closeDialog(options, index);
-							doFetch();
-						}
+					const res = await rolePermissionFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						doFetch();
 					}
 				},
 			},
@@ -228,61 +202,44 @@ function openDialog(params: { mode: Mode; row?: RolePermission }) {
 	});
 }
 
-// ========== 事件处理函数 ==========
-
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-// 表格操作函数
-function handleAdd() {
-	openDialog({ mode: "add" });
-}
-
-function handleEdit(row: RolePermission) {
-	openDialog({ mode: "edit", row });
-}
-
 function handleDelete(row: RolePermission) {
 	ElMessage.warning(
-		transformI18n($t("settingManage.organizeManage.common.messages.deletePending", { name: row.name })),
+		i18n.global.t($t("settingManage.organizeManage.common.messages.deletePending"), { name: row.name }),
 	);
 }
 
 function handleViewPermissions(row: RolePermission) {
 	ElMessage.info(
-		transformI18n($t("settingManage.organizeManage.common.messages.viewPermissionPending", { name: row.name })),
+		i18n.global.t($t("settingManage.organizeManage.common.messages.viewPermissionPending"), { name: row.name }),
 	);
 }
-
-// ========== 生命周期 ==========
-onMounted(async () => {
-	// 加载表格数据 (auto loaded by hook)
-});
 </script>
 
 <template>
-	<section class="index-root">
-		<!-- PlusSearch 搜索栏 -->
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
 
-		<!-- 表格区域 -->
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary" @click="handleAdd">
+				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
@@ -301,7 +258,7 @@ onMounted(async () => {
 						<ElButton type="info" @click="handleViewPermissions(row)">
 							{{ transformI18n($t("settingManage.organizeManage.common.buttons.permissionConfig")) }}
 						</ElButton>
-						<ElButton type="warning" @click="handleEdit(row)">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
@@ -314,4 +271,7 @@ onMounted(async () => {
 	</section>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.index-root {
+}
+</style>
