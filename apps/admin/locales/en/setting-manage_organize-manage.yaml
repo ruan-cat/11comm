@@ -58,6 +58,9 @@ settingManage:
       pageTitle: Staff Info
       tableTitle: Staff Management
       dialogTitle: Staff
+      dialogs:
+        addTitle: Add Staff
+        editTitle: Edit Staff
       fields:
         employeeId: Staff ID
         employeeNumber: Staff Number
@@ -117,6 +120,9 @@ settingManage:
       pageTitle: Role Permission
       tableTitle: Role Permission Management
       dialogTitle: Role Permission
+      dialogs:
+        addTitle: Add Role Permission
+        editTitle: Edit Role Permission
       fields:
         name: Role Name
         code: Role Code
@@ -161,6 +167,9 @@ settingManage:
       pageTitle: Work Schedule
       tableTitle: Schedule Management
       dialogTitle: Schedule
+      dialogs:
+        addTitle: Add Schedule
+        editTitle: Edit Schedule
       fields:
         name: Schedule Name
         type: Schedule Type
@@ -185,6 +194,9 @@ settingManage:
         friday: Friday
         saturday: Saturday
         sunday: Sunday
+      status:
+        enabled: Enabled
+        disabled: Disabled
       form:
         validation:
           enterName: Please enter the schedule name
@@ -199,6 +211,9 @@ settingManage:
       pageTitle: Scheduling Settings
       tableTitle: Scheduling Settings
       dialogTitle: Scheduling Settings
+      dialogs:
+        addTitle: Add Scheduling Settings
+        editTitle: Edit Scheduling Settings
       fields:
         name: Schedule Name
         type: Schedule Type
@@ -226,6 +241,11 @@ settingManage:
       pageTitle: Shift Settings
       tableTitle: Shift Information
       dialogTitle: Shift Settings
+      dialogs:
+        addTitle: Add Shift
+        editTitle: Edit Shift
+        confirmDelete: 'Are you sure you want to delete shift "{name}"?'
+        confirmToggle: 'Are you sure you want to {action} shift "{name}"?'
       fields:
         name: Shift Name
         type: Shift Type
@@ -249,9 +269,6 @@ settingManage:
           selectType: Please select the shift type
           selectStartTime: Please select the start time
           selectEndTime: Please select the end time
-      dialogs:
-        confirmDelete: 'Are you sure you want to delete shift "{name}"?'
-        confirmToggle: 'Are you sure you want to {action} shift "{name}"?'
       messages:
         deleted: Deleted successfully
         statusUpdated: "Shift has been {action}"

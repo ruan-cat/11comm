@@ -58,6 +58,9 @@ settingManage:
       pageTitle: 员工信息
       tableTitle: 员工管理
       dialogTitle: 员工
+      dialogs:
+        addTitle: 新增员工
+        editTitle: 编辑员工
       fields:
         employeeId: 员工ID
         employeeNumber: 员工编号
@@ -117,6 +120,9 @@ settingManage:
       pageTitle: 角色权限
       tableTitle: 角色权限管理
       dialogTitle: 角色权限
+      dialogs:
+        addTitle: 新增角色权限
+        editTitle: 编辑角色权限
       fields:
         name: 角色名称
         code: 角色编码
@@ -161,6 +167,9 @@ settingManage:
       pageTitle: 排班表
       tableTitle: 排班管理
       dialogTitle: 排班
+      dialogs:
+        addTitle: 新增排班
+        editTitle: 编辑排班
       fields:
         name: 排班名称
         type: 排班类型
@@ -185,6 +194,9 @@ settingManage:
         friday: 星期五
         saturday: 星期六
         sunday: 星期日
+      status:
+        enabled: 启用
+        disabled: 禁用
       form:
         validation:
           enterName: 请输入排班名称
@@ -199,6 +211,9 @@ settingManage:
       pageTitle: 排班设置
       tableTitle: 排班设置
       dialogTitle: 排班设置
+      dialogs:
+        addTitle: 新增排班设置
+        editTitle: 编辑排班设置
       fields:
         name: 排班名称
         type: 排班类型
@@ -226,6 +241,11 @@ settingManage:
       pageTitle: 班次设置
       tableTitle: 班次信息
       dialogTitle: 班次设置
+      dialogs:
+        addTitle: 新增班次
+        editTitle: 编辑班次
+        confirmDelete: 确认删除班次 "{name}" 吗？
+        confirmToggle: 确认{action}班次 "{name}" 吗？
       fields:
         name: 班次名称
         type: 班次类型
@@ -249,9 +269,6 @@ settingManage:
           selectType: 请选择班次类型
           selectStartTime: 请选择开始时间
           selectEndTime: 请选择结束时间
-      dialogs:
-        confirmDelete: 确认删除班次 "{name}" 吗？
-        confirmToggle: 确认{action}班次 "{name}" 吗？
       messages:
         deleted: 删除成功
         statusUpdated: 班次已{action}
