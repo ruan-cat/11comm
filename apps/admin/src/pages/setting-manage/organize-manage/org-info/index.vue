@@ -9,45 +9,39 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted, nextTick, watch } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { useMode, type Mode } from "@/composables/use-mode";
-
+import { nextTick, onMounted, ref } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
-
+import { ElMessage } from "element-plus";
 import { ReTreeLineIcon } from "components/ReTreeLineIcon";
 import { useReTreeLineIcon } from "components/ReTreeLineIcon/src/use-re-tree-line-icon.ts";
-import type { TreeNodeWithIcon, TreeSelectEvent, ReTreeLineIconInstance } from "components/ReTreeLineIcon/src/types.ts";
-import { ElMessage } from "element-plus";
-
-import type { OrganizationTreeNode, Employee, EmployeeListQuery } from "@01s-11comm/type";
+import type { ReTreeLineIconInstance, TreeNodeWithIcon, TreeSelectEvent } from "components/ReTreeLineIcon/src/types.ts";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { useEmployeeListQuery, useOrganizationTreeQuery } from "@/api/setting-manage/organize-manage/org-info";
+import type { Employee, OrganizationTreeNode } from "@01s-11comm/type";
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+interface EmployeeSearchForm {
+	employeeName?: string;
+}
 
-// 使用组织树查询 Hook
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const { data: organizationTreeData, isFetching: treeLoading } = useOrganizationTreeQuery();
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & EmployeeSearchForm = {
 	employeeName: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-// 使用员工列表查询 Hook
 const {
-	tableData,
 	pureTableProps,
 	isFetching: tableLoading,
 	updateParams,
@@ -57,227 +51,188 @@ const {
 	handleCurrentPageChange,
 } = useEmployeeListQuery(plusSearchDefaultValues);
 
-// 树组件状态
 const treeRef = ref<ReTreeLineIconInstance | null>(null);
 
-// 使用新的组合式API
 const {
-	selectedNode,
 	hasSelection,
-	selectedNodeName,
-	searchKeyword,
 	getSelectedNode,
+	searchKeyword,
+	selectedNodeName,
 	selectNode,
-	clearSelection,
 	toggleExpansion,
 	searchNodes,
 	resetTree,
 	onMounted: onTreeMounted,
 } = useReTreeLineIcon(treeRef, {
 	watchSelection: true,
-	autoSearch: false, // 我们手动控制搜索
+	autoSearch: false,
 });
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const localSelectedOrg = ref<OrganizationTreeNode | null>(null);
+const [isFetchingT, setIsLoadingT] = useToggle(false);
+
+async function testAsync() {
+	setIsLoadingT(true);
+	await sleep(1300);
+	setIsLoadingT(false);
+}
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.name")),
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.name"))),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.phone")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.phone"))),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.position")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.position"))),
 		prop: "position",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.email")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.email"))),
 		prop: "email",
 		width: 200,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.address")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.address"))),
 		prop: "address",
 		width: 200,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.gender")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.gender"))),
 		prop: "gender",
 		width: 80,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-// 表格操作栏配置
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("settingManage.organizeManage.orgInfo.tableTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.orgInfo.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-// PlusSearch 搜索表单数据接口
-interface EmployeeSearchForm {
-	employeeName?: string;
-}
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
+		label: renderI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
 		prop: "employeeName",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-// 树组件搜索配置
-const treeSearchOptions = {
+const treeSearchOptions = withLocale(() => ({
 	searchable: true,
-	searchPlaceholder: transformI18n($t("settingManage.organizeManage.orgInfo.search.orgNamePlaceholder")),
-};
+	searchPlaceholder: renderI18n($t("settingManage.organizeManage.orgInfo.search.orgNamePlaceholder")),
+}));
 
-// 树组件展开折叠配置
 const treeExpansionOptions = {
 	showExpansionControl: true,
 	controlPosition: "dropdown" as const,
 };
 
-// ========== 事件处理函数 ==========
-
-// 本地选中状态（可写）
-const localSelectedOrg = ref<OrganizationTreeNode | null>(null);
-
-// 测试异步函数
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-}
-
-// 示例：如何使用组合式API获取树的状态
-function demonstrateTreeAPI() {
-	console.log("当前选中节点:", getSelectedNode());
-	console.log("是否有选中:", hasSelection.value);
-	console.log("选中节点名称:", selectedNodeName.value);
-	console.log("搜索关键字:", searchKeyword.value);
-}
-
-// 树节点点击事件
 function handleTreeNodeClick(event: TreeSelectEvent) {
 	localSelectedOrg.value = event.selected ? (event.node as OrganizationTreeNode) : null;
 
-	// 根据选中的组织加载关联员工
 	if (localSelectedOrg.value) {
 		loadEmployeesByOrg(localSelectedOrg.value);
-	} else {
-		// 取消选择时，加载所有或重置
-		updateParams({ orgId: undefined, pageIndex: 1 });
+		return;
 	}
+
+	updateParams({ orgId: undefined, pageIndex: 1 });
 }
 
-// 树选择变化事件
 function handleTreeSelectionChange(node: TreeNodeWithIcon | null) {
 	localSelectedOrg.value = node as OrganizationTreeNode | null;
 }
 
-// 根据组织加载员工
 function loadEmployeesByOrg(org: OrganizationTreeNode) {
 	updateParams({ orgId: org.id, pageIndex: 1 });
 }
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
-async function handleSearch() {
+function handleSearch() {
 	updateParams({
 		employeeName: plusSearchModel.value.employeeName,
 		pageIndex: 1,
 	});
 }
 
-// 组织操作
 function handleAddOrg() {
-	console.log("添加组织");
+	void testAsync();
 }
 
 function handleEditOrg() {
 	if (!localSelectedOrg.value) {
-		ElMessage.warning(transformI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
+		ElMessage.warning(renderI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
 		return;
 	}
-	console.log("修改组织:", localSelectedOrg.value);
+
+	void getSelectedNode();
 }
 
 function handleDeleteOrg() {
 	if (!localSelectedOrg.value) {
-		ElMessage.warning(transformI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
+		ElMessage.warning(renderI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
 		return;
 	}
-	console.log("删除组织:", localSelectedOrg.value);
+
+	void localSelectedOrg.value;
 }
 
-// 员工操作
 function handleAddEmployee() {
-	console.log("关联员工");
+	void testAsync();
 }
 
 function handleExportDoc() {
-	console.log("导出文档");
+	void testAsync();
 }
 
 function handleEditEmployee(row: Employee) {
-	console.log("编辑员工:", row);
+	void row;
 }
 
 function handleDeleteEmployee(row: Employee) {
-	console.log("删除员工:", row);
+	void row;
 }
 
-// ========== 生命周期 ==========
 onMounted(async () => {
-	// 初始化树组件API
-	nextTick(() => {
-		onTreeMounted();
-		// 演示API使用
-		demonstrateTreeAPI();
-	});
+	await nextTick();
+	onTreeMounted();
+	void hasSelection.value;
+	void selectedNodeName.value;
+	void searchKeyword.value;
+	void selectNode;
+	void toggleExpansion;
+	void searchNodes;
+	void resetTree;
 });
 </script>
 
 <template>
-	<section class="org-info-container">
+	<section :key="locale" class="org-info-container">
 		<el-row :gutter="20" class="h-full">
-			<!-- 左侧组织树 -->
 			<el-col :span="6" class="left-content">
 				<el-card shadow="never" class="h-full">
 					<template #header>
@@ -286,7 +241,6 @@ onMounted(async () => {
 						</div>
 					</template>
 
-					<!-- 组织操作按钮 -->
 					<div class="mb-4">
 						<ElButton type="primary" @click="handleAddOrg">
 							{{ transformI18n($t("common.buttons.add")) }}
@@ -299,7 +253,6 @@ onMounted(async () => {
 						</ElButton>
 					</div>
 
-					<!-- 使用新的树组件 -->
 					<div class="tree-container">
 						<ReTreeLineIcon
 							ref="treeRef"
@@ -315,18 +268,18 @@ onMounted(async () => {
 				</el-card>
 			</el-col>
 
-			<!-- 右侧员工管理 -->
 			<el-col :span="18" class="right-content">
-				<!-- PlusSearch 搜索栏 -->
 				<PlusSearch
+					:key="locale"
 					v-model="plusSearchModel"
 					:="plusSearchProps"
 					:columns="plusSearchColumns"
+					:search-text="plusSearchButtonTexts.searchText"
+					:reset-text="plusSearchButtonTexts.resetText"
 					@search="handleSearch"
 					@reset="handleReSearch"
 				/>
 
-				<!-- 员工表格区域 -->
 				<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 					<template #buttons>
 						<ElButton type="info" @click="handleExportDoc">
