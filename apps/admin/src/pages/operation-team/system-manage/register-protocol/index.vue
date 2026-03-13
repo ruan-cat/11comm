@@ -1,36 +1,98 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "注册协议",
+		// 注册协议
+		title: "operationTeam.systemManage.registerProtocol.pageTitle",
 		icon: "mdi:file-document-outline",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.systemManage.registerProtocol"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { computed, h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import type {
+	OperationTeamRegisterProtocol,
+	OperationTeamRegisterProtocolListQuery,
+	RegisterProtocolFormVO,
+} from "@01s-11comm/type";
 import {
-	type OperationTeamRegisterProtocol,
-	type OperationTeamRegisterProtocolListQuery,
-	type RegisterProtocolFormVO,
-	protocolTypeOptions,
-	operationRegisterProtocolEnabledOptions,
 	isMandatoryOptions,
+	operationRegisterProtocolEnabledOptions,
+	protocolTypeOptions,
 } from "@01s-11comm/type";
 import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage/register-protocol";
 import { type RegisterProtocolFormProps, defaultForm } from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
-import { useMode, type Mode } from "@/composables/use-mode";
 
-/** 表单组件实例 */
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+
+const protocolTypeLabelMap = {
+	用户注册协议: "operationTeam.systemManage.registerProtocol.options.protocolTypes.userRegistration",
+	隐私政策: "operationTeam.systemManage.registerProtocol.options.protocolTypes.privacyPolicy",
+	服务条款: "operationTeam.systemManage.registerProtocol.options.protocolTypes.serviceTerms",
+	免责声明: "operationTeam.systemManage.registerProtocol.options.protocolTypes.disclaimer",
+	版权声明: "operationTeam.systemManage.registerProtocol.options.protocolTypes.copyright",
+} as const;
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+function translateProtocolTypeLabel(value?: string) {
+	const key = value ? protocolTypeLabelMap[value as keyof typeof protocolTypeLabelMap] : undefined;
+	return key ? renderI18n($t(key)) : value;
+}
+
+function translateEnabledLabel(value?: boolean | number | string) {
+	if (value === true || value === "启用" || value === "Enabled") {
+		return renderI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.enabled"));
+	}
+	if (value === false || value === "禁用" || value === "Disabled") {
+		return renderI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.disabled"));
+	}
+	return value === undefined || value === null ? "" : String(value);
+}
+
+function translateRequiredLabel(value?: boolean | number | string) {
+	if (value === true || value === "是" || value === "Yes") {
+		return renderI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.yes"));
+	}
+	if (value === false || value === "否" || value === "No") {
+		return renderI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.no"));
+	}
+	return value === undefined || value === null ? "" : String(value);
+}
+
+const translatedProtocolTypeOptions = withLocale(() =>
+	protocolTypeOptions.map((item) => ({
+		...item,
+		label: translateProtocolTypeLabel(String(item.value)),
+	})),
+);
+
+const translatedEnabledOptions = withLocale(() =>
+	operationRegisterProtocolEnabledOptions.map((item) => ({
+		...item,
+		label: translateEnabledLabel(item.value),
+	})),
+);
+
+const translatedRequiredOptions = withLocale(() =>
+	isMandatoryOptions.map((item) => ({
+		...item,
+		label: translateRequiredLabel(item.value),
+	})),
+);
+
 const registerProtocolFormInstance = ref<InstanceType<typeof RegisterProtocolForm> | null>(null);
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<OperationTeamRegisterProtocolListQuery> = {
 	title: "",
 	protocolType: undefined,
@@ -38,13 +100,9 @@ const plusSearchModelRef: FieldValues & Partial<OperationTeamRegisterProtocolLis
 	isRequired: undefined,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -56,138 +114,121 @@ const {
 	handleCurrentPageChange,
 } = useRegisterProtocolListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "协议ID",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolId"))),
 		prop: "id",
 		width: 120,
 		fixed: true,
 	},
 	{
-		label: "协议名称",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName"))),
 		prop: "title",
 		minWidth: 200,
 	},
 	{
-		label: "协议类型",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolType"))),
 		prop: "protocolType",
 		width: 150,
+		cellRenderer: ({ row }) => translateProtocolTypeLabel(row.protocolType),
 	},
 	{
-		label: "协议版本",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolVersion"))),
 		prop: "version",
 		width: 120,
 	},
 	{
-		label: "启用状态",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.enabledStatus"))),
 		prop: "isEnabled",
 		width: 100,
+		cellRenderer: ({ row }) => translateEnabledLabel(row.isEnabled),
 	},
 	{
-		label: "是否必读",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.isRequired"))),
 		prop: "isRequired",
 		width: 120,
+		cellRenderer: ({ row }) => translateRequiredLabel(row.isRequired),
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.remark"))),
 		prop: "remark",
 		minWidth: 250,
 	},
 	{
-		label: "生效日期",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.effectiveTime"))),
 		prop: "effectiveTime",
 		width: 120,
 	},
 	{
-		label: "失效日期",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.expireTime"))),
 		prop: "expireTime",
 		width: 120,
 	},
 	{
-		label: "操作人",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.operator"))),
 		prop: "operator",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "更新时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.registerProtocol.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "注册协议",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("operationTeam.systemManage.registerProtocol.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 协议名称
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "协议名称",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName")),
 		prop: "title",
 		valueType: "input",
 	},
-
-	// 协议类型
 	{
-		label: "协议类型",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolType")),
 		prop: "protocolType",
 		valueType: "select",
-		options: protocolTypeOptions,
+		options: translatedProtocolTypeOptions.value,
 	},
-
-	// 是否启用
 	{
-		label: "是否启用",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.enabledStatus")),
 		prop: "isEnabled",
 		valueType: "select",
-		options: operationRegisterProtocolEnabledOptions,
+		options: translatedEnabledOptions.value,
 	},
-
-	// 是否必读
 	{
-		label: "是否必读",
+		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.isRequired")),
 		prop: "isRequired",
 		valueType: "select",
-		options: isMandatoryOptions,
+		options: translatedRequiredOptions.value,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -195,19 +236,14 @@ function handleSearch() {
 	});
 }
 
-/** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: OperationTeamRegisterProtocol;
 }
 
-/** 模式控制 */
-const { modeText, setMode, isAdd, isEdit, isInfo } = useMode();
-
-/** 测试异步函数 */
+const { setMode, isAdd, isEdit, isInfo } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
@@ -216,21 +252,22 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}注册协议`;
+	const title = isAdd.value
+		? () => renderI18n($t("operationTeam.systemManage.registerProtocol.dialogs.addTitle"))
+		: isEdit.value
+			? () => renderI18n($t("operationTeam.systemManage.registerProtocol.dialogs.editTitle"))
+			: () => renderI18n($t("operationTeam.systemManage.registerProtocol.dialogs.infoTitle"));
 
-	/** 业务对象 */
 	const formVO: RegisterProtocolFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value || isInfo.value
 			? (structuredClone({
 					...defaultForm,
 					protocolName: row?.title || "",
-					protocolType: row?.protocolType || "UserRegistrationProtocol",
+					protocolType: row?.protocolType || "用户注册协议",
 					protocolVersion: row?.version || "v1.0.0",
 					status: row?.isEnabled ? "Enabled" : "Disabled",
 					isMandatory: row?.isRequired ? "Yes" : "No",
@@ -242,13 +279,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				}) as RegisterProtocolFormVO)
 			: structuredClone(defaultForm);
 
-	/** 表单组件需要的props */
 	const props: RegisterProtocolFormProps = {
 		form: formVO,
 		defaultValues: formVO,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
@@ -257,49 +292,49 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		width: "80%",
 		top: "10vh",
 		props,
-
 		contentRenderer: () =>
 			h(RegisterProtocolForm, {
 				ref: registerProtocolFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = registerProtocolFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = registerProtocolFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => renderI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
-					const formComputed = registerProtocolFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = registerProtocolFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => renderI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					registerProtocolFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					registerProtocolFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: isInfo.value ? "关闭" : transformI18n($t("common.buttons.submit")),
+				label: isInfo.value
+					? () => renderI18n($t("common.buttons.cancel"))
+					: () => renderI18n($t("common.buttons.submit")),
 				type: isInfo.value ? "info" : "success",
 				btnClick: isInfo.value
-					? async ({ dialog: { options, index }, button }) => {
-							const formComputed = registerProtocolFormInstance.value.formComputed;
-							await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					? async ({ dialog: { options, index } }) => {
+							const formComputed = registerProtocolFormInstance.value?.formComputed;
+							if (formComputed) {
+								await useDoBeforeClose({ defaultValues, formComputed, index, options });
+							}
 						}
 					: async ({ dialog: { options, index }, button }) => {
-							/** 提交表单时 校验 */
-							const res = await registerProtocolFormInstance.value.plusFormInstance.handleSubmit();
+							const res = await registerProtocolFormInstance.value?.plusFormInstance?.handleSubmit();
 							if (res) {
 								button.btn.loading = true;
 								await testAsync();
@@ -311,15 +346,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// await loadTableData();
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -335,7 +367,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore 忽略 treeProps 所需的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
