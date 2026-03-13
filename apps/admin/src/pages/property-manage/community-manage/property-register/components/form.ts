@@ -1,21 +1,12 @@
+import type { Mode } from "@/composables/use-mode";
 import type { PropertyRegisterFormVO } from "@01s-11comm/type";
-import { type Mode } from "@/composables/use-mode";
 
-/**
- * 产权登记表单 props
- * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
- */
 export interface PropertyRegisterFormProps {
-	/** 表单数据 */
 	form: PropertyRegisterFormVO;
-	/** 表单组件重置时默认使用的对象 */
 	defaultValues: PropertyRegisterFormVO;
-	/** 表单模式 Form mode */
 	mode?: Mode;
 }
 
-/** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: PropertyRegisterFormVO = {
 	propertyRightId: "",
 	houseId: "",
@@ -24,6 +15,6 @@ export const defaultForm: PropertyRegisterFormVO = {
 	contactInfo: "",
 	idCardNumber: "",
 	address: "",
-	status: "启用",
+	status: "enabled",
 	remark: "",
 };
