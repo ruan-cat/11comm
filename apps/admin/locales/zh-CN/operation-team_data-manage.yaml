@@ -1,21 +1,165 @@
 # 物业公司
 property-management-company:
+  pageTitle: 物业公司
+  tableTitle: 物业公司
   manageCommunity: 管理小区
   limitLogin: 限制登录
   resetPassword: 重置密码
   propertyManagementNumber: 物业编号
-  name: 名称
-  phone: 电话
+  name: 物业名称
+  phone: 联系电话
+  dialogs:
+    addTitle: 添加物业公司
+    editTitle: 编辑物业公司
+  fields:
+    companyId: 物业编号
+    companyName: 物业名称
+    address: 公司地址
+    administrator: 管理员
+    phone: 联系电话
+    legalRepresentative: 公司法人
+    establishmentDate: 成立日期
+    landmark: 位置地标
+    communityCount: 开通小区数量
+    companyType: 公司类型
+    serviceLevel: 服务等级
+    operationStatus: 运营状态
+    createTime: 创建时间
+    remarks: 备注
+  placeholders:
+    companyId: 请输入物业编号
+    companyName: 请输入物业公司名称
+    address: 请输入公司详细地址
+    administrator: 请输入管理员姓名
+    phone: 请输入联系电话
+    legalRepresentative: 请输入公司法人姓名
+    establishmentDate: 请选择成立日期
+    landmark: 请输入位置地标
+    communityCount: 请输入开通小区数量
+    companyType: 请选择公司类型
+    serviceLevel: 请选择服务等级
+    operationStatus: 请选择运营状态
+    remarks: 请输入备注信息
+  validation:
+    companyNameRequired: 请输入物业公司名称
+    companyNameLength: 长度在 2 到 50 个字符
+    addressRequired: 请输入公司地址
+    addressLength: 长度在 5 到 200 个字符
+    phoneRequired: 请输入联系电话
+    phoneInvalid: 请输入正确的电话号码
+    administratorRequired: 请输入管理员姓名
+    administratorLength: 长度在 2 到 10 个字符
+    legalRepresentativeRequired: 请输入公司法人姓名
+    legalRepresentativeLength: 长度在 2 到 10 个字符
+    establishmentDateRequired: 请选择成立日期
+    landmarkLength: 长度不能超过 50 个字符
+    communityCountRequired: 请输入开通小区数量
+    communityCountRange: 数量范围 0-9999
+    companyTypeRequired: 请选择公司类型
+    serviceLevelRequired: 请选择服务等级
+    operationStatusRequired: 请选择运营状态
+    remarksLength: 备注长度不能超过 500 个字符
+  options:
+    companyTypes:
+      stateOwned: 国企
+      private: 民企
+    serviceLevels:
+      level1: 一级
+      level2: 二级
+      level3: 三级
+    operationStatuses:
+      operating: 正常运营
+      suspended: 暂停服务
+      cancelled: 停止运营
 
 # 小区信息
 community-information:
+  pageTitle: 小区信息
+  tableTitle: 小区信息
   communityID: 小区ID
   communityName: 小区名称
-  province: 省
+  province: 省份
   city: 城市
   district: 区县
+  dialogs:
+    addTitle: 添加小区信息
+    editTitle: 编辑小区信息
+    infoTitle: 小区信息详情
+  fields:
+    communityId: 小区ID
+    communityName: 小区名称
+    propertyCompany: 物业公司
+    nearbyLandmark: 附近地标
+    province: 省份
+    city: 城市
+    district: 区县
+    contactPhone: 联系电话
+    administrator: 管理员
+    status: 状态
+    createTime: 创建时间
+    communityCode: 社区编码
+    cityCode: 城市编码
+    detailedAddress: 详细地址
+  placeholders:
+    communityId: 请输入小区ID
+    communityName: 请输入小区名称
+    propertyCompany: 请输入物业公司名称
+    nearbyLandmark: 请输入附近地标
+    province: 请选择省份
+    city: 请选择城市
+    district: 请选择区县
+    detailedAddress: 请输入详细地址
+    contactPhone: 请输入联系电话
+    administrator: 请输入管理员姓名
+    status: 请选择状态
+    communityCode: 请输入社区编码
+    cityCode: 请输入城市编码
+    createTime: 请输入创建时间
+  validation:
+    communityNameRequired: 请输入小区名称
+    communityNameLength: 长度在 2 到 50 个字符
+    propertyCompanyRequired: 请输入物业公司名称
+    propertyCompanyLength: 长度在 2 到 50 个字符
+    provinceRequired: 请选择省份
+    cityRequired: 请选择城市
+    districtRequired: 请选择区县
+    detailedAddressRequired: 请输入详细地址
+    detailedAddressLength: 长度在 5 到 100 个字符
+    contactPhoneRequired: 请输入联系电话
+    contactPhoneInvalid: 请输入正确的手机号码
+    administratorRequired: 请输入管理员姓名
+    administratorLength: 长度在 2 到 20 个字符
+    statusRequired: 请选择状态
+  options:
+    provinces:
+      beijing: 北京市
+      shanghai: 上海市
+      guangzhou: 广州市
+      shenzhen: 深圳市
+      hangzhou: 杭州市
+    cities:
+      beijing: 北京市
+      shanghai: 上海市
+      guangzhou: 广州市
+      shenzhen: 深圳市
+      hangzhou: 杭州市
+      nanjing: 南京市
+      wuhan: 武汉市
+      chengdu: 成都市
+    districts:
+      chaoyang: 朝阳区
+      haidian: 海淀区
+      dongcheng: 东城区
+      xicheng: 西城区
+      fengtai: 丰台区
+    statuses:
+      normal: 正常
+      disabled: 停用
+      preparing: 筹建中
+      delivered: 已交付
+      enabled: 启用
 
-#物业公司-管理小区按钮
+# 物业公司-管理小区按钮
 property-management-company-community-management:
   communityNumber: 小区编号
   communityName: 小区名称

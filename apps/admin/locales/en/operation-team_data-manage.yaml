@@ -1,21 +1,165 @@
-# 物业公司
+# Property management company
 property-management-company:
+  pageTitle: Property Company
+  tableTitle: Property Company
   manageCommunity: Manage Community
   limitLogin: Limit Login
   resetPassword: Reset Password
-  propertyManagementNumber: Property Management Number
-  name: Name
+  propertyManagementNumber: Property Number
+  name: Property Company Name
   phone: Phone
+  dialogs:
+    addTitle: Add Property Company
+    editTitle: Edit Property Company
+  fields:
+    companyId: Property Number
+    companyName: Property Company Name
+    address: Company Address
+    administrator: Administrator
+    phone: Phone
+    legalRepresentative: Legal Representative
+    establishmentDate: Establishment Date
+    landmark: Landmark
+    communityCount: Community Count
+    companyType: Company Type
+    serviceLevel: Service Level
+    operationStatus: Operation Status
+    createTime: Created Time
+    remarks: Remarks
+  placeholders:
+    companyId: Please enter Property Number
+    companyName: Please enter Property Company Name
+    address: Please enter Company Address
+    administrator: Please enter Administrator Name
+    phone: Please enter Phone
+    legalRepresentative: Please enter Legal Representative Name
+    establishmentDate: Please select Establishment Date
+    landmark: Please enter Landmark
+    communityCount: Please enter Community Count
+    companyType: Please select Company Type
+    serviceLevel: Please select Service Level
+    operationStatus: Please select Operation Status
+    remarks: Please enter Remarks
+  validation:
+    companyNameRequired: Please enter Property Company Name
+    companyNameLength: Length must be between 2 and 50 characters
+    addressRequired: Please enter Company Address
+    addressLength: Length must be between 5 and 200 characters
+    phoneRequired: Please enter Phone
+    phoneInvalid: Please enter a valid phone number
+    administratorRequired: Please enter Administrator Name
+    administratorLength: Length must be between 2 and 10 characters
+    legalRepresentativeRequired: Please enter Legal Representative Name
+    legalRepresentativeLength: Length must be between 2 and 10 characters
+    establishmentDateRequired: Please select Establishment Date
+    landmarkLength: Length cannot exceed 50 characters
+    communityCountRequired: Please enter Community Count
+    communityCountRange: Count must be between 0 and 9999
+    companyTypeRequired: Please select Company Type
+    serviceLevelRequired: Please select Service Level
+    operationStatusRequired: Please select Operation Status
+    remarksLength: Remarks cannot exceed 500 characters
+  options:
+    companyTypes:
+      stateOwned: State-Owned
+      private: Private
+    serviceLevels:
+      level1: Level 1
+      level2: Level 2
+      level3: Level 3
+    operationStatuses:
+      operating: Operating
+      suspended: Suspended
+      cancelled: Cancelled
 
-# 小区信息
+# Community information
 community-information:
-  communityID: communityID
-  communityName: communityName
-  province: province
-  city: city
-  district: district
+  pageTitle: Community Info
+  tableTitle: Community Info
+  communityID: Community ID
+  communityName: Community Name
+  province: Province
+  city: City
+  district: District
+  dialogs:
+    addTitle: Add Community Info
+    editTitle: Edit Community Info
+    infoTitle: Community Info Details
+  fields:
+    communityId: Community ID
+    communityName: Community Name
+    propertyCompany: Property Company
+    nearbyLandmark: Nearby Landmark
+    province: Province
+    city: City
+    district: District
+    contactPhone: Phone
+    administrator: Administrator
+    status: Status
+    createTime: Created Time
+    communityCode: Community Code
+    cityCode: City Code
+    detailedAddress: Detailed Address
+  placeholders:
+    communityId: Please enter Community ID
+    communityName: Please enter Community Name
+    propertyCompany: Please enter Property Company Name
+    nearbyLandmark: Please enter Nearby Landmark
+    province: Please select Province
+    city: Please select City
+    district: Please select District
+    detailedAddress: Please enter Detailed Address
+    contactPhone: Please enter Phone
+    administrator: Please enter Administrator Name
+    status: Please select Status
+    communityCode: Please enter Community Code
+    cityCode: Please enter City Code
+    createTime: Please enter Created Time
+  validation:
+    communityNameRequired: Please enter Community Name
+    communityNameLength: Length must be between 2 and 50 characters
+    propertyCompanyRequired: Please enter Property Company Name
+    propertyCompanyLength: Length must be between 2 and 50 characters
+    provinceRequired: Please select Province
+    cityRequired: Please select City
+    districtRequired: Please select District
+    detailedAddressRequired: Please enter Detailed Address
+    detailedAddressLength: Length must be between 5 and 100 characters
+    contactPhoneRequired: Please enter Phone
+    contactPhoneInvalid: Please enter a valid mobile number
+    administratorRequired: Please enter Administrator Name
+    administratorLength: Length must be between 2 and 20 characters
+    statusRequired: Please select Status
+  options:
+    provinces:
+      beijing: Beijing
+      shanghai: Shanghai
+      guangzhou: Guangzhou
+      shenzhen: Shenzhen
+      hangzhou: Hangzhou
+    cities:
+      beijing: Beijing
+      shanghai: Shanghai
+      guangzhou: Guangzhou
+      shenzhen: Shenzhen
+      hangzhou: Hangzhou
+      nanjing: Nanjing
+      wuhan: Wuhan
+      chengdu: Chengdu
+    districts:
+      chaoyang: Chaoyang District
+      haidian: Haidian District
+      dongcheng: Dongcheng District
+      xicheng: Xicheng District
+      fengtai: Fengtai District
+    statuses:
+      normal: Normal
+      disabled: Disabled
+      preparing: Preparing
+      delivered: Delivered
+      enabled: Enabled
 
-#物业公司-管理小区按钮
+# Property company - manage community
 property-management-company-community-management:
   communityNumber: Community Number
   communityName: Community Name
