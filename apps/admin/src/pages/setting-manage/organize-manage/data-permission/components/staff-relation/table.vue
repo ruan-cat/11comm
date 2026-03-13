@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef, onMounted, nextTick } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { cloneDeep } from "lodash-es";
-import type { FieldValues, PlusColumn } from "plus-pro-components";
-
-const tableRef = useTemplateRef("tableRef");
+import { computed, ref, useTemplateRef, nextTick } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 
 interface StaffRelationItem {
 	name: string;
@@ -14,164 +11,151 @@ interface StaffRelationItem {
 	gender: string;
 }
 
-/** 表格数据 */
+interface StaffRelationSearchForm {
+	name?: string;
+	phone?: string;
+}
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const tableRef = useTemplateRef("tableRef");
 const tableData = ref<StaffRelationItem[]>([]);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.name")),
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.name"))),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.phone")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.phone"))),
 		prop: "phone",
 		width: 150,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.email")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.email"))),
 		prop: "email",
 		width: 200,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.address")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.address"))),
 		prop: "address",
 		minWidth: 150,
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.gender")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.gender"))),
 		prop: "gender",
 		width: 80,
 	},
 	{
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 160,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 分页配置 */
-const pagination = ref<PaginationProps>({
+const pagination = computed<PaginationProps>(() => ({
 	...defaultPagination,
 	pageSize: 10,
 	currentPage: 1,
 	total: tableData.value.length,
-});
+}));
 
-/** 处理页数变化 */
-async function handlePageSizeChange(pageSize: number) {
-	pagination.value.pageSize = pageSize;
-}
-
-/** 处理页码变化 */
-async function handleCurrentPageChange(currentPage: number) {
-	pagination.value.currentPage = currentPage;
-}
-
-/** 表格组件配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = computed<PureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
-});
+}));
 
-/** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.title")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.title")),
 	columns: columns.value,
-});
+}));
 
-interface StaffRelationSearchForm {
-	name?: string;
-	phone?: string;
-}
-
-/** 表格搜索栏双向绑定的变量 */
 const plusSearchModelRef: FieldValues & StaffRelationSearchForm = {
 	name: "",
 	phone: "",
 };
 
-/** 表格搜索栏重置功能用的默认数据 */
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 表格搜索栏组件表单配置 */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
+		label: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
 		prop: "name",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
+		},
 	},
 	{
-		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
+		label: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
 		prop: "phone",
 		valueType: "input",
+		fieldProps: {
+			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
+		},
 	},
 ]);
 
-/** 表格搜索栏组件配置 */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 2,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues, { showNumber: 2 });
 
-async function handleReSearch() {
-	console.log("重新搜索");
+function handleReSearch() {
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 }
 
-async function handleSearch() {
-	console.log("搜索");
-}
+async function handleSearch() {}
 
-/** 刷新数据 */
 async function doFetch() {
-	console.log("刷新数据");
 	await handleSearch();
 }
 
-/** 删除操作 */
 function handleDelete(row: StaffRelationItem) {
-	console.log("删除员工关联", row);
+	void row;
 }
 
-/** 查看详情 */
 function handleDetail(row: StaffRelationItem) {
-	console.log("查看详情", row);
+	void row;
 }
 
 async function doResetTableAdaptive() {
 	await nextTick();
 	// @ts-ignore
-	await tableRef.value.setAdaptive();
+	await tableRef.value?.setAdaptive?.();
 }
 
 defineExpose({
-	/** 重置表格自适应高度 */
 	doResetTableAdaptive,
 });
-
-onMounted(async () => {});
 </script>
 
 <template>
-	<section class="staff-relation-table-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+	<section :key="locale" class="staff-relation-table-root">
+		<PlusSearch
+			:key="locale"
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<!--
-          TODO: 先完成 单元授权 tab列表页的表格多选弹框功能 然后再复用代码 实现此处的业务逻辑
-          还需要完成表格弹框业务
-        -->
 				<ElButton type="primary">
 					{{ transformI18n($t("settingManage.organizeManage.common.buttons.associateEmployee")) }}
 				</ElButton>
@@ -184,8 +168,6 @@ onMounted(async () => {});
 					:="pureTableProps"
 					:columns="dynamicColumns"
 					:size="size"
-					@page-size-change="handlePageSizeChange"
-					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
 						<ElButton type="danger" @click="handleDelete(row)">
