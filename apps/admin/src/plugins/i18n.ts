@@ -1,5 +1,5 @@
 // 多组件库的国际化和本地项目国际化兼容
-import { type I18n, createI18n } from "vue-i18n";
+import { createI18n } from "vue-i18n";
 import type { App, WritableComputedRef } from "vue";
 import { responsiveStorageNameSpace } from "@/config";
 import { storageLocal, isObject } from "@pureadmin/utils";
@@ -23,6 +23,89 @@ const enGlob = import.meta.glob("../../locales/en/**/*.y(a)?ml", {
 	eager: true,
 });
 
+/**
+ * 提取国际化文件的命名空间
+ * @description 例如 `../../locales/zh-CN/dev-team.yaml` -> `dev-team`
+ */
+function getLocaleFileNamespace(filePath: string) {
+	const matched = filePath.match(/([A-Za-z0-9-_]+)\./i);
+	return matched?.[1] ?? "";
+}
+
+/**
+ * 规范化文件命名空间
+ * @description 例如 `dev-team` -> `devTeam`
+ */
+function normalizeLocaleNamespace(namespace: string) {
+	return namespace.replace(/[-_]+([A-Za-z0-9])/g, (_, char: string) => {
+		return char.toUpperCase();
+	});
+}
+
+/**
+ * 深度合并国际化消息对象
+ */
+function mergeLocaleMessages(target: Record<string, any>, source: Record<string, any>) {
+	for (const [key, value] of Object.entries(source)) {
+		if (isObject(target[key]) && isObject(value)) {
+			target[key] = mergeLocaleMessages(
+				target[key] as Record<string, any>,
+				value as Record<string, any>,
+			);
+			continue;
+		}
+
+		target[key] = value;
+	}
+
+	return target;
+}
+
+/**
+ * 解析单个国际化文件的命名空间和内容
+ * @description 兼容项目里“文件名一层 + 内容再包一层命名空间”的旧写法
+ */
+function resolveLocaleModuleEntry(filePath: string, localeModule: Record<string, any>) {
+	const fileNamespace = getLocaleFileNamespace(filePath);
+	const normalizedFileNamespace = normalizeLocaleNamespace(fileNamespace);
+	const entries = Object.entries(localeModule);
+
+	if (entries.length === 1) {
+		const [nestedNamespace, nestedMessages] = entries[0];
+		if (
+			nestedNamespace === normalizedFileNamespace ||
+			normalizedFileNamespace.startsWith(nestedNamespace)
+		) {
+			return [nestedNamespace, nestedMessages] as const;
+		}
+	}
+
+	return [fileNamespace, localeModule] as const;
+}
+
+/**
+ * 构建按命名空间归并后的国际化消息
+ */
+function buildLocaleMessagesByNamespace(localeGlob: Record<string, any>) {
+	return Object.entries(localeGlob).reduce(
+		(acc, [filePath, localeModule]: [string, any]) => {
+			const [namespace, messages] = resolveLocaleModuleEntry(filePath, localeModule.default);
+			const prevMessages = acc[namespace];
+
+			acc[namespace] =
+				isObject(prevMessages) && isObject(messages)
+					? mergeLocaleMessages(
+							prevMessages as Record<string, any>,
+							messages as Record<string, any>,
+						)
+					: messages;
+
+			return acc;
+		},
+		{} as Record<string, any>,
+	);
+}
+
 const siphonI18n = (function () {
 	/** @deprecated */
 	function getOldCache() {
@@ -37,26 +120,11 @@ const siphonI18n = (function () {
 	}
 
 	function getNewCache() {
-		/**
-		 * 生成匹配语法的模板 根据语言分区来分别地获取i18n配置文件
-		 * @deprecated 匹配语法无法使用变量 只能用 字符串字面量
-		 */
-		function getGlobTemplate(lang: Langs) {
-			return `"../../locales/${lang}/**/*.y(a)?ml"` as const;
-		}
-
 		const langsKeyI18nValue = langs.map((lang) => {
-			/** @deprecated 根据语言生成的 匹配模板 */
-			const globTemplate = getGlobTemplate(lang);
-
-			/** 根据语言来分别获取的 i18n 配置对象 */
-			const i18nValue = Object.fromEntries(
-				Object.entries(lang === "zh-CN" ? zhCNGlob : enGlob).map(([key, value]: any) => {
-					const matched = key.match(/([A-Za-z0-9-_]+)\./i)[1];
-					return [matched, value.default];
-				}),
+			/** 根据语言来分别获取并归并的 i18n 配置对象 */
+			const i18nValue = buildLocaleMessagesByNamespace(
+				lang === "zh-CN" ? zhCNGlob : enGlob,
 			);
-			// console.log(` 当前语言 ${lang} 下的配置？ `, i18nValue);
 			return [lang, i18nValue] as const;
 		});
 
@@ -81,40 +149,6 @@ export const localesConfigs = {
 	},
 };
 
-/** 获取对象中所有嵌套对象的key键，并将它们用点号分割组成字符串 */
-function getObjectKeys(obj) {
-	const stack = [];
-	const keys: Set<string> = new Set();
-
-	stack.push({ obj, key: "" });
-
-	while (stack.length > 0) {
-		const { obj, key } = stack.pop();
-
-		for (const k in obj) {
-			const newKey = key ? `${key}.${k}` : k;
-
-			if (obj[k] && isObject(obj[k])) {
-				stack.push({ obj: obj[k], key: newKey });
-			} else {
-				keys.add(key);
-			}
-		}
-	}
-	return keys;
-}
-
-/** 将展开的key缓存 */
-const keysCache: Map<string, Set<string>> = new Map();
-const flatI18n = (prefix = "zh-CN") => {
-	let cache = keysCache.get(prefix);
-	if (!cache) {
-		cache = getObjectKeys(siphonI18n(prefix));
-		keysCache.set(prefix, cache);
-	}
-	return cache;
-};
-
 /**
  * 国际化转换工具函数（自动读取根目录locales文件夹下文件进行国际化匹配）
  * @param message message
@@ -131,22 +165,18 @@ export function transformI18n(message: any = "") {
 		return message[locale?.value];
 	}
 
-	const key = message.match(/(\S*)\./)?.input;
-
-	if (key && flatI18n("zh-CN").has(key)) {
-		return i18n.global.t.call(i18n.global.locale, message);
-	} else if (!key && Object.hasOwn(siphonI18n("zh-CN"), message)) {
-		// 兼容非嵌套形式的国际化写法
-		return i18n.global.t.call(i18n.global.locale, message);
-	} else {
+	if (!i18n.global.te(message)) {
 		return message;
 	}
+
+	const translatedMessage = i18n.global.t(message);
+	return translatedMessage === message ? message : translatedMessage;
 }
 
 /** 此函数只是配合i18n Ally插件来进行国际化智能提示，并无实际意义（只对提示起作用），如果不需要国际化可删除 */
 export const $t = (key: string) => key;
 
-export const i18n: I18n = createI18n({
+export const i18n = createI18n({
 	legacy: false,
 	locale: storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}locale`)?.locale ?? "zh",
 	fallbackLocale: "en",
