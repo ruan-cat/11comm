@@ -1,329 +1,468 @@
-<!--
-  车位结构图表单
-  用于新增 修改车位结构图信息
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import type { ParkingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
+import type { ParkingSpaceStructureDiagramFormProps } from "./form";
 
-import { ParkingSpaceStructureDiagramFormProps } from "./form";
-import {
-	parkingSpaceTypeOptions,
-	parkingSpaceStatusOptions,
-	floorAreaOptions,
-	isChargingPileOptions,
-} from "@01s-11comm/type";
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & ParkingSpaceStructureDiagramFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & ParkingSpaceStructureDiagramFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ParkingSpaceStructureDiagramFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const parkingSpaceTypeLabelKeyMap = {
+	地下车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.underground",
+	地面车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.ground",
+	子母车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.childMother",
+	无障碍车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.accessible",
+	机械车位: "propertyManage_communityManage.parking-space-structure-diagram.options.type.mechanical",
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 车位基础信息
+const parkingSpaceStatusLabelKeyMap = {
+	空闲: "propertyManage_communityManage.parking-space-structure-diagram.options.status.idle",
+	已售: "propertyManage_communityManage.parking-space-structure-diagram.options.status.sold",
+	已租: "propertyManage_communityManage.parking-space-structure-diagram.options.status.rented",
+	维修中: "propertyManage_communityManage.parking-space-structure-diagram.options.status.maintaining",
+	其他: "propertyManage_communityManage.parking-space-structure-diagram.options.status.other",
+} as const;
+
+const orientationLabelKeyMap = {
+	靠墙: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.wall",
+	中间: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.middle",
+	靠柱: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.column",
+	露天: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.outdoor",
+	机械车位: "propertyManage_communityManage.parking-space-structure-diagram.options.orientation.mechanical",
+} as const;
+
+const floorAreaLabelKeyMap = {
+	地下1层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.b1",
+	地下2层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.b2",
+	地下3层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.b3",
+	地面层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.ground",
+	架空层: "propertyManage_communityManage.parking-space-structure-diagram.options.floorArea.elevated",
+} as const;
+
+const booleanLabelKeyMap = {
+	是: "propertyManage_communityManage.parking-space-structure-diagram.options.boolean.yes",
+	否: "propertyManage_communityManage.parking-space-structure-diagram.options.boolean.no",
+} as const;
+
+const chargingPilePowerLabelKeyMap = {
+	"3.5kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw35",
+	"7kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw7",
+	"11kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw11",
+	"20kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw20",
+	"22kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw22",
+	"7kW/3.5kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw7_35",
+	"11kW/7kW": "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.kw11_7",
+	其他: "propertyManage_communityManage.parking-space-structure-diagram.options.chargingPower.other",
+} as const;
+
+function buildOptionList<T extends Record<string, string>>(labelMap: T) {
+	return Object.entries(labelMap).map(([value, key]) => ({
+		label: renderI18n($t(key)),
+		value,
+	}));
+}
+
+const parkingSpaceTypeOptions = withLocale(() => buildOptionList(parkingSpaceTypeLabelKeyMap));
+const parkingSpaceStatusOptions = withLocale(() => buildOptionList(parkingSpaceStatusLabelKeyMap));
+const orientationOptions = withLocale(() => buildOptionList(orientationLabelKeyMap));
+const floorAreaOptions = withLocale(() => buildOptionList(floorAreaLabelKeyMap));
+const booleanOptions = withLocale(() => buildOptionList(booleanLabelKeyMap));
+const chargingPilePowerOptions = withLocale(() => buildOptionList(chargingPilePowerLabelKeyMap));
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "车位编号",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber")),
 		prop: "parkingSpaceNumber",
 		valueType: "input",
-		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入车位编号，如：B1-A001",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceNumber"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "车位类型",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceType")),
 		prop: "parkingSpaceType",
 		valueType: "select",
-		width: "160px",
-		options: parkingSpaceTypeOptions,
+		options: parkingSpaceTypeOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择车位类型",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceType"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "车位状态",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus"),
+		),
 		prop: "parkingSpaceStatus",
 		valueType: "select",
-		width: "140px",
-		options: parkingSpaceStatusOptions,
+		options: parkingSpaceStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择车位状态",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceStatus"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "车位位置",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceLocation"),
+		),
 		prop: "parkingSpaceLocation",
 		valueType: "input",
-		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入车位详细位置",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceLocation"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "车位面积",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceArea")),
 		prop: "parkingSpaceArea",
-		valueType: "input-number",
-		width: "150px",
+		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入车位面积",
-			min: 0,
-			step: 0.1,
-			controlsPosition: "right",
+			clearable: true,
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceArea"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "车位朝向",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceOrientation"),
+		),
 		prop: "parkingSpaceOrientation",
 		valueType: "select",
-		width: "120px",
-		options: [
-			{ label: "南北", value: "南北" },
-			{ label: "东西", value: "东西" },
-			{ label: "南", value: "南" },
-			{ label: "北", value: "北" },
-			{ label: "东", value: "东" },
-			{ label: "西", value: "西" },
-		],
+		options: orientationOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择朝向",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceOrientation"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "楼层区域",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.floorArea")),
 		prop: "floorArea",
 		valueType: "select",
-		width: "140px",
-		options: floorAreaOptions,
+		options: floorAreaOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择楼层区域",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.floorArea"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
-
-	// 业主信息
 	{
-		label: "业主姓名",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
-		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入业主姓名",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.ownerName"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "联系电话",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
-		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系电话",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.contactPhone"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
-
-	// 车辆信息
 	{
-		label: "车牌号码",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.licensePlateNumber"),
+		),
 		prop: "licensePlateNumber",
 		valueType: "input",
-		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入车牌号码",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.licensePlateNumber"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "车辆品牌",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.vehicleBrand")),
 		prop: "vehicleBrand",
 		valueType: "input",
-		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入车辆品牌型号",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.vehicleBrand"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
-
-	// 费用信息
 	{
-		label: "购买时间",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.purchaseTime")),
 		prop: "purchaseTime",
 		valueType: "date-picker",
-		width: "180px",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请选择购买时间",
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
+			clearable: true,
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.purchaseTime"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: "到期时间",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.expiryTime")),
 		prop: "expiryTime",
 		valueType: "date-picker",
-		width: "180px",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请选择到期时间",
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
+			clearable: true,
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.expiryTime"),
+			),
+			disabled: props.mode === "info",
 		},
-		hidden: (form: ParkingSpaceStructureDiagramFormVO) => form.parkingSpaceStatus !== "已租",
+		hidden: (currentForm: ParkingSpaceStructureDiagramFormVO) => currentForm.parkingSpaceStatus !== "已租",
 	},
 	{
-		label: "月租金",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.monthlyRent")),
 		prop: "monthlyRent",
 		valueType: "input-number",
-		width: "150px",
 		fieldProps: {
-			placeholder: "请输入月租金",
 			min: 0,
 			step: 10,
 			controlsPosition: "right",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.monthlyRent"),
+			),
+			disabled: props.mode === "info",
 		},
-		hidden: (form: ParkingSpaceStructureDiagramFormVO) => form.parkingSpaceStatus !== "已租",
+		hidden: (currentForm: ParkingSpaceStructureDiagramFormVO) => currentForm.parkingSpaceStatus !== "已租",
 	},
 	{
-		label: "管理费",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.managementFee")),
 		prop: "managementFee",
 		valueType: "input-number",
-		width: "150px",
 		fieldProps: {
-			placeholder: "请输入管理费",
 			min: 0,
 			step: 5,
 			controlsPosition: "right",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.managementFee"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
-
-	// 充电设施
 	{
-		label: "是否充电桩",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.hasEvChargingPile"),
+		),
 		prop: "hasEvChargingPile",
 		valueType: "select",
-		width: "140px",
-		options: isChargingPileOptions,
+		options: booleanOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.hasEvChargingPile"),
+			),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "充电桩功率",
+		label: renderI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.chargingPilePower"),
+		),
 		prop: "chargingPilePower",
 		valueType: "select",
-		width: "140px",
-		options: [
-			{ label: "3.5kW", value: "3.5kW" },
-			{ label: "7kW", value: "7kW" },
-			{ label: "11kW", value: "11kW" },
-			{ label: "22kW", value: "22kW" },
-			{ label: "7kW/3.5kW", value: "7kW/3.5kW" },
-			{ label: "11kW/7kW", value: "11kW/7kW" },
-			{ label: "其他", value: "其他" },
-		],
+		options: chargingPilePowerOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择功率",
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.chargingPilePower"),
+			),
+			disabled: props.mode === "info",
 		},
-		hidden: (form: ParkingSpaceStructureDiagramFormVO) => form.hasEvChargingPile !== "是",
+		hidden: (currentForm: ParkingSpaceStructureDiagramFormVO) => currentForm.hasEvChargingPile !== "是",
 	},
-
-	// 备注信息
 	{
-		label: "备注信息",
+		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
-		width: "100%",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请输入备注信息",
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
+			placeholder: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.remark"),
+			),
+			disabled: props.mode === "info",
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceNumber: [
-		{ required: true, message: "请输入车位编号", trigger: "blur" },
-		{ min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
-	],
-	parkingSpaceType: [{ required: true, message: "请选择车位类型", trigger: "change" }],
-	parkingSpaceStatus: [{ required: true, message: "请选择车位状态", trigger: "change" }],
-	parkingSpaceLocation: [
-		{ required: true, message: "请输入车位位置", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	parkingSpaceArea: [{ required: true, message: "请输入车位面积", trigger: "blur" }],
-	parkingSpaceOrientation: [{ required: true, message: "请选择车位朝向", trigger: "change" }],
-	floorArea: [{ required: true, message: "请选择楼层区域", trigger: "change" }],
-	ownerName: [{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }],
-	contactPhone: [{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" }],
-	licensePlateNumber: [
 		{
-			pattern:
-				/^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/,
-			message: "请输入正确的车牌号码",
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterParkingSpaceNumber"),
+			),
 			trigger: "blur",
 		},
 	],
-	vehicleBrand: [{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" }],
-	expiryTime: [{ required: true, message: "请选择到期时间", trigger: "change" }],
-	monthlyRent: [{ required: true, message: "请输入月租金", trigger: "blur" }],
-	managementFee: [{ required: true, message: "请输入管理费", trigger: "blur" }],
-	hasEvChargingPile: [{ required: true, message: "请选择是否配备充电桩", trigger: "change" }],
-	chargingPilePower: [{ required: true, message: "请选择充电桩功率", trigger: "change" }],
-	remark: [{ max: 500, message: "备注信息长度不能超过 500 个字符", trigger: "blur" }],
-});
+	parkingSpaceType: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceType"),
+			),
+			trigger: "change",
+		},
+	],
+	parkingSpaceStatus: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceStatus"),
+			),
+			trigger: "change",
+		},
+	],
+	parkingSpaceLocation: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterParkingSpaceLocation"),
+			),
+			trigger: "blur",
+		},
+	],
+	parkingSpaceArea: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterParkingSpaceArea"),
+			),
+			trigger: "blur",
+		},
+	],
+	parkingSpaceOrientation: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceOrientation"),
+			),
+			trigger: "change",
+		},
+	],
+	floorArea: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectFloorArea"),
+			),
+			trigger: "change",
+		},
+	],
+	contactPhone: [
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.contactPhonePattern"),
+			),
+			trigger: "blur",
+		},
+	],
+	licensePlateNumber: [
+		{
+			pattern: /^[\u4E00-\u9FFFA-Z][A-Z][A-Z0-9]{5,6}$/u,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.licensePlateNumberPattern"),
+			),
+			trigger: "blur",
+		},
+	],
+	expiryTime: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectExpiryTime"),
+			),
+			trigger: "change",
+		},
+	],
+	monthlyRent: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterMonthlyRent"),
+			),
+			trigger: "blur",
+		},
+	],
+	managementFee: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterManagementFee"),
+			),
+			trigger: "blur",
+		},
+	],
+	hasEvChargingPile: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectHasEvChargingPile"),
+			),
+			trigger: "change",
+		},
+	],
+	chargingPilePower: [
+		{
+			required: true,
+			message: renderI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectChargingPilePower"),
+			),
+			trigger: "change",
+		},
+	],
+}));
 
-/** 默认对外导出函数 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -337,7 +476,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:label-width="120"
 		/>
