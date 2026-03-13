@@ -1,91 +1,176 @@
-<!--
-  报表组件表单
-  用于新增 修改报表组件信息
--->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
-import type { ReportComponentFormVO } from "@01s-11comm/type";
-import { ReportComponentFormProps, defaultForm } from "./form";
+import { computed, ref, useTemplateRef } from "vue";
+import { componentTypeOptions, queryMethodOptions, type ReportComponentFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type ReportComponentFormProps } from "./form";
 
 const props = defineProps<ReportComponentFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+const componentTypeLabelKeyMap: Record<string, string> = {
+	表格: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
+	table: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
+	图表: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.chart"),
+	chart: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.chart"),
+	摘要: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.summary"),
+	summary: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.summary"),
+	文本: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.text"),
+	text: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.text"),
+	图片: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.image"),
+	image: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.image"),
+	按钮: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.button"),
+	button: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.button"),
+	输入框: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.input"),
+	input: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.input"),
+	下拉框: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.select"),
+	select: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.select"),
+	日期选择器: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.datePicker"),
+	datePicker: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.datePicker"),
+};
+
+const queryMethodLabelKeyMap = {
+	sql: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.sql"),
+	api: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.api"),
+	local: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.local"),
+} as const;
+
+function translateComponentType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	return renderI18n(componentTypeLabelKeyMap[value] ?? value);
+}
+
+function translateQueryMethod(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = queryMethodLabelKeyMap[value as keyof typeof queryMethodLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
 const defaultValues = props.defaultValues as FieldValues & ReportComponentFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & ReportComponentFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ReportComponentFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const translatedComponentTypeOptions = withLocale(() =>
+	componentTypeOptions.map((option) => ({
+		...option,
+		label: translateComponentType(String(option.value)),
+	})),
+);
 
-/** 表单项配置 */
-const plusFormColumns = computed<PlusColumn[]>(() => [
+const translatedQueryMethodOptions = withLocale(() =>
+	queryMethodOptions.map((option) => ({
+		...option,
+		label: translateQueryMethod(String(option.value)),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "组件名称",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.componentName")),
 		prop: "componentName",
 		valueType: "input",
 		required: true,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.componentName")),
+		},
 	},
 	{
-		label: "组件类型",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.componentType")),
 		prop: "componentType",
 		valueType: "select",
-		options: [
-			{ label: "表格", value: "表格" },
-			{ label: "饼状图", value: "饼状图" },
-		],
 		required: true,
+		options: translatedComponentTypeOptions.value,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.componentType")),
+		},
 	},
 	{
-		label: "查询方式",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.queryMethod")),
 		prop: "queryMethod",
 		valueType: "select",
-		options: [
-			{ label: "SQL", value: "sql" },
-			{ label: "JAVA", value: "java" },
-		],
 		required: true,
+		options: translatedQueryMethodOptions.value,
+		fieldProps: {
+			clearable: true,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.queryMethod")),
+		},
 	},
 	{
-		label: "SQL",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.sql")),
 		prop: "sql",
 		valueType: "textarea",
+		fieldProps: {
+			rows: 4,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.sql")),
+		},
 		hidden: () => form.value.queryMethod !== "sql",
 	},
 	{
-		label: "JAVA",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.java")),
 		prop: "java",
 		valueType: "textarea",
-		hidden: () => form.value.queryMethod !== "java",
+		fieldProps: {
+			rows: 4,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.java")),
+		},
+		hidden: () => form.value.queryMethod === "sql",
 	},
 	{
-		label: "描述",
+		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
+		fieldProps: {
+			rows: 3,
+			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.description")),
+		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	componentName: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.validation.componentNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.validation.componentNameLength")),
+			trigger: "blur",
+		},
+	],
+	componentType: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.validation.componentTypeRequired")),
+			trigger: "change",
+		},
+	],
+	queryMethod: [
+		{
+			required: true,
+			message: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.validation.queryMethodRequired")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
