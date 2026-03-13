@@ -1,24 +1,31 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "小区公示",
+		// 小区公示
+		title: "propertyManage_communityManage.notice.pageTitle",
 		icon: "mdi:bullhorn",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.communityManage.notice"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
+import { h, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useI18n } from "vue-i18n";
-import { transformI18n } from "@/plugins/i18n";
+import { sleep } from "@antfu/utils";
+import { useToggle } from "@vueuse/core";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
 import { noticeTypeOptions, noticeListDataToFormData as listDataToFormData } from "@01s-11comm/type";
 import { useCommunityNoticeListQuery } from "@/api/property-manage/community-manage/notice";
 import { type CommunityNoticeFormProps, defaultForm } from "./components/form";
 import CommunityNoticeForm from "./components/form.vue";
+import { useGotoDetailsPage } from "@/composables/use-goto-details-page";
 
-const { t } = useI18n();
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 const communityNoticeFormInstance = ref<InstanceType<typeof CommunityNoticeForm> | null>(null);
 
 const plusSearchModelRef: FieldValues & Partial<CommunityNoticeQueryParams> = {
@@ -26,15 +33,10 @@ const plusSearchModelRef: FieldValues & Partial<CommunityNoticeQueryParams> = {
 	noticeType: undefined,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -44,101 +46,102 @@ const {
 	handleCurrentPageChange,
 } = useCommunityNoticeListQuery(plusSearchDefaultValues);
 
-/** 选中的表格数据 */
 const selectedRows = ref<CommunityNoticeListItem[]>([]);
+const hasSelection = withLocale(() => selectedRows.value.length > 0);
 
-/** 是否有选中的数据 */
-const hasSelection = computed(() => selectedRows.value.length > 0);
+const noticeTypeLabelKeyMap = {
+	notification: $t("propertyManage_communityManage.notice.typeOptions.notice"),
+	announcement: $t("propertyManage_communityManage.notice.typeOptions.announcement"),
+	reminder: $t("propertyManage_communityManage.notice.typeOptions.reminder"),
+	activity: $t("propertyManage_communityManage.notice.typeOptions.activity"),
+	maintenance: $t("propertyManage_communityManage.notice.typeOptions.maintenance"),
+	safety: $t("propertyManage_communityManage.notice.typeOptions.security"),
+} as const;
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+function translateNoticeType(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = noticeTypeLabelKeyMap[value as keyof typeof noticeTypeLabelKeyMap];
+	return key ? transformI18n(key) : value;
+}
+
+const translatedNoticeTypeOptions = withLocale(() =>
+	noticeTypeOptions.map((option) => ({
+		...option,
+		label: translateNoticeType(String(option.value)),
+	})),
+);
+
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "头部照片",
-		prop: "headerImage",
-		width: 100,
-		slot: "headerImage",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		label: "公示标题",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.notice.publicityTitle"))),
 		prop: "noticeTitle",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: "公示类型",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.notice.publicityType"))),
 		prop: "noticeType",
-		width: 100,
+		width: 120,
+		cellRenderer: ({ row }) => translateNoticeType(row.noticeType),
 	},
 	{
-		label: "公示时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.notice.publishTime"))),
 		prop: "noticeTime",
 		width: 160,
 		sortable: true,
 	},
 	{
-		label: "发布人",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.notice.publisher"))),
 		prop: "publisher",
 		width: 100,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_communityManage.notice.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 公示标题
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "公示标题",
+		label: transformI18n($t("propertyManage_communityManage.notice.publicityTitle")),
 		prop: "noticeTitle",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入公示标题",
+			placeholder: transformI18n($t("propertyManage_communityManage.notice.publicityTitlePlaceholder")),
 		},
 	},
-
-	// 公示类型
 	{
-		label: "公示类型",
+		label: transformI18n($t("propertyManage_communityManage.notice.publicityType")),
 		prop: "noticeType",
 		valueType: "select",
-		options: noticeTypeOptions,
+		options: translatedNoticeTypeOptions.value,
 		fieldProps: {
-			placeholder: "请选择公示类型",
+			placeholder: transformI18n($t("propertyManage_communityManage.notice.form.typePlaceholder")),
 		},
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 2,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues, { showNumber: 2 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -146,12 +149,10 @@ function handleSearch() {
 	});
 }
 
-/** 处理表格选择变化 */
 function handleSelectionChange(selection: CommunityNoticeListItem[]) {
 	selectedRows.value = selection;
 }
 
-/** 批量删除 */
 async function handleBatchDelete() {
 	if (selectedRows.value.length === 0) {
 		ElMessage.warning(transformI18n($t("propertyManage_communityManage.notice.noSelection")));
@@ -160,8 +161,8 @@ async function handleBatchDelete() {
 
 	try {
 		await ElMessageBox.confirm(
-			t("propertyManage_communityManage.notice.batchDeleteConfirm", { count: selectedRows.value.length }),
-			t("propertyManage_communityManage.notice.batchDeleteTitle"),
+			i18n.global.t($t("propertyManage_communityManage.notice.batchDeleteConfirm"), { count: selectedRows.value.length }),
+			transformI18n($t("propertyManage_communityManage.notice.batchDeleteTitle")),
 			{
 				confirmButtonText: transformI18n($t("common.buttons.del")),
 				cancelButtonText: transformI18n($t("common.buttons.cancel")),
@@ -169,12 +170,9 @@ async function handleBatchDelete() {
 			},
 		);
 
-		// TODO: 调用批量删除API
-		// 模拟删除操作
 		await new Promise((resolve) => setTimeout(resolve, 500));
-
 		ElMessage.success(
-			t("propertyManage_communityManage.notice.operationSuccess", {
+			i18n.global.t($t("propertyManage_communityManage.notice.operationSuccess"), {
 				operation: transformI18n($t("common.buttons.del")),
 			}),
 		);
@@ -183,7 +181,7 @@ async function handleBatchDelete() {
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(
-				t("propertyManage_communityManage.notice.operationFailed", {
+				i18n.global.t($t("propertyManage_communityManage.notice.operationFailed"), {
 					operation: transformI18n($t("common.buttons.del")),
 				}),
 			);
@@ -191,14 +189,7 @@ async function handleBatchDelete() {
 	}
 }
 
-/** 批量发布 */
 async function handleBatchPublish() {
-	if (selectedRows.value.length === 0) {
-		ElMessage.warning(transformI18n($t("propertyManage_communityManage.notice.noSelection")));
-		return;
-	}
-
-	// 所有选中的数据都可以操作
 	if (selectedRows.value.length === 0) {
 		ElMessage.warning(transformI18n($t("propertyManage_communityManage.notice.noSelection")));
 		return;
@@ -206,8 +197,8 @@ async function handleBatchPublish() {
 
 	try {
 		await ElMessageBox.confirm(
-			t("propertyManage_communityManage.notice.batchPublishConfirm", { count: selectedRows.value.length }),
-			t("propertyManage_communityManage.notice.batchPublishTitle"),
+			i18n.global.t($t("propertyManage_communityManage.notice.batchPublishConfirm"), { count: selectedRows.value.length }),
+			transformI18n($t("propertyManage_communityManage.notice.batchPublishTitle")),
 			{
 				confirmButtonText: transformI18n($t("propertyManage_communityManage.notice.publish")),
 				cancelButtonText: transformI18n($t("common.buttons.cancel")),
@@ -215,12 +206,9 @@ async function handleBatchPublish() {
 			},
 		);
 
-		// TODO: 调用批量发布API
-		// 模拟发布操作
 		await new Promise((resolve) => setTimeout(resolve, 500));
-
 		ElMessage.success(
-			t("propertyManage_communityManage.notice.operationSuccess", {
+			i18n.global.t($t("propertyManage_communityManage.notice.operationSuccess"), {
 				operation: transformI18n($t("propertyManage_communityManage.notice.publish")),
 			}),
 		);
@@ -229,7 +217,7 @@ async function handleBatchPublish() {
 	} catch (error) {
 		if (error !== "cancel") {
 			ElMessage.error(
-				t("propertyManage_communityManage.notice.operationFailed", {
+				i18n.global.t($t("propertyManage_communityManage.notice.operationFailed"), {
 					operation: transformI18n($t("propertyManage_communityManage.notice.publish")),
 				}),
 			);
@@ -237,12 +225,11 @@ async function handleBatchPublish() {
 	}
 }
 
-/** 删除单个公示 */
 async function handleDelete(row: CommunityNoticeListItem) {
 	try {
 		await ElMessageBox.confirm(
-			t("propertyManage_communityManage.notice.deleteConfirm", { title: row.noticeTitle }),
-			t("propertyManage_communityManage.notice.deleteTitle"),
+			i18n.global.t($t("propertyManage_communityManage.notice.deleteConfirm"), { title: row.noticeTitle }),
+			transformI18n($t("propertyManage_communityManage.notice.deleteTitle")),
 			{
 				confirmButtonText: transformI18n($t("common.buttons.del")),
 				cancelButtonText: transformI18n($t("common.buttons.cancel")),
@@ -250,10 +237,7 @@ async function handleDelete(row: CommunityNoticeListItem) {
 			},
 		);
 
-		// TODO: 调用删除API
-		// 模拟删除操作
 		await new Promise((resolve) => setTimeout(resolve, 300));
-
 		ElMessage.success(transformI18n($t("propertyManage_communityManage.notice.deleteSuccess")));
 		await doFetch();
 	} catch (error) {
@@ -263,110 +247,97 @@ async function handleDelete(row: CommunityNoticeListItem) {
 	}
 }
 
-/** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: CommunityNoticeListItem;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
-
-/** 测试异步函数 */
+const { modeText, setMode, isAdd, isEdit } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 	await sleep(1300);
 	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("propertyManage_communityManage.notice.pageTitle"))}`;
-
-	/** 表单组件需要的props */
 	const formProps: CommunityNoticeFormProps = {
 		form: structuredClone(defaultForm),
 		defaultValues: structuredClone(defaultForm),
+		mode,
 	};
 
-	/** 编辑模式的表单数据 */
 	let editFormProps: CommunityNoticeFormProps | null = null;
 	if (row && isEdit.value) {
 		const formData = listDataToFormData(row);
 		editFormProps = {
 			form: formData,
 			defaultValues: structuredClone(formData),
+			mode,
 		};
 	}
 
-	/** 弹框组件所需的变量 */
 	const props = isAdd.value ? formProps : editFormProps || formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = props.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () => `${modeText.value}${transformI18n($t("propertyManage_communityManage.notice.pageTitle"))}`,
 		props,
 		width: "800px",
-
 		contentRenderer: () =>
 			h(CommunityNoticeForm, {
 				ref: communityNoticeFormInstance,
 				...props,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = communityNoticeFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = communityNoticeFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = communityNoticeFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = communityNoticeFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					communityNoticeFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					communityNoticeFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await communityNoticeFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await communityNoticeFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						try {
 							await testAsync();
 							ElMessage.success(
-								t("propertyManage_communityManage.notice.operationSuccess", { operation: modeText.value }),
+								i18n.global.t($t("propertyManage_communityManage.notice.operationSuccess"), {
+									operation: modeText.value,
+								}),
 							);
 							closeDialog(options, index);
-							// 刷新表格数据
 							await doFetch();
-						} catch (error) {
+						} catch {
 							ElMessage.error(
-								t("propertyManage_communityManage.notice.operationFailed", { operation: modeText.value }),
+								i18n.global.t($t("propertyManage_communityManage.notice.operationFailed"), {
+									operation: modeText.value,
+								}),
 							);
 						} finally {
 							button.btn.loading = false;
@@ -380,28 +351,25 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 const { gotoDetailPage } = useGotoDetailsPage();
 
-// TODO: 需要先调研一下是否有公示页面
-/** 跳转到 公示详情页面 */
 function gotoNoticeDetailPage(row: CommunityNoticeListItem) {
 	gotoDetailPage({
 		name: "property-manage-community-manage--detail-page",
 		params: {
-			id: row.headerImage, // 使用头部照片作为ID，或者可以考虑其他唯一标识
+			id: row.headerImage,
 		},
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section>
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -415,8 +383,6 @@ onMounted(async () => {
 						</template>
 						{{ transformI18n($t("common.buttons.add")) }}
 					</ElButton>
-
-					<!-- 批量操作按钮 -->
 					<ElButton v-if="hasSelection" type="success" @click="handleBatchPublish">
 						<template #icon>
 							<IconifyIcon icon="ep:upload" />
@@ -433,17 +399,15 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- 选中状态提示 -->
 				<div v-if="hasSelection">
 					<span>
-						{{ t("propertyManage_communityManage.notice.selectedCount", { count: selectedRows.length }) }}
+						{{ i18n.global.t($t("propertyManage_communityManage.notice.selectedCount"), { count: selectedRows.length }) }}
 					</span>
 					<ElButton type="text" size="small" @click="selectedRows = []">
 						{{ transformI18n($t("propertyManage_communityManage.notice.clearSelection")) }}
 					</ElButton>
 				</div>
 
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"
@@ -453,12 +417,6 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 					@selection-change="handleSelectionChange"
 				>
-					<!-- 头部照片 -->
-					<template #headerImage="{ row }">
-						<el-image :src="row.headerImage" :preview-src-list="[row.headerImage]" :initial-index="0" fit="cover" />
-					</template>
-
-					<!-- 操作按钮 -->
 					<template #operation="{ row }">
 						<div>
 							<ElButton type="primary" size="small" @click="gotoNoticeDetailPage(row)">
