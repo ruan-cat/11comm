@@ -1,168 +1,217 @@
-<!--
-  系统配置表单
-  用于新增 修改系统配置
--->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { SystemConfigFormVO } from "@01s-11comm/type";
-import { systemConfigTypeOptions, systemConfigSystemOptions, systemConfigEnabledOptions } from "@01s-11comm/type";
-
-import { SystemConfigFormProps, defaultForm } from "./form";
+import { systemConfigSystemOptions, systemConfigTypeOptions } from "@01s-11comm/type";
+import { type SystemConfigFormProps } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
+const { withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & SystemConfigFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & SystemConfigFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & SystemConfigFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const configTypeLabelKeys = [
+	"operationTeam.systemManage.systemConfig.options.configTypes.text",
+	"operationTeam.systemManage.systemConfig.options.configTypes.number",
+	"operationTeam.systemManage.systemConfig.options.configTypes.boolean",
+	"operationTeam.systemManage.systemConfig.options.configTypes.json",
+	"operationTeam.systemManage.systemConfig.options.configTypes.url",
+] as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
-	// 配置名称
+const systemLabelKeys = [
+	"operationTeam.systemManage.systemConfig.options.systems.yes",
+	"operationTeam.systemManage.systemConfig.options.systems.no",
+] as const;
+
+const translatedSystemConfigTypeOptions = withLocale(() =>
+	systemConfigTypeOptions.map((item, index) => ({
+		...item,
+		label: transformI18n($t(configTypeLabelKeys[index] ?? configTypeLabelKeys[0])),
+	})),
+);
+
+const translatedSystemOptions = withLocale(() =>
+	systemConfigSystemOptions.map((item, index) => ({
+		...item,
+		label: transformI18n($t(systemLabelKeys[index] ?? systemLabelKeys[0])),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() => [
 	{
-		label: "配置名称",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.options.statuses.enabled")),
+		value: "Enabled",
+	},
+	{
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.options.statuses.disabled")),
+		value: "Disabled",
+	},
+]);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置名称",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.configName")),
 			maxlength: 50,
 		},
 	},
-
-	// 配置值
 	{
-		label: "配置值",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configValue")),
 		prop: "configValue",
 		valueType: "textarea",
 		width: "300px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置值",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.configValue")),
 			rows: 3,
 			maxlength: 1000,
 		},
 	},
-
-	// 配置类型
 	{
-		label: "配置类型",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configType")),
 		prop: "configType",
 		valueType: "select",
 		width: "150px",
 		required: true,
-		options: systemConfigTypeOptions,
+		options: translatedSystemConfigTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择配置类型",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.configType")),
 		},
 	},
-
-	// 配置键
 	{
-		label: "配置键",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configKey")),
 		prop: "configKey",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置键",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.configKey")),
 		},
 	},
-
-	// 是否系统内置
 	{
-		label: "是否系统内置",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.isSystem")),
 		prop: "isSystem",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: systemConfigSystemOptions,
+		options: translatedSystemOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.isSystem")),
 		},
 	},
-
-	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.status")),
 		prop: "status",
 		valueType: "select",
 		width: "120px",
 		required: true,
-		options: systemConfigEnabledOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.status")),
 		},
 	},
-
-	// 描述
 	{
-		label: "描述",
+		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入配置描述信息",
+			placeholder: transformI18n($t("operationTeam.systemManage.systemConfig.placeholders.description")),
 			rows: 4,
 			maxlength: 200,
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	configName: [
-		{ required: true, message: "请填写配置名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configNameLength")),
+			trigger: "blur",
+		},
 	],
 	configKey: [
-		{ required: true, message: "请填写配置键", trigger: "blur" },
-		{ min: 1, max: 100, message: "长度在 1 到 100 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configKeyRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 1,
+			max: 100,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configKeyLength")),
+			trigger: "blur",
+		},
 	],
 	configValue: [
-		{ required: true, message: "请填写配置值", trigger: "blur" },
-		{ min: 1, max: 1000, message: "长度在 1 到 1000 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configValueRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 1,
+			max: 1000,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configValueLength")),
+			trigger: "blur",
+		},
 	],
-	configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
-	isSystem: [{ required: true, message: "请选择是否系统内置", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-	description: [{ max: 200, message: "描述长度不能超过200个字符", trigger: "blur" }],
-});
+	configType: [
+		{
+			required: true,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.configTypeRequired")),
+			trigger: "change",
+		},
+	],
+	isSystem: [
+		{
+			required: true,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.isSystemRequired")),
+			trigger: "change",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+	description: [
+		{
+			max: 200,
+			message: transformI18n($t("operationTeam.systemManage.systemConfig.validation.descriptionLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -177,7 +226,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
