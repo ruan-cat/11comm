@@ -3,181 +3,264 @@
   用于新增 修改商户管理员信息
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-import type { MerchantAdminFormVO } from "@01s-11comm/type";
-import { statusOptions, propertyCompanyOptions } from "@01s-11comm/type";
-
+import { computed, ref, useTemplateRef } from "vue";
+import { propertyCompanyOptions, statusOptions, type MerchantAdminFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { MerchantAdminFormProps } from "./form";
 
 const props = defineProps<MerchantAdminFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
 const defaultValues = props.defaultValues as FieldValues & MerchantAdminFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = cloneDeep(props.form) as FieldValues & MerchantAdminFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & MerchantAdminFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const propertyCompanyLabelKeyMap = {
+	示例物业公司1: $t("operation-team_merchant-manage.merchant-admin.options.propertyCompany.company1"),
+	示例物业公司2: $t("operation-team_merchant-manage.merchant-admin.options.propertyCompany.company2"),
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const accountStatusLabelKeyMap = {
+	启用: $t("operation-team_merchant-manage.merchant-admin.options.accountStatus.enabled"),
+	禁用: $t("operation-team_merchant-manage.merchant-admin.options.accountStatus.disabled"),
+	enabled: $t("operation-team_merchant-manage.merchant-admin.options.accountStatus.enabled"),
+	disabled: $t("operation-team_merchant-manage.merchant-admin.options.accountStatus.disabled"),
+} as const;
+
+function translatePropertyCompany(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = propertyCompanyLabelKeyMap[value as keyof typeof propertyCompanyLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+function translateAccountStatus(value?: string | null) {
+	if (!value) {
+		return value ?? "";
+	}
+
+	const key = accountStatusLabelKeyMap[value as keyof typeof accountStatusLabelKeyMap];
+	return key ? renderI18n(key) : value;
+}
+
+const translatedPropertyCompanyOptions = withLocale(() =>
+	propertyCompanyOptions.map((option) => ({
+		...option,
+		label: translatePropertyCompany(String(option.value)),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	statusOptions.map((option) => ({
+		...option,
+		label: translateAccountStatus(String(option.value)),
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "物业公司",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.propertyCompany")),
 		prop: "propertyCompany",
 		valueType: "select",
-		options: propertyCompanyOptions,
+		options: translatedPropertyCompanyOptions.value,
 		width: "300px",
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择物业公司",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.propertyCompany")),
 		},
 	},
 	{
-		label: "管理员姓名",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminName")),
 		prop: "adminName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入管理员姓名",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminName")),
 		},
 	},
 	{
-		label: "管理员电话",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminPhone")),
 		prop: "adminPhone",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入管理员电话",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminPhone")),
 		},
 	},
 	{
-		label: "管理员邮箱",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminEmail")),
 		prop: "adminEmail",
 		valueType: "input",
 		width: "250px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入管理员邮箱",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminEmail")),
 		},
 	},
 	{
-		label: "身份证号码",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.idCardNo")),
 		prop: "idCardNo",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入身份证号码",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.idCardNo")),
 		},
 	},
 	{
-		label: "账户状态",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.accountStatus")),
 		prop: "accountStatus",
 		valueType: "select",
-		options: statusOptions,
+		options: translatedStatusOptions.value,
 		width: "150px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择账户状态",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.accountStatus")),
 		},
 	},
 	{
-		label: "登录密码",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.loginPassword")),
 		prop: "loginPassword",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			type: "password",
 			clearable: true,
-			placeholder: "请输入登录密码",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.loginPassword")),
 			showPassword: true,
 		},
 	},
 	{
-		label: "确认密码",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.confirmPassword")),
 		prop: "confirmPassword",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			type: "password",
 			clearable: true,
-			placeholder: "请确认密码",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.confirmPassword")),
 			showPassword: true,
 		},
 	},
 	{
-		label: "联系地址",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.contactAddress")),
 		prop: "contactAddress",
 		valueType: "input",
 		width: "400px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系地址",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.contactAddress")),
 		},
 	},
 	{
-		label: "备注",
+		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		width: "400px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入备注信息",
+			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.remarks")),
 			rows: 3,
 		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	propertyCompany: [{ required: true, message: "请选择物业公司", trigger: "change" }],
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	propertyCompany: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.selectPropertyCompany")),
+			trigger: "change",
+		},
+	],
 	adminName: [
-		{ required: true, message: "请输入管理员姓名", trigger: "blur" },
-		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterAdminName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 20,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminNameLength")),
+			trigger: "blur",
+		},
 	],
 	adminPhone: [
-		{ required: true, message: "请输入管理员电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterAdminPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminPhonePattern")),
+			trigger: "blur",
+		},
 	],
-	adminEmail: [{ type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }],
+	adminEmail: [
+		{
+			type: "email",
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminEmailPattern")),
+			trigger: "blur",
+		},
+	],
 	idCardNo: [
-		{ required: true, message: "请输入身份证号码", trigger: "blur" },
-		{ pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: "请输入正确的身份证号码", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterIdCardNo")),
+			trigger: "blur",
+		},
+		{
+			pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.idCardNoPattern")),
+			trigger: "blur",
+		},
 	],
-	accountStatus: [{ required: true, message: "请选择账户状态", trigger: "change" }],
+	accountStatus: [
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.selectAccountStatus")),
+			trigger: "change",
+		},
+	],
 	loginPassword: [
-		{ required: true, message: "请输入登录密码", trigger: "blur" },
-		{ min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterLoginPassword")),
+			trigger: "blur",
+		},
+		{
+			min: 6,
+			max: 20,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.loginPasswordLength")),
+			trigger: "blur",
+		},
 	],
 	confirmPassword: [
-		{ required: true, message: "请确认密码", trigger: "blur" },
+		{
+			required: true,
+			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterConfirmPassword")),
+			trigger: "blur",
+		},
 		{
 			validator: (rule: any, value: string, callback: any) => {
-				if (value !== form.value.loginPassword) {
-					callback(new Error("两次输入密码不一致"));
+				if (value !== (form.value as Record<string, unknown>).loginPassword) {
+					callback(new Error(renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.passwordMismatch"))));
 				} else {
 					callback();
 				}
@@ -185,9 +268,8 @@ const plusFormRules = ref<PlusFormRules>({
 			trigger: "blur",
 		},
 	],
-});
+}));
 
-/** 默认对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
