@@ -1,52 +1,116 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef } from "vue";
-import { type ChangePasswordRecordFormProps, defaultForm } from "./form";
-import { type FieldValues, type PlusColumn } from "plus-pro-components";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import type { ChangePasswordRecordFormProps } from "./form";
+import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 import {
-	changePasswordRecordTypeOptions,
-	changePasswordRecordStatusOptions,
 	changePasswordRecordDepartmentOptions,
+	changePasswordRecordStatusOptions,
+	changePasswordRecordTypeOptions,
 	type ChangePasswordRecord,
 } from "@01s-11comm/type";
 
 const props = defineProps<ChangePasswordRecordFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+function translateFromRecord(record: Record<string, string>, value?: string | null) {
+	if (!value) {
+		return "";
+	}
+	return record[value] ?? value;
+}
+
+const departmentTextMap = withLocale(() => ({
+	物业团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.property")),
+	开发团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.development")),
+	运营团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.operation")),
+	财务部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.finance")),
+	客服部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.customer")),
+	维修部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.maintenance")),
+	安保部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.security")),
+	绿化部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.greening")),
+	未知部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.unknown")),
+}));
+
+const changeTypeTextMap = withLocale(() => ({
+	用户自行修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.selfService")),
+	管理员重置: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.adminReset")),
+	强制修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.forceChange")),
+	首次登录修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstLogin")),
+	首次设置: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstSetup")),
+	主动修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.activeChange")),
+}));
+
+const statusTextMap = withLocale(() => ({
+	成功: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.success")),
+	失败: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.failed")),
+	待审核: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.pending")),
+}));
+
+function translateDepartmentLabel(value?: string | null) {
+	return translateFromRecord(departmentTextMap.value, value);
+}
+
+function translateChangeTypeLabel(value?: string | null) {
+	return translateFromRecord(changeTypeTextMap.value, value);
+}
+
+function translateStatusLabel(value?: string | null) {
+	return translateFromRecord(statusTextMap.value, value);
+}
+
+function createRequiredMessage(fieldLabel: string, select = false) {
+	return locale.value === "en"
+		? `${select ? "Please select " : "Please enter "}${fieldLabel}`
+		: `${select ? "请选择" : "请输入"}${fieldLabel}`;
+}
+
+function createLengthMessage(fieldLabel: string, min: number, max: number) {
+	return locale.value === "en"
+		? `${fieldLabel} length must be between ${min} and ${max} characters`
+		: `${fieldLabel}长度应在 ${min} 到 ${max} 个字符之间`;
+}
+
+const translatedDepartmentOptions = withLocale(() =>
+	changePasswordRecordDepartmentOptions.map((item) => ({
+		...item,
+		label: translateDepartmentLabel(String(item.value)),
+	})),
+);
+
+const translatedChangeTypeOptions = withLocale(() =>
+	changePasswordRecordTypeOptions.map((item) => ({
+		...item,
+		label: translateChangeTypeLabel(String(item.value)),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	changePasswordRecordStatusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
+
 const defaultValues = props.defaultValues as FieldValues & ChangePasswordRecord;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
-/** 表单重设 */
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & ChangePasswordRecord;
+const form = ref(structuredClone(props.form) as FieldValues & ChangePasswordRecord);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "记录ID",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.recordId")),
 		prop: "id",
 		valueType: "input",
 		fieldProps: {
@@ -54,7 +118,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "用户名",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.username")),
 		prop: "username",
 		valueType: "input",
 		fieldProps: {
@@ -62,7 +126,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "真实姓名",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.realName")),
 		prop: "realName",
 		valueType: "input",
 		fieldProps: {
@@ -70,13 +134,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "所属部门",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.department")),
 		prop: "department",
 		valueType: "select",
-		options: changePasswordRecordDepartmentOptions,
+		options: translatedDepartmentOptions.value,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 	{
-		label: "修改时间",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeTime")),
 		prop: "changeTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -87,7 +154,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "修改IP",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeIp")),
 		prop: "changeIp",
 		valueType: "input",
 		fieldProps: {
@@ -95,13 +162,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "修改类型",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeType")),
 		prop: "changeType",
 		valueType: "select",
-		options: changePasswordRecordTypeOptions,
+		options: translatedChangeTypeOptions.value,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 	{
-		label: "操作人",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.operator")),
 		prop: "operator",
 		valueType: "input",
 		fieldProps: {
@@ -109,13 +179,16 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "状态",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: changePasswordRecordStatusOptions,
+		options: translatedStatusOptions.value,
+		fieldProps: {
+			clearable: true,
+		},
 	},
 	{
-		label: "备注",
+		label: renderI18n($t("settingManage.systemManage.changePassword.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
@@ -125,28 +198,30 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	username: [
-		{ required: true, message: "请输入用户名", trigger: "blur" },
-		{ min: 3, max: 20, message: "用户名长度应在3-20个字符之间", trigger: "blur" },
-	],
-	realName: [
-		{ required: true, message: "请输入真实姓名", trigger: "blur" },
-		{ min: 2, max: 10, message: "真实姓名长度应在2-10个字符之间", trigger: "blur" },
-	],
-	department: [{ required: true, message: "请选择所属部门", trigger: "change" }],
-	changeTime: [{ required: true, message: "请选择修改时间", trigger: "change" }],
-	changeType: [{ required: true, message: "请选择修改类型", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
+const plusFormRules = withLocale<PlusFormRules>(() => {
+	const usernameLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.username"));
+	const realNameLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.realName"));
+	const departmentLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.department"));
+	const changeTimeLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.changeTime"));
+	const changeTypeLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.changeType"));
+	const statusLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.status"));
+
+	return {
+		username: [
+			{ required: true, message: createRequiredMessage(usernameLabel), trigger: "blur" },
+			{ min: 3, max: 20, message: createLengthMessage(usernameLabel, 3, 20), trigger: "blur" },
+		],
+		realName: [
+			{ required: true, message: createRequiredMessage(realNameLabel), trigger: "blur" },
+			{ min: 2, max: 10, message: createLengthMessage(realNameLabel, 2, 10), trigger: "blur" },
+		],
+		department: [{ required: true, message: createRequiredMessage(departmentLabel, true), trigger: "change" }],
+		changeTime: [{ required: true, message: createRequiredMessage(changeTimeLabel, true), trigger: "change" }],
+		changeType: [{ required: true, message: createRequiredMessage(changeTypeLabel, true), trigger: "change" }],
+		status: [{ required: true, message: createRequiredMessage(statusLabel, true), trigger: "change" }],
+	};
 });
 
-/** 计算属性：表单列配置 */
-const plusFormColumnsComputed = computed(() => {
-	return plusFormColumns.value;
-});
-
-/** 对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -160,7 +235,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
