@@ -1,247 +1,304 @@
 <!--
   房屋装修表单
-  用于新增 修改房屋装修信息
+  用于新增/修改房屋装修信息
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import type { HouseDecorationFormVO } from "@01s-11comm/type";
-import { decorationStatusOptions, delayStatusOptions } from "@01s-11comm/type";
-
-import { HouseDecorationFormProps } from "./form";
+import { type HouseDecorationFormProps } from "./form";
 
 const props = defineProps<HouseDecorationFormProps>();
+const { withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & HouseDecorationFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
-
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & HouseDecorationFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & HouseDecorationFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const statusLabelKeyMap = {
+	待审核: "propertyManage_communityManage.house-decoration.options.status.pending",
+	审核不通过: "propertyManage_communityManage.house-decoration.options.status.rejected",
+	装修中: "propertyManage_communityManage.house-decoration.options.status.inProgress",
+	待验收: "propertyManage_communityManage.house-decoration.options.status.pendingAcceptance",
+	验收成功: "propertyManage_communityManage.house-decoration.options.status.accepted",
+	验收失败: "propertyManage_communityManage.house-decoration.options.status.failed",
+} as const;
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const booleanLabelKeyMap = {
+	是: "propertyManage_communityManage.house-decoration.options.boolean.yes",
+	否: "propertyManage_communityManage.house-decoration.options.boolean.no",
+} as const;
+
+const translatedStatusOptions = withLocale(() =>
+	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
+		label: transformI18n($t(key)),
+		value,
+	})),
+);
+
+const translatedBooleanOptions = withLocale(() =>
+	Object.entries(booleanLabelKeyMap).map(([value, key]) => ({
+		label: transformI18n($t(key)),
+		value,
+	})),
+);
+
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "房屋编号",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.houseNumber")),
 		prop: "houseNumber",
 		valueType: "input",
-		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入房屋编号，如：A栋101",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.houseNumber")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "联系人",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.contactName")),
 		prop: "contactName",
 		valueType: "input",
-		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系人姓名",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.contactName")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "联系电话",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
-		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入联系电话",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.contactPhone")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "申请时间",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.applicationTime")),
 		prop: "applicationTime",
 		valueType: "date-picker",
-		width: "200px",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请选择申请时间",
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.applicationTime")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "装修时间",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.decorationTime")),
 		prop: "decorationTime",
 		valueType: "date-picker",
-		width: "200px",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请选择装修开始时间",
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.decorationTime")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "装修单位",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.decorationCompany")),
 		prop: "decorationCompany",
 		valueType: "input",
-		width: "280px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入装修公司名称",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.decorationCompany")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "负责人电话",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.managerPhone")),
 		prop: "managerPhone",
 		valueType: "input",
-		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入装修负责人电话",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.managerPhone")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.status")),
 		prop: "status",
 		valueType: "select",
-		width: "140px",
-		options: decorationStatusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择装修状态",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.status")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "是否延期",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.isDelayed")),
 		prop: "isDelayed",
 		valueType: "select",
-		width: "120px",
-		options: delayStatusOptions,
+		options: translatedBooleanOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.isDelayed")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "延期时间",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.delayTime")),
 		prop: "delayTime",
 		valueType: "date-picker",
-		width: "200px",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请选择延期时间",
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.delayTime")),
+			disabled: props.mode === "info",
 		},
-		hidden: (form: HouseDecorationFormVO) => form.isDelayed === "否",
+		hidden: (currentForm: HouseDecorationFormVO) => currentForm.isDelayed === "否",
 	},
 	{
-		label: "是否违规",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.isViolated")),
 		prop: "isViolated",
 		valueType: "select",
-		width: "120px",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: translatedBooleanOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择",
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.isViolated")),
+			disabled: props.mode === "info",
 		},
-		required: true,
 	},
 	{
-		label: "违规说明",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.violationDescription")),
 		prop: "violationDescription",
 		valueType: "textarea",
-		width: "100%",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请输入违规说明",
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.violationDescription")),
+			disabled: props.mode === "info",
 		},
-		hidden: (form: HouseDecorationFormVO) => form.isViolated === "否",
+		hidden: (currentForm: HouseDecorationFormVO) => currentForm.isViolated === "否",
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
-		width: "100%",
 		fieldProps: {
-			clearable: true,
-			placeholder: "请输入备注信息",
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
+			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.remarks")),
+			disabled: props.mode === "info",
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	houseNumber: [
-		{ required: true, message: "请输入房屋编号", trigger: "blur" },
-		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.enterHouseNumber")),
+			trigger: "blur",
+		},
 	],
 	contactName: [
-		{ required: true, message: "请输入联系人姓名", trigger: "blur" },
-		{ min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.enterContactName")),
+			trigger: "blur",
+		},
 	],
 	contactPhone: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.enterContactPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.contactPhonePattern")),
+			trigger: "blur",
+		},
 	],
-	applicationTime: [{ required: true, message: "请选择申请时间", trigger: "change" }],
-	decorationTime: [{ required: true, message: "请选择装修时间", trigger: "change" }],
+	applicationTime: [
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectApplicationTime")),
+			trigger: "change",
+		},
+	],
+	decorationTime: [
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectDecorationTime")),
+			trigger: "change",
+		},
+	],
 	decorationCompany: [
-		{ required: true, message: "请输入装修单位", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.enterDecorationCompany")),
+			trigger: "blur",
+		},
 	],
 	managerPhone: [
-		{ required: true, message: "请输入负责人电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.enterManagerPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.managerPhonePattern")),
+			trigger: "blur",
+		},
 	],
-	status: [{ required: true, message: "请选择装修状态", trigger: "change" }],
-	isDelayed: [{ required: true, message: "请选择是否延期", trigger: "change" }],
-	delayTime: [{ required: true, message: "请选择延期时间", trigger: "change" }],
-	isViolated: [{ required: true, message: "请选择是否违规", trigger: "change" }],
-	violationDescription: [{ max: 500, message: "违规说明长度不能超过 500 个字符", trigger: "blur" }],
-	remarks: [{ max: 500, message: "备注长度不能超过 500 个字符", trigger: "blur" }],
-});
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+	isDelayed: [
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectIsDelayed")),
+			trigger: "change",
+		},
+	],
+	delayTime: [
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectDelayTime")),
+			trigger: "change",
+		},
+	],
+	isViolated: [
+		{
+			required: true,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectIsViolated")),
+			trigger: "change",
+		},
+	],
+	violationDescription: [
+		{
+			max: 500,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.violationDescriptionMaxLength")),
+			trigger: "blur",
+		},
+	],
+	remarks: [
+		{
+			max: 500,
+			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.remarksMaxLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
-/** 默认对外导出函数 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -255,7 +312,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:label-width="120"
 		/>
