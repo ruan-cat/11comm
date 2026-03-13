@@ -1,31 +1,145 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "修改密码记录",
+		// 修改密码记录
+		title: "operationTeam.systemManage.changePassword.pageTitle",
 		icon: "mdi:lock-reset",
 		roles: ["运营团队"],
 		rank: getRouteRank("operationTeam.systemManage.changePassword"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import type {
+	ChangePasswordRecordListItem,
+	ChangePasswordRecordQueryParams,
+} from "@01s-11comm/type";
 import {
-	type ChangePasswordRecordListItem,
-	type ChangePasswordRecordQueryParams,
-	userRoleOptions,
-	departmentOptions,
 	changeMethodOptions,
 	changePasswordStatusOptions,
 	changePasswordSuccessOptions,
+	departmentOptions,
+	userRoleOptions,
 } from "@01s-11comm/type";
 import { useChangePasswordRecordListQuery } from "@/api/operation-team/system-manage/change-password";
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+
+function renderI18n(message: string) {
+	void locale.value;
+	return transformI18n(message);
+}
+
+function translateFromRecord(record: Record<string, string>, value?: string | null) {
+	if (!value) {
+		return "";
+	}
+	return record[value] ?? value;
+}
+
+const userRoleTextMap = withLocale(() => ({
+	管理员: renderI18n($t("operationTeam.systemManage.changePassword.options.userRoles.admin")),
+	普通用户: renderI18n($t("operationTeam.systemManage.changePassword.options.userRoles.normal")),
+	访客: renderI18n($t("operationTeam.systemManage.changePassword.options.userRoles.visitor")),
+}));
+
+const departmentTextMap = withLocale(() => ({
+	物业团队: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.property")),
+	开发团队: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.development")),
+	运营团队: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.operation")),
+	财务部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.finance")),
+	客服部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.customer")),
+	维修部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.maintenance")),
+	安保部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.security")),
+	绿化部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.greening")),
+}));
+
+const changeMethodTextMap = withLocale(() => ({
+	用户自行修改: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.selfService")),
+	管理员重置: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.adminReset")),
+	强制修改: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.forceChange")),
+	首次登录修改: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.firstLogin")),
+}));
+
+const statusTextMap = withLocale(() => ({
+	成功: renderI18n($t("operationTeam.systemManage.changePassword.options.statuses.success")),
+	失败: renderI18n($t("operationTeam.systemManage.changePassword.options.statuses.failed")),
+	待审核: renderI18n($t("operationTeam.systemManage.changePassword.options.statuses.pending")),
+}));
+
+const successTextMap = withLocale(() => ({
+	是: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
+	否: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
+	Yes: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
+	No: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
+}));
+
+function translateUserRoleLabel(value?: string | null) {
+	return translateFromRecord(userRoleTextMap.value, value);
+}
+
+function translateDepartmentLabel(value?: string | null) {
+	return translateFromRecord(departmentTextMap.value, value);
+}
+
+function translateChangeMethodLabel(value?: string | null) {
+	return translateFromRecord(changeMethodTextMap.value, value);
+}
+
+function translateStatusLabel(value?: string | null) {
+	return translateFromRecord(statusTextMap.value, value);
+}
+
+function translateSuccessLabel(value?: boolean | string | number | null) {
+	if (value === true) {
+		return renderI18n($t("operationTeam.systemManage.changePassword.options.successes.yes"));
+	}
+	if (value === false) {
+		return renderI18n($t("operationTeam.systemManage.changePassword.options.successes.no"));
+	}
+	if (typeof value === "string") {
+		return successTextMap.value[value] ?? value;
+	}
+	return value === null || value === undefined ? "" : String(value);
+}
+
+const translatedUserRoleOptions = withLocale(() =>
+	userRoleOptions.map((item) => ({
+		...item,
+		label: translateUserRoleLabel(String(item.value)),
+	})),
+);
+
+const translatedDepartmentOptions = withLocale(() =>
+	departmentOptions.map((item) => ({
+		...item,
+		label: translateDepartmentLabel(String(item.value)),
+	})),
+);
+
+const translatedChangeMethodOptions = withLocale(() =>
+	changeMethodOptions.map((item) => ({
+		...item,
+		label: translateChangeMethodLabel(String(item.value)),
+	})),
+);
+
+const translatedStatusOptions = withLocale(() =>
+	changePasswordStatusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
+
+const translatedSuccessOptions = withLocale(() =>
+	changePasswordSuccessOptions.map((item) => ({
+		...item,
+		label: translateSuccessLabel(item.value),
+	})),
+);
+
 const plusSearchModelRef: FieldValues &
 	Partial<ChangePasswordRecordQueryParams> & { changeTimeRange: [string, string] } = {
 	username: "",
@@ -40,13 +154,9 @@ const plusSearchModelRef: FieldValues &
 	changeTimeRange: ["", ""],
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -58,152 +168,141 @@ const {
 	handleCurrentPageChange,
 } = useChangePasswordRecordListQuery(plusSearchDefaultValues);
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "用户名",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.username"))),
 		prop: "username",
 		width: 120,
 		fixed: true,
 	},
 	{
-		label: "真实姓名",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.realName"))),
 		prop: "realName",
 		width: 100,
 	},
 	{
-		label: "用户角色",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.userRole"))),
 		prop: "userRole",
 		width: 120,
+		cellRenderer: ({ row }) => translateUserRoleLabel(row.userRole),
 	},
 	{
-		label: "所属部门",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.department"))),
 		prop: "department",
-		width: 100,
+		width: 120,
+		cellRenderer: ({ row }) => translateDepartmentLabel(row.department),
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.phone"))),
 		prop: "phone",
 		width: 120,
 	},
 	{
-		label: "修改时间",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.changeTime"))),
 		prop: "changeTime",
 		width: 160,
 	},
 	{
-		label: "修改IP地址",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operationTeam.systemManage.changePassword.fields.changeIpAddress")),
+		),
 		prop: "ipAddress",
 		width: 130,
 	},
 	{
-		label: "修改地点",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.location"))),
 		prop: "location",
 		minWidth: 150,
 	},
 	{
-		label: "修改方式",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.changeMethod"))),
 		prop: "changeMethod",
 		width: 120,
+		cellRenderer: ({ row }) => translateChangeMethodLabel(row.changeMethod),
 	},
 	{
-		label: "操作状态",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operationTeam.systemManage.changePassword.fields.operationStatus")),
+		),
 		prop: "status",
 		width: 100,
+		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		label: "是否成功",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.success"))),
 		prop: "success",
 		width: 100,
+		cellRenderer: ({ row }) => translateSuccessLabel(row.success),
 	},
 	{
-		label: "失败原因",
+		headerRenderer: createHeaderRenderer(
+			renderI18n($t("operationTeam.systemManage.changePassword.fields.failureReason")),
+		),
 		prop: "failureReason",
 		minWidth: 180,
 	},
 	{
-		label: "操作人",
+		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.operator"))),
 		prop: "operator",
 		width: 100,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
 		width: 200,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "密码修改记录",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: renderI18n($t("operationTeam.systemManage.changePassword.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 用户名
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "用户名",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.username")),
 		prop: "username",
 		valueType: "input",
 	},
-
-	// 真实姓名
 	{
-		label: "真实姓名",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.realName")),
 		prop: "realName",
 		valueType: "input",
 	},
-
-	// 用户角色
 	{
-		label: "用户角色",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.userRole")),
 		prop: "userRole",
 		valueType: "select",
-		options: userRoleOptions,
+		options: translatedUserRoleOptions.value,
 	},
-
-	// 所属部门
 	{
-		label: "所属部门",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.department")),
 		prop: "department",
 		valueType: "select",
-		options: departmentOptions,
+		options: translatedDepartmentOptions.value,
 	},
-
-	// 修改方式
 	{
-		label: "修改方式",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.changeMethod")),
 		prop: "changeMethod",
 		valueType: "select",
-		options: changeMethodOptions,
+		options: translatedChangeMethodOptions.value,
 	},
-
-	// 操作状态
 	{
-		label: "操作状态",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.operationStatus")),
 		prop: "status",
 		valueType: "select",
-		options: changePasswordStatusOptions,
+		options: translatedStatusOptions.value,
 	},
-
-	// 是否成功
 	{
-		label: "是否成功",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.success")),
 		prop: "success",
 		valueType: "select",
-		options: changePasswordSuccessOptions,
+		options: translatedSuccessOptions.value,
 	},
-
-	// 修改时间范围
 	{
-		label: "修改时间范围",
+		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.changeTimeRange")),
 		prop: "changeTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
@@ -222,22 +321,16 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
+const plusSearchProps = searchProps(plusSearchDefaultValues, {
+	searchText: renderI18n($t("common.buttons.search")),
+	resetText: renderI18n($t("common.buttons.reset")),
 });
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({
 		...plusSearchModel.value,
@@ -245,22 +338,19 @@ function handleSearch() {
 	});
 }
 
-/** 查看详情 */
 function viewDetails(row: ChangePasswordRecordListItem) {
 	console.log("查看详情", row);
-	// TODO: 实现查看详情功能
 }
 
-/** 导出记录 */
 function exportRecords() {
 	console.log("导出记录");
-	// TODO: 实现导出功能
 }
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -270,14 +360,15 @@ function exportRecords() {
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary"> {{ transformI18n($t("common.buttons.add")) }} </ElButton>
+				<ElButton type="primary">
+					{{ transformI18n($t("common.buttons.add")) }}
+				</ElButton>
 				<ElButton type="success" @click="exportRecords">
 					{{ transformI18n($t("common.buttons.export")) }}
 				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -290,8 +381,12 @@ function exportRecords() {
 						<ElButton type="info" @click="viewDetails(row)">
 							{{ transformI18n($t("common.buttons.detail")) }}
 						</ElButton>
-						<ElButton type="warning"> {{ transformI18n($t("common.buttons.edit")) }} </ElButton>
-						<ElButton type="danger"> {{ transformI18n($t("common.buttons.del")) }} </ElButton>
+						<ElButton type="warning">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="danger">
+							{{ transformI18n($t("common.buttons.del")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
