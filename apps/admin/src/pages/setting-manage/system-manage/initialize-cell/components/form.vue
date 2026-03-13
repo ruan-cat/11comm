@@ -1,118 +1,158 @@
 <script lang="ts" setup>
-import { useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type InitializeCommunityFormProps } from "./form";
 import { type InitializeCommunityFormVO, statusOptions } from "@01s-11comm/type";
 
+type InitializeCommunityFormModel = FieldValues &
+	InitializeCommunityFormVO & {
+		communityId?: string;
+		communityName?: string;
+		nearbyLandmark?: string;
+		cityCode?: string;
+		status?: string;
+	};
+
 const props = defineProps<InitializeCommunityFormProps>();
+const { withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
-const defaultValues = props.defaultValues as FieldValues & InitializeCommunityFormVO;
+function translateStatusLabel(value?: string | null) {
+	if (value === "启用") {
+		return transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.enabled"));
+	}
+	if (value === "禁用") {
+		return transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.disabled"));
+	}
+	return value ?? "";
+}
 
-/** 表单组件实例 要求对外直接导出本表单实例 */
+const defaultValues = props.defaultValues as InitializeCommunityFormModel;
 const plusFormInstance = useTemplateRef("plusFormRef");
+
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & InitializeCommunityFormVO;
+const form = ref(cloneDeep(props.form) as InitializeCommunityFormModel);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const translatedStatusOptions = withLocale(() =>
+	statusOptions.map((item) => ({
+		...item,
+		label: translateStatusLabel(String(item.value)),
+	})),
+);
 
-/**
- * 只读的表单对象 用于外部做判断
- */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/**
- * 表单项配置
- */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "小区ID",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.communityId")),
 		prop: "communityId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入小区ID",
+			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.communityId")),
 		},
 	},
 	{
-		label: "小区名称",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入小区名称",
+			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.communityName")),
 		},
 	},
 	{
-		label: "附近地标",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.nearbyLandmark")),
 		prop: "nearbyLandmark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入附近地标",
+			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.nearbyLandmark")),
 		},
 	},
 	{
-		label: "城市编码",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.cityCode")),
 		prop: "cityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入城市编码",
+			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.cityCode")),
 		},
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: statusOptions,
+		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择状态",
+			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.status")),
 		},
 	},
 ]);
 
-/**
- * 表单项配置 动态计算 只读
- */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	communityId: [
-		{ required: true, message: "请输入小区ID", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityIdRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityIdLength")),
+			trigger: "blur",
+		},
 	],
 	communityName: [
-		{ required: true, message: "请输入小区名称", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityNameLength")),
+			trigger: "blur",
+		},
 	],
 	nearbyLandmark: [
-		{ required: true, message: "请输入附近地标", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.nearbyLandmarkRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.nearbyLandmarkLength")),
+			trigger: "blur",
+		},
 	],
 	cityCode: [
-		{ required: true, message: "请输入城市编码", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.cityCodeRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.cityCodeLength")),
+			trigger: "blur",
+		},
 	],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -127,7 +167,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
