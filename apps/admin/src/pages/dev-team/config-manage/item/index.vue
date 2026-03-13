@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
+		// 配置项
 		title: "devTeam.configManage.item.pageTitle",
 		icon: "tabler:settings-2",
 		roles: ["开发团队"],
