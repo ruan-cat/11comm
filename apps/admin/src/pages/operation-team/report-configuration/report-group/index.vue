@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "报表组",
+		// 报表组
+		title: "operationTeam.reportConfiguration.reportGroup.pageTitle",
 		icon: "mdi:group",
 		roles: ["开发团队"],
 		rank: getRouteRank("operationTeam.reportConfiguration.reportGroup"),
