@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "系统配置",
+		// 系统配置
+		title: "settingManage.systemManage.systemConfig.pageTitle",
 		icon: "mdi:application-cog",
 		roles: ["开发团队"],
 		rank: getRouteRank("settingManage.systemManage.systemConfig"),
 	},
 });
 
-import { ref, computed, h, watch } from "vue";
+import { ref, computed, h } from "vue";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type SystemConfigFormProps, defaultForm } from "./components/form";
 import SystemConfigFormComponent from "./components/form.vue";
 import { useMode } from "@/composables/use-mode";
@@ -20,6 +22,8 @@ import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
 import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
 import type { SystemConfigListItem } from "@01s-11comm/type";
+
+const { locale, withLocale } = useI18nConfig();
 
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 
@@ -49,45 +53,45 @@ const systemConfig = computed<SystemConfigListItem>(() => {
 });
 
 /** 系统基本信息配置 */
-const basicColumns = computed(() => [
+const basicColumns = withLocale(() => [
 	{
-		label: "标题名称",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.title")),
 		value: systemConfig.value.title,
 		minWidth: 120,
 	},
 	{
-		label: "副标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.subtitle")),
 		value: systemConfig.value.subtitle,
 		minWidth: 120,
 	},
 	{
-		label: "简写名称",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.shortName")),
 		value: systemConfig.value.shortName,
 		minWidth: 120,
 	},
 	{
-		label: "公司名称",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.companyName")),
 		value: systemConfig.value.companyName,
 		minWidth: 120,
 	},
 ]);
 
 /** 系统地址配置 */
-const urlColumns = computed(() => [
+const urlColumns = withLocale(() => [
 	{
-		label: "logo地址",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.logoUrl")),
 		value: systemConfig.value.logoUrl,
 		minWidth: 120,
 		copy: true,
 	},
 	{
-		label: "静态url",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.staticUrl")),
 		value: systemConfig.value.staticUrl,
 		minWidth: 120,
 		copy: true,
 	},
 	{
-		label: "商城地址",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.mallUrl")),
 		value: systemConfig.value.mallUrl,
 		minWidth: 120,
 		copy: true,
@@ -95,25 +99,25 @@ const urlColumns = computed(() => [
 ]);
 
 /** 业务配置 */
-const businessColumns = computed(() => [
+const businessColumns = withLocale(() => [
 	{
-		label: "默认小区编号",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.defaultCommunityCode")),
 		value: systemConfig.value.defaultCommunityCode,
 		minWidth: 120,
 		copy: true,
 	},
 	{
-		label: "业主标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.ownerTitle")),
 		value: systemConfig.value.ownerTitle,
 		minWidth: 120,
 	},
 	{
-		label: "物业手机标题",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.propertyMobileTitle")),
 		value: systemConfig.value.propertyMobileTitle,
 		minWidth: 120,
 	},
 	{
-		label: "qq地图key",
+		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.qqMapKey")),
 		value: systemConfig.value.qqMapKey,
 		minWidth: 120,
 		copy: true,
@@ -146,7 +150,7 @@ function openEditDialog() {
 	setMode("edit");
 
 	/** 弹框标题 */
-	const title = "修改系统配置";
+	const title = () => transformI18n($t("settingManage.systemManage.systemConfig.dialogs.editTitle"));
 
 	/** 业务对象 */
 	// 将 SystemConfigListItem 转换为表单数据
@@ -181,7 +185,7 @@ function openEditDialog() {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = systemConfigFormInstance.value?.formComputed;
@@ -191,14 +195,14 @@ function openEditDialog() {
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					systemConfigFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					if (systemConfigFormInstance.value?.plusFormInstance) {
@@ -225,11 +229,13 @@ function openEditDialog() {
 </script>
 
 <template>
-	<div v-loading="isFetching" class="system-config-container">
+	<div :key="locale" v-loading="isFetching" class="system-config-container">
 		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
-					<span class="font-medium">系统基本信息</span>
+					<span class="font-medium">
+						{{ transformI18n($t("settingManage.systemManage.systemConfig.sections.basicInfo")) }}
+					</span>
 					<ElButton type="warning" @click="openEditDialog">
 						{{ transformI18n($t("common.buttons.edit")) }}
 					</ElButton>
@@ -243,7 +249,9 @@ function openEditDialog() {
 		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
-					<span class="font-medium">系统地址配置</span>
+					<span class="font-medium">
+						{{ transformI18n($t("settingManage.systemManage.systemConfig.sections.urlConfig")) }}
+					</span>
 				</div>
 			</template>
 			<ElScrollbar>
@@ -254,7 +262,9 @@ function openEditDialog() {
 		<ElCard class="mb-4 box-card" shadow="never">
 			<template #header>
 				<div class="card-header">
-					<span class="font-medium">业务配置</span>
+					<span class="font-medium">
+						{{ transformI18n($t("settingManage.systemManage.systemConfig.sections.businessConfig")) }}
+					</span>
 				</div>
 			</template>
 			<ElScrollbar>
