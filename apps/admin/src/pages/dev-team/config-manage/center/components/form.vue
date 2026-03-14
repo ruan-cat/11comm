@@ -8,11 +8,6 @@ import { type ConfigCenterFormProps } from "./form";
 const props = defineProps<ConfigCenterFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const configTypeLabelKeyMap = {
 	system: $t("devTeam.configManage.center.form.options.system"),
 	business: $t("devTeam.configManage.center.form.options.business"),
@@ -35,7 +30,7 @@ function translateConfigType(value?: string | null) {
 	}
 
 	const key = configTypeLabelKeyMap[value as keyof typeof configTypeLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStatus(value?: string | null) {
@@ -44,7 +39,7 @@ function translateStatus(value?: string | null) {
 	}
 
 	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const defaultValues = props.defaultValues as FieldValues & ConfigCenterFormVO;
@@ -70,18 +65,18 @@ const translatedStatusOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configName")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configName")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.configName")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configType")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configType")),
 		prop: "configType",
 		valueType: "select",
 		required: true,
@@ -90,54 +85,54 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configType")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.configType")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configKey")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configKey")),
 		prop: "configKey",
 		valueType: "input",
 		required: true,
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configKey")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.configKey")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configValue")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configValue")),
 		prop: "configValue",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configValue")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.configValue")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.defaultValue")),
+		label: transformI18n($t("devTeam.configManage.center.fields.defaultValue")),
 		prop: "defaultValue",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.defaultValue")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.defaultValue")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configDescription")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configDescription")),
 		prop: "configDescription",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configDescription")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.configDescription")),
 			rows: 3,
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.status")),
+		label: transformI18n($t("devTeam.configManage.center.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
@@ -145,28 +140,28 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.status")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.sortOrder")),
+		label: transformI18n($t("devTeam.configManage.center.fields.sortOrder")),
 		prop: "sortOrder",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.sortOrder")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.sortOrder")),
 			min: 0,
 			max: 9999,
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.remark")),
+		label: transformI18n($t("devTeam.configManage.center.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.remark")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.remark")),
 			rows: 2,
 		},
 	},
@@ -176,46 +171,46 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	configName: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.configNameRequired")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.configNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.configNameLength")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.configNameLength")),
 			trigger: "blur",
 		},
 	],
 	configType: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.configTypeRequired")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.configTypeRequired")),
 			trigger: "change",
 		},
 	],
 	configKey: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.configKeyRequired")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.configKeyRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)*$/,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.configKeyPattern")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.configKeyPattern")),
 			trigger: "blur",
 		},
 	],
 	configValue: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.configValueRequired")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.configValueRequired")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.configManage.center.form.validation.statusRequired")),
+			message: transformI18n($t("devTeam.configManage.center.form.validation.statusRequired")),
 			trigger: "change",
 		},
 	],
