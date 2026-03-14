@@ -1,20 +1,24 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "发票抬头",
+		// 发票抬头
+		title: "property-manage_house-property-manage.invoice-title.pageTitle",
 		icon: "mdi:receipt",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.invoiceTitle"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { InvoiceTitleListItem, InvoiceTitleQueryParams, InvoiceTitleFormVO } from "@01s-11comm/type";
 import { invoiceTitleTypeOptions } from "@01s-11comm/type";
 import { useInvoiceTitleListQuery } from "@/api/property-manage/house-property-manage/invoice-title";
 import { defaultForm } from "./components/form";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -60,87 +64,101 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 	},
 
 	{
-		label: "发票类型",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.invoiceType")),
 		prop: "invoiceType",
 		valueType: "select",
 		options: invoiceTitleTypeOptions,
 	},
 
 	{
-		label: "发票名头",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.invoiceTitle")),
 		prop: "invoiceTitle",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.code")),
+		),
 		prop: "code",
 		width: 120,
 	},
 	{
-		label: "业主名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.ownerName")),
+		),
 		prop: "ownerName",
 		width: 120,
 	},
 	{
-		label: "发票类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.invoiceType")),
+		),
 		prop: "invoiceType",
 		width: 120,
 	},
 	{
-		label: "发票名头",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.invoiceTitle")),
+		),
 		prop: "invoiceTitle",
 		width: 160,
 	},
 	{
-		label: "纳税人识别号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.taxpayerId")),
+		),
 		prop: "taxpayerId",
 		width: 160,
 	},
 	{
-		label: "地址",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.address")),
+		),
 		prop: "address",
 		width: 180,
 	},
 	{
-		label: "电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.phone")),
+		),
 		prop: "phone",
 		width: 120,
 	},
 	{
-		label: "开户行及账号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.bankAccount")),
+		),
 		prop: "bankAccount",
 		width: 200,
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice-title.fields.remark")),
+		),
 		prop: "remark",
 		width: 150,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -148,10 +166,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "发票抬头",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.invoice-title.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 // 模式控制
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -176,9 +194,6 @@ async function testAsync() {
 function openDialog(params: { mode: Mode; row?: InvoiceTitleListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
-
-	/** 弹框标题 */
-	const title = `${modeText.value}发票抬头`;
 
 	/** 业务对象 */
 	const formData: InvoiceTitleFormVO = isAdd.value
@@ -206,7 +221,10 @@ function openDialog(params: { mode: Mode; row?: InvoiceTitleListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.invoice-title.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.invoice-title.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(InvoiceTitleForm, {
@@ -219,7 +237,7 @@ function openDialog(params: { mode: Mode; row?: InvoiceTitleListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = invoiceTitleFormInstance.value?.formComputed;
@@ -228,7 +246,7 @@ function openDialog(params: { mode: Mode; row?: InvoiceTitleListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					invoiceTitleFormInstance.value?.plusFormInstance?.handleReset();
@@ -236,7 +254,7 @@ function openDialog(params: { mode: Mode; row?: InvoiceTitleListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await invoiceTitleFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -255,11 +273,14 @@ function openDialog(params: { mode: Mode; row?: InvoiceTitleListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

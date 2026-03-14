@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { invoiceTypeOptions } from "@01s-11comm/type";
 import { type InvoiceTitleFormProps } from "./form";
 import type { InvoiceTitleFormVO } from "@01s-11comm/type";
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();
@@ -22,125 +26,127 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as InvoiceTitleFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & InvoiceTitleFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入业主名称",
+			placeholder: transformI18n($t("property-manage_house-property-manage.invoice-title.form.placeholders.ownerName")),
 		},
 	},
 	{
-		label: "发票类型",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.invoiceType")),
 		prop: "invoiceType",
 		valueType: "select",
 		options: invoiceTypeOptions,
 		fieldProps: {
-			placeholder: "请选择发票类型",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.invoice-title.form.placeholders.invoiceType"),
+			),
 		},
 	},
 	{
-		label: "发票名头",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.invoiceTitle")),
 		prop: "invoiceTitle",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入发票名头",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.invoice-title.form.placeholders.invoiceTitle"),
+			),
 		},
 	},
 	{
-		label: "纳税人识别号",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.taxpayerId")),
 		prop: "taxpayerId",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入纳税人识别号",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.invoice-title.form.placeholders.taxpayerId"),
+			),
 		},
 	},
 	{
-		label: "地址",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.address")),
 		prop: "address",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入地址",
+			placeholder: transformI18n($t("property-manage_house-property-manage.invoice-title.form.placeholders.address")),
 		},
 	},
 	{
-		label: "电话",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入电话",
+			placeholder: transformI18n($t("property-manage_house-property-manage.invoice-title.form.placeholders.phone")),
 		},
 	},
 	{
-		label: "开户行及账号",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.bankAccount")),
 		prop: "bankAccount",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入开户行及账号",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.invoice-title.form.placeholders.bankAccount"),
+			),
 		},
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
-			placeholder: "请输入备注信息",
+			placeholder: transformI18n($t("property-manage_house-property-manage.invoice-title.form.placeholders.remark")),
 			rows: 3,
 		},
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	ownerName: [
 		{
 			required: true,
-			message: "请输入业主名称",
+			message: transformI18n($t("property-manage_house-property-manage.invoice-title.form.rules.ownerNameRequired")),
 			trigger: "blur",
 		},
 	],
 	invoiceType: [
 		{
 			required: true,
-			message: "请选择发票类型",
+			message: transformI18n($t("property-manage_house-property-manage.invoice-title.form.rules.invoiceTypeRequired")),
 			trigger: "change",
 		},
 	],
 	invoiceTitle: [
 		{
 			required: true,
-			message: "请输入发票名头",
+			message: transformI18n($t("property-manage_house-property-manage.invoice-title.form.rules.invoiceTitleRequired")),
 			trigger: "blur",
 		},
 	],
 	taxpayerId: [
 		{
 			required: true,
-			message: "请输入纳税人识别号",
+			message: transformI18n($t("property-manage_house-property-manage.invoice-title.form.rules.taxpayerIdRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[A-Z0-9]{15,20}$/,
-			message: "纳税人识别号格式不正确",
+			message: transformI18n($t("property-manage_house-property-manage.invoice-title.form.rules.taxpayerIdFormat")),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 // 默认导出表单实例和计算属性
 defineExpose({
@@ -150,7 +156,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
