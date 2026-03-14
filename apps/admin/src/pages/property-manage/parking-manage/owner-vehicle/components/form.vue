@@ -4,11 +4,16 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import type { OwnerVehicleFormVO } from "@01s-11comm/type";
 import { vehicleTypeOptions, licensePlateTypeOptions } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { OwnerVehicleFormProps } from "./form";
 
 const props = defineProps<OwnerVehicleFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnerVehicleFormVO;
@@ -25,177 +30,181 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & OwnerVehicleFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & OwnerVehicleFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedVehicleTypeOptions = withLocale(() =>
+	vehicleTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n($t(`property-manage_parking-manage.owner-vehicle.form.options.vehicleType.${option.value}`)),
+	})),
+);
+
+const translatedLicensePlateTypeOptions = withLocale(() =>
+	licensePlateTypeOptions.map((option) => ({
+		...option,
+		label: transformI18n(
+			$t(`property-manage_parking-manage.owner-vehicle.form.options.licensePlateType.${option.value}`),
+		),
+	})),
+);
+
+const translatedOwnerVehicleOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.options.ownerVehicle.yes")),
+		value: "是",
+	},
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.options.ownerVehicle.no")),
+		value: "否",
+	},
+]);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 车牌号
 	{
-		label: "车牌号",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.licensePlate")),
 		prop: "licensePlate",
 		valueType: "input",
 		required: true,
 	},
-
 	// 汽车品牌
 	{
-		label: "汽车品牌",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.carBrand")),
 		prop: "carBrand",
 		valueType: "input",
 	},
-
 	// 车类型
 	{
-		label: "车类型",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.carType")),
 		prop: "carType",
 		valueType: "select",
-		options: vehicleTypeOptions,
+		options: translatedVehicleTypeOptions.value,
 		required: true,
 	},
-
 	// 颜色
 	{
-		label: "颜色",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.color")),
 		prop: "color",
 		valueType: "input",
 	},
-
 	// 车牌类型
 	{
-		label: "车牌类型",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.licensePlateType")),
 		prop: "licensePlateType",
 		valueType: "select",
-		options: licensePlateTypeOptions,
+		options: translatedLicensePlateTypeOptions.value,
 		required: true,
 	},
-
 	// 业主
 	{
-		label: "业主",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.owner")),
 		prop: "owner",
 		valueType: "input",
 		required: true,
-		disabled: true, //不可输入（这里disabled无用）且有一个【按钮】和一个【添加链接】
+		disabled: true,
 	},
-
 	// 车位
 	{
-		label: "车位",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.parkingSpace")),
 		prop: "parkingSpace",
 		valueType: "input",
 		required: true,
-		disabled: true, //不可输入（这里disabled无用）且有一个【按钮】和一个【添加链接】
+		disabled: true,
 	},
-
 	// 业主车辆
 	{
-		label: "业主车辆",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.ownerVehicle")),
 		prop: "ownerVehicle",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: translatedOwnerVehicleOptions.value,
 		required: true,
 	},
-
 	// 开始时间
 	{
-		label: "开始时间",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 		required: true,
 	},
-
 	// 结束时间
 	{
-		label: "结束时间",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 		required: true,
 	},
-
 	// 备注
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	licensePlate: [
 		{
 			required: true,
-			message: "请输入车牌号",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.licensePlate")),
 			trigger: "blur",
 		},
 	],
 	carType: [
 		{
 			required: true,
-			message: "请选择车类型",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.carType")),
 			trigger: "change",
 		},
 	],
 	licensePlateType: [
 		{
 			required: true,
-			message: "请选择车牌类型",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.licensePlateType")),
 			trigger: "change",
 		},
 	],
 	owner: [
 		{
 			required: true,
-			message: "请输入业主",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.owner")),
 			trigger: "blur",
 		},
 	],
 	parkingSpace: [
 		{
 			required: true,
-			message: "请输入车位",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.parkingSpace")),
 			trigger: "blur",
 		},
 	],
 	ownerVehicle: [
 		{
 			required: true,
-			message: "请选择是否业主车辆",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.ownerVehicle")),
 			trigger: "change",
 		},
 	],
 	startTime: [
 		{
 			required: true,
-			message: "请选择开始时间",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.startTime")),
 			trigger: "change",
 		},
 	],
 	endTime: [
 		{
 			required: true,
-			message: "请选择结束时间",
+			message: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.validation.endTime")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -204,13 +213,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:label-width="100"
 		/>

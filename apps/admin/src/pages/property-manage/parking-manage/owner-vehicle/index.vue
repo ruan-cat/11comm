@@ -1,26 +1,45 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "业主车辆",
+		// 业主车辆
+		title: "property-manage_parking-manage.owner-vehicle.pageTitle",
 		icon: "mdi:car",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.parkingManage.ownerVehicle"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
+import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { defaultAddDialogParams } from "@/config/constant";
+import { cloneDeep } from "@pureadmin/utils";
+
 import { useOwnerVehicleListQuery } from "@/api/property-manage/parking-manage/owner-vehicle";
-import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
-import OwnerVehicleForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { parkingSpaceStatusOptions } from "@01s-11comm/type";
 import type { OwnerVehicleListItem, OwnerVehicleQueryParams } from "@01s-11comm/type";
+import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
+import OwnerVehicleForm from "./components/form.vue";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd } = useMode();
+const { modeText, setMode, isAdd } = useMode();
+
+/** 表单组件实例 */
+const ownerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
+
+const translatedParkingSpaceStatusOptions = withLocale(() =>
+	parkingSpaceStatusOptions.map((option) => ({
+		...option,
+		label: transformI18n($t(`property-manage_parking-manage.owner-vehicle.options.parkingSpaceStatus.${option.value}`)),
+	})),
+);
 
 /** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -31,9 +50,6 @@ async function testAsync() {
 	setIsLoadingT(false);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
-
-/** 表单组件实例 */
-const ownerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
 // 1. 表格搜索栏配置
 /**
@@ -56,67 +72,8 @@ const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 车牌号
-	{
-		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.plateNumber")),
-		prop: "licensePlate",
-		valueType: "input",
-	},
-
-	// 车位编号
-	{
-		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.parkingSpaceNumber")),
-		prop: "parkingSpaceNumber",
-		valueType: "input",
-	},
-
-	// 车位状态
-	{
-		label: transformI18n($t("property-manage.owner-vehicle-manage_parking.parkingSpaceStatus")),
-		prop: "parkingSpaceStatus",
-		valueType: "select",
-		options: parkingSpaceStatusOptions,
-	},
-
-	// 业主名称
-	{
-		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.ownerName")),
-		prop: "ownerName",
-		valueType: "input",
-	},
-
-	// 联系方式
-	{
-		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.phone")),
-		prop: "contactInfo",
-		valueType: "input",
-	},
-	// 成员车牌号
-	{
-		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.memberPlateNumber")),
-		prop: "memberPlateNumber",
-		valueType: "input",
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-// 2. 使用 TanStack Query hooks
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -126,7 +83,53 @@ const {
 	handleCurrentPageChange,
 } = useOwnerVehicleListQuery(plusSearchDefaultValues);
 
-// 3. 搜索函数(固定写法)
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	/** 车牌号 */
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.licensePlate")),
+		prop: "licensePlate",
+		valueType: "input",
+	},
+	/** 车位编号 */
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.parkingSpaceNumber")),
+		prop: "parkingSpaceNumber",
+		valueType: "input",
+	},
+	/** 车位状态 */
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.parkingSpaceStatus")),
+		prop: "parkingSpaceStatus",
+		valueType: "select",
+		options: translatedParkingSpaceStatusOptions.value,
+	},
+	/** 业主名称 */
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.ownerName")),
+		prop: "ownerName",
+		valueType: "input",
+	},
+	/** 联系方式 */
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.contactInfo")),
+		prop: "contactInfo",
+		valueType: "input",
+	},
+	/** 成员车牌号 */
+	{
+		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.memberPlateNumber")),
+		prop: "memberPlateNumber",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -138,67 +141,92 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-// 4. 表格列配置
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+/** 表格列配置 */
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "车牌号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.licensePlate")),
+		),
 		prop: "licensePlate",
 		width: 120,
 	},
 	{
-		label: "成员车辆",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.memberVehicle")),
+		),
 		prop: "memberVehicle",
 		width: 120,
 	},
 	{
-		label: "房屋号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.houseNumber")),
+		),
 		prop: "houseNumber",
 		width: 120,
 	},
 	{
-		label: "车牌类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.licensePlateType")),
+		),
 		prop: "licensePlateType",
 		width: 120,
 	},
 	{
-		label: "车辆类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.vehicleType")),
+		),
 		prop: "vehicleType",
 		width: 120,
 	},
 	{
-		label: "颜色",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.color")),
+		),
 		prop: "color",
 		width: 120,
 	},
 	{
-		label: "业主",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.owner")),
+		),
 		prop: "owner",
 		width: 120,
 	},
 	{
-		label: "车位",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.parkingSpace")),
+		),
 		prop: "parkingSpace",
 		width: 120,
 	},
 	{
-		label: "有效期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.validityPeriod")),
+		),
 		prop: "validityPeriod",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.status")),
+		),
 		prop: "status",
 		width: 120,
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.owner-vehicle.fields.remark")),
+		),
 		prop: "remark",
 		width: 120,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -206,22 +234,19 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业主车辆",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_parking-manage.owner-vehicle.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 打开弹框 */
 function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}业主车辆`;
-
 	/** 业务对象 */
 	const ownerVehicleFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				...row,
 			});
@@ -237,7 +262,10 @@ function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_parking-manage.owner-vehicle.dialogs.addTitle"))
+				: transformI18n($t("property-manage_parking-manage.owner-vehicle.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -253,7 +281,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = ownerVehicleFormInstance.value?.formComputed;
@@ -262,7 +290,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					ownerVehicleFormInstance.value?.plusFormInstance?.handleReset();
@@ -270,7 +298,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await ownerVehicleFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -279,6 +307,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
@@ -288,11 +317,13 @@ function openDialog({ mode, row }: { mode: Mode; row?: OwnerVehicleListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
