@@ -1,122 +1,156 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "巡检点",
+		// 巡检点
+		title: "property-manage_patrol-manage.point.pageTitle",
 		icon: "mdi:map-marker-check",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage.point"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolPointFormProps, defaultForm } from "./components/form";
 import type { PointListItem, PointQueryParams, PatrolPointFormVO } from "@01s-11comm/type";
 import PatrolPointForm from "./components/form.vue";
 import { usePointListQuery } from "@/api/property-manage/patrol-manage/point";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "任务详情ID",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.point.fields.taskDetailId"))),
 		prop: "taskDetailId",
 		width: 120,
 	},
 	{
-		label: "巡检点名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolPointName")),
+		),
 		prop: "patrolPointName",
 		width: 120,
 	},
 	{
-		label: "巡检计划名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolPlanName")),
+		),
 		prop: "patrolPlanName",
 		width: 120,
 	},
 	{
-		label: "巡检路线名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolRouteName")),
+		),
 		prop: "patrolRouteName",
 		width: 120,
 	},
 	{
-		label: "巡检人开始/结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolPersonTime")),
+		),
 		prop: "patrolPersonTime",
 		width: 160,
 	},
 	{
-		label: "巡检点开始/结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolPointTime")),
+		),
 		prop: "patrolPointTime",
 		width: 160,
 	},
 	{
-		label: "实际巡检时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.actualPatrolTime")),
+		),
 		prop: "actualPatrolTime",
 		width: 120,
 	},
 	{
-		label: "实际签到状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.actualCheckInStatus")),
+		),
 		prop: "actualCheckInStatus",
 		width: 120,
 	},
 	{
-		label: "计划巡检人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.planPatrolPerson")),
+		),
 		prop: "planPatrolPerson",
 		width: 120,
 	},
 	{
-		label: "实际巡检人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.actualPatrolPerson")),
+		),
 		prop: "actualPatrolPerson",
 		width: 120,
 	},
 	{
-		label: "巡检方式",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.point.fields.patrolMethod"))),
 		prop: "patrolMethod",
 		width: 120,
 	},
 	{
-		label: "任务状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.point.fields.taskStatus"))),
 		prop: "taskStatus",
 		width: 120,
 	},
 	{
-		label: "巡检点状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolPointStatus")),
+		),
 		prop: "patrolPointStatus",
 		width: 120,
 	},
 	{
-		label: "巡检情况",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.point.fields.patrolSituation")),
+		),
 		prop: "patrolSituation",
 		width: 120,
 	},
 	{
-		label: "巡检照片",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.point.fields.patrolPhotos"))),
 		prop: "patrolPhotos",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.point.fields.createTime"))),
 		prop: "createTime",
 		width: 120,
 	},
 	{
-		label: "位置信息",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.point.fields.locationInfo"))),
 		prop: "locationInfo",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
+
+/** 表格操作栏组件 配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_patrol-manage.point.tableTitle")),
+	columns: columns.value,
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -162,14 +196,14 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "巡检人",
+		label: transformI18n($t("property-manage_patrol-manage.point.fields.patrolPerson")),
 		prop: "patrolPerson",
 		valueType: "input",
 	},
 	{
-		label: "巡检开始时间",
+		label: transformI18n($t("property-manage_patrol-manage.point.fields.patrolStartTime")),
 		prop: "patrolStartTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -179,7 +213,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: "巡检结束时间",
+		label: transformI18n($t("property-manage_patrol-manage.point.fields.patrolEndTime")),
 		prop: "patrolEndTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -190,20 +224,8 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "巡检点",
-	columns: columns.value,
-});
+/** 表格搜索栏组件 配置 */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表单组件实例 */
 const patrolPointFormInstance = ref<InstanceType<typeof PatrolPointForm> | null>(null);
@@ -237,9 +259,6 @@ function openDialog(params: { mode: Mode; row?: PointListItem }) {
 		defaultValues: patrolPointFormData,
 	};
 
-	/** 弹框标题 */
-	const title = `${modeText.value}巡检点`;
-
 	/** 弹框组件所需的变量 */
 	const props = formProps;
 
@@ -248,7 +267,10 @@ function openDialog(params: { mode: Mode; row?: PointListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_patrol-manage.point.dialogs.addTitle"))
+				: transformI18n($t("property-manage_patrol-manage.point.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(PatrolPointForm, {
@@ -261,7 +283,7 @@ function openDialog(params: { mode: Mode; row?: PointListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = patrolPointFormInstance.value?.formComputed;
@@ -269,14 +291,14 @@ function openDialog(params: { mode: Mode; row?: PointListItem }) {
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					patrolPointFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await patrolPointFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -294,11 +316,13 @@ function openDialog(params: { mode: Mode; row?: PointListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
