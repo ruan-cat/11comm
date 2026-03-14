@@ -27,11 +27,6 @@ interface EmployeeSearchForm {
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const { data: organizationTreeData, isFetching: treeLoading } = useOrganizationTreeQuery();
 
 const plusSearchModelRef: FieldValues & EmployeeSearchForm = {
@@ -80,40 +75,40 @@ async function testAsync() {
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.name"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.orgInfo.fields.name"))),
 		prop: "name",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.phone"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.orgInfo.fields.phone"))),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.position"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.orgInfo.fields.position"))),
 		prop: "position",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.email"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.orgInfo.fields.email"))),
 		prop: "email",
 		width: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.address"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.orgInfo.fields.address"))),
 		prop: "address",
 		width: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.orgInfo.fields.gender"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.orgInfo.fields.gender"))),
 		prop: "gender",
 		width: 80,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -121,17 +116,17 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.orgInfo.tableTitle")),
+	title: transformI18n($t("settingManage.organizeManage.orgInfo.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
+		label: transformI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
 		prop: "employeeName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
+			placeholder: transformI18n($t("settingManage.organizeManage.orgInfo.search.employeeName")),
 		},
 	},
 ]);
@@ -140,7 +135,7 @@ const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 const treeSearchOptions = withLocale(() => ({
 	searchable: true,
-	searchPlaceholder: renderI18n($t("settingManage.organizeManage.orgInfo.search.orgNamePlaceholder")),
+	searchPlaceholder: transformI18n($t("settingManage.organizeManage.orgInfo.search.orgNamePlaceholder")),
 }));
 
 const treeExpansionOptions = {
@@ -185,7 +180,7 @@ function handleAddOrg() {
 
 function handleEditOrg() {
 	if (!localSelectedOrg.value) {
-		ElMessage.warning(renderI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
+		ElMessage.warning(transformI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
 		return;
 	}
 
@@ -194,7 +189,7 @@ function handleEditOrg() {
 
 function handleDeleteOrg() {
 	if (!localSelectedOrg.value) {
-		ElMessage.warning(renderI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
+		ElMessage.warning(transformI18n($t("settingManage.organizeManage.common.messages.selectOrgFirst")));
 		return;
 	}
 
