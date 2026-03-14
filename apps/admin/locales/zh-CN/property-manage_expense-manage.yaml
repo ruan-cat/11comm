@@ -1,0 +1,823 @@
+# 取消费用
+cancel-fee:
+  pageTitle: 取消费用
+  tableTitle: 取消费用
+  fields:
+    batchNumber: 批次号
+    employee: 员工
+    time: 时间
+    cancelReason: 取消原因
+    auditStatus: 审核状态
+    auditOpinion: 审核意见
+  search:
+    batchNumber: 批次号
+    employee: 员工
+    auditStatus: 审核状态
+  form:
+    fields:
+      batchNumber: 批次号
+      employee: 员工
+      time: 时间
+      cancelReason: 取消原因
+      auditStatus: 审核状态
+      auditOpinion: 审核意见
+    validation:
+      auditStatusRequired: 请选择审核状态
+      auditOpinionRequired: 请输入审核意见
+  dialogs:
+    addTitle: 新增取消费用审核
+    editTitle: 编辑取消费用审核
+
+# 合同收费
+contracte-charge:
+  pageTitle: 合同收费
+  tableTitle: 合同收费
+  fields:
+    contractNumber: 合同编号
+    parentContractNumber: 父合同编号
+    contractName: 合同名称
+    contractType: 合同类型
+    partyB: 乙方
+    contractAmount: 合同金额
+    startTime: 开始时间
+    endTime: 结束时间
+  search:
+    contractNumber: 合同编号
+    contractName: 合同名称
+    contractType: 合同类型
+  button:
+    payment: 缴费
+    viewFee: 查看费用
+  form:
+    fields:
+      feeType: 费用类型
+      chargeItem: 收费项目
+      contractStatus: 合同状态
+      billingStartTime: 计费起始时间
+      billingEndTime: 计费结束时间
+    placeholders:
+      chargeItem: 请输入收费项目
+    options:
+      feeType:
+        propertyFee: 物业费
+        deposit: 押金
+        gasFee: 煤气费
+        heatingFee: 取暖费
+        maintenanceFee: 维修费
+        serviceFee: 服务费
+        other: 其他
+        systemFee: 系统费用
+        rent: 租金
+      contractStatus:
+        pending: 待审核
+        reviewing: 审核中
+        completed: 审核完成
+    validation:
+      feeTypeRequired: 请选择费用类型
+      chargeItemRequired: 请输入收费项目
+      contractStatusRequired: 请选择合同状态
+      billingStartTimeRequired: 请选择计费起始时间
+      billingEndTimeRequired: 请选择计费结束时间
+  dialogs:
+    addTitle: 新增合同收费
+    editTitle: 编辑合同收费
+
+# 优惠申请
+discount-apply:
+  pageTitle: 优惠申请
+  tableTitle: 优惠申请
+  discountType: 优惠类型
+  phoneApply: 电话申请
+  export: 导出
+  fields:
+    house: 房屋
+    discountId: 折扣ID
+    discountName: 折扣名称
+    applicationType: 申请类型
+    applicant: 申请人
+    applicantPhone: 申请电话
+    startTime: 开始时间
+    endTime: 结束时间
+    status: 状态
+    createTime: 创建时间
+    usageStatus: 使用状态
+    returnType: 返还类型
+    returnAmount: 返还金额
+  search:
+    house: 房屋
+    applicationType: 申请类型
+    usageStatus: 使用状态
+  form:
+    fields:
+      house: 房屋
+      applicationType: 申请类型
+      expenseItem: 费用项目
+      applicant: 申请人
+      applicantPhone: 申请电话
+      startTime: 开始时间
+      endTime: 结束时间
+      description: 申请名说明
+      material: 图片材料
+    options:
+      applicationType:
+        vacantHouse: 空置房
+        difficultFamily: 困难家庭
+        longTermResident: 长期住户
+        specialContribution: 特殊贡献
+  dialogs:
+    addTitle: 新增优惠申请
+    editTitle: 编辑优惠申请
+
+# 折扣设置
+discount-setting:
+  pageTitle: 折扣设置
+  tableTitle: 折扣设置
+  fields:
+    discountId: 折扣ID
+    discountName: 折扣名称
+    discountType: 折扣类型
+    ruleName: 规则名称
+    rule: 规则
+    createTime: 创建时间
+  search:
+    discountId: 折扣ID
+    discountName: 折扣名称
+    discountType: 折扣类型
+    ruleName: 规则名称
+  form:
+    fields:
+      discountName: 折扣名称
+      discountType: 折扣类型
+      rule: 规则
+      description: 描述
+    validation:
+      discountNameRequired: 请输入折扣名称
+      discountNameLength: 长度在 2 到 50 个字符
+      discountTypeRequired: 请选择折扣类型
+      ruleRequired: 请选择规则
+  dialogs:
+    addTitle: 新增折扣设置
+    editTitle: 编辑折扣设置
+
+# 优惠类型
+discount-type:
+  pageTitle: 优惠类型
+  tableTitle: 优惠类型
+  deleteConfirmMessage: 确认删除优惠类型"{name}"吗？
+  deleteConfirmTitle: 删除确认
+  deleteConfirmOk: 确认
+  deleteConfirmCancel: 取消
+  deleteSuccess: 删除成功
+  deleteFailed: 删除失败
+  fields:
+    discountId: 折扣ID
+    discountName: 折扣名称
+    discountType: 折扣类型
+    ruleName: 规则名称
+    rule: 规则
+    createTime: 创建时间
+  search:
+    discountId: 折扣ID
+    discountName: 折扣名称
+    discountType: 折扣类型
+    ruleName: 规则名称
+  form:
+    fields:
+      discountName: 折扣名称
+      discountType: 折扣类型
+      ruleName: 规则名称
+      rule: 规则
+    placeholders:
+      discountName: 请输入折扣名称
+      discountType: 请选择折扣类型
+      ruleName: 请输入规则名称
+      rule: 请输入折扣规则说明
+    validation:
+      discountNameRequired: 请输入折扣名称
+      discountNameLength: 长度在 2 到 50 个字符
+      discountTypeRequired: 请选择折扣类型
+      ruleNameRequired: 请输入规则名称
+      ruleNameLength: 长度在 2 到 50 个字符
+  dialogs:
+    addTitle: 新增优惠类型
+    editTitle: 编辑优惠类型
+
+# 费用项设置
+expense-item-setting:
+  pageTitle: 费用项设置
+  tableTitle: 费用项
+  fields:
+    code: 编号
+    feeType: 费用类型
+    expenseItem: 收费项目
+    expenseIdentifier: 费用标识
+    paymentType: 付费类型
+    paymentCycle: 缴费周期(单位:月)
+    formula: 公式
+    billingUnitPrice: 计费单价(单位:元)
+    fixedFee: 附加/固定费用(单位:元)
+    accountDeduction: 账户抵扣
+    status: 状态
+  form:
+    fields:
+      feeType: 费用类型
+      expenseItem: 收费项目
+      expenseIdentifier: 费用标识
+      paymentType: 付费类型
+      paymentCycle: 缴费周期(单位:月)
+      prepaymentPeriod: 预付期(单位:天)
+      unit: 单位
+      accountDeduction: 账户抵扣
+      mobilePayment: 手机缴费
+      roundingMode: 进位方式
+      decimalPlaces: 保留小数位
+      status: 状态
+      formula: 计算公式
+      billingUnitPrice: 计费单价
+      fixedFee: 固定费用
+    options:
+      expenseIdentifier:
+        recurring: 周期性费用
+        oneTime: 一次性费用
+      paymentType:
+        prepaid: 预付费
+        postpaid: 后付费
+      accountDeduction:
+        yes: 是
+        no: 否
+      mobilePayment:
+        yes: 是
+        no: 否
+      roundingMode:
+        round: 四舍五入
+        ceil: 向上取整
+        floor: 向下取整
+      decimalPlaces:
+        integer: 取整
+        one: 1位
+        two: 2位
+        three: 3位
+        four: 4位
+      status:
+        enabled: 启用
+        disabled: 禁用
+    validation:
+      expenseItemRequired: 请输入收费项目
+      expenseIdentifierRequired: 请选择费用标识
+      paymentTypeRequired: 请选择付费类型
+      paymentCycleRequired: 请输入缴费周期
+      prepaymentPeriodRequired: 请输入预付期
+      unitRequired: 请输入单位
+      accountDeductionRequired: 请选择账户抵扣
+      mobilePaymentRequired: 请选择手机缴费
+      roundingModeRequired: 请选择进位方式
+      decimalPlacesRequired: 请选择保留小数位
+      statusRequired: 请选择状态
+      formulaRequired: 请输入计算公式
+      billingUnitPriceRequired: 请输入计费单价
+      fixedFeeRequired: 请输入固定费用
+  dialogs:
+    addTitle: 新增费用项设置
+    editTitle: 编辑费用项设置
+
+# 费用汇总表
+expense-summary-table:
+  pageTitle: 费用汇总表
+  tableTitle: 费用汇总表
+  fields:
+    time: 时间
+    expenseItemId: 费用项ID
+    expenseItemName: 费用项名称
+    receivableAmount: 应收金额
+    actualAmount: 实收金额
+  search:
+    time: 时间
+    expenseItemId: 费用项ID
+    expenseItemName: 费用项名称
+  button:
+    overduePayment: 欠费缴费
+    viewFee: 查看费用
+  form:
+    fields:
+      time: 时间
+      expenseItemId: 费用项ID
+      expenseItemName: 费用项名称
+      receivableAmount: 应收金额
+      actualAmount: 实收金额
+    placeholders:
+      time: 请输入时间
+      expenseItemId: 请输入费用项ID
+      expenseItemName: 请选择费用项名称
+      receivableAmount: 请输入应收金额
+      actualAmount: 请输入实收金额
+    options:
+      expenseItemName:
+        propertyFee: 物业费
+        waterFee: 水费
+        electricityFee: 电费
+        gasFee: 燃气费
+        parkingFee: 停车费
+        elevatorFee: 电梯费
+        garbageFee: 垃圾处理费
+        greeningFee: 绿化费
+        securityFee: 安防费
+        maintenanceFund: 维修基金
+    validation:
+      timeRequired: 请输入时间
+      expenseItemIdRequired: 请输入费用项ID
+      expenseItemNameRequired: 请选择费用项名称
+      receivableAmountRequired: 请输入应收金额
+      receivableAmountFormat: 请输入正确的金额格式
+      actualAmountRequired: 请输入实收金额
+      actualAmountFormat: 请输入正确的金额格式
+  dialogs:
+    addTitle: 新增费用汇总表
+    editTitle: 编辑费用汇总表
+
+# 房屋收费
+house-charge:
+  pageTitle: 房屋收费
+  tableTitle: 房屋收费
+  fields:
+    name: 名称
+    status: 状态
+    createTime: 创建时间
+    updateTime: 更新时间
+    remark: 备注
+  search:
+    name: 名称
+    status: 状态
+  form:
+    fields:
+      expenseType: 费用类型
+      expenseItem: 收费项目
+      expenseIdentifier: 费用标识
+      paymentType: 付费类型
+      paymentCycle: 缴费周期(单位:月)
+      prepaymentPeriod: 预付期(单位:天)
+      unit: 单位
+      accountDeduction: 账户抵扣
+      mobilePayment: 手机缴费
+      roundingMode: 进位方式
+      decimalPlaces: 保留小数位
+      status: 状态
+      formula: 计算公式
+      billingUnitPrice: 计费单价
+      fixedFee: 固定费用
+    options:
+      expenseType:
+        propertyFee: 物业费
+        deposit: 押金
+        parkingFee: 停车费
+        gasFee: 煤气费
+        heatingFee: 取暖费
+        maintenanceFee: 维修费
+        serviceFee: 服务费
+        other: 其他
+        waterFee: 水费
+        electricityFee: 电费
+        rent: 租金
+        publicShareFee: 公摊费
+      expenseIdentifier:
+        recurring: 周期性费用
+        oneTime: 一次性费用
+      paymentType:
+        prepaid: 预付费
+        postpaid: 后付费
+      accountDeduction:
+        yes: 是
+        no: 否
+      mobilePayment:
+        yes: 是
+        no: 否
+      roundingMode:
+        round: 四舍五入
+        ceil: 向上取整
+        floor: 向下取整
+      decimalPlaces:
+        integer: 取整
+        one: 1位
+        two: 2位
+        three: 3位
+        four: 4位
+      status:
+        enabled: 启用
+        disabled: 禁用
+    validation:
+      expenseTypeRequired: 请选择费用类型
+      expenseItemRequired: 请输入收费项目
+      expenseItemLength: 收费项目长度在 2 到 50 个字符
+      expenseIdentifierRequired: 请选择费用标识
+      paymentTypeRequired: 请选择付费类型
+      paymentCycleRequired: 请输入缴费周期
+      paymentCycleFormat: 缴费周期必须为正整数
+      prepaymentPeriodRequired: 请输入预付期
+      prepaymentPeriodFormat: 预付期必须为正整数
+      unitRequired: 请输入单位
+      unitLength: 单位长度在 1 到 20 个字符
+      accountDeductionRequired: 请选择账户抵扣
+      mobilePaymentRequired: 请选择手机缴费
+      roundingModeRequired: 请选择进位方式
+      decimalPlacesRequired: 请选择保留小数位
+      statusRequired: 请选择状态
+      formulaRequired: 请输入计算公式
+      billingUnitPriceRequired: 请输入计费单价
+      billingUnitPriceFormat: 请输入正确的金额格式
+      fixedFeeRequired: 请输入固定费用
+      fixedFeeFormat: 请输入正确的金额格式
+  dialogs:
+    addTitle: 新增房屋收费
+    editTitle: 编辑房屋收费
+
+# 抄表类型
+meter-reading-type:
+  pageTitle: 抄表类型
+  tableTitle: 抄表类型
+  fields:
+    name: 名称
+    description: 说明
+    status: 状态
+    createTime: 创建时间
+    remark: 备注
+  search:
+    name: 名称
+    description: 说明
+    status: 状态
+  form:
+    fields:
+      name: 名称
+      description: 说明
+    placeholders:
+      name: 请输入抄表类型名称
+      description: 请输入抄表类型说明
+    validation:
+      nameRequired: 请输入抄表类型名称
+      nameLength: 长度在 2 到 50 个字符
+      descriptionRequired: 请输入抄表类型说明
+      descriptionLength: 长度在 5 到 200 个字符
+  dialogs:
+    addTitle: 新增抄表类型
+    editTitle: 编辑抄表类型
+
+# 欠费信息
+overdue-payment-information:
+  pageTitle: 欠费信息
+  tableTitle: 欠费信息
+  fields:
+    chargeObject: 收费对象
+    ownerName: 业主名称
+    phoneNumber: 手机号
+    overdueTimePeriod: 欠费时间段
+    totalAmount: 合计金额
+    updateTime: 更新时间
+  search:
+    chargeObject: 收费对象
+    ownerName: 业主名称
+    phoneNumber: 手机号
+  button:
+    overduePayment: 欠费缴费
+    exportOverdueList: 导出欠费清单
+    viewDetails: 查看详情
+    viewFee: 查看费用
+  form:
+    fields:
+      chargeObject: 收费对象
+      ownerName: 业主名称
+      phoneNumber: 手机号
+      contactAddress: 联系地址
+      overdueTimeRange: 欠费时间范围
+      overdueAmount: 欠费金额
+      paymentStatus: 缴费状态
+      overdueDescription: 欠费说明
+    placeholders:
+      ownerName: 请输入业主姓名
+      phoneNumber: 请输入手机号码
+      contactAddress: 请输入详细地址
+      overdueAmount: 请输入欠费金额
+      overdueDescription: 请输入欠费说明
+    validation:
+      chargeObjectRequired: 请选择收费对象
+      ownerNameRequired: 请输入业主名称
+      ownerNameLength: 长度在 2 到 20 个字符
+      phoneNumberRequired: 请输入手机号
+      phoneNumberFormat: 请输入正确的手机号码
+      overdueTimeRangeRequired: 请选择欠费时间范围
+      overdueAmountRequired: 请输入欠费金额
+      paymentStatusRequired: 请选择缴费状态
+  dialogs:
+    addTitle: 新增欠费信息
+    editTitle: 编辑欠费信息
+
+# 缴费审核
+payment-review:
+  pageTitle: 缴费审核
+  tableTitle: 缴费审核
+  fields:
+    house: 房屋
+    expenseItem: 费用项目
+    paymentPeriod: 付费周期
+    payableAmount: 应付金额
+    paidAmount: 实付金额
+    operator: 操作员工
+    paymentTime: 缴费时间
+    auditStatus: 审核状态
+    paymentRemark: 缴费备注
+    auditDescription: 审核说明
+    details: 详情
+  search:
+    house: 房屋
+    expenseItem: 费用项目
+    auditStatus: 审核状态
+    paymentTimeRange: 缴费时间范围
+  button:
+    batchAudit: 批量审核
+    exportAuditRecord: 导出审核记录
+    auditApprove: 审核通过
+    auditReject: 审核拒绝
+    viewDetails: 查看详情
+    viewVoucher: 查看凭证
+  form:
+    fields:
+      house: 房屋
+      expenseItem: 费用项目
+      paymentPeriod: 付费周期
+      paymentStartTime: 缴费起始时间
+      paymentEndTime: 缴费结束时间
+      payableAmount: 应付金额
+      paidAmount: 实付金额
+      operator: 操作员工
+      paymentTime: 缴费时间
+      auditStatus: 审核状态
+      auditDescription: 审核说明
+      paymentRemark: 缴费备注
+      details: 详情
+    placeholders:
+      house: 请输入房屋编号，如：A栋101
+      expenseItem: 请选择费用项目
+      paymentPeriod: 请输入付费周期，如：2024年Q1
+      paymentStartTime: 请选择缴费起始时间
+      paymentEndTime: 请选择缴费结束时间
+      payableAmount: 请输入应付金额
+      paidAmount: 请输入实付金额
+      operator: 请输入操作员工姓名
+      paymentTime: 请选择缴费时间
+      auditStatus: 请选择审核状态
+      auditDescription: 请输入审核说明
+      paymentRemark: 请输入缴费备注
+      details: 请输入详细信息
+    options:
+      expenseItem:
+        propertyFee: 物业费
+        parkingFee: 停车费
+        utilityFee: 水电费
+        gasFee: 燃气费
+        heatingFee: 暖气费
+        otherFee: 其他费用
+      auditStatus:
+        pending: 待审核
+        approved: 审核通过
+        rejected: 审核拒绝
+    validation:
+      houseRequired: 请输入房屋编号
+      houseLength: 长度在 2 到 20 个字符
+      expenseItemRequired: 请选择费用项目
+      paymentPeriodRequired: 请输入付费周期
+      paymentPeriodLength: 长度在 2 到 50 个字符
+      paymentStartTimeRequired: 请选择缴费起始时间
+      paymentEndTimeRequired: 请选择缴费结束时间
+      payableAmountRequired: 请输入应付金额
+      payableAmountFormat: 请输入正确的金额格式
+      paidAmountRequired: 请输入实付金额
+      paidAmountFormat: 请输入正确的金额格式
+      operatorRequired: 请输入操作员工姓名
+      operatorLength: 长度在 2 到 10 个字符
+      paymentTimeRequired: 请选择缴费时间
+      auditStatusRequired: 请选择审核状态
+      auditDescriptionLength: 审核说明长度不能超过 500 个字符
+      paymentRemarkLength: 缴费备注长度不能超过 500 个字符
+      detailsLength: 详情长度不能超过 1000 个字符
+  dialogs:
+    addTitle: 新增缴费审核
+    editTitle: 编辑缴费审核
+
+# 退费审核
+refund-review:
+  pageTitle: 退费审核
+  tableTitle: 退费审核
+  fields:
+    refundOrderNumber: 退费单号
+    paymentOrderNumber: 缴费单号
+    feeType: 费用类型
+    payer: 付费对象
+    payablePaidAmount: 退费金额
+    applyTime: 申请时间
+    refundReason: 退费原因
+    applicant: 申请人
+    auditStatus: 审核状态
+    auditor: 审核人
+  search:
+    refundOrderNumber: 退费单号
+    paymentOrderNumber: 缴费单号
+    feeType: 费用类型
+    auditStatus: 审核状态
+  button:
+    batchAudit: 批量审核
+    overduePayment: 欠费缴费
+    viewFee: 查看费用
+  form:
+    fields:
+      refundOrderNumber: 退费单号
+      paymentOrderNumber: 缴费单号
+      feeType: 费用类型
+      payer: 付费对象
+      paymentCycle: 付费周期
+      amount: 退费金额
+      applyTime: 申请时间
+      refundReason: 退费原因
+      applicant: 申请人
+      auditStatus: 审核状态
+      auditor: 审核人
+      auditRemark: 审核备注
+    validation:
+      auditStatusRequired: 请选择审核状态
+      auditRemarkRequired: 请输入审核备注
+  dialogs:
+    addTitle: 新增退费审核
+    editTitle: 编辑退费审核
+
+# 欠费催缴
+reminder-for-overdue-payments:
+  pageTitle: 欠费催缴
+  tableTitle: 欠费催缴
+  fields:
+    name: 名称
+    status: 状态
+    createTime: 创建时间
+  search:
+    name: 名称
+    status: 状态
+  button:
+    immediateReminder: 立即催缴
+    viewDetails: 查看详情
+  form:
+    fields:
+      ownerName: 业主名称
+      paymentObject: 付费对象
+      feeName: 费用名称
+      reminderAmount: 催缴金额
+      reminderMethod: 催缴方式
+      reminderStatus: 催缴状态
+      reminderTime: 催缴时间
+      reminderRemark: 催缴备注
+    placeholders:
+      ownerName: 请输入业主名称
+      paymentObject: 请输入付费对象
+      feeName: 请输入费用名称
+      reminderAmount: 请输入催缴金额
+      reminderMethod: 请选择催缴方式
+      reminderStatus: 请选择催缴状态
+    validation:
+      ownerNameRequired: 请输入业主名称
+      paymentObjectRequired: 请输入付费对象
+      feeNameRequired: 请输入费用名称
+      reminderAmountRequired: 请输入催缴金额
+      reminderMethodRequired: 请选择催缴方式
+      reminderStatusRequired: 请选择催缴状态
+  dialogs:
+    addTitle: 新增欠费催缴
+    editTitle: 编辑欠费催缴
+
+# 补打收据
+reprint-voucher:
+  pageTitle: 补打收据
+  tableTitle: 补打收据
+  fields:
+    name: 名称
+    status: 状态
+    createTime: 创建时间
+  search:
+    receiptNumber: 收据编号
+    feeType: 费用类型
+    house: 房屋
+    owner: 业主
+  form:
+    fields:
+      receiptNumber: 收据编号
+      feeType: 费用类型
+      feeItem: 费用项
+      house: 房屋
+      owner: 业主
+      parkingSpace: 车位
+      totalAmount: 总金额
+      paymentTime: 缴费时间
+      printCopies: 打印份数
+      printRemark: 打印备注
+    validation:
+      printCopiesRequired: 请输入打印份数
+      printCopiesRange: 打印份数必须在1-10之间
+      printRemarkLength: 打印备注不能超过200个字符
+  dialogs:
+    addTitle: 新增补打收据
+    editTitle: 编辑补打收据
+
+# 车辆收费
+vehicle-charge:
+  pageTitle: 车辆收费
+  tableTitle: 车辆收费
+  viewFee: 查看费用
+  fields:
+    name: 名称
+    status: 状态
+    createTime: 创建时间
+  search:
+    parkingLotSpace: 车位编号
+    licensePlateNumber: 车牌号
+    ownerName: 车主姓名
+    parkingSpaceStatus: 车位状态
+  form:
+    fields:
+      licensePlateNumber: 车牌号
+      ownerName: 业主名称
+      parkingSpaceStatus: 车位状态
+      chargeAmount: 收费金额
+      chargeTime: 收费时间
+      chargeMethod: 收费方式
+    placeholders:
+      licensePlateNumber: 请输入车牌号
+      ownerName: 请输入业主名称
+      parkingSpaceStatus: 请选择车位状态
+      chargeAmount: 请输入收费金额
+      chargeTime: 请选择收费时间
+      chargeMethod: 请输入收费方式
+    validation:
+      licensePlateNumberRequired: 请输入车牌号
+      ownerNameRequired: 请输入业主名称
+      parkingSpaceStatusRequired: 请选择车位状态
+      chargeAmountRequired: 请输入收费金额
+      chargeTimeRequired: 请选择收费时间
+      chargeMethodRequired: 请输入收费方式
+  dialogs:
+    addTitle: 新增车辆收费
+    editTitle: 编辑车辆收费
+
+# 水电抄表
+water-and-electricity-meter-reading:
+  pageTitle: 水电抄表
+  tableTitle: 水电抄表
+  meterReading: 抄表
+  meterReadingType: 抄表类型
+  readingImport1: 读数导入1
+  readingImport2: 读数导入2
+  fields:
+    meterId: 表ID
+    meterType: 表类型
+    objectName: 对象名称
+    lastReading: 上期度数
+    currentReading: 本期度数
+    lastReadingTime: 上期读表时间
+    currentReadingTime: 本期读表时间
+    createTime: 创建时间
+  search:
+    meterType: 表类型
+    meterId: 表ID
+  form:
+    fields:
+      expenseType: 费用类型
+      chargeItem: 收费项目
+      meterReadingType: 抄表类型
+      chargeObject: 收费对象
+      lastReading: 上期度数
+      currentReading: 本期度数
+      lastReadingTime: 上期读表时间
+      currentReadingTime: 本期读表时间
+      remark: 备注
+    placeholders:
+      chargeObject: 请输入收费对象
+      lastReading: 请输入上期度数
+      currentReading: 请输入本期度数
+      remark: 请输入备注信息
+    options:
+      expenseType:
+        waterFee: 水费
+        electricityFee: 电费
+      chargeItem:
+        waterMeter: 水表
+        electricityMeter: 电表
+      meterReadingType:
+        waterMeter: 水表
+        electricityMeter: 电表
+    validation:
+      expenseTypeRequired: 请选择费用类型
+      chargeItemRequired: 请选择收费项目
+      meterReadingTypeRequired: 请选择抄表类型
+      chargeObjectRequired: 请输入收费对象
+      chargeObjectLength: 长度在 2 到 50 个字符
+      lastReadingRequired: 请输入上期度数
+      lastReadingFormat: 请输入有效的数字
+      currentReadingRequired: 请输入本期度数
+      currentReadingFormat: 请输入有效的数字
+      lastReadingTimeRequired: 请选择上期读表时间
+      currentReadingTimeRequired: 请选择本期读表时间
+  dialogs:
+    addTitle: 新增水电抄表
+    editTitle: 编辑水电抄表

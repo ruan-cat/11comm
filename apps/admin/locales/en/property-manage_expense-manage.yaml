@@ -1,0 +1,823 @@
+# Cancel Fee
+cancel-fee:
+  pageTitle: Cancel Fee
+  tableTitle: Cancel Fee
+  fields:
+    batchNumber: Batch Number
+    employee: Employee
+    time: Time
+    cancelReason: Cancel Reason
+    auditStatus: Audit Status
+    auditOpinion: Audit Opinion
+  search:
+    batchNumber: Batch Number
+    employee: Employee
+    auditStatus: Audit Status
+  form:
+    fields:
+      batchNumber: Batch Number
+      employee: Employee
+      time: Time
+      cancelReason: Cancel Reason
+      auditStatus: Audit Status
+      auditOpinion: Audit Opinion
+    validation:
+      auditStatusRequired: Please select audit status
+      auditOpinionRequired: Please enter audit opinion
+  dialogs:
+    addTitle: Add Cancel Fee Review
+    editTitle: Edit Cancel Fee Review
+
+# Contract Charge
+contracte-charge:
+  pageTitle: Contract Charge
+  tableTitle: Contract Charge
+  fields:
+    contractNumber: Contract Number
+    parentContractNumber: Parent Contract Number
+    contractName: Contract Name
+    contractType: Contract Type
+    partyB: Party B
+    contractAmount: Contract Amount
+    startTime: Start Time
+    endTime: End Time
+  search:
+    contractNumber: Contract Number
+    contractName: Contract Name
+    contractType: Contract Type
+  button:
+    payment: Payment
+    viewFee: View Fee
+  form:
+    fields:
+      feeType: Fee Type
+      chargeItem: Charge Item
+      contractStatus: Contract Status
+      billingStartTime: Billing Start Time
+      billingEndTime: Billing End Time
+    placeholders:
+      chargeItem: Please enter charge item
+    options:
+      feeType:
+        propertyFee: Property Fee
+        deposit: Deposit
+        gasFee: Gas Fee
+        heatingFee: Heating Fee
+        maintenanceFee: Maintenance Fee
+        serviceFee: Service Fee
+        other: Other
+        systemFee: System Fee
+        rent: Rent
+      contractStatus:
+        pending: Pending
+        reviewing: Reviewing
+        completed: Completed
+    validation:
+      feeTypeRequired: Please select fee type
+      chargeItemRequired: Please enter charge item
+      contractStatusRequired: Please select contract status
+      billingStartTimeRequired: Please select billing start time
+      billingEndTimeRequired: Please select billing end time
+  dialogs:
+    addTitle: Add Contract Charge
+    editTitle: Edit Contract Charge
+
+# Discount Apply
+discount-apply:
+  pageTitle: Discount Apply
+  tableTitle: Discount Apply
+  discountType: Discount Type
+  phoneApply: Phone Apply
+  export: Export
+  fields:
+    house: House
+    discountId: Discount ID
+    discountName: Discount Name
+    applicationType: Application Type
+    applicant: Applicant
+    applicantPhone: Applicant Phone
+    startTime: Start Time
+    endTime: End Time
+    status: Status
+    createTime: Create Time
+    usageStatus: Usage Status
+    returnType: Return Type
+    returnAmount: Return Amount
+  search:
+    house: House
+    applicationType: Application Type
+    usageStatus: Usage Status
+  form:
+    fields:
+      house: House
+      applicationType: Application Type
+      expenseItem: Expense Item
+      applicant: Applicant
+      applicantPhone: Applicant Phone
+      startTime: Start Time
+      endTime: End Time
+      description: Description
+      material: Image Material
+    options:
+      applicationType:
+        vacantHouse: Vacant House
+        difficultFamily: Difficult Family
+        longTermResident: Long-term Resident
+        specialContribution: Special Contribution
+  dialogs:
+    addTitle: Add Discount Apply
+    editTitle: Edit Discount Apply
+
+# Discount Setting
+discount-setting:
+  pageTitle: Discount Setting
+  tableTitle: Discount Setting
+  fields:
+    discountId: Discount ID
+    discountName: Discount Name
+    discountType: Discount Type
+    ruleName: Rule Name
+    rule: Rule
+    createTime: Create Time
+  search:
+    discountId: Discount ID
+    discountName: Discount Name
+    discountType: Discount Type
+    ruleName: Rule Name
+  form:
+    fields:
+      discountName: Discount Name
+      discountType: Discount Type
+      rule: Rule
+      description: Description
+    validation:
+      discountNameRequired: Please enter discount name
+      discountNameLength: Length must be between 2 and 50 characters
+      discountTypeRequired: Please select discount type
+      ruleRequired: Please select rule
+  dialogs:
+    addTitle: Add Discount Setting
+    editTitle: Edit Discount Setting
+
+# Discount Type
+discount-type:
+  pageTitle: Discount Type
+  tableTitle: Discount Type
+  deleteConfirmMessage: Are you sure to delete discount type "{name}"?
+  deleteConfirmTitle: Delete Confirmation
+  deleteConfirmOk: Confirm
+  deleteConfirmCancel: Cancel
+  deleteSuccess: Deleted successfully
+  deleteFailed: Delete failed
+  fields:
+    discountId: Discount ID
+    discountName: Discount Name
+    discountType: Discount Type
+    ruleName: Rule Name
+    rule: Rule
+    createTime: Create Time
+  search:
+    discountId: Discount ID
+    discountName: Discount Name
+    discountType: Discount Type
+    ruleName: Rule Name
+  form:
+    fields:
+      discountName: Discount Name
+      discountType: Discount Type
+      ruleName: Rule Name
+      rule: Rule
+    placeholders:
+      discountName: Please enter discount name
+      discountType: Please select discount type
+      ruleName: Please enter rule name
+      rule: Please enter discount rule description
+    validation:
+      discountNameRequired: Please enter discount name
+      discountNameLength: Length must be between 2 and 50 characters
+      discountTypeRequired: Please select discount type
+      ruleNameRequired: Please enter rule name
+      ruleNameLength: Length must be between 2 and 50 characters
+  dialogs:
+    addTitle: Add Discount Type
+    editTitle: Edit Discount Type
+
+# Expense Item Setting
+expense-item-setting:
+  pageTitle: Expense Item Setting
+  tableTitle: Expense Item
+  fields:
+    code: Code
+    feeType: Fee Type
+    expenseItem: Charge Item
+    expenseIdentifier: Expense Identifier
+    paymentType: Payment Type
+    paymentCycle: Payment Cycle (Month)
+    formula: Formula
+    billingUnitPrice: Billing Unit Price (CNY)
+    fixedFee: Additional/Fixed Fee (CNY)
+    accountDeduction: Account Deduction
+    status: Status
+  form:
+    fields:
+      feeType: Fee Type
+      expenseItem: Charge Item
+      expenseIdentifier: Expense Identifier
+      paymentType: Payment Type
+      paymentCycle: Payment Cycle (Month)
+      prepaymentPeriod: Prepayment Period (Day)
+      unit: Unit
+      accountDeduction: Account Deduction
+      mobilePayment: Mobile Payment
+      roundingMode: Rounding Mode
+      decimalPlaces: Decimal Places
+      status: Status
+      formula: Calculation Formula
+      billingUnitPrice: Billing Unit Price
+      fixedFee: Fixed Fee
+    options:
+      expenseIdentifier:
+        recurring: Recurring Fee
+        oneTime: One-time Fee
+      paymentType:
+        prepaid: Prepaid
+        postpaid: Postpaid
+      accountDeduction:
+        yes: Yes
+        no: No
+      mobilePayment:
+        yes: Yes
+        no: No
+      roundingMode:
+        round: Round
+        ceil: Ceiling
+        floor: Floor
+      decimalPlaces:
+        integer: Integer
+        one: 1 Decimal
+        two: 2 Decimals
+        three: 3 Decimals
+        four: 4 Decimals
+      status:
+        enabled: Enabled
+        disabled: Disabled
+    validation:
+      expenseItemRequired: Please enter charge item
+      expenseIdentifierRequired: Please select expense identifier
+      paymentTypeRequired: Please select payment type
+      paymentCycleRequired: Please enter payment cycle
+      prepaymentPeriodRequired: Please enter prepayment period
+      unitRequired: Please enter unit
+      accountDeductionRequired: Please select account deduction
+      mobilePaymentRequired: Please select mobile payment
+      roundingModeRequired: Please select rounding mode
+      decimalPlacesRequired: Please select decimal places
+      statusRequired: Please select status
+      formulaRequired: Please enter calculation formula
+      billingUnitPriceRequired: Please enter billing unit price
+      fixedFeeRequired: Please enter fixed fee
+  dialogs:
+    addTitle: Add Expense Item Setting
+    editTitle: Edit Expense Item Setting
+
+# Expense Summary Table
+expense-summary-table:
+  pageTitle: Expense Summary
+  tableTitle: Expense Summary
+  fields:
+    time: Time
+    expenseItemId: Expense Item ID
+    expenseItemName: Expense Item Name
+    receivableAmount: Receivable Amount
+    actualAmount: Actual Amount
+  search:
+    time: Time
+    expenseItemId: Expense Item ID
+    expenseItemName: Expense Item Name
+  button:
+    overduePayment: Overdue Payment
+    viewFee: View Fee
+  form:
+    fields:
+      time: Time
+      expenseItemId: Expense Item ID
+      expenseItemName: Expense Item Name
+      receivableAmount: Receivable Amount
+      actualAmount: Actual Amount
+    placeholders:
+      time: Please enter time
+      expenseItemId: Please enter expense item ID
+      expenseItemName: Please select expense item name
+      receivableAmount: Please enter receivable amount
+      actualAmount: Please enter actual amount
+    options:
+      expenseItemName:
+        propertyFee: Property Fee
+        waterFee: Water Fee
+        electricityFee: Electricity Fee
+        gasFee: Gas Fee
+        parkingFee: Parking Fee
+        elevatorFee: Elevator Fee
+        garbageFee: Garbage Fee
+        greeningFee: Greening Fee
+        securityFee: Security Fee
+        maintenanceFund: Maintenance Fund
+    validation:
+      timeRequired: Please enter time
+      expenseItemIdRequired: Please enter expense item ID
+      expenseItemNameRequired: Please select expense item name
+      receivableAmountRequired: Please enter receivable amount
+      receivableAmountFormat: Please enter a valid amount format
+      actualAmountRequired: Please enter actual amount
+      actualAmountFormat: Please enter a valid amount format
+  dialogs:
+    addTitle: Add Expense Summary
+    editTitle: Edit Expense Summary
+
+# House Charge
+house-charge:
+  pageTitle: House Charge
+  tableTitle: House Charge
+  fields:
+    name: Name
+    status: Status
+    createTime: Create Time
+    updateTime: Update Time
+    remark: Remark
+  search:
+    name: Name
+    status: Status
+  form:
+    fields:
+      expenseType: Expense Type
+      expenseItem: Charge Item
+      expenseIdentifier: Expense Identifier
+      paymentType: Payment Type
+      paymentCycle: Payment Cycle (Month)
+      prepaymentPeriod: Prepayment Period (Day)
+      unit: Unit
+      accountDeduction: Account Deduction
+      mobilePayment: Mobile Payment
+      roundingMode: Rounding Mode
+      decimalPlaces: Decimal Places
+      status: Status
+      formula: Calculation Formula
+      billingUnitPrice: Billing Unit Price
+      fixedFee: Fixed Fee
+    options:
+      expenseType:
+        propertyFee: Property Fee
+        deposit: Deposit
+        parkingFee: Parking Fee
+        gasFee: Gas Fee
+        heatingFee: Heating Fee
+        maintenanceFee: Maintenance Fee
+        serviceFee: Service Fee
+        other: Other
+        waterFee: Water Fee
+        electricityFee: Electricity Fee
+        rent: Rent
+        publicShareFee: Public Share Fee
+      expenseIdentifier:
+        recurring: Recurring Fee
+        oneTime: One-time Fee
+      paymentType:
+        prepaid: Prepaid
+        postpaid: Postpaid
+      accountDeduction:
+        yes: Yes
+        no: No
+      mobilePayment:
+        yes: Yes
+        no: No
+      roundingMode:
+        round: Round
+        ceil: Ceiling
+        floor: Floor
+      decimalPlaces:
+        integer: Integer
+        one: 1 Decimal
+        two: 2 Decimals
+        three: 3 Decimals
+        four: 4 Decimals
+      status:
+        enabled: Enabled
+        disabled: Disabled
+    validation:
+      expenseTypeRequired: Please select expense type
+      expenseItemRequired: Please enter charge item
+      expenseItemLength: Charge item length must be between 2 and 50 characters
+      expenseIdentifierRequired: Please select expense identifier
+      paymentTypeRequired: Please select payment type
+      paymentCycleRequired: Please enter payment cycle
+      paymentCycleFormat: Payment cycle must be a positive integer
+      prepaymentPeriodRequired: Please enter prepayment period
+      prepaymentPeriodFormat: Prepayment period must be a positive integer
+      unitRequired: Please enter unit
+      unitLength: Unit length must be between 1 and 20 characters
+      accountDeductionRequired: Please select account deduction
+      mobilePaymentRequired: Please select mobile payment
+      roundingModeRequired: Please select rounding mode
+      decimalPlacesRequired: Please select decimal places
+      statusRequired: Please select status
+      formulaRequired: Please enter calculation formula
+      billingUnitPriceRequired: Please enter billing unit price
+      billingUnitPriceFormat: Please enter a valid amount format
+      fixedFeeRequired: Please enter fixed fee
+      fixedFeeFormat: Please enter a valid amount format
+  dialogs:
+    addTitle: Add House Charge
+    editTitle: Edit House Charge
+
+# Meter Reading Type
+meter-reading-type:
+  pageTitle: Meter Reading Type
+  tableTitle: Meter Reading Type
+  fields:
+    name: Name
+    description: Description
+    status: Status
+    createTime: Create Time
+    remark: Remark
+  search:
+    name: Name
+    description: Description
+    status: Status
+  form:
+    fields:
+      name: Name
+      description: Description
+    placeholders:
+      name: Please enter meter reading type name
+      description: Please enter meter reading type description
+    validation:
+      nameRequired: Please enter meter reading type name
+      nameLength: Length must be between 2 and 50 characters
+      descriptionRequired: Please enter meter reading type description
+      descriptionLength: Length must be between 5 and 200 characters
+  dialogs:
+    addTitle: Add Meter Reading Type
+    editTitle: Edit Meter Reading Type
+
+# Overdue Payment Information
+overdue-payment-information:
+  pageTitle: Overdue Payment Information
+  tableTitle: Overdue Payment Information
+  fields:
+    chargeObject: Charge Object
+    ownerName: Owner Name
+    phoneNumber: Phone Number
+    overdueTimePeriod: Overdue Time Period
+    totalAmount: Total Amount
+    updateTime: Update Time
+  search:
+    chargeObject: Charge Object
+    ownerName: Owner Name
+    phoneNumber: Phone Number
+  button:
+    overduePayment: Overdue Payment
+    exportOverdueList: Export Overdue List
+    viewDetails: View Details
+    viewFee: View Fee
+  form:
+    fields:
+      chargeObject: Charge Object
+      ownerName: Owner Name
+      phoneNumber: Phone Number
+      contactAddress: Contact Address
+      overdueTimeRange: Overdue Time Range
+      overdueAmount: Overdue Amount
+      paymentStatus: Payment Status
+      overdueDescription: Overdue Description
+    placeholders:
+      ownerName: Please enter owner name
+      phoneNumber: Please enter phone number
+      contactAddress: Please enter detailed address
+      overdueAmount: Please enter overdue amount
+      overdueDescription: Please enter overdue description
+    validation:
+      chargeObjectRequired: Please select charge object
+      ownerNameRequired: Please enter owner name
+      ownerNameLength: Length must be between 2 and 20 characters
+      phoneNumberRequired: Please enter phone number
+      phoneNumberFormat: Please enter a valid phone number
+      overdueTimeRangeRequired: Please select overdue time range
+      overdueAmountRequired: Please enter overdue amount
+      paymentStatusRequired: Please select payment status
+  dialogs:
+    addTitle: Add Overdue Payment Information
+    editTitle: Edit Overdue Payment Information
+
+# Payment Review
+payment-review:
+  pageTitle: Payment Review
+  tableTitle: Payment Review
+  fields:
+    house: House
+    expenseItem: Expense Item
+    paymentPeriod: Payment Period
+    payableAmount: Payable Amount
+    paidAmount: Paid Amount
+    operator: Operator
+    paymentTime: Payment Time
+    auditStatus: Audit Status
+    paymentRemark: Payment Remark
+    auditDescription: Audit Description
+    details: Details
+  search:
+    house: House
+    expenseItem: Expense Item
+    auditStatus: Audit Status
+    paymentTimeRange: Payment Time Range
+  button:
+    batchAudit: Batch Audit
+    exportAuditRecord: Export Audit Record
+    auditApprove: Approve
+    auditReject: Reject
+    viewDetails: View Details
+    viewVoucher: View Voucher
+  form:
+    fields:
+      house: House
+      expenseItem: Expense Item
+      paymentPeriod: Payment Period
+      paymentStartTime: Payment Start Time
+      paymentEndTime: Payment End Time
+      payableAmount: Payable Amount
+      paidAmount: Paid Amount
+      operator: Operator
+      paymentTime: Payment Time
+      auditStatus: Audit Status
+      auditDescription: Audit Description
+      paymentRemark: Payment Remark
+      details: Details
+    placeholders:
+      house: "Please enter house number, e.g.: Building A 101"
+      expenseItem: Please select expense item
+      paymentPeriod: "Please enter payment period, e.g.: 2024 Q1"
+      paymentStartTime: Please select payment start time
+      paymentEndTime: Please select payment end time
+      payableAmount: Please enter payable amount
+      paidAmount: Please enter paid amount
+      operator: Please enter operator name
+      paymentTime: Please select payment time
+      auditStatus: Please select audit status
+      auditDescription: Please enter audit description
+      paymentRemark: Please enter payment remark
+      details: Please enter details
+    options:
+      expenseItem:
+        propertyFee: Property Fee
+        parkingFee: Parking Fee
+        utilityFee: Utility Fee
+        gasFee: Gas Fee
+        heatingFee: Heating Fee
+        otherFee: Other Fee
+      auditStatus:
+        pending: Pending
+        approved: Approved
+        rejected: Rejected
+    validation:
+      houseRequired: Please enter house number
+      houseLength: Length must be between 2 and 20 characters
+      expenseItemRequired: Please select expense item
+      paymentPeriodRequired: Please enter payment period
+      paymentPeriodLength: Length must be between 2 and 50 characters
+      paymentStartTimeRequired: Please select payment start time
+      paymentEndTimeRequired: Please select payment end time
+      payableAmountRequired: Please enter payable amount
+      payableAmountFormat: Please enter a valid amount format
+      paidAmountRequired: Please enter paid amount
+      paidAmountFormat: Please enter a valid amount format
+      operatorRequired: Please enter operator name
+      operatorLength: Length must be between 2 and 10 characters
+      paymentTimeRequired: Please select payment time
+      auditStatusRequired: Please select audit status
+      auditDescriptionLength: Audit description cannot exceed 500 characters
+      paymentRemarkLength: Payment remark cannot exceed 500 characters
+      detailsLength: Details cannot exceed 1000 characters
+  dialogs:
+    addTitle: Add Payment Review
+    editTitle: Edit Payment Review
+
+# Refund Review
+refund-review:
+  pageTitle: Refund Review
+  tableTitle: Refund Review
+  fields:
+    refundOrderNumber: Refund Order Number
+    paymentOrderNumber: Payment Order Number
+    feeType: Fee Type
+    payer: Payer
+    payablePaidAmount: Refund Amount
+    applyTime: Apply Time
+    refundReason: Refund Reason
+    applicant: Applicant
+    auditStatus: Audit Status
+    auditor: Auditor
+  search:
+    refundOrderNumber: Refund Order Number
+    paymentOrderNumber: Payment Order Number
+    feeType: Fee Type
+    auditStatus: Audit Status
+  button:
+    batchAudit: Batch Audit
+    overduePayment: Overdue Payment
+    viewFee: View Fee
+  form:
+    fields:
+      refundOrderNumber: Refund Order Number
+      paymentOrderNumber: Payment Order Number
+      feeType: Fee Type
+      payer: Payer
+      paymentCycle: Payment Cycle
+      amount: Refund Amount
+      applyTime: Apply Time
+      refundReason: Refund Reason
+      applicant: Applicant
+      auditStatus: Audit Status
+      auditor: Auditor
+      auditRemark: Audit Remark
+    validation:
+      auditStatusRequired: Please select audit status
+      auditRemarkRequired: Please enter audit remark
+  dialogs:
+    addTitle: Add Refund Review
+    editTitle: Edit Refund Review
+
+# Reminder for Overdue Payments
+reminder-for-overdue-payments:
+  pageTitle: Overdue Payment Reminder
+  tableTitle: Overdue Payment Reminder
+  fields:
+    name: Name
+    status: Status
+    createTime: Create Time
+  search:
+    name: Name
+    status: Status
+  button:
+    immediateReminder: Immediate Reminder
+    viewDetails: View Details
+  form:
+    fields:
+      ownerName: Owner Name
+      paymentObject: Payment Object
+      feeName: Fee Name
+      reminderAmount: Reminder Amount
+      reminderMethod: Reminder Method
+      reminderStatus: Reminder Status
+      reminderTime: Reminder Time
+      reminderRemark: Reminder Remark
+    placeholders:
+      ownerName: Please enter owner name
+      paymentObject: Please enter payment object
+      feeName: Please enter fee name
+      reminderAmount: Please enter reminder amount
+      reminderMethod: Please select reminder method
+      reminderStatus: Please select reminder status
+    validation:
+      ownerNameRequired: Please enter owner name
+      paymentObjectRequired: Please enter payment object
+      feeNameRequired: Please enter fee name
+      reminderAmountRequired: Please enter reminder amount
+      reminderMethodRequired: Please select reminder method
+      reminderStatusRequired: Please select reminder status
+  dialogs:
+    addTitle: Add Overdue Payment Reminder
+    editTitle: Edit Overdue Payment Reminder
+
+# Reprint Voucher
+reprint-voucher:
+  pageTitle: Reprint Voucher
+  tableTitle: Reprint Voucher
+  fields:
+    name: Name
+    status: Status
+    createTime: Create Time
+  search:
+    receiptNumber: Receipt Number
+    feeType: Fee Type
+    house: House
+    owner: Owner
+  form:
+    fields:
+      receiptNumber: Receipt Number
+      feeType: Fee Type
+      feeItem: Fee Item
+      house: House
+      owner: Owner
+      parkingSpace: Parking Space
+      totalAmount: Total Amount
+      paymentTime: Payment Time
+      printCopies: Print Copies
+      printRemark: Print Remark
+    validation:
+      printCopiesRequired: Please enter print copies
+      printCopiesRange: Print copies must be between 1 and 10
+      printRemarkLength: Print remark cannot exceed 200 characters
+  dialogs:
+    addTitle: Add Reprint Voucher
+    editTitle: Edit Reprint Voucher
+
+# Vehicle Charge
+vehicle-charge:
+  pageTitle: Vehicle Charge
+  tableTitle: Vehicle Charge
+  viewFee: View Fee
+  fields:
+    name: Name
+    status: Status
+    createTime: Create Time
+  search:
+    parkingLotSpace: Parking Space Number
+    licensePlateNumber: License Plate Number
+    ownerName: Owner Name
+    parkingSpaceStatus: Parking Space Status
+  form:
+    fields:
+      licensePlateNumber: License Plate Number
+      ownerName: Owner Name
+      parkingSpaceStatus: Parking Space Status
+      chargeAmount: Charge Amount
+      chargeTime: Charge Time
+      chargeMethod: Charge Method
+    placeholders:
+      licensePlateNumber: Please enter license plate number
+      ownerName: Please enter owner name
+      parkingSpaceStatus: Please select parking space status
+      chargeAmount: Please enter charge amount
+      chargeTime: Please select charge time
+      chargeMethod: Please enter charge method
+    validation:
+      licensePlateNumberRequired: Please enter license plate number
+      ownerNameRequired: Please enter owner name
+      parkingSpaceStatusRequired: Please select parking space status
+      chargeAmountRequired: Please enter charge amount
+      chargeTimeRequired: Please select charge time
+      chargeMethodRequired: Please enter charge method
+  dialogs:
+    addTitle: Add Vehicle Charge
+    editTitle: Edit Vehicle Charge
+
+# Water and Electricity Meter Reading
+water-and-electricity-meter-reading:
+  pageTitle: Water & Electricity Meter Reading
+  tableTitle: Water & Electricity Meter Reading
+  meterReading: Meter Reading
+  meterReadingType: Meter Reading Type
+  readingImport1: Reading Import 1
+  readingImport2: Reading Import 2
+  fields:
+    meterId: Meter ID
+    meterType: Meter Type
+    objectName: Object Name
+    lastReading: Last Reading
+    currentReading: Current Reading
+    lastReadingTime: Last Reading Time
+    currentReadingTime: Current Reading Time
+    createTime: Create Time
+  search:
+    meterType: Meter Type
+    meterId: Meter ID
+  form:
+    fields:
+      expenseType: Expense Type
+      chargeItem: Charge Item
+      meterReadingType: Meter Reading Type
+      chargeObject: Charge Object
+      lastReading: Last Reading
+      currentReading: Current Reading
+      lastReadingTime: Last Reading Time
+      currentReadingTime: Current Reading Time
+      remark: Remark
+    placeholders:
+      chargeObject: Please enter charge object
+      lastReading: Please enter last reading
+      currentReading: Please enter current reading
+      remark: Please enter remark
+    options:
+      expenseType:
+        waterFee: Water Fee
+        electricityFee: Electricity Fee
+      chargeItem:
+        waterMeter: Water Meter
+        electricityMeter: Electricity Meter
+      meterReadingType:
+        waterMeter: Water Meter
+        electricityMeter: Electricity Meter
+    validation:
+      expenseTypeRequired: Please select expense type
+      chargeItemRequired: Please select charge item
+      meterReadingTypeRequired: Please select meter reading type
+      chargeObjectRequired: Please enter charge object
+      chargeObjectLength: Length must be between 2 and 50 characters
+      lastReadingRequired: Please enter last reading
+      lastReadingFormat: Please enter a valid number
+      currentReadingRequired: Please enter current reading
+      currentReadingFormat: Please enter a valid number
+      lastReadingTimeRequired: Please select last reading time
+      currentReadingTimeRequired: Please select current reading time
+  dialogs:
+    addTitle: Add Water & Electricity Meter Reading
+    editTitle: Edit Water & Electricity Meter Reading

@@ -140,9 +140,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	chargeItem: [
 		{
 			required: true,
-			message: transformI18n(
-				$t("property-manage_expense-manage.contracte-charge.form.validation.chargeItemRequired"),
-			),
+			message: transformI18n($t("property-manage_expense-manage.contracte-charge.form.validation.chargeItemRequired")),
 			trigger: "blur",
 		},
 	],
