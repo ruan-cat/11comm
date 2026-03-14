@@ -6,12 +6,7 @@ import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import type { BuildingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();
-const { locale, withLocale } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { withLocale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & BuildingSpaceStructureDiagramFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -21,7 +16,7 @@ const form = ref(cloneDeep(props.form) as FieldValues & BuildingSpaceStructureDi
 const formComputed = computed(() => form.value);
 
 const buildingStructureLabelKeyMap = {
-	"钢筋混凝土结构":
+	钢筋混凝土结构:
 		"propertyManage_communityManage.building-space-structure-diagram.options.structure.reinforcedConcrete",
 	钢结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.steel",
 	砖混结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.brickConcrete",
@@ -33,93 +28,90 @@ const buildingStatusLabelKeyMap = {
 	正常使用: "propertyManage_communityManage.building-space-structure-diagram.options.status.normal",
 	装修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.renovating",
 	维修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.repairing",
-	待验收:
-		"propertyManage_communityManage.building-space-structure-diagram.options.status.pendingAcceptance",
+	待验收: "propertyManage_communityManage.building-space-structure-diagram.options.status.pendingAcceptance",
 	已停用: "propertyManage_communityManage.building-space-structure-diagram.options.status.disabled",
 } as const;
 
 const buildingStructureOptions = withLocale(() =>
 	Object.entries(buildingStructureLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const buildingStatusOptions = withLocale(() =>
 	Object.entries(buildingStatusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
 		prop: "buildingId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingId"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingName"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalFloors")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalFloors")),
 		prop: "totalFloors",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
 			max: 100,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.totalFloors"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
-			$t("propertyManage_communityManage.building-space-structure-diagram.fields.totalHouseholds"),
-		),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalHouseholds")),
 		prop: "totalHouseholds",
 		valueType: "input-number",
 		fieldProps: {
 			min: 1,
 			max: 1000,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.totalHouseholds"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingArea")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingArea")),
 		prop: "buildingArea",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			precision: 1,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingArea"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure"),
 		),
 		prop: "buildingStructure",
@@ -127,86 +119,82 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: buildingStructureOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingStructure"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
-			$t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear"),
-		),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear")),
 		prop: "constructionYear",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.constructionYear"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.drawingPath")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.drawingPath")),
 		prop: "drawingPath",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.drawingPath"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: buildingStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.status"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
-			$t("propertyManage_communityManage.building-space-structure-diagram.fields.personInCharge"),
-		),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.personInCharge")),
 		prop: "personInCharge",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.personInCharge"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.contactPhone")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.contactPhone"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.remarks")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.remarks"),
 			),
 			disabled: props.mode === "info",
@@ -218,7 +206,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	buildingId: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterBuildingId"),
 			),
 			trigger: "blur",
@@ -227,7 +215,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	buildingName: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterBuildingName"),
 			),
 			trigger: "blur",
@@ -236,7 +224,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	totalFloors: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterTotalFloors"),
 			),
 			trigger: "blur",
@@ -245,7 +233,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	totalHouseholds: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterTotalHouseholds"),
 			),
 			trigger: "blur",
@@ -254,7 +242,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	buildingArea: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterBuildingArea"),
 			),
 			trigger: "blur",
@@ -263,7 +251,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	buildingStructure: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.selectBuildingStructure"),
 			),
 			trigger: "change",
@@ -272,7 +260,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	constructionYear: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterConstructionYear"),
 			),
 			trigger: "blur",
@@ -281,7 +269,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	drawingPath: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterDrawingPath"),
 			),
 			trigger: "blur",
@@ -290,7 +278,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	status: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.selectStatus"),
 			),
 			trigger: "change",
@@ -299,7 +287,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	personInCharge: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterPersonInCharge"),
 			),
 			trigger: "blur",
@@ -308,14 +296,14 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	contactPhone: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.enterContactPhone"),
 			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.validation.contactPhonePattern"),
 			),
 			trigger: "blur",
