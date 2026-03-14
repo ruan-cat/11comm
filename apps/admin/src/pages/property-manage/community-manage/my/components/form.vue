@@ -6,12 +6,7 @@ import type { CommunityManageMyFormVO } from "@01s-11comm/type";
 import type { CommunityManageMyFormProps } from "./form";
 
 const props = defineProps<CommunityManageMyFormProps>();
-const { locale, withLocale } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { withLocale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CommunityManageMyFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -46,92 +41,92 @@ const statusLabelKeyMap = {
 
 const provinceOptions = withLocale(() =>
 	Object.entries(provinceLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const statusOptions = withLocale(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.name")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.name")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.name")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.code")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.code")),
 		prop: "code",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.code")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.code")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.province")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.province")),
 		prop: "province",
 		valueType: "select",
 		options: provinceOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.province")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.province")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.city")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.city")),
 		prop: "city",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.city")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.city")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.district")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.district")),
 		prop: "district",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.district")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.district")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.servicePhone")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.servicePhone")),
 		prop: "servicePhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.servicePhone")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.servicePhone")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.area")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.area")),
 		prop: "area",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.area")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.area")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.startTime")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -139,12 +134,12 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.startTime")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.startTime")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.endTime")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -152,18 +147,18 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.endTime")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.endTime")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.status")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: statusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.status")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.status")),
 			disabled: props.mode === "info",
 		},
 	},
@@ -173,79 +168,81 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.enterName")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.enterName")),
 			trigger: "blur",
 		},
 	],
 	code: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.enterCode")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.enterCode")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^([A-Z]{2}|[A-Z]{3})\d{3}$/,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.codePattern")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.codePattern")),
 			trigger: "blur",
 		},
 	],
 	province: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.selectProvince")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.selectProvince")),
 			trigger: "change",
 		},
 	],
 	city: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.enterCity")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.enterCity")),
 			trigger: "blur",
 		},
 	],
 	district: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.enterDistrict")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.enterDistrict")),
 			trigger: "blur",
 		},
 	],
 	servicePhone: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.enterServicePhone")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.enterServicePhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.servicePhonePattern")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.servicePhonePattern")),
 			trigger: "blur",
 		},
 	],
 	area: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.enterArea")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.enterArea")),
 			trigger: "blur",
 		},
 	],
 	startTime: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.selectStartTime")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.selectStartTime")),
 			trigger: "change",
 		},
 	],
 	endTime: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.selectEndTime")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.selectEndTime")),
 			trigger: "change",
 		},
 		{
 			validator: (_rule: any, value: string, callback: (error?: Error) => void) => {
 				if (value && form.value.startTime && new Date(value) <= new Date(form.value.startTime)) {
-					callback(new Error(renderI18n($t("propertyManage_communityManage.my.form.validation.endTimeAfterStartTime"))));
+					callback(
+						new Error(transformI18n($t("propertyManage_communityManage.my.form.validation.endTimeAfterStartTime"))),
+					);
 					return;
 				}
 
@@ -257,7 +254,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.my.form.validation.selectStatus")),
+			message: transformI18n($t("propertyManage_communityManage.my.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
