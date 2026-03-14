@@ -4,11 +4,16 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import type { ReserveVenueOrderFormVO } from "@01s-11comm/type";
 import { reservedVenueOptions, reserveVenueOrderStatusOptions } from "@01s-11comm/type";
 import type { ReserveVenueOrderFormProps } from "./form";
 
 const props = defineProps<ReserveVenueOrderFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueOrderFormVO;
@@ -25,24 +30,18 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ReserveVenueOrderFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ReserveVenueOrderFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 订单编号
 	{
-		label: "订单编号",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.orderNumber")),
 		prop: "orderNumber",
 		valueType: "input",
 		required: true,
@@ -50,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 场馆
 	{
-		label: "场馆",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.venue")),
 		prop: "venue",
 		valueType: "input",
 		required: true,
@@ -58,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 场地
 	{
-		label: "场地",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.site")),
 		prop: "site",
 		valueType: "select",
 		options: reservedVenueOptions,
@@ -67,7 +66,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 预约人
 	{
-		label: "预约人",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.reserver")),
 		prop: "reserver",
 		valueType: "input",
 		required: true,
@@ -75,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 预约电话
 	{
-		label: "预约电话",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.reservationPhone")),
 		prop: "reservationPhone",
 		valueType: "input",
 		required: true,
@@ -83,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 预约日期
 	{
-		label: "预约日期",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.reservationDate")),
 		prop: "reservationDate",
 		valueType: "date-picker",
 		fieldProps: {
@@ -96,7 +95,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 预约时间
 	{
-		label: "预约时间",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.reservationTime")),
 		prop: "reservationTime",
 		valueType: "input",
 		required: true,
@@ -104,7 +103,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 应收金额
 	{
-		label: "应收金额",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.receivableAmount")),
 		prop: "receivableAmount",
 		valueType: "input",
 		required: true,
@@ -112,7 +111,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 实收金额
 	{
-		label: "实收金额",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.receivedAmount")),
 		prop: "receivedAmount",
 		valueType: "input",
 		required: true,
@@ -120,7 +119,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 支付方式
 	{
-		label: "支付方式",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.paymentMethod")),
 		prop: "paymentMethod",
 		valueType: "select",
 		options: [
@@ -134,7 +133,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: reserveVenueOrderStatusOptions,
@@ -143,7 +142,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 创建时间
 	{
-		label: "创建时间",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.createTime")),
 		prop: "createTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -156,107 +155,130 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 备注
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.form.fields.remark")),
 		prop: "remark",
 		valueType: "input",
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	orderNumber: [
 		{
 			required: true,
-			message: "请输入订单编号",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.orderNumberRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	venue: [
 		{
 			required: true,
-			message: "请输入场馆",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.venueRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	site: [
 		{
 			required: true,
-			message: "请选择场地",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.siteRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	reserver: [
 		{
 			required: true,
-			message: "请输入预约人",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.reserverRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	reservationPhone: [
 		{
 			required: true,
-			message: "请输入预约电话",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.reservationPhoneRequired"),
+			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.reservationPhoneFormat"),
+			),
 			trigger: "blur",
 		},
 	],
 	reservationDate: [
 		{
 			required: true,
-			message: "请选择预约日期",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.reservationDateRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	reservationTime: [
 		{
 			required: true,
-			message: "请输入预约时间",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.reservationTimeRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	receivableAmount: [
 		{
 			required: true,
-			message: "请输入应收金额",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.receivableAmountRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	receivedAmount: [
 		{
 			required: true,
-			message: "请输入实收金额",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.receivedAmountRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	paymentMethod: [
 		{
 			required: true,
-			message: "请选择支付方式",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.paymentMethodRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: "请选择状态",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.statusRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	createTime: [
 		{
 			required: true,
-			message: "请选择创建时间",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue-order.form.validation.createTimeRequired"),
+			),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -265,13 +287,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>

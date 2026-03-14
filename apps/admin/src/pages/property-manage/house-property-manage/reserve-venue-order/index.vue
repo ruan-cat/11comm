@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "场地预约订单",
+		// 场地预约订单
+		title: "property-manage_house-property-manage.reserve-venue-order.pageTitle",
 		icon: "mdi:calendar-clock",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.reserveVenueOrder"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type {
 	ReserveVenueOrderListItem,
@@ -21,80 +24,110 @@ import { type ReserveVenueOrderFormProps, defaultForm } from "./components/form"
 import ReserveVenueOrderForm from "./components/form.vue";
 import { useReserveVenueOrderListQuery } from "@/api/property-manage/house-property-manage/reserve-venue-order";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 const reserveVenueOrderFormInstance = ref<InstanceType<typeof ReserveVenueOrderForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "订单编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.orderNumber")),
+		),
 		prop: "orderNumber",
 		width: 120,
 	},
 	{
-		label: "场馆",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.venue")),
+		),
 		prop: "venue",
 		width: 120,
 	},
 	{
-		label: "场地",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.site")),
+		),
 		prop: "site",
 		width: 120,
 	},
 	{
-		label: "预约人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.reserver")),
+		),
 		prop: "reserver",
 		width: 120,
 	},
 	{
-		label: "预约电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.reservationPhone")),
+		),
 		prop: "reservationPhone",
 		width: 120,
 	},
 	{
-		label: "预约日期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.reservationDate")),
+		),
 		prop: "reservationDate",
 		width: 120,
 	},
 	{
-		label: "预约时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.reservationTime")),
+		),
 		prop: "reservationTime",
 		width: 120,
 	},
 	{
-		label: "应收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.receivableAmount")),
+		),
 		prop: "receivableAmount",
 		width: 120,
 	},
 	{
-		label: "实收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.receivedAmount")),
+		),
 		prop: "receivedAmount",
 		width: 120,
 	},
 	{
-		label: "支付方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.paymentMethod")),
+		),
 		prop: "paymentMethod",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.status")),
+		),
 		prop: "status",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.reserve-venue-order.fields.remark")),
+		),
 		prop: "remark",
 		width: 150,
 		showOverflowTooltip: true,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -102,10 +135,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "场地预约订单",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -121,7 +154,7 @@ const plusSearchModelRef: FieldValues & Partial<ReserveVenueOrderQueryParams> = 
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -140,7 +173,7 @@ const {
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -153,29 +186,29 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "订单编号",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.search.orderNumber")),
 		prop: "orderNumber",
 		valueType: "input",
 	},
 	{
-		label: "场馆",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.search.venue")),
 		prop: "venue",
 		valueType: "input",
 	},
 	{
-		label: "预约人",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.search.reserver")),
 		prop: "reserver",
 		valueType: "input",
 	},
 	{
-		label: "预约电话",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.search.reservationPhone")),
 		prop: "reservationPhone",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.search.status")),
 		prop: "status",
 		valueType: "select",
 		options: reserveVenueOrderStatusOptions,
@@ -183,13 +216,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -214,13 +241,10 @@ interface OpenDialogParams {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}场地预约订单`;
-
 	/** 业务对象 */
 	const formData: ReserveVenueOrderFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				orderNumber: row?.orderNumber || "",
 				venue: row?.venue || "",
@@ -248,7 +272,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.reserve-venue-order.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.reserve-venue-order.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -264,7 +291,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = reserveVenueOrderFormInstance.value?.formComputed;
@@ -273,7 +300,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					reserveVenueOrderFormInstance.value?.plusFormInstance?.handleReset();
@@ -281,7 +308,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await reserveVenueOrderFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -300,11 +327,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
