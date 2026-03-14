@@ -24,7 +24,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type DictionaryFormProps, defaultForm } from "./components/form";
 import DictionaryForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const dictionaryTypeLabelKeyMap = {
 	system: "devTeam.configManage.dictionary.form.options.system",
@@ -39,22 +39,17 @@ const enableStatusLabelKeyMap = {
 	disabled: "devTeam.configManage.dictionary.form.options.disabled",
 } as const;
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const translatedDictionaryTypeOptions = withLocale(() =>
 	dictionaryTypeOptions.map((option) => ({
 		...option,
-		label: renderI18n(dictionaryTypeLabelKeyMap[String(option.value) as keyof typeof dictionaryTypeLabelKeyMap]),
+		label: transformI18n(dictionaryTypeLabelKeyMap[String(option.value) as keyof typeof dictionaryTypeLabelKeyMap]),
 	})),
 );
 
 const translatedEnableStatusOptions = withLocale(() =>
 	enableStatusOptions.map((option) => ({
 		...option,
-		label: renderI18n(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap]),
+		label: transformI18n(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap]),
 	})),
 );
 
@@ -81,54 +76,54 @@ const {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryName"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName"))),
 		prop: "dictionaryName",
 		width: 180,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode"))),
 		prop: "dictionaryCode",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryType"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryType"))),
 		prop: "dictionaryType",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.itemCount"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.itemCount"))),
 		prop: "itemCount",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.description"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.description"))),
 		prop: "description",
 		width: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.isEnabled"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.isEnabled"))),
 		prop: "isEnabled",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.dictionary.fields.creator"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.creator"))),
 		prop: "creator",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 320,
 		fixed: "right",
 		slot: "operation",
@@ -136,39 +131,36 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("devTeam.configManage.dictionary.pageTitle")),
+	title: transformI18n($t("devTeam.configManage.dictionary.pageTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode")),
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode")),
 		prop: "dictionaryCode",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.dictionary.fields.dictionaryType")),
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "select",
 		options: translatedDictionaryTypeOptions.value,
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.dictionary.fields.isEnabled")),
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
 		options: translatedEnableStatusOptions.value,
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -218,8 +210,8 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("devTeam.configManage.dictionary.dialogs.addTitle"))
-				: renderI18n($t("devTeam.configManage.dictionary.dialogs.editTitle")),
+				? transformI18n($t("devTeam.configManage.dictionary.dialogs.addTitle"))
+				: transformI18n($t("devTeam.configManage.dictionary.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(DictionaryForm, {
@@ -235,7 +227,7 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = dictionaryFormInstance.value?.formComputed;
@@ -245,14 +237,14 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					dictionaryFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await dictionaryFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -288,6 +280,8 @@ function gotoDictionaryItemsPage(row: DictionaryListItem) {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
