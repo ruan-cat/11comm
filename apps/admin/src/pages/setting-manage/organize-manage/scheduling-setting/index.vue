@@ -25,11 +25,6 @@ import SchedulingSettingForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<SchedulingSettingListQuery> = {
 	name: "",
 	type: "",
@@ -66,7 +61,7 @@ function translateSchedulingTypeLabel(value?: string | null) {
 	}
 
 	const key = schedulingTypeLabelMap[value as keyof typeof schedulingTypeLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateSchedulingStatusLabel(value?: string | null) {
@@ -75,7 +70,7 @@ function translateSchedulingStatusLabel(value?: string | null) {
 	}
 
 	const key = schedulingStatusLabelMap[value as keyof typeof schedulingStatusLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const translatedSchedulingStatusOptions = withLocale(() =>
@@ -90,43 +85,55 @@ const schedulingSettingFormInstance = ref<InstanceType<typeof SchedulingSettingF
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		),
 		prop: "name",
 		minWidth: 200,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.type"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.type")),
+		),
 		prop: "type",
 		width: 120,
 		cellRenderer: ({ row }) => translateSchedulingTypeLabel(row.type),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.cycle")),
+		),
 		prop: "cycle",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.effectiveTime")),
+		),
 		prop: "effectiveTime",
 		width: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.staff")),
+		),
 		prop: "staff",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		),
 		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => translateSchedulingStatusLabel(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
@@ -134,35 +141,35 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.schedulingSetting.tableTitle")),
+	title: transformI18n($t("settingManage.organizeManage.schedulingSetting.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
+			placeholder: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedSchedulingStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
+			placeholder: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.status")),
 		},
 	},
 ]);
 
 const plusSearchProps = searchProps(plusSearchDefaultValues, {
 	labelWidth: 140,
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
+	searchText: transformI18n($t("common.buttons.search")),
+	resetText: transformI18n($t("common.buttons.reset")),
 });
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -204,8 +211,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: SchedulingSetting }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("settingManage.organizeManage.schedulingSetting.dialogs.addTitle"))
-				: renderI18n($t("settingManage.organizeManage.schedulingSetting.dialogs.editTitle")),
+				? transformI18n($t("settingManage.organizeManage.schedulingSetting.dialogs.addTitle"))
+				: transformI18n($t("settingManage.organizeManage.schedulingSetting.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(SchedulingSettingForm, {
@@ -220,7 +227,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: SchedulingSetting }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = schedulingSettingFormInstance.value?.formComputed;
@@ -230,14 +237,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: SchedulingSetting }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					schedulingSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await schedulingSettingFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -275,8 +282,8 @@ function handleToggleStatus(row: SchedulingSetting) {
 	console.log(`${row.status === "enabled" ? "停用" : "启用"}排班`, row);
 	message(
 		newStatus === "enabled"
-			? renderI18n($t("settingManage.organizeManage.common.buttons.enable"))
-			: renderI18n($t("settingManage.organizeManage.common.buttons.disable")),
+			? transformI18n($t("settingManage.organizeManage.common.buttons.enable"))
+			: transformI18n($t("settingManage.organizeManage.common.buttons.disable")),
 		{ type: "success" },
 	);
 }
