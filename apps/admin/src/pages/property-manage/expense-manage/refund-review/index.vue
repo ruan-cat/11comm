@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "退费审核",
+		// 退费审核
+		title: "property-manage_expense-manage.refund-review.pageTitle",
 		icon: "mdi:cash-refund",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.refundReview"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, onMounted, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { type RefundReviewFormProps, defaultForm } from "./components/form";
 import RefundReviewForm from "./components/form.vue";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -21,6 +24,8 @@ import {
 	auditStatusOptions,
 } from "@01s-11comm/type";
 import { useRefundReviewListQuery } from "@/api/property-manage/expense-manage/refund-review";
+
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
 
 /** 表单组件实例 */
 const refundReviewFormInstance = ref<InstanceType<typeof RefundReviewForm> | null>(null);
@@ -55,7 +60,7 @@ const plusSearchModelRef: FieldValues & Partial<RefundReviewQueryParams> = {
  * @important
  * 【必须在 API Hook 之前声明】此变量必须在调用 use{Page}ListQuery 之前定义
  */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /**
  * 表格搜索栏变量 双向绑定的变量 响应式数据
@@ -77,61 +82,83 @@ const {
 } = useRefundReviewListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "退费单号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.refundOrderNumber")),
+		),
 		prop: "refundOrderNumber",
 		width: 120,
 	},
 	{
-		label: "缴费单号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.paymentOrderNumber")),
+		),
 		prop: "paymentOrderNumber",
 		width: 120,
 	},
 	{
-		label: "费用类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.feeType")),
+		),
 		prop: "feeType",
 		width: 100,
 	},
 	{
-		label: "付费对象",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.payer")),
+		),
 		prop: "payer",
 		width: 100,
 	},
 	{
-		label: "退费金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.payablePaidAmount")),
+		),
 		prop: "payablePaidAmount",
 		width: 100,
 	},
 	{
-		label: "申请时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.applyTime")),
+		),
 		prop: "applyTime",
 		width: 180,
 	},
 	{
-		label: "退费原因",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.refundReason")),
+		),
 		prop: "refundReason",
 		width: 100,
 	},
 	{
-		label: "申请人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.applicant")),
+		),
 		prop: "applicant",
 		width: 100,
 	},
 	{
-		label: "审核状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.auditStatus")),
+		),
 		prop: "auditStatus",
 		width: 100,
 	},
 	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.refund-review.fields.auditor")),
+		),
 		prop: "auditor",
-		label: "审核人",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 280,
 		fixed: "right",
 		slot: "operation",
@@ -140,7 +167,7 @@ const columns = ref<TableColumnList>([
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -150,37 +177,31 @@ function handleSearch() {
 }
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "退费单号",
+		label: transformI18n($t("property-manage_expense-manage.refund-review.search.refundOrderNumber")),
 		prop: "refundOrderNumber",
 		valueType: "input",
 	},
 	{
-		label: "缴费单号",
+		label: transformI18n($t("property-manage_expense-manage.refund-review.search.paymentOrderNumber")),
 		prop: "paymentOrderNumber",
 		valueType: "input",
 	},
 	{
-		label: "费用类型",
+		label: transformI18n($t("property-manage_expense-manage.refund-review.search.feeType")),
 		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions,
 	},
 	{
-		label: "审核状态",
+		label: transformI18n($t("property-manage_expense-manage.refund-review.search.auditStatus")),
 		prop: "auditStatus",
 		valueType: "select",
 		options: auditStatusOptions,
@@ -188,13 +209,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格操作栏组件 配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "退费审核",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.refund-review.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 /** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
@@ -203,9 +224,9 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 
 	/** 业务对象 */
 	const formData: RefundReviewFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					refundOrderNumber: row?.refundOrderNumber || "",
 					paymentOrderNumber: row?.paymentOrderNumber || "",
@@ -220,7 +241,7 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 					auditor: row?.auditor || "",
 					auditRemark: "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: RefundReviewFormProps = {
@@ -235,7 +256,15 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 	const defaultValues = props.defaultValues;
 
 	/** 弹框标题 */
-	const title = `${modeText.value}退费审核`;
+	const title = () => {
+		if (isAdd.value) {
+			return transformI18n($t("property-manage_expense-manage.refund-review.dialogs.addTitle"));
+		}
+		if (isEdit.value) {
+			return transformI18n($t("property-manage_expense-manage.refund-review.dialogs.editTitle"));
+		}
+		return transformI18n($t("property-manage_expense-manage.refund-review.dialogs.editTitle"));
+	};
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -247,30 +276,34 @@ function openDialog(params: { mode: Mode; row?: RefundReviewListItem }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = refundReviewFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = refundReviewFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = refundReviewFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = refundReviewFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					refundReviewFormInstance.value.plusFormInstance.handleReset();
+					refundReviewFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await refundReviewFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await refundReviewFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -289,8 +322,9 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -316,11 +350,15 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info">{{ transformI18n($t("欠费缴费")) }}</ElButton>
+						<ElButton type="info">{{
+							transformI18n($t("property-manage_expense-manage.refund-review.button.overduePayment"))
+						}}</ElButton>
 						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="info">{{ transformI18n($t("查看费用")) }}</ElButton>
+						<ElButton type="info">{{
+							transformI18n($t("property-manage_expense-manage.refund-review.button.viewFee"))
+						}}</ElButton>
 					</template>
 				</PureTable>
 			</template>
