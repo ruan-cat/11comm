@@ -28,12 +28,7 @@ import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pa
 import { type CatalogFormProps, defaultForm } from "./components/form";
 import CatalogForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const groupTypeOptionLabelMap = {
 	system: $t("devTeam.menuManage.catalog.form.options.system"),
@@ -55,7 +50,7 @@ function translateGroupType(value?: string | null) {
 	}
 
 	const key = groupTypeOptionLabelMap[value as keyof typeof groupTypeOptionLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStoreType(value?: string | null) {
@@ -64,7 +59,7 @@ function translateStoreType(value?: string | null) {
 	}
 
 	const key = storeTypeOptionLabelMap[value as keyof typeof storeTypeOptionLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedGroupTypeOptions = withLocale(() =>
@@ -103,50 +98,50 @@ const {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.name"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.name"))),
 		prop: "name",
 		width: 150,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.icon"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.icon"))),
 		prop: "icon",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.label"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.label"))),
 		prop: "label",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.seq"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.seq"))),
 		prop: "seq",
 		width: 80,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.groupType"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.groupType"))),
 		prop: "groupType",
 		width: 120,
 		cellRenderer: ({ row }) => translateGroupType(row.groupType ?? row.typeText),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.storeType"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.storeType"))),
 		prop: "storeType",
 		width: 120,
 		cellRenderer: ({ row }) => translateStoreType(row.storeType ?? row.storeTypeText),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.menuManage.catalog.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -154,34 +149,31 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("devTeam.menuManage.catalog.pageTitle")),
+	title: transformI18n($t("devTeam.menuManage.catalog.pageTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.name")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.groupType")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
 		options: translatedGroupTypeOptions.value,
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.storeType")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeType",
 		valueType: "select",
 		options: translatedStoreTypeOptions.value,
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -232,8 +224,8 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("devTeam.menuManage.catalog.dialogs.addTitle"))
-				: renderI18n($t("devTeam.menuManage.catalog.dialogs.editTitle")),
+				? transformI18n($t("devTeam.menuManage.catalog.dialogs.addTitle"))
+				: transformI18n($t("devTeam.menuManage.catalog.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(CatalogForm, {
@@ -248,7 +240,7 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = catalogFormInstance.value?.formComputed;
@@ -258,14 +250,14 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					catalogFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await catalogFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -290,6 +282,8 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
