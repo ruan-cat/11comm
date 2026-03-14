@@ -12,7 +12,8 @@ definePage({
 import { computed, ref } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
-import { $t, i18n, transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type ReportComponentListItem,
@@ -29,6 +30,7 @@ import ReportComponentForm from "./components/form.vue";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const componentTypeLabelKeyMap: Record<string, string> = {
 	表格: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
@@ -57,32 +59,25 @@ const queryMethodLabelKeyMap = {
 	local: $t("operationTeam.reportConfiguration.reportComponent.form.options.queryMethods.local"),
 } as const;
 
-const locale = computed(() => i18n.global.locale.value);
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 function translateComponentType(value?: string) {
 	if (!value) {
 		return value;
 	}
-	return renderI18n(componentTypeLabelKeyMap[value] ?? value);
+	return transformI18n(componentTypeLabelKeyMap[value] ?? value);
 }
 
 function translateQueryMethod(value?: string) {
 	if (!value) {
 		return value;
 	}
-	return renderI18n(queryMethodLabelKeyMap[value as keyof typeof queryMethodLabelKeyMap] ?? value);
+	return transformI18n(queryMethodLabelKeyMap[value as keyof typeof queryMethodLabelKeyMap] ?? value);
 }
 
 const translatedComponentTypeOptions = computed(() => {
 	void locale.value;
 	return componentTypeOptions.map((option) => ({
 		...option,
-		label: renderI18n(componentTypeLabelKeyMap[String(option.value)]),
+		label: transformI18n(componentTypeLabelKeyMap[String(option.value)]),
 	}));
 });
 
@@ -90,7 +85,7 @@ const translatedQueryMethodOptions = computed(() => {
 	void locale.value;
 	return queryMethodOptions.map((option) => ({
 		...option,
-		label: renderI18n(queryMethodLabelKeyMap[String(option.value) as keyof typeof queryMethodLabelKeyMap]),
+		label: transformI18n(queryMethodLabelKeyMap[String(option.value) as keyof typeof queryMethodLabelKeyMap]),
 	}));
 });
 
@@ -114,91 +109,95 @@ const {
 	pureTableProps,
 } = useReportComponentListQuery(plusSearchDefaultValues);
 
-const columns = computed<TableColumnList>(() => [
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
+		),
 		prop: "id",
 		width: 120,
 	},
 	{
-		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentName")),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentName")),
+		),
 		prop: "componentName",
 		width: 150,
 	},
 	{
-		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentType")),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentType")),
+		),
 		prop: "componentType",
 		width: 120,
 		cellRenderer: ({ row }) => translateComponentType(row.componentType),
 	},
 	{
-		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.queryMethod")),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.queryMethod")),
+		),
 		prop: "queryMethod",
 		width: 120,
 		cellRenderer: ({ row }) => translateQueryMethod(row.queryMethod),
 	},
 	{
-		headerRenderer: () => renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.description")),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: () => renderI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 160,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-const pureTableBarProps = computed<PureTableBarProps>(() => ({
-	title: renderI18n($t("operationTeam.reportConfiguration.reportComponent.pageTitle")),
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("operationTeam.reportConfiguration.reportComponent.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
 		prop: "componentId",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentName")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentName")),
 		prop: "componentName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentType")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentType")),
 		prop: "componentType",
 		valueType: "select",
 		options: translatedComponentTypeOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.componentType")),
+			placeholder: transformI18n(
+				$t("operationTeam.reportConfiguration.reportComponent.form.placeholders.componentType"),
+			),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportComponent.fields.queryMethod")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.queryMethod")),
 		prop: "queryMethod",
 		valueType: "select",
 		options: translatedQueryMethodOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.queryMethod")),
+			placeholder: transformI18n($t("operationTeam.reportConfiguration.reportComponent.form.placeholders.queryMethod")),
 		},
 	},
 ]);
 
-const plusSearchProps = computed<PlusSearchProps>(() => ({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-	showNumber: 3,
-}));
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -304,11 +303,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
