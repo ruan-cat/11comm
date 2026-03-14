@@ -1,0 +1,384 @@
+# Arrears Details List
+arrears-details-list:
+  pageTitle: Arrears Details
+  tableTitle: Arrears Details
+  fields:
+    feeNumber: Fee Number
+    roomNumber: Room Number
+    owner: Owner
+    ownerPhone: Owner Phone
+    area: Area
+    feeItem: Fee Item
+    startTime: Start Time
+    endTime: End Time
+    arrearsDuration: Arrears Duration (Days)
+    arrearsAmount: Arrears Amount
+  search:
+    feeCategory: Fee Category
+    roomNumber: Room Number
+    startTime: Start Time
+    endTime: End Time
+    community: Community
+    ownerName: Owner Name
+  form:
+    fields:
+      feeNumber: Fee Number
+      roomNumber: Room Number
+      owner: Owner
+      ownerPhone: Owner Phone
+      area: Area
+      feeItem: Fee Item
+      startTime: Start Time
+      endTime: End Time
+      arrearsDuration: Arrears Duration
+      arrearsAmount: Arrears Amount
+    validation:
+      roomNumberRequired: Please enter room number
+      ownerRequired: Please enter owner
+      ownerPhoneRequired: Please enter owner phone
+      feeItemRequired: Please enter fee item
+      startTimeRequired: Please select start time
+      endTimeRequired: Please select end time
+      arrearsAmountRequired: Please enter arrears amount
+  dialogs:
+    addTitle: Add Arrears Details
+    editTitle: Edit Arrears Details
+  summary:
+    subtotalArrears: "Subtotal Arrears: {amount} CNY"
+    totalArrears: "Total Arrears: {amount} CNY"
+    feeStartTimeNote: "Fee Start Time: The billing start time of the created fee"
+    depositDurationNote: "Arrears Duration (Days): For deposit fee items, the duration is from fee start time to today"
+    otherDurationNote: "For non-deposit fee items, the duration is from fee start time to fee end time"
+    arrearsAmountNote: "Arrears Amount: Payable fees within the arrears period"
+
+# Data Statistics
+data-statistics:
+  pageTitle: Data Statistics
+  tableTitle: Data Statistics
+  fields:
+    community: Community
+    house: House
+    owner: Owner
+    arrears: Arrears
+    actualReceipt: Actual Receipt
+    propertyFee: Property Fee
+    deposit: Deposit
+    parkingFee: Parking Fee
+    gasFee: Gas Fee
+    heatingFee: Heating Fee
+    repairFee: Repair Fee
+    serviceFee: Service Fee
+    other: Other
+    waterFee: Water Fee
+    electricityFee: Electricity Fee
+    rent: Rent
+    publicShareFee: Public Share Fee
+  search:
+    startTime: Start Time
+    endTime: End Time
+    community: Community
+
+# Deposit Report
+deposit-report:
+  pageTitle: Deposit Report
+  tableTitle: Deposit Report
+  fields:
+    feeId: Fee ID
+    roomNumber: Room Number
+    owner: Owner
+    feeType: Fee Type
+    feeItem: Fee Item
+    feeStartTime: Fee Start Time
+    feeEndTime: Fee End Time
+    createTime: Created Time
+    payerObjectType: Payer Object Type
+    payerId: Payer ID
+    receivableAmount: Receivable Amount
+    status: Status
+    refundStatus: Refund Status
+  search:
+    building: Building
+    unit: Unit
+    roomNumber: Room Number
+    feeId: Fee ID
+    feeItemName: Fee Item Name
+    chargeStatus: Charge Status
+    chargeObjectType: Charge Object Type
+    feeCreateStartTime: Fee Create Start Time
+    feeCreateEndTime: Fee Create End Time
+    refundStatus: Refund Status
+
+# Expense Summary Table
+expense-summary-table:
+  pageTitle: Expense Summary
+  tableTitle: Expense Summary
+  fields:
+    community: Community
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    feeItem: Fee Item
+    totalHouseholds: Total Households
+    chargedHouseholds: Charged Households
+    arrearsHouseholds: Arrears Households
+    arrears: Arrears
+    actualPayment: Actual Payment
+    currentReceivable: Current Receivable
+    currentActualReceipt: Current Actual Receipt
+    householdChargeRate: Household Charge Rate
+    chargeRate: Charge Rate
+    clearanceRate: Clearance Rate
+    statisticsTime: Statistics Time
+  search:
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    expenseItemName: Expense Item Name
+  charts:
+    buildingChargeRate: Building Charge Rate Statistics Chart
+    feeItemChargeRate: Fee Item Charge Rate Statistics Chart
+
+# Fee Reminder
+fee-reminder:
+  pageTitle: Fee Reminder
+  tableTitle: Fee Reminder
+  fields:
+    time: Time
+    expenseItemId: Expense Item ID
+    expenseItemName: Expense Item Name
+    receivableAmount: Receivable Amount
+    community: Community
+    reminderType: Reminder Type
+    expirationTime: Expiration Time
+    status: Status
+  search:
+    time: Time
+    expenseItemId: Expense Item ID
+    expenseItemName: Expense Item Name
+    reminderType: Reminder Type
+  sections:
+    prepaymentReminders: Prepayment Reminders
+    expirationReminders: Expiration Reminders
+
+# No Charge House
+no-charge-house:
+  pageTitle: Uncharged Houses
+  tableTitle: Uncharged Houses
+  fields:
+    community: Community
+    building: Building
+    unit: Unit
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+  search:
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    community: Community
+    building: Building
+    unit: Unit
+
+# Outstanding Fees Analysis
+outstanding-fees-analysis:
+  pageTitle: Outstanding Fees Analysis
+  tableTitle: Outstanding Fees Analysis
+  fields:
+    community: Community
+    building: Building
+    unit: Unit
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    feeItem: Fee Item
+    totalUncollectedAmount: Total Uncollected Amount
+    currentUncollectedAmount: Current Uncollected Amount
+    historicalUncollectedAmount: Historical Uncollected Amount
+    latestReceivableMonth: Latest Receivable Month
+    statisticsTime: Statistics Time
+  search:
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    feeItem: Fee Item
+    community: Community
+    building: Building
+    unit: Unit
+
+# Owner Payment Details
+owner-payment-details:
+  pageTitle: Owner Payment Details
+  tableTitle: Owner Payment Details
+  fields:
+    community: Community
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    feeCategory: Fee Category
+    feeItem: Fee Item
+    year: Year
+    january: January
+    february: February
+    march: March
+    april: April
+    may: May
+    june: June
+    july: July
+    august: August
+    september: September
+    october: October
+    november: November
+    december: December
+    total: Total
+    receivable: Receivable
+    prepaid: Prepaid
+  search:
+    houseNumberContractName: House Number / Contract Name
+    ownerName: Owner Name
+    ownerPhone: Owner Phone
+    feeCategory: Fee Category
+    feeItem: Fee Item
+    community: Community
+    year: Year
+
+# Patrol Report
+patrol-report:
+  pageTitle: Patrol Report
+  tableTitle: Patrol Report
+  fields:
+    community: Community
+    patrolNumber: Patrol Number
+    patrolName: Patrol Name
+    patrolType: Patrol Type
+    patrolLevel: Patrol Level
+    responsiblePerson: Responsible Person
+    patrolTime: Patrol Time
+    status: Status
+    abnormalCount: Abnormal Count
+  search:
+    patrolName: Patrol Name
+    patrolType: Patrol Type
+    patrolLevel: Patrol Level
+    responsiblePerson: Responsible Person
+    status: Status
+    community: Community
+    patrolTimeStart: Patrol Time Start
+    patrolTimeEnd: Patrol Time End
+
+# Payment Details Form
+payment-details-form:
+  pageTitle: Payment Details
+  tableTitle: Payment Details
+  fields:
+    orderNumber: Order Number
+    community: Community
+    roomNumberOwner: Room Number / Owner
+    feeType: Fee Type
+    feeItem: Fee Item
+    feeStatus: Fee Status
+    paymentMethod: Payment Method
+    paymentTime: Payment Time
+    cashier: Cashier
+    payableAmount: Payable Amount
+    receivableAmount: Receivable Amount
+    actualAmount: Actual Amount
+    accountDeduction: Account Deduction
+    discountAmount: Discount Amount
+    giftAmount: Gift Amount
+    lateFee: Late Fee
+    area: Area
+    parkingSpace: Parking Space
+    description: Description
+  search:
+    paymentStartTime: Payment Start Time
+    paymentEndTime: Payment End Time
+    paymentMethod: Payment Method
+    feeStatus: Fee Status
+    feeType: Fee Type
+    feeItem: Fee Item
+    houseNumberCarNumber: House Number / License Plate
+    community: Community
+
+# Repair Report Form
+repair-report-form:
+  pageTitle: Repair Report
+  tableTitle: Repair Report
+  fields:
+    community: Community
+    repairOrderNumber: Repair Order Number
+    repairType: Repair Type
+    urgencyLevel: Urgency Level
+    reporter: Reporter
+    reporterPhone: Reporter Phone
+    repairAddress: Repair Address
+    reportTime: Report Time
+    handler: Handler
+    processor: Processor
+    feeStatus: Fee Status
+    repairStatus: Repair Status
+  search:
+    repairType: Repair Type
+    repairStatus: Repair Status
+    urgencyLevel: Urgency Level
+    reporter: Reporter
+    reporterPhone: Reporter Phone
+    community: Community
+    feeStatus: Fee Status
+    reportTimeStart: Report Time Start
+    reportTimeEnd: Report Time End
+
+# Repair Reports Summary Table
+repair-reports-summary-table:
+  pageTitle: Repair Reports Summary
+  tableTitle: Repair Reports Summary
+  fields:
+    community: Community
+    repairType: Repair Type
+    repairCount: Repair Count
+    processingCount: Processing
+    completedCount: Completed
+    unfinishedCount: Unfinished
+    pendingRevisitCount: Pending Revisit
+    dissatisfiedCount: Dissatisfied
+    emergencyCount: Emergency Orders
+    statisticsTime: Statistics Time
+    operation: Operation
+  search:
+    repairType: Repair Type
+    repairStatus: Repair Status
+    urgencyLevel: Urgency Level
+    community: Community
+    statisticsStartTime: Statistics Start Time
+    statisticsEndTime: Statistics End Time
+
+# Statement Expenses
+statement-expenses:
+  pageTitle: Expense Details
+  tableTitle: Expense Details
+  fields:
+    community: Community
+    houseContractName: House Number / Contract Name
+    ownerName: Owner Name
+    expenseType: Expense Type
+    expenseItem: Expense Item
+    expenseStatus: Expense Status
+    paymentMethod: Payment Method
+    receivableAmount: Receivable Amount
+    receivedAmount: Received Amount
+    unpaidAmount: Unpaid Amount
+    billingPeriod: Billing Period
+    startDate: Start Date
+    endDate: End Date
+    billingArea: Billing Area
+    parkingSpace: Parking Space
+  search:
+    community: Community
+    houseContractName: House / Contract
+    ownerName: Owner Name
+    expenseType: Expense Type
+    expenseItem: Expense Item
+    expenseStatus: Expense Status
+    paymentMethod: Payment Method
+    billingPeriod: Billing Period
+  buttons:
+    detail: Details

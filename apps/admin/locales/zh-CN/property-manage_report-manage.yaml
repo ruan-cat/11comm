@@ -1,0 +1,384 @@
+# 欠费明细表
+arrears-details-list:
+  pageTitle: 欠费明细表
+  tableTitle: 欠费明细表
+  fields:
+    feeNumber: 费用编号
+    roomNumber: 房号
+    owner: 业主
+    ownerPhone: 业主电话
+    area: 面积
+    feeItem: 费用项
+    startTime: 开始时间
+    endTime: 结束时间
+    arrearsDuration: 欠费时长(天)
+    arrearsAmount: 欠费金额
+  search:
+    feeCategory: 费用大类
+    roomNumber: 房号
+    startTime: 开始时间
+    endTime: 结束时间
+    community: 小区
+    ownerName: 业主名称
+  form:
+    fields:
+      feeNumber: 费用编号
+      roomNumber: 房号
+      owner: 业主
+      ownerPhone: 业主电话
+      area: 面积
+      feeItem: 费用项
+      startTime: 开始时间
+      endTime: 结束时间
+      arrearsDuration: 欠费时长
+      arrearsAmount: 欠费金额
+    validation:
+      roomNumberRequired: 请输入房号
+      ownerRequired: 请输入业主
+      ownerPhoneRequired: 请输入业主电话
+      feeItemRequired: 请输入费用项
+      startTimeRequired: 请选择开始时间
+      endTimeRequired: 请选择结束时间
+      arrearsAmountRequired: 请输入欠费金额
+  dialogs:
+    addTitle: 新增欠费明细表
+    editTitle: 修改欠费明细表
+  summary:
+    subtotalArrears: "小计 欠费 : {amount} 元"
+    totalArrears: "大计 欠费 : {amount} 元"
+    feeStartTimeNote: 费用开始时间：所创建费用的计费起始时间
+    depositDurationNote: 欠费时长（天）：押金费用项欠费时长是费用开始时间到当天的天数
+    otherDurationNote: 除押金外的费用项欠费时长是费用的开始时间到费用的结束时间的天数
+    arrearsAmountNote: 欠费金额：欠费周期内应缴费用
+
+# 数据统计
+data-statistics:
+  pageTitle: 数据统计
+  tableTitle: 数据统计
+  fields:
+    community: 小区
+    house: 房屋
+    owner: 业主
+    arrears: 欠费
+    actualReceipt: 实收
+    propertyFee: 物业费
+    deposit: 押金
+    parkingFee: 停车费
+    gasFee: 煤气费
+    heatingFee: 取暖费
+    repairFee: 维修费
+    serviceFee: 服务费
+    other: 其他
+    waterFee: 水费
+    electricityFee: 电费
+    rent: 租金
+    publicShareFee: 公摊费
+  search:
+    startTime: 开始时间
+    endTime: 结束时间
+    community: 小区
+
+# 押金报表
+deposit-report:
+  pageTitle: 押金报表
+  tableTitle: 押金报表
+  fields:
+    feeId: 费用ID
+    roomNumber: 房号
+    owner: 业主
+    feeType: 费用类型
+    feeItem: 费用项
+    feeStartTime: 费用开始时间
+    feeEndTime: 费用结束时间
+    createTime: 创建时间
+    payerObjectType: 付费对象类型
+    payerId: 付款方ID
+    receivableAmount: 应收金额
+    status: 状态
+    refundStatus: 退费状态
+  search:
+    building: 楼栋
+    unit: 单元
+    roomNumber: 房屋编号
+    feeId: 费用ID
+    feeItemName: 费用项目名称
+    chargeStatus: 收费状态
+    chargeObjectType: 收费对象类型
+    feeCreateStartTime: 费用创建开始时间
+    feeCreateEndTime: 费用创建结束时间
+    refundStatus: 退费状态
+
+# 费用汇总表
+expense-summary-table:
+  pageTitle: 费用汇总表
+  tableTitle: 费用汇总表
+  fields:
+    community: 小区
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    feeItem: 费用项
+    totalHouseholds: 总户数
+    chargedHouseholds: 收费户
+    arrearsHouseholds: 欠费户
+    arrears: 欠费
+    actualPayment: 实缴
+    currentReceivable: 当期应收
+    currentActualReceipt: 当前实收
+    householdChargeRate: 户收费率
+    chargeRate: 收费率
+    clearanceRate: 清缴率
+    statisticsTime: 统计时间
+  search:
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    expenseItemName: 费用项名称
+  charts:
+    buildingChargeRate: 楼栋收费率统计柱状图
+    feeItemChargeRate: 费用项收费率统计柱状图
+
+# 费用提醒
+fee-reminder:
+  pageTitle: 费用提醒
+  tableTitle: 费用提醒
+  fields:
+    time: 时间
+    expenseItemId: 费用项ID
+    expenseItemName: 费用项名称
+    receivableAmount: 应收金额
+    community: 小区
+    reminderType: 提醒类型
+    expirationTime: 到期时间
+    status: 状态
+  search:
+    time: 时间
+    expenseItemId: 费用项ID
+    expenseItemName: 费用项名称
+    reminderType: 提醒类型
+  sections:
+    prepaymentReminders: 预缴费提醒
+    expirationReminders: 到期提醒
+
+# 未收费房屋
+no-charge-house:
+  pageTitle: 未收费房屋
+  tableTitle: 未收费房屋
+  fields:
+    community: 小区
+    building: 楼栋
+    unit: 单元
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+  search:
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    community: 小区
+    building: 楼栋
+    unit: 单元
+
+# 欠费分析
+outstanding-fees-analysis:
+  pageTitle: 欠费分析
+  tableTitle: 欠费分析
+  fields:
+    community: 小区
+    building: 楼栋
+    unit: 单元
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    feeItem: 费用项
+    totalUncollectedAmount: 总未收金额
+    currentUncollectedAmount: 当期未收金额
+    historicalUncollectedAmount: 历史未收金额
+    latestReceivableMonth: 最近应收月份
+    statisticsTime: 统计时间
+  search:
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    feeItem: 费用项
+    community: 小区
+    building: 楼栋
+    unit: 单元
+
+# 业主缴费明细
+owner-payment-details:
+  pageTitle: 业主缴费明细
+  tableTitle: 业主缴费明细
+  fields:
+    community: 小区
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    feeCategory: 费用大类
+    feeItem: 费用项
+    year: 年度
+    january: 1月
+    february: 2月
+    march: 3月
+    april: 4月
+    may: 5月
+    june: 6月
+    july: 7月
+    august: 8月
+    september: 9月
+    october: 10月
+    november: 11月
+    december: 12月
+    total: 合计
+    receivable: 应收
+    prepaid: 预收
+  search:
+    houseNumberContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    ownerPhone: 业主手机号
+    feeCategory: 费用大类
+    feeItem: 费用项
+    community: 小区
+    year: 年度
+
+# 巡检报表
+patrol-report:
+  pageTitle: 巡检报表
+  tableTitle: 巡检报表
+  fields:
+    community: 小区
+    patrolNumber: 巡检编号
+    patrolName: 巡检名称
+    patrolType: 巡检类型
+    patrolLevel: 巡检级别
+    responsiblePerson: 负责人
+    patrolTime: 巡检时间
+    status: 状态
+    abnormalCount: 异常数
+  search:
+    patrolName: 巡检名称
+    patrolType: 巡检类型
+    patrolLevel: 巡检级别
+    responsiblePerson: 负责人
+    status: 状态
+    community: 小区
+    patrolTimeStart: 巡检时间开始
+    patrolTimeEnd: 巡检时间结束
+
+# 缴费明细表
+payment-details-form:
+  pageTitle: 缴费明细表
+  tableTitle: 缴费明细表
+  fields:
+    orderNumber: 订单号
+    community: 小区
+    roomNumberOwner: 房号/业主
+    feeType: 费用类型
+    feeItem: 费用项
+    feeStatus: 费用状态
+    paymentMethod: 支付方式
+    paymentTime: 缴费时间
+    cashier: 收银员
+    payableAmount: 应缴金额
+    receivableAmount: 应收金额
+    actualAmount: 实收金额
+    accountDeduction: 账户抵扣
+    discountAmount: 优惠减免金额
+    giftAmount: 赠送金额
+    lateFee: 滞纳金
+    area: 面积
+    parkingSpace: 车位
+    description: 说明
+  search:
+    paymentStartTime: 缴费开始时间
+    paymentEndTime: 缴费结束时间
+    paymentMethod: 支付方式
+    feeStatus: 费用状态
+    feeType: 费用类型
+    feeItem: 费用项
+    houseNumberCarNumber: 房屋编号/车牌号
+    community: 小区
+
+# 报修报表
+repair-report-form:
+  pageTitle: 报修报表
+  tableTitle: 报修报表
+  fields:
+    community: 小区
+    repairOrderNumber: 报修单号
+    repairType: 报修类型
+    urgencyLevel: 紧急程度
+    reporter: 报修人
+    reporterPhone: 报修电话
+    repairAddress: 报修地址
+    reportTime: 报修时间
+    handler: 受理人
+    processor: 处理人
+    feeStatus: 费用状态
+    repairStatus: 报修状态
+  search:
+    repairType: 报修类型
+    repairStatus: 报修状态
+    urgencyLevel: 紧急程度
+    reporter: 报修人
+    reporterPhone: 报修电话
+    community: 小区
+    feeStatus: 费用状态
+    reportTimeStart: 报修时间开始
+    reportTimeEnd: 报修时间结束
+
+# 报修汇总表
+repair-reports-summary-table:
+  pageTitle: 报修汇总表
+  tableTitle: 报修汇总表
+  fields:
+    community: 小区
+    repairType: 报修类型
+    repairCount: 报修数量
+    processingCount: 处理中
+    completedCount: 已完成
+    unfinishedCount: 未完成
+    pendingRevisitCount: 待回访
+    dissatisfiedCount: 不满意
+    emergencyCount: 紧急工单
+    statisticsTime: 统计时间
+    operation: 操作
+  search:
+    repairType: 报修类型
+    repairStatus: 报修状态
+    urgencyLevel: 紧急程度
+    community: 小区
+    statisticsStartTime: 统计开始时间
+    statisticsEndTime: 统计结束时间
+
+# 费用明细表
+statement-expenses:
+  pageTitle: 费用明细表
+  tableTitle: 费用明细表
+  fields:
+    community: 小区
+    houseContractName: 房屋编号/合同名称
+    ownerName: 业主名称
+    expenseType: 费用类型
+    expenseItem: 费用项
+    expenseStatus: 费用状态
+    paymentMethod: 支付方式
+    receivableAmount: 应收金额
+    receivedAmount: 已收金额
+    unpaidAmount: 未收金额
+    billingPeriod: 账期
+    startDate: 开始日期
+    endDate: 结束日期
+    billingArea: 计费面积
+    parkingSpace: 车位
+  search:
+    community: 小区
+    houseContractName: 房屋/合同
+    ownerName: 业主名称
+    expenseType: 费用类型
+    expenseItem: 费用项
+    expenseStatus: 费用状态
+    paymentMethod: 支付方式
+    billingPeriod: 账期
+  buttons:
+    detail: 详情
