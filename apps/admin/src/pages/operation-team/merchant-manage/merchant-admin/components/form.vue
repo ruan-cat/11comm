@@ -12,11 +12,6 @@ import { MerchantAdminFormProps } from "./form";
 const props = defineProps<MerchantAdminFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & MerchantAdminFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -42,7 +37,7 @@ function translatePropertyCompany(value?: string | null) {
 	}
 
 	const key = propertyCompanyLabelKeyMap[value as keyof typeof propertyCompanyLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateAccountStatus(value?: string | null) {
@@ -51,7 +46,7 @@ function translateAccountStatus(value?: string | null) {
 	}
 
 	const key = accountStatusLabelKeyMap[value as keyof typeof accountStatusLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedPropertyCompanyOptions = withLocale(() =>
@@ -70,7 +65,7 @@ const translatedStatusOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.propertyCompany")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.propertyCompany")),
 		prop: "propertyCompany",
 		valueType: "select",
 		options: translatedPropertyCompanyOptions.value,
@@ -78,102 +73,102 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.propertyCompany")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.propertyCompany")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminName")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminName")),
 		prop: "adminName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminName")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminName")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminPhone")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminPhone")),
 		prop: "adminPhone",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminPhone")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminPhone")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminEmail")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.adminEmail")),
 		prop: "adminEmail",
 		valueType: "input",
 		width: "250px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminEmail")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.adminEmail")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.idCardNo")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.idCardNo")),
 		prop: "idCardNo",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.idCardNo")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.idCardNo")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.accountStatus")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.accountStatus")),
 		prop: "accountStatus",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		width: "150px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.accountStatus")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.accountStatus")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.loginPassword")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.loginPassword")),
 		prop: "loginPassword",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			type: "password",
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.loginPassword")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.loginPassword")),
 			showPassword: true,
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.confirmPassword")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.confirmPassword")),
 		prop: "confirmPassword",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			type: "password",
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.confirmPassword")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.confirmPassword")),
 			showPassword: true,
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.contactAddress")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.contactAddress")),
 		prop: "contactAddress",
 		valueType: "input",
 		width: "400px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.contactAddress")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.contactAddress")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.remarks")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		width: "400px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.remarks")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.remarks")),
 			rows: 3,
 		},
 	},
@@ -183,84 +178,88 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	propertyCompany: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.selectPropertyCompany")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.selectPropertyCompany")),
 			trigger: "change",
 		},
 	],
 	adminName: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterAdminName")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterAdminName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 20,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminNameLength")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminNameLength")),
 			trigger: "blur",
 		},
 	],
 	adminPhone: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterAdminPhone")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterAdminPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminPhonePattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminPhonePattern")),
 			trigger: "blur",
 		},
 	],
 	adminEmail: [
 		{
 			type: "email",
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminEmailPattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.adminEmailPattern")),
 			trigger: "blur",
 		},
 	],
 	idCardNo: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterIdCardNo")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterIdCardNo")),
 			trigger: "blur",
 		},
 		{
 			pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.idCardNoPattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.idCardNoPattern")),
 			trigger: "blur",
 		},
 	],
 	accountStatus: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.selectAccountStatus")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.selectAccountStatus")),
 			trigger: "change",
 		},
 	],
 	loginPassword: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterLoginPassword")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterLoginPassword")),
 			trigger: "blur",
 		},
 		{
 			min: 6,
 			max: 20,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.loginPasswordLength")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.loginPasswordLength")),
 			trigger: "blur",
 		},
 	],
 	confirmPassword: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterConfirmPassword")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.enterConfirmPassword")),
 			trigger: "blur",
 		},
 		{
 			validator: (rule: any, value: string, callback: any) => {
 				if (value !== (form.value as Record<string, unknown>).loginPassword) {
-					callback(new Error(renderI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.passwordMismatch"))));
+					callback(
+						new Error(
+							transformI18n($t("operation-team_merchant-manage.merchant-admin.form.validation.passwordMismatch")),
+						),
+					);
 				} else {
 					callback();
 				}
