@@ -1,33 +1,32 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "车位申请",
+		// 车位申请
+		title: "property-manage_parking-manage.carport-apply.pageTitle",
 		icon: "mdi:clipboard-text-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.parkingManage.carportApply"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useCarportApplyListQuery } from "@/api/property-manage/parking-manage/carport-apply";
 import { type CarportApplyFormProps, defaultForm } from "./components/form";
 import CarportApplyForm from "./components/form.vue";
 import type { CarportApplyListItem, CarportApplyQueryParams } from "@01s-11comm/type";
 import { carBrandOptions, parkingSpaceStatusOptions } from "@01s-11comm/type";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 /** 表单组件实例 */
 const carportApplyFormInstance = ref<InstanceType<typeof CarportApplyForm> | null>(null);
 
 // 1. 表格搜索栏配置
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<CarportApplyQueryParams> = {
 	licensePlate: "",
 	carBrand: "",
@@ -35,13 +34,9 @@ const plusSearchModelRef: FieldValues & Partial<CarportApplyQueryParams> = {
 	reviewResult: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -53,135 +48,136 @@ const {
 	handleCurrentPageChange,
 } = useCarportApplyListQuery(plusSearchDefaultValues);
 
-// 3. 搜索函数(固定写法)
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 车牌号
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "车牌号",
+		label: transformI18n($t("property-manage_parking-manage.carport-apply.fields.licensePlate")),
 		prop: "licensePlate",
 		valueType: "input",
 	},
-
-	// 汽车品牌
 	{
-		label: "汽车品牌",
+		label: transformI18n($t("property-manage_parking-manage.carport-apply.fields.carBrand")),
 		prop: "carBrand",
 		valueType: "select",
 		options: carBrandOptions,
 	},
-
-	// 手机号
 	{
-		label: "手机号",
+		label: transformI18n($t("property-manage_parking-manage.carport-apply.fields.phoneNumber")),
 		prop: "phoneNumber",
 		valueType: "input",
 	},
-
-	// 审核结果
 	{
-		label: "审核结果",
+		label: transformI18n($t("property-manage_parking-manage.carport-apply.fields.reviewResult")),
 		prop: "reviewResult",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-// 4. 表格列配置
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "申请ID",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.applicationId")),
+		),
 		prop: "applicationId",
 		width: 120,
 	},
 	{
-		label: "车牌号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.licensePlate")),
+		),
 		prop: "licensePlate",
 		width: 120,
 	},
 	{
-		label: "停车位",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.parkingSpace")),
+		),
 		prop: "parkingSpace",
 		width: 120,
 	},
 	{
-		label: "汽车品牌",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.carBrand")),
+		),
 		prop: "carBrand",
 		width: 120,
 	},
 	{
-		label: "车辆类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.vehicleType")),
+		),
 		prop: "vehicleType",
 		width: 120,
 	},
 	{
-		label: "颜色",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.color")),
+		),
 		prop: "color",
 		width: 120,
 	},
 	{
-		label: "起租时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.startLeaseTime")),
+		),
 		prop: "startLeaseTime",
 		width: 120,
 	},
 	{
-		label: "结租时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.endLeaseTime")),
+		),
 		prop: "endLeaseTime",
 		width: 120,
 	},
 	{
-		label: "申请人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.applicant")),
+		),
 		prop: "applicant",
 		width: 120,
 	},
 	{
-		label: "手机号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.phoneNumber")),
+		),
 		prop: "phoneNumber",
 		width: 120,
 	},
 	{
-		label: "审核结果",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-apply.fields.reviewResult")),
+		),
 		prop: "reviewResult",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "车位申请",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_parking-manage.carport-apply.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -192,7 +188,6 @@ interface OpenDialogParams {
 const { mode, modeText, setMode, isAdd } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
@@ -201,14 +196,9 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}车位申请`;
-
-	/** 业务对象 */
 	const carportApplyFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: structuredClone({
@@ -216,18 +206,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				...row,
 			});
 
-	/** 表单组件需要的props */
 	const formProps: CarportApplyFormProps = {
 		form: carportApplyFormVO,
 		defaultValues: carportApplyFormVO,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_parking-manage.carport-apply.dialogs.addTitle"))
+				: transformI18n($t("property-manage_parking-manage.carport-apply.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -243,7 +234,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = carportApplyFormInstance.value?.formComputed;
@@ -252,7 +243,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					carportApplyFormInstance.value?.plusFormInstance?.handleReset();
@@ -260,7 +251,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await carportApplyFormInstance.value.plusFormInstance.handleSubmit();
@@ -278,11 +269,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
