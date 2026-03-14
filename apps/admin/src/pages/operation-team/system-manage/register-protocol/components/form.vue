@@ -7,12 +7,7 @@ import { protocolTypeOptions } from "@01s-11comm/type";
 import { RegisterProtocolFormProps } from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
-const { locale, withLocale } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { withLocale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RegisterProtocolFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -36,51 +31,51 @@ const protocolTypeLabelKeys = [
 const translatedProtocolTypeOptions = withLocale(() =>
 	protocolTypeOptions.map((item, index) => ({
 		...item,
-		label: renderI18n($t(protocolTypeLabelKeys[index] ?? protocolTypeLabelKeys[0])),
+		label: transformI18n($t(protocolTypeLabelKeys[index] ?? protocolTypeLabelKeys[0])),
 	})),
 );
 
 const translatedStatusOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.statuses.draft")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.statuses.draft")),
 		value: "Draft",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.enabled")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.enabled")),
 		value: "Enabled",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.disabled")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.enabledStatuses.disabled")),
 		value: "Disabled",
 	},
 ]);
 
 const translatedRequiredOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.yes")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.yes")),
 		value: "Yes",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.no")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.no")),
 		value: "No",
 	},
 ]);
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName")),
 		prop: "protocolName",
 		valueType: "input",
 		required: true,
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolName")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolName")),
 			maxlength: 100,
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolType")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolType")),
 		prop: "protocolType",
 		valueType: "select",
 		required: true,
@@ -89,22 +84,22 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolType")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolType")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolVersion")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolVersion")),
 		prop: "protocolVersion",
 		valueType: "input",
 		required: true,
 		width: "150px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolVersion")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolVersion")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.status")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
@@ -112,11 +107,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.status")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.isRequired")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.isRequired")),
 		prop: "isMandatory",
 		valueType: "select",
 		required: true,
@@ -124,11 +119,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: translatedRequiredOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.isRequired")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.isRequired")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.effectiveDate")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.effectiveDate")),
 		prop: "effectiveDate",
 		valueType: "date-picker",
 		required: true,
@@ -136,7 +131,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			type: "date",
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.effectiveDate")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.effectiveDate")),
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			disabledDate: (time: Date) => {
@@ -145,14 +140,14 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.expirationDate")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.expirationDate")),
 		prop: "expirationDate",
 		valueType: "date-picker",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
 			type: "date",
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.expirationDate")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.expirationDate")),
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			disabledDate: (time: Date, formValues: any) => {
@@ -164,24 +159,24 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.sortWeight")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.sortWeight")),
 		prop: "sortWeight",
 		valueType: "input-number",
 		width: "150px",
 		fieldProps: {
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.sortWeight")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.sortWeight")),
 			min: 0,
 			max: 9999,
 			controls: true,
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolSummary")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolSummary")),
 		prop: "protocolSummary",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolSummary")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolSummary")),
 			maxlength: 500,
 			showWordLimit: true,
 			rows: 3,
@@ -189,13 +184,13 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolContent")),
+		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolContent")),
 		prop: "protocolContent",
 		valueType: "textarea",
 		required: true,
 		width: "100%",
 		fieldProps: {
-			placeholder: renderI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolContent")),
+			placeholder: transformI18n($t("operationTeam.systemManage.registerProtocol.placeholders.protocolContent")),
 			maxlength: 50000,
 			showWordLimit: true,
 			rows: 15,
@@ -208,65 +203,65 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	protocolName: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolNameRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 100,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolNameLength")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolNameLength")),
 			trigger: "blur",
 		},
 	],
 	protocolType: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolTypeRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolTypeRequired")),
 			trigger: "change",
 		},
 	],
 	protocolVersion: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolVersionRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolVersionRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^v?\d+\.\d+\.\d+$/,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolVersionFormat")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolVersionFormat")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.statusRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.statusRequired")),
 			trigger: "change",
 		},
 	],
 	isMandatory: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.isRequiredRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.isRequiredRequired")),
 			trigger: "change",
 		},
 	],
 	protocolContent: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolContentRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolContentRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 100,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolContentLength")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.protocolContentLength")),
 			trigger: "blur",
 		},
 	],
 	effectiveDate: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.registerProtocol.validation.effectiveDateRequired")),
+			message: transformI18n($t("operationTeam.systemManage.registerProtocol.validation.effectiveDateRequired")),
 			trigger: "change",
 		},
 	],
