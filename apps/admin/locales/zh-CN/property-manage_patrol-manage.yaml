@@ -1,0 +1,364 @@
+# 巡检明细
+detail:
+  pageTitle: 巡检明细
+  tableTitle: 巡检明细
+  fields:
+    taskDetailId: 任务详情ID
+    patrolPointName: 巡检点名称
+    patrolPlanName: 巡检计划名称
+    patrolRouteName: 巡检路线名称
+    patrolPersonStartEndTime: 巡检人开始结束时间
+    patrolPointStartEndTime: 巡检点开始结束时间
+    actualPatrolTime: 实际巡检时间
+    actualCheckInStatus: 实际签到状态
+    plannedPatrolPerson: 计划巡检人
+    actualPatrolPerson: 实际巡检人
+    patrolMethod: 巡检方式
+    taskStatus: 任务状态
+    patrolPointStatus: 巡检点状态
+    patrolSituation: 巡检情况
+    patrolPhotos: 巡检照片
+    createTime: 创建时间
+    locationInfo: 位置信息
+  search:
+    patrolPerson: 巡检人
+    patrolStartTime: 巡检开始时间
+    patrolEndTime: 巡检结束时间
+    patrolMethod: 巡检方式
+    taskStatus: 任务状态
+    patrolPointStatus: 巡检点状态
+  form:
+    fields:
+      patrolPointName: 巡检点名称
+      patrolPlanName: 巡检计划名称
+      patrolRouteName: 巡检路线名称
+      plannedPatrolPerson: 计划巡检人
+      patrolMethod: 巡检方式
+      location: 位置信息
+      patrolSituation: 巡检情况
+    options:
+      patrolMethod:
+        dailyPatrol: 日常巡检
+        specialPatrol: 专项巡检
+        surprisePatrol: 突击巡检
+        regularPatrol: 定期巡检
+      taskStatus:
+        enabled: 启用
+        disabled: 禁用
+      patrolPointStatus:
+        normal: 正常
+        abnormal: 异常
+        processed: 已处理
+        pending: 待处理
+    placeholders:
+      patrolPointName: 请输入巡检点名称
+      patrolPlanName: 请输入巡检计划名称
+      patrolRouteName: 请输入巡检路线名称
+      plannedPatrolPerson: 请输入计划巡检人
+      patrolMethod: 请选择巡检方式
+      location: 请输入位置信息
+      patrolSituation: 请输入巡检情况
+    validation:
+      patrolPointNameRequired: 请输入巡检点名称
+      patrolPlanNameRequired: 请输入巡检计划名称
+      patrolRouteNameRequired: 请输入巡检路线名称
+      plannedPatrolPersonRequired: 请输入计划巡检人
+      patrolMethodRequired: 请选择巡检方式
+      locationRequired: 请输入位置信息
+  dialogs:
+    addTitle: 新增巡检明细
+    editTitle: 修改巡检明细
+
+# 巡检项目
+item:
+  pageTitle: 巡检项目
+  tableTitle: 巡检项目
+  fields:
+    itemId: 编号
+    itemName: 巡检项目
+    createTime: 创建时间
+    remark: 备注
+  search:
+    itemId: 编号
+    itemName: 巡检项目
+  form:
+    fields:
+      code: 编号
+      patrolItem: 巡检项目
+      createTime: 创建时间
+      remark: 备注
+    placeholders:
+      code: 请输入编号
+      patrolItem: 请输入巡检项目
+      createTime: 请选择创建时间
+      remark: 请输入备注
+    validation:
+      codeRequired: 请输入编号
+      patrolItemRequired: 请输入巡检项目
+      createTimeRequired: 请选择创建时间
+  dialogs:
+    addTitle: 新增巡检项目
+    editTitle: 修改巡检项目
+
+# 巡检路线
+path:
+  pageTitle: 巡检路线
+  tableTitle: 巡检路线
+  fields:
+    pathId: 巡检点ID
+    pathName: 巡检点名称
+    pathType: 巡检点类型
+    location: 巡检位置
+    startTime: 开始时间
+    endTime: 结束时间
+    sortOrder: 排序
+  search:
+    pathName: 巡检路线
+  form:
+    fields:
+      patrolPointName: 巡检点名称
+      patrolPointType: 巡检点类型
+      patrolLocation: 巡检位置
+      startTime: 开始时间
+      endTime: 结束时间
+      sortOrder: 排序
+    options:
+      patrolPointType:
+        importantArea: 重要区域
+        normalArea: 普通区域
+        equipmentArea: 设备区域
+    placeholders:
+      patrolPointName: 请输入巡检点名称
+      patrolPointType: 请选择巡检点类型
+      patrolLocation: 请输入巡检位置
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      sortOrder: 请输入排序
+    validation:
+      patrolPointNameRequired: 请输入巡检点名称
+      patrolPointTypeRequired: 请选择巡检点类型
+      patrolLocationRequired: 请输入巡检位置
+      startTimeRequired: 请选择开始时间
+      endTimeRequired: 请选择结束时间
+      sortOrderRequired: 请输入排序
+  dialogs:
+    addTitle: 新增巡检路线
+    editTitle: 修改巡检路线
+
+# 巡检计划
+plan:
+  pageTitle: 巡检计划
+  tableTitle: 巡检计划
+  fields:
+    planName: 计划名称
+    routeName: 计划路线
+    planCycle: 计划周期
+    checkInMethod: 签到方式
+    dateRange: 日期范围
+    timeRange: 时间范围
+    taskAdvanceMinutes: 任务提前(分钟)
+    creator: 制定人
+    createTime: 制定时间
+    status: 状态
+    patrolPerson: 巡检人员
+  search:
+    planId: 计划ID
+    planName: 计划名称
+    patrolPerson: 巡检人
+    status: 状态
+  form:
+    fields:
+      planName: 计划名称
+      planRoute: 计划路线
+      planCycle: 计划周期
+      checkInMethod: 签到方式
+      dateRange: 日期范围
+      timeRange: 时间范围
+      taskAdvanceMinutes: 任务提前(分钟)
+      patrolStaff: 巡检人员
+      status: 状态
+    options:
+      planCycle:
+        daily: 每日
+        weekly: 每周
+        monthly: 每月
+        quarterly: 每季度
+        yearly: 每年
+      checkInMethod:
+        qrCode: 二维码
+        nfc: NFC
+        gps: GPS
+      status:
+        enabled: 启用
+        disabled: 禁用
+      planStatus:
+        enabled: 启用
+        disabled: 禁用
+    placeholders:
+      planName: 请输入计划名称
+      planRoute: 请输入计划路线
+      planCycle: 请选择计划周期
+      checkInMethod: 请选择签到方式
+      dateRange: 请选择日期范围
+      timeRange: 请选择时间范围
+      taskAdvanceMinutes: 请输入任务提前时间
+      patrolStaff: 请输入巡检人员
+      status: 请选择状态
+    validation:
+      planNameRequired: 请输入计划名称
+      planRouteRequired: 请输入计划路线
+      planCycleRequired: 请选择计划周期
+      checkInMethodRequired: 请选择签到方式
+      dateRangeRequired: 请选择日期范围
+      timeRangeRequired: 请选择时间范围
+      taskAdvanceMinutesRequired: 请输入任务提前时间
+      taskAdvanceMinutesRange: 请输入0-1440之间的数字
+      patrolStaffRequired: 请输入巡检人员
+      statusRequired: 请选择状态
+  dialogs:
+    addTitle: 新增巡检计划
+    editTitle: 修改巡检计划
+
+# 巡检点
+point:
+  pageTitle: 巡检点
+  tableTitle: 巡检点
+  fields:
+    taskDetailId: 任务详情ID
+    patrolPointName: 巡检点名称
+    patrolPlanName: 巡检计划名称
+    patrolRouteName: 巡检路线名称
+    patrolPersonTime: 巡检人开始/结束时间
+    patrolPointTime: 巡检点开始/结束时间
+    actualPatrolTime: 实际巡检时间
+    actualCheckInStatus: 实际签到状态
+    planPatrolPerson: 计划巡检人
+    actualPatrolPerson: 实际巡检人
+    patrolMethod: 巡检方式
+    taskStatus: 任务状态
+    patrolPointStatus: 巡检点状态
+    patrolSituation: 巡检情况
+    patrolPhotos: 巡检照片
+    createTime: 创建时间
+    locationInfo: 位置信息
+  search:
+    patrolPerson: 巡检人
+    patrolStartTime: 巡检开始时间
+    patrolEndTime: 巡检结束时间
+  form:
+    fields:
+      patrolPointName: 巡检点名称
+      patrolPlanName: 巡检计划名称
+      patrolRouteName: 巡检路线名称
+      planPatrolPerson: 计划巡检人
+      patrolMethod: 巡检方式
+      actualCheckInStatus: 实际签到状态
+      taskStatus: 任务状态
+      patrolPointStatus: 巡检点状态
+      patrolSituation: 巡检情况
+      locationInfo: 位置信息
+    options:
+      patrolMethod:
+        dailyPatrol: 日常巡检
+        specialPatrol: 专项巡检
+        surprisePatrol: 突击巡检
+        regularPatrol: 定期巡检
+      checkInStatus:
+        notCheckedIn: 未签到
+        checkedIn: 已签到
+        late: 迟到
+        absent: 缺勤
+      taskStatus:
+        enabled: 启用
+        disabled: 禁用
+      patrolPointStatus:
+        normal: 正常
+        abnormal: 异常
+        processed: 已处理
+        pending: 待处理
+      patrolSituation:
+        normal: 正常
+        abnormal: 异常
+        needRepair: 需要维修
+        needReplace: 需要更换
+    placeholders:
+      patrolPointName: 请输入巡检点名称
+      patrolPlanName: 请输入巡检计划名称
+      patrolRouteName: 请输入巡检路线名称
+      planPatrolPerson: 请输入计划巡检人
+      patrolMethod: 请选择巡检方式
+      actualCheckInStatus: 请选择实际签到状态
+      taskStatus: 请选择任务状态
+      patrolPointStatus: 请选择巡检点状态
+      patrolSituation: 请选择巡检情况
+      locationInfo: 请输入位置信息
+    validation:
+      patrolPointNameRequired: 请输入巡检点名称
+      patrolPlanNameRequired: 请输入巡检计划名称
+      patrolRouteNameRequired: 请输入巡检路线名称
+      planPatrolPersonRequired: 请输入计划巡检人
+      patrolMethodRequired: 请选择巡检方式
+  dialogs:
+    addTitle: 新增巡检点
+    editTitle: 修改巡检点
+
+# 巡检任务
+task:
+  pageTitle: 巡检任务
+  tableTitle: 巡检任务
+  fields:
+    taskCode: 任务编码
+    planName: 巡检计划
+    patrolPersonTime: 巡检人开始/结束时间
+    actualPatrolTime: 实际巡检时间
+    planPatrolPerson: 计划巡检人
+    currentPatrolPerson: 当前巡检人
+    transferDescription: 转移描述
+    patrolMethod: 巡检方式
+    status: 巡检状态
+  search:
+    executor: 执行人
+    patrolStartTime: 巡检开始时间
+    patrolEndTime: 巡检结束时间
+    status: 巡检状态
+  form:
+    fields:
+      taskCode: 任务编码
+      patrolPlan: 巡检计划
+      patrolPersonTimeRange: 巡检人开始/结束时间
+      actualPatrolTime: 实际巡检时间
+      plannedPatrolPerson: 计划巡检人
+      currentPatrolPerson: 当前巡检人
+      transferDescription: 转移描述
+      patrolMethod: 巡检方式
+      patrolStatus: 巡检状态
+    options:
+      patrolMethod:
+        walking: 步行
+        driving: 乘车
+      patrolStatus:
+        pending: 待执行
+        inProgress: 执行中
+        completed: 已完成
+        overdue: 已逾期
+      taskStatus:
+        enabled: 启用
+        disabled: 禁用
+    placeholders:
+      taskCode: 任务编码
+      patrolPlan: 请输入巡检计划
+      patrolPersonTimeRange: 请输入巡检人开始/结束时间
+      actualPatrolTime: 请输入实际巡检时间
+      plannedPatrolPerson: 请输入计划巡检人
+      currentPatrolPerson: 请输入当前巡检人
+      transferDescription: 请输入转移描述
+      patrolMethod: 请选择巡检方式
+      patrolStatus: 请选择巡检状态
+    validation:
+      patrolPlanRequired: 请输入巡检计划
+      plannedPatrolPersonRequired: 请输入计划巡检人
+      patrolMethodRequired: 请选择巡检方式
+      patrolStatusRequired: 请选择巡检状态
+  dialogs:
+    addTitle: 新增巡检任务
+    editTitle: 修改巡检任务

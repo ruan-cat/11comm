@@ -1,0 +1,364 @@
+# Patrol Detail
+detail:
+  pageTitle: Patrol Detail
+  tableTitle: Patrol Detail
+  fields:
+    taskDetailId: Task Detail ID
+    patrolPointName: Patrol Point Name
+    patrolPlanName: Patrol Plan Name
+    patrolRouteName: Patrol Route Name
+    patrolPersonStartEndTime: Patrol Person Start/End Time
+    patrolPointStartEndTime: Patrol Point Start/End Time
+    actualPatrolTime: Actual Patrol Time
+    actualCheckInStatus: Actual Check-in Status
+    plannedPatrolPerson: Planned Patrol Person
+    actualPatrolPerson: Actual Patrol Person
+    patrolMethod: Patrol Method
+    taskStatus: Task Status
+    patrolPointStatus: Patrol Point Status
+    patrolSituation: Patrol Situation
+    patrolPhotos: Patrol Photos
+    createTime: Created At
+    locationInfo: Location Info
+  search:
+    patrolPerson: Patrol Person
+    patrolStartTime: Patrol Start Time
+    patrolEndTime: Patrol End Time
+    patrolMethod: Patrol Method
+    taskStatus: Task Status
+    patrolPointStatus: Patrol Point Status
+  form:
+    fields:
+      patrolPointName: Patrol Point Name
+      patrolPlanName: Patrol Plan Name
+      patrolRouteName: Patrol Route Name
+      plannedPatrolPerson: Planned Patrol Person
+      patrolMethod: Patrol Method
+      location: Location Info
+      patrolSituation: Patrol Situation
+    options:
+      patrolMethod:
+        dailyPatrol: Daily Patrol
+        specialPatrol: Special Patrol
+        surprisePatrol: Surprise Patrol
+        regularPatrol: Regular Patrol
+      taskStatus:
+        enabled: Enabled
+        disabled: Disabled
+      patrolPointStatus:
+        normal: Normal
+        abnormal: Abnormal
+        processed: Processed
+        pending: Pending
+    placeholders:
+      patrolPointName: Please enter patrol point name
+      patrolPlanName: Please enter patrol plan name
+      patrolRouteName: Please enter patrol route name
+      plannedPatrolPerson: Please enter planned patrol person
+      patrolMethod: Please select patrol method
+      location: Please enter location info
+      patrolSituation: Please enter patrol situation
+    validation:
+      patrolPointNameRequired: Please enter patrol point name
+      patrolPlanNameRequired: Please enter patrol plan name
+      patrolRouteNameRequired: Please enter patrol route name
+      plannedPatrolPersonRequired: Please enter planned patrol person
+      patrolMethodRequired: Please select patrol method
+      locationRequired: Please enter location info
+  dialogs:
+    addTitle: Add Patrol Detail
+    editTitle: Edit Patrol Detail
+
+# Patrol Item
+item:
+  pageTitle: Patrol Item
+  tableTitle: Patrol Item
+  fields:
+    itemId: Item ID
+    itemName: Patrol Item
+    createTime: Created At
+    remark: Remark
+  search:
+    itemId: Item ID
+    itemName: Patrol Item
+  form:
+    fields:
+      code: Item ID
+      patrolItem: Patrol Item
+      createTime: Created At
+      remark: Remark
+    placeholders:
+      code: Please enter item ID
+      patrolItem: Please enter patrol item
+      createTime: Please select created time
+      remark: Please enter remark
+    validation:
+      codeRequired: Please enter item ID
+      patrolItemRequired: Please enter patrol item
+      createTimeRequired: Please select created time
+  dialogs:
+    addTitle: Add Patrol Item
+    editTitle: Edit Patrol Item
+
+# Patrol Path
+path:
+  pageTitle: Patrol Path
+  tableTitle: Patrol Path
+  fields:
+    pathId: Patrol Point ID
+    pathName: Patrol Point Name
+    pathType: Patrol Point Type
+    location: Patrol Location
+    startTime: Start Time
+    endTime: End Time
+    sortOrder: Sort Order
+  search:
+    pathName: Patrol Path
+  form:
+    fields:
+      patrolPointName: Patrol Point Name
+      patrolPointType: Patrol Point Type
+      patrolLocation: Patrol Location
+      startTime: Start Time
+      endTime: End Time
+      sortOrder: Sort Order
+    options:
+      patrolPointType:
+        importantArea: Important Area
+        normalArea: Normal Area
+        equipmentArea: Equipment Area
+    placeholders:
+      patrolPointName: Please enter patrol point name
+      patrolPointType: Please select patrol point type
+      patrolLocation: Please enter patrol location
+      startTime: Please select start time
+      endTime: Please select end time
+      sortOrder: Please enter sort order
+    validation:
+      patrolPointNameRequired: Please enter patrol point name
+      patrolPointTypeRequired: Please select patrol point type
+      patrolLocationRequired: Please enter patrol location
+      startTimeRequired: Please select start time
+      endTimeRequired: Please select end time
+      sortOrderRequired: Please enter sort order
+  dialogs:
+    addTitle: Add Patrol Path
+    editTitle: Edit Patrol Path
+
+# Patrol Plan
+plan:
+  pageTitle: Patrol Plan
+  tableTitle: Patrol Plan
+  fields:
+    planName: Plan Name
+    routeName: Plan Route
+    planCycle: Plan Cycle
+    checkInMethod: Check-in Method
+    dateRange: Date Range
+    timeRange: Time Range
+    taskAdvanceMinutes: Task Advance (Minutes)
+    creator: Creator
+    createTime: Created At
+    status: Status
+    patrolPerson: Patrol Staff
+  search:
+    planId: Plan ID
+    planName: Plan Name
+    patrolPerson: Patrol Person
+    status: Status
+  form:
+    fields:
+      planName: Plan Name
+      planRoute: Plan Route
+      planCycle: Plan Cycle
+      checkInMethod: Check-in Method
+      dateRange: Date Range
+      timeRange: Time Range
+      taskAdvanceMinutes: Task Advance (Minutes)
+      patrolStaff: Patrol Staff
+      status: Status
+    options:
+      planCycle:
+        daily: Daily
+        weekly: Weekly
+        monthly: Monthly
+        quarterly: Quarterly
+        yearly: Yearly
+      checkInMethod:
+        qrCode: QR Code
+        nfc: NFC
+        gps: GPS
+      status:
+        enabled: Enabled
+        disabled: Disabled
+      planStatus:
+        enabled: Enabled
+        disabled: Disabled
+    placeholders:
+      planName: Please enter plan name
+      planRoute: Please enter plan route
+      planCycle: Please select plan cycle
+      checkInMethod: Please select check-in method
+      dateRange: Please select date range
+      timeRange: Please select time range
+      taskAdvanceMinutes: Please enter task advance time
+      patrolStaff: Please enter patrol staff
+      status: Please select status
+    validation:
+      planNameRequired: Please enter plan name
+      planRouteRequired: Please enter plan route
+      planCycleRequired: Please select plan cycle
+      checkInMethodRequired: Please select check-in method
+      dateRangeRequired: Please select date range
+      timeRangeRequired: Please select time range
+      taskAdvanceMinutesRequired: Please enter task advance time
+      taskAdvanceMinutesRange: Please enter a number between 0 and 1440
+      patrolStaffRequired: Please enter patrol staff
+      statusRequired: Please select status
+  dialogs:
+    addTitle: Add Patrol Plan
+    editTitle: Edit Patrol Plan
+
+# Patrol Point
+point:
+  pageTitle: Patrol Point
+  tableTitle: Patrol Point
+  fields:
+    taskDetailId: Task Detail ID
+    patrolPointName: Patrol Point Name
+    patrolPlanName: Patrol Plan Name
+    patrolRouteName: Patrol Route Name
+    patrolPersonTime: Patrol Person Start/End Time
+    patrolPointTime: Patrol Point Start/End Time
+    actualPatrolTime: Actual Patrol Time
+    actualCheckInStatus: Actual Check-in Status
+    planPatrolPerson: Planned Patrol Person
+    actualPatrolPerson: Actual Patrol Person
+    patrolMethod: Patrol Method
+    taskStatus: Task Status
+    patrolPointStatus: Patrol Point Status
+    patrolSituation: Patrol Situation
+    patrolPhotos: Patrol Photos
+    createTime: Created At
+    locationInfo: Location Info
+  search:
+    patrolPerson: Patrol Person
+    patrolStartTime: Patrol Start Time
+    patrolEndTime: Patrol End Time
+  form:
+    fields:
+      patrolPointName: Patrol Point Name
+      patrolPlanName: Patrol Plan Name
+      patrolRouteName: Patrol Route Name
+      planPatrolPerson: Planned Patrol Person
+      patrolMethod: Patrol Method
+      actualCheckInStatus: Actual Check-in Status
+      taskStatus: Task Status
+      patrolPointStatus: Patrol Point Status
+      patrolSituation: Patrol Situation
+      locationInfo: Location Info
+    options:
+      patrolMethod:
+        dailyPatrol: Daily Patrol
+        specialPatrol: Special Patrol
+        surprisePatrol: Surprise Patrol
+        regularPatrol: Regular Patrol
+      checkInStatus:
+        notCheckedIn: Not Checked In
+        checkedIn: Checked In
+        late: Late
+        absent: Absent
+      taskStatus:
+        enabled: Enabled
+        disabled: Disabled
+      patrolPointStatus:
+        normal: Normal
+        abnormal: Abnormal
+        processed: Processed
+        pending: Pending
+      patrolSituation:
+        normal: Normal
+        abnormal: Abnormal
+        needRepair: Needs Repair
+        needReplace: Needs Replacement
+    placeholders:
+      patrolPointName: Please enter patrol point name
+      patrolPlanName: Please enter patrol plan name
+      patrolRouteName: Please enter patrol route name
+      planPatrolPerson: Please enter planned patrol person
+      patrolMethod: Please select patrol method
+      actualCheckInStatus: Please select actual check-in status
+      taskStatus: Please select task status
+      patrolPointStatus: Please select patrol point status
+      patrolSituation: Please select patrol situation
+      locationInfo: Please enter location info
+    validation:
+      patrolPointNameRequired: Please enter patrol point name
+      patrolPlanNameRequired: Please enter patrol plan name
+      patrolRouteNameRequired: Please enter patrol route name
+      planPatrolPersonRequired: Please enter planned patrol person
+      patrolMethodRequired: Please select patrol method
+  dialogs:
+    addTitle: Add Patrol Point
+    editTitle: Edit Patrol Point
+
+# Patrol Task
+task:
+  pageTitle: Patrol Task
+  tableTitle: Patrol Task
+  fields:
+    taskCode: Task Code
+    planName: Patrol Plan
+    patrolPersonTime: Patrol Person Start/End Time
+    actualPatrolTime: Actual Patrol Time
+    planPatrolPerson: Planned Patrol Person
+    currentPatrolPerson: Current Patrol Person
+    transferDescription: Transfer Description
+    patrolMethod: Patrol Method
+    status: Patrol Status
+  search:
+    executor: Executor
+    patrolStartTime: Patrol Start Time
+    patrolEndTime: Patrol End Time
+    status: Patrol Status
+  form:
+    fields:
+      taskCode: Task Code
+      patrolPlan: Patrol Plan
+      patrolPersonTimeRange: Patrol Person Start/End Time
+      actualPatrolTime: Actual Patrol Time
+      plannedPatrolPerson: Planned Patrol Person
+      currentPatrolPerson: Current Patrol Person
+      transferDescription: Transfer Description
+      patrolMethod: Patrol Method
+      patrolStatus: Patrol Status
+    options:
+      patrolMethod:
+        walking: Walking
+        driving: Driving
+      patrolStatus:
+        pending: Pending
+        inProgress: In Progress
+        completed: Completed
+        overdue: Overdue
+      taskStatus:
+        enabled: Enabled
+        disabled: Disabled
+    placeholders:
+      taskCode: Task Code
+      patrolPlan: Please enter patrol plan
+      patrolPersonTimeRange: Please enter patrol person start/end time
+      actualPatrolTime: Please enter actual patrol time
+      plannedPatrolPerson: Please enter planned patrol person
+      currentPatrolPerson: Please enter current patrol person
+      transferDescription: Please enter transfer description
+      patrolMethod: Please select patrol method
+      patrolStatus: Please select patrol status
+    validation:
+      patrolPlanRequired: Please enter patrol plan
+      plannedPatrolPersonRequired: Please enter planned patrol person
+      patrolMethodRequired: Please select patrol method
+      patrolStatusRequired: Please select patrol status
+  dialogs:
+    addTitle: Add Patrol Task
+    editTitle: Edit Patrol Task
