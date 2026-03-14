@@ -1,32 +1,16 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { ReprintVoucherFormVO } from "@01s-11comm/type";
 import { feeTypeOptions } from "@01s-11comm/type";
 
-interface ReprintVoucherFormProps {
-	/** 表单数据 */
-	form: ReprintVoucherFormVO;
-	/** 默认值 */
-	defaultValues: ReprintVoucherFormVO;
-}
+import { ReprintVoucherFormProps, defaultForm } from "./form";
 
 const props = defineProps<ReprintVoucherFormProps>();
 
-/** 默认表单数据 */
-const defaultForm: ReprintVoucherFormVO = {
-	receiptId: "",
-	receiptNumber: "",
-	feeType: "",
-	feeItem: "",
-	house: "",
-	owner: "",
-	parkingSpace: "",
-	totalAmount: "",
-	paymentTime: "",
-	printCopies: 1,
-	printRemark: "",
-};
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ReprintVoucherFormVO;
@@ -42,23 +26,16 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form);
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & ReprintVoucherFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "收据编号",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.receiptNumber")),
 		prop: "receiptNumber",
 		valueType: "input",
 		fieldProps: {
@@ -67,7 +44,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "费用类型",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.feeType")),
 		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions,
@@ -78,7 +55,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "费用项",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.feeItem")),
 		prop: "feeItem",
 		valueType: "input",
 		fieldProps: {
@@ -87,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "房屋",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.house")),
 		prop: "house",
 		valueType: "input",
 		fieldProps: {
@@ -96,7 +73,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "业主",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.owner")),
 		prop: "owner",
 		valueType: "input",
 		fieldProps: {
@@ -105,7 +82,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "车位",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.parkingSpace")),
 		prop: "parkingSpace",
 		valueType: "input",
 		fieldProps: {
@@ -114,7 +91,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "总金额",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.totalAmount")),
 		prop: "totalAmount",
 		valueType: "input",
 		fieldProps: {
@@ -123,7 +100,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "缴费时间",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.paymentTime")),
 		prop: "paymentTime",
 		valueType: "input",
 		fieldProps: {
@@ -132,7 +109,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "打印份数",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.printCopies")),
 		prop: "printCopies",
 		valueType: "input-number",
 		fieldProps: {
@@ -141,7 +118,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "打印备注",
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.fields.printRemark")),
 		prop: "printRemark",
 		valueType: "textarea",
 		fieldProps: {
@@ -152,29 +129,29 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	printCopies: [
 		{
 			required: true,
-			message: "请输入打印份数",
+			message: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.validation.printCopiesRequired")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 1,
 			max: 10,
-			message: "打印份数必须在1-10之间",
+			message: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.validation.printCopiesRange")),
 			trigger: "blur",
 		},
 	],
 	printRemark: [
 		{
 			max: 200,
-			message: "打印备注不能超过200个字符",
+			message: transformI18n($t("property-manage_expense-manage.reprint-voucher.form.validation.printRemarkLength")),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 // 对外导出
 defineExpose({
@@ -184,7 +161,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"

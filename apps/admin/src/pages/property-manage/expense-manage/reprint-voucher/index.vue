@@ -1,24 +1,34 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "补打收据",
+		// 补打收据
+		title: "property-manage_expense-manage.reprint-voucher.pageTitle",
 		icon: "mdi:receipt-text-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.reprintVoucher"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { sleep } from "@antfu/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ReprintVoucherFormProps, defaultForm } from "./components/form";
 import ReprintVoucherForm from "./components/form.vue";
 import type { ReprintVoucherListItem, ReprintVoucherQueryParams } from "@01s-11comm/type";
 import { feeTypeOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useReprintVoucherListQuery } from "@/api/property-manage/expense-manage/reprint-voucher";
+import { useToggle } from "@vueuse/core";
+import { consola } from "consola";
+import { defaultAddDialogParams } from "@/config/constant";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { cloneDeep } from "@pureadmin/utils";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const reprintVoucherFormInstance = ref<InstanceType<typeof ReprintVoucherForm> | null>(null);
@@ -44,14 +54,13 @@ const plusSearchModelRef: FieldValues & Partial<ReprintVoucherQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -61,18 +70,82 @@ const {
 	handleCurrentPageChange,
 } = useReprintVoucherListQuery(plusSearchDefaultValues);
 
+/** 表格列配置 */
+const columns = withLocale<TableColumnList>(() => [
+	{
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.reprint-voucher.fields.name")),
+		),
+		prop: "name",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.reprint-voucher.fields.status")),
+		),
+		prop: "status",
+		width: 100,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.reprint-voucher.fields.createTime")),
+		),
+		prop: "createTime",
+		width: 180,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
+		width: 230,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+/** 表格操作栏组件 配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.reprint-voucher.tableTitle")),
+	columns: columns.value,
+}));
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.search.receiptNumber")),
+		prop: "receiptNumber",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.search.feeType")),
+		prop: "feeType",
+		valueType: "select",
+		options: feeTypeOptions,
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.search.house")),
+		prop: "house",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.reprint-voucher.search.owner")),
+		prop: "owner",
+		valueType: "input",
+	},
+]);
+
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -81,67 +154,6 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "名称",
-		prop: "name",
-		width: 120,
-	},
-	{
-		label: "状态",
-		prop: "status",
-		width: 100,
-	},
-	{
-		label: "创建时间",
-		prop: "createTime",
-		width: 180,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 230,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: "收据编号",
-		prop: "receiptNumber",
-		valueType: "input",
-	},
-	{
-		label: "费用类型",
-		prop: "feeType",
-		valueType: "select",
-		options: feeTypeOptions,
-	},
-	{
-		label: "房屋",
-		prop: "house",
-		valueType: "input",
-	},
-	{
-		label: "业主",
-		prop: "owner",
-		valueType: "input",
-	},
-]);
-
-/** 表格操作栏组件 配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "补打收据",
-	columns: columns.value,
-});
-
 /** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 	const { mode, row } = params;
@@ -149,15 +161,15 @@ function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 
 	/** 业务对象 */
 	const formData = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					receiptId: row?.id || "",
 					receiptNumber: row?.name || "",
 					paymentTime: row?.createTime || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ReprintVoucherFormProps = {
@@ -165,49 +177,50 @@ function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 		defaultValues: formData,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
-
-	/** 弹框标题 */
-	const title = `${modeText.value}补打收据`;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.reprint-voucher.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.reprint-voucher.dialogs.editTitle")),
+		props: formProps,
 		contentRenderer: () =>
 			h(ReprintVoucherForm, {
 				ref: reprintVoucherFormInstance,
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = reprintVoucherFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = reprintVoucherFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = reprintVoucherFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = reprintVoucherFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					reprintVoucherFormInstance.value.plusFormInstance.handleReset();
+					reprintVoucherFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await reprintVoucherFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await reprintVoucherFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -219,18 +232,16 @@ function openDialog(params: { mode: Mode; row?: ReprintVoucherListItem }) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
