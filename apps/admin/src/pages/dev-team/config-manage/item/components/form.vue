@@ -119,24 +119,63 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 
 const plusFormRules = withLocale<PlusFormRules>(() => ({
 	configItemName: [
-		{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemName")), trigger: "blur" },
-		{ min: 2, max: 50, message: transformI18n($t("devTeam.configManage.item.form.validation.configItemNameLength")), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemNameLength")),
+			trigger: "blur",
+		},
 	],
 	configItemCode: [
-		{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemCode")), trigger: "blur" },
-		{ min: 2, max: 50, message: transformI18n($t("devTeam.configManage.item.form.validation.configItemCodeLength")), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemCode")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemCodeLength")),
+			trigger: "blur",
+		},
 		{
 			pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
 			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemCodePattern")),
 			trigger: "blur",
 		},
 	],
-	configItemType: [{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.selectConfigItemType")), trigger: "change" }],
-	configItemValue: [
-		{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemValue")), trigger: "blur" },
-		{ min: 1, max: 500, message: transformI18n($t("devTeam.configManage.item.form.validation.configItemValueLength")), trigger: "blur" },
+	configItemType: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.selectConfigItemType")),
+			trigger: "change",
+		},
 	],
-	isEnabled: [{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.selectIsEnabled")), trigger: "change" }],
+	configItemValue: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemValue")),
+			trigger: "blur",
+		},
+		{
+			min: 1,
+			max: 500,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemValueLength")),
+			trigger: "blur",
+		},
+	],
+	isEnabled: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.item.form.validation.selectIsEnabled")),
+			trigger: "change",
+		},
+	],
 }));
 
 defineExpose({
