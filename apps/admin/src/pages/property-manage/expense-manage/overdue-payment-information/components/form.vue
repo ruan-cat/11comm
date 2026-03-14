@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
 import { chargeObjectOptions, overduePaymentStatusOptions } from "@01s-11comm/type";
 
@@ -7,6 +10,8 @@ import { OverduePaymentInformationFormProps } from "./form";
 
 /** 表单组件的 props */
 const props = defineProps<OverduePaymentInformationFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OverduePaymentInformationFormVO;
@@ -22,7 +27,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & OverduePaymentInformationFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & OverduePaymentInformationFormVO;
 
 /**
  * 表单对象
@@ -44,9 +49,9 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "收费对象",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.chargeObject")),
 		prop: "chargeObject",
 		valueType: "select",
 		options: chargeObjectOptions,
@@ -57,37 +62,43 @@ const plusFormColumns = ref<PlusColumn[]>([
 		width: "200px",
 	},
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入业主姓名",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.placeholders.ownerName"),
+			),
 		},
 		width: "200px",
 	},
 	{
-		label: "手机号",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.phoneNumber")),
 		prop: "phoneNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入手机号码",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.placeholders.phoneNumber"),
+			),
 		},
 		width: "200px",
 	},
 	{
-		label: "联系地址",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.contactAddress")),
 		prop: "contactAddress",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入详细地址",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.placeholders.contactAddress"),
+			),
 		},
 		width: "300px",
 	},
 	{
-		label: "欠费时间范围",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.overdueTimeRange")),
 		prop: "overdueTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
@@ -100,18 +111,20 @@ const plusFormColumns = ref<PlusColumn[]>([
 		width: "280px",
 	},
 	{
-		label: "欠费金额",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.overdueAmount")),
 		prop: "overdueAmount",
 		valueType: "input-number",
 		fieldProps: {
 			precision: 2,
 			min: 0,
-			placeholder: "请输入欠费金额",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.placeholders.overdueAmount"),
+			),
 		},
 		width: "200px",
 	},
 	{
-		label: "缴费状态",
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.form.fields.paymentStatus")),
 		prop: "paymentStatus",
 		valueType: "select",
 		options: overduePaymentStatusOptions,
@@ -121,11 +134,15 @@ const plusFormColumns = ref<PlusColumn[]>([
 		width: "150px",
 	},
 	{
-		label: "欠费说明",
+		label: transformI18n(
+			$t("property-manage_expense-manage.overdue-payment-information.form.fields.overdueDescription"),
+		),
 		prop: "overdueDescription",
 		valueType: "textarea",
 		fieldProps: {
-			placeholder: "请输入欠费说明",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.placeholders.overdueDescription"),
+			),
 			rows: 3,
 			maxlength: 200,
 			showWordLimit: true,
@@ -135,20 +152,77 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	chargeObject: [{ required: true, message: "请选择收费对象", trigger: "change" }],
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	chargeObject: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.chargeObjectRequired"),
+			),
+			trigger: "change",
+		},
+	],
 	ownerName: [
-		{ required: true, message: "请输入业主名称", trigger: "blur" },
-		{ min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.ownerNameRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 20,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.ownerNameLength"),
+			),
+			trigger: "blur",
+		},
 	],
 	phoneNumber: [
-		{ required: true, message: "请输入手机号", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.phoneNumberRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.phoneNumberFormat"),
+			),
+			trigger: "blur",
+		},
 	],
-	overdueTimeRange: [{ required: true, message: "请选择欠费时间范围", trigger: "change" }],
-	overdueAmount: [{ required: true, message: "请输入欠费金额", trigger: "blur" }],
-	paymentStatus: [{ required: true, message: "请选择缴费状态", trigger: "change" }],
-});
+	overdueTimeRange: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.overdueTimeRangeRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	overdueAmount: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.overdueAmountRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	paymentStatus: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.overdue-payment-information.form.validation.paymentStatusRequired"),
+			),
+			trigger: "change",
+		},
+	],
+}));
 
 // 默认导出，供外部使用
 defineExpose({
@@ -158,7 +232,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"

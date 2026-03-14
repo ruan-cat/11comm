@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "欠费信息",
+		// 欠费信息
+		title: "property-manage_expense-manage.overdue-payment-information.pageTitle",
 		icon: "mdi:alert-circle-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.overduePaymentInformation"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type OverduePaymentInformationFormProps, defaultForm } from "./components/form";
 import type { OverduePaymentInformationFormVO } from "@01s-11comm/type";
 import OverduePaymentInformationForm from "./components/form.vue";
@@ -20,13 +22,15 @@ import {
 	type OverduePaymentInformationQueryParams,
 	chargeObjectOptions,
 } from "@01s-11comm/type";
-import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 import { addDialog, closeDialog } from "@/components/ReDialog";
+import { cloneDeep } from "@pureadmin/utils";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const overduePaymentInformationFormInstance = ref<InstanceType<typeof OverduePaymentInformationForm> | null>(null);
@@ -52,44 +56,8 @@ const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 收费对象
-	{
-		label: "收费对象",
-		prop: "chargeObject",
-		valueType: "select",
-		options: chargeObjectOptions,
-	},
-	// 业主名称
-	{
-		label: "业主名称",
-		prop: "ownerName",
-		valueType: "input",
-	},
-	// 手机号
-	{
-		label: "手机号",
-		prop: "phoneNumber",
-		valueType: "input",
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -98,6 +66,99 @@ const {
 	handlePageSizeChange,
 	handleCurrentPageChange,
 } = useOverduePaymentInformationListQuery(plusSearchDefaultValues);
+
+/** 表格列配置 */
+const columns = withLocale<TableColumnList>(() => [
+	{
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.overdue-payment-information.fields.chargeObject")),
+		),
+		prop: "chargeObject",
+		width: 100,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.overdue-payment-information.fields.ownerName")),
+		),
+		prop: "ownerName",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.overdue-payment-information.fields.phoneNumber")),
+		),
+		prop: "phoneNumber",
+		width: 140,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.overdue-payment-information.fields.overdueTimePeriod")),
+		),
+		prop: "startTime",
+		width: 200,
+		formatter: (row: OverduePaymentInformationListItem) => `${row.startTime} 至 ${row.endTime}`,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.overdue-payment-information.fields.totalAmount")),
+		),
+		prop: "totalAmount",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.overdue-payment-information.fields.updateTime")),
+		),
+		prop: "updateTime",
+		width: 180,
+	},
+	{
+		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
+		width: 280,
+		fixed: "right",
+		slot: "operation",
+	},
+]);
+
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.overdue-payment-information.tableTitle")),
+	columns: columns.value,
+}));
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	// 收费对象
+	{
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.search.chargeObject")),
+		prop: "chargeObject",
+		valueType: "select",
+		options: chargeObjectOptions,
+	},
+	// 业主名称
+	{
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.search.ownerName")),
+		prop: "ownerName",
+		valueType: "input",
+	},
+	// 手机号
+	{
+		label: transformI18n($t("property-manage_expense-manage.overdue-payment-information.search.phoneNumber")),
+		prop: "phoneNumber",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -110,68 +171,16 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{
-		label: "收费对象",
-		prop: "chargeObject",
-		width: 100,
-	},
-	{
-		label: "业主名称",
-		prop: "ownerName",
-		width: 120,
-	},
-	{
-		label: "手机号",
-		prop: "phoneNumber",
-		width: 140,
-	},
-	{
-		label: "欠费时间段",
-		prop: "startTime", // Will be formatted
-		width: 200,
-		formatter: (row: OverduePaymentInformationListItem) => `${row.startTime} 至 ${row.endTime}`,
-	},
-	{
-		label: "合计金额",
-		prop: "totalAmount",
-		width: 120,
-	},
-	{
-		label: "更新时间",
-		prop: "updateTime",
-		width: 180,
-	},
-	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
-		width: 280,
-		fixed: "right",
-		slot: "operation",
-	},
-]);
-
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "欠费信息",
-	columns: columns.value,
-});
-
 /** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}欠费信息`;
-
 	/** 业务对象 */
 	const overduePaymentInformationFormVO: OverduePaymentInformationFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					chargeObject: row?.chargeObject || "",
 					ownerName: row?.ownerName || "",
@@ -180,11 +189,11 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 					endTime: row?.endTime || "",
 					overdueTimeRange: [row?.startTime || "", row?.endTime || ""],
 					overdueAmount: row?.totalAmount || "",
-					paymentStatus: "未缴费", // Default
-					contactAddress: "", // Default
-					overdueDescription: "", // Default
+					paymentStatus: "未缴费",
+					contactAddress: "",
+					overdueDescription: "",
 				} as OverduePaymentInformationFormVO)
-			: structuredClone({
+			: cloneDeep({
 					...defaultForm,
 					chargeObject: row?.chargeObject || "",
 					ownerName: row?.ownerName || "",
@@ -193,9 +202,9 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 					endTime: row?.endTime || "",
 					overdueTimeRange: [row?.startTime || "", row?.endTime || ""],
 					overdueAmount: row?.totalAmount || "",
-					paymentStatus: "未缴费", // Default
-					contactAddress: "", // Default
-					overdueDescription: "", // Default
+					paymentStatus: "未缴费",
+					contactAddress: "",
+					overdueDescription: "",
 				} as OverduePaymentInformationFormVO);
 
 	/** 表单组件需要的props */
@@ -204,15 +213,15 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 		defaultValues: overduePaymentInformationFormVO,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.overdue-payment-information.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.overdue-payment-information.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(OverduePaymentInformationForm, {
@@ -225,7 +234,7 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = overduePaymentInformationFormInstance.value?.formComputed;
@@ -233,14 +242,14 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button: _button }) => {
 					overduePaymentInformationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await overduePaymentInformationFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -260,40 +269,40 @@ function openDialog(params: { mode: Mode; row?: OverduePaymentInformationListIte
 function handleOperationClick(operation: string, row: OverduePaymentInformationListItem) {
 	switch (operation) {
 		case "欠费缴费":
-			// 可以添加缴费相关的逻辑
 			console.log("欠费缴费操作", row);
 			break;
 		case "查看详情":
 			openDialog({ mode: "info", row });
 			break;
 		case "查看费用":
-			// 可以添加查看费用明细的逻辑
 			console.log("查看费用操作", row);
 			break;
 		default:
 			console.log(`${operation} 操作`, row);
 	}
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary"> 欠费缴费 </ElButton>
-				<ElButton type="info"> 导出欠费清单 </ElButton>
+				<ElButton type="primary">
+					{{ transformI18n($t("property-manage_expense-manage.overdue-payment-information.button.overduePayment")) }}
+				</ElButton>
+				<ElButton type="info">
+					{{ transformI18n($t("property-manage_expense-manage.overdue-payment-information.button.exportOverdueList")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
@@ -307,9 +316,17 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="handleOperationClick('欠费缴费', row)"> 欠费缴费 </ElButton>
-						<ElButton type="info" @click="handleOperationClick('查看详情', row)"> 查看详情 </ElButton>
-						<ElButton type="primary" @click="handleOperationClick('查看费用', row)"> 查看费用 </ElButton>
+						<ElButton type="warning" @click="handleOperationClick('欠费缴费', row)">
+							{{
+								transformI18n($t("property-manage_expense-manage.overdue-payment-information.button.overduePayment"))
+							}}
+						</ElButton>
+						<ElButton type="info" @click="handleOperationClick('查看详情', row)">
+							{{ transformI18n($t("property-manage_expense-manage.overdue-payment-information.button.viewDetails")) }}
+						</ElButton>
+						<ElButton type="primary" @click="handleOperationClick('查看费用', row)">
+							{{ transformI18n($t("property-manage_expense-manage.overdue-payment-information.button.viewFee")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
