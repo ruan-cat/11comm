@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { PatrolPlanFormProps } from "./form";
 import type { PatrolPlanFormVO } from "@01s-11comm/type";
@@ -7,6 +10,8 @@ import { checkInMethodOptions } from "@01s-11comm/type";
 import { statusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPlanFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolPlanFormVO;
@@ -23,51 +28,61 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & PatrolPlanFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & PatrolPlanFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const translatedPlanCycleOptions = withLocale(() => [
 	{
-		label: "计划名称",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.options.planCycle.daily")),
+		value: "每日",
+	},
+	{
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.options.planCycle.weekly")),
+		value: "每周",
+	},
+	{
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.options.planCycle.monthly")),
+		value: "每月",
+	},
+	{
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.options.planCycle.quarterly")),
+		value: "每季度",
+	},
+	{
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.options.planCycle.yearly")),
+		value: "每年",
+	},
+]);
+
+/** 表单项配置 */
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.planName")),
 		prop: "planName",
 		valueType: "input",
 	},
 	{
-		label: "计划路线",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.planRoute")),
 		prop: "planRoute",
 		valueType: "input",
 	},
 	{
-		label: "计划周期",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.planCycle")),
 		prop: "planCycle",
 		valueType: "select",
-		options: [
-			{ label: "每日", value: "每日" },
-			{ label: "每周", value: "每周" },
-			{ label: "每月", value: "每月" },
-			{ label: "每季度", value: "每季度" },
-			{ label: "每年", value: "每年" },
-		],
+		options: translatedPlanCycleOptions.value,
 	},
 	{
-		label: "签到方式",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.checkInMethod")),
 		prop: "checkInMethod",
 		valueType: "select",
 		options: checkInMethodOptions,
 	},
 	{
-		label: "日期范围",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.dateRange")),
 		prop: "dateRange",
 		valueType: "date-picker",
 		fieldProps: {
@@ -75,7 +90,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "时间范围",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.timeRange")),
 		prop: "timeRange",
 		valueType: "time-picker",
 		fieldProps: {
@@ -83,7 +98,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "任务提前(分钟)",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.taskAdvanceMinutes")),
 		prop: "taskAdvanceMinutes",
 		valueType: "input-number",
 		fieldProps: {
@@ -92,12 +107,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "巡检人员",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.patrolStaff")),
 		prop: "patrolStaff",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: statusOptions,
@@ -105,20 +120,78 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	planName: [{ required: true, message: "请输入计划名称", trigger: "blur" }],
-	planRoute: [{ required: true, message: "请输入计划路线", trigger: "blur" }],
-	planCycle: [{ required: true, message: "请选择计划周期", trigger: "change" }],
-	checkInMethod: [{ required: true, message: "请选择签到方式", trigger: "change" }],
-	dateRange: [{ required: true, message: "请选择日期范围", trigger: "change" }],
-	timeRange: [{ required: true, message: "请选择时间范围", trigger: "change" }],
-	taskAdvanceMinutes: [
-		{ required: true, message: "请输入任务提前时间", trigger: "blur" },
-		{ type: "number" as const, min: 0, max: 1440, message: "请输入0-1440之间的数字", trigger: "blur" },
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	planName: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.planName")),
+			trigger: "blur",
+		},
 	],
-	patrolStaff: [{ required: true, message: "请输入巡检人员", trigger: "blur" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	planRoute: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.planRoute")),
+			trigger: "blur",
+		},
+	],
+	planCycle: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.planCycle")),
+			trigger: "change",
+		},
+	],
+	checkInMethod: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.checkInMethod")),
+			trigger: "change",
+		},
+	],
+	dateRange: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.dateRange")),
+			trigger: "change",
+		},
+	],
+	timeRange: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.timeRange")),
+			trigger: "change",
+		},
+	],
+	taskAdvanceMinutes: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.taskAdvanceMinutes")),
+			trigger: "blur",
+		},
+		{
+			type: "number" as const,
+			min: 0,
+			max: 1440,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.taskAdvanceMinutesRange")),
+			trigger: "blur",
+		},
+	],
+	patrolStaff: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.patrolStaff")),
+			trigger: "blur",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.plan.form.validation.status")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -127,7 +200,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
