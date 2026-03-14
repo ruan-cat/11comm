@@ -18,11 +18,6 @@ import { MenuGroupFormProps } from "./form";
 const props = defineProps<MenuGroupFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & MenuGroupFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -86,7 +81,7 @@ function translateGroupType(value?: string | null) {
 	}
 
 	const key = groupTypeLabelKeyMap[value as keyof typeof groupTypeLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStore(value?: string | null) {
@@ -95,7 +90,7 @@ function translateStore(value?: string | null) {
 	}
 
 	const key = storeLabelKeyMap[value as keyof typeof storeLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateIcon(value?: string | null) {
@@ -104,7 +99,7 @@ function translateIcon(value?: string | null) {
 	}
 
 	const key = iconLabelKeyMap[value as keyof typeof iconLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStatus(value?: string | null) {
@@ -113,7 +108,7 @@ function translateStatus(value?: string | null) {
 	}
 
 	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedGroupTypeOptions = withLocale(() =>
@@ -146,40 +141,40 @@ const translatedStatusOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.menuManage.group.fields.groupId")),
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupId")),
 		prop: "groupId",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.groupId")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.groupId")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.fields.groupName")),
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupName")),
 		prop: "groupName",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.groupName")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.groupName")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.fields.groupCode")),
+		label: transformI18n($t("devTeam.menuManage.group.fields.groupCode")),
 		prop: "groupCode",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.groupCode")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.groupCode")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.form.fields.groupType")),
+		label: transformI18n($t("devTeam.menuManage.group.form.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
 		width: "180px",
@@ -188,11 +183,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.groupType")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.groupType")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.form.fields.storeName")),
+		label: transformI18n($t("devTeam.menuManage.group.form.fields.storeName")),
 		prop: "storeName",
 		valueType: "select",
 		width: "180px",
@@ -201,11 +196,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.storeName")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.storeName")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.fields.sortNo")),
+		label: transformI18n($t("devTeam.menuManage.group.fields.sortNo")),
 		prop: "sortNo",
 		valueType: "input-number",
 		width: "150px",
@@ -213,11 +208,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			min: 1,
 			max: 9999,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.sortNo")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.sortNo")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.form.fields.icon")),
+		label: transformI18n($t("devTeam.menuManage.group.form.fields.icon")),
 		prop: "icon",
 		valueType: "select",
 		width: "200px",
@@ -226,11 +221,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.icon")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.icon")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.fields.status")),
+		label: transformI18n($t("devTeam.menuManage.group.fields.status")),
 		prop: "status",
 		valueType: "select",
 		width: "150px",
@@ -238,17 +233,17 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.status")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.group.fields.description")),
+		label: transformI18n($t("devTeam.menuManage.group.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.menuManage.group.form.placeholders.description")),
+			placeholder: transformI18n($t("devTeam.menuManage.group.form.placeholders.description")),
 			rows: 3,
 			maxlength: 200,
 			showWordLimit: true,
@@ -260,98 +255,98 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	groupId: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.enterGroupId")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.enterGroupId")),
 			trigger: "blur",
 		},
 		{
 			min: 3,
 			max: 20,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.groupIdLength")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.groupIdLength")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[A-Z0-9_]+$/,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.groupIdPattern")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.groupIdPattern")),
 			trigger: "blur",
 		},
 	],
 	groupName: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.enterGroupName")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.enterGroupName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.groupNameLength")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.groupNameLength")),
 			trigger: "blur",
 		},
 	],
 	groupCode: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.enterGroupCode")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.enterGroupCode")),
 			trigger: "blur",
 		},
 		{
 			min: 3,
 			max: 50,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.groupCodeLength")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.groupCodeLength")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[A-Z_]+$/,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.groupCodePattern")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.groupCodePattern")),
 			trigger: "blur",
 		},
 	],
 	groupType: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.selectGroupType")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.selectGroupType")),
 			trigger: "change",
 		},
 	],
 	storeName: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.selectStoreName")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.selectStoreName")),
 			trigger: "change",
 		},
 	],
 	sortNo: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.enterSortNo")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.enterSortNo")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 1,
 			max: 9999,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.sortNoRange")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.sortNoRange")),
 			trigger: "blur",
 		},
 	],
 	icon: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.selectIcon")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.selectIcon")),
 			trigger: "change",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.selectStatus")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
 	description: [
 		{
 			max: 200,
-			message: renderI18n($t("devTeam.menuManage.group.form.validation.descriptionMax")),
+			message: transformI18n($t("devTeam.menuManage.group.form.validation.descriptionMax")),
 			trigger: "blur",
 		},
 	],
