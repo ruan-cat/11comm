@@ -8,11 +8,6 @@ import { type InitializeCellFormProps } from "./form";
 const props = defineProps<InitializeCellFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as unknown as FieldValues & InitializeCellFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 
@@ -23,154 +18,154 @@ const formComputed = computed(() => form.value);
 
 const translatedCellTypeOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
 		value: "ResidentialUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
 		value: "CommercialUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
 		value: "GarageUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.office")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.office")),
 		value: "OfficeUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.club")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.club")),
 		value: "ClubUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.property")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.property")),
 		value: "PropertyUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.sports")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.sports")),
 		value: "SportsUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.education")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.education")),
 		value: "EducationUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.medical")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.medical")),
 		value: "MedicalUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.storage")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.storage")),
 		value: "StorageUnit",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
 		value: "CultureUnit",
 	},
 ]);
 
 const translatedStatusOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
 		value: "Uninitialized",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
 		value: "Initializing",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
 		value: "Initialized",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.failed")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.failed")),
 		value: "InitializationFailed",
 	},
 ]);
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
 		prop: "cellName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.cellName")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.cellName")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
 		prop: "cellType",
 		valueType: "select",
 		options: translatedCellTypeOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.cellType")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.cellType")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingId")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.buildingId")),
 		prop: "buildingId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.buildingId")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.buildingId")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.buildingName")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.buildingName")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.floor")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.floor")),
 		prop: "floor",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.floor")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.floor")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.unitNumber")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.unitNumber")),
 		prop: "unitNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.unitNumber")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.unitNumber")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.households")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.households")),
 		prop: "households",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			max: 1000,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.households")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.households")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.status")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.status")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.description")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.systemManage.initializeCell.placeholders.description")),
+			placeholder: transformI18n($t("operationTeam.systemManage.initializeCell.placeholders.description")),
 			rows: 3,
 		},
 	},
@@ -180,99 +175,99 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	cellName: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.cellNameRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.cellNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.cellNameLength")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.cellNameLength")),
 			trigger: "blur",
 		},
 	],
 	cellType: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.cellTypeRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.cellTypeRequired")),
 			trigger: "change",
 		},
 	],
 	buildingId: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingIdRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.buildingIdRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[A-Z0-9]+$/,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingIdPattern")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.buildingIdPattern")),
 			trigger: "blur",
 		},
 	],
 	buildingName: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingNameRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.buildingNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.buildingNameLength")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.buildingNameLength")),
 			trigger: "blur",
 		},
 	],
 	floor: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.floorRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.floorRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 1,
 			max: 30,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.floorLength")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.floorLength")),
 			trigger: "blur",
 		},
 	],
 	unitNumber: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.unitNumberRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.unitNumberRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 1,
 			max: 20,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.unitNumberLength")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.unitNumberLength")),
 			trigger: "blur",
 		},
 	],
 	households: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.householdsRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.householdsRequired")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 1,
 			max: 1000,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.householdsRange")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.householdsRange")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.statusRequired")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.statusRequired")),
 			trigger: "change",
 		},
 	],
 	description: [
 		{
 			max: 200,
-			message: renderI18n($t("operationTeam.systemManage.initializeCell.validation.descriptionLength")),
+			message: transformI18n($t("operationTeam.systemManage.initializeCell.validation.descriptionLength")),
 			trigger: "blur",
 		},
 	],
