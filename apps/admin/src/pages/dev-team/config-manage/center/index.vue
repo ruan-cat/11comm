@@ -21,7 +21,7 @@ import { openDialog } from "./components/dialog";
 import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const configTypeLabelKeyMap = {
 	system: $t("devTeam.configManage.center.form.options.system"),
@@ -45,7 +45,7 @@ function translateConfigType(value?: string) {
 	}
 
 	const key = configTypeLabelKeyMap[value as keyof typeof configTypeLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStatus(value?: string) {
@@ -54,25 +54,20 @@ function translateStatus(value?: string) {
 	}
 
 	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
-	return key ? renderI18n(key) : value;
-}
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
+	return key ? transformI18n(key) : value;
 }
 
 const translatedConfigTypeOptions = withLocale(() =>
 	configTypeOptions.map((option) => ({
 		...option,
-		label: renderI18n(configTypeLabelKeyMap[String(option.value) as keyof typeof configTypeLabelKeyMap]),
+		label: transformI18n(configTypeLabelKeyMap[String(option.value) as keyof typeof configTypeLabelKeyMap]),
 	})),
 );
 
 const translatedStatusOptions = withLocale(() =>
 	configStatusOptions.map((option) => ({
 		...option,
-		label: renderI18n(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap]),
+		label: transformI18n(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap]),
 	})),
 );
 
@@ -98,39 +93,36 @@ const {
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configName")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configType")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configType")),
 		prop: "configType",
 		valueType: "select",
 		options: translatedConfigTypeOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.configType")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.configType")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.status")),
+		label: transformI18n($t("devTeam.configManage.center.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("devTeam.configManage.center.form.placeholders.status")),
+			placeholder: transformI18n($t("devTeam.configManage.center.form.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.configKey")),
+		label: transformI18n($t("devTeam.configManage.center.fields.configKey")),
 		prop: "configKey",
 		valueType: "input",
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -144,72 +136,72 @@ function handleSearch() {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.configName"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.configName"))),
 		prop: "configName",
 		width: 150,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.configType"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.configType"))),
 		prop: "configType",
 		width: 120,
 		cellRenderer: ({ row }) => translateConfigType(row.configType),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.configKey"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.configKey"))),
 		prop: "configKey",
 		width: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.configValue"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.configValue"))),
 		prop: "configValue",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.defaultValue"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.defaultValue"))),
 		prop: "defaultValue",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.configDescription"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.configDescription"))),
 		prop: "configDescription",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.status"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.status"))),
 		prop: "status",
 		width: 80,
 		cellRenderer: ({ row }) => translateStatus(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.sortOrder"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.sortOrder"))),
 		prop: "sortOrder",
 		width: 80,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.remark"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.remark"))),
 		prop: "remark",
 		minWidth: 150,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.center.fields.creator"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.creator"))),
 		prop: "creator",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 200,
 		fixed: "right",
 		slot: "operation",
@@ -217,37 +209,39 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("devTeam.configManage.center.pageTitle")),
+	title: transformI18n($t("devTeam.configManage.center.pageTitle")),
 	columns: columns.value,
 }));
 
 function viewDetails(row: ConfigCenterListItem) {
-	console.log(renderI18n($t("devTeam.configManage.center.logs.viewDetails")), row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.viewDetails")), row);
 }
 
 function copyConfig(row: ConfigCenterListItem) {
-	console.log(renderI18n($t("devTeam.configManage.center.logs.copyConfig")), row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.copyConfig")), row);
 }
 
 function toggleStatus(row: ConfigCenterListItem) {
-	console.log(renderI18n($t("devTeam.configManage.center.logs.toggleStatusAction")), row);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.toggleStatusAction")), row);
 	const newStatus = row.status === "enabled" ? "disabled" : "enabled";
 	console.log(
-		`${renderI18n($t("devTeam.configManage.center.logs.toggleStatus"))}: ${row.configName}, ${row.status} -> ${newStatus}`,
+		`${transformI18n($t("devTeam.configManage.center.logs.toggleStatus"))}: ${row.configName}, ${row.status} -> ${newStatus}`,
 	);
 }
 
 function deleteConfig(row: ConfigCenterListItem) {
-	console.log(renderI18n($t("devTeam.configManage.center.logs.deleteConfig")), row);
-	console.log(`${renderI18n($t("devTeam.configManage.center.logs.confirmDelete"))}: ${row.configName} (${row.configKey})`);
+	console.log(transformI18n($t("devTeam.configManage.center.logs.deleteConfig")), row);
+	console.log(
+		`${transformI18n($t("devTeam.configManage.center.logs.confirmDelete"))}: ${row.configName} (${row.configKey})`,
+	);
 }
 
 function exportConfig() {
-	console.log(renderI18n($t("devTeam.configManage.center.logs.exportConfig")));
+	console.log(transformI18n($t("devTeam.configManage.center.logs.exportConfig")));
 }
 
 function importConfig() {
-	console.log(renderI18n($t("devTeam.configManage.center.logs.importConfig")));
+	console.log(transformI18n($t("devTeam.configManage.center.logs.importConfig")));
 }
 </script>
 
@@ -258,6 +252,8 @@ function importConfig() {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
