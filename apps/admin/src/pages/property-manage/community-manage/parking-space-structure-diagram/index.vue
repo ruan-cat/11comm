@@ -28,17 +28,12 @@ import ParkingSpaceStructureDiagramForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & Partial<ParkingSpaceStructureDiagramQueryParams> = {
 	parkingSpaceNumber: "",
 	parkingSpaceStatus: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -51,7 +46,9 @@ const {
 	handleCurrentPageChange,
 } = useParkingSpaceStructureDiagramListQuery(plusSearchDefaultValues);
 
-const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(null);
+const parkingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof ParkingSpaceStructureDiagramForm> | null>(
+	null,
+);
 const { gotoDetailPage } = useGotoDetailsPage();
 const { setMode, isAdd } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -105,12 +102,12 @@ function translateOptionLabel<T extends Record<string, string>>(value: string | 
 	}
 
 	const key = labelMap[value as keyof T];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const parkingSpaceStatusOptions = withLocale(() =>
 	Object.entries(parkingSpaceStatusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
@@ -118,18 +115,18 @@ const parkingSpaceStatusOptions = withLocale(() =>
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber")),
 		),
 		prop: "parkingSpaceNumber",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceType")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceType")),
 		),
 		prop: "parkingSpaceType",
 		minWidth: 130,
@@ -137,21 +134,21 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceLocation")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceLocation")),
 		),
 		prop: "parkingSpaceLocation",
 		minWidth: 170,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceArea")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceArea")),
 		),
 		prop: "parkingSpaceArea",
 		minWidth: 110,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus")),
 		),
 		prop: "parkingSpaceStatus",
 		minWidth: 120,
@@ -159,63 +156,65 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.ownerName")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.ownerName")),
 		),
 		prop: "ownerName",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.contactPhone")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.contactPhone")),
 		),
 		prop: "contactPhone",
 		minWidth: 140,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.licensePlateNumber")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.licensePlateNumber")),
 		),
 		prop: "licensePlateNumber",
 		minWidth: 140,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.vehicleBrand")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.vehicleBrand")),
 		),
 		prop: "vehicleBrand",
 		minWidth: 140,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.purchaseTime")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.purchaseTime")),
 		),
 		prop: "purchaseTime",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.expiryTime")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.expiryTime")),
 		),
 		prop: "expiryTime",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.monthlyRent")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.monthlyRent")),
 		),
 		prop: "monthlyRent",
 		minWidth: 100,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.managementFee")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.managementFee")),
 		),
 		prop: "managementFee",
 		minWidth: 100,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceOrientation")),
+			transformI18n(
+				$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceOrientation"),
+			),
 		),
 		prop: "parkingSpaceOrientation",
 		minWidth: 120,
@@ -223,7 +222,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.floorArea")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.floorArea")),
 		),
 		prop: "floorArea",
 		minWidth: 120,
@@ -231,7 +230,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.hasEvChargingPile")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.hasEvChargingPile")),
 		),
 		prop: "hasEvChargingPile",
 		minWidth: 120,
@@ -239,13 +238,13 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.chargingPilePower")),
+			transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.chargingPilePower")),
 		),
 		prop: "chargingPilePower",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 260,
 		fixed: "right",
 		slot: "operation",
@@ -253,32 +252,32 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.tableTitle")),
+	title: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber"),
 		),
 		prop: "parkingSpaceNumber",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceNumber"),
 			),
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus"),
 		),
 		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceStatus"),
 			),
 		},
@@ -288,7 +287,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -339,8 +338,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: ParkingSpaceStructureDiag
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.dialogs.addTitle"))
-				: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.dialogs.editTitle")),
+				? transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(ParkingSpaceStructureDiagramForm, {
@@ -355,7 +354,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: ParkingSpaceStructureDiag
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = parkingSpaceStructureDiagramFormInstance.value?.formComputed;
@@ -365,14 +364,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: ParkingSpaceStructureDiag
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					parkingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await parkingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -426,10 +425,14 @@ function refreshParkingSpaceStatus() {
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 				<ElButton type="info" @click="refreshParkingSpaceStatus">
-					{{ transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.refreshStatus")) }}
+					{{
+						transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.refreshStatus"))
+					}}
 				</ElButton>
 				<ElButton type="warning" @click="exportParkingSpaceStructure">
-					{{ transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.exportStructure")) }}
+					{{
+						transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.exportStructure"))
+					}}
 				</ElButton>
 			</template>
 
@@ -445,7 +448,9 @@ function refreshParkingSpaceStatus() {
 				>
 					<template #operation="{ row }">
 						<ElButton type="info" @click="gotoParkingSpaceDetailPage(row)">
-							{{ transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.viewDetail")) }}
+							{{
+								transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.buttons.viewDetail"))
+							}}
 						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
