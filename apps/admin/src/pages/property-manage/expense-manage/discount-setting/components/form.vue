@@ -1,14 +1,19 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { discountTypeOptions, ruleOptions } from "@01s-11comm/type";
 import { type FieldValues, type PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import type { DiscountSettingFormProps } from "./form";
 import type { DiscountSettingFormVO } from "@01s-11comm/type";
 
 const props = defineProps<DiscountSettingFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & DiscountSettingFormVO;
@@ -25,24 +30,17 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & DiscountSettingFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & DiscountSettingFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 折扣名称
 	{
-		label: "折扣名称",
+		label: transformI18n($t("property-manage_expense-manage.discount-setting.form.fields.discountName")),
 		prop: "discountName",
 		valueType: "input",
 		required: true,
@@ -53,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 折扣类型
 	{
-		label: "折扣类型",
+		label: transformI18n($t("property-manage_expense-manage.discount-setting.form.fields.discountType")),
 		prop: "discountType",
 		valueType: "select",
 		options: discountTypeOptions,
@@ -66,7 +64,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 规则
 	{
-		label: "规则",
+		label: transformI18n($t("property-manage_expense-manage.discount-setting.form.fields.rule")),
 		prop: "rule",
 		valueType: "select",
 		options: ruleOptions,
@@ -79,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 描述
 	{
-		label: "描述",
+		label: transformI18n($t("property-manage_expense-manage.discount-setting.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
@@ -89,14 +87,39 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	discountName: [
-		{ required: true, message: "请输入折扣名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.discount-setting.form.validation.discountNameRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("property-manage_expense-manage.discount-setting.form.validation.discountNameLength")),
+			trigger: "blur",
+		},
 	],
-	discountType: [{ required: true, message: "请选择折扣类型", trigger: "change" }],
-	rule: [{ required: true, message: "请选择规则", trigger: "change" }],
-});
+	discountType: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.discount-setting.form.validation.discountTypeRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	rule: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.discount-setting.form.validation.ruleRequired")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -105,7 +128,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
