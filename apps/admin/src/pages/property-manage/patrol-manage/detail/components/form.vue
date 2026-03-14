@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import type { Mode } from "@/composables/use-mode";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
@@ -9,6 +12,8 @@ import { patrolMethodOptions } from "@01s-11comm/type";
 import { type PatrolDetailFormProps } from "./form";
 
 const props = defineProps<PatrolDetailFormProps & { mode: Mode }>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolDetailFormVO;
@@ -25,32 +30,24 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & PatrolDetailFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & PatrolDetailFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 巡检点名称
 	{
-		label: "巡检点名称",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.patrolPointName")),
 		prop: "patrolPointName",
 		valueType: "input",
 		required: true,
 	},
-
 	// 巡检计划名称
 	{
-		label: "巡检计划名称",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.patrolPlanName")),
 		prop: "patrolPlanName",
 		valueType: "input",
 		required: true,
@@ -58,7 +55,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 巡检路线名称
 	{
-		label: "巡检路线名称",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.patrolRouteName")),
 		prop: "patrolRouteName",
 		valueType: "input",
 		required: true,
@@ -66,7 +63,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 计划巡检人
 	{
-		label: "计划巡检人",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.plannedPatrolPerson")),
 		prop: "plannedPatrolPerson",
 		valueType: "input",
 		required: true,
@@ -74,7 +71,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 巡检方式
 	{
-		label: "巡检方式",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.patrolMethod")),
 		prop: "patrolMethod",
 		valueType: "select",
 		required: true,
@@ -83,7 +80,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 位置信息
 	{
-		label: "位置信息",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.location")),
 		prop: "location",
 		valueType: "input",
 		required: true,
@@ -91,17 +88,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 巡检情况
 	{
-		label: "巡检情况",
+		label: transformI18n($t("property-manage_patrol-manage.detail.form.fields.patrolSituation")),
 		prop: "patrolSituation",
 		valueType: "textarea",
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({});
+const plusFormRules = withLocale<PlusFormRules>(() => ({}));
 
 defineExpose({
 	plusFormInstance,
@@ -110,13 +104,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:label-width="120"
 		/>

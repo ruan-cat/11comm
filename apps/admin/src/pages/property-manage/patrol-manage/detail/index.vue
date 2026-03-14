@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "巡检明细",
+		// 巡检明细
+		title: "property-manage_patrol-manage.detail.pageTitle",
 		icon: "mdi:clipboard-text",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage.detail"),
 	},
 });
 
-import { ref, computed, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type PatrolDetailFormProps, defaultForm } from "./components/form";
 import { type PatrolDetailFormVO, type PatrolMethodType } from "@01s-11comm/type";
 import {
@@ -21,6 +23,8 @@ import {
 } from "@01s-11comm/type";
 import PatrolDetailForm from "./components/form.vue";
 import { useDetailListQuery } from "@/api/property-manage/patrol-manage/detail";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -39,113 +43,131 @@ async function testAsync() {
 }
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "任务详情ID",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.detail.fields.taskDetailId"))),
 		prop: "taskDetailId",
 		width: 120,
 	},
 	{
-		label: "巡检点名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPointName")),
+		),
 		prop: "patrolPointName",
 		width: 120,
 	},
 	{
-		label: "巡检计划名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPlanName")),
+		),
 		prop: "patrolPlanName",
 		width: 120,
 	},
 	{
-		label: "巡检路线名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolRouteName")),
+		),
 		prop: "patrolRouteName",
 		width: 120,
 	},
 	{
-		label: "巡检人开始结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPersonStartEndTime")),
+		),
 		prop: "patrolPersonStartEndTime",
 		width: 160,
 	},
 	{
-		label: "巡检点开始结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPointStartEndTime")),
+		),
 		prop: "patrolPointStartEndTime",
 		width: 160,
 	},
 	{
-		label: "实际巡检时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.actualPatrolTime")),
+		),
 		prop: "actualPatrolTime",
 		width: 150,
 	},
 	{
-		label: "实际签到状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.actualCheckInStatus")),
+		),
 		prop: "actualCheckInStatus",
 		width: 100,
 	},
 	{
-		label: "计划巡检人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.plannedPatrolPerson")),
+		),
 		prop: "plannedPatrolPerson",
 		width: 100,
 	},
 	{
-		label: "实际巡检人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.actualPatrolPerson")),
+		),
 		prop: "actualPatrolPerson",
 		width: 100,
 	},
 	{
-		label: "巡检方式",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.detail.fields.patrolMethod"))),
 		prop: "patrolMethod",
 		width: 100,
 	},
 	{
-		label: "任务状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.detail.fields.taskStatus"))),
 		prop: "taskStatus",
 		width: 100,
 	},
 	{
-		label: "巡检点状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPointStatus")),
+		),
 		prop: "patrolPointStatus",
 		width: 100,
 	},
 	{
-		label: "巡检情况",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.detail.fields.patrolSituation")),
+		),
 		prop: "patrolSituation",
 		width: 150,
 	},
 	{
-		label: "巡检照片",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPhotos"))),
 		prop: "patrolPhotos",
 		width: 100,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.detail.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: "位置信息",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.detail.fields.locationInfo"))),
 		prop: "locationInfo",
 		width: 150,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "巡检明细",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_patrol-manage.detail.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<PatrolDetailQueryParams> = {
 	patrolPerson: "",
 	patrolStartTime: "",
@@ -155,13 +177,9 @@ const plusSearchModelRef: FieldValues & Partial<PatrolDetailQueryParams> = {
 	patrolPointStatus: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -173,32 +191,14 @@ const {
 	handleCurrentPageChange,
 } = useDetailListQuery(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
-}
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	/** 巡检人 */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "巡检人",
+		label: transformI18n($t("property-manage_patrol-manage.detail.fields.plannedPatrolPerson")),
 		prop: "patrolPerson",
 		valueType: "input",
 	},
-
-	/** 巡检开始时间 */
 	{
-		label: "巡检开始时间",
+		label: transformI18n($t("property-manage_patrol-manage.detail.fields.patrolStartTime")),
 		prop: "patrolStartTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -207,10 +207,8 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD HH:mm:ss",
 		},
 	},
-
-	/** 巡检结束时间 */
 	{
-		label: "巡检结束时间",
+		label: transformI18n($t("property-manage_patrol-manage.detail.fields.patrolEndTime")),
 		prop: "patrolEndTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -219,40 +217,36 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD HH:mm:ss",
 		},
 	},
-
-	/** 巡检方式 */
 	{
-		label: "巡检方式",
+		label: transformI18n($t("property-manage_patrol-manage.detail.fields.patrolMethod")),
 		prop: "patrolMethod",
 		valueType: "select",
 		options: patrolMethodOptions,
 	},
-
-	/** 任务状态 */
 	{
-		label: "任务状态",
+		label: transformI18n($t("property-manage_patrol-manage.detail.fields.taskStatus")),
 		prop: "taskStatus",
 		valueType: "select",
 		options: taskStatusOptions,
 	},
-
-	/** 巡检点状态 */
 	{
-		label: "巡检点状态",
+		label: transformI18n($t("property-manage_patrol-manage.detail.fields.patrolPointStatus")),
 		prop: "patrolPointStatus",
 		valueType: "select",
 		options: patrolPointStatusOptions,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
@@ -281,18 +275,15 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 		defaultValues: patrolDetailFormVO,
 	};
 
-	/** 弹框标题 */
-	const title = `${modeText.value}巡检明细`;
-
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_patrol-manage.detail.dialogs.addTitle"))
+				: transformI18n($t("property-manage_patrol-manage.detail.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(PatrolDetailForm, {
@@ -308,9 +299,9 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
+				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = patrolDetailFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
@@ -318,14 +309,14 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
+				btnClick: () => {
 					patrolDetailFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await patrolDetailFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -334,6 +325,7 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 						await testAsync();
 						button.btn.loading = false;
 						closeDialog(options, index);
+						await doFetch();
 					}
 				},
 			},
@@ -343,11 +335,14 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
