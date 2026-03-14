@@ -143,9 +143,6 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	],
 }));
 
-/** 动态计算的表单项配置 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 对外导出 */
 defineExpose({
 	plusFormInstance,
@@ -160,7 +157,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
