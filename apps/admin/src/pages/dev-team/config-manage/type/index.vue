@@ -9,18 +9,13 @@ definePage({
 	},
 });
 
-import { ref } from "vue";
+import { cloneDeep, ref } from "vue";
 import { type DictionaryTypeQueryParams, dictionaryTypeStatusOptions } from "@01s-11comm/type";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useDictionaryTypeListQuery } from "@/api/dev-team/config-manage/type";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const statusLabelKeyMap = {
 	enabled: $t("devTeam.configManage.type.options.status.enabled"),
@@ -33,7 +28,7 @@ function translateStatus(value?: string | null) {
 	}
 
 	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedDictionaryTypeStatusOptions = withLocale(() =>
@@ -50,7 +45,7 @@ const plusSearchModelRef: FieldValues & Partial<DictionaryTypeQueryParams> = {
 	status: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -66,45 +61,45 @@ const {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.dictionaryNumber"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber"))),
 		prop: "dictionaryNumber",
 		width: 120,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.dictionaryName"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.dictionaryName"))),
 		prop: "dictionaryName",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.dictionaryType"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.dictionaryType"))),
 		prop: "dictionaryType",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.status"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.status"))),
 		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => translateStatus(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.remark"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.remark"))),
 		prop: "remark",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.configManage.type.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -112,44 +107,41 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("devTeam.configManage.type.pageTitle")),
+	title: transformI18n($t("devTeam.configManage.type.pageTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryName")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryType")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.status")),
+		label: transformI18n($t("devTeam.configManage.type.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedDictionaryTypeStatusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.status")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.status")),
 		},
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -165,6 +157,8 @@ function handleSearch() {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
