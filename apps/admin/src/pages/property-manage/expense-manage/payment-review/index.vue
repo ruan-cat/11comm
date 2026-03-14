@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "缴费审核",
+		// 缴费审核
+		title: "property-manage_expense-manage.payment-review.pageTitle",
 		icon: "mdi:check-circle-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.paymentReview"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { sleep } from "@antfu/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type PaymentReviewFormProps, defaultForm } from "./components/form";
 import type { PaymentReviewFormVO } from "@01s-11comm/type";
 import 缴费审核Form from "./components/form.vue";
@@ -24,12 +27,13 @@ import {
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
-
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 /** 表单组件实例 */
 const 缴费审核FormInstance = ref<InstanceType<typeof 缴费审核Form> | null>(null);
@@ -54,7 +58,6 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -65,114 +68,131 @@ const {
 } = usePaymentReviewListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "房屋",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.house")),
+		),
 		prop: "house",
 		width: 100,
 	},
 	{
-		label: "费用项目",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.expenseItem")),
+		),
 		prop: "expenseItem",
 		width: 100,
 	},
 	{
-		label: "付费周期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.paymentPeriod")),
+		),
 		prop: "paymentPeriod",
 		width: 120,
 	},
 	{
-		label: "应付金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.payableAmount")),
+		),
 		prop: "payableAmount",
 		width: 100,
 	},
 	{
-		label: "实付金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.paidAmount")),
+		),
 		prop: "paidAmount",
 		width: 100,
 	},
 	{
-		label: "操作员工",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.operator")),
+		),
 		prop: "operator",
 		width: 100,
 	},
 	{
-		label: "缴费时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.paymentTime")),
+		),
 		prop: "paymentTime",
 		width: 180,
 	},
 	{
-		label: "审核状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.auditStatus")),
+		),
 		prop: "auditStatus",
 		width: 100,
 	},
 	{
-		label: "缴费备注",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.paymentRemark")),
+		),
 		prop: "paymentRemark",
 		width: 150,
 	},
 	{
-		label: "审核说明",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.auditDescription")),
+		),
 		prop: "auditDescription",
 		width: 150,
 	},
 	{
-		label: "详情",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.payment-review.fields.details")),
+		),
 		prop: "details",
 		width: 150,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 320,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({
-		...plusSearchModel.value,
-		pageIndex: 1,
-	});
-}
+/** 表格操作栏组件 配置  */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.payment-review.tableTitle")),
+	columns: columns.value,
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	/** 房屋 */
 	{
-		label: "房屋",
+		label: transformI18n($t("property-manage_expense-manage.payment-review.search.house")),
 		prop: "house",
 		valueType: "input",
 	},
 	/** 费用项目 */
 	{
-		label: "费用项目",
+		label: transformI18n($t("property-manage_expense-manage.payment-review.search.expenseItem")),
 		prop: "expenseItem",
 		valueType: "select",
 		options: expenseItemOptions,
 	},
 	/** 审核状态 */
 	{
-		label: "审核状态",
+		label: transformI18n($t("property-manage_expense-manage.payment-review.search.auditStatus")),
 		prop: "auditStatus",
 		valueType: "select",
 		options: paymentReviewAuditStatusOptions,
 	},
 	/** 缴费时间范围 */
 	{
-		label: "缴费时间范围",
+		label: transformI18n($t("property-manage_expense-manage.payment-review.search.paymentTimeRange")),
 		prop: "缴费时间范围",
 		valueType: "date-picker",
 		fieldProps: {
@@ -192,19 +212,21 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "缴费审核",
-	columns: columns.value,
-});
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({
+		...plusSearchModel.value,
+		pageIndex: 1,
+	});
+}
 
 /** 测试异步函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -223,14 +245,11 @@ function openDialog(params: { mode: Mode; row?: PaymentReviewListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}缴费审核`;
-
 	/** 业务对象 */
 	const paymentReviewFormVO: PaymentReviewFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? {
+			? cloneDeep({
 					...defaultForm,
 					house: row?.house || "",
 					expenseItem: row?.expenseItem || "",
@@ -245,8 +264,8 @@ function openDialog(params: { mode: Mode; row?: PaymentReviewListItem }) {
 					auditDescription: row?.auditDescription || "",
 					paymentRemark: row?.paymentRemark || "",
 					details: row?.details || "",
-				}
-			: structuredClone(defaultForm);
+				})
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: PaymentReviewFormProps = {
@@ -259,7 +278,10 @@ function openDialog(params: { mode: Mode; row?: PaymentReviewListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.payment-review.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.payment-review.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -269,33 +291,37 @@ function openDialog(params: { mode: Mode; row?: PaymentReviewListItem }) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = 缴费审核FormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = 缴费审核FormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = 缴费审核FormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = 缴费审核FormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					缴费审核FormInstance.value.plusFormInstance.handleReset();
+					缴费审核FormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await 缴费审核FormInstance.value.plusFormInstance.handleSubmit();
+					const res = await 缴费审核FormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -325,24 +351,21 @@ function handleOperationClick(operation: string, row: PaymentReviewListItem) {
 			openDialog({ mode: "add" });
 			break;
 		case "导出审核记录":
-			// 导出功能，暂时不处理
 			console.log(`${operation} 操作`, row);
 			break;
 		default:
 			console.log(`${operation} 操作`, row);
 	}
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -350,10 +373,10 @@ onMounted(async () => {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleOperationClick('批量审核', {} as PaymentReviewListItem)">
-					{{ transformI18n($t("批量审核")) }}
+					{{ transformI18n($t("property-manage_expense-manage.payment-review.button.batchAudit")) }}
 				</ElButton>
 				<ElButton type="info" @click="handleOperationClick('导出审核记录', {} as PaymentReviewListItem)">
-					{{ transformI18n($t("导出审核记录")) }}
+					{{ transformI18n($t("property-manage_expense-manage.payment-review.button.exportAuditRecord")) }}
 				</ElButton>
 			</template>
 
@@ -369,13 +392,17 @@ onMounted(async () => {
 				>
 					<template #operation="{ row }">
 						<ElButton v-if="row.审核状态 === '待审核'" type="primary" @click="handleOperationClick('审核通过', row)">
-							审核通过
+							{{ transformI18n($t("property-manage_expense-manage.payment-review.button.auditApprove")) }}
 						</ElButton>
 						<ElButton v-if="row.审核状态 === '待审核'" type="primary" @click="handleOperationClick('审核拒绝', row)">
-							审核拒绝
+							{{ transformI18n($t("property-manage_expense-manage.payment-review.button.auditReject")) }}
 						</ElButton>
-						<ElButton type="info" @click="handleOperationClick('查看详情', row)"> 查看详情 </ElButton>
-						<ElButton type="info" @click="handleOperationClick('查看凭证', row)"> 查看凭证 </ElButton>
+						<ElButton type="info" @click="handleOperationClick('查看详情', row)">
+							{{ transformI18n($t("property-manage_expense-manage.payment-review.button.viewDetails")) }}
+						</ElButton>
+						<ElButton type="info" @click="handleOperationClick('查看凭证', row)">
+							{{ transformI18n($t("property-manage_expense-manage.payment-review.button.viewVoucher")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
