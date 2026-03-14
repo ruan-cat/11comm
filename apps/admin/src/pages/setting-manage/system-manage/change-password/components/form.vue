@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cloneDeep } from "@pureadmin/utils";
 import { computed, ref, useTemplateRef } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
@@ -16,11 +17,6 @@ import {
 const props = defineProps<ChangePasswordRecordFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
 		return "";
@@ -29,30 +25,30 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 }
 
 const departmentTextMap = withLocale(() => ({
-	物业团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.property")),
-	开发团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.development")),
-	运营团队: renderI18n($t("settingManage.systemManage.changePassword.options.departments.operation")),
-	财务部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.finance")),
-	客服部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.customer")),
-	维修部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.maintenance")),
-	安保部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.security")),
-	绿化部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.greening")),
-	未知部门: renderI18n($t("settingManage.systemManage.changePassword.options.departments.unknown")),
+	物业团队: transformI18n($t("settingManage.systemManage.changePassword.options.departments.property")),
+	开发团队: transformI18n($t("settingManage.systemManage.changePassword.options.departments.development")),
+	运营团队: transformI18n($t("settingManage.systemManage.changePassword.options.departments.operation")),
+	财务部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.finance")),
+	客服部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.customer")),
+	维修部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.maintenance")),
+	安保部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.security")),
+	绿化部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.greening")),
+	未知部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.unknown")),
 }));
 
 const changeTypeTextMap = withLocale(() => ({
-	用户自行修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.selfService")),
-	管理员重置: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.adminReset")),
-	强制修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.forceChange")),
-	首次登录修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstLogin")),
-	首次设置: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstSetup")),
-	主动修改: renderI18n($t("settingManage.systemManage.changePassword.options.changeTypes.activeChange")),
+	用户自行修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.selfService")),
+	管理员重置: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.adminReset")),
+	强制修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.forceChange")),
+	首次登录修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstLogin")),
+	首次设置: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.firstSetup")),
+	主动修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.activeChange")),
 }));
 
 const statusTextMap = withLocale(() => ({
-	成功: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.success")),
-	失败: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.failed")),
-	待审核: renderI18n($t("settingManage.systemManage.changePassword.options.statuses.pending")),
+	成功: transformI18n($t("settingManage.systemManage.changePassword.options.statuses.success")),
+	失败: transformI18n($t("settingManage.systemManage.changePassword.options.statuses.failed")),
+	待审核: transformI18n($t("settingManage.systemManage.changePassword.options.statuses.pending")),
 }));
 
 function translateDepartmentLabel(value?: string | null) {
@@ -105,12 +101,12 @@ const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-const form = ref(structuredClone(props.form) as FieldValues & ChangePasswordRecord);
+const form = ref(cloneDeep(props.form) as FieldValues & ChangePasswordRecord);
 const formComputed = computed(() => form.value);
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.recordId")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.recordId")),
 		prop: "id",
 		valueType: "input",
 		fieldProps: {
@@ -118,7 +114,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.username")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.username")),
 		prop: "username",
 		valueType: "input",
 		fieldProps: {
@@ -126,7 +122,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.realName")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.realName")),
 		prop: "realName",
 		valueType: "input",
 		fieldProps: {
@@ -134,7 +130,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.department")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.department")),
 		prop: "department",
 		valueType: "select",
 		options: translatedDepartmentOptions.value,
@@ -143,7 +139,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeTime")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.changeTime")),
 		prop: "changeTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -154,7 +150,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeIp")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.changeIp")),
 		prop: "changeIp",
 		valueType: "input",
 		fieldProps: {
@@ -162,7 +158,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.changeType")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.changeType")),
 		prop: "changeType",
 		valueType: "select",
 		options: translatedChangeTypeOptions.value,
@@ -171,7 +167,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.operator")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.operator")),
 		prop: "operator",
 		valueType: "input",
 		fieldProps: {
@@ -179,7 +175,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.status")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedStatusOptions.value,
@@ -188,7 +184,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.systemManage.changePassword.fields.remark")),
+		label: transformI18n($t("settingManage.systemManage.changePassword.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
@@ -199,12 +195,12 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 const plusFormRules = withLocale<PlusFormRules>(() => {
-	const usernameLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.username"));
-	const realNameLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.realName"));
-	const departmentLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.department"));
-	const changeTimeLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.changeTime"));
-	const changeTypeLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.changeType"));
-	const statusLabel = renderI18n($t("settingManage.systemManage.changePassword.fields.status"));
+	const usernameLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.username"));
+	const realNameLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.realName"));
+	const departmentLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.department"));
+	const changeTimeLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.changeTime"));
+	const changeTypeLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.changeType"));
+	const statusLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.status"));
 
 	return {
 		username: [
