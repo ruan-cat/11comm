@@ -1,17 +1,19 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "车位信息",
+		// 车位信息
+		title: "property-manage_parking-manage.carport-info.pageTitle",
 		icon: "mdi:garage",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.parkingManage.carportInfo"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useCarportInfoListQuery } from "@/api/property-manage/parking-manage/carport-info";
 import { type CarportInfoFormProps, defaultForm } from "./components/form";
 import CarportInfoForm from "./components/form.vue";
@@ -19,15 +21,10 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { parkingSpaceStatusOptions, parkingSpaceTypeOptions, parkingLotOptions } from "@01s-11comm/type";
 import type { CarportInfoListItem, CarportInfoQueryParams } from "@01s-11comm/type";
 
-/** 车位信息表单组件实例 */
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 const carportInfoFormInstance = ref<InstanceType<typeof CarportInfoForm> | null>(null);
 
-// 1. 表格搜索栏配置
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<CarportInfoQueryParams> = {
 	parkingLot: "",
 	parkingSpace: "",
@@ -38,13 +35,9 @@ const plusSearchModelRef: FieldValues & Partial<CarportInfoQueryParams> = {
 	vehicleNumber: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -56,154 +49,160 @@ const {
 	handleCurrentPageChange,
 } = useCarportInfoListQuery(plusSearchDefaultValues);
 
-// 3. 搜索函数(固定写法)
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "停车场",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingLot")),
 		prop: "parkingLot",
 		valueType: "select",
 		options: parkingLotOptions,
 	},
 	{
-		label: "车位编号",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpace")),
 		prop: "parkingSpace",
 		valueType: "input",
 	},
 	{
-		label: "车位状态",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpaceStatus")),
 		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
 	},
 	{
-		label: "车位类型",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpaceType")),
 		prop: "parkingSpaceType",
 		valueType: "select",
 		options: parkingSpaceTypeOptions,
 	},
 	{
-		label: "业主姓名",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 	},
 	{
-		label: "联系电话",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 	},
 	{
-		label: "车辆号码",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.vehicleNumber")),
 		prop: "vehicleNumber",
 		valueType: "input",
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-// 4. 表格列配置
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "停车场",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingLot")),
+		),
 		prop: "parkingLot",
 		width: 120,
 	},
 	{
-		label: "车位",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpace")),
+		),
 		prop: "parkingSpace",
 		width: 120,
 	},
 	{
-		label: "车位状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpaceStatus")),
+		),
 		prop: "parkingSpaceStatus",
 		width: 120,
 	},
 	{
-		label: "车位类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpaceType")),
+		),
 		prop: "parkingSpaceType",
 		width: 120,
 	},
 	{
-		label: "面积",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_parking-manage.carport-info.fields.area"))),
 		prop: "area",
 		width: 120,
 	},
 	{
-		label: "业主姓名",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.ownerName")),
+		),
 		prop: "ownerName",
 		width: 120,
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.contactPhone")),
+		),
 		prop: "contactPhone",
 		width: 120,
 	},
 	{
-		label: "车辆号码",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.vehicleNumber")),
+		),
 		prop: "vehicleNumber",
 		width: 120,
 	},
 	{
-		label: "购买日期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.purchaseDate")),
+		),
 		prop: "purchaseDate",
 		width: 120,
 	},
 	{
-		label: "到期日期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.expiryDate")),
+		),
 		prop: "expiryDate",
 		width: 120,
 	},
 	{
-		label: "月租费用",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.monthlyRent")),
+		),
 		prop: "monthlyRent",
 		width: 120,
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_parking-manage.carport-info.fields.remark")),
+		),
 		prop: "remark",
 		minWidth: 150,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "车位信息",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_parking-manage.carport-info.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/** 模式控制 */
 const { mode, modeText, setMode, isAdd } = useMode();
 
-/** 模拟异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
@@ -213,14 +212,9 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}车位信息`;
-
-	/** 业务对象 */
 	const carportInfoFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: structuredClone({
@@ -228,18 +222,19 @@ function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 				...row,
 			});
 
-	/** 表单组件需要的props */
 	const formProps: CarportInfoFormProps = {
 		form: carportInfoFormVO,
 		defaultValues: carportInfoFormVO,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_parking-manage.carport-info.dialogs.addTitle"))
+				: transformI18n($t("property-manage_parking-manage.carport-info.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(CarportInfoForm, {
@@ -252,7 +247,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = carportInfoFormInstance.value?.formComputed;
@@ -260,14 +255,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					carportInfoFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await carportInfoFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -285,11 +280,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

@@ -1,189 +1,163 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { CarportInfoFormVO } from "@01s-11comm/type";
 import { parkingLotOptions, parkingSpaceStatusOptions, parkingSpaceTypeOptions } from "@01s-11comm/type";
 import type { CarportInfoFormProps } from "./form";
 
-/** 表单组件的 props */
 const props = defineProps<CarportInfoFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
-/** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & CarportInfoFormVO;
-
-/** 表单组件实例 要求对外直接导出本表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & CarportInfoFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & CarportInfoFormVO);
+const formComputed = computed(() => form.value);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
-
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "停车场",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingLot")),
 		prop: "parkingLot",
 		valueType: "select",
 		options: parkingLotOptions,
-		fieldProps: {
-			clearable: true,
-		},
+		fieldProps: { clearable: true },
 	},
 	{
-		label: "车位编号",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpace")),
 		prop: "parkingSpace",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入车位编号",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.parkingSpace")),
 		},
 	},
 	{
-		label: "车位状态",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpaceStatus")),
 		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
-		fieldProps: {
-			clearable: true,
-		},
+		fieldProps: { clearable: true },
 	},
 	{
-		label: "车位类型",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingSpaceType")),
 		prop: "parkingSpaceType",
 		valueType: "select",
 		options: parkingSpaceTypeOptions,
-		fieldProps: {
-			clearable: true,
-		},
+		fieldProps: { clearable: true },
 	},
 	{
-		label: "面积",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.area")),
 		prop: "area",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入车位面积",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.area")),
 		},
 	},
 	{
-		label: "业主姓名",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入业主姓名",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.ownerName")),
 		},
 	},
 	{
-		label: "联系电话",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入联系电话",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.contactPhone")),
 		},
 	},
 	{
-		label: "车辆号码",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.vehicleNumber")),
 		prop: "vehicleNumber",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入车辆号码",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.vehicleNumber")),
 		},
 	},
 	{
-		label: "购买日期",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.purchaseDate")),
 		prop: "purchaseDate",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
-			placeholder: "请选择购买日期",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.purchaseDate")),
 		},
 	},
 	{
-		label: "到期日期",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.expiryDate")),
 		prop: "expiryDate",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "date",
-			placeholder: "请选择到期日期",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.expiryDate")),
 		},
 	},
 	{
-		label: "月租费用",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.monthlyRent")),
 		prop: "monthlyRent",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			precision: 2,
-			placeholder: "请输入月租费用",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.monthlyRent")),
 		},
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
-			placeholder: "请输入备注信息",
+			placeholder: transformI18n($t("property-manage_parking-manage.carport-info.placeholders.remark")),
 			rows: 3,
 		},
 	},
 ]);
 
-/** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingLot: [
 		{
 			required: true,
-			message: "请选择停车场",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.parkingLot")),
 			trigger: "change",
 		},
 	],
 	parkingSpace: [
 		{
 			required: true,
-			message: "请输入车位编号",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.parkingSpace")),
 			trigger: "blur",
 		},
 	],
 	parkingSpaceStatus: [
 		{
 			required: true,
-			message: "请选择车位状态",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.parkingSpaceStatus")),
 			trigger: "change",
 		},
 	],
 	parkingSpaceType: [
 		{
 			required: true,
-			message: "请选择车位类型",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.parkingSpaceType")),
 			trigger: "change",
 		},
 	],
 	area: [
 		{
 			required: true,
-			message: "请输入车位面积",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.area")),
 			trigger: "blur",
 		},
 	],
 	contactPhone: [
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.contactPhoneFormat")),
 			trigger: "blur",
 		},
 	],
@@ -191,13 +165,12 @@ const plusFormRules = ref<PlusFormRules>({
 		{
 			type: "number",
 			min: 0,
-			message: "月租费用需大于等于0",
+			message: transformI18n($t("property-manage_parking-manage.carport-info.rules.monthlyRent")),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
-/** 默认对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,
@@ -205,7 +178,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
