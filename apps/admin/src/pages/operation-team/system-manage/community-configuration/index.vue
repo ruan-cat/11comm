@@ -26,12 +26,7 @@ import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/
 import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -41,17 +36,17 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 }
 
 const settingTypeTextMap = withLocale(() => ({
-	系统设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.system")),
-	业务设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.business")),
-	界面设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.ui")),
-	功能设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.feature")),
-	安全设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.security")),
+	系统设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.system")),
+	业务设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.business")),
+	界面设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.ui")),
+	功能设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.feature")),
+	安全设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.security")),
 }));
 
 const statusTextMap = withLocale(() => ({
-	启用: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.enabled")),
-	禁用: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.disabled")),
-	待审核: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.pending")),
+	启用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.enabled")),
+	禁用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.disabled")),
+	待审核: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.pending")),
 }));
 
 function translateSettingTypeLabel(value?: string | null) {
@@ -104,7 +99,7 @@ const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
 		),
 		prop: "communityName",
 		width: 150,
@@ -112,53 +107,57 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingName")),
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingName")),
 		),
 		prop: "settingName",
 		width: 150,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingValue")),
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingValue")),
 		),
 		prop: "settingValue",
 		width: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingType")),
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingType")),
 		),
 		prop: "settingType",
 		width: 120,
 		cellRenderer: ({ row }) => translateSettingTypeLabel(row.settingType),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.status")),
+		),
 		prop: "statusText",
 		width: 100,
 		cellRenderer: ({ row }) => translateStatusLabel(row.statusText),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.remark"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.remark")),
+		),
 		prop: "remark",
 		minWidth: 200,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.createTime")),
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.createTime")),
 		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.updateTime")),
+			transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.updateTime")),
 		),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -166,39 +165,36 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operationTeam.systemManage.communityConfiguration.tableTitle")),
+	title: transformI18n($t("operationTeam.systemManage.communityConfiguration.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingName")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingName")),
 		prop: "settingName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingType")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingType")),
 		prop: "settingType",
 		valueType: "select",
 		options: translatedSettingTypeOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.dataStatus")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.dataStatus")),
 		prop: "statusCd",
 		valueType: "select",
 		options: translatedCommunityStatusOptions.value,
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -249,10 +245,10 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 	};
 
 	const title = isAdd.value
-		? () => renderI18n($t("operationTeam.systemManage.communityConfiguration.dialogs.addTitle"))
+		? () => transformI18n($t("operationTeam.systemManage.communityConfiguration.dialogs.addTitle"))
 		: isEdit.value
-			? () => renderI18n($t("operationTeam.systemManage.communityConfiguration.dialogs.editTitle"))
-			: () => renderI18n($t("operationTeam.systemManage.communityConfiguration.dialogs.infoTitle"));
+			? () => transformI18n($t("operationTeam.systemManage.communityConfiguration.dialogs.editTitle"))
+			: () => transformI18n($t("operationTeam.systemManage.communityConfiguration.dialogs.infoTitle"));
 
 	const defaultValues = formProps.defaultValues;
 
@@ -273,7 +269,7 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = communityConfigurationFormInstance.value?.formComputed;
@@ -283,14 +279,14 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					communityConfigurationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await communityConfigurationFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -314,6 +310,8 @@ function openDialog(params: { mode: Mode; row?: CommunityConfigListItem }) {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
