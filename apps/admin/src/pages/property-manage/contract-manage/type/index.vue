@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "合同类型",
+		// 合同类型
+		title: "property-manage_contract-manage.contract-type.pageTitle",
 		icon: "carbon:category",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.contractManage.type"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
 
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -22,11 +25,32 @@ import AddForm from "./components/form.vue";
 import { useTypeListQuery } from "@/api/property-manage/contract-manage/type";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
+import { cloneDeep } from "@pureadmin/utils";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 const addFormInstance = ref<InstanceType<typeof AddForm> | null>(null);
+
+const auditLabelMap = {
+	yes: "property-manage_contract-manage.contract-type.options.auditYes",
+	no: "property-manage_contract-manage.contract-type.options.auditNo",
+} as const;
+
+function translateAuditLabel(value?: string | null) {
+	if (!value) return value ?? "";
+	const key = auditLabelMap[value as keyof typeof auditLabelMap];
+	return key ? transformI18n($t(key)) : value;
+}
+
+const translatedAuditTypeOptions = withLocale(() =>
+	auditTypeOptions.map((option) => ({
+		...option,
+		label: translateAuditLabel(String(option.value)),
+	})),
+);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -47,7 +71,6 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -58,31 +81,43 @@ const {
 } = useTypeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "类型名称",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-type.fields.typeName")),
+		),
 		prop: "typeName",
 		width: 120,
 	},
 	{
-		label: "是否审核",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-type.fields.isAudit")),
+		),
 		prop: "isAudit",
 		width: 120,
+		cellRenderer: ({ row }) => translateAuditLabel(row.isAudit),
 	},
 	{
-		label: "描述",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-type.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-type.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 180,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 360,
 		fixed: "right",
 		slot: "operation",
@@ -90,39 +125,33 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "合同类型",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_contract-manage.contract-type.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	/** 合同类型名称 */
 	{
-		label: "合同类型名称",
+		label: transformI18n($t("property-manage_contract-manage.contract-type.search.typeName")),
 		prop: "typeName",
 		valueType: "input",
 	},
 	/** 审核类型 */
 	{
-		label: "审核类型",
+		label: transformI18n($t("property-manage_contract-manage.contract-type.search.isAudit")),
 		prop: "isAudit",
 		valueType: "select",
-		options: auditTypeOptions,
+		options: translatedAuditTypeOptions.value,
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -150,20 +179,17 @@ function openDialog(params: { mode: Mode; row?: TypeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}合同类型`;
-
 	/** 业务对象 */
 	const contractTypeFormVO: ContractTypeFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					typeName: row?.typeName || "",
 					isAudit: (row?.isAudit === "是" ? "是" : "否") as IsAuditType,
 					description: row?.description || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: AddFormProps = {
@@ -176,7 +202,10 @@ function openDialog(params: { mode: Mode; row?: TypeListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_contract-manage.contract-type.dialogs.addTitle"))
+				: transformI18n($t("property-manage_contract-manage.contract-type.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -186,35 +215,39 @@ function openDialog(params: { mode: Mode; row?: TypeListItem }) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = addFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = addFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = addFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = addFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					addFormInstance.value.plusFormInstance.handleReset();
+					addFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await addFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await addFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -247,19 +280,16 @@ function handleExtend(row: TypeListItem) {
 function addAuditPeople() {
 	consola.log("添加审核人员");
 }
-
-/** 挂载完后进行初始化 */
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -269,7 +299,9 @@ onMounted(async () => {
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
-				<ElButton type="primary" @click="addAuditPeople"> 添加审核人员 </ElButton>
+				<ElButton type="primary" @click="addAuditPeople">
+					{{ transformI18n($t("property-manage_contract-manage.contract-type.addpeople")) }}
+				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">

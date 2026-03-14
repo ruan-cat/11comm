@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
-import type { FieldValues, PlusColumn } from "plus-pro-components";
-import type { PlusFormRules } from "@/config/constant";
+import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 import type { ContractTypeFormVO } from "@01s-11comm/type";
 import { auditTypeOptions } from "@01s-11comm/type";
@@ -9,6 +10,7 @@ import { auditTypeOptions } from "@01s-11comm/type";
 import { AddFormProps, defaultForm } from "./form";
 
 const props = defineProps<AddFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ContractTypeFormVO;
@@ -18,46 +20,50 @@ const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & ContractTypeFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & ContractTypeFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
+const auditLabelMap = {
+	yes: "property-manage_contract-manage.contract-type.options.auditYes",
+	no: "property-manage_contract-manage.contract-type.options.auditNo",
+} as const;
+
+function translateAuditLabel(value?: string | null) {
+	if (!value) return value ?? "";
+	const key = auditLabelMap[value as keyof typeof auditLabelMap];
+	return key ? transformI18n($t(key)) : value;
+}
+
+const translatedAuditTypeOptions = withLocale(() =>
+	auditTypeOptions.map((option) => ({
+		...option,
+		label: translateAuditLabel(String(option.value)),
+	})),
+);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	/** 类型名称 */
 	{
-		label: "类型名称",
+		label: transformI18n($t("property-manage_contract-manage.contract-type.form.fields.typeName")),
 		prop: "typeName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入合同类型名称",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-type.form.placeholders.typeName")),
 		},
 	},
 
 	/** 是否审核 */
 	{
-		label: "是否审核",
+		label: transformI18n($t("property-manage_contract-manage.contract-type.form.fields.isAudit")),
 		prop: "isAudit",
 		valueType: "select",
-		options: auditTypeOptions,
+		options: translatedAuditTypeOptions.value,
 		required: true,
 		fieldProps: {
 			clearable: true,
@@ -67,29 +73,47 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	/** 描述 */
 	{
-		label: "描述",
+		label: transformI18n($t("property-manage_contract-manage.contract-type.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
 			clearable: true,
-			placeholder: "请输入合同类型的详细描述",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-type.form.placeholders.description")),
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	typeName: [
-		{ required: true, message: "请输入类型名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-type.form.validation.typeNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("property-manage_contract-manage.contract-type.form.validation.typeNameLength")),
+			trigger: "blur",
+		},
 	],
-	isAudit: [{ required: true, message: "请选择是否审核", trigger: "change" }],
-	description: [{ max: 500, message: "描述长度不能超过500个字符", trigger: "blur" }],
-});
+	isAudit: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-type.form.validation.isAuditRequired")),
+			trigger: "change",
+		},
+	],
+	description: [
+		{
+			max: 500,
+			message: transformI18n($t("property-manage_contract-manage.contract-type.form.validation.descriptionLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -104,7 +128,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
