@@ -10,12 +10,7 @@ import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
 import { type PropertyManagementCompanyFormProps } from "./form";
 
 const props = defineProps<PropertyManagementCompanyFormProps>();
-const { locale, withLocale } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { withLocale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PropertyManagementCompanyFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -26,121 +21,133 @@ const formComputed = computed(() => form.value);
 
 const translatedCompanyTypeOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.companyTypes.stateOwned")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.options.companyTypes.stateOwned")),
 		value: "state_owned",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.companyTypes.private")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.options.companyTypes.private")),
 		value: "private",
 	},
 ]);
 
 const translatedServiceLevelOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level1")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level1")),
 		value: "level_1",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level2")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level2")),
 		value: "level_2",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level3")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level3")),
 		value: "level_3",
 	},
 ]);
 
 const translatedOperationStatusOptions = withLocale(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.operationStatuses.operating")),
+		label: transformI18n(
+			$t("operation-team_data-manage.property-management-company.options.operationStatuses.operating"),
+		),
 		value: "operating",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.operationStatuses.suspended")),
+		label: transformI18n(
+			$t("operation-team_data-manage.property-management-company.options.operationStatuses.suspended"),
+		),
 		value: "suspended",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.options.operationStatuses.cancelled")),
+		label: transformI18n(
+			$t("operation-team_data-manage.property-management-company.options.operationStatuses.cancelled"),
+		),
 		value: "cancelled",
 	},
 ]);
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
 		prop: "name",
 		valueType: "input",
 		width: "240px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.companyName")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.placeholders.companyName")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.address")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.address")),
 		prop: "address",
 		valueType: "input",
 		width: "320px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.address")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.placeholders.address")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.phone")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.placeholders.phone")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.administrator")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.administrator")),
 		prop: "administrator",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.administrator")),
+			placeholder: transformI18n(
+				$t("operation-team_data-manage.property-management-company.placeholders.administrator"),
+			),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.legalRepresentative")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.legalRepresentative")),
 		prop: "legalRepresentative",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.legalRepresentative")),
+			placeholder: transformI18n(
+				$t("operation-team_data-manage.property-management-company.placeholders.legalRepresentative"),
+			),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.establishmentDate")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.establishmentDate")),
 		prop: "establishmentDate",
 		valueType: "date-picker",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.establishmentDate")),
+			placeholder: transformI18n(
+				$t("operation-team_data-manage.property-management-company.placeholders.establishmentDate"),
+			),
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.landmark")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.landmark")),
 		prop: "landmark",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.landmark")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.placeholders.landmark")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.communityCount")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.communityCount")),
 		prop: "communityCount",
 		valueType: "input-number",
 		width: "160px",
@@ -148,11 +155,13 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			min: 0,
 			max: 9999,
 			precision: 0,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.communityCount")),
+			placeholder: transformI18n(
+				$t("operation-team_data-manage.property-management-company.placeholders.communityCount"),
+			),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.companyType")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyType")),
 		prop: "companyType",
 		valueType: "select",
 		width: "160px",
@@ -160,39 +169,43 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.companyType")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.placeholders.companyType")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.serviceLevel")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.serviceLevel")),
 		prop: "serviceLevel",
 		valueType: "select",
 		width: "140px",
 		options: translatedServiceLevelOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.serviceLevel")),
+			placeholder: transformI18n(
+				$t("operation-team_data-manage.property-management-company.placeholders.serviceLevel"),
+			),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.operationStatus")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.operationStatus")),
 		prop: "operationStatus",
 		valueType: "select",
 		width: "140px",
 		options: translatedOperationStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.operationStatus")),
+			placeholder: transformI18n(
+				$t("operation-team_data-manage.property-management-company.placeholders.operationStatus"),
+			),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.remarks")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.placeholders.remarks")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.placeholders.remarks")),
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
@@ -204,120 +217,142 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.companyNameRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.companyNameRequired"),
+			),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.companyNameLength")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.companyNameLength")),
 			trigger: "blur",
 		},
 	],
 	address: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.addressRequired")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.addressRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 5,
 			max: 200,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.addressLength")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.addressLength")),
 			trigger: "blur",
 		},
 	],
 	phone: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.phoneRequired")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.phoneRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^((0\d{2,3}-\d{7,8})|(1[3-9]\d{9}))$/,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.phoneInvalid")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.phoneInvalid")),
 			trigger: "blur",
 		},
 	],
 	administrator: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.administratorRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.administratorRequired"),
+			),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 10,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.administratorLength")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.administratorLength"),
+			),
 			trigger: "blur",
 		},
 	],
 	legalRepresentative: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.legalRepresentativeRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.legalRepresentativeRequired"),
+			),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 10,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.legalRepresentativeLength")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.legalRepresentativeLength"),
+			),
 			trigger: "blur",
 		},
 	],
 	establishmentDate: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.establishmentDateRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.establishmentDateRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	landmark: [
 		{
 			max: 50,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.landmarkLength")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.landmarkLength")),
 			trigger: "blur",
 		},
 	],
 	communityCount: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.communityCountRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.communityCountRequired"),
+			),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 0,
 			max: 9999,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.communityCountRange")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.communityCountRange"),
+			),
 			trigger: "blur",
 		},
 	],
 	companyType: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.companyTypeRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.companyTypeRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	serviceLevel: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.serviceLevelRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.serviceLevelRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	operationStatus: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.operationStatusRequired")),
+			message: transformI18n(
+				$t("operation-team_data-manage.property-management-company.validation.operationStatusRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	remarks: [
 		{
 			max: 500,
-			message: renderI18n($t("operation-team_data-manage.property-management-company.validation.remarksLength")),
+			message: transformI18n($t("operation-team_data-manage.property-management-company.validation.remarksLength")),
 			trigger: "blur",
 		},
 	],
