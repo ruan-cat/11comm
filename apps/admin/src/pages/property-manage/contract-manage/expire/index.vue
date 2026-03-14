@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "到期合同",
+		// 到期合同
+		title: "property-manage_contract-manage.expired-contract.pageTitle",
 		icon: "mdi:calendar-alert",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.contractManage.expire"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { addDialog, closeDialog, updateDialog, closeAllDialog } from "@/components/ReDialog";
+import { ref, onMounted, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
 	type ContractExpireFormVO,
@@ -25,6 +27,70 @@ import { useExpireListQuery } from "@/api/property-manage/contract-manage/expire
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
+import { cloneDeep } from "@pureadmin/utils";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+const statusTextMap = withLocale(() => ({
+	未处理: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.unprocessed")),
+	处理中: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.processing")),
+	已续签: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.renewed")),
+	已终止: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.terminated")),
+	已延期: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.delayed")),
+}));
+
+function translateStatusLabel(value?: string | null) {
+	if (!value) return "";
+	return statusTextMap.value[value] ?? value;
+}
+
+const translatedContractTypeOptions = withLocale(() =>
+	contractTypeOptions.map((item) => ({
+		...item,
+		label: transformI18n(
+			$t(
+				`property-manage_contract-manage.expired-contract.form.options.contractTypes.${
+					item.value === "采购合同"
+						? "purchase"
+						: item.value === "销售合同"
+							? "sales"
+							: item.value === "服务合同"
+								? "service"
+								: item.value === "租赁合同"
+									? "lease"
+									: item.value === "劳务合同"
+										? "labor"
+										: item.value === "技术合同"
+											? "technology"
+											: "purchase"
+				}`,
+			),
+		),
+	})),
+);
+
+const translatedHandlingStatusOptions = withLocale(() =>
+	handlingStatusOptions.map((item) => ({
+		...item,
+		label: transformI18n(
+			$t(
+				`property-manage_contract-manage.expired-contract.options.processingStatuses.${
+					item.value === "未处理"
+						? "unprocessed"
+						: item.value === "处理中"
+							? "processing"
+							: item.value === "已续签"
+								? "renewed"
+								: item.value === "已终止"
+									? "terminated"
+									: item.value === "已延期"
+										? "delayed"
+										: "unprocessed"
+				}`,
+			),
+		),
+	})),
+);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -59,135 +125,145 @@ const {
 } = useExpireListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "合同名称",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractName")),
+		),
 		prop: "contractName",
 		width: 160,
 	},
 	{
-		label: "合同编号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractNumber")),
+		),
 		prop: "contractNumber",
 		width: 140,
 	},
 	{
-		label: "合同类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractType")),
+		),
 		prop: "contractType",
 		width: 120,
 	},
 	{
-		label: "甲方",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.partyA")),
+		),
 		prop: "partyA",
 		width: 140,
 	},
 	{
-		label: "乙方",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.partyB")),
+		),
 		prop: "partyB",
 		width: 140,
 	},
 	{
-		label: "合同金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractAmount")),
+		),
 		prop: "contractAmount",
 		width: 120,
 	},
 	{
-		label: "到期时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.endTime")),
+		),
 		prop: "endTime",
 		width: 160,
 	},
 	{
-		label: "处理状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.processingStatus")),
+		),
 		prop: "processingStatus",
 		width: 100,
-		formatter: (row: ExpireListItem) => {
-			const statusMap = {
-				未处理: "未处理",
-				处理中: "处理中",
-				已续签: "已续签",
-				已终止: "已终止",
-				已延期: "已延期",
-			};
-			return statusMap[row.processingStatus] || row.processingStatus;
-		},
+		cellRenderer: ({ row }) => translateStatusLabel(row.processingStatus),
 	},
 	{
-		label: "处理人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.processor")),
+		),
 		prop: "processor",
 		width: 100,
 	},
 	{
-		label: "处理时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.processTime")),
+		),
 		prop: "processTime",
 		width: 160,
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.expired-contract.fields.remark")),
+		),
 		prop: "remark",
 		width: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "到期合同",
+/** 表格操作栏组件配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_contract-manage.expired-contract.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
- * 表格搜索栏组件 表单配置
+ * 表格搜索栏组件表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "合同名称",
+		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractName")),
 		prop: "contractName",
 		valueType: "input",
 	},
 	{
-		label: "合同编号",
+		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractNumber")),
 		prop: "contractNumber",
 		valueType: "input",
 	},
 	{
-		label: "合同类型",
+		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractType")),
 		prop: "contractType",
 		valueType: "select",
-		options: contractTypeOptions,
+		options: translatedContractTypeOptions.value,
 	},
 	{
-		label: "甲方",
+		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.partyA")),
 		prop: "partyA",
 		valueType: "input",
 	},
 	{
-		label: "乙方",
+		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.partyB")),
 		prop: "partyB",
 		valueType: "input",
 	},
 	{
-		label: "处理状态",
+		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.processingStatus")),
 		prop: "processingStatus",
 		valueType: "select",
-		options: handlingStatusOptions,
+		options: translatedHandlingStatusOptions.value,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+/** 表格搜索栏组件配置 */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -226,14 +302,11 @@ interface OpenDialogParams {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}合同到期处理`;
-
 	/** 业务对象 */
 	const contractExpireFormVO: ContractExpireFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					contractName: row?.contractName || "",
 					contractNumber: row?.contractNumber || "",
@@ -254,7 +327,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					processor: row?.processor || "",
 					description: "", // Missing in list item
 				} as ContractExpireFormVO)
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractExpireFormProps = {
@@ -267,7 +340,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_contract-manage.expired-contract.dialogs.addTitle"))
+				: transformI18n($t("property-manage_contract-manage.expired-contract.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -283,7 +359,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = contractExpireFormInstance.value.formComputed;
@@ -292,7 +368,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					contractExpireFormInstance.value.plusFormInstance.handleReset();
@@ -300,7 +376,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await contractExpireFormInstance.value.plusFormInstance.handleSubmit();
@@ -323,11 +399,14 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -353,8 +432,12 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info" @click="openDialog({ mode: 'add', row })"> 续签处理 </ElButton>
-						<ElButton type="danger" @click="openDialog({ mode: 'add', row })"> 终止处理 </ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'add', row })">
+							{{ transformI18n($t("property-manage_contract-manage.expired-contract.renewalProcess")) }}
+						</ElButton>
+						<ElButton type="danger" @click="openDialog({ mode: 'add', row })">
+							{{ transformI18n($t("property-manage_contract-manage.expired-contract.terminationProcess")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
