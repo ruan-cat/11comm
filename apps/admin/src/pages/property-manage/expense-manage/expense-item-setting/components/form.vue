@@ -4,11 +4,16 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import type { ExpenseItemFeeType, ExpenseItemSettingFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { ExpenseItemSettingFormProps, defaultForm } from "./form";
 
 const props = defineProps<ExpenseItemSettingFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ExpenseItemSettingFormVO;
@@ -25,30 +30,120 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ExpenseItemSettingFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & ExpenseItemSettingFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedExpenseIdentifierOptions = withLocale(() => [
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-item-setting.form.options.expenseIdentifier.recurring"),
+		),
+		value: "周期性费用",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-item-setting.form.options.expenseIdentifier.oneTime"),
+		),
+		value: "一次性费用",
+	},
+]);
+
+const translatedPaymentTypeOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.paymentType.prepaid")),
+		value: "预付费",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.paymentType.postpaid")),
+		value: "后付费",
+	},
+]);
+
+const translatedAccountDeductionOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.accountDeduction.yes")),
+		value: "是",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.accountDeduction.no")),
+		value: "否",
+	},
+]);
+
+const translatedMobilePaymentOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.mobilePayment.yes")),
+		value: "是",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.mobilePayment.no")),
+		value: "否",
+	},
+]);
+
+const translatedRoundingModeOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.roundingMode.round")),
+		value: "四舍五入",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.roundingMode.ceil")),
+		value: "向上取整",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.roundingMode.floor")),
+		value: "向下取整",
+	},
+]);
+
+const translatedDecimalPlacesOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.decimalPlaces.integer")),
+		value: "取整",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.decimalPlaces.one")),
+		value: "1位",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.decimalPlaces.two")),
+		value: "2位",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.decimalPlaces.three")),
+		value: "3位",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.decimalPlaces.four")),
+		value: "4位",
+	},
+]);
+
+const translatedStatusOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.status.enabled")),
+		value: "启用",
+	},
+	{
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.status.disabled")),
+		value: "禁用",
+	},
+]);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 费用类型
 	{
-		label: "费用类型",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.feeType")),
 		prop: "feeType",
 	},
 
 	// 收费项目
 	{
-		label: "收费项目",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.expenseItem")),
 		prop: "expenseItem",
 		valueType: "input",
 		required: true,
@@ -56,30 +151,24 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 费用标识
 	{
-		label: "费用标识",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.expenseIdentifier")),
 		prop: "expenseIdentifier",
 		valueType: "select",
-		options: [
-			{ label: "周期性费用", value: "周期性费用" },
-			{ label: "一次性费用", value: "一次性费用" },
-		],
+		options: translatedExpenseIdentifierOptions.value,
 		required: true,
 	},
 
 	// 付费类型
 	{
-		label: "付费类型",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.paymentType")),
 		prop: "paymentType",
 		valueType: "select",
-		options: [
-			{ label: "预付费", value: "预付费" },
-			{ label: "后付费", value: "后付费" },
-		],
+		options: translatedPaymentTypeOptions.value,
 		required: true,
 	},
 	// 缴费周期
 	{
-		label: "缴费周期(单位:月)",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.paymentCycle")),
 		prop: "paymentCycle",
 		valueType: "input",
 		required: true,
@@ -87,7 +176,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	// 预付期
 	{
-		label: "预付期(单位:天)",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.prepaymentPeriod")),
 		prop: "prepaymentPeriod",
 		valueType: "input",
 		required: true,
@@ -95,113 +184,197 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	// 单位
 	{
-		label: "单位",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.unit")),
 		prop: "unit",
 		valueType: "input",
 		required: true,
 	},
 	// 账户抵扣
 	{
-		label: "账户抵扣",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.accountDeduction")),
 		prop: "accountDeduction",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: translatedAccountDeductionOptions.value,
 		required: true,
 	},
 	// 手机缴费
 	{
-		label: "手机缴费",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.mobilePayment")),
 		prop: "mobilePayment",
 		valueType: "select",
-		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
-		],
+		options: translatedMobilePaymentOptions.value,
 		required: true,
 	},
 	// 进位方式
 	{
-		label: "进位方式",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.roundingMode")),
 		prop: "roundingMode",
 		valueType: "select",
-		options: [
-			{ label: "四舍五入", value: "四舍五入" },
-			{ label: "向上取整", value: "向上取整" },
-			{ label: "向下取整", value: "向下取整" },
-		],
+		options: translatedRoundingModeOptions.value,
 		required: true,
 	},
 	// 保留小数位
 	{
-		label: "保留小数位",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.decimalPlaces")),
 		prop: "decimalPlaces",
 		valueType: "select",
-		options: [
-			{ label: "取整", value: "取整" },
-			{ label: "1位", value: "1位" },
-			{ label: "2位", value: "2位" },
-			{ label: "3位", value: "3位" },
-			{ label: "4位", value: "4位" },
-		],
+		options: translatedDecimalPlacesOptions.value,
 		required: true,
 	},
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.status")),
 		prop: "status",
 		valueType: "select",
-		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
-		],
+		options: translatedStatusOptions.value,
 		required: true,
 	},
 	// 计算公式
 	{
-		label: "计算公式",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.formula")),
 		prop: "formula",
 		valueType: "input",
 		required: true,
 	},
 	// 计费单价
 	{
-		label: "计费单价",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.billingUnitPrice")),
 		prop: "billingUnitPrice",
 		valueType: "input",
 		required: true,
 	},
 	// 固定费用
 	{
-		label: "固定费用",
+		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.fixedFee")),
 		prop: "fixedFee",
 		valueType: "input",
 		required: true,
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	expenseItem: [{ required: true, message: "请输入收费项目", trigger: "blur" }],
-	expenseIdentifier: [{ required: true, message: "请选择费用标识", trigger: "change" }],
-	paymentType: [{ required: true, message: "请选择付费类型", trigger: "change" }],
-	paymentCycle: [{ required: true, message: "请输入缴费周期", trigger: "blur" }],
-	prepaymentPeriod: [{ required: true, message: "请输入预付期", trigger: "blur" }],
-	unit: [{ required: true, message: "请输入单位", trigger: "blur" }],
-	accountDeduction: [{ required: true, message: "请选择账户抵扣", trigger: "change" }],
-	mobilePayment: [{ required: true, message: "请选择手机缴费", trigger: "change" }],
-	roundingMode: [{ required: true, message: "请选择进位方式", trigger: "change" }],
-	decimalPlaces: [{ required: true, message: "请选择保留小数位", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-	formula: [{ required: true, message: "请输入计算公式", trigger: "blur" }],
-	billingUnitPrice: [{ required: true, message: "请输入计费单价", trigger: "blur" }],
-	fixedFee: [{ required: true, message: "请输入固定费用", trigger: "blur" }],
-});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	expenseItem: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.expenseItemRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	expenseIdentifier: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.expenseIdentifierRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	paymentType: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.paymentTypeRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	paymentCycle: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.paymentCycleRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	prepaymentPeriod: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.prepaymentPeriodRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	unit: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.validation.unitRequired")),
+			trigger: "blur",
+		},
+	],
+	accountDeduction: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.accountDeductionRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	mobilePayment: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.mobilePaymentRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	roundingMode: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.roundingModeRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	decimalPlaces: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.decimalPlacesRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+	formula: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.validation.formulaRequired")),
+			trigger: "blur",
+		},
+	],
+	billingUnitPrice: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.billingUnitPriceRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	fixedFee: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-item-setting.form.validation.fixedFeeRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -210,13 +383,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
