@@ -4,12 +4,15 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { $t, transformI18n } from "@/plugins/i18n";
 import type { RefreshCacheFormVO } from "@01s-11comm/type";
 import { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions } from "@01s-11comm/type";
 
 import { RefreshCacheFormProps, defaultForm } from "./form";
 
 const props = defineProps<RefreshCacheFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 Default values for form reset */
 const defaultValues = props.defaultValues as FieldValues & RefreshCacheFormVO;
@@ -34,42 +37,42 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 Form columns configuration */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "缓存编码",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode")),
 		prop: "cacheCode",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入缓存编码，如 REDIS_001",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.cacheCode")),
 		},
 	},
 	{
-		label: "缓存名称",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName")),
 		prop: "cacheName",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入缓存名称",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.cacheName")),
 		},
 	},
 	{
-		label: "缓存键名",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheKey")),
 		prop: "cacheKey",
 		valueType: "input",
 		required: true,
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入缓存键名，如 user:info:{id}",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.cacheKey")),
 		},
 	},
 	{
-		label: "缓存类型",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheType")),
 		prop: "cacheType",
 		valueType: "select",
 		required: true,
@@ -78,22 +81,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择缓存类型",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.cacheType")),
 		},
 	},
 	{
-		label: "缓存分组",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheGroup")),
 		prop: "cacheGroup",
 		valueType: "input",
 		required: true,
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入缓存分组，如 user, order, product",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.cacheGroup")),
 		},
 	},
 	{
-		label: "过期时间",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.expireTimeSeconds")),
 		prop: "expireTime",
 		valueType: "input-number",
 		required: true,
@@ -102,24 +105,24 @@ const plusFormColumns = ref<PlusColumn[]>([
 			min: 1,
 			max: 86400 * 30,
 			controlsPosition: "right",
-			placeholder: "秒",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.expireTime")),
 		},
 	},
 	{
-		label: "缓存描述",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入缓存描述信息",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.description")),
 			rows: 3,
 			maxlength: 200,
 			showWordLimit: true,
 		},
 	},
 	{
-		label: "刷新策略",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.refreshPolicy")),
 		prop: "refreshPolicy",
 		valueType: "select",
 		required: true,
@@ -128,11 +131,11 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择刷新策略",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.refreshPolicy")),
 		},
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.status")),
 		prop: "status",
 		valueType: "select",
 		required: true,
@@ -140,50 +143,110 @@ const plusFormColumns = ref<PlusColumn[]>([
 		options: cacheStatusOptions,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请选择状态",
+			placeholder: transformI18n($t("devTeam.cacheManage.refreshCache.form.placeholders.status")),
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 Computed form columns */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 Form validation rules */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	cacheCode: [
-		{ required: true, message: "请输入缓存编码", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.enterCacheCode")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.cacheCodeLength")),
+			trigger: "blur",
+		},
 		{
 			pattern: /^[A-Z0-9_]+$/,
-			message: "缓存编码只能包含大写字母、数字和下划线",
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.cacheCodePattern")),
 			trigger: "blur",
 		},
 	],
 	cacheName: [
-		{ required: true, message: "请输入缓存名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	cacheKey: [
-		{ required: true, message: "请输入缓存键名", trigger: "blur" },
-		{ min: 3, max: 100, message: "长度在 3 到 100 个字符", trigger: "blur" },
 		{
-			pattern: /^[a-zA-Z0-9_:{}[\].-]+$/,
-			message: "缓存键名只能包含字母、数字、下划线、冒号、大括号、中括号、点和横杠",
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.enterCacheName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.cacheNameLength")),
 			trigger: "blur",
 		},
 	],
-	cacheType: [{ required: true, message: "请选择缓存类型", trigger: "change" }],
+	cacheKey: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.enterCacheKey")),
+			trigger: "blur",
+		},
+		{
+			min: 3,
+			max: 100,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.cacheKeyLength")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[a-zA-Z0-9_:{}[\].-]+$/,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.cacheKeyPattern")),
+			trigger: "blur",
+		},
+	],
+	cacheType: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.selectCacheType")),
+			trigger: "change",
+		},
+	],
 	cacheGroup: [
-		{ required: true, message: "请输入缓存分组", trigger: "blur" },
-		{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.enterCacheGroup")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 30,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.cacheGroupLength")),
+			trigger: "blur",
+		},
 	],
 	expireTime: [
-		{ required: true, message: "请输入过期时间", trigger: "blur" },
-		{ type: "number", min: 1, message: "过期时间必须大于0秒", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.enterExpireTime")),
+			trigger: "blur",
+		},
+		{
+			type: "number",
+			min: 1,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.expireTimeMin")),
+			trigger: "blur",
+		},
 	],
-	refreshPolicy: [{ required: true, message: "请选择刷新策略", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-});
+	refreshPolicy: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.selectRefreshPolicy")),
+			trigger: "change",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.cacheManage.refreshCache.form.validation.selectStatus")),
+			trigger: "change",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -198,7 +261,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
