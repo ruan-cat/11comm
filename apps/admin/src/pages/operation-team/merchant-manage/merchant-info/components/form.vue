@@ -13,7 +13,6 @@ import { MerchantInfoFormProps } from "./form";
 const props = defineProps<MerchantInfoFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-
 const defaultValues = props.defaultValues as FieldValues & MerchantInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -143,7 +142,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.affiliatedCommunity")),
+			placeholder: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.placeholders.affiliatedCommunity"),
+			),
 		},
 	},
 	{
@@ -173,7 +174,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.legalRepresentative")),
+			placeholder: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.placeholders.legalRepresentative"),
+			),
 		},
 	},
 	{
@@ -183,7 +186,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.establishmentDate")),
+			placeholder: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.placeholders.establishmentDate"),
+			),
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
@@ -218,7 +223,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessLicenseNo")),
+			placeholder: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.placeholders.businessLicenseNo"),
+			),
 		},
 	},
 	{
@@ -300,13 +307,17 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	affiliatedCommunity: [
 		{
 			required: true,
-			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterAffiliatedCommunity")),
+			message: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.validation.enterAffiliatedCommunity"),
+			),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.affiliatedCommunityLength")),
+			message: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.validation.affiliatedCommunityLength"),
+			),
 			trigger: "blur",
 		},
 	],
@@ -337,20 +348,26 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	legalRepresentative: [
 		{
 			required: true,
-			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterLegalRepresentative")),
+			message: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.validation.enterLegalRepresentative"),
+			),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 10,
-			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.legalRepresentativeLength")),
+			message: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.validation.legalRepresentativeLength"),
+			),
 			trigger: "blur",
 		},
 	],
 	establishmentDate: [
 		{
 			required: true,
-			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectEstablishmentDate")),
+			message: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.validation.selectEstablishmentDate"),
+			),
 			trigger: "change",
 		},
 	],
@@ -378,7 +395,9 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 		},
 		{
 			pattern: /^[0-9A-Z]{18}$/,
-			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessLicenseNoPattern")),
+			message: transformI18n(
+				$t("operation-team_merchant-manage.merchant-info.form.validation.businessLicenseNoPattern"),
+			),
 			trigger: "blur",
 		},
 	],
