@@ -17,17 +17,17 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { merchantAdminStatusOptions, type MerchantAdminFormVO, type MerchantAdminListItem, type MerchantAdminQueryParams } from "@01s-11comm/type";
+import {
+	merchantAdminStatusOptions,
+	type MerchantAdminFormVO,
+	type MerchantAdminListItem,
+	type MerchantAdminQueryParams,
+} from "@01s-11comm/type";
 import { useMerchantAdminListQuery } from "@/api/operation-team/merchant-manage/merchant-admin";
 import { defaultForm, type MerchantAdminFormProps } from "./components/form";
 import MerchantAdminForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
 
 const merchantAdminFormInstance = ref<InstanceType<typeof MerchantAdminForm> | null>(null);
 
@@ -68,7 +68,7 @@ function translateStatus(value?: string | null) {
 	}
 
 	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedStatusOptions = withLocale(() =>
@@ -81,58 +81,72 @@ const translatedStatusOptions = withLocale(() =>
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.propertyName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.propertyName")),
+		),
 		prop: "propertyName",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminName")),
+		),
 		prop: "adminName",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminPhone"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminPhone")),
+		),
 		prop: "adminPhone",
 		width: 130,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.id"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.id"))),
 		prop: "id",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.status")),
+		),
 		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => translateStatus(row.status),
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.affiliatedCommunityCount")),
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.affiliatedCommunityCount")),
 		),
 		prop: "affiliatedCommunityCount",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.loginCount"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.loginCount")),
+		),
 		prop: "loginCount",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.lastLoginTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.lastLoginTime")),
+		),
 		prop: "lastLoginTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 350,
 		fixed: "right",
 		slot: "operation",
@@ -140,33 +154,33 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operation-team_merchant-manage.merchant-admin.tableTitle")),
+	title: transformI18n($t("operation-team_merchant-manage.merchant-admin.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.propertyName")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.propertyName")),
 		prop: "merchantName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminName")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminName")),
 		prop: "adminName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminPhone")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.adminPhone")),
 		prop: "phone",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-admin.fields.status")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-admin.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.status")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-admin.form.placeholders.status")),
 		},
 	},
 ]);
@@ -226,8 +240,8 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("operation-team_merchant-manage.merchant-admin.dialogs.addTitle"))
-				: renderI18n($t("operation-team_merchant-manage.merchant-admin.dialogs.editTitle")),
+				? transformI18n($t("operation-team_merchant-manage.merchant-admin.dialogs.addTitle"))
+				: transformI18n($t("operation-team_merchant-manage.merchant-admin.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(MerchantAdminForm, {
@@ -242,7 +256,7 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = merchantAdminFormInstance.value?.formComputed;
@@ -252,14 +266,14 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					merchantAdminFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await merchantAdminFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -277,15 +291,15 @@ function openDialog(params: { mode: Mode; row?: MerchantAdminListItem }) {
 }
 
 function handleViewCommunities() {
-	ElMessage.info(renderI18n($t("operation-team_merchant-manage.merchant-admin.messages.communitiesComingSoon")));
+	ElMessage.info(transformI18n($t("operation-team_merchant-manage.merchant-admin.messages.communitiesComingSoon")));
 }
 
 function handleLogin() {
-	ElMessage.info(renderI18n($t("operation-team_merchant-manage.merchant-admin.messages.loginComingSoon")));
+	ElMessage.info(transformI18n($t("operation-team_merchant-manage.merchant-admin.messages.loginComingSoon")));
 }
 
 function handleRestrictLogin() {
-	ElMessage.info(renderI18n($t("operation-team_merchant-manage.merchant-admin.messages.restrictLoginComingSoon")));
+	ElMessage.info(transformI18n($t("operation-team_merchant-manage.merchant-admin.messages.restrictLoginComingSoon")));
 }
 </script>
 
