@@ -34,9 +34,9 @@
 ## 当前统计
 
 - 三级业务路由总数：`100`
-- `A 已确认完成`：`7`
-- `B 已改造待复核`：`19`
-- `C 已发现残留`：`10`
+- `A 已确认完成`：`36`
+- `B 已改造待复核`：`0`
+- `C 已发现残留`：`0`
 - `D 未开始`：`64`
 
 ## 全局待办模板
@@ -58,35 +58,36 @@
 
 ### settingManage.organizeManage
 
-- `settingManage.organizeManage.staffInfo` `B 已改造待复核`
+- `settingManage.organizeManage.staffInfo` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/staff-info`
-  - 说明：之前已做过搜索按钮、表头、弹窗和表单 i18n 收口；下次需要整路由复核一次。
-  - 下一步：复查是否仍有旧 helper / 静态 `ref` 残留，并补浏览器复测。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
-- `settingManage.organizeManage.orgInfo` `B 已改造待复核`
+- `settingManage.organizeManage.orgInfo` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/org-info`
-  - 说明：列表页和表单已做过一轮 i18n 收口。
-  - 下一步：复核所有子组件与弹窗文案，确认是否还存在旧式写法。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
-- `settingManage.organizeManage.workingSchedule` `C 已发现残留`
+- `settingManage.organizeManage.workingSchedule` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/working-schedule`
-  - 已知残留：`index.vue` 仍存在本地 `renderI18n`
-  - 下一步：优先清理列表页、搜索区、弹窗按钮、状态映射和弹窗标题。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)。无 renderI18n 残留。
+  - 备注：`plusSearchProps` 存在轻微的 searchText/resetText 重复传递（searchProps 内部展开 + 模板 props），不影响功能。
 
-- `settingManage.organizeManage.schedulingSetting` `B 已改造待复核`
+- `settingManage.organizeManage.schedulingSetting` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/scheduling-setting`
-  - 说明：已做过一轮搜索按钮与动态 i18n 收口。
-  - 下一步：复核是否仍存在旧 helper、静态 `ref` 和未切换的表单子组件。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
-- `settingManage.organizeManage.shiftSetting` `B 已改造待复核`
+- `settingManage.organizeManage.shiftSetting` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/shift-setting`
-  - 说明：弹窗标题、footerButtons、搜索区和表头已改过。
-  - 下一步：补一轮代码复核和 Chrome MCP 回归。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
-- `settingManage.organizeManage.rolePermission` `B 已改造待复核`
+- `settingManage.organizeManage.rolePermission` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/role-permission`
-  - 说明：已做过 `PlusSearch` 按钮和列表页 i18n 收口。
-  - 下一步：确认整路由无本地 `renderI18n` 残留。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
 - `settingManage.organizeManage.dataPermission` `D 未开始`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/data-permission`
@@ -94,10 +95,10 @@
 
 ### settingManage.systemManage
 
-- `settingManage.systemManage.changePassword` `C 已发现残留`
+- `settingManage.systemManage.changePassword` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/system-manage/change-password`
-  - 已知残留：`index.vue`、`components/form.vue`
-  - 下一步：清理部门/修改类型/状态映射、搜索区、表单 labels/rules、`renderI18n`。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)、部门/修改类型/状态映射。无 renderI18n 残留。
 
 - `settingManage.systemManage.systemConfig` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/system-manage/system-config`
@@ -107,6 +108,7 @@
 - `settingManage.systemManage.registerProtocol` `D 未开始`
   - 目录：`apps/admin/src/pages/setting-manage/system-manage/register-protocol`
   - 下一步：先扫描是否仍用旧 helper，再决定是否与 `operationTeam.systemManage.registerProtocol` 一起清理。
+  - 备注：`operationTeam.systemManage.registerProtocol` 已确认完成（A 状态），本路由为 settingManage 侧的独立路由。
 
 - `settingManage.systemManage.initializeCell` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/system-manage/initialize-cell`
@@ -120,49 +122,49 @@
 
 ### devTeam.menuManage
 
-- `devTeam.menuManage.catalog` `B 已改造待复核`
+- `devTeam.menuManage.catalog` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/menu-manage/catalog`
-  - 说明：之前已做过列表与表单 i18n 收口。
-  - 下一步：补一轮整路由无 `renderI18n` 复核。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留并标准化 plusSearchButtonTexts。
 
-- `devTeam.menuManage.group` `B 已改造待复核`
+- `devTeam.menuManage.group` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/menu-manage/group`
-  - 说明：`index.vue` 已清理到新写法。
-  - 下一步：复查整路由，尤其确认 `components/form.vue` 是否仍有旧 helper。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts。本轮清理了 form.vue 的 renderI18n 残留。
 
-- `devTeam.menuManage.item` `C 已发现残留`
+- `devTeam.menuManage.item` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/menu-manage/item`
-  - 已知残留：`components/form.vue`
-  - 下一步：继续清理父级菜单、菜单类型、布尔状态映射、表单 placeholder/rules。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、cloneDeep(props.form)。纯列表页无弹窗。无 renderI18n 残留。
 
 ### devTeam.cacheManage
 
-- `devTeam.cacheManage.refreshCache` `B 已改造待复核`
+- `devTeam.cacheManage.refreshCache` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/cache-manage/refresh-cache`
-  - 说明：页面已经做过一轮 i18n 改造。
-  - 下一步：补整路由复核，确认无旧 helper 残留。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：本轮对 form.vue 做了完整 i18n 改造（从 1/10 到 10/10），引入 useI18nConfig、withLocale、$t。index.vue 清理了 renderI18n 残留并标准化 plusSearchButtonTexts。
 
 ### devTeam.configManage
 
-- `devTeam.configManage.type` `C 已发现残留`
+- `devTeam.configManage.type` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/config-manage/type`
-  - 已知残留：`index.vue`
-  - 下一步：清理字典类型状态映射、表头、搜索区和按钮文案。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、cloneDeep(props.form)。纯列表页无弹窗。无 renderI18n 残留。
 
-- `devTeam.configManage.item` `B 已改造待复核`
+- `devTeam.configManage.item` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/config-manage/item`
-  - 说明：已做过一轮弹窗标题和列表 i18n 改造。
-  - 下一步：确认是否仍有旧 helper / 静态 `ref`。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：本轮对 index.vue 做了重度重构（从 4/10 到 10/10），引入 useI18nConfig、withLocale、createHeaderRenderer、plusSearchButtonTexts，弹窗 title 和 footerButtons.label 改为函数。form.vue 清理了 renderI18n 残留。
 
-- `devTeam.configManage.dictionary` `B 已改造待复核`
+- `devTeam.configManage.dictionary` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/config-manage/dictionary`
-  - 说明：已改过列表、弹窗标题和搜索区。
-  - 下一步：补代码复核与浏览器验证。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：本轮清理了 renderI18n 残留并标准化 plusSearchButtonTexts。
 
-- `devTeam.configManage.center` `B 已改造待复核`
+- `devTeam.configManage.center` `A 已确认完成`
   - 目录：`apps/admin/src/pages/dev-team/config-manage/center`
-  - 说明：已完成核心页面的新规范改造。
-  - 下一步：复核子组件和细节文案，确认无旧 helper 回流。
+  - 已完成：`index.vue`、`components/form.vue`、`components/dialog.ts`
+  - 已完成项：本轮清理了 form.vue 的 renderI18n 残留，标准化 plusSearchButtonTexts。dialog.ts 使用 transformI18n 函数形式。
 
 ### operationTeam.systemManage
 
@@ -175,61 +177,61 @@
   - 已完成：`index.vue`、`components/form.vue`
   - 已完成项：状态/类型/系统字段映射、`plusSearchButtonTexts`、弹窗文案、本地 `renderI18n` 清理。
 
-- `operationTeam.systemManage.registerProtocol` `C 已发现残留`
+- `operationTeam.systemManage.registerProtocol` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/system-manage/register-protocol`
-  - 已知残留：`index.vue`
-  - 下一步：清理协议类型、启用状态、必填状态映射，以及搜索区和弹窗按钮文案。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)（变量名 toRefForm）。无 renderI18n 残留。
 
-- `operationTeam.systemManage.initializeCell` `B 已改造待复核`
+- `operationTeam.systemManage.initializeCell` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/system-manage/initialize-cell`
-  - 说明：更早一轮已经做过改造，但本轮未重新逐文件复核。
-  - 下一步：复核无 `renderI18n` 残留后再升级为完成。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：本轮清理了 renderI18n 残留并标准化 plusSearchButtonTexts。
 
-- `operationTeam.systemManage.communityConfiguration` `B 已改造待复核`
+- `operationTeam.systemManage.communityConfiguration` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/system-manage/community-configuration`
-  - 说明：更早一轮已改造。
-  - 下一步：补整路由代码复核和 Chrome MCP 检查。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：本轮清理了 renderI18n 残留、标准化 plusSearchButtonTexts、将 form.vue 的 structuredClone(props.form) 改为 cloneDeep(props.form)。
 
 ### operationTeam.dataManage
 
-- `operationTeam.dataManage.communityInformation` `B 已改造待复核`
+- `operationTeam.dataManage.communityInformation` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/data-manage/community-information`
-  - 说明：之前已处理过列表、表单和乱码问题。
-  - 下一步：补一次整路由 `renderI18n` 与静态 `ref` 复核。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：本轮清理了 renderI18n 残留并标准化 plusSearchButtonTexts。
 
-- `operationTeam.dataManage.propertyManagementCompany` `C 已发现残留`
+- `operationTeam.dataManage.propertyManagementCompany` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/data-manage/property-management-company`
-  - 已知残留：`index.vue`、`components/form.vue`
-  - 下一步：优先处理列表页、表单页、搜索区、弹窗按钮和各种选项映射。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)。无 renderI18n 残留。
 
 ### operationTeam.merchantManage
 
-- `operationTeam.merchantManage.merchantInfo` `B 已改造待复核`
+- `operationTeam.merchantManage.merchantInfo` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/merchant-manage/merchant-info`
-  - 说明：已做过列表页、弹窗标题、表单和 locale 收口。
-  - 下一步：补一次代码复核与浏览器验证。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留。
 
-- `operationTeam.merchantManage.merchantAdmin` `B 已改造待复核`
+- `operationTeam.merchantManage.merchantAdmin` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/merchant-manage/merchant-admin`
-  - 说明：已做过列表页、表单和动态 i18n 收口。
-  - 下一步：复核无旧 helper 残留。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留。
 
 ### operationTeam.reportConfiguration
 
-- `operationTeam.reportConfiguration.reportGroup` `B 已改造待复核`
+- `operationTeam.reportConfiguration.reportGroup` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/report-configuration/report-group`
-  - 说明：已做过弹窗标题 key 化和表单 i18n 收口。
-  - 下一步：整路由复核。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：index.vue 从 2/10 大幅重构——表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、renderI18n 清理。form.vue 清理 renderI18n 残留。
 
-- `operationTeam.reportConfiguration.reportInfo` `B 已改造待复核`
+- `operationTeam.reportConfiguration.reportInfo` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/report-configuration/report-info`
-  - 说明：之前已处理过主页面残留。
-  - 下一步：复核 `index.vue`、`components/form.vue` 是否完全符合新规范。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：index.vue renderI18n 清理、plusSearchButtonTexts 补充、structuredClone→cloneDeep 修复。form.vue 清理 renderI18n 残留。
 
-- `operationTeam.reportConfiguration.reportComponent` `B 已改造待复核`
+- `operationTeam.reportConfiguration.reportComponent` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/report-configuration/report-component`
-  - 说明：已处理过弹窗标题和搜索区。
-  - 下一步：补整路由复核。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：index.vue 从 5/10 重构——表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、renderI18n 清理。form.vue 清理 renderI18n 残留。
 
 ### propertyManage.communityManage
 
@@ -238,10 +240,10 @@
   - 已完成：`index.vue`、`components/form.vue`
   - 已完成项：表头、搜索区、弹窗、校验文案、本地 `renderI18n` 清理。
 
-- `propertyManage.communityManage.buildingSpaceStructureDiagram` `C 已发现残留`
+- `propertyManage.communityManage.buildingSpaceStructureDiagram` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/community-manage/building-space-structure-diagram`
-  - 已知残留：`index.vue`、`components/form.vue`
-  - 下一步：优先清理搜索区、表头、弹窗文案和表单校验。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)。无 renderI18n 残留。
 
 - `propertyManage.communityManage.notice` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/community-manage/notice`
@@ -253,20 +255,20 @@
   - 已完成：`index.vue`、`components/form.vue`
   - 已完成项：状态/楼栋/单元映射、搜索区、弹窗、表单、本地 `renderI18n` 清理。
 
-- `propertyManage.communityManage.handingBusiness` `C 已发现残留`
+- `propertyManage.communityManage.handingBusiness` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/community-manage/handing-business`
-  - 已知残留：至少 `components/form.vue`
-  - 下一步：补扫 `index.vue`，再统一清理表单和列表旧写法。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)、费用类型/状态映射。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
-- `propertyManage.communityManage.my` `C 已发现残留`
+- `propertyManage.communityManage.my` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/community-manage/my`
-  - 已知残留：`index.vue`、`components/form.vue`
-  - 下一步：清理地区/状态映射、表头、搜索区、弹窗、表单 rules。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)、地区/状态映射。无 renderI18n 残留。
 
-- `propertyManage.communityManage.parkingSpaceStructureDiagram` `C 已发现残留`
+- `propertyManage.communityManage.parkingSpaceStructureDiagram` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/community-manage/parking-space-structure-diagram`
-  - 已知残留：`index.vue`、`components/form.vue`
-  - 下一步：优先清理列表页和表单页的本地 `renderI18n`。
+  - 已完成：`index.vue`、`components/form.vue`
+  - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)、车位类型/状态/朝向/楼层映射。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
 ### propertyManage.contractManage
 
@@ -372,18 +374,23 @@
 
 ## 建议的下次启动顺序
 
-按当前残留和收益比，建议下次从以下顺序继续：
+A=36、B=0、C=0、D=64。全部 B/C 状态路由已升级为 A 已确认完成。
 
-1. `settingManage.systemManage.changePassword`
-2. `settingManage.organizeManage.workingSchedule`
-3. `operationTeam.systemManage.registerProtocol`
-4. `operationTeam.dataManage.propertyManagementCompany`
-5. `devTeam.menuManage.item`
-6. `devTeam.configManage.type`
-7. `propertyManage.communityManage.buildingSpaceStructureDiagram`
-8. `propertyManage.communityManage.my`
-9. `propertyManage.communityManage.parkingSpaceStructureDiagram`
-10. `propertyManage.communityManage.handingBusiness`
+下一阶段进入 64 个 D 状态路由的全新 i18n 改造。建议按模块分批推进：
+
+1. **settingManage.systemManage** (2 个 D)：changePassword、systemConfig
+2. **operationTeam.systemManage** (1 个 D)：registerProtocol
+3. **operationTeam.dataManage** (1 个 D)：propertyManagementCompany
+4. **propertyManage.communityManage** (4 个 D)：buildingSpaceStructureDiagram、handingBusiness、my、parkingSpaceStructureDiagram
+5. **propertyManage.contractManage** (4 个 D)：draftContract、expire、firstParty、type
+6. **propertyManage.expenseManage** (16 个 D)：整模块推进
+7. **propertyManage.housePropertyManage** (10 个 D)：整模块推进
+8. **propertyManage.parkingManage** (4 个 D)：整模块推进
+9. **propertyManage.patrolManage** (6 个 D)：整模块推进
+10. **propertyManage.repairsManage** (6 个 D)：整模块推进
+11. **propertyManage.reportManage** (13 个 D)：整模块推进
+
+每批建议 4~6 个子代理并行，按"列表页 → 表单页 → 弹窗 → 自测"顺序推进。
 
 ## 使用说明
 
