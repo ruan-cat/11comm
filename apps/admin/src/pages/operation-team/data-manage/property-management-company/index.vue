@@ -26,12 +26,7 @@ import { usePropertyCompanyListQuery } from "@/api/operation-team/data-manage/pr
 import { type PropertyManagementCompanyFormProps, defaultForm } from "./components/form";
 import PropertyManagementCompanyForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<PropertyCompanyQueryParams> = {
 	companyId: "",
@@ -39,7 +34,7 @@ const plusSearchModelRef: FieldValues & Partial<PropertyCompanyQueryParams> = {
 	phone: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -75,7 +70,7 @@ function translateCompanyTypeLabel(value?: string | null) {
 	}
 
 	const key = companyTypeLabelMap[value as keyof typeof companyTypeLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateServiceLevelLabel(value?: string | null) {
@@ -84,7 +79,7 @@ function translateServiceLevelLabel(value?: string | null) {
 	}
 
 	const key = serviceLevelLabelMap[value as keyof typeof serviceLevelLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateOperationStatusLabel(value?: string | null) {
@@ -93,7 +88,7 @@ function translateOperationStatusLabel(value?: string | null) {
 	}
 
 	const key = operationStatusLabelMap[value as keyof typeof operationStatusLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const propertyManagementCompanyFormInstance = ref<InstanceType<typeof PropertyManagementCompanyForm> | null>(null);
@@ -102,70 +97,70 @@ const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
 		),
 		prop: "companyId",
 		width: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
 		),
 		prop: "companyName",
 		minWidth: 200,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.address")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.address")),
 		),
 		prop: "address",
 		minWidth: 250,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.administrator")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.administrator")),
 		),
 		prop: "administrator",
 		width: 100,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
 		),
 		prop: "phone",
 		width: 150,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.legalRepresentative")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.legalRepresentative")),
 		),
 		prop: "legalRepresentative",
 		width: 110,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.establishmentDate")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.establishmentDate")),
 		),
 		prop: "establishmentDate",
 		width: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.landmark")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.landmark")),
 		),
 		prop: "landmark",
 		width: 150,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.communityCount")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.communityCount")),
 		),
 		prop: "communityCount",
 		width: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.companyType")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.companyType")),
 		),
 		prop: "companyType",
 		width: 100,
@@ -173,7 +168,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.serviceLevel")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.serviceLevel")),
 		),
 		prop: "serviceLevel",
 		width: 100,
@@ -181,7 +176,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.operationStatus")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.operationStatus")),
 		),
 		prop: "operationStatus",
 		width: 110,
@@ -189,13 +184,13 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operation-team_data-manage.property-management-company.fields.createTime")),
+			transformI18n($t("operation-team_data-manage.property-management-company.fields.createTime")),
 		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 390,
 		fixed: "right",
 		slot: "operation",
@@ -203,44 +198,41 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operation-team_data-manage.property-management-company.tableTitle")),
+	title: transformI18n($t("operation-team_data-manage.property-management-company.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
 		prop: "companyId",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
 		prop: "companyName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
+		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
+			placeholder: transformI18n($t("operation-team_data-manage.property-management-company.fields.phone")),
 		},
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -297,8 +289,8 @@ function openDialog(params: { mode: Mode; row?: PropertyCompanyListItem }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("operation-team_data-manage.property-management-company.dialogs.addTitle"))
-				: renderI18n($t("operation-team_data-manage.property-management-company.dialogs.editTitle")),
+				? transformI18n($t("operation-team_data-manage.property-management-company.dialogs.addTitle"))
+				: transformI18n($t("operation-team_data-manage.property-management-company.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(PropertyManagementCompanyForm, {
@@ -313,7 +305,7 @@ function openDialog(params: { mode: Mode; row?: PropertyCompanyListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = propertyManagementCompanyFormInstance.value?.formComputed;
@@ -323,14 +315,14 @@ function openDialog(params: { mode: Mode; row?: PropertyCompanyListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					propertyManagementCompanyFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await propertyManagementCompanyFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -363,8 +355,10 @@ function gotoManageCommunityPage(row: PropertyCompanyListItem) {
 		<PlusSearch
 			:key="locale"
 			v-model="plusSearchModel"
-			:="plusSearchProps"
+			v-bind="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
