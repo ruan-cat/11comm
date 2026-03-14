@@ -24,11 +24,6 @@ import RolePermissionForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & Partial<RolePermissionListQuery> = {
 	name: "",
 	code: "",
@@ -52,34 +47,38 @@ const rolePermissionFormInstance = ref<InstanceType<typeof RolePermissionForm> |
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.name"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.rolePermission.fields.name"))),
 		prop: "name",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.code"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.rolePermission.fields.code"))),
 		prop: "code",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.rolePermission.fields.status")),
+		),
 		prop: "enabled",
 		width: 100,
 		cellRenderer: ({ row }) =>
 			row.enabled
-				? renderI18n($t("settingManage.organizeManage.rolePermission.status.enabled"))
-				: renderI18n($t("settingManage.organizeManage.rolePermission.status.disabled")),
+				? transformI18n($t("settingManage.organizeManage.rolePermission.status.enabled"))
+				: transformI18n($t("settingManage.organizeManage.rolePermission.status.disabled")),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.rolePermission.fields.description"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.rolePermission.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -87,32 +86,32 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.rolePermission.tableTitle")),
+	title: transformI18n($t("settingManage.organizeManage.rolePermission.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
+			placeholder: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
+		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		prop: "code",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
+			placeholder: transformI18n($t("settingManage.organizeManage.rolePermission.fields.code")),
 		},
 	},
 ]);
 
 const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
+	searchText: transformI18n($t("common.buttons.search")),
+	resetText: transformI18n($t("common.buttons.reset")),
 });
 
 const { setMode, isAdd, isEdit } = useMode();
@@ -152,8 +151,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: RolePermission }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("settingManage.organizeManage.rolePermission.dialogs.addTitle"))
-				: renderI18n($t("settingManage.organizeManage.rolePermission.dialogs.editTitle")),
+				? transformI18n($t("settingManage.organizeManage.rolePermission.dialogs.addTitle"))
+				: transformI18n($t("settingManage.organizeManage.rolePermission.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(RolePermissionForm, {
@@ -168,7 +167,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: RolePermission }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = rolePermissionFormInstance.value?.formComputed;
@@ -178,14 +177,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: RolePermission }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					rolePermissionFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await rolePermissionFormInstance.value?.plusFormInstance?.handleSubmit();
