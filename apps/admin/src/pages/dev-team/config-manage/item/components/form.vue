@@ -36,28 +36,23 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const translatedConfigItemTypeOptions = withLocale(() =>
 	configItemTypeOptions.map((option) => ({
 		...option,
-		label: renderI18n($t(configItemTypeLabelKeyMap[String(option.value) as keyof typeof configItemTypeLabelKeyMap])),
+		label: transformI18n($t(configItemTypeLabelKeyMap[String(option.value) as keyof typeof configItemTypeLabelKeyMap])),
 	})),
 );
 
 const translatedItemEnableStatusOptions = withLocale(() =>
 	itemEnableStatusOptions.map((option) => ({
 		...option,
-		label: renderI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
+		label: transformI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
 	})),
 );
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.configManage.item.fields.configName")),
+		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
 		prop: "configItemName",
 		valueType: "input",
 		fieldProps: {
@@ -66,7 +61,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		required: true,
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.item.fields.configCode")),
+		label: transformI18n($t("devTeam.configManage.item.fields.configCode")),
 		prop: "configItemCode",
 		valueType: "input",
 		fieldProps: {
@@ -75,7 +70,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		required: true,
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.item.fields.configType")),
+		label: transformI18n($t("devTeam.configManage.item.fields.configType")),
 		prop: "configItemType",
 		valueType: "select",
 		options: translatedConfigItemTypeOptions.value,
@@ -86,7 +81,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		required: true,
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.item.fields.configValue")),
+		label: transformI18n($t("devTeam.configManage.item.fields.configValue")),
 		prop: "configItemValue",
 		valueType: "input",
 		fieldProps: {
@@ -95,7 +90,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		required: true,
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.item.fields.description")),
+		label: transformI18n($t("devTeam.configManage.item.fields.description")),
 		prop: "configItemDescription",
 		valueType: "input",
 		fieldProps: {
@@ -103,7 +98,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.item.fields.isEnabled")),
+		label: transformI18n($t("devTeam.configManage.item.fields.isEnabled")),
 		prop: "isEnabled",
 		valueType: "select",
 		options: translatedItemEnableStatusOptions.value,
@@ -113,7 +108,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		required: true,
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.center.fields.remark")),
+		label: transformI18n($t("devTeam.configManage.center.fields.remark")),
 		prop: "remark",
 		valueType: "input",
 		fieldProps: {
@@ -124,24 +119,24 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 
 const plusFormRules = withLocale<PlusFormRules>(() => ({
 	configItemName: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.enterConfigItemName")), trigger: "blur" },
-		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.item.form.validation.configItemNameLength")), trigger: "blur" },
+		{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemName")), trigger: "blur" },
+		{ min: 2, max: 50, message: transformI18n($t("devTeam.configManage.item.form.validation.configItemNameLength")), trigger: "blur" },
 	],
 	configItemCode: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.enterConfigItemCode")), trigger: "blur" },
-		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.item.form.validation.configItemCodeLength")), trigger: "blur" },
+		{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemCode")), trigger: "blur" },
+		{ min: 2, max: 50, message: transformI18n($t("devTeam.configManage.item.form.validation.configItemCodeLength")), trigger: "blur" },
 		{
 			pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
-			message: renderI18n($t("devTeam.configManage.item.form.validation.configItemCodePattern")),
+			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemCodePattern")),
 			trigger: "blur",
 		},
 	],
-	configItemType: [{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.selectConfigItemType")), trigger: "change" }],
+	configItemType: [{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.selectConfigItemType")), trigger: "change" }],
 	configItemValue: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.enterConfigItemValue")), trigger: "blur" },
-		{ min: 1, max: 500, message: renderI18n($t("devTeam.configManage.item.form.validation.configItemValueLength")), trigger: "blur" },
+		{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemValue")), trigger: "blur" },
+		{ min: 1, max: 500, message: transformI18n($t("devTeam.configManage.item.form.validation.configItemValueLength")), trigger: "blur" },
 	],
-	isEnabled: [{ required: true, message: renderI18n($t("devTeam.configManage.item.form.validation.selectIsEnabled")), trigger: "change" }],
+	isEnabled: [{ required: true, message: transformI18n($t("devTeam.configManage.item.form.validation.selectIsEnabled")), trigger: "change" }],
 }));
 
 defineExpose({
