@@ -22,12 +22,7 @@ import { type ReportInfoFormProps, defaultForm } from "./components/form";
 import ReportInfoForm from "./components/form.vue";
 
 const reportInfoFormInstance = ref<InstanceType<typeof ReportInfoForm> | null>(null);
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<ReportInfoQueryParams> = {
 	reportCode: "",
@@ -51,27 +46,35 @@ const {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportCode"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportCode")),
+		),
 		prop: "reportCode",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.groupName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.groupName")),
+		),
 		prop: "groupName",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportName")),
+		),
 		prop: "reportName",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.description"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -79,35 +82,32 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operationTeam.reportConfiguration.reportInfo.pageTitle")),
+	title: transformI18n($t("operationTeam.reportConfiguration.reportInfo.pageTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportCode")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportCode")),
 		prop: "reportCode",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.groupId")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.groupId")),
 		prop: "groupId",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportName")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportName")),
 		prop: "reportName",
 		valueType: "input",
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -158,8 +158,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("operationTeam.reportConfiguration.reportInfo.dialogs.addTitle"))
-				: renderI18n($t("operationTeam.reportConfiguration.reportInfo.dialogs.editTitle")),
+				? transformI18n($t("operationTeam.reportConfiguration.reportInfo.dialogs.addTitle"))
+				: transformI18n($t("operationTeam.reportConfiguration.reportInfo.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(ReportInfoForm, {
@@ -174,7 +174,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = reportInfoFormInstance.value?.formComputed;
@@ -184,14 +184,14 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					reportInfoFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await reportInfoFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -215,6 +215,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
