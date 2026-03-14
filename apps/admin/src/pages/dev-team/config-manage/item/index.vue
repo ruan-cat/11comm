@@ -10,7 +10,8 @@ definePage({
 });
 
 import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import {
 	type ConfigItemListItem,
 	type ConfigItemQueryParams,
@@ -23,6 +24,8 @@ import { type ConfigItemFormProps, defaultForm } from "./components/form";
 import type { ConfigItemFormVO } from "@01s-11comm/type";
 import ConfigItemForm from "./components/form.vue";
 const configItemFormInstance = ref<InstanceType<typeof ConfigItemForm> | null>(null);
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -55,59 +58,58 @@ const {
 } = useConfigItemListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.configName"))),
 		prop: "configName",
 		width: 150,
 		fixed: true,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.configCode")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.configCode"))),
 		prop: "configCode",
 		width: 150,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.configType")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.configType"))),
 		prop: "configType",
 		width: 120,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.configValue")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.configValue"))),
 		prop: "configValue",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.description")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.description"))),
 		prop: "description",
 		width: 180,
 		showOverflowTooltip: true,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.isEnabled")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.isEnabled"))),
 		prop: "isEnabled",
 		width: 100,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.createTime")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.createTime"))),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.updateTime")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.updateTime"))),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.creator")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.item.fields.creator"))),
 		prop: "creator",
 		width: 100,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 260,
 		fixed: "right",
 		slot: "operation",
@@ -115,16 +117,16 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.configManage.item.pageTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	// 配置项名称
 	{
 		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
@@ -157,13 +159,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -193,9 +189,6 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}${transformI18n($t("devTeam.configManage.item.pageTitle"))}`;
-
 	/** 业务对象 */
 	const formData: ConfigItemFormVO = isAdd.value
 		? structuredClone(defaultForm)
@@ -223,7 +216,10 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () => {
+			const mText = modeText.value;
+			return `${mText}${transformI18n($t("devTeam.configManage.item.pageTitle"))}`;
+		},
 		props,
 
 		contentRenderer: () =>
@@ -242,7 +238,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = configItemFormInstance.value?.formComputed;
@@ -253,7 +249,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					configItemFormInstance.value?.plusFormInstance?.handleReset();
@@ -261,7 +257,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await configItemFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -279,11 +275,13 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
