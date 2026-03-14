@@ -1,11 +1,16 @@
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import type { HouseManagementFormVO } from "@01s-11comm/type";
 import { houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
 import type { HouseManageFormProps } from "./form";
 import type { FieldValues } from "plus-pro-components";
 
 const props = defineProps<HouseManageFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & HouseManagementFormVO;
@@ -21,60 +26,54 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & HouseManagementFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & HouseManagementFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "房屋编号",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.house")),
 		prop: "house",
 		valueType: "input",
 	},
 	{
-		label: "楼层",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.floor")),
 		prop: "floor",
 		valueType: "input",
 	},
 	{
-		label: "业主",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.owner")),
 		prop: "owner",
 		valueType: "input",
 	},
 	{
-		label: "类型",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.type")),
 		prop: "type",
 		valueType: "select",
 		options: houseTypeOptions,
 	},
 	{
-		label: "房屋面积",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.houseArea")),
 		prop: "houseArea",
 		valueType: "input",
 	},
 	{
-		label: "租金",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.rent")),
 		prop: "rent",
 		valueType: "input",
 	},
 	{
-		label: "房屋状态",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.houseStatus")),
 		prop: "houseStatus",
 		valueType: "select",
 		options: houseStatusOptions,
 	},
 	{
-		label: "有效期",
+		label: transformI18n($t("property-manage_house-property-manage.house.form.fields.validUntil")),
 		prop: "validUntil",
 		valueType: "date-picker",
 		fieldProps: {
@@ -86,64 +85,64 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	house: [
 		{
 			required: true,
-			message: "请输入房屋编号",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.houseRequired")),
 			trigger: "blur",
 		},
 	],
 	floor: [
 		{
 			required: true,
-			message: "请输入楼层",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.floorRequired")),
 			trigger: "blur",
 		},
 	],
 	owner: [
 		{
 			required: true,
-			message: "请输入业主",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.ownerRequired")),
 			trigger: "blur",
 		},
 	],
 	type: [
 		{
 			required: true,
-			message: "请选择类型",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.typeRequired")),
 			trigger: "change",
 		},
 	],
 	houseArea: [
 		{
 			required: true,
-			message: "请输入房屋面积",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.houseAreaRequired")),
 			trigger: "blur",
 		},
 	],
 	rent: [
 		{
 			required: true,
-			message: "请输入租金",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.rentRequired")),
 			trigger: "blur",
 		},
 	],
 	houseStatus: [
 		{
 			required: true,
-			message: "请选择房屋状态",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.houseStatusRequired")),
 			trigger: "change",
 		},
 	],
 	validUntil: [
 		{
 			required: true,
-			message: "请选择有效期",
+			message: transformI18n($t("property-manage_house-property-manage.house.form.validation.validUntilRequired")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -152,7 +151,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"

@@ -1,21 +1,26 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "房屋管理",
+		// 房屋管理
+		title: "property-manage_house-property-manage.house.pageTitle",
 		icon: "mdi:home-city",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.house"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { HouseManagementFormVO, HouseListItem, HouseQueryParams } from "@01s-11comm/type";
 import { buildingUnitOptions, houseTypeOptions, houseStatusOptions } from "@01s-11comm/type";
 import { type HouseManageFormProps, defaultForm } from "./components/form";
 import HouseManageForm from "./components/form.vue";
 import { useHouseListQuery } from "@/api/property-manage/house-property-manage/house";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const houseManageFormInstance = ref<InstanceType<typeof HouseManageForm> | null>(null);
 
@@ -32,7 +37,7 @@ const plusSearchModelRef: FieldValues & Partial<HouseQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -50,91 +55,119 @@ const {
 } = useHouseListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "房屋",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.houseCode")),
+		),
 		prop: "houseCode",
 		width: 120,
 	},
 	{
-		label: "楼层",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_house-property-manage.house.fields.floor"))),
 		prop: "floor",
 		width: 100,
 	},
 	{
-		label: "业主",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_house-property-manage.house.fields.owner"))),
 		prop: "owner",
 		width: 120,
 	},
 	{
-		label: "类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.houseType")),
+		),
 		prop: "houseType",
 		width: 100,
 	},
 	{
-		label: "房屋面积",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.houseArea")),
+		),
 		prop: "houseArea",
 		width: 120,
 	},
 	{
-		label: "租金",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_house-property-manage.house.fields.rent"))),
 		prop: "rent",
 		width: 100,
 	},
 	{
-		label: "房屋状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.houseStatus")),
+		),
 		prop: "houseStatus",
 		width: 100,
 	},
 	{
-		label: "有效期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.validUntil")),
+		),
 		prop: "validUntil",
 		width: 120,
 	},
 	{
-		label: "业主成员",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.ownerMembers")),
+		),
 		prop: "ownerMembers",
 		width: 100,
 	},
 	{
-		label: "业主车辆",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.ownerVehicles")),
+		),
 		prop: "ownerVehicles",
 		width: 100,
 	},
 	{
-		label: "业主房屋",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.ownerHouses")),
+		),
 		prop: "ownerHouses",
 		width: 100,
 	},
 	{
-		label: "投诉",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.complaints")),
+		),
 		prop: "complaints",
 		width: 100,
 	},
 	{
-		label: "报修",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.repairs")),
+		),
 		prop: "repairs",
 		width: 100,
 	},
 	{
-		label: "房屋欠费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.houseArrears")),
+		),
 		prop: "houseArrears",
 		width: 100,
 	},
 	{
-		label: "业主欠费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.ownerArrears")),
+		),
 		prop: "ownerArrears",
 		width: 100,
 	},
 	{
-		label: "房屋合同",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.house.fields.houseContract")),
+		),
 		prop: "houseContract",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -142,35 +175,35 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "房屋管理",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.house.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
+		label: transformI18n($t("property-manage_house-property-manage.house.search.houseCode")),
 		prop: "houseCode",
 		valueType: "input",
 	},
 	{
-		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseState")),
+		label: transformI18n($t("property-manage_house-property-manage.house.search.houseStatus")),
 		prop: "houseStatus",
 		valueType: "select",
 		options: houseStatusOptions,
 	},
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.houses.type")),
+		label: transformI18n($t("property-manage_house-property-manage.house.search.houseType")),
 		prop: "houseType",
 		valueType: "select",
 		options: houseTypeOptions,
 	},
 	{
-		label: transformI18n($t("propertyManage_housePropertyManage.houses.unionId")),
+		label: transformI18n($t("property-manage_house-property-manage.house.search.buildingUnit")),
 		prop: "buildingUnit",
 		valueType: "select",
 		options: buildingUnitOptions,
@@ -178,17 +211,11 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -214,11 +241,9 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	const title = `${modeText.value}房屋管理`;
-
 	const formData: HouseManagementFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				house: row?.houseCode || "",
 				floor: String(row?.floor ?? ""),
@@ -240,7 +265,10 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.house.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.house.dialogs.editTitle")),
 		props,
 
 		contentRenderer: () =>
@@ -258,7 +286,7 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// console.log(options, index, button);
@@ -270,7 +298,7 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
@@ -279,7 +307,7 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
@@ -298,11 +326,14 @@ function openDialog(params: { mode: Mode; row?: HouseListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

@@ -3,15 +3,20 @@
   用于新增 修改场地预约
 -->
 <script lang="ts" setup>
-import { ref, computed, watch, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { ReserveVenueFormVO } from "@01s-11comm/type";
 import { venueTypeOptions, reservationStatusOptions } from "@01s-11comm/type";
 import type { ReserveVenueFormProps } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
+const { locale, withLocale } = useI18nConfig();
+
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
+
 /**
  * 本表单组件 实际使用的表单对象
  * @description
@@ -19,24 +24,16 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ReserveVenueFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & ReserveVenueFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 预约人
 	{
-		label: "预约人",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.reserver")),
 		prop: "reserver",
 		valueType: "input",
 		required: true,
@@ -44,7 +41,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 联系电话
 	{
-		label: "联系电话",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		required: true,
@@ -52,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 预约时间
 	{
-		label: "预约时间",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.reservationTime")),
 		prop: "reservationTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -65,7 +62,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 开始时间
 	{
-		label: "开始时间",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.startTime")),
 		prop: "startTime",
 		valueType: "time-picker",
 		fieldProps: {
@@ -77,7 +74,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 结束时间
 	{
-		label: "结束时间",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.endTime")),
 		prop: "endTime",
 		valueType: "time-picker",
 		fieldProps: {
@@ -89,7 +86,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 场地类型
 	{
-		label: "场地类型",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.venueType")),
 		prop: "venueType",
 		valueType: "select",
 		options: venueTypeOptions.map((item) => ({ label: item.label, value: item.value })),
@@ -98,7 +95,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 预约状态
 	{
-		label: "预约状态",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.reservationStatus")),
 		prop: "reservationStatus",
 		valueType: "select",
 		options: reservationStatusOptions.map((item) => ({ label: item.label, value: item.value })),
@@ -107,7 +104,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 使用人数
 	{
-		label: "使用人数",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.numberOfUsers")),
 		prop: "numberOfUsers",
 		valueType: "input-number",
 		required: true,
@@ -115,79 +112,90 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 备注
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	reserver: [
 		{
 			required: true,
-			message: "请输入预约人",
+			message: transformI18n($t("property-manage_house-property-manage.reserve-venue.form.validation.enterReserver")),
 			trigger: "blur",
 		},
 	],
 	contactPhone: [
 		{
 			required: true,
-			message: "请输入联系电话",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.enterContactPhone"),
+			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.contactPhonePattern"),
+			),
 			trigger: "blur",
 		},
 	],
 	reservationTime: [
 		{
 			required: true,
-			message: "请选择预约时间",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.selectReservationTime"),
+			),
 			trigger: "change",
 		},
 	],
 	startTime: [
 		{
 			required: true,
-			message: "请选择开始时间",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.selectStartTime"),
+			),
 			trigger: "change",
 		},
 	],
 	endTime: [
 		{
 			required: true,
-			message: "请选择结束时间",
+			message: transformI18n($t("property-manage_house-property-manage.reserve-venue.form.validation.selectEndTime")),
 			trigger: "change",
 		},
 	],
 	venueType: [
 		{
 			required: true,
-			message: "请选择场地类型",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.selectVenueType"),
+			),
 			trigger: "change",
 		},
 	],
 	reservationStatus: [
 		{
 			required: true,
-			message: "请选择预约状态",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.selectReservationStatus"),
+			),
 			trigger: "change",
 		},
 	],
 	numberOfUsers: [
 		{
 			required: true,
-			message: "请输入使用人数",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.reserve-venue.form.validation.enterNumberOfUsers"),
+			),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -196,13 +204,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>

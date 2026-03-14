@@ -4,11 +4,16 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import type { SiteManagementFormVO } from "@01s-11comm/type";
 import { siteManagementStatusOptions } from "@01s-11comm/type";
 import type { SiteManagementFormProps } from "./form";
 
 const props = defineProps<SiteManagementFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & SiteManagementFormVO;
@@ -25,24 +30,18 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & SiteManagementFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & SiteManagementFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 编号
 	{
-		label: "编号",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.idNumber")),
 		prop: "idNumber",
 		valueType: "input",
 		required: true,
@@ -50,7 +49,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 名称
 	{
-		label: "名称",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.name")),
 		prop: "name",
 		valueType: "input",
 		required: true,
@@ -58,7 +57,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 开场时间
 	{
-		label: "开场时间",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.openingTime")),
 		prop: "openingTime",
 		valueType: "time-picker",
 		fieldProps: {
@@ -70,7 +69,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 关场时间
 	{
-		label: "关场时间",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.closingTime")),
 		prop: "closingTime",
 		valueType: "time-picker",
 		fieldProps: {
@@ -82,7 +81,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 每小时费用
 	{
-		label: "每小时费用",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.hourlyFee")),
 		prop: "hourlyFee",
 		valueType: "input",
 		required: true,
@@ -90,7 +89,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 管理员
 	{
-		label: "管理员",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.administrator")),
 		prop: "administrator",
 		valueType: "input",
 		required: true,
@@ -98,7 +97,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 管理员电话
 	{
-		label: "管理员电话",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.administratorPhone")),
 		prop: "administratorPhone",
 		valueType: "input",
 		required: true,
@@ -106,7 +105,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_house-property-manage.site-management.form.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: siteManagementStatusOptions,
@@ -114,73 +113,86 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	idNumber: [
 		{
 			required: true,
-			message: "请输入编号",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.idNumberRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	name: [
 		{
 			required: true,
-			message: "请输入名称",
+			message: transformI18n($t("property-manage_house-property-manage.site-management.form.validation.nameRequired")),
 			trigger: "blur",
 		},
 	],
 	openingTime: [
 		{
 			required: true,
-			message: "请选择开场时间",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.openingTimeRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	closingTime: [
 		{
 			required: true,
-			message: "请选择关场时间",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.closingTimeRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	hourlyFee: [
 		{
 			required: true,
-			message: "请输入每小时费用",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.hourlyFeeRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	administrator: [
 		{
 			required: true,
-			message: "请输入管理员",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.administratorRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	administratorPhone: [
 		{
 			required: true,
-			message: "请输入管理员电话",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.administratorPhoneRequired"),
+			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.administratorPhoneFormat"),
+			),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: "请选择状态",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.site-management.form.validation.statusRequired"),
+			),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -189,13 +201,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
