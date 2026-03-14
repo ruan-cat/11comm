@@ -12,11 +12,6 @@ import { type StaffInfoFormProps } from "./form.ts";
 const props = defineProps<StaffInfoFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & StaffInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -38,7 +33,7 @@ const translatedGenderOptions = withLocale(() =>
 		return {
 			...option,
 			value: normalizedValue,
-			label: renderI18n(
+			label: transformI18n(
 				$t(
 					`settingManage.organizeManage.staffInfo.form.options.gender.${genderKeyMap[String(option.value) as keyof typeof genderKeyMap]}`,
 				),
@@ -48,144 +43,156 @@ const translatedGenderOptions = withLocale(() =>
 );
 
 const positionOptions = withLocale(() => [
-	{ label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.staff")), value: "普通员工" },
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.departmentManager")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.staff")),
+		value: "普通员工",
+	},
+	{
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.departmentManager")),
 		value: "部门经理",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.deputyManager")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.deputyManager")),
 		value: "部门副经理",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.teamLeader")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.teamLeader")),
 		value: "部门组长",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.branchGeneralManager")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.branchGeneralManager")),
 		value: "分公司总经理",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.branchDeputyGeneralManager")),
+		label: transformI18n(
+			$t("settingManage.organizeManage.staffInfo.form.options.positions.branchDeputyGeneralManager"),
+		),
 		value: "分公司副总经理",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.generalManagerAssistant")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.generalManagerAssistant")),
 		value: "总经理助理",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.headquartersGeneralManager")),
+		label: transformI18n(
+			$t("settingManage.organizeManage.staffInfo.form.options.positions.headquartersGeneralManager"),
+		),
 		value: "总公司总经理",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.headquartersDeputyGeneralManager")),
+		label: transformI18n(
+			$t("settingManage.organizeManage.staffInfo.form.options.positions.headquartersDeputyGeneralManager"),
+		),
 		value: "总公司副总经理",
 	},
 ]);
 
 const orgOptions = withLocale(() => [
-	{ label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.top")), value: "中航物业1" },
+	{ label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.top")), value: "中航物业1" },
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.finance")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.finance")),
 		value: "中航物业1/财务部",
 	},
-	{ label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.hr")), value: "中航物业1/人事部" },
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.engineering")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.hr")),
+		value: "中航物业1/人事部",
+	},
+	{
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.engineering")),
 		value: "中航物业1/工程部",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.security")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.security")),
 		value: "中航物业1/安保部",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.service")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.service")),
 		value: "中航物业1/客服部",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.cleaning")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.cleaning")),
 		value: "中航物业1/保洁部",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.greening")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.greening")),
 		value: "中航物业1/绿化部",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.administration")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.administration")),
 		value: "中航物业1/行政部",
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.external")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.external")),
 		value: "中航物业1/物业1外实员部门",
 	},
 ]);
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.name")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.name")),
 			maxlength: 10,
 			minlength: 2,
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.gender")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.gender")),
 		prop: "gender",
 		valueType: "select",
 		options: translatedGenderOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.gender")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.gender")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.position")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.position")),
 		prop: "position",
 		valueType: "select",
 		options: positionOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.position")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.position")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.email")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.email")),
 		prop: "email",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.email")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.email")),
 			type: "email",
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.phone")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.phone")),
 			maxlength: 11,
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.address")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.address")),
 		prop: "address",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.address")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.address")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.orgName")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.orgName")),
 		prop: "orgName",
 		valueType: "select",
 		options: orgOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.orgName")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.form.placeholders.orgName")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.avatar")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.avatar")),
 		prop: "avatar",
 	},
 ]);
@@ -194,60 +201,60 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.enterName")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.enterName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 10,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.nameLength")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.nameLength")),
 			trigger: "blur",
 		},
 	],
 	gender: [
 		{
 			required: true,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.selectGender")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.selectGender")),
 			trigger: "change",
 		},
 	],
 	position: [
 		{
 			required: true,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.selectPosition")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.selectPosition")),
 			trigger: "change",
 		},
 	],
 	email: [
 		{
 			type: "email",
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.invalidEmail")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.invalidEmail")),
 			trigger: "blur",
 		},
 	],
 	phone: [
 		{
 			required: true,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.enterPhone")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.enterPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.invalidPhone")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.invalidPhone")),
 			trigger: "blur",
 		},
 	],
 	address: [
 		{
 			required: true,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.enterAddress")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.enterAddress")),
 			trigger: "blur",
 		},
 	],
 	orgName: [
 		{
 			required: true,
-			message: renderI18n($t("settingManage.organizeManage.staffInfo.form.validation.selectOrgName")),
+			message: transformI18n($t("settingManage.organizeManage.staffInfo.form.validation.selectOrgName")),
 			trigger: "change",
 		},
 	],
