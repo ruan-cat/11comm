@@ -30,11 +30,6 @@ import CommunityManageForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
 	province: "",
 	city: "",
@@ -44,7 +39,7 @@ const plusSearchModelRef: FieldValues & Partial<MyCommunityQueryParams> = {
 	status: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -97,19 +92,19 @@ function translateOptionLabel<T extends Record<string, string>>(value: string | 
 	}
 
 	const key = labelMap[value as keyof T];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const provinceOptions = withLocale(() =>
 	Object.entries(provinceLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const statusOptions = withLocale(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
@@ -117,46 +112,46 @@ const statusOptions = withLocale(() =>
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.province"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.province"))),
 		prop: "province",
 		minWidth: 120,
 		cellRenderer: ({ row }) => translateOptionLabel(row.province, provinceLabelKeyMap),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.city"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.city"))),
 		prop: "city",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.district"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.district"))),
 		prop: "district",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.communityName"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.communityName"))),
 		prop: "communityName",
 		minWidth: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.communityCode"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.communityCode"))),
 		prop: "communityCode",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.createTime"))),
 		prop: "createTime",
 		minWidth: 170,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.updateTime"))),
 		prop: "updateTime",
 		minWidth: 170,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.my.fields.status"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.my.fields.status"))),
 		prop: "status",
 		minWidth: 120,
 		cellRenderer: ({ row }) => {
@@ -166,11 +161,13 @@ const columns = withLocale<TableColumnList>(() => [
 				maintenance: "info",
 				disabled: "danger",
 			};
-			return h(ElTag, { type: typeMap[row.status] ?? "info" }, () => translateOptionLabel(row.status, statusLabelKeyMap));
+			return h(ElTag, { type: typeMap[row.status] ?? "info" }, () =>
+				translateOptionLabel(row.status, statusLabelKeyMap),
+			);
 		},
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 260,
 		fixed: "right",
 		slot: "operation",
@@ -178,59 +175,59 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("propertyManage_communityManage.my.tableTitle")),
+	title: transformI18n($t("propertyManage_communityManage.my.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.province")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.province")),
 		prop: "province",
 		valueType: "select",
 		options: provinceOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.province")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.province")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.city")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.city")),
 		prop: "city",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.city")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.city")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.district")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.district")),
 		prop: "district",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.district")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.district")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.communityName")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.name")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.name")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.communityCode")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.communityCode")),
 		prop: "communityCode",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.code")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.code")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.my.fields.status")),
+		label: transformI18n($t("propertyManage_communityManage.my.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: statusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.my.form.placeholders.status")),
+			placeholder: transformI18n($t("propertyManage_communityManage.my.form.placeholders.status")),
 		},
 	},
 ]);
@@ -238,7 +235,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -277,14 +274,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: MyCommunityListItem }) {
 		...defaultAddDialogParams,
 		title: () => {
 			if (isAdd.value) {
-				return renderI18n($t("propertyManage_communityManage.my.dialogs.addTitle"));
+				return transformI18n($t("propertyManage_communityManage.my.dialogs.addTitle"));
 			}
 
 			if (isEdit.value) {
-				return renderI18n($t("propertyManage_communityManage.my.dialogs.editTitle"));
+				return transformI18n($t("propertyManage_communityManage.my.dialogs.editTitle"));
 			}
 
-			return renderI18n($t("propertyManage_communityManage.my.dialogs.infoTitle"));
+			return transformI18n($t("propertyManage_communityManage.my.dialogs.infoTitle"));
 		},
 		props,
 		contentRenderer: () =>
@@ -300,7 +297,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: MyCommunityListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = communityManageFormInstance.value?.formComputed;
@@ -313,14 +310,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: MyCommunityListItem }) {
 				? []
 				: ([
 						{
-							label: () => renderI18n($t("common.buttons.reset")),
+							label: () => transformI18n($t("common.buttons.reset")),
 							type: "warning",
 							btnClick: () => {
 								communityManageFormInstance.value?.plusFormInstance?.handleReset();
 							},
 						},
 						{
-							label: () => renderI18n($t("common.buttons.submit")),
+							label: () => transformI18n($t("common.buttons.submit")),
 							type: "success",
 							btnClick: async ({ dialog: { options, index }, button }) => {
 								const res = await communityManageFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -352,20 +349,20 @@ async function handleDelete(row: MyCommunityListItem) {
 			i18n.global.t($t("propertyManage_communityManage.my.dialogs.confirmDelete"), {
 				communityName: row.communityName,
 			}),
-			renderI18n($t("propertyManage_communityManage.my.dialogs.deleteTitle")),
+			transformI18n($t("propertyManage_communityManage.my.dialogs.deleteTitle")),
 			{
-				confirmButtonText: renderI18n($t("common.buttons.del")),
-				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				confirmButtonText: transformI18n($t("common.buttons.del")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);
 
 		await testAsync();
-		ElMessage.success(renderI18n($t("propertyManage_communityManage.my.messages.deleteSuccess")));
+		ElMessage.success(transformI18n($t("propertyManage_communityManage.my.messages.deleteSuccess")));
 		await doFetch();
 	} catch (error) {
 		if (error !== "cancel") {
-			ElMessage.error(renderI18n($t("propertyManage_communityManage.my.messages.deleteFailed")));
+			ElMessage.error(transformI18n($t("propertyManage_communityManage.my.messages.deleteFailed")));
 		}
 	}
 }
