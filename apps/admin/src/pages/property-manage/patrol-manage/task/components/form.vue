@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { type PatrolTaskFormProps } from "./form";
 import type { PatrolTaskFormVO } from "@01s-11comm/type";
 import { patrolStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolTaskFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolTaskFormVO;
@@ -21,7 +26,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & PatrolTaskFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & PatrolTaskFormVO;
 
 /**
  * 表单对象
@@ -34,10 +39,28 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-/** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const translatedPatrolMethodOptions = withLocale(() => [
 	{
-		label: "任务编码",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.options.patrolMethod.walking")),
+		value: "步行",
+	},
+	{
+		label: transformI18n($t("property-manage_patrol-manage.task.form.options.patrolMethod.driving")),
+		value: "乘车",
+	},
+]);
+
+const translatedPatrolStatusOptions = withLocale(() =>
+	patrolStatusOptions.map((option) => ({
+		...option,
+		label: transformI18n($t(`property-manage_patrol-manage.task.form.options.patrolStatus.${option.value}`)),
+	})),
+);
+
+/** 表单项配置 */
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.taskCode")),
 		prop: "taskCode",
 		valueType: "input",
 		fieldProps: {
@@ -45,89 +68,80 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "巡检计划",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.patrolPlan")),
 		prop: "patrolPlan",
 		valueType: "input",
 	},
 	{
-		label: "巡检人开始/结束时间",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.patrolPersonTimeRange")),
 		prop: "patrolPersonTimeRange",
 		valueType: "input",
 	},
 	{
-		label: "实际巡检时间",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.actualPatrolTime")),
 		prop: "actualPatrolTime",
 		valueType: "input",
 	},
 	{
-		label: "计划巡检人",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.plannedPatrolPerson")),
 		prop: "plannedPatrolPerson",
 		valueType: "input",
 	},
 	{
-		label: "当前巡检人",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.currentPatrolPerson")),
 		prop: "currentPatrolPerson",
 		valueType: "input",
 	},
 	{
-		label: "转移描述",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.transferDescription")),
 		prop: "transferDescription",
 		valueType: "textarea",
 	},
 	{
-		label: "巡检方式",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.patrolMethod")),
 		prop: "patrolMethod",
 		valueType: "select",
-		options: [
-			{
-				label: "步行",
-				value: "步行",
-			},
-			{
-				label: "乘车",
-				value: "乘车",
-			},
-		],
+		options: translatedPatrolMethodOptions.value,
 	},
 	{
-		label: "巡检状态",
+		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.patrolStatus")),
 		prop: "patrolStatus",
 		valueType: "select",
-		options: patrolStatusOptions,
+		options: translatedPatrolStatusOptions.value,
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	patrolPlan: [
 		{
 			required: true,
-			message: "请输入巡检计划",
+			message: transformI18n($t("property-manage_patrol-manage.task.form.validation.patrolPlan")),
 			trigger: "blur",
 		},
 	],
 	plannedPatrolPerson: [
 		{
 			required: true,
-			message: "请输入计划巡检人",
+			message: transformI18n($t("property-manage_patrol-manage.task.form.validation.plannedPatrolPerson")),
 			trigger: "blur",
 		},
 	],
 	patrolMethod: [
 		{
 			required: true,
-			message: "请选择巡检方式",
+			message: transformI18n($t("property-manage_patrol-manage.task.form.validation.patrolMethod")),
 			trigger: "change",
 		},
 	],
 	patrolStatus: [
 		{
 			required: true,
-			message: "请选择巡检状态",
+			message: transformI18n($t("property-manage_patrol-manage.task.form.validation.patrolStatus")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 /** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
@@ -140,7 +154,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"

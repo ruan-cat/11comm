@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "巡检任务",
+		// 巡检任务
+		title: "property-manage_patrol-manage.task.pageTitle",
 		icon: "mdi:clipboard-list-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage.task"),
@@ -11,7 +12,9 @@ definePage({
 import { ref, computed, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolTaskFormProps, defaultForm } from "./components/form";
 import type { TaskListItem, TaskQueryParams, PatrolTaskFormVO } from "@01s-11comm/type";
@@ -19,63 +22,85 @@ import { taskStatusOptions } from "@01s-11comm/type";
 import PatrolTaskForm from "./components/form.vue";
 import { useTaskListQuery } from "@/api/property-manage/patrol-manage/task";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
 
 /** 表单组件实例 */
 const patrolTaskFormInstance = ref<InstanceType<typeof PatrolTaskForm> | null>(null);
 
+const translatedTaskStatusOptions = withLocale(() =>
+	taskStatusOptions.map((option) => ({
+		...option,
+		label: transformI18n($t(`property-manage_patrol-manage.task.options.status.${option.value}`)),
+	})),
+);
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "任务编码",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.task.fields.taskCode"))),
 		prop: "taskCode",
 		width: 120,
 	},
 	{
-		label: "巡检计划",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.task.fields.planName"))),
 		prop: "planName",
 		width: 120,
 	},
 	{
-		label: "巡检人开始/结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.task.fields.patrolPersonTime")),
+		),
 		prop: "patrolPersonTime",
 		width: 150,
 	},
 	{
-		label: "实际巡检时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.task.fields.actualPatrolTime")),
+		),
 		prop: "actualPatrolTime",
 		width: 150,
 	},
 	{
-		label: "计划巡检人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.task.fields.planPatrolPerson")),
+		),
 		prop: "planPatrolPerson",
 		width: 120,
 	},
 	{
-		label: "当前巡检人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.task.fields.currentPatrolPerson")),
+		),
 		prop: "currentPatrolPerson",
 		width: 120,
 	},
 	{
-		label: "转移描述",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_patrol-manage.task.fields.transferDescription")),
+		),
 		prop: "transferDescription",
 		width: 120,
 	},
 	{
-		label: "巡检方式",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.task.fields.patrolMethod"))),
 		prop: "patrolMethod",
 		width: 100,
 	},
 	{
-		label: "巡检状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.task.fields.status"))),
 		prop: "status",
 		width: 100,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -83,10 +108,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "巡检任务",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_patrol-manage.task.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -133,15 +158,15 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_inspectionManage.inspection.executor")),
+		label: transformI18n($t("property-manage_patrol-manage.task.search.executor")),
 		prop: "executor",
 		valueType: "input",
 	},
 
 	{
-		label: transformI18n($t("propertyManage_inspectionManage.inspection.inspectionStartTame")),
+		label: transformI18n($t("property-manage_patrol-manage.task.search.patrolStartTime")),
 		prop: "patrolStartTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -152,7 +177,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 
 	{
-		label: transformI18n($t("propertyManage_inspectionManage.inspection.inspectionCompletionTime")),
+		label: transformI18n($t("property-manage_patrol-manage.task.search.patrolEndTime")),
 		prop: "patrolEndTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -163,21 +188,15 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 
 	{
-		label: transformI18n($t("propertyManage_inspectionManage.inspection.inspectionStatus")),
+		label: transformI18n($t("property-manage_patrol-manage.task.search.status")),
 		prop: "status",
 		valueType: "select",
-		options: taskStatusOptions,
+		options: translatedTaskStatusOptions.value,
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 测试异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -195,17 +214,14 @@ function openDialog(params: { mode: Mode; row?: TaskListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}巡检任务`;
-
 	/** 业务对象 */
 	const patrolTaskFormVO: PatrolTaskFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				...row,
 			});
-	const defaultValues = structuredClone(patrolTaskFormVO);
+	const defaultValues = cloneDeep(patrolTaskFormVO);
 
 	/** 表单组件需要的props */
 	const formProps: PatrolTaskFormProps = {
@@ -215,7 +231,10 @@ function openDialog(params: { mode: Mode; row?: TaskListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_patrol-manage.task.dialogs.addTitle"))
+				: transformI18n($t("property-manage_patrol-manage.task.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(PatrolTaskForm, {
@@ -228,7 +247,7 @@ function openDialog(params: { mode: Mode; row?: TaskListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = patrolTaskFormInstance.value?.formComputed;
@@ -237,7 +256,7 @@ function openDialog(params: { mode: Mode; row?: TaskListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					patrolTaskFormInstance.value?.plusFormInstance?.handleReset();
@@ -245,7 +264,7 @@ function openDialog(params: { mode: Mode; row?: TaskListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await patrolTaskFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -262,11 +281,13 @@ function openDialog(params: { mode: Mode; row?: TaskListItem }) {
 }
 </script>
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

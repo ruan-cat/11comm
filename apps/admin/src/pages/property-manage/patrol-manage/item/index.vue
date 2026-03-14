@@ -1,78 +1,74 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "巡检项目",
+		// 巡检项目
+		title: "property-manage_patrol-manage.item.pageTitle",
 		icon: "mdi:format-list-checks",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.patrolManage.item"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PatrolItemFormProps, defaultForm } from "./components/form";
 import PatrolItemForm from "./components/form.vue";
 import { useItemListQuery } from "@/api/property-manage/patrol-manage/item";
 import type { ItemListItem, ItemQueryParams } from "@01s-11comm/type";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.item.fields.itemId"))),
 		prop: "itemId",
 		width: 120,
 	},
 	{
-		label: "巡检项目",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.item.fields.itemName"))),
 		prop: "itemName",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.item.fields.createTime"))),
 		prop: "createTime",
 		width: 120,
 	},
 	{
-		label: "备注",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_patrol-manage.item.fields.remark"))),
 		prop: "remark",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "巡检项目",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_patrol-manage.item.tableTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<ItemQueryParams> = {
 	itemId: "",
 	itemName: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -84,42 +80,29 @@ const {
 	handleCurrentPageChange,
 } = useItemListQuery(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
-}
-
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_inspectionManage.inspection.projectNumber")),
+		label: transformI18n($t("property-manage_patrol-manage.item.fields.itemId")),
 		prop: "itemId",
 		valueType: "input",
 	},
 	{
-		label: transformI18n($t("propertyManage_inspectionManage.inspection.inspectionItems")),
+		label: transformI18n($t("property-manage_patrol-manage.item.fields.itemName")),
 		prop: "itemName",
 		valueType: "input",
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -128,7 +111,6 @@ const { modeText, setMode, isAdd } = useMode();
 const patrolItemFormInstance = ref<InstanceType<typeof PatrolItemForm> | null>(null);
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-/** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
@@ -141,9 +123,6 @@ async function testAsync() {
 function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
-
-	/** 弹框标题 */
-	const title = `${modeText.value}巡检项目`;
 
 	/** 业务对象 */
 	const patrolItemFormVO = isAdd.value
@@ -159,15 +138,14 @@ function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 		defaultValues: patrolItemFormVO,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_patrol-manage.item.dialogs.addTitle"))
+				: transformI18n($t("property-manage_patrol-manage.item.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(PatrolItemForm, {
@@ -180,7 +158,7 @@ function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = patrolItemFormInstance.value?.formComputed;
@@ -188,14 +166,14 @@ function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					patrolItemFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await patrolItemFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -211,13 +189,15 @@ function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 	});
 }
 </script>
-
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

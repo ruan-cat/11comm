@@ -4,11 +4,15 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { PatrolItemFormProps } from "./form";
 import type { PatrolItemFormVO } from "@01s-11comm/type";
 
 const props = defineProps<PatrolItemFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolItemFormVO;
@@ -18,77 +22,60 @@ const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & PatrolItemFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const form = ref(cloneDeep(props.form) as FieldValues & PatrolItemFormVO);
+const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "编号",
+		label: transformI18n($t("property-manage_patrol-manage.item.form.code")),
 		prop: "code",
 		valueType: "input",
 		required: true,
 	},
 	{
-		label: "巡检项目",
+		label: transformI18n($t("property-manage_patrol-manage.item.form.patrolItem")),
 		prop: "patrolItem",
 		valueType: "input",
 		required: true,
 	},
 	{
-		label: "创建时间",
+		label: transformI18n($t("property-manage_patrol-manage.item.form.createTime")),
 		prop: "createTime",
 		valueType: "date-picker",
 		required: true,
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_patrol-manage.item.form.remark")),
 		prop: "remark",
 		valueType: "input",
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	code: [
 		{
 			required: true,
-			message: "请输入编号",
+			message: transformI18n($t("property-manage_patrol-manage.item.form.rules.codeRequired")),
 			trigger: "blur",
 		},
 	],
 	patrolItem: [
 		{
 			required: true,
-			message: "请输入巡检项目",
+			message: transformI18n($t("property-manage_patrol-manage.item.form.rules.patrolItemRequired")),
 			trigger: "blur",
 		},
 	],
 	createTime: [
 		{
 			required: true,
-			message: "请选择创建时间",
+			message: transformI18n($t("property-manage_patrol-manage.item.form.rules.createTimeRequired")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 /** 对外导出 */
 defineExpose({
@@ -98,7 +85,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
