@@ -9,11 +9,6 @@ import { type CatalogFormProps } from "./form";
 const props = defineProps<CatalogFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const groupTypeOptionLabelMap = {
 	system: $t("devTeam.menuManage.catalog.form.options.system"),
 	merchant: $t("devTeam.menuManage.catalog.form.options.merchant"),
@@ -34,7 +29,7 @@ function translateGroupType(value?: string | null) {
 	}
 
 	const key = groupTypeOptionLabelMap[value as keyof typeof groupTypeOptionLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStoreType(value?: string | null) {
@@ -43,7 +38,7 @@ function translateStoreType(value?: string | null) {
 	}
 
 	const key = storeTypeOptionLabelMap[value as keyof typeof storeTypeOptionLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const defaultValues = props.defaultValues as FieldValues & MenuCatalogFormData;
@@ -69,7 +64,7 @@ const translatedStoreTypeOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.name")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
@@ -77,7 +72,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.icon")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.icon")),
 		prop: "icon",
 		valueType: "input",
 		fieldProps: {
@@ -85,7 +80,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.label")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.label")),
 		prop: "label",
 		valueType: "input",
 		fieldProps: {
@@ -93,7 +88,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.seq")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.seq")),
 		prop: "seq",
 		valueType: "input-number",
 		fieldProps: {
@@ -102,7 +97,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.groupType")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.groupType")),
 		prop: "groupType",
 		valueType: "select",
 		options: translatedGroupTypeOptions.value,
@@ -112,7 +107,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.storeType")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.storeType")),
 		prop: "storeType",
 		valueType: "select",
 		options: translatedStoreTypeOptions.value,
@@ -122,7 +117,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.menuManage.catalog.fields.description")),
+		label: transformI18n($t("devTeam.menuManage.catalog.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
@@ -136,55 +131,55 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterName")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.enterName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.nameLength")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.nameLength")),
 			trigger: "blur",
 		},
 	],
 	icon: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterIcon")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.enterIcon")),
 			trigger: "blur",
 		},
 	],
 	label: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterLabel")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.enterLabel")),
 			trigger: "blur",
 		},
 	],
 	seq: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.enterSeq")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.enterSeq")),
 			trigger: "blur",
 		},
 		{
 			type: "number",
 			min: 0,
 			max: 999,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.seqRange")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.seqRange")),
 			trigger: "blur",
 		},
 	],
 	groupType: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.selectGroupType")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.selectGroupType")),
 			trigger: "change",
 		},
 	],
 	storeType: [
 		{
 			required: true,
-			message: renderI18n($t("devTeam.menuManage.catalog.form.validation.selectStoreType")),
+			message: transformI18n($t("devTeam.menuManage.catalog.form.validation.selectStoreType")),
 			trigger: "change",
 		},
 	],
