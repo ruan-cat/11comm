@@ -9,16 +9,11 @@ definePage({
 	},
 });
 
-import { ref } from "vue";
+import { cloneDeep, ref } from "vue";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { $t, transformI18n } from "@/plugins/i18n";
-import {
-	booleanOptions,
-	menuItemStatusOptions,
-	menuTypeOptions,
-	type MenuItemQueryParams,
-} from "@01s-11comm/type";
+import { booleanOptions, menuItemStatusOptions, menuTypeOptions, type MenuItemQueryParams } from "@01s-11comm/type";
 import { useMenuItemListQuery } from "@/api/dev-team/menu-manage/item";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
@@ -34,7 +29,7 @@ const plusSearchModelRef: FieldValues & Partial<MenuItemQueryParams> = {
 	isHidden: undefined,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -272,7 +267,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
