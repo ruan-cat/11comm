@@ -8,16 +8,12 @@ import type { ParkingSpaceStructureDiagramFormProps } from "./form";
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & ParkingSpaceStructureDiagramFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-const form = ref(cloneDeep(props.form) as FieldValues & ParkingSpaceStructureDiagramFormVO);
+const toRefForm = cloneDeep(props.form) as FieldValues & ParkingSpaceStructureDiagramFormVO;
+const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
 const parkingSpaceTypeLabelKeyMap = {
@@ -70,7 +66,7 @@ const chargingPilePowerLabelKeyMap = {
 
 function buildOptionList<T extends Record<string, string>>(labelMap: T) {
 	return Object.entries(labelMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	}));
 }
@@ -84,32 +80,34 @@ const chargingPilePowerOptions = withLocale(() => buildOptionList(chargingPilePo
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber")),
+		label: transformI18n(
+			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber"),
+		),
 		prop: "parkingSpaceNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceNumber"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceType")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceType")),
 		prop: "parkingSpaceType",
 		valueType: "select",
 		options: parkingSpaceTypeOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceType"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceStatus"),
 		),
 		prop: "parkingSpaceStatus",
@@ -117,40 +115,40 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: parkingSpaceStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceStatus"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceLocation"),
 		),
 		prop: "parkingSpaceLocation",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceLocation"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceArea")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceArea")),
 		prop: "parkingSpaceArea",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceArea"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceOrientation"),
 		),
 		prop: "parkingSpaceOrientation",
@@ -158,77 +156,77 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: orientationOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.parkingSpaceOrientation"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.floorArea")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.floorArea")),
 		prop: "floorArea",
 		valueType: "select",
 		options: floorAreaOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.floorArea"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.ownerName")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.ownerName"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.contactPhone")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.contactPhone"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.licensePlateNumber"),
 		),
 		prop: "licensePlateNumber",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.licensePlateNumber"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.vehicleBrand")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.vehicleBrand")),
 		prop: "vehicleBrand",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.vehicleBrand"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.purchaseTime")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.purchaseTime")),
 		prop: "purchaseTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -236,14 +234,14 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.purchaseTime"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.expiryTime")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.expiryTime")),
 		prop: "expiryTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -251,7 +249,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.expiryTime"),
 			),
 			disabled: props.mode === "info",
@@ -259,14 +257,14 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		hidden: (currentForm: ParkingSpaceStructureDiagramFormVO) => currentForm.parkingSpaceStatus !== "已租",
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.monthlyRent")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.monthlyRent")),
 		prop: "monthlyRent",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			step: 10,
 			controlsPosition: "right",
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.monthlyRent"),
 			),
 			disabled: props.mode === "info",
@@ -274,44 +272,40 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		hidden: (currentForm: ParkingSpaceStructureDiagramFormVO) => currentForm.parkingSpaceStatus !== "已租",
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.managementFee")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.managementFee")),
 		prop: "managementFee",
 		valueType: "input-number",
 		fieldProps: {
 			min: 0,
 			step: 5,
 			controlsPosition: "right",
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.managementFee"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
-			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.hasEvChargingPile"),
-		),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.hasEvChargingPile")),
 		prop: "hasEvChargingPile",
 		valueType: "select",
 		options: booleanOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.hasEvChargingPile"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n(
-			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.chargingPilePower"),
-		),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.chargingPilePower")),
 		prop: "chargingPilePower",
 		valueType: "select",
 		options: chargingPilePowerOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.chargingPilePower"),
 			),
 			disabled: props.mode === "info",
@@ -319,14 +313,14 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		hidden: (currentForm: ParkingSpaceStructureDiagramFormVO) => currentForm.hasEvChargingPile !== "是",
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.remark")),
+		label: transformI18n($t("propertyManage_communityManage.parking-space-structure-diagram.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.placeholders.remark"),
 			),
 			disabled: props.mode === "info",
@@ -338,7 +332,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceNumber: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterParkingSpaceNumber"),
 			),
 			trigger: "blur",
@@ -347,7 +341,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceType: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceType"),
 			),
 			trigger: "change",
@@ -356,7 +350,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceStatus: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceStatus"),
 			),
 			trigger: "change",
@@ -365,7 +359,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceLocation: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterParkingSpaceLocation"),
 			),
 			trigger: "blur",
@@ -374,7 +368,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceArea: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterParkingSpaceArea"),
 			),
 			trigger: "blur",
@@ -383,8 +377,10 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	parkingSpaceOrientation: [
 		{
 			required: true,
-			message: renderI18n(
-				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceOrientation"),
+			message: transformI18n(
+				$t(
+					"propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectParkingSpaceOrientation",
+				),
 			),
 			trigger: "change",
 		},
@@ -392,7 +388,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	floorArea: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectFloorArea"),
 			),
 			trigger: "change",
@@ -401,7 +397,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	contactPhone: [
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.contactPhonePattern"),
 			),
 			trigger: "blur",
@@ -410,7 +406,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	licensePlateNumber: [
 		{
 			pattern: /^[\u4E00-\u9FFFA-Z][A-Z][A-Z0-9]{5,6}$/u,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.licensePlateNumberPattern"),
 			),
 			trigger: "blur",
@@ -419,7 +415,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	expiryTime: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectExpiryTime"),
 			),
 			trigger: "change",
@@ -428,7 +424,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	monthlyRent: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterMonthlyRent"),
 			),
 			trigger: "blur",
@@ -437,7 +433,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	managementFee: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.enterManagementFee"),
 			),
 			trigger: "blur",
@@ -446,7 +442,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	hasEvChargingPile: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectHasEvChargingPile"),
 			),
 			trigger: "change",
@@ -455,7 +451,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	chargingPilePower: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.parking-space-structure-diagram.form.validation.selectChargingPilePower"),
 			),
 			trigger: "change",
