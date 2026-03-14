@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "费用汇总表",
+		// 费用汇总表
+		title: "property-manage_expense-manage.expense-summary-table.pageTitle",
 		icon: "mdi:table-large",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.expenseSummaryTable"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ExpenseSummaryTableFormProps, defaultForm } from "./components/form";
 import type { ExpenseSummaryTableFormVO, ExpenseItemNameType } from "@01s-11comm/type";
 import ExpenseSummaryTableForm from "./components/form.vue";
@@ -25,7 +27,9 @@ import { defaultAddDialogParams } from "@/config/constant";
 
 import { useMode, type Mode } from "@/composables/use-mode";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 表单组件实例 */
 const expenseSummaryTableFormInstance = ref<InstanceType<typeof ExpenseSummaryTableForm> | null>(null);
@@ -59,36 +63,49 @@ const {
 } = useExpenseSummaryTableListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "时间",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.expense-summary-table.fields.time")),
+		),
 		prop: "time",
 		width: 120,
 	},
 	{
-		label: "费用项ID",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.expense-summary-table.fields.expenseItemId")),
+		),
 		prop: "expenseItemId",
 		width: 120,
 	},
 	{
-		label: "费用项名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.expense-summary-table.fields.expenseItemName")),
+		),
 		prop: "expenseItemName",
 		width: 120,
 	},
 	{
-		label: "应收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.expense-summary-table.fields.receivableAmount")),
+		),
 		prop: "receivableAmount",
 		width: 120,
 	},
 	{
-		label: "实收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.expense-summary-table.fields.actualAmount")),
+		),
 		prop: "actualAmount",
 		width: 120,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
@@ -96,33 +113,33 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "费用汇总表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.expense-summary-table.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	// 时间
 	{
-		label: "时间",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.search.time")),
 		prop: "time",
 		valueType: "input",
 	},
 
 	// 费用项ID
 	{
-		label: "费用项ID",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.search.expenseItemId")),
 		prop: "expenseItemId",
 		valueType: "input",
 	},
 
 	// 费用项名称
 	{
-		label: "费用项名称",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.search.expenseItemName")),
 		prop: "expenseItemName",
 		valueType: "select",
 		options: expenseItemNameOptions,
@@ -134,13 +151,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -162,7 +173,7 @@ interface OpenDialogParams {
 	row?: ExpenseSummaryTableListItem;
 }
 
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -180,14 +191,11 @@ async function testAsync() {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}费用汇总表`;
-
 	/** 业务对象 */
 	const expenseSummaryTableFormVO: ExpenseSummaryTableFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					time: row?.time || "",
 					expenseItemId: row?.expenseItemId || "",
@@ -195,7 +203,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					receivableAmount: row?.receivableAmount || "",
 					actualAmount: row?.actualAmount || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ExpenseSummaryTableFormProps = {
@@ -208,7 +216,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.expense-summary-table.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.expense-summary-table.dialogs.editTitle")),
+		props: formProps,
 
 		contentRenderer: () =>
 			h(ExpenseSummaryTableForm, {
@@ -217,33 +229,39 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = expenseSummaryTableFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = expenseSummaryTableFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = expenseSummaryTableFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = expenseSummaryTableFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					expenseSummaryTableFormInstance.value.plusFormInstance.handleReset();
+					/** 手动重置表单 */
+					expenseSummaryTableFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					const res = await expenseSummaryTableFormInstance.value.plusFormInstance.handleSubmit();
+					/** 提交表单时 校验 */
+					const res = await expenseSummaryTableFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -256,18 +274,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -293,11 +309,15 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> 欠费缴费 </ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("property-manage_expense-manage.expense-summary-table.button.overduePayment")) }}
+						</ElButton>
 						<ElButton type="danger">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
-						<ElButton type="info">查看费用</ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("property-manage_expense-manage.expense-summary-table.button.viewFee")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>

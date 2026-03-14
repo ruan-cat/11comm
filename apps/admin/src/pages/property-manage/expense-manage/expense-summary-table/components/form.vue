@@ -4,11 +4,16 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import type { ExpenseSummaryTableFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { ExpenseSummaryTableFormProps, defaultForm } from "./form";
 
 const props = defineProps<ExpenseSummaryTableFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ExpenseSummaryTableFormVO;
@@ -25,112 +30,208 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ExpenseSummaryTableFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & ExpenseSummaryTableFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedExpenseItemNameOptions = withLocale(() => [
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.propertyFee"),
+		),
+		value: "物业费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.waterFee"),
+		),
+		value: "水费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.electricityFee"),
+		),
+		value: "电费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.gasFee"),
+		),
+		value: "燃气费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.parkingFee"),
+		),
+		value: "停车费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.elevatorFee"),
+		),
+		value: "电梯费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.garbageFee"),
+		),
+		value: "垃圾处理费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.greeningFee"),
+		),
+		value: "绿化费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.securityFee"),
+		),
+		value: "安防费",
+	},
+	{
+		label: transformI18n(
+			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.maintenanceFund"),
+		),
+		value: "维修基金",
+	},
+]);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 时间
 	{
-		label: "时间",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.fields.time")),
 		prop: "time",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入时间",
+			placeholder: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.placeholders.time")),
 		},
 	},
 
 	// 费用项ID
 	{
-		label: "费用项ID",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.fields.expenseItemId")),
 		prop: "expenseItemId",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入费用项ID",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.placeholders.expenseItemId"),
+			),
 		},
 	},
 
 	// 费用项名称
 	{
-		label: "费用项名称",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.fields.expenseItemName")),
 		prop: "expenseItemName",
 		valueType: "select",
-		options: [
-			{ label: "物业费", value: "物业费" },
-			{ label: "水费", value: "水费" },
-			{ label: "电费", value: "电费" },
-			{ label: "燃气费", value: "燃气费" },
-			{ label: "停车费", value: "停车费" },
-			{ label: "电梯费", value: "电梯费" },
-			{ label: "垃圾处理费", value: "垃圾处理费" },
-			{ label: "绿化费", value: "绿化费" },
-			{ label: "安防费", value: "安防费" },
-			{ label: "维修基金", value: "维修基金" },
-		],
+		options: translatedExpenseItemNameOptions.value,
 		required: true,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择费用项名称",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.placeholders.expenseItemName"),
+			),
 		},
 	},
 
 	// 应收金额
 	{
-		label: "应收金额",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.fields.receivableAmount")),
 		prop: "receivableAmount",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入应收金额",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.placeholders.receivableAmount"),
+			),
 		},
 	},
 
 	// 实收金额
 	{
-		label: "实收金额",
+		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.fields.actualAmount")),
 		prop: "actualAmount",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入实收金额",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.placeholders.actualAmount"),
+			),
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	time: [{ required: true, message: "请输入时间", trigger: "blur" }],
-	expenseItemId: [{ required: true, message: "请输入费用项ID", trigger: "blur" }],
-	expenseItemName: [{ required: true, message: "请选择费用项名称", trigger: "change" }],
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	time: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.validation.timeRequired")),
+			trigger: "blur",
+		},
+	],
+	expenseItemId: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.validation.expenseItemIdRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	expenseItemName: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.validation.expenseItemNameRequired"),
+			),
+			trigger: "change",
+		},
+	],
 	receivableAmount: [
-		{ required: true, message: "请输入应收金额", trigger: "blur" },
-		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.validation.receivableAmountRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^\d+(\.\d{1,2})?$/,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.validation.receivableAmountFormat"),
+			),
+			trigger: "blur",
+		},
 	],
 	actualAmount: [
-		{ required: true, message: "请输入实收金额", trigger: "blur" },
-		{ pattern: /^\d+(\.\d{1,2})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.validation.actualAmountRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^\d+(\.\d{1,2})?$/,
+			message: transformI18n(
+				$t("property-manage_expense-manage.expense-summary-table.form.validation.actualAmountFormat"),
+			),
+			trigger: "blur",
+		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -139,13 +240,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
