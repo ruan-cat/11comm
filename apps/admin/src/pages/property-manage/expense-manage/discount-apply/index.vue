@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "优惠申请",
+		// 优惠申请
+		title: "property-manage_expense-manage.discount-apply.pageTitle",
 		icon: "mdi:percent-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.discountApply"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type DiscountApplyFormProps, defaultForm } from "./components/form";
@@ -28,6 +31,8 @@ import { defaultAddDialogParams } from "@/config/constant";
 
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { h } from "vue";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -50,7 +55,6 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -61,76 +65,102 @@ const {
 } = useDiscountApplyListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
+	{ ...defaultPureTableIndexColumn, headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))) },
 	{
 		prop: "house",
-		label: "房屋",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.house")),
+		),
 		width: 200,
 	},
 	{
 		prop: "discountId",
-		label: "折扣ID",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.discountId")),
+		),
 		width: 120,
 	},
 	{
 		prop: "discountName",
-		label: "折扣名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.discountName")),
+		),
 		width: 120,
 	},
 	{
 		prop: "applicationType",
-		label: "申请类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.applicationType")),
+		),
 		width: 120,
 	},
 	{
 		prop: "applicant",
-		label: "申请人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.applicant")),
+		),
 		width: 120,
 	},
 	{
 		prop: "applicantPhone",
-		label: "申请电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.applicantPhone")),
+		),
 		width: 120,
 	},
 	{
 		prop: "startTime",
-		label: "开始时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.startTime")),
+		),
 		width: 120,
 	},
 	{
 		prop: "endTime",
-		label: "结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.endTime")),
+		),
 		width: 120,
 	},
 	{
 		prop: "status",
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.status")),
+		),
 		width: 120,
 	},
 	{
 		prop: "createTime",
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.createTime")),
+		),
 		width: 120,
 	},
 	{
 		prop: "usageStatus",
-		label: "使用状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.usageStatus")),
+		),
 		width: 120,
 	},
 	{
 		prop: "returnType",
-		label: "返还类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.returnType")),
+		),
 		width: 120,
 	},
 	{
 		prop: "returnAmount",
-		label: "返还金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-apply.fields.returnAmount")),
+		),
 		width: 120,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -138,32 +168,32 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "优惠申请",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.discount-apply.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	// 房屋
 	{
-		label: "房屋",
+		label: transformI18n($t("property-manage_expense-manage.discount-apply.search.house")),
 		prop: "house",
 		valueType: "input",
 	},
 	// 申请类型
 	{
-		label: "申请类型",
+		label: transformI18n($t("property-manage_expense-manage.discount-apply.search.applicationType")),
 		prop: "applicationType",
 		valueType: "select",
 		options: applicationTypeOptions,
 	},
 	// 使用状态
 	{
-		label: "使用状态",
+		label: transformI18n($t("property-manage_expense-manage.discount-apply.search.usageStatus")),
 		prop: "usageStatus",
 		valueType: "select",
 		options: usageStatusOptions,
@@ -171,13 +201,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -196,7 +220,7 @@ function handleSearch() {
 // 弹框相关功能
 const DiscountApplyFormInstance = ref<InstanceType<typeof DiscountApplyForm> | null>(null);
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
@@ -215,13 +239,16 @@ function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}优惠申请`;
+	const title = () =>
+		isAdd.value
+			? transformI18n($t("property-manage_expense-manage.discount-apply.dialogs.addTitle"))
+			: transformI18n($t("property-manage_expense-manage.discount-apply.dialogs.editTitle"));
 
 	/** 业务对象 */
-	const 业务对象: DiscountApplyFormVO = isAdd.value
-		? structuredClone(defaultForm)
+	const formVO: DiscountApplyFormVO = isAdd.value
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					house: row?.house || "",
 					applicationType: (row?.applicationType as DiscountApplyFormVO["applicationType"]) || "空置房",
@@ -233,12 +260,12 @@ function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 					description: row?.discountName || "",
 					material: "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: DiscountApplyFormProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -257,35 +284,35 @@ function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = DiscountApplyFormInstance.value.formComputed;
+			const formComputed = DiscountApplyFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** console.log(options, index, button); */
-					const formComputed = DiscountApplyFormInstance.value.formComputed;
+					const formComputed = DiscountApplyFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					DiscountApplyFormInstance.value.plusFormInstance.handleReset();
+					DiscountApplyFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await DiscountApplyFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await DiscountApplyFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -298,18 +325,16 @@ function openDialog(params: { mode: Mode; row?: DiscountApplyListItem }) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -317,13 +342,13 @@ onMounted(async () => {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="info">
-					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.discountType")) }}
+					{{ transformI18n($t("property-manage_expense-manage.discount-apply.discountType")) }}
 				</ElButton>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
-					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.phoneApply")) }}
+					{{ transformI18n($t("property-manage_expense-manage.discount-apply.phoneApply")) }}
 				</ElButton>
 				<ElButton type="info">
-					{{ transformI18n($t("propertyManage_expensesManage.discount-apply.export")) }}
+					{{ transformI18n($t("property-manage_expense-manage.discount-apply.export")) }}
 				</ElButton>
 			</template>
 
