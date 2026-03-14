@@ -1,0 +1,572 @@
+property-manage_house-property-manage:
+  # House Management (房屋管理)
+  house:
+    pageTitle: House Management
+    tableTitle: House Management
+    fields:
+      houseCode: House
+      floor: Floor
+      owner: Owner
+      houseType: Type
+      houseArea: House Area
+      rent: Rent
+      houseStatus: House Status
+      validUntil: Valid Until
+      ownerMembers: Owner Members
+      ownerVehicles: Owner Vehicles
+      ownerHouses: Owner Houses
+      complaints: Complaints
+      repairs: Repairs
+      houseArrears: House Arrears
+      ownerArrears: Owner Arrears
+      houseContract: House Contract
+    search:
+      houseCode: House Number
+      houseStatus: House Status
+      houseType: House Type
+      buildingUnit: Building Unit
+    form:
+      fields:
+        house: House Number
+        floor: Floor
+        owner: Owner
+        type: Type
+        houseArea: House Area
+        rent: Rent
+        houseStatus: House Status
+        validUntil: Valid Until
+      options:
+        houseType:
+          residential: Residential
+          commercial: Commercial
+          office: Office
+          garage: Garage
+          other: Other
+        houseStatus:
+          selfOccupied: Self-occupied
+          rented: Rented
+          vacant: Vacant
+          underRenovation: Under Renovation
+        buildingUnit:
+          currentBuildingUnit: Current Building Unit
+          allBuildingUnits: All Building Units
+      validation:
+        houseRequired: Please enter house number
+        floorRequired: Please enter floor
+        ownerRequired: Please enter owner
+        typeRequired: Please select type
+        houseAreaRequired: Please enter house area
+        rentRequired: Please enter rent
+        houseStatusRequired: Please select house status
+        validUntilRequired: Please select valid until date
+    dialogs:
+      addTitle: Add House Management
+      editTitle: Edit House Management
+
+  # Invoice (发票)
+  invoice:
+    pageTitle: Invoice
+    tableTitle: Invoice
+    fields:
+      code: Code
+      invoiceType: Invoice Type
+      ownerName: Owner Name
+      applicant: Applicant
+      invoiceTitle: Invoice Title
+      taxpayerId: Taxpayer ID
+      applicationAmount: Application Amount
+      invoiceNumber: Invoice Number
+      auditStatus: Audit Status
+      applicationTime: Application Time
+    search:
+      code: Code
+      invoiceType: Invoice Type
+      ownerName: Owner Name
+      applicant: Applicant
+      auditStatus: Audit Status
+    form:
+      fields:
+        code: Code
+        invoiceType: Invoice Type
+        ownerName: Owner Name
+        applicant: Applicant
+        invoiceTitle: Invoice Title
+        taxpayerId: Taxpayer ID
+        applicationAmount: Application Amount
+        invoiceNumber: Invoice Number
+        auditStatus: Audit Status
+        applicationTime: Application Time
+      options:
+        invoiceType:
+          ordinary: Ordinary Invoice
+          vatSpecial: VAT Special Invoice
+          electronic: Electronic Invoice
+        invoiceAuditStatus:
+          pending: Pending Review
+          approved: Approved
+          rejected: Rejected
+      validation:
+        invoiceTypeRequired: Please select invoice type
+        ownerNameRequired: Please enter owner name
+        applicantRequired: Please enter applicant
+        invoiceTitleRequired: Please enter invoice title
+        taxpayerIdRequired: Please enter taxpayer ID
+        applicationAmountRequired: Please enter application amount
+        invoiceNumberRequired: Please enter invoice number
+    dialogs:
+      addTitle: Add Invoice
+      editTitle: Edit Invoice
+
+  # Invoice Title (发票抬头)
+  invoice-title:
+    pageTitle: Invoice Title
+    tableTitle: Invoice Title
+    fields:
+      code: Code
+      ownerName: Owner Name
+      invoiceType: Invoice Type
+      invoiceTitle: Invoice Title
+      taxpayerId: Taxpayer ID
+      address: Address
+      phone: Phone
+      bankAccount: Bank & Account
+      remark: Remark
+    search:
+      ownerName: Owner Name
+      invoiceType: Invoice Type
+      invoiceTitle: Invoice Title
+    form:
+      fields:
+        ownerName: Owner Name
+        invoiceType: Invoice Type
+        invoiceTitle: Invoice Title
+        taxpayerId: Taxpayer ID
+        address: Address
+        phone: Phone
+        bankAccount: Bank & Account
+        remark: Remark
+      placeholders:
+        ownerName: Please enter owner name
+        invoiceType: Please select invoice type
+        invoiceTitle: Please enter invoice title
+        taxpayerId: Please enter taxpayer ID
+        address: Please enter address
+        phone: Please enter phone
+        bankAccount: Please enter bank & account
+        remark: Please enter remark
+      options:
+        invoiceTitleType:
+          vatSpecial: VAT Special Invoice
+          vatOrdinary: VAT Ordinary Invoice
+          electronicOrdinary: Electronic Ordinary Invoice
+      validation:
+        ownerNameRequired: Please enter owner name
+        invoiceTypeRequired: Please select invoice type
+        invoiceTitleRequired: Please enter invoice title
+        taxpayerIdRequired: Please enter taxpayer ID
+        taxpayerIdFormat: Taxpayer ID format is incorrect
+    dialogs:
+      addTitle: Add Invoice Title
+      editTitle: Edit Invoice Title
+
+  # Owner Account (业主账户)
+  owner-account:
+    pageTitle: Owner Account
+    tableTitle: Owner Account
+    fields:
+      accountNo: Account Number
+      accountName: Account Name
+      idCard: ID Card Number
+      phone: Phone Number
+      accountType: Account Type
+      accountBalance: Account Balance
+      deductHouseNo: Deduction House Number
+      createTime: Create Time
+      remark: Remark
+    search:
+      accountName: Account Name
+      idCard: ID Card Number
+      phone: Contact
+      accountType: Account Type
+    form:
+      fields:
+        accountType: Account Type
+        ownerPhone: Owner Phone
+        ownerName: Owner Name
+        prepaidAmount: Prepaid Amount
+        paymentMethod: Payment Method
+        remark: Remark
+      placeholders:
+        accountType: Please select account type
+        ownerPhone: Please enter owner phone number
+        ownerName: Please enter owner name
+        prepaidAmount: Please enter prepaid amount
+        paymentMethod: Please select payment method
+        remark: Please enter remark
+      options:
+        accountType:
+          general: General Account
+          wechat: WeChat
+          alipay: Alipay
+          bankCard: Bank Card
+          cash: Cash
+        paymentMethod:
+          cash: Cash
+          wechatPay: WeChat Pay
+          alipay: Alipay
+          bankCard: Bank Card
+          bankTransfer: Bank Transfer
+      validation:
+        accountTypeRequired: Please select account type
+        ownerPhoneRequired: Please enter owner phone number
+        ownerPhoneFormat: Please enter a valid phone number format
+        ownerNameRequired: Please enter owner name
+        prepaidAmountRequired: Please enter prepaid amount
+        prepaidAmountFormat: Please enter a valid amount format
+    dialogs:
+      addTitle: Add Owner Account
+      editTitle: Edit Owner Account
+
+  # Owner Information (业主信息)
+  owner-information:
+    pageTitle: Owner Information
+    tableTitle: Owner Information
+    fields:
+      name: Name
+      status: Status
+      createTime: Create Time
+    search:
+      personType: Person Type
+      ownerName: Customer Name
+      houseNo: House Number
+      phone: Contact Phone
+      idCard: ID Card
+    form:
+      fields:
+        personnelType: Person Type
+        personnelRole: Person Role
+        customerName: Customer Name
+        contactPhone: Contact Phone
+        gender: Gender
+        backupPhone: Backup Phone
+        address: Address
+        accessKey: Access Key
+        idCard: ID Card
+        remark: Remark
+      options:
+        personType:
+          owner: Owner
+          family: Family
+          tenant: Tenant
+          user: User
+        personRole:
+          propertyOwner: Property Owner
+          contactPerson: Contact Person
+          user: User
+        gender:
+          male: Male
+          female: Female
+      validation:
+        personnelTypeRequired: Please select person type
+        personnelRoleRequired: Please select person role
+        customerNameRequired: Please enter customer name
+        contactPhoneRequired: Please enter contact phone
+        contactPhoneFormat: Please enter a valid phone number format
+        genderRequired: Please select gender
+        idCardRequired: Please enter ID card
+    dialogs:
+      addTitle: Add Owner Information
+      editTitle: Edit Owner Information
+
+  # Owner Member (业主成员)
+  owner-member:
+    pageTitle: Owner Member
+    tableTitle: Owner Member
+    fields:
+      memberFace: Member Face
+      name: Name
+      gender: Gender
+      type: Type
+      idCard: ID Card
+      contact: Contact
+      homeAddress: Home Address
+      accessKey: Access Key
+      createTime: Create Time
+    search:
+      name: Name
+      status: Status
+    form:
+      fields:
+        memberFace: Member Face
+        name: Name
+        gender: Gender
+        type: Type
+        idCard: ID Card
+        contact: Contact
+        homeAddress: Home Address
+        creator: Creator
+        remark: Remark
+        accessKey: Access Key
+      options:
+        gender:
+          male: Male
+          female: Female
+        memberType:
+          family: Family
+          tenant: Tenant
+          user: User
+        ownerMemberStatus:
+          enabled: Enabled
+          disabled: Disabled
+        accessKey:
+          yes: "Yes"
+          no: "No"
+      validation:
+        nameRequired: Please enter name
+        genderRequired: Please select gender
+        typeRequired: Please select type
+        idCardRequired: Please enter ID card
+        contactRequired: Please enter contact
+        contactFormat: Please enter a valid phone number format
+        homeAddressRequired: Please enter home address
+    dialogs:
+      addTitle: Add Owner Member
+      editTitle: Edit Owner Member
+
+  # Owners Committee (业委会)
+  owners-committee:
+    pageTitle: Owners Committee
+    tableTitle: Owners Committee
+    fields:
+      fullName: Full Name
+      gender: Gender
+      phone: Phone
+      idNumber: ID Number
+      address: Address
+      position: Position
+      post: Post
+      tenure: Tenure
+      status: Status
+    search:
+      fullName: Full Name
+      status: Status
+    form:
+      fields:
+        fullName: Full Name
+        gender: Gender
+        phone: Phone
+        idNumber: ID Number
+        address: Address
+        position: Position
+        post: Post
+        postDescription: Post Description
+        term: Term
+        tenure: Tenure
+        status: Status
+        remark: Remark
+      options:
+        gender:
+          male: Male
+          female: Female
+        ownersCommitteeStatus:
+          enabled: Enabled
+          disabled: Disabled
+      validation:
+        fullNameRequired: Please enter full name
+        genderRequired: Please select gender
+        phoneRequired: Please enter phone
+        phoneFormat: Please enter a valid phone number format
+        idNumberRequired: Please enter ID number
+        idNumberFormat: Please enter a valid ID number
+        addressRequired: Please enter address
+        positionRequired: Please enter position
+        postRequired: Please enter post
+        termRequired: Please enter term
+        tenureRequired: Please enter tenure
+        statusRequired: Please select status
+    dialogs:
+      addTitle: Add Owners Committee
+      editTitle: Edit Owners Committee
+
+  # Reserve Venue (场地预约)
+  reserve-venue:
+    pageTitle: Venue Reservation
+    tableTitle: Venue Reservation
+    fields:
+      reserver: Reserver
+      contactPhone: Contact Phone
+      reservationTime: Reservation Time
+      startTime: Usage Time
+      venueType: Venue Type
+      reservationStatus: Reservation Status
+      numberOfUsers: Number of Users
+      remark: Remark
+    search:
+      reserver: Reserver
+      venueType: Venue Type
+      reservationStatus: Reservation Status
+    form:
+      fields:
+        reserver: Reserver
+        contactPhone: Contact Phone
+        reservationTime: Reservation Time
+        startTime: Start Time
+        endTime: End Time
+        venueType: Venue Type
+        reservationStatus: Reservation Status
+        numberOfUsers: Number of Users
+        remark: Remark
+      options:
+        venueType:
+          basketballCourt: Basketball Court
+          badmintonCourt: Badminton Court
+          tableTennisRoom: Table Tennis Room
+          gym: Gym
+          swimmingPool: Swimming Pool
+          meetingRoom: Meeting Room
+        reservationStatus:
+          available: Available
+          reserved: Reserved
+          inUse: In Use
+          underMaintenance: Under Maintenance
+        reserveVenueStatus:
+          pendingReservation: Pending Reservation
+          reserved: Reserved
+          cancelled: Cancelled
+          completed: Completed
+      validation:
+        reserverRequired: Please enter reserver
+        contactPhoneRequired: Please enter contact phone
+        contactPhoneFormat: Please enter a valid phone number format
+        reservationTimeRequired: Please select reservation time
+        startTimeRequired: Please select start time
+        endTimeRequired: Please select end time
+        venueTypeRequired: Please select venue type
+        reservationStatusRequired: Please select reservation status
+        numberOfUsersRequired: Please enter number of users
+    dialogs:
+      addTitle: Add Venue Reservation
+      editTitle: Edit Venue Reservation
+
+  # Reserve Venue Order (场地预约订单)
+  reserve-venue-order:
+    pageTitle: Venue Reservation Order
+    tableTitle: Venue Reservation Order
+    fields:
+      orderNumber: Order Number
+      venue: Venue
+      site: Site
+      reserver: Reserver
+      reservationPhone: Reservation Phone
+      reservationDate: Reservation Date
+      reservationTime: Reservation Time
+      receivableAmount: Receivable Amount
+      receivedAmount: Received Amount
+      paymentMethod: Payment Method
+      status: Status
+      createTime: Create Time
+      remark: Remark
+    search:
+      orderNumber: Order Number
+      venue: Venue
+      reserver: Reserver
+      reservationPhone: Reservation Phone
+      status: Status
+    form:
+      fields:
+        orderNumber: Order Number
+        venue: Venue
+        site: Site
+        reserver: Reserver
+        reservationPhone: Reservation Phone
+        reservationDate: Reservation Date
+        reservationTime: Reservation Time
+        receivableAmount: Receivable Amount
+        receivedAmount: Received Amount
+        paymentMethod: Payment Method
+        status: Status
+        createTime: Create Time
+        remark: Remark
+      options:
+        reservedVenue:
+          meetingRoom: Meeting Room
+          gym: Gym
+          swimmingPool: Swimming Pool
+          badmintonCourt: Badminton Court
+          tennisCourt: Tennis Court
+          basketballCourt: Basketball Court
+        reserveVenueOrderStatus:
+          pendingPayment: Pending Payment
+          paid: Paid
+          cancelled: Cancelled
+          refunded: Refunded
+        paymentMethod:
+          wechat: WeChat
+          alipay: Alipay
+          cash: Cash
+          bankCard: Bank Card
+      validation:
+        orderNumberRequired: Please enter order number
+        venueRequired: Please enter venue
+        siteRequired: Please select site
+        reserverRequired: Please enter reserver
+        reservationPhoneRequired: Please enter reservation phone
+        reservationPhoneFormat: Please enter a valid phone number format
+        reservationDateRequired: Please select reservation date
+        reservationTimeRequired: Please enter reservation time
+        receivableAmountRequired: Please enter receivable amount
+        receivedAmountRequired: Please enter received amount
+        paymentMethodRequired: Please select payment method
+        statusRequired: Please select status
+        createTimeRequired: Please select create time
+    dialogs:
+      addTitle: Add Venue Reservation Order
+      editTitle: Edit Venue Reservation Order
+
+  # Site Management (场地管理)
+  site-management:
+    pageTitle: Site Management
+    tableTitle: Site Management
+    fields:
+      idNumber: ID Number
+      name: Name
+      openingTime: Opening Time
+      closingTime: Closing Time
+      hourlyFee: Hourly Fee
+      administrator: Administrator
+      administratorPhone: Administrator Phone
+      status: Status
+    search:
+      idNumber: Site ID
+      name: Site Name
+      administrator: Administrator
+      status: Status
+    form:
+      fields:
+        idNumber: ID Number
+        name: Name
+        openingTime: Opening Time
+        closingTime: Closing Time
+        hourlyFee: Hourly Fee
+        administrator: Administrator
+        administratorPhone: Administrator Phone
+        status: Status
+      options:
+        siteManagementStatus:
+          enabled: Enabled
+          disabled: Disabled
+          available: Available
+          underMaintenance: Under Maintenance
+      validation:
+        idNumberRequired: Please enter ID number
+        nameRequired: Please enter name
+        openingTimeRequired: Please select opening time
+        closingTimeRequired: Please select closing time
+        hourlyFeeRequired: Please enter hourly fee
+        administratorRequired: Please enter administrator
+        administratorPhoneRequired: Please enter administrator phone
+        administratorPhoneFormat: Please enter a valid phone number format
+        statusRequired: Please select status
+    dialogs:
+      addTitle: Add Site Management
+      editTitle: Edit Site Management

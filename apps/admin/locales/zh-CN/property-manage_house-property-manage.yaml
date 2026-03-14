@@ -1,0 +1,571 @@
+# 房屋管理
+house:
+  pageTitle: 房屋管理
+  tableTitle: 房屋管理
+  fields:
+    houseCode: 房屋
+    floor: 楼层
+    owner: 业主
+    houseType: 类型
+    houseArea: 房屋面积
+    rent: 租金
+    houseStatus: 房屋状态
+    validUntil: 有效期
+    ownerMembers: 业主成员
+    ownerVehicles: 业主车辆
+    ownerHouses: 业主房屋
+    complaints: 投诉
+    repairs: 报修
+    houseArrears: 房屋欠费
+    ownerArrears: 业主欠费
+    houseContract: 房屋合同
+  search:
+    houseCode: 房屋编号
+    houseStatus: 房屋状态
+    houseType: 房屋类型
+    buildingUnit: 楼栋单元
+  form:
+    fields:
+      house: 房屋编号
+      floor: 楼层
+      owner: 业主
+      type: 类型
+      houseArea: 房屋面积
+      rent: 租金
+      houseStatus: 房屋状态
+      validUntil: 有效期
+    options:
+      houseType:
+        residential: 住宅
+        shop: 商铺
+        office: 办公
+        garage: 车库
+        other: 其他
+      houseStatus:
+        selfOccupied: 自住
+        rented: 出租
+        vacant: 空置
+        renovating: 装修中
+      buildingUnit:
+        current: 当前楼栋单元
+        all: 全部楼栋单元
+    validation:
+      houseRequired: 请输入房屋编号
+      floorRequired: 请输入楼层
+      ownerRequired: 请输入业主
+      typeRequired: 请选择类型
+      houseAreaRequired: 请输入房屋面积
+      rentRequired: 请输入租金
+      houseStatusRequired: 请选择房屋状态
+      validUntilRequired: 请选择有效期
+  dialogs:
+    addTitle: 新增房屋管理
+    editTitle: 修改房屋管理
+
+# 发票
+invoice:
+  pageTitle: 发票
+  tableTitle: 发票
+  fields:
+    code: 编号
+    invoiceType: 发票类型
+    ownerName: 业主名称
+    applicant: 申请人
+    invoiceTitle: 发票名头
+    taxpayerId: 纳税人识别号
+    applicationAmount: 申请金额
+    invoiceNumber: 发票号
+    auditStatus: 发审核状态
+    applicationTime: 申请时间
+  search:
+    code: 编号
+    invoiceType: 发票类型
+    ownerName: 业主名称
+    applicant: 申请人
+    auditStatus: 审核状态
+  form:
+    fields:
+      code: 编号
+      invoiceType: 发票类型
+      ownerName: 业主名称
+      applicant: 申请人
+      invoiceTitle: 发票名头
+      taxpayerId: 纳税人识别号
+      applicationAmount: 申请金额
+      invoiceNumber: 发票号
+      auditStatus: 审核状态
+      applicationTime: 申请时间
+    options:
+      invoiceType:
+        normal: 普通发票
+        vatSpecial: 增值税专用发票
+        electronic: 电子发票
+      auditStatus:
+        pending: 待审核
+        approved: 已通过
+        rejected: 已拒绝
+    validation:
+      invoiceTypeRequired: 请选择发票类型
+      ownerNameRequired: 请输入业主名称
+      applicantRequired: 请输入申请人
+      invoiceTitleRequired: 请输入发票名头
+      taxpayerIdRequired: 请输入纳税人识别号
+      applicationAmountRequired: 请输入申请金额
+      invoiceNumberRequired: 请输入发票号
+  dialogs:
+    addTitle: 新增发票
+    editTitle: 修改发票
+
+# 发票抬头
+invoice-title:
+  pageTitle: 发票抬头
+  tableTitle: 发票抬头
+  fields:
+    code: 编号
+    ownerName: 业主名称
+    invoiceType: 发票类型
+    invoiceTitle: 发票名头
+    taxpayerId: 纳税人识别号
+    address: 地址
+    phone: 电话
+    bankAccount: 开户行及账号
+    remark: 备注
+  search:
+    ownerName: 业主名称
+    invoiceType: 发票类型
+    invoiceTitle: 发票名头
+  form:
+    fields:
+      ownerName: 业主名称
+      invoiceType: 发票类型
+      invoiceTitle: 发票名头
+      taxpayerId: 纳税人识别号
+      address: 地址
+      phone: 电话
+      bankAccount: 开户行及账号
+      remark: 备注
+    placeholders:
+      ownerName: 请输入业主名称
+      invoiceType: 请选择发票类型
+      invoiceTitle: 请输入发票名头
+      taxpayerId: 请输入纳税人识别号
+      address: 请输入地址
+      phone: 请输入电话
+      bankAccount: 请输入开户行及账号
+      remark: 请输入备注信息
+    options:
+      invoiceType:
+        vatSpecial: 增值税专用发票
+        vatNormal: 增值税普通发票
+        electronicNormal: 电子普通发票
+    validation:
+      ownerNameRequired: 请输入业主名称
+      invoiceTypeRequired: 请选择发票类型
+      invoiceTitleRequired: 请输入发票名头
+      taxpayerIdRequired: 请输入纳税人识别号
+      taxpayerIdFormat: 纳税人识别号格式不正确
+  dialogs:
+    addTitle: 新增发票抬头
+    editTitle: 修改发票抬头
+
+# 业主账户
+owner-account:
+  pageTitle: 业主账户
+  tableTitle: 业主账户
+  fields:
+    accountNo: 账户编号
+    accountName: 账户名称
+    idCard: 身份证号
+    phone: 手机号
+    accountType: 账户类型
+    accountBalance: 账户金额
+    deductHouseNo: 扣款房号
+    createTime: 创建时间
+    remark: 备注
+  search:
+    accountName: 账户名称
+    idCard: 身份证号
+    phone: 联系方式
+    accountType: 账户类型
+  form:
+    fields:
+      accountType: 账户类型
+      ownerPhone: 业主手机
+      ownerName: 业主名称
+      prepaidAmount: 预存金额
+      paymentMethod: 支付方式
+      remark: 备注
+    placeholders:
+      accountType: 请选择账户类型
+      ownerPhone: 请输入业主手机号
+      ownerName: 请输入业主名称
+      prepaidAmount: 请输入预存金额
+      paymentMethod: 请选择支付方式
+      remark: 请输入备注信息
+    options:
+      accountType:
+        general: 通用账户
+        wechat: 微信
+        alipay: 支付宝
+        bankCard: 银行卡
+        cash: 现金
+      paymentMethod:
+        cash: 现金
+        wechatPay: 微信支付
+        alipay: 支付宝
+        bankCard: 银行卡
+        bankTransfer: 银行转账
+    validation:
+      accountTypeRequired: 请选择账户类型
+      ownerPhoneRequired: 请输入业主手机号
+      ownerPhoneFormat: 请输入正确的手机号格式
+      ownerNameRequired: 请输入业主名称
+      prepaidAmountRequired: 请输入预存金额
+      prepaidAmountFormat: 请输入正确的金额格式
+  dialogs:
+    addTitle: 新增业主账户
+    editTitle: 修改业主账户
+
+# 业主信息
+owner-information:
+  pageTitle: 业主信息
+  tableTitle: 业主信息
+  fields:
+    name: 名称
+    status: 状态
+    createTime: 创建时间
+  search:
+    personType: 人员类型
+    ownerName: 客户名称
+    houseNo: 房屋编号
+    phone: 联系电话
+    idCard: 身份证
+  form:
+    fields:
+      personnelType: 人员类型
+      personnelRole: 人员角色
+      customerName: 客户名称
+      contactPhone: 联系手机
+      gender: 性别
+      backupPhone: 备用手机
+      address: 地址
+      accessKey: 门禁钥匙
+      idCard: 身份证
+      remark: 备注
+    options:
+      personType:
+        owner: 业主
+        family: 家人
+        tenant: 租户
+        user: 使用人
+      personRole:
+        propertyOwner: 产权人
+        contact: 联系人
+        user: 使用人
+      gender:
+        male: 男
+        female: 女
+    validation:
+      personnelTypeRequired: 请选择人员类型
+      personnelRoleRequired: 请选择人员角色
+      customerNameRequired: 请输入客户名称
+      contactPhoneRequired: 请输入联系手机
+      contactPhoneFormat: 请输入正确的手机号格式
+      genderRequired: 请选择性别
+      idCardRequired: 请输入身份证
+  dialogs:
+    addTitle: 新增业主信息
+    editTitle: 修改业主信息
+
+# 业主成员
+owner-member:
+  pageTitle: 业主成员
+  tableTitle: 业主成员
+  fields:
+    memberFace: 成员人脸
+    name: 名称
+    gender: 性别
+    type: 类型
+    idCard: 身份证
+    contact: 联系方式
+    homeAddress: 家庭住址
+    accessKey: 门禁钥匙
+    createTime: 创建时间
+  search:
+    name: 名称
+    status: 状态
+  form:
+    fields:
+      memberFace: 成员人脸
+      name: 名称
+      gender: 性别
+      type: 类型
+      idCard: 身份证
+      contact: 联系方式
+      homeAddress: 家庭住址
+      creator: 创建人
+      remark: 备注
+      accessKey: 门禁钥匙
+    options:
+      gender:
+        male: 男
+        female: 女
+      memberType:
+        family: 家人
+        tenant: 租户
+        user: 使用人
+      ownerMemberStatus:
+        enabled: 启用
+        disabled: 禁用
+      accessKey:
+        yes: 有
+        no: 无
+    validation:
+      nameRequired: 请输入名称
+      genderRequired: 请选择性别
+      typeRequired: 请选择类型
+      idCardRequired: 请输入身份证
+      contactRequired: 请输入联系方式
+      contactFormat: 请输入正确的手机号格式
+      homeAddressRequired: 请输入家庭住址
+  dialogs:
+    addTitle: 新增业主成员
+    editTitle: 修改业主成员
+
+# 业委会
+owners-committee:
+  pageTitle: 业委会
+  tableTitle: 业委会
+  fields:
+    fullName: 姓名
+    gender: 性别
+    phone: 电话
+    idNumber: 身份证
+    address: 住址
+    position: 职位
+    post: 岗位
+    tenure: 任期
+    status: 状态
+  search:
+    fullName: 姓名
+    status: 状态
+  form:
+    fields:
+      fullName: 姓名
+      gender: 性别
+      phone: 电话
+      idNumber: 身份证号码
+      address: 住址
+      position: 职位
+      post: 岗位
+      postDescription: 岗位描述
+      term: 届期
+      tenure: 任期
+      status: 状态
+      remark: 备注
+    options:
+      gender:
+        male: 男
+        female: 女
+      status:
+        enabled: 启用
+        disabled: 禁用
+    validation:
+      fullNameRequired: 请输入姓名
+      genderRequired: 请选择性别
+      phoneRequired: 请输入电话
+      phoneFormat: 请输入正确的手机号格式
+      idNumberRequired: 请输入身份证号码
+      idNumberFormat: 请输入正确的身份证号码
+      addressRequired: 请输入住址
+      positionRequired: 请输入职位
+      postRequired: 请输入岗位
+      termRequired: 请输入届期
+      tenureRequired: 请输入任期
+      statusRequired: 请选择状态
+  dialogs:
+    addTitle: 新增业委会
+    editTitle: 修改业委会
+
+# 场地预约
+reserve-venue:
+  pageTitle: 场地预约
+  tableTitle: 场地预约
+  fields:
+    reserver: 预约人
+    contactPhone: 联系电话
+    reservationTime: 预约时间
+    startTime: 使用时间
+    venueType: 场地类型
+    reservationStatus: 预约状态
+    numberOfUsers: 使用人数
+    remark: 备注
+  search:
+    reserver: 预约人
+    venueType: 场地类型
+    reservationStatus: 预约状态
+  form:
+    fields:
+      reserver: 预约人
+      contactPhone: 联系电话
+      reservationTime: 预约时间
+      startTime: 开始时间
+      endTime: 结束时间
+      venueType: 场地类型
+      reservationStatus: 预约状态
+      numberOfUsers: 使用人数
+      remark: 备注
+    options:
+      venueType:
+        basketball: 篮球场
+        badminton: 羽毛球场
+        tableTennis: 乒乓球室
+        gym: 健身房
+        swimmingPool: 游泳池
+        meetingRoom: 会议室
+      reservationStatus:
+        available: 可预约
+        reserved: 已预约
+        inUse: 使用中
+        maintenance: 维护中
+      reserveVenueStatus:
+        pending: 待预约
+        reserved: 已预约
+        cancelled: 已取消
+        completed: 已完成
+    validation:
+      reserverRequired: 请输入预约人
+      contactPhoneRequired: 请输入联系电话
+      contactPhoneFormat: 请输入正确的手机号格式
+      reservationTimeRequired: 请选择预约时间
+      startTimeRequired: 请选择开始时间
+      endTimeRequired: 请选择结束时间
+      venueTypeRequired: 请选择场地类型
+      reservationStatusRequired: 请选择预约状态
+      numberOfUsersRequired: 请输入使用人数
+  dialogs:
+    addTitle: 新增场地预约
+    editTitle: 修改场地预约
+
+# 场地预约订单
+reserve-venue-order:
+  pageTitle: 场地预约订单
+  tableTitle: 场地预约订单
+  fields:
+    orderNumber: 订单编号
+    venue: 场馆
+    site: 场地
+    reserver: 预约人
+    reservationPhone: 预约电话
+    reservationDate: 预约日期
+    reservationTime: 预约时间
+    receivableAmount: 应收金额
+    receivedAmount: 实收金额
+    paymentMethod: 支付方式
+    status: 状态
+    createTime: 创建时间
+    remark: 备注
+  search:
+    orderNumber: 订单编号
+    venue: 场馆
+    reserver: 预约人
+    reservationPhone: 预约电话
+    status: 状态
+  form:
+    fields:
+      orderNumber: 订单编号
+      venue: 场馆
+      site: 场地
+      reserver: 预约人
+      reservationPhone: 预约电话
+      reservationDate: 预约日期
+      reservationTime: 预约时间
+      receivableAmount: 应收金额
+      receivedAmount: 实收金额
+      paymentMethod: 支付方式
+      status: 状态
+      createTime: 创建时间
+      remark: 备注
+    options:
+      reservedVenue:
+        meetingRoom: 会议室
+        gym: 健身房
+        swimmingPool: 游泳池
+        badminton: 羽毛球场
+        tennis: 网球场
+        basketball: 篮球场
+      orderStatus:
+        pendingPayment: 待支付
+        paid: 已支付
+        cancelled: 已取消
+        refunded: 已退款
+      paymentMethod:
+        wechat: 微信
+        alipay: 支付宝
+        cash: 现金
+        bankCard: 银行卡
+    validation:
+      orderNumberRequired: 请输入订单编号
+      venueRequired: 请输入场馆
+      siteRequired: 请选择场地
+      reserverRequired: 请输入预约人
+      reservationPhoneRequired: 请输入预约电话
+      reservationPhoneFormat: 请输入正确的手机号格式
+      reservationDateRequired: 请选择预约日期
+      reservationTimeRequired: 请输入预约时间
+      receivableAmountRequired: 请输入应收金额
+      receivedAmountRequired: 请输入实收金额
+      paymentMethodRequired: 请选择支付方式
+      statusRequired: 请选择状态
+      createTimeRequired: 请选择创建时间
+  dialogs:
+    addTitle: 新增场地预约订单
+    editTitle: 修改场地预约订单
+
+# 场地管理
+site-management:
+  pageTitle: 场地管理
+  tableTitle: 场地管理
+  fields:
+    idNumber: 编号
+    name: 名称
+    openingTime: 开场时间
+    closingTime: 关场时间
+    hourlyFee: 每小时费用
+    administrator: 管理员
+    administratorPhone: 管理员电话
+    status: 状态
+  search:
+    idNumber: 场地编号
+    name: 场地名称
+    administrator: 管理员
+    status: 状态
+  form:
+    fields:
+      idNumber: 编号
+      name: 名称
+      openingTime: 开场时间
+      closingTime: 关场时间
+      hourlyFee: 每小时费用
+      administrator: 管理员
+      administratorPhone: 管理员电话
+      status: 状态
+    options:
+      status:
+        enabled: 启用
+        disabled: 禁用
+        available: 可预约
+        maintenance: 维护中
+    validation:
+      idNumberRequired: 请输入编号
+      nameRequired: 请输入名称
+      openingTimeRequired: 请选择开场时间
+      closingTimeRequired: 请选择关场时间
+      hourlyFeeRequired: 请输入每小时费用
+      administratorRequired: 请输入管理员
+      administratorPhoneRequired: 请输入管理员电话
+      administratorPhoneFormat: 请输入正确的手机号格式
+      statusRequired: 请选择状态
+  dialogs:
+    addTitle: 新增场地管理
+    editTitle: 修改场地管理
