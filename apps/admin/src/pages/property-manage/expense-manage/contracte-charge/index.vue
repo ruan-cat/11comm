@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "合同收费",
+		// 合同收费
+		title: "property-manage_expense-manage.contracte-charge.pageTitle",
 		icon: "mdi:file-document-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.contracteCharge"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { useMode, type Mode } from "@/composables/use-mode";
 
 import { type ContracteChargeFormProps, defaultForm } from "./components/form";
@@ -22,7 +25,8 @@ import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import { h } from "vue";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -43,7 +47,6 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -54,51 +57,70 @@ const {
 } = useContracteChargeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "合同编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.contractNumber")),
+		),
 		prop: "contractNumber",
 		width: 120,
 	},
 	{
-		label: "父合同编号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.parentContractNumber")),
+		),
 		prop: "parentContractNumber",
 		width: 120,
 	},
 	{
-		label: "合同名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.contractName")),
+		),
 		prop: "contractName",
 		width: 120,
 	},
 	{
-		label: "合同类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.contractType")),
+		),
 		prop: "contractType",
 		width: 120,
 	},
 	{
-		label: "乙方",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.partyB")),
+		),
 		prop: "partyB",
 		width: 120,
 	},
 	{
-		label: "合同金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.contractAmount")),
+		),
 		prop: "contractAmount",
 		width: 120,
 	},
 	{
-		label: "开始时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.startTime")),
+		),
 		prop: "startTime",
 		width: 200,
 	},
 	{
-		label: "结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.contracte-charge.fields.endTime")),
+		),
 		prop: "endTime",
 		width: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 290,
 		fixed: "right",
 		slot: "operation",
@@ -106,32 +128,32 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "合同收费",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.contracte-charge.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	// 合同编号
 	{
-		label: "合同编号",
+		label: transformI18n($t("property-manage_expense-manage.contracte-charge.search.contractNumber")),
 		prop: "contractNumber",
 		valueType: "input",
 	},
 
 	// 合同名称
 	{
-		label: "合同名称",
+		label: transformI18n($t("property-manage_expense-manage.contracte-charge.search.contractName")),
 		prop: "contractName",
 		valueType: "input",
 	},
 	// 合同类型
 	{
-		label: "合同类型",
+		label: transformI18n($t("property-manage_expense-manage.contracte-charge.search.contractType")),
 		prop: "contractType",
 		valueType: "select",
 		options: contractTypeOptions,
@@ -139,13 +161,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -164,7 +180,7 @@ function handleSearch() {
 // 弹框相关功能
 const contracteChargeFormInstance = ref<InstanceType<typeof ContracteChargeForm> | null>(null);
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
@@ -182,14 +198,11 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}合同收费`;
-
 	/** 业务对象 */
-	const 业务对象: ContracteChargeFormVO = isAdd.value
-		? structuredClone(defaultForm)
+	const formVO: ContracteChargeFormVO = isAdd.value
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					feeType: "物业费", // Default or map from row
 					chargeItem: row?.contractName || "",
@@ -197,12 +210,12 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 					billingStartTime: row?.startTime || "",
 					billingEndTime: row?.endTime || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContracteChargeFormProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 弹框组件所需的变量 */
@@ -213,7 +226,10 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.contracte-charge.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.contracte-charge.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(ContracteChargeForm, {
@@ -221,22 +237,26 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 				...formProps,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = contracteChargeFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = contracteChargeFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** console.log(options, index, button); */
-					const formComputed = contracteChargeFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = contracteChargeFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
@@ -245,11 +265,11 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await contracteChargeFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await contracteChargeFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -262,18 +282,16 @@ function openDialog(params: { mode: Mode; row?: ContracteChargeListItem }) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -296,11 +314,15 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="info"> 缴费 </ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("property-manage_expense-manage.contracte-charge.button.payment")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info"> 查看费用 </ElButton>
+						<ElButton type="info">
+							{{ transformI18n($t("property-manage_expense-manage.contracte-charge.button.viewFee")) }}
+						</ElButton>
 					</template>
 				</PureTable>
 			</template>
