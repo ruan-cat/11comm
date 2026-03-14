@@ -1,5 +1,7 @@
 # 合同类型
 contract-type:
+  pageTitle: 合同类型
+  tableTitle: 合同类型
   title: 合同类型
   add: 添加合同类型
   edit: 编辑合同类型
@@ -13,10 +15,39 @@ contract-type:
   button:
     extent: 扩展信息
     template: 合同模板
+  fields:
+    typeName: 类型名称
+    isAudit: 是否审核
+    description: 描述
+    createTime: 创建时间
+  search:
+    typeName: 合同类型名称
+    isAudit: 审核类型
+  form:
+    fields:
+      typeName: 类型名称
+      isAudit: 是否审核
+      description: 描述
+    placeholders:
+      typeName: 请输入合同类型名称
+      description: 请输入合同类型的详细描述
+    validation:
+      typeNameRequired: 请输入类型名称
+      typeNameLength: 长度在 2 到 50 个字符
+      isAuditRequired: 请选择是否审核
+      descriptionLength: 描述长度不能超过500个字符
+  options:
+    auditYes: 是
+    auditNo: 否
+  dialogs:
+    addTitle: 添加合同类型
+    editTitle: 编辑合同类型
 
 # 起草合同
 draft-contract:
   title: 起草合同
+  pageTitle: 起草合同
+  tableTitle: 起草合同信息
   add: 起草
   edit: 编辑合同
   delete: 删除合同
@@ -31,18 +62,335 @@ draft-contract:
   addpeople: 设置审核人员
   addpeopleplaceholder: 请选择审核人员
   print: 打印
+  fields:
+    contractName: 合同名称
+    contractNumber: 合同编号
+    parentContractNumber: 父合同编号
+    contractType: 合同类型
+    handler: 经办人
+    contractAmount: 合同金额
+    startTime: 开始时间
+    endTime: 结束时间
+    status: 状态
+    partyA: 甲方
+    partyAContact: 甲方联系人
+    partyAPhone: 甲方联系电话
+    partyB: 乙方
+    partyBContact: 乙方联系人
+    partyBPhone: 乙方联系电话
+    handlerPhone: 经办电话
+    signingTime: 签订时间
+    description: 说明
+    attachments: 合同附件
+  form:
+    placeholders:
+      contractName: 必填，请填写合同名称
+      contractNumber: 必填，请填写合同编号
+      contractType: 必填，请选择合同类型
+      partyA: 必填，请填写甲方
+      partyAContact: 必填，请填写甲方联系人
+      partyAPhone: 必填，请填写甲方联系电话
+      partyB: 必填，请填写乙方
+      partyBContact: 必填，请填写乙方联系人
+      partyBPhone: 必填，请填写乙方联系电话
+      handler: 必填，请填写经办人
+      handlerPhone: 必填，请填写经办电话
+      contractAmount: 选填，请填写合同金额
+      startTime: 必填，请选择开始时间
+      endTime: 必填，请选择结束时间
+      signingTime: 必填，请选择签订时间
+      description: 选填，请输入合同说明信息
+      attachmentsTip: 支持上传PDF、Word、Excel文件，最多5个文件
+    validation:
+      contractName: 请填写合同名称
+      contractNameLength: 合同名称长度在 2 到 50 个字符
+      contractNumber: 请填写合同编号
+      contractNumberLength: 合同编号长度在 2 到 30 个字符
+      contractType: 请选择合同类型
+      partyA: 请填写甲方
+      partyAContact: 请填写甲方联系人
+      partyAPhone: 请填写甲方联系电话
+      phoneFormat: 请输入正确的手机号码
+      partyB: 请填写乙方
+      partyBContact: 请填写乙方联系人
+      partyBPhone: 请填写乙方联系电话
+      handler: 请填写经办人
+      handlerPhone: 请填写经办电话
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      signingTime: 请选择签订时间
+  dialogs:
+    addTitle: 起草合同
+    editTitle: 编辑合同
+  options:
+    status:
+      draft: 草稿
+      approving: 审批中
+      effective: 已生效
+      terminated: 已终止
+
+# 合同甲方
+first-party:
+  pageTitle: 合同甲方
+  tableTitle: 合同甲方信息
+  fields:
+    partyA: 甲方
+    contactPerson: 甲方联系人
+    contactPhone: 联系电话
+    address: 地址
+    creditCode: 统一社会信用代码
+    establishmentDate: 成立日期
+    legalRepresentative: 法定代表人
+    businessScope: 经营范围
+  form:
+    placeholders:
+      partyA: 请输入甲方名称
+      contactPerson: 请输入甲方联系人姓名
+      contactPhone: 请输入11位手机号码
+      address: 请输入详细地址
+      creditCode: 请输入18位统一社会信用代码
+      establishmentDate: 请选择成立日期
+      legalRepresentative: 请输入法定代表人姓名
+      businessScope: 请输入经营范围，如：房地产开发、物业管理等
+    validation:
+      partyARequired: 请输入甲方名称
+      partyALength: 长度在 2 到 100 个字符
+      contactPersonRequired: 请输入甲方联系人
+      contactPersonLength: 长度在 2 到 50 个字符
+      contactPhoneRequired: 请输入联系电话
+      contactPhoneFormat: 请输入正确的手机号码
+      addressLength: 长度在 5 到 200 个字符
+      creditCodeFormat: 请输入正确的统一社会信用代码
+      establishmentDateRequired: 请选择成立日期
+      legalRepresentativeLength: 长度在 2 到 50 个字符
+      businessScopeLength: 长度在 5 到 500 个字符
+  dialogs:
+    addTitle: 新增合同甲方
+    editTitle: 编辑合同甲方
 
 # 合同变更
 contract-change:
   title: 合同变更
+  pageTitle: 合同变更
+  tableTitle: 合同变更列表
   details: 明细
   cencel: 取消
   subjectChange: 主体变更
   termadjustment: 租期调整
   assetchange: 资产变更
+  fields:
+    contractName: 合同名称
+    contractNumber: 合同编号
+    contractType: 合同类型
+    partyA: 甲方
+    partyB: 乙方
+    changeType: 变更类型
+    changer: 变更人
+    applyTime: 申请时间
+    description: 说明
+    status: 状态
+  form:
+    fields:
+      contractChangeTitle: 合同变更信息
+      contractName: 合同名称
+      contractNumber: 合同编号
+      contractType: 合同类型
+      partyA: 甲方
+      partyAContact: 甲方联系人
+      partyAPhone: 甲方联系电话
+      partyB: 乙方
+      partyBContact: 乙方联系人
+      partyBPhone: 乙方联系电话
+      handler: 经办人
+      handlerPhone: 经办电话
+      contractAmount: 合同金额
+      startTime: 开始时间
+      endTime: 结束时间
+      signingTime: 签订时间
+      changeType: 变更类型
+      changer: 变更人
+      beforeChange: 变更前
+      afterChange: 变更后
+      description: 变更说明
+      attachments: 合同附件
+    placeholders:
+      contractName: 请输入合同名称
+      contractNumber: 请输入合同编号
+      partyA: 请输入甲方名称
+      partyAContact: 请输入甲方联系人
+      partyAPhone: 请输入甲方联系电话
+      partyB: 请输入乙方名称
+      partyBContact: 请输入乙方联系人
+      partyBPhone: 请输入乙方联系电话
+      handler: 请输入经办人姓名
+      handlerPhone: 请输入经办电话
+      contractAmount: 请输入合同金额
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      signingTime: 请选择签订时间
+      changer: 请输入变更人姓名
+      beforeChange: 请输入变更前的内容
+      afterChange: 请输入变更后的内容
+      description: 请输入变更说明信息
+    validation:
+      contractName: 请输入合同名称
+      contractNameLength: 长度在 2 到 50 个字符
+      contractNumber: 请输入合同编号
+      contractNumberLength: 长度在 2 到 30 个字符
+      contractType: 请选择合同类型
+      partyA: 请输入甲方名称
+      partyAContact: 请输入甲方联系人
+      partyAPhone: 请输入甲方联系电话
+      phoneFormat: 请输入正确的手机号码
+      partyB: 请输入乙方名称
+      partyBContact: 请输入乙方联系人
+      partyBPhone: 请输入乙方联系电话
+      handler: 请输入经办人姓名
+      handlerPhone: 请输入经办电话
+      contractAmount: 请输入合同金额
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      signingTime: 请选择签订时间
+      changeType: 请选择变更类型
+      changer: 请输入变更人姓名
+      beforeChange: 请输入变更前的内容
+      afterChange: 请输入变更后的内容
+      description: 请输入变更说明
+    options:
+      contractTypes:
+        purchase: 采购合同
+        sales: 销售合同
+        service: 服务合同
+        lease: 租赁合同
+      changeTypes:
+        amount: 合同金额
+        period: 服务期限
+        content: 服务内容
+        payment: 付款方式
+        subject: 合同主体
+      statuses:
+        pending: 待审核
+        reviewing: 审核中
+        approved: 已通过
+        rejected: 已拒绝
+        withdrawn: 已撤回
 
 # 到期合同
 expired-contract:
+  pageTitle: 到期合同
+  tableTitle: 到期合同
   title: 到期合同
   renewal: 续签
   termination: 终止
+  renewalProcess: 续签处理
+  terminationProcess: 终止处理
+  fields:
+    contractName: 合同名称
+    contractNumber: 合同编号
+    contractType: 合同类型
+    partyA: 甲方
+    partyB: 乙方
+    contractAmount: 合同金额
+    endTime: 到期时间
+    processingStatus: 处理状态
+    processor: 处理人
+    processTime: 处理时间
+    remark: 备注
+  search:
+    contractName: 合同名称
+    contractNumber: 合同编号
+    contractType: 合同类型
+    partyA: 甲方
+    partyB: 乙方
+    processingStatus: 处理状态
+  form:
+    fields:
+      contractExpireTitle: 合同到期处理
+      contractName: 合同名称
+      contractNumber: 合同编号
+      contractType: 合同类型
+      partyA: 甲方
+      partyAContact: 甲方联系人
+      partyAPhone: 甲方联系电话
+      partyB: 乙方
+      partyBContact: 乙方联系人
+      partyBPhone: 乙方联系电话
+      handler: 经办人
+      handlerPhone: 经办电话
+      contractAmount: 合同金额
+      startTime: 开始时间
+      endTime: 结束时间
+      signingTime: 签订时间
+      processingType: 到期处理类型
+      processor: 处理人
+      description: 说明
+    placeholders:
+      contractName: 请输入合同名称
+      contractNumber: 请输入合同编号
+      contractType: 请选择合同类型
+      partyA: 请输入甲方名称
+      partyAContact: 请输入甲方联系人
+      partyAPhone: 请输入甲方联系电话
+      partyB: 请输入乙方名称
+      partyBContact: 请输入乙方联系人
+      partyBPhone: 请输入乙方联系电话
+      handler: 请输入经办人姓名
+      handlerPhone: 请输入经办电话
+      contractAmount: 请输入合同金额
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      signingTime: 请选择签订时间
+      processingType: 请选择处理类型
+      processor: 请输入处理人姓名
+      description: 请输入处理说明
+    validation:
+      contractName: 请输入合同名称
+      contractNameLength: 长度在 2 到 50 个字符
+      contractNumber: 请输入合同编号
+      contractNumberLength: 长度在 3 到 30 个字符
+      contractType: 请选择合同类型
+      partyA: 请输入甲方名称
+      partyALength: 长度在 2 到 50 个字符
+      partyAContact: 请输入甲方联系人
+      partyAContactLength: 长度在 2 到 20 个字符
+      partyAPhone: 请输入甲方联系电话
+      phoneFormat: 请输入正确的手机号码
+      partyB: 请输入乙方名称
+      partyBLength: 长度在 2 到 50 个字符
+      partyBContact: 请输入乙方联系人
+      partyBContactLength: 长度在 2 到 20 个字符
+      partyBPhone: 请输入乙方联系电话
+      handler: 请输入经办人姓名
+      handlerLength: 长度在 2 到 20 个字符
+      handlerPhone: 请输入经办电话
+      contractAmount: 请输入合同金额
+      amountFormat: 请输入正确的金额格式
+      startTime: 请选择开始时间
+      endTime: 请选择结束时间
+      signingTime: 请选择签订时间
+      processingType: 请选择到期处理类型
+      processor: 请输入处理人姓名
+      processorLength: 长度在 2 到 20 个字符
+      description: 请输入处理说明
+      descriptionLength: 长度在 5 到 500 个字符
+    options:
+      contractTypes:
+        purchase: 采购合同
+        sales: 销售合同
+        service: 服务合同
+        lease: 租赁合同
+        labor: 劳务合同
+        technology: 技术合同
+      processingTypes:
+        renewal: 续签
+        termination: 终止
+  options:
+    processingStatuses:
+      unprocessed: 未处理
+      processing: 处理中
+      renewed: 已续签
+      terminated: 已终止
+      delayed: 已延期
+  dialogs:
+    addTitle: 新增合同到期处理
+    editTitle: 编辑合同到期处理

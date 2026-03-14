@@ -1,0 +1,366 @@
+# Contract Type
+contract-type:
+  pageTitle: Contract Type
+  tableTitle: Contract Type
+  title: Contract Type
+  add: Add Contract Type
+  edit: Edit Contract Type
+  delete: Delete Contract Type
+  name: Contract Type Name
+  description: Contract Type Description
+  status: Status
+  addpeople: Set Auditors
+  addpeopleplaceholder: Please select auditor
+  contracttypename: Contract Type Name
+  button:
+    extent: Extension Info
+    template: Contract Template
+  fields:
+    typeName: Type Name
+    isAudit: Audit Required
+    description: Description
+    createTime: Created At
+  search:
+    typeName: Contract Type Name
+    isAudit: Audit Type
+  form:
+    fields:
+      typeName: Type Name
+      isAudit: Audit Required
+      description: Description
+    placeholders:
+      typeName: Please enter contract type name
+      description: Please enter detailed description
+    validation:
+      typeNameRequired: Please enter type name
+      typeNameLength: Length must be between 2 and 50 characters
+      isAuditRequired: Please select audit option
+      descriptionLength: Description cannot exceed 500 characters
+  dialogs:
+    addTitle: Add Contract Type
+    editTitle: Edit Contract Type
+  options:
+    auditYes: "Yes"
+    auditNo: "No"
+
+# Draft Contract
+draft-contract:
+  title: Draft Contract
+  pageTitle: Draft Contract
+  tableTitle: Draft Contract Info
+  add: Draft
+  edit: Edit Contract
+  delete: Delete Contract
+  contract-name: Contract Name
+  contract-type: Contract Type
+  contract-number: Contract Number
+  contract-amount: Contract Amount
+  contract-start-date: Contract Start Date
+  contract-end-date: Contract End Date
+  contract-description: Contract Description
+  status: Status
+  addpeople: Set Auditors
+  addpeopleplaceholder: Please select auditor
+  print: Print
+  fields:
+    contractName: Contract Name
+    contractNumber: Contract Number
+    parentContractNumber: Parent Contract Number
+    contractType: Contract Type
+    handler: Handler
+    contractAmount: Contract Amount
+    startTime: Start Time
+    endTime: End Time
+    status: Status
+    partyA: Party A
+    partyAContact: Party A Contact
+    partyAPhone: Party A Phone
+    partyB: Party B
+    partyBContact: Party B Contact
+    partyBPhone: Party B Phone
+    handlerPhone: Handler Phone
+    signingTime: Signing Time
+    description: Description
+    attachments: Attachments
+  form:
+    placeholders:
+      contractName: Required, please enter contract name
+      contractNumber: Required, please enter contract number
+      contractType: Required, please select contract type
+      partyA: Required, please enter Party A
+      partyAContact: Required, please enter Party A contact
+      partyAPhone: Required, please enter Party A phone
+      partyB: Required, please enter Party B
+      partyBContact: Required, please enter Party B contact
+      partyBPhone: Required, please enter Party B phone
+      handler: Required, please enter handler
+      handlerPhone: Required, please enter handler phone
+      contractAmount: Optional, please enter contract amount
+      startTime: Required, please select start time
+      endTime: Required, please select end time
+      signingTime: Required, please select signing time
+      description: Optional, please enter contract description
+      attachmentsTip: Supports PDF, Word, Excel files, up to 5 files
+  dialogs:
+    addTitle: Draft Contract
+    editTitle: Edit Contract
+  options:
+    status:
+      draft: Draft
+      approving: Approving
+      effective: Effective
+      terminated: Terminated
+
+# First Party
+first-party:
+  pageTitle: First Party
+  tableTitle: First Party Info
+  fields:
+    partyA: Party A
+    contactPerson: Contact Person
+    contactPhone: Contact Phone
+    address: Address
+    creditCode: Unified Social Credit Code
+    establishmentDate: Establishment Date
+    legalRepresentative: Legal Representative
+    businessScope: Business Scope
+  form:
+    placeholders:
+      partyA: Please enter Party A name
+      contactPerson: Please enter contact person name
+      contactPhone: Please enter 11-digit phone number
+      address: Please enter detailed address
+      creditCode: Please enter 18-digit unified social credit code
+      establishmentDate: Please select establishment date
+      legalRepresentative: Please enter legal representative name
+      businessScope: Please enter business scope
+  dialogs:
+    addTitle: Add First Party
+    editTitle: Edit First Party
+
+# Contract Change
+contract-change:
+  title: Contract Change
+  pageTitle: Contract Change
+  tableTitle: Contract Change List
+  details: Details
+  cencel: Cancel
+  subjectChange: Subject Change
+  termadjustment: Term Adjustment
+  assetchange: Asset Change
+  fields:
+    contractName: Contract Name
+    contractNumber: Contract Number
+    contractType: Contract Type
+    partyA: Party A
+    partyB: Party B
+    changeType: Change Type
+    changer: Changed By
+    applyTime: Apply Time
+    description: Description
+    status: Status
+  form:
+    fields:
+      contractChangeTitle: Contract Change Info
+      contractName: Contract Name
+      contractNumber: Contract Number
+      contractType: Contract Type
+      partyA: Party A
+      partyAContact: Party A Contact
+      partyAPhone: Party A Phone
+      partyB: Party B
+      partyBContact: Party B Contact
+      partyBPhone: Party B Phone
+      handler: Handler
+      handlerPhone: Handler Phone
+      contractAmount: Contract Amount
+      startTime: Start Time
+      endTime: End Time
+      signingTime: Signing Time
+      changeType: Change Type
+      changer: Changed By
+      beforeChange: Before Change
+      afterChange: After Change
+      description: Change Description
+      attachments: Attachments
+    placeholders:
+      contractName: Please enter contract name
+      contractNumber: Please enter contract number
+      partyA: Please enter Party A name
+      partyAContact: Please enter Party A contact
+      partyAPhone: Please enter Party A phone
+      partyB: Please enter Party B name
+      partyBContact: Please enter Party B contact
+      partyBPhone: Please enter Party B phone
+      handler: Please enter handler name
+      handlerPhone: Please enter handler phone
+      contractAmount: Please enter contract amount
+      startTime: Please select start time
+      endTime: Please select end time
+      signingTime: Please select signing time
+      changer: Please enter changer name
+      beforeChange: Please enter content before change
+      afterChange: Please enter content after change
+      description: Please enter change description
+    validation:
+      contractName: Please enter contract name
+      contractNameLength: Length must be between 2 and 50 characters
+      contractNumber: Please enter contract number
+      contractNumberLength: Length must be between 2 and 30 characters
+      contractType: Please select contract type
+      partyA: Please enter Party A name
+      partyAContact: Please enter Party A contact
+      partyAPhone: Please enter Party A phone
+      phoneFormat: Please enter a valid phone number
+      partyB: Please enter Party B name
+      partyBContact: Please enter Party B contact
+      partyBPhone: Please enter Party B phone
+      handler: Please enter handler name
+      handlerPhone: Please enter handler phone
+      contractAmount: Please enter contract amount
+      startTime: Please select start time
+      endTime: Please select end time
+      signingTime: Please select signing time
+      changeType: Please select change type
+      changer: Please enter changer name
+      beforeChange: Please enter content before change
+      afterChange: Please enter content after change
+      description: Please enter change description
+    options:
+      contractTypes:
+        purchase: Purchase Contract
+        sales: Sales Contract
+        service: Service Contract
+        lease: Lease Contract
+      changeTypes:
+        amount: Contract Amount
+        period: Service Period
+        content: Service Content
+        payment: Payment Method
+        subject: Contract Subject
+      statuses:
+        pending: Pending Review
+        reviewing: Under Review
+        approved: Approved
+        rejected: Rejected
+        withdrawn: Withdrawn
+
+# Expired Contract
+expired-contract:
+  pageTitle: Expired Contract
+  tableTitle: Expired Contract
+  title: Expired Contract
+  renewal: Renewal
+  termination: Termination
+  renewalProcess: Renewal Process
+  terminationProcess: Termination Process
+  fields:
+    contractName: Contract Name
+    contractNumber: Contract Number
+    contractType: Contract Type
+    partyA: Party A
+    partyB: Party B
+    contractAmount: Contract Amount
+    endTime: Expiry Time
+    processingStatus: Processing Status
+    processor: Processor
+    processTime: Process Time
+    remark: Remark
+  search:
+    contractName: Contract Name
+    contractNumber: Contract Number
+    contractType: Contract Type
+    partyA: Party A
+    partyB: Party B
+    processingStatus: Processing Status
+  form:
+    fields:
+      contractExpireTitle: Contract Expiry Processing
+      contractName: Contract Name
+      contractNumber: Contract Number
+      contractType: Contract Type
+      partyA: Party A
+      partyAContact: Party A Contact
+      partyAPhone: Party A Phone
+      partyB: Party B
+      partyBContact: Party B Contact
+      partyBPhone: Party B Phone
+      handler: Handler
+      handlerPhone: Handler Phone
+      contractAmount: Contract Amount
+      startTime: Start Time
+      endTime: End Time
+      signingTime: Signing Time
+      processingType: Processing Type
+      processor: Processor
+      description: Description
+    placeholders:
+      contractName: Please enter contract name
+      contractNumber: Please enter contract number
+      contractType: Please select contract type
+      partyA: Please enter Party A name
+      partyAContact: Please enter Party A contact
+      partyAPhone: Please enter Party A phone
+      partyB: Please enter Party B name
+      partyBContact: Please enter Party B contact
+      partyBPhone: Please enter Party B phone
+      handler: Please enter handler name
+      handlerPhone: Please enter handler phone
+      contractAmount: Please enter contract amount
+      startTime: Please select start time
+      endTime: Please select end time
+      signingTime: Please select signing time
+      processingType: Please select processing type
+      processor: Please enter processor name
+      description: Please enter processing description
+    validation:
+      contractName: Please enter contract name
+      contractNameLength: Length must be between 2 and 50 characters
+      contractNumber: Please enter contract number
+      contractNumberLength: Length must be between 3 and 30 characters
+      contractType: Please select contract type
+      partyA: Please enter Party A name
+      partyALength: Length must be between 2 and 50 characters
+      partyAContact: Please enter Party A contact
+      partyAContactLength: Length must be between 2 and 20 characters
+      partyAPhone: Please enter Party A phone
+      phoneFormat: Please enter a valid phone number
+      partyB: Please enter Party B name
+      partyBLength: Length must be between 2 and 50 characters
+      partyBContact: Please enter Party B contact
+      partyBContactLength: Length must be between 2 and 20 characters
+      partyBPhone: Please enter Party B phone
+      handler: Please enter handler name
+      handlerLength: Length must be between 2 and 20 characters
+      handlerPhone: Please enter handler phone
+      contractAmount: Please enter contract amount
+      amountFormat: Please enter a valid amount format
+      startTime: Please select start time
+      endTime: Please select end time
+      signingTime: Please select signing time
+      processingType: Please select processing type
+      processor: Please enter processor name
+      processorLength: Length must be between 2 and 20 characters
+      description: Please enter processing description
+      descriptionLength: Length must be between 5 and 500 characters
+    options:
+      contractTypes:
+        purchase: Purchase Contract
+        sales: Sales Contract
+        service: Service Contract
+        lease: Lease Contract
+        labor: Labor Contract
+        technology: Technology Contract
+      processingTypes:
+        renewal: Renewal
+        termination: Termination
+  dialogs:
+    addTitle: Add Contract Expiry Processing
+    editTitle: Edit Contract Expiry Processing
+  options:
+    processingStatuses:
+      unprocessed: Unprocessed
+      processing: Processing
+      renewed: Renewed
+      terminated: Terminated
+      delayed: Delayed
