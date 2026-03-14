@@ -9,8 +9,9 @@ definePage({
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, onMounted } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useReportGroupListQuery } from "@/api/operation-team/report-configuration/report-group";
 import { type ReportGroupFormProps, defaultForm } from "./components/form";
 import type { ReportGroupFormVO } from "@01s-11comm/type";
@@ -19,6 +20,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import type { ReportGroupListItem, ReportGroupQueryParams } from "@01s-11comm/type";
 
 const reportGroupFormInstance = ref<InstanceType<typeof ReportGroupForm> | null>(null);
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -50,31 +52,36 @@ const {
 } = useReportGroupListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "组ID",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.groupId")),
+		),
 		prop: "groupId",
 		width: 120,
 	},
 	{
-		label: "组名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.name")),
+		),
 		prop: "name",
 		width: 150,
 	},
 	{
-		label: "组url",
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.url"))),
 		prop: "url",
 		minWidth: 200,
 	},
 	{
-		label: "描述",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.remark")),
+		),
 		prop: "remark",
 		minWidth: 200,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 160,
 		fixed: "right",
 		slot: "operation",
@@ -82,48 +89,39 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报表组",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("operationTeam.reportConfiguration.reportGroup.pageTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 组ID
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "组ID",
+		label: transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.groupId")),
 		prop: "groupId",
 		valueType: "input",
 	},
-	// 组名称
 	{
-		label: "组名称",
+		label: transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
-	// 组url
 	{
-		label: "组url",
+		label: transformI18n($t("operationTeam.reportConfiguration.reportGroup.fields.url")),
 		prop: "url",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -142,7 +140,7 @@ interface OpenDialogParams {
 }
 
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
@@ -156,7 +154,6 @@ async function testAsync() {
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
-	const title = `${modeText.value}报表组`;
 
 	/** 业务对象 */
 	const reportGroupFormVO: ReportGroupFormVO = isAdd.value
@@ -180,7 +177,11 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () => {
+			if (isAdd.value) return transformI18n($t("operationTeam.reportConfiguration.reportGroup.dialogs.addTitle"));
+			if (isEdit.value) return transformI18n($t("operationTeam.reportConfiguration.reportGroup.dialogs.editTitle"));
+			return transformI18n($t("operationTeam.reportConfiguration.reportGroup.dialogs.infoTitle"));
+		},
 		props: formProps,
 		contentRenderer: () =>
 			h(ReportGroupForm, {
@@ -189,32 +190,36 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			}),
 
 		async doBeforeClose({ options, index }) {
-			const formComputed = reportGroupFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = reportGroupFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
-					const formComputed = reportGroupFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = reportGroupFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
-					reportGroupFormInstance.value.plusFormInstance.handleReset();
+					reportGroupFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
-					const res = await reportGroupFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await reportGroupFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -233,8 +238,17 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+	<section :key="locale" class="index-root">
+		<PlusSearch
+			:key="locale"
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>

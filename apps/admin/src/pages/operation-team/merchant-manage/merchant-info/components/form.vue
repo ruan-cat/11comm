@@ -13,10 +13,6 @@ import { MerchantInfoFormProps } from "./form";
 const props = defineProps<MerchantInfoFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
 
 const defaultValues = props.defaultValues as FieldValues & MerchantInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -59,7 +55,7 @@ function translateMerchantType(value?: string | null) {
 	}
 
 	const key = merchantTypeLabelKeyMap[value as keyof typeof merchantTypeLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateBusinessStatus(value?: string | null) {
@@ -68,7 +64,7 @@ function translateBusinessStatus(value?: string | null) {
 	}
 
 	const key = businessStatusLabelKeyMap[value as keyof typeof businessStatusLabelKeyMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedMerchantTypeOptions = withLocale(() =>
@@ -87,28 +83,28 @@ const translatedBusinessStatusOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantId")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantId")),
 		prop: "merchantId",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantId")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantId")),
 			disabled: true,
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantName")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantName")),
 		prop: "merchantName",
 		valueType: "input",
 		width: "240px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantName")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantName")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantType")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantType")),
 		prop: "merchantType",
 		valueType: "select",
 		width: "160px",
@@ -116,95 +112,95 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantType")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantType")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessStatus")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.businessStatus")),
 		prop: "businessStatus",
 		valueType: "select",
 		width: "140px",
 		options: translatedBusinessStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessStatus")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessStatus")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantAddress")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantAddress")),
 		prop: "merchantAddress",
 		valueType: "input",
 		width: "320px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantAddress")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.merchantAddress")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.affiliatedCommunity")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.affiliatedCommunity")),
 		prop: "affiliatedCommunity",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.affiliatedCommunity")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.affiliatedCommunity")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.contactPhone")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.contactPhone")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.contactPhone")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.contactMobile")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.contactMobile")),
 		prop: "contactMobile",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.contactMobile")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.contactMobile")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.legalRepresentative")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.legalRepresentative")),
 		prop: "legalRepresentative",
 		valueType: "input",
 		width: "160px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.legalRepresentative")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.legalRepresentative")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.establishmentDate")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.establishmentDate")),
 		prop: "establishmentDate",
 		valueType: "date-picker",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.establishmentDate")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.establishmentDate")),
 			type: "date",
 			format: "YYYY-MM-DD",
 			valueFormat: "YYYY-MM-DD",
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessHours")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.businessHours")),
 		prop: "businessHours",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessHours")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessHours")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessArea")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.businessArea")),
 		prop: "businessArea",
 		valueType: "input-number",
 		width: "160px",
@@ -212,47 +208,47 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			min: 0,
 			max: 999999,
 			precision: 2,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessArea")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessArea")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.businessLicenseNo")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.businessLicenseNo")),
 		prop: "businessLicenseNo",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessLicenseNo")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.businessLicenseNo")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.bankName")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.bankName")),
 		prop: "bankName",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.bankName")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.bankName")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.bankAccount")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.bankAccount")),
 		prop: "bankAccount",
 		valueType: "input",
 		width: "220px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.bankAccount")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.bankAccount")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_merchant-manage.merchant-info.fields.remarks")),
+		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.remarks")),
 		prop: "remarks",
 		valueType: "textarea",
 		width: "100%",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.remarks")),
+			placeholder: transformI18n($t("operation-team_merchant-manage.merchant-info.form.placeholders.remarks")),
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
@@ -264,104 +260,104 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	merchantName: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterMerchantName")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterMerchantName")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.merchantNameLength")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.merchantNameLength")),
 			trigger: "blur",
 		},
 	],
 	merchantType: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectMerchantType")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectMerchantType")),
 			trigger: "change",
 		},
 	],
 	businessStatus: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectBusinessStatus")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectBusinessStatus")),
 			trigger: "change",
 		},
 	],
 	merchantAddress: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterMerchantAddress")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterMerchantAddress")),
 			trigger: "blur",
 		},
 		{
 			min: 5,
 			max: 200,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.merchantAddressLength")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.merchantAddressLength")),
 			trigger: "blur",
 		},
 	],
 	affiliatedCommunity: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterAffiliatedCommunity")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterAffiliatedCommunity")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.affiliatedCommunityLength")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.affiliatedCommunityLength")),
 			trigger: "blur",
 		},
 	],
 	contactPhone: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterContactPhone")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterContactPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^((0\d{2,3}-\d{7,8})|(1[3-9]\d{9}))$/,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.contactPhonePattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.contactPhonePattern")),
 			trigger: "blur",
 		},
 	],
 	contactMobile: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterContactMobile")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterContactMobile")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.contactMobilePattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.contactMobilePattern")),
 			trigger: "blur",
 		},
 	],
 	legalRepresentative: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterLegalRepresentative")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterLegalRepresentative")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 10,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.legalRepresentativeLength")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.legalRepresentativeLength")),
 			trigger: "blur",
 		},
 	],
 	establishmentDate: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectEstablishmentDate")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.selectEstablishmentDate")),
 			trigger: "change",
 		},
 	],
 	businessHours: [
 		{
 			pattern: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])-([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessHoursPattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessHoursPattern")),
 			trigger: "blur",
 		},
 	],
@@ -370,40 +366,40 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 			type: "number",
 			min: 0,
 			max: 999999,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessAreaRange")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessAreaRange")),
 			trigger: "blur",
 		},
 	],
 	businessLicenseNo: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterBusinessLicenseNo")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.enterBusinessLicenseNo")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[0-9A-Z]{18}$/,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessLicenseNoPattern")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.businessLicenseNoPattern")),
 			trigger: "blur",
 		},
 	],
 	bankName: [
 		{
 			max: 50,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.bankNameMax")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.bankNameMax")),
 			trigger: "blur",
 		},
 	],
 	bankAccount: [
 		{
 			max: 30,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.bankAccountMax")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.bankAccountMax")),
 			trigger: "blur",
 		},
 	],
 	remarks: [
 		{
 			max: 500,
-			message: renderI18n($t("operation-team_merchant-manage.merchant-info.form.validation.remarksMax")),
+			message: transformI18n($t("operation-team_merchant-manage.merchant-info.form.validation.remarksMax")),
 			trigger: "blur",
 		},
 	],
