@@ -1,15 +1,19 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "起草合同",
+		// 起草合同
+		title: "property-manage_contract-manage.draft-contract.pageTitle",
 		icon: "mdi:file-edit",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.contractManage.draftContract"),
 	},
 });
 
-import { ref, computed, h, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { sleep } from "@antfu/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import {
 	type ContractDraftFormVO,
@@ -25,6 +29,8 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 
@@ -59,54 +65,6 @@ const {
 } = useDraftContractListQuery(plusSearchDefaultValues);
 
 /** 模式控制 */
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: "合同名称",
-		prop: "contractName",
-		valueType: "input",
-	},
-	{
-		label: "合同编号",
-		prop: "contractNumber",
-		valueType: "input",
-	},
-	{
-		label: "合同类型",
-		prop: "contractType",
-		valueType: "select",
-		options: contractTypeOptions,
-	},
-	{
-		label: "经办人",
-		prop: "handler",
-		valueType: "input",
-	},
-]);
-
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
-/** 重置搜索条件并重新加载数据 */
-function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
-	resetParams();
-}
-
-/** 执行搜索 */
-function handleSearch() {
-	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
-}
-
 const { mode, modeText, setMode, isAdd, isEdit } = useMode();
 
 /** 测试异步函数 */
@@ -119,67 +77,100 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
+const statusLabelKeyMap = {
+	草稿: "property-manage_contract-manage.draft-contract.options.status.draft",
+	审批中: "property-manage_contract-manage.draft-contract.options.status.approving",
+	已生效: "property-manage_contract-manage.draft-contract.options.status.effective",
+	已终止: "property-manage_contract-manage.draft-contract.options.status.terminated",
+} as const;
+
+function translateStatusLabel(value?: string | null) {
+	if (!value) return value ?? "";
+	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
+	return key ? transformI18n($t(key)) : value;
+}
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "合同名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractName")),
+		),
 		prop: "contractName",
 		width: 150,
 	},
 	{
-		label: "合同编号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractNumber")),
+		),
 		prop: "contractNumber",
 		width: 120,
 	},
 	{
-		label: "父合同编号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.parentContractNumber")),
+		),
 		prop: "parentContractNumber",
 		width: 120,
 	},
 	{
-		label: "合同类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractType")),
+		),
 		prop: "contractType",
 		width: 100,
 	},
 	{
-		label: "经办人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.handler")),
+		),
 		prop: "handler",
 		width: 80,
 	},
 	{
-		label: "合同金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractAmount")),
+		),
 		prop: "contractAmount",
 		width: 100,
 		align: "right",
 	},
 	{
-		label: "开始时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.startTime")),
+		),
 		prop: "startTime",
 		width: 100,
 	},
 	{
-		label: "结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.endTime")),
+		),
 		prop: "endTime",
 		width: 100,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.draft-contract.fields.status")),
+		),
 		prop: "status",
 		width: 80,
-		formatter: (row: DraftContractListItem) => {
-			const statusMap = {
-				草稿: '<span class="text-gray-500">草稿</span>',
-				审批中: '<span class="text-blue-500">审批中</span>',
-				已生效: '<span class="text-green-500">已生效</span>',
-				已终止: '<span class="text-red-500">已终止</span>',
+		cellRenderer: ({ row }: { row: DraftContractListItem }) => {
+			const label = translateStatusLabel(row.status);
+			const colorMap: Record<string, string> = {
+				草稿: "text-gray-500",
+				审批中: "text-blue-500",
+				已生效: "text-green-500",
+				已终止: "text-red-500",
 			};
-			return statusMap[row.status] || row.status;
+			const cls = colorMap[row.status] || "";
+			return h("span", { class: cls }, label);
 		},
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -187,10 +178,52 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "起草合同信息",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_contract-manage.draft-contract.tableTitle")),
 	columns: columns.value,
-});
+}));
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractName")),
+		prop: "contractName",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractNumber")),
+		prop: "contractNumber",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.contractType")),
+		prop: "contractType",
+		valueType: "select",
+		options: contractTypeOptions,
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.handler")),
+		prop: "handler",
+		valueType: "input",
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
+
+/** 重置搜索条件并重新加载数据 */
+function handleReSearch() {
+	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	resetParams();
+}
+
+/** 执行搜索 */
+function handleSearch() {
+	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
+}
 
 /** 打开弹框 参数 */
 interface OpenDialogParams {
@@ -202,14 +235,11 @@ interface OpenDialogParams {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}起草合同`;
-
 	/** 业务对象 */
 	const contractDraftFormVO: ContractDraftFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					contractName: row?.contractName || "",
 					contractNumber: row?.contractNumber || "",
@@ -229,7 +259,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					description: "",
 					attachments: [],
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractDraftFormProps = {
@@ -242,7 +272,12 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () => {
+			if (isAdd.value) {
+				return transformI18n($t("property-manage_contract-manage.draft-contract.dialogs.addTitle"));
+			}
+			return transformI18n($t("property-manage_contract-manage.draft-contract.dialogs.editTitle"));
+		},
 		props: formProps,
 
 		contentRenderer: () =>
@@ -258,7 +293,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = contractDraftFormInstance.value.formComputed;
@@ -267,7 +302,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					// 手动重置表单
@@ -276,7 +311,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
@@ -312,11 +347,14 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
