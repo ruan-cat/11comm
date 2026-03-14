@@ -25,11 +25,6 @@ import ShiftSettingForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & Partial<ShiftSettingListQuery> = {
 	name: "",
 	type: "",
@@ -80,55 +75,59 @@ function translateShiftTypeLabel(value?: string | null) {
 	}
 
 	const key = shiftTypeLabelMap[value as keyof typeof shiftTypeLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateShiftStatusLabel(value?: boolean | null) {
 	return value
-		? renderI18n($t("settingManage.organizeManage.shiftSetting.status.enabled"))
-		: renderI18n($t("settingManage.organizeManage.shiftSetting.status.disabled"));
+		? transformI18n($t("settingManage.organizeManage.shiftSetting.status.enabled"))
+		: transformI18n($t("settingManage.organizeManage.shiftSetting.status.disabled"));
 }
 
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.name"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.shiftSetting.fields.name"))),
 		prop: "name",
 		width: 200,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.startTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.shiftSetting.fields.startTime")),
+		),
 		prop: "startTime",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.endTime"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.shiftSetting.fields.endTime"))),
 		prop: "endTime",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.type"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.shiftSetting.fields.type"))),
 		prop: "type",
 		width: 120,
 		cellRenderer: ({ row }) => translateShiftTypeLabel(row.type),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.status"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.shiftSetting.fields.status"))),
 		prop: "enabled",
 		width: 100,
 		cellRenderer: ({ row }) => translateShiftStatusLabel(row.enabled),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.shiftSetting.fields.description"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.shiftSetting.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 360,
 		fixed: "right",
 		slot: "operation",
@@ -136,17 +135,17 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.shiftSetting.tableTitle")),
+	title: transformI18n($t("settingManage.organizeManage.shiftSetting.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
+		label: transformI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
+			placeholder: transformI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
 		},
 	},
 ]);
@@ -180,14 +179,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: ShiftSetting }) {
 		...defaultAddDialogParams,
 		title: () => {
 			if (isAdd.value) {
-				return renderI18n($t("settingManage.organizeManage.shiftSetting.dialogs.addTitle"));
+				return transformI18n($t("settingManage.organizeManage.shiftSetting.dialogs.addTitle"));
 			}
 
 			if (isEdit.value) {
-				return renderI18n($t("settingManage.organizeManage.shiftSetting.dialogs.editTitle"));
+				return transformI18n($t("settingManage.organizeManage.shiftSetting.dialogs.editTitle"));
 			}
 
-			return renderI18n($t("settingManage.organizeManage.shiftSetting.dialogTitle"));
+			return transformI18n($t("settingManage.organizeManage.shiftSetting.dialogTitle"));
 		},
 		props,
 		contentRenderer: () =>
@@ -203,7 +202,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: ShiftSetting }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = shiftSettingFormInstance.value?.formComputed;
@@ -213,14 +212,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: ShiftSetting }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					shiftSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await shiftSettingFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -262,45 +261,44 @@ async function handleDelete(row: ShiftSetting) {
 	try {
 		await ElMessageBox.confirm(
 			i18n.global.t($t("settingManage.organizeManage.shiftSetting.dialogs.confirmDelete"), { name: row.name }),
-			renderI18n($t("settingManage.organizeManage.common.dialogs.confirmTitle")),
+			transformI18n($t("settingManage.organizeManage.common.dialogs.confirmTitle")),
 			{
-				confirmButtonText: renderI18n($t("common.buttons.pureConfirm")),
-				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				confirmButtonText: transformI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);
 
-		message(renderI18n($t("settingManage.organizeManage.shiftSetting.messages.deleted")), { type: "success" });
+		message(transformI18n($t("settingManage.organizeManage.shiftSetting.messages.deleted")), { type: "success" });
 		doFetch();
 	} catch {}
 }
 
 async function handleToggleStatus(row: ShiftSetting) {
 	const action = row.enabled
-		? renderI18n($t("settingManage.organizeManage.common.buttons.disable"))
-		: renderI18n($t("settingManage.organizeManage.common.buttons.enable"));
+		? transformI18n($t("settingManage.organizeManage.common.buttons.disable"))
+		: transformI18n($t("settingManage.organizeManage.common.buttons.enable"));
 
 	try {
 		await ElMessageBox.confirm(
 			i18n.global.t($t("settingManage.organizeManage.shiftSetting.dialogs.confirmToggle"), { action, name: row.name }),
-			renderI18n($t("settingManage.organizeManage.common.dialogs.confirmTitle")),
+			transformI18n($t("settingManage.organizeManage.common.dialogs.confirmTitle")),
 			{
-				confirmButtonText: renderI18n($t("common.buttons.pureConfirm")),
-				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				confirmButtonText: transformI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);
 
-		message(
-			i18n.global.t($t("settingManage.organizeManage.shiftSetting.messages.statusUpdated"), { action }),
-			{ type: "success" },
-		);
+		message(i18n.global.t($t("settingManage.organizeManage.shiftSetting.messages.statusUpdated"), { action }), {
+			type: "success",
+		});
 		doFetch();
 	} catch {}
 }
 
 function handleFile() {
-	message(renderI18n($t("settingManage.organizeManage.common.messages.fileComingSoon")), { type: "info" });
+	message(transformI18n($t("settingManage.organizeManage.common.messages.fileComingSoon")), { type: "info" });
 }
 </script>
 
