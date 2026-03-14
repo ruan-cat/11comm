@@ -9,11 +9,6 @@ import { CommunityConfigurationFormProps } from "./form";
 const props = defineProps<CommunityConfigurationFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
 		return "";
@@ -22,17 +17,17 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 }
 
 const settingTypeTextMap = withLocale(() => ({
-	系统设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.system")),
-	业务设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.business")),
-	界面设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.ui")),
-	功能设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.feature")),
-	安全设置: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.security")),
+	系统设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.system")),
+	业务设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.business")),
+	界面设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.ui")),
+	功能设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.feature")),
+	安全设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.security")),
 }));
 
 const statusTextMap = withLocale(() => ({
-	启用: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.enabled")),
-	禁用: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.disabled")),
-	待审核: renderI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.pending")),
+	启用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.enabled")),
+	禁用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.disabled")),
+	待审核: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.pending")),
 }));
 
 function translateSettingTypeLabel(value?: string | null) {
@@ -48,7 +43,7 @@ const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-const form = ref(structuredClone(props.form) as FieldValues & SettingCommunityConfigFormVO);
+const form = ref(cloneDeep(props.form) as FieldValues & SettingCommunityConfigFormVO);
 const formComputed = computed(() => form.value);
 
 const translatedSettingTypeOptions = withLocale(() =>
@@ -67,7 +62,7 @@ const translatedCommunityStatusOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
@@ -75,7 +70,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingName")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingName")),
 		prop: "settingName",
 		valueType: "input",
 		fieldProps: {
@@ -83,7 +78,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingValue")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingValue")),
 		prop: "settingValue",
 		valueType: "input",
 		fieldProps: {
@@ -91,7 +86,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingType")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.settingType")),
 		prop: "settingType",
 		valueType: "select",
 		options: translatedSettingTypeOptions.value,
@@ -101,7 +96,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.dataStatus")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.dataStatus")),
 		prop: "statusCd",
 		valueType: "select",
 		options: translatedCommunityStatusOptions.value,
@@ -110,7 +105,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.communityConfiguration.fields.remark")),
+		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
@@ -124,53 +119,53 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	communityName: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.communityNameRequired")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.communityNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.communityNameLength")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.communityNameLength")),
 			trigger: "blur",
 		},
 	],
 	settingName: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingNameRequired")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 100,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingNameLength")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingNameLength")),
 			trigger: "blur",
 		},
 	],
 	settingValue: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingValueRequired")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingValueRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 1,
 			max: 200,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingValueLength")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingValueLength")),
 			trigger: "blur",
 		},
 	],
 	settingType: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingTypeRequired")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.settingTypeRequired")),
 			trigger: "change",
 		},
 	],
 	statusCd: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.systemManage.communityConfiguration.validation.dataStatusRequired")),
+			message: transformI18n($t("operationTeam.systemManage.communityConfiguration.validation.dataStatusRequired")),
 			trigger: "change",
 		},
 	],
