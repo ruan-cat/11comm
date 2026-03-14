@@ -102,7 +102,7 @@ pure-admin 后台框架模板：
 - pure-admin 文档仓库 ： https://github.com/pure-admin/pure-admin-doc
 - pure-admin 注册路由 ： `https://github.com/pure-admin/pure-admin-doc/blob/master/docs/01.指南/01.指南/07.路由和菜单.md`
 
-## 02 <!-- TODO: 本项目直接开始的处理任务 持续完成对i18n的优化，写好代码了再提交到远程仓库 --> 优化本项目的 i18n 实现的方式
+## 02 优化本项目的 i18n 实现的方式
 
 我注意到很多 vue 组件私实现 i18n 的方式，写法非常糟糕冗长。特别是在很多 index.vue 和 form.vue 内的实现很冗长。
 
@@ -133,4 +133,10 @@ pure-admin 后台框架模板：
 
 在 .claude\skills\frontend-development\SKILL.md 内的搜索栏组件部分，说明 `<PlusSearch>` 组件增加需要配置的内容。
 
-## 04 <!-- TODO: --> 持续完成本项目的 i18n 补全
+## 04 <!-- TODO: --> 持续完成本项目的 i18n 改造和补全
+
+按照 `apps\admin\src\docs\plan\2026-03-13-admin-i18n-route-progress.md` 的要求，请继续完成 i18n 的改造改写任务。
+
+请你及时的检查，用 MCP 工具查看本地的记忆，继续上一次的 i18n 修改进度。
+
+请及时的更新 `apps\admin\src\docs\plan\2026-03-13-admin-i18n-route-progress.md` 报告文件。
