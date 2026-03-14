@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "取消费用",
+		// 取消费用
+		title: "property-manage_expense-manage.cancel-fee.pageTitle",
 		icon: "mdi:close-circle-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.cancelFee"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type CancelFeeFormProps, defaultForm } from "./components/form";
 import type { CancelFeeFormVO } from "@01s-11comm/type";
@@ -20,6 +23,8 @@ import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 import { addDialog, closeDialog } from "@/components/ReDialog";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -42,22 +47,22 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	// 批次号
 	{
-		label: "批次号",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.search.batchNumber")),
 		prop: "batchNumber",
 		valueType: "input",
 	},
 	// 员工
 	{
-		label: "员工",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.search.employee")),
 		prop: "employee",
 		valueType: "input",
 	},
 	// 审核状态
 	{
-		label: "审核状态",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.search.auditStatus")),
 		prop: "auditStatus",
 		valueType: "select",
 		options: auditStatusOptions,
@@ -65,17 +70,10 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -97,41 +95,54 @@ function handleSearch() {
 }
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "批次号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.cancel-fee.fields.batchNumber")),
+		),
 		prop: "batchNumber",
 		width: 140,
 	},
 	{
-		label: "员工",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.cancel-fee.fields.employee")),
+		),
 		prop: "employee",
 		width: 120,
 	},
 	{
-		label: "时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_expense-manage.cancel-fee.fields.time"))),
 		prop: "time",
 		width: 160,
 	},
 	{
-		label: "取消原因",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.cancel-fee.fields.cancelReason")),
+		),
 		prop: "cancelReason",
 		minWidth: 200,
 	},
 	{
-		label: "审核状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.cancel-fee.fields.auditStatus")),
+		),
 		prop: "auditStatus",
 		width: 120,
 	},
 	{
-		label: "审核意见",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.cancel-fee.fields.auditOpinion")),
+		),
 		prop: "auditOpinion",
 		minWidth: 180,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -139,15 +150,15 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "取消费用",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.cancel-fee.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 // 弹框相关功能
 const cancelFeeFormInstance = ref<InstanceType<typeof CancelFeeForm> | null>(null);
 /** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
@@ -165,13 +176,10 @@ function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}取消费用审核`;
-
 	/** 业务对象 */
-	const 业务对象: CancelFeeFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+	const formVO: CancelFeeFormVO = isAdd.value
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				batchNumber: row?.batchNumber || "",
 				employee: row?.employee || "",
@@ -183,8 +191,8 @@ function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 
 	/** 表单组件需要的props */
 	const props: CancelFeeFormProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: formVO,
+		defaultValues: formVO,
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */
@@ -192,7 +200,10 @@ function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.cancel-fee.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.cancel-fee.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(CancelFeeForm, {
@@ -200,35 +211,39 @@ function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 				...props,
 			}),
 		async doBeforeClose({ options, index }) {
-			const formComputed = cancelFeeFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			const formComputed = cancelFeeFormInstance.value?.formComputed;
+			if (formComputed) {
+				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+			}
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** console.log(options, index, button); */
-					const formComputed = cancelFeeFormInstance.value.formComputed;
-					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					const formComputed = cancelFeeFormInstance.value?.formComputed;
+					if (formComputed) {
+						await useDoBeforeClose({ defaultValues, formComputed, index, options });
+					}
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
-					cancelFeeFormInstance.value.plusFormInstance.handleReset();
+					cancelFeeFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
-					const res = await cancelFeeFormInstance.value.plusFormInstance.handleSubmit();
+					const res = await cancelFeeFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
 						await testAsync();
@@ -241,18 +256,16 @@ function openDialog(params: { mode: Mode; row?: CancelFeeListItem }) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

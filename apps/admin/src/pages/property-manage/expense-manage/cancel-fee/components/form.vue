@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { CancelFeeFormVO } from "@01s-11comm/type";
 import { auditStatusOptions } from "@01s-11comm/type";
 
 import { CancelFeeFormProps, defaultForm } from "./form";
 
 const props = defineProps<CancelFeeFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & CancelFeeFormVO;
@@ -15,44 +19,35 @@ const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
 /**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & CancelFeeFormVO;
-
-/**
  * 表单对象
  * @description
  * 本表单对象都来自于外部传递
  */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & CancelFeeFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "批次号",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.form.fields.batchNumber")),
 		prop: "batchNumber",
 		valueType: "input",
 	},
 	{
-		label: "员工",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.form.fields.employee")),
 		prop: "employee",
 		valueType: "input",
 	},
 	{
-		label: "时间",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.form.fields.time")),
 		prop: "time",
 		valueType: "input",
 	},
 	{
-		label: "取消原因",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.form.fields.cancelReason")),
 		prop: "cancelReason",
 		valueType: "textarea",
 		fieldProps: {
@@ -60,13 +55,13 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "审核状态",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.form.fields.auditStatus")),
 		prop: "auditStatus",
 		valueType: "select",
 		options: auditStatusOptions,
 	},
 	{
-		label: "审核意见",
+		label: transformI18n($t("property-manage_expense-manage.cancel-fee.form.fields.auditOpinion")),
 		prop: "auditOpinion",
 		valueType: "textarea",
 		fieldProps: {
@@ -76,22 +71,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	auditStatus: [
 		{
 			required: true,
-			message: "请选择审核状态",
+			message: transformI18n($t("property-manage_expense-manage.cancel-fee.form.validation.auditStatusRequired")),
 			trigger: "change",
 		},
 	],
 	auditOpinion: [
 		{
 			required: true,
-			message: "请输入审核意见",
+			message: transformI18n($t("property-manage_expense-manage.cancel-fee.form.validation.auditOpinionRequired")),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 // 暴露给父组件使用的变量和方法
 defineExpose({
@@ -101,7 +96,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
