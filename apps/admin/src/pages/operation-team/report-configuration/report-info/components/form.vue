@@ -8,11 +8,6 @@ import { type ReportInfoFormProps } from "./form";
 const props = defineProps<ReportInfoFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & ReportInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -21,53 +16,65 @@ const form = ref(cloneDeep(props.form) as FieldValues & ReportInfoFormVO);
 const formComputed = computed(() => form.value);
 
 const reportGroupOptions = withLocale(() => [
-	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.test")), value: "测试报表组" },
-	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.inspection")), value: "巡检报表" },
-	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.business")), value: "营业报表" },
-	{ label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.repair")), value: "报修报表" },
+	{
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.test")),
+		value: "测试报表组",
+	},
+	{
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.inspection")),
+		value: "巡检报表",
+	},
+	{
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.business")),
+		value: "营业报表",
+	},
+	{
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.repair")),
+		value: "报修报表",
+	},
 ]);
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.reportGroup")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.reportGroup")),
 		prop: "reportGroup",
 		valueType: "select",
 		options: reportGroupOptions.value,
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.reportGroup")),
+			placeholder: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.reportGroup")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.optionTitle")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.optionTitle")),
 		prop: "optionTitle",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.optionTitle")),
+			placeholder: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.optionTitle")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.sort")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.sort")),
 		prop: "sort",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.sort")),
+			placeholder: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.sort")),
 		},
 	},
 	{
-		label: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.description")),
+		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		required: true,
 		fieldProps: {
 			clearable: true,
 			rows: 3,
-			placeholder: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.description")),
+			placeholder: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.placeholders.description")),
 		},
 	},
 ]);
@@ -76,45 +83,45 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	reportGroup: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.reportGroupRequired")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.reportGroupRequired")),
 			trigger: "change",
 		},
 	],
 	optionTitle: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.optionTitleRequired")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.optionTitleRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 100,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.optionTitleLength")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.optionTitleLength")),
 			trigger: "blur",
 		},
 	],
 	sort: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.sortRequired")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.sortRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^[1-9]\d*$/,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.sortPattern")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.sortPattern")),
 			trigger: "blur",
 		},
 	],
 	description: [
 		{
 			required: true,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.descriptionRequired")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.descriptionRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 200,
-			message: renderI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.descriptionLength")),
+			message: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.validation.descriptionLength")),
 			trigger: "blur",
 		},
 	],
