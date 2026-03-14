@@ -4,11 +4,16 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import type { FirstPartyFormVO } from "@01s-11comm/type";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import type { PlusFormRules } from "@/config/constant";
 
 import { type FirstPartyFormProps, defaultForm } from "./form";
 
 const props = defineProps<FirstPartyFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & FirstPartyFormVO;
@@ -25,81 +30,75 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & FirstPartyFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & FirstPartyFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "甲方",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.partyA")),
 		prop: "partyA",
 		valueType: "input",
 		required: true,
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入甲方名称",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.partyA")),
 		},
 	},
 
 	{
-		label: "甲方联系人",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.contactPerson")),
 		prop: "contactPerson",
 		valueType: "input",
 		required: true,
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入甲方联系人姓名",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.contactPerson")),
 		},
 	},
 
 	{
-		label: "联系电话",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		required: true,
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入11位手机号码",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.contactPhone")),
 		},
 	},
 
 	{
-		label: "地址",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.address")),
 		prop: "address",
 		valueType: "input",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入详细地址",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.address")),
 		},
 	},
 
 	{
-		label: "统一社会信用代码",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.creditCode")),
 		prop: "creditCode",
 		valueType: "input",
 		width: "200px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入18位统一社会信用代码",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.creditCode")),
 		},
 	},
 
 	{
-		label: "成立日期",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.establishmentDate")),
 		prop: "establishmentDate",
 		valueType: "date-picker",
 		required: true,
@@ -109,63 +108,119 @@ const plusFormColumns = ref<PlusColumn[]>([
 			type: "date",
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
-			placeholder: "请选择成立日期",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.establishmentDate")),
 		},
 	},
 
 	{
-		label: "法定代表人",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.legalRepresentative")),
 		prop: "legalRepresentative",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入法定代表人姓名",
+			placeholder: transformI18n(
+				$t("property-manage_contract-manage.first-party.form.placeholders.legalRepresentative"),
+			),
 		},
 	},
 
 	{
-		label: "经营范围",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.businessScope")),
 		prop: "businessScope",
 		valueType: "textarea",
 		width: "400px",
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入经营范围，如：房地产开发、物业管理等",
+			placeholder: transformI18n($t("property-manage_contract-manage.first-party.form.placeholders.businessScope")),
 			rows: 4,
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	partyA: [
-		{ required: true, message: "请输入甲方名称", trigger: "blur" },
-		{ min: 2, max: 100, message: "长度在 2 到 100 个字符", trigger: "blur" },
-	],
-	contactPerson: [
-		{ required: true, message: "请输入甲方联系人", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
-	],
-	contactPhone: [
-		{ required: true, message: "请输入联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
-	],
-	address: [{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" }],
-	creditCode: [
 		{
-			pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/,
-			message: "请输入正确的统一社会信用代码",
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.partyARequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.partyALength")),
 			trigger: "blur",
 		},
 	],
-	establishmentDate: [{ required: true, message: "请选择成立日期", trigger: "change" }],
-	legalRepresentative: [{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" }],
-	businessScope: [{ min: 5, max: 500, message: "长度在 5 到 500 个字符", trigger: "blur" }],
-});
+	contactPerson: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.contactPersonRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.contactPersonLength")),
+			trigger: "blur",
+		},
+	],
+	contactPhone: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.contactPhoneRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.contactPhoneFormat")),
+			trigger: "blur",
+		},
+	],
+	address: [
+		{
+			min: 5,
+			max: 200,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.addressLength")),
+			trigger: "blur",
+		},
+	],
+	creditCode: [
+		{
+			pattern: /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.creditCodeFormat")),
+			trigger: "blur",
+		},
+	],
+	establishmentDate: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_contract-manage.first-party.form.validation.establishmentDateRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	legalRepresentative: [
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n(
+				$t("property-manage_contract-manage.first-party.form.validation.legalRepresentativeLength"),
+			),
+			trigger: "blur",
+		},
+	],
+	businessScope: [
+		{
+			min: 5,
+			max: 500,
+			message: transformI18n($t("property-manage_contract-manage.first-party.form.validation.businessScopeLength")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -180,7 +235,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>

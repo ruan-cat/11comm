@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "合同甲方",
+		// 合同甲方
+		title: "property-manage_contract-manage.first-party.pageTitle",
 		icon: "mdi:account-group",
 		roles: ["物业团队"],
+		rank: getRouteRank("propertyManage.contractManage.firstParty"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, onMounted, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
 import {
@@ -24,6 +27,8 @@ import { useFirstPartyListQuery } from "@/api/property-manage/contract-manage/fi
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 表单组件实例 */
 const firstPartyFormInstance = ref<InstanceType<typeof FirstPartyForm> | null>(null);
@@ -58,46 +63,60 @@ const {
 } = useFirstPartyListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "甲方",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.partyA")),
+		),
 		prop: "partyA",
 		width: 200,
 	},
 	{
-		label: "甲方联系人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.contactPerson")),
+		),
 		prop: "contactPerson",
 		width: 120,
 	},
 	{
-		label: "联系电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.contactPhone")),
+		),
 		prop: "contactPhone",
 		width: 130,
 	},
 	{
-		label: "地址",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.address")),
+		),
 		prop: "address",
 		minWidth: 250,
 	},
 	{
-		label: "统一社会信用代码",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.creditCode")),
+		),
 		prop: "creditCode",
 		width: 180,
 	},
 	{
-		label: "成立日期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.establishmentDate")),
+		),
 		prop: "establishmentDate",
 		width: 120,
 	},
 	{
-		label: "法定代表人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.first-party.fields.legalRepresentative")),
+		),
 		prop: "legalRepresentative",
 		width: 120,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
@@ -105,49 +124,43 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "合同甲方",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_contract-manage.first-party.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "甲方",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.partyA")),
 		prop: "partyA",
 		valueType: "input",
 	},
 
 	{
-		label: "甲方联系人",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.contactPerson")),
 		prop: "contactPerson",
 		valueType: "input",
 	},
 
 	{
-		label: "联系电话",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 	},
 
 	{
-		label: "法定代表人",
+		label: transformI18n($t("property-manage_contract-manage.first-party.fields.legalRepresentative")),
 		prop: "legalRepresentative",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -182,7 +195,12 @@ function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 	setMode(mode);
 
 	/** 弹框标题 */
-	const title = `${modeText.value}合同甲方`;
+	const title = () => {
+		if (isAdd.value) {
+			return transformI18n($t("property-manage_contract-manage.first-party.dialogs.addTitle"));
+		}
+		return transformI18n($t("property-manage_contract-manage.first-party.dialogs.editTitle"));
+	};
 
 	/** 业务对象 */
 	const firstPartyFormVO: FirstPartyFormVO = isAdd.value
@@ -228,7 +246,7 @@ function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = firstPartyFormInstance.value.formComputed;
@@ -237,7 +255,7 @@ function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index } }) => {
 					// 手动重置表单
@@ -246,7 +264,7 @@ function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					// 提交表单时 校验
@@ -270,11 +288,14 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
