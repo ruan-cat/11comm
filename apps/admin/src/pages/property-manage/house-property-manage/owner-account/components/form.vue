@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
-import { useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { OwnerAccountFormVO } from "@01s-11comm/type";
 import { accountTypeOptions, paymentMethodOptions } from "@01s-11comm/type";
 import type { OwnerAccountFormProps } from "./form";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnerAccountFormVO;
@@ -22,115 +25,129 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & OwnerAccountFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & OwnerAccountFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "账户类型",
+		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.accountType")),
 		prop: "accountType",
 		valueType: "select",
 		options: accountTypeOptions,
 		fieldProps: {
-			placeholder: "请选择账户类型",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.placeholder.selectAccountType"),
+			),
 		},
 	},
 	{
-		label: "业主手机",
+		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.ownerPhone")),
 		prop: "ownerPhone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入业主手机号",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.placeholder.enterOwnerPhone"),
+			),
 		},
 	},
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入业主名称",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.placeholder.enterOwnerName"),
+			),
 		},
 	},
 	{
-		label: "预存金额",
+		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.prepaidAmount")),
 		prop: "prepaidAmount",
 		valueType: "input",
 		fieldProps: {
-			placeholder: "请输入预存金额",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.placeholder.enterPrepaidAmount"),
+			),
 		},
 	},
 	{
-		label: "支付方式",
+		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.paymentMethod")),
 		prop: "paymentMethod",
 		valueType: "select",
 		options: paymentMethodOptions,
 		fieldProps: {
-			placeholder: "请选择支付方式",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.placeholder.selectPaymentMethod"),
+			),
 		},
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
-			placeholder: "请输入备注信息",
+			placeholder: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.placeholder.enterRemark"),
+			),
 			rows: 3,
 		},
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	accountType: [
 		{
 			required: true,
-			message: "请选择账户类型",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.validation.selectAccountType"),
+			),
 			trigger: "change",
 		},
 	],
 	ownerPhone: [
 		{
 			required: true,
-			message: "请输入业主手机号",
+			message: transformI18n($t("property-manage_house-property-manage.owner-account.form.validation.enterOwnerPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.validation.ownerPhonePattern"),
+			),
 			trigger: "blur",
 		},
 	],
 	ownerName: [
 		{
 			required: true,
-			message: "请输入业主名称",
+			message: transformI18n($t("property-manage_house-property-manage.owner-account.form.validation.enterOwnerName")),
 			trigger: "blur",
 		},
 	],
 	prepaidAmount: [
 		{
 			required: true,
-			message: "请输入预存金额",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.validation.enterPrepaidAmount"),
+			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^\d+(\.\d{1,2})?$/,
-			message: "请输入正确的金额格式",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owner-account.form.validation.prepaidAmountPattern"),
+			),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 // 默认导出表单实例和计算属性
 defineExpose({
@@ -140,7 +157,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
