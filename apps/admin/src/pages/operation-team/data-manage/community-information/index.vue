@@ -27,12 +27,7 @@ import { useCommunityInfoListQuery } from "@/api/operation-team/data-manage/comm
 import { type CommunityInformationFormProps, defaultForm } from "./components/form";
 import CommunityInformationForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<CommunityInfoQueryParams> = {
 	communityId: "",
@@ -96,7 +91,7 @@ function translateProvinceLabel(value?: string | null) {
 		return value ?? "";
 	}
 	const key = provinceLabelMap[value as keyof typeof provinceLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateCityLabel(value?: string | null) {
@@ -104,7 +99,7 @@ function translateCityLabel(value?: string | null) {
 		return value ?? "";
 	}
 	const key = cityLabelMap[value as keyof typeof cityLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateDistrictLabel(value?: string | null) {
@@ -112,7 +107,7 @@ function translateDistrictLabel(value?: string | null) {
 		return value ?? "";
 	}
 	const key = districtLabelMap[value as keyof typeof districtLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 function translateStatusLabel(value?: string | null) {
@@ -120,7 +115,7 @@ function translateStatusLabel(value?: string | null) {
 		return value ?? "";
 	}
 	const key = statusLabelMap[value as keyof typeof statusLabelMap];
-	return key ? renderI18n(key) : value;
+	return key ? transformI18n(key) : value;
 }
 
 const translatedProvinceOptions = withLocale(() =>
@@ -154,66 +149,88 @@ const translatedStatusOptions = withLocale(() =>
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.communityId"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.communityId")),
+		),
 		prop: "communityId",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.communityName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.communityName")),
+		),
 		prop: "communityName",
 		minWidth: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.propertyCompany"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.propertyCompany")),
+		),
 		prop: "propertyCompany",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.nearbyLandmark"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.nearbyLandmark")),
+		),
 		prop: "nearbyLandmark",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.province"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.province")),
+		),
 		prop: "province",
 		width: 100,
 		cellRenderer: ({ row }) => translateProvinceLabel(row.province),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.city"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.city")),
+		),
 		prop: "city",
 		width: 100,
 		cellRenderer: ({ row }) => translateCityLabel(row.city),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.district"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.district")),
+		),
 		prop: "district",
 		width: 100,
 		cellRenderer: ({ row }) => translateDistrictLabel(row.district),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.contactPhone"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.contactPhone")),
+		),
 		prop: "contactPhone",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.administrator"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.administrator")),
+		),
 		prop: "administrator",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.status")),
+		),
 		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operation-team_data-manage.community-information.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operation-team_data-manage.community-information.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -221,45 +238,42 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operation-team_data-manage.community-information.tableTitle")),
+	title: transformI18n($t("operation-team_data-manage.community-information.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityId")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityId")),
 		prop: "communityId",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityName")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.province")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.province")),
 		prop: "province",
 		valueType: "select",
 		options: translatedProvinceOptions.value,
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.city")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.city")),
 		prop: "city",
 		valueType: "select",
 		options: translatedCityOptions.value,
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.district")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.district")),
 		prop: "district",
 		valueType: "select",
 		options: translatedDistrictOptions.value,
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 const { setMode, isAdd, isEdit, isInfo } = useMode();
 const communityInformationFormInstance = ref<InstanceType<typeof CommunityInformationForm> | null>(null);
@@ -319,10 +333,10 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("operation-team_data-manage.community-information.dialogs.addTitle"))
+				? transformI18n($t("operation-team_data-manage.community-information.dialogs.addTitle"))
 				: isEdit.value
-					? renderI18n($t("operation-team_data-manage.community-information.dialogs.editTitle"))
-					: renderI18n($t("operation-team_data-manage.community-information.dialogs.infoTitle")),
+					? transformI18n($t("operation-team_data-manage.community-information.dialogs.editTitle"))
+					: transformI18n($t("operation-team_data-manage.community-information.dialogs.infoTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(CommunityInformationForm, {
@@ -337,7 +351,7 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = communityInformationFormInstance.value?.formComputed;
@@ -347,14 +361,14 @@ function openDialog(params: { mode: Mode; row?: CommunityInfoListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					communityInformationFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await communityInformationFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -390,6 +404,8 @@ function handleSearch() {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
