@@ -28,12 +28,7 @@ import { useInitializeCellListQuery } from "@/api/operation-team/system-manage/i
 import { type InitializeCellFormProps, defaultForm } from "./components/form";
 import InitializeCellForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -43,24 +38,24 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 }
 
 const cellTypeTextMap = withLocale(() => ({
-	住宅单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
-	商业单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
-	车库单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
-	办公单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.office")),
-	会所单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.club")),
-	物业单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.property")),
-	运动单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.sports")),
-	教育单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.education")),
-	医疗单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.medical")),
-	仓储单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.storage")),
-	文化单元: renderI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
+	住宅单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
+	商业单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
+	车库单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
+	办公单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.office")),
+	会所单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.club")),
+	物业单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.property")),
+	运动单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.sports")),
+	教育单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.education")),
+	医疗单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.medical")),
+	仓储单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.storage")),
+	文化单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
 }));
 
 const statusTextMap = withLocale(() => ({
-	待初始化: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
-	初始化中: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
-	已完成: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
-	初始化失败: renderI18n($t("operationTeam.systemManage.initializeCell.options.statuses.failed")),
+	待初始化: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
+	初始化中: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
+	已完成: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
+	初始化失败: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.failed")),
 }));
 
 const cellTypeValueMap = {
@@ -155,64 +150,80 @@ const { setMode, isAdd, isEdit, isInfo } = useMode();
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellId"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellId"))),
 		prop: "cellId",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
+		),
 		prop: "cellName",
 		minWidth: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellType"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
+		),
 		prop: "cellType",
 		width: 120,
 		cellRenderer: ({ row }) => translateCellTypeLabel(row.cellType),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
+		),
 		prop: "buildingName",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.floor"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.initializeCell.fields.floor"))),
 		prop: "floor",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.unitNumber"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.unitNumber")),
+		),
 		prop: "unitNumber",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.households"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.households")),
+		),
 		prop: "houseCount",
 		width: 80,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.status"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.initializeCell.fields.status"))),
 		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.description"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.initializeCell.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.initializeCell.fields.updateTime")),
+		),
 		prop: "updateTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -220,39 +231,36 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operationTeam.systemManage.initializeCell.tableTitle")),
+	title: transformI18n($t("operationTeam.systemManage.initializeCell.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
 		prop: "cellName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellType")),
 		prop: "cellType",
 		valueType: "select",
 		options: translatedSearchCellTypeOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.initializeCell.fields.status")),
+		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedSearchStatusOptions.value,
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -295,10 +303,10 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 	const defaultValues = formProps.defaultValues;
 
 	const title = isAdd.value
-		? () => renderI18n($t("operationTeam.systemManage.initializeCell.dialogs.addTitle"))
+		? () => transformI18n($t("operationTeam.systemManage.initializeCell.dialogs.addTitle"))
 		: isEdit.value
-			? () => renderI18n($t("operationTeam.systemManage.initializeCell.dialogs.editTitle"))
-			: () => renderI18n($t("operationTeam.systemManage.initializeCell.dialogs.infoTitle"));
+			? () => transformI18n($t("operationTeam.systemManage.initializeCell.dialogs.editTitle"))
+			: () => transformI18n($t("operationTeam.systemManage.initializeCell.dialogs.infoTitle"));
 
 	addDialog({
 		...defaultAddDialogParams,
@@ -317,7 +325,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = initializeCellFormInstance.value?.formComputed;
@@ -327,14 +335,14 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					initializeCellFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await initializeCellFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -368,6 +376,8 @@ async function handleDelete(row: InitializeCellListItem) {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
