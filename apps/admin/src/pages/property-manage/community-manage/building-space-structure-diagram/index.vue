@@ -29,11 +29,6 @@ import BuildingSpaceStructureDiagramForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & Partial<BuildingSpaceStructureDiagramQueryParams> = {
 	buildingId: "",
 	buildingName: "",
@@ -42,7 +37,7 @@ const plusSearchModelRef: FieldValues & Partial<BuildingSpaceStructureDiagramQue
 	constructionYear: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -55,7 +50,9 @@ const {
 	handleCurrentPageChange,
 } = useBuildingSpaceStructureDiagramListQuery(plusSearchDefaultValues);
 
-const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(null);
+const buildingSpaceStructureDiagramFormInstance = ref<InstanceType<typeof BuildingSpaceStructureDiagramForm> | null>(
+	null,
+);
 const { setMode, isAdd, isEdit } = useMode();
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 
@@ -66,7 +63,7 @@ async function testAsync() {
 }
 
 const buildingStructureLabelKeyMap = {
-	"钢筋混凝土结构":
+	钢筋混凝土结构:
 		"propertyManage_communityManage.building-space-structure-diagram.options.structure.reinforcedConcrete",
 	钢结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.steel",
 	砖混结构: "propertyManage_communityManage.building-space-structure-diagram.options.structure.brickConcrete",
@@ -78,8 +75,7 @@ const buildingStatusLabelKeyMap = {
 	正常使用: "propertyManage_communityManage.building-space-structure-diagram.options.status.normal",
 	装修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.renovating",
 	维修中: "propertyManage_communityManage.building-space-structure-diagram.options.status.repairing",
-	待验收:
-		"propertyManage_communityManage.building-space-structure-diagram.options.status.pendingAcceptance",
+	待验收: "propertyManage_communityManage.building-space-structure-diagram.options.status.pendingAcceptance",
 	已停用: "propertyManage_communityManage.building-space-structure-diagram.options.status.disabled",
 } as const;
 
@@ -89,19 +85,19 @@ function translateOptionLabel<T extends Record<string, string>>(value: string | 
 	}
 
 	const key = labelMap[value as keyof T];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const buildingStructureOptions = withLocale(() =>
 	Object.entries(buildingStructureLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const buildingStatusOptions = withLocale(() =>
 	Object.entries(buildingStatusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
@@ -109,46 +105,46 @@ const buildingStatusOptions = withLocale(() =>
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
 		),
 		prop: "buildingId",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
 		),
 		prop: "buildingName",
 		minWidth: 140,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalFloors")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalFloors")),
 		),
 		prop: "totalFloors",
 		minWidth: 110,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalHouseholds")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.totalHouseholds")),
 		),
 		prop: "totalHouseholds",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingArea")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingArea")),
 		),
 		prop: "buildingArea",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure")),
 		),
 		prop: "buildingStructure",
 		minWidth: 150,
@@ -156,14 +152,14 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear")),
 		),
 		prop: "constructionYear",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
 		),
 		prop: "status",
 		minWidth: 120,
@@ -171,27 +167,27 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.lastUpdateTime")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.lastUpdateTime")),
 		),
 		prop: "lastUpdateTime",
 		minWidth: 170,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.personInCharge")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.personInCharge")),
 		),
 		prop: "personInCharge",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.contactPhone")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.contactPhone")),
 		),
 		prop: "contactPhone",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 300,
 		fixed: "right",
 		slot: "operation",
@@ -199,63 +195,61 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.tableTitle")),
+	title: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
 		prop: "buildingId",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingId"),
 			),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingName")),
 		prop: "buildingName",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingName"),
 			),
 		},
 	},
 	{
-		label: renderI18n(
+		label: transformI18n(
 			$t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingStructure"),
 		),
 		prop: "buildingStructure",
 		valueType: "select",
 		options: buildingStructureOptions.value,
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.buildingStructure"),
 			),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: buildingStatusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.status"),
 			),
 		},
 	},
 	{
-		label: renderI18n(
-			$t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear"),
-		),
+		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.constructionYear")),
 		prop: "constructionYear",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.building-space-structure-diagram.form.placeholders.constructionYear"),
 			),
 		},
@@ -265,7 +259,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -309,8 +303,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: BuildingSpaceStructureDia
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.addTitle"))
-				: renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.editTitle")),
+				? transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(BuildingSpaceStructureDiagramForm, {
@@ -325,7 +319,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: BuildingSpaceStructureDia
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = buildingSpaceStructureDiagramFormInstance.value?.formComputed;
@@ -335,14 +329,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: BuildingSpaceStructureDia
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					buildingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await buildingSpaceStructureDiagramFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -365,10 +359,10 @@ async function handleDelete(row: BuildingSpaceStructureDiagramListItem) {
 				buildingId: row.buildingId,
 				buildingName: row.buildingName,
 			}),
-			renderI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.deleteTitle")),
+			transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.dialogs.deleteTitle")),
 			{
-				confirmButtonText: renderI18n($t("common.buttons.del")),
-				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				confirmButtonText: transformI18n($t("common.buttons.del")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);
@@ -418,11 +412,15 @@ function downloadDrawing(row: BuildingSpaceStructureDiagramListItem) {
 				>
 					<template #operation="{ row }">
 						<ElButton type="info" @click="viewDrawing(row)">
-							{{ transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.buttons.viewDrawing")) }}
+							{{
+								transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.buttons.viewDrawing"))
+							}}
 						</ElButton>
 						<ElButton type="info" @click="downloadDrawing(row)">
 							{{
-								transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.buttons.downloadDrawing"))
+								transformI18n(
+									$t("propertyManage_communityManage.building-space-structure-diagram.buttons.downloadDrawing"),
+								)
 							}}
 						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
