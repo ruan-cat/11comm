@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from "vue";
+import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import type { InvoiceFormVO } from "@01s-11comm/type";
 import { invoiceTypeOptions, invoiceAuditStatusOptions } from "@01s-11comm/type";
 import { InvoiceFormProps } from "./form";
+import type { FieldValues } from "plus-pro-components";
 
 /** 表单组件的 props */
 const props = defineProps<InvoiceFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & InvoiceFormVO;
@@ -23,23 +29,17 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & InvoiceFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & InvoiceFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "编号",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.code")),
 		prop: "code",
 		valueType: "input",
 		fieldProps: {
@@ -47,49 +47,49 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "发票类型",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.invoiceType")),
 		prop: "invoiceType",
 		valueType: "select",
 		options: invoiceTypeOptions,
 	},
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 	},
 	{
-		label: "申请人",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.applicant")),
 		prop: "applicant",
 		valueType: "input",
 	},
 	{
-		label: "发票名头",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.invoiceTitle")),
 		prop: "invoiceTitle",
 		valueType: "input",
 	},
 	{
-		label: "纳税人识别号",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.taxpayerId")),
 		prop: "taxpayerId",
 		valueType: "input",
 	},
 	{
-		label: "申请金额",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.applicationAmount")),
 		prop: "applicationAmount",
 		valueType: "input",
 	},
 	{
-		label: "发票号",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.invoiceNumber")),
 		prop: "invoiceNumber",
 		valueType: "input",
 	},
 	{
-		label: "审核状态",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.auditStatus")),
 		prop: "auditStatus",
 		valueType: "select",
 		options: invoiceAuditStatusOptions,
 	},
 	{
-		label: "申请时间",
+		label: transformI18n($t("property-manage_house-property-manage.invoice.form.fields.applicationTime")),
 		prop: "applicationTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -101,57 +101,59 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	invoiceType: [
 		{
 			required: true,
-			message: "请选择发票类型",
+			message: transformI18n($t("property-manage_house-property-manage.invoice.form.validation.invoiceTypeRequired")),
 			trigger: "change",
 		},
 	],
 	ownerName: [
 		{
 			required: true,
-			message: "请输入业主名称",
+			message: transformI18n($t("property-manage_house-property-manage.invoice.form.validation.ownerNameRequired")),
 			trigger: "blur",
 		},
 	],
 	applicant: [
 		{
 			required: true,
-			message: "请输入申请人",
+			message: transformI18n($t("property-manage_house-property-manage.invoice.form.validation.applicantRequired")),
 			trigger: "blur",
 		},
 	],
 	invoiceTitle: [
 		{
 			required: true,
-			message: "请输入发票名头",
+			message: transformI18n($t("property-manage_house-property-manage.invoice.form.validation.invoiceTitleRequired")),
 			trigger: "blur",
 		},
 	],
 	taxpayerId: [
 		{
 			required: true,
-			message: "请输入纳税人识别号",
+			message: transformI18n($t("property-manage_house-property-manage.invoice.form.validation.taxpayerIdRequired")),
 			trigger: "blur",
 		},
 	],
 	applicationAmount: [
 		{
 			required: true,
-			message: "请输入申请金额",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.invoice.form.validation.applicationAmountRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	invoiceNumber: [
 		{
 			required: true,
-			message: "请输入发票号",
+			message: transformI18n($t("property-manage_house-property-manage.invoice.form.validation.invoiceNumberRequired")),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 /** 对外导出表单实例和表单对象 */
 defineExpose({
@@ -161,7 +163,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"

@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "业主信息",
+		// 业主信息
+		title: "property-manage_house-property-manage.owner-information.pageTitle",
 		icon: "mdi:account-card",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.ownerInformation"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { OwnerInformationListItem, OwnerInformationQueryParams, OwnerInformationFormVO } from "@01s-11comm/type";
 import { personTypeOptions } from "@01s-11comm/type";
@@ -19,6 +21,8 @@ import { type OwnerInformationFormProps, defaultForm } from "./components/form";
 import OwnerInformationForm from "./components/form.vue";
 /** 表格组件实例 */
 const OwnerInformationFormInstance = ref<InstanceType<typeof OwnerInformationForm> | null>(null);
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -66,10 +70,10 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	// 人员类型
 	{
-		label: "人员类型",
+		label: transformI18n($t("property-manage_house-property-manage.owner-information.fields.personType")),
 		prop: "personType",
 		valueType: "select",
 		options: personTypeOptions,
@@ -77,51 +81,65 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 
 	// 客户名称
 	{
-		label: "客户名称",
+		label: transformI18n($t("property-manage_house-property-manage.owner-information.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 	},
 
 	// 房屋编号
 	{
-		label: "房屋编号",
+		label: transformI18n($t("property-manage_house-property-manage.owner-information.fields.houseNo")),
 		prop: "houseNo",
 		valueType: "input",
 	},
 
 	// 联系电话
 	{
-		label: "联系电话",
+		label: transformI18n($t("property-manage_house-property-manage.owner-information.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 	},
 
 	// 身份证
 	{
-		label: "身份证",
+		label: transformI18n($t("property-manage_house-property-manage.owner-information.fields.idCard")),
 		prop: "idCard",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
-	{ label: "名称", prop: "name", width: 120 },
-	{ label: "状态", prop: "status", width: 120 },
-	{ label: "创建时间", prop: "createTime", width: 160 },
+const columns = withLocale<TableColumnList>(() => [
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-information.fields.name")),
+		),
+		prop: "name",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-information.fields.status")),
+		),
+		prop: "status",
+		width: 120,
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-information.fields.createTime")),
+		),
+		prop: "createTime",
+		width: 160,
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -129,10 +147,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业主信息",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.owner-information.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -146,9 +164,6 @@ interface OpenDialogParams {
 /** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
-
-	/** 弹框标题 */
-	const title = `${modeText.value}业主信息`;
 
 	/** 业务对象 */
 	const formData: OwnerInformationFormVO = isAdd.value
@@ -178,7 +193,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.owner-information.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.owner-information.dialogs.editTitle")),
 		props: formProps,
 
 		contentRenderer: () =>
@@ -194,7 +212,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = OwnerInformationFormInstance.value?.formComputed;
@@ -203,7 +221,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					OwnerInformationFormInstance.value?.plusFormInstance?.handleReset();
@@ -211,7 +229,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await OwnerInformationFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -235,11 +253,14 @@ async function testAsync() {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

@@ -1,19 +1,28 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "发票",
+		// 发票
+		title: "property-manage_house-property-manage.invoice.pageTitle",
 		icon: "mdi:receipt",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.invoice"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { InvoiceListItem, InvoiceQueryParams, InvoiceFormVO } from "@01s-11comm/type";
 import { invoiceTypeOptions, invoiceAuditStatusOptions } from "@01s-11comm/type";
 import { useInvoiceListQuery } from "@/api/property-manage/house-property-manage/invoice";
+import { type InvoiceFormProps, defaultForm } from "./components/form";
+import InvoiceForm from "./components/form.vue";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+const invoiceFormInstance = ref<InstanceType<typeof InvoiceForm> | null>(null);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -29,10 +38,47 @@ const plusSearchModelRef: FieldValues & Partial<InvoiceQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
+
+/**
+ * 表格搜索栏组件 表单配置
+ * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ */
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+	{
+		label: transformI18n($t("property-manage_house-property-manage.invoice.search.code")),
+		prop: "code",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_house-property-manage.invoice.search.invoiceType")),
+		prop: "invoiceType",
+		valueType: "select",
+		options: invoiceTypeOptions,
+	},
+	{
+		label: transformI18n($t("property-manage_house-property-manage.invoice.search.ownerName")),
+		prop: "ownerName",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_house-property-manage.invoice.search.applicant")),
+		prop: "applicant",
+		valueType: "input",
+	},
+	{
+		label: transformI18n($t("property-manage_house-property-manage.invoice.search.auditStatus")),
+		prop: "auditStatus",
+		valueType: "select",
+		options: invoiceAuditStatusOptions,
+	},
+]);
+
+/** 表格搜索栏组件 配置  */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 使用 TanStack Query 获取数据 */
 const {
@@ -46,18 +92,9 @@ const {
 	handleCurrentPageChange,
 } = useInvoiceListQuery(plusSearchDefaultValues);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
-
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -66,96 +103,84 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	{
-		label: "编号",
-		prop: "code",
-		valueType: "input",
-	},
-	{
-		label: "发票类型",
-		prop: "invoiceType",
-		valueType: "select",
-		options: invoiceTypeOptions,
-	},
-	{
-		label: "业主名称",
-		prop: "ownerName",
-		valueType: "input",
-	},
-	{
-		label: "申请人",
-		prop: "applicant",
-		valueType: "input",
-	},
-	{
-		label: "审核状态",
-		prop: "auditStatus",
-		valueType: "select",
-		options: invoiceAuditStatusOptions,
-	},
-]);
-
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.code")),
+		),
 		prop: "编号",
 		width: 120,
 	},
 	{
-		label: "发票类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.invoiceType")),
+		),
 		prop: "发票类型",
 		width: 120,
 	},
 	{
-		label: "业主名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.ownerName")),
+		),
 		prop: "业主名称",
 		width: 120,
 	},
 	{
-		label: "申请人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.applicant")),
+		),
 		prop: "申请人",
 		width: 120,
 	},
 	{
-		label: "发票名头",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.invoiceTitle")),
+		),
 		prop: "发票名头",
 		width: 120,
 	},
 	{
-		label: "纳税人识别号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.taxpayerId")),
+		),
 		prop: "纳税人识别号",
 		width: 120,
 	},
 	{
-		label: "申请金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.applicationAmount")),
+		),
 		prop: "申请金额",
 		width: 120,
 	},
 	{
-		label: "发票号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.invoiceNumber")),
+		),
 		prop: "发票号",
 		width: 120,
 	},
 	{
-		label: "发审核状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.auditStatus")),
+		),
 		prop: "发审核状态",
 		width: 120,
 	},
 	{
-		label: "申请时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.invoice.fields.applicationTime")),
+		),
 		prop: "申请时间",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -163,19 +188,13 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "发票",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.invoice.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 // 模式控制
 const { modeText, setMode, isAdd } = useMode();
-
-// 导入表单组件
-import { type InvoiceFormProps, defaultForm } from "./components/form";
-import InvoiceForm from "./components/form.vue";
-
-const invoiceFormInstance = ref<InstanceType<typeof InvoiceForm> | null>(null);
 
 /** 测试异步操作 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
@@ -193,13 +212,10 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}发票`;
-
 	/** 业务对象 */
 	const formData: InvoiceFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				code: row?.code || "",
 				invoiceType: row?.invoiceType || "",
@@ -227,7 +243,10 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.invoice.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.invoice.dialogs.editTitle")),
 		props,
 		contentRenderer: () =>
 			h(InvoiceForm, {
@@ -240,7 +259,7 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = invoiceFormInstance.value?.formComputed;
@@ -249,7 +268,7 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					invoiceFormInstance.value?.plusFormInstance?.handleReset();
@@ -257,7 +276,7 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await invoiceFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -276,11 +295,14 @@ function openDialog(params: { mode: Mode; row?: InvoiceListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
