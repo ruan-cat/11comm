@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { useTemplateRef, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { MeterReadingTypeFormVO } from "@01s-11comm/type";
 
 import { MeterTypeFormProps } from "./form";
 
 const props = defineProps<MeterTypeFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & MeterReadingTypeFormVO;
@@ -21,14 +25,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & MeterReadingTypeFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & MeterReadingTypeFormVO);
 
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
@@ -36,44 +33,61 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "名称",
+		label: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.fields.name")),
 		prop: "name",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入抄表类型名称",
+			placeholder: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.placeholders.name")),
 		},
 	},
 	{
-		label: "说明",
+		label: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入抄表类型说明",
+			placeholder: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.placeholders.description")),
 			rows: 3,
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
-		{ required: true, message: "请输入抄表类型名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.validation.nameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.validation.nameLength")),
+			trigger: "blur",
+		},
 	],
 	description: [
-		{ required: true, message: "请输入抄表类型说明", trigger: "blur" },
-		{ min: 5, max: 200, message: "长度在 5 到 200 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.meter-reading-type.form.validation.descriptionRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			min: 5,
+			max: 200,
+			message: transformI18n($t("property-manage_expense-manage.meter-reading-type.form.validation.descriptionLength")),
+			trigger: "blur",
+		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -82,13 +96,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
