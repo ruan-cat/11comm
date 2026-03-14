@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "水电抄表",
+		// 水电抄表
+		title: "property-manage_expense-manage.water-and-electricity-meter-reading.pageTitle",
 		icon: "mdi:water",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.waterAndElectricityMeterReading"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, onMounted, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import { type WaterAndElectricityMeterReadingFormProps, defaultForm } from "./components/form";
 import WaterAndElectricityMeterReadingForm from "./components/form.vue";
 import { useWaterAndElectricityMeterReadingListQuery } from "@/api/property-manage/expense-manage/water-and-electricity-meter-reading";
@@ -25,6 +28,8 @@ import { defaultAddDialogParams } from "@/config/constant";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
 
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
  * @description
@@ -36,7 +41,7 @@ const plusSearchModelRef: FieldValues & Partial<WaterAndElectricityMeterReadingQ
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -45,28 +50,22 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "表类型",
+		label: transformI18n($t("property-manage_expense-manage.water-and-electricity-meter-reading.search.meterType")),
 		prop: "meterType",
 		valueType: "select",
 		options: meterTypeOptions,
 	},
 	{
-		label: "表ID",
+		label: transformI18n($t("property-manage_expense-manage.water-and-electricity-meter-reading.search.meterId")),
 		prop: "meterId",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 使用 TanStack Query 获取数据 */
 const {
@@ -82,7 +81,7 @@ const {
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
