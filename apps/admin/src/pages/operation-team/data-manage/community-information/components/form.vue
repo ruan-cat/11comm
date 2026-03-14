@@ -9,11 +9,6 @@ import { type CommunityInformationFormProps } from "./form";
 const props = defineProps<CommunityInformationFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & CommunityInformationFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -63,7 +58,7 @@ function translateProvinceLabel(value?: string | null) {
 	}
 
 	const key = provinceLabelMap[value as keyof typeof provinceLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateCityLabel(value?: string | null) {
@@ -72,7 +67,7 @@ function translateCityLabel(value?: string | null) {
 	}
 
 	const key = cityLabelMap[value as keyof typeof cityLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateDistrictLabel(value?: string | null) {
@@ -81,7 +76,7 @@ function translateDistrictLabel(value?: string | null) {
 	}
 
 	const key = districtLabelMap[value as keyof typeof districtLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 function translateStatusLabel(value?: string | null) {
@@ -90,7 +85,7 @@ function translateStatusLabel(value?: string | null) {
 	}
 
 	const key = statusLabelMap[value as keyof typeof statusLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const translatedProvinceOptions = withLocale(() =>
@@ -123,136 +118,136 @@ const translatedStatusOptions = withLocale(() =>
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityId")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityId")),
 		prop: "communityId",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.communityId")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.communityId")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityName")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityName")),
 		prop: "communityName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.communityName")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.communityName")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.propertyCompany")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.propertyCompany")),
 		prop: "propertyCompany",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.propertyCompany")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.propertyCompany")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.nearbyLandmark")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.nearbyLandmark")),
 		prop: "nearbyLandmark",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.nearbyLandmark")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.nearbyLandmark")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.province")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.province")),
 		prop: "province",
 		valueType: "select",
 		options: translatedProvinceOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.province")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.province")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.city")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.city")),
 		prop: "city",
 		valueType: "select",
 		options: translatedCityOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.city")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.city")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.district")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.district")),
 		prop: "district",
 		valueType: "select",
 		options: translatedDistrictOptions.value,
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.district")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.district")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.detailedAddress")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.detailedAddress")),
 		prop: "detailedAddress",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.detailedAddress")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.detailedAddress")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.contactPhone")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.contactPhone")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.contactPhone")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.administrator")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.administrator")),
 		prop: "administrator",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.administrator")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.administrator")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.status")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.status")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.communityCode")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityCode")),
 		prop: "communityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.communityCode")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.communityCode")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.cityCode")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.cityCode")),
 		prop: "cityCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.cityCode")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.cityCode")),
 		},
 	},
 	{
-		label: renderI18n($t("operation-team_data-manage.community-information.fields.createTime")),
+		label: transformI18n($t("operation-team_data-manage.community-information.fields.createTime")),
 		prop: "createTime",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("operation-team_data-manage.community-information.placeholders.createTime")),
+			placeholder: transformI18n($t("operation-team_data-manage.community-information.placeholders.createTime")),
 		},
 	},
 ]);
@@ -261,92 +256,92 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	communityName: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.communityNameRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.communityNameRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.communityNameLength")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.communityNameLength")),
 			trigger: "blur",
 		},
 	],
 	propertyCompany: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.propertyCompanyRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.propertyCompanyRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 50,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.propertyCompanyLength")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.propertyCompanyLength")),
 			trigger: "blur",
 		},
 	],
 	province: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.provinceRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.provinceRequired")),
 			trigger: "change",
 		},
 	],
 	city: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.cityRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.cityRequired")),
 			trigger: "change",
 		},
 	],
 	district: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.districtRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.districtRequired")),
 			trigger: "change",
 		},
 	],
 	detailedAddress: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.detailedAddressRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.detailedAddressRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 5,
 			max: 100,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.detailedAddressLength")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.detailedAddressLength")),
 			trigger: "blur",
 		},
 	],
 	contactPhone: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.contactPhoneRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.contactPhoneRequired")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.contactPhoneInvalid")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.contactPhoneInvalid")),
 			trigger: "blur",
 		},
 	],
 	administrator: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.administratorRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.administratorRequired")),
 			trigger: "blur",
 		},
 		{
 			min: 2,
 			max: 20,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.administratorLength")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.administratorLength")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("operation-team_data-manage.community-information.validation.statusRequired")),
+			message: transformI18n($t("operation-team_data-manage.community-information.validation.statusRequired")),
 			trigger: "change",
 		},
 	],
