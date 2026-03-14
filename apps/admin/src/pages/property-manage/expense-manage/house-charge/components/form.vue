@@ -4,6 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, watch, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { HouseChargeFormVO } from "@01s-11comm/type";
 import {
 	discountTypeOptions,
@@ -21,6 +24,7 @@ import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 import { HouseChargeFormProps, defaultForm } from "./form";
 
 const props = defineProps<HouseChargeFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & HouseChargeFormVO;
@@ -37,39 +41,68 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & HouseChargeFormVO;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
+const form = ref(cloneDeep(props.form) as FieldValues & HouseChargeFormVO);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
 		/** 费用类型 */
-		label: "费用类型",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.expenseType")),
 		prop: "expenseType",
 		valueType: "select",
 		options: [
-			{ label: "物业费", value: "物业费" },
-			{ label: "押金", value: "押金" },
-			{ label: "停车费", value: "停车费" },
-			{ label: "煤气费", value: "煤气费" },
-			{ label: "取暖费", value: "取暖费" },
-			{ label: "维修费", value: "维修费" },
-			{ label: "服务费", value: "服务费" },
-			{ label: "其他", value: "其他" },
-			{ label: "水费", value: "水费" },
-			{ label: "电费", value: "电费" },
-			{ label: "租金", value: "租金" },
-			{ label: "公摊费", value: "公摊费" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.propertyFee")),
+				value: "物业费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.deposit")),
+				value: "押金",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.parkingFee")),
+				value: "停车费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.gasFee")),
+				value: "煤气费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.heatingFee")),
+				value: "取暖费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.maintenanceFee")),
+				value: "维修费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.serviceFee")),
+				value: "服务费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.other")),
+				value: "其他",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.waterFee")),
+				value: "水费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.electricityFee")),
+				value: "电费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.rent")),
+				value: "租金",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseType.publicShareFee")),
+				value: "公摊费",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -79,7 +112,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 收费项目 */
-		label: "收费项目",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.expenseItem")),
 		prop: "expenseItem",
 		valueType: "input",
 		required: true,
@@ -89,12 +122,20 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 费用标识 */
-		label: "费用标识",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.expenseIdentifier")),
 		prop: "expenseIdentifier",
 		valueType: "select",
 		options: [
-			{ label: "周期性费用", value: "周期性费用" },
-			{ label: "一次性费用", value: "一次性费用" },
+			{
+				label: transformI18n(
+					$t("property-manage_expense-manage.house-charge.form.options.expenseIdentifier.recurring"),
+				),
+				value: "周期性费用",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.expenseIdentifier.oneTime")),
+				value: "一次性费用",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -103,12 +144,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 付费类型 */
-		label: "付费类型",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.paymentType")),
 		prop: "paymentType",
 		valueType: "select",
 		options: [
-			{ label: "预付费", value: "预付费" },
-			{ label: "后付费", value: "后付费" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.paymentType.prepaid")),
+				value: "预付费",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.paymentType.postpaid")),
+				value: "后付费",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -117,7 +164,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 缴费周期 */
-		label: "缴费周期(单位:月)",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.paymentCycle")),
 		prop: "缴费周期(单位:月)",
 		valueType: "input",
 		required: true,
@@ -128,7 +175,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 预付期 */
-		label: "预付期(单位:天)",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.prepaymentPeriod")),
 		prop: "预付期(单位:天)",
 		valueType: "input",
 		required: true,
@@ -139,7 +186,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 单位 */
-		label: "单位",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.unit")),
 		prop: "unit",
 		valueType: "input",
 		required: true,
@@ -149,12 +196,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 账户抵扣 */
-		label: "账户抵扣",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.accountDeduction")),
 		prop: "accountDeduction",
 		valueType: "select",
 		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.accountDeduction.yes")),
+				value: "是",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.accountDeduction.no")),
+				value: "否",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -163,12 +216,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 手机缴费 */
-		label: "手机缴费",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.mobilePayment")),
 		prop: "mobilePayment",
 		valueType: "select",
 		options: [
-			{ label: "是", value: "是" },
-			{ label: "否", value: "否" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.mobilePayment.yes")),
+				value: "是",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.mobilePayment.no")),
+				value: "否",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -177,13 +236,22 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 进位方式 */
-		label: "进位方式",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.roundingMode")),
 		prop: "roundingMode",
 		valueType: "select",
 		options: [
-			{ label: "四舍五入", value: "四舍五入" },
-			{ label: "向上取整", value: "向上取整" },
-			{ label: "向下取整", value: "向下取整" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.roundingMode.round")),
+				value: "四舍五入",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.roundingMode.ceil")),
+				value: "向上取整",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.roundingMode.floor")),
+				value: "向下取整",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -192,15 +260,30 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 保留小数位 */
-		label: "保留小数位",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.decimalPlaces")),
 		prop: "decimalPlaces",
 		valueType: "select",
 		options: [
-			{ label: "取整", value: "取整" },
-			{ label: "1位", value: "1位" },
-			{ label: "2位", value: "2位" },
-			{ label: "3位", value: "3位" },
-			{ label: "4位", value: "4位" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.decimalPlaces.integer")),
+				value: "取整",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.decimalPlaces.one")),
+				value: "1位",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.decimalPlaces.two")),
+				value: "2位",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.decimalPlaces.three")),
+				value: "3位",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.decimalPlaces.four")),
+				value: "4位",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -209,12 +292,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 状态 */
-		label: "状态",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: [
-			{ label: "启用", value: "启用" },
-			{ label: "禁用", value: "禁用" },
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.status.enabled")),
+				value: "启用",
+			},
+			{
+				label: transformI18n($t("property-manage_expense-manage.house-charge.form.options.status.disabled")),
+				value: "禁用",
+			},
 		],
 		required: true,
 		fieldProps: {
@@ -223,7 +312,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 计算公式 */
-		label: "计算公式",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.formula")),
 		prop: "formula",
 		valueType: "input",
 		required: true,
@@ -233,7 +322,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 计费单价 */
-		label: "计费单价",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.billingUnitPrice")),
 		prop: "billingUnitPrice",
 		valueType: "input",
 		required: true,
@@ -243,7 +332,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	{
 		/** 固定费用 */
-		label: "固定费用",
+		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.fixedFee")),
 		prop: "fixedFee",
 		valueType: "input",
 		required: true,
@@ -253,45 +342,154 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	expenseType: [{ required: true, message: "请选择费用类型", trigger: "change" }],
-	expenseItem: [
-		{ required: true, message: "请输入收费项目", trigger: "blur" },
-		{ min: 2, max: 50, message: "收费项目长度在 2 到 50 个字符", trigger: "blur" },
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	expenseType: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.expenseTypeRequired")),
+			trigger: "change",
+		},
 	],
-	expenseIdentifier: [{ required: true, message: "请选择费用标识", trigger: "change" }],
-	paymentType: [{ required: true, message: "请选择付费类型", trigger: "change" }],
+	expenseItem: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.expenseItemRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.expenseItemLength")),
+			trigger: "blur",
+		},
+	],
+	expenseIdentifier: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.house-charge.form.validation.expenseIdentifierRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	paymentType: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.paymentTypeRequired")),
+			trigger: "change",
+		},
+	],
 	paymentCycle: [
-		{ required: true, message: "请输入缴费周期", trigger: "blur" },
-		{ pattern: /^[1-9]\d*$/, message: "缴费周期必须为正整数", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.paymentCycleRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[1-9]\d*$/,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.paymentCycleFormat")),
+			trigger: "blur",
+		},
 	],
 	prepaymentPeriod: [
-		{ required: true, message: "请输入预付期", trigger: "blur" },
-		{ pattern: /^[1-9]\d*$/, message: "预付期必须为正整数", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.house-charge.form.validation.prepaymentPeriodRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[1-9]\d*$/,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.prepaymentPeriodFormat")),
+			trigger: "blur",
+		},
 	],
 	unit: [
-		{ required: true, message: "请输入单位", trigger: "blur" },
-		{ min: 1, max: 20, message: "单位长度在 1 到 20 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.unitRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 1,
+			max: 20,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.unitLength")),
+			trigger: "blur",
+		},
 	],
-	accountDeduction: [{ required: true, message: "请选择账户抵扣", trigger: "change" }],
-	mobilePayment: [{ required: true, message: "请选择手机缴费", trigger: "change" }],
-	roundingMode: [{ required: true, message: "请选择进位方式", trigger: "change" }],
-	decimalPlaces: [{ required: true, message: "请选择保留小数位", trigger: "change" }],
-	status: [{ required: true, message: "请选择状态", trigger: "change" }],
-	formula: [{ required: true, message: "请输入计算公式", trigger: "blur" }],
+	accountDeduction: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.house-charge.form.validation.accountDeductionRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	mobilePayment: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.mobilePaymentRequired")),
+			trigger: "change",
+		},
+	],
+	roundingMode: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.roundingModeRequired")),
+			trigger: "change",
+		},
+	],
+	decimalPlaces: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.decimalPlacesRequired")),
+			trigger: "change",
+		},
+	],
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
+	formula: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.formulaRequired")),
+			trigger: "blur",
+		},
+	],
 	billingUnitPrice: [
-		{ required: true, message: "请输入计费单价", trigger: "blur" },
-		{ pattern: /^[0-9]+(\.[0-9]{1,4})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.house-charge.form.validation.billingUnitPriceRequired"),
+			),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[0-9]+(\.[0-9]{1,4})?$/,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.billingUnitPriceFormat")),
+			trigger: "blur",
+		},
 	],
 	fixedFee: [
-		{ required: true, message: "请输入固定费用", trigger: "blur" },
-		{ pattern: /^[0-9]+(\.[0-9]{1,4})?$/, message: "请输入正确的金额格式", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.fixedFeeRequired")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^[0-9]+(\.[0-9]{1,4})?$/,
+			message: transformI18n($t("property-manage_expense-manage.house-charge.form.validation.fixedFeeFormat")),
+			trigger: "blur",
+		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -300,13 +498,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
