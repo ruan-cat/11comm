@@ -8,16 +8,12 @@ import type { HandingBusinessFormProps } from "./form";
 const props = defineProps<HandingBusinessFormProps>();
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & HandingBusinessFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-const form = ref(cloneDeep(props.form) as FieldValues & HandingBusinessFormVO);
+const toRefForm = cloneDeep(props.form) as FieldValues & HandingBusinessFormVO;
+const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
 const feeTypeLabelKeyMap = {
@@ -37,102 +33,102 @@ const statusLabelKeyMap = {
 
 const feeTypeOptions = withLocale(() =>
 	Object.entries(feeTypeLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const statusOptions = withLocale(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
 		prop: "feeItem",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeItem")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeItem")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
 		prop: "feeId",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeId")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeId")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
 		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeType")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeType")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.amountReceivable")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.amountReceivable")),
 		prop: "amountReceivable",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.placeholders.amountReceivable"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTime")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTime")),
 		prop: "accountCreationTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.placeholders.accountCreationTime"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.receivablePeriod")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.receivablePeriod")),
 		prop: "receivablePeriod",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n(
+			placeholder: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.placeholders.receivablePeriod"),
 			),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.description")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.description")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.description")),
 			disabled: props.mode === "info",
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.status")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: statusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.status")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.status")),
 			disabled: props.mode === "info",
 		},
 	},
@@ -142,35 +138,35 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	feeItem: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.enterFeeItem")),
+			message: transformI18n($t("propertyManage_communityManage.handing-business.form.validation.enterFeeItem")),
 			trigger: "blur",
 		},
 	],
 	feeId: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.enterFeeId")),
+			message: transformI18n($t("propertyManage_communityManage.handing-business.form.validation.enterFeeId")),
 			trigger: "blur",
 		},
 	],
 	feeType: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.selectFeeType")),
+			message: transformI18n($t("propertyManage_communityManage.handing-business.form.validation.selectFeeType")),
 			trigger: "change",
 		},
 	],
 	amountReceivable: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.validation.enterAmountReceivable"),
 			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^\d+(\.\d{1,2})?$/,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.validation.amountReceivablePattern"),
 			),
 			trigger: "blur",
@@ -179,7 +175,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	accountCreationTime: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.validation.selectAccountCreationTime"),
 			),
 			trigger: "change",
@@ -188,7 +184,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	receivablePeriod: [
 		{
 			required: true,
-			message: renderI18n(
+			message: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.validation.enterReceivablePeriod"),
 			),
 			trigger: "blur",
@@ -197,14 +193,14 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	description: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.enterDescription")),
+			message: transformI18n($t("propertyManage_communityManage.handing-business.form.validation.enterDescription")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: renderI18n($t("propertyManage_communityManage.handing-business.form.validation.selectStatus")),
+			message: transformI18n($t("propertyManage_communityManage.handing-business.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
