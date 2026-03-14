@@ -1,29 +1,39 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "优惠类型",
+		// 优惠类型
+		title: "property-manage_expense-manage.discount-type.pageTitle",
 		icon: "mdi:tag-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.discountType"),
 	},
 });
 
-import { ref, computed, onMounted } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { useMode, type Mode } from "@/composables/use-mode";
-import { ElMessage, ElMessageBox } from "element-plus";
-
-import { type DiscountTypeFormProps, defaultForm } from "./components/form";
-import type { DiscountTypeFormVO, DiscountType } from "@01s-11comm/type";
-import DiscountTypeForm from "./components/form.vue";
-import { useDiscountTypeListQuery } from "@/api/property-manage/expense-manage/discount-type";
-import { type DiscountTypeListItem, type DiscountTypeQueryParams, discountTypeOptions } from "@01s-11comm/type";
-import { useToggle } from "@vueuse/core";
-import { consola } from "consola";
+import { h, ref } from "vue";
+import { sleep } from "@antfu/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { addDialog, closeDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
 
-import { addDialog, closeDialog } from "@/components/ReDialog";
-import { h } from "vue";
+import { useMode, type Mode } from "@/composables/use-mode";
+import type { DiscountTypeFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import type { DiscountTypeFormVO, DiscountType, DiscountTypeListItem, DiscountTypeQueryParams } from "@01s-11comm/type";
+import { discountTypeOptions } from "@01s-11comm/type";
+import DiscountTypeForm from "./components/form.vue";
+import { useDiscountTypeListQuery } from "@/api/property-manage/expense-manage/discount-type";
+import { useToggle } from "@vueuse/core";
+import { consola } from "consola";
+import { cloneDeep } from "@pureadmin/utils";
+import { ElMessage, ElMessageBox } from "element-plus";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+/** 模式控制 */
+const { setMode, isAdd, isEdit, isInfo } = useMode();
+
+const DiscountTypeFormInstance = ref<InstanceType<typeof DiscountTypeForm> | null>(null);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -43,7 +53,6 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -54,47 +63,52 @@ const {
 } = useDiscountTypeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
+	{ ...defaultPureTableIndexColumn, headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))) },
 	{
-		prop: "id", // DiscountTypeListItem has id, assuming discountId is not in item but only in form? No, I updated list item to not have specific keys.
-		// Wait, I updated DiscountSettingListItem but NOT DiscountTypeListItem.
-		// Let me check type definition again.
-		// DiscountTypeListItem has: id, name, status, createTime, updateTime, remark.
-		// But in index.vue I see: 折扣ID, 折扣名称, 折扣类型, 规则名称, 规则.
-		// I must update DiscountTypeListItem as well.
-		label: "折扣ID",
+		prop: "id",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-type.fields.discountId")),
+		),
 		width: 120,
 		fixed: true,
 	},
 	{
-		prop: "name", // Mapping 折扣名称 -> name
-		label: "折扣名称",
+		prop: "name",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-type.fields.discountName")),
+		),
 		width: 200,
 	},
 	{
-		prop: "discountType", // I need to add this to type definition
-		label: "折扣类型",
+		prop: "discountType",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-type.fields.discountType")),
+		),
 		width: 200,
 	},
 	{
-		prop: "ruleName", // I need to add this to type definition
-		label: "规则名称",
+		prop: "ruleName",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-type.fields.ruleName")),
+		),
 		width: 200,
 	},
 	{
-		prop: "rule", // I need to add this to type definition
-		label: "规则",
+		prop: "rule",
+		headerRenderer: createHeaderRenderer(transformI18n($t("property-manage_expense-manage.discount-type.fields.rule"))),
 		width: 200,
 	},
 	{
 		prop: "createTime",
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.discount-type.fields.createTime")),
+		),
 		width: 200,
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -102,51 +116,45 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "优惠类型",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.discount-type.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	/** 折扣ID */
 	{
-		label: "折扣ID",
-		prop: "id", // Use id for discountId
+		label: transformI18n($t("property-manage_expense-manage.discount-type.search.discountId")),
+		prop: "id",
 		valueType: "input",
 	},
 	/** 折扣名称 */
 	{
-		label: "折扣名称",
+		label: transformI18n($t("property-manage_expense-manage.discount-type.search.discountName")),
 		prop: "name",
 		valueType: "input",
 	},
 	/** 折扣类型 */
 	{
-		label: "折扣类型",
-		prop: "discountType", // Need to add to query params
+		label: transformI18n($t("property-manage_expense-manage.discount-type.search.discountType")),
+		prop: "discountType",
 		valueType: "select",
 		options: discountTypeOptions,
 	},
 	/** 规则名称 */
 	{
-		label: "规则名称",
-		prop: "ruleName", // Need to add to query params
+		label: transformI18n($t("property-manage_expense-manage.discount-type.search.ruleName")),
+		prop: "ruleName",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -166,11 +174,11 @@ function handleSearch() {
 async function handleDelete(row: DiscountTypeListItem) {
 	try {
 		await ElMessageBox.confirm(
-			`确认删除优惠类型"${row.name}"吗？`, // Map 折扣名称 -> name
-			"删除确认",
+			transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmMessage", { name: row.name })),
+			transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmTitle")),
 			{
-				confirmButtonText: "确认",
-				cancelButtonText: "取消",
+				confirmButtonText: transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmOk")),
+				cancelButtonText: transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmCancel")),
 				type: "warning",
 			},
 		);
@@ -180,25 +188,19 @@ async function handleDelete(row: DiscountTypeListItem) {
 		console.log("删除优惠类型:", row.id);
 
 		/** 显示成功提示 */
-		ElMessage.success("删除成功");
+		ElMessage.success(transformI18n($t("property-manage_expense-manage.discount-type.deleteSuccess")));
 
 		/** 重新加载数据 */
 		await doFetch();
 	} catch (error) {
 		if (error !== "cancel") {
 			console.error("删除失败:", error);
-			ElMessage.error("删除失败");
+			ElMessage.error(transformI18n($t("property-manage_expense-manage.discount-type.deleteFailed")));
 		}
 	}
 }
 
-/** 弹框相关功能 */
-const DiscountTypeFormInstance = ref<InstanceType<typeof DiscountTypeForm> | null>(null);
-/** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit, isInfo } = useMode();
-
 const [isFetchingT, setIsLoadingT] = useToggle(false);
-
 /** 模拟异步操作函数 */
 async function testAsync() {
 	setIsLoadingT(true);
@@ -213,109 +215,109 @@ function openDialog(params: { mode: Mode; row?: DiscountTypeListItem }) {
 	const { row } = params;
 	setMode(params.mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}优惠类型`;
-
 	/** 业务对象 */
-	const 业务对象: DiscountTypeFormVO = isAdd.value
-		? structuredClone(defaultForm)
+	const discountTypeFormVO: DiscountTypeFormVO = isAdd.value
+		? cloneDeep(defaultForm)
 		: isEdit.value || isInfo.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					discountName: row?.name || "",
 					discountType: (row?.discountType || "百分比折扣") as DiscountType,
 					ruleName: row?.ruleName || "",
 					rule: row?.rule || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: DiscountTypeFormProps = {
-		form: 业务对象,
-		defaultValues: 业务对象,
+		form: discountTypeFormVO,
+		defaultValues: discountTypeFormVO,
 		disabled: isInfo.value,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
 	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
-
-	/** 构建底部按钮 */
-	const footerButtons = [];
-
-	/** 取消按钮 - 所有模式都有 */
-	footerButtons.push({
-		label: transformI18n($t("common.buttons.cancel")),
-		type: "info",
-		btnClick: async ({ dialog: { options, index } }) => {
-			const formComputed = DiscountTypeFormInstance.value.formComputed;
-			await useDoBeforeClose({ defaultValues, formComputed, index, options });
-		},
-	});
-
-	/** 重置按钮 - 非查看模式有 */
-	if (!isInfo.value) {
-		footerButtons.push({
-			label: transformI18n($t("common.buttons.reset")),
-			type: "warning",
-			btnClick: () => {
-				DiscountTypeFormInstance.value.plusFormInstance.handleReset();
-			},
-		});
-	}
-
-	/** 提交按钮 - 非查看模式有 */
-	if (!isInfo.value) {
-		footerButtons.push({
-			label: transformI18n($t("common.buttons.submit")),
-			type: "success",
-			btnClick: async ({ dialog: { options, index }, button }) => {
-				const res = await DiscountTypeFormInstance.value.plusFormInstance.handleSubmit();
-				if (res) {
-					button.btn.loading = true;
-					await testAsync();
-					button.btn.loading = false;
-					closeDialog(options, index);
-					await doFetch();
-				}
-			},
-		});
-	}
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
-		props,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_expense-manage.discount-type.dialogs.addTitle"))
+				: transformI18n($t("property-manage_expense-manage.discount-type.dialogs.editTitle")),
+		props: formProps,
+
 		contentRenderer: () =>
 			h(DiscountTypeForm, {
 				ref: DiscountTypeFormInstance,
 				...formProps,
 			}),
+
 		async doBeforeClose({ options, index }) {
 			if (!isInfo.value) {
-				const formComputed = DiscountTypeFormInstance.value.formComputed;
-				await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				const formComputed = DiscountTypeFormInstance.value?.formComputed;
+				if (formComputed) {
+					await useDoBeforeClose({ defaultValues, formComputed, index, options });
+				}
 			} else {
 				closeDialog(options, index);
 			}
 		},
-		footerButtons,
+
+		footerButtons: [
+			{
+				label: () => transformI18n($t("common.buttons.cancel")),
+				type: "info",
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					if (!isInfo.value) {
+						const formComputed = DiscountTypeFormInstance.value?.formComputed;
+						if (formComputed) {
+							await useDoBeforeClose({ defaultValues, formComputed, index, options });
+						}
+					} else {
+						closeDialog(options, index);
+					}
+				},
+			},
+
+			{
+				label: () => transformI18n($t("common.buttons.reset")),
+				type: "warning",
+				hide: isInfo.value,
+				btnClick: ({ dialog: { options, index }, button }) => {
+					/** 手动重置表单 */
+					DiscountTypeFormInstance.value?.plusFormInstance?.handleReset();
+				},
+			},
+
+			{
+				label: () => transformI18n($t("common.buttons.submit")),
+				type: "success",
+				hide: isInfo.value,
+				btnClick: async ({ dialog: { options, index }, button }) => {
+					/** 提交表单时 校验 */
+					const res = await DiscountTypeFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (res) {
+						button.btn.loading = true;
+						await testAsync();
+						button.btn.loading = false;
+						closeDialog(options, index);
+						await doFetch();
+					}
+				},
+			},
+		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
