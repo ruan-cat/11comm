@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type PatrolPathFormProps, defaultForm } from "./form";
 import type { PatrolPathFormData } from "@01s-11comm/type";
 import { patrolPointTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPathFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolPathFormData;
@@ -13,30 +17,13 @@ const defaultValues = props.defaultValues as FieldValues & PatrolPathFormData;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & PatrolPathFormData;
-
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const form = ref(cloneDeep(props.form) as FieldValues & PatrolPathFormData);
+const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "巡检点名称",
+		label: transformI18n($t("property-manage_patrol-manage.path.form.patrolPointName")),
 		prop: "patrolPointName",
 		valueType: "input",
 		fieldProps: {
@@ -44,18 +31,18 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "巡检点类型",
+		label: transformI18n($t("property-manage_patrol-manage.path.form.patrolPointType")),
 		prop: "patrolPointType",
 		valueType: "select",
 		options: patrolPointTypeOptions,
 	},
 	{
-		label: "巡检位置",
+		label: transformI18n($t("property-manage_patrol-manage.path.form.patrolLocation")),
 		prop: "patrolLocation",
 		valueType: "input",
 	},
 	{
-		label: "开始时间",
+		label: transformI18n($t("property-manage_patrol-manage.path.form.startTime")),
 		prop: "startTime",
 		valueType: "time-picker",
 		fieldProps: {
@@ -64,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "结束时间",
+		label: transformI18n($t("property-manage_patrol-manage.path.form.endTime")),
 		prop: "endTime",
 		valueType: "time-picker",
 		fieldProps: {
@@ -73,7 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "排序",
+		label: transformI18n($t("property-manage_patrol-manage.path.form.sortOrder")),
 		prop: "sortOrder",
 		valueType: "input-number",
 		fieldProps: {
@@ -83,14 +70,50 @@ const plusFormColumns = ref<PlusColumn[]>([
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	patrolPointName: [{ required: true, message: "请输入巡检点名称", trigger: "blur" }],
-	patrolPointType: [{ required: true, message: "请选择巡检点类型", trigger: "change" }],
-	patrolLocation: [{ required: true, message: "请输入巡检位置", trigger: "blur" }],
-	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	sortOrder: [{ required: true, message: "请输入排序", trigger: "blur" }],
-});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	patrolPointName: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.path.form.rules.patrolPointNameRequired")),
+			trigger: "blur",
+		},
+	],
+	patrolPointType: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.path.form.rules.patrolPointTypeRequired")),
+			trigger: "change",
+		},
+	],
+	patrolLocation: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.path.form.rules.patrolLocationRequired")),
+			trigger: "blur",
+		},
+	],
+	startTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.path.form.rules.startTimeRequired")),
+			trigger: "change",
+		},
+	],
+	endTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.path.form.rules.endTimeRequired")),
+			trigger: "change",
+		},
+	],
+	sortOrder: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_patrol-manage.path.form.rules.sortOrderRequired")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -99,7 +122,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
