@@ -1,21 +1,25 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "业主成员",
+		// 业主成员
+		title: "property-manage_house-property-manage.owner-member.pageTitle",
 		icon: "mdi:account-group",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.ownerMember"),
 	},
 });
 
-import { ref, computed } from "vue";
+import { h, ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { transformI18n } from "@/plugins/i18n";
 import type { OwnerMemberListItem, OwnerMemberQueryParams, OwnerMemberFormVO } from "@01s-11comm/type";
 import { ownerMemberStatusOptions } from "@01s-11comm/type";
 import { type OwnerMemberFormProps, defaultForm } from "./components/form";
 import OwnerMemberForm from "./components/form.vue";
 import { useOwnerMemberListQuery } from "@/api/property-manage/house-property-manage/owner-member";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -28,7 +32,7 @@ const plusSearchModelRef: FieldValues & Partial<OwnerMemberQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -47,7 +51,7 @@ const {
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -60,14 +64,14 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "名称",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: ownerMemberStatusOptions,
@@ -75,65 +79,79 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "成员人脸",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.memberFace")),
+		),
 		prop: "memberFace",
 		width: 120,
 	},
 	{
-		label: "名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.name")),
+		),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: "性别",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.gender")),
+		),
 		prop: "gender",
 		width: 80,
 	},
 	{
-		label: "类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.type")),
+		),
 		prop: "type",
 		width: 100,
 	},
 	{
-		label: "身份证",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.idCard")),
+		),
 		prop: "idCard",
 		width: 160,
 	},
 	{
-		label: "联系方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.contact")),
+		),
 		prop: "contact",
 		width: 120,
 	},
 	{
-		label: "家庭住址",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.homeAddress")),
+		),
 		prop: "homeAddress",
 		width: 180,
 	},
 	{
-		label: "门禁钥匙",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.accessKey")),
+		),
 		prop: "accessKey",
 		width: 100,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owner-member.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -141,10 +159,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业主成员",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.owner-member.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -166,13 +184,10 @@ function openDialog(params: { mode: Mode; row?: OwnerMemberListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}业主成员`;
-
 	/** 业务对象 */
 	const formData: OwnerMemberFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				memberFace: row?.memberFace || "",
 				name: row?.name || "",
@@ -195,7 +210,10 @@ function openDialog(params: { mode: Mode; row?: OwnerMemberListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.owner-member.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.owner-member.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(OwnerMemberForm, {
@@ -208,7 +226,7 @@ function openDialog(params: { mode: Mode; row?: OwnerMemberListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = ownerMemberFormInstance.value?.formComputed;
@@ -217,7 +235,7 @@ function openDialog(params: { mode: Mode; row?: OwnerMemberListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					ownerMemberFormInstance.value?.plusFormInstance?.handleReset();
@@ -225,7 +243,7 @@ function openDialog(params: { mode: Mode; row?: OwnerMemberListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await ownerMemberFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -244,11 +262,14 @@ function openDialog(params: { mode: Mode; row?: OwnerMemberListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { OwnerMemberFormVO } from "@01s-11comm/type";
 import { genderOptions, memberTypeOptions } from "@01s-11comm/type";
 import type { OwnerMemberFormProps } from "./form";
 
 const props = defineProps<OwnerMemberFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnerMemberFormVO;
@@ -21,31 +25,25 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & OwnerMemberFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & OwnerMemberFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 成员人脸
 	{
-		label: "成员人脸",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.memberFace")),
 		prop: "memberFace",
 		valueType: "input",
 	},
 
 	// 名称
 	{
-		label: "名称",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.name")),
 		prop: "name",
 		valueType: "input",
 		required: true,
@@ -53,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 性别
 	{
-		label: "性别",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.gender")),
 		prop: "gender",
 		valueType: "select",
 		options: genderOptions,
@@ -62,7 +60,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 类型
 	{
-		label: "类型",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.type")),
 		prop: "type",
 		valueType: "select",
 		options: memberTypeOptions,
@@ -71,7 +69,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 身份证
 	{
-		label: "身份证",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.idCard")),
 		prop: "idCard",
 		valueType: "input",
 		required: true,
@@ -79,7 +77,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 联系方式
 	{
-		label: "联系方式",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.contact")),
 		prop: "contact",
 		valueType: "input",
 		required: true,
@@ -87,7 +85,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 家庭住址
 	{
-		label: "家庭住址",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.homeAddress")),
 		prop: "homeAddress",
 		valueType: "input",
 		required: true,
@@ -95,14 +93,14 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 创建人
 	{
-		label: "创建人",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.creator")),
 		prop: "creator",
 		valueType: "input",
 	},
 
 	// 备注
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
@@ -112,7 +110,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 门禁钥匙
 	{
-		label: "门禁钥匙",
+		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.accessKey")),
 		prop: "accessKey",
 		valueType: "select",
 		options: [
@@ -122,59 +120,56 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,
-			message: "请输入名称",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.enterName")),
 			trigger: "blur",
 		},
 	],
 	gender: [
 		{
 			required: true,
-			message: "请选择性别",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.selectGender")),
 			trigger: "change",
 		},
 	],
 	type: [
 		{
 			required: true,
-			message: "请选择类型",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.selectType")),
 			trigger: "change",
 		},
 	],
 	idCard: [
 		{
 			required: true,
-			message: "请输入身份证",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.enterIdCard")),
 			trigger: "blur",
 		},
 	],
 	contact: [
 		{
 			required: true,
-			message: "请输入联系方式",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.enterContact")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.contactPattern")),
 			trigger: "blur",
 		},
 	],
 	homeAddress: [
 		{
 			required: true,
-			message: "请输入家庭住址",
+			message: transformI18n($t("property-manage_house-property-manage.owner-member.form.validation.enterHomeAddress")),
 			trigger: "blur",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -183,13 +178,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:label-width="90"
 		/>
