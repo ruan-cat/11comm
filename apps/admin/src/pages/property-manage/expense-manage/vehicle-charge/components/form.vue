@@ -4,6 +4,9 @@
 -->
 <script lang="ts" setup>
 import { ref, computed, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import type { VehicleChargeFormVO } from "@01s-11comm/type";
 import { parkingSpaceStatusOptions } from "@01s-11comm/type";
 import type { FieldValues } from "plus-pro-components";
@@ -11,6 +14,8 @@ import type { FieldValues } from "plus-pro-components";
 import { VehicleChargeFormProps, defaultForm } from "./form";
 
 const props = defineProps<VehicleChargeFormProps>();
+
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & VehicleChargeFormVO;
@@ -27,7 +32,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & VehicleChargeFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & VehicleChargeFormVO;
 
 /**
  * 表单对象
@@ -41,29 +46,31 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "车牌号",
+		label: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.fields.licensePlateNumber")),
 		prop: "licensePlateNumber",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入车牌号",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.vehicle-charge.form.placeholders.licensePlateNumber"),
+			),
 		},
 	},
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.fields.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入业主名称",
+			placeholder: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.placeholders.ownerName")),
 		},
 	},
 	{
-		label: "车位状态",
+		label: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.fields.parkingSpaceStatus")),
 		prop: "parkingSpaceStatus",
 		valueType: "select",
 		options: parkingSpaceStatusOptions,
@@ -71,21 +78,23 @@ const plusFormColumns = ref<PlusColumn[]>([
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: "请选择车位状态",
+			placeholder: transformI18n(
+				$t("property-manage_expense-manage.vehicle-charge.form.placeholders.parkingSpaceStatus"),
+			),
 		},
 	},
 	{
-		label: "收费金额",
+		label: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.fields.chargeAmount")),
 		prop: "chargeAmount",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入收费金额",
+			placeholder: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.placeholders.chargeAmount")),
 		},
 	},
 	{
-		label: "收费时间",
+		label: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.fields.chargeTime")),
 		prop: "chargeTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -93,34 +102,71 @@ const plusFormColumns = ref<PlusColumn[]>([
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
 			clearable: true,
-			placeholder: "请选择收费时间",
+			placeholder: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.placeholders.chargeTime")),
 		},
 		required: true,
 	},
 	{
-		label: "收费方式",
+		label: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.fields.chargeMethod")),
 		prop: "chargeMethod",
 		valueType: "input",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入收费方式",
+			placeholder: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.placeholders.chargeMethod")),
 		},
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	licensePlateNumber: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
-	ownerName: [{ required: true, message: "请输入业主名称", trigger: "blur" }],
-	parkingSpaceStatus: [{ required: true, message: "请选择车位状态", trigger: "change" }],
-	chargeAmount: [{ required: true, message: "请输入收费金额", trigger: "blur" }],
-	chargeTime: [{ required: true, message: "请选择收费时间", trigger: "change" }],
-	chargeMethod: [{ required: true, message: "请输入收费方式", trigger: "blur" }],
-});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	licensePlateNumber: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.vehicle-charge.form.validation.licensePlateNumberRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	ownerName: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.validation.ownerNameRequired")),
+			trigger: "blur",
+		},
+	],
+	parkingSpaceStatus: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_expense-manage.vehicle-charge.form.validation.parkingSpaceStatusRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	chargeAmount: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.validation.chargeAmountRequired")),
+			trigger: "blur",
+		},
+	],
+	chargeTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.validation.chargeTimeRequired")),
+			trigger: "change",
+		},
+	],
+	chargeMethod: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_expense-manage.vehicle-charge.form.validation.chargeMethodRequired")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -129,13 +175,13 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<PlusForm
 			ref="plusFormRef"
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 		/>
 	</section>
