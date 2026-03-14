@@ -26,24 +26,19 @@ import HandingBusinessForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues &
 	Partial<HandingBusinessQueryParams> & {
 		accountCreationTimeRange?: string[];
 	} = {
-		feeItem: "",
-		feeId: "",
-		feeType: undefined,
-		status: undefined,
-		accountCreationStartTime: "",
-		accountCreationEndTime: "",
-	};
+	feeItem: "",
+	feeId: "",
+	feeType: undefined,
+	status: undefined,
+	accountCreationStartTime: "",
+	accountCreationEndTime: "",
+};
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -87,19 +82,19 @@ function translateOptionLabel<T extends Record<string, string>>(value: string | 
 	}
 
 	const key = labelMap[value as keyof T];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const feeTypeOptions = withLocale(() =>
 	Object.entries(feeTypeLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
 const statusOptions = withLocale(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
-		label: renderI18n($t(key)),
+		label: transformI18n($t(key)),
 		value,
 	})),
 );
@@ -107,53 +102,63 @@ const statusOptions = withLocale(() =>
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.feeItem"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
+		),
 		prop: "feeItem",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.feeId"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
+		),
 		prop: "feeId",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.feeType"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
+		),
 		prop: "feeType",
 		minWidth: 130,
 		cellRenderer: ({ row }) => translateOptionLabel(row.feeType, feeTypeLabelKeyMap),
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.handing-business.fields.amountReceivable")),
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.amountReceivable")),
 		),
 		prop: "amountReceivable",
 		minWidth: 120,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTime")),
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTime")),
 		),
 		prop: "accountCreationTime",
 		minWidth: 160,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("propertyManage_communityManage.handing-business.fields.receivablePeriod")),
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.receivablePeriod")),
 		),
 		prop: "receivablePeriod",
 		minWidth: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.description"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.description")),
+		),
 		prop: "description",
 		minWidth: 220,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("propertyManage_communityManage.handing-business.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.handing-business.fields.status")),
+		),
 		prop: "status",
 		minWidth: 120,
 		cellRenderer: ({ row }) => {
@@ -171,7 +176,7 @@ const columns = withLocale<TableColumnList>(() => [
 		},
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 260,
 		fixed: "right",
 		slot: "operation",
@@ -179,57 +184,57 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("propertyManage_communityManage.handing-business.tableTitle")),
+	title: transformI18n($t("propertyManage_communityManage.handing-business.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
 		prop: "feeItem",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeItem")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeItem")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeId")),
 		prop: "feeId",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeId")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeId")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeType")),
 		prop: "feeType",
 		valueType: "select",
 		options: feeTypeOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeType")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.feeType")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.status")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: statusOptions.value,
 		fieldProps: {
-			placeholder: renderI18n($t("propertyManage_communityManage.handing-business.form.placeholders.status")),
+			placeholder: transformI18n($t("propertyManage_communityManage.handing-business.form.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTimeRange")),
+		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.accountCreationTimeRange")),
 		prop: "accountCreationTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "daterange",
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
-			startPlaceholder: renderI18n(
+			startPlaceholder: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.placeholders.accountCreationStartTime"),
 			),
-			endPlaceholder: renderI18n(
+			endPlaceholder: transformI18n(
 				$t("propertyManage_communityManage.handing-business.form.placeholders.accountCreationEndTime"),
 			),
 			onChange(value: string[] | null) {
@@ -247,7 +252,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -276,14 +281,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: HandingBusinessListItem }
 		...defaultAddDialogParams,
 		title: () => {
 			if (isAdd.value) {
-				return renderI18n($t("propertyManage_communityManage.handing-business.dialogs.addTitle"));
+				return transformI18n($t("propertyManage_communityManage.handing-business.dialogs.addTitle"));
 			}
 
 			if (isEdit.value) {
-				return renderI18n($t("propertyManage_communityManage.handing-business.dialogs.editTitle"));
+				return transformI18n($t("propertyManage_communityManage.handing-business.dialogs.editTitle"));
 			}
 
-			return renderI18n($t("propertyManage_communityManage.handing-business.dialogs.infoTitle"));
+			return transformI18n($t("propertyManage_communityManage.handing-business.dialogs.infoTitle"));
 		},
 		props: formProps,
 		contentRenderer: () =>
@@ -299,7 +304,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: HandingBusinessListItem }
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = handingBusinessFormInstance.value?.formComputed;
@@ -312,14 +317,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: HandingBusinessListItem }
 				? []
 				: ([
 						{
-							label: () => renderI18n($t("common.buttons.reset")),
+							label: () => transformI18n($t("common.buttons.reset")),
 							type: "warning",
 							btnClick: () => {
 								handingBusinessFormInstance.value?.plusFormInstance?.handleReset();
 							},
 						},
 						{
-							label: () => renderI18n($t("common.buttons.submit")),
+							label: () => transformI18n($t("common.buttons.submit")),
 							type: "success",
 							btnClick: async ({ dialog: { options, index }, button }) => {
 								const res = await handingBusinessFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -344,10 +349,10 @@ async function handleDelete(row: HandingBusinessListItem) {
 				feeId: row.feeId,
 				feeItem: row.feeItem,
 			}),
-			renderI18n($t("propertyManage_communityManage.handing-business.dialogs.deleteTitle")),
+			transformI18n($t("propertyManage_communityManage.handing-business.dialogs.deleteTitle")),
 			{
-				confirmButtonText: renderI18n($t("common.buttons.del")),
-				cancelButtonText: renderI18n($t("common.buttons.cancel")),
+				confirmButtonText: transformI18n($t("common.buttons.del")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
 				type: "warning",
 			},
 		);

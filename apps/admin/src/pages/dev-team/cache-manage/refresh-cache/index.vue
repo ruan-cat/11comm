@@ -16,12 +16,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { useRefreshCacheListQuery } from "@/api/dev-team/cache-manage/refresh-cache";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<RefreshCacheQueryParams> = {
 	cacheId: "",
@@ -45,48 +40,50 @@ const {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode"))),
 		prop: "cacheCode",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName"))),
 		prop: "cacheName",
 		minWidth: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheKey"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheKey"))),
 		prop: "cacheKey",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheType"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheType"))),
 		prop: "cacheType",
 		minWidth: 110,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheGroup"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheGroup"))),
 		prop: "cacheGroup",
 		minWidth: 110,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.expireTimeSeconds"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("devTeam.cacheManage.refreshCache.fields.expireTimeSeconds")),
+		),
 		prop: "expireTime",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.status"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.status"))),
 		prop: "status",
 		minWidth: 90,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("devTeam.cacheManage.refreshCache.fields.refreshPolicy"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.refreshPolicy"))),
 		prop: "refreshPolicy",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 120,
 		fixed: "right",
 		slot: "operation",
@@ -94,32 +91,29 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("devTeam.cacheManage.refreshCache.tableTitle")),
+	title: transformI18n($t("devTeam.cacheManage.refreshCache.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheId")),
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheId")),
 		prop: "cacheId",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode")),
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode")),
 		prop: "cacheCode",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName")),
+		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheName")),
 		prop: "cacheName",
 		valueType: "input",
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -134,7 +128,7 @@ function handleSearch() {
 }
 
 function handleClearCache(row: RefreshCacheListItem) {
-	console.log(renderI18n($t("devTeam.cacheManage.refreshCache.buttons.refresh")), row);
+	console.log(transformI18n($t("devTeam.cacheManage.refreshCache.buttons.refresh")), row);
 }
 </script>
 
@@ -145,6 +139,8 @@ function handleClearCache(row: RefreshCacheListItem) {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
