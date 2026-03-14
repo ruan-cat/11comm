@@ -12,7 +12,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { DictionaryTypeFormProps } from "./form";
 
 const props = defineProps<DictionaryTypeFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { withLocale } = useI18nConfig();
 
 const dictionaryCategoryLabelKeyMap = {
 	system: "devTeam.configManage.type.form.options.categories.system",
@@ -54,75 +54,72 @@ const toRefForm = cloneDeep(props.form) as unknown as FieldValues & DictionaryTy
 const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const translatedDictionaryCategoryOptions = withLocale(() =>
-	dictionaryCategoryOptions.map(option => ({
+	dictionaryCategoryOptions.map((option) => ({
 		...option,
-		label: renderI18n($t(dictionaryCategoryLabelKeyMap[String(option.value) as keyof typeof dictionaryCategoryLabelKeyMap])),
+		label: transformI18n(
+			$t(dictionaryCategoryLabelKeyMap[String(option.value) as keyof typeof dictionaryCategoryLabelKeyMap]),
+		),
 	})),
 );
 
 const translatedDataTypeOptions = withLocale(() =>
-	dataTypeOptions.map(option => ({
+	dataTypeOptions.map((option) => ({
 		...option,
-		label: renderI18n($t(dataTypeLabelKeyMap[String(option.value) as keyof typeof dataTypeLabelKeyMap])),
+		label: transformI18n($t(dataTypeLabelKeyMap[String(option.value) as keyof typeof dataTypeLabelKeyMap])),
 	})),
 );
 
 const translatedRequiredOptions = withLocale(() =>
-	requiredOptions.map(option => ({
+	requiredOptions.map((option) => ({
 		...option,
-		label: renderI18n($t(requiredLabelKeyMap[String(option.value) as keyof typeof requiredLabelKeyMap])),
+		label: transformI18n($t(requiredLabelKeyMap[String(option.value) as keyof typeof requiredLabelKeyMap])),
 	})),
 );
 
 const translatedStatusOptions = withLocale(() =>
-	dictionaryTypeStatusOptions.map(option => ({
+	dictionaryTypeStatusOptions.map((option) => ({
 		...option,
-		label: renderI18n($t(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap])),
+		label: transformI18n($t(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap])),
 	})),
 );
 
 const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryNumber")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.dictionaryNumber")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryName")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryName")),
 		prop: "dictionaryName",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryName")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.dictionaryName")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryType")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryType")),
 		prop: "dictionaryType",
 		valueType: "input",
 		width: "200px",
 		required: true,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryType")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.dictionaryType")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dictionaryCategory")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryCategory")),
 		prop: "dictionaryCategory",
 		valueType: "select",
 		width: "180px",
@@ -131,11 +128,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dictionaryCategory")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.dictionaryCategory")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.dataType")),
+		label: transformI18n($t("devTeam.configManage.type.fields.dataType")),
 		prop: "dataType",
 		valueType: "select",
 		width: "150px",
@@ -144,21 +141,21 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 			filterable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.dataType")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.dataType")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.defaultValue")),
+		label: transformI18n($t("devTeam.configManage.type.fields.defaultValue")),
 		prop: "defaultValue",
 		valueType: "input",
 		width: "180px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.defaultValue")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.defaultValue")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.isRequired")),
+		label: transformI18n($t("devTeam.configManage.type.fields.isRequired")),
 		prop: "isRequired",
 		valueType: "select",
 		width: "120px",
@@ -166,22 +163,22 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: translatedRequiredOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.isRequired")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.isRequired")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.validationRule")),
+		label: transformI18n($t("devTeam.configManage.type.fields.validationRule")),
 		prop: "validationRule",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.validationRule")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.validationRule")),
 			rows: 3,
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.displayOrder")),
+		label: transformI18n($t("devTeam.configManage.type.fields.displayOrder")),
 		prop: "displayOrder",
 		valueType: "input-number",
 		width: "150px",
@@ -190,11 +187,11 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			min: 0,
 			max: 9999,
 			precision: 0,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.displayOrder")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.displayOrder")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.status")),
+		label: transformI18n($t("devTeam.configManage.type.fields.status")),
 		prop: "status",
 		valueType: "select",
 		width: "120px",
@@ -202,17 +199,17 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		options: translatedStatusOptions.value,
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.status")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.status")),
 		},
 	},
 	{
-		label: renderI18n($t("devTeam.configManage.type.fields.remark")),
+		label: transformI18n($t("devTeam.configManage.type.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 		width: "300px",
 		fieldProps: {
 			clearable: true,
-			placeholder: renderI18n($t("devTeam.configManage.type.form.placeholders.remark")),
+			placeholder: transformI18n($t("devTeam.configManage.type.form.placeholders.remark")),
 			rows: 3,
 		},
 	},
@@ -220,43 +217,96 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 
 const plusFormRules = withLocale<PlusFormRules>(() => ({
 	dictionaryNumber: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberRequired")), trigger: "blur" },
-		{ min: 2, max: 50, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberLength")), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberLength")),
+			trigger: "blur",
+		},
 		{
 			pattern: /^[A-Za-z0-9_]+$/,
-			message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberPattern")),
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryNumberPattern")),
 			trigger: "blur",
 		},
 	],
 	dictionaryName: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNameRequired")), trigger: "blur" },
-		{ min: 2, max: 100, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryNameLength")), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryNameRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryNameLength")),
+			trigger: "blur",
+		},
 	],
 	dictionaryType: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryTypeRequired")), trigger: "blur" },
-		{ min: 2, max: 100, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryTypeLength")), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryTypeRequired")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 100,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryTypeLength")),
+			trigger: "blur",
+		},
 		{
 			pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
-			message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryTypePattern")),
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryTypePattern")),
 			trigger: "blur",
 		},
 	],
 	dictionaryCategory: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dictionaryCategoryRequired")), trigger: "change" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dictionaryCategoryRequired")),
+			trigger: "change",
+		},
 	],
-	dataType: [{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.dataTypeRequired")), trigger: "change" }],
-	isRequired: [{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.isRequiredRequired")), trigger: "change" }],
+	dataType: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.dataTypeRequired")),
+			trigger: "change",
+		},
+	],
+	isRequired: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.isRequiredRequired")),
+			trigger: "change",
+		},
+	],
 	displayOrder: [
-		{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.displayOrderRequired")), trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.displayOrderRequired")),
+			trigger: "blur",
+		},
 		{
 			type: "number",
 			min: 0,
 			max: 9999,
-			message: renderI18n($t("devTeam.configManage.type.form.validation.displayOrderRange")),
+			message: transformI18n($t("devTeam.configManage.type.form.validation.displayOrderRange")),
 			trigger: "blur",
 		},
 	],
-	status: [{ required: true, message: renderI18n($t("devTeam.configManage.type.form.validation.statusRequired")), trigger: "change" }],
+	status: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.type.form.validation.statusRequired")),
+			trigger: "change",
+		},
+	],
 }));
 
 defineExpose({
