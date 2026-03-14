@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "欠费催缴",
+		// 欠费催缴
+		title: "property-manage_expense-manage.reminder-for-overdue-payments.pageTitle",
 		icon: "mdi:bell-alert-outline",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.expenseManage.reminderForOverduePayments"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { ref, onMounted, h } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { cloneDeep } from "@pureadmin/utils";
 import ReminderForOverduePaymentsForm from "./components/form.vue";
 import type {
 	ReminderForOverduePaymentsListItem,
@@ -19,6 +22,8 @@ import type {
 import { reminderMethodOptions, reminderStatusOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useReminderForOverduePaymentsListQuery } from "@/api/property-manage/expense-manage/reminder-for-overdue-payments";
+
+const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
 
 /** 表单组件 Props 类型 */
 interface ReminderForOverduePaymentsFormProps {
@@ -51,7 +56,7 @@ const plusSearchModelRef: FieldValues & Partial<ReminderForOverduePaymentsQueryP
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -68,7 +73,7 @@ const {
 	handleCurrentPageChange,
 } = useReminderForOverduePaymentsListQuery(plusSearchDefaultValues);
 
-const { modeText, setMode, isAdd, isEdit } = useMode();
+const { setMode, isAdd, isEdit } = useMode();
 
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 /** 模拟异步操作函数 */
@@ -81,26 +86,34 @@ async function testAsync() {
 }
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "名称",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.fields.name")),
+		),
 		prop: "name",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.fields.status")),
+		),
 		prop: "status",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 180,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -109,7 +122,7 @@ const columns = ref<TableColumnList>([
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -122,16 +135,16 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	/** 名称 */
 	{
-		label: "名称",
+		label: transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.search.name")),
 		prop: "name",
 		valueType: "input",
 	},
 	/** 状态 */
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.search.status")),
 		prop: "status",
 		valueType: "select",
 		options: reminderStatusOptions,
@@ -139,19 +152,13 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置 */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格操作栏组件 配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "欠费催缴",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 打开弹框
@@ -173,18 +180,26 @@ function openDialog(params: { mode: Mode; row?: ReminderForOverduePaymentsListIt
 		setMode(mode);
 
 		/** 弹框标题 */
-		const title = `${modeText.value}欠费催缴`;
+		const title = () => {
+			if (isAdd.value) {
+				return transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.dialogs.addTitle"));
+			}
+			if (isEdit.value) {
+				return transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.dialogs.editTitle"));
+			}
+			return transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.dialogs.editTitle"));
+		};
 
 		/** 业务对象 */
 		const formData = isAdd.value
-			? structuredClone(defaultForm)
+			? cloneDeep(defaultForm)
 			: isEdit.value
-				? structuredClone({
+				? cloneDeep({
 						...defaultForm,
 						ownerName: row?.name || "",
 						reminderStatus: row?.status || "",
 					})
-				: structuredClone({
+				: cloneDeep({
 						...defaultForm,
 						ownerName: row?.name || "",
 						reminderStatus: row?.status || "",
@@ -219,7 +234,7 @@ function openDialog(params: { mode: Mode; row?: ReminderForOverduePaymentsListIt
 
 			footerButtons: [
 				{
-					label: transformI18n($t("common.buttons.cancel")),
+					label: () => transformI18n($t("common.buttons.cancel")),
 					type: "info",
 					btnClick: async ({ dialog: { options, index }, button }) => {
 						const formComputed = reminderForOverduePaymentsFormInstance.value?.formComputed;
@@ -230,7 +245,7 @@ function openDialog(params: { mode: Mode; row?: ReminderForOverduePaymentsListIt
 				},
 
 				{
-					label: transformI18n($t("common.buttons.reset")),
+					label: () => transformI18n($t("common.buttons.reset")),
 					type: "warning",
 					btnClick: ({ dialog: { options, index }, button }) => {
 						reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleReset();
@@ -238,7 +253,7 @@ function openDialog(params: { mode: Mode; row?: ReminderForOverduePaymentsListIt
 				},
 
 				{
-					label: transformI18n($t("common.buttons.submit")),
+					label: () => transformI18n($t("common.buttons.submit")),
 					type: "success",
 					btnClick: async ({ dialog: { options, index }, button }) => {
 						const res = await reminderForOverduePaymentsFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -263,8 +278,9 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
@@ -293,8 +309,12 @@ onMounted(async () => {
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info">立即催缴</ElButton>
-						<ElButton type="info" @click="openDialog({ mode: 'info', row })">查看详情</ElButton>
+						<ElButton type="info">{{
+							transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.button.immediateReminder"))
+						}}</ElButton>
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">{{
+							transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.button.viewDetails"))
+						}}</ElButton>
 						<ElButton type="danger">{{ transformI18n($t("common.buttons.del")) }}</ElButton>
 					</template>
 				</PureTable>
