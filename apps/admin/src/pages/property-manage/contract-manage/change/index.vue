@@ -1,29 +1,68 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "合同变更",
+		// 合同变更
+		title: "property-manage_contract-manage.contract-change.pageTitle",
 		icon: "mdi:swap-horizontal",
 		roles: ["物业团队"],
+		rank: getRouteRank("propertyManage.contractManage.change"),
 	},
 });
 
-import { ref, computed, onMounted, h } from "vue";
-import { transformI18n } from "@/plugins/i18n";
-import { addDialog, closeDialog } from "@/components/ReDialog";
-import { defaultAddDialogParams } from "@/config/constant";
-import { useMode, type Mode } from "@/composables/use-mode";
+import { ref, h } from "vue";
+import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
+import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
+import type { ContractChangeFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import ContractChangeForm from "./components/form.vue";
 import {
 	type ContractChangeFormVO,
 	type ChangeListItem,
 	type ChangeQueryParams,
-	changeStatusOptions,
 	contractTypeOptions,
 } from "@01s-11comm/type";
-import { type ContractChangeFormProps, defaultForm } from "./components/form";
-import ContractChangeForm from "./components/form.vue";
-import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+const statusTextMap = withLocale(() => ({
+	待审核: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.pending")),
+	审核中: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.reviewing")),
+	已通过: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.approved")),
+	已拒绝: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.rejected")),
+	已撤回: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.withdrawn")),
+}));
+
+function translateStatusLabel(value?: string | null) {
+	if (!value) return "";
+	return statusTextMap.value[value] ?? value;
+}
+
+const translatedContractTypeOptions = withLocale(() =>
+	contractTypeOptions.map((item) => ({
+		...item,
+		label: transformI18n(
+			$t(
+				`property-manage_contract-manage.contract-change.form.options.contractTypes.${
+					item.value === "采购合同"
+						? "purchase"
+						: item.value === "销售合同"
+							? "sales"
+							: item.value === "服务合同"
+								? "service"
+								: item.value === "租赁合同"
+									? "lease"
+									: "purchase"
+				}`,
+			),
+		),
+	})),
+);
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -39,7 +78,7 @@ const plusSearchModelRef: FieldValues & Partial<ChangeQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -48,37 +87,30 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "合同名称",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.fields.contractName")),
 		prop: "contractName",
 		valueType: "input",
 	},
 	{
-		label: "合同编号",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.fields.contractNumber")),
 		prop: "contractNumber",
 		valueType: "input",
 	},
 	{
-		label: "合同类型",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.fields.contractType")),
 		prop: "contractType",
 		valueType: "select",
-		options: contractTypeOptions,
+		options: translatedContractTypeOptions.value,
 	},
 ]);
 
 /** 表格搜索栏组件配置 */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 使用 TanStack Query 获取数据 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -90,7 +122,7 @@ const {
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -100,71 +132,82 @@ function handleSearch() {
 }
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
+const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		label: "合同名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.contractName")),
+		),
 		prop: "contractName",
 		width: 160,
 	},
 	{
-		label: "合同编号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.contractNumber")),
+		),
 		prop: "contractNumber",
 		width: 140,
 	},
 	{
-		label: "合同类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.contractType")),
+		),
 		prop: "contractType",
 		width: 120,
 	},
 	{
-		label: "甲方",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.partyA")),
+		),
 		prop: "partyA",
 		width: 140,
 	},
 	{
-		label: "乙方",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.partyB")),
+		),
 		prop: "partyB",
 		width: 140,
 	},
 	{
-		label: "变更类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.changeType")),
+		),
 		prop: "changeType",
 		width: 120,
 	},
 	{
-		label: "变更人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.changer")),
+		),
 		prop: "changer",
 		width: 100,
 	},
 	{
-		label: "申请时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.applyTime")),
+		),
 		prop: "applyTime",
 		width: 160,
 	},
 	{
-		label: "说明",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.description")),
+		),
 		prop: "description",
 		width: 200,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_contract-manage.contract-change.fields.status")),
+		),
 		prop: "status",
 		width: 100,
-		formatter: (row: ChangeListItem) => {
-			const statusMap = {
-				待审核: "待审核",
-				审核中: "审核中",
-				已通过: "已通过",
-				已拒绝: "已拒绝",
-				已撤回: "已撤回",
-			};
-			return statusMap[row.status] || row.status;
-		},
+		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
@@ -172,10 +215,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "合同变更",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_contract-manage.contract-change.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 表单组件实例引用 */
 const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
@@ -195,26 +238,15 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框参数接口 */
-interface OpenDialogParams {
-	/** 操作模式 */
-	mode: Mode;
-	/** 行数据 */
-	row?: ChangeListItem;
-}
-
 /** 打开弹框函数 */
-function openDialog({ mode, row }: OpenDialogParams) {
+function openDialog({ mode, row }: { mode: Mode; row?: ChangeListItem }) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}合同变更`;
-
 	/** 业务对象 */
-	const 合同变更表单业务对象 = isAdd.value
-		? structuredClone(defaultForm)
+	const formData = isAdd.value
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					contractName: row?.contractName || "",
 					contractNumber: row?.contractNumber || "",
 					contractType: row?.contractType || "",
@@ -237,24 +269,19 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					afterChange: "",
 					attachments: [],
 				} as ContractChangeFormVO)
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ContractChangeFormProps = {
-		form: 合同变更表单业务对象 as ContractChangeFormVO,
-		defaultValues: 合同变更表单业务对象 as ContractChangeFormVO,
+		form: formData as ContractChangeFormVO,
+		defaultValues: formData as ContractChangeFormVO,
 	};
 
-	/** 弹框组件所需的变量 */
-	const props = formProps;
-
-	/** 根据不同模式下 变化的表单默认重置对象 */
-	const defaultValues = props.defaultValues;
+	const defaultValues = formProps.defaultValues;
 
 	addDialog({
-		...defaultAddDialogParams,
-		title,
-		props,
+		title: () => `${modeText.value}${transformI18n($t("property-manage_contract-manage.contract-change.pageTitle"))}`,
+		props: formProps,
 
 		contentRenderer: () =>
 			h(ContractChangeForm, {
@@ -272,7 +299,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = ContractChangeFormInstance.value?.formComputed;
@@ -283,7 +310,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					/** 手动重置表单 */
@@ -292,7 +319,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					/** 提交表单时 校验 */
@@ -309,15 +336,20 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		],
 	});
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
-	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+	<section :key="locale" class="index-root">
+		<PlusSearch
+			:key="locale"
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>

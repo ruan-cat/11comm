@@ -3,12 +3,15 @@
   用于新增 修改合同变更
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { ContractChangeFormVO } from "@01s-11comm/type";
-
-import { ContractChangeFormProps } from "./form";
+import type { ContractChangeFormProps } from "./form";
 
 const props = defineProps<ContractChangeFormProps>();
+
+const { withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ContractChangeFormVO;
@@ -25,7 +28,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ContractChangeFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & ContractChangeFormVO;
 
 /**
  * 表单对象
@@ -39,47 +42,86 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
+const translatedContractTypeOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.contractTypes.purchase")),
+		value: "采购合同",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.contractTypes.sales")),
+		value: "销售合同",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.contractTypes.service")),
+		value: "服务合同",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.contractTypes.lease")),
+		value: "租赁合同",
+	},
+]);
+
+const translatedChangeTypeOptions = withLocale(() => [
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.amount")),
+		value: "合同金额",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.period")),
+		value: "服务期限",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.content")),
+		value: "服务内容",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.payment")),
+		value: "付款方式",
+	},
+	{
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.subject")),
+		value: "合同主体",
+	},
+]);
+
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 合同变更信息分组标题
 	{
-		label: "合同变更信息",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractChangeTitle")),
 		prop: "contractChangeTitle",
 		span: 24,
 	},
 	// 合同基本信息
 	{
-		label: "合同名称",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractName")),
 		prop: "contractName",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入合同名称",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.contractName")),
 		},
 	},
 	{
-		label: "合同编号",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractNumber")),
 		prop: "contractNumber",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入合同编号",
+			placeholder: transformI18n(
+				$t("property-manage_contract-manage.contract-change.form.placeholders.contractNumber"),
+			),
 		},
 	},
 	{
-		label: "合同类型",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractType")),
 		prop: "contractType",
 		valueType: "select",
-		options: [
-			{ label: "采购合同", value: "采购合同" },
-			{ label: "销售合同", value: "销售合同" },
-			{ label: "服务合同", value: "服务合同" },
-			{ label: "租赁合同", value: "租赁合同" },
-		],
+		options: translatedContractTypeOptions.value,
 		required: true,
 		span: 8,
 		fieldProps: {
@@ -87,145 +129,145 @@ const plusFormColumns = ref<PlusColumn[]>([
 			filterable: true,
 		},
 	},
-
 	// 甲方信息
 	{
-		label: "甲方",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyA")),
 		prop: "partyA",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入甲方名称",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyA")),
 		},
 	},
 	{
-		label: "甲方联系人",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyAContact")),
 		prop: "partyAContact",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入甲方联系人",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyAContact")),
 		},
 	},
 	{
-		label: "甲方联系电话",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyAPhone")),
 		prop: "partyAPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入甲方联系电话",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyAPhone")),
 		},
 	},
 
 	// 乙方信息
 	{
-		label: "乙方",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyB")),
 		prop: "partyB",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入乙方名称",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyB")),
 		},
 	},
 	{
-		label: "乙方联系人",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyBContact")),
 		prop: "partyBContact",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入乙方联系人",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyBContact")),
 		},
 	},
 	{
-		label: "乙方联系电话",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyBPhone")),
 		prop: "partyBPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入乙方联系电话",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyBPhone")),
 		},
 	},
 
 	// 经办信息
 	{
-		label: "经办人",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.handler")),
 		prop: "handler",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入经办人姓名",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.handler")),
 		},
 	},
 	{
-		label: "经办电话",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.handlerPhone")),
 		prop: "handlerPhone",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入经办电话",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.handlerPhone")),
 		},
 	},
 	{
-		label: "合同金额",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractAmount")),
 		prop: "contractAmount",
 		valueType: "input",
 		required: true,
 		span: 8,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入合同金额",
+			placeholder: transformI18n(
+				$t("property-manage_contract-manage.contract-change.form.placeholders.contractAmount"),
+			),
 		},
 	},
-
 	// 时间信息
 	{
-		label: "开始时间",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择开始时间",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.startTime")),
 		},
 		required: true,
 		span: 8,
 	},
 	{
-		label: "结束时间",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择结束时间",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.endTime")),
 		},
 		required: true,
 		span: 8,
 	},
 	{
-		label: "签订时间",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.signingTime")),
 		prop: "signingTime",
 		valueType: "date-picker",
 		fieldProps: {
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: "请选择签订时间",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.signingTime")),
 		},
 		required: true,
 		span: 8,
@@ -233,16 +275,10 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 变更信息
 	{
-		label: "变更类型",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.changeType")),
 		prop: "changeType",
 		valueType: "select",
-		options: [
-			{ label: "合同金额", value: "合同金额" },
-			{ label: "服务期限", value: "服务期限" },
-			{ label: "服务内容", value: "服务内容" },
-			{ label: "付款方式", value: "付款方式" },
-			{ label: "合同主体", value: "合同主体" },
-		],
+		options: translatedChangeTypeOptions.value,
 		required: true,
 		span: 8,
 		fieldProps: {
@@ -251,36 +287,35 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "变更人",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.changer")),
 		prop: "changer",
 		valueType: "input",
 		required: true,
 		span: 16,
 		fieldProps: {
 			clearable: true,
-			placeholder: "请输入变更人姓名",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.changer")),
 		},
 	},
-
 	// 变更前后内容
 	{
-		label: "变更前",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.beforeChange")),
 		prop: "beforeChange",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
-			placeholder: "请输入变更前的内容",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.beforeChange")),
 		},
 		required: true,
 		span: 24,
 	},
 	{
-		label: "变更后",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.afterChange")),
 		prop: "afterChange",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
-			placeholder: "请输入变更后的内容",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.afterChange")),
 		},
 		required: true,
 		span: 24,
@@ -288,12 +323,12 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 说明
 	{
-		label: "变更说明",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
 		fieldProps: {
 			rows: 4,
-			placeholder: "请输入变更说明信息",
+			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.description")),
 		},
 		required: true,
 		span: 24,
@@ -301,7 +336,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 合同附件
 	{
-		label: "合同附件",
+		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.attachments")),
 		prop: "attachments",
 		valueType: "text",
 		fieldProps: {
@@ -315,47 +350,178 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	contractName: [
-		{ required: true, message: "请输入合同名称", trigger: "blur" },
-		{ min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.contractName")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 50,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.contractNameLength")),
+			trigger: "blur",
+		},
 	],
 	contractNumber: [
-		{ required: true, message: "请输入合同编号", trigger: "blur" },
-		{ min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.contractNumber")),
+			trigger: "blur",
+		},
+		{
+			min: 2,
+			max: 30,
+			message: transformI18n(
+				$t("property-manage_contract-manage.contract-change.form.validation.contractNumberLength"),
+			),
+			trigger: "blur",
+		},
 	],
-	contractType: [{ required: true, message: "请选择合同类型", trigger: "change" }],
-	partyA: [{ required: true, message: "请输入甲方名称", trigger: "blur" }],
-	partyAContact: [{ required: true, message: "请输入甲方联系人", trigger: "blur" }],
+	contractType: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.contractType")),
+			trigger: "change",
+		},
+	],
+	partyA: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.partyA")),
+			trigger: "blur",
+		},
+	],
+	partyAContact: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.partyAContact")),
+			trigger: "blur",
+		},
+	],
 	partyAPhone: [
-		{ required: true, message: "请输入甲方联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.partyAPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.phoneFormat")),
+			trigger: "blur",
+		},
 	],
-	partyB: [{ required: true, message: "请输入乙方名称", trigger: "blur" }],
-	partyBContact: [{ required: true, message: "请输入乙方联系人", trigger: "blur" }],
+	partyB: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.partyB")),
+			trigger: "blur",
+		},
+	],
+	partyBContact: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.partyBContact")),
+			trigger: "blur",
+		},
+	],
 	partyBPhone: [
-		{ required: true, message: "请输入乙方联系电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.partyBPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.phoneFormat")),
+			trigger: "blur",
+		},
 	],
-	handler: [{ required: true, message: "请输入经办人姓名", trigger: "blur" }],
+	handler: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.handler")),
+			trigger: "blur",
+		},
+	],
 	handlerPhone: [
-		{ required: true, message: "请输入经办电话", trigger: "blur" },
-		{ pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" },
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.handlerPhone")),
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3-9]\d{9}$/,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.phoneFormat")),
+			trigger: "blur",
+		},
 	],
-	contractAmount: [{ required: true, message: "请输入合同金额", trigger: "blur" }],
-	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	signingTime: [{ required: true, message: "请选择签订时间", trigger: "change" }],
-	changeType: [{ required: true, message: "请选择变更类型", trigger: "change" }],
-	changer: [{ required: true, message: "请输入变更人姓名", trigger: "blur" }],
-	beforeChange: [{ required: true, message: "请输入变更前的内容", trigger: "blur" }],
-	afterChange: [{ required: true, message: "请输入变更后的内容", trigger: "blur" }],
-	description: [{ required: true, message: "请输入变更说明", trigger: "blur" }],
-});
+	contractAmount: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.contractAmount")),
+			trigger: "blur",
+		},
+	],
+	startTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.startTime")),
+			trigger: "change",
+		},
+	],
+	endTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.endTime")),
+			trigger: "change",
+		},
+	],
+	signingTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.signingTime")),
+			trigger: "change",
+		},
+	],
+	changeType: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.changeType")),
+			trigger: "change",
+		},
+	],
+	changer: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.changer")),
+			trigger: "blur",
+		},
+	],
+	beforeChange: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.beforeChange")),
+			trigger: "blur",
+		},
+	],
+	afterChange: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.afterChange")),
+			trigger: "blur",
+		},
+	],
+	description: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_contract-manage.contract-change.form.validation.description")),
+			trigger: "blur",
+		},
+	],
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -370,7 +536,7 @@ defineExpose({
 		class="form-root"
 		:has-footer="false"
 		:default-values="defaultValues"
-		:columns="plusFormColumnsComputed"
+		:columns="plusFormColumns"
 		:rules="plusFormRules"
 		:grid="{ cols: 24 }"
 	/>
