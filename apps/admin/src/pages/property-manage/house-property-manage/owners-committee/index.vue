@@ -1,21 +1,25 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "业委会",
+		// 业委会
+		title: "property-manage_house-property-manage.owners-committee.pageTitle",
 		icon: "mdi:account-tie",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.housePropertyManage.ownersCommittee"),
 	},
 });
 
-import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { h, ref } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { OwnersCommitteeListItem, OwnersCommitteeQueryParams, OwnersCommitteeFormVO } from "@01s-11comm/type";
 import { ownersCommitteeStatusOptions } from "@01s-11comm/type";
 import { type OwnersCommitteeFormProps, defaultForm } from "./components/form";
 import OwnersCommitteeForm from "./components/form.vue";
 import { useOwnersCommitteeListQuery } from "@/api/property-manage/house-property-manage/owners-committee";
+
+const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -28,7 +32,7 @@ const plusSearchModelRef: FieldValues & Partial<OwnersCommitteeQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -47,7 +51,7 @@ const {
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -60,14 +64,14 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "姓名",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.fullName")),
 		prop: "fullName",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: ownersCommitteeStatusOptions,
@@ -75,65 +79,79 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "姓名",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.fullName")),
+		),
 		prop: "fullName",
 		width: 120,
 	},
 	{
-		label: "性别",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.gender")),
+		),
 		prop: "gender",
 		width: 80,
 	},
 	{
-		label: "电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.phone")),
+		),
 		prop: "phone",
 		width: 150,
 	},
 	{
-		label: "身份证",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.idNumber")),
+		),
 		prop: "idNumber",
 		width: 160,
 	},
 	{
-		label: "住址",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.address")),
+		),
 		prop: "address",
 		width: 180,
 	},
 	{
-		label: "职位",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.position")),
+		),
 		prop: "position",
 		width: 120,
 	},
 	{
-		label: "岗位",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.post")),
+		),
 		prop: "post",
 		width: 120,
 	},
 	{
-		label: "任期",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.tenure")),
+		),
 		prop: "tenure",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_house-property-manage.owners-committee.fields.status")),
+		),
 		prop: "status",
 		width: 100,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -141,10 +159,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "业委会",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_house-property-manage.owners-committee.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /** 表单组件实例 */
 const ownersCommitteeFormInstance = ref<InstanceType<typeof OwnersCommitteeForm> | null>(null);
@@ -166,13 +184,10 @@ function openDialog(params: { mode: Mode; row?: OwnersCommitteeListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}业委会`;
-
 	/** 业务对象 */
 	const formData: OwnersCommitteeFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				fullName: row?.fullName || "",
 				gender: row?.gender || "男",
@@ -196,7 +211,10 @@ function openDialog(params: { mode: Mode; row?: OwnersCommitteeListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_house-property-manage.owners-committee.dialogs.addTitle"))
+				: transformI18n($t("property-manage_house-property-manage.owners-committee.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(OwnersCommitteeForm, {
@@ -209,7 +227,7 @@ function openDialog(params: { mode: Mode; row?: OwnersCommitteeListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = ownersCommitteeFormInstance.value?.formComputed;
@@ -218,7 +236,7 @@ function openDialog(params: { mode: Mode; row?: OwnersCommitteeListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					ownersCommitteeFormInstance.value?.plusFormInstance?.handleReset();
@@ -226,7 +244,7 @@ function openDialog(params: { mode: Mode; row?: OwnersCommitteeListItem }) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await ownersCommitteeFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -245,11 +263,14 @@ function openDialog(params: { mode: Mode; row?: OwnersCommitteeListItem }) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

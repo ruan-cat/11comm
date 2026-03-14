@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
-import { OwnersCommitteeFormProps, defaultForm } from "./form";
+import type { OwnersCommitteeFormProps } from "./form";
 import type { OwnersCommitteeFormVO } from "@01s-11comm/type";
 import { genderOptions, ownersCommitteeStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<OwnersCommitteeFormProps>();
+const { locale, withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnersCommitteeFormVO;
@@ -22,24 +25,16 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & OwnersCommitteeFormVO;
+const form = ref(cloneDeep(props.form) as FieldValues & OwnersCommitteeFormVO);
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
-const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	// 姓名
 	{
-		label: "姓名",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.fullName")),
 		prop: "fullName",
 		valueType: "input",
 		required: true,
@@ -47,7 +42,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 性别
 	{
-		label: "性别",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.gender")),
 		prop: "gender",
 		valueType: "select",
 		options: genderOptions,
@@ -56,7 +51,7 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 电话
 	{
-		label: "电话",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		required: true,
@@ -64,55 +59,55 @@ const plusFormColumns = ref<PlusColumn[]>([
 
 	// 身份证号码
 	{
-		label: "身份证号码",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.idNumber")),
 		prop: "idNumber",
 		valueType: "input",
 		required: true,
 	},
 	// 住址
 	{
-		label: "住址",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.address")),
 		prop: "address",
 		valueType: "input",
 		required: true,
 	},
 	// 职位
 	{
-		label: "职位",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.position")),
 		prop: "position",
 		valueType: "input",
 		required: true,
 	},
 	// 岗位
 	{
-		label: "岗位",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.post")),
 		prop: "post",
 		valueType: "input",
 		required: true,
 	},
 	// 岗位描述
 	{
-		label: "岗位描述",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.postDescription")),
 		prop: "postDescription",
 		valueType: "input",
 	},
 	// 届期
 	{
-		label: "届期",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.term")),
 		prop: "term",
 		valueType: "input",
 		required: true,
 	},
 	// 任期
 	{
-		label: "任期",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.tenure")),
 		prop: "tenure",
 		valueType: "input",
 		required: true,
 	},
 	// 状态
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: ownersCommitteeStatusOptions,
@@ -120,98 +115,103 @@ const plusFormColumns = ref<PlusColumn[]>([
 	},
 	// 备注
 	{
-		label: "备注",
+		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
-/** 表单项配置 动态计算 只读 */
-const plusFormColumnsComputed = computed(() => plusFormColumns.value);
-
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	fullName: [
 		{
 			required: true,
-			message: "请输入姓名",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owners-committee.form.validation.enterFullName"),
+			),
 			trigger: "blur",
 		},
 	],
 	gender: [
 		{
 			required: true,
-			message: "请选择性别",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.selectGender")),
 			trigger: "change",
 		},
 	],
 	phone: [
 		{
 			required: true,
-			message: "请输入电话",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.enterPhone")),
 			trigger: "blur",
 		},
 		{
 			pattern: /^1[3-9]\d{9}$/,
-			message: "请输入正确的手机号格式",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.phonePattern")),
 			trigger: "blur",
 		},
 	],
 	idNumber: [
 		{
 			required: true,
-			message: "请输入身份证号码",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owners-committee.form.validation.enterIdNumber"),
+			),
 			trigger: "blur",
 		},
 		{
 			pattern: /^\d{17}[\dXx]$/,
-			message: "请输入正确的身份证号码",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owners-committee.form.validation.idNumberPattern"),
+			),
 			trigger: "blur",
 		},
 	],
 	address: [
 		{
 			required: true,
-			message: "请输入住址",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.enterAddress")),
 			trigger: "blur",
 		},
 	],
 	position: [
 		{
 			required: true,
-			message: "请输入职位",
+			message: transformI18n(
+				$t("property-manage_house-property-manage.owners-committee.form.validation.enterPosition"),
+			),
 			trigger: "blur",
 		},
 	],
 	post: [
 		{
 			required: true,
-			message: "请输入岗位",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.enterPost")),
 			trigger: "blur",
 		},
 	],
 	term: [
 		{
 			required: true,
-			message: "请输入届期",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.enterTerm")),
 			trigger: "blur",
 		},
 	],
 	tenure: [
 		{
 			required: true,
-			message: "请输入任期",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.enterTenure")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: "请选择状态",
+			message: transformI18n($t("property-manage_house-property-manage.owners-committee.form.validation.selectStatus")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 defineExpose({
 	plusFormInstance,
@@ -220,7 +220,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="form-root">
+	<section :key="locale" class="form-root">
 		<!-- 需要配置分组表单，一旦配置分组表单，columns将会失效
 	    1.配置两列：
 	      :row-props="{ gutter: 20 }"
@@ -235,7 +235,7 @@ defineExpose({
 			v-model="form"
 			:has-footer="false"
 			:default-values="defaultValues"
-			:columns="plusFormColumnsComputed"
+			:columns="plusFormColumns"
 			:rules="plusFormRules"
 			:row-props="{ gutter: 20 }"
 			:col-props="{
