@@ -24,11 +24,6 @@ import StaffInfoForm from "./components/form.vue";
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<StaffInfoListQuery> = {
 	id: "",
 	name: "",
@@ -77,56 +72,58 @@ function translateGenderLabel(value?: string | null) {
 	}
 
 	const key = genderLabelMap[value as keyof typeof genderLabelMap];
-	return key ? renderI18n($t(key)) : value;
+	return key ? transformI18n($t(key)) : value;
 }
 
 const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
 
 const columns = withLocale<TableColumnList>(() => [
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.employeeNumber"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeNumber")),
+		),
 		prop: "employeeNumber",
 		minWidth: 180,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.name"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.name"))),
 		prop: "name",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone"))),
 		prop: "phone",
 		width: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.orgName"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.orgName"))),
 		prop: "orgName",
 		width: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.position"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.position"))),
 		prop: "position",
 		width: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.email"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.email"))),
 		prop: "email",
 		width: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.address"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.address"))),
 		prop: "address",
 		minWidth: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.staffInfo.fields.gender"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.organizeManage.staffInfo.fields.gender"))),
 		prop: "gender",
 		width: 100,
 		cellRenderer: ({ row }) => translateGenderLabel(row.gender),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 330,
 		fixed: "right",
 		slot: "operation",
@@ -134,41 +131,41 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.staffInfo.tableTitle")),
+	title: transformI18n($t("settingManage.organizeManage.staffInfo.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		prop: "id",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
+		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
+			placeholder: transformI18n($t("settingManage.organizeManage.staffInfo.fields.phone")),
 		},
 	},
 ]);
 
 const plusSearchProps = searchProps(plusSearchDefaultValues, {
 	labelWidth: 100,
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
+	searchText: transformI18n($t("common.buttons.search")),
+	resetText: transformI18n($t("common.buttons.reset")),
 });
 
 function handleReSearch() {
@@ -220,8 +217,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: StaffInfo }) {
 		...defaultAddDialogParams,
 		title: () =>
 			isAdd.value
-				? renderI18n($t("settingManage.organizeManage.staffInfo.dialogs.addTitle"))
-				: renderI18n($t("settingManage.organizeManage.staffInfo.dialogs.editTitle")),
+				? transformI18n($t("settingManage.organizeManage.staffInfo.dialogs.addTitle"))
+				: transformI18n($t("settingManage.organizeManage.staffInfo.dialogs.editTitle")),
 		width: "60%",
 		props,
 		contentRenderer: () =>
@@ -237,7 +234,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: StaffInfo }) {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = staffInfoFormInstance.value?.formComputed;
@@ -247,14 +244,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: StaffInfo }) {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					staffInfoFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await staffInfoFormInstance.value?.plusFormInstance?.handleSubmit();
