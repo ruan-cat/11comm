@@ -1,5 +1,122 @@
-# 业主车辆
+# Carport Apply
+carport-apply:
+  pageTitle: Carport Application
+  tableTitle: Carport Application
+  fields:
+    applicationId: Application ID
+    licensePlate: License Plate
+    parkingSpace: Parking Space
+    carBrand: Car Brand
+    vehicleType: Vehicle Type
+    color: Color
+    startLeaseTime: Lease Start Time
+    endLeaseTime: Lease End Time
+    applicant: Applicant
+    phoneNumber: Phone Number
+    reviewResult: Review Result
+  search:
+    licensePlate: License Plate
+    carBrand: Car Brand
+    phoneNumber: Phone Number
+    reviewResult: Review Result
+  form:
+    fields:
+      licensePlate: License Plate
+      parkingSpace: Parking Space
+      carBrand: Car Brand
+      vehicleType: Vehicle Type
+      color: Color
+      startLeaseTime: Lease Start Time
+      endLeaseTime: Lease End Time
+      applicant: Applicant
+      phoneNumber: Phone Number
+      reviewResult: Review Result
+    placeholders:
+      licensePlate: Please enter license plate
+      parkingSpace: Please enter parking space
+      applicant: Please enter applicant
+      phoneNumber: Please enter phone number
+    validation:
+      licensePlateRequired: Please enter license plate
+      parkingSpaceRequired: Please enter parking space
+      carBrandRequired: Please select car brand
+      vehicleTypeRequired: Please select vehicle type
+      colorRequired: Please select color
+      startLeaseTimeRequired: Please select lease start time
+      endLeaseTimeRequired: Please select lease end time
+      applicantRequired: Please enter applicant
+      phoneNumberRequired: Please enter phone number
+      phoneNumberFormat: Please enter a valid phone number
+      reviewResultRequired: Please select review result
+  dialogs:
+    addTitle: Add Carport Application
+    editTitle: Edit Carport Application
+
+# Carport Info
+carport-info:
+  pageTitle: Carport Info
+  tableTitle: Carport Info
+  fields:
+    parkingLot: Parking Lot
+    parkingSpace: Parking Space
+    parkingSpaceStatus: Space Status
+    parkingSpaceType: Space Type
+    area: Area
+    ownerName: Owner Name
+    contactPhone: Contact Phone
+    vehicleNumber: Vehicle Number
+    purchaseDate: Purchase Date
+    expiryDate: Expiry Date
+    monthlyRent: Monthly Rent
+    remark: Remark
+  search:
+    parkingLot: Parking Lot
+    parkingSpace: Space Number
+    parkingSpaceStatus: Space Status
+    parkingSpaceType: Space Type
+    ownerName: Owner Name
+    contactPhone: Contact Phone
+    vehicleNumber: Vehicle Number
+  form:
+    fields:
+      parkingLot: Parking Lot
+      parkingSpace: Space Number
+      parkingSpaceStatus: Space Status
+      parkingSpaceType: Space Type
+      area: Area
+      ownerName: Owner Name
+      contactPhone: Contact Phone
+      vehicleNumber: Vehicle Number
+      purchaseDate: Purchase Date
+      expiryDate: Expiry Date
+      monthlyRent: Monthly Rent
+      remark: Remark
+    placeholders:
+      parkingSpace: Please enter space number
+      area: Please enter parking space area
+      ownerName: Please enter owner name
+      contactPhone: Please enter contact phone
+      vehicleNumber: Please enter vehicle number
+      purchaseDate: Please select purchase date
+      expiryDate: Please select expiry date
+      monthlyRent: Please enter monthly rent
+      remark: Please enter remark
+    validation:
+      parkingLotRequired: Please select parking lot
+      parkingSpaceRequired: Please enter space number
+      parkingSpaceStatusRequired: Please select space status
+      parkingSpaceTypeRequired: Please select space type
+      areaRequired: Please enter parking space area
+      contactPhoneFormat: Please enter a valid phone number
+      monthlyRentMin: Monthly rent must be greater than or equal to 0
+  dialogs:
+    addTitle: Add Carport Info
+    editTitle: Edit Carport Info
+
+# Owner Vehicle
 owner-vehicle:
+  pageTitle: Owner Vehicle
+  tableTitle: Owner Vehicle
   plateNumber: Plate Number
   parkingSpaceNumber: Parking Space Number
   parkingSpaceStatus: Parking Space Status
@@ -7,7 +124,109 @@ owner-vehicle:
   phone: Phone
   memberPlateNumber: Member Plate Number
   carImport: Car Import
-  output: Output
+  output: Export
   renewLease: Renew Lease
   release: Release
   buyMonthlyCard: Buy Monthly Card
+  fields:
+    licensePlate: License Plate
+    memberVehicle: Member Vehicle
+    houseNumber: House Number
+    licensePlateType: License Plate Type
+    vehicleType: Vehicle Type
+    color: Color
+    owner: Owner
+    parkingSpace: Parking Space
+    validityPeriod: Validity Period
+    status: Status
+    remark: Remark
+  search:
+    licensePlate: License Plate
+    parkingSpaceNumber: Parking Space Number
+    parkingSpaceStatus: Parking Space Status
+    ownerName: Owner Name
+    contactInfo: Contact Info
+    memberPlateNumber: Member Plate Number
+  form:
+    fields:
+      licensePlate: License Plate
+      carBrand: Car Brand
+      carType: Car Type
+      color: Color
+      licensePlateType: License Plate Type
+      owner: Owner
+      parkingSpace: Parking Space
+      ownerVehicle: Owner Vehicle
+      startTime: Start Time
+      endTime: End Time
+      remark: Remark
+    options:
+      ownerVehicle:
+        "yes": "Yes"
+        "no": "No"
+    placeholders:
+      licensePlate: Please enter license plate
+      carBrand: Please enter car brand
+      color: Please enter color
+      owner: Please enter owner
+      parkingSpace: Please enter parking space
+      remark: Please enter remark
+    validation:
+      licensePlateRequired: Please enter license plate
+      carTypeRequired: Please select car type
+      licensePlateTypeRequired: Please select license plate type
+      ownerRequired: Please enter owner
+      parkingSpaceRequired: Please enter parking space
+      ownerVehicleRequired: Please select owner vehicle option
+      startTimeRequired: Please select start time
+      endTimeRequired: Please select end time
+  dialogs:
+    addTitle: Add Owner Vehicle
+    editTitle: Edit Owner Vehicle
+
+# Parking Lot
+parking-lot:
+  pageTitle: Parking Lot Management
+  tableTitle: Parking Lot Management
+  fields:
+    parkingLotNumber: Parking Lot Number
+    parkingLotType: Parking Lot Type
+    parkingSpaceType: Space Type
+    externalCode: External Code
+    remark: Remark
+    createTime: Created At
+  search:
+    parkingLotNumber: Parking Lot Number
+    parkingLotType: Parking Lot Type
+    parkingSpaceType: Space Type
+  form:
+    fields:
+      parkingLotNumber: Parking Lot Number
+      parkingLotType: Parking Lot Type
+      parkingSpaceType: Space Type
+      externalCode: External Code
+      remark: Remark
+    placeholders:
+      parkingLotNumber: Please enter parking lot number
+      externalCode: Please enter external code
+      remark: Please enter remark
+    options:
+      parkingLotType:
+        surface: Surface Parking Lot
+        underground: Underground Parking Lot
+        multilevel: Multi-level Parking Lot
+        roadside: Roadside Parking
+      parkingSpaceType:
+        standard: Standard Space
+        large: Large Space
+        accessible: Accessible Space
+        charging: EV Charging Space
+        visitor: Visitor Space
+    validation:
+      parkingLotNumberRequired: Please enter parking lot number
+      parkingLotTypeRequired: Please select parking lot type
+      parkingSpaceTypeRequired: Please select space type
+      externalCodeRequired: Please enter external code
+  dialogs:
+    addTitle: Add Parking Lot
+    editTitle: Edit Parking Lot
