@@ -1,69 +1,93 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "巡检报表",
+		// 巡检报表
+		title: "property-manage_report-manage.patrol-report.pageTitle",
 		icon: "mdi:clipboard-list",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.patrolReport"),
 	},
 });
 
-import dayjs from "dayjs";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { PatrolReportListItem, PatrolReportQueryParams } from "@01s-11comm/type";
 import { patrolTypeOptions, patrolLevelOptions, statusOptions, communityOptions } from "@01s-11comm/type";
 import { usePatrolReportListQuery } from "@/api/property-manage/report-manage/patrol-report";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "小区",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.community")),
+		),
 		prop: "community",
 		minWidth: 140,
 	},
 	{
-		label: "巡检编号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.patrolNumber")),
+		),
 		prop: "patrolNumber",
 		minWidth: 160,
 	},
 	{
-		label: "巡检名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.patrolName")),
+		),
 		prop: "patrolName",
 		minWidth: 180,
 	},
 	{
-		label: "巡检类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.patrolType")),
+		),
 		prop: "patrolType",
 		minWidth: 140,
 	},
 	{
-		label: "巡检级别",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.patrolLevel")),
+		),
 		prop: "patrolLevel",
 		minWidth: 140,
 	},
 	{
-		label: "负责人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.responsiblePerson")),
+		),
 		prop: "responsiblePerson",
 		minWidth: 140,
 	},
 	{
-		label: "巡检时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.patrolTime")),
+		),
 		prop: "patrolTime",
 		minWidth: 180,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.status")),
+		),
 		prop: "status",
 		minWidth: 140,
 	},
 	{
-		label: "异常数",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.patrol-report.fields.abnormalCount")),
+		),
 		prop: "abnormalCount",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -71,10 +95,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "巡检报表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.patrol-report.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -114,61 +138,55 @@ const {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "巡检名称",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.patrolName")),
 		prop: "patrolName",
 		valueType: "input",
 	},
 	{
-		label: "巡检类型",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.patrolType")),
 		prop: "patrolType",
 		valueType: "select",
 		options: patrolTypeOptions,
 	},
 	{
-		label: "巡检级别",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.patrolLevel")),
 		prop: "patrolLevel",
 		valueType: "select",
 		options: patrolLevelOptions,
 	},
 	{
-		label: "负责人",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.responsiblePerson")),
 		prop: "responsiblePerson",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.status")),
 		prop: "status",
 		valueType: "select",
 		options: statusOptions,
 	},
 	{
-		label: "小区",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.community")),
 		prop: "community",
 		valueType: "select",
 		options: communityOptions,
 	},
 	{
-		label: "巡检时间开始",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.patrolTimeStart")),
 		prop: "patrolTimeStart",
 		valueType: "date-picker",
 	},
 	{
-		label: "巡检时间结束",
+		label: transformI18n($t("property-manage_report-manage.patrol-report.search.patrolTimeEnd")),
 		prop: "patrolTimeEnd",
 		valueType: "date-picker",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -183,11 +201,14 @@ function handleSearch() {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -200,7 +221,7 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
