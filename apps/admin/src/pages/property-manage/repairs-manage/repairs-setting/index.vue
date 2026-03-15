@@ -1,17 +1,19 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "报修设置",
+		// 报修设置
+		title: "propertyManage_repairsManage.repairs-setting.pageTitle",
 		icon: "mdi:settings",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.repairsSetting"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RepairsSettingFormProps, defaultForm } from "./components/form";
 import RepairsSettingForm from "./components/form.vue";
@@ -34,6 +36,8 @@ import type {
 	RepairsSettingQueryParams,
 } from "@01s-11comm/type";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
@@ -41,76 +45,80 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const repairsSettingFormInstance = ref<InstanceType<typeof RepairsSettingForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "类型名称",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.typeName")),
+		),
 		prop: "typeName",
 		width: 140,
 	},
 	{
-		label: "报修设置类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.settingType")),
+		),
 		prop: "settingType",
 		width: 120,
 	},
 	{
-		label: "派单方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.dispatchMethod")),
+		),
 		prop: "dispatchMethod",
 		width: 120,
 	},
 	{
-		label: "区域",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.publicArea")),
+		),
 		prop: "publicArea",
 		width: 120,
 	},
 	{
-		label: "业主端展示",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.ownerDisplay")),
+		),
 		prop: "ownerDisplay",
 		width: 120,
 	},
 	{
-		label: "通知方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.notificationMethod")),
+		),
 		prop: "notificationMethod",
 		width: 120,
 	},
 	{
-		label: "是否回访",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.returnVisitSetting")),
+		),
 		prop: "returnVisitSetting",
 		width: 120,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-setting.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报修设置",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("propertyManage_repairsManage.repairs-setting.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-interface RepairsSettingQueryVO {
-	typeName?: string;
-	dispatchMethod?: string;
-	settingType?: string;
-	publicArea?: string;
-	returnVisitSetting?: string;
-}
-
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & RepairsSettingQueryParams = {
 	typeName: "",
 	dispatchMethod: "",
@@ -121,13 +129,9 @@ const plusSearchModelRef: FieldValues & RepairsSettingQueryParams = {
 	pageSize: 10,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -139,59 +143,39 @@ const {
 	handleCurrentPageChange,
 } = useRepairsSettingListQuery(plusSearchDefaultValues);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 类型名称
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.typeName")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-setting.search.typeName")),
 		prop: "typeName",
 		valueType: "input",
 	},
-
-	// 派单方式
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.orderMethod")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-setting.search.dispatchMethod")),
 		prop: "dispatchMethod",
 		valueType: "select",
 		options: dispatchMethodOptions,
 	},
-
-	// 报修设置类型
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairReportingSettingType")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-setting.search.settingType")),
 		prop: "settingType",
 		valueType: "select",
 		options: repairsSettingTypeOptions,
 	},
-
-	// 区域
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.regionalSelection")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-setting.search.publicArea")),
 		prop: "publicArea",
 		valueType: "select",
 		options: areaOptions,
 	},
-
-	// 是否回访
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.whetherToMakeAReturnVisit")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-setting.search.returnVisitSetting")),
 		prop: "returnVisitSetting",
 		valueType: "select",
 		options: returnVisitSettingOptions,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -202,7 +186,6 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: RepairsSettingListItem;
@@ -217,35 +200,26 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 新增按钮点击事件 */
 function handleAdd() {
 	openDialog({ mode: "add" });
 }
 
-/** 编辑按钮点击事件 */
 function handleEdit(row: RepairsSettingListItem) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 查看按钮点击事件 */
 function handleView(row: RepairsSettingListItem) {
 	openDialog({ mode: "info", row });
 }
 
-/** 删除按钮点击事件 */
 async function handleDelete(row: RepairsSettingListItem) {
 	consola.log("删除", row);
 	await doFetch();
 }
 
-/** 打开弹框 */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}报修设置`;
-
-	/** 业务对象 */
 	const formValue: RepairsSettingFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
@@ -265,7 +239,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);
 
-	/** 表单组件需要的props */
 	const formProps: RepairsSettingFormProps = {
 		form: formValue,
 		defaultValues,
@@ -273,40 +246,38 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("propertyManage_repairsManage.repairs-setting.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_repairsManage.repairs-setting.dialogs.editTitle")),
 		props: formProps,
-
 		contentRenderer: () =>
 			h(RepairsSettingForm, {
 				ref: repairsSettingFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = repairsSettingFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = repairsSettingFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					repairsSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await repairsSettingFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -324,18 +295,27 @@ function openDialog({ mode, row }: OpenDialogParams) {
 </script>
 
 <template>
-	<section class="index-root">
-		<PlusSearch v-model="plusSearchModel" :="plusSearchProps" :columns="plusSearchColumns" @search="handleSearch" />
+	<section :key="locale" class="index-root">
+		<PlusSearch
+			:key="locale"
+			v-model="plusSearchModel"
+			:="plusSearchProps"
+			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
+			@search="handleSearch"
+			@reset="handleReSearch"
+		/>
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
-					{{ transformI18n($t("propertyManage_repairsManage.repairs.add")) }}
+					{{ transformI18n($t("propertyManage_repairsManage.repairs-setting.buttons.add")) }}
 				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
