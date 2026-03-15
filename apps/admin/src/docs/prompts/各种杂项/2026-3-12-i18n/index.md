@@ -140,3 +140,31 @@ pure-admin 后台框架模板：
 请你及时的检查，用 MCP 工具查看本地的记忆，继续上一次的 i18n 修改进度。
 
 请及时的更新 `apps\admin\src\docs\plan\2026-03-13-admin-i18n-route-progress.md` 报告文件。
+
+## 05 <!-- TODO:  --> withLocale 的设计非常失败
+
+withLocale 的设计纯属是多此一举，这根本就不是实现 i18n 自动切换的方案。
+
+注意到这个函数：
+
+```ts
+/** 让配置型 computed 显式依赖当前语言，切换语言时自动重算。 */
+function withLocale<T>(factory: () => T) {
+	return computed(() => {
+		void locale.value;
+		return factory();
+	});
+}
+```
+
+### `record-bug-fix-memory` 技能更新经验教训
+
+中间设计一个 `void locale.value;` 是非常愚蠢的做法，这个做法硬着头皮来关联 i18n，这个做法是错误的。这个错误应该被记录到经验教训内，记录到 `record-bug-fix-memory` 技能内。
+
+### 更新数个技能对 withLocale 的说明，避免直接使用这个错误的 withLocale，避免错误引导
+
+请你在 `.claude\skills\code-style` 和 `.claude\skills\frontend-development` 内，或者是其他的 skills 内，删改，删除掉对 withLocale 的使用，应该直接换成 computed 。直接使用 computed 就行了。这个封装非常失败。
+
+### 正确做法
+
+直接把 withLocale 换成 vue 提供的 computed 即可。
