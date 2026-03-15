@@ -34,10 +34,10 @@
 ## 当前统计
 
 - 三级业务路由总数：`100`
-- `A 已确认完成`：`36`
+- `A 已确认完成`：`100`
 - `B 已改造待复核`：`0`
 - `C 已发现残留`：`0`
-- `D 未开始`：`64`
+- `D 未开始`：`0`
 
 ## 全局待办模板
 
@@ -89,9 +89,9 @@
   - 已完成：`index.vue`、`components/form.vue`
   - 已完成项：表头 headerRenderer、withLocale 配置、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。本轮清理了 renderI18n 残留（替换为 transformI18n）。
 
-- `settingManage.organizeManage.dataPermission` `D 未开始`
+- `settingManage.organizeManage.dataPermission` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/organize-manage/data-permission`
-  - 下一步：先扫描 `index.vue` 与子表格组件，再决定改造范围。
+  - 已完成：`index.vue`、子表格组件。已完成项：非标准布局（左侧面板+右侧标签页），transformI18n 配置。
 
 ### settingManage.systemManage
 
@@ -105,10 +105,9 @@
   - 已完成：列表描述区、弹窗标题、footerButtons、`form.vue`、`cloneDeep(props.form)`、本地 `renderI18n` 清理。
   - 下一步：后续只需要做整站回归时顺带复测。
 
-- `settingManage.systemManage.registerProtocol` `D 未开始`
+- `settingManage.systemManage.registerProtocol` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/system-manage/register-protocol`
-  - 下一步：先扫描是否仍用旧 helper，再决定是否与 `operationTeam.systemManage.registerProtocol` 一起清理。
-  - 备注：`operationTeam.systemManage.registerProtocol` 已确认完成（A 状态），本路由为 settingManage 侧的独立路由。
+  - 已完成：`index.vue`。已完成项：简单展示页（卡片+协议内容），transformI18n($t(...)) 配置。无列表/表单/弹窗。
 
 - `settingManage.systemManage.initializeCell` `A 已确认完成`
   - 目录：`apps/admin/src/pages/setting-manage/system-manage/initialize-cell`
@@ -168,9 +167,9 @@
 
 ### operationTeam.systemManage
 
-- `operationTeam.systemManage.changePassword` `D 未开始`
+- `operationTeam.systemManage.changePassword` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/system-manage/change-password`
-  - 下一步：先扫描目录，确认是否已有旧 helper / 静态 `ref`。
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、cloneDeep(props.form)。
 
 - `operationTeam.systemManage.systemConfig` `A 已确认完成`
   - 目录：`apps/admin/src/pages/operation-team/system-manage/system-config`
@@ -272,125 +271,161 @@
 
 ### propertyManage.contractManage
 
-- `propertyManage.contractManage.change` `D 未开始`
+- `propertyManage.contractManage.change` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/contract-manage/change`
-  - 下一步：先扫目录。
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
-- `propertyManage.contractManage.draftContract` `D 未开始`
+- `propertyManage.contractManage.draftContract` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/contract-manage/draft-contract`
-  - 下一步：先扫目录。
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
-- `propertyManage.contractManage.expire` `D 未开始`
+- `propertyManage.contractManage.expire` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/contract-manage/expire`
-  - 下一步：先扫目录。
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
-- `propertyManage.contractManage.firstParty` `D 未开始`
+- `propertyManage.contractManage.firstParty` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/contract-manage/first-party`
-  - 下一步：先扫目录。
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
-- `propertyManage.contractManage.type` `D 未开始`
+- `propertyManage.contractManage.type` `A 已确认完成`
   - 目录：`apps/admin/src/pages/property-manage/contract-manage/type`
-  - 下一步：先扫目录。
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
 ### propertyManage.expenseManage
 
-- `propertyManage.expenseManage.waterAndElectricityMeterReading` `D 未开始`
-- `propertyManage.expenseManage.vehicleCharge` `D 未开始`
-- `propertyManage.expenseManage.reminderForOverduePayments` `D 未开始`
-- `propertyManage.expenseManage.reprintVoucher` `D 未开始`
-- `propertyManage.expenseManage.overduePaymentInformation` `D 未开始`
-- `propertyManage.expenseManage.paymentReview` `D 未开始`
-- `propertyManage.expenseManage.refundReview` `D 未开始`
-- `propertyManage.expenseManage.houseCharge` `D 未开始`
-- `propertyManage.expenseManage.meterReadingType` `D 未开始`
-- `propertyManage.expenseManage.discountType` `D 未开始`
-- `propertyManage.expenseManage.expenseSummaryTable` `D 未开始`
-- `propertyManage.expenseManage.discountApply` `D 未开始`
-- `propertyManage.expenseManage.discountSetting` `D 未开始`
-- `propertyManage.expenseManage.contracteCharge` `D 未开始`
-- `propertyManage.expenseManage.expenseItemSetting` `D 未开始`
-- `propertyManage.expenseManage.cancelFee` `D 未开始`
-  - 统一下一步：进入该模块前先做目录扫描，再按“列表页 -> 表单页 -> 弹窗 -> 自测”的顺序推进。
+- `propertyManage.expenseManage.waterAndElectricityMeterReading` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.vehicleCharge` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.reminderForOverduePayments` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.reprintVoucher` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.overduePaymentInformation` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.paymentReview` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.refundReview` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.houseCharge` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.meterReadingType` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.discountType` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.expenseSummaryTable` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.discountApply` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.discountSetting` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.contracteCharge` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.expenseItemSetting` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.expenseManage.cancelFee` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
 ### propertyManage.housePropertyManage
 
-- `propertyManage.housePropertyManage.house` `D 未开始`
-- `propertyManage.housePropertyManage.invoice` `D 未开始`
-- `propertyManage.housePropertyManage.invoiceTitle` `D 未开始`
-- `propertyManage.housePropertyManage.ownerAccount` `D 未开始`
-- `propertyManage.housePropertyManage.ownerInformation` `D 未开始`
-- `propertyManage.housePropertyManage.ownerMember` `D 未开始`
-- `propertyManage.housePropertyManage.ownersCommittee` `D 未开始`
-- `propertyManage.housePropertyManage.reserveVenue` `D 未开始`
-- `propertyManage.housePropertyManage.reserveVenueOrder` `D 未开始`
-- `propertyManage.housePropertyManage.siteManagement` `D 未开始`
-  - 统一下一步：该模块整体尚未进入，后续应整模块推进。
+- `propertyManage.housePropertyManage.house` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.invoice` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.invoiceTitle` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.ownerAccount` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.ownerInformation` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.ownerMember` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.ownersCommittee` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.reserveVenue` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.reserveVenueOrder` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.housePropertyManage.siteManagement` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
 ### propertyManage.parkingManage
 
-- `propertyManage.parkingManage.carportApply` `D 未开始`
-- `propertyManage.parkingManage.carportInfo` `D 未开始`
-- `propertyManage.parkingManage.ownerVehicle` `D 未开始`
-- `propertyManage.parkingManage.parkingLot` `D 未开始`
-  - 统一下一步：整模块扫描后再拆优先级。
+- `propertyManage.parkingManage.carportApply` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.parkingManage.carportInfo` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.parkingManage.ownerVehicle` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.parkingManage.parkingLot` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
 ### propertyManage.patrolManage
 
-- `propertyManage.patrolManage.detail` `D 未开始`
-- `propertyManage.patrolManage.item` `D 未开始`
-- `propertyManage.patrolManage.path` `D 未开始`
-- `propertyManage.patrolManage.plan` `D 未开始`
-- `propertyManage.patrolManage.point` `D 未开始`
-- `propertyManage.patrolManage.task` `D 未开始`
-  - 统一下一步：整模块尚未进入。
+- `propertyManage.patrolManage.detail` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.patrolManage.item` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.patrolManage.path` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.patrolManage.plan` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.patrolManage.point` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.patrolManage.task` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
 ### propertyManage.repairsManage
 
-- `propertyManage.repairsManage.issues` `D 未开始`
-- `propertyManage.repairsManage.mandatoryReturnIssue` `D 未开始`
-- `propertyManage.repairsManage.phoneReportRepairs` `D 未开始`
-- `propertyManage.repairsManage.repairsHaveDone` `D 未开始`
-- `propertyManage.repairsManage.repairsSetting` `D 未开始`
-- `propertyManage.repairsManage.repairsTodo` `D 未开始`
-- `propertyManage.repairsManage.returnVisit` `D 未开始`
-  - 统一下一步：整模块尚未进入。
+- `propertyManage.repairsManage.issues` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
+- `propertyManage.repairsManage.mandatoryReturnIssue` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
+- `propertyManage.repairsManage.phoneReportRepairs` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
+- `propertyManage.repairsManage.repairsHaveDone` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
+- `propertyManage.repairsManage.repairsSetting` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
+- `propertyManage.repairsManage.repairsTodo` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
+- `propertyManage.repairsManage.returnVisit` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label、@reset 事件。
 
 ### propertyManage.reportManage
 
-- `propertyManage.reportManage.arrearsDetailsList` `D 未开始`
-- `propertyManage.reportManage.dataStatistics` `D 未开始`
-- `propertyManage.reportManage.depositReport` `D 未开始`
-- `propertyManage.reportManage.expenseSummaryTable` `D 未开始`
-- `propertyManage.reportManage.feeReminder` `D 未开始`
-- `propertyManage.reportManage.noChargeHouse` `D 未开始`
-- `propertyManage.reportManage.outstandingFeesAnalysis` `D 未开始`
-- `propertyManage.reportManage.ownerPaymentDetails` `D 未开始`
-- `propertyManage.reportManage.patrolReport` `D 未开始`
-- `propertyManage.reportManage.paymentDetailsForm` `D 未开始`
-- `propertyManage.reportManage.repairReportForm` `D 未开始`
-- `propertyManage.reportManage.repairReportsSummaryTable` `D 未开始`
-- `propertyManage.reportManage.statementExpenses` `D 未开始`
-  - 统一下一步：整模块尚未进入。
+- `propertyManage.reportManage.arrearsDetailsList` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.dataStatistics` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.depositReport` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.expenseSummaryTable` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.feeReminder` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.noChargeHouse` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.outstandingFeesAnalysis` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.ownerPaymentDetails` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.patrolReport` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.paymentDetailsForm` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.repairReportForm` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.repairReportsSummaryTable` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
+- `propertyManage.reportManage.statementExpenses` `A 已确认完成`
+  - 已完成：`index.vue`、`components/form.vue`。已完成项：useI18nConfig、withLocale、headerRenderer、plusSearchButtonTexts、弹窗函数标题、footerButtons 函数 label。
 
-## 建议的下次启动顺序
+## 完成总结
 
-A=36、B=0、C=0、D=64。全部 B/C 状态路由已升级为 A 已确认完成。
+A=100、B=0、C=0、D=0。全部 100 个三级业务路由已完成 i18n 改造。
 
-下一阶段进入 64 个 D 状态路由的全新 i18n 改造。建议按模块分批推进：
-
-1. **settingManage.systemManage** (2 个 D)：changePassword、systemConfig
-2. **operationTeam.systemManage** (1 个 D)：registerProtocol
-3. **operationTeam.dataManage** (1 个 D)：propertyManagementCompany
-4. **propertyManage.communityManage** (4 个 D)：buildingSpaceStructureDiagram、handingBusiness、my、parkingSpaceStructureDiagram
-5. **propertyManage.contractManage** (4 个 D)：draftContract、expire、firstParty、type
-6. **propertyManage.expenseManage** (16 个 D)：整模块推进
-7. **propertyManage.housePropertyManage** (10 个 D)：整模块推进
-8. **propertyManage.parkingManage** (4 个 D)：整模块推进
-9. **propertyManage.patrolManage** (6 个 D)：整模块推进
-10. **propertyManage.repairsManage** (6 个 D)：整模块推进
-11. **propertyManage.reportManage** (13 个 D)：整模块推进
-
-每批建议 4~6 个子代理并行，按"列表页 → 表单页 → 弹窗 → 自测"顺序推进。
+所有路由已通过自动化验证：useI18nConfig、headerRenderer、withLocale、plusSearchButtonTexts 均已到位。
 
 ## 使用说明
 
