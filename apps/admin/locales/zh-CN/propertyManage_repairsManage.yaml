@@ -1,28 +1,313 @@
-# 单独定义文件夹 报修管理
-repairs:
-  order: 派单
-  return: 强制回单
-  binding: 绑定维修师傅
-  revisit: 回访
-  registration: 登记
-  doc: 文档
-  add: 添加
-  typeName: 类型名称
-  orderMethod: 派单方式
-  repairReportingSettingType: 报修设置类型
-  regionalSelection: 区域选择
-  whetherToMakeAReturnVisit: 是否回访
-  workOrderNumber: 工单编号
-  repairman: 报修人
-  repairPhone: 报修电话
-  repairType: 报修类型
-  repairLocation: 报修位置
-  maintenanceType: 维修类型
-  startTime: 开始时间
-  endTime: 结束时间
-  repairStatus: 报修状态
-  returnStatus: 回访状态
-  transferOrder: 转单
-  returnOrder: 退单
-  completed: 办结
-  pause: 暂停
+# 报修管理 - 工单池
+issues:
+  pageTitle: 工单池
+  tableTitle: 工单池
+  fields:
+    workOrderCode: 工单编码
+    location: 位置
+    repairType: 报修类型
+    maintenanceType: 维修类型
+    reporter: 报修人
+    contactInfo: 联系方式
+    appointmentTimeRange: 预约开始结束时间
+    submitTime: 提交时间
+    orderDuration: 提单时长
+    completeTime: 完成时间
+    status: 状态
+    violationDescription: 违规说明
+    remark: 备注
+  search:
+    workOrderNumber: 工单编号
+    reporter: 报修人
+    reporterPhone: 报修电话
+    repairType: 报修类型
+    repairSettingType: 报修设置类型
+    repairLocation: 报修位置
+    maintenanceType: 维修类型
+    startTime: 开始时间
+    endTime: 结束时间
+  form:
+    fields:
+      workOrderCode: 工单编码
+      location: 位置
+      repairType: 报修类型
+      maintenanceType: 维修类型
+      reporter: 报修人
+      contactInfo: 联系方式
+      appointmentTimeRange: 预约开始结束时间
+      submitTime: 提交时间
+      orderDuration: 提单时长
+      completeTime: 完成时间
+      status: 状态
+      violationDescription: 违规说明
+      remark: 备注
+    validation:
+      locationRequired: 请输入位置
+      repairTypeRequired: 请选择报修类型
+      maintenanceTypeRequired: 请选择维修类型
+      reporterRequired: 请输入报修人
+      contactInfoRequired: 请输入联系方式
+      statusRequired: 请选择状态
+  dialogs:
+    addTitle: 新增工单池
+    editTitle: 修改工单池
+
+# 报修管理 - 强制回单
+mandatory-return-issue:
+  pageTitle: 强制回单
+  tableTitle: 强制回单
+  fields:
+    workOrderNumber: 工单编号
+    location: 位置
+    repairType: 报修类型
+    reporter: 报修人
+    contactInfo: 联系方式
+    appointmentTime: 预约时间
+    submitTime: 提交时间
+    status: 状态
+    remark: 备注
+  search:
+    repairType: 报修类型
+    reporter: 报修人
+    contactPhone: 报修电话
+  form:
+    fields:
+      workOrderNumber: 工单编号
+      location: 位置
+      repairType: 报修类型
+      reporter: 报修人
+      contactInfo: 联系方式
+      appointmentTime: 预约时间
+      submitTime: 提交时间
+      status: 状态
+      remark: 备注
+    validation:
+      locationRequired: 请输入位置
+      repairTypeRequired: 请选择报修类型
+      reporterRequired: 请输入报修人
+      contactInfoRequired: 请输入联系方式
+      statusRequired: 请选择状态
+  buttons:
+    mandatoryReturn: 强制回单
+  dialogs:
+    addTitle: 新增强制回单
+    editTitle: 修改强制回单
+
+# 报修管理 - 电话报修
+phone-report-repairs:
+  pageTitle: 电话报修
+  tableTitle: 电话报修
+  fields:
+    workOrderNumber: 工单编号
+    location: 位置
+    repairType: 报修类型
+    reporter: 报修人
+    contactInfo: 联系方式
+    appointmentTime: 预约时间
+    overtimeTime: 超时时间
+    submitTime: 提交时间
+    status: 状态
+  search:
+    workOrderNumber: 工单编号
+    reporter: 报修人
+    contactPhone: 报修电话
+    repairType: 报修类型
+    status: 报修状态
+  buttons:
+    registration: 登记
+  form:
+    fields:
+      repairScope: 报修范围
+      repairType: 报修类型
+      reporter: 报修人
+      contactInfo: 联系方式
+      appointmentTime: 预约时间
+      repairDescription: 报修内容
+    options:
+      repairScope:
+        communityPublic: 小区公区
+        ownerPrivate: 业主自用
+    validation:
+      repairScopeRequired: 请选择报修范围
+      repairTypeRequired: 请选择报修类型
+      reporterRequired: 请输入报修人
+      contactInfoRequired: 请输入联系方式
+      appointmentTimeRequired: 请选择预约时间
+      repairDescriptionRequired: 请输入报修内容
+  dialogs:
+    addTitle: 新增电话报修
+    editTitle: 修改电话报修
+
+# 报修管理 - 报修已办
+repairs-have-done:
+  pageTitle: 报修已办
+  tableTitle: 报修已办
+  fields:
+    workOrderNumber: 工单编号
+    location: 位置
+    repairType: 报修类型
+    maintenanceType: 维修类型
+    reporter: 报修人
+    contactInfo: 联系方式
+    appointmentTime: 预约时间
+    status: 状态
+    remark: 备注
+  search:
+    maintenanceType: 维修类型
+    reporter: 报修人
+    repairPhone: 报修电话
+    repairType: 报修类型
+    repairStatus: 报修状态
+    workOrderNumber: 工单编号
+  form:
+    fields:
+      workOrderNumber: 工单编号
+      location: 位置
+      repairType: 报修类型
+      maintenanceType: 维修类型
+      reporter: 报修人
+      contactInfo: 联系方式
+      appointmentTime: 预约时间
+      status: 状态
+      remark: 备注
+    validation:
+      locationRequired: 请输入位置
+      repairTypeRequired: 请选择报修类型
+      maintenanceTypeRequired: 请选择维修类型
+      reporterRequired: 请输入报修人
+      contactInfoRequired: 请输入联系方式
+      appointmentTimeRequired: 请选择预约时间
+      statusRequired: 请选择状态
+  dialogs:
+    addTitle: 新增报修已办
+    editTitle: 修改报修已办
+
+# 报修管理 - 报修设置
+repairs-setting:
+  pageTitle: 报修设置
+  tableTitle: 报修设置
+  fields:
+    typeName: 类型名称
+    settingType: 报修设置类型
+    dispatchMethod: 派单方式
+    publicArea: 区域
+    ownerDisplay: 业主端展示
+    notificationMethod: 通知方式
+    returnVisitSetting: 是否回访
+    createTime: 创建时间
+  search:
+    typeName: 类型名称
+    dispatchMethod: 派单方式
+    settingType: 报修设置类型
+    publicArea: 区域选择
+    returnVisitSetting: 是否回访
+  buttons:
+    add: 添加
+  form:
+    fields:
+      typeName: 类型名称
+      settingType: 设置类型
+      dispatchMethod: 派单方式
+      publicArea: 公共区域
+      ownerDisplay: 业主端展示
+      notificationMethod: 通知方式
+      returnVisitSetting: 回访设置
+      description: 说明
+    options:
+      ownerDisplay:
+        "yes": 是
+        "no": 否
+      notificationMethod:
+        sms: 短信
+        wechat: 微信
+        wechatAndBadge: 微信+员工工牌
+    validation:
+      typeNameRequired: 请输入类型名称
+      settingTypeRequired: 请选择设置类型
+      dispatchMethodRequired: 请选择派单方式
+      publicAreaRequired: 请选择公共区域
+      ownerDisplayRequired: 请选择业主端展示
+      notificationMethodRequired: 请选择通知方式
+      returnVisitSettingRequired: 请选择回访设置
+  dialogs:
+    addTitle: 新增报修设置
+    editTitle: 修改报修设置
+
+# 报修管理 - 报修待办
+repairs-todo:
+  pageTitle: 报修待办
+  tableTitle: 报修待办
+  fields:
+    workOrderNumber: 工单编号
+    location: 位置
+    repairType: 报修类型
+    maintenanceType: 维修类型
+    reporter: 报修人
+    contactInfo: 联系方式
+    appointmentTime: 预约时间
+    status: 状态
+  search:
+    workOrderNumber: 工单编号
+    reporter: 报修人
+    status: 报修状态
+  form:
+    fields:
+      workOrderNumber: 工单编号
+      location: 位置
+      repairType: 报修类型
+      maintenanceType: 维修类型
+      reporter: 报修人
+      contactInfo: 联系方式
+      appointmentTime: 预约时间
+      status: 状态
+      remark: 备注
+    validation:
+      locationRequired: 请输入位置
+      repairTypeRequired: 请选择报修类型
+      maintenanceTypeRequired: 请选择维修类型
+      reporterRequired: 请输入报修人
+      contactInfoRequired: 请输入联系方式
+      appointmentTimeRequired: 请选择预约时间
+      statusRequired: 请选择状态
+  dialogs:
+    addTitle: 新增报修待办
+    editTitle: 修改报修待办
+
+# 报修管理 - 报修回访
+return-visit:
+  pageTitle: 报修回访
+  tableTitle: 报修回访
+  fields:
+    workOrderNumber: 工单编号
+    location: 位置
+    repairType: 报修类型
+    reporter: 报修人
+    contactInfo: 联系方式
+    appointmentTime: 预约时间
+    returnVisitStatus: 回访状态
+  search:
+    workOrderNumber: 工单编号
+    repairType: 报修类型
+    reporter: 报修人
+    contactPhone: 报修电话
+    returnVisitStatus: 回访状态
+  form:
+    fields:
+      workOrderNumber: 工单编号
+      location: 位置
+      repairType: 报修类型
+      reporter: 报修人
+      contactInfo: 联系方式
+      appointmentTime: 预约时间
+      returnVisitStatus: 回访状态
+      remark: 备注
+    validation:
+      locationRequired: 请输入位置
+      repairTypeRequired: 请选择报修类型
+      reporterRequired: 请输入报修人
+      contactInfoRequired: 请输入联系方式
+      appointmentTimeRequired: 请选择预约时间
+      returnVisitStatusRequired: 请选择回访状态
+  dialogs:
+    addTitle: 新增报修回访
+    editTitle: 修改报修回访

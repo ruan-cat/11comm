@@ -1,28 +1,313 @@
-# 报修管理:
-repairs:
-  order: Order
-  return: Return
-  binding: Binding
-  revisit: Revisit
-  registration: Registration
-  doc: Doc
-  add: Add
-  typeName: TypeName
-  orderMethod: OrderMethod
-  repairReportingSettingType: RepairReportingSettingType
-  regionalSelection: RegionalSelection
-  whetherToMakeAReturnVisit: WhetherToMakeAReturnVisit
-  workOrderNumber: WorkOrderNumber
-  repairman: Repairman
-  repairPhone: RepairPhone
-  repairType: RepairType
-  repairLocation: RepairLocation
-  maintenanceType: MaintenanceType
-  startTime: StartTime
-  endTime: EndTime
-  repairStatus: RepairStatus
-  returnStatus: ReturnStatus
-  transferOrder: TransferOrder
-  returnOrder: ReturnOrder
-  completed: Completed
-  pause: Pause
+# Repairs Management - Issues Pool
+issues:
+  pageTitle: Issues Pool
+  tableTitle: Issues Pool
+  fields:
+    workOrderCode: Work Order Code
+    location: Location
+    repairType: Repair Type
+    maintenanceType: Maintenance Type
+    reporter: Reporter
+    contactInfo: Contact Info
+    appointmentTimeRange: Appointment Time Range
+    submitTime: Submit Time
+    orderDuration: Order Duration
+    completeTime: Complete Time
+    status: Status
+    violationDescription: Violation Description
+    remark: Remark
+  search:
+    workOrderNumber: Work Order Number
+    reporter: Reporter
+    reporterPhone: Reporter Phone
+    repairType: Repair Type
+    repairSettingType: Repair Setting Type
+    repairLocation: Repair Location
+    maintenanceType: Maintenance Type
+    startTime: Start Time
+    endTime: End Time
+  form:
+    fields:
+      workOrderCode: Work Order Code
+      location: Location
+      repairType: Repair Type
+      maintenanceType: Maintenance Type
+      reporter: Reporter
+      contactInfo: Contact Info
+      appointmentTimeRange: Appointment Time Range
+      submitTime: Submit Time
+      orderDuration: Order Duration
+      completeTime: Complete Time
+      status: Status
+      violationDescription: Violation Description
+      remark: Remark
+    validation:
+      locationRequired: Please enter location
+      repairTypeRequired: Please select repair type
+      maintenanceTypeRequired: Please select maintenance type
+      reporterRequired: Please enter reporter
+      contactInfoRequired: Please enter contact info
+      statusRequired: Please select status
+  dialogs:
+    addTitle: Add Issues Pool
+    editTitle: Edit Issues Pool
+
+# Repairs Management - Mandatory Return Issue
+mandatory-return-issue:
+  pageTitle: Mandatory Return Issue
+  tableTitle: Mandatory Return Issue
+  fields:
+    workOrderNumber: Work Order Number
+    location: Location
+    repairType: Repair Type
+    reporter: Reporter
+    contactInfo: Contact Info
+    appointmentTime: Appointment Time
+    submitTime: Submit Time
+    status: Status
+    remark: Remark
+  search:
+    repairType: Repair Type
+    reporter: Reporter
+    contactPhone: Contact Phone
+  form:
+    fields:
+      workOrderNumber: Work Order Number
+      location: Location
+      repairType: Repair Type
+      reporter: Reporter
+      contactInfo: Contact Info
+      appointmentTime: Appointment Time
+      submitTime: Submit Time
+      status: Status
+      remark: Remark
+    validation:
+      locationRequired: Please enter location
+      repairTypeRequired: Please select repair type
+      reporterRequired: Please enter reporter
+      contactInfoRequired: Please enter contact info
+      statusRequired: Please select status
+  buttons:
+    mandatoryReturn: Mandatory Return
+  dialogs:
+    addTitle: Add Mandatory Return Issue
+    editTitle: Edit Mandatory Return Issue
+
+# Repairs Management - Phone Report Repairs
+phone-report-repairs:
+  pageTitle: Phone Report Repairs
+  tableTitle: Phone Report Repairs
+  fields:
+    workOrderNumber: Work Order Number
+    location: Location
+    repairType: Repair Type
+    reporter: Reporter
+    contactInfo: Contact Info
+    appointmentTime: Appointment Time
+    overtimeTime: Overtime
+    submitTime: Submit Time
+    status: Status
+  search:
+    workOrderNumber: Work Order Number
+    reporter: Reporter
+    contactPhone: Contact Phone
+    repairType: Repair Type
+    status: Repair Status
+  buttons:
+    registration: Registration
+  form:
+    fields:
+      repairScope: Repair Scope
+      repairType: Repair Type
+      reporter: Reporter
+      contactInfo: Contact Info
+      appointmentTime: Appointment Time
+      repairDescription: Repair Description
+    options:
+      repairScope:
+        communityPublic: Community Public Area
+        ownerPrivate: Owner Private
+    validation:
+      repairScopeRequired: Please select repair scope
+      repairTypeRequired: Please select repair type
+      reporterRequired: Please enter reporter
+      contactInfoRequired: Please enter contact info
+      appointmentTimeRequired: Please select appointment time
+      repairDescriptionRequired: Please enter repair description
+  dialogs:
+    addTitle: Add Phone Report Repairs
+    editTitle: Edit Phone Report Repairs
+
+# Repairs Management - Repairs Have Done
+repairs-have-done:
+  pageTitle: Repairs Have Done
+  tableTitle: Repairs Have Done
+  fields:
+    workOrderNumber: Work Order Number
+    location: Location
+    repairType: Repair Type
+    maintenanceType: Maintenance Type
+    reporter: Reporter
+    contactInfo: Contact Info
+    appointmentTime: Appointment Time
+    status: Status
+    remark: Remark
+  search:
+    maintenanceType: Maintenance Type
+    reporter: Reporter
+    repairPhone: Repair Phone
+    repairType: Repair Type
+    repairStatus: Repair Status
+    workOrderNumber: Work Order Number
+  form:
+    fields:
+      workOrderNumber: Work Order Number
+      location: Location
+      repairType: Repair Type
+      maintenanceType: Maintenance Type
+      reporter: Reporter
+      contactInfo: Contact Info
+      appointmentTime: Appointment Time
+      status: Status
+      remark: Remark
+    validation:
+      locationRequired: Please enter location
+      repairTypeRequired: Please select repair type
+      maintenanceTypeRequired: Please select maintenance type
+      reporterRequired: Please enter reporter
+      contactInfoRequired: Please enter contact info
+      appointmentTimeRequired: Please select appointment time
+      statusRequired: Please select status
+  dialogs:
+    addTitle: Add Repairs Have Done
+    editTitle: Edit Repairs Have Done
+
+# Repairs Management - Repairs Setting
+repairs-setting:
+  pageTitle: Repairs Setting
+  tableTitle: Repairs Setting
+  fields:
+    typeName: Type Name
+    settingType: Setting Type
+    dispatchMethod: Dispatch Method
+    publicArea: Area
+    ownerDisplay: Owner Display
+    notificationMethod: Notification Method
+    returnVisitSetting: Return Visit
+    createTime: Create Time
+  search:
+    typeName: Type Name
+    dispatchMethod: Dispatch Method
+    settingType: Setting Type
+    publicArea: Area Selection
+    returnVisitSetting: Return Visit
+  buttons:
+    add: Add
+  form:
+    fields:
+      typeName: Type Name
+      settingType: Setting Type
+      dispatchMethod: Dispatch Method
+      publicArea: Public Area
+      ownerDisplay: Owner Display
+      notificationMethod: Notification Method
+      returnVisitSetting: Return Visit Setting
+      description: Description
+    options:
+      ownerDisplay:
+        "yes": "Yes"
+        "no": "No"
+      notificationMethod:
+        sms: SMS
+        wechat: WeChat
+        wechatAndBadge: WeChat + Staff Badge
+    validation:
+      typeNameRequired: Please enter type name
+      settingTypeRequired: Please select setting type
+      dispatchMethodRequired: Please select dispatch method
+      publicAreaRequired: Please select public area
+      ownerDisplayRequired: Please select owner display
+      notificationMethodRequired: Please select notification method
+      returnVisitSettingRequired: Please select return visit setting
+  dialogs:
+    addTitle: Add Repairs Setting
+    editTitle: Edit Repairs Setting
+
+# Repairs Management - Repairs Todo
+repairs-todo:
+  pageTitle: Repairs Todo
+  tableTitle: Repairs Todo
+  fields:
+    workOrderNumber: Work Order Number
+    location: Location
+    repairType: Repair Type
+    maintenanceType: Maintenance Type
+    reporter: Reporter
+    contactInfo: Contact Info
+    appointmentTime: Appointment Time
+    status: Status
+  search:
+    workOrderNumber: Work Order Number
+    reporter: Reporter
+    status: Repair Status
+  form:
+    fields:
+      workOrderNumber: Work Order Number
+      location: Location
+      repairType: Repair Type
+      maintenanceType: Maintenance Type
+      reporter: Reporter
+      contactInfo: Contact Info
+      appointmentTime: Appointment Time
+      status: Status
+      remark: Remark
+    validation:
+      locationRequired: Please enter location
+      repairTypeRequired: Please select repair type
+      maintenanceTypeRequired: Please select maintenance type
+      reporterRequired: Please enter reporter
+      contactInfoRequired: Please enter contact info
+      appointmentTimeRequired: Please select appointment time
+      statusRequired: Please select status
+  dialogs:
+    addTitle: Add Repairs Todo
+    editTitle: Edit Repairs Todo
+
+# Repairs Management - Return Visit
+return-visit:
+  pageTitle: Return Visit
+  tableTitle: Return Visit
+  fields:
+    workOrderNumber: Work Order Number
+    location: Location
+    repairType: Repair Type
+    reporter: Reporter
+    contactInfo: Contact Info
+    appointmentTime: Appointment Time
+    returnVisitStatus: Return Visit Status
+  search:
+    workOrderNumber: Work Order Number
+    repairType: Repair Type
+    reporter: Reporter
+    contactPhone: Contact Phone
+    returnVisitStatus: Return Visit Status
+  form:
+    fields:
+      workOrderNumber: Work Order Number
+      location: Location
+      repairType: Repair Type
+      reporter: Reporter
+      contactInfo: Contact Info
+      appointmentTime: Appointment Time
+      returnVisitStatus: Return Visit Status
+      remark: Remark
+    validation:
+      locationRequired: Please enter location
+      repairTypeRequired: Please select repair type
+      reporterRequired: Please enter reporter
+      contactInfoRequired: Please enter contact info
+      appointmentTimeRequired: Please select appointment time
+      returnVisitStatusRequired: Please select return visit status
+  dialogs:
+    addTitle: Add Return Visit
+    editTitle: Edit Return Visit
