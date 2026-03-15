@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "报修汇总表",
+		// 报修汇总表
+		title: "property-manage_report-manage.repair-reports-summary-table.pageTitle",
 		icon: "mdi:table-merge-cells",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.repairReportsSummaryTable"),
@@ -9,7 +10,8 @@ definePage({
 });
 
 import { ref, computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import {
 	type RepairReportsSummaryTableListItem,
 	type RepairReportsSummaryTableQueryParams,
@@ -19,6 +21,8 @@ import {
 	communityOptions,
 } from "@01s-11comm/type";
 import { useRepairReportsSummaryTableListQuery } from "@/api/property-manage/report-manage/repair-reports-summary-table";
+
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -44,51 +48,45 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "报修类型",
+		label: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.search.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
-		label: "报修状态",
+		label: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.search.repairStatus")),
 		prop: "repairStatus",
 		valueType: "select",
 		options: repairStatusOptions,
 	},
 	{
-		label: "紧急程度",
+		label: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.search.urgencyLevel")),
 		prop: "urgencyLevel",
 		valueType: "select",
 		options: urgencyLevelOptions,
 	},
 	{
-		label: "小区",
+		label: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.search.community")),
 		prop: "community",
 		valueType: "select",
 		options: communityOptions,
 	},
 	{
-		label: "统计开始时间",
+		label: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.search.statisticsStartTime")),
 		prop: "statisticsStartTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "统计结束时间",
+		label: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.search.statisticsEndTime")),
 		prop: "statisticsEndTime",
 		valueType: "date-picker",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 使用 TanStack Query 获取数据 */
 const {
@@ -117,60 +115,83 @@ function handleSearch() {
 }
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "小区",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.community")),
+		),
 		prop: "community",
 		minWidth: 140,
 	},
 	{
-		label: "报修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.repairType")),
+		),
 		prop: "repairType",
 		minWidth: 140,
 	},
 	{
-		label: "报修数量",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.repairCount")),
+		),
 		prop: "repairCount",
 		minWidth: 120,
 	},
 	{
-		label: "处理中",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.processingCount")),
+		),
 		prop: "processingCount",
 		minWidth: 120,
 	},
 	{
-		label: "已完成",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.completedCount")),
+		),
 		prop: "completedCount",
 		minWidth: 120,
 	},
 	{
-		label: "未完成",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.unfinishedCount")),
+		),
 		prop: "unfinishedCount",
 		minWidth: 120,
 	},
 	{
-		label: "待回访",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.pendingRevisitCount")),
+		),
 		prop: "pendingRevisitCount",
 		minWidth: 120,
 	},
 	{
-		label: "不满意",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.dissatisfiedCount")),
+		),
 		prop: "dissatisfiedCount",
 		minWidth: 120,
 	},
 	{
-		label: "紧急工单",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.emergencyCount")),
+		),
 		prop: "emergencyCount",
 		minWidth: 120,
 	},
 	{
-		label: "统计时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-reports-summary-table.fields.statisticsTime")),
+		),
 		prop: "statisticsTime",
 		minWidth: 180,
 	},
 	{
-		label: "操作",
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 200,
 		fixed: "right",
 		slot: "operation",
@@ -178,18 +199,21 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报修汇总表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.repair-reports-summary-table.tableTitle")),
 	columns: columns.value,
-});
+}));
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -202,7 +226,7 @@ const pureTableBarProps = ref<PureTableBarProps>({
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

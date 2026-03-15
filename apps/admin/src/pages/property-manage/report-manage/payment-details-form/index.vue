@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "缴费明细表",
+		// 缴费明细表
+		title: "property-manage_report-manage.payment-details-form.pageTitle",
 		icon: "mdi:cash-register",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.paymentDetailsForm"),
 	},
 });
 
-import dayjs from "dayjs";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { ExpenseSummaryTableListItem, ExpenseSummaryTableQueryParams } from "@01s-11comm/type";
 import {
 	paymentMethodOptions,
@@ -18,6 +19,8 @@ import {
 	expenseItemOptions,
 	communityOptions,
 } from "@01s-11comm/type";
+
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 // TODO: 本页面需要继续完成写法改造；需要从API获取真实数据
 /** 模拟表格数据 - 待替换为真实API数据 */
@@ -35,105 +38,146 @@ const pagination = ref<PaginationProps>({
 const tableData = ref<ExpenseSummaryTableListItem[]>([]);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "订单号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.orderNumber")),
+		),
 		prop: "订单号",
 		minWidth: 180,
 	},
 	{
-		label: "小区",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.community")),
+		),
 		prop: "小区",
 		minWidth: 140,
 	},
 	{
-		label: "房号/业主",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.roomNumberOwner")),
+		),
 		prop: "房号业主",
 		minWidth: 180,
 	},
 	{
-		label: "费用类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.feeType")),
+		),
 		prop: "费用类型",
 		minWidth: 140,
 	},
 	{
-		label: "费用项",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.feeItem")),
+		),
 		prop: "费用项",
 		minWidth: 140,
 	},
 	{
-		label: "费用状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.feeStatus")),
+		),
 		prop: "费用状态",
 		minWidth: 120,
 	},
 	{
-		label: "支付方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.paymentMethod")),
+		),
 		prop: "支付方式",
 		minWidth: 120,
 	},
 	{
-		label: "缴费时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.paymentTime")),
+		),
 		prop: "缴费时间",
 		minWidth: 200,
 	},
 	{
-		label: "收银员",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.cashier")),
+		),
 		prop: "收银员",
 		minWidth: 140,
 	},
 	{
-		label: "应缴金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.payableAmount")),
+		),
 		prop: "应缴金额",
 		minWidth: 140,
 	},
 	{
-		label: "应收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.receivableAmount")),
+		),
 		prop: "应收金额",
 		minWidth: 140,
 	},
 	{
-		label: "实收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.actualAmount")),
+		),
 		prop: "实收金额",
 		minWidth: 140,
 	},
 	{
-		label: "账户抵扣",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.accountDeduction")),
+		),
 		prop: "账户抵扣",
 		minWidth: 140,
 	},
 	{
-		label: "优惠减免金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.discountAmount")),
+		),
 		prop: "优惠减免金额",
 		minWidth: 160,
 	},
 	{
-		label: "赠送金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.giftAmount")),
+		),
 		prop: "赠送金额",
 		minWidth: 140,
 	},
 	{
-		label: "滞纳金",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.lateFee")),
+		),
 		prop: "滞纳金",
 		minWidth: 140,
 	},
 	{
-		label: "面积",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.area")),
+		),
 		prop: "面积",
 		minWidth: 120,
 	},
 	{
-		label: "车位",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.parkingSpace")),
+		),
 		prop: "车位",
 		minWidth: 120,
 	},
 	{
-		label: "说明",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.payment-details-form.fields.description")),
+		),
 		prop: "说明",
 		minWidth: 160,
 	},
 	{
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -149,10 +193,10 @@ const pureTableProps = ref<PureTableProps>({
 });
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "缴费明细表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.payment-details-form.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -180,48 +224,48 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "缴费开始时间",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.paymentStartTime")),
 		prop: "缴费开始时间",
 		valueType: "date-picker",
 	},
 	{
-		label: "缴费结束时间",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.paymentEndTime")),
 		prop: "缴费结束时间",
 		valueType: "date-picker",
 	},
 	{
-		label: "支付方式",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.paymentMethod")),
 		prop: "支付方式",
 		valueType: "select",
 		options: paymentMethodOptions,
 	},
 	{
-		label: "费用状态",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.feeStatus")),
 		prop: "费用状态",
 		valueType: "select",
 		options: expenseStatusOptions,
 	},
 	{
-		label: "费用类型",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.feeType")),
 		prop: "费用类型",
 		valueType: "select",
 		options: feeTypeOptions,
 	},
 	{
-		label: "费用项",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.feeItem")),
 		prop: "费用项",
 		valueType: "select",
 		options: expenseItemOptions,
 	},
 	{
-		label: "房屋编号/车牌号",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.houseNumberCarNumber")),
 		prop: "房屋编号车牌号",
 		valueType: "input",
 	},
 	{
-		label: "小区",
+		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.community")),
 		prop: "小区",
 		valueType: "select",
 		options: communityOptions,
@@ -229,59 +273,11 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 加载表格数据 */
 async function loadTableData() {
-	// TODO: 此函数使用中文属性名，需要重构为使用英文属性名或更新类型定义
-	// 当前 mockTableData 为空数组，此函数实际不会执行任何过滤操作
 	let filteredData = mockTableData;
-
-	// 以下代码暂时注释，等待类型定义更新或重构
-	/*
-	if (plusSearchModel.value.缴费开始时间 && plusSearchModel.value.缴费结束时间) {
-		const start = dayjs(plusSearchModel.value.缴费开始时间 as string);
-		const end = dayjs(plusSearchModel.value.缴费结束时间 as string);
-		filteredData = filteredData.filter((item) => {
-			const current = dayjs(item.缴费时间);
-			return current.isAfter(start) && current.isBefore(end);
-		});
-	}
-
-	if (plusSearchModel.value.支付方式) {
-		filteredData = filteredData.filter((item) => item.支付方式 === plusSearchModel.value.支付方式);
-	}
-
-	if (plusSearchModel.value.费用状态) {
-		filteredData = filteredData.filter((item) => item.费用状态 === plusSearchModel.value.费用状态);
-	}
-
-	if (plusSearchModel.value.费用类型) {
-		filteredData = filteredData.filter((item) => item.费用类型 === plusSearchModel.value.费用类型);
-	}
-
-	if (plusSearchModel.value.费用项) {
-		filteredData = filteredData.filter((item) => item.费用项 === plusSearchModel.value.费用项);
-	}
-
-	if (plusSearchModel.value.房屋编号车牌号) {
-		filteredData = filteredData.filter(
-			(item) =>
-				item.房号业主.includes(plusSearchModel.value.房屋编号车牌号!) ||
-				item.车位?.includes(plusSearchModel.value.房屋编号车牌号!),
-		);
-	}
-
-	if (plusSearchModel.value.小区) {
-		filteredData = filteredData.filter((item) => item.小区 === plusSearchModel.value.小区);
-	}
-	*/
 
 	pagination.value.total = filteredData.length;
 
@@ -324,11 +320,14 @@ onMounted(async () => {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -341,7 +340,7 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

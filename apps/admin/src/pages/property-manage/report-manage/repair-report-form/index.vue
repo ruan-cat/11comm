@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "报修报表",
+		// 报修报表
+		title: "property-manage_report-manage.repair-report-form.pageTitle",
 		icon: "mdi:tools",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.repairReportForm"),
 	},
 });
 
-import dayjs from "dayjs";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { RepairReportFormListItem, RepairReportFormQueryParams } from "@01s-11comm/type";
 import { useRepairReportFormListQuery } from "@/api/property-manage/report-manage/repair-report-form";
 import {
@@ -19,6 +20,8 @@ import {
 	communityOptions,
 	feeStatusOptions,
 } from "@01s-11comm/type";
+
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 使用列表查询组合式函数 */
 const {
@@ -44,70 +47,97 @@ const {
 });
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "小区",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.community")),
+		),
 		prop: "community",
 		minWidth: 140,
 	},
 	{
-		label: "报修单号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.repairOrderNumber")),
+		),
 		prop: "repairOrderNumber",
 		minWidth: 160,
 	},
 	{
-		label: "报修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.repairType")),
+		),
 		prop: "repairType",
 		minWidth: 140,
 	},
 	{
-		label: "紧急程度",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.urgencyLevel")),
+		),
 		prop: "urgencyLevel",
 		minWidth: 140,
 	},
 	{
-		label: "报修人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.reporter")),
+		),
 		prop: "reporter",
 		minWidth: 140,
 	},
 	{
-		label: "报修电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.reporterPhone")),
+		),
 		prop: "reporterPhone",
 		minWidth: 160,
 	},
 	{
-		label: "报修地址",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.repairAddress")),
+		),
 		prop: "repairAddress",
 		minWidth: 180,
 	},
 	{
-		label: "报修时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.reportTime")),
+		),
 		prop: "reportTime",
 		minWidth: 180,
 	},
 	{
-		label: "受理人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.handler")),
+		),
 		prop: "handler",
 		minWidth: 140,
 	},
 	{
-		label: "处理人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.processor")),
+		),
 		prop: "processor",
 		minWidth: 140,
 	},
 	{
-		label: "费用状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.feeStatus")),
+		),
 		prop: "feeStatus",
 		minWidth: 140,
 	},
 	{
-		label: "报修状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.repair-report-form.fields.repairStatus")),
+		),
 		prop: "repairStatus",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -121,10 +151,10 @@ const pureTableProps = computed<PureTableProps>(() => ({
 }));
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报修报表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.repair-report-form.tableTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -155,67 +185,61 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "报修类型",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
-		label: "报修状态",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.repairStatus")),
 		prop: "repairStatus",
 		valueType: "select",
 		options: repairStatusOptions,
 	},
 	{
-		label: "紧急程度",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.urgencyLevel")),
 		prop: "urgencyLevel",
 		valueType: "select",
 		options: urgencyLevelOptions,
 	},
 	{
-		label: "报修人",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
 	{
-		label: "报修电话",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.reporterPhone")),
 		prop: "reporterPhone",
 		valueType: "input",
 	},
 	{
-		label: "小区",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.community")),
 		prop: "community",
 		valueType: "select",
 		options: communityOptions,
 	},
 	{
-		label: "费用状态",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.feeStatus")),
 		prop: "feeStatus",
 		valueType: "select",
 		options: feeStatusOptions,
 	},
 	{
-		label: "报修时间开始",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.reportTimeStart")),
 		prop: "reportTimeStart",
 		valueType: "date-picker",
 	},
 	{
-		label: "报修时间结束",
+		label: transformI18n($t("property-manage_report-manage.repair-report-form.search.reportTimeEnd")),
 		prop: "reportTimeEnd",
 		valueType: "date-picker",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -230,11 +254,14 @@ function handleSearch() {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -247,7 +274,7 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
