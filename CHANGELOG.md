@@ -1,3 +1,172 @@
+## v0.11.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.10.0...v0.11.0)
+
+### ✨ 新增功能
+
+- **auth:** 实现 Neon Auth 认证服务后端 API ([5186b2b4](https://github.com/ruan-cat/11comm/commit/5186b2b4))
+- **auth:** 实现 Nitro 认证中间件 ([bd3aac9f](https://github.com/ruan-cat/11comm/commit/bd3aac9f))
+- **auth:** 实现 RLS 数据隔离和权限工具 ([c82e7ee7](https://github.com/ruan-cat/11comm/commit/c82e7ee7))
+- **types:** 添加 Auth Schema 和权限码类型定义 ([ed9b2020](https://github.com/ruan-cat/11comm/commit/ed9b2020))
+- **frontend:** 集成前端登录和 OAuth 认证 ([5541e753](https://github.com/ruan-cat/11comm/commit/5541e753))
+- **memorix:** 使用 memorix hooks install 集成 AI 记忆系统 ([e5118650](https://github.com/ruan-cat/11comm/commit/e5118650))
+- **api:** 新增首页常用菜单 Mock 接口 ([6157c861](https://github.com/ruan-cat/11comm/commit/6157c861))
+- 补充 33 个空表的 seed 数据生成逻辑 ([cc190d8b](https://github.com/ruan-cat/11comm/commit/cc190d8b))
+- **skills:** 新增 record-bug-fix-memory 错误经验沉淀技能 ([45160f18](https://github.com/ruan-cat/11comm/commit/45160f18))
+
+### 🐞 修复缺陷
+
+- **server/middleware:** 修复中间件 h3 模块导入路径 ([a599fd2c](https://github.com/ruan-cat/11comm/commit/a599fd2c))
+- **server/utils:** 修复服务端工具函数 h3 模块导入路径 ([df096cc7](https://github.com/ruan-cat/11comm/commit/df096cc7))
+- **server/api/auth:** 修复认证 API 路由 h3 模块导入路径 ([bdb0b2dc](https://github.com/ruan-cat/11comm/commit/bdb0b2dc))
+- **types:** 修复全量 TypeScript 类型错误 ([aa659901](https://github.com/ruan-cat/11comm/commit/aa659901))
+- **seed:** 修复 seed-sql 文件的导入路径 ([faabc02a](https://github.com/ruan-cat/11comm/commit/faabc02a))
+- **auth:** 修复未登录访问首页返回 401 错误 ([82692dbd](https://github.com/ruan-cat/11comm/commit/82692dbd))
+- **seed:** 修复 seed 脚本环境变量加载顺序导致 db 为 null ([44c5f85b](https://github.com/ruan-cat/11comm/commit/44c5f85b))
+- **seed:** 修复 seed 脚本数据库连接 null 错误 ([1afa364b](https://github.com/ruan-cat/11comm/commit/1afa364b))
+- **auth:** 修复认证中间件 401 错误 ([2fcf40cc](https://github.com/ruan-cat/11comm/commit/2fcf40cc))
+- **auth:** 修复生产环境 500 错误 ([d3b0f005](https://github.com/ruan-cat/11comm/commit/d3b0f005))
+- **auth:** 修复 auth 插件空指针错误 ([8f0bec9a](https://github.com/ruan-cat/11comm/commit/8f0bec9a))
+- **use-list-query:** 修复分页切换缓存未命中与重复请求 ([0978ec64](https://github.com/ruan-cat/11comm/commit/0978ec64))
+- **middleware:** 恢复日志中间件中 Node.js/Cloudflare Workers 环境差异的排错经验注释 ([dbc54271](https://github.com/ruan-cat/11comm/commit/dbc54271))
+- **test:** 修复测试用例中 setup-neon 的模块解析错误 ([eb783616](https://github.com/ruan-cat/11comm/commit/eb783616))
+
+### 🦄 代码重构
+
+- **auth:** ⚠️ 删除鉴权中间件和插件，放弃 Neon Auth 集成 ([6b54844f](https://github.com/ruan-cat/11comm/commit/6b54844f))
+- **auth:** 删除鉴权工具函数 ([e970e44c](https://github.com/ruan-cat/11comm/commit/e970e44c))
+- **api:** 删除所有鉴权 API 端点 ([683d8f21](https://github.com/ruan-cat/11comm/commit/683d8f21))
+- **docs:** 重构 MiniMax 驱动技术报告为目录结构 ([f1064813](https://github.com/ruan-cat/11comm/commit/f1064813))
+- **neon-db-query:** 将 neon-db-list 技能升级为 neon-db-query ([48b9e8d2](https://github.com/ruan-cat/11comm/commit/48b9e8d2))
+- **admin:** 移除 print 工具中的 as any 断言 ([f5379a3e](https://github.com/ruan-cat/11comm/commit/f5379a3e))
+- **admin-i18n-plugin:** ⚠️ 重整 admin i18n 插件的运行时入口 ([766a7e5a](https://github.com/ruan-cat/11comm/commit/766a7e5a))
+- **use-i18n-config:** ⚠️ 收缩 use-i18n-config 为结构层组合式 API ([bcfb34fa](https://github.com/ruan-cat/11comm/commit/bcfb34fa))
+- **redialog:** ⚠️ 让 ReDialog 支持函数型标题与按钮文案 ([e5fb7242](https://github.com/ruan-cat/11comm/commit/e5fb7242))
+
+### 📖 Documentation
+
+- 添加认证系统文档和使用指南 ([029661f6](https://github.com/ruan-cat/11comm/commit/029661f6))
+- 更新认证系统任务进度为全部完成 ([bf26c4fa](https://github.com/ruan-cat/11comm/commit/bf26c4fa))
+- 同步 Memorix 规则到 CLAUDE.md ([ddbef016](https://github.com/ruan-cat/11comm/commit/ddbef016))
+- **openspec:** 更新 nitro-api-authentication 任务文档 ([5f703f9a](https://github.com/ruan-cat/11comm/commit/5f703f9a))
+- 新增 029 和 030 号任务到「各种杂项」文档 ([a62935c4](https://github.com/ruan-cat/11comm/commit/a62935c4))
+- **nitro-api-development:** 补充 h3 导入路径高频错误陷阱说明 ([247617c3](https://github.com/ruan-cat/11comm/commit/247617c3))
+- **CLAUDE.md:** 新增 h3 导入规范说明 ([b55a06be](https://github.com/ruan-cat/11comm/commit/b55a06be))
+- **openspec/nitro-api-authentication:** 更新认证规范文档并新增分析报告 ([8898cb21](https://github.com/ruan-cat/11comm/commit/8898cb21))
+- **CLAUDE.md:** 压缩 Memorix 规则为 3 条核心规则 ([2d3c9393](https://github.com/ruan-cat/11comm/commit/2d3c9393))
+- **CLAUDE.md:** 恢复意外删除的 §16 获取技术栈上下文 ([82ad2ea4](https://github.com/ruan-cat/11comm/commit/82ad2ea4))
+- **CLAUDE.md:** 删除 §14 项目架构（可从代码目录直接推断） ([7cc35579](https://github.com/ruan-cat/11comm/commit/7cc35579))
+- **CLAUDE.md:** 删除 §13 常用开发命令（可从 package.json 查阅） ([96d306d7](https://github.com/ruan-cat/11comm/commit/96d306d7))
+- **CLAUDE.md:** 合并压缩 §8-10 Gemini 协作规范为单一章节 ([e21cbc0e](https://github.com/ruan-cat/11comm/commit/e21cbc0e))
+- **CLAUDE.md:** 删除 §6.3 具体路由举例，保留核心规则 ([8f943d96](https://github.com/ruan-cat/11comm/commit/8f943d96))
+- **CLAUDE.md:** 压缩 §4 类型项目导出规范，引用 type-project-organization 技能 ([3d1d9bc2](https://github.com/ruan-cat/11comm/commit/3d1d9bc2))
+- **CLAUDE.md:** 删除原 §3 代码格式要求（由 code-style 技能覆盖） ([d10bef61](https://github.com/ruan-cat/11comm/commit/d10bef61))
+- **CLAUDE.md:** 重新编号所有章节，修复 §3 重复 Bug ([77696443](https://github.com/ruan-cat/11comm/commit/77696443))
+- **prompts:** 删除标题中的 TODO 注释标记 ([bd374d5d](https://github.com/ruan-cat/11comm/commit/bd374d5d))
+- **skills:** 新增 TypeScript 类型错误修复和 Nitro API 开发 gotcha ([3960e142](https://github.com/ruan-cat/11comm/commit/3960e142))
+- 新增 TypeScript 类型错误修复复盘报告 ([d062c7e8](https://github.com/ruan-cat/11comm/commit/d062c7e8))
+- 删除过期的类型错误修复复盘报告 ([6065875a](https://github.com/ruan-cat/11comm/commit/6065875a))
+- 清理 prompts 文档中的 TODO 注释标记 ([12ef5317](https://github.com/ruan-cat/11comm/commit/12ef5317))
+- **auth:** 标记 nitro-api-authentication 任务全部完成 ([60c99a7d](https://github.com/ruan-cat/11comm/commit/60c99a7d))
+- 清理 prompts 文档中的 TODO 注释标记并新增认证系统任务文档 ([a5010b44](https://github.com/ruan-cat/11comm/commit/a5010b44))
+- **report:** 生成前端/全栈求职简历素材 ([ec854a85](https://github.com/ruan-cat/11comm/commit/ec854a85))
+- 修复文档中的 TODO 注释 ([f4d84d84](https://github.com/ruan-cat/11comm/commit/f4d84d84))
+- 新增数据库填充任务规划 ([37ce146f](https://github.com/ruan-cat/11comm/commit/37ce146f))
+- **openspec:** 归档 nitro-api-authentication 任务并同步 specs ([4b6f1d99](https://github.com/ruan-cat/11comm/commit/4b6f1d99))
+- 整理 500 错误排查报告文档 ([df96951b](https://github.com/ruan-cat/11comm/commit/df96951b))
+- 更新文档声明放弃鉴权，删除过时报告 ([89dcd357](https://github.com/ruan-cat/11comm/commit/89dcd357))
+- 清理文档中的 TODO 标记 ([474cee98](https://github.com/ruan-cat/11comm/commit/474cee98))
+- 补充生产环境故障排查的提示文档 ([29058510](https://github.com/ruan-cat/11comm/commit/29058510))
+- **admin:** 添加生产环境 500 错误调试报告 ([21b5d77b](https://github.com/ruan-cat/11comm/commit/21b5d77b))
+- **admin:** 添加在 Claude Code 会话中驱动 MiniMax 模型的技术报告 ([26197a3e](https://github.com/ruan-cat/11comm/commit/26197a3e))
+- **admin:** 标记 MiniMax 驱动技术报告为高价值内容 ([fd3bc9f5](https://github.com/ruan-cat/11comm/commit/fd3bc9f5))
+- ⚠️ 标记驱动 MiniMax 模型技术报告为重要参考资料 ([1240a51f](https://github.com/ruan-cat/11comm/commit/1240a51f))
+- 新增 fill-database-tables OpenSpec 变更规范 ([4868c02d](https://github.com/ruan-cat/11comm/commit/4868c02d))
+- **openspec:** 为 fill-database-tables 任务添加 Agent Team 并行执行策略 ([bc682b16](https://github.com/ruan-cat/11comm/commit/bc682b16))
+- ⚠️ 细粒化 fill-database-tables 任务清单为待办列表格式 ([cdc910df](https://github.com/ruan-cat/11comm/commit/cdc910df))
+- 删除 index.md 中的过时 TODO 标记 ([2f09e1ec](https://github.com/ruan-cat/11comm/commit/2f09e1ec))
+- **neon-db-query:** 更新技能中的数据库表清单 ([1e4efe65](https://github.com/ruan-cat/11comm/commit/1e4efe65))
+- **openspec:** 同步多代理 OpenSpec 技能与命令文档 ([3a4695f2](https://github.com/ruan-cat/11comm/commit/3a4695f2))
+- **openspec:** 归档 fill-database-tables 变更 ([ddfb2b40](https://github.com/ruan-cat/11comm/commit/ddfb2b40))
+- **reports:** 更新风险评估报告筛选标准 ([67403366](https://github.com/ruan-cat/11comm/commit/67403366))
+- **prompts:** 添加风险报告更新任务提示词 ([d62f6d07](https://github.com/ruan-cat/11comm/commit/d62f6d07))
+- **ai-guidelines:** 同步并精简代理记忆与技能说明 ([9db8efb2](https://github.com/ruan-cat/11comm/commit/9db8efb2))
+- **prompts:** 更新杂项提示中的 i18n 任务记录 ([5031875b](https://github.com/ruan-cat/11comm/commit/5031875b))
+- **report:** 追加生产环境 i18n 复核与修复进度 ([e32cf7dd](https://github.com/ruan-cat/11comm/commit/e32cf7dd))
+- **code-style:** ⚠️ 重写 code-style 技能中的 admin i18n 规范 ([1558bd1f](https://github.com/ruan-cat/11comm/commit/1558bd1f))
+- **frontend-development:** ⚠️ 同步 frontend-development 技能到当前列表页与表单页写法 ([82c86663](https://github.com/ruan-cat/11comm/commit/82c86663))
+- **i18n-progress-plan:** ⚠️ 新增按业务路由索引的 i18n 改造进度账本 ([fa575619](https://github.com/ruan-cat/11comm/commit/fa575619))
+- **i18n-prompts:** ⚠️ 整理 i18n 提示词与杂项索引文档 ([3ccee807](https://github.com/ruan-cat/11comm/commit/3ccee807))
+- **i18n-audit-report:** ⚠️ 补充 admin i18n 审计路线与修复进度报告 ([054bdcd9](https://github.com/ruan-cat/11comm/commit/054bdcd9))
+- **i18n-prompts:** 更新 i18n 改造提示词文档 ([52e3a80f](https://github.com/ruan-cat/11comm/commit/52e3a80f))
+- **i18n-progress:** 更新 i18n 路由进度计划至 A=36 B=0 D=64 ([2a3e1225](https://github.com/ruan-cat/11comm/commit/2a3e1225))
+- **i18n-progress:** 更新 i18n 路由改造进度文档至全部完成 ([b96da583](https://github.com/ruan-cat/11comm/commit/b96da583))
+- **skills:** 在三个 AI 记忆文件中同步新增技能表章节 ([f7709819](https://github.com/ruan-cat/11comm/commit/f7709819))
+- **admin:** 更新 i18n 相关计划进度与提示词文档 ([be64b2e7](https://github.com/ruan-cat/11comm/commit/be64b2e7))
+
+### 🔨 构建相关
+
+- **typed-router:** ⚠️ 修正自动路由排除规则以隐藏 components 子路由 ([ed2d53a7](https://github.com/ruan-cat/11comm/commit/ed2d53a7))
+- **type,package.json,admin:** 升级依赖；更新依赖锁文件。 ([1f77ec83](https://github.com/ruan-cat/11comm/commit/1f77ec83))
+- **type,package.json,admin:** ⚠️ 升级依赖 ([6442bf58](https://github.com/ruan-cat/11comm/commit/6442bf58))
+
+### 🏡 Chore
+
+- 添加 IDE 配置文件 ([013dd328](https://github.com/ruan-cat/11comm/commit/013dd328))
+- **db:** 添加 Neon Auth RLS 策略数据库迁移 ([6504ff81](https://github.com/ruan-cat/11comm/commit/6504ff81))
+- **db:** 清理过期的 drizzle 迁移文件 ([4a6abe1f](https://github.com/ruan-cat/11comm/commit/4a6abe1f))
+- **seed:** 生成开发环境 seed SQL 数据文件 ([241d3e52](https://github.com/ruan-cat/11comm/commit/241d3e52))
+- **admin:** 更新文档和日志中间件 ([b07ec868](https://github.com/ruan-cat/11comm/commit/b07ec868))
+- 标记生产环境故障排查任务已完成 ([8e3e6535](https://github.com/ruan-cat/11comm/commit/8e3e6535))
+- 标记 fill-database-tables 任务优化已完成 ([029600bd](https://github.com/ruan-cat/11comm/commit/029600bd))
+- 标记 fill-database-tables 任务已完成 ([f7a65a8c](https://github.com/ruan-cat/11comm/commit/f7a65a8c))
+- 修复 seed-sql 模块 TypeScript 类型错误 ([503a8f82](https://github.com/ruan-cat/11comm/commit/503a8f82))
+- 更新数据库 seed SQL 文件 ([7ea6c040](https://github.com/ruan-cat/11comm/commit/7ea6c040))
+- 标记 fill-database-tables 任务全部完成 ([3eeb0ec0](https://github.com/ruan-cat/11comm/commit/3eeb0ec0))
+- 修复 5 个空表的 seed 数据生成逻辑 ([2f796288](https://github.com/ruan-cat/11comm/commit/2f796288))
+- 更新 seed SQL 文件 ([072337b9](https://github.com/ruan-cat/11comm/commit/072337b9))
+- 更新 Claude Code 状态栏配置 ([50e97abc](https://github.com/ruan-cat/11comm/commit/50e97abc))
+
+### ✅ Tests
+
+- **auth:** 新增认证系统集成测试 ([6baa9580](https://github.com/ruan-cat/11comm/commit/6baa9580))
+
+### 🎨 Styles
+
+- **neon-db-query:** 格式化表格对齐 ([761cfecd](https://github.com/ruan-cat/11comm/commit/761cfecd))
+
+### 🔧 更新配置
+
+- 更新认证相关配置 ([ab8ce810](https://github.com/ruan-cat/11comm/commit/ab8ce810))
+- 添加 local_cache 到 .gitignore 忽略配置 ([a59fc7d0](https://github.com/ruan-cat/11comm/commit/a59fc7d0))
+- 添加 Claude Code 和 Gemini 本地配置文件 ([791053d9](https://github.com/ruan-cat/11comm/commit/791053d9))
+- **nitro:** 移除不支持的 middleware 配置 ([6afd7066](https://github.com/ruan-cat/11comm/commit/6afd7066))
+- **admin:** ⚠️ 清理 Neon Auth 相关配置 ([24b68722](https://github.com/ruan-cat/11comm/commit/24b68722))
+- **i18n-ally:** ⚠️ 收紧 VSCode i18n Ally 的自定义识别入口 ([82eb06d9](https://github.com/ruan-cat/11comm/commit/82eb06d9))
+- **deps:** 迁移 drizzle-orm 的 overrides 配置到 pnpm-workspace.yaml ([eb90d51b](https://github.com/ruan-cat/11comm/commit/eb90d51b))
+
+#### ⚠️ Breaking Changes
+
+- **auth:** ⚠️ 删除鉴权中间件和插件，放弃 Neon Auth 集成 ([6b54844f](https://github.com/ruan-cat/11comm/commit/6b54844f))
+- **admin-i18n-plugin:** ⚠️ 重整 admin i18n 插件的运行时入口 ([766a7e5a](https://github.com/ruan-cat/11comm/commit/766a7e5a))
+- **use-i18n-config:** ⚠️ 收缩 use-i18n-config 为结构层组合式 API ([bcfb34fa](https://github.com/ruan-cat/11comm/commit/bcfb34fa))
+- **redialog:** ⚠️ 让 ReDialog 支持函数型标题与按钮文案 ([e5fb7242](https://github.com/ruan-cat/11comm/commit/e5fb7242))
+- ⚠️ 标记驱动 MiniMax 模型技术报告为重要参考资料 ([1240a51f](https://github.com/ruan-cat/11comm/commit/1240a51f))
+- ⚠️ 细粒化 fill-database-tables 任务清单为待办列表格式 ([cdc910df](https://github.com/ruan-cat/11comm/commit/cdc910df))
+- **code-style:** ⚠️ 重写 code-style 技能中的 admin i18n 规范 ([1558bd1f](https://github.com/ruan-cat/11comm/commit/1558bd1f))
+- **frontend-development:** ⚠️ 同步 frontend-development 技能到当前列表页与表单页写法 ([82c86663](https://github.com/ruan-cat/11comm/commit/82c86663))
+- **i18n-progress-plan:** ⚠️ 新增按业务路由索引的 i18n 改造进度账本 ([fa575619](https://github.com/ruan-cat/11comm/commit/fa575619))
+- **i18n-prompts:** ⚠️ 整理 i18n 提示词与杂项索引文档 ([3ccee807](https://github.com/ruan-cat/11comm/commit/3ccee807))
+- **i18n-audit-report:** ⚠️ 补充 admin i18n 审计路线与修复进度报告 ([054bdcd9](https://github.com/ruan-cat/11comm/commit/054bdcd9))
+- **typed-router:** ⚠️ 修正自动路由排除规则以隐藏 components 子路由 ([ed2d53a7](https://github.com/ruan-cat/11comm/commit/ed2d53a7))
+- **type,package.json,admin:** ⚠️ 升级依赖 ([6442bf58](https://github.com/ruan-cat/11comm/commit/6442bf58))
+- **admin:** ⚠️ 清理 Neon Auth 相关配置 ([24b68722](https://github.com/ruan-cat/11comm/commit/24b68722))
+- **i18n-ally:** ⚠️ 收紧 VSCode i18n Ally 的自定义识别入口 ([82eb06d9](https://github.com/ruan-cat/11comm/commit/82eb06d9))
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## v0.10.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.9.0...v0.10.0)
