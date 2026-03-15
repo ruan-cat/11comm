@@ -25,7 +25,7 @@ import {
 } from "@01s-11comm/type";
 import { useRefundReviewListQuery } from "@/api/property-manage/expense-manage/refund-review";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表单组件实例 */
 const refundReviewFormInstance = ref<InstanceType<typeof RefundReviewForm> | null>(null);
@@ -328,6 +328,8 @@ onMounted(async () => {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>

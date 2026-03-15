@@ -23,7 +23,7 @@ import { reminderMethodOptions, reminderStatusOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useReminderForOverduePaymentsListQuery } from "@/api/property-manage/expense-manage/reminder-for-overdue-payments";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表单组件 Props 类型 */
 interface ReminderForOverduePaymentsFormProps {
@@ -284,6 +284,8 @@ onMounted(async () => {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
