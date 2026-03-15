@@ -10,7 +10,7 @@ definePage({
 });
 
 import { computed } from "vue";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
 import { useRegisterProtocolListQuery } from "@/api/setting-manage/system-manage/register-protocol";
 import type { SettingManagementRegisterProtocolDisplay } from "@01s-11comm/type";
 
