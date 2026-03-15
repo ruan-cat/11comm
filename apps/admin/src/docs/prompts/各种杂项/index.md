@@ -416,13 +416,13 @@ import { createError } from "h3";
 
 请你及时的更新 apps\admin\src\docs\reports\2026-02-20-fullstack-project-risk-analysis.md 和 apps\admin\src\docs\reports\2026-02-27-project-risk-assessment.md 这两个文档，标记其他的风险项均不属于有意义的风险项，不予考虑。
 
-## 033 <!-- TODO: --> 全面更新本项目的 i18n 配置
+## 033 全面更新本项目的 i18n 配置
 
 详情在 `apps\admin\src\docs\prompts\各种杂项\2026-3-12-i18n\index.md` 内。
 
 ## 034 <!-- TODO: --> 大批量处理 Drizzle/Nitro 类型错误
 
-仓库里仍然有服务端 Drizzle/Nitro 类型错误，属于这次修复范围。
+仓库里仍然有服务端 Drizzle/Nitro 类型错误，属于这次修复范围。需要你完成修复。
 
 ## 035 <!-- TODO: --> 全面替换 structuredClone
 

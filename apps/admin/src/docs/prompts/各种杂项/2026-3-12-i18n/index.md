@@ -1,4 +1,4 @@
-# <!-- TODO: --> 全面更新本项目的 i18n 配置
+# <!-- 已完成 --> 全面更新本项目的 i18n 配置
 
 在 `apps\admin\src\docs\plan\2026-03-13-admin-i18n-route-progress.md` 内记录任务进度。
 
@@ -133,7 +133,7 @@ pure-admin 后台框架模板：
 
 在 .claude\skills\frontend-development\SKILL.md 内的搜索栏组件部分，说明 `<PlusSearch>` 组件增加需要配置的内容。
 
-## 04 <!-- TODO: --> 持续完成本项目的 i18n 改造和补全
+## 04 持续完成本项目的 i18n 改造和补全
 
 按照 `apps\admin\src\docs\plan\2026-03-13-admin-i18n-route-progress.md` 的要求，请继续完成 i18n 的改造改写任务。
 
