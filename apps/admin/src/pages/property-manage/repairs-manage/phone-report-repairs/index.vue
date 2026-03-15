@@ -1,93 +1,113 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "电话报修",
+		// 电话报修
+		title: "propertyManage_repairsManage.phone-report-repairs.pageTitle",
 		icon: "mdi:phone-settings",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.phoneReportRepairs"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type PhoneRepairsFormProps, defaultForm } from "./components/form";
 import PhoneRepairsForm from "./components/form.vue";
 import type { PhoneReportRepairsListItem, PhoneReportRepairsQueryParams, PhoneRepairsFormVO } from "@01s-11comm/type";
 import { repairTypeOptions, repairStatusOptions } from "@01s-11comm/type";
 import { usePhoneReportRepairsListQuery } from "@/api/property-manage/repairs-manage/phone-report-repairs";
+
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 const phoneRepairsFormInstance = ref<InstanceType<typeof PhoneRepairsForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "工单编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.workOrderNumber")),
+		),
 		prop: "workOrderNumber",
 		width: 120,
 	},
 	{
-		label: "位置",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.location")),
+		),
 		prop: "location",
 		width: 120,
 	},
 	{
-		label: "报修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.repairType")),
+		),
 		prop: "repairType",
 		width: 120,
 	},
 	{
-		label: "报修人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.reporter")),
+		),
 		prop: "reporter",
 		width: 120,
 	},
 	{
-		label: "联系方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.contactInfo")),
+		),
 		prop: "contactInfo",
 		width: 120,
 	},
 	{
-		label: "预约时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.appointmentTime")),
+		),
 		prop: "appointmentTime",
 		width: 120,
 	},
 	{
-		label: "超时时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.overtimeTime")),
+		),
 		prop: "overtimeTime",
 		width: 120,
 	},
 	{
-		label: "提交时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.submitTime")),
+		),
 		prop: "submitTime",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.phone-report-repairs.fields.status")),
+		),
 		prop: "status",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "电话报修",
+/** 表格操作栏组件 配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & PhoneReportRepairsQueryParams = {
 	workOrderNumber: "",
 	reporter: "",
@@ -98,13 +118,9 @@ const plusSearchModelRef: FieldValues & PhoneReportRepairsQueryParams = {
 	pageSize: 10,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -116,57 +132,37 @@ const {
 	handleCurrentPageChange,
 } = usePhoneReportRepairsListQuery(plusSearchDefaultValues);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 工单编号
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
+		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.search.workOrderNumber")),
 		prop: "workOrderNumber",
 		valueType: "input",
 	},
-
-	// 报修人
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
+		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.search.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
-
-	// 报修电话
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
+		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.search.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 	},
-
-	// 报修类型
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
+		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.search.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
-
-	// 报修状态
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
+		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.search.status")),
 		prop: "status",
 		valueType: "select",
 		options: repairStatusOptions,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -198,9 +194,6 @@ async function testAsync() {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}电话报修`;
-
 	/** 业务对象 */
 	const formValue: PhoneRepairsFormVO = isAdd.value
 		? structuredClone(defaultForm)
@@ -216,7 +209,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);
 
-	/** 表单组件需要的props */
 	const formProps: PhoneRepairsFormProps = {
 		form: formValue,
 		defaultValues,
@@ -224,45 +216,40 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("propertyManage_repairsManage.phone-report-repairs.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.dialogs.editTitle")),
 		props: formProps,
-
 		contentRenderer: () =>
 			h(PhoneRepairsForm, {
 				ref: phoneRepairsFormInstance,
 				...formProps,
 			}),
-
 		async doBeforeClose({ options, index }) {
 			const formComputed = phoneRepairsFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// console.log(options, index, button);
 					const formComputed = phoneRepairsFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
 					phoneRepairsFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
 					const res = await phoneRepairsFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -276,22 +263,18 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-/** 新增按钮点击事件 */
 function handleAdd() {
 	openDialog({ mode: "add" });
 }
 
-/** 编辑按钮点击事件 */
 function handleEdit(row: PhoneReportRepairsListItem) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 查看按钮点击事件 */
 function handleView(row: PhoneReportRepairsListItem) {
 	openDialog({ mode: "info", row });
 }
 
-/** 删除按钮点击事件 */
 async function handleDelete(row: PhoneReportRepairsListItem) {
 	consola.log("删除", row);
 	await doFetch();
@@ -299,11 +282,14 @@ async function handleDelete(row: PhoneReportRepairsListItem) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -311,12 +297,12 @@ async function handleDelete(row: PhoneReportRepairsListItem) {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
-					{{ transformI18n($t("propertyManage_repairsManage.repairs.registration")) }}
+					{{ transformI18n($t("propertyManage_repairsManage.phone-report-repairs.buttons.registration")) }}
 				</ElButton>
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
