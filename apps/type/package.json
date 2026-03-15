@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@10.28.2",
+	"packageManager": "pnpm@10.32.1",
 	"engines": {
 		"node": ">=22.14.0"
 	},
@@ -32,8 +32,8 @@
 	"dependencies": {
 		"@ruan-cat/utils": "^4.20.0",
 		"drizzle-orm": "^0.42.0",
-		"drizzle-zod": "^0.8.0",
-		"zod": "^3.24.0"
+		"drizzle-zod": "^0.8.3",
+		"zod": "^3.25.76"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
