@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "押金报表",
+		// 押金报表
+		title: "property-manage_report-manage.deposit-report.pageTitle",
 		icon: "mdi:bank",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.depositReport"),
 	},
 });
 
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { DepositReportListItem, DepositReportQueryParams } from "@01s-11comm/type";
 import {
 	buildingOptions,
@@ -22,93 +24,119 @@ import {
 } from "@01s-11comm/type";
 import { useDepositReportListQuery } from "@/api/property-manage/report-manage/deposit-report";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "费用ID",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.feeId")),
+		),
 		prop: "费用ID",
 		minWidth: 140,
 	},
 	{
-		label: "房号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.roomNumber")),
+		),
 		prop: "房号",
 		minWidth: 140,
 	},
 	{
-		label: "业主",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.owner")),
+		),
 		prop: "业主",
 		minWidth: 180,
 	},
 	{
-		label: "费用类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.feeType")),
+		),
 		prop: "费用类型",
 		minWidth: 140,
 	},
 	{
-		label: "费用项",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.feeItem")),
+		),
 		prop: "费用项",
 		minWidth: 160,
 	},
 	{
-		label: "费用开始时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.feeStartTime")),
+		),
 		prop: "费用开始时间",
 		minWidth: 180,
 	},
 	{
-		label: "费用结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.feeEndTime")),
+		),
 		prop: "费用结束时间",
 		minWidth: 180,
 	},
 	{
-		label: "创建时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.createTime")),
+		),
 		prop: "创建时间",
 		minWidth: 180,
 	},
 	{
-		label: "付费对象类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.payerObjectType")),
+		),
 		prop: "付费对象类型",
 		minWidth: 160,
 	},
 	{
-		label: "付款方ID",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.payerId")),
+		),
 		prop: "付款方ID",
 		minWidth: 140,
 	},
 	{
-		label: "应收金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.receivableAmount")),
+		),
 		prop: "应收金额",
 		minWidth: 140,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.status")),
+		),
 		prop: "状态",
 		minWidth: 140,
 	},
 	{
-		label: "退费状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.deposit-report.fields.refundStatus")),
+		),
 		prop: "退费状态",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "押金报表",
+/** 表格操作栏组件配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.deposit-report.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<DepositReportQueryParams> = {
 	building: "",
 	unit: "",
@@ -121,14 +149,9 @@ const plusSearchModelRef: FieldValues & Partial<DepositReportQueryParams> = {
 	feeCreateEndTime: "",
 	refundStatus: "",
 };
-
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -140,96 +163,86 @@ const {
 	handleCurrentPageChange,
 } = useDepositReportListQuery(plusSearchDefaultValues);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "楼栋",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.building")),
 		prop: "building",
 		valueType: "select",
 		options: buildingOptions,
 	},
 	{
-		label: "单元",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.unit")),
 		prop: "unit",
 		valueType: "select",
 		options: unitOptions,
 	},
 	{
-		label: "房屋编号",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.roomNumber")),
 		prop: "roomNumber",
 		valueType: "input",
 	},
 	{
-		label: "费用ID",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.feeId")),
 		prop: "feeId",
 		valueType: "input",
 	},
 	{
-		label: "费用项目名称",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.feeItemName")),
 		prop: "feeItemName",
 		valueType: "select",
 		options: feeItemOptions,
 	},
 	{
-		label: "收费状态",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.chargeStatus")),
 		prop: "chargeStatus",
 		valueType: "select",
 		options: chargeStatusOptions,
 	},
 	{
-		label: "收费对象类型",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.chargeObjectType")),
 		prop: "chargeObjectType",
 		valueType: "select",
 		options: chargeObjectTypeOptions,
 	},
 	{
-		label: "费用创建开始时间",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.feeCreateStartTime")),
 		prop: "feeCreateStartTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "费用创建结束时间",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.feeCreateEndTime")),
 		prop: "feeCreateEndTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "退费状态",
+		label: transformI18n($t("property-manage_report-manage.deposit-report.search.refundStatus")),
 		prop: "refundStatus",
 		valueType: "select",
 		options: refundStatusOptions,
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -242,7 +255,7 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

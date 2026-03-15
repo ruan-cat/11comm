@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "数据统计",
+		// 数据统计
+		title: "property-manage_report-manage.data-statistics.pageTitle",
 		icon: "mdi:chart-bar",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.dataStatistics"),
@@ -9,100 +10,140 @@ definePage({
 });
 
 import dayjs from "dayjs";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import type { DataStatisticsListItem, DataStatisticsQueryParams } from "@01s-11comm/type";
 import { useDataStatisticsListQuery } from "@/api/property-manage/report-manage/data-statistics";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "小区",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.community")),
+		),
 		prop: "小区",
 		minWidth: 160,
 	},
 	{
-		label: "房屋",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.house")),
+		),
 		prop: "房屋",
 		minWidth: 160,
 	},
 	{
-		label: "业主",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.owner")),
+		),
 		prop: "业主",
 		minWidth: 180,
 	},
 	{
-		label: "欠费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.arrears")),
+		),
 		prop: "欠费",
 		minWidth: 120,
 	},
 	{
-		label: "实收",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.actualReceipt")),
+		),
 		prop: "实收",
 		minWidth: 120,
 	},
 	{
-		label: "物业费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.propertyFee")),
+		),
 		prop: "物业费",
 		minWidth: 120,
 	},
 	{
-		label: "押金",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.deposit")),
+		),
 		prop: "押金",
 		minWidth: 120,
 	},
 	{
-		label: "停车费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.parkingFee")),
+		),
 		prop: "停车费",
 		minWidth: 120,
 	},
 	{
-		label: "煤气费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.gasFee")),
+		),
 		prop: "煤气费",
 		minWidth: 120,
 	},
 	{
-		label: "取暖费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.heatingFee")),
+		),
 		prop: "取暖费",
 		minWidth: 120,
 	},
 	{
-		label: "维修费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.repairFee")),
+		),
 		prop: "维修费",
 		minWidth: 120,
 	},
 	{
-		label: "服务费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.serviceFee")),
+		),
 		prop: "服务费",
 		minWidth: 120,
 	},
 	{
-		label: "其他",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.other")),
+		),
 		prop: "其他",
 		minWidth: 120,
 	},
 	{
-		label: "水费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.waterFee")),
+		),
 		prop: "水费",
 		minWidth: 120,
 	},
 	{
-		label: "电费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.electricityFee")),
+		),
 		prop: "电费",
 		minWidth: 120,
 	},
 	{
-		label: "租金",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.rent")),
+		),
 		prop: "租金",
 		minWidth: 120,
 	},
 	{
-		label: "公摊费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.data-statistics.fields.publicShareFee")),
+		),
 		prop: "公摊费",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -110,30 +151,20 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "数据统计",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.data-statistics.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & DataStatisticsQueryParams = {
 	name: "",
 	status: "",
 	pageIndex: 1,
 	pageSize: 10,
 };
-
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -145,56 +176,46 @@ const {
 	handleCurrentPageChange,
 } = useDataStatisticsListQuery(plusSearchDefaultValues);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "开始时间",
+		label: transformI18n($t("property-manage_report-manage.data-statistics.search.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "结束时间",
+		label: transformI18n($t("property-manage_report-manage.data-statistics.search.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "小区",
+		label: transformI18n($t("property-manage_report-manage.data-statistics.search.community")),
 		prop: "community",
 		valueType: "select",
 		options: [],
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -207,7 +228,7 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -226,3 +247,8 @@ function handleSearch() {
 		</PureTableBar>
 	</section>
 </template>
+
+<style lang="scss" scoped>
+.index-root {
+}
+</style>

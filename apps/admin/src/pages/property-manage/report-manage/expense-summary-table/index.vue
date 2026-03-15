@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "费用汇总表",
+		// 费用汇总表
+		title: "property-manage_report-manage.expense-summary-table.pageTitle",
 		icon: "mdi:table-large",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.expenseSummaryTable"),
@@ -9,7 +10,8 @@ definePage({
 });
 
 import dayjs from "dayjs";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import BuildChart from "./components/build.vue";
 import PaymentChart from "./components/payment.vue";
 import {
@@ -19,115 +21,142 @@ import {
 } from "@01s-11comm/type";
 import { useExpenseSummaryTableListQuery } from "@/api/property-manage/report-manage/expense-summary-table";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "小区",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.community")),
+		),
 		prop: "小区",
 		minWidth: 140,
 	},
 	{
-		label: "房屋编号/合同名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.houseNumberContractName")),
+		),
 		prop: "房屋编号合同名称",
 		minWidth: 200,
 	},
 	{
-		label: "业主名称",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.ownerName")),
+		),
 		prop: "业主名称",
 		minWidth: 160,
 	},
 	{
-		label: "业主手机号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.ownerPhone")),
+		),
 		prop: "业主手机号",
 		minWidth: 160,
 	},
 	{
-		label: "费用项",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.feeItem")),
+		),
 		prop: "费用项",
 		minWidth: 140,
 	},
 	{
-		label: "总户数",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.totalHouseholds")),
+		),
 		prop: "总户数",
 		minWidth: 120,
 	},
 	{
-		label: "收费户",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.chargedHouseholds")),
+		),
 		prop: "收费户",
 		minWidth: 120,
 	},
 	{
-		label: "欠费户",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.arrearsHouseholds")),
+		),
 		prop: "欠费户",
 		minWidth: 120,
 	},
 	{
-		label: "欠费",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.arrears")),
+		),
 		prop: "欠费",
 		minWidth: 140,
 	},
 	{
-		label: "实缴",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.actualPayment")),
+		),
 		prop: "实缴",
 		minWidth: 140,
 	},
 	{
-		label: "当期应收",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.currentReceivable")),
+		),
 		prop: "当期应收",
 		minWidth: 140,
 	},
 	{
-		label: "当前实收",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.currentActualReceipt")),
+		),
 		prop: "当前实收",
 		minWidth: 140,
 	},
 	{
-		label: "户收费率",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.householdChargeRate")),
+		),
 		prop: "户收费率",
 		minWidth: 140,
 	},
 	{
-		label: "收费率",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.chargeRate")),
+		),
 		prop: "收费率",
 		minWidth: 140,
 	},
 	{
-		label: "清缴率",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.clearanceRate")),
+		),
 		prop: "清缴率",
 		minWidth: 140,
 	},
 	{
-		label: "统计时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.expense-summary-table.fields.statisticsTime")),
+		),
 		prop: "统计时间",
 		minWidth: 180,
 	},
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "费用汇总表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.expense-summary-table.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & Partial<ExpenseSummaryTableQueryParams> = {
 	time: "",
 	expenseItemId: "",
 	expenseItemName: "",
 };
-
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -139,28 +168,24 @@ const {
 	handleCurrentPageChange,
 } = useExpenseSummaryTableListQuery(plusSearchDefaultValues);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "房屋编号/合同名称",
+		label: transformI18n($t("property-manage_report-manage.expense-summary-table.search.houseNumberContractName")),
 		prop: "房屋编号合同名称",
 		valueType: "input",
 	},
 	{
-		label: "业主名称",
+		label: transformI18n($t("property-manage_report-manage.expense-summary-table.search.ownerName")),
 		prop: "业主名称",
 		valueType: "input",
 	},
 	{
-		label: "业主手机号",
+		label: transformI18n($t("property-manage_report-manage.expense-summary-table.search.ownerPhone")),
 		prop: "业主手机号",
 		valueType: "input",
 	},
 	{
-		label: "费用项名称",
+		label: transformI18n($t("property-manage_report-manage.expense-summary-table.search.expenseItemName")),
 		prop: "expenseItemName",
 		valueType: "select",
 		options: expenseItemNameOptions,
@@ -171,33 +196,27 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -210,7 +229,7 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -223,11 +242,11 @@ function handleSearch() {
 		</PureTableBar>
 
 		<div>
-			楼栋收费率统计柱状图
+			{{ transformI18n($t("property-manage_report-manage.expense-summary-table.charts.buildingChargeRate")) }}
 			<BuildChart />
 		</div>
 		<div>
-			费用项收费率统计柱状图
+			{{ transformI18n($t("property-manage_report-manage.expense-summary-table.charts.feeItemChargeRate")) }}
 			<PaymentChart />
 		</div>
 	</section>
