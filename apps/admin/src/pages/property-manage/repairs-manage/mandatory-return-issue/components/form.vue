@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { MandatoryReturnIssueFormProps } from "./form";
 import type { MandatoryReturnIssueFormVO } from "@01s-11comm/type";
 import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<MandatoryReturnIssueFormProps>();
+
+const { withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & MandatoryReturnIssueFormVO;
@@ -14,126 +19,113 @@ const defaultValues = props.defaultValues as FieldValues & MandatoryReturnIssueF
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & MandatoryReturnIssueFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & MandatoryReturnIssueFormVO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
 const form = ref(toRefForm);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "工单编号",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.workOrderNumber")),
 		prop: "workOrderNumber",
 		valueType: "input",
-		fieldProps: {
-			disabled: true,
-		},
+		fieldProps: { disabled: true },
 	},
 	{
-		label: "位置",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.location")),
 		prop: "location",
 		valueType: "input",
 	},
 	{
-		label: "报修类型",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
-		label: "报修人",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
 	{
-		label: "联系方式",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.contactInfo")),
 		prop: "contactInfo",
 		valueType: "input",
 	},
 	{
-		label: "预约时间",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.appointmentTime")),
 		prop: "appointmentTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "提交时间",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.submitTime")),
 		prop: "submitTime",
 		valueType: "input",
-		fieldProps: {
-			disabled: true,
-		},
+		fieldProps: { disabled: true },
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: mandatoryReturnIssueStatusOptions,
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	location: [
 		{
 			required: true,
-			message: "请输入位置",
+			message: transformI18n(
+				$t("propertyManage_repairsManage.mandatory-return-issue.form.validation.locationRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	repairType: [
 		{
 			required: true,
-			message: "请选择报修类型",
+			message: transformI18n(
+				$t("propertyManage_repairsManage.mandatory-return-issue.form.validation.repairTypeRequired"),
+			),
 			trigger: "change",
 		},
 	],
 	reporter: [
 		{
 			required: true,
-			message: "请输入报修人",
+			message: transformI18n(
+				$t("propertyManage_repairsManage.mandatory-return-issue.form.validation.reporterRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	contactInfo: [
 		{
 			required: true,
-			message: "请输入联系方式",
+			message: transformI18n(
+				$t("propertyManage_repairsManage.mandatory-return-issue.form.validation.contactInfoRequired"),
+			),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: "请选择状态",
+			message: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.form.validation.statusRequired")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
-/** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-/** 对外导出 */
 defineExpose({
 	plusFormInstance,
 	formComputed,

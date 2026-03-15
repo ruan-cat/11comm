@@ -1,17 +1,19 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "强制回单",
+		// 强制回单
+		title: "propertyManage_repairsManage.mandatory-return-issue.pageTitle",
 		icon: "mdi:clipboard-alert",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.mandatoryReturnIssue"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type MandatoryReturnIssueFormProps, defaultForm } from "./components/form";
 import MandatoryReturnIssueForm from "./components/form.vue";
@@ -23,6 +25,8 @@ import type {
 } from "@01s-11comm/type";
 import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
@@ -30,67 +34,83 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const mandatoryReturnIssueFormInstance = ref<InstanceType<typeof MandatoryReturnIssueForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "工单编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.workOrderNumber")),
+		),
 		prop: "workOrderNumber",
 		width: 120,
 	},
 	{
-		label: "位置",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.location")),
+		),
 		prop: "location",
 		width: 120,
 	},
 	{
-		label: "报修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.repairType")),
+		),
 		prop: "repairType",
 		width: 120,
 	},
 	{
-		label: "报修人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.reporter")),
+		),
 		prop: "reporter",
 		width: 120,
 	},
 	{
-		label: "联系方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.contactInfo")),
+		),
 		prop: "contactInfo",
 		width: 120,
 	},
 	{
-		label: "预约时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.appointmentTime")),
+		),
 		prop: "appointmentTime",
 		width: 120,
 	},
 	{
-		label: "提交时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.submitTime")),
+		),
 		prop: "submitTime",
 		width: 120,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.fields.status")),
+		),
 		prop: "status",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "强制回单",
+/** 表格操作栏组件 配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.pageTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & MandatoryReturnIssueQueryParams = {
 	repairType: "",
@@ -120,35 +140,28 @@ const {
 
 /**
  * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "报修类型",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.search.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
-		label: "报修人",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.search.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
 	{
-		label: "报修电话",
+		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.search.contactPhone")),
 		prop: "contactPhone",
 		valueType: "input",
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+/** 表格搜索栏组件 配置 */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -176,9 +189,6 @@ function openDialog(params: { mode: Mode; row?: MandatoryReturnIssueListItem }) 
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}强制回单`;
-
 	/** 业务对象 */
 	const 业务对象: MandatoryReturnIssueFormVO = isAdd.value
 		? structuredClone(defaultForm)
@@ -204,7 +214,10 @@ function openDialog(params: { mode: Mode; row?: MandatoryReturnIssueListItem }) 
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(MandatoryReturnIssueForm, {
@@ -217,24 +230,22 @@ function openDialog(params: { mode: Mode; row?: MandatoryReturnIssueListItem }) 
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const formComputed = mandatoryReturnIssueFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
 					mandatoryReturnIssueFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await mandatoryReturnIssueFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -278,16 +289,18 @@ async function handleMandatoryReturn(row: MandatoryReturnIssueListItem) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
 
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="handleAdd">
@@ -296,7 +309,7 @@ async function handleMandatoryReturn(row: MandatoryReturnIssueListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -310,7 +323,7 @@ async function handleMandatoryReturn(row: MandatoryReturnIssueListItem) {
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
 						<ElButton type="warning" @click="handleMandatoryReturn(row)">
-							{{ transformI18n($t("propertyManage_repairsManage.repairs.return")) }}
+							{{ transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.buttons.mandatoryReturn")) }}
 						</ElButton>
 						<ElButton type="warning" @click="handleEdit(row)">
 							{{ transformI18n($t("common.buttons.edit")) }}
