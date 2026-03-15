@@ -1,10 +1,11 @@
 // @ts-nocheck
 import Sortable from "sortablejs";
 import { ElDropdownItem, ElDropdownMenu } from "element-plus";
+import type { TableColumns } from "@pureadmin/table";
 import { transformI18n } from "@/plugins/i18n";
 import { useEpThemeStoreHook } from "@/store/modules/epTheme";
-import { type PropType, ref, unref, computed, nextTick, defineComponent, getCurrentInstance } from "vue";
-import { delay, cloneDeep, isBoolean, isFunction, getKeyList } from "@pureadmin/utils";
+import { type PropType, ref, unref, computed, nextTick, defineComponent, getCurrentInstance, isVNode } from "vue";
+import { delay, cloneDeep, isBoolean, isFunction } from "@pureadmin/utils";
 
 import Fullscreen from "~icons/ri/fullscreen-fill";
 import ExitFullscreen from "~icons/ri/fullscreen-exit-fill";
@@ -55,11 +56,86 @@ export default defineComponent({
 		const isIndeterminate = ref(false);
 		const instance = getCurrentInstance()!;
 		const isExpandAll = ref(props.isExpandAll);
+
+		/**
+		 * 统一解析列设置弹层里使用的列名。
+		 *
+		 * 这个函数故意放在 `setup` 内部，只服务当前组件自身，
+		 * 避免被组件外部误复用后逐渐演变成新的公共入口。
+		 *
+		 * 之前这里直接读取 `label`，但项目现在为了让表头跟随 i18n 动态切换，
+		 * 很多列已经改成只配置 `headerRenderer`。如果列设置弹层还只认 `label`，
+		 * 这些列就会直接从筛选列表里消失，表现出来就是“表格列无法筛选”。
+		 *
+		 * 因此这里统一兼容两种来源：
+		 * 1. 旧写法里的 `label`
+		 * 2. 新写法里的 `headerRenderer`
+		 *
+		 * 同时把 `headerRenderer` 的返回值限制在当前组件内部解析，确保
+		 * 勾选、重置、固定列判断都使用完全相同的一套规则，减少后续分叉。
+		 */
+		function getColumnFilterLabel(column: TableColumns, index = 0): string | undefined {
+			function extractRenderedHeaderText(renderedHeader: unknown): string | undefined {
+				if (typeof renderedHeader === "string" || typeof renderedHeader === "number") {
+					const text = String(renderedHeader).trim();
+					return text || undefined;
+				}
+
+				if (Array.isArray(renderedHeader)) {
+					const text = renderedHeader
+						.map((item) => extractRenderedHeaderText(item))
+						.filter(Boolean)
+						.join("")
+						.trim();
+
+					return text || undefined;
+				}
+
+				if (isVNode(renderedHeader)) {
+					return extractRenderedHeaderText(renderedHeader.children);
+				}
+
+				return undefined;
+			}
+
+			if (typeof column?.label === "string" && column.label.trim()) {
+				return column.label;
+			}
+
+			if (!isFunction(column?.headerRenderer)) {
+				return undefined;
+			}
+
+			return extractRenderedHeaderText(
+				column.headerRenderer({
+					column,
+					$index: index,
+					index,
+					props: {},
+					attrs: {},
+				}),
+			);
+		}
+
+		/** 统一生成列设置弹层使用的列名列表，避免重复书写相同的遍历逻辑。 */
+		function getColumnFilterLabelList(columns: TableColumnList = []) {
+			const labelList: string[] = [];
+
+			columns.forEach((column, index) => {
+				const label = getColumnFilterLabel(column, index);
+				if (label) {
+					labelList.push(label);
+				}
+			});
+
+			return labelList;
+		}
+
 		const filterColumns = cloneDeep(props?.columns).filter((column) =>
 			isBoolean(column?.hide) ? !column.hide : !(isFunction(column?.hide) && column?.hide()),
 		);
-		let checkColumnList = getKeyList(cloneDeep(props?.columns), "label");
-		const checkedColumns = ref(getKeyList(cloneDeep(filterColumns), "label"));
+		let checkColumnList = getColumnFilterLabelList(cloneDeep(props?.columns));
+		const checkedColumns = ref(getColumnFilterLabelList(cloneDeep(filterColumns)));
 		const dynamicColumns = ref(cloneDeep(props?.columns));
 
 		const getDropdownItemStyle = computed(() => {
@@ -134,7 +210,12 @@ export default defineComponent({
 		}
 
 		function handleCheckColumnListChange(val: boolean, label: string) {
-			dynamicColumns.value.filter((item) => transformI18n(item.label) === transformI18n(label))[0].hide = !val;
+			const targetColumn = dynamicColumns.value.find(
+				(item, index) => transformI18n(getColumnFilterLabel(item, index) ?? "") === transformI18n(label),
+			);
+			if (targetColumn) {
+				targetColumn.hide = !val;
+			}
 		}
 
 		async function onReset() {
@@ -142,8 +223,8 @@ export default defineComponent({
 			isIndeterminate.value = false;
 			dynamicColumns.value = cloneDeep(props?.columns);
 			checkColumnList = [];
-			checkColumnList = await getKeyList(cloneDeep(props?.columns), "label");
-			checkedColumns.value = getKeyList(cloneDeep(filterColumns), "label");
+			checkColumnList = await getColumnFilterLabelList(cloneDeep(props?.columns));
+			checkedColumns.value = getColumnFilterLabelList(cloneDeep(filterColumns));
 		}
 
 		const dropdown = {
@@ -194,7 +275,9 @@ export default defineComponent({
 		};
 
 		const isFixedColumn = (label: string) => {
-			return dynamicColumns.value.filter((item) => transformI18n(item.label) === transformI18n(label))[0].fixed
+			return dynamicColumns.value.find(
+				(item, index) => transformI18n(getColumnFilterLabel(item, index) ?? "") === transformI18n(label),
+			)?.fixed
 				? true
 				: false;
 		};

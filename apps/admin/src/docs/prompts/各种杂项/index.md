@@ -420,10 +420,18 @@ import { createError } from "h3";
 
 详情在 `apps\admin\src\docs\prompts\各种杂项\2026-3-12-i18n\index.md` 内。
 
-## 034 <!-- TODO: --> 大批量处理 Drizzle/Nitro 类型错误
+## 034 <!-- 已完成 --> 大批量处理 Drizzle/Nitro 类型错误
 
 仓库里仍然有服务端 Drizzle/Nitro 类型错误，属于这次修复范围。需要你完成修复。
 
-## 035 <!-- TODO: --> 全面替换 structuredClone
+## 035 <!-- TODO: --> 修复表格列无法筛选的问题
+
+请注意 `apps\admin\src\components\RePureTableBar\src\bar.tsx` 的逻辑，注意到全部使用 `getKeyList` 的逻辑。这里的逻辑是从传入的数组内，筛选出全部含有 label 字段的配置。但是我们项目情况改动很大了。我们项目的表格列配置，现在为了实现全面的，有效的 i18n，都不配置 label 字段来显示表格的表头了。都是用 headerRenderer 字段的函数，来实现动态变化的表头了。
+
+RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你修复。我需要你封装一个函数，确保能够同时筛选到表格列数组配置包含 label 和 headerRenderer 字段的内容。
+
+封装合适的函数，确保调用优雅清晰。且提供详细清晰的注释，说明清楚为什么要这样改动。
+
+## 036 <!-- TODO: --> 全面替换 structuredClone
 
 全面替换，废弃，不使用 structuredClone，因为弹窗打开时会因为 Vue props proxy 报错。换成 cloneDeep 。
