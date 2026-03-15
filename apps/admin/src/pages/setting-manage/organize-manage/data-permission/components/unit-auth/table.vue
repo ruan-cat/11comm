@@ -16,11 +16,6 @@ interface UnitAuthItem {
 
 const { locale, withLocale, createHeaderRenderer } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const tableData = ref<UnitAuthItem[]>([]);
 const unitAuthFormInstance = ref<InstanceType<typeof UnitAuthForm> | null>(null);
 const [isLoadingT, setIsLoadingT] = useToggle(false);
@@ -34,20 +29,24 @@ async function testAsync() {
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.building"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.building")),
+		),
 		prop: "building",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unit"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unit")),
+		),
 		prop: "unit",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 90,
 		fixed: "right",
 		slot: "operation",
@@ -69,7 +68,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 }));
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.title")),
+	title: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.title")),
 	columns: columns.value,
 }));
 
@@ -83,7 +82,7 @@ function openUnitAuthDialog() {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title: () => renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.dialogTitle")),
+		title: () => transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.dialogTitle")),
 		width: "900px",
 		contentRenderer: () =>
 			h(UnitAuthForm, {
@@ -98,7 +97,7 @@ function openUnitAuthDialog() {
 		},
 		footerButtons: [
 			{
-				label: () => renderI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = unitAuthFormInstance.value?.formComputed;
@@ -108,19 +107,19 @@ function openUnitAuthDialog() {
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					unitAuthFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
 			{
-				label: () => renderI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const selectedData = unitAuthFormInstance.value?.getSelectedData?.() ?? [];
 					if (selectedData.length === 0) {
-						message(renderI18n($t("settingManage.organizeManage.common.messages.unitRequired")), {
+						message(transformI18n($t("settingManage.organizeManage.common.messages.unitRequired")), {
 							type: "warning",
 						});
 						return;
@@ -136,7 +135,7 @@ function openUnitAuthDialog() {
 					}));
 
 					tableData.value.push(...newData);
-					message(renderI18n($t("settingManage.organizeManage.common.messages.unitAssociateSuccess")), {
+					message(transformI18n($t("settingManage.organizeManage.common.messages.unitAssociateSuccess")), {
 						type: "success",
 					});
 					closeDialog(options, index);
@@ -150,7 +149,7 @@ function handleDelete(row: UnitAuthItem) {
 	const index = tableData.value.findIndex((item) => item.building === row.building && item.unit === row.unit);
 	if (index > -1) {
 		tableData.value.splice(index, 1);
-		message(renderI18n($t("settingManage.organizeManage.common.messages.deleteSuccess")), { type: "success" });
+		message(transformI18n($t("settingManage.organizeManage.common.messages.deleteSuccess")), { type: "success" });
 	}
 }
 
@@ -168,11 +167,7 @@ async function doFetch() {}
 
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-				<PureTable
-					:="pureTableProps"
-					:columns="dynamicColumns"
-					:size="size"
-				>
+				<PureTable :="pureTableProps" :columns="dynamicColumns" :size="size">
 					<template #operation="{ row }">
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}

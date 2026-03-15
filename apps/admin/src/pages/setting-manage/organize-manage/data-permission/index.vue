@@ -19,11 +19,6 @@ import { useDataPermissionListQuery } from "@/api/setting-manage/organize-manage
 
 const { locale, withLocale } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
 
 const { tableData, isFetching } = useDataPermissionListQuery({});
@@ -47,12 +42,12 @@ const rightTitle = withLocale(() => {
 		return selectedItem.value.name;
 	}
 
-	return renderI18n($t("settingManage.organizeManage.dataPermission.defaultTitle"));
+	return transformI18n($t("settingManage.organizeManage.dataPermission.defaultTitle"));
 });
 
 const tabLabels = withLocale(() => ({
-	unitAuth: renderI18n($t("settingManage.organizeManage.dataPermission.tabs.unitAuth")),
-	staffRelation: renderI18n($t("settingManage.organizeManage.dataPermission.tabs.staffRelation")),
+	unitAuth: transformI18n($t("settingManage.organizeManage.dataPermission.tabs.unitAuth")),
+	staffRelation: transformI18n($t("settingManage.organizeManage.dataPermission.tabs.staffRelation")),
 }));
 
 function handleItemClick(item: DataPermission) {

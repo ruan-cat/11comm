@@ -18,46 +18,51 @@ interface StaffRelationSearchForm {
 
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const tableRef = useTemplateRef("tableRef");
 const tableData = ref<StaffRelationItem[]>([]);
 
 const columns = withLocale<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.index"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.name"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.name")),
+		),
 		prop: "name",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.phone"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.phone")),
+		),
 		prop: "phone",
 		width: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.email"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.email")),
+		),
 		prop: "email",
 		width: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.address"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.address")),
+		),
 		prop: "address",
 		minWidth: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.gender"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.gender")),
+		),
 		prop: "gender",
 		width: 80,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 160,
 		fixed: "right",
 		slot: "operation",
@@ -79,7 +84,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 }));
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.title")),
+	title: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.title")),
 	columns: columns.value,
 }));
 
@@ -93,19 +98,19 @@ const plusSearchModel = ref(plusSearchModelRef);
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
 		prop: "name",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
+			placeholder: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
 		prop: "phone",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
+			placeholder: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeePhone")),
 		},
 	},
 ]);
@@ -163,12 +168,7 @@ defineExpose({
 
 			<template #default="{ size, dynamicColumns }">
 				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-				<PureTable
-					ref="tableRef"
-					:="pureTableProps"
-					:columns="dynamicColumns"
-					:size="size"
-				>
+				<PureTable ref="tableRef" :="pureTableProps" :columns="dynamicColumns" :size="size">
 					<template #operation="{ row }">
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}

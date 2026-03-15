@@ -17,11 +17,6 @@ import {
 const props = defineProps<UnitAuthFormProps>();
 const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
-
 const defaultValues = props.defaultValues as FieldValues & UnitSelectionFormVO;
 const plusFormInstance = useTemplateRef<any>("plusFormRef");
 usePlusFormReset(plusFormInstance);
@@ -36,19 +31,19 @@ const searchForm = ref<UnitSelectionSearchVO>({
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
 		prop: "buildingCode",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
+			placeholder: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
 		},
 	},
 	{
-		label: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
+		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
 		prop: "unitCode",
 		valueType: "input",
 		fieldProps: {
-			placeholder: renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
+			placeholder: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
 		},
 	},
 ]);
@@ -59,8 +54,7 @@ const tableData = ref<UnitSelectionItemVO[]>(unitSelectionMockData);
 
 const filteredTableData = computed(() =>
 	tableData.value.filter((item) => {
-		const buildingMatch =
-			!searchForm.value.buildingCode || item.buildingCode.includes(searchForm.value.buildingCode);
+		const buildingMatch = !searchForm.value.buildingCode || item.buildingCode.includes(searchForm.value.buildingCode);
 		const unitMatch = !searchForm.value.unitCode || item.unitCode.includes(searchForm.value.unitCode);
 		return buildingMatch && unitMatch;
 	}),
@@ -72,12 +66,16 @@ const columns = withLocale<TableColumnList>(() => [
 		width: 55,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
+		),
 		prop: "buildingCode",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.unitCode")),
+		),
 		prop: "unitCode",
 		minWidth: 200,
 	},
