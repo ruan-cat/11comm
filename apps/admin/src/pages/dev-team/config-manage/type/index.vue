@@ -9,7 +9,8 @@ definePage({
 	},
 });
 
-import { cloneDeep, ref } from "vue";
+import { ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { type DictionaryTypeQueryParams, dictionaryTypeStatusOptions } from "@01s-11comm/type";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useDictionaryTypeListQuery } from "@/api/dev-team/config-manage/type";

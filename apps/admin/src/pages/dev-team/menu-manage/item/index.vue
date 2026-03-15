@@ -9,7 +9,8 @@ definePage({
 	},
 });
 
-import { cloneDeep, ref } from "vue";
+import { ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { $t, transformI18n } from "@/plugins/i18n";
