@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -27,7 +27,7 @@ import type {
 } from "@01s-11comm/type";
 import { useInitializeCommunityListQuery } from "@/api/setting-manage/system-manage/initialize-cell";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -36,13 +36,13 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const initItemTextMap = withLocale(() => ({
+const initItemTextMap = computed(() => ({
 	初始化楼栋: transformI18n($t("settingManage.systemManage.initializeCell.options.items.building")),
 	初始化房屋: transformI18n($t("settingManage.systemManage.initializeCell.options.items.house")),
 	初始化车位: transformI18n($t("settingManage.systemManage.initializeCell.options.items.parking")),
 }));
 
-const initStatusTextMap = withLocale(() => ({
+const initStatusTextMap = computed(() => ({
 	已完成: transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.completed")),
 	初始化中: transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.inProgress")),
 	待初始化: transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.pending")),
@@ -56,7 +56,7 @@ function translateInitStatusLabel(value?: string | null) {
 	return translateFromRecord(initStatusTextMap.value, value);
 }
 
-const translatedInitItemOptions = withLocale(() => [
+const translatedInitItemOptions = computed(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.initializeCell.options.items.building")),
 		value: "初始化楼栋",
@@ -71,7 +71,7 @@ const translatedInitItemOptions = withLocale(() => [
 	},
 ]);
 
-const translatedInitStatusOptions = withLocale(() => [
+const translatedInitStatusOptions = computed(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.pending")),
 		value: "待初始化",
@@ -107,22 +107,28 @@ const {
 	pureTableProps,
 } = useInitializeCommunityListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.initializeCell.fields.initItem"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.initializeCell.fields.initItem")),
+		),
 		prop: "initItem",
 		minWidth: 150,
 		cellRenderer: ({ row }) => translateInitItemLabel(row.initItem),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.initializeCell.fields.initStatus"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.initializeCell.fields.initStatus")),
+		),
 		prop: "initStatus",
 		width: 120,
 		cellRenderer: ({ row }) => translateInitStatusLabel(row.initStatus),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.initializeCell.fields.configParams"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.initializeCell.fields.configParams")),
+		),
 		prop: "configParams",
 		minWidth: 220,
 		cellRenderer: ({ row }) => JSON.stringify(row.configParams ?? {}),
@@ -135,12 +141,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.systemManage.initializeCell.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.initItem")),
 		prop: "initItem",

@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -22,7 +22,7 @@ import type { StaffInfo, StaffInfoFormVO, StaffInfoListQuery } from "@01s-11comm
 import { defaultForm, type StaffInfoFormProps } from "./components/form";
 import StaffInfoForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<StaffInfoListQuery> = {
 	id: "",
@@ -77,7 +77,7 @@ function translateGenderLabel(value?: string | null) {
 
 const staffInfoFormInstance = ref<InstanceType<typeof StaffInfoForm> | null>(null);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		headerRenderer: createHeaderRenderer(
 			transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeNumber")),
@@ -130,12 +130,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.organizeManage.staffInfo.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.employeeId")),
 		prop: "id",

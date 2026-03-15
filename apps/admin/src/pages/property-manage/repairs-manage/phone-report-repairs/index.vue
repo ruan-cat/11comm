@@ -21,12 +21,12 @@ import type { PhoneReportRepairsListItem, PhoneReportRepairsQueryParams, PhoneRe
 import { repairTypeOptions, repairStatusOptions } from "@01s-11comm/type";
 import { usePhoneReportRepairsListQuery } from "@/api/property-manage/repairs-manage/phone-report-repairs";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const phoneRepairsFormInstance = ref<InstanceType<typeof PhoneRepairsForm> | null>(null);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -103,7 +103,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.pageTitle")),
 	columns: columns.value,
 }));
@@ -132,7 +132,7 @@ const {
 	handleCurrentPageChange,
 } = usePhoneReportRepairsListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.search.workOrderNumber")),
 		prop: "workOrderNumber",

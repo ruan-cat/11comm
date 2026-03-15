@@ -23,7 +23,7 @@ import { reminderMethodOptions, reminderStatusOptions } from "@01s-11comm/type";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { useReminderForOverduePaymentsListQuery } from "@/api/property-manage/expense-manage/reminder-for-overdue-payments";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表单组件 Props 类型 */
 interface ReminderForOverduePaymentsFormProps {
@@ -86,7 +86,7 @@ async function testAsync() {
 }
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -135,7 +135,7 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 名称 */
 	{
 		label: transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.search.name")),
@@ -155,7 +155,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格操作栏组件 配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.tableTitle")),
 	columns: columns.value,
 }));

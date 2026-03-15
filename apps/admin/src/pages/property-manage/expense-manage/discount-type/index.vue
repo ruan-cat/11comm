@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
@@ -28,7 +28,7 @@ import { consola } from "consola";
 import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
 const { setMode, isAdd, isEdit, isInfo } = useMode();
@@ -63,7 +63,7 @@ const {
 } = useDiscountTypeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{ ...defaultPureTableIndexColumn, headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))) },
 	{
 		prop: "id",
@@ -116,7 +116,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_expense-manage.discount-type.tableTitle")),
 	columns: columns.value,
 }));
@@ -125,7 +125,7 @@ const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 折扣ID */
 	{
 		label: transformI18n($t("property-manage_expense-manage.discount-type.search.discountId")),

@@ -7,7 +7,7 @@ import { invoiceTypeOptions } from "@01s-11comm/type";
 import { type InvoiceTitleFormProps } from "./form";
 import type { InvoiceTitleFormVO } from "@01s-11comm/type";
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();
@@ -34,7 +34,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_house-property-manage.invoice-title.fields.ownerName")),
 		prop: "ownerName",
@@ -112,7 +112,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	ownerName: [
 		{
 			required: true,

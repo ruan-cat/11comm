@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -26,7 +26,7 @@ import { useCommunityConfigListQuery } from "@/api/operation-team/system-manage/
 import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -35,7 +35,7 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const settingTypeTextMap = withLocale(() => ({
+const settingTypeTextMap = computed(() => ({
 	系统设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.system")),
 	业务设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.business")),
 	界面设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.ui")),
@@ -43,7 +43,7 @@ const settingTypeTextMap = withLocale(() => ({
 	安全设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.security")),
 }));
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	启用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.enabled")),
 	禁用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.disabled")),
 	待审核: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.pending")),
@@ -57,14 +57,14 @@ function translateStatusLabel(value?: string | null) {
 	return translateFromRecord(statusTextMap.value, value);
 }
 
-const translatedSettingTypeOptions = withLocale(() =>
+const translatedSettingTypeOptions = computed(() =>
 	settingTypeOptions.map((item) => ({
 		...item,
 		label: translateSettingTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedCommunityStatusOptions = withLocale(() =>
+const translatedCommunityStatusOptions = computed(() =>
 	communityConfigStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.label)),
@@ -95,7 +95,7 @@ const {
 	handleCurrentPageChange,
 } = useCommunityConfigListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -164,12 +164,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.systemManage.communityConfiguration.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
 		prop: "communityName",

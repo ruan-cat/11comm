@@ -28,7 +28,7 @@ import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 表单组件实例 */
 const firstPartyFormInstance = ref<InstanceType<typeof FirstPartyForm> | null>(null);
@@ -63,7 +63,7 @@ const {
 } = useFirstPartyListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -124,7 +124,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_contract-manage.first-party.tableTitle")),
 	columns: columns.value,
 }));
@@ -133,7 +133,7 @@ const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.first-party.fields.partyA")),
 		prop: "partyA",

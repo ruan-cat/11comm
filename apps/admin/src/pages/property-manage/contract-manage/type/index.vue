@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
@@ -27,7 +27,7 @@ import { useToggle } from "@vueuse/core";
 import { consola } from "consola";
 import { cloneDeep } from "@pureadmin/utils";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
 const { setMode, isAdd, isEdit } = useMode();
@@ -45,7 +45,7 @@ function translateAuditLabel(value?: string | null) {
 	return key ? transformI18n($t(key)) : value;
 }
 
-const translatedAuditTypeOptions = withLocale(() =>
+const translatedAuditTypeOptions = computed(() =>
 	auditTypeOptions.map((option) => ({
 		...option,
 		label: translateAuditLabel(String(option.value)),
@@ -81,7 +81,7 @@ const {
 } = useTypeListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -125,7 +125,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_contract-manage.contract-type.tableTitle")),
 	columns: columns.value,
 }));
@@ -134,7 +134,7 @@ const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 合同类型名称 */
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-type.search.typeName")),

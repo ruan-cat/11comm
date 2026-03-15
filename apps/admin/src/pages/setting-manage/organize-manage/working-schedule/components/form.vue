@@ -7,7 +7,7 @@ import { WorkingScheduleFormProps } from "./form";
 import { scheduleTypeOptions, weekdayOptions, type WorkingScheduleFormVO } from "@01s-11comm/type";
 
 const props = defineProps<WorkingScheduleFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & WorkingScheduleFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -16,7 +16,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & WorkingScheduleFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedScheduleTypeOptions = withLocale(() =>
+const translatedScheduleTypeOptions = computed(() =>
 	scheduleTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n(
@@ -37,7 +37,7 @@ const weekdayKeyMap = {
 	7: "sunday",
 } as const;
 
-const translatedWeekdayOptions = withLocale(() =>
+const translatedWeekdayOptions = computed(() =>
 	weekdayOptions.map((option) => ({
 		...option,
 		label: transformI18n(
@@ -48,7 +48,7 @@ const translatedWeekdayOptions = withLocale(() =>
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",
@@ -122,7 +122,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

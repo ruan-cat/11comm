@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -28,7 +28,7 @@ import { useInitializeCellListQuery } from "@/api/operation-team/system-manage/i
 import { type InitializeCellFormProps, defaultForm } from "./components/form";
 import InitializeCellForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -37,7 +37,7 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const cellTypeTextMap = withLocale(() => ({
+const cellTypeTextMap = computed(() => ({
 	住宅单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
 	商业单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.commercial")),
 	车库单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.garage")),
@@ -51,7 +51,7 @@ const cellTypeTextMap = withLocale(() => ({
 	文化单元: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.culture")),
 }));
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	待初始化: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
 	初始化中: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.inProgress")),
 	已完成: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.completed")),
@@ -99,14 +99,14 @@ function normalizeStatusValue(value?: string): CellStatus {
 	return mapped ?? "Uninitialized";
 }
 
-const translatedSearchCellTypeOptions = withLocale(() =>
+const translatedSearchCellTypeOptions = computed(() =>
 	cellTypeOptions.map((item) => ({
 		...item,
 		label: translateCellTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedSearchStatusOptions = withLocale(() =>
+const translatedSearchStatusOptions = computed(() =>
 	initializeCellStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.value)),
@@ -147,7 +147,7 @@ const {
 
 const { setMode, isAdd, isEdit, isInfo } = useMode();
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellId"))),
@@ -230,12 +230,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.systemManage.initializeCell.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
 		prop: "cellName",

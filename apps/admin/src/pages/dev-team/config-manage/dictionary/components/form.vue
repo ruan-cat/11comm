@@ -7,7 +7,7 @@ import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const props = defineProps<DictionaryFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const dictionaryTypeLabelKeyMap = {
 	system: "devTeam.configManage.dictionary.form.options.system",
@@ -33,21 +33,21 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedDictionaryTypeOptions = withLocale(() =>
+const translatedDictionaryTypeOptions = computed(() =>
 	dictionaryTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(dictionaryTypeLabelKeyMap[String(option.value) as keyof typeof dictionaryTypeLabelKeyMap])),
 	})),
 );
 
-const translatedEnableStatusOptions = withLocale(() =>
+const translatedEnableStatusOptions = computed(() =>
 	enableStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
 		prop: "dictionaryName",
@@ -105,7 +105,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	dictionaryName: [
 		{
 			required: true,

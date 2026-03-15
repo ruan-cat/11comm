@@ -16,7 +16,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { useDictionaryTypeListQuery } from "@/api/dev-team/config-manage/type";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const statusLabelKeyMap = {
 	enabled: $t("devTeam.configManage.type.options.status.enabled"),
@@ -32,7 +32,7 @@ function translateStatus(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedDictionaryTypeStatusOptions = withLocale(() =>
+const translatedDictionaryTypeStatusOptions = computed(() =>
 	dictionaryTypeStatusOptions.map((option) => ({
 		...option,
 		label: translateStatus(String(option.value)),
@@ -59,7 +59,7 @@ const {
 	handleCurrentPageChange,
 } = useDictionaryTypeListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber"))),
@@ -107,12 +107,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.configManage.type.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",

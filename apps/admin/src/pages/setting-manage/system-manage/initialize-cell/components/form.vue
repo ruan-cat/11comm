@@ -15,7 +15,7 @@ type InitializeCommunityFormModel = FieldValues &
 	};
 
 const props = defineProps<InitializeCommunityFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 function translateStatusLabel(value?: string | null) {
 	if (value === "启用") {
@@ -35,14 +35,14 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as InitializeCommunityFormModel);
 const formComputed = computed(() => form.value);
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	statusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.communityId")),
 		prop: "communityId",
@@ -92,7 +92,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	communityId: [
 		{
 			required: true,

@@ -22,7 +22,7 @@ import {
 } from "@01s-11comm/type";
 import { useChangePasswordRecordListQuery } from "@/api/operation-team/system-manage/change-password";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -31,13 +31,13 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const userRoleTextMap = withLocale(() => ({
+const userRoleTextMap = computed(() => ({
 	管理员: transformI18n($t("operationTeam.systemManage.changePassword.options.userRoles.admin")),
 	普通用户: transformI18n($t("operationTeam.systemManage.changePassword.options.userRoles.normal")),
 	访客: transformI18n($t("operationTeam.systemManage.changePassword.options.userRoles.visitor")),
 }));
 
-const departmentTextMap = withLocale(() => ({
+const departmentTextMap = computed(() => ({
 	物业团队: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.property")),
 	开发团队: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.development")),
 	运营团队: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.operation")),
@@ -48,20 +48,20 @@ const departmentTextMap = withLocale(() => ({
 	绿化部门: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.greening")),
 }));
 
-const changeMethodTextMap = withLocale(() => ({
+const changeMethodTextMap = computed(() => ({
 	用户自行修改: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.selfService")),
 	管理员重置: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.adminReset")),
 	强制修改: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.forceChange")),
 	首次登录修改: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.firstLogin")),
 }));
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	成功: transformI18n($t("operationTeam.systemManage.changePassword.options.statuses.success")),
 	失败: transformI18n($t("operationTeam.systemManage.changePassword.options.statuses.failed")),
 	待审核: transformI18n($t("operationTeam.systemManage.changePassword.options.statuses.pending")),
 }));
 
-const successTextMap = withLocale(() => ({
+const successTextMap = computed(() => ({
 	是: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
 	否: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
 	Yes: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
@@ -97,35 +97,35 @@ function translateSuccessLabel(value?: boolean | string | number | null) {
 	return value === null || value === undefined ? "" : String(value);
 }
 
-const translatedUserRoleOptions = withLocale(() =>
+const translatedUserRoleOptions = computed(() =>
 	userRoleOptions.map((item) => ({
 		...item,
 		label: translateUserRoleLabel(String(item.value)),
 	})),
 );
 
-const translatedDepartmentOptions = withLocale(() =>
+const translatedDepartmentOptions = computed(() =>
 	departmentOptions.map((item) => ({
 		...item,
 		label: translateDepartmentLabel(String(item.value)),
 	})),
 );
 
-const translatedChangeMethodOptions = withLocale(() =>
+const translatedChangeMethodOptions = computed(() =>
 	changeMethodOptions.map((item) => ({
 		...item,
 		label: translateChangeMethodLabel(String(item.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	changePasswordStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.value)),
 	})),
 );
 
-const translatedSuccessOptions = withLocale(() =>
+const translatedSuccessOptions = computed(() =>
 	changePasswordSuccessOptions.map((item) => ({
 		...item,
 		label: translateSuccessLabel(item.value),
@@ -160,7 +160,7 @@ const {
 	handleCurrentPageChange,
 } = useChangePasswordRecordListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -263,12 +263,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.systemManage.changePassword.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.username")),
 		prop: "username",

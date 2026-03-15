@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -19,7 +19,7 @@ import { type OwnersCommitteeFormProps, defaultForm } from "./components/form";
 import OwnersCommitteeForm from "./components/form.vue";
 import { useOwnersCommitteeListQuery } from "@/api/property-manage/house-property-manage/owners-committee";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -64,7 +64,7 @@ function handleSearch() {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_house-property-manage.owners-committee.fields.fullName")),
 		prop: "fullName",
@@ -82,7 +82,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -159,7 +159,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_house-property-manage.owners-committee.tableTitle")),
 	columns: columns.value,
 }));

@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -22,7 +22,7 @@ import { type ReportInfoFormProps, defaultForm } from "./components/form";
 import ReportInfoForm from "./components/form.vue";
 
 const reportInfoFormInstance = ref<InstanceType<typeof ReportInfoForm> | null>(null);
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<ReportInfoQueryParams> = {
 	reportCode: "",
@@ -43,7 +43,7 @@ const {
 	pureTableProps,
 } = useReportInfoListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -81,12 +81,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.reportConfiguration.reportInfo.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.fields.reportCode")),
 		prop: "reportCode",

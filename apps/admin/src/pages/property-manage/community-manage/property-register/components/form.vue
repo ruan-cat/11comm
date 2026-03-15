@@ -10,7 +10,7 @@ import type { PropertyRegisterFormVO } from "@01s-11comm/type";
 import type { PropertyRegisterFormProps } from "./form";
 
 const props = defineProps<PropertyRegisterFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PropertyRegisterFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -26,21 +26,23 @@ const statusLabelKeyMap = {
 	disabled: "propertyManage_communityManage.property-register.options.status.disabled",
 } as const;
 
-const statusOptions = withLocale(() =>
+const statusOptions = computed(() =>
 	(["enabled", "disabled"] as const).map((value) => ({
 		label: transformI18n($t(statusLabelKeyMap[value])),
 		value,
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.property-register.fields.propertyRightId")),
 		prop: "propertyRightId",
 		valueType: "input",
 		fieldProps: {
 			disabled: true,
-			placeholder: transformI18n($t("propertyManage_communityManage.property-register.form.placeholders.propertyRightId")),
+			placeholder: transformI18n(
+				$t("propertyManage_communityManage.property-register.form.placeholders.propertyRightId"),
+			),
 		},
 	},
 	{
@@ -121,7 +123,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	houseId: [
 		{
 			required: true,
@@ -163,7 +165,9 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 		},
 		{
 			pattern: /^\d{17}[\dXx]$/,
-			message: transformI18n($t("propertyManage_communityManage.property-register.form.validation.idCardNumberPattern")),
+			message: transformI18n(
+				$t("propertyManage_communityManage.property-register.form.validation.idCardNumberPattern"),
+			),
 			trigger: "blur",
 		},
 	],

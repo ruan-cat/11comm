@@ -20,10 +20,10 @@ import PatrolPathForm from "./components/form.vue";
 import { usePathListQuery } from "@/api/property-manage/patrol-manage/path";
 import type { PathListItem, PathQueryParams } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -71,7 +71,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_patrol-manage.path.tableTitle")),
 	columns: columns.value,
 }));
@@ -94,7 +94,7 @@ const {
 	handleCurrentPageChange,
 } = usePathListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_patrol-manage.path.fields.pathName")),
 		prop: "pathName",

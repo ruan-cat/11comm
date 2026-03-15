@@ -24,10 +24,10 @@ import {
 } from "@01s-11comm/type";
 import { useDepositReportListQuery } from "@/api/property-manage/report-manage/deposit-report";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -132,7 +132,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.deposit-report.pageTitle")),
 	columns: columns.value,
 }));
@@ -163,7 +163,7 @@ const {
 	handleCurrentPageChange,
 } = useDepositReportListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.deposit-report.search.building")),
 		prop: "building",

@@ -21,7 +21,7 @@ import { openDialog } from "./components/dialog";
 import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const configTypeLabelKeyMap = {
 	system: $t("devTeam.configManage.center.form.options.system"),
@@ -57,14 +57,14 @@ function translateStatus(value?: string) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedConfigTypeOptions = withLocale(() =>
+const translatedConfigTypeOptions = computed(() =>
 	configTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n(configTypeLabelKeyMap[String(option.value) as keyof typeof configTypeLabelKeyMap]),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	configStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap]),
@@ -91,7 +91,7 @@ const {
 	handleCurrentPageChange,
 } = useConfigCenterListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
@@ -133,7 +133,7 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.configName"))),
@@ -208,7 +208,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.configManage.center.pageTitle")),
 	columns: columns.value,
 }));

@@ -16,7 +16,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { MenuGroupFormProps } from "./form";
 
 const props = defineProps<MenuGroupFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & MenuGroupFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -111,35 +111,35 @@ function translateStatus(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedGroupTypeOptions = withLocale(() =>
+const translatedGroupTypeOptions = computed(() =>
 	groupTypeOptions.map((option) => ({
 		...option,
 		label: translateGroupType(String(option.value)),
 	})),
 );
 
-const translatedStoreOptions = withLocale(() =>
+const translatedStoreOptions = computed(() =>
 	storeOptions.map((option) => ({
 		...option,
 		label: translateStore(String(option.value)),
 	})),
 );
 
-const translatedIconOptions = withLocale(() =>
+const translatedIconOptions = computed(() =>
 	iconOptions.map((option) => ({
 		...option,
 		label: translateIcon(String(option.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	menuGroupStatusOptions.map((option) => ({
 		...option,
 		label: translateStatus(String(option.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.menuManage.group.fields.groupId")),
 		prop: "groupId",
@@ -251,7 +251,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	groupId: [
 		{
 			required: true,

@@ -6,7 +6,7 @@ import type { HandingBusinessFormVO } from "@01s-11comm/type";
 import type { HandingBusinessFormProps } from "./form";
 
 const props = defineProps<HandingBusinessFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & HandingBusinessFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -31,21 +31,21 @@ const statusLabelKeyMap = {
 	voided: "propertyManage_communityManage.handing-business.options.status.voided",
 } as const;
 
-const feeTypeOptions = withLocale(() =>
+const feeTypeOptions = computed(() =>
 	Object.entries(feeTypeLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const statusOptions = withLocale(() =>
+const statusOptions = computed(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
 		prop: "feeItem",
@@ -134,7 +134,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	feeItem: [
 		{
 			required: true,

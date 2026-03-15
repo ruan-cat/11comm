@@ -8,7 +8,7 @@ import { genderOptions, memberTypeOptions } from "@01s-11comm/type";
 import type { OwnerMemberFormProps } from "./form";
 
 const props = defineProps<OwnerMemberFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnerMemberFormVO;
@@ -33,7 +33,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 成员人脸
 	{
 		label: transformI18n($t("property-manage_house-property-manage.owner-member.fields.memberFace")),
@@ -121,7 +121,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

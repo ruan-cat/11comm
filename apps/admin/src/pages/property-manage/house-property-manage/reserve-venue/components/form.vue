@@ -11,7 +11,7 @@ import { venueTypeOptions, reservationStatusOptions } from "@01s-11comm/type";
 import type { ReserveVenueFormProps } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -30,7 +30,7 @@ const form = ref(cloneDeep(props.form) as FieldValues & ReserveVenueFormVO);
 const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 预约人
 	{
 		label: transformI18n($t("property-manage_house-property-manage.reserve-venue.fields.reserver")),
@@ -119,7 +119,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	reserver: [
 		{
 			required: true,
@@ -155,9 +155,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	startTime: [
 		{
 			required: true,
-			message: transformI18n(
-				$t("property-manage_house-property-manage.reserve-venue.form.validation.selectStartTime"),
-			),
+			message: transformI18n($t("property-manage_house-property-manage.reserve-venue.form.validation.selectStartTime")),
 			trigger: "change",
 		},
 	],
@@ -171,9 +169,7 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	venueType: [
 		{
 			required: true,
-			message: transformI18n(
-				$t("property-manage_house-property-manage.reserve-venue.form.validation.selectVenueType"),
-			),
+			message: transformI18n($t("property-manage_house-property-manage.reserve-venue.form.validation.selectVenueType")),
 			trigger: "change",
 		},
 	],

@@ -13,7 +13,7 @@ import type { OwnerVehicleFormProps } from "./form";
 
 const props = defineProps<OwnerVehicleFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnerVehicleFormVO;
@@ -36,14 +36,14 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedVehicleTypeOptions = withLocale(() =>
+const translatedVehicleTypeOptions = computed(() =>
 	vehicleTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(`property-manage_parking-manage.owner-vehicle.form.options.vehicleType.${option.value}`)),
 	})),
 );
 
-const translatedLicensePlateTypeOptions = withLocale(() =>
+const translatedLicensePlateTypeOptions = computed(() =>
 	licensePlateTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n(
@@ -52,7 +52,7 @@ const translatedLicensePlateTypeOptions = withLocale(() =>
 	})),
 );
 
-const translatedOwnerVehicleOptions = withLocale(() => [
+const translatedOwnerVehicleOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.options.ownerVehicle.yes")),
 		value: "是",
@@ -64,7 +64,7 @@ const translatedOwnerVehicleOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 车牌号
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.form.fields.licensePlate")),
@@ -147,7 +147,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	licensePlate: [
 		{
 			required: true,

@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ConfigCenterFormProps } from "./form";
 
 const props = defineProps<ConfigCenterFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const configTypeLabelKeyMap = {
 	system: $t("devTeam.configManage.center.form.options.system"),
@@ -49,21 +49,21 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & ConfigCenterFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedConfigTypeOptions = withLocale(() =>
+const translatedConfigTypeOptions = computed(() =>
 	configTypeOptions.map((option) => ({
 		...option,
 		label: translateConfigType(String(option.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	configStatusOptions.map((option) => ({
 		...option,
 		label: translateStatus(String(option.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
 		prop: "configName",
@@ -167,7 +167,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	configName: [
 		{
 			required: true,

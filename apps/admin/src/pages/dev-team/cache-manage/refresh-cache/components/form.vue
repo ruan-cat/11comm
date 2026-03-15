@@ -12,7 +12,7 @@ import { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions } from "@01s
 import { RefreshCacheFormProps, defaultForm } from "./form";
 
 const props = defineProps<RefreshCacheFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 Default values for form reset */
 const defaultValues = props.defaultValues as FieldValues & RefreshCacheFormVO;
@@ -37,7 +37,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 Form columns configuration */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode")),
 		prop: "cacheCode",
@@ -149,7 +149,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 Form validation rules */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	cacheCode: [
 		{
 			required: true,

@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -30,7 +30,7 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 import { defaultForm, type MerchantInfoFormProps } from "./components/form";
 import MerchantInfoForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const merchantInfoFormInstance = ref<InstanceType<typeof MerchantInfoForm> | null>(null);
 
@@ -101,21 +101,21 @@ function translateBusinessStatus(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedMerchantTypeOptions = withLocale(() =>
+const translatedMerchantTypeOptions = computed(() =>
 	merchantTypeOptions.map((option) => ({
 		...option,
 		label: translateMerchantType(String(option.value)),
 	})),
 );
 
-const translatedBusinessStatusOptions = withLocale(() =>
+const translatedBusinessStatusOptions = computed(() =>
 	businessStatusOptions.map((option) => ({
 		...option,
 		label: translateBusinessStatus(String(option.value)),
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -214,12 +214,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operation-team_merchant-manage.merchant-info.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantName")),
 		prop: "merchantName",

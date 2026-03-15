@@ -8,7 +8,7 @@ import { parkingLotOptions, parkingSpaceStatusOptions, parkingSpaceTypeOptions }
 import type { CarportInfoFormProps } from "./form";
 
 const props = defineProps<CarportInfoFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CarportInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -17,7 +17,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & CarportInfoFormVO);
 const formComputed = computed(() => form.value);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingLot")),
 		prop: "parkingLot",
@@ -118,7 +118,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	parkingLot: [
 		{
 			required: true,

@@ -21,7 +21,7 @@ import CarportApplyForm from "./components/form.vue";
 import type { CarportApplyListItem, CarportApplyQueryParams } from "@01s-11comm/type";
 import { carBrandOptions, parkingSpaceStatusOptions } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 表单组件实例 */
 const carportApplyFormInstance = ref<InstanceType<typeof CarportApplyForm> | null>(null);
@@ -57,7 +57,7 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_parking-manage.carport-apply.fields.licensePlate")),
 		prop: "licensePlate",
@@ -84,7 +84,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -174,7 +174,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_parking-manage.carport-apply.tableTitle")),
 	columns: columns.value,
 }));

@@ -21,10 +21,10 @@ import {
 } from "@01s-11comm/type";
 import { useExpenseSummaryTableListQuery } from "@/api/property-manage/report-manage/expense-summary-table";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -144,7 +144,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.expense-summary-table.pageTitle")),
 	columns: columns.value,
 }));
@@ -168,7 +168,7 @@ const {
 	handleCurrentPageChange,
 } = useExpenseSummaryTableListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.expense-summary-table.search.houseNumberContractName")),
 		prop: "房屋编号合同名称",

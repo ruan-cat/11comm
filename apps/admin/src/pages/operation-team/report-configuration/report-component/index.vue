@@ -30,7 +30,7 @@ import ReportComponentForm from "./components/form.vue";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 
 const reportComponentFormInstance = ref<InstanceType<typeof ReportComponentForm> | null>(null);
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const componentTypeLabelKeyMap: Record<string, string> = {
 	表格: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
@@ -109,7 +109,7 @@ const {
 	pureTableProps,
 } = useReportComponentListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -156,12 +156,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.reportConfiguration.reportComponent.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.reportConfiguration.reportComponent.fields.componentId")),
 		prop: "componentId",

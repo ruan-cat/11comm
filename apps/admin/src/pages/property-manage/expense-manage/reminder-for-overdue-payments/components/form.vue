@@ -19,7 +19,7 @@ interface ReminderForOverduePaymentsFormProps {
 
 const props = defineProps<ReminderForOverduePaymentsFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认表单数据 */
 const defaultForm: ReminderForOverduePaymentsFormVO = {
@@ -55,7 +55,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.reminder-for-overdue-payments.form.fields.ownerName")),
 		prop: "ownerName",
@@ -141,7 +141,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	ownerName: [
 		{
 			required: true,

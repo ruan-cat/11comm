@@ -15,7 +15,7 @@ import {
 
 const props = defineProps<RepairsSettingFormProps>();
 
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RepairsSettingFormVO;
 
@@ -27,7 +27,7 @@ const toRefForm = cloneDeep(props.form) as FieldValues & RepairsSettingFormVO;
 const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs-setting.form.fields.typeName")),
 		prop: "typeName",
@@ -110,7 +110,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	typeName: [
 		{
 			required: true,

@@ -25,7 +25,7 @@ import {
 } from "@01s-11comm/type";
 import { useRefundReviewListQuery } from "@/api/property-manage/expense-manage/refund-review";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表单组件实例 */
 const refundReviewFormInstance = ref<InstanceType<typeof RefundReviewForm> | null>(null);
@@ -82,7 +82,7 @@ const {
 } = useRefundReviewListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -183,7 +183,7 @@ const plusSearchProps = searchProps(plusSearchDefaultValues);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.refund-review.search.refundOrderNumber")),
 		prop: "refundOrderNumber",
@@ -209,7 +209,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表格操作栏组件 配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_expense-manage.refund-review.tableTitle")),
 	columns: columns.value,
 }));

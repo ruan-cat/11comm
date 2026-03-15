@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { ElMessageBox } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -27,7 +27,7 @@ import type {
 } from "@01s-11comm/type";
 import BuildingSpaceStructureDiagramForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<BuildingSpaceStructureDiagramQueryParams> = {
 	buildingId: "",
@@ -88,21 +88,21 @@ function translateOptionLabel<T extends Record<string, string>>(value: string | 
 	return key ? transformI18n($t(key)) : value;
 }
 
-const buildingStructureOptions = withLocale(() =>
+const buildingStructureOptions = computed(() =>
 	Object.entries(buildingStructureLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const buildingStatusOptions = withLocale(() =>
+const buildingStatusOptions = computed(() =>
 	Object.entries(buildingStatusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -194,12 +194,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
 		prop: "buildingId",

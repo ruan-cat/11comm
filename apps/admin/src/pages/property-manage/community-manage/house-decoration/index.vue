@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -28,7 +28,7 @@ import type {
 } from "@01s-11comm/type";
 import HouseDecorationForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<HouseDecorationQueryParams> = {
 	houseNumber: "",
@@ -97,91 +97,117 @@ function translateBooleanLabel(value?: string | null) {
 	return key ? transformI18n($t(key)) : value;
 }
 
-const decorationStatusOptions = withLocale(() =>
+const decorationStatusOptions = computed(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const delayStatusOptions = withLocale(() =>
+const delayStatusOptions = computed(() =>
 	Object.entries(booleanLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.houseNumber"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.houseNumber")),
+		),
 		prop: "houseNumber",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.contactName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.contactName")),
+		),
 		prop: "contactName",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.contactPhone"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.contactPhone")),
+		),
 		prop: "contactPhone",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.decorationTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.decorationTime")),
+		),
 		prop: "decorationTime",
 		minWidth: 170,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.applicationTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.applicationTime")),
+		),
 		prop: "applicationTime",
 		minWidth: 170,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.decorationCompany"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.decorationCompany")),
+		),
 		prop: "decorationCompany",
 		minWidth: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.managerPhone"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.managerPhone")),
+		),
 		prop: "managerPhone",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.status")),
+		),
 		prop: "status",
 		minWidth: 120,
 		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.isDelayed"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.isDelayed")),
+		),
 		prop: "isDelayed",
 		minWidth: 120,
 		cellRenderer: ({ row }) => translateBooleanLabel(row.isDelayed),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.delayTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.delayTime")),
+		),
 		prop: "delayTime",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.isViolated"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.isViolated")),
+		),
 		prop: "isViolated",
 		minWidth: 120,
 		cellRenderer: ({ row }) => translateBooleanLabel(row.isViolated),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.violationDescription"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.violationDescription")),
+		),
 		prop: "violationDescription",
 		minWidth: 200,
 		showOverflowTooltip: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.house-decoration.fields.remarks"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.house-decoration.fields.remarks")),
+		),
 		prop: "remarks",
 		minWidth: 180,
 		showOverflowTooltip: true,
@@ -194,12 +220,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_communityManage.house-decoration.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.houseNumber")),
 		prop: "houseNumber",
@@ -250,7 +276,9 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
-			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.decorationTime")),
+			placeholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.decorationTime"),
+			),
 		},
 	},
 	{
@@ -261,8 +289,12 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 			type: "daterange",
 			valueFormat: "YYYY-MM-DD",
 			format: "YYYY-MM-DD",
-			startPlaceholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.applicationStartTime")),
-			endPlaceholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.applicationEndTime")),
+			startPlaceholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.applicationStartTime"),
+			),
+			endPlaceholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.applicationEndTime"),
+			),
 			onChange(value: string[] | null) {
 				plusSearchModel.value.applicationStartTime = value?.[0] ?? "";
 				plusSearchModel.value.applicationEndTime = value?.[1] ?? "";

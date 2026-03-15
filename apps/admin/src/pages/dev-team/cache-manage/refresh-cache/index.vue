@@ -16,7 +16,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { useRefreshCacheListQuery } from "@/api/dev-team/cache-manage/refresh-cache";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<RefreshCacheQueryParams> = {
 	cacheId: "",
@@ -37,7 +37,7 @@ const {
 	handleCurrentPageChange,
 } = useRefreshCacheListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheCode"))),
@@ -90,12 +90,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.cacheManage.refreshCache.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.cacheManage.refreshCache.fields.cacheId")),
 		prop: "cacheId",

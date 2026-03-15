@@ -10,7 +10,7 @@ import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 const props = defineProps<SystemConfigFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & SystemConfigListItem;
@@ -42,7 +42,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.title")),
 		prop: "title",

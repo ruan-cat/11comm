@@ -10,7 +10,7 @@ import { patrolStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolTaskFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolTaskFormVO;
@@ -39,7 +39,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedPatrolMethodOptions = withLocale(() => [
+const translatedPatrolMethodOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_patrol-manage.task.form.options.patrolMethod.walking")),
 		value: "步行",
@@ -50,7 +50,7 @@ const translatedPatrolMethodOptions = withLocale(() => [
 	},
 ]);
 
-const translatedPatrolStatusOptions = withLocale(() =>
+const translatedPatrolStatusOptions = computed(() =>
 	patrolStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(`property-manage_patrol-manage.task.form.options.patrolStatus.${option.value}`)),
@@ -58,7 +58,7 @@ const translatedPatrolStatusOptions = withLocale(() =>
 );
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_patrol-manage.task.form.fields.taskCode")),
 		prop: "taskCode",
@@ -112,7 +112,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	patrolPlan: [
 		{
 			required: true,

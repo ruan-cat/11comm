@@ -17,7 +17,7 @@ import StaffRelationTable from "./components/staff-relation/table.vue";
 import type { DataPermission } from "@01s-11comm/type";
 import { useDataPermissionListQuery } from "@/api/setting-manage/organize-manage/data-permission";
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
 
@@ -37,7 +37,7 @@ watch(
 	{ immediate: true },
 );
 
-const rightTitle = withLocale(() => {
+const rightTitle = computed(() => {
 	if (selectedItem.value?.name) {
 		return selectedItem.value.name;
 	}
@@ -45,7 +45,7 @@ const rightTitle = withLocale(() => {
 	return transformI18n($t("settingManage.organizeManage.dataPermission.defaultTitle"));
 });
 
-const tabLabels = withLocale(() => ({
+const tabLabels = computed(() => ({
 	unitAuth: transformI18n($t("settingManage.organizeManage.dataPermission.tabs.unitAuth")),
 	staffRelation: transformI18n($t("settingManage.organizeManage.dataPermission.tabs.staffRelation")),
 }));

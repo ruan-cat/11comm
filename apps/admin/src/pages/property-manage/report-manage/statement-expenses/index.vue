@@ -23,7 +23,7 @@ import {
 import { useStatementExpensesListQuery } from "@/api/property-manage/report-manage/statement-expenses";
 import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pageSize";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -60,7 +60,7 @@ const {
 } = useStatementExpensesListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -179,7 +179,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.statement-expenses.tableTitle")),
 	columns: columns.value,
 }));
@@ -188,7 +188,7 @@ const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.statement-expenses.search.community")),
 		prop: "community",

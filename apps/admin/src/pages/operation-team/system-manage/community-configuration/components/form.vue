@@ -7,7 +7,7 @@ import { communityConfigStatusOptions, settingTypeOptions } from "@01s-11comm/ty
 import { CommunityConfigurationFormProps } from "./form";
 
 const props = defineProps<CommunityConfigurationFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -16,7 +16,7 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const settingTypeTextMap = withLocale(() => ({
+const settingTypeTextMap = computed(() => ({
 	系统设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.system")),
 	业务设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.business")),
 	界面设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.ui")),
@@ -24,7 +24,7 @@ const settingTypeTextMap = withLocale(() => ({
 	安全设置: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.settingTypes.security")),
 }));
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	启用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.enabled")),
 	禁用: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.disabled")),
 	待审核: transformI18n($t("operationTeam.systemManage.communityConfiguration.options.statuses.pending")),
@@ -46,21 +46,21 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & SettingCommunityConfigFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedSettingTypeOptions = withLocale(() =>
+const translatedSettingTypeOptions = computed(() =>
 	settingTypeOptions.map((item) => ({
 		...item,
 		label: translateSettingTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedCommunityStatusOptions = withLocale(() =>
+const translatedCommunityStatusOptions = computed(() =>
 	communityConfigStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.label)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.communityConfiguration.fields.communityName")),
 		prop: "communityName",
@@ -115,7 +115,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	communityName: [
 		{
 			required: true,

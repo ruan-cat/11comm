@@ -6,7 +6,7 @@ import type { CommunityManageMyFormVO } from "@01s-11comm/type";
 import type { CommunityManageMyFormProps } from "./form";
 
 const props = defineProps<CommunityManageMyFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CommunityManageMyFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -39,21 +39,21 @@ const statusLabelKeyMap = {
 	disabled: "propertyManage_communityManage.my.options.status.disabled",
 } as const;
 
-const provinceOptions = withLocale(() =>
+const provinceOptions = computed(() =>
 	Object.entries(provinceLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const statusOptions = withLocale(() =>
+const statusOptions = computed(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.my.fields.name")),
 		prop: "name",
@@ -164,7 +164,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

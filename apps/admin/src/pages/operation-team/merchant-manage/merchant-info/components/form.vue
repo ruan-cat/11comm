@@ -11,7 +11,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { MerchantInfoFormProps } from "./form";
 
 const props = defineProps<MerchantInfoFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & MerchantInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -66,21 +66,21 @@ function translateBusinessStatus(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedMerchantTypeOptions = withLocale(() =>
+const translatedMerchantTypeOptions = computed(() =>
 	merchantTypeOptions.map((option) => ({
 		...option,
 		label: translateMerchantType(String(option.value)),
 	})),
 );
 
-const translatedBusinessStatusOptions = withLocale(() =>
+const translatedBusinessStatusOptions = computed(() =>
 	businessStatusOptions.map((option) => ({
 		...option,
 		label: translateBusinessStatus(String(option.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operation-team_merchant-manage.merchant-info.fields.merchantId")),
 		prop: "merchantId",
@@ -263,7 +263,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	merchantName: [
 		{
 			required: true,

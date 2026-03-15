@@ -6,7 +6,7 @@ import type { ParkingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import type { ParkingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ParkingSpaceStructureDiagramFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -71,14 +71,14 @@ function buildOptionList<T extends Record<string, string>>(labelMap: T) {
 	}));
 }
 
-const parkingSpaceTypeOptions = withLocale(() => buildOptionList(parkingSpaceTypeLabelKeyMap));
-const parkingSpaceStatusOptions = withLocale(() => buildOptionList(parkingSpaceStatusLabelKeyMap));
-const orientationOptions = withLocale(() => buildOptionList(orientationLabelKeyMap));
-const floorAreaOptions = withLocale(() => buildOptionList(floorAreaLabelKeyMap));
-const booleanOptions = withLocale(() => buildOptionList(booleanLabelKeyMap));
-const chargingPilePowerOptions = withLocale(() => buildOptionList(chargingPilePowerLabelKeyMap));
+const parkingSpaceTypeOptions = computed(() => buildOptionList(parkingSpaceTypeLabelKeyMap));
+const parkingSpaceStatusOptions = computed(() => buildOptionList(parkingSpaceStatusLabelKeyMap));
+const orientationOptions = computed(() => buildOptionList(orientationLabelKeyMap));
+const floorAreaOptions = computed(() => buildOptionList(floorAreaLabelKeyMap));
+const booleanOptions = computed(() => buildOptionList(booleanLabelKeyMap));
+const chargingPilePowerOptions = computed(() => buildOptionList(chargingPilePowerLabelKeyMap));
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n(
 			$t("propertyManage_communityManage.parking-space-structure-diagram.fields.parkingSpaceNumber"),
@@ -328,7 +328,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	parkingSpaceNumber: [
 		{
 			required: true,

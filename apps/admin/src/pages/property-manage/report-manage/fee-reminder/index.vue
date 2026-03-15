@@ -18,10 +18,10 @@ import type { ReminderForOverduePaymentsListItem, ReminderForOverduePaymentsQuer
 import { expenseItemNameOptions, reminderTypeOptions } from "@01s-11comm/type";
 import { useFeeReminderListQuery } from "@/api/property-manage/report-manage/fee-reminder";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -94,7 +94,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.fee-reminder.pageTitle")),
 	columns: columns.value,
 }));
@@ -118,7 +118,7 @@ const {
 	handleCurrentPageChange,
 } = useFeeReminderListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.fee-reminder.search.time")),
 		prop: "time",

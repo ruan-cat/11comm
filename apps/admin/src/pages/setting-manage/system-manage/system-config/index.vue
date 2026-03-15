@@ -23,7 +23,7 @@ import { sleep } from "@antfu/utils";
 import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
 import type { SystemConfigListItem } from "@01s-11comm/type";
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 
@@ -53,7 +53,7 @@ const systemConfig = computed<SystemConfigListItem>(() => {
 });
 
 /** 系统基本信息配置 */
-const basicColumns = withLocale(() => [
+const basicColumns = computed(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.title")),
 		value: systemConfig.value.title,
@@ -77,7 +77,7 @@ const basicColumns = withLocale(() => [
 ]);
 
 /** 系统地址配置 */
-const urlColumns = withLocale(() => [
+const urlColumns = computed(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.logoUrl")),
 		value: systemConfig.value.logoUrl,
@@ -99,7 +99,7 @@ const urlColumns = withLocale(() => [
 ]);
 
 /** 业务配置 */
-const businessColumns = withLocale(() => [
+const businessColumns = computed(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.systemConfig.fields.defaultCommunityCode")),
 		value: systemConfig.value.defaultCommunityCode,

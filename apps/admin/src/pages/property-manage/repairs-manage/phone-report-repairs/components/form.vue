@@ -10,7 +10,7 @@ import { repairTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PhoneRepairsFormProps>();
 
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PhoneRepairsFormVO;
 
@@ -23,7 +23,7 @@ const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.phone-report-repairs.form.fields.repairScope")),
 		prop: "repairScope",
@@ -80,7 +80,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	repairScope: [
 		{
 			required: true,

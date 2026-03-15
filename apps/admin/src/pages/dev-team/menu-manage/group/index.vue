@@ -17,7 +17,7 @@ import type { MenuGroupQueryParams } from "@01s-11comm/type";
 import { menuGroupStatusOptions } from "@01s-11comm/type";
 import { useMenuGroupListQuery } from "@/api/dev-team/menu-manage/group";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<MenuGroupQueryParams> = {
 	groupId: "",
@@ -55,14 +55,14 @@ function translateStatus(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	menuGroupStatusOptions.map((option) => ({
 		...option,
 		label: translateStatus(String(option.value)),
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -118,12 +118,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.menuManage.group.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.menuManage.group.fields.groupId")),
 		prop: "groupId",

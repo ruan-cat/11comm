@@ -21,7 +21,7 @@ import { repairTypeOptions, returnVisitStatusOptions } from "@01s-11comm/type";
 import ReturnVisitForm from "./components/form.vue";
 import { useReturnVisitListQuery } from "@/api/property-manage/repairs-manage/return-visit";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -30,7 +30,7 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const returnVisitFormInstance = ref<InstanceType<typeof ReturnVisitForm> | null>(null);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -92,7 +92,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_repairsManage.return-visit.pageTitle")),
 	columns: columns.value,
 }));
@@ -121,7 +121,7 @@ const {
 	handleCurrentPageChange,
 } = useReturnVisitListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.return-visit.search.workOrderNumber")),
 		prop: "workOrderNumber",

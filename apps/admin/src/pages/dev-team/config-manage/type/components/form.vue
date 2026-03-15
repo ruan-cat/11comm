@@ -12,7 +12,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { DictionaryTypeFormProps } from "./form";
 
 const props = defineProps<DictionaryTypeFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const dictionaryCategoryLabelKeyMap = {
 	system: "devTeam.configManage.type.form.options.categories.system",
@@ -54,7 +54,7 @@ const toRefForm = cloneDeep(props.form) as unknown as FieldValues & DictionaryTy
 const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
-const translatedDictionaryCategoryOptions = withLocale(() =>
+const translatedDictionaryCategoryOptions = computed(() =>
 	dictionaryCategoryOptions.map((option) => ({
 		...option,
 		label: transformI18n(
@@ -63,28 +63,28 @@ const translatedDictionaryCategoryOptions = withLocale(() =>
 	})),
 );
 
-const translatedDataTypeOptions = withLocale(() =>
+const translatedDataTypeOptions = computed(() =>
 	dataTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(dataTypeLabelKeyMap[String(option.value) as keyof typeof dataTypeLabelKeyMap])),
 	})),
 );
 
-const translatedRequiredOptions = withLocale(() =>
+const translatedRequiredOptions = computed(() =>
 	requiredOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(requiredLabelKeyMap[String(option.value) as keyof typeof requiredLabelKeyMap])),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	dictionaryTypeStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(statusLabelKeyMap[String(option.value) as keyof typeof statusLabelKeyMap])),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.type.fields.dictionaryNumber")),
 		prop: "dictionaryNumber",
@@ -215,7 +215,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	dictionaryNumber: [
 		{
 			required: true,

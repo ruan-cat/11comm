@@ -21,7 +21,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { parkingSpaceStatusOptions, parkingSpaceTypeOptions, parkingLotOptions } from "@01s-11comm/type";
 import type { CarportInfoListItem, CarportInfoQueryParams } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const carportInfoFormInstance = ref<InstanceType<typeof CarportInfoForm> | null>(null);
 
@@ -58,7 +58,7 @@ function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_parking-manage.carport-info.fields.parkingLot")),
 		prop: "parkingLot",
@@ -101,7 +101,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -196,7 +196,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_parking-manage.carport-info.tableTitle")),
 	columns: columns.value,
 }));

@@ -10,7 +10,7 @@ import type { HouseDecorationFormVO } from "@01s-11comm/type";
 import { type HouseDecorationFormProps } from "./form";
 
 const props = defineProps<HouseDecorationFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & HouseDecorationFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -33,21 +33,21 @@ const booleanLabelKeyMap = {
 	否: "propertyManage_communityManage.house-decoration.options.boolean.no",
 } as const;
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const translatedBooleanOptions = withLocale(() =>
+const translatedBooleanOptions = computed(() =>
 	Object.entries(booleanLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.house-decoration.fields.houseNumber")),
 		prop: "houseNumber",
@@ -86,7 +86,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
-			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.applicationTime")),
+			placeholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.applicationTime"),
+			),
 			disabled: props.mode === "info",
 		},
 	},
@@ -98,7 +100,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
-			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.decorationTime")),
+			placeholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.decorationTime"),
+			),
 			disabled: props.mode === "info",
 		},
 	},
@@ -108,7 +112,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
-			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.decorationCompany")),
+			placeholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.decorationCompany"),
+			),
 			disabled: props.mode === "info",
 		},
 	},
@@ -176,7 +182,9 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 			rows: 3,
 			maxlength: 500,
 			showWordLimit: true,
-			placeholder: transformI18n($t("propertyManage_communityManage.house-decoration.form.placeholders.violationDescription")),
+			placeholder: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.placeholders.violationDescription"),
+			),
 			disabled: props.mode === "info",
 		},
 		hidden: (currentForm: HouseDecorationFormVO) => currentForm.isViolated === "否",
@@ -195,7 +203,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	houseNumber: [
 		{
 			required: true,
@@ -225,21 +233,27 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	applicationTime: [
 		{
 			required: true,
-			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectApplicationTime")),
+			message: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.validation.selectApplicationTime"),
+			),
 			trigger: "change",
 		},
 	],
 	decorationTime: [
 		{
 			required: true,
-			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.selectDecorationTime")),
+			message: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.validation.selectDecorationTime"),
+			),
 			trigger: "change",
 		},
 	],
 	decorationCompany: [
 		{
 			required: true,
-			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.enterDecorationCompany")),
+			message: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.validation.enterDecorationCompany"),
+			),
 			trigger: "blur",
 		},
 	],
@@ -286,7 +300,9 @@ const plusFormRules = withLocale<PlusFormRules>(() => ({
 	violationDescription: [
 		{
 			max: 500,
-			message: transformI18n($t("propertyManage_communityManage.house-decoration.form.validation.violationDescriptionMaxLength")),
+			message: transformI18n(
+				$t("propertyManage_communityManage.house-decoration.form.validation.violationDescriptionMaxLength"),
+			),
 			trigger: "blur",
 		},
 	],

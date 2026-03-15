@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -28,7 +28,7 @@ import { type RemovePageIndexAndPageSize } from "@/utils/remove-pageIndex-and-pa
 import { type CatalogFormProps, defaultForm } from "./components/form";
 import CatalogForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const groupTypeOptionLabelMap = {
 	system: $t("devTeam.menuManage.catalog.form.options.system"),
@@ -62,14 +62,14 @@ function translateStoreType(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedGroupTypeOptions = withLocale(() =>
+const translatedGroupTypeOptions = computed(() =>
 	groupTypeOptions.map((option) => ({
 		...option,
 		label: translateGroupType(String(option.value)),
 	})),
 );
 
-const translatedStoreTypeOptions = withLocale(() =>
+const translatedStoreTypeOptions = computed(() =>
 	storeTypeOptions.map((option) => ({
 		...option,
 		label: translateStoreType(String(option.value)),
@@ -95,7 +95,7 @@ const {
 	handleCurrentPageChange,
 } = useMenuCatalogListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.menuManage.catalog.fields.name"))),
@@ -148,12 +148,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.menuManage.catalog.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",

@@ -24,7 +24,7 @@ import { useMode, type Mode } from "@/composables/use-mode";
 import { type DictionaryFormProps, defaultForm } from "./components/form";
 import DictionaryForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const dictionaryTypeLabelKeyMap = {
 	system: "devTeam.configManage.dictionary.form.options.system",
@@ -39,14 +39,14 @@ const enableStatusLabelKeyMap = {
 	disabled: "devTeam.configManage.dictionary.form.options.disabled",
 } as const;
 
-const translatedDictionaryTypeOptions = withLocale(() =>
+const translatedDictionaryTypeOptions = computed(() =>
 	dictionaryTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n(dictionaryTypeLabelKeyMap[String(option.value) as keyof typeof dictionaryTypeLabelKeyMap]),
 	})),
 );
 
-const translatedEnableStatusOptions = withLocale(() =>
+const translatedEnableStatusOptions = computed(() =>
 	enableStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap]),
@@ -73,7 +73,7 @@ const {
 	handleCurrentPageChange,
 } = useDictionaryListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName"))),
@@ -130,12 +130,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.configManage.dictionary.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryName")),
 		prop: "dictionaryName",

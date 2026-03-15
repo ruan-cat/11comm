@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -21,7 +21,7 @@ import type { ScheduleType, WorkingSchedule, WorkingScheduleFormVO, WorkingSched
 import { WorkingScheduleFormProps, defaultForm } from "./components/form";
 import WorkingScheduleForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<WorkingScheduleListQuery> = {
 	name: "",
@@ -83,7 +83,7 @@ function translateEnabledLabel(value?: boolean | null) {
 		: transformI18n($t("settingManage.organizeManage.workingSchedule.status.disabled"));
 }
 
-const translatedScheduleTypeOptions = withLocale(() => [
+const translatedScheduleTypeOptions = computed(() => [
 	{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.morning")), value: "morning" },
 	{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.afternoon")), value: "afternoon" },
 	{ label: transformI18n($t("settingManage.organizeManage.workingSchedule.options.evening")), value: "evening" },
@@ -93,7 +93,7 @@ const translatedScheduleTypeOptions = withLocale(() => [
 
 const workingScheduleFormInstance = ref<InstanceType<typeof WorkingScheduleForm> | null>(null);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -161,12 +161,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.organizeManage.workingSchedule.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.workingSchedule.fields.name")),
 		prop: "name",

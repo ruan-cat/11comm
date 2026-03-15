@@ -29,9 +29,9 @@ import { consola } from "consola";
 import { defaultAddDialogParams } from "@/config/constant";
 import { cloneDeep } from "@pureadmin/utils";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	未处理: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.unprocessed")),
 	处理中: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.processing")),
 	已续签: transformI18n($t("property-manage_contract-manage.expired-contract.options.processingStatuses.renewed")),
@@ -44,7 +44,7 @@ function translateStatusLabel(value?: string | null) {
 	return statusTextMap.value[value] ?? value;
 }
 
-const translatedContractTypeOptions = withLocale(() =>
+const translatedContractTypeOptions = computed(() =>
 	contractTypeOptions.map((item) => ({
 		...item,
 		label: transformI18n(
@@ -69,7 +69,7 @@ const translatedContractTypeOptions = withLocale(() =>
 	})),
 );
 
-const translatedHandlingStatusOptions = withLocale(() =>
+const translatedHandlingStatusOptions = computed(() =>
 	handlingStatusOptions.map((item) => ({
 		...item,
 		label: transformI18n(
@@ -125,7 +125,7 @@ const {
 } = useExpireListQuery(plusSearchDefaultValues);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -218,7 +218,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_contract-manage.expired-contract.tableTitle")),
 	columns: columns.value,
 }));
@@ -227,7 +227,7 @@ const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
  * 表格搜索栏组件表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.expired-contract.fields.contractName")),
 		prop: "contractName",

@@ -12,7 +12,7 @@ import { contractTypeOptions } from "@01s-11comm/type";
 
 import { ContractDraftFormProps } from "./form";
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const props = defineProps<ContractDraftFormProps>();
 
@@ -31,7 +31,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 合同基本信息
 	{
 		/** @description 合同名称 */
@@ -251,7 +251,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	contractName: [
 		{
 			required: true,

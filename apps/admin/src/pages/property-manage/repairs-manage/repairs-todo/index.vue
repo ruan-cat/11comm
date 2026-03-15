@@ -21,7 +21,7 @@ import RepairsTodoForm from "./components/form.vue";
 import { useRepairsTodoListQuery } from "@/api/property-manage/repairs-manage/repairs-todo";
 import { repairStatusOptions } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -30,7 +30,7 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const repairsTodoFormInstance = ref<InstanceType<typeof RepairsTodoForm> | null>(null);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -97,7 +97,7 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_repairsManage.repairs-todo.pageTitle")),
 	columns: columns.value,
 }));
@@ -123,7 +123,7 @@ const {
 	handleCurrentPageChange,
 } = useRepairsTodoListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs-todo.search.workOrderNumber")),
 		prop: "workOrderNumber",

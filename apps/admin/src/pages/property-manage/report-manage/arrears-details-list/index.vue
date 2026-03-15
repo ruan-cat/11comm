@@ -21,7 +21,7 @@ import { type ArrearsDetailsFormProps, defaultForm as defaultArrearsDetailsForm 
 import ArrearsDetailsForm from "./components/form.vue";
 import { useArrearsDetailsListQuery } from "@/api/property-manage/report-manage/arrears-details-list";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const smallTotal = ref<number>(0);
 const largeTotal = ref<number>(0);
@@ -33,7 +33,7 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const arrearsDetailsFormInstance = ref<InstanceType<typeof ArrearsDetailsForm> | null>(null);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -117,7 +117,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.arrears-details-list.pageTitle")),
 	columns: columns.value,
 }));
@@ -158,7 +158,7 @@ const {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.feeCategory")),
 		prop: "feeCategory",

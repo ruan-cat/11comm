@@ -15,7 +15,7 @@ import {
 } from "./form";
 
 const props = defineProps<UnitAuthFormProps>();
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & UnitSelectionFormVO;
 const plusFormInstance = useTemplateRef<any>("plusFormRef");
@@ -29,7 +29,7 @@ const searchForm = ref<UnitSelectionSearchVO>({
 	unitCode: "",
 });
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.fields.buildingCode")),
 		prop: "buildingCode",
@@ -60,7 +60,7 @@ const filteredTableData = computed(() =>
 	}),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		type: "selection",
 		width: 55,

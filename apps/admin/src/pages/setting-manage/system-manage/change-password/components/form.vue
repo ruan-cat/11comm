@@ -15,7 +15,7 @@ import {
 } from "@01s-11comm/type";
 
 const props = defineProps<ChangePasswordRecordFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -24,7 +24,7 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const departmentTextMap = withLocale(() => ({
+const departmentTextMap = computed(() => ({
 	物业团队: transformI18n($t("settingManage.systemManage.changePassword.options.departments.property")),
 	开发团队: transformI18n($t("settingManage.systemManage.changePassword.options.departments.development")),
 	运营团队: transformI18n($t("settingManage.systemManage.changePassword.options.departments.operation")),
@@ -36,7 +36,7 @@ const departmentTextMap = withLocale(() => ({
 	未知部门: transformI18n($t("settingManage.systemManage.changePassword.options.departments.unknown")),
 }));
 
-const changeTypeTextMap = withLocale(() => ({
+const changeTypeTextMap = computed(() => ({
 	用户自行修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.selfService")),
 	管理员重置: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.adminReset")),
 	强制修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.forceChange")),
@@ -45,7 +45,7 @@ const changeTypeTextMap = withLocale(() => ({
 	主动修改: transformI18n($t("settingManage.systemManage.changePassword.options.changeTypes.activeChange")),
 }));
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	成功: transformI18n($t("settingManage.systemManage.changePassword.options.statuses.success")),
 	失败: transformI18n($t("settingManage.systemManage.changePassword.options.statuses.failed")),
 	待审核: transformI18n($t("settingManage.systemManage.changePassword.options.statuses.pending")),
@@ -75,21 +75,21 @@ function createLengthMessage(fieldLabel: string, min: number, max: number) {
 		: `${fieldLabel}长度应在 ${min} 到 ${max} 个字符之间`;
 }
 
-const translatedDepartmentOptions = withLocale(() =>
+const translatedDepartmentOptions = computed(() =>
 	changePasswordRecordDepartmentOptions.map((item) => ({
 		...item,
 		label: translateDepartmentLabel(String(item.value)),
 	})),
 );
 
-const translatedChangeTypeOptions = withLocale(() =>
+const translatedChangeTypeOptions = computed(() =>
 	changePasswordRecordTypeOptions.map((item) => ({
 		...item,
 		label: translateChangeTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	changePasswordRecordStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.value)),
@@ -104,7 +104,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & ChangePasswordRecord);
 const formComputed = computed(() => form.value);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.changePassword.fields.recordId")),
 		prop: "id",
@@ -194,7 +194,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => {
+const plusFormRules = computed<PlusFormRules>(() => {
 	const usernameLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.username"));
 	const realNameLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.realName"));
 	const departmentLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.department"));

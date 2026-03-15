@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -23,7 +23,7 @@ import { schedulingStatusOptions } from "@01s-11comm/type";
 import { defaultForm, type SchedulingSettingFormProps } from "./components/form";
 import SchedulingSettingForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<SchedulingSettingListQuery> = {
 	name: "",
@@ -73,7 +73,7 @@ function translateSchedulingStatusLabel(value?: string | null) {
 	return key ? transformI18n($t(key)) : value;
 }
 
-const translatedSchedulingStatusOptions = withLocale(() =>
+const translatedSchedulingStatusOptions = computed(() =>
 	schedulingStatusOptions.map((option) => ({
 		...option,
 		label: translateSchedulingStatusLabel(String(option.value)),
@@ -82,7 +82,7 @@ const translatedSchedulingStatusOptions = withLocale(() =>
 
 const schedulingSettingFormInstance = ref<InstanceType<typeof SchedulingSettingForm> | null>(null);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -140,12 +140,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.organizeManage.schedulingSetting.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",

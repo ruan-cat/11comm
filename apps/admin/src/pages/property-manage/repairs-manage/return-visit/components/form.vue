@@ -10,7 +10,7 @@ import { repairTypeOptions, returnVisitStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<ReturnVisitFormProps>();
 
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ReturnVisitFormVO;
 
@@ -22,7 +22,7 @@ const toRefForm = cloneDeep(props.form) as FieldValues & ReturnVisitFormVO;
 const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.return-visit.form.fields.workOrderNumber")),
 		prop: "workOrderNumber",
@@ -68,7 +68,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	location: [
 		{
 			required: true,

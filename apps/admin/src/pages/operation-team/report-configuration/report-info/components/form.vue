@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ReportInfoFormProps } from "./form";
 
 const props = defineProps<ReportInfoFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ReportInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -15,7 +15,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & ReportInfoFormVO);
 const formComputed = computed(() => form.value);
 
-const reportGroupOptions = withLocale(() => [
+const reportGroupOptions = computed(() => [
 	{
 		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.options.groups.test")),
 		value: "测试报表组",
@@ -34,7 +34,7 @@ const reportGroupOptions = withLocale(() => [
 	},
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.reportConfiguration.reportInfo.form.fields.reportGroup")),
 		prop: "reportGroup",
@@ -79,7 +79,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	reportGroup: [
 		{
 			required: true,

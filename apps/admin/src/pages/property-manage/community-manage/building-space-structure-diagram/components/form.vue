@@ -6,7 +6,7 @@ import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import type { BuildingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & BuildingSpaceStructureDiagramFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -32,21 +32,21 @@ const buildingStatusLabelKeyMap = {
 	已停用: "propertyManage_communityManage.building-space-structure-diagram.options.status.disabled",
 } as const;
 
-const buildingStructureOptions = withLocale(() =>
+const buildingStructureOptions = computed(() =>
 	Object.entries(buildingStructureLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const buildingStatusOptions = withLocale(() =>
+const buildingStatusOptions = computed(() =>
 	Object.entries(buildingStatusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.building-space-structure-diagram.fields.buildingId")),
 		prop: "buildingId",
@@ -202,7 +202,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	buildingId: [
 		{
 			required: true,

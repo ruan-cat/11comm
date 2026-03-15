@@ -6,7 +6,7 @@ import { RolePermissionFormProps } from "./form";
 import type { RolePermissionFormVO } from "@01s-11comm/type";
 
 const props = defineProps<RolePermissionFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RolePermissionFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -15,12 +15,12 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & RolePermissionFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedStatusOptions = withLocale(() => [
+const translatedStatusOptions = computed(() => [
 	{ label: transformI18n($t("settingManage.organizeManage.rolePermission.status.enabled")), value: true },
 	{ label: transformI18n($t("settingManage.organizeManage.rolePermission.status.disabled")), value: false },
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.rolePermission.fields.name")),
 		prop: "name",
@@ -57,7 +57,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ReportComponentFormProps } from "./form";
 
 const props = defineProps<ReportComponentFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const componentTypeLabelKeyMap: Record<string, string> = {
 	表格: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
@@ -59,21 +59,21 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & ReportComponentFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedComponentTypeOptions = withLocale(() =>
+const translatedComponentTypeOptions = computed(() =>
 	componentTypeOptions.map((option) => ({
 		...option,
 		label: translateComponentType(String(option.value)),
 	})),
 );
 
-const translatedQueryMethodOptions = withLocale(() =>
+const translatedQueryMethodOptions = computed(() =>
 	queryMethodOptions.map((option) => ({
 		...option,
 		label: translateQueryMethod(String(option.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.reportConfiguration.reportComponent.form.fields.componentName")),
 		prop: "componentName",
@@ -141,7 +141,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	componentName: [
 		{
 			required: true,

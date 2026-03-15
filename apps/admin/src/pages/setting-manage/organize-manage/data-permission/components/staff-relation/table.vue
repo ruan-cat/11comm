@@ -16,12 +16,12 @@ interface StaffRelationSearchForm {
 	phone?: string;
 }
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const tableRef = useTemplateRef("tableRef");
 const tableData = ref<StaffRelationItem[]>([]);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -83,7 +83,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	pagination: pagination.value,
 }));
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.title")),
 	columns: columns.value,
 }));
@@ -96,7 +96,7 @@ const plusSearchModelRef: FieldValues & StaffRelationSearchForm = {
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.dataPermission.staffRelation.fields.employeeName")),
 		prop: "name",

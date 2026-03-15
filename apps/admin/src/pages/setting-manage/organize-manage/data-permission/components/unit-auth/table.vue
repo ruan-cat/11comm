@@ -14,7 +14,7 @@ interface UnitAuthItem {
 	unit: string;
 }
 
-const { locale, withLocale, createHeaderRenderer } = useI18nConfig();
+const { locale, createHeaderRenderer } = useI18nConfig();
 
 const tableData = ref<UnitAuthItem[]>([]);
 const unitAuthFormInstance = ref<InstanceType<typeof UnitAuthForm> | null>(null);
@@ -26,7 +26,7 @@ async function testAsync() {
 	setIsLoadingT(false);
 }
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -67,7 +67,7 @@ const pureTableProps = computed<PureTableProps>(() => ({
 	pagination: pagination.value,
 }));
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.organizeManage.dataPermission.unitAuth.title")),
 	columns: columns.value,
 }));

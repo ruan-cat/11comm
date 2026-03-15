@@ -15,10 +15,10 @@ import type { NoChargeHouseListItem, NoChargeHouseQueryParams } from "@01s-11com
 import { useNoChargeHouseListQuery } from "@/api/property-manage/report-manage/no-charge-house";
 import { communityOptions, buildingOptions, unitOptions } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -68,7 +68,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.no-charge-house.pageTitle")),
 	columns: columns.value,
 }));
@@ -97,7 +97,7 @@ const {
 	handleCurrentPageChange,
 } = useNoChargeHouseListQuery(plusSearchDefaultValues);
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.no-charge-house.search.houseNumberContractName")),
 		prop: "houseNumberContractName",

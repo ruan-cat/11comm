@@ -25,13 +25,13 @@ import type { ParkingLotListItem, ParkingLotQueryParams, ParkingLotFormVO } from
 import { type ParkingLotFormProps, defaultForm } from "./components/form";
 import ParkingLotForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const ParkingLotFormInstance = ref<InstanceType<typeof ParkingLotForm> | null>(null);
 
 const { modeText, setMode, isAdd } = useMode();
 
-const translatedParkingLotTypeOptions = withLocale(() => [
+const translatedParkingLotTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_parking-manage.parking-lot.options.parkingLotType.surface")),
 		value: "地面停车场",
@@ -50,7 +50,7 @@ const translatedParkingLotTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedParkingSpaceTypeOptions = withLocale(() => [
+const translatedParkingSpaceTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_parking-manage.parking-lot.options.parkingSpaceType.standard")),
 		value: "标准车位",
@@ -116,7 +116,7 @@ const {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 停车场编号 */
 	{
 		label: transformI18n($t("property-manage_parking-manage.parking-lot.search.parkingLotNumber")),
@@ -154,7 +154,7 @@ function handleSearch() {
 }
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -209,7 +209,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_parking-manage.parking-lot.tableTitle")),
 	columns: columns.value,
 }));

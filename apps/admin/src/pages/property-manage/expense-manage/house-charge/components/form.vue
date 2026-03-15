@@ -24,7 +24,7 @@ import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 import { HouseChargeFormProps, defaultForm } from "./form";
 
 const props = defineProps<HouseChargeFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & HouseChargeFormVO;
@@ -48,7 +48,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		/** 费用类型 */
 		label: transformI18n($t("property-manage_expense-manage.house-charge.form.fields.expenseType")),
@@ -343,7 +343,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	expenseType: [
 		{
 			required: true,

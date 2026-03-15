@@ -20,7 +20,7 @@ import {
 	communityOptions,
 } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 // TODO: 本页面需要继续完成写法改造；需要从API获取真实数据
 /** 模拟表格数据 - 待替换为真实API数据 */
@@ -38,7 +38,7 @@ const pagination = ref<PaginationProps>({
 const tableData = ref<ExpenseSummaryTableListItem[]>([]);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -193,7 +193,7 @@ const pureTableProps = ref<PureTableProps>({
 });
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.payment-details-form.tableTitle")),
 	columns: columns.value,
 }));
@@ -224,7 +224,7 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_report-manage.payment-details-form.search.paymentStartTime")),
 		prop: "缴费开始时间",

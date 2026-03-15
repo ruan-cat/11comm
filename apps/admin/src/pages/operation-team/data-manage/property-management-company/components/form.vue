@@ -10,7 +10,7 @@ import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
 import { type PropertyManagementCompanyFormProps } from "./form";
 
 const props = defineProps<PropertyManagementCompanyFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PropertyManagementCompanyFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -19,7 +19,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & PropertyManagementCompanyFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedCompanyTypeOptions = withLocale(() => [
+const translatedCompanyTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.options.companyTypes.stateOwned")),
 		value: "state_owned",
@@ -30,7 +30,7 @@ const translatedCompanyTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedServiceLevelOptions = withLocale(() => [
+const translatedServiceLevelOptions = computed(() => [
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.options.serviceLevels.level1")),
 		value: "level_1",
@@ -45,7 +45,7 @@ const translatedServiceLevelOptions = withLocale(() => [
 	},
 ]);
 
-const translatedOperationStatusOptions = withLocale(() => [
+const translatedOperationStatusOptions = computed(() => [
 	{
 		label: transformI18n(
 			$t("operation-team_data-manage.property-management-company.options.operationStatuses.operating"),
@@ -66,7 +66,7 @@ const translatedOperationStatusOptions = withLocale(() => [
 	},
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyName")),
 		prop: "name",
@@ -213,7 +213,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

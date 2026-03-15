@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -27,7 +27,7 @@ import { useCommunityInfoListQuery } from "@/api/operation-team/data-manage/comm
 import { type CommunityInformationFormProps, defaultForm } from "./components/form";
 import CommunityInformationForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<CommunityInfoQueryParams> = {
 	communityId: "",
@@ -118,35 +118,35 @@ function translateStatusLabel(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedProvinceOptions = withLocale(() =>
+const translatedProvinceOptions = computed(() =>
 	communitySearchOptions.provinces.map((item) => ({
 		...item,
 		label: translateProvinceLabel(String(item.value)),
 	})),
 );
 
-const translatedCityOptions = withLocale(() =>
+const translatedCityOptions = computed(() =>
 	communitySearchOptions.cities.map((item) => ({
 		...item,
 		label: translateCityLabel(String(item.value)),
 	})),
 );
 
-const translatedDistrictOptions = withLocale(() =>
+const translatedDistrictOptions = computed(() =>
 	communitySearchOptions.districts.map((item) => ({
 		...item,
 		label: translateDistrictLabel(String(item.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	communityInformationStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.value)),
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -237,12 +237,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operation-team_data-manage.community-information.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityId")),
 		prop: "communityId",

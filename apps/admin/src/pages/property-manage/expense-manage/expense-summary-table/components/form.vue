@@ -13,7 +13,7 @@ import { ExpenseSummaryTableFormProps, defaultForm } from "./form";
 
 const props = defineProps<ExpenseSummaryTableFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ExpenseSummaryTableFormVO;
@@ -36,7 +36,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedExpenseItemNameOptions = withLocale(() => [
+const translatedExpenseItemNameOptions = computed(() => [
 	{
 		label: transformI18n(
 			$t("property-manage_expense-manage.expense-summary-table.form.options.expenseItemName.propertyFee"),
@@ -100,7 +100,7 @@ const translatedExpenseItemNameOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 时间
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-summary-table.form.fields.time")),
@@ -173,7 +173,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	time: [
 		{
 			required: true,

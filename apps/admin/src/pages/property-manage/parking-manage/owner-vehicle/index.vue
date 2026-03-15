@@ -26,7 +26,7 @@ import type { OwnerVehicleListItem, OwnerVehicleQueryParams } from "@01s-11comm/
 import { type OwnerVehicleFormProps, defaultForm } from "./components/form";
 import OwnerVehicleForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd } = useMode();
@@ -34,7 +34,7 @@ const { modeText, setMode, isAdd } = useMode();
 /** 表单组件实例 */
 const ownerVehicleFormInstance = ref<InstanceType<typeof OwnerVehicleForm> | null>(null);
 
-const translatedParkingSpaceStatusOptions = withLocale(() =>
+const translatedParkingSpaceStatusOptions = computed(() =>
 	parkingSpaceStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(`property-manage_parking-manage.owner-vehicle.options.parkingSpaceStatus.${option.value}`)),
@@ -87,7 +87,7 @@ const {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	/** 车牌号 */
 	{
 		label: transformI18n($t("property-manage_parking-manage.owner-vehicle.search.licensePlate")),
@@ -142,7 +142,7 @@ function handleSearch() {
 }
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -234,7 +234,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置  */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_parking-manage.owner-vehicle.tableTitle")),
 	columns: columns.value,
 }));

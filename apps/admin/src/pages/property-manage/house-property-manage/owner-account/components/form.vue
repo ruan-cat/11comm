@@ -9,7 +9,7 @@ import type { OwnerAccountFormProps } from "./form";
 
 /** 表单组件props */
 const props = defineProps<OwnerAccountFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & OwnerAccountFormVO;
@@ -33,7 +33,7 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_house-property-manage.owner-account.fields.accountType")),
 		prop: "accountType",
@@ -100,7 +100,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	accountType: [
 		{
 			required: true,

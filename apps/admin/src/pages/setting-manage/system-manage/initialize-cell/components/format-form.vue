@@ -5,7 +5,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { FormatFormProps, type FormatConfirmationFormVO } from "./format-form";
 
 const props = defineProps<FormatFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & FormatConfirmationFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -15,7 +15,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & FormatConfirmationFormVO);
 const formComputed = computed(() => form.value);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.developerPassword")),
 		prop: "developerPassword",
@@ -38,7 +38,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	developerPassword: [
 		{
 			required: true,

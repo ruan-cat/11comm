@@ -11,7 +11,7 @@ import { statusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPlanFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolPlanFormVO;
@@ -34,7 +34,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedPlanCycleOptions = withLocale(() => [
+const translatedPlanCycleOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_patrol-manage.plan.form.options.planCycle.daily")),
 		value: "每日",
@@ -58,7 +58,7 @@ const translatedPlanCycleOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_patrol-manage.plan.form.fields.planName")),
 		prop: "planName",
@@ -120,7 +120,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	planName: [
 		{
 			required: true,

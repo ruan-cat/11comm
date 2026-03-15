@@ -7,7 +7,7 @@ import { protocolTypeOptions } from "@01s-11comm/type";
 import { RegisterProtocolFormProps } from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RegisterProtocolFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -28,14 +28,14 @@ const protocolTypeLabelKeys = [
 	"operationTeam.systemManage.registerProtocol.options.protocolTypes.copyright",
 ] as const;
 
-const translatedProtocolTypeOptions = withLocale(() =>
+const translatedProtocolTypeOptions = computed(() =>
 	protocolTypeOptions.map((item, index) => ({
 		...item,
 		label: transformI18n($t(protocolTypeLabelKeys[index] ?? protocolTypeLabelKeys[0])),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() => [
+const translatedStatusOptions = computed(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.statuses.draft")),
 		value: "Draft",
@@ -50,7 +50,7 @@ const translatedStatusOptions = withLocale(() => [
 	},
 ]);
 
-const translatedRequiredOptions = withLocale(() => [
+const translatedRequiredOptions = computed(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.registerProtocol.options.requiredStatuses.yes")),
 		value: "Yes",
@@ -61,7 +61,7 @@ const translatedRequiredOptions = withLocale(() => [
 	},
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName")),
 		prop: "protocolName",
@@ -199,7 +199,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	protocolName: [
 		{
 			required: true,

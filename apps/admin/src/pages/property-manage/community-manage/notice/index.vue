@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -24,7 +24,7 @@ import { type CommunityNoticeFormProps, defaultForm } from "./components/form";
 import CommunityNoticeForm from "./components/form.vue";
 import { useGotoDetailsPage } from "@/composables/use-goto-details-page";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const communityNoticeFormInstance = ref<InstanceType<typeof CommunityNoticeForm> | null>(null);
 
@@ -47,7 +47,7 @@ const {
 } = useCommunityNoticeListQuery(plusSearchDefaultValues);
 
 const selectedRows = ref<CommunityNoticeListItem[]>([]);
-const hasSelection = withLocale(() => selectedRows.value.length > 0);
+const hasSelection = computed(() => selectedRows.value.length > 0);
 
 const noticeTypeLabelKeyMap = {
 	notification: $t("propertyManage_communityManage.notice.typeOptions.notice"),
@@ -67,14 +67,14 @@ function translateNoticeType(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedNoticeTypeOptions = withLocale(() =>
+const translatedNoticeTypeOptions = computed(() =>
 	noticeTypeOptions.map((option) => ({
 		...option,
 		label: translateNoticeType(String(option.value)),
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -110,12 +110,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_communityManage.notice.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.notice.publicityTitle")),
 		prop: "noticeTitle",
@@ -161,7 +161,9 @@ async function handleBatchDelete() {
 
 	try {
 		await ElMessageBox.confirm(
-			i18n.global.t($t("propertyManage_communityManage.notice.batchDeleteConfirm"), { count: selectedRows.value.length }),
+			i18n.global.t($t("propertyManage_communityManage.notice.batchDeleteConfirm"), {
+				count: selectedRows.value.length,
+			}),
 			transformI18n($t("propertyManage_communityManage.notice.batchDeleteTitle")),
 			{
 				confirmButtonText: transformI18n($t("common.buttons.del")),
@@ -197,7 +199,9 @@ async function handleBatchPublish() {
 
 	try {
 		await ElMessageBox.confirm(
-			i18n.global.t($t("propertyManage_communityManage.notice.batchPublishConfirm"), { count: selectedRows.value.length }),
+			i18n.global.t($t("propertyManage_communityManage.notice.batchPublishConfirm"), {
+				count: selectedRows.value.length,
+			}),
 			transformI18n($t("propertyManage_communityManage.notice.batchPublishTitle")),
 			{
 				confirmButtonText: transformI18n($t("propertyManage_communityManage.notice.publish")),
@@ -401,7 +405,9 @@ function gotoNoticeDetailPage(row: CommunityNoticeListItem) {
 			<template #default="{ size, dynamicColumns }">
 				<div v-if="hasSelection">
 					<span>
-						{{ i18n.global.t($t("propertyManage_communityManage.notice.selectedCount"), { count: selectedRows.length }) }}
+						{{
+							i18n.global.t($t("propertyManage_communityManage.notice.selectedCount"), { count: selectedRows.length })
+						}}
 					</span>
 					<ElButton type="text" size="small" @click="selectedRows = []">
 						{{ transformI18n($t("propertyManage_communityManage.notice.clearSelection")) }}

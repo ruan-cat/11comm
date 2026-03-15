@@ -27,7 +27,7 @@ import type { FieldValues, PlusColumn } from "plus-pro-components";
 import { type CommunityConfigurationFormProps, defaultForm } from "./components/form";
 import CommunityConfigurationForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -36,7 +36,7 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 	return record[value] ?? value;
 }
 
-const settingTypeTextMap = withLocale(() => ({
+const settingTypeTextMap = computed(() => ({
 	系统设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.system")),
 	业务设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.business")),
 	界面设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.ui")),
@@ -44,7 +44,7 @@ const settingTypeTextMap = withLocale(() => ({
 	安全设置: transformI18n($t("settingManage.systemManage.communityConfiguration.options.settingTypes.security")),
 }));
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	启用: transformI18n($t("settingManage.systemManage.communityConfiguration.options.statuses.enabled")),
 	禁用: transformI18n($t("settingManage.systemManage.communityConfiguration.options.statuses.disabled")),
 	待审核: transformI18n($t("settingManage.systemManage.communityConfiguration.options.statuses.pending")),
@@ -58,14 +58,14 @@ function translateCommunityStatusLabel(value?: string | null) {
 	return translateFromRecord(statusTextMap.value, value);
 }
 
-const translatedSettingTypeOptions = withLocale(() =>
+const translatedSettingTypeOptions = computed(() =>
 	settingTypeOptions.map((item) => ({
 		...item,
 		label: translateSettingTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedCommunityStatusOptions = withLocale(() =>
+const translatedCommunityStatusOptions = computed(() =>
 	communityConfigStatusOptions.map((item) => ({
 		...item,
 		label: translateCommunityStatusLabel(String(item.label)),
@@ -93,7 +93,7 @@ const {
 	handleCurrentPageChange,
 } = useCommunityConfigurationListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -126,13 +126,17 @@ const columns = withLocale<TableColumnList>(() => [
 		cellRenderer: ({ row }) => translateSettingTypeLabel(row.settingType),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.communityConfiguration.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.status")),
+		),
 		prop: "statusText",
 		width: 100,
 		cellRenderer: ({ row }) => translateCommunityStatusLabel(row.statusText),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("settingManage.systemManage.communityConfiguration.fields.remark"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("settingManage.systemManage.communityConfiguration.fields.remark")),
+		),
 		prop: "remark",
 		minWidth: 200,
 	},
@@ -158,12 +162,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("settingManage.systemManage.communityConfiguration.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.communityConfiguration.fields.communityName")),
 		prop: "communityName",

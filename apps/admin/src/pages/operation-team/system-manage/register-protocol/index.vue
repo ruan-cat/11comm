@@ -26,7 +26,7 @@ import { useRegisterProtocolListQuery } from "@/api/operation-team/system-manage
 import { type RegisterProtocolFormProps, defaultForm } from "./components/form";
 import RegisterProtocolForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const protocolTypeLabelMap = {
 	用户注册协议: "operationTeam.systemManage.registerProtocol.options.protocolTypes.userRegistration",
@@ -61,21 +61,21 @@ function translateRequiredLabel(value?: boolean | number | string) {
 	return value === undefined || value === null ? "" : String(value);
 }
 
-const translatedProtocolTypeOptions = withLocale(() =>
+const translatedProtocolTypeOptions = computed(() =>
 	protocolTypeOptions.map((item) => ({
 		...item,
 		label: translateProtocolTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedEnabledOptions = withLocale(() =>
+const translatedEnabledOptions = computed(() =>
 	operationRegisterProtocolEnabledOptions.map((item) => ({
 		...item,
 		label: translateEnabledLabel(item.value),
 	})),
 );
 
-const translatedRequiredOptions = withLocale(() =>
+const translatedRequiredOptions = computed(() =>
 	isMandatoryOptions.map((item) => ({
 		...item,
 		label: translateRequiredLabel(item.value),
@@ -105,7 +105,7 @@ const {
 	handleCurrentPageChange,
 } = useRegisterProtocolListQuery(plusSearchDefaultValues);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -203,12 +203,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.systemManage.registerProtocol.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.registerProtocol.fields.protocolName")),
 		prop: "title",

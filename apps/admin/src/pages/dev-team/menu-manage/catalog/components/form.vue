@@ -7,7 +7,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type CatalogFormProps } from "./form";
 
 const props = defineProps<CatalogFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const groupTypeOptionLabelMap = {
 	system: $t("devTeam.menuManage.catalog.form.options.system"),
@@ -48,21 +48,21 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & MenuCatalogFormData);
 const formComputed = computed(() => form.value);
 
-const translatedGroupTypeOptions = withLocale(() =>
+const translatedGroupTypeOptions = computed(() =>
 	groupTypeOptions.map((option) => ({
 		...option,
 		label: translateGroupType(String(option.value)),
 	})),
 );
 
-const translatedStoreTypeOptions = withLocale(() =>
+const translatedStoreTypeOptions = computed(() =>
 	storeTypeOptions.map((option) => ({
 		...option,
 		label: translateStoreType(String(option.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.menuManage.catalog.fields.name")),
 		prop: "name",
@@ -127,7 +127,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

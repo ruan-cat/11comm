@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { ElMessageBox, ElTag } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -24,7 +24,7 @@ import type { HandingBusinessFormVO, HandingBusinessListItem, HandingBusinessQue
 import { handingBusinessListDataToFormData as listDataToFormData } from "@01s-11comm/type";
 import HandingBusinessForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues &
 	Partial<HandingBusinessQueryParams> & {
@@ -85,21 +85,21 @@ function translateOptionLabel<T extends Record<string, string>>(value: string | 
 	return key ? transformI18n($t(key)) : value;
 }
 
-const feeTypeOptions = withLocale(() =>
+const feeTypeOptions = computed(() =>
 	Object.entries(feeTypeLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const statusOptions = withLocale(() =>
+const statusOptions = computed(() =>
 	Object.entries(statusLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -183,12 +183,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_communityManage.handing-business.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.handing-business.fields.feeItem")),
 		prop: "feeItem",

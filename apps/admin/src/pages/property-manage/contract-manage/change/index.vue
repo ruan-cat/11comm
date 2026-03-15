@@ -28,9 +28,9 @@ import {
 	contractTypeOptions,
 } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
-const statusTextMap = withLocale(() => ({
+const statusTextMap = computed(() => ({
 	待审核: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.pending")),
 	审核中: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.reviewing")),
 	已通过: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.approved")),
@@ -43,7 +43,7 @@ function translateStatusLabel(value?: string | null) {
 	return statusTextMap.value[value] ?? value;
 }
 
-const translatedContractTypeOptions = withLocale(() =>
+const translatedContractTypeOptions = computed(() =>
 	contractTypeOptions.map((item) => ({
 		...item,
 		label: transformI18n(
@@ -87,7 +87,7 @@ const plusSearchModel = ref(plusSearchModelRef);
  * 表格搜索栏组件表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.fields.contractName")),
 		prop: "contractName",
@@ -132,7 +132,7 @@ function handleSearch() {
 }
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -215,7 +215,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_contract-manage.contract-change.tableTitle")),
 	columns: columns.value,
 }));

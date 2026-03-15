@@ -11,7 +11,7 @@ import type { ContractChangeFormProps } from "./form";
 
 const props = defineProps<ContractChangeFormProps>();
 
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ContractChangeFormVO;
@@ -42,7 +42,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedContractTypeOptions = withLocale(() => [
+const translatedContractTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.contractTypes.purchase")),
 		value: "采购合同",
@@ -61,7 +61,7 @@ const translatedContractTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedChangeTypeOptions = withLocale(() => [
+const translatedChangeTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.amount")),
 		value: "合同金额",
@@ -85,7 +85,7 @@ const translatedChangeTypeOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 合同变更信息分组标题
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractChangeTitle")),
@@ -351,7 +351,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	contractName: [
 		{
 			required: true,

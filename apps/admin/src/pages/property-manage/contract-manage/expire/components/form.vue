@@ -13,7 +13,7 @@ import { ContractExpireFormProps, defaultForm } from "./form";
 
 const props = defineProps<ContractExpireFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ContractExpireFormVO;
@@ -36,7 +36,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedContractTypeOptions = withLocale(() => [
+const translatedContractTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.expired-contract.form.options.contractTypes.purchase")),
 		value: "采购合同",
@@ -63,7 +63,7 @@ const translatedContractTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedProcessingTypeOptions = withLocale(() => [
+const translatedProcessingTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.expired-contract.form.options.processingTypes.renewal")),
 		value: "续签",
@@ -77,7 +77,7 @@ const translatedProcessingTypeOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 合同到期信息分组标题
 	{
 		label: transformI18n($t("property-manage_contract-manage.expired-contract.form.fields.contractExpireTitle")),
@@ -338,7 +338,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	contractName: [
 		{
 			required: true,

@@ -11,7 +11,7 @@ definePage({
 
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useGotoDetailsPage } from "@/composables/use-goto-details-page";
@@ -26,7 +26,7 @@ import { usePropertyCompanyListQuery } from "@/api/operation-team/data-manage/pr
 import { type PropertyManagementCompanyFormProps, defaultForm } from "./components/form";
 import PropertyManagementCompanyForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<PropertyCompanyQueryParams> = {
 	companyId: "",
@@ -93,7 +93,7 @@ function translateOperationStatusLabel(value?: string | null) {
 
 const propertyManagementCompanyFormInstance = ref<InstanceType<typeof PropertyManagementCompanyForm> | null>(null);
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(
@@ -197,12 +197,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operation-team_data-manage.property-management-company.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operation-team_data-manage.property-management-company.fields.companyId")),
 		prop: "companyId",

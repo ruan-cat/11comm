@@ -9,7 +9,7 @@ definePage({
 	},
 });
 
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { ElMessageBox, ElTag } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -23,7 +23,7 @@ import type { PropertyRegisterFormVO, PropertyRegisterListItem, PropertyRegister
 import { defaultForm } from "./components/form";
 import PropertyRegisterForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<PropertyRegisterQueryParams> = {
 	houseId: "",
@@ -71,9 +71,9 @@ const buildingLabelKeyMap = {
 	"1栋": "propertyManage_communityManage.property-register.options.building.building1",
 	"2栋": "propertyManage_communityManage.property-register.options.building.building2",
 	"3栋": "propertyManage_communityManage.property-register.options.building.building3",
-	"A栋": "propertyManage_communityManage.property-register.options.building.buildingA",
-	"B栋": "propertyManage_communityManage.property-register.options.building.buildingB",
-	"C栋": "propertyManage_communityManage.property-register.options.building.buildingC",
+	A栋: "propertyManage_communityManage.property-register.options.building.buildingA",
+	B栋: "propertyManage_communityManage.property-register.options.building.buildingB",
+	C栋: "propertyManage_communityManage.property-register.options.building.buildingC",
 } as const;
 
 const unitLabelKeyMap = {
@@ -91,69 +91,85 @@ function translateStatusLabel(value?: string | null) {
 	return key ? transformI18n($t(key)) : value;
 }
 
-const statusOptions = withLocale(() =>
+const statusOptions = computed(() =>
 	(["enabled", "disabled"] as const).map((value) => ({
 		label: transformI18n($t(statusLabelKeyMap[value])),
 		value,
 	})),
 );
 
-const buildingOptions = withLocale(() =>
+const buildingOptions = computed(() =>
 	Object.entries(buildingLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const unitOptions = withLocale(() =>
+const unitOptions = computed(() =>
 	Object.entries(unitLabelKeyMap).map(([value, key]) => ({
 		label: transformI18n($t(key)),
 		value,
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.propertyRightId"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.propertyRightId")),
+		),
 		prop: "propertyRightId",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.houseId"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.houseId")),
+		),
 		prop: "houseId",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.houseNumber"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.houseNumber")),
+		),
 		prop: "houseNumber",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.ownerName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.ownerName")),
+		),
 		prop: "ownerName",
 		minWidth: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.contactInfo"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.contactInfo")),
+		),
 		prop: "contactInfo",
 		minWidth: 140,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.idCardNumber"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.idCardNumber")),
+		),
 		prop: "idCardNumber",
 		minWidth: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.address"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.address")),
+		),
 		prop: "address",
 		minWidth: 220,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_communityManage.property-register.fields.status"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_communityManage.property-register.fields.status")),
+		),
 		prop: "status",
 		minWidth: 120,
 		cellRenderer: ({ row }) => {
@@ -169,12 +185,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_communityManage.property-register.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.property-register.fields.houseId")),
 		prop: "houseId",

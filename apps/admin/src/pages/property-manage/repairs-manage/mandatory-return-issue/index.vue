@@ -25,7 +25,7 @@ import type {
 } from "@01s-11comm/type";
 import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11comm/type";
 
-const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+const { locale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -34,7 +34,7 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const mandatoryReturnIssueFormInstance = ref<InstanceType<typeof MandatoryReturnIssueForm> | null>(null);
 
 /** 表格列配置 */
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -104,7 +104,7 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件 配置 */
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.pageTitle")),
 	columns: columns.value,
 }));
@@ -141,7 +141,7 @@ const {
 /**
  * 表格搜索栏组件 表单配置
  */
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.mandatory-return-issue.search.repairType")),
 		prop: "repairType",

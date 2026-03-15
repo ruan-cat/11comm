@@ -12,7 +12,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { CommunityNoticeFormProps } from "./form";
 
 const props = defineProps<CommunityNoticeFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CommunityNoticeFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -62,14 +62,14 @@ function translateNoticeStatus(value?: string | null) {
 	return key ? transformI18n(key) : value;
 }
 
-const translatedNoticeTypeOptions = withLocale(() =>
+const translatedNoticeTypeOptions = computed(() =>
 	noticeTypeOptions.map((option) => ({
 		...option,
 		label: translateNoticeType(String(option.value)),
 	})),
 );
 
-const translatedNoticeStatusOptions = withLocale(() =>
+const translatedNoticeStatusOptions = computed(() =>
 	noticeStatusOptions.map((option) => ({
 		...option,
 		label: translateNoticeStatus(String(option.value)),
@@ -94,7 +94,7 @@ watch([() => form.value.validityStartTime, () => form.value.validityEndTime], ([
 	}
 });
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_communityManage.notice.form.title")),
 		prop: "noticeTitle",
@@ -171,7 +171,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale(() => ({
+const plusFormRules = computed(() => ({
 	noticeTitle: [
 		{
 			required: true,
@@ -181,7 +181,10 @@ const plusFormRules = withLocale(() => ({
 		{
 			min: 2,
 			max: MAX_TITLE_LENGTH,
-			message: i18n.global.t($t("propertyManage_communityManage.notice.form.titleLength"), { min: 2, max: MAX_TITLE_LENGTH }),
+			message: i18n.global.t($t("propertyManage_communityManage.notice.form.titleLength"), {
+				min: 2,
+				max: MAX_TITLE_LENGTH,
+			}),
 			trigger: "blur",
 		},
 	],
@@ -301,13 +304,17 @@ defineExpose({
 
 			<div class="字数统计区域">
 				<div class="统计项">
-					<span class="统计标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.titleCharCount")) }}</span>
+					<span class="统计标签">{{
+						transformI18n($t("propertyManage_communityManage.notice.form.titleCharCount"))
+					}}</span>
 					<span class="统计数字" :class="{ 字数警告: titleCharCount > MAX_TITLE_LENGTH * 0.9 }">
 						{{ titleCharCount }} / {{ MAX_TITLE_LENGTH }}
 					</span>
 				</div>
 				<div class="统计项">
-					<span class="统计标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.summaryCharCount")) }}</span>
+					<span class="统计标签">{{
+						transformI18n($t("propertyManage_communityManage.notice.form.summaryCharCount"))
+					}}</span>
 					<span class="统计数字" :class="{ 字数警告: summaryCharCount > MAX_SUMMARY_LENGTH * 0.9 }">
 						{{ summaryCharCount }} / {{ MAX_SUMMARY_LENGTH }}
 					</span>
@@ -320,14 +327,25 @@ defineExpose({
 				<template #header>
 					<div class="卡片头部">
 						<h3 class="公示标题">
-							{{ form.noticeTitle || transformI18n($t("propertyManage_communityManage.notice.form.preview.titlePreview")) }}
+							{{
+								form.noticeTitle || transformI18n($t("propertyManage_communityManage.notice.form.preview.titlePreview"))
+							}}
 						</h3>
 						<div class="公示元信息">
 							<ElTag type="primary" size="small">
-								{{ translateNoticeType(form.noticeType) || transformI18n($t("propertyManage_communityManage.notice.form.preview.type")) }}
+								{{
+									translateNoticeType(form.noticeType) ||
+									transformI18n($t("propertyManage_communityManage.notice.form.preview.type"))
+								}}
 							</ElTag>
-							<ElTag :type="form.status === 'published' ? 'success' : form.status === 'draft' ? 'info' : 'danger'" size="small">
-								{{ translateNoticeStatus(form.status) || transformI18n($t("propertyManage_communityManage.notice.form.preview.status")) }}
+							<ElTag
+								:type="form.status === 'published' ? 'success' : form.status === 'draft' ? 'info' : 'danger'"
+								size="small"
+							>
+								{{
+									translateNoticeStatus(form.status) ||
+									transformI18n($t("propertyManage_communityManage.notice.form.preview.status"))
+								}}
 							</ElTag>
 						</div>
 					</div>
@@ -336,22 +354,36 @@ defineExpose({
 				<div class="公示内容">
 					<div class="公示摘要">
 						<h4>{{ transformI18n($t("propertyManage_communityManage.notice.form.preview.contentSummary")) }}</h4>
-						<p>{{ form.summary || transformI18n($t("propertyManage_communityManage.notice.form.preview.noSummary")) }}</p>
+						<p>
+							{{ form.summary || transformI18n($t("propertyManage_communityManage.notice.form.preview.noSummary")) }}
+						</p>
 					</div>
 
 					<div class="公示时间信息">
 						<div class="时间项">
-							<span class="时间标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.preview.validityPeriod")) }}</span>
+							<span class="时间标签">{{
+								transformI18n($t("propertyManage_communityManage.notice.form.preview.validityPeriod"))
+							}}</span>
 							<span class="时间值">
-								{{ form.validityStartTime || transformI18n($t("propertyManage_communityManage.notice.form.preview.startDate")) }}
+								{{
+									form.validityStartTime ||
+									transformI18n($t("propertyManage_communityManage.notice.form.preview.startDate"))
+								}}
 								~
-								{{ form.validityEndTime || transformI18n($t("propertyManage_communityManage.notice.form.preview.endDate")) }}
+								{{
+									form.validityEndTime ||
+									transformI18n($t("propertyManage_communityManage.notice.form.preview.endDate"))
+								}}
 							</span>
 						</div>
 						<div class="时间项">
-							<span class="时间标签">{{ transformI18n($t("propertyManage_communityManage.notice.form.preview.publisher")) }}</span>
+							<span class="时间标签">{{
+								transformI18n($t("propertyManage_communityManage.notice.form.preview.publisher"))
+							}}</span>
 							<span class="时间值">
-								{{ form.publisher || transformI18n($t("propertyManage_communityManage.notice.form.preview.systemAdmin")) }}
+								{{
+									form.publisher || transformI18n($t("propertyManage_communityManage.notice.form.preview.systemAdmin"))
+								}}
 							</span>
 						</div>
 					</div>

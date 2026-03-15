@@ -13,7 +13,7 @@ import { ExpenseItemSettingFormProps, defaultForm } from "./form";
 
 const props = defineProps<ExpenseItemSettingFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ExpenseItemSettingFormVO;
@@ -36,7 +36,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedExpenseIdentifierOptions = withLocale(() => [
+const translatedExpenseIdentifierOptions = computed(() => [
 	{
 		label: transformI18n(
 			$t("property-manage_expense-manage.expense-item-setting.form.options.expenseIdentifier.recurring"),
@@ -51,7 +51,7 @@ const translatedExpenseIdentifierOptions = withLocale(() => [
 	},
 ]);
 
-const translatedPaymentTypeOptions = withLocale(() => [
+const translatedPaymentTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.paymentType.prepaid")),
 		value: "预付费",
@@ -62,7 +62,7 @@ const translatedPaymentTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedAccountDeductionOptions = withLocale(() => [
+const translatedAccountDeductionOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.accountDeduction.yes")),
 		value: "是",
@@ -73,7 +73,7 @@ const translatedAccountDeductionOptions = withLocale(() => [
 	},
 ]);
 
-const translatedMobilePaymentOptions = withLocale(() => [
+const translatedMobilePaymentOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.mobilePayment.yes")),
 		value: "是",
@@ -84,7 +84,7 @@ const translatedMobilePaymentOptions = withLocale(() => [
 	},
 ]);
 
-const translatedRoundingModeOptions = withLocale(() => [
+const translatedRoundingModeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.roundingMode.round")),
 		value: "四舍五入",
@@ -99,7 +99,7 @@ const translatedRoundingModeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedDecimalPlacesOptions = withLocale(() => [
+const translatedDecimalPlacesOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.decimalPlaces.integer")),
 		value: "取整",
@@ -122,7 +122,7 @@ const translatedDecimalPlacesOptions = withLocale(() => [
 	},
 ]);
 
-const translatedStatusOptions = withLocale(() => [
+const translatedStatusOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.options.status.enabled")),
 		value: "启用",
@@ -134,7 +134,7 @@ const translatedStatusOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 费用类型
 	{
 		label: transformI18n($t("property-manage_expense-manage.expense-item-setting.form.fields.feeType")),
@@ -253,7 +253,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	expenseItem: [
 		{
 			required: true,

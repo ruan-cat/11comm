@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type MenuItemFormProps } from "./form";
 
 const props = defineProps<MenuItemFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & MenuItemFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -15,7 +15,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & MenuItemFormVO);
 const formComputed = computed(() => form.value);
 
-const parentMenuOptions = withLocale(() => [
+const parentMenuOptions = computed(() => [
 	{ label: transformI18n($t("devTeam.menuManage.item.form.parentMenus.root")), value: "根菜单" },
 	{ label: transformI18n($t("devTeam.menuManage.item.form.parentMenus.systemManage")), value: "系统管理" },
 	{ label: transformI18n($t("devTeam.menuManage.item.form.parentMenus.monitorManage")), value: "监控管理" },
@@ -67,28 +67,28 @@ function translateBoolean(value?: string | number | boolean | null) {
 	return key ? transformI18n(key) : String(value);
 }
 
-const translatedMenuTypeOptions = withLocale(() =>
+const translatedMenuTypeOptions = computed(() =>
 	menuTypeOptions.map((option) => ({
 		...option,
 		label: translateMenuType(String(option.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	menuItemStatusOptions.map((option) => ({
 		...option,
 		label: translateStatus(String(option.value)),
 	})),
 );
 
-const translatedBooleanOptions = withLocale(() =>
+const translatedBooleanOptions = computed(() =>
 	booleanOptions.map((option) => ({
 		...option,
 		label: translateBoolean(option.value),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.menuManage.item.fields.menuName")),
 		prop: "menuName",
@@ -237,7 +237,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	menuName: [
 		{
 			required: true,

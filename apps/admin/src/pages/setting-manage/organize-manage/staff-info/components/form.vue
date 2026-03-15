@@ -10,7 +10,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { type StaffInfoFormProps } from "./form.ts";
 
 const props = defineProps<StaffInfoFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & StaffInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -26,7 +26,7 @@ const genderKeyMap = {
 	female: "female",
 } as const;
 
-const translatedGenderOptions = withLocale(() =>
+const translatedGenderOptions = computed(() =>
 	staffGenderOptions.map((option) => {
 		const normalizedValue = String(option.value) === "女" || String(option.value) === "female" ? "female" : "male";
 
@@ -42,7 +42,7 @@ const translatedGenderOptions = withLocale(() =>
 	}),
 );
 
-const positionOptions = withLocale(() => [
+const positionOptions = computed(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.positions.staff")),
 		value: "普通员工",
@@ -87,7 +87,7 @@ const positionOptions = withLocale(() => [
 	},
 ]);
 
-const orgOptions = withLocale(() => [
+const orgOptions = computed(() => [
 	{ label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.top")), value: "中航物业1" },
 	{
 		label: transformI18n($t("settingManage.organizeManage.staffInfo.form.options.orgs.finance")),
@@ -127,7 +127,7 @@ const orgOptions = withLocale(() => [
 	},
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.staffInfo.fields.name")),
 		prop: "name",
@@ -197,7 +197,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

@@ -9,7 +9,7 @@ import { WaterAndElectricityMeterReadingFormProps } from "./form";
 
 const props = defineProps<WaterAndElectricityMeterReadingFormProps>();
 
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & WaterAndElectricityMeterReadingFormVO;
@@ -32,7 +32,7 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedExpenseTypeOptions = withLocale(() => [
+const translatedExpenseTypeOptions = computed(() => [
 	{
 		label: transformI18n(
 			$t("property-manage_expense-manage.water-and-electricity-meter-reading.form.options.expenseType.waterFee"),
@@ -47,7 +47,7 @@ const translatedExpenseTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedChargeItemOptions = withLocale(() => [
+const translatedChargeItemOptions = computed(() => [
 	{
 		label: transformI18n(
 			$t("property-manage_expense-manage.water-and-electricity-meter-reading.form.options.chargeItem.waterMeter"),
@@ -62,7 +62,7 @@ const translatedChargeItemOptions = withLocale(() => [
 	},
 ]);
 
-const translatedMeterReadingTypeOptions = withLocale(() => [
+const translatedMeterReadingTypeOptions = computed(() => [
 	{
 		label: transformI18n(
 			$t("property-manage_expense-manage.water-and-electricity-meter-reading.form.options.meterReadingType.waterMeter"),
@@ -80,7 +80,7 @@ const translatedMeterReadingTypeOptions = withLocale(() => [
 ]);
 
 /** 表单项配置 */
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 费用类型
 	{
 		label: transformI18n(
@@ -214,7 +214,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	expenseType: [
 		{
 			required: true,

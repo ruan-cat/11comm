@@ -17,7 +17,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { booleanOptions, menuItemStatusOptions, menuTypeOptions, type MenuItemQueryParams } from "@01s-11comm/type";
 import { useMenuItemListQuery } from "@/api/dev-team/menu-manage/item";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const plusSearchModelRef: FieldValues & Partial<MenuItemQueryParams> = {
 	menuId: "",
@@ -93,28 +93,28 @@ function translateBoolean(value?: string | number | boolean | null) {
 	return key ? transformI18n(key) : String(value);
 }
 
-const translatedMenuTypeOptions = withLocale(() =>
+const translatedMenuTypeOptions = computed(() =>
 	menuTypeOptions.map((option) => ({
 		...option,
 		label: translateMenuType(String(option.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	menuItemStatusOptions.map((option) => ({
 		...option,
 		label: translateStatus(String(option.value)),
 	})),
 );
 
-const translatedBooleanOptions = withLocale(() =>
+const translatedBooleanOptions = computed(() =>
 	booleanOptions.map((option) => ({
 		...option,
 		label: translateBoolean(option.value),
 	})),
 );
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	{
 		...defaultPureTableIndexColumn,
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
@@ -197,12 +197,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("devTeam.menuManage.item.pageTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.menuManage.item.fields.menuId")),
 		prop: "menuId",

@@ -10,7 +10,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { type ShiftSettingFormProps } from "./form";
 
 const props = defineProps<ShiftSettingFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ShiftSettingFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -30,7 +30,7 @@ const shiftTypeKeyMap = {
 	allDay: "allDay",
 } as const;
 
-const translatedShiftTypeOptions = withLocale(() =>
+const translatedShiftTypeOptions = computed(() =>
 	shiftTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n(
@@ -41,7 +41,7 @@ const translatedShiftTypeOptions = withLocale(() =>
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.shiftSetting.fields.name")),
 		prop: "name",
@@ -102,7 +102,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

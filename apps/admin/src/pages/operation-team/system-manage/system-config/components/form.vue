@@ -7,7 +7,7 @@ import { systemConfigSystemOptions, systemConfigTypeOptions } from "@01s-11comm/
 import { type SystemConfigFormProps } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & SystemConfigFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -30,21 +30,21 @@ const systemLabelKeys = [
 	"operationTeam.systemManage.systemConfig.options.systems.no",
 ] as const;
 
-const translatedSystemConfigTypeOptions = withLocale(() =>
+const translatedSystemConfigTypeOptions = computed(() =>
 	systemConfigTypeOptions.map((item, index) => ({
 		...item,
 		label: transformI18n($t(configTypeLabelKeys[index] ?? configTypeLabelKeys[0])),
 	})),
 );
 
-const translatedSystemOptions = withLocale(() =>
+const translatedSystemOptions = computed(() =>
 	systemConfigSystemOptions.map((item, index) => ({
 		...item,
 		label: transformI18n($t(systemLabelKeys[index] ?? systemLabelKeys[0])),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() => [
+const translatedStatusOptions = computed(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.systemConfig.options.statuses.enabled")),
 		value: "Enabled",
@@ -55,7 +55,7 @@ const translatedStatusOptions = withLocale(() => [
 	},
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName")),
 		prop: "configName",
@@ -143,7 +143,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	configName: [
 		{
 			required: true,

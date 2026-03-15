@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { OrganizationInfoFormProps } from "./form";
 
 const props = defineProps<OrganizationInfoFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & OrganizationInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -15,14 +15,14 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & OrganizationInfoFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedOrganizationTypeOptions = withLocale(() =>
+const translatedOrganizationTypeOptions = computed(() =>
 	organizationTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(`settingManage.organizeManage.orgInfo.form.options.${option.value}`)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.orgInfo.fields.name")),
 		prop: "name",
@@ -61,7 +61,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

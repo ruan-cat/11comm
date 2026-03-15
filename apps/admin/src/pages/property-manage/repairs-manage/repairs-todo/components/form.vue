@@ -10,7 +10,7 @@ import { repairTypeOptions, maintenanceTypeOptions, repairStatusOptions } from "
 
 const props = defineProps<RepairsTodoFormProps>();
 
-const { withLocale } = useI18nConfig();
+const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RepairsTodoFormVO;
 
@@ -22,7 +22,7 @@ const toRefForm = cloneDeep(props.form) as FieldValues & RepairsTodoFormVO;
 const form = ref(toRefForm);
 const formComputed = computed(() => form.value);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("propertyManage_repairsManage.repairs-todo.form.fields.workOrderNumber")),
 		prop: "workOrderNumber",
@@ -74,7 +74,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	location: [
 		{
 			required: true,

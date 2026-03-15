@@ -7,7 +7,7 @@ import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const props = defineProps<ConfigItemFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const configItemTypeLabelKeyMap = {
 	system: "devTeam.configManage.item.form.options.system",
@@ -36,21 +36,21 @@ const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedConfigItemTypeOptions = withLocale(() =>
+const translatedConfigItemTypeOptions = computed(() =>
 	configItemTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(configItemTypeLabelKeyMap[String(option.value) as keyof typeof configItemTypeLabelKeyMap])),
 	})),
 );
 
-const translatedItemEnableStatusOptions = withLocale(() =>
+const translatedItemEnableStatusOptions = computed(() =>
 	itemEnableStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
 		prop: "configItemName",
@@ -117,7 +117,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	configItemName: [
 		{
 			required: true,

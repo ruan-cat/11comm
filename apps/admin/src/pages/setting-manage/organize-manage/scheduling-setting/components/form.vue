@@ -6,7 +6,7 @@ import { type SchedulingSettingFormProps } from "./form";
 import { type SchedulingSettingFormVO, schedulingStatusOptions, schedulingTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<SchedulingSettingFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & SchedulingSettingFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -15,21 +15,21 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as FieldValues & SchedulingSettingFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedSchedulingTypeOptions = withLocale(() =>
+const translatedSchedulingTypeOptions = computed(() =>
 	schedulingTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(`settingManage.organizeManage.schedulingSetting.form.options.type.${option.value}`)),
 	})),
 );
 
-const translatedSchedulingStatusOptions = withLocale(() =>
+const translatedSchedulingStatusOptions = computed(() =>
 	schedulingStatusOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(`settingManage.organizeManage.schedulingSetting.form.options.status.${option.value}`)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.organizeManage.schedulingSetting.fields.name")),
 		prop: "name",
@@ -86,7 +86,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	name: [
 		{
 			required: true,

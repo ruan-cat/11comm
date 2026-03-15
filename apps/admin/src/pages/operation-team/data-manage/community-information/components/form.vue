@@ -7,7 +7,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type CommunityInformationFormProps } from "./form";
 
 const props = defineProps<CommunityInformationFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CommunityInformationFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -88,35 +88,35 @@ function translateStatusLabel(value?: string | null) {
 	return key ? transformI18n($t(key)) : value;
 }
 
-const translatedProvinceOptions = withLocale(() =>
+const translatedProvinceOptions = computed(() =>
 	communitySearchOptions.provinces.map((item) => ({
 		...item,
 		label: translateProvinceLabel(String(item.value)),
 	})),
 );
 
-const translatedCityOptions = withLocale(() =>
+const translatedCityOptions = computed(() =>
 	communitySearchOptions.cities.map((item) => ({
 		...item,
 		label: translateCityLabel(String(item.value)),
 	})),
 );
 
-const translatedDistrictOptions = withLocale(() =>
+const translatedDistrictOptions = computed(() =>
 	communitySearchOptions.districts.map((item) => ({
 		...item,
 		label: translateDistrictLabel(String(item.value)),
 	})),
 );
 
-const translatedStatusOptions = withLocale(() =>
+const translatedStatusOptions = computed(() =>
 	communityInformationStatusOptions.map((item) => ({
 		...item,
 		label: translateStatusLabel(String(item.value)),
 	})),
 );
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operation-team_data-manage.community-information.fields.communityId")),
 		prop: "communityId",
@@ -252,7 +252,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	communityName: [
 		{
 			required: true,

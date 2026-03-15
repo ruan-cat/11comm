@@ -1,4 +1,4 @@
-import { h, ref } from "vue";
+import { h, ref, computed } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";

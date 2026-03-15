@@ -16,17 +16,17 @@ import { addDialog, closeDialog } from "@/components/ReDialog";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
-import type { SystemConfigFormVO, OperationTeamSystemConfig, OperationTeamSystemConfigListQuery } from "@01s-11comm/type";
-import {
-	systemConfigEnabledOptions,
-	systemConfigSystemOptions,
-	systemConfigTypeOptions,
+import type {
+	SystemConfigFormVO,
+	OperationTeamSystemConfig,
+	OperationTeamSystemConfigListQuery,
 } from "@01s-11comm/type";
+import { systemConfigEnabledOptions, systemConfigSystemOptions, systemConfigTypeOptions } from "@01s-11comm/type";
 import { useSystemConfigListQuery } from "@/api/operation-team/system-manage/system-config";
 import { type SystemConfigFormProps, defaultForm } from "./components/form";
 import SystemConfigForm from "./components/form.vue";
 
-const { locale, withLocale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
 
 const configTypeLabelMap = {
 	文本: "operationTeam.systemManage.systemConfig.options.configTypes.text",
@@ -61,21 +61,21 @@ function translateSystemLabel(value?: boolean | number | string) {
 	return value === undefined || value === null ? "" : String(value);
 }
 
-const translatedConfigTypeOptions = withLocale(() =>
+const translatedConfigTypeOptions = computed(() =>
 	systemConfigTypeOptions.map((item) => ({
 		...item,
 		label: translateConfigTypeLabel(String(item.value)),
 	})),
 );
 
-const translatedEnabledOptions = withLocale(() =>
+const translatedEnabledOptions = computed(() =>
 	systemConfigEnabledOptions.map((item) => ({
 		...item,
 		label: translateEnabledLabel(item.value),
 	})),
 );
 
-const translatedSystemOptions = withLocale(() =>
+const translatedSystemOptions = computed(() =>
 	systemConfigSystemOptions.map((item) => ({
 		...item,
 		label: translateSystemLabel(item.value),
@@ -117,7 +117,7 @@ const {
 
 const { setMode, isAdd, isEdit, isInfo } = useMode();
 
-const columns = withLocale<TableColumnList>(() => [
+const columns = computed<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configId"))),
@@ -125,17 +125,23 @@ const columns = withLocale<TableColumnList>(() => [
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName")),
+		),
 		prop: "configName",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configValue"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.systemConfig.fields.configValue")),
+		),
 		prop: "configValue",
 		minWidth: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.configType"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.systemConfig.fields.configType")),
+		),
 		prop: "configType",
 		width: 100,
 		cellRenderer: ({ row }) => translateConfigTypeLabel(row.configType),
@@ -153,17 +159,23 @@ const columns = withLocale<TableColumnList>(() => [
 		cellRenderer: ({ row }) => translateEnabledLabel(row.isEnabled),
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.description"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.systemConfig.fields.description")),
+		),
 		prop: "description",
 		minWidth: 200,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.createTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.systemConfig.fields.createTime")),
+		),
 		prop: "createTime",
 		width: 160,
 	},
 	{
-		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.systemConfig.fields.updateTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.systemConfig.fields.updateTime")),
+		),
 		prop: "updateTime",
 		width: 160,
 	},
@@ -175,12 +187,12 @@ const columns = withLocale<TableColumnList>(() => [
 	},
 ]);
 
-const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("operationTeam.systemManage.systemConfig.tableTitle")),
 	columns: columns.value,
 }));
 
-const plusSearchColumns = withLocale<PlusColumn[]>(() => [
+const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.systemConfig.fields.configName")),
 		prop: "configName",

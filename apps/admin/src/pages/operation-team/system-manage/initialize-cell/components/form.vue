@@ -6,7 +6,7 @@ import type { InitializeCellFormVO } from "@01s-11comm/type";
 import { type InitializeCellFormProps } from "./form";
 
 const props = defineProps<InitializeCellFormProps>();
-const { locale, withLocale } = useI18nConfig();
+const { locale, computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as unknown as FieldValues & InitializeCellFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
@@ -16,7 +16,7 @@ usePlusFormReset(plusFormInstance);
 const form = ref(cloneDeep(props.form) as unknown as FieldValues & InitializeCellFormVO);
 const formComputed = computed(() => form.value);
 
-const translatedCellTypeOptions = withLocale(() => [
+const translatedCellTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.cellTypes.residential")),
 		value: "ResidentialUnit",
@@ -63,7 +63,7 @@ const translatedCellTypeOptions = withLocale(() => [
 	},
 ]);
 
-const translatedStatusOptions = withLocale(() => [
+const translatedStatusOptions = computed(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.initializeCell.options.statuses.pending")),
 		value: "Uninitialized",
@@ -82,7 +82,7 @@ const translatedStatusOptions = withLocale(() => [
 	},
 ]);
 
-const plusFormColumns = withLocale<PlusColumn[]>(() => [
+const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("operationTeam.systemManage.initializeCell.fields.cellName")),
 		prop: "cellName",
@@ -171,7 +171,7 @@ const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusFormRules = withLocale<PlusFormRules>(() => ({
+const plusFormRules = computed<PlusFormRules>(() => ({
 	cellName: [
 		{
 			required: true,
