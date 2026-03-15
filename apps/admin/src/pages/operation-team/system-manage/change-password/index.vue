@@ -12,10 +12,7 @@ definePage({
 import { ref } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
-import type {
-	ChangePasswordRecordListItem,
-	ChangePasswordRecordQueryParams,
-} from "@01s-11comm/type";
+import type { ChangePasswordRecordListItem, ChangePasswordRecordQueryParams } from "@01s-11comm/type";
 import {
 	changeMethodOptions,
 	changePasswordStatusOptions,
@@ -25,12 +22,7 @@ import {
 } from "@01s-11comm/type";
 import { useChangePasswordRecordListQuery } from "@/api/operation-team/system-manage/change-password";
 
-const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig();
-
-function renderI18n(message: string) {
-	void locale.value;
-	return transformI18n(message);
-}
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
@@ -40,40 +32,40 @@ function translateFromRecord(record: Record<string, string>, value?: string | nu
 }
 
 const userRoleTextMap = withLocale(() => ({
-	管理员: renderI18n($t("operationTeam.systemManage.changePassword.options.userRoles.admin")),
-	普通用户: renderI18n($t("operationTeam.systemManage.changePassword.options.userRoles.normal")),
-	访客: renderI18n($t("operationTeam.systemManage.changePassword.options.userRoles.visitor")),
+	管理员: transformI18n($t("operationTeam.systemManage.changePassword.options.userRoles.admin")),
+	普通用户: transformI18n($t("operationTeam.systemManage.changePassword.options.userRoles.normal")),
+	访客: transformI18n($t("operationTeam.systemManage.changePassword.options.userRoles.visitor")),
 }));
 
 const departmentTextMap = withLocale(() => ({
-	物业团队: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.property")),
-	开发团队: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.development")),
-	运营团队: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.operation")),
-	财务部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.finance")),
-	客服部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.customer")),
-	维修部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.maintenance")),
-	安保部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.security")),
-	绿化部门: renderI18n($t("operationTeam.systemManage.changePassword.options.departments.greening")),
+	物业团队: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.property")),
+	开发团队: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.development")),
+	运营团队: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.operation")),
+	财务部门: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.finance")),
+	客服部门: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.customer")),
+	维修部门: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.maintenance")),
+	安保部门: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.security")),
+	绿化部门: transformI18n($t("operationTeam.systemManage.changePassword.options.departments.greening")),
 }));
 
 const changeMethodTextMap = withLocale(() => ({
-	用户自行修改: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.selfService")),
-	管理员重置: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.adminReset")),
-	强制修改: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.forceChange")),
-	首次登录修改: renderI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.firstLogin")),
+	用户自行修改: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.selfService")),
+	管理员重置: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.adminReset")),
+	强制修改: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.forceChange")),
+	首次登录修改: transformI18n($t("operationTeam.systemManage.changePassword.options.changeMethods.firstLogin")),
 }));
 
 const statusTextMap = withLocale(() => ({
-	成功: renderI18n($t("operationTeam.systemManage.changePassword.options.statuses.success")),
-	失败: renderI18n($t("operationTeam.systemManage.changePassword.options.statuses.failed")),
-	待审核: renderI18n($t("operationTeam.systemManage.changePassword.options.statuses.pending")),
+	成功: transformI18n($t("operationTeam.systemManage.changePassword.options.statuses.success")),
+	失败: transformI18n($t("operationTeam.systemManage.changePassword.options.statuses.failed")),
+	待审核: transformI18n($t("operationTeam.systemManage.changePassword.options.statuses.pending")),
 }));
 
 const successTextMap = withLocale(() => ({
-	是: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
-	否: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
-	Yes: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
-	No: renderI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
+	是: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
+	否: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
+	Yes: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.yes")),
+	No: transformI18n($t("operationTeam.systemManage.changePassword.options.successes.no")),
 }));
 
 function translateUserRoleLabel(value?: string | null) {
@@ -94,10 +86,10 @@ function translateStatusLabel(value?: string | null) {
 
 function translateSuccessLabel(value?: boolean | string | number | null) {
 	if (value === true) {
-		return renderI18n($t("operationTeam.systemManage.changePassword.options.successes.yes"));
+		return transformI18n($t("operationTeam.systemManage.changePassword.options.successes.yes"));
 	}
 	if (value === false) {
-		return renderI18n($t("operationTeam.systemManage.changePassword.options.successes.no"));
+		return transformI18n($t("operationTeam.systemManage.changePassword.options.successes.no"));
 	}
 	if (typeof value === "string") {
 		return successTextMap.value[value] ?? value;
@@ -171,84 +163,100 @@ const {
 const columns = withLocale<TableColumnList>(() => [
 	defaultPureTableIndexColumn,
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.username"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.username")),
+		),
 		prop: "username",
 		width: 120,
 		fixed: true,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.realName"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.realName")),
+		),
 		prop: "realName",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.userRole"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.userRole")),
+		),
 		prop: "userRole",
 		width: 120,
 		cellRenderer: ({ row }) => translateUserRoleLabel(row.userRole),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.department"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.department")),
+		),
 		prop: "department",
 		width: 120,
 		cellRenderer: ({ row }) => translateDepartmentLabel(row.department),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.phone"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.changePassword.fields.phone"))),
 		prop: "phone",
 		width: 120,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.changeTime"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.changeTime")),
+		),
 		prop: "changeTime",
 		width: 160,
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.changePassword.fields.changeIpAddress")),
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.changeIpAddress")),
 		),
 		prop: "ipAddress",
 		width: 130,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.location"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.location")),
+		),
 		prop: "location",
 		minWidth: 150,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.changeMethod"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.changeMethod")),
+		),
 		prop: "changeMethod",
 		width: 120,
 		cellRenderer: ({ row }) => translateChangeMethodLabel(row.changeMethod),
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.changePassword.fields.operationStatus")),
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.operationStatus")),
 		),
 		prop: "status",
 		width: 100,
 		cellRenderer: ({ row }) => translateStatusLabel(row.status),
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.success"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("operationTeam.systemManage.changePassword.fields.success"))),
 		prop: "success",
 		width: 100,
 		cellRenderer: ({ row }) => translateSuccessLabel(row.success),
 	},
 	{
 		headerRenderer: createHeaderRenderer(
-			renderI18n($t("operationTeam.systemManage.changePassword.fields.failureReason")),
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.failureReason")),
 		),
 		prop: "failureReason",
 		minWidth: 180,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("operationTeam.systemManage.changePassword.fields.operator"))),
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("operationTeam.systemManage.changePassword.fields.operator")),
+		),
 		prop: "operator",
 		width: 100,
 	},
 	{
-		headerRenderer: createHeaderRenderer(renderI18n($t("common.table.operation"))),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 200,
 		fixed: "right",
 		slot: "operation",
@@ -256,53 +264,53 @@ const columns = withLocale<TableColumnList>(() => [
 ]);
 
 const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
-	title: renderI18n($t("operationTeam.systemManage.changePassword.tableTitle")),
+	title: transformI18n($t("operationTeam.systemManage.changePassword.tableTitle")),
 	columns: columns.value,
 }));
 
 const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.username")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.username")),
 		prop: "username",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.realName")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.realName")),
 		prop: "realName",
 		valueType: "input",
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.userRole")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.userRole")),
 		prop: "userRole",
 		valueType: "select",
 		options: translatedUserRoleOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.department")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.department")),
 		prop: "department",
 		valueType: "select",
 		options: translatedDepartmentOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.changeMethod")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.changeMethod")),
 		prop: "changeMethod",
 		valueType: "select",
 		options: translatedChangeMethodOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.operationStatus")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.operationStatus")),
 		prop: "status",
 		valueType: "select",
 		options: translatedStatusOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.success")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.success")),
 		prop: "success",
 		valueType: "select",
 		options: translatedSuccessOptions.value,
 	},
 	{
-		label: renderI18n($t("operationTeam.systemManage.changePassword.fields.changeTimeRange")),
+		label: transformI18n($t("operationTeam.systemManage.changePassword.fields.changeTimeRange")),
 		prop: "changeTimeRange",
 		valueType: "date-picker",
 		fieldProps: {
@@ -321,10 +329,7 @@ const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	},
 ]);
 
-const plusSearchProps = searchProps(plusSearchDefaultValues, {
-	searchText: renderI18n($t("common.buttons.search")),
-	resetText: renderI18n($t("common.buttons.reset")),
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
@@ -354,6 +359,8 @@ function exportRecords() {
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
