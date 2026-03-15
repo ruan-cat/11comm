@@ -141,9 +141,9 @@ pure-admin 后台框架模板：
 
 请及时的更新 `apps\admin\src\docs\plan\2026-03-13-admin-i18n-route-progress.md` 报告文件。
 
-## 05 <!-- TODO:  --> withLocale 的设计非常失败
+## 05 <!-- TODO:  --> withLocale 和 void locale.value; 的设计非常失败
 
-withLocale 的设计纯属是多此一举，这根本就不是实现 i18n 自动切换的方案。
+withLocalh 和 void locale.value; 的设计纯属是多此一举，这根本就不是实现 i18n 自动切换的方案。
 
 注意到这个函数：
 
@@ -156,6 +156,9 @@ function withLocale<T>(factory: () => T) {
 	});
 }
 ```
+
+首先，用 `void locale.value;` 写法来实现 i18n 响应式变更，纯属无意义的写法。完全无法实现动态触发的。
+所以，这也导致 withLocale 函数本身就是无意义的。
 
 ### `record-bug-fix-memory` 技能更新经验教训
 
