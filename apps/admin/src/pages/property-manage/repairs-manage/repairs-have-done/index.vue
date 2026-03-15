@@ -1,23 +1,27 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "报修已办",
+		// 报修已办
+		title: "propertyManage_repairsManage.repairs-have-done.pageTitle",
 		icon: "mdi:clipboard-check",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.repairsHaveDone"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type RepairsHaveDoneFormProps, defaultForm } from "./components/form";
 import type { RepairsHaveDoneFormVO, RepairsHaveDoneListItem, RepairsHaveDoneQueryParams } from "@01s-11comm/type";
 import RepairsHaveDoneForm from "./components/form.vue";
 import { useRepairsHaveDoneListQuery } from "@/api/property-manage/repairs-manage/repairs-have-done";
 import { maintenanceTypeOptions, repairTypeOptions, repairStatusOptions } from "@01s-11comm/type";
+
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
@@ -26,68 +30,80 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const repairsHaveDoneFormInstance = ref<InstanceType<typeof RepairsHaveDoneForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "工单编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.workOrderNumber")),
+		),
 		prop: "工单编号",
 		width: 120,
 	},
 	{
-		label: "位置",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.location")),
+		),
 		prop: "位置",
 		width: 140,
 	},
 	{
-		label: "报修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.repairType")),
+		),
 		prop: "报修类型",
 		width: 120,
 	},
 	{
-		label: "维修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.maintenanceType")),
+		),
 		prop: "维修类型",
 		width: 120,
 	},
 	{
-		label: "报修人",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.reporter")),
+		),
 		prop: "报修人",
 		width: 120,
 	},
 	{
-		label: "联系方式",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.contactInfo")),
+		),
 		prop: "联系方式",
 		width: 140,
 	},
 	{
-		label: "预约时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.appointmentTime")),
+		),
 		prop: "预约时间",
 		width: 150,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.repairs-have-done.fields.status")),
+		),
 		prop: "状态",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "报修已办",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("propertyManage_repairsManage.repairs-have-done.pageTitle")),
 	columns: columns.value,
-});
+}));
 
-/**
- * 表格搜索栏 双向绑定的变量 原本的数据
- * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
- */
 const plusSearchModelRef: FieldValues & RepairsHaveDoneQueryParams = {
 	maintenanceType: "",
 	reporter: "",
@@ -99,13 +115,9 @@ const plusSearchModelRef: FieldValues & RepairsHaveDoneQueryParams = {
 	pageSize: 10,
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
 const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
-
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
 const {
 	tableData,
 	pureTableProps,
@@ -117,76 +129,53 @@ const {
 	handleCurrentPageChange,
 } = useRepairsHaveDoneListQuery(plusSearchDefaultValues);
 
-/**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
- */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 维修类型
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.maintenanceType")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-have-done.search.maintenanceType")),
 		prop: "maintenanceType",
 		valueType: "select",
 		options: maintenanceTypeOptions,
 	},
-	// 报修人
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-have-done.search.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
-
-	// 报修电话
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-have-done.search.repairPhone")),
 		prop: "repairPhone",
 		valueType: "input",
 	},
-	// 报修类型
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-have-done.search.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
-
-	// 报修状态
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairStatus")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-have-done.search.repairStatus")),
 		prop: "repairStatus",
 		valueType: "select",
 		options: repairStatusOptions,
 	},
-
-	// 工单编号
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
+		label: transformI18n($t("propertyManage_repairsManage.repairs-have-done.search.workOrderNumber")),
 		prop: "workOrderNumber",
 		valueType: "input",
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
 	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 测试异步操作函数 */
 const [isFetchingT, setIsLoadingT] = useToggle(false);
 async function testAsync() {
 	setIsLoadingT(true);
@@ -196,15 +185,10 @@ async function testAsync() {
 	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
 }
 
-/** 打开弹框 */
 function openDialog(params: { mode: Mode; row?: RepairsHaveDoneListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}报修已办`;
-
-	/** 业务对象 */
 	const formValue: RepairsHaveDoneFormVO = isAdd.value
 		? structuredClone(defaultForm)
 		: isEdit.value
@@ -223,7 +207,6 @@ function openDialog(params: { mode: Mode; row?: RepairsHaveDoneListItem }) {
 			: structuredClone(defaultForm);
 	const defaultValues = structuredClone(formValue);
 
-	/** 表单组件需要的props */
 	const formProps: RepairsHaveDoneFormProps = {
 		form: formValue,
 		defaultValues,
@@ -231,7 +214,10 @@ function openDialog(params: { mode: Mode; row?: RepairsHaveDoneListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("propertyManage_repairsManage.repairs-have-done.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_repairsManage.repairs-have-done.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(RepairsHaveDoneForm, {
@@ -244,24 +230,22 @@ function openDialog(params: { mode: Mode; row?: RepairsHaveDoneListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = repairsHaveDoneFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					repairsHaveDoneFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await repairsHaveDoneFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -278,22 +262,18 @@ function openDialog(params: { mode: Mode; row?: RepairsHaveDoneListItem }) {
 	});
 }
 
-/** 新增按钮点击事件 */
 function handleAdd() {
 	openDialog({ mode: "add" });
 }
 
-/** 编辑按钮点击事件 */
 function handleEdit(row: RepairsHaveDoneListItem) {
 	openDialog({ mode: "edit", row });
 }
 
-/** 查看按钮点击事件 */
 function handleView(row: RepairsHaveDoneListItem) {
 	openDialog({ mode: "info", row });
 }
 
-/** 删除按钮点击事件 */
 async function handleDelete(row: RepairsHaveDoneListItem) {
 	consola.log("删除", row);
 	await doFetch();
@@ -301,11 +281,14 @@ async function handleDelete(row: RepairsHaveDoneListItem) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -318,7 +301,7 @@ async function handleDelete(row: RepairsHaveDoneListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
