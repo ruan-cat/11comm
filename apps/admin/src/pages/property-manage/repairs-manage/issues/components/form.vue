@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import { IssuesSettingFormProps } from "./form";
 import {
@@ -11,6 +14,8 @@ import {
 
 const props = defineProps<IssuesSettingFormProps>();
 
+const { withLocale } = useI18nConfig();
+
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & IssuesFormVO;
 
@@ -18,20 +23,8 @@ const defaultValues = props.defaultValues as FieldValues & IssuesFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-/**
- * 本表单组件 实际使用的表单对象
- * @description
- * 用强制类型转换 确保表单对象满足表单组件的类型要求
- *
- * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
- */
-const toRefForm = structuredClone(props.form) as FieldValues & IssuesFormVO;
+const toRefForm = cloneDeep(props.form) as FieldValues & IssuesFormVO;
 
-/**
- * 表单对象
- * @description
- * 本表单对象都来自于外部传递
- */
 const form = ref(toRefForm);
 /** 只读的表单对象 用于外部做判断 */
 const formComputed = computed(() => {
@@ -39,125 +32,123 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "工单编码",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.workOrderCode")),
 		prop: "workOrderCode",
 		valueType: "input",
-		fieldProps: {
-			disabled: true,
-		},
+		fieldProps: { disabled: true },
 	},
 	{
-		label: "位置",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.location")),
 		prop: "location",
 		valueType: "input",
 	},
 	{
-		label: "报修类型",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
 	{
-		label: "维修类型",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.maintenanceType")),
 		prop: "maintenanceType",
 		valueType: "select",
 		options: repairCategoryOptions,
 	},
 	{
-		label: "报修人",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
 	{
-		label: "联系方式",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.contactInfo")),
 		prop: "contactInfo",
 		valueType: "input",
 	},
 	{
-		label: "预约开始结束时间",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.appointmentTimeRange")),
 		prop: "appointmentTimeRange",
 		valueType: "input",
 	},
 	{
-		label: "提交时间",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.submitTime")),
 		prop: "submitTime",
 		valueType: "input",
 	},
 	{
-		label: "提单时长",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.orderDuration")),
 		prop: "orderDuration",
 		valueType: "input",
 	},
 	{
-		label: "完成时间",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.completeTime")),
 		prop: "completeTime",
 		valueType: "input",
 	},
 	{
-		label: "状态",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.status")),
 		prop: "status",
 		valueType: "select",
 		options: repairsIssuesStatusOptions,
 	},
 	{
-		label: "违规说明",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.violationDescription")),
 		prop: "violationDescription",
 		valueType: "textarea",
 	},
 	{
-		label: "备注",
+		label: transformI18n($t("propertyManage_repairsManage.issues.form.fields.remark")),
 		prop: "remark",
 		valueType: "textarea",
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
+const plusFormRules = withLocale<PlusFormRules>(() => ({
 	location: [
 		{
 			required: true,
-			message: "请输入位置",
+			message: transformI18n($t("propertyManage_repairsManage.issues.form.validation.locationRequired")),
 			trigger: "blur",
 		},
 	],
 	repairType: [
 		{
 			required: true,
-			message: "请选择报修类型",
+			message: transformI18n($t("propertyManage_repairsManage.issues.form.validation.repairTypeRequired")),
 			trigger: "change",
 		},
 	],
 	maintenanceType: [
 		{
 			required: true,
-			message: "请选择维修类型",
+			message: transformI18n($t("propertyManage_repairsManage.issues.form.validation.maintenanceTypeRequired")),
 			trigger: "change",
 		},
 	],
 	reporter: [
 		{
 			required: true,
-			message: "请输入报修人",
+			message: transformI18n($t("propertyManage_repairsManage.issues.form.validation.reporterRequired")),
 			trigger: "blur",
 		},
 	],
 	contactInfo: [
 		{
 			required: true,
-			message: "请输入联系方式",
+			message: transformI18n($t("propertyManage_repairsManage.issues.form.validation.contactInfoRequired")),
 			trigger: "blur",
 		},
 	],
 	status: [
 		{
 			required: true,
-			message: "请选择状态",
+			message: transformI18n($t("propertyManage_repairsManage.issues.form.validation.statusRequired")),
 			trigger: "change",
 		},
 	],
-});
+}));
 
 /** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);

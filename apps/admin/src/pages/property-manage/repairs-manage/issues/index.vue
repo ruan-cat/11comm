@@ -1,18 +1,19 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "工单池",
+		// 工单池
+		title: "propertyManage_repairsManage.issues.pageTitle",
 		icon: "mdi:clipboard-multiple",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.repairsManage.issues"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
-
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import { type IssuesSettingFormProps, defaultForm } from "./components/form";
 import { type IssuesFormVO, type IssuesListItem, type IssuesQueryParams } from "@01s-11comm/type";
@@ -25,6 +26,8 @@ import {
 } from "@01s-11comm/type";
 import { useIssuesListQuery } from "@/api/property-manage/repairs-manage/issues";
 
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
+
 /** 模式控制 */
 const { modeText, setMode, isAdd, isEdit } = useMode();
 
@@ -32,77 +35,83 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const issuesSettingFormInstance = ref<InstanceType<typeof IssuesSettingForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "工单编码",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.workOrderCode"))),
 		prop: "workOrderCode",
 		width: 120,
 	},
 	{
-		label: "位置",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.location"))),
 		prop: "location",
 		width: 120,
 	},
 	{
-		label: "报修类型",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.repairType"))),
 		prop: "repairType",
 		width: 120,
 	},
 	{
-		label: "维修类型",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.issues.fields.maintenanceType")),
+		),
 		prop: "maintenanceType",
 		width: 100,
 	},
 	{
-		label: "报修人",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.reporter"))),
 		prop: "reporter",
 		width: 100,
 	},
 	{
-		label: "联系方式",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.contactInfo"))),
 		prop: "contactInfo",
 		width: 120,
 	},
 	{
-		label: "预约开始结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("propertyManage_repairsManage.issues.fields.appointmentTimeRange")),
+		),
 		prop: "appointmentTimeRange",
 		width: 180,
 	},
 	{
-		label: "提交时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.submitTime"))),
 		prop: "submitTime",
 		width: 150,
 	},
 	{
-		label: "提单时长",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.orderDuration"))),
 		prop: "orderDuration",
 		width: 100,
 	},
 	{
-		label: "完成时间",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.completeTime"))),
 		prop: "completeTime",
 		width: 150,
 	},
 	{
-		label: "状态",
+		headerRenderer: createHeaderRenderer(transformI18n($t("propertyManage_repairsManage.issues.fields.status"))),
 		prop: "status",
 		width: 100,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 240,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "工单池",
+/** 表格操作栏组件 配置 */
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("propertyManage_repairsManage.issues.pageTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -143,62 +152,47 @@ const {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
-	// 工单编号
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.workOrderNumber")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.workOrderNumber")),
 		prop: "workOrderNumber",
 		valueType: "input",
 	},
-
-	// 报修人
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairman")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.reporter")),
 		prop: "reporter",
 		valueType: "input",
 	},
-
-	// 报修电话
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairPhone")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.reporterPhone")),
 		prop: "reporterPhone",
 		valueType: "input",
 	},
-
-	// 报修类型
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairType")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.repairType")),
 		prop: "repairType",
 		valueType: "select",
 		options: repairTypeOptions,
 	},
-
-	// 报修设置类型
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairReportingSettingType")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.repairSettingType")),
 		prop: "repairSettingType",
 		valueType: "select",
 		options: repairsSettingTypeOptions,
 	},
-
-	// 报修位置
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.repairLocation")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.repairLocation")),
 		prop: "repairLocation",
 		valueType: "input",
 	},
-
-	// 维修类型
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.maintenanceType")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.maintenanceType")),
 		prop: "maintenanceType",
 		valueType: "select",
 		options: repairCategoryOptions,
 	},
-
-	// 开始时间
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.startTime")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -207,10 +201,8 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 			format: "YYYY-MM-DD",
 		},
 	},
-
-	// 结束时间
 	{
-		label: transformI18n($t("propertyManage_repairsManage.repairs.endTime")),
+		label: transformI18n($t("propertyManage_repairsManage.issues.search.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -221,14 +213,8 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+/** 表格搜索栏组件 配置 */
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -256,9 +242,6 @@ async function testAsync() {
 function openDialog(params: { mode: Mode; row?: IssuesListItem }) {
 	const { mode, row } = params;
 	setMode(mode);
-
-	/** 弹框标题 */
-	const title = `${modeText.value}工单池`;
 
 	/** 业务对象 */
 	const issuesFormVO: IssuesFormVO = isAdd.value
@@ -291,7 +274,10 @@ function openDialog(params: { mode: Mode; row?: IssuesListItem }) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("propertyManage_repairsManage.issues.dialogs.addTitle"))
+				: transformI18n($t("propertyManage_repairsManage.issues.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(IssuesSettingForm, {
@@ -304,29 +290,24 @@ function openDialog(params: { mode: Mode; row?: IssuesListItem }) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** console.log(options, index, button); */
 					const formComputed = issuesSettingFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
 					issuesSettingFormInstance.value?.plusFormInstance?.handleReset();
 				},
 			},
-
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
 					const res = await issuesSettingFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
 						button.btn.loading = true;
@@ -365,11 +346,14 @@ async function handleDelete(row: IssuesListItem) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -382,7 +366,7 @@ async function handleDelete(row: IssuesListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
