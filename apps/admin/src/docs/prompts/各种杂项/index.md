@@ -424,7 +424,7 @@ import { createError } from "h3";
 
 仓库里仍然有服务端 Drizzle/Nitro 类型错误，属于这次修复范围。需要你完成修复。
 
-## 035 <!-- TODO: --> 修复表格列无法筛选的问题
+## 035 <!-- 已完成 --> 修复表格列无法筛选的问题
 
 请注意 `apps\admin\src\components\RePureTableBar\src\bar.tsx` 的逻辑，注意到全部使用 `getKeyList` 的逻辑。这里的逻辑是从传入的数组内，筛选出全部含有 label 字段的配置。但是我们项目情况改动很大了。我们项目的表格列配置，现在为了实现全面的，有效的 i18n，都不配置 label 字段来显示表格的表头了。都是用 headerRenderer 字段的函数，来实现动态变化的表头了。
 
