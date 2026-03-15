@@ -25,6 +25,10 @@
 			"cache": true,
 			"outputs": [".vercel/output/**"]
 		},
+		"move-vercel-output-to-root": {
+			"cache": false,
+			"dependsOn": ["vite:build:prod:vercel"]
+		},
 		"typedoc": {
 			"cache": false
 		},

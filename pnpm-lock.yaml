@@ -37,23 +37,23 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0
       "@ruan-cat/commitlint-config":
-        specifier: ^4.9.3
-        version: 4.9.3(async-validator@4.2.5)(change-case@5.4.4)(commitizen@4.3.1(@types/node@24.12.0)(typescript@5.9.3))(cz-git@1.12.0)(focus-trap@7.8.0)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^4.9.4
+        version: 4.9.4(async-validator@4.2.5)(change-case@5.4.4)(commitizen@4.3.1(@types/node@24.12.0)(typescript@5.9.3))(cz-git@1.12.0)(focus-trap@7.8.0)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/domains":
         specifier: ^2.1.0
         version: 2.1.0
       "@ruan-cat/generate-code-workspace":
-        specifier: ^0.7.3
-        version: 0.7.3(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(tsx@4.21.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^0.7.4
+        version: 0.7.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(tsx@4.21.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/taze-config":
-        specifier: ^1.0.3
-        version: 1.0.3(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(taze@19.10.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^1.0.4
+        version: 1.0.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(taze@19.10.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/utils":
-        specifier: ^4.21.0
-        version: 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^4.22.0
+        version: 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/vercel-deploy-tool":
-        specifier: ^1.2.4
-        version: 1.2.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(rollup@4.59.0)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^1.2.5
+        version: 1.2.5(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(rollup@4.59.0)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@shixinde/apifox-swagger":
         specifier: ^4.3.1
         version: 4.3.1(sass@1.98.0)(typescript@5.9.3)(vuepress@2.0.0-rc.18(typescript@5.9.3)(vue@3.5.30(typescript@5.9.3)))
@@ -223,8 +223,8 @@ importers:
         specifier: ^2.6.4
         version: 2.6.4(echarts@6.0.0)(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/utils":
-        specifier: ^4.21.0
-        version: 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^4.22.0
+        version: 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@tanstack/vue-query":
         specifier: ^5.92.9
         version: 5.92.9(vue@3.5.30(typescript@5.9.3))
@@ -430,8 +430,8 @@ importers:
         specifier: 4.13.49
         version: 4.13.49(vue@3.5.30(typescript@5.9.3))
       wavesurfer.js:
-        specifier: ^7.12.2
-        version: 7.12.2
+        specifier: ^7.12.3
+        version: 7.12.3
       xgplayer:
         specifier: ^3.0.23
         version: 3.0.23(core-js@3.48.0)
@@ -476,8 +476,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2))
       "@ruan-cat/vitepress-preset-config":
-        specifier: ^3.1.1
-        version: 3.1.1(0c40c050dfdbd61ffa9eee1a7580a26d)
+        specifier: ^3.1.2
+        version: 3.1.2(0c40c050dfdbd61ffa9eee1a7580a26d)
       "@tailwindcss/vite":
         specifier: ^4.2.1
         version: 4.2.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -674,8 +674,8 @@ importers:
   apps/type:
     dependencies:
       "@ruan-cat/utils":
-        specifier: ^4.21.0
-        version: 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^4.22.0
+        version: 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       drizzle-orm:
         specifier: 0.42.0
         version: 0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)
@@ -3971,9 +3971,9 @@ packages:
       { integrity: sha512-kx7/aAOXVdv3xgczpJYXf9DLve7wQIp5tnJGkIiftFGnfCIJg76TUI5YcMbH1hnIj8Zfqph00NzaOTpXkUjNOA== }
     hasBin: true
 
-  "@ruan-cat/commitlint-config@4.9.3":
+  "@ruan-cat/commitlint-config@4.9.4":
     resolution:
-      { integrity: sha512-NhZVHqlorNrXBlFVG8kJEjn1BFm/i2fztHsz/hg9z2OeqFo9SXF9GABUAfNWasUy3baAJowDKY+5cJJrYV4/zg== }
+      { integrity: sha512-BO21z0kJXFDesbiPenbFSQsny1TB9wRL0TrvR4Y4MgkRoYIZc6nrTVR8uHdjWCJEaPz92A0i3nWBx5sh2LoQlg== }
     hasBin: true
     peerDependencies:
       commitizen: ">=4"
@@ -3983,18 +3983,18 @@ packages:
     resolution:
       { integrity: sha512-2+ELUbZW7N2yEDFbKHkaRiXpG358+A8I24krC37Q2UXFEbk+cVITunoZFck5dMLezvnA0CROgj81S2wri4/4Ow== }
 
-  "@ruan-cat/generate-code-workspace@0.7.3":
+  "@ruan-cat/generate-code-workspace@0.7.4":
     resolution:
-      { integrity: sha512-DcC5aGchGotdMqzZFYe28iN1qBQ7etcOPaEoiy0XHtT20Z3JlGLvaxOUbNvWGHlteKh5oAwEEqKtVIXAitkXJA== }
+      { integrity: sha512-STQYdRFh8vLCZLV17g0xaHyebqloOPzhBLf1mCu2iyVcs//wBLDkJkLBzNAqy+5ce5aongyPn58eegg00mIvbg== }
     peerDependencies:
       tsx: 4.19.3
     peerDependenciesMeta:
       tsx:
         optional: true
 
-  "@ruan-cat/taze-config@1.0.3":
+  "@ruan-cat/taze-config@1.0.4":
     resolution:
-      { integrity: sha512-Q2Gyq4v5RxXn/NG1gZaDpeA/kkG1bLlTqXlbQiDukzlcj3hgTIUxvGEKSzpJRTRpMBez5o8sQnrx2VqkYPyC5Q== }
+      { integrity: sha512-4eOEKQL40nRg9CVa0t71XVY3vgD7AVzlr69ORrWVuGemD6FINQ3Y741c84q7BoXzI2wqCA61KlTbWdaazDU9jg== }
     hasBin: true
     peerDependencies:
       taze: ">=19"
@@ -4002,9 +4002,10 @@ packages:
       taze:
         optional: true
 
-  "@ruan-cat/utils@4.21.0":
+  "@ruan-cat/utils@4.22.0":
     resolution:
-      { integrity: sha512-LGrS5XLfi0byM6ZBI8ksisCxfnuFJ8hEWriXzTI1LDaaJfinSOqtNhb28M9/djqXMOmTDDdz/moHtS87sGrgQg== }
+      { integrity: sha512-nUdcBJI94Q7cliqCHZcHDCHKlkPq6cyUSLHmcYDvSwnn7932edQR+CzjnYXtKmhp8UwezH/JjXx0ba3kUzlcYQ== }
+    hasBin: true
     peerDependencies:
       js-yaml: "*"
       typescript: ">=5"
@@ -4020,9 +4021,9 @@ packages:
       vite-plugin-autogeneration-import-file:
         optional: true
 
-  "@ruan-cat/vercel-deploy-tool@1.2.4":
+  "@ruan-cat/vercel-deploy-tool@1.2.5":
     resolution:
-      { integrity: sha512-BVyY9o2CZdiCqkNCzAfDbVlKUDNBEr4/INRZDq8L6ugP182lxHWg5W8injwYTQXCIQXeTcTiT7arahsT2D+g2w== }
+      { integrity: sha512-9kJNhUH4HzjCWAELGFbcjOz0MDXZ3B4KhSFHzUYj8h3jmXp9iOM88T6KlUF3rlWqbhuYU/Ix9LeAbRcUJbQqRg== }
     hasBin: true
 
   "@ruan-cat/vite-plugin-ts-alias@0.2.0":
@@ -4031,9 +4032,9 @@ packages:
     peerDependencies:
       vite: ">=6"
 
-  "@ruan-cat/vitepress-preset-config@3.1.1":
+  "@ruan-cat/vitepress-preset-config@3.1.2":
     resolution:
-      { integrity: sha512-aZnHj9cyF1k1FzYet0m/LRpA0aylfhBNDEoEdcVj0RXAfxO3FxNCVrEWAec1SbkBTG9N0iDREFoRegf385lVIA== }
+      { integrity: sha512-B2Bh3uEOvMwdmsrYUphKgYYRcHHF3HN5yfahRNK/47D0YoeqNhBpE/aiDFR6TdkIUjIyPCnf2RBCM0q/haGYNw== }
     peerDependencies:
       vitepress: ^1.6.x
       vitepress-demo-plugin: ^1
@@ -13489,9 +13490,9 @@ packages:
       { integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA== }
     engines: { node: ">=18" }
 
-  wavesurfer.js@7.12.2:
+  wavesurfer.js@7.12.3:
     resolution:
-      { integrity: sha512-akVYISAHCw2gNw/7n8Pk/zH1Zz91WJyL/2MaNQCLD1XV3A226gKlWoDHWp9UdWqQ3zXnWttDf9ewZQQ3cxbOmQ== }
+      { integrity: sha512-+QtFRftd/AktiQJerW7pa9jA8g/LZmMJjBDHDQtDa0PwCX+047KOUZqfvoQb5CClVSwNilhoABIYupUymqfjhw== }
 
   wcwidth@1.0.1:
     resolution:
@@ -16261,9 +16262,9 @@ snapshots:
       dayjs: 1.11.20
       node-notifier: 10.0.1
 
-  "@ruan-cat/commitlint-config@4.9.3(async-validator@4.2.5)(change-case@5.4.4)(commitizen@4.3.1(@types/node@24.12.0)(typescript@5.9.3))(cz-git@1.12.0)(focus-trap@7.8.0)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+  "@ruan-cat/commitlint-config@4.9.4(async-validator@4.2.5)(change-case@5.4.4)(commitizen@4.3.1(@types/node@24.12.0)(typescript@5.9.3))(cz-git@1.12.0)(focus-trap@7.8.0)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
-      "@ruan-cat/utils": 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       changelogen: 0.6.2(magicast@0.3.5)
       commander: 13.1.0
       commitizen: 4.3.1(@types/node@24.12.0)(typescript@5.9.3)
@@ -16296,9 +16297,9 @@ snapshots:
     dependencies:
       consola: 3.4.2
 
-  "@ruan-cat/generate-code-workspace@0.7.3(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(tsx@4.21.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+  "@ruan-cat/generate-code-workspace@0.7.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(tsx@4.21.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
-      "@ruan-cat/utils": 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       commander: 13.1.0
       consola: 3.4.2
       js-yaml: 4.1.1
@@ -16325,9 +16326,9 @@ snapshots:
       - vite-plugin-autogeneration-import-file
       - vue
 
-  "@ruan-cat/taze-config@1.0.3(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(taze@19.10.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+  "@ruan-cat/taze-config@1.0.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(taze@19.10.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
-      "@ruan-cat/utils": 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       commander: 13.1.0
       consola: 3.4.2
     optionalDependencies:
@@ -16351,7 +16352,7 @@ snapshots:
       - vite-plugin-autogeneration-import-file
       - vue
 
-  "@ruan-cat/utils@4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+  "@ruan-cat/utils@4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
       "@vueuse/integrations": 13.9.0(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.30(typescript@5.9.3))
       axios: 1.13.6
@@ -16379,7 +16380,7 @@ snapshots:
       - universal-cookie
       - vue
 
-  "@ruan-cat/utils@4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+  "@ruan-cat/utils@4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
       "@vueuse/integrations": 13.9.0(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.30(typescript@5.9.3))
       axios: 1.13.6
@@ -16406,10 +16407,10 @@ snapshots:
       - universal-cookie
       - vue
 
-  "@ruan-cat/vercel-deploy-tool@1.2.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(rollup@4.59.0)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+  "@ruan-cat/vercel-deploy-tool@1.2.5(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(rollup@4.59.0)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
       "@dotenvx/dotenvx": 1.55.1
-      "@ruan-cat/utils": 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       c12: 3.3.3(magicast@0.3.5)
       commander: 13.1.0
       consola: 3.4.2
@@ -16451,11 +16452,11 @@ snapshots:
       upath: 2.0.1
       vite: 7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  "@ruan-cat/vitepress-preset-config@3.1.1(0c40c050dfdbd61ffa9eee1a7580a26d)":
+  "@ruan-cat/vitepress-preset-config@3.1.2(0c40c050dfdbd61ffa9eee1a7580a26d)":
     dependencies:
       "@leelaa/vitepress-plugin-extended": 1.0.7(vitepress@1.6.4(@algolia/client-search@5.49.2)(@types/node@24.12.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(less@4.6.4)(lightningcss@1.31.1)(markdown-it-mathjax3@4.3.2)(nprogress@0.2.0)(postcss@8.5.8)(qrcode@1.5.4)(sass@1.98.0)(search-insights@2.9.0)(sortablejs@1.15.7)(typescript@5.9.3))(vue@3.5.30(typescript@5.9.3))
       "@nolebase/vitepress-plugin-git-changelog": 2.18.2(vitepress@1.6.4(@algolia/client-search@5.49.2)(@types/node@24.12.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(less@4.6.4)(lightningcss@1.31.1)(markdown-it-mathjax3@4.3.2)(nprogress@0.2.0)(postcss@8.5.8)(qrcode@1.5.4)(sass@1.98.0)(search-insights@2.9.0)(sortablejs@1.15.7)(typescript@5.9.3))(vue@3.5.30(typescript@5.9.3))
-      "@ruan-cat/utils": 4.21.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.30)(vue-router@4.6.4(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)))(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@shikijs/vitepress-twoslash": 3.23.0(typescript@5.9.3)
       consola: 3.4.2
       gray-matter: 4.0.3
@@ -25493,7 +25494,7 @@ snapshots:
     dependencies:
       xml-name-validator: 5.0.0
 
-  wavesurfer.js@7.12.2: {}
+  wavesurfer.js@7.12.3: {}
 
   wcwidth@1.0.1:
     dependencies:
