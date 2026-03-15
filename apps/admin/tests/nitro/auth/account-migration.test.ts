@@ -4,7 +4,7 @@
  */
 
 import { test, expect, describe, beforeAll } from "vitest";
-import { fetchNitroApi, checkNitroServer, NITRO_BASE_URL } from "../setup-neon";
+import { fetchNitroApi, checkNitroServer, NITRO_BASE_URL } from "../../setup-neon";
 
 describe("账户迁移接口测试", () => {
 	beforeAll(async () => {

@@ -13,7 +13,7 @@
  */
 
 import { test, expect, describe, beforeAll } from "vitest";
-import { fetchNitroApi, checkNitroServer, NITRO_BASE_URL } from "../setup-neon";
+import { fetchNitroApi, checkNitroServer, NITRO_BASE_URL } from "../../setup-neon";
 import * as jose from "jose";
 
 /**
