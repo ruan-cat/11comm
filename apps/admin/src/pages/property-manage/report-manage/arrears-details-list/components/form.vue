@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 
 import type { ArrearsDetailsFormProps } from "./form";
 
 const props = defineProps<ArrearsDetailsFormProps>();
+
+const { withLocale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ArrearsDetailsFormProps["form"];
@@ -19,7 +24,7 @@ usePlusFormReset(plusFormInstance);
  *
  * 保守写法 重新克隆一个对象 避免直接修改外部传递的值
  */
-const toRefForm = structuredClone(props.form) as FieldValues & ArrearsDetailsFormProps["form"];
+const toRefForm = cloneDeep(props.form) as FieldValues & ArrearsDetailsFormProps["form"];
 
 /**
  * 表单对象
@@ -33,9 +38,9 @@ const formComputed = computed(() => {
 });
 
 /** 表单项配置 */
-const plusFormColumns = ref<PlusColumn[]>([
+const plusFormColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "费用编号",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.feeNumber")),
 		prop: "feeNumber",
 		valueType: "input",
 		fieldProps: {
@@ -43,62 +48,112 @@ const plusFormColumns = ref<PlusColumn[]>([
 		},
 	},
 	{
-		label: "房号",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.roomNumber")),
 		prop: "roomNumber",
 		valueType: "input",
 	},
 	{
-		label: "业主",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.owner")),
 		prop: "owner",
 		valueType: "input",
 	},
 	{
-		label: "业主电话",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.ownerPhone")),
 		prop: "ownerPhone",
 		valueType: "input",
 	},
 	{
-		label: "面积",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.area")),
 		prop: "area",
 		valueType: "input",
 	},
 	{
-		label: "费用项",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.feeItem")),
 		prop: "feeItem",
 		valueType: "input",
 	},
 	{
-		label: "开始时间",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "结束时间",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 	},
 	{
-		label: "欠费时长",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.arrearsDuration")),
 		prop: "arrearsDuration",
 		valueType: "input",
 	},
 	{
-		label: "欠费金额",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.form.fields.arrearsAmount")),
 		prop: "arrearsAmount",
 		valueType: "input",
 	},
 ]);
 
 /** 表单校验规则 */
-const plusFormRules = ref<PlusFormRules>({
-	roomNumber: [{ required: true, message: "请输入房号", trigger: "blur" }],
-	owner: [{ required: true, message: "请输入业主", trigger: "blur" }],
-	ownerPhone: [{ required: true, message: "请输入业主电话", trigger: "blur" }],
-	feeItem: [{ required: true, message: "请输入费用项", trigger: "blur" }],
-	startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
-	endTime: [{ required: true, message: "请选择结束时间", trigger: "change" }],
-	arrearsAmount: [{ required: true, message: "请输入欠费金额", trigger: "blur" }],
-});
+const plusFormRules = withLocale<PlusFormRules>(() => ({
+	roomNumber: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_report-manage.arrears-details-list.form.validation.roomNumberRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	owner: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_report-manage.arrears-details-list.form.validation.ownerRequired")),
+			trigger: "blur",
+		},
+	],
+	ownerPhone: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_report-manage.arrears-details-list.form.validation.ownerPhoneRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+	feeItem: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_report-manage.arrears-details-list.form.validation.feeItemRequired")),
+			trigger: "blur",
+		},
+	],
+	startTime: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_report-manage.arrears-details-list.form.validation.startTimeRequired"),
+			),
+			trigger: "change",
+		},
+	],
+	endTime: [
+		{
+			required: true,
+			message: transformI18n($t("property-manage_report-manage.arrears-details-list.form.validation.endTimeRequired")),
+			trigger: "change",
+		},
+	],
+	arrearsAmount: [
+		{
+			required: true,
+			message: transformI18n(
+				$t("property-manage_report-manage.arrears-details-list.form.validation.arrearsAmountRequired"),
+			),
+			trigger: "blur",
+		},
+	],
+}));
 
 /** 动态计算的表单项配置 */
 const plusFormColumnsComputed = computed(() => plusFormColumns.value);

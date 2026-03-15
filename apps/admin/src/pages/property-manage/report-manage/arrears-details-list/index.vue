@@ -1,23 +1,27 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		title: "欠费明细表",
+		// 欠费明细表
+		title: "property-manage_report-manage.arrears-details-list.pageTitle",
 		icon: "mdi:cash-minus",
 		roles: ["物业团队"],
 		rank: getRouteRank("propertyManage.reportManage.arrearsDetailsList"),
 	},
 });
 
-import { ref, computed, h } from "vue";
+import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 
-import { transformI18n } from "@/plugins/i18n";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { ArrearsDetailsFormVO, ArrearsDetailsListItem, ArrearsDetailsListQueryParams } from "@01s-11comm/type";
 import { type ArrearsDetailsFormProps, defaultForm as defaultArrearsDetailsForm } from "./components/form";
 import ArrearsDetailsForm from "./components/form.vue";
 import { useArrearsDetailsListQuery } from "@/api/property-manage/report-manage/arrears-details-list";
+
+const { locale, withLocale, createHeaderRenderer, searchProps, plusSearchButtonTexts } = useI18nConfig();
 
 const smallTotal = ref<number>(0);
 const largeTotal = ref<number>(0);
@@ -29,61 +33,83 @@ const { modeText, setMode, isAdd, isEdit } = useMode();
 const arrearsDetailsFormInstance = ref<InstanceType<typeof ArrearsDetailsForm> | null>(null);
 
 /** 表格列配置 */
-const columns = ref<TableColumnList>([
-	defaultPureTableIndexColumn,
+const columns = withLocale<TableColumnList>(() => [
 	{
-		label: "费用编号",
+		...defaultPureTableIndexColumn,
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.index"))),
+	},
+	{
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.feeNumber")),
+		),
 		prop: "费用编号",
 		width: 100,
 	},
 	{
-		label: "房号",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.roomNumber")),
+		),
 		prop: "房号",
 		width: 150,
 	},
 	{
-		label: "业主",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.owner")),
+		),
 		prop: "业主",
 		width: 120,
 	},
 	{
-		label: "业主电话",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.ownerPhone")),
+		),
 		prop: "业主电话",
 		width: 140,
 	},
 	{
-		label: "面积",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.area")),
+		),
 		prop: "面积",
 		width: 90,
 	},
 	{
-		label: "费用项",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.feeItem")),
+		),
 		prop: "费用项",
 		width: 150,
 	},
 	{
-		label: "开始时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.startTime")),
+		),
 		prop: "开始时间",
 		width: 140,
 	},
 	{
-		label: "结束时间",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.endTime")),
+		),
 		prop: "结束时间",
 		width: 140,
 	},
 	{
-		label: "欠费时长(天)",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.arrearsDuration")),
+		),
 		prop: "欠费时长",
 		width: 130,
 	},
 	{
-		label: "欠费金额",
+		headerRenderer: createHeaderRenderer(
+			transformI18n($t("property-manage_report-manage.arrears-details-list.fields.arrearsAmount")),
+		),
 		prop: "欠费金额",
 		width: 120,
 	},
 	{
-		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
-		headerRenderer: () => transformI18n($t("common.table.operation")),
+		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
 		width: 230,
 		fixed: "right",
 		slot: "operation",
@@ -91,10 +117,10 @@ const columns = ref<TableColumnList>([
 ]);
 
 /** 表格操作栏组件配置 */
-const pureTableBarProps = ref<PureTableBarProps>({
-	title: "欠费明细表",
+const pureTableBarProps = withLocale<PureTableBarProps>(() => ({
+	title: transformI18n($t("property-manage_report-manage.arrears-details-list.pageTitle")),
 	columns: columns.value,
-});
+}));
 
 /**
  * 表格搜索栏 双向绑定的变量 原本的数据
@@ -132,20 +158,20 @@ const {
  * 表格搜索栏组件 表单配置
  * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
  */
-const plusSearchColumns = computed<PlusColumn[]>(() => [
+const plusSearchColumns = withLocale<PlusColumn[]>(() => [
 	{
-		label: "费用大类",
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.feeCategory")),
 		prop: "feeCategory",
 		valueType: "select",
 		options: [],
 	},
 	{
-		label: transformI18n($t("propertyManage_communityManage.house-decoration.houseNumber")),
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.roomNumber")),
 		prop: "roomNumber",
 		valueType: "input",
 	},
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.startTime")),
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -155,7 +181,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.endTime")),
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
 		fieldProps: {
@@ -165,26 +191,20 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.cell")),
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.community")),
 		prop: "community",
 		valueType: "select",
 		options: [],
 	},
 	{
-		label: transformI18n($t("propertyManage_reportManage.report.employerName")),
+		label: transformI18n($t("property-manage_report-manage.arrears-details-list.search.ownerName")),
 		prop: "ownerName",
 		valueType: "input",
 	},
 ]);
 
 /** 表格搜索栏组件 配置  */
-const plusSearchProps = ref<PlusSearchProps>({
-	defaultValues: plusSearchDefaultValues,
-	columns: [],
-	labelWidth: 140,
-	labelPosition: "right",
-	showNumber: 3,
-});
+const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
@@ -217,9 +237,6 @@ interface OpenDialogParams {
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 弹框标题 */
-	const title = `${modeText.value}欠费明细表`;
-
 	/** 业务对象 */
 	const formValue: ArrearsDetailsFormVO = isAdd.value
 		? structuredClone(defaultArrearsDetailsForm)
@@ -248,7 +265,10 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	addDialog({
 		...defaultAddDialogParams,
-		title,
+		title: () =>
+			isAdd.value
+				? transformI18n($t("property-manage_report-manage.arrears-details-list.dialogs.addTitle"))
+				: transformI18n($t("property-manage_report-manage.arrears-details-list.dialogs.editTitle")),
 		props: formProps,
 		contentRenderer: () =>
 			h(ArrearsDetailsForm, {
@@ -261,7 +281,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		},
 		footerButtons: [
 			{
-				label: transformI18n($t("common.buttons.cancel")),
+				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
 				btnClick: async ({ dialog: { options, index } }) => {
 					const formComputed = arrearsDetailsFormInstance.value?.formComputed;
@@ -270,7 +290,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.reset")),
+				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
 				btnClick: () => {
 					arrearsDetailsFormInstance.value?.plusFormInstance?.handleReset();
@@ -278,7 +298,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			},
 
 			{
-				label: transformI18n($t("common.buttons.submit")),
+				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await arrearsDetailsFormInstance.value?.plusFormInstance?.handleSubmit();
@@ -318,11 +338,14 @@ async function handleDelete(row: ArrearsDetailsListItem) {
 </script>
 
 <template>
-	<section class="index-root">
+	<section :key="locale" class="index-root">
 		<PlusSearch
+			:key="locale"
 			v-model="plusSearchModel"
 			:="plusSearchProps"
 			:columns="plusSearchColumns"
+			:search-text="plusSearchButtonTexts.searchText"
+			:reset-text="plusSearchButtonTexts.resetText"
 			@search="handleSearch"
 			@reset="handleReSearch"
 		/>
@@ -335,7 +358,7 @@ async function handleDelete(row: ArrearsDetailsListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
+				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -360,12 +383,26 @@ async function handleDelete(row: ArrearsDetailsListItem) {
 		</PureTableBar>
 
 		<section class="summary">
-			<div>小计 欠费 : {{ smallTotal }} 元</div>
-			<div>大计 欠费 : {{ largeTotal }} 元</div>
-			<div>费用开始时间：所创建费用的计费起始时间</div>
-			<div>欠费时长（天）：押金费用项欠费时长是费用开始时间到当天的天数</div>
-			<div>除押金外的费用项欠费时长是费用的开始时间到费用的结束时间的天数</div>
-			<div>欠费金额：欠费周期内应缴费用</div>
+			<div>
+				{{
+					transformI18n(
+						$t("property-manage_report-manage.arrears-details-list.summary.subtotalArrears", { amount: smallTotal }),
+					)
+				}}
+			</div>
+			<div>
+				{{
+					transformI18n(
+						$t("property-manage_report-manage.arrears-details-list.summary.totalArrears", { amount: largeTotal }),
+					)
+				}}
+			</div>
+			<div>{{ transformI18n($t("property-manage_report-manage.arrears-details-list.summary.feeStartTimeNote")) }}</div>
+			<div>
+				{{ transformI18n($t("property-manage_report-manage.arrears-details-list.summary.depositDurationNote")) }}
+			</div>
+			<div>{{ transformI18n($t("property-manage_report-manage.arrears-details-list.summary.otherDurationNote")) }}</div>
+			<div>{{ transformI18n($t("property-manage_report-manage.arrears-details-list.summary.arrearsAmountNote")) }}</div>
 		</section>
 	</section>
 </template>
