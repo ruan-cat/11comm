@@ -15,20 +15,11 @@ export function useI18nConfig() {
 	 * 这是固定用途的公共 computed，不是对 `$t` 的通用二次封装。
 	 */
 	const plusSearchButtonTexts = computed(() => {
-		void locale.value;
 		return {
 			searchText: i18n.global.t("common.buttons.search"),
 			resetText: i18n.global.t("common.buttons.reset"),
 		};
 	});
-
-	/** 让配置型 computed 显式依赖当前语言，切换语言时自动重算。 */
-	function withLocale<T>(factory: () => T) {
-		return computed(() => {
-			void locale.value;
-			return factory();
-		});
-	}
 
 	/**
 	 * 包装表头渲染结构。
@@ -36,17 +27,13 @@ export function useI18nConfig() {
 	 */
 	function createHeaderRenderer(label: string) {
 		return () => {
-			void locale.value;
 			return transformI18n(label);
 		};
 	}
 
 	/** 构建带搜索区默认结构的 `PlusSearchProps`。 */
-	function searchProps(
-		defaultValues: PlusSearchProps["defaultValues"],
-		overrides: Partial<PlusSearchProps> = {},
-	) {
-		return withLocale<PlusSearchProps>(() => ({
+	function searchProps(defaultValues: PlusSearchProps["defaultValues"], overrides: Partial<PlusSearchProps> = {}) {
+		return computed<PlusSearchProps>(() => ({
 			defaultValues,
 			columns: [],
 			labelWidth: 140,
@@ -58,7 +45,6 @@ export function useI18nConfig() {
 
 	return {
 		locale,
-		withLocale,
 		createHeaderRenderer,
 		plusSearchButtonTexts,
 		searchProps,

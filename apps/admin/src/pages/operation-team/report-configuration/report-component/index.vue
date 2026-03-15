@@ -74,7 +74,6 @@ function translateQueryMethod(value?: string) {
 }
 
 const translatedComponentTypeOptions = computed(() => {
-	void locale.value;
 	return componentTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n(componentTypeLabelKeyMap[String(option.value)]),
@@ -82,7 +81,6 @@ const translatedComponentTypeOptions = computed(() => {
 });
 
 const translatedQueryMethodOptions = computed(() => {
-	void locale.value;
 	return queryMethodOptions.map((option) => ({
 		...option,
 		label: transformI18n(queryMethodLabelKeyMap[String(option.value) as keyof typeof queryMethodLabelKeyMap]),
