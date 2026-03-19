@@ -42,11 +42,11 @@
 
 ### 2.2. 数据库与质量保障技能 (Database & Quality)
 
-- `schema-and-seed-guardian` ：`.claude\skills\schema-and-seed-guardian\SKILL.md` `Schema与Seed守护技能` ，用于预防数据库 schema 定义和 seed 数据生成中的常见错误。
+- `schema-and-seed-guardian` ：`.claude\skills\schema-and-seed-guardian\SKILL.md` `Schema与Seed守护技能` ，用于预防数据库 schema 定义和 Direct Seed 模块编写中的常见错误。
 
 - `schema-change-sync` ：`.claude\skills\schema-change-sync\SKILL.md` `Schema变更同步技能` ，数据库 Schema 变更时的全项目同步检查清单。当修改表字段或新增数据库表时，确保类型项目、数据库迁移、后端接口、前端页面、种子数据和技能文档全部同步更新。
 
-- `neon-db-query` ：`.claude\skills\neon-db-query\SKILL.md` `Neon数据库表查询技能` ，提供项目所有数据库表的完整清单，并支持使用 Neon MCP 批量查询表结构信息，用于 seed 数据生成参考。
+- `neon-db-query` ：`.claude\skills\neon-db-query\SKILL.md` `Neon数据库表查询技能` ，提供项目所有数据库表的完整清单，并支持使用 Neon MCP 批量查询表结构信息，用于数据库结构查询和开发参考。
 
 - `neon-postgres-zh` ：`.claude\skills\neon-postgres-zh\SKILL.md` `Neon Postgres中文文档技能` ，Neon PostgreSQL 数据库服务的中文参考文档。
 
