@@ -67,9 +67,11 @@ pnpm db:migrate
 # 推送 schema 变更（开发环境）
 pnpm db:push
 
-# 生成种子数据
-pnpm db:generate-seed
+# 填充种子数据（TRUNCATE + 重新插入）
 pnpm db:seed
+
+# 核弹级重置（DROP 全部表 → 重建 → 填充数据）
+pnpm db:reset
 ```
 
 详见：[Schema 开发规范](./src/docs/guides/db-schema.md)
@@ -158,37 +160,24 @@ ls .output/server/index.mjs  # 服务端入口文件
 
 ### 5. Drizzle ORM 数据库命令
 
-|          命令           |                      说明                      |
-| :---------------------: | :--------------------------------------------: |
-|   `pnpm db:generate`    | 生成数据库迁移文件（根据 schema 变更生成 SQL） |
-|    `pnpm db:migrate`    |         执行数据库迁移（应用迁移文件）         |
-|     `pnpm db:push`      |  推送 schema 变更到数据库（开发环境快速同步）  |
-|    `pnpm db:studio`     |  启动 Drizzle Studio（可视化数据库管理界面）   |
-|     `pnpm db:drop`      |            删除迁移文件（谨慎使用）            |
-| `pnpm db:generate-seed` |     生成种子数据 SQL 文件（详见下方说明）      |
-|     `pnpm db:seed`      |    执行种子数据导入到数据库（详见下方说明）    |
+|        命令        |                      说明                       |
+| :----------------: | :---------------------------------------------: |
+| `pnpm db:generate` | 生成数据库迁移文件（根据 schema 变更生成 SQL）  |
+| `pnpm db:migrate`  |         执行数据库迁移（应用迁移文件）          |
+|   `pnpm db:push`   |  推送 schema 变更到数据库（开发环境快速同步）   |
+|  `pnpm db:studio`  |   启动 Drizzle Studio（可视化数据库管理界面）   |
+|   `pnpm db:drop`   |            删除迁移文件（谨慎使用）             |
+|   `pnpm db:seed`   |      TRUNCATE 全部表数据，重新填充种子数据      |
+|  `pnpm db:reset`   | 核弹级重置：DROP 全部表 → 重建表结构 → 填充数据 |
 
 #### 5.1 种子数据命令详细说明
 
-种子数据命令用于生成和导入测试数据，详细使用指南请参阅：[种子数据命令使用指南](./src/docs/guides/seed-commands.md)
+项目使用 **Direct Seed** 架构，Seed 模块直接使用 Drizzle ORM Insert 类型定义数据，无中间 SQL 文件层。详细使用指南请参阅：[种子数据命令使用指南](./src/docs/guides/seed-commands.md)
 
-##### `db:generate-seed` 命令参数
-
-|          命令           |              说明              |
-| :---------------------: | :----------------------------: |
-| `pnpm db:generate-seed` |     生成全部模块的种子 SQL     |
-|    `--list-modules`     |   显示可用模块列表及依赖关系   |
-|    `--module=<name>`    | 只生成指定模块（如 community） |
-
-##### `db:seed` 命令参数
-
-|       命令        |            说明            |
-| :---------------: | :------------------------: |
-|  `pnpm db:seed`   |  导入全部种子数据到数据库  |
-| `pnpm db:reseed`  | 清理数据后重新导入全部数据 |
-|     `--clean`     |     清理数据后重新导入     |
-|  `--clean-only`   |   仅执行清理，不导入数据   |
-| `--module=<name>` |    只导入指定模块的数据    |
+|      命令       |                                            说明                                            |
+| :-------------: | :----------------------------------------------------------------------------------------: |
+| `pnpm db:seed`  |   TRUNCATE CASCADE 清空全部表 → 按依赖顺序重新填充数据。适用于 seed 数据变更、表结构未变   |
+| `pnpm db:reset` | DROP 全部表 → 清除迁移历史 → 从 schema 重推表结构 → 填充数据。适用于 schema 变更后从零重建 |
 
 ### 6. 环境变量命令
 

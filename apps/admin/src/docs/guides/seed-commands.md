@@ -1,383 +1,101 @@
-# 种子数据命令使用指南
+# 数据库 Seed 命令指南
 
-本文档详细说明 `db:generate-seed` 和 `db:seed` 命令的使用方法，帮助开发者正确生成和导入测试数据。
+> 更新日期: 2026-03-19
 
-## 1. 概述
+## 概述
 
-种子数据系统用于将 mock 数据转换为可执行的 SQL 文件，并导入到 Neon PostgreSQL 数据库中。
+项目使用 Direct Seed 架构管理数据库种子数据。Seed 模块直接使用 Drizzle ORM 的 Insert 类型定义数据，通过 `db.insert()` 直接插入数据库，无中间 SQL 文件层。
 
-### 1.1. 命令简介
+## 命令
 
-|          命令           |                 说明                  |
-| :---------------------: | :-----------------------------------: |
-| `pnpm db:generate-seed` | 生成种子 SQL 文件（从 mock 数据生成） |
-|     `pnpm db:seed`      |        执行 SQL 文件导入数据库        |
+### `pnpm db:seed` — 数据重填
 
-### 1.2. 文件位置
+在现有数据库结构上重新填充数据：
 
-- **Schema 定义**: `apps/type/src/business/{domain}/{module}/schema.ts`
-- **生成脚本**: `apps/admin/scripts/generate-seed-sql.ts`
-- **执行脚本**: `apps/admin/scripts/run-seed-sql.ts`
-- **模块定义**: `apps/admin/server/db/seed-sql/`
-- **生成的 SQL 文件**: `apps/admin/drizzle/seed/`
+1. TRUNCATE CASCADE 清空全部表数据
+2. 按依赖顺序逐模块插入数据
 
-## 2. `db:generate-seed` 命令
+适用场景：修改了 seed 数据内容，但表结构没有变化。
 
-此命令将 mock 数据转换为 SQL INSERT 语句，保存到 `drizzle/seed/` 目录。
+### `pnpm db:reset` — 核弹级重置
 
-### 2.1. 基本用法
+从零重建整个数据库：
 
-```bash
-# 生成全部模块的种子 SQL
-pnpm db:generate-seed
-```
+1. DROP 全部表（DROP SCHEMA public CASCADE）
+2. 清除本地迁移历史
+3. 从 schema 重新推送表结构（drizzle-kit push）
+4. 填充全部种子数据
 
-### 2.2. 命令参数
+适用场景：修改了 schema 表结构，想要完全从零开始。
 
-#### `--list-modules`
-
-显示可用模块列表及其依赖关系。
-
-```bash
-pnpm db:generate-seed --list-modules
-```
-
-输出示例：
-
-```log
-📋 可用模块列表:
-
-  [00-dev] dev             - 开发配置基础数据
-  [01-community] community       - 社区管理基础数据
-  [02-setting] setting         - 系统设置与组织架构 (依赖: 01-community)
-  [03-house-property] house-property  - 房产与业主数据 (依赖: 01-community)
-  [04-operation] operation       - 运营管理数据 (依赖: 01-community)
-  [05-contract] contract        - 合同管理数据 (依赖: 03-house-property)
-  [06-parking] parking         - 停车管理数据 (依赖: 03-house-property)
-  [07-expense] expense         - 费用管理数据 (依赖: 06-parking, 05-contract)
-  [08-patrol] patrol          - 巡检管理数据 (依赖: 03-house-property, 02-setting)
-  [09-repairs] repairs         - 报修管理数据 (依赖: 03-house-property, 02-setting)
-  [10-report] report          - 报表中心数据 (依赖: 07-expense)
-```
-
-#### `--module=<name>`
-
-只生成指定模块的 SQL 文件。支持使用模块名称或 ID。
-
-```bash
-# 使用模块名称
-pnpm db:generate-seed --module=community
-
-# 使用模块 ID
-pnpm db:generate-seed --module=01-community
-```
-
-**注意**: 如果指定模块依赖其他模块，系统会检查依赖模块的 SQL 文件是否存在，不存在则报错提示。
-
-### 2.3. 生成的文件
-
-生成成功后，会在 `apps/admin/drizzle/seed/` 目录下创建以下文件：
-
-|         文件名          |        说明        |
-| :---------------------: | :----------------: |
-|      `00-dev.sql`       |  开发配置基础数据  |
-|   `01-community.sql`    |  社区管理基础数据  |
-|    `02-setting.sql`     | 系统设置与组织架构 |
-| `03-house-property.sql` |   房产与业主数据   |
-|   `04-operation.sql`    |    运营管理数据    |
-|    `05-contract.sql`    |    合同管理数据    |
-|    `06-parking.sql`     |    停车管理数据    |
-|    `07-expense.sql`     |    费用管理数据    |
-|     `08-patrol.sql`     |    巡检管理数据    |
-|    `09-repairs.sql`     |    报修管理数据    |
-|     `10-report.sql`     |    报表中心数据    |
-|      `_clean.sql`       |      清理脚本      |
-
-### 2.4. SQL 文件格式
-
-生成的 SQL 文件格式如下：
-
-```sql
--- Module: 01-community (社区管理基础数据)
-
-BEGIN;
-
--- Table: cm_communities (5 records)
-INSERT INTO "cm_communities" (...) VALUES (...);
-
--- Table: cm_notices (10 records)
-INSERT INTO "cm_notices" (...) VALUES (...);
-
-COMMIT;
-```
-
-特点：
-
-- 使用事务包装 (`BEGIN` / `COMMIT`)
-- 包含表名和记录数注释
-- 不包含时间戳（避免无意义的 Git diff）
-
-## 3. `db:seed` 命令
-
-此命令执行 `drizzle/seed/` 目录下的 SQL 文件，将数据导入数据库。
-
-### 3.1. 基本用法
-
-```bash
-# 导入全部种子数据
-pnpm db:seed
-```
-
-### 3.2. 命令参数
-
-#### `--clean`
-
-在导入数据前先清理（TRUNCATE）相关表。
-
-```bash
-pnpm db:seed --clean
-```
-
-#### `--clean-only`
-
-只执行清理操作，不导入数据。
-
-```bash
-pnpm db:seed --clean-only
-```
-
-#### `--module=<name>`
-
-只导入指定模块的数据。支持使用模块名称或文件名。
-
-```bash
-# 导入单个模块
-pnpm db:seed --module=community
-
-# 导入多个模块（逗号分隔）
-pnpm db:seed --module=community,setting
-```
-
-### 3.3. 执行顺序
-
-SQL 文件按文件名的数字前缀顺序执行（00、01、02...），确保依赖关系正确。
-
-## 4. 模块依赖关系
-
-种子数据模块之间存在依赖关系，必须按正确顺序生成和导入。
+## 文件结构
 
 ```plain
-Layer 0 (无依赖):
-├── 00-dev          # 开发配置
-└── 01-community    # 社区管理
-
-Layer 1 (依赖 Layer 0):
-├── 02-setting         # 依赖 community
-├── 03-house-property  # 依赖 community
-└── 04-operation       # 依赖 community
-
-Layer 2 (依赖 Layer 1):
-├── 05-contract  # 依赖 house-property
-└── 06-parking   # 依赖 house-property
-
-Layer 3 (依赖 Layer 2):
-├── 07-expense   # 依赖 parking, contract
-├── 08-patrol    # 依赖 house-property, setting
-└── 09-repairs   # 依赖 house-property, setting
-
-Layer 4 (依赖 Layer 3):
-└── 10-report    # 依赖 expense
+apps/admin/server/db/seed/
+├── index.ts              # 入口脚本，支持 --reset 参数
+├── runner.ts             # 执行引擎：TRUNCATE + 拓扑排序 + 按序执行
+├── helpers.ts            # sid() 确定性UUID、defineSeed() 类型工具
+└── modules/
+    ├── _registry.ts      # 模块注册表
+    ├── dev.seed.ts       # 开发环境基础数据
+    ├── community.seed.ts # 社区管理
+    ├── setting.seed.ts   # 组织/角色/权限/班次
+    ├── house-property.seed.ts  # 房屋/业主
+    ├── operation.seed.ts # 运营/商户
+    ├── contract.seed.ts  # 合同
+    ├── parking.seed.ts   # 停车
+    ├── expense.seed.ts   # 费用
+    ├── patrol.seed.ts    # 巡检
+    ├── repairs.seed.ts   # 报修
+    └── report.seed.ts    # 报表
 ```
 
-## 5. 常见使用场景
+## 模块依赖层级
 
-### 5.1. 初始化开发环境
-
-```bash
-# 1. 确保数据库表结构已创建
-pnpm db:push
-
-# 2. 生成全部种子 SQL
-pnpm db:generate-seed
-
-# 3. 导入种子数据
-pnpm db:seed
+```plain
+Layer 0: dev, community
+Layer 1: setting, house-property, operation
+Layer 2: contract, parking
+Layer 3: expense, patrol, repairs
+Layer 4: report
 ```
 
-### 5.2. 重置数据库数据
+Runner 会自动按依赖顺序执行，无需手动管理。
 
-```bash
-# 清理并重新导入全部数据
-pnpm db:seed --clean
+## 新增表的 Seed 数据流程
+
+1. 在 `apps/type` 中定义 schema（Trinity Pattern）
+2. 运行 `pnpm -F @01s-11comm/type db:generate` 生成迁移
+3. 运行 `pnpm db:push` 或 `pnpm db:migrate` 推送到数据库
+4. 在对应的 `.seed.ts` 模块中添加 `db.insert(table).values([...])`
+5. 运行 `pnpm db:seed` 验证
+
+如果是全新领域，创建新的 `.seed.ts` 文件并在 `_registry.ts` 中注册。
+
+## Seed 模块编写模式
+
+```typescript
+import { someTable } from "@01s-11comm/type";
+import { defineSeed, sid } from "../helpers";
+
+export default defineSeed({
+	name: "module-name",
+	dependencies: ["dependency-module"],
+	async seed(db) {
+		await db.insert(someTable).values([
+			{
+				id: sid("scope", "key"),
+				name: "数据名称",
+				status: "enabled",
+			},
+		]);
+	},
+});
 ```
 
-### 5.3. 只更新特定模块数据
+### 关键约定
 
-```bash
-# 1. 重新生成特定模块
-pnpm db:generate-seed --module=community
-
-# 2. 导入特定模块
-pnpm db:seed --module=community
-```
-
-### 5.4. 查看可用模块
-
-```bash
-pnpm db:generate-seed --list-modules
-```
-
-## 6. 注意事项
-
-### 6.1. 环境变量
-
-执行数据库命令前，请确保已配置数据库连接环境变量：
-
-```bash
-# 从 Vercel 拉取环境变量
-pnpm env:pull
-```
-
-或手动创建 `.env.vercel.local` 文件：
-
-```env
-DATABASE_URL=postgresql://...
-```
-
-### 6.2. 依赖检查
-
-生成单个模块时，系统会自动检查依赖模块的 SQL 文件是否存在：
-
-```log
-❌ 错误: 模块 [setting] 依赖 [01-community] 模块，但文件 01-community.sql 不存在
-   请先生成依赖模块: pnpm db:generate-seed --module=01-community
-```
-
-### 6.3. 事务安全
-
-每个 SQL 文件都使用事务包装，如果某条语句失败，整个文件的更改会回滚。
-
-### 6.4. ID 一致性
-
-种子数据使用确定性 UUID (v5)，相同的输入数据总是生成相同的 UUID，确保：
-
-- 多次生成的 SQL 文件内容一致
-- 外键引用在不同模块间保持正确
-
-## 7. 故障排除
-
-### 7.1. 模块未找到
-
-```log
-❌ 未找到模块: xxx
-```
-
-解决：使用 `--list-modules` 查看可用模块名称。
-
-### 7.2. 依赖文件不存在
-
-```log
-❌ 错误: 模块 [xxx] 依赖 [yyy] 模块，但文件 yyy.sql 不存在
-```
-
-解决：先生成依赖模块，或一次性生成全部模块。
-
-### 7.3. 数据库连接失败
-
-```log
-❌ 执行失败: xxx.sql
-```
-
-解决：检查 `DATABASE_URL` 环境变量是否正确配置。
-
-## 8. 相关文档
-
-- [数据库 Schema 设计](../reports/2026-02-03-analyze-mock-data-and-create-db-seed-inspection.md)
-- [Drizzle ORM 官方文档](https://orm.drizzle.team/)
-- [Neon 数据库文档](https://neon.tech/docs)
-
-## 9. Schema 变更与数据库同步
-
-当修改 `apps/type/src/business/{domain}/{module}/schema.ts` 文件中的数据库表定义后，需要按顺序执行以下命令来同步变更到 Neon 云数据库。
-
-### 9.1. Schema 存储位置
-
-项目的数据库 Schema 定义位于 `apps/type/src/business/{domain}/{module}/schema.ts` 文件中。每个 schema 文件必须遵循 **Trinity Pattern**，同时导出：
-
-- **Drizzle Table** - 数据库表定义
-- **Zod Schemas** - 运行时验证
-- **TypeScript Types** - 静态类型
-
-### 9.2. 更新 Schema 后的命令执行顺序
-
-#### 步骤 1: 生成数据库迁移文件
-
-```bash
-# 在 type 项目中生成迁移文件
-pnpm -F @01s-11comm/type db:generate
-```
-
-此命令会根据 schema.ts 中的表定义变更，在 `apps/admin/drizzle/` 目录下生成新的迁移 SQL 文件。
-
-#### 步骤 2: 推送 Schema 变更到数据库
-
-```bash
-# 开发环境快速同步（推荐）
-pnpm db:push
-
-# 或者执行迁移文件（生产环境推荐）
-pnpm db:migrate
-```
-
-- `db:push`: 适用于开发环境，直接将 schema 变更推送到数据库
-- `db:migrate`: 适用于生产环境，执行迁移文件，更安全
-
-#### 步骤 3: 重新生成种子数据
-
-```bash
-# 生成全部模块的种子 SQL
-pnpm db:generate-seed
-```
-
-如果只是修改了现有表的字段，通常需要重新生成相关模块的种子数据。
-
-#### 步骤 4: 导入种子数据到数据库
-
-```bash
-# 方式一：直接导入（保留现有数据）
-pnpm db:seed
-
-# 方式二：清理后重新导入（完全重置）
-pnpm db:reseed
-```
-
-- `db:seed`: 在现有数据基础上导入新种子数据
-- `db:reseed`: 先清理数据库中的现有数据，再导入新种子数据（等效于 `db:seed --clean`）
-
-### 9.3. 完整命令序列示例
-
-```bash
-# 完整的 Schema 更新流程
-# 1. 修改 schema.ts 文件后...
-
-# 2. 生成迁移文件
-pnpm -F @01s-11comm/type db:generate
-
-# 3. 推送到数据库
-pnpm db:push
-
-# 4. 重新生成种子数据
-pnpm db:generate-seed
-
-# 5. 导入种子数据
-pnpm db:reseed
-```
-
-### 9.4. 相关 Skills 技能文档
-
-更多关于 Schema 变更同步的详细规范，请参考以下技能文档：
-
-- **Schema 变更同步**: `.claude/skills/schema-change-sync/SKILL.md` - 数据库 Schema 变更时的全项目同步检查清单
-- **Schema 与 Seed 守护**: `.claude/skills/schema-and-seed-guardian/SKILL.md` - 数据库架构变更和种子数据生成的规范
-- **项目 Schema 注册表**: `.claude/skills/project-schema-registry/SKILL.md` - Schema 编写标准和 Trinity Pattern
-- **Neon 数据库表清单**: `.claude/skills/neon-db-list/SKILL.md` - 项目中所有数据库表的完整列表
+- **sid(scope, key)**: 确定性 UUID，相同参数永远生成相同 ID
+- **跨模块引用**: 使用相同的 `sid()` 调用确保外键一致
+- **枚举值**: 直接使用英文值（`"enabled"` 而非中文）
+- **类型安全**: 数据直接使用 Drizzle Insert 类型，改 schema 后编译器自动报错
