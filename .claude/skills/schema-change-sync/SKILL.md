@@ -97,11 +97,13 @@ pnpm -F @01s-11comm/admin db:generate
 
 ### 2.7. 种子数据
 
-**文件**: `apps/admin/server/db/seed-sql/{module}.ts`
+**文件**: `apps/admin/server/db/seed/modules/{module}.seed.ts`
 
-- 导入 Mock 数据源
-- 建立中文标签→英文枚举值的映射表（见第 3 节）
-- 编写 `db.insert(table).values(records).toSQL()` 生成逻辑
+- 在对应 seed 模块的 `seed(db)` 函数中添加新表的 `db.insert(table).values([...])`
+- 数据直接使用 Drizzle Insert 类型，TypeScript 编译器会检查字段匹配
+- 使用 `sid(scope, key)` 生成确定性 UUID
+- 如果是全新领域，创建新的 `.seed.ts` 文件并在 `_registry.ts` 中注册
+- 运行 `pnpm db:seed` 验证数据填充
 
 ### 2.8. 前端列表页面
 

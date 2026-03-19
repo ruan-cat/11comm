@@ -29,8 +29,6 @@ license: MIT
 - **API 语法速查**: [api-reference.md](references/api-reference.md) - H3 常用函数 (getQuery, readBody) 及模式。
 - **代码示例**: [examples.md](references/examples.md) - 标准的 CRUD 处理器示例和 JSON 响应结构。
 - **参数处理**: [request-params-handling.md](references/request-params-handling.md) - **[New]** 详解 `readBody` 使用、参数清洗 (空字符串/pageIndex 映射) 及错误捕获模式。
-- **迁移指南**: [mock-to-neon-migration.md](references/mock-to-neon-migration.md) - 如何将旧的 Mock 接口迁移到真实的 Neon 数据库。
-- **Mock 模式参考** (Legacy): [mock-mode.md](references/mock-mode.md) - Legacy Mock 模式的完整开发规范（仅用于维护现有接口）。
 - **多平台数据库连接**: [cloudflare-env-database.md](references/cloudflare-env-database.md) - **[关键]** Cloudflare Worker 与 Vercel 平台下的环境变量获取机制、Drizzle+Neon 数据库连接模式，以及 `event.req.runtime.cloudflare.env` 的正确使用方式。
 
 ## 4. 返回值类型约束 (Response Type Constraint)

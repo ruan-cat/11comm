@@ -57,51 +57,28 @@ import { isNull } from "drizzle-orm";
 
 ## II. Seed 数据生成脚本开发规范
 
-在编写或修改 Seed 生成逻辑时 (`apps/admin/server/db/seed-sql/*.ts`)：
+### Seed 脚本规范 (Direct Seed)
 
-### 1. 性能陷阱 (Performance)
+在编写或修改 Seed 模块时 (`apps/admin/server/db/seed/modules/*.seed.ts`)：
 
-**风险**：在 SQL 参数替换，或循环拼接字符串时使用低效算法。
-**案例**：`toFullSql` 曾因 O(N\*M) 的 `split` 实现导致 CPU 100% 卡死。
-**规范**：
+#### 规范 1: 使用类型安全的直接插入
 
-- 禁止在循环中做昂贵的字符串操作。
-- SQL 参数替换必须使用 Regex 或专门的 builder。
-- 批量插入（Batch Insert）优于单条循环插入。
+- 使用 Drizzle Insert 类型定义数据，TypeScript 编译器会在 schema 变更后自动报错
+- 使用 `db.insert(table).values([...])` 直接插入
+- 禁止使用 `as any` 类型断言
 
-### 2. ID 映射与外键解析 (Data Integrity)
+#### 规范 2: 使用 sid() 生成确定性 UUID
 
-**风险**：Mock 数据使用自然键（如姓名 "张三"）引用，而数据库使用 UUID。
-**后果**：`idMap.get("hp_owners", "张三")` 失败（因为 idMap 可能只存了 ID 注册时的 Mock ID），导致插入 NULL 到非空外键，引发 Crash。
-**规范**：
+- `sid(scope, key)` 基于 uuid v5 生成确定性 ID
+- 跨模块引用时使用相同的 `sid()` 调用确保外键一致
+- 例如：`communityId: sid("community", "sunshine")` 在所有模块中生成相同的 UUID
 
-- **建立 Name Lookup**：如果 Mock 数据通过 Name 关联，必须在生成主表时，额外维护一个 `Map<Name, UUID>`。
-- **防御性编程 (Defensive Programming)**：
-  ```typescript
-  const ownerId = nameMap.get(item.ownerName) || idMap.get("hp_owners", item.ownerName);
-  if (!ownerId) {
-  	console.warn(`Skipping record: Owner ${item.ownerName} not found`);
-  	return null; // 必须处理 null/undefined，以配合 .filter(Boolean) 移除无效记录
-  }
-  ```
+#### 规范 3: 枚举值直接使用英文
 
-### 3. 日期格式 (Data Types)
+- 直接写 `"enabled"` 而非 `toStatusEnum("启用")`
+- 直接写 `"approved"` 而非 `toAuditStatusEnum("已通过")`
 
-**风险**：Mock 数据使用 `2024-01` 或 `2024年Q1` 等非标准格式。
-**后果**：PostgreSQL Date 类型解析失败，脚本崩溃。
-**规范**：
+#### 规范 4: 命令使用
 
-- 入库前必须清洗日期格式，统一转换为 `YYYY-MM-DD`。
-
-### 4. 依赖完整性 (Execution Order)
-
-**风险**：仅生成子模块 Seed 时，因依赖模块未运行导致 `IdMap` 为空。
-**规范**：
-
-- 即使只生成子模块，脚本框架也必须**空运行**所有依赖模块的生成逻辑（注册 ID 但不输出 SQL），以填充内存中的 `IdMap`。
-
-### 5. 清理机制 (File Management)
-
-**规范**：
-
-- 每次生成前，必须清理 (`Wipe`) 输出目录，防止旧文件名（如 `01-old.sql`）与新文件名（`02-new.sql`）并存导致的数据冲突。当使用 `db:generate-seed` 时，确保脚本执行了清理动作。
+- `pnpm db:seed` — TRUNCATE CASCADE 全部表 → 重新填充数据
+- `pnpm db:reset` — DROP 全部表 → 清除迁移 → 从 schema 重建 → 填充数据
