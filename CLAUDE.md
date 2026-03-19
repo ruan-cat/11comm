@@ -244,6 +244,11 @@ openspec validate {任务名称} --strict
 - Zod schema 与 Drizzle table 不一致
 - Seed 数据生成器函数（应使用字面量数组）
 
+#### Drizzle Seed 类型绕过
+
+- `primaryId()` 的 `defaultRandom()` 会将 `id` 排除出 `InferInsertModel`；种子数据 `.values()` 必须使用 `rows()` identity 函数（见 `server/db/seed/helpers.ts`）打破 fresh literal excess property check。
+- 修改 `primaryId()` 的 default 实现方式无效——Drizzle 对任何有默认值的列都执行相同类型排除。
+
 ## 11. 开发工作流
 
 1. 使用 pnpm 进行包管理

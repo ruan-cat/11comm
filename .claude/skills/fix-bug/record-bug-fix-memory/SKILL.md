@@ -105,6 +105,15 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 验证方式：`pnpm exec tsc --noEmit` 输出中仅剩下这 4 个与 drizzle-orm 无关的错误。
 - 后续约束：在统计类型错误修复结果时，要明确区分"目标错误"和"已有的无关错误"，避免把已有错误算入修复失败的范围。
 
+### `apps/admin/server/db/seed` 的 Drizzle v0.42 insert 类型排除事故
+
+- 问题现象：种子系统重构后，11 个 seed 模块共 106+ 处 `db.insert(table).values([...])` 全部报 TS2769 "No overload matches this call"，`id` 和其他有默认值/nullable 的列被 TypeScript 认为是"多余属性"而拒绝编译。
+- 实际根因：Drizzle ORM v0.42 的 `primaryId()` helper 内部使用 `uuid('id').defaultRandom().primaryKey()`，该组合导致 `InferInsertModel` 类型推导将 `id` 完全排除在 insert 类型之外（Drizzle 对任何有 `default`/`$defaultFn`/`defaultRandom` 的列都做同样处理）。同时 TypeScript 对 "fresh object literal"（直接写在函数参数位置的对象字面量）执行严格的 excess property check，不允许传入类型定义之外的属性。两者叠加，所有包含 `id` 或 nullable 列的 `.values()` 调用全部失败。
+- 关键误导点：三个错误假设各浪费了一轮完整调试循环：(1) 修改 `primaryId()` 从 `defaultRandom()` 改为 `default(sql\`gen_random_uuid()\`).$defaultFn(() => crypto.randomUUID())`，期望让`id`变为可选——无效，Drizzle 内部对**任何**有默认值的列都执行相同的类型排除逻辑，与具体 default 实现方式无关；(2) 创建`rows()`函数用`InferInsertModel<T> & { id?: string }`做数据类型——无效，`InferInsertModel`只包含`notNull`且无`default`的列，所有 nullable/有默认值的列（不止`id`）同样被标记为多余属性；(3) 使用简单泛型 identity 函数`rows<T>(data: T): T`但不加`const`类型参数——导致枚举字面量值（如`"percentage"`）被宽化为`string`，与 pgEnum 的联合字面量类型不匹配。
+- 有效修复：在 `helpers.ts` 中添加泛型 identity 函数 `rows<const T extends Record<string, unknown>[]>(data: T): T`，将所有 `.values([...])` 改为 `.values(rows([...]))`。关键设计：`const` 类型参数保留字面量类型不被宽化；函数调用边界打破 TypeScript 的 "fresh object literal" 标记，使 `.values()` 走结构兼容性检查而非严格属性检查；零运行时开销，不使用 `as any`。
+- 验证方式：`npx tsc --noEmit` 输出中 seed 相关错误为 0（仅剩 `hooks.ts` 的 4 个预存错误，与 seed 无关）；`pnpm db:reset` 全量重置 11/11 模块通过；`pnpm db:seed` 增量重灌 11/11 模块通过。
+- 后续约束：在 Drizzle ORM 项目中为种子数据编写 `.values()` 调用时，如果列定义使用了 `defaultRandom()`、`.default()`、`.$defaultFn()` 或 `.notNull()` 缺失，必须预期这些列不会出现在 `InferInsertModel` 中。遇到此类问题时，第一反应应该是用泛型 identity 函数打破 fresh literal check，而不是尝试修改 schema 定义或使用 `as any`。修改 `primaryId()` 的 default 实现方式不能解决这个问题——这是 Drizzle 类型系统的设计决策，不是 bug。
+
 ## 写入经验时必须保留的额外信息
 
 如果这次 bug 与仓库已有事故模式相似，写记忆时不要遗漏下面这些额外信息：

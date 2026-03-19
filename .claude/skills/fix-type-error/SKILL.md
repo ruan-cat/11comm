@@ -495,13 +495,68 @@ nitroApp.hooks.hook("request", async (rawEvent) => {
 ```typescript
 // ❌ TypeScript 认为不安全
 (BUSINESS_TABLE_GROUPS[group] as string[])
-	.includes(tableName)
-	(
+	.includes(tableName)(
 		// ✅ 双重 as
 		BUSINESS_TABLE_GROUPS[group] as unknown as string[],
 	)
 	.includes(tableName);
 ```
+
+### 2.25 Drizzle ORM `.values()` 报 TS2769：InferInsertModel 排除有默认值的列
+
+**现象：** `db.insert(table).values([{ id: ..., ... }])` 报 `TS2769: No overload matches this call`，`id` 和其他有默认值/nullable 的列被视为"多余属性"
+
+**根因：** Drizzle v0.42 的 `InferInsertModel` 类型推导会将所有带 `default`/`$defaultFn`/`defaultRandom` 的列排除在 insert 类型之外。TypeScript 对 "fresh object literal"（直接写在函数参数位置的对象字面量）执行 excess property check，不允许传入类型定义以外的属性。
+
+**常见误区（不要踩）：**
+
+1. ❌ 修改 `primaryId()` 从 `defaultRandom()` 改为 `default(sql...).$defaultFn(...)`，期望 `id` 变为可选——**无效**，Drizzle 对任何有默认值的列都执行相同的类型排除
+2. ❌ 用 `InferInsertModel<T> & { id?: string }` 做类型交叉——**无效**，`InferInsertModel` 只包含 `notNull + 无 default` 的列，所有 nullable/有默认值的列同样被排除
+
+**正确写法：**
+
+```typescript
+// ❌ 错误：fresh object literal 直接传入 .values()，触发 excess property check
+db.insert(table).values([{ id: sid("scope", "key"), name: "test", status: "active" }]);
+
+// ✅ 正确：用泛型 identity 函数 rows() 打破 fresh literal 标记
+import { rows } from "../helpers";
+db.insert(table).values(rows([{ id: sid("scope", "key"), name: "test", status: "active" }]));
+```
+
+**rows() 实现（在 `server/db/seed/helpers.ts`）：**
+
+```typescript
+export function rows<const T extends Record<string, unknown>[]>(data: T): T {
+	return data;
+}
+```
+
+**原理：** 函数调用边界打破 TypeScript 的 "fresh object literal" 标记，使 `.values()` 走结构兼容性检查而非严格属性检查。`const` 类型参数保留字面量类型（见 2.26）。零运行时开销，不使用 `as any`。
+
+### 2.26 泛型 identity 函数必须加 `const` 类型参数保留枚举字面量
+
+**现象：** 使用 `rows<T>(data: T): T`（无 `const`）包装后，`pgEnum` 列仍然报类型错误——枚举字面量值 `"percentage"` 被宽化为 `string`，与 `"fixed" | "percentage" | "period"` 不匹配
+
+**根因：** TypeScript 泛型默认会将字符串字面量类型宽化为 `string`。`const` 类型参数（`<const T>`）告诉 TypeScript 保留传入值的字面量类型。
+
+**正确写法：**
+
+```typescript
+// ❌ 错误：无 const，字面量被宽化
+function rows<T extends Record<string, unknown>[]>(data: T): T {
+	return data;
+}
+// "percentage" 被推断为 string → 与 pgEnum 联合类型不匹配
+
+// ✅ 正确：const 保留字面量类型
+function rows<const T extends Record<string, unknown>[]>(data: T): T {
+	return data;
+}
+// "percentage" 被保留为 "percentage" → 与 pgEnum 联合类型匹配
+```
+
+**适用范围：** 任何需要在函数边界打破 excess property check 同时保留 enum/字面量类型的场景。
 
 ## 3. 项目特定的类型处理策略
 
