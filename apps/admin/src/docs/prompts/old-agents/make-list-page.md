@@ -519,10 +519,6 @@ const columns = ref<TableColumnList>([
 
 你在生成 `<PureTable>` 表格组件时，请你忽略类型报错。你**必须**使用以下写法来忽略掉类型报错。
 
-```html
-<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
-```
-
 ### 14.2 使用 `<PureTable>` 表格组件
 
 在列表页内使用 `<PureTable>` 组件时，一定是在 `<PureTableBar>` 组件的插槽内使用的。例子如下：
@@ -535,7 +531,6 @@ const columns = ref<TableColumnList>([
 		</template>
 
 		<template #default="{ size, dynamicColumns }">
-			<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 			<PureTable
 				:="pureTableProps"
 				:columns="dynamicColumns"

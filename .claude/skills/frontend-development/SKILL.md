@@ -199,11 +199,16 @@ const plusSearchProps = searchProps(plusSearchDefaultValues);
 如果页面本身沿用仓库现状，需要在模板上保留：
 
 ```vue
-<!-- @vue-ignore -->
 <PureTable ... />
 ```
 
 不要为了消除这类历史噪音而擅自改掉页面正常工作的现有接口结构。
+
+### 5.7 PureTable `treeProps` 类型现状
+
+- 已经走 `useListQuery` 或 `defaultPureTableProps` + `ListPureTableProps` 的页面，不要再添加 `<!-- @vue-ignore -->` 来忽略 `treeProps.checkStrictly`。
+- 旧页面如果还保留本地 `ref<PureTableProps>` / `computed<PureTableProps>`，应先切到统一的 `ListPureTableProps`，再删除注释；不要只删注释不修类型。
+- `treeProps` 的默认值统一放在 `apps/admin/src/config/constant.ts`，类型别名统一放在 `apps/admin/types/pure-table.d.ts`。
 
 ## 6. 表单组件标准
 
