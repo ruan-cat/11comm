@@ -6,17 +6,19 @@
 
 √ **已完成** 基于前端目录结构生成的路由。
 
-使用 [unplugin-vue-router](https://uvr.esm.is/) 实现自动化路由，仅仅对新增的业务代码，实现页面组件的路由导航。
+当前项目已经迁移到 [Vue Router v5](https://router.vuejs.org/guide/migration/v4-to-v5.html) 内置的文件路由能力，仅仅对新增的业务代码，实现页面组件的路由导航。
 
 ### 安装依赖
 
 ```bash
-pnpm -F=@ruan-cat-10wms/main i -D unplugin-vue-router vite-plugin-vue-meta-layouts
+pnpm --filter @01s-11comm/admin add vue-router@^5
 ```
 
 ### 配置自动导入插件需要的类型
 
-- https://uvr.esm.is/introduction.html#auto-imports
+- https://router.vuejs.org/guide/migration/v4-to-v5.html
+- `vue-router/unplugin`
+- `apps/admin/src/route-map.d.ts`
 
 ### 配置布局组件
 

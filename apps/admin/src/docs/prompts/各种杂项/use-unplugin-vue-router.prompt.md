@@ -8,7 +8,20 @@
 
 :::
 
-我现在要改造 pure-admin 项目，将该项目用 unplugin-vue-router 基于目录结构的路由插件来改造。
+::: warning 历史文件名说明
+
+本文件名保留了历史上的 `unplugin-vue-router` 命名，但当前项目已经迁移到 Vue Router v5 内置的文件路由能力。
+
+后续请统一按下面这组新入口理解和维护：
+
+- `vue-router/vite`
+- `vue-router/unplugin`
+- `vue-router/auto-routes`
+- `apps/admin/src/route-map.d.ts`
+
+:::
+
+我现在要改造 pure-admin 项目，将该项目用 Vue Router v5 基于目录结构的文件路由来改造。
 
 现在的路由配置方案用起来不舒服，我不希望未来在 `src\router\modules` 目录内手动写入任何路由。
 
@@ -32,14 +45,14 @@
 
 ## 侧边栏仅仅展示自动化路由
 
-我希望本项目的侧边栏，仅仅展示 unplugin-vue-router 生成的自动化路由。
+我希望本项目的侧边栏，仅仅展示文件路由生成的自动化路由。
 
 ## 告诉我额外要配置的 meta 信息
 
 在 pure-admin 内，肯定要求配置一些固定的 meta 信息的。
 
-我们首先是依赖于 pure-admin 的路由系统的，其次是在该路由系统的基础上，加上额外的 unplugin-vue-router 自动化路由功能。
+我们首先是依赖于 pure-admin 的路由系统的，其次是在该路由系统的基础上，加上额外的 Vue Router v5 文件路由功能。
 
 请认真阅读 pure-admin 的文档，了解它的路由系统是如何工作的。
 
-未来我会在 unplugin-vue-router 所要求的的 definePage() 宏内，增加所需的 meta 信息。
+未来我会在文件路由要求的 `definePage()` 宏内，增加所需的 meta 信息。

@@ -96,12 +96,19 @@ monorepo 下的 node 命令调度器。
 - [Message](https://element-plus.org/zh-CN/component/message.html)
 - [Tree](https://element-plus.org/zh-CN/component/tree.html)
 
-## 10. unplugin-vue-router
+## 10. Vue Router v5 文件路由
 
-基于文件的路由生成插件。
+当前后台项目已经迁移到 Vue Router v5 内置的文件路由能力，不再直接安装 `unplugin-vue-router`。
 
-- https://uvr.esm.is/guide/file-based-routing.html
-- https://uvr.esm.is/guide/extending-routes.html#definepage
+- 迁移说明：https://router.vuejs.org/guide/migration/v4-to-v5.html
+- 类型化路由：https://router.vuejs.org/guide/advanced/typed-routes.html
+
+当前项目内需要掌握的关键约定：
+
+- Vite 插件入口：`vue-router/vite`
+- 自动导入工具入口：`vue-router/unplugin`
+- 运行时自动路由模块：`vue-router/auto-routes`
+- 生成的路由类型文件：`apps/admin/src/route-map.d.ts`
 
 ## 11. pure-admin
 
