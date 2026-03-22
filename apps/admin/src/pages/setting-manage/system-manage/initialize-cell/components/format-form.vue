@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
 import { $t, i18n, transformI18n } from "@/plugins/i18n";
-import { useI18nConfig } from "@/composables/use-i18n-config";
 import { FormatFormProps, type FormatConfirmationFormVO } from "./format-form";
 
 const props = defineProps<FormatFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & FormatConfirmationFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

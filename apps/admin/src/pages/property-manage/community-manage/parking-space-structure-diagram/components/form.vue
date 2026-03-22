@@ -6,7 +6,7 @@ import type { ParkingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import type { ParkingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<ParkingSpaceStructureDiagramFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ParkingSpaceStructureDiagramFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

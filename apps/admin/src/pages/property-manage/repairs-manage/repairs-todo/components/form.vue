@@ -10,7 +10,6 @@ import { repairTypeOptions, maintenanceTypeOptions, repairStatusOptions } from "
 
 const props = defineProps<RepairsTodoFormProps>();
 
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RepairsTodoFormVO;
 

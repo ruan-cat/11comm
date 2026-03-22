@@ -14,7 +14,6 @@ import {
 
 const props = defineProps<IssuesSettingFormProps>();
 
-const { computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & IssuesFormVO;

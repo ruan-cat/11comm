@@ -12,7 +12,6 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { DictionaryTypeFormProps } from "./form";
 
 const props = defineProps<DictionaryTypeFormProps>();
-const { computed } = useI18nConfig();
 
 const dictionaryCategoryLabelKeyMap = {
 	system: "devTeam.configManage.type.form.options.categories.system",

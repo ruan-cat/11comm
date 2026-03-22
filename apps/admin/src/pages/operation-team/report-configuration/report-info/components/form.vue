@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ReportInfoFormProps } from "./form";
 
 const props = defineProps<ReportInfoFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ReportInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

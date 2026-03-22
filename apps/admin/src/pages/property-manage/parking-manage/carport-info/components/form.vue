@@ -8,7 +8,7 @@ import { parkingLotOptions, parkingSpaceStatusOptions, parkingSpaceTypeOptions }
 import type { CarportInfoFormProps } from "./form";
 
 const props = defineProps<CarportInfoFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CarportInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

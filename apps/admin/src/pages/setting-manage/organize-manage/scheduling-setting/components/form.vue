@@ -6,7 +6,7 @@ import { type SchedulingSettingFormProps } from "./form";
 import { type SchedulingSettingFormVO, schedulingStatusOptions, schedulingTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<SchedulingSettingFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & SchedulingSettingFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

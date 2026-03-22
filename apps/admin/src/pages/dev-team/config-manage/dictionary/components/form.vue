@@ -7,7 +7,7 @@ import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const props = defineProps<DictionaryFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const dictionaryTypeLabelKeyMap = {
 	system: "devTeam.configManage.dictionary.form.options.system",

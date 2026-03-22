@@ -12,7 +12,6 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { CommunityNoticeFormProps } from "./form";
 
 const props = defineProps<CommunityNoticeFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CommunityNoticeFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

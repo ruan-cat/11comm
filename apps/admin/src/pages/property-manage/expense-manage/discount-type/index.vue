@@ -11,7 +11,7 @@ definePage({
 
 import { h, ref, computed } from "vue";
 import { sleep } from "@antfu/utils";
-import { $t, transformI18n } from "@/plugins/i18n";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { defaultAddDialogParams } from "@/config/constant";
@@ -174,7 +174,7 @@ function handleSearch() {
 async function handleDelete(row: DiscountTypeListItem) {
 	try {
 		await ElMessageBox.confirm(
-			transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmMessage", { name: row.name })),
+			i18n.global.t($t("property-manage_expense-manage.discount-type.deleteConfirmMessage"), { name: row.name }),
 			transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmTitle")),
 			{
 				confirmButtonText: transformI18n($t("property-manage_expense-manage.discount-type.deleteConfirmOk")),
@@ -278,33 +278,33 @@ function openDialog(params: { mode: Mode; row?: DiscountTypeListItem }) {
 					}
 				},
 			},
-
-			{
-				label: () => transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				hide: isInfo.value,
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					DiscountTypeFormInstance.value?.plusFormInstance?.handleReset();
-				},
-			},
-
-			{
-				label: () => transformI18n($t("common.buttons.submit")),
-				type: "success",
-				hide: isInfo.value,
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await DiscountTypeFormInstance.value?.plusFormInstance?.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-						await doFetch();
-					}
-				},
-			},
+			...(isInfo.value
+				? []
+				: [
+						{
+							label: () => transformI18n($t("common.buttons.reset")),
+							type: "warning" as const,
+							btnClick: () => {
+								/** 手动重置表单 */
+								DiscountTypeFormInstance.value?.plusFormInstance?.handleReset();
+							},
+						},
+						{
+							label: () => transformI18n($t("common.buttons.submit")),
+							type: "success" as const,
+							btnClick: async ({ dialog: { options, index }, button }) => {
+								/** 提交表单时 校验 */
+								const res = await DiscountTypeFormInstance.value?.plusFormInstance?.handleSubmit();
+								if (res) {
+									button.btn.loading = true;
+									await testAsync();
+									button.btn.loading = false;
+									closeDialog(options, index);
+									await doFetch();
+								}
+							},
+						},
+					]),
 		],
 	});
 }
@@ -330,7 +330,6 @@ function openDialog(params: { mode: Mode; row?: DiscountTypeListItem }) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

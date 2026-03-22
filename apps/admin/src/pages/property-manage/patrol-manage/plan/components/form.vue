@@ -11,7 +11,7 @@ import { statusOptions } from "@01s-11comm/type";
 
 const props = defineProps<PatrolPlanFormProps>();
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & PatrolPlanFormVO;

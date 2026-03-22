@@ -13,7 +13,7 @@ import { ref, h } from "vue";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 
-import { $t, transformI18n } from "@/plugins/i18n";
+import { $t, i18n, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useMode, type Mode } from "@/composables/use-mode";
 import type { ArrearsDetailsFormVO, ArrearsDetailsListItem, ArrearsDetailsListQueryParams } from "@01s-11comm/type";
@@ -358,7 +358,6 @@ async function handleDelete(row: ArrearsDetailsListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"
@@ -385,16 +384,16 @@ async function handleDelete(row: ArrearsDetailsListItem) {
 		<section class="summary">
 			<div>
 				{{
-					transformI18n(
-						$t("property-manage_report-manage.arrears-details-list.summary.subtotalArrears", { amount: smallTotal }),
-					)
+					i18n.global.t($t("property-manage_report-manage.arrears-details-list.summary.subtotalArrears"), {
+						amount: smallTotal,
+					})
 				}}
 			</div>
 			<div>
 				{{
-					transformI18n(
-						$t("property-manage_report-manage.arrears-details-list.summary.totalArrears", { amount: largeTotal }),
-					)
+					i18n.global.t($t("property-manage_report-manage.arrears-details-list.summary.totalArrears"), {
+						amount: largeTotal,
+					})
 				}}
 			</div>
 			<div>{{ transformI18n($t("property-manage_report-manage.arrears-details-list.summary.feeStartTimeNote")) }}</div>

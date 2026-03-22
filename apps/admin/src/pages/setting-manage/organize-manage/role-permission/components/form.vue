@@ -6,7 +6,7 @@ import { RolePermissionFormProps } from "./form";
 import type { RolePermissionFormVO } from "@01s-11comm/type";
 
 const props = defineProps<RolePermissionFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RolePermissionFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

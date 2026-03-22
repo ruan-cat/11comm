@@ -1,6 +1,7 @@
-import { isString, isEmpty } from "@pureadmin/utils";
+import { isEmpty } from "@pureadmin/utils";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { useRouter, useRoute, type LocationQueryRaw, type RouteParamsRaw } from "vue-router";
+import { createDetailTagTitle, isDetailRouteParameter, normalizeDetailRouteParameter } from "./detail-parameter";
 
 export function useDetail() {
 	const route = useRoute();
@@ -8,24 +9,24 @@ export function useDetail() {
 	const getParameter = isEmpty(route.params) ? route.query : route.params;
 
 	function toDetail(parameter: LocationQueryRaw | RouteParamsRaw, model: "query" | "params") {
-		// ⚠️ 这里要特别注意下，因为vue-router在解析路由参数的时候会自动转化成字符串类型，比如在使用useRoute().route.query或useRoute().route.params时，得到的参数都是字符串类型
-		// 所以在传参的时候，如果参数是数字类型，就需要在此处 toString() 一下，保证传参跟路由参数类型一致都是字符串，这是必不可少的环节！！！
-		Object.keys(parameter).forEach((param) => {
-			if (!isString(parameter[param])) {
-				parameter[param] = parameter[param].toString();
-			}
-		});
+		if (!isDetailRouteParameter(parameter)) {
+			console.warn("toDetail: 详情页参数缺少 id，已取消本次跳转");
+			return;
+		}
+
+		/** 详情页跳转参数统一归一化为字符串 */
+		const normalizedParameter = normalizeDetailRouteParameter(parameter);
+		/** 标签标题 */
+		const detailTagTitle = createDetailTagTitle(normalizedParameter);
+
 		if (model === "query") {
 			// 保存信息到标签页
 			useMultiTagsStoreHook().handleTags("push", {
 				path: `/tabs/query-detail`,
 				name: "TabQueryDetail",
-				query: parameter,
+				query: normalizedParameter,
 				meta: {
-					title: {
-						zh: `No.${parameter.id} - 详情信息`,
-						en: `No.${parameter.id} - DetailInfo`,
-					},
+					title: detailTagTitle,
 					// 如果使用的是非国际化精简版title可以像下面这么写
 					// title: `No.${index} - 详情信息`,
 					// 最大打开标签数
@@ -34,23 +35,20 @@ export function useDetail() {
 			});
 			// 路由跳转
 			// @ts-ignore - TabQueryDetail 路由名称暂不在自动生成的路由类型中
-			router.push({ name: "TabQueryDetail", query: parameter });
+			router.push({ name: "TabQueryDetail", query: normalizedParameter });
 		} else if (model === "params") {
 			useMultiTagsStoreHook().handleTags("push", {
 				path: `/tabs/params-detail/:id`,
 				name: "TabParamsDetail",
-				params: parameter,
+				params: normalizedParameter,
 				meta: {
-					title: {
-						zh: `No.${parameter.id} - 详情信息`,
-						en: `No.${parameter.id} - DetailInfo`,
-					},
+					title: detailTagTitle,
 					// 如果使用的是非国际化精简版title可以像下面这么写
 					// title: `No.${index} - 详情信息`,
 				},
 			});
 			// @ts-ignore - TabParamsDetail 路由名称暂不在自动生成的路由类型中
-			router.push({ name: "TabParamsDetail", params: parameter });
+			router.push({ name: "TabParamsDetail", params: normalizedParameter });
 		}
 	}
 

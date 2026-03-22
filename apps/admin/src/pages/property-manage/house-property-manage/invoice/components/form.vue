@@ -11,7 +11,7 @@ import type { FieldValues } from "plus-pro-components";
 /** 表单组件的 props */
 const props = defineProps<InvoiceFormProps>();
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & InvoiceFormVO;

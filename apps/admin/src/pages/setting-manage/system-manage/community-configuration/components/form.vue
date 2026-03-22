@@ -8,7 +8,6 @@ import { communityConfigStatusOptions, settingTypeOptions } from "@01s-11comm/ty
 import { cloneDeep } from "@pureadmin/utils";
 
 const props = defineProps<CommunityConfigurationFormProps>();
-const { computed } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {

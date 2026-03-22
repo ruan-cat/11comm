@@ -7,7 +7,7 @@ import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const props = defineProps<ConfigItemFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const configItemTypeLabelKeyMap = {
 	system: "devTeam.configManage.item.form.options.system",

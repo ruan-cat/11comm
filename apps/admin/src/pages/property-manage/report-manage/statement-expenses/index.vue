@@ -266,7 +266,6 @@ function handleSearch() {
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

@@ -24,7 +24,7 @@ import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 import { HouseChargeFormProps, defaultForm } from "./form";
 
 const props = defineProps<HouseChargeFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & HouseChargeFormVO;

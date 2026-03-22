@@ -6,7 +6,7 @@ import type { InitializeCellFormVO } from "@01s-11comm/type";
 import { type InitializeCellFormProps } from "./form";
 
 const props = defineProps<InitializeCellFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as unknown as FieldValues & InitializeCellFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

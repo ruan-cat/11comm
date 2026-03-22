@@ -153,7 +153,6 @@ function handleClearCache(row: RefreshCacheListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"

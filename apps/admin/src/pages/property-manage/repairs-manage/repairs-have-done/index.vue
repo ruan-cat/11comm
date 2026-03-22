@@ -301,7 +301,6 @@ async function handleDelete(row: RepairsHaveDoneListItem) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

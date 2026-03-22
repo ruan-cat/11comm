@@ -15,7 +15,7 @@ import {
 } from "@01s-11comm/type";
 
 const props = defineProps<ChangePasswordRecordFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {

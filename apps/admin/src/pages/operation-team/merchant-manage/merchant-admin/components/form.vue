@@ -10,7 +10,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { MerchantAdminFormProps } from "./form";
 
 const props = defineProps<MerchantAdminFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & MerchantAdminFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

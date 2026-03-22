@@ -19,7 +19,7 @@ interface ReminderForOverduePaymentsFormProps {
 
 const props = defineProps<ReminderForOverduePaymentsFormProps>();
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认表单数据 */
 const defaultForm: ReminderForOverduePaymentsFormVO = {

@@ -437,7 +437,6 @@ function refreshParkingSpaceStatus() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略 treeProps 所需要的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"

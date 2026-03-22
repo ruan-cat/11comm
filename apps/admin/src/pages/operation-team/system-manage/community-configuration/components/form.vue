@@ -7,7 +7,7 @@ import { communityConfigStatusOptions, settingTypeOptions } from "@01s-11comm/ty
 import { CommunityConfigurationFormProps } from "./form";
 
 const props = defineProps<CommunityConfigurationFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {

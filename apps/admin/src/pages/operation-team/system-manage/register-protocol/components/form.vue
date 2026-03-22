@@ -7,7 +7,6 @@ import { protocolTypeOptions } from "@01s-11comm/type";
 import { RegisterProtocolFormProps } from "./form";
 
 const props = defineProps<RegisterProtocolFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RegisterProtocolFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

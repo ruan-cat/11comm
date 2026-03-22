@@ -6,7 +6,7 @@ import type { HandingBusinessFormVO } from "@01s-11comm/type";
 import type { HandingBusinessFormProps } from "./form";
 
 const props = defineProps<HandingBusinessFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & HandingBusinessFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

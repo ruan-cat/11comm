@@ -2,16 +2,39 @@ import type { DialogOptions } from "@/components/ReDialog/type";
 import type { Arrayable } from "element-plus/es/utils";
 import type { FormItemRule } from "element-plus";
 
+export type DefaultPureTableTreeProps = {
+	hasChildren: string;
+	children: string;
+	checkStrictly: boolean;
+};
+
+export type DefaultPureTableProps = Prettify<
+	Omit<PureTableProps, "columns" | "data" | "treeProps"> & {
+		treeProps: DefaultPureTableTreeProps;
+	}
+>;
+
+export type DefaultListPureTableProps = Prettify<
+	DefaultPureTableProps & Pick<PureTableProps, "columns" | "data"> & Partial<Pick<PureTableProps, "pagination">>
+>;
+
+export const defaultPureTableTreeProps: DefaultPureTableTreeProps = {
+	hasChildren: "hasChildren",
+	children: "children",
+	checkStrictly: false,
+};
+
 /**
  * 默认的 表格组件 配置
  * @description
  * 移除掉不需要手动配置的 columns 和 data
  */
-export const defaultPureTableProps: Prettify<Omit<PureTableProps, "columns" | "data">> = {
+export const defaultPureTableProps: DefaultPureTableProps = {
 	border: true,
 	stripe: true,
 	adaptive: true,
 	highlightCurrentRow: true,
+	treeProps: defaultPureTableTreeProps,
 	// 是否开启表格内容过长时显示 tooltip
 	showOverflowTooltip: true,
 };

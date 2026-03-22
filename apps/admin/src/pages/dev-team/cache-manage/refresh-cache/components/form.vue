@@ -12,7 +12,7 @@ import { cacheTypeOptions, refreshPolicyOptions, cacheStatusOptions } from "@01s
 import { RefreshCacheFormProps, defaultForm } from "./form";
 
 const props = defineProps<RefreshCacheFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 Default values for form reset */
 const defaultValues = props.defaultValues as FieldValues & RefreshCacheFormVO;

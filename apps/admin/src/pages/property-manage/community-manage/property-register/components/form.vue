@@ -10,7 +10,6 @@ import type { PropertyRegisterFormVO } from "@01s-11comm/type";
 import type { PropertyRegisterFormProps } from "./form";
 
 const props = defineProps<PropertyRegisterFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PropertyRegisterFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

@@ -172,7 +172,6 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:loading="isFetching"

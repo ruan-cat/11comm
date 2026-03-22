@@ -6,7 +6,6 @@ import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 import type { BuildingSpaceStructureDiagramFormProps } from "./form";
 
 const props = defineProps<BuildingSpaceStructureDiagramFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & BuildingSpaceStructureDiagramFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

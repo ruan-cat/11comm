@@ -226,7 +226,6 @@ const pureTableBarProps = computed<PureTableBarProps>(() => ({
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

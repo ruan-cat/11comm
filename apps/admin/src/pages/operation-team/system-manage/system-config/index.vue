@@ -346,7 +346,6 @@ async function handleDelete(row: OperationTeamSystemConfig) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略 treeProps 所需的 checkStrictly 类型 -->
 				<PureTable
 					:="pureTableProps"
 					:data="tableData"

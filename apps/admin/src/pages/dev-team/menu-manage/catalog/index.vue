@@ -296,7 +296,6 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

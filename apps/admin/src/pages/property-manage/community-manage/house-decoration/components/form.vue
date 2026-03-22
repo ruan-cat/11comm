@@ -10,7 +10,6 @@ import type { HouseDecorationFormVO } from "@01s-11comm/type";
 import { type HouseDecorationFormProps } from "./form";
 
 const props = defineProps<HouseDecorationFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & HouseDecorationFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

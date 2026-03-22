@@ -145,7 +145,7 @@ const columns = computed<TableColumnList>(() => [
 ]);
 
 /** 表格配置 */
-const pureTableProps = computed<PureTableProps>(() => ({
+const pureTableProps = computed<ListPureTableProps>(() => ({
 	...pureTablePropsFromComposable.value,
 	columns: [],
 }));
@@ -274,7 +274,6 @@ function handleSearch() {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

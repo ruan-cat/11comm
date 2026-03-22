@@ -15,7 +15,6 @@ type InitializeCommunityFormModel = FieldValues &
 	};
 
 const props = defineProps<InitializeCommunityFormProps>();
-const { computed } = useI18nConfig();
 
 function translateStatusLabel(value?: string | null) {
 	if (value === "启用") {

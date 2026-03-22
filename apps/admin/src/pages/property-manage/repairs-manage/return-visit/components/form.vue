@@ -10,7 +10,6 @@ import { repairTypeOptions, returnVisitStatusOptions } from "@01s-11comm/type";
 
 const props = defineProps<ReturnVisitFormProps>();
 
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ReturnVisitFormVO;
 

@@ -10,7 +10,6 @@ import { repairTypeOptions } from "@01s-11comm/type";
 
 const props = defineProps<PhoneRepairsFormProps>();
 
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PhoneRepairsFormVO;
 

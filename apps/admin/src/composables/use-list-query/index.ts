@@ -7,9 +7,11 @@ import { useQuery, type UseQueryReturnType, keepPreviousData } from "@tanstack/v
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { JsonVO, PageDTO, BaseListQueryParams } from "@01s-11comm/type";
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_INDEX } from "@01s-11comm/type";
-import type { PaginationProps, PureTableProps } from "@pureadmin/table";
-import { defaultPagination, defaultPureTableProps } from "@/config/constant";
+import type { PaginationProps } from "@pureadmin/table";
+import { defaultPagination, defaultPureTableProps, type DefaultListPureTableProps } from "@/config/constant";
 import { http } from "@/utils/http";
+
+type UseListPureTableProps = DefaultListPureTableProps;
 
 /**
  * useListQuery 配置选项
@@ -62,7 +64,7 @@ export interface UseListQueryReturn<TItem, TParams extends BaseListQueryParams =
 	/** 分页配置 */
 	pagination: ComputedRef<PaginationProps>;
 	/** 表格组件配置 */
-	pureTableProps: ComputedRef<PureTableProps>;
+	pureTableProps: ComputedRef<UseListPureTableProps>;
 
 	/** 原始 Query 对象 Original query object */
 	tanStackQueryObject: UseQueryReturnType<JsonVO<PageDTO<TItem>>, Error>;
@@ -201,7 +203,7 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 	 * 表格组件 配置
 	 * @description 用于 `PureTable` 的表格组件配置
 	 */
-	const pureTableProps = computed<PureTableProps>(() => ({
+	const pureTableProps = computed<UseListPureTableProps>(() => ({
 		...defaultPureTableProps,
 		data: tableData.value,
 		pagination: pagination.value,

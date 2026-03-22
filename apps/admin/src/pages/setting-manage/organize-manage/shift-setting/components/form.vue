@@ -10,7 +10,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { type ShiftSettingFormProps } from "./form";
 
 const props = defineProps<ShiftSettingFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ShiftSettingFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

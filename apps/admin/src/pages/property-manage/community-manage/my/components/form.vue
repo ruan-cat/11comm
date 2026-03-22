@@ -6,7 +6,6 @@ import type { CommunityManageMyFormVO } from "@01s-11comm/type";
 import type { CommunityManageMyFormProps } from "./form";
 
 const props = defineProps<CommunityManageMyFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & CommunityManageMyFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

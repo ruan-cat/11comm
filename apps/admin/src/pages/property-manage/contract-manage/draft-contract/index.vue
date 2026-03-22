@@ -156,15 +156,17 @@ const columns = computed<TableColumnList>(() => [
 		),
 		prop: "status",
 		width: 80,
-		cellRenderer: ({ row }: { row: DraftContractListItem }) => {
-			const label = translateStatusLabel(row.status);
+		cellRenderer: ({ row }) => {
+			const draftRow = row as DraftContractListItem | undefined;
+			const status = draftRow?.status ?? "";
+			const label = translateStatusLabel(status);
 			const colorMap: Record<string, string> = {
 				草稿: "text-gray-500",
 				审批中: "text-blue-500",
 				已生效: "text-green-500",
 				已终止: "text-red-500",
 			};
-			const cls = colorMap[row.status] || "";
+			const cls = colorMap[status] || "";
 			return h("span", { class: cls }, label);
 		},
 	},
@@ -367,7 +369,6 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

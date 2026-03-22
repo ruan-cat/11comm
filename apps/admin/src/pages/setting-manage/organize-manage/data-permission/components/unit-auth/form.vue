@@ -90,7 +90,7 @@ const pagination = computed<PaginationProps>(() => ({
 	total: filteredTableData.value.length,
 }));
 
-const pureTableProps = computed<PureTableProps>(() => ({
+const pureTableProps = computed<ListPureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: filteredTableData.value,
 	columns: [],
@@ -134,7 +134,6 @@ defineExpose({
 			@reset="handleReset"
 		/>
 
-		<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 		<PureTable
 			:="pureTableProps"
 			:columns="columns"

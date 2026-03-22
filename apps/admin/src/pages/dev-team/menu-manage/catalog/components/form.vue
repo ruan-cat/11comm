@@ -7,7 +7,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type CatalogFormProps } from "./form";
 
 const props = defineProps<CatalogFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const groupTypeOptionLabelMap = {
 	system: $t("devTeam.menuManage.catalog.form.options.system"),

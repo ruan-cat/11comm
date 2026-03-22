@@ -7,7 +7,6 @@ import { systemConfigSystemOptions, systemConfigTypeOptions } from "@01s-11comm/
 import { type SystemConfigFormProps } from "./form";
 
 const props = defineProps<SystemConfigFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & SystemConfigFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

@@ -23,7 +23,7 @@ import { sleep } from "@antfu/utils";
 import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
 import type { SystemConfigListItem } from "@01s-11comm/type";
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const systemConfigFormInstance = ref<InstanceType<typeof SystemConfigFormComponent> | null>(null);
 

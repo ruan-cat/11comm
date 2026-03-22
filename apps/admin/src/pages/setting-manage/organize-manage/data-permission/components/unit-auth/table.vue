@@ -60,7 +60,7 @@ const pagination = computed<PaginationProps>(() => ({
 	total: tableData.value.length,
 }));
 
-const pureTableProps = computed<PureTableProps>(() => ({
+const pureTableProps = computed<ListPureTableProps>(() => ({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
@@ -166,7 +166,6 @@ async function doFetch() {}
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable :="pureTableProps" :columns="dynamicColumns" :size="size">
 					<template #operation="{ row }">
 						<ElButton type="danger" @click="handleDelete(row)">

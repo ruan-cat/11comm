@@ -11,7 +11,7 @@ import { venueTypeOptions, reservationStatusOptions } from "@01s-11comm/type";
 import type { ReserveVenueFormProps } from "./form";
 
 const props = defineProps<ReserveVenueFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & ReserveVenueFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

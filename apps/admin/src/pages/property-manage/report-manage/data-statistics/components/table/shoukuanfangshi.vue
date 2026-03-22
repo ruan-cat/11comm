@@ -107,11 +107,8 @@ async function handleCurrentPageChange(currentPage: number) {
 }
 
 /** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
-	border: true,
-	stripe: true,
-	adaptive: true,
-	highlightCurrentRow: true,
+const pureTableProps = ref<ListPureTableProps>({
+	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
 	pagination: pagination.value,
@@ -133,7 +130,6 @@ const pureTableBarProps = ref<PureTableBarProps>({
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

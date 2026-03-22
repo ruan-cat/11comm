@@ -10,7 +10,7 @@ import { $t, transformI18n } from "@/plugins/i18n";
 import { type StaffInfoFormProps } from "./form.ts";
 
 const props = defineProps<StaffInfoFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & StaffInfoFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

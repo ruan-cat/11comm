@@ -315,7 +315,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

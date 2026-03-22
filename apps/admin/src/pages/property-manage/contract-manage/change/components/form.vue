@@ -11,8 +11,6 @@ import type { ContractChangeFormProps } from "./form";
 
 const props = defineProps<ContractChangeFormProps>();
 
-const { computed } = useI18nConfig();
-
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ContractChangeFormVO;
 

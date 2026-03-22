@@ -10,7 +10,6 @@ import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
 
 const props = defineProps<SystemConfigFormProps>();
-const { computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & SystemConfigListItem;

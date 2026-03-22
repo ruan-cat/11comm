@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ConfigCenterFormProps } from "./form";
 
 const props = defineProps<ConfigCenterFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const configTypeLabelKeyMap = {
 	system: $t("devTeam.configManage.center.form.options.system"),

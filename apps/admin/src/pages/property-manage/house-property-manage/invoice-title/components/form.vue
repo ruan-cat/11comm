@@ -7,7 +7,7 @@ import { invoiceTypeOptions } from "@01s-11comm/type";
 import { type InvoiceTitleFormProps } from "./form";
 import type { InvoiceTitleFormVO } from "@01s-11comm/type";
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 表单组件props */
 const props = defineProps<InvoiceTitleFormProps>();

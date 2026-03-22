@@ -10,7 +10,6 @@ import type { PropertyManagementCompanyFormVO } from "@01s-11comm/type";
 import { type PropertyManagementCompanyFormProps } from "./form";
 
 const props = defineProps<PropertyManagementCompanyFormProps>();
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & PropertyManagementCompanyFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

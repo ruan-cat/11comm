@@ -15,7 +15,6 @@ import {
 
 const props = defineProps<RepairsSettingFormProps>();
 
-const { computed } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & RepairsSettingFormVO;
 

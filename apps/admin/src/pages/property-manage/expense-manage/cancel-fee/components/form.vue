@@ -9,7 +9,7 @@ import { auditStatusOptions } from "@01s-11comm/type";
 import { CancelFeeFormProps, defaultForm } from "./form";
 
 const props = defineProps<CancelFeeFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & CancelFeeFormVO;

@@ -17,7 +17,7 @@ import StaffRelationTable from "./components/staff-relation/table.vue";
 import type { DataPermission } from "@01s-11comm/type";
 import { useDataPermissionListQuery } from "@/api/setting-manage/organize-manage/data-permission";
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const staffRelationTableRef = useTemplateRef("staffRelationTableRef");
 

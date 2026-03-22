@@ -7,7 +7,7 @@ import { WorkingScheduleFormProps } from "./form";
 import { scheduleTypeOptions, weekdayOptions, type WorkingScheduleFormVO } from "@01s-11comm/type";
 
 const props = defineProps<WorkingScheduleFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const defaultValues = props.defaultValues as FieldValues & WorkingScheduleFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");

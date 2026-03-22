@@ -11,7 +11,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 /** 表单组件的 props */
 const props = defineProps<RefundReviewFormProps>();
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & RefundReviewFormVO;

@@ -9,7 +9,7 @@ import { WaterAndElectricityMeterReadingFormProps } from "./form";
 
 const props = defineProps<WaterAndElectricityMeterReadingFormProps>();
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & WaterAndElectricityMeterReadingFormVO;

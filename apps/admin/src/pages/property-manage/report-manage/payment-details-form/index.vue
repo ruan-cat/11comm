@@ -185,7 +185,7 @@ const columns = computed<TableColumnList>(() => [
 ]);
 
 /** 表格配置 */
-const pureTableProps = ref<PureTableProps>({
+const pureTableProps = ref<ListPureTableProps>({
 	...defaultPureTableProps,
 	data: tableData.value,
 	columns: [],
@@ -340,7 +340,6 @@ onMounted(async () => {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

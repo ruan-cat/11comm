@@ -12,7 +12,7 @@ import { carBrandOptions, vehicleTypeOptions, vehicleColorOptions, auditStatusOp
 import type { CarportApplyFormProps } from "./form";
 
 const props = defineProps<CarportApplyFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & CarportApplyFormVO;

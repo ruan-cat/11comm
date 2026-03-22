@@ -347,7 +347,6 @@ function openDialog({ mode, row }: OpenDialogParams) {
 			</template>
 
 			<template #default="{ size, dynamicColumns }">
-				<!-- @vue-ignore 忽略treeProps所需要的checkStrictly类型 -->
 				<PureTable
 					:="pureTableProps"
 					:columns="dynamicColumns"

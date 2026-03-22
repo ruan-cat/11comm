@@ -10,7 +10,6 @@ import { repairTypeOptions, mandatoryReturnIssueStatusOptions } from "@01s-11com
 
 const props = defineProps<MandatoryReturnIssueFormProps>();
 
-const { computed } = useI18nConfig();
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & MandatoryReturnIssueFormVO;

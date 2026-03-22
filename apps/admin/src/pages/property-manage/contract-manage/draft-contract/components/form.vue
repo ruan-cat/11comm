@@ -12,7 +12,7 @@ import { contractTypeOptions } from "@01s-11comm/type";
 
 import { ContractDraftFormProps } from "./form";
 
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const props = defineProps<ContractDraftFormProps>();
 

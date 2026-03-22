@@ -6,7 +6,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type ReportComponentFormProps } from "./form";
 
 const props = defineProps<ReportComponentFormProps>();
-const { locale, computed } = useI18nConfig();
+const { locale } = useI18nConfig();
 
 const componentTypeLabelKeyMap: Record<string, string> = {
 	表格: $t("operationTeam.reportConfiguration.reportComponent.form.options.componentTypes.table"),
