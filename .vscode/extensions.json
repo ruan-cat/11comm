@@ -10,8 +10,6 @@
 		"eamodio.gitlens",
 		// 使用 git-graph 插件 实现git提交分支图的查看
 		"mhutchie.git-graph",
-		"christian-kohler.npm-intellisense",
-		"christian-kohler.path-intellisense",
 		// UI交互增强插件 TODO高亮
 		"wayou.vscode-todo-highlight",
 		// UI交互增强插件 TODO树统计
@@ -24,6 +22,8 @@
 		"warmthsea.vscode-custom-code-color",
 		// UI交互增强插件 vscode的图标主题
 		"PKief.material-icon-theme",
+		"christian-kohler.npm-intellisense",
+		"christian-kohler.path-intellisense",
 		"lokalise.i18n-ally",
 		"csstools.postcss",
 		"redhat.vscode-yaml",
