@@ -1,6 +1,6 @@
 // 自动导入插件
 import AutoImport from "unplugin-auto-import/vite";
-import { VueRouterAutoImports } from "unplugin-vue-router";
+import { VueRouterAutoImports } from "vue-router/unplugin";
 
 /** 自动导入插件 */
 export default AutoImport({

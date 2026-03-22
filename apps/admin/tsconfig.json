@@ -52,15 +52,11 @@
 			"vite/client",
 			"element-plus/global",
 			"@pureadmin/table/volar",
+			"vue-router/auto-routes",
 			"unplugin-icons/types/vue",
 			"@pureadmin/descriptions/volar",
 			// 保证自动导入插件提供了充足的类型
 			"unplugin-auto-import",
-			/**
-        自动化路由插件 准备类型识别
-        https://uvr.esm.is/introduction.html#setup
-      */
-			"unplugin-vue-router/client",
 			// 自动化布局插件 准备类型识别
 			"vite-plugin-vue-meta-layouts/client",
 			// 全局组件类型
@@ -73,6 +69,7 @@
 		"server/**/*.ts",
 		// "src/**/*.tsx", // 暂时排除 TSX 文件的类型检查，避免 Vue 组件 JSX 类型错误
 		"src/**/*.vue",
+		"src/route-map.d.ts",
 		"types/*.d.ts",
 		"vite.config.ts",
 		// 测试文件

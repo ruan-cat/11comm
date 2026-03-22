@@ -72,7 +72,7 @@ export function useGotoDetailsPage() {
 			// 2. 根据路由名称获取目标路由信息
 			const targetRoute = getRouteByName(routeName);
 			if (!targetRoute) {
-				console.warn(`gotoDetailPage: 未找到名为 "${routeName}" 的路由`);
+				console.warn(`gotoDetailPage: 未找到名为 "${String(routeName)}" 的路由`);
 				return router.push(params);
 			}
 
@@ -145,7 +145,7 @@ export function useGotoDetailsPage() {
 			if (routeInfo?.meta?.activePath) {
 				to.meta.activePath = routeInfo.meta.activePath;
 			} else {
-				console.warn(`handleDetailPageBeforeEnter: 未找到路由名称 "${routeName}" 的路由信息`);
+				console.warn(`handleDetailPageBeforeEnter: 未找到路由名称 "${String(routeName)}" 的路由信息`);
 			}
 			// 无论成功与否 都要无条件合并其他元信息
 			merge(to.meta, routeInfo.meta);

@@ -23,10 +23,9 @@ import {
 } from "./utils";
 import { type Router, type RouteRecordRaw, type RouteComponent, createRouter } from "vue-router";
 import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/auth";
-
 import { routes as autoRoutes, handleHotUpdate } from "vue-router/auto-routes";
 import { setupLayouts } from "virtual:meta-layouts";
-import { disposalAutoRouter } from "@ruan-cat/utils/unplugin-vue-router";
+import { disposalAutoRouter } from "./file-based-routing";
 
 /** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
  * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax

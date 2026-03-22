@@ -17,8 +17,8 @@ import { vitePluginFakeServer } from "vite-plugin-fake-server";
 import type { ComponentResolver } from "unplugin-vue-components/types";
 
 // 自动化路由插件
-import VueRouter from "unplugin-vue-router/vite";
-import { getRouteName } from "@ruan-cat/utils/unplugin-vue-router";
+import VueRouter from "vue-router/vite";
+import { getRouteName } from "../../src/router/file-based-routing/get-route-name";
 
 // 布局插件
 import MetaLayouts from "vite-plugin-vue-meta-layouts";
@@ -81,9 +81,6 @@ export function getPluginsList(
 		/**
 		 * 布局插件
 		 * @description 注意到布局插件源码demo的写法 这里把布局组件移动到 `路由插件` 上面。
-		 * @see https://vscode.dev/github/dishait/vite-plugin-vue-meta-layouts/blob/main/examples/unplugin-vue-router/vite.config.ts#L11-L17
-		 * @see https://vscode.dev/github/dishait/vite-plugin-vue-meta-layouts/blob/main/examples/vite-plugin-pages/vite.config.ts#L8
-		 *
 		 * @see https://github.com/dishait/vite-plugin-vue-meta-layouts/blob/main/README_EN.md#config
 		 */
 		MetaLayouts({
@@ -94,20 +91,19 @@ export function getPluginsList(
 			skipTopLevelRouteLayout: true,
 			/**
 			 * 忽略掉全部 components 文件夹下面的组件 避免识别成布局组件
-			 * @see https://vscode.dev/github/dishait/vite-plugin-vue-meta-layouts/blob/main/examples/unplugin-vue-router/vite.config.ts#L13
 			 */
 			excludes: ["**/components/**/*.vue"],
 		}),
 
 		/**
-		 * 类型化路由插件
+		 * 文件路由插件
 		 * @description
 		 * 其定义位置必须在 `@vitejs/plugin-vue` 插件之前。
 		 *
-		 * @see https://uvr.esm.is/introduction.html#installation
+		 * @see https://router.vuejs.org/guide/migration/v4-to-v5.html
 		 */
 		VueRouter({
-			dts: "./types/typed-router.d.ts",
+			dts: "./src/route-map.d.ts",
 			routesFolder: [
 				{
 					/**

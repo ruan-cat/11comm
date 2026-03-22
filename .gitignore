@@ -35,6 +35,7 @@ node_modules
 # 不提供自动生成的类型文件
 auto-imports.d.ts
 typed-router.d.ts
+route-map.d.ts
 
 # 满足特定命名规则的文件，认定为自动生成的类型文件，不予提交
 components.d.ts
@@ -92,4 +93,3 @@ vite.config.ts.*.mjs
 
 # 忽略本地缓存目录
 local_cache
-
