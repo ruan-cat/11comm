@@ -16,7 +16,7 @@ describe("relizy-runner", () => {
 		]);
 
 		expect(instructions).toContain(
-			"release:relizy detected that this repository does not have baseline package tags yet:",
+			"[release:relizy] 检测到本仓库尚未为以下包建立基线 tag（independent 模式首次发版前需要）：",
 		);
 		expect(instructions).toContain('git tag "@01s-11comm/admin@6.0.0"');
 		expect(instructions).toContain('git tag "@01s-11comm/type@1.0.0"');

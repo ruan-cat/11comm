@@ -3,13 +3,74 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { load as loadYaml } from "js-yaml";
+import type { PackageJson } from "pkg-types";
 
 const WINDOWS_GNU_COMMANDS = ["grep", "head", "sed"] as const;
+
+interface PnpmWorkspaceManifest {
+	packages?: string[];
+}
 
 export interface WorkspacePackageInfo {
 	name: string;
 	version: string;
 }
+
+// ── 工作区包发现 ──────────────────────────────────────────────────────────────
+
+/**
+ * 解析根目录 `pnpm-workspace.yaml` 并展开 glob 模式，
+ * 收集所有含 `package.json` 的子包目录，返回其 name 与 version。
+ *
+ * 使用 `js-yaml` 读取 YAML、`pkg-types` 的 `PackageJSON` 类型约束读取结果，
+ * 不依赖任何第三方工作区枚举库，也不硬编码目录列表。
+ */
+function getWorkspacePackages(): WorkspacePackageInfo[] {
+	const workspaceRoot = process.cwd();
+	const yamlPath = resolve(workspaceRoot, "pnpm-workspace.yaml");
+
+	if (!existsSync(yamlPath)) {
+		console.error("[release:relizy] 未在当前目录找到 pnpm-workspace.yaml，请从仓库根目录执行本脚本。");
+		return [];
+	}
+
+	const manifest = loadYaml(readFileSync(yamlPath, "utf8")) as PnpmWorkspaceManifest;
+	const globs = manifest.packages ?? [];
+	const packages: WorkspacePackageInfo[] = [];
+
+	for (const pattern of globs) {
+		// 仅处理 "dir/*" 形式的简单一级通配（覆盖 pnpm-workspace.yaml 的常见写法）
+		const parts = pattern.split("/");
+
+		if (parts.length !== 2 || parts[1] !== "*") {
+			continue;
+		}
+
+		const dir = resolve(workspaceRoot, parts[0]);
+
+		if (!existsSync(dir)) {
+			continue;
+		}
+
+		const discovered = readdirSync(dir, { withFileTypes: true })
+			.filter((entry) => entry.isDirectory())
+			.map((entry) => join(dir, entry.name, "package.json"))
+			.filter((pkgPath) => existsSync(pkgPath))
+			.map((pkgPath) => {
+				const pkg = JSON.parse(readFileSync(pkgPath, "utf8")) as PackageJson;
+
+				return { name: pkg.name, version: pkg.version };
+			})
+			.filter((pkg): pkg is WorkspacePackageInfo => typeof pkg.name === "string" && typeof pkg.version === "string");
+
+		packages.push(...discovered);
+	}
+
+	return packages;
+}
+
+// ── Windows GNU 工具兼容层 ────────────────────────────────────────────────────
 
 function runLookup(command: string, args: string[], env: NodeJS.ProcessEnv = process.env) {
 	return spawnSync(command, args, {
@@ -77,8 +138,8 @@ function ensureRelizyShellEnv() {
 	const gitUsrBinPath = resolveGitUsrBinPath();
 
 	if (!gitUsrBinPath) {
-		console.error("release:relizy could not find the GNU tools required by relizy on Windows.");
-		console.error("Install Git for Windows first, or add its usr/bin directory to PATH.");
+		console.error("[release:relizy] 在 Windows 上未找到 relizy 所需的 GNU 工具（grep / head / sed）。");
+		console.error("请先安装 Git for Windows，或将其安装目录下的 usr\\bin 加入 PATH。");
 		process.exit(1);
 	}
 
@@ -88,35 +149,15 @@ function ensureRelizyShellEnv() {
 	};
 
 	if (!WINDOWS_GNU_COMMANDS.every((command) => hasExecutable(command, env))) {
-		console.error("release:relizy found Git for Windows, but grep/head/sed are still unavailable.");
-		console.error(`Check PATH, or verify this directory manually: ${gitUsrBinPath}`);
+		console.error("[release:relizy] 已定位到 Git for Windows，但 grep / head / sed 仍不可用。");
+		console.error(`请检查 PATH，或手动确认该目录是否存在所需可执行文件：${gitUsrBinPath}`);
 		process.exit(1);
 	}
 
 	return env;
 }
 
-function getWorkspacePackages() {
-	const appsDir = resolve(process.cwd(), "apps");
-
-	if (!existsSync(appsDir)) {
-		return [];
-	}
-
-	return readdirSync(appsDir, { withFileTypes: true })
-		.filter((entry) => entry.isDirectory())
-		.map((entry) => join(appsDir, entry.name, "package.json"))
-		.filter((packageJsonPath) => existsSync(packageJsonPath))
-		.map((packageJsonPath) => {
-			const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as Partial<WorkspacePackageInfo>;
-
-			return {
-				name: packageJson.name,
-				version: packageJson.version,
-			};
-		})
-		.filter((pkg): pkg is WorkspacePackageInfo => typeof pkg.name === "string" && typeof pkg.version === "string");
-}
+// ── independent 模式 baseline tag 检查 ───────────────────────────────────────
 
 function getPackageTags(packageName: string, env: NodeJS.ProcessEnv) {
 	const stdout = execFileSync("git", ["tag", "--list", `${packageName}@*`], {
@@ -146,10 +187,10 @@ export function buildBootstrapInstructions(missingPackages: WorkspacePackageInfo
 	const pushArgs = missingPackages.map((pkg) => `"${pkg.name}@${pkg.version}"`).join(" ");
 
 	return [
-		"release:relizy detected that this repository does not have baseline package tags yet:",
+		"[release:relizy] 检测到本仓库尚未为以下包建立基线 tag（independent 模式首次发版前需要）：",
 		...missingPackages.map((pkg) => `- ${pkg.name}@${pkg.version}`),
 		"",
-		"Before the first independent release, create baseline tags at the current package versions:",
+		"请按当前 package.json 版本创建基线 tag，并推送到远端：",
 		...tagCommands,
 		`git push origin ${pushArgs}`,
 	].join("\n");
@@ -159,13 +200,16 @@ function printBootstrapInstructions(missingPackages: WorkspacePackageInfo[]) {
 	console.error(buildBootstrapInstructions(missingPackages));
 }
 
+// ── 主入口 ────────────────────────────────────────────────────────────────────
+
 function resolveRelizyEntrypoint() {
 	return resolve(process.cwd(), "node_modules", "relizy", "bin", "relizy.mjs");
 }
 
 export function runRelizyRunner(relizyArgs: string[]) {
 	if (relizyArgs.length === 0) {
-		console.error("Usage: tsx scripts/relizy-runner.ts <relizy args>");
+		console.error("用法：pnpm exec tsx scripts/relizy-runner.ts <relizy 子命令与参数>");
+		console.error("示例：pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release");
 		return 1;
 	}
 
@@ -183,7 +227,7 @@ export function runRelizyRunner(relizyArgs: string[]) {
 	const relizyEntrypoint = resolveRelizyEntrypoint();
 
 	if (!existsSync(relizyEntrypoint)) {
-		console.error("Local relizy CLI was not found. Run pnpm install first.");
+		console.error("未在 node_modules 中找到 relizy 命令行入口，请先执行 pnpm install。");
 		return 1;
 	}
 
