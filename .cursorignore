@@ -7,8 +7,6 @@
 
 node_modules
 
-scripts
-
 auto-imports.d.ts
 *.code-workspace
 pnpm-lock.yaml
