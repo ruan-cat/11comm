@@ -349,6 +349,7 @@ onMounted(async () => {});
 </script>
 
 <template>
+	<!-- TODO: 首页需要实现更加漂亮的，精彩的，满足 11comm 风格的登录页 -->
 	<div class="select-none">
 		<img :src="bg" class="wave" />
 		<div class="flex-c absolute right-5 top-3">
