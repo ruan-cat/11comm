@@ -2,7 +2,7 @@
 	"name": "@01s-11comm/type",
 	"description": "业务类型库，用于存放项目中共享的业务类型定义。",
 	"version": "1.0.0",
-	"private": true,
+	"private": false,
 	"type": "module",
 	"packageManager": "pnpm@10.32.1",
 	"engines": {
