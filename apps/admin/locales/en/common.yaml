@@ -238,6 +238,8 @@ login:
   purePhoneLogin: Phone Login
   pureQRCodeLogin: QRCode Login
   pureRegister: Register
+  pureGoogleLogin: Google Login
+  pureGithubLogin: GitHub Login
   pureWeChatLogin: WeChat Login
   pureAlipayLogin: Alipay Login
   pureQQLogin: QQ Login

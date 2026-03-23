@@ -238,6 +238,8 @@ login:
   purePhoneLogin: 手机登录
   pureQRCodeLogin: 二维码登录
   pureRegister: 注册
+  pureGoogleLogin: Google 登录
+  pureGithubLogin: GitHub 登录
   pureWeChatLogin: 微信登录
   pureAlipayLogin: 支付宝登录
   pureQQLogin: QQ登录
