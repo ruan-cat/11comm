@@ -1,79 +1,703 @@
+/* -------------------------------------------------------------------------- */
+/* 登录页：极光网格 + 光斑（与 motion-v 入场动效配合）                          */
+/* -------------------------------------------------------------------------- */
+
+.login-page {
+	position: relative;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	/* 锁在一屏内：滚动只发生在本层，避免 body 与内部同时出现滚动条；不要用会与 min-height:0 冲突的写法 */
+	min-height: 100dvh;
+	min-height: 100vh;
+	max-height: 100dvh;
+	max-height: 100vh;
+	overflow-x: clip;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	display: flex;
+	flex-direction: column;
+	/* 为 absolute 底栏预留，避免最后一行被遮挡 */
+	padding-bottom: env(safe-area-inset-bottom, 0px);
+	/* 底层固色；明暗渐变放在 ::before / ::after 交叉淡入淡出（CSS 无法直接插值两套 background-image） */
+	background-color: oklch(0.97 0.02 280);
+	transition: background-color 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+	isolation: isolate;
+}
+
+/* 浅色主题渐变层 */
+.login-page::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background-color: oklch(0.97 0.02 280);
+	background-image:
+		radial-gradient(ellipse 90% 70% at 15% 35%, oklch(0.92 0.1 285 / 0.45), transparent 52%),
+		radial-gradient(ellipse 85% 65% at 88% 65%, oklch(0.93 0.08 200 / 0.38), transparent 55%),
+		radial-gradient(ellipse 70% 50% at 50% 100%, oklch(0.94 0.06 260 / 0.28), transparent 60%),
+		linear-gradient(155deg, oklch(0.97 0.02 280) 0%, oklch(0.99 0.015 200) 42%, oklch(0.96 0.028 260) 100%);
+	background-size:
+		200% 200%,
+		200% 200%,
+		180% 180%,
+		100% 100%;
+	background-position:
+		0% 50%,
+		100% 50%,
+		50% 100%,
+		0 0;
+	animation: login-bg-flow 24s ease-in-out infinite;
+	opacity: 1;
+	transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 深色主题渐变层（与浅色叠化切换） */
+.login-page::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background-color: oklch(0.14 0.03 280);
+	background-image:
+		radial-gradient(ellipse 90% 70% at 18% 32%, oklch(0.32 0.12 285 / 0.55), transparent 52%),
+		radial-gradient(ellipse 85% 65% at 85% 68%, oklch(0.28 0.1 220 / 0.45), transparent 55%),
+		radial-gradient(ellipse 75% 55% at 48% 105%, oklch(0.26 0.08 260 / 0.35), transparent 58%),
+		linear-gradient(158deg, oklch(0.16 0.04 280) 0%, oklch(0.13 0.035 250) 48%, oklch(0.11 0.025 240) 100%);
+	background-size:
+		200% 200%,
+		200% 200%,
+		180% 180%,
+		100% 100%;
+	background-position:
+		0% 50%,
+		100% 50%,
+		50% 100%,
+		0 0;
+	animation: login-bg-flow 28s ease-in-out infinite;
+	opacity: 0;
+	transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .login-page {
+	background-color: oklch(0.14 0.03 280);
+}
+
+.dark .login-page::before {
+	opacity: 0;
+}
+
+.dark .login-page::after {
+	opacity: 1;
+}
+
+@keyframes login-bg-flow {
+	0%,
+	100% {
+		background-position:
+			0% 42%,
+			100% 58%,
+			42% 88%,
+			0 0;
+	}
+	33% {
+		background-position:
+			72% 28%,
+			18% 72%,
+			58% 100%,
+			0 0;
+	}
+	66% {
+		background-position:
+			100% 65%,
+			0% 35%,
+			88% 72%,
+			0 0;
+	}
+}
+
+.login-ambient {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+/* 流光扫光：与 motion 的 transform 分离，专做横向漂移 + 明暗脉动 */
+.login-aurora {
+	position: fixed;
+	inset: -15%;
+	z-index: 1;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.login-aurora__beam {
+	position: absolute;
+	width: min(70vw, 900px);
+	height: min(120vh, 1400px);
+	top: -15%;
+	left: -35%;
+	border-radius: 50%;
+	filter: blur(56px);
+	opacity: 0.55;
+	will-change: transform, opacity;
+	background: linear-gradient(
+		118deg,
+		transparent 0%,
+		oklch(0.88 0.14 285 / 0.12) 38%,
+		oklch(0.96 0.1 200 / 0.38) 49.5%,
+		oklch(0.9 0.12 280 / 0.2) 61%,
+		transparent 100%
+	);
+	transform-origin: 40% 50%;
+	animation: login-aurora-sweep-a 16s ease-in-out infinite;
+}
+
+.login-aurora__beam--2 {
+	top: 8%;
+	left: -45%;
+	width: min(65vw, 820px);
+	opacity: 0.4;
+	background: linear-gradient(
+		95deg,
+		transparent 0%,
+		oklch(0.92 0.08 220 / 0.15) 42%,
+		oklch(0.98 0.06 195 / 0.32) 50%,
+		oklch(0.9 0.1 260 / 0.18) 58%,
+		transparent 100%
+	);
+	animation: login-aurora-sweep-b 22s ease-in-out infinite;
+	animation-delay: -8s;
+}
+
+.login-aurora__beam--3 {
+	top: 35%;
+	left: -55%;
+	width: min(58vw, 720px);
+	height: min(100vh, 1100px);
+	opacity: 0.35;
+	filter: blur(64px);
+	background: linear-gradient(
+		72deg,
+		transparent 0%,
+		oklch(0.9 0.1 300 / 0.1) 44%,
+		oklch(0.97 0.08 270 / 0.28) 50%,
+		oklch(0.88 0.11 290 / 0.12) 56%,
+		transparent 100%
+	);
+	animation: login-aurora-sweep-c 19s ease-in-out infinite;
+	animation-delay: -4s;
+}
+
+.dark .login-aurora__beam {
+	background: linear-gradient(
+		118deg,
+		transparent 0%,
+		oklch(0.42 0.14 285 / 0.22) 38%,
+		oklch(0.52 0.12 210 / 0.42) 49.5%,
+		oklch(0.4 0.12 280 / 0.28) 61%,
+		transparent 100%
+	);
+	opacity: 0.5;
+}
+
+.dark .login-aurora__beam--2 {
+	background: linear-gradient(
+		95deg,
+		transparent 0%,
+		oklch(0.38 0.1 230 / 0.2) 42%,
+		oklch(0.48 0.09 200 / 0.38) 50%,
+		oklch(0.36 0.1 260 / 0.22) 58%,
+		transparent 100%
+	);
+	opacity: 0.38;
+}
+
+.dark .login-aurora__beam--3 {
+	background: linear-gradient(
+		72deg,
+		transparent 0%,
+		oklch(0.35 0.1 300 / 0.18) 44%,
+		oklch(0.45 0.09 270 / 0.32) 50%,
+		oklch(0.34 0.11 290 / 0.2) 56%,
+		transparent 100%
+	);
+	opacity: 0.32;
+}
+
+@keyframes login-aurora-sweep-a {
+	0% {
+		transform: translate3d(-8%, 0, 0) rotate(-14deg) scale(1);
+		opacity: 0.45;
+	}
+	50% {
+		transform: translate3d(42%, -6%, 0) rotate(10deg) scale(1.12);
+		opacity: 0.72;
+	}
+	100% {
+		transform: translate3d(-8%, 0, 0) rotate(-14deg) scale(1);
+		opacity: 0.45;
+	}
+}
+
+@keyframes login-aurora-sweep-b {
+	0% {
+		transform: translate3d(5%, 4%, 0) rotate(8deg) scale(1.05);
+		opacity: 0.32;
+	}
+	50% {
+		transform: translate3d(55%, -12%, 0) rotate(-12deg) scale(1.08);
+		opacity: 0.55;
+	}
+	100% {
+		transform: translate3d(5%, 4%, 0) rotate(8deg) scale(1.05);
+		opacity: 0.32;
+	}
+}
+
+@keyframes login-aurora-sweep-c {
+	0% {
+		transform: translate3d(-18%, 10%, 0) rotate(-6deg) scale(1);
+		opacity: 0.28;
+	}
+	50% {
+		transform: translate3d(48%, 2%, 0) rotate(14deg) scale(1.15);
+		opacity: 0.48;
+	}
+	100% {
+		transform: translate3d(-18%, 10%, 0) rotate(-6deg) scale(1);
+		opacity: 0.28;
+	}
+}
+
+/* 外层只负责定位；内层 .login-blob 做漂移，避免与 motion-v 的 transform 冲突 */
+.login-blob-wrap {
+	position: absolute;
+	pointer-events: none;
+}
+
+.login-blob-wrap--1 {
+	left: -8%;
+	top: 12%;
+	width: min(52vw, 520px);
+	height: min(52vw, 520px);
+}
+
+.login-blob-wrap--2 {
+	right: -5%;
+	top: 28%;
+	width: min(42vw, 420px);
+	height: min(42vw, 420px);
+}
+
+.login-blob-wrap--3 {
+	left: 28%;
+	bottom: -6%;
+	width: min(36vw, 380px);
+	height: min(36vw, 380px);
+}
+
+.login-blob {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	filter: blur(64px);
+	will-change: transform;
+	transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-blob--1 {
+	background: radial-gradient(circle at 30% 30%, oklch(0.78 0.18 290) 0%, oklch(0.65 0.14 270) 45%, transparent 70%);
+	opacity: 0.55;
+	animation: login-blob-drift-a 22s ease-in-out infinite;
+}
+
+.login-blob--2 {
+	background: radial-gradient(circle at 50% 40%, oklch(0.72 0.16 200) 0%, oklch(0.62 0.12 230) 50%, transparent 72%);
+	opacity: 0.45;
+	animation: login-blob-drift-b 26s ease-in-out infinite;
+}
+
+.login-blob--3 {
+	background: radial-gradient(circle at 50% 50%, oklch(0.75 0.14 320) 0%, oklch(0.6 0.1 280) 55%, transparent 75%);
+	opacity: 0.4;
+	animation: login-blob-drift-c 19s ease-in-out infinite;
+}
+
+.dark .login-blob--1 {
+	background: radial-gradient(circle at 30% 30%, oklch(0.42 0.16 290) 0%, oklch(0.32 0.12 270) 45%, transparent 70%);
+	opacity: 0.5;
+}
+
+.dark .login-blob--2 {
+	background: radial-gradient(circle at 50% 40%, oklch(0.38 0.14 220) 0%, oklch(0.3 0.1 250) 50%, transparent 72%);
+	opacity: 0.42;
+}
+
+.dark .login-blob--3 {
+	background: radial-gradient(circle at 50% 50%, oklch(0.4 0.13 310) 0%, oklch(0.28 0.1 280) 55%, transparent 75%);
+	opacity: 0.38;
+}
+
+@keyframes login-blob-drift-a {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	33% {
+		transform: translate(11%, -7%) scale(1.08);
+	}
+	66% {
+		transform: translate(-9%, 9%) scale(0.96);
+	}
+}
+
+@keyframes login-blob-drift-b {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	40% {
+		transform: translate(-9%, 10%) scale(1.07);
+	}
+	75% {
+		transform: translate(8%, -6%) scale(0.95);
+	}
+}
+
+@keyframes login-blob-drift-c {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	50% {
+		transform: translate(10%, -7%) scale(1.06);
+	}
+}
+
+.login-noise {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	opacity: 0.035;
+	pointer-events: none;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	mix-blend-mode: overlay;
+	transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .login-noise {
+	opacity: 0.06;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.login-page::before,
+	.login-page::after {
+		animation: none;
+		transition: opacity 0.15s ease;
+	}
+
+	.login-aurora__beam,
+	.login-aurora__beam--2,
+	.login-aurora__beam--3 {
+		animation: none;
+	}
+
+	.login-blob--1,
+	.login-blob--2,
+	.login-blob--3 {
+		animation: none;
+	}
+
+	.wave {
+		animation: none;
+	}
+
+	.login-box,
+	.login-noise,
+	.wave,
+	.login-blob {
+		transition-duration: 0.15s;
+	}
+}
+
 .wave {
 	position: fixed;
 	height: 100%;
 	width: 80%;
 	left: 0;
 	bottom: 0;
-	z-index: -1;
+	z-index: 1;
+	opacity: 0.35;
+	mix-blend-mode: multiply;
+	will-change: transform;
+	animation: login-wave-drift 20s ease-in-out infinite alternate;
+	transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .wave {
+	opacity: 0.22;
+	mix-blend-mode: soft-light;
+}
+
+@keyframes login-wave-drift {
+	0% {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+	50% {
+		transform: translate3d(-2%, 1%, 0) scale(1.03);
+	}
+	100% {
+		transform: translate3d(1.5%, -0.5%, 0) scale(1.01);
+	}
 }
 
 .login-container {
-	width: 100vw;
-	height: 100vh;
+	position: relative;
+	z-index: 2;
+	box-sizing: border-box;
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+	width: 100%;
 	max-width: 100%;
+	margin: 0;
+	/* 全宽双栏：左侧插画区自适应，右侧登录卡片列固定最大宽度并靠右，避免整坨居中 */
+	padding: clamp(0.75rem, 2vh, 2rem) clamp(1rem, 4vw, 3rem);
+	padding-bottom: calc(2.75rem + env(safe-area-inset-bottom, 0px));
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-gap: 18rem;
-	padding: 0 2rem;
+	grid-template-columns: minmax(0, 1fr) minmax(280px, min(440px, 100%));
+	align-items: center;
+	gap: clamp(1rem, 2.5vw, 2.5rem);
+	column-gap: clamp(1.25rem, 4vw, 3rem);
 }
 
 .img {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: center;
 	align-items: center;
+	min-width: 0;
+	padding: 0 0.25rem;
 }
 
-.img img {
-	width: 500px;
+.img img,
+.img :deep(svg) {
+	width: min(100%, 440px);
+	max-width: 440px;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.login-illustration {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	min-width: 0;
 }
 
 .login-box {
 	display: flex;
+	justify-content: center;
 	align-items: center;
+	justify-self: end;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
 	text-align: center;
 	overflow: hidden;
+	border-radius: 1.25rem;
+	padding: clamp(1rem, 2vh, 1.75rem) clamp(1rem, 2.5vw, 1.75rem);
+	background: oklch(1 0 0 / 0.45);
+	backdrop-filter: blur(16px) saturate(140%);
+	-webkit-backdrop-filter: blur(16px) saturate(140%);
+	box-shadow:
+		0 4px 24px oklch(0.2 0.05 280 / 0.08),
+		0 1px 0 oklch(1 0 0 / 0.6) inset;
+	border: 1px solid oklch(1 0 0 / 0.35);
+	transition:
+		background 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+		border-color 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+		box-shadow 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .login-box {
+	background: oklch(0.22 0.03 280 / 0.55);
+	box-shadow:
+		0 8px 32px oklch(0.05 0.02 280 / 0.45),
+		0 1px 0 oklch(1 0 0 / 0.06) inset;
+	border-color: oklch(1 0 0 / 0.08);
 }
 
 .login-form {
-	width: 360px;
+	width: 100%;
+	max-width: 400px;
+	margin: 0 auto;
+	box-sizing: border-box;
 }
 
-.avatar {
-	width: 350px;
-	height: 80px;
+/* 顶部品牌 Logo：不宜过大，避免抢占表单视觉重心 */
+.login-form .avatar {
+	display: block;
+	width: auto;
+	max-width: 104px;
+	max-height: 40px;
+	height: auto;
+	min-height: 0;
+	margin: 0 auto 0.5rem;
+	object-fit: contain;
+}
+
+.login-form .avatar :deep(svg) {
+	display: block;
+	width: 100%;
+	max-width: 104px;
+	max-height: 40px;
+	height: auto;
+	margin: 0 auto;
 }
 
 .login-form h2 {
 	text-transform: uppercase;
-	margin: 15px 0;
-	color: #999;
+	margin: 0.5rem 0 1rem;
+	min-height: 2.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(120deg, oklch(0.45 0.12 280), oklch(0.55 0.14 230));
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
 	font:
-		bold 200% Consolas,
+		bold clamp(1.25rem, 3.5vw, 1.75rem) Consolas,
 		Monaco,
 		monospace;
+	letter-spacing: 0.04em;
+	line-height: 1.25;
+}
+
+.dark .login-form h2 {
+	background: linear-gradient(120deg, oklch(0.82 0.08 280), oklch(0.88 0.06 200));
+	-webkit-background-clip: text;
+	background-clip: text;
+}
+
+/* 与输入框同宽的辅助行 */
+.login-form__toolbar {
+	box-sizing: border-box;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.75rem;
+	min-height: 2rem;
+	padding: 0 2px;
+}
+
+.login-form__operates {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.login-form__operate-btn {
+	margin: 0 !important;
+	width: 100%;
+}
+
+/* 第三方登录：固定 3×2 栅格，图标与文案垂直对齐 */
+.login-third-party {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.65rem 0.5rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.login-third-party__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.35rem;
+	min-width: 0;
+	margin: 0;
+	padding: 0.35rem 0.2rem;
+	border: none;
+	background: transparent;
+	font: inherit;
+	color: inherit;
+	cursor: default;
+	border-radius: 0.5rem;
+	transition:
+		color 0.2s ease,
+		background-color 0.2s ease;
+}
+
+.login-third-party__item--active {
+	cursor: pointer;
+	color: oklch(0.45 0.02 260);
+}
+
+.dark .login-third-party__item--active {
+	color: oklch(0.78 0.02 260);
+}
+
+.login-third-party__item--active:hover {
+	color: var(--el-color-primary);
+	background: oklch(0.5 0.08 280 / 0.08);
+}
+
+.login-third-party__item--disabled {
+	cursor: not-allowed;
+	opacity: 0.65;
+}
+
+.login-third-party__icon {
+	flex-shrink: 0;
+	width: 18px !important;
+	height: 18px !important;
+	max-width: 18px;
+	max-height: 18px;
+	display: block;
+}
+
+.login-third-party__label {
+	font-size: 0.6875rem;
+	line-height: 1.25;
+	text-align: center;
+	word-break: break-all;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+	max-width: 100%;
+}
+
+@media screen and (min-width: 400px) {
+	.login-third-party__label {
+		font-size: 0.75rem;
+	}
 }
 
 @media screen and (max-width: 1180px) {
 	.login-container {
-		grid-gap: 9rem;
+		column-gap: clamp(1.5rem, 3vw, 2.5rem);
 	}
 
-	.login-form {
-		width: 290px;
-	}
-
-	.login-form h2 {
-		font-size: 2.4rem;
-		margin: 8px 0;
-	}
-
-	.img img {
-		width: 360px;
-	}
-
-	.avatar {
-		width: 280px;
-		height: 80px;
+	.img img,
+	.img :deep(svg) {
+		max-width: 380px;
 	}
 }
 
@@ -88,9 +712,25 @@
 
 	.login-container {
 		grid-template-columns: 1fr;
+		max-width: 440px;
+		margin-inline: auto;
+		min-height: auto;
+		padding-top: 3rem;
+		padding-bottom: 4rem;
 	}
 
 	.login-box {
 		justify-content: center;
+		justify-self: stretch;
+	}
+}
+
+/* 矮屏 / 高缩放：压缩纵向间距，减少必须滚动的概率 */
+@media (max-height: 720px) {
+	.login-container {
+		padding-top: clamp(0.5rem, 2vh, 1.25rem);
+		padding-bottom: calc(2.25rem + env(safe-area-inset-bottom, 0px));
+		gap: clamp(0.5rem, 1.5vh, 1rem);
+		column-gap: clamp(0.75rem, 2vw, 1.5rem);
 	}
 }

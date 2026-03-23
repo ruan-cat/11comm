@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import Motion from "./utils/motion";
+import { Motion as MotionDiv } from "motion-v";
 import { useRouter } from "vue-router";
 import { message } from "@/utils/message";
 import { loginRules } from "./utils/rule";
@@ -19,7 +20,8 @@ import LoginUpdate from "./components/LoginUpdate.vue";
 import LoginQrCode from "./components/LoginQrCode.vue";
 import { bg, avatar, illustration } from "./utils/static";
 import { ReImageVerify } from "@/components/ReImageVerify";
-import { ref, toRaw, reactive, watch, computed, onMounted, useTemplateRef } from "vue";
+import { ref, toRaw, reactive, watch, computed, useTemplateRef } from "vue";
+import { useToggle } from "@vueuse/core";
 import { useAuth } from "@/composables/use-auth";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
@@ -344,15 +346,49 @@ async function refreshCaptcha() {
 		ruleForm.verifyCode = "";
 	}
 }
-
-onMounted(async () => {});
 </script>
 
 <template>
-	<!-- TODO: 首页需要实现更加漂亮的，精彩的，满足 11comm 风格的登录页 -->
-	<div class="select-none">
-		<img :src="bg" class="wave" />
-		<div class="flex-c absolute right-5 top-3">
+	<div class="select-none login-page">
+		<div class="login-ambient" aria-hidden="true">
+			<MotionDiv
+				class="login-blob-wrap login-blob-wrap--1"
+				:initial="{ opacity: 0 }"
+				:animate="{ opacity: 1 }"
+				:transition="{ duration: 0.6, delay: 0, ease: [0.22, 1, 0.36, 1] }"
+			>
+				<div class="login-blob login-blob--1" />
+			</MotionDiv>
+			<MotionDiv
+				class="login-blob-wrap login-blob-wrap--2"
+				:initial="{ opacity: 0 }"
+				:animate="{ opacity: 1 }"
+				:transition="{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }"
+			>
+				<div class="login-blob login-blob--2" />
+			</MotionDiv>
+			<MotionDiv
+				class="login-blob-wrap login-blob-wrap--3"
+				:initial="{ opacity: 0 }"
+				:animate="{ opacity: 1 }"
+				:transition="{ duration: 0.6, delay: 0.16, ease: [0.22, 1, 0.36, 1] }"
+			>
+				<div class="login-blob login-blob--3" />
+			</MotionDiv>
+		</div>
+		<div class="login-aurora" aria-hidden="true">
+			<div class="login-aurora__beam login-aurora__beam--1" />
+			<div class="login-aurora__beam login-aurora__beam--2" />
+			<div class="login-aurora__beam login-aurora__beam--3" />
+		</div>
+		<div class="login-noise" aria-hidden="true" />
+		<img :src="bg" class="wave" alt="" />
+		<MotionDiv
+			class="flex-c absolute right-5 top-3 z-20"
+			:initial="{ opacity: 0, y: -14 }"
+			:animate="{ opacity: 1, y: 0 }"
+			:transition="{ type: 'spring', stiffness: 260, damping: 30, delay: 0.35 }"
+		>
 			<!-- 主题 -->
 			<el-switch
 				v-model="dataTheme"
@@ -389,12 +425,26 @@ onMounted(async () => {});
 					</el-dropdown-menu>
 				</template>
 			</el-dropdown>
-		</div>
+		</MotionDiv>
 		<div class="login-container">
 			<div class="img">
-				<component :is="toRaw(illustration)" />
+				<MotionDiv
+					class="login-illustration"
+					:initial="{ opacity: 0, x: -40, rotate: -2 }"
+					:animate="{ opacity: 1, x: 0, rotate: 0 }"
+					:transition="{ type: 'spring', stiffness: 120, damping: 22, delay: 0.1 }"
+				>
+					<MotionDiv :animate="{ y: [0, -12, 0] }" :transition="{ duration: 6, repeat: Infinity, ease: 'easeInOut' }">
+						<component :is="toRaw(illustration)" />
+					</MotionDiv>
+				</MotionDiv>
 			</div>
-			<div class="login-box">
+			<MotionDiv
+				class="login-box"
+				:initial="{ opacity: 0, x: 48 }"
+				:animate="{ opacity: 1, x: 0 }"
+				:transition="{ type: 'spring', stiffness: 160, damping: 26, delay: 0.06 }"
+			>
 				<div class="login-form">
 					<avatar class="avatar" />
 					<Motion>
@@ -461,7 +511,7 @@ onMounted(async () => {});
 
 						<Motion :delay="250">
 							<el-form-item>
-								<div class="w-full h-[20px] flex justify-between items-center">
+								<div class="login-form__toolbar">
 									<el-checkbox v-model="checked">
 										<span class="flex">
 											<select
@@ -508,15 +558,15 @@ onMounted(async () => {});
 
 						<Motion :delay="300">
 							<el-form-item>
-								<div class="w-full h-[20px] flex justify-between items-center">
+								<div class="login-form__operates">
 									<el-button
 										v-for="(item, index) in operates"
 										:key="index"
-										class="w-full mt-4!"
+										class="login-form__operate-btn"
 										size="default"
 										@click="useUserStoreHook().SET_CURRENTPAGE(index + 1)"
 									>
-										{{ t(item.title) }}
+										{{ t(item.titleKey) }}
 									</el-button>
 								</div>
 							</el-form-item>
@@ -605,24 +655,25 @@ onMounted(async () => {});
 									{{ t("common.login.pureThirdLogin") }}
 								</p>
 							</el-divider>
-							<div class="w-full flex justify-evenly">
-								<span
+							<div class="login-third-party">
+								<button
 									v-for="(item, index) in thirdParty"
 									:key="index"
-									:title="item.title"
-									:class="[
-										'cursor-pointer text-gray-500 hover:text-blue-400',
-										item.provider ? 'flex flex-col items-center cursor-pointer' : '',
-									]"
+									type="button"
+									:title="t(item.titleKey)"
+									class="login-third-party__item"
+									:class="item.provider ? 'login-third-party__item--active' : 'login-third-party__item--disabled'"
+									:disabled="!item.provider"
 									@click="item.provider && handleOAuthLogin(item.provider)"
 								>
 									<IconifyIconOnline
 										:icon="`ri:${item.icon}-fill`"
-										width="20"
-										:class="item.provider ? 'hover:scale-110 transition-transform' : ''"
+										width="18"
+										height="18"
+										class="login-third-party__icon"
 									/>
-									<span v-if="item.provider" class="text-[10px] mt-1">{{ item.title }}</span>
-								</span>
+									<span class="login-third-party__label">{{ t(item.titleKey) }}</span>
+								</button>
 							</div>
 						</el-form-item>
 					</Motion>
@@ -635,12 +686,17 @@ onMounted(async () => {});
 					<!-- 忘记密码 -->
 					<LoginUpdate v-if="currentPage === 4" />
 				</div>
-			</div>
+			</MotionDiv>
 		</div>
-		<div class="w-full flex-c absolute bottom-3 text-sm text-[rgba(0,0,0,0.6)] dark:text-[rgba(220,220,242,0.8)]">
+		<MotionDiv
+			class="w-full flex-c absolute bottom-3 z-10 text-sm text-[rgba(0,0,0,0.6)] dark:text-[rgba(220,220,242,0.8)]"
+			:initial="{ opacity: 0 }"
+			:animate="{ opacity: 1 }"
+			:transition="{ delay: 0.55, duration: 0.5 }"
+		>
 			Copyright © 2020-present
 			<a class="hover:text-primary" href="https://github.com/pure-admin" target="_blank"> &nbsp;{{ title }} </a>
-		</div>
+		</MotionDiv>
 	</div>
 </template>
 
@@ -649,6 +705,25 @@ onMounted(async () => {});
 </style>
 
 <style lang="scss" scoped>
+.login-form {
+	:deep(.el-form-item__content) {
+		width: 100%;
+	}
+
+	:deep(.el-input-group) {
+		display: flex;
+		width: 100%;
+		align-items: stretch;
+	}
+
+	:deep(.el-input-group__append) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+}
+
 :deep(.el-input-group__append, .el-input-group__prepend) {
 	padding: 0;
 }

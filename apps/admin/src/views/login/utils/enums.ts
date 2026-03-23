@@ -1,42 +1,42 @@
-import { $t } from "@/plugins/i18n";
+/** 文案一律用 titleKey，在页面内通过 useI18n().t() 解析，避免模块顶层 $t 未就绪或语言切换不生效 */
 
 const operates = [
 	{
-		title: $t("common.login.purePhoneLogin"),
+		titleKey: "common.login.purePhoneLogin",
 	},
 	{
-		title: $t("common.login.pureQRCodeLogin"),
+		titleKey: "common.login.pureQRCodeLogin",
 	},
 	{
-		title: $t("common.login.pureRegister"),
+		titleKey: "common.login.pureRegister",
 	},
 ];
 
 const thirdParty = [
 	{
-		title: "Google 登录",
+		titleKey: "common.login.pureGoogleLogin",
 		icon: "google",
 		provider: "google",
 	},
 	{
-		title: "GitHub 登录",
+		titleKey: "common.login.pureGithubLogin",
 		icon: "github",
 		provider: "github",
 	},
 	{
-		title: $t("common.login.pureWeChatLogin"),
+		titleKey: "common.login.pureWeChatLogin",
 		icon: "wechat",
 	},
 	{
-		title: $t("common.login.pureAlipayLogin"),
+		titleKey: "common.login.pureAlipayLogin",
 		icon: "alipay",
 	},
 	{
-		title: $t("common.login.pureQQLogin"),
+		titleKey: "common.login.pureQQLogin",
 		icon: "qq",
 	},
 	{
-		title: $t("common.login.pureWeiBoLogin"),
+		titleKey: "common.login.pureWeiBoLogin",
 		icon: "weibo",
 	},
 ];
