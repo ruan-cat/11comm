@@ -3,19 +3,13 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { load as loadYaml } from "js-yaml";
+import { parsePnpmWorkspaceYaml } from "pnpm-workspace-yaml";
 import type { PackageJson } from "pkg-types";
 
 const WINDOWS_GNU_COMMANDS = ["grep", "head", "sed"] as const;
 
-interface PnpmWorkspaceManifest {
-	packages?: string[];
-}
-
-export interface WorkspacePackageInfo {
-	name: string;
-	version: string;
-}
+/** 发版基线 tag 校验所需的最小字段，由 {@link PackageJson} 派生，避免重复定义 shape。 */
+export type WorkspacePackageInfo = Required<Pick<PackageJson, "name" | "version">>;
 
 // ── 工作区包发现 ──────────────────────────────────────────────────────────────
 
@@ -23,20 +17,19 @@ export interface WorkspacePackageInfo {
  * 解析根目录 `pnpm-workspace.yaml` 并展开 glob 模式，
  * 收集所有含 `package.json` 的子包目录，返回其 name 与 version。
  *
- * 使用 `js-yaml` 读取 YAML、`pkg-types` 的 `PackageJSON` 类型约束读取结果，
- * 不依赖任何第三方工作区枚举库，也不硬编码目录列表。
+ * 使用 [pnpm-workspace-yaml](https://github.com/antfu/pnpm-workspace-utils/tree/main/packages/pnpm-workspace-yaml)
+ * 解析工作区清单，再用 `pkg-types` 的 `PackageJson` 约束子包字段。
  */
 function getWorkspacePackages(): WorkspacePackageInfo[] {
 	const workspaceRoot = process.cwd();
 	const yamlPath = resolve(workspaceRoot, "pnpm-workspace.yaml");
 
 	if (!existsSync(yamlPath)) {
-		console.error("[release:relizy] 未在当前目录找到 pnpm-workspace.yaml，请从仓库根目录执行本脚本。");
+		console.error("release:relizy：未在当前目录找到 pnpm-workspace.yaml，请从仓库根目录执行。");
 		return [];
 	}
 
-	const manifest = loadYaml(readFileSync(yamlPath, "utf8")) as PnpmWorkspaceManifest;
-	const globs = manifest.packages ?? [];
+	const globs = parsePnpmWorkspaceYaml(readFileSync(yamlPath, "utf8")).toJSON().packages ?? [];
 	const packages: WorkspacePackageInfo[] = [];
 
 	for (const pattern of globs) {

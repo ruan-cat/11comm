@@ -1,36 +1,33 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { load } from "js-yaml";
+import { parsePnpmWorkspaceYaml } from "pnpm-workspace-yaml";
 import { defineConfig } from "relizy";
 import changelogConfig from "./changelog.config";
 
-interface PnpmWorkspaceManifest {
-	packages?: string[];
+function readWorkspacePackageGlobs(): string[] {
+	const content = readFileSync(resolve(process.cwd(), "pnpm-workspace.yaml"), "utf8");
+
+	return (parsePnpmWorkspaceYaml(content).toJSON().packages ?? []).filter((p) => !p.startsWith("!"));
 }
-
-function readWorkspacePackagePatterns(): string[] {
-	const manifest = load(readFileSync(resolve("pnpm-workspace.yaml"), "utf8")) as PnpmWorkspaceManifest;
-
-	return manifest?.packages?.filter((p) => !p.startsWith("!")) ?? [];
-}
-
-const workspacePatterns = readWorkspacePackagePatterns();
 
 export default defineConfig({
 	projectName: "11comm",
+
 	types: changelogConfig.types,
 	templates: {
 		...(changelogConfig.templates ?? {}),
 		changelogTitle: "{{newVersion}} ({{date}})",
 	},
+
 	monorepo: {
 		versionMode: "independent",
-		packages: workspacePatterns,
+		packages: readWorkspacePackageGlobs(),
 	},
+
 	changelog: {
 		rootChangelog: true,
 		includeCommitBody: true,
-		formatCmd: `pnpm exec prettier --experimental-cli --write CHANGELOG.md ${workspacePatterns.map((p) => `"${p}/CHANGELOG.md"`).join(" ")}`,
+		formatCmd: "pnpm run format:changelog",
 	},
 	release: {
 		changelog: true,
