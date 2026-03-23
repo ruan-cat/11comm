@@ -122,6 +122,7 @@
 		"lodash-es": "^4.17.23",
 		"mint-filter": "^4.0.3",
 		"mitt": "^3.0.1",
+		"motion-v": "^2.2.0",
 		"mqtt": "5.13.1",
 		"nitro": "3.0.1-alpha.2",
 		"nprogress": "^0.2.0",

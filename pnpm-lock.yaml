@@ -333,6 +333,9 @@ importers:
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
+      motion-v:
+        specifier: ^2.2.0
+        version: 2.2.0(@vueuse/core@13.9.0(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
       mqtt:
         specifier: 5.13.1
         version: 5.13.1
@@ -8304,6 +8307,21 @@ packages:
       { integrity: sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA== }
     engines: { node: ">=0.8" }
 
+  framer-motion@12.38.0:
+    resolution:
+      { integrity: sha512-rFYkY/pigbcswl1XQSb7q424kSTQ8q6eAC+YUsSKooHQYuLdzdHjrt6uxUC+PRAO++q5IS7+TamgIw1AphxR+g== }
+    peerDependencies:
+      "@emotion/is-prop-valid": "*"
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      "@emotion/is-prop-valid":
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   framesync@6.1.2:
     resolution:
       { integrity: sha512-jBTqhX6KaQVDyus8muwZbBeGGP0XgujBRbQ7gM7BRdS3CadCZIHiawyzYLnafYcvZIh5j8WE7cxZKFn7dXhu9g== }
@@ -10346,6 +10364,21 @@ packages:
     resolution:
       { integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw== }
     engines: { node: ">=0.10.0" }
+
+  motion-dom@12.38.0:
+    resolution:
+      { integrity: sha512-pdkHLD8QYRp8VfiNLb8xIBJis1byQ9gPT3Jnh2jqfFtAsWUA3dEepDlsWe/xMpO8McV+VdpKVcp+E+TGJEtOoA== }
+
+  motion-utils@12.36.0:
+    resolution:
+      { integrity: sha512-eHWisygbiwVvf6PZ1vhaHCLamvkSbPIeAYxWUuL3a2PD/TROgE7FvfHWTIH4vMl798QLfMw15nRqIaRDXTlYRg== }
+
+  motion-v@2.2.0:
+    resolution:
+      { integrity: sha512-8rrUBt9UMwy45MfLMwHer9J7xBY/rL31S+0U3ZUAouqjH3AOVHvS0NGuXwF4mfWfvb22rfZEv59ZsBc2f1epxQ== }
+    peerDependencies:
+      "@vueuse/core": ">=10.0.0"
+      vue: ">=3.0.0"
 
   mousetrap@1.6.5:
     resolution:
@@ -20880,6 +20913,12 @@ snapshots:
 
   frac@1.1.2: {}
 
+  framer-motion@12.38.0:
+    dependencies:
+      motion-dom: 12.38.0
+      motion-utils: 12.36.0
+      tslib: 2.8.1
+
   framesync@6.1.2:
     dependencies:
       tslib: 2.4.0
@@ -22868,6 +22907,25 @@ snapshots:
   mobx@5.15.7: {}
 
   modify-values@1.0.1: {}
+
+  motion-dom@12.38.0:
+    dependencies:
+      motion-utils: 12.36.0
+
+  motion-utils@12.36.0: {}
+
+  motion-v@2.2.0(@vueuse/core@13.9.0(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3)):
+    dependencies:
+      "@vueuse/core": 13.9.0(vue@3.5.30(typescript@5.9.3))
+      framer-motion: 12.38.0
+      hey-listen: 1.0.8
+      motion-dom: 12.38.0
+      motion-utils: 12.36.0
+      vue: 3.5.30(typescript@5.9.3)
+    transitivePeerDependencies:
+      - "@emotion/is-prop-valid"
+      - react
+      - react-dom
 
   mousetrap@1.6.5: {}
 
