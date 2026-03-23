@@ -40,6 +40,7 @@
 		"changelog:commit-and-tag-version": "commit-and-tag-version",
 		"format:*": "prettier --experimental-cli --write . --ignore-path ./.config/.prettierignore --ignore-path .gitignore",
 		"ci": "pnpm run build",
+		"repro:relizy-path": "node docs/issues/relizy/repro-relizy-body-path-includes.mjs",
 		"prepare": "simple-git-hooks"
 	},
 	"devDependencies": {
