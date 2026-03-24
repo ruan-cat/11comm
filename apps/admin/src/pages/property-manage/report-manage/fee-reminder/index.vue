@@ -8,6 +8,7 @@ definePage({
 		rank: getRouteRank("propertyManage.reportManage.feeReminder"),
 	},
 });
+import { cloneDeep } from "@pureadmin/utils";
 
 import dayjs from "dayjs";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -104,7 +105,7 @@ const plusSearchModelRef: FieldValues & Partial<ReminderForOverduePaymentsQueryP
 	expenseItemId: "",
 	expenseItemName: "",
 };
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -150,7 +151,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

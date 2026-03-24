@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { ElMessageBox } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -34,7 +35,7 @@ const plusSearchModelRef: FieldValues & Partial<ShiftSettingListQuery> = {
 	description: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -237,7 +238,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: ShiftSetting }) {
 }
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

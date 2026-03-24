@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, onMounted } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useReportGroupListQuery } from "@/api/operation-team/report-configuration/report-group";
@@ -34,7 +35,7 @@ const plusSearchModelRef: FieldValues & Partial<ReportGroupQueryParams> = {
 };
 
 /** 重置功能用的默认值 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -157,15 +158,15 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const reportGroupFormVO: ReportGroupFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					name: row?.name || "",
 					url: row?.url || "",
 					remark: row?.remark || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: ReportGroupFormProps = {

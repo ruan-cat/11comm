@@ -46,7 +46,7 @@ const plusSearchModelRef: FieldValues & Partial<DiscountTypeQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -158,7 +158,7 @@ const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

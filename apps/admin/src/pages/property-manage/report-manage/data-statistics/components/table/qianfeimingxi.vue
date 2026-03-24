@@ -7,6 +7,7 @@ definePage({
 });
 
 import { ref, computed, watch } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { transformI18n } from "@/plugins/i18n";
 import { title } from "process";
 import type { DataStatisticsArrearsDetailsListItem, DataStatisticsArrearsDetailsQueryParams } from "@01s-11comm/type";
@@ -134,7 +135,7 @@ const plusSearchModelRef: FieldValues & DataStatisticsArrearsDetailsQueryParams 
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);

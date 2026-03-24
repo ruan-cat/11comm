@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -42,7 +43,7 @@ const plusSearchModelRef: FieldValues & Partial<MerchantInfoQueryParams> = {
 	affiliatedCommunity: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -258,7 +259,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -283,7 +284,7 @@ function openDialog(params: { mode: Mode; row?: MerchantInfoListItem }) {
 	setMode(mode);
 
 	const formVO: MerchantInfoFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: cloneDeep({
 				...defaultForm,
 				merchantId: row?.merchantId || "",

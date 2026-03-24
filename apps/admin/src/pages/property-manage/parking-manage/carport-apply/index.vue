@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -34,7 +35,7 @@ const plusSearchModelRef: FieldValues & Partial<CarportApplyQueryParams> = {
 	reviewResult: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -49,7 +50,7 @@ const {
 } = useCarportApplyListQuery(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -200,8 +201,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	const carportApplyFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				...row,
 			});

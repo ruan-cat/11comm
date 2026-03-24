@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type PatrolDetailFormProps, defaultForm } from "./components/form";
@@ -177,7 +178,7 @@ const plusSearchModelRef: FieldValues & Partial<PatrolDetailQueryParams> = {
 	patrolPointStatus: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -240,7 +241,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -255,9 +256,9 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 
 	/** 业务对象 */
 	const patrolDetailFormVO: PatrolDetailFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					patrolPointName: row?.patrolPointName || "",
 					patrolPlanName: row?.patrolPlanName || "",
@@ -267,7 +268,7 @@ function openDialog(params: { mode: Mode; row?: PatrolDetailListItem }) {
 					location: row?.locationInfo || "",
 					patrolSituation: row?.patrolSituation || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: PatrolDetailFormProps = {

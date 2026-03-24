@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -30,7 +31,7 @@ const plusSearchModelRef: FieldValues & Partial<ReportInfoQueryParams> = {
 	reportName: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -136,16 +137,16 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	const formVO: ReportInfoFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					reportGroup: row?.groupId || "",
 					optionTitle: row?.reportName || "",
 					sort: row?.sortOrder?.toString() || "",
 					description: row?.description || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const formProps: ReportInfoFormProps = {
 		form: formVO,

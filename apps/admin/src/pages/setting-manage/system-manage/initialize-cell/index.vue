@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -94,7 +95,7 @@ const plusSearchModelRef: FieldValues & Partial<InitializeCommunityQueryParams> 
 	initStatus: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -164,7 +165,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -188,7 +189,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 	setMode(mode);
 
 	const configParams = (row?.configParams as Record<string, unknown> | undefined) ?? {};
-	const formVO = structuredClone({
+	const formVO = cloneDeep({
 		...defaultForm,
 		initItem: row?.initItem || "",
 		initStatus: row?.initStatus || "",
@@ -200,7 +201,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 		status: String(configParams.status ?? "启用"),
 	}) as InitializeCommunityFormVO;
 
-	const addFormVO = structuredClone({
+	const addFormVO = cloneDeep({
 		...defaultForm,
 		communityId: "",
 		communityName: "",
@@ -212,7 +213,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 	const resolvedForm = isAdd.value ? addFormVO : formVO;
 	const formProps: InitializeCommunityFormProps = {
 		form: resolvedForm,
-		defaultValues: structuredClone(resolvedForm),
+		defaultValues: cloneDeep(resolvedForm),
 	};
 
 	const title = isAdd.value
@@ -278,8 +279,8 @@ function openDialog(params: { mode: Mode; row?: InitializeCommunityListItem }) {
 
 function openFormatDialog(row: InitializeCommunityListItem) {
 	const formProps: FormatFormProps = {
-		form: structuredClone(formatDefaultForm),
-		defaultValues: structuredClone(formatDefaultForm),
+		form: cloneDeep(formatDefaultForm),
+		defaultValues: cloneDeep(formatDefaultForm),
 		initItem: row.initItem,
 		initStatus: row.initStatus || "",
 	};

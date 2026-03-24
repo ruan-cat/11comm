@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, onMounted, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -45,7 +46,7 @@ const plusSearchModelRef: FieldValues & Partial<FirstPartyQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -164,7 +165,7 @@ const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -204,9 +205,9 @@ function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 
 	/** 业务对象 */
 	const firstPartyFormVO: FirstPartyFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					partyA: row?.partyA || "",
 					contactPerson: row?.contactPerson || "",
@@ -217,7 +218,7 @@ function openDialog(params: { mode: Mode; row?: FirstPartyListItem }) {
 					legalRepresentative: row?.legalRepresentative || "",
 					businessScope: row?.businessScope || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: FirstPartyFormProps = {

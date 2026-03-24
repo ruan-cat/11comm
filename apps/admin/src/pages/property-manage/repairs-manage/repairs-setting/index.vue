@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -129,7 +130,7 @@ const plusSearchModelRef: FieldValues & RepairsSettingQueryParams = {
 	pageSize: 10,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -178,7 +179,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -221,9 +222,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	const formValue: RepairsSettingFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					typeName: row?.typeName || "",
 					settingType: (row?.settingType as RepairsSettingType | undefined) || defaultForm.settingType,
@@ -236,8 +237,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 						(row?.returnVisitSetting as ReturnVisitSettingType | undefined) || defaultForm.returnVisitSetting,
 					description: row?.remark || "",
 				})
-			: structuredClone(defaultForm);
-	const defaultValues = structuredClone(formValue);
+			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(formValue);
 
 	const formProps: RepairsSettingFormProps = {
 		form: formValue,

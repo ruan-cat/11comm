@@ -9,6 +9,7 @@ definePage({
 });
 
 import { ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { useChangePasswordRecordListQuery } from "@/api/setting-manage/system-manage/change-password";
@@ -99,7 +100,7 @@ const plusSearchModelRef: FieldValues & Partial<ChangePasswordRecordListQuery> =
 	changeTimeRange: ["", ""],
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -252,7 +253,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues, plusSearchButtonTexts);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

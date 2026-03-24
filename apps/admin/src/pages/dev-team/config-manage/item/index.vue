@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import {
@@ -40,7 +41,7 @@ const plusSearchModelRef: FieldValues & Partial<ConfigItemQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -163,7 +164,7 @@ const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -191,9 +192,9 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 
 	/** 业务对象 */
 	const formData: ConfigItemFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					configItemName: row?.itemName || "",
 					configItemCode: row?.itemKey || "",
@@ -203,7 +204,7 @@ function openDialog(params: { mode: Mode; row?: ConfigItemListItem }) {
 					isEnabled: "",
 					remark: "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const props: ConfigItemFormProps = {

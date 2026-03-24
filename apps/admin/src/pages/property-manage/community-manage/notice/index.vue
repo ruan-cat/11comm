@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -33,7 +34,7 @@ const plusSearchModelRef: FieldValues & Partial<CommunityNoticeQueryParams> = {
 	noticeType: undefined,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -138,7 +139,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues, { showNumber: 2 });
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -269,8 +270,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	const formProps: CommunityNoticeFormProps = {
-		form: structuredClone(defaultForm),
-		defaultValues: structuredClone(defaultForm),
+		form: cloneDeep(defaultForm),
+		defaultValues: cloneDeep(defaultForm),
 		mode,
 	};
 
@@ -279,7 +280,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 		const formData = listDataToFormData(row);
 		editFormProps = {
 			form: formData,
-			defaultValues: structuredClone(formData),
+			defaultValues: cloneDeep(formData),
 			mode,
 		};
 	}

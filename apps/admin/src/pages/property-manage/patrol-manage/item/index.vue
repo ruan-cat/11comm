@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -66,7 +67,7 @@ const plusSearchModelRef: FieldValues & Partial<ItemQueryParams> = {
 	itemName: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -96,7 +97,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -126,8 +127,8 @@ function openDialog(params: { mode: Mode; row?: ItemListItem }) {
 
 	/** 业务对象 */
 	const patrolItemFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				...row,
 			});

@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -164,7 +165,7 @@ const plusSearchModelRef: FieldValues & Partial<PointQueryParams> = {
 };
 
 /** 表格搜索栏 重置功能用的默认数据 */
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
 /** 表格搜索栏变量 双向绑定的变量 响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
@@ -183,7 +184,7 @@ const {
 
 /** 重置搜索条件并重新加载数据 */
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -247,8 +248,8 @@ function openDialog(params: { mode: Mode; row?: PointListItem }) {
 
 	/** 业务对象 */
 	const patrolPointFormData: PatrolPointFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				...row,
 			});

@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -132,7 +133,7 @@ const plusSearchModelRef: FieldValues & Partial<InitializeCellQueryParams> = {
 	status: undefined,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -263,7 +264,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -279,9 +280,9 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 	setMode(mode);
 
 	const formVO: InitializeCellFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value || isInfo.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					cellName: row?.cellName || "",
 					cellType: normalizeCellTypeValue(row?.cellType),
@@ -293,7 +294,7 @@ function openDialog(params: { mode: Mode; row?: InitializeCellListItem }) {
 					status: normalizeStatusValue(row?.status),
 					description: row?.description || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const formProps: InitializeCellFormProps = {
 		form: formVO,

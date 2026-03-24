@@ -1,4 +1,5 @@
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { addDialog, closeDialog } from "@/components/ReDialog";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -23,7 +24,7 @@ function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 	setMode(mode);
 
 	const formData: ConfigCenterFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
 			? {
 					...defaultForm,
@@ -37,7 +38,7 @@ function openDialog(params: { mode: Mode; row?: ConfigCenterListItem }) {
 					sortOrder: row?.sortOrder || 0,
 					remark: row?.remark || "",
 				}
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const formProps: ConfigCenterFormProps = {
 		form: formData,

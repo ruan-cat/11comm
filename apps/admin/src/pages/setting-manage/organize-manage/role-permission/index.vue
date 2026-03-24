@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
@@ -29,7 +30,7 @@ const plusSearchModelRef: FieldValues & Partial<RolePermissionListQuery> = {
 	code: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -202,7 +203,7 @@ function openDialog({ mode, row }: { mode: Mode; row?: RolePermission }) {
 }
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -118,7 +119,7 @@ const plusSearchModelRef: FieldValues & PhoneReportRepairsQueryParams = {
 	pageSize: 10,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -165,7 +166,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -196,9 +197,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 
 	/** 业务对象 */
 	const formValue: PhoneRepairsFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					repairType: row?.repairType || defaultForm.repairType,
 					reporter: row?.reporter || "",
@@ -206,8 +207,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					appointmentTime: row?.appointmentTime || "",
 					repairDescription: row?.remark || "",
 				})
-			: structuredClone(defaultForm);
-	const defaultValues = structuredClone(formValue);
+			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(formValue);
 
 	const formProps: PhoneRepairsFormProps = {
 		form: formValue,

@@ -11,6 +11,7 @@ definePage({
 });
 
 import { ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { type RefreshCacheListItem, type RefreshCacheQueryParams } from "@01s-11comm/type";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useRefreshCacheListQuery } from "@/api/dev-team/cache-manage/refresh-cache";
@@ -24,7 +25,7 @@ const plusSearchModelRef: FieldValues & Partial<RefreshCacheQueryParams> = {
 	cacheName: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -116,7 +117,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

@@ -10,6 +10,7 @@ definePage({
 });
 
 import { computed, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import {
 	type DictionaryListItem,
 	type DictionaryQueryParams,
@@ -60,7 +61,7 @@ const plusSearchModelRef: FieldValues & Partial<DictionaryQueryParams> = {
 	isEnabled: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -163,7 +164,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -188,9 +189,9 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 	setMode(mode);
 
 	const formData: DictionaryFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					dictionaryName: row?.dictionaryName || "",
 					dictionaryCode: row?.dictionaryCode || "",
@@ -198,7 +199,7 @@ function openDialog(params: { mode: Mode; row?: DictionaryListItem }) {
 					dictionaryDescription: row?.dictionaryDescription || "",
 					remark: row?.remark || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const props: DictionaryFormProps = {
 		form: formData,

@@ -10,6 +10,7 @@ definePage({
 });
 
 import { computed, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -94,7 +95,7 @@ const plusSearchModelRef: FieldValues & Partial<ReportComponentQueryParams> = {
 	queryMethod: undefined,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -226,9 +227,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	const reportComponentFormVO: ReportComponentFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					componentName: row?.componentName || "",
 					componentType: (row?.componentType || defaultForm.componentType) as ComponentType,
@@ -237,7 +238,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					java: row?.java || "",
 					description: row?.description || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const props: ReportComponentFormProps = {
 		form: reportComponentFormVO,

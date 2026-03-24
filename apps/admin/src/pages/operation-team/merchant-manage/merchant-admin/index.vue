@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage } from "element-plus";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
@@ -38,7 +39,7 @@ const plusSearchModelRef: FieldValues & Partial<MerchantAdminQueryParams> = {
 	status: undefined,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {

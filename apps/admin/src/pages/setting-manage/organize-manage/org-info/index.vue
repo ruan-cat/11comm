@@ -10,6 +10,7 @@ definePage({
 });
 
 import { nextTick, onMounted, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { ElMessage } from "element-plus";
@@ -33,7 +34,7 @@ const plusSearchModelRef: FieldValues & EmployeeSearchForm = {
 	employeeName: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -163,7 +164,7 @@ function loadEmployeesByOrg(org: OrganizationTreeNode) {
 }
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 

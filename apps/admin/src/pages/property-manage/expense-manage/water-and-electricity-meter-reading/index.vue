@@ -185,9 +185,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	const title = `${modeText.value}水电抄表`;
 
 	const formData: WaterAndElectricityMeterReadingFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					// TODO: 需要补充完善
 					// 费用类型: row?.meterType === "水表" ? "水费" : row?.meterType === "电表" ? "电费" : "水费",
@@ -201,7 +201,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					// 本期读表时间: row?.currentReadingTime || "",
 					// 备注: "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	/** 表单组件需要的props */
 	const formProps: WaterAndElectricityMeterReadingFormProps = {

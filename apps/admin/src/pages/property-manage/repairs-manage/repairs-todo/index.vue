@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -109,7 +110,7 @@ const plusSearchModelRef: FieldValues & RepairsTodoQueryParams = {
 	pageSize: 10,
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -145,7 +146,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -171,9 +172,9 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
 	const formValue: RepairsTodoFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					workOrderNumber: row?.workOrderNumber || "",
 					location: row?.location || "",
@@ -185,8 +186,8 @@ function openDialog({ mode, row }: OpenDialogParams) {
 					status: row?.status || "",
 					remark: row?.remark || "",
 				})
-			: structuredClone(defaultForm);
-	const defaultValues = structuredClone(formValue);
+			: cloneDeep(defaultForm);
+	const defaultValues = cloneDeep(formValue);
 
 	const formProps: RepairsTodoFormProps = {
 		form: formValue,

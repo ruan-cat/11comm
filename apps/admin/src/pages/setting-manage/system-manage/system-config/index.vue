@@ -16,8 +16,7 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import { type SystemConfigFormProps, defaultForm } from "./components/form";
 import SystemConfigFormComponent from "./components/form.vue";
 import { useMode } from "@/composables/use-mode";
-
-// import { cloneDeep } from "@pureadmin/utils"; // 已迁移到 structuredClone
+import { cloneDeep } from "@pureadmin/utils";
 import { useToggle } from "@vueuse/core";
 import { sleep } from "@antfu/utils";
 import { useSystemConfigListQuery } from "@/api/setting-manage/system-manage/system-config";
@@ -154,12 +153,12 @@ function openEditDialog() {
 
 	/** 业务对象 */
 	// 将 SystemConfigListItem 转换为表单数据
-	const formVO: SystemConfigListItem = structuredClone(systemConfig.value);
+	const formVO: SystemConfigListItem = cloneDeep(systemConfig.value);
 
 	/** 表单组件需要的props */
 	const formProps: SystemConfigFormProps = {
 		form: formVO,
-		defaultValues: structuredClone(formVO),
+		defaultValues: cloneDeep(formVO),
 	};
 
 	/** 根据不同模式下 变化的表单默认重置对象 */

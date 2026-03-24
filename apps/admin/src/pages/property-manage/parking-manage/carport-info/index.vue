@@ -10,6 +10,7 @@ definePage({
 });
 
 import { ref, h } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import consola from "consola";
 import { useToggle } from "@vueuse/core";
 import { $t, transformI18n } from "@/plugins/i18n";
@@ -35,7 +36,7 @@ const plusSearchModelRef: FieldValues & Partial<CarportInfoQueryParams> = {
 	vehicleNumber: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -50,7 +51,7 @@ const {
 } = useCarportInfoListQuery(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -216,8 +217,8 @@ function openDialog({ mode, row }: { mode: Mode; row?: CarportInfoListItem }) {
 	setMode(mode);
 
 	const carportInfoFormVO = isAdd.value
-		? structuredClone(defaultForm)
-		: structuredClone({
+		? cloneDeep(defaultForm)
+		: cloneDeep({
 				...defaultForm,
 				...row,
 			});

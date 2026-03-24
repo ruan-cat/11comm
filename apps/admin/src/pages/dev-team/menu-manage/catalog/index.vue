@@ -10,6 +10,7 @@ definePage({
 });
 
 import { h, ref, computed } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { useMode, type Mode } from "@/composables/use-mode";
@@ -82,7 +83,7 @@ const plusSearchModelRef: FieldValues & RemovePageIndexAndPageSize<MenuCatalogQu
 	status: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -176,7 +177,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -199,9 +200,9 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 	setMode(mode);
 
 	const menuCatalogFormData: MenuCatalogFormData = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					gid: row?.gid || "",
 					icon: row?.icon || "",
@@ -212,11 +213,11 @@ function openDialog(params: { mode: Mode; row?: MenuCatalogListItem }) {
 					label: row?.label || "",
 					storeType: row?.storeType || "property",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const formProps: CatalogFormProps = {
 		form: menuCatalogFormData,
-		defaultValues: structuredClone(menuCatalogFormData),
+		defaultValues: cloneDeep(menuCatalogFormData),
 	};
 	const defaultValues = formProps.defaultValues;
 

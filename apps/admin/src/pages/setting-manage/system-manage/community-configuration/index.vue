@@ -10,6 +10,7 @@ definePage({
 });
 
 import { computed, h, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
 import { sleep } from "@antfu/utils";
 import { useToggle } from "@vueuse/core";
 import { addDialog, closeDialog } from "@/components/ReDialog";
@@ -79,7 +80,7 @@ const plusSearchModelRef: FieldValues & Partial<CommunityConfigurationListQuery>
 	statusCd: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -195,7 +196,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
@@ -228,9 +229,9 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 	setMode(mode);
 
 	const formVO: SettingCommunityConfigFormVO = isAdd.value
-		? structuredClone(defaultForm)
+		? cloneDeep(defaultForm)
 		: isEdit.value || isInfo.value
-			? structuredClone({
+			? cloneDeep({
 					...defaultForm,
 					csId: row?.csId || "",
 					communityId: row?.communityId || "",
@@ -241,7 +242,7 @@ function openDialog(params: { mode: Mode; row?: CommunityConfiguration }) {
 					statusCd: row?.statusCd || "0",
 					remark: row?.remark || "",
 				})
-			: structuredClone(defaultForm);
+			: cloneDeep(defaultForm);
 
 	const formProps: CommunityConfigurationFormProps = {
 		form: formVO,

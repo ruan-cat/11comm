@@ -8,6 +8,7 @@ definePage({
 		rank: getRouteRank("propertyManage.reportManage.depositReport"),
 	},
 });
+import { cloneDeep } from "@pureadmin/utils";
 
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
@@ -149,7 +150,7 @@ const plusSearchModelRef: FieldValues & Partial<DepositReportQueryParams> = {
 	feeCreateEndTime: "",
 	refundStatus: "",
 };
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 
 const {
@@ -225,7 +226,7 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
