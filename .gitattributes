@@ -1,0 +1,21 @@
+﻿# 统一强制使用 LF 行尾，防止 Windows 幽灵 git modified 问题
+* text=auto eol=lf
+
+# 二进制文件不处理行尾
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.otf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.7z binary
+*.pdf binary
