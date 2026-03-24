@@ -1,3 +1,5 @@
+<!-- TODO: 等待pr合并 -->
+
 # relizy：Windows 下 independent 发版误报「No packages to bump, no relevant commits found」
 
 > 本文档用于向 [LouisMazel/relizy](https://github.com/LouisMazel/relizy) 提交 issue 时的背景说明与复现材料；亦供本仓库排错参考。
