@@ -168,6 +168,16 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 验证方式：数据库层验证外键约束存在；模块依赖图无循环。
 - 后续约束：模块依赖必须遵循分层架构，低层级模块不得引用高层级模块。跨层级引用需要重新组织模块结构，而非强行添加外键。
 
+### 仓库级 Git：Windows CRLF 行尾与「幽灵 modified」事故
+
+- 问题现象：某文件（例如 `apps/admin/src/views/login/utils/motion.ts`）在 `git status` 中反复显示为已修改，但 `git diff` 看起来「每一行都变了」、语义却完全相同；或出现「diff 为空但仍显示 modified」的循环。其他项目（如 monorepo）也可能出现同类现象。
+- 实际根因：索引中的 blob 为 LF（`i/lf`），工作区磁盘文件为 CRLF（`w/crlf`）。项目若长期缺少 `.gitattributes` 统一 `eol`，而全局 `core.autocrlf=false`，则 IDE、杀毒、历史 checkout 等可能把文件写成 CRLF；CRLF 与 LF 的物理字节数不同（每行多 `\r`），stat 缓存难以稳定命中，Git 反复重检，表现为「幽灵」修改。
+- 关键线索：`git ls-files --eol <路径>` 显示 `i/lf w/crlf` 即可确诊；不要用「三个 hash 一致」排除 CRLF——hash 在归一化后计算，与磁盘是否 CRLF 无关。
+- 关键误导点：误以为 `git checkout -- .` 或反复 `git add` 能根治；若未把磁盘物理行尾改为 LF 并配合 `git add --renormalize`，问题会复发。误以为「没有改代码」就不是真实问题——行尾是真实差异，只是 diff 常以换行归一化方式展示。
+- 有效修复：（1）在仓库根新增 `.gitattributes`，对文本统一 `* text=auto eol=lf`（并声明常见二进制后缀为 `binary`）；（2）对仍显示 `w/crlf` 的已跟踪文件，用工具将内容写回 LF（例如 PowerShell 读字节 → 将 `\r\n` 替换为 `\n` → 写回）；（3）执行 `git add --renormalize .` 刷新索引与 stat 缓存；（4）一次性提交 `.gitattributes` 与行尾归一化结果，避免后续同事再踩坑。
+- 验证方式：`git ls-files --eol` 输出中不再出现 `w/crlf`；`git status` 干净；抽查文件与 `HEAD` 在逻辑上一致。
+- 后续约束：在 Windows 上遇到「莫名其妙多出的修改」时，先跑 `git ls-files --eol` 看工作区行尾，再决定是否需要归一化；新仓库应尽早提交 `.gitattributes`。不要把此类问题记成「某 AI 误改」——优先从行尾与 `.gitattributes` 缺失排查。
+
 ## 写入经验时必须保留的额外信息
 
 如果这次 bug 与仓库已有事故模式相似，写记忆时不要遗漏下面这些额外信息：
@@ -175,7 +185,7 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 这次问题是否打破了某个"用户已确认稳定"的基线
 - 是否存在"不要乱改"的配置，例如 `pnpm.overrides`
 - 首个可信信号来自哪里，是终端日志、浏览器 console、网络请求，还是构建输出
-- 这次修复属于哪一类：依赖实例统一、废弃 API 清理、导入路径修正、类型断言补齐、Schema 设计缺陷修正、迁移文件重置、测试环境配置修正、Seed 流程简化、模块分层重组
+- 这次修复属于哪一类：依赖实例统一、废弃 API 清理、导入路径修正、类型断言补齐、Schema 设计缺陷修正、迁移文件重置、测试环境配置修正、Seed 流程简化、模块分层重组、Git 行尾归一化与 `.gitattributes`
 - 这次是否存在误导性很强的假象，例如"看起来像版本冲突，实际是实例重复"
 - 最终验证是否基于 fresh 进程、fresh 日志和 fresh 页面，而不是历史缓存
 
@@ -187,6 +197,7 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 好的写法：`pnpm exec tsc --noEmit 输出中 drizzle-orm 相关错误为 0`
 - 好的写法：`4 个修复文件均无类型错误输出`
 - 好的写法：`pnpm install 后 drizzle-orm 版本为 0.42.0，peer dependency 无冲突`
+- 好的写法：`git ls-files --eol` 中目标文件不再出现 `w/crlf`，`git status` 无未提交变更
 - 不好的写法：`应该没问题了`
 - 不好的写法：`看起来像是好了`
 
