@@ -432,7 +432,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 封装合适的函数，确保调用优雅清晰。且提供详细清晰的注释，说明清楚为什么要这样改动。
 
-## 036 <!-- TODO: --> 全面替换 structuredClone
+## 036 <!-- done: 2026-03-24 --> 全面替换 structuredClone
 
 全面替换，废弃，不使用 structuredClone，因为弹窗打开时会因为 Vue props proxy 报错。换成 cloneDeep 。
 
