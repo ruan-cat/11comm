@@ -38,6 +38,16 @@ export interface UserFormProps {
 }
 ```
 
+## `form.vue` 内部数据（深拷贝）
+
+弹窗/抽屉传入的 `props.form` 可能是 **Vue Proxy**，**禁止** 使用 `structuredClone` 做初始化。
+
+**必须** 使用 `cloneDeep`（`import { cloneDeep } from "@pureadmin/utils"`），与主技能 `frontend-development/SKILL.md` §6.2 一致：
+
+```typescript
+const form = ref(cloneDeep(props.form) as FieldValues & XxxFormVO);
+```
+
 ## 表单组件使用
 
 在使用表单组件时，必须传递 `mode` 属性。

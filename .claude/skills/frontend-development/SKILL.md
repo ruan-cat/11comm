@@ -16,6 +16,7 @@ license: MIT
 - `apps/admin/src/pages/**/components/dialog.ts`
 - `apps/admin/src/api/**`
 - `apps/admin/src/composables/**`
+- 本技能配套参考：`references/list-page-pattern.md`、`references/form-standards.md`、`references/api-data-fetching.md`（须与本节及 §5、§6 的 `cloneDeep` / 禁止 `structuredClone` 约定一致）
 
 ## 2. 核心原则
 
@@ -24,7 +25,7 @@ license: MIT
 3. 页面配置对象、表格列、搜索配置、表单配置优先使用 `computed` 或 `useI18nConfig().withLocale()`，不要继续堆静态 `ref`。
 4. i18n key 必须直接写在组件里，写成 `$t("xxx.xxx")`，不要再二次封装 `$t`。
 5. 表格列标题需要动态切语言时，一律使用 `headerRenderer`，不要继续写静态 `label`。
-6. `form.vue` 内部表单数据优先 `ref(cloneDeep(props.form))`，不要用 `structuredClone(props.form)` 处理弹窗传入的 props proxy。
+6. 列表页默认快照与弹窗表单初始化统一使用 `cloneDeep`（`import { cloneDeep } from "@pureadmin/utils"`），**禁止** `structuredClone`（对 Vue reactive/proxy 不安全，弹窗场景易报错）。
 
 ## 3. 页面文件结构
 
@@ -93,12 +94,14 @@ const { locale, withLocale, createHeaderRenderer, searchProps } = useI18nConfig(
 标准顺序：
 
 ```ts
+import { cloneDeep } from "@pureadmin/utils";
+
 const plusSearchModelRef: FieldValues & Partial<QueryParams> = {
 	name: "",
 	status: "",
 };
 
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 const plusSearchModel = ref(plusSearchModelRef);
 ```
 
@@ -239,8 +242,7 @@ const formComputed = computed(() => form.value);
 
 约束：
 
-- 优先 `cloneDeep(props.form)`。
-- 不要使用 `structuredClone(props.form)`，弹窗场景下容易踩到 props proxy 问题。
+- 优先 `cloneDeep(props.form)`；**禁止** `structuredClone(props.form)`（Vue proxy 下不稳定）。
 - `formComputed` 暴露给弹窗关闭前比较逻辑。
 
 ### 6.3 表单配置对象

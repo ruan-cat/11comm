@@ -54,13 +54,15 @@ export function useUserListQuery(initialParams: Partial<UserQueryParams>) {
 列表页面 **必须** 使用带有 `plusSearchDefaultValues` 的 Hook。
 
 ```typescript
-// 1. 定义模型引用
-const plusSearchModelRef = ref<Partial<UserQueryParams>>({ ... });
+import { cloneDeep } from "@pureadmin/utils";
 
-// 2. 定义默认值 (使用 structuredClone)
-const plusSearchDefaultValues = structuredClone(plusSearchModelRef);
+// 1. 定义搜索模型字面量（非 ref）
+const plusSearchModelRef: FieldValues & Partial<UserQueryParams> = { ... };
 
-// 3. 初始化模型
+// 2. 定义默认值（深拷贝快照，供 Hook 与重置使用）
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+
+// 3. 可编辑的搜索模型
 const plusSearchModel = ref(plusSearchModelRef);
 
 // 4. 调用 Hook
@@ -81,7 +83,7 @@ const {
 
 ```typescript
 function handleReSearch() {
-	plusSearchModel.value = structuredClone(plusSearchDefaultValues);
+	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 ```

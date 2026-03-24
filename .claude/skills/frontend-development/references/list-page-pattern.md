@@ -11,11 +11,12 @@
     - **必须** 使用 `Partial<{Page}QueryParams>` 类型约束。
 
 2.  **默认值 (`plusSearchDefaultValues`)**:
-    - 定义搜索表单的默认值。
+    - 对 `plusSearchModelRef` 做**深拷贝快照**，供 Hook 初始参数与 `handleReSearch` 重置使用。
+    - **必须** 使用 `cloneDeep(plusSearchModelRef)`（`import { cloneDeep } from "@pureadmin/utils"`）。
+    - **禁止** `structuredClone`：对 Vue reactive / Proxy 不安全，弹窗与搜索重置场景易报错。
 
-3.  **搜索模型初始化 (`plusSearchModel`)**:
-    - 使用 `useMode` 或类似组合式函数初始化完整的搜索模型。
-    - 结合 `plusSearchModelRef` 和 `plusSearchDefaultValues`。
+3.  **搜索模型 (`plusSearchModel`)**:
+    - `plusSearchModelRef` 为**普通对象字面量**（非 `ref`）；`const plusSearchModel = ref(plusSearchModelRef)` 持有可编辑的搜索状态。
 
 4.  **API Hooks (`use...Api`)**:
     - 调用数据获取的 API Hook。
@@ -23,27 +24,35 @@
 
 ## 代码示例 (Code Example)
 
-```typescript
-// 1. 定义搜索模型引用 (Define Search Model Ref)
-const plusSearchModelRef = ref<Partial<UserQueryParams>>({});
+与主技能 `frontend-development/SKILL.md` §5.2、以及 `references/api-data-fetching.md` **保持一致**：
 
-// 2. 定义默认值 (Define Default Values)
-const plusSearchDefaultValues = {
-	status: "enabled",
-	role: "admin",
+```typescript
+import { ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+
+// 1. 搜索模型字面量（类型按页面 QueryParams 约束）
+const plusSearchModelRef: FieldValues & Partial<UserQueryParams> = {
+	name: "",
+	status: "",
 };
 
-// 3. 初始化搜索模型 (Initialize Search Model)
-const { plusSearchModel } = useMode({
-	plusSearchModelRef,
-	plusSearchDefaultValues,
-});
+// 2. 默认值快照（深拷贝）
+const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
+const plusSearchModel = ref(plusSearchModelRef);
 
-// 4. 调用 API Hook (Call API Hook)
-const { data, refresh } = useUserApi({
-	searchModel: plusSearchModel,
-});
+// 3. 在模型与默认值就绪后调用列表 Query Hook
+const {
+	pureTableProps,
+	isFetching,
+	updateParams,
+	resetParams,
+	doFetch,
+	handlePageSizeChange,
+	handleCurrentPageChange,
+} = useUserListQuery(plusSearchDefaultValues);
 ```
+
+重置搜索示例：`plusSearchModel.value = cloneDeep(plusSearchDefaultValues)`（见 `api-data-fetching.md`）。
 
 ## 为什么顺序很重要 (Why This Order Matters)
 
