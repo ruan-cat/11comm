@@ -6,6 +6,14 @@ import { fileURLToPath } from "node:url";
 import { parsePnpmWorkspaceYaml } from "pnpm-workspace-yaml";
 import type { PackageJson } from "pkg-types";
 
+/**
+ * 本脚本将 `process.argv` 原样转发给 relizy CLI。
+ *
+ * **`release` / `bump` 建议附带 `--yes`**：`relizy` 在应用版本计划前会交互询问
+ * 「Do you want to proceed with these version updates?」。在终端、CI、`pnpm` 脚本中若
+ * 未关闭该提示，进程会一直等待 stdin，看起来像“卡死”。`--yes` 对应上游选项
+ * *Skip confirmation prompt about bumping packages*，与改发版算法无关。
+ */
 const WINDOWS_GNU_COMMANDS = ["grep", "head", "sed"] as const;
 
 /** 发版基线 tag 校验所需的最小字段，由 {@link PackageJson} 派生，避免重复定义 shape。 */
@@ -202,7 +210,7 @@ function resolveRelizyEntrypoint() {
 export function runRelizyRunner(relizyArgs: string[]) {
 	if (relizyArgs.length === 0) {
 		console.error("用法：pnpm exec tsx scripts/relizy-runner.ts <relizy 子命令与参数>");
-		console.error("示例：pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release");
+		console.error("示例：pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release --yes");
 		return 1;
 	}
 
