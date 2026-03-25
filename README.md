@@ -68,10 +68,10 @@ pnpm --filter @01s-11comm/admin dev
 - [`relizy.config.ts`](./relizy.config.ts) 使用 [`pnpm-workspace-yaml`](https://github.com/antfu/pnpm-workspace-utils/tree/main/packages/pnpm-workspace-yaml) 解析工作区清单（`monorepo.packages`），并对 `!` 开头的排除项做过滤；changelog 生成后的格式化由根脚本 **`pnpm run format:changelog`** 执行（定义在 [package.json](./package.json) 的 `format:changelog`）。
 - [`scripts/relizy-runner.ts`](./scripts/relizy-runner.ts) 同样用该库解析 `pnpm-workspace.yaml`，枚举 `apps/*` 下一级子包，用于 **基线 tag** 检查（仅 **`release` / `bump`** 会触发）。
 
-这里额外包一层 `tsx scripts/relizy-runner.ts`，**不是为了改 relizy 的发版逻辑**，而是为了补两类前置约束：**Windows** 下给 relizy 补齐 `grep` / `head` / `sed` 依赖；**首次接入 independent** 时先检查子包基线 tag。包装层通过后，才等价于执行：
+这里额外包一层 `tsx scripts/relizy-runner.ts`，**不是为了改 relizy 的发版逻辑**，而是为了补两类前置约束：**Windows** 下给 relizy 补齐 `grep` / `head` / `sed` 依赖；**首次接入 independent** 时先检查子包基线 tag。包装层通过后，才等价于执行（与根目录 `package.json` 中 `release` / `release:relizy` 脚本一致）：
 
 ```bash
-relizy release --no-publish --no-provider-release
+relizy release --no-publish --no-provider-release --yes
 ```
 
 发版入口仍应统一走 **relizy-runner**：在 Windows 上为 relizy 补齐 Git 自带的 `grep` / `head` / `sed` 路径；在 `release` / `bump` 前校验 independent 基线 tag（首次发版前需按提示补打 tag）。**不要绕过 runner** 直接调用 `relizy`，以免在 PowerShell 下踩上游 shell 依赖问题。
@@ -80,6 +80,12 @@ relizy release --no-publish --no-provider-release
 
 - Windows 下自动补齐 **Git for Windows** 的 `usr\bin` 等路径，避免 `relizy` 内部调用 `grep`、`head`、`sed` 失败。
 - 首次接入时检查每个子包是否已有 **`@scope/pkg@x.y.z`** 形式的 package tag；若没有，会直接打印需要补打的基线 tag 命令，而不是等 `relizy` 进入内部流程后再报错。
+
+### `--yes` 是做什么的？
+
+`relizy release` 在真正 bump 前会弹出交互确认：**「Do you want to proceed with these version updates?」**。本地用终端跑、或在 CI / 自动化里没有附加输入时，进程会一直等 `(Y/n)`，表现为**卡住不动**。
+
+根脚本里的 **`--yes`** 是 relizy 官方选项（帮助文案：_Skip confirmation prompt about bumping packages_），用来**跳过这一步确认**，不改变版本计算、changelog 或 commit/tag 逻辑。若你需要人工过目计划再确认，可自行去掉 `--yes`，改用交互式终端执行 `pnpm exec tsx scripts/relizy-runner.ts release ...`（不加 `--yes`）。
 
 ### 常用命令
 
@@ -90,8 +96,8 @@ pnpm release
 # 等价写法
 pnpm run release:relizy
 
-# 等价于实际执行的（便于对照参数）
-pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release
+# 等价于实际执行的（便于对照参数；含非交互确认）
+pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release --yes
 ```
 
 **执行效果（`pnpm release` / `pnpm release:relizy` 默认）**
@@ -113,7 +119,7 @@ pnpm release:relizy -- --patch --dry-run --no-clean
 仅本地生成提交与 tag、**不 push**：
 
 ```bash
-pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release --no-push
+pnpm exec tsx scripts/relizy-runner.ts release --no-publish --no-provider-release --yes --no-push
 ```
 
 **注意事项**
@@ -132,7 +138,7 @@ relizy 支持全局 `--dry-run`：**不写入文件、不创建 tag/commit、不
 pnpm exec tsx scripts/relizy-runner.ts changelog --dry-run
 
 # 预览完整 release（仍会先经过 runner 的基线 tag 检查）
-pnpm exec tsx scripts/relizy-runner.ts release --dry-run --no-publish --no-provider-release
+pnpm exec tsx scripts/relizy-runner.ts release --dry-run --no-publish --no-provider-release --yes
 ```
 
 若尚未为各包打过 `@scope/pkg@version` 形式的 tag，runner 会先报错并给出 `git tag` 命令；应先补基线 tag，或在已具备 tag 的分支再试。
@@ -197,7 +203,7 @@ git push origin "@01s-11comm/admin@6.0.0" "@01s-11comm/type@1.0.0"
 - 需要在 **Windows 本地**直接执行发版命令。当前 **`relizy@1.2.1`** 在 independent 模式下会直接调用 `grep` / `head` / `sed` 处理 git tag；Git Bash 或 CI 通常无妨，但 **PowerShell / cmd** 下不一定天然可用。
 - **首次接入** independent，仓库里还没有每个子包各自的**基线 tag**。此时 `relizy` 需要先知道每个包从哪个 `@scope/pkg@x.y.z` tag 起算后续变更，否则第一次发版基线不清晰，上游报错也不够直观。
 
-本项目**同时满足**上述两点，因此 [package.json](./package.json) 没有直接写成 `relizy release --no-publish --no-provider-release`，而是先通过 **`tsx scripts/relizy-runner.ts`** 做前置处理：
+本项目**同时满足**上述两点，因此 [package.json](./package.json) 没有直接写成裸 `relizy release ...`（标准发版脚本为 `release --no-publish --no-provider-release --yes`，另见上文「`--yes`」），而是先通过 **`tsx scripts/relizy-runner.ts`** 做前置处理：
 
 - 在 Windows 下自动补齐 Git for Windows 的 GNU 工具路径，确保 `grep` / `head` / `sed` 可用。
 - 在真正调用 `relizy` 前，先检查 `apps/*` 子包是否已有基线 package tag；若没有，直接打印应补的 `git tag` / `git push` 命令，而不是等 `relizy` 内部再抛出不友好的错误。
