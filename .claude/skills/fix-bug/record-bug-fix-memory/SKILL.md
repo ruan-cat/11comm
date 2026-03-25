@@ -172,11 +172,12 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 
 - 问题现象：某文件（例如 `apps/admin/src/views/login/utils/motion.ts`）在 `git status` 中反复显示为已修改，但 `git diff` 看起来「每一行都变了」、语义却完全相同；或出现「diff 为空但仍显示 modified」的循环。其他项目（如 monorepo）也可能出现同类现象。
 - 实际根因：索引中的 blob 为 LF（`i/lf`），工作区磁盘文件为 CRLF（`w/crlf`）。项目若长期缺少 `.gitattributes` 统一 `eol`，而全局 `core.autocrlf=false`，则 IDE、杀毒、历史 checkout 等可能把文件写成 CRLF；CRLF 与 LF 的物理字节数不同（每行多 `\r`），stat 缓存难以稳定命中，Git 反复重检，表现为「幽灵」修改。
-- 关键线索：`git ls-files --eol <路径>` 显示 `i/lf w/crlf` 即可确诊；不要用「三个 hash 一致」排除 CRLF——hash 在归一化后计算，与磁盘是否 CRLF 无关。
-- 关键误导点：误以为 `git checkout -- .` 或反复 `git add` 能根治；若未把磁盘物理行尾改为 LF 并配合 `git add --renormalize`，问题会复发。误以为「没有改代码」就不是真实问题——行尾是真实差异，只是 diff 常以换行归一化方式展示。
-- 有效修复：（1）在仓库根新增 `.gitattributes`，对文本统一 `* text=auto eol=lf`（并声明常见二进制后缀为 `binary`）；（2）对仍显示 `w/crlf` 的已跟踪文件，用工具将内容写回 LF（例如 PowerShell 读字节 → 将 `\r\n` 替换为 `\n` → 写回）；（3）执行 `git add --renormalize .` 刷新索引与 stat 缓存；（4）一次性提交 `.gitattributes` 与行尾归一化结果，避免后续同事再踩坑。
-- 验证方式：`git ls-files --eol` 输出中不再出现 `w/crlf`；`git status` 干净；抽查文件与 `HEAD` 在逻辑上一致。
-- 后续约束：在 Windows 上遇到「莫名其妙多出的修改」时，先跑 `git ls-files --eol` 看工作区行尾，再决定是否需要归一化；新仓库应尽早提交 `.gitattributes`。不要把此类问题记成「某 AI 误改」——优先从行尾与 `.gitattributes` 缺失排查。
+- **二次复发根因（2026-03-25）**：即使 `.gitattributes` 和 `.editorconfig` 都已正确配置 `eol=lf`，如果 Prettier 的 `endOfLine` 设为 `"auto"`，Prettier 在 Windows 上仍会保留/引入 CRLF。同时若 `.vscode/settings.json` 缺少 `"files.eol": "\n"`，VSCode/Cursor 在 Windows 上默认使用 CRLF 打开文件，再由 `endOfLine: "auto"` 的 Prettier 保留 CRLF 行尾写回磁盘。这形成了一个 `.gitattributes` 无法拦截的 CRLF 回注链：`git checkout (LF) → 编辑器打开 (转 CRLF) → Prettier 保存 (保留 CRLF) → git status (幽灵 modified)`。
+- 关键线索：`git ls-files --eol <路径>` 显示 `i/lf w/crlf` 即可确诊；也可用 `node -e` 对比文件字节数与 blob 字节数（CRLF 的文件比 LF 的 blob 多出 `\r` 个数的字节）。不要用「三个 hash 一致」排除 CRLF——`git hash-object` 默认按 `.gitattributes` 做 clean filter 归一化后计算 hash，与磁盘是否 CRLF 无关。
+- 关键误导点：（1）`.gitattributes` 已存在且配置正确，容易误以为「行尾配置已完善，不可能是 CRLF 问题」——实际上 `.gitattributes` 只管 Git 的 clean/smudge 层，不管编辑器和格式化工具的行为。（2）`git diff` 输出为空容易让人往权限、encoding、stat 缓存等方向排查——实际上 `git diff` 默认做 text 归一化对比，CRLF vs LF 会被吞掉。（3）误以为 `git checkout -- .` 或反复 `git add` 能根治；若 Prettier/编辑器仍在写 CRLF，下次保存就会复发。
+- 有效修复：（1）在仓库根新增 `.gitattributes`，对文本统一 `* text=auto eol=lf`（并声明常见二进制后缀为 `binary`）；（2）**将 `prettier.config.mjs` 的 `endOfLine` 从 `"auto"` 改为 `"lf"`**——这是阻断 CRLF 回注链的关键一环；（3）**在 `.vscode/settings.json` 添加 `"files.eol": "\n"`**——防止编辑器在 Windows 上默认以 CRLF 打开文件；（4）对仍显示 `w/crlf` 的已跟踪文件，用工具将内容写回 LF（例如 Node.js 读 Buffer → 将 `\r\n` 替换为 `\n` → 写回）；（5）执行 `git add --renormalize .` 刷新索引与 stat 缓存；（6）一次性提交所有归一化结果。
+- 验证方式：文件字节数与 `git cat-file -p <blob-hash>` 的字节数一致（说明磁盘 LF = blob LF）；`git status` 干净；`git update-index --refresh` 无 `needs update` 输出。
+- 后续约束：在 Windows 上遇到「莫名其妙多出的修改」时，按优先级排查：① `git ls-files --eol` 看工作区行尾；② Prettier 的 `endOfLine` 是否为 `"lf"`（`"auto"` 在 Windows 上是定时炸弹）；③ `.vscode/settings.json` 是否有 `"files.eol": "\n"`；④ `.gitattributes` 是否存在 `eol=lf`。四层配置必须协同一致，缺一层就可能复发。不要把此类问题记成「某 AI 误改」——优先从行尾配置栈排查。
 
 ## 写入经验时必须保留的额外信息
 
@@ -185,7 +186,7 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 这次问题是否打破了某个"用户已确认稳定"的基线
 - 是否存在"不要乱改"的配置，例如 `pnpm.overrides`
 - 首个可信信号来自哪里，是终端日志、浏览器 console、网络请求，还是构建输出
-- 这次修复属于哪一类：依赖实例统一、废弃 API 清理、导入路径修正、类型断言补齐、Schema 设计缺陷修正、迁移文件重置、测试环境配置修正、Seed 流程简化、模块分层重组、Git 行尾归一化与 `.gitattributes`
+- 这次修复属于哪一类：依赖实例统一、废弃 API 清理、导入路径修正、类型断言补齐、Schema 设计缺陷修正、迁移文件重置、测试环境配置修正、Seed 流程简化、模块分层重组、Git 行尾归一化与 `.gitattributes`、格式化工具行尾配置矛盾
 - 这次是否存在误导性很强的假象，例如"看起来像版本冲突，实际是实例重复"
 - 最终验证是否基于 fresh 进程、fresh 日志和 fresh 页面，而不是历史缓存
 
