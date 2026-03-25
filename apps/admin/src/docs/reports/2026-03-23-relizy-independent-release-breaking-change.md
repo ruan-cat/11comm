@@ -1,4 +1,7 @@
-<!-- 看情况可以删除掉 -->
+<!--
+  TODO: 需要整合到通用工具包的说明文档内
+  有参考意义 不予删除
+-->
 
 # 2026-03-23 接入 Relizy 独立发版方案并调整子包 private 约束
 
@@ -22,7 +25,7 @@
 ## 本次改动
 
 - 根目录新增 [`relizy.config.ts`](./../../../../../relizy.config.ts)。
-- 根 `package.json` 新增 `release:relizy` 命令，通过 [`scripts/relizy-runner.ts`](./../../../../../scripts/relizy-runner.ts) 在仓库内执行 `relizy release --no-publish --no-provider-release`。
+- 根 `package.json` 新增 `release` / `release:relizy` 命令，通过 [`scripts/relizy-runner.ts`](./../../../../../scripts/relizy-runner.ts) 在仓库内执行 `relizy release --no-publish --no-provider-release --yes`（`--yes` 用于跳过 bump 前的交互确认，见 README「Relizy 发版」小节）。
 - `relizy` monorepo 包范围改为 `apps/*`，实际覆盖 `apps/admin` 和 `apps/type`。
 - `relizy.config.ts` 直接复用 [`changelog.config.ts`](./../../../../../changelog.config.ts) 的 `types` 和 `templates`。
 - 保留根 changelog，同时为每个子包生成独立 changelog。
@@ -72,7 +75,7 @@ git push origin "@01s-11comm/admin@6.0.0" "@01s-11comm/type@1.0.0"
 
 当前缓解措施只有两层：
 
-- 标准命令固定使用 `relizy release --no-publish --no-provider-release`
+- 标准命令固定使用 `relizy release --no-publish --no-provider-release --yes`（避免交互确认在无 TTY/CI 下阻塞）
 - `relizy.config.ts` 默认也关闭了 `publish` 与 `providerRelease`
 
 这能阻止当前发版流程误发 npm，但它不是等价于 `private: true` 的硬保护。
@@ -99,11 +102,13 @@ git push origin "@01s-11comm/admin@6.0.0" "@01s-11comm/type@1.0.0"
 pnpm release:relizy
 ```
 
-实际执行：
+实际执行（经 runner 调用 relizy；与根 `package.json` 脚本一致）：
 
 ```bash
-relizy release --no-publish --no-provider-release
+relizy release --no-publish --no-provider-release --yes
 ```
+
+`--yes`：`relizy` 默认会在 bump 前询问是否继续；不加则在许多环境下会卡住等待输入。详见仓库根目录 [README.md](../../../../../README.md) 中「`--yes` 是做什么的？」。
 
 推荐发版示例：
 
