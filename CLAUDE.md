@@ -260,6 +260,17 @@ openspec validate {任务名称} --strict
 7. 使用组合式函数处理共享逻辑
 8. 测试文件与实现文件共同定位
 
+## 11.1. Windows 行尾配置一致性（防止幽灵 git modified）
+
+本项目在 Windows 上必须保持四层行尾配置协同一致，缺一层就会导致文件反复出现「幽灵 modified」：
+
+1. `.gitattributes`：`* text=auto eol=lf`
+2. `.editorconfig`：`end_of_line = lf`
+3. `prettier.config.mjs`：`endOfLine: "lf"`（**禁止** `"auto"`，`"auto"` 在 Windows 上会保留/引入 CRLF）
+4. `.vscode/settings.json`：`"files.eol": "\n"`
+
+遇到「git status 显示 modified 但 git diff 为空」时，按此顺序排查。详见 `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md` 中的 CRLF 幽灵修改事故记录。
+
 ## 12. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。
