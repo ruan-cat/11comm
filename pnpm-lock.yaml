@@ -151,8 +151,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(prettier@3.8.1)
       relizy:
-        specifier: ^1.2.1
-        version: 1.2.1(@types/node@24.12.0)(magicast@0.3.5)
+        specifier: 1.2.2-beta.0
+        version: 1.2.2-beta.0(@types/node@24.12.0)(magicast@0.3.5)
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -11680,9 +11680,9 @@ packages:
       { integrity: sha512-cnE+y8bz4NhMjISKbgeVJtqNbtf5QpjZP+Bslo+UqkIt9QPnX9q095eiRRASJG1/tz6dlNr6Z5NsBiWYokp6EQ== }
     hasBin: true
 
-  relizy@1.2.1:
+  relizy@1.2.2-beta.0:
     resolution:
-      { integrity: sha512-ZGiXzj+EOTkQv+OmICjs3dHgi1QCx6g1M1zyezOsL/hCblQbjyQWjEBrUcipJfy/1odiNkelygCnlwQEwyzyCg== }
+      { integrity: sha512-QOWGSq0dLaALl28r5OB7ha1jUU+aATAV7Ao4ugcRGgXxDQbZFsXud09nqojk42j0N0b12VV5pqVjYg7E7fIESQ== }
     engines: { node: ">=20.0.0" }
     hasBin: true
     peerDependencies:
@@ -24091,7 +24091,7 @@ snapshots:
     dependencies:
       jsesc: 3.0.2
 
-  relizy@1.2.1(@types/node@24.12.0)(magicast@0.3.5):
+  relizy@1.2.2-beta.0(@types/node@24.12.0)(magicast@0.3.5):
     dependencies:
       "@inquirer/prompts": 8.3.2(@types/node@24.12.0)
       "@maz-ui/node": 4.6.1
