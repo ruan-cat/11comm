@@ -1,5 +1,36 @@
 # 6.0.0 (2025-04-10)
 
+## @01s-11comm/admin@6.1.0 (2026-03-25)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.0.0...@01s-11comm/admin@6.1.0)
+
+### ✨ 新增功能
+
+- **admin:** 重做登录页动效、背景与主题过渡 ([2ac3bc28](https://github.com/ruan-cat/11comm/commit/2ac3bc28))
+
+  接入 motion-v 入场动效；极光流光与背景渐变流动；明暗主题双图层交叉淡入淡出；
+  simple 布局改用 100% 宽度避免横向滚动；登录区靠右栅格；光斑与 motion 的 transform 解耦以恢复漂移动画；
+  第三方登录枚举改为 titleKey 与运行时 t() 解析。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### 🐞 修复缺陷
+
+- **admin:** 列表与弹窗深拷贝改用 cloneDeep 替代 structuredClone ([e214aa2c](https://github.com/ruan-cat/11comm/commit/e214aa2c))
+
+  structuredClone 在 Vue reactive/proxy 场景下不稳定，易导致弹窗与搜索重置异常。
+  统一使用 @pureadmin/utils 的 cloneDeep，并补全相关 import。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### 📖 Documentation
+
+- **admin:** 标记杂项提示词 036 structuredClone 迁移为已完成 ([ba4ddce7](https://github.com/ruan-cat/11comm/commit/ba4ddce7))
+
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ### ✔️ Refactor
 
 - Refactor the icon module, use `@iconify/json` to replace the `@iconify-icons/*` dependency that is no longer maintained and updated, optimize the user experience, ensure that the icon library can be continuously updated and support `Tree-shaking`
