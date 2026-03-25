@@ -1,4 +1,5 @@
 <!-- TODO: 等待pr合并 -->
+<!-- TODO: 需要整合到通用工具包的说明文档内 -->
 
 # relizy：Windows 下 independent 发版误报「No packages to bump, no relevant commits found」
 
@@ -94,7 +95,7 @@ pnpm run repro:relizy-path
 ## 本仓库上下文
 
 - 本 monorepo 使用 `independent` 与 `@scope/pkg@version` baseline tag。
-- 发版入口：`pnpm release` / `pnpm release:relizy` → `scripts/relizy-runner.ts`。
+- 发版入口：`pnpm release` / `pnpm release:relizy` → `scripts/relizy-runner.ts`（脚本含 `--yes`，避免 relizy 在 bump 前交互确认导致终端或 CI 阻塞；说明见根 [README.md](../../../README.md)）。
 
 ---
 
