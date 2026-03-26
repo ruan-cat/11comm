@@ -1,5 +1,6 @@
-<!-- TODO: 等待pr合并 -->
-<!-- TODO: 需要整合到通用工具包的说明文档内 -->
+<!-- 已合并 等待pr合并 -->
+
+> 说明文档同步结论：若其他仓库复用本仓库这套 `relizy-runner` / relizy 接入方案，通用说明文档中应明确写明两点。第一，当前 runner 只负责补齐 **Windows 下 `grep` / `head` / `sed` 依赖** 与 **independent 首次接入时的 baseline tag 校验**，**不修复** `relizy@1.2.1` 在 Windows 下基于 `commit.body.includes(path.relative(...))` 的路径过滤误判。第二，若在 Windows 环境中已经补齐 GNU 工具、也已有 package baseline tag，却仍出现 `No packages to bump, no relevant commits found`，应优先排查本问题，而不是误判为 commit type、Emoji 或 runner 入口使用错误。
 
 # relizy：Windows 下 independent 发版误报「No packages to bump, no relevant commits found」
 
