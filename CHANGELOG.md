@@ -1,5 +1,33 @@
 # Changelog
 
+**Multiple Packages Updated** - 2026-03-26
+
+## @01s-11comm/admin@6.1.2 (2026-03-26)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.1...@01s-11comm/admin@6.1.2)
+
+### 📖 Documentation
+
+- **admin:** 同步 relizy 独立发版报告中的标准命令 ([c573b4cc](https://github.com/ruan-cat/11comm/commit/c573b4cc))
+
+  使破坏性变更说明与当前 release 脚本一致，并链到根 README 中关于 --yes 的说明。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+- **relizy:** 同步 relizy 独立发版报告与 Windows 路径 issue 说明 ([13687d74](https://github.com/ruan-cat/11comm/commit/13687d74))
+  - 将「待整合到通用工具包」类 TODO 标记为已合并状态
+  - 在 Windows path / body filter issue 中补充通用文档应写明的两点结论（runner 职责边界与排错优先级）
+    Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
+## @01s-11comm/type@1.1.1 (2026-03-26)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.0...@01s-11comm/type@1.1.1)
+
+No relevant changes for this release
+
 **Multiple Packages Updated** - 2026-03-25
 
 ## @01s-11comm/admin@6.1.1 (2026-03-25)
