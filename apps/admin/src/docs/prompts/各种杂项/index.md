@@ -436,11 +436,11 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 全面替换，废弃，不使用 structuredClone，因为弹窗打开时会因为 Vue props proxy 报错。换成 cloneDeep 。
 
-## 037 <!-- TODO: --> 去检查 relizy 仓库，是不是真的出现路径是被导致的错误
+## 037 <!-- 已完成。是的，是 relizy 导致了 window 系统的路径识别故障 --> 去检查 relizy 仓库，是不是真的出现路径是被导致的错误
 
 - 相关调研数据： docs\issues\relizy
 
-## 038 <!-- TODO: --> 优化 relizy 脚本代码
+## 038 <!-- TODO: 等待我完成一系列pr 就可以实现脚本优化了 --> 优化 relizy 脚本代码
 
 1. 用全局 init-relizy 技能来优化本仓库的脚本。
 2. 及时更新 README 文档，说明清楚不再使用具体的脚本文件来完成发版了。
