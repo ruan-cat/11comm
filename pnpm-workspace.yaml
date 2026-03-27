@@ -33,5 +33,3 @@ onlyBuiltDependencies:
 overrides:
   css-select@^5.2.1: 5.2.0
   drizzle-orm: 0.42.0
-  # 本地联调 relizy：保留下一行；无需本地包时删除 relizy 行并执行 pnpm i 重算 lockfile
-  relizy: link:../relizy__ruan-cat
