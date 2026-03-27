@@ -5,7 +5,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"timeout": 10
 					}
 				]
@@ -16,7 +16,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"timeout": 10
 					}
 				]
@@ -27,7 +27,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"timeout": 10
 					}
 				]
@@ -38,7 +38,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"timeout": 10
 					}
 				]
@@ -49,11 +49,12 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"timeout": 10
 					}
 				]
 			}
 		]
-	}
+	},
+	"version": 1
 }

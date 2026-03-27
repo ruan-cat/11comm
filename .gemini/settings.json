@@ -7,7 +7,7 @@
 					{
 						"name": "memorix-session-start",
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"description": "Load memorix context at session start"
 					}
 				]
@@ -20,7 +20,7 @@
 					{
 						"name": "memorix-after-tool",
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"description": "Record tool usage in memorix"
 					}
 				]
@@ -33,7 +33,7 @@
 					{
 						"name": "memorix-after-agent",
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"description": "Record agent response in memorix"
 					}
 				]
@@ -46,11 +46,12 @@
 					{
 						"name": "memorix-pre-compress",
 						"type": "command",
-						"command": "cmd /c memorix hook",
+						"command": "memorix.cmd hook",
 						"description": "Save context before compression"
 					}
 				]
 			}
 		]
-	}
+	},
+	"version": 1
 }
