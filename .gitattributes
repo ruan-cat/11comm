@@ -1,5 +1,5 @@
-﻿# 统一强制使用 LF 行尾，防止 Windows 幽灵 git modified 问题
 * text=auto eol=lf
+# 统一强制使用 LF 行尾，防止 Windows 幽灵 git modified 问题
 
 # 二进制文件不处理行尾
 *.png binary
