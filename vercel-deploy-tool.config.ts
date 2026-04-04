@@ -51,6 +51,12 @@ export default defineConfig({
 			type: "static",
 			targetCWD: "./apps/admin/src/.vitepress/dist",
 			url: getDomains("11comm-doc"),
+			watchPaths: [
+				"apps/admin/src/docs/**",
+				"apps/admin/src/.vitepress/**",
+				"apps/admin/package.json",
+				"vercel-deploy-tool.config.ts",
+			],
 		},
 	],
 });
