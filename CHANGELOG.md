@@ -1,3 +1,13 @@
+## [0.11.4](https://github.com/ruan-cat/11comm/compare/v0.11.3...v0.11.4) (2026-04-09)
+
+- 📦 deps(root)!: 卸载 commit-and-tag-version 并消除旧链路依赖污染 ([8b2706a](https://github.com/ruan-cat/11comm/commit/8b2706adb5a30224d02bb897505b0811c985b712))
+
+### BREAKING CHANGES
+
+- 移除根级 `changelog:commit-and-tag-version` 脚本与 `commit-and-tag-version` 开发依赖。若 CI 或本地脚本仍调用该命令，请改用 `pnpm run changelog:conventional-changelog`、relizy 或 bumpp 既有发版链路。
+
+Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
 ## <small>0.11.3 (2026-04-09)</small>
 
 - 🐞 fix(ci): 修复 Vercel 部署工作流 pnpm 透传 `--` 导致 vdt deploy 参数解析失败 ([5789904](https://github.com/ruan-cat/11comm/commit/5789904))
