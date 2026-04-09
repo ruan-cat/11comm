@@ -58,22 +58,36 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # changelogithub: git log @-tag 歧义失败
-      # relizy provider-release: 单独运行缺少上下文，创建 0 个 release
-      # changelogen gh release: 内容正确但 tag 映射为 v* 格式，无法关联 scoped tag
-      # 最终方案：使用 gh CLI 直接创建 release，将 tag 名作为普通字符串处理，无歧义
+      # 最终方案：使用 gh CLI 直接创建 release，将 tag 名作为普通字符串处理，无 @ 歧义
+      # 支持两种 tag 格式：
+      #   - @scope/pkg@version（子包）→ 从 relizy 的根 CHANGELOG.md 提取对应 section
+      #   - v*（根包）→ 从 conventional-changelog 生成的根 CHANGELOG.md 提取对应 section
+      # 详见探索报告：apps/admin/src/docs/reports/2026-04-09-monorepo-sub-package-github-release-exploration.md
       - name: 从 CHANGELOG.md 提取内容并创建 GitHub Release
         if: github.ref_type == 'tag'
         run: |
           TAG="${{ github.ref_name }}"
           echo "触发 tag: $TAG"
 
-          # 转义 tag 中的特殊字符用于 awk 匹配
-          ESCAPED_TAG=$(printf '%s' "$TAG" | sed 's/[[\\.^$*+?(){}|]/\\&/g; s/\//\\\//g')
+          # 检查该 tag 的 release 是否已存在
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release '$TAG' 已存在，跳过创建"
+            exit 0
+          fi
 
-          # 从根 CHANGELOG.md 提取该 tag 对应的版本 section
-          # section 格式: ## @scope/pkg@version (date) ... 直到下一个 ## 或文件结束
-          NOTES=$(awk "/^## ${ESCAPED_TAG}[[:space:]]/{found=1; next} found && /^## [^#]/{exit} found{print}" CHANGELOG.md)
+          # 根据 tag 格式选择不同的 CHANGELOG 提取策略
+          if [[ "$TAG" == v* ]]; then
+            # 根包 tag (v0.12.0) → conventional-changelog 格式
+            # section header: ## <small>0.12.0 (2026-04-09)</small>
+            VERSION="${TAG#v}"
+            ESCAPED_VER=$(printf '%s' "$VERSION" | sed 's/[[\\.^$*+?(){}|]/\\&/g')
+            NOTES=$(awk "/^## <small>${ESCAPED_VER}[[:space:]]/{found=1; next} found && /^## /{exit} found && /^# /{exit} found{print}" CHANGELOG.md)
+          else
+            # 子包 tag (@scope/pkg@version) → relizy 格式
+            # section header: ## @scope/pkg@version (2026-04-09)
+            ESCAPED_TAG=$(printf '%s' "$TAG" | sed 's/[[\\.^$*+?(){}|]/\\&/g; s/\//\\\//g')
+            NOTES=$(awk "/^## ${ESCAPED_TAG}[[:space:]]/{found=1; next} found && /^## [^#]/{exit} found{print}" CHANGELOG.md)
+          fi
 
           if [ -z "$NOTES" ]; then
             echo "::warning::未在根 CHANGELOG.md 中找到 tag '$TAG' 对应的 section，跳过 release 创建"
@@ -82,12 +96,6 @@ jobs:
 
           echo "提取到的 release notes:"
           echo "$NOTES"
-
-          # 检查该 tag 的 release 是否已存在
-          if gh release view "$TAG" > /dev/null 2>&1; then
-            echo "Release '$TAG' 已存在，跳过创建"
-            exit 0
-          fi
 
           gh release create "$TAG" --title "$TAG" --notes "$NOTES"
           echo "成功为 tag '$TAG' 创建 GitHub Release"

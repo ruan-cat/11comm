@@ -7,12 +7,12 @@ import { defineConfig } from "bumpp";
 export default defineConfig({
 	// 不生成提交信息
 	// commit: false,
-	commit: "📢 publish: release package %s",
+	commit: "📢 publish(root): release v%s",
 	tag: "v%s",
 	// 尝试不生成 tag
 	// tag: false,
-	// 不推送到远程仓库
-	// push: false,
+	// 不推送到远程仓库，由 release 流程最后统一 git push --follow-tags
+	push: false,
 	// 在执行完 bumpp 后执行本地的更新日志生成命令
 	execute: "pnpm run changelog:conventional-changelog",
 	// execute: "pnpm run changelog:commit-and-tag-version",
