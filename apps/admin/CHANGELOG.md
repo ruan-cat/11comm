@@ -1,5 +1,21 @@
 # 6.0.0 (2025-04-10)
 
+## @01s-11comm/admin@6.1.8 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.7...@01s-11comm/admin@6.1.8)
+
+### 📖 Documentation
+
+- **admin:** 完善探索报告并清理 release workflow 临时配置 ([5c037269](https://github.com/ruan-cat/11comm/commit/5c037269))
+  - 移除 dev 分支的临时工作流触发
+  - 探索报告新增 changelogen gh release 和 gh release create 的完整验证记录
+  - 记录最终结论：gh release create 自定义脚本是 monorepo scoped tag 场景下的最佳方案
+    Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## @01s-11comm/admin@6.1.7 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.6...@01s-11comm/admin@6.1.7)
