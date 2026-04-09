@@ -2,6 +2,38 @@
 
 **Multiple Packages Updated** - 2026-04-09
 
+## @01s-11comm/admin@6.1.5 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.4...@01s-11comm/admin@6.1.5)
+
+### 📖 Documentation
+
+- **admin,type:** 补充 relizy provider-release 踩坑记录与 type 包版本发布说明 ([afdd8664](https://github.com/ruan-cat/11comm/commit/afdd8664))
+  - admin: 探索报告新增 --yes 参数不兼容的踩坑记录和 provider-release 参数列表
+  - type: README 新增版本发布章节，说明独立版本管理和 GitHub Release 生成方式
+    Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
+## @01s-11comm/type@1.1.3 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.2...@01s-11comm/type@1.1.3)
+
+### 📖 Documentation
+
+- **admin,type:** 补充 relizy provider-release 踩坑记录与 type 包版本发布说明 ([afdd8664](https://github.com/ruan-cat/11comm/commit/afdd8664))
+  - admin: 探索报告新增 --yes 参数不兼容的踩坑记录和 provider-release 参数列表
+  - type: README 新增版本发布章节，说明独立版本管理和 GitHub Release 生成方式
+    Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
+**Multiple Packages Updated** - 2026-04-09
+
 ## @01s-11comm/admin@6.1.4 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.3...@01s-11comm/admin@6.1.4)
