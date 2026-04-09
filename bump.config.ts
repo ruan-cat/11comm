@@ -7,7 +7,7 @@ import { defineConfig } from "bumpp";
 export default defineConfig({
 	// 不生成提交信息
 	// commit: false,
-	commit: "📢 publish: release package v%s",
+	commit: "📢 publish: release package %s",
 	tag: "v%s",
 	// 尝试不生成 tag
 	// tag: false,

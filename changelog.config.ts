@@ -16,6 +16,6 @@ export default {
 	types: relizyCompatibleTypes,
 
 	templates: {
-		commitMessage: "📢 publish: release package v{{newVersion}}",
+		commitMessage: "📢 publish: release package {{newVersion}}",
 	},
 } satisfies Partial<ChangelogConfig>;
