@@ -7,6 +7,7 @@ on:
     tags:
       - "v*"
       - "@*/v*" # 支持 @scope/package@v1.0.0 格式
+      - "@*/*@*" # 支持 relizy 生成的 @scope/package@version 格式，如 @01s-11comm/admin@6.1.2
 
 permissions: write-all
 
