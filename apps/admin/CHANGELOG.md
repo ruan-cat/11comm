@@ -1,5 +1,22 @@
 # 6.0.0 (2025-04-10)
 
+## @01s-11comm/admin@6.1.7 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.6...@01s-11comm/admin@6.1.7)
+
+### 🔧 更新配置
+
+- **ci:** 改用 gh release create 从 CHANGELOG.md 创建 GitHub Release ([66976225](https://github.com/ruan-cat/11comm/commit/66976225))
+
+  changelogen gh release 的 tag 映射为 v\* 格式，无法关联 relizy 的 scoped tag。
+  改用 gh CLI 直接创建 release，将 tag 名作为普通字符串处理，无 @ 歧义。
+  脚本从根 CHANGELOG.md 提取触发 tag 对应的版本 section 作为 release notes。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## @01s-11comm/admin@6.1.6 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.5...@01s-11comm/admin@6.1.6)
