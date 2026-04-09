@@ -1,3 +1,12 @@
+## <small>0.11.1 (2026-04-09)</small>
+
+- 📃 docs(admin): 完善探索报告并清理 release workflow 临时配置 ([5c03726](https://github.com/ruan-cat/11comm/commit/5c03726))
+- 📢 publish: release package v@01s-11comm/admin@6.1.6, @01s-11comm/type@1.1.4 ([245991e](https://github.com/ruan-cat/11comm/commit/245991e))
+- 📢 publish: release package v@01s-11comm/admin@6.1.7, @01s-11comm/type@1.1.5 ([7be388e](https://github.com/ruan-cat/11comm/commit/7be388e))
+- 🔧 config(ci): 改用 gh release create 从 CHANGELOG.md 创建 GitHub Release ([6697622](https://github.com/ruan-cat/11comm/commit/6697622))
+- 🔧 config(ci): 将 GitHub Release 生成方式从 relizy provider-release 切换为 changelogen gh release ([2fc76d7](https://github.com/ruan-cat/11comm/commit/2fc76d7))
+- 🔧 config(ci): 临时增加 dev 分支触发和 debug 日志，加速 provider-release 调试 ([194432c](https://github.com/ruan-cat/11comm/commit/194432c))
+
 # Changelog
 
 **Multiple Packages Updated** - 2026-04-09
