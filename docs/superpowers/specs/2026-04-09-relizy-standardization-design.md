@@ -19,7 +19,7 @@
 1. 不将 `versionMode` 从 `independent` 改为其他模式。
 2. 不回滚 `apps/admin`、`apps/type` 的 `private: false` 现状。
 3. 不重写历史报告或 issue 调研文档的历史叙述，只修正当前有效入口和当前 README。
-4. 不清理全部旧发版链路依赖与脚本，例如 `bumpp`、`conventional-changelog-cli`、`commit-and-tag-version`；本次仅处理 Relizy 主链路。
+4. 不清理全部旧发版链路依赖与脚本，例如 `bumpp`、`conventional-changelog-cli`；本次仅处理 Relizy 主链路。（`commit-and-tag-version` 已于 2026-04-09 单独清理：该工具将 `conventional-changelog@4.0.0` 锁死，导致 pnpm shamefully-hoist 将旧版 `angular@6.0.0` 提升到根 `node_modules`，遮蔽新链路需要的 `angular@8.3.0`，已彻底卸载。）
 
 ## 现状侦察结论
 

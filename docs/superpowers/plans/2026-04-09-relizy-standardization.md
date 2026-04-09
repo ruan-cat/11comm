@@ -101,7 +101,8 @@ Keep unchanged:
 - `release:bumpp`
 - `release:changelogen`
 - `changelog:conventional-changelog`
-- `changelog:commit-and-tag-version`
+
+> **注意**：`changelog:commit-and-tag-version` 已于 2026-04-09 单独清理，原因是 `commit-and-tag-version` 将 `conventional-changelog@4.0.0` 锁死，导致旧版 `angular@6.0.0` 通过 pnpm shamefully-hoist 污染新链路，已彻底卸载该依赖。
 
 Expected:
 
