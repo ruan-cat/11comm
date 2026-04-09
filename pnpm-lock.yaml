@@ -49,8 +49,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(taze@19.10.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/utils":
-        specifier: ^4.22.0
-        version: 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+        specifier: ^4.25.0
+        version: 4.25.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       "@ruan-cat/vercel-deploy-tool":
         specifier: ^1.2.5
         version: 1.2.5(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(rollup@4.59.0)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
@@ -4187,6 +4187,25 @@ packages:
       vite-plugin-autogeneration-import-file:
         optional: true
 
+  "@ruan-cat/utils@4.25.0":
+    resolution:
+      { integrity: sha512-C+dA68hV3ABM7ZZRdIrhioqQzf7EQl2aKp6iL9Cr+FTGqp9hLkGkBB/pqyT85NCemdMpFYBykf3FDf1cqhFI+g== }
+    hasBin: true
+    peerDependencies:
+      js-yaml: "*"
+      typescript: ">=5"
+      unplugin-vue-router: ^0.12.0
+      vite-plugin-autogeneration-import-file: ">=3"
+    peerDependenciesMeta:
+      js-yaml:
+        optional: true
+      typescript:
+        optional: true
+      unplugin-vue-router:
+        optional: true
+      vite-plugin-autogeneration-import-file:
+        optional: true
+
   "@ruan-cat/vercel-deploy-tool@1.2.5":
     resolution:
       { integrity: sha512-9kJNhUH4HzjCWAELGFbcjOz0MDXZ3B4KhSFHzUYj8h3jmXp9iOM88T6KlUF3rlWqbhuYU/Ix9LeAbRcUJbQqRg== }
@@ -5758,6 +5777,10 @@ packages:
   axios@1.13.6:
     resolution:
       { integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ== }
+
+  axios@1.15.0:
+    resolution:
+      { integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q== }
 
   bail@2.0.2:
     resolution:
@@ -9551,6 +9574,10 @@ packages:
     resolution:
       { integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg== }
 
+  lodash-es@4.18.1:
+    resolution:
+      { integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A== }
+
   lodash-unified@1.0.3:
     resolution:
       { integrity: sha512-WK9qSozxXOD7ZJQlpSqOT+om2ZfcT4yO+03FuzAHD0wF6S0l0090LRPDx3vhTTLZ8cFKpBn+IOcVXK6qOcIlfQ== }
@@ -11505,6 +11532,11 @@ packages:
   proxy-from-env@1.1.0:
     resolution:
       { integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg== }
+
+  proxy-from-env@2.1.0:
+    resolution:
+      { integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA== }
+    engines: { node: ">=10" }
 
   prr@1.0.1:
     resolution:
@@ -16643,7 +16675,7 @@ snapshots:
 
   "@ruan-cat/commitlint-config@4.9.4(async-validator@4.2.5)(change-case@5.4.4)(commitizen@4.3.1(@types/node@24.12.0)(typescript@5.9.3))(cz-git@1.12.0)(focus-trap@7.8.0)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
-      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.25.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       changelogen: 0.6.2(magicast@0.3.5)
       commander: 13.1.0
       commitizen: 4.3.1(@types/node@24.12.0)(typescript@5.9.3)
@@ -16678,7 +16710,7 @@ snapshots:
 
   "@ruan-cat/generate-code-workspace@0.7.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(tsx@4.21.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
-      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.25.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       commander: 13.1.0
       consola: 3.4.2
       js-yaml: 4.1.1
@@ -16707,7 +16739,7 @@ snapshots:
 
   "@ruan-cat/taze-config@1.0.4(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(taze@19.10.0)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
-      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.25.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       commander: 13.1.0
       consola: 3.4.2
     optionalDependencies:
@@ -16729,33 +16761,6 @@ snapshots:
       - universal-cookie
       - unplugin-vue-router
       - vite-plugin-autogeneration-import-file
-      - vue
-
-  "@ruan-cat/utils@4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
-    dependencies:
-      "@vueuse/integrations": 13.9.0(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.30(typescript@5.9.3))
-      axios: 1.13.6
-      consola: 3.4.2
-      lodash-es: 4.17.23
-      pnpm-workspace-yaml: 1.6.0
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      js-yaml: 4.1.1
-      typescript: 5.9.3
-      vite-plugin-autogeneration-import-file: 3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2))
-    transitivePeerDependencies:
-      - async-validator
-      - change-case
-      - debug
-      - drauu
-      - focus-trap
-      - fuse.js
-      - idb-keyval
-      - jwt-decode
-      - nprogress
-      - qrcode
-      - sortablejs
-      - universal-cookie
       - vue
 
   "@ruan-cat/utils@4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
@@ -16785,10 +16790,38 @@ snapshots:
       - universal-cookie
       - vue
 
+  "@ruan-cat/utils@4.25.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
+    dependencies:
+      "@vueuse/integrations": 13.9.0(async-validator@4.2.5)(axios@1.15.0)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.30(typescript@5.9.3))
+      axios: 1.15.0
+      consola: 3.4.2
+      lodash-es: 4.18.1
+      pkg-types: 2.3.0
+      pnpm-workspace-yaml: 1.6.0
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      js-yaml: 4.1.1
+      typescript: 5.9.3
+      vite-plugin-autogeneration-import-file: 3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2))
+    transitivePeerDependencies:
+      - async-validator
+      - change-case
+      - debug
+      - drauu
+      - focus-trap
+      - fuse.js
+      - idb-keyval
+      - jwt-decode
+      - nprogress
+      - qrcode
+      - sortablejs
+      - universal-cookie
+      - vue
+
   "@ruan-cat/vercel-deploy-tool@1.2.5(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(magicast@0.3.5)(nprogress@0.2.0)(qrcode@1.5.4)(rollup@4.59.0)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))":
     dependencies:
       "@dotenvx/dotenvx": 1.55.1
-      "@ruan-cat/utils": 4.22.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
+      "@ruan-cat/utils": 4.25.0(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@24.12.0)(jiti@2.6.1)(less@4.6.4)(lightningcss@1.31.1)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.2)))(vue@3.5.30(typescript@5.9.3))
       c12: 3.3.3(magicast@0.3.5)
       commander: 13.1.0
       consola: 3.4.2
@@ -18218,6 +18251,20 @@ snapshots:
       qrcode: 1.5.4
       sortablejs: 1.15.7
 
+  "@vueuse/integrations@13.9.0(async-validator@4.2.5)(axios@1.15.0)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.30(typescript@5.9.3))":
+    dependencies:
+      "@vueuse/core": 13.9.0(vue@3.5.30(typescript@5.9.3))
+      "@vueuse/shared": 13.9.0(vue@3.5.30(typescript@5.9.3))
+      vue: 3.5.30(typescript@5.9.3)
+    optionalDependencies:
+      async-validator: 4.2.5
+      axios: 1.15.0
+      change-case: 5.4.4
+      focus-trap: 7.8.0
+      nprogress: 0.2.0
+      qrcode: 1.5.4
+      sortablejs: 1.15.7
+
   "@vueuse/metadata@10.11.1": {}
 
   "@vueuse/metadata@11.3.0": {}
@@ -18572,6 +18619,14 @@ snapshots:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.5
       proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.15.0:
+    dependencies:
+      follow-redirects: 1.15.11(debug@4.4.3)
+      form-data: 4.0.5
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -21905,6 +21960,8 @@ snapshots:
 
   lodash-es@4.17.23: {}
 
+  lodash-es@4.18.1: {}
+
   lodash-unified@1.0.3(@types/lodash-es@4.17.12)(lodash-es@4.17.23)(lodash@4.17.23):
     dependencies:
       "@types/lodash-es": 4.17.12
@@ -23927,6 +23984,8 @@ snapshots:
   property-information@7.1.0: {}
 
   proxy-from-env@1.1.0: {}
+
+  proxy-from-env@2.1.0: {}
 
   prr@1.0.1:
     optional: true
