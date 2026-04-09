@@ -49,11 +49,20 @@ jobs:
       # - name: Build
       #   run: pnpm run build
 
-      - name: 用 changelogithub 生成 github release 发行版日志
-        run: pnpm dlx changelogithub
+      # changelogithub 底层使用 changelogen，在 git log tag1...tag2 时无法解析含 @ 的 scoped tag（如 @01s-11comm/admin@6.1.3），
+      # 会产生 fatal: ambiguous argument 错误，因此不兼容 relizy 的 monorepo 子包 tag 格式。
+      # 详见探索报告：apps/admin/src/docs/reports/2026-04-09-monorepo-sub-package-github-release-exploration.md
+      # - name: 用 changelogithub 生成 github release 发行版日志
+      #   run: pnpm dlx changelogithub
+      #   continue-on-error: true
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 用 relizy 生成 github release 发行版日志
+        run: pnpm relizy provider-release --yes
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELIZY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 对于 changelogithub 来说，生成的日志文件不美观，且云端没有更好的方式实现git文件提交操作 故不使用
       # - name: 用 changelogithub 生成 CHANGELOG 文件日志
