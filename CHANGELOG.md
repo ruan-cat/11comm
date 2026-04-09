@@ -1,3 +1,10 @@
+## <small>0.11.3 (2026-04-09)</small>
+
+- 🐞 fix(ci): 修复 Vercel 部署工作流 pnpm 透传 `--` 导致 vdt deploy 参数解析失败 ([5789904](https://github.com/ruan-cat/11comm/commit/5789904))
+- 📃 docs(reports): 新增 monorepo 发版落地指南并标注探索报告保留说明 ([abfed64](https://github.com/ruan-cat/11comm/commit/abfed64))
+- 📢 publish: release @01s-11comm/admin@6.1.9, @01s-11comm/type@1.1.6 ([1e4da2b](https://github.com/ruan-cat/11comm/commit/1e4da2b))
+- 🦄 refactor(type): 故意触发发版。 ([3dbbe57](https://github.com/ruan-cat/11comm/commit/3dbbe57))
+
 ## <small>0.11.2 (2026-04-09)</small>
 
 - 📢 publish: release @01s-11comm/admin@6.1.8 ([d96b579](https://github.com/ruan-cat/11comm/commit/d96b579))
