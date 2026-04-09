@@ -165,4 +165,4 @@ pnpm -F @01s-11comm/type typecheck
 
 ## 11. 版本发布
 
-本包使用 `relizy` 进行独立版本管理（`versionMode: "independent"`），tag 格式为 `@01s-11comm/type@<version>`。GitHub Release 通过 CI 中的 `relizy provider-release` 自动生成。
+本包使用 `relizy` 进行独立版本管理（`versionMode: "independent"`），tag 格式为 `@01s-11comm/type@<version>`。GitHub Release 通过 CI 中的 `changelogen gh release` 从 CHANGELOG.md 自动生成。

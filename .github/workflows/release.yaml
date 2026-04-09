@@ -67,11 +67,13 @@ jobs:
           echo "sha: ${{ github.sha }}"
           git tag --list --sort=-creatordate | head -10
 
-      - name: 用 relizy 生成 github release 发行版日志
-        run: pnpm relizy provider-release --log-level debug
+      # relizy provider-release 单独运行缺少 release 流程的上下文，创建 0 个 release。
+      # 改用 changelogen gh release，它直接解析 CHANGELOG.md 创建 GitHub Release，不跑 git log tag1...tag2。
+      - name: 用 changelogen 从 CHANGELOG.md 生成 github release
+        run: pnpm changelogen gh release all --token $GITHUB_TOKEN
         continue-on-error: true
         env:
-          RELIZY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 对于 changelogithub 来说，生成的日志文件不美观，且云端没有更好的方式实现git文件提交操作 故不使用
       # - name: 用 changelogithub 生成 CHANGELOG 文件日志

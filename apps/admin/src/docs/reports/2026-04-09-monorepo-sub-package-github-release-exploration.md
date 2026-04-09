@@ -136,9 +136,10 @@ Options:
 ## 结论
 
 1. **`changelogithub` 不兼容 monorepo scoped tag 格式**（`@scope/pkg@version`），这是底层 `changelogen` 使用 git 命令时的固有限制，不可通过配置解决
-2. **relizy 自带的 `provider-release` 子命令**是最佳替代方案，天然支持自己生成的 tag 格式，且可在 CI 中安全运行
+2. **`relizy provider-release` 单独运行缺少上下文**：relizy 官方从未在 CI 中单独使用 `provider-release`，官方做法是在 CI 中运行完整的 `relizy release --yes`。`provider-release` 依赖 `release` 流程中产生的上下文（哪些包被 bumped、tag 范围等），单独调用时报 "Creating 0 GitHub release(s)"
 3. GitHub Actions 的 tag 过滤模式 `@*/*@*` 已验证可正确匹配 relizy 生成的子包 tag
 4. **`provider-release` 不接受 `--yes` 参数**，该选项仅用于 `release` 子命令
+5. **当前尝试方向**：改用 `changelogen gh release all`，它直接解析已有的 CHANGELOG.md 创建 GitHub Release，不需要跑 `git log tag1...tag2`，有望绕过 `@` 歧义问题
 
 ## 相关文件
 
