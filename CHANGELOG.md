@@ -1,5 +1,54 @@
 # Changelog
 
+**Multiple Packages Updated** - 2026-04-09
+
+## @01s-11comm/admin@6.1.3 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.2...@01s-11comm/admin@6.1.3)
+
+### 📖 Documentation
+
+- **admin:** 更新杂项提示词中 relizy 相关条目状态 ([4750da1e](https://github.com/ruan-cat/11comm/commit/4750da1e))
+  - 037：标记已完成并记录 Windows 下 relizy 路径识别问题的结论
+  - 038：补充待 PR 合并后再优化 relizy 脚本的 TODO 说明
+    Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+- **admin:** 设计登录页 vue-bits 动态背景提示词任务 ([6e5f43fb](https://github.com/ruan-cat/11comm/commit/6e5f43fb))
+  - 新增 login/index.md：001 任务步骤（PlasmaWaveBackground、接入主题切换与浏览器验证）
+  - 新增 2026-3-27-use-vue-bits-background/from-chatgpt.md：落地方案与组件设计备忘
+    Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+- **type:** 补全 `@01s-11comm/type` README 说明文档 ([01c1eed6](https://github.com/ruan-cat/11comm/commit/01c1eed6))
+
+  将占位说明扩展为可执行的类型项目指南：包定位与同构 SSOT、`exports` 子路径、目录与业务域、Trinity Pattern 摘要、导出/导入规范（含禁止 `@/` 与跨包相对路径）、Drizzle Kit 与 `apps/admin` 的配置关系及常用命令，并附 FAQ 与项目内技能索引。
+  此次变更仅为文档，不涉及对外 API 或运行时行为的破坏性调整。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+- **admin:** 将全栈前端简历文档从 reports 移至 resume 目录 ([891702f2](https://github.com/ruan-cat/11comm/commit/891702f2))
+
+  将 `2026-03-03-frontend-fullstack-resume.md` 归入 `src/docs/resume`，与报告类文档分区存放，便于维护与检索。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
+## @01s-11comm/type@1.1.2 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.1...@01s-11comm/type@1.1.2)
+
+### 📖 Documentation
+
+- **type:** 补全 `@01s-11comm/type` README 说明文档 ([01c1eed6](https://github.com/ruan-cat/11comm/commit/01c1eed6))
+
+  将占位说明扩展为可执行的类型项目指南：包定位与同构 SSOT、`exports` 子路径、目录与业务域、Trinity Pattern 摘要、导出/导入规范（含禁止 `@/` 与跨包相对路径）、Drizzle Kit 与 `apps/admin` 的配置关系及常用命令，并附 FAQ 与项目内技能索引。
+  此次变更仅为文档，不涉及对外 API 或运行时行为的破坏性调整。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 **Multiple Packages Updated** - 2026-03-26
 
 ## @01s-11comm/admin@6.1.2 (2026-03-26)

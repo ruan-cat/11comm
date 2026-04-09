@@ -1,7 +1,7 @@
 {
 	"name": "@01s-11comm/admin",
 	"description": "基于vue-pure-admin的管理后台。",
-	"version": "6.1.2",
+	"version": "6.1.3",
 	"private": false,
 	"type": "module",
 	"packageManager": "pnpm@10.32.1",
