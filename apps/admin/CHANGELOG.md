@@ -1,5 +1,22 @@
 # 6.0.0 (2025-04-10)
 
+## @01s-11comm/admin@6.1.4 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.3...@01s-11comm/admin@6.1.4)
+
+### 🔧 更新配置
+
+- **ci:** 将 release workflow 的 GitHub Release 生成工具从 changelogithub 切换为 relizy provider-release ([f1a0b2eb](https://github.com/ruan-cat/11comm/commit/f1a0b2eb))
+
+  changelogithub 底层 changelogen 在 git log tag1...tag2 时无法解析含 @ 的
+  scoped tag（如 @01s-11comm/admin@6.1.3），会产生 fatal: ambiguous argument。
+  改用 relizy 自带的 provider-release 子命令，天然支持 monorepo 子包 tag 格式。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## @01s-11comm/admin@6.1.3 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.2...@01s-11comm/admin@6.1.3)
