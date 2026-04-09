@@ -1,5 +1,22 @@
 # Changelog
 
+## @01s-11comm/type@1.1.4 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.3...@01s-11comm/type@1.1.4)
+
+### 🔧 更新配置
+
+- **ci:** 将 GitHub Release 生成方式从 relizy provider-release 切换为 changelogen gh release ([2fc76d77](https://github.com/ruan-cat/11comm/commit/2fc76d77))
+
+  relizy provider-release 单独运行缺少 release 流程上下文，创建 0 个 release。
+  改用 changelogen gh release all，它直接解析 CHANGELOG.md 创建 GitHub Release，
+  不依赖 git log tag1...tag2，有望绕过 @scope/pkg@version 的 @ 歧义问题。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## @01s-11comm/type@1.1.3 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.2...@01s-11comm/type@1.1.3)
