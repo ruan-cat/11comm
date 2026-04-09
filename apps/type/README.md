@@ -160,3 +160,9 @@ pnpm -F @01s-11comm/type typecheck
 - **包管理器**：`pnpm@10.32.1`（与仓库约束一致）
 
 本文档描述的是当前仓库中的约定与结构；若与根目录 `CLAUDE.md` / `AGENTS.md` 中有表述差异，以**更严格的工程约束**及**实际代码**为准。
+
+---
+
+## 11. 版本发布
+
+本包使用 `relizy` 进行独立版本管理（`versionMode: "independent"`），tag 格式为 `@01s-11comm/type@<version>`。GitHub Release 通过 CI 中的 `relizy provider-release` 自动生成。

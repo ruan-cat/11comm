@@ -105,11 +105,40 @@ relizy 提供独立的 `provider-release` 子命令，专门用于创建 GitHub/
 - `provider-release` 是独立子命令，不受 config 中 `release.providerRelease` 配置项约束
 - 此方案保持了职责分离：本地负责版本管理（bump/changelog/tag/push），CI 负责 GitHub Release 创建
 
+## 验证过程中的踩坑记录
+
+### `provider-release` 不支持 `--yes` 参数
+
+首次在 CI 中配置为 `pnpm relizy provider-release --yes` 时报错：
+
+```plain
+error: unknown option '--yes'
+```
+
+`--yes` 是 `release` 子命令的专属选项（用于跳过 bump 前的交互确认），`provider-release` 不接受此参数。正确写法：
+
+```yaml
+run: pnpm relizy provider-release
+```
+
+### `provider-release` 的完整参数列表
+
+```plain
+Options:
+  --from <ref>           Start commit reference
+  --to <ref>             End commit reference
+  --token <token>        Provider token
+  --provider <provider>  Git provider (github or gitlab)
+```
+
+认证通过环境变量 `RELIZY_GITHUB_TOKEN` 传入即可，无需 `--token` 参数。
+
 ## 结论
 
 1. **`changelogithub` 不兼容 monorepo scoped tag 格式**（`@scope/pkg@version`），这是底层 `changelogen` 使用 git 命令时的固有限制，不可通过配置解决
 2. **relizy 自带的 `provider-release` 子命令**是最佳替代方案，天然支持自己生成的 tag 格式，且可在 CI 中安全运行
 3. GitHub Actions 的 tag 过滤模式 `@*/*@*` 已验证可正确匹配 relizy 生成的子包 tag
+4. **`provider-release` 不接受 `--yes` 参数**，该选项仅用于 `release` 子命令
 
 ## 相关文件
 
