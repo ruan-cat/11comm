@@ -24,6 +24,26 @@
 
 **Multiple Packages Updated** - 2026-04-09
 
+## @01s-11comm/admin@6.1.10 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.9...@01s-11comm/admin@6.1.10)
+
+### 📖 Documentation
+
+- **admin:** 新增 conventional-changelog angular 预设与 hoist 冲突分析报告 ([e23e582b](https://github.com/ruan-cat/11comm/commit/e23e582b))
+
+  说明 01s-11comm 与 eams-component-lib 在相同 conventional-changelog 命令下
+  标题格式（`<small>` 与 compare-link）差异的根因：旧链路与新链路包混装、
+  preset-loader@5 解析到根目录 angular@6.0.0、writer 默认模板回退；
+  并补充 Mermaid 包混装关系图与修复建议。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
+**Multiple Packages Updated** - 2026-04-09
+
 ## @01s-11comm/admin@6.1.9 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.8...@01s-11comm/admin@6.1.9)
