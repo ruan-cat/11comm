@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev # 临时：加速调试 provider-release
     tags:
       - "v*"
       - "@*/v*" # 支持 @scope/package@v1.0.0 格式
@@ -58,8 +59,16 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 输出触发信息（用于诊断）
+        run: |
+          echo "ref_type: ${{ github.ref_type }}"
+          echo "ref_name: ${{ github.ref_name }}"
+          echo "ref: ${{ github.ref }}"
+          echo "sha: ${{ github.sha }}"
+          git tag --list --sort=-creatordate | head -10
+
       - name: 用 relizy 生成 github release 发行版日志
-        run: pnpm relizy provider-release
+        run: pnpm relizy provider-release --log-level debug
         continue-on-error: true
         env:
           RELIZY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
