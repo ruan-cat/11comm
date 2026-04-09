@@ -59,19 +59,39 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 输出触发信息（用于诊断）
+      # changelogithub: git log @-tag 歧义失败
+      # relizy provider-release: 单独运行缺少上下文，创建 0 个 release
+      # changelogen gh release: 内容正确但 tag 映射为 v* 格式，无法关联 scoped tag
+      # 最终方案：使用 gh CLI 直接创建 release，将 tag 名作为普通字符串处理，无歧义
+      - name: 从 CHANGELOG.md 提取内容并创建 GitHub Release
+        if: github.ref_type == 'tag'
         run: |
-          echo "ref_type: ${{ github.ref_type }}"
-          echo "ref_name: ${{ github.ref_name }}"
-          echo "ref: ${{ github.ref }}"
-          echo "sha: ${{ github.sha }}"
-          git tag --list --sort=-creatordate | head -10
+          TAG="${{ github.ref_name }}"
+          echo "触发 tag: $TAG"
 
-      # relizy provider-release 单独运行缺少 release 流程的上下文，创建 0 个 release。
-      # 改用 changelogen gh release，它直接解析 CHANGELOG.md 创建 GitHub Release，不跑 git log tag1...tag2。
-      - name: 用 changelogen 从 CHANGELOG.md 生成 github release
-        run: pnpm changelogen gh release all --token $GITHUB_TOKEN
-        continue-on-error: true
+          # 转义 tag 中的特殊字符用于 awk 匹配
+          ESCAPED_TAG=$(printf '%s' "$TAG" | sed 's/[[\\.^$*+?(){}|]/\\&/g; s/\//\\\//g')
+
+          # 从根 CHANGELOG.md 提取该 tag 对应的版本 section
+          # section 格式: ## @scope/pkg@version (date) ... 直到下一个 ## 或文件结束
+          NOTES=$(awk "/^## ${ESCAPED_TAG}[[:space:]]/{found=1; next} found && /^## [^#]/{exit} found{print}" CHANGELOG.md)
+
+          if [ -z "$NOTES" ]; then
+            echo "::warning::未在根 CHANGELOG.md 中找到 tag '$TAG' 对应的 section，跳过 release 创建"
+            exit 0
+          fi
+
+          echo "提取到的 release notes:"
+          echo "$NOTES"
+
+          # 检查该 tag 的 release 是否已存在
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release '$TAG' 已存在，跳过创建"
+            exit 0
+          fi
+
+          gh release create "$TAG" --title "$TAG" --notes "$NOTES"
+          echo "成功为 tag '$TAG' 创建 GitHub Release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

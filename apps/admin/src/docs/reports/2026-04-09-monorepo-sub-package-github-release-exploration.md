@@ -8,9 +8,13 @@
 
 本次探索的目标是：**让 monorepo 子包的 tag 也能触发 GitHub Actions，并通过工具自动生成 GitHub Release**。
 
+核心约束：本地生成 tag，云端负责生成 GitHub Release。
+
+---
+
 ## 探索过程
 
-### 第一步：修改 GitHub Actions tag 过滤模式
+### 第一步：修改 GitHub Actions tag 过滤模式（成功）
 
 原始 `.github/workflows/release.yaml` 的 tag 触发规则：
 
@@ -31,7 +35,9 @@ tags:
 
 **结果**：GitHub Actions 工作流成功被 `@01s-11comm/admin@6.1.3` 和 `@01s-11comm/type@1.1.2` 触发。tag 过滤模式修改有效。
 
-### 第二步：changelogithub 处理子包 tag
+---
+
+### 第二步：尝试 changelogithub（失败）
 
 工作流触发后，`changelogithub` 步骤执行失败。
 
@@ -46,7 +52,7 @@ Use '--' to separate paths from revisions, like this:
 'git <command> [<revision>...] -- [<file>...]'
 ```
 
-### 根本原因
+#### 根本原因
 
 **`changelogithub` 底层使用 `changelogen`，它在执行 `git log` 时会用 `tag1...tag2` 格式查找提交范围。但 `@scope/pkg@version` 格式中包含 `@` 符号，git 无法正确将其解析为 tag 引用（与路径产生歧义），导致 `fatal: ambiguous argument` 错误。**
 
@@ -57,71 +63,25 @@ Use '--' to separate paths from revisions, like this:
 3. Git 的参数解析器遇到 `@` 时产生歧义——无法判断这是一个 tag 名还是路径的一部分
 4. 这是 `changelogen`/`changelogithub` 工具链的固有限制，不是配置问题
 
-这意味着 **`changelogithub` 从原理上就不兼容 `@scope/package@version` 格式的 monorepo tag**。
+**结论**：`changelogithub` 从原理上就不兼容 `@scope/package@version` 格式的 monorepo tag。
 
-### 第三步：替代方案评估
+---
 
-| 方案                                   | 可行性     | 说明                                                                    |
-| -------------------------------------- | ---------- | ----------------------------------------------------------------------- |
-| changelogithub                         | **不可行** | 底层 changelogen 无法解析含 `@` 的 scoped tag                           |
-| relizy `providerRelease: true`（本地） | 可行       | 需要在本地配置 `RELIZY_GITHUB_TOKEN` (PAT)，安全性较低                  |
-| relizy `provider-release`（CI）        | **推荐**   | 在 GitHub Actions 中运行 `relizy provider-release`，复用 `GITHUB_TOKEN` |
+### 第三步：尝试 relizy provider-release（失败）
 
-## 推荐方案：在 GitHub Actions 中使用 `relizy provider-release`
+relizy 提供独立的 `provider-release` 子命令，专门用于创建 GitHub/GitLab Release。理论上它天然理解自己生成的 tag 格式。
 
-relizy 提供独立的 `provider-release` 子命令，专门用于创建 GitHub/GitLab Release，不会执行 bump、changelog、publish 等操作。
+#### 3.1 首次尝试：`--yes` 参数不兼容
 
-### 工作原理
-
-- `relizy provider-release` 读取当前 tag 对应的 changelog 内容，调用 GitHub API 创建 Release
-- relizy 天然理解自己生成的 `@scope/package@version` tag 格式，不存在 changelogen 的路径歧义问题
-- 在 CI 中通过 `RELIZY_GITHUB_TOKEN` 环境变量传入 `secrets.GITHUB_TOKEN`
-
-### 具体改动
-
-将 `release.yaml` 中的 changelogithub 步骤：
-
-```yaml
-- name: 用 changelogithub 生成 github release 发行版日志
-  run: pnpm dlx changelogithub
-  continue-on-error: true
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-替换为：
-
-```yaml
-- name: 用 relizy 生成 github release 发行版日志
-  run: pnpm relizy provider-release --yes
-  continue-on-error: true
-  env:
-    RELIZY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-### 注意事项
-
-- `relizy.config.ts` 中的 `providerRelease: false` 和 `package.json` 中的 `--no-provider-release` 保持不变——这些只控制**本地** `pnpm release` 时是否创建 release，不影响 CI 中单独运行 `relizy provider-release`
-- `provider-release` 是独立子命令，不受 config 中 `release.providerRelease` 配置项约束
-- 此方案保持了职责分离：本地负责版本管理（bump/changelog/tag/push），CI 负责 GitHub Release 创建
-
-## 验证过程中的踩坑记录
-
-### `provider-release` 不支持 `--yes` 参数
-
-首次在 CI 中配置为 `pnpm relizy provider-release --yes` 时报错：
+配置为 `pnpm relizy provider-release --yes` 时报错：
 
 ```plain
 error: unknown option '--yes'
 ```
 
-`--yes` 是 `release` 子命令的专属选项（用于跳过 bump 前的交互确认），`provider-release` 不接受此参数。正确写法：
+`--yes` 是 `release` 子命令的专属选项（用于跳过 bump 前的交互确认），`provider-release` 不接受此参数。
 
-```yaml
-run: pnpm relizy provider-release
-```
-
-### `provider-release` 的完整参数列表
+`provider-release` 的完整参数列表：
 
 ```plain
 Options:
@@ -131,22 +91,130 @@ Options:
   --provider <provider>  Git provider (github or gitlab)
 ```
 
-认证通过环境变量 `RELIZY_GITHUB_TOKEN` 传入即可，无需 `--token` 参数。
+#### 3.2 移除 `--yes` 后：创建 0 个 release
 
-## 结论
+修正为 `pnpm relizy provider-release` 后，命令成功运行但创建了 0 个 release：
 
-1. **`changelogithub` 不兼容 monorepo scoped tag 格式**（`@scope/pkg@version`），这是底层 `changelogen` 使用 git 命令时的固有限制，不可通过配置解决
-2. **`relizy provider-release` 单独运行缺少上下文**：relizy 官方从未在 CI 中单独使用 `provider-release`，官方做法是在 CI 中运行完整的 `relizy release --yes`。`provider-release` 依赖 `release` 流程中产生的上下文（哪些包被 bumped、tag 范围等），单独调用时报 "Creating 0 GitHub release(s)"
-3. GitHub Actions 的 tag 过滤模式 `@*/*@*` 已验证可正确匹配 relizy 生成的子包 tag
-4. **`provider-release` 不接受 `--yes` 参数**，该选项仅用于 `release` 子命令
-5. **当前尝试方向**：改用 `changelogen gh release all`，它直接解析已有的 CHANGELOG.md 创建 GitHub Release，不需要跑 `git log tag1...tag2`，有望绕过 `@` 歧义问题
+```plain
+v1.2.2-beta.0
+[log] Running in CI: GitHub Actions
+[info] 没有检测到文件修改
+[start] Start provider release
+[info] Detected Git provider: github
+[info] Creating 0 GitHub release(s)
+[warn] No releases created
+```
+
+#### 根本原因
+
+**relizy 官方从未在 CI 中单独使用过 `provider-release`。**
+
+通过查看 relizy 官方仓库（[LouisMazel/relizy](https://github.com/LouisMazel/relizy)）的 `.github/workflows/release-latest.yml`，发现官方的做法是在 CI 中运行**完整的** `relizy release --yes`，由 `release` 命令统一编排所有步骤：
+
+```yaml
+# relizy 官方 release-latest.yml
+- name: Version Packages (Latest)
+  env:
+    GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+  run: |
+    pnpm relizy release --tag latest --yes
+```
+
+`provider-release` 依赖 `release` 流程中产生的上下文信息（哪些包被 bumped、从哪个 tag 到哪个 tag 的范围等）。当单独调用 `provider-release` 时，它没有这些上下文，因此找不到需要创建 release 的版本。
+
+relizy 官方的文档中虽然有 "Separate Bump and Publish" 示例展示了 `provider-release` 单独使用，但那个示例中 `provider-release` 运行在一个 checkout 了特定 tag 的独立 job 里（`ref: v${{ needs.bump.outputs.version }}`），并且是针对单包仓库的 `v*` 格式 tag，不适用于 monorepo independent 模式。
+
+**结论**：`relizy provider-release` 单独运行在 CI 中缺少上下文，不适合"本地生成 tag → CI 创建 release"的工作流。它的设计初衷是作为 `relizy release` 全流程的一个子步骤，而非独立使用。
+
+---
+
+### 第四步：尝试 changelogen gh release（部分成功，tag 映射错误）
+
+`changelogen` 提供了 `gh release` 子命令，工作方式与 `changelogithub` 完全不同：
+
+- **`changelogithub`**：重新跑 `git log tag1...tag2` 生成 changelog → 遇到 `@` 歧义
+- **`changelogen gh release`**：**直接解析已有的 CHANGELOG.md 文件**，从中提取版本 section 并调用 GitHub API 创建 Release → 不涉及 git log，理论上绕过 `@` 歧义
+
+配置：
+
+```yaml
+- name: 用 changelogen 从 CHANGELOG.md 生成 github release
+  run: pnpm changelogen gh release all --token $GITHUB_TOKEN
+  continue-on-error: true
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### 实测结果
+
+GitHub Release **成功创建了！** changelogen 从 CHANGELOG.md 中解析出所有版本的 section，并为每个版本创建了 GitHub Release。release 的内容（changelog body）完全正确。
+
+但存在一个**关键问题：tag 名称映射错误**。
+
+实际创建的 GitHub Release：
+
+| changelogen 创建的 Release tag | 对应的 relizy git tag     | Release 内容 |
+| ------------------------------ | ------------------------- | ------------ |
+| `v6.1.6`                       | `@01s-11comm/admin@6.1.6` | admin 的变更 |
+| `v6.1.5`                       | `@01s-11comm/admin@6.1.5` | admin 的变更 |
+| `v1.1.4`                       | `@01s-11comm/type@1.1.4`  | type 的变更  |
+| `v1.1.3`                       | `@01s-11comm/type@1.1.3`  | type 的变更  |
+| `v0.11.0`                      | `v0.11.0`                 | 根包的变更   |
+
+#### 问题分析
+
+changelogen 在解析 CHANGELOG.md 中的版本 header（如 `## @01s-11comm/admin@6.1.6 (2026-04-09)`）时：
+
+1. 提取出版本号 `6.1.6`
+2. 自动添加 `v` 前缀，生成 tag 名 `v6.1.6`
+3. 如果该 tag 不存在，changelogen 会**自动创建一个新的 git tag** `v6.1.6`
+4. 然后将 GitHub Release 关联到这个新 tag
+
+这导致了以下问题：
+
+- **创建了多余的 git tag**：`v6.1.6`、`v6.1.5` 等不属于任何包的 tag 被创建
+- **Release 未关联到正确的 scoped tag**：GitHub Release 的 tag 是 `v6.1.6` 而不是 `@01s-11comm/admin@6.1.6`
+- **包归属不可辨识**：从 tag 名 `v6.1.6` 无法判断这是 admin 包还是 type 包的 release
+- **版本号冲突风险**：如果 admin 和 type 碰巧 bump 到同一个版本号（如都到 `2.0.0`），会产生 tag 冲突
+
+**结论**：`changelogen gh release` 的内容生成是正确的，但它的 tag 映射逻辑是为单包仓库设计的（`v*` 格式），无法正确处理 monorepo scoped tag 格式。此方案不可用。
+
+---
+
+## 方案总结
+
+| 方案                             | 状态       | 失败原因                                                      |
+| -------------------------------- | ---------- | ------------------------------------------------------------- |
+| `changelogithub`                 | 失败       | 底层 `git log tag1...tag2` 无法解析含 `@` 的 scoped tag       |
+| `relizy provider-release`（CI）  | 失败       | 单独运行缺少 release 流程上下文，创建 0 个 release            |
+| `changelogen gh release`         | 部分成功   | Release 内容正确，但 tag 映射为 `v*` 格式而非 scoped tag 格式 |
+| `relizy release`（全 CI）        | 可行但不选 | 官方推荐方式，但改变了本地发版习惯                            |
+| `relizy providerRelease`（本地） | 可行但不选 | 需要本地配置 GitHub PAT，安全性较低                           |
+
+## 下一步方案：gh release create 自定义脚本
+
+鉴于以上所有工具都无法完美满足"本地生成 scoped tag → CI 创建对应 GitHub Release"的需求，计划使用 GitHub CLI（`gh`）编写自定义脚本：
+
+1. 工作流由 tag 推送触发时，`github.ref_name` 为完整的 tag 名（如 `@01s-11comm/admin@6.1.6`）
+2. 脚本从根 `CHANGELOG.md` 中提取该 tag 对应的版本 section
+3. 使用 `gh release create "$TAG" --title "$TAG" --notes "$NOTES"` 创建 Release
+4. `gh` CLI 将 tag 名作为普通字符串处理，不存在任何 `@` 解析歧义
+
+**优势**：
+
+- `gh` CLI 预装在 GitHub Actions runner 中，无需额外安装
+- 完全控制 tag 名称和 release 内容
+- 不依赖任何第三方工具的 tag 解析逻辑
+- 天然支持任何格式的 tag 名
+
+---
 
 ## 相关文件
 
 - [`relizy.config.ts`](../../../../../relizy.config.ts) — relizy 配置
 - [`.github/workflows/release.yaml`](../../../../../../.github/workflows/release.yaml) — Release 工作流
 - [`package.json`](../../../../../package.json) — 发版脚本定义
-- [`changelogithub.config.ts`](../../../../../changelogithub.config.ts) — changelogithub 配置（待决定是否保留）
+- [`changelogithub.config.ts`](../../../../../changelogithub.config.ts) — changelogithub 配置（历史遗留，已注释）
 
 ## 关联报告
 
