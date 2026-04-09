@@ -59,7 +59,7 @@ jobs:
       - name: 运行自写的vercel部署工具
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
-            pnpm run deploy -- --diff-base ${{ github.event.before }}
+            pnpm run deploy --diff-base ${{ github.event.before }}
           else
             pnpm run deploy
           fi

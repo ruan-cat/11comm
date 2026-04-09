@@ -179,6 +179,15 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 验证方式：文件字节数与 `git cat-file -p <blob-hash>` 的字节数一致（说明磁盘 LF = blob LF）；`git status` 干净；`git update-index --refresh` 无 `needs update` 输出。
 - 后续约束：在 Windows 上遇到「莫名其妙多出的修改」时，按优先级排查：① `git ls-files --eol` 看工作区行尾；② Prettier 的 `endOfLine` 是否为 `"lf"`（`"auto"` 在 Windows 上是定时炸弹）；③ `.vscode/settings.json` 是否有 `"files.eol": "\n"`；④ `.gitattributes` 是否存在 `eol=lf`。四层配置必须协同一致，缺一层就可能复发。不要把此类问题记成「某 AI 误改」——优先从行尾配置栈排查。
 
+### `.github/workflows` 的 pnpm v10 `--` 参数透传导致 CLI 子命令参数解析失败事故
+
+- 问题现象：GitHub Actions 中 `vercel-deploy-tool.yaml` 工作流部署失败，报错 `error: too many arguments for 'deploy'. Expected 0 arguments but got 2.`，实际执行的命令为 `vdt deploy -- --diff-base ef2fee6...`。同时 dotenvx 打印 `[MISSING_ENV_FILE] missing .env file` 警告（该警告为非致命的次要问题）。
+- 实际根因：工作流中使用 `pnpm run deploy -- --diff-base ${{ github.event.before }}` 传递参数。在 pnpm v10 中，`--` 分隔符会被**原样透传**到脚本命令中（与 npm 不同，npm 会消费掉 `--`）。而 `deploy` 脚本为 `dotenvx run -f apps/admin/.env.production -f .env -- vdt deploy`，其中已有一个 `--` 用于分隔 dotenvx 选项与子命令。pnpm 追加的 `-- --diff-base ef2fee6` 使最终执行变为 `vdt deploy -- --diff-base ef2fee6`，commander.js 在遇到 `--` 后停止选项解析，将 `--diff-base` 和 `ef2fee6` 当作位置参数处理，而 `deploy` 子命令定义了 0 个位置参数，因此报错。
+- 关键误导点：容易误以为 `vdt deploy` 不支持 `--diff-base` 选项，或误以为 `dotenvx` 的 `.env` 缺失警告是主要错误。实际上 `vdt deploy` 完整支持 `--diff-base <ref>`、`--force-all`、`--env-path <path>` 三个选项（commander 定义），问题纯粹出在 pnpm 的 `--` 透传行为上。
+- 有效修复：将工作流中 `pnpm run deploy -- --diff-base ${{ github.event.before }}` 改为 `pnpm run deploy --diff-base ${{ github.event.before }}`（移除 `--`）。pnpm v10 中脚本名后面的选项会直接追加到脚本命令末尾，不需要 `--` 分隔符。
+- 验证方式：工作流重新触发后，`vdt deploy --diff-base <ref>` 正确解析选项，部署流程正常完成。
+- 后续约束：在 pnpm v10+ 的 CI 工作流中，通过 `pnpm run <script>` 向脚本传递额外选项时，**不要使用 `--` 分隔符**——pnpm 会将 `--` 原样透传到脚本命令中，可能导致 commander.js 等 CLI 框架将后续选项误判为位置参数。直接写 `pnpm run <script> --flag value` 即可。当脚本内部已使用 `--` 分隔符（如 `dotenvx run ... -- subcommand`）时，额外的 `--` 会产生双重分隔，破坏子命令的选项解析。
+
 ## 写入经验时必须保留的额外信息
 
 如果这次 bug 与仓库已有事故模式相似，写记忆时不要遗漏下面这些额外信息：
@@ -186,7 +195,7 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 这次问题是否打破了某个"用户已确认稳定"的基线
 - 是否存在"不要乱改"的配置，例如 `pnpm.overrides`
 - 首个可信信号来自哪里，是终端日志、浏览器 console、网络请求，还是构建输出
-- 这次修复属于哪一类：依赖实例统一、废弃 API 清理、导入路径修正、类型断言补齐、Schema 设计缺陷修正、迁移文件重置、测试环境配置修正、Seed 流程简化、模块分层重组、Git 行尾归一化与 `.gitattributes`、格式化工具行尾配置矛盾
+- 这次修复属于哪一类：依赖实例统一、废弃 API 清理、导入路径修正、类型断言补齐、Schema 设计缺陷修正、迁移文件重置、测试环境配置修正、Seed 流程简化、模块分层重组、Git 行尾归一化与 `.gitattributes`、格式化工具行尾配置矛盾、CI 工作流参数透传错误
 - 这次是否存在误导性很强的假象，例如"看起来像版本冲突，实际是实例重复"
 - 最终验证是否基于 fresh 进程、fresh 日志和 fresh 页面，而不是历史缓存
 
