@@ -15,7 +15,6 @@ export default defineConfig({
 	push: false,
 	// 在执行完 bumpp 后执行本地的更新日志生成命令
 	execute: "pnpm run changelog:conventional-changelog",
-	// execute: "pnpm run changelog:commit-and-tag-version",
 	// 将暂存区的全部文件都提交
 	all: true,
 });
