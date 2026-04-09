@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev # 临时：加速调试 provider-release
     tags:
       - "v*"
       - "@*/v*" # 支持 @scope/package@v1.0.0 格式

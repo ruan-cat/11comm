@@ -183,22 +183,57 @@ changelogen 在解析 CHANGELOG.md 中的版本 header（如 `## @01s-11comm/adm
 
 ## 方案总结
 
-| 方案                             | 状态       | 失败原因                                                      |
-| -------------------------------- | ---------- | ------------------------------------------------------------- |
-| `changelogithub`                 | 失败       | 底层 `git log tag1...tag2` 无法解析含 `@` 的 scoped tag       |
-| `relizy provider-release`（CI）  | 失败       | 单独运行缺少 release 流程上下文，创建 0 个 release            |
-| `changelogen gh release`         | 部分成功   | Release 内容正确，但 tag 映射为 `v*` 格式而非 scoped tag 格式 |
-| `relizy release`（全 CI）        | 可行但不选 | 官方推荐方式，但改变了本地发版习惯                            |
-| `relizy providerRelease`（本地） | 可行但不选 | 需要本地配置 GitHub PAT，安全性较低                           |
+| 方案                             | 状态         | 说明                                                          |
+| -------------------------------- | ------------ | ------------------------------------------------------------- |
+| `changelogithub`                 | 失败         | 底层 `git log tag1...tag2` 无法解析含 `@` 的 scoped tag       |
+| `relizy provider-release`（CI）  | 失败         | 单独运行缺少 release 流程上下文，创建 0 个 release            |
+| `changelogen gh release`         | 部分成功     | Release 内容正确，但 tag 映射为 `v*` 格式而非 scoped tag 格式 |
+| `relizy release`（全 CI）        | 可行但不选   | 官方推荐方式，但改变了本地发版习惯                            |
+| `relizy providerRelease`（本地） | 可行但不选   | 需要本地配置 GitHub PAT，安全性较低                           |
+| **`gh release create`（CI）**    | **最终采用** | 从 CHANGELOG.md 提取内容，tag 名作为普通字符串，完美兼容      |
 
-## 下一步方案：gh release create 自定义脚本
+---
 
-鉴于以上所有工具都无法完美满足"本地生成 scoped tag → CI 创建对应 GitHub Release"的需求，计划使用 GitHub CLI（`gh`）编写自定义脚本：
+### 第五步：gh release create 自定义脚本（成功）
 
-1. 工作流由 tag 推送触发时，`github.ref_name` 为完整的 tag 名（如 `@01s-11comm/admin@6.1.6`）
-2. 脚本从根 `CHANGELOG.md` 中提取该 tag 对应的版本 section
+鉴于以上所有工具都无法完美满足"本地生成 scoped tag → CI 创建对应 GitHub Release"的需求，最终采用 GitHub CLI（`gh`）编写自定义脚本。
+
+#### 工作原理
+
+1. 工作流由 tag 推送触发时，`github.ref_name` 为完整的 tag 名（如 `@01s-11comm/admin@6.1.7`）
+2. 脚本转义 tag 中的特殊字符，用 `awk` 从根 `CHANGELOG.md` 中提取该 tag 对应的版本 section
 3. 使用 `gh release create "$TAG" --title "$TAG" --notes "$NOTES"` 创建 Release
-4. `gh` CLI 将 tag 名作为普通字符串处理，不存在任何 `@` 解析歧义
+4. `gh` CLI 将 tag 名作为普通字符串传给 GitHub API，不存在任何 `@` 解析歧义
+5. 脚本还包含幂等性检查：如果 release 已存在则跳过
+
+#### 最终配置
+
+```yaml
+- name: 从 CHANGELOG.md 提取内容并创建 GitHub Release
+  if: github.ref_type == 'tag'
+  run: |
+    TAG="${{ github.ref_name }}"
+    ESCAPED_TAG=$(printf '%s' "$TAG" | sed 's/[[\\.^$*+?(){}|]/\\&/g; s/\//\\\//g')
+    NOTES=$(awk "/^## ${ESCAPED_TAG}[[:space:]]/{found=1; next} found && /^## [^#]/{exit} found{print}" CHANGELOG.md)
+    if [ -z "$NOTES" ]; then
+      echo "::warning::未找到 tag '$TAG' 对应的 CHANGELOG section"
+      exit 0
+    fi
+    if gh release view "$TAG" > /dev/null 2>&1; then
+      echo "Release '$TAG' 已存在，跳过"
+      exit 0
+    fi
+    gh release create "$TAG" --title "$TAG" --notes "$NOTES"
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### 验证结果
+
+成功为两个子包创建了 GitHub Release，**tag 名称完全匹配 relizy 生成的 scoped tag**：
+
+- `@01s-11comm/admin@6.1.7` → [GitHub Release](https://github.com/ruan-cat/11comm/releases/tag/%4001s-11comm/admin%406.1.7) - 内容为 admin 的变更日志
+- `@01s-11comm/type@1.1.5` → [GitHub Release](https://github.com/ruan-cat/11comm/releases/tag/%4001s-11comm/type%401.1.5) - 内容为 type 的变更日志
 
 **优势**：
 
@@ -206,6 +241,15 @@ changelogen 在解析 CHANGELOG.md 中的版本 header（如 `## @01s-11comm/adm
 - 完全控制 tag 名称和 release 内容
 - 不依赖任何第三方工具的 tag 解析逻辑
 - 天然支持任何格式的 tag 名
+- 幂等：重复运行不会创建重复 release
+
+## 最终结论
+
+在"本地 `pnpm release` 生成 scoped tag → CI 自动创建 GitHub Release"这一工作流下：
+
+1. 所有基于 `changelogen` 的工具（changelogithub、relizy provider-release、changelogen gh release）都存在不同程度的兼容性问题
+2. **`gh release create` 自定义脚本是最可靠的方案**，因为它绕过了所有 tag 解析层，直接使用 GitHub API
+3. 关键前提：relizy 已在本地生成了完整的 CHANGELOG.md，CI 只需从中提取内容
 
 ---
 
