@@ -1,3 +1,9 @@
+## <small>0.11.2 (2026-04-09)</small>
+
+- 📢 publish: release @01s-11comm/admin@6.1.8 ([d96b579](https://github.com/ruan-cat/11comm/commit/d96b579))
+- 🔧 config(release): 统一发版流程为 relizy + bumpp + 单次 push ([6b29922](https://github.com/ruan-cat/11comm/commit/6b29922))
+- 🔧 config(release): 移除 bumpp 和 changelogen commit message 模板中的 v 前缀 ([f8c947f](https://github.com/ruan-cat/11comm/commit/f8c947f))
+
 ## <small>0.11.1 (2026-04-09)</small>
 
 - 📃 docs(admin): 完善探索报告并清理 release workflow 临时配置 ([5c03726](https://github.com/ruan-cat/11comm/commit/5c03726))
