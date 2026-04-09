@@ -59,7 +59,7 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 用 relizy 生成 github release 发行版日志
-        run: pnpm relizy provider-release --yes
+        run: pnpm relizy provider-release
         continue-on-error: true
         env:
           RELIZY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
