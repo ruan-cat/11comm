@@ -1,5 +1,20 @@
 # 6.0.0 (2025-04-10)
 
+## @01s-11comm/admin@6.1.9 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.8...@01s-11comm/admin@6.1.9)
+
+### 📖 Documentation
+
+- **reports:** 新增 monorepo 发版落地指南并标注探索报告保留说明 ([abfed646](https://github.com/ruan-cat/11comm/commit/abfed646))
+
+  补充可在他仓复现的 relizy + bumpp + GitHub Actions 全流程文档；在子包 GitHub Release 探索报告顶部增加保留说明，避免误删高价值调研记录。
+  Co-authored-by: Cursor <199161495+cursoragent@users.noreply.github.com>
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## @01s-11comm/admin@6.1.8 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/admin@6.1.7...@01s-11comm/admin@6.1.8)

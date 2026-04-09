@@ -1,5 +1,17 @@
 # Changelog
 
+## @01s-11comm/type@1.1.6 (2026-04-09)
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.5...@01s-11comm/type@1.1.6)
+
+### 🦄 代码重构
+
+- **type:** 故意触发发版。 ([3dbbe57e](https://github.com/ruan-cat/11comm/commit/3dbbe57e))
+
+### ❤️ Contributors
+
+- Ruan-cat ([@ruan-cat](https://github.com/ruan-cat))
+
 ## @01s-11comm/type@1.1.5 (2026-04-09)
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/@01s-11comm/type@1.1.4...@01s-11comm/type@1.1.5)
