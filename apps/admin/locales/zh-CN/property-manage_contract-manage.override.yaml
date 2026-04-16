@@ -1,0 +1,35 @@
+draft-contract:
+  dialogs:
+    deleteConfirmTitle: "提示"
+    deleteConfirmMessage: "确认删除这条合同草稿吗？"
+  actions:
+    restoreAttachment: "恢复"
+    removeAttachment: "移除"
+  messages:
+    blockingUpload: "还有未完成的上传任务，暂时不能提交。"
+    saveSuccess: "保存成功"
+    deleteSuccess: "删除成功"
+    emptyDetail: "暂无详情数据"
+shared-upload:
+  dropzoneTip: "点击或拖拽文件到这里，上传会先进入共享续传队列"
+  blockingAlert: "有未完成的上传任务时，附件还不能认为已可提交"
+  missingPartSuffix: "个缺片"
+  actions:
+    start: "开始"
+    pause: "暂停"
+    resume: "继续"
+    remove: "移除"
+contract-change:
+  dialogs:
+    deleteConfirmTitle: "删除确认"
+    deleteConfirmMessage: "确认删除该合同变更？"
+  actions:
+    confirmDelete: "确认"
+    restoreAttachment: "恢复"
+    deleteAttachment: "删除"
+  messages:
+    saveSuccess: "保存成功"
+    deleteSuccess: "删除成功"
+    attachmentCountSuffix: "项"
+    attachmentRetained: "保留"
+    attachmentDeleted: "删除"

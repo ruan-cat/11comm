@@ -9,26 +9,50 @@ definePage({
 	},
 });
 
-import { ref, h } from "vue";
-import { sleep } from "@antfu/utils";
-import { useToggle } from "@vueuse/core";
-import { consola } from "consola";
+import { computed, h, ref } from "vue";
+import { cloneDeep } from "@pureadmin/utils";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { addDialog, closeDialog } from "@/components/ReDialog";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 import { useMode, type Mode } from "@/composables/use-mode";
-import { useChangeListQuery } from "@/api/property-manage/contract-manage/change";
+import {
+	createChange,
+	deleteChange,
+	getChangeDetail,
+	updateChange,
+	useChangeListQuery,
+} from "@/api/property-manage/contract-manage/change";
 import type { ContractChangeFormProps } from "./components/form";
 import { defaultForm } from "./components/form";
 import ContractChangeForm from "./components/form.vue";
+import { createExistingChangeAttachmentDraft } from "./utils/attachment";
 import {
-	type ContractChangeFormVO,
+	type AttachmentDetailItem,
+	type ChangeCreatePayload,
 	type ChangeListItem,
 	type ChangeQueryParams,
+	type ChangeUpdatePayload,
+	type ContractChangeDetailVO,
+	type ContractChangeFormVO,
+	type JsonVO,
 	contractTypeOptions,
 } from "@01s-11comm/type";
 
+type ChangeFormRow =
+	| (ChangeListItem & { attachments?: AttachmentDetailItem[] })
+	| (Partial<ContractChangeDetailVO> & { attachments?: AttachmentDetailItem[] });
+
 const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+const changePageMessageKeys = {
+	deleteConfirmMessage: "property-manage_contract-manage.contract-change.dialogs.deleteConfirmMessage",
+	deleteConfirmTitle: "property-manage_contract-manage.contract-change.dialogs.deleteConfirmTitle",
+	deleteConfirmButton: "property-manage_contract-manage.contract-change.actions.confirmDelete",
+	saveSuccess: "property-manage_contract-manage.contract-change.messages.saveSuccess",
+	deleteSuccess: "property-manage_contract-manage.contract-change.messages.deleteSuccess",
+} as const;
 
 const statusTextMap = computed(() => ({
 	待审核: transformI18n($t("property-manage_contract-manage.contract-change.form.options.statuses.pending")),
@@ -43,31 +67,12 @@ function translateStatusLabel(value?: string | null) {
 	return statusTextMap.value[value] ?? value;
 }
 
-const translatedContractTypeOptions = computed(() =>
-	contractTypeOptions.map((item) => ({
-		...item,
-		label: transformI18n(
-			$t(
-				`property-manage_contract-manage.contract-change.form.options.contractTypes.${
-					item.value === "采购合同"
-						? "purchase"
-						: item.value === "销售合同"
-							? "sales"
-							: item.value === "服务合同"
-								? "service"
-								: item.value === "租赁合同"
-									? "lease"
-									: "purchase"
-				}`,
-			),
-		),
-	})),
-);
+const translatedContractTypeOptions = computed(() => contractTypeOptions);
 
 /**
- * 表格搜索栏 双向绑定的变量 原本的数据
+ * 表格搜索栏双向绑定的变量原始数据
  * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ * 为了满足搜索栏组件的校验需求，这里需要额外拓展为索引类型
  */
 const plusSearchModelRef: FieldValues & Partial<ChangeQueryParams> = {
 	contractName: "",
@@ -77,10 +82,10 @@ const plusSearchModelRef: FieldValues & Partial<ChangeQueryParams> = {
 	partyB: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
+/** 表格搜索栏重置功能用的默认数据 */
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+/** 表格搜索栏变量，双向绑定的变量，响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
 /**
@@ -221,60 +226,137 @@ const pureTableBarProps = computed<PureTableBarProps>(() => ({
 }));
 
 /** 表单组件实例引用 */
-const ContractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
+const contractChangeFormInstance = ref<InstanceType<typeof ContractChangeForm> | null>(null);
 
 /** 模式相关状态管理 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const { modeText, setMode, isInfo } = useMode();
 
-/** 异步操作加载状态 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
+/** 快速新增时的默认变更类型 */
+const quickCreateChangeTypeMap = {
+	subject: "合同主体",
+	period: "服务期限",
+	asset: "服务内容",
+} as const;
 
-/** 模拟异步函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+/**
+ * 统一拆包 JsonVO 响应。
+ * @description
+ * 合同变更页面同时兼容直接业务数据和 `JsonVO<T>` 包装结构，这里负责收敛成纯数据对象。
+ */
+function unwrapJsonVO<T>(response: T | JsonVO<T>) {
+	if (response && typeof response === "object" && "data" in response) {
+		return (response as JsonVO<T>).data;
+	}
+
+	return response as T;
+}
+
+/**
+ * 归一化既有附件草稿。
+ * @description
+ * 列表行或详情接口返回的附件需要进入表单层继续参与增删改，这里统一转换成附件草稿结构。
+ */
+function normalizeAttachmentDrafts(row?: ChangeFormRow) {
+	if (!Array.isArray(row?.attachments)) {
+		return [];
+	}
+
+	return row.attachments.map((item) => createExistingChangeAttachmentDraft(item as AttachmentDetailItem));
+}
+
+/**
+ * 构造合同变更表单初始值。
+ * @description
+ * 根据当前弹窗模式合并默认值、详情数据和附件草稿，确保新增态与编辑态共用同一套表单结构。
+ */
+function buildFormData({
+	mode,
+	row,
+	initialChangeType,
+}: {
+	mode: Mode;
+	row?: ChangeFormRow;
+	initialChangeType?: ContractChangeFormVO["changeType"];
+}) {
+	const detailRow = row as Partial<ContractChangeDetailVO> | undefined;
+	const attachments = normalizeAttachmentDrafts(row);
+
+	if (mode === "add") {
+		return cloneDeep({
+			...defaultForm,
+			changeType: initialChangeType ?? defaultForm.changeType,
+			attachments,
+		}) as ContractChangeFormVO & { id?: string };
+	}
+
+	return cloneDeep({
+		...defaultForm,
+		id: detailRow?.id || "",
+		contractName: row?.contractName || "",
+		contractNumber: row?.contractNumber || "",
+		contractType: row?.contractType || "",
+		partyA: detailRow?.partyA || row?.partyA || "",
+		partyAContact: detailRow?.partyAContact || "",
+		partyAPhone: detailRow?.partyAPhone || "",
+		partyB: detailRow?.partyB || row?.partyB || "",
+		partyBContact: detailRow?.partyBContact || "",
+		partyBPhone: detailRow?.partyBPhone || "",
+		handler: detailRow?.handler || row?.changer || "",
+		handlerPhone: detailRow?.handlerPhone || "",
+		contractAmount: detailRow?.contractAmount || "",
+		startTime: detailRow?.startTime || "",
+		endTime: detailRow?.endTime || "",
+		signingTime: detailRow?.signingTime || "",
+		changeType: detailRow?.changeType || row?.changeType || initialChangeType || defaultForm.changeType,
+		changer: detailRow?.changer || row?.changer || "",
+		description: detailRow?.description || row?.description || "",
+		beforeChange: detailRow?.beforeChange || "",
+		afterChange: detailRow?.afterChange || "",
+		attachments,
+	}) as ContractChangeFormVO & { id?: string };
+}
+
+/**
+ * 拉取合同变更详情。
+ * @description
+ * 详情接口返回 `JsonVO` 时，先在页面层拆包，再交给表单弹窗和详情查看逻辑复用。
+ */
+async function fetchChangeDetail(id: string) {
+	const response = await getChangeDetail({ id });
+	return unwrapJsonVO<ContractChangeDetailVO>(response);
 }
 
 /** 打开弹框函数 */
-function openDialog({ mode, row }: { mode: Mode; row?: ChangeListItem }) {
+/**
+ * 打开合同变更弹窗。
+ * @description
+ * 负责新增、编辑、详情三种模式下的详情拉取、表单初始化、弹窗装配和最终提交调用。
+ */
+async function openDialog({
+	mode,
+	row,
+	initialChangeType,
+}: {
+	mode: Mode;
+	row?: ChangeFormRow;
+	initialChangeType?: ContractChangeFormVO["changeType"];
+}) {
 	setMode(mode);
 
-	/** 业务对象 */
-	const formData = isAdd.value
-		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					contractName: row?.contractName || "",
-					contractNumber: row?.contractNumber || "",
-					contractType: row?.contractType || "",
-					partyA: row?.partyA || "",
-					partyAContact: "",
-					partyAPhone: "",
-					partyB: row?.partyB || "",
-					partyBContact: "",
-					partyBPhone: "",
-					handler: "",
-					handlerPhone: "",
-					contractAmount: "",
-					startTime: "",
-					endTime: "",
-					signingTime: "",
-					changeType: row?.changeType || "合同金额",
-					changer: row?.changer || "",
-					description: row?.description || "",
-					beforeChange: "",
-					afterChange: "",
-					attachments: [],
-				} as ContractChangeFormVO)
-			: cloneDeep(defaultForm);
+	const detailRow = row?.id && mode !== "add" ? await fetchChangeDetail(row.id).catch(() => null) : null;
 
-	/** 表单组件需要的props */
+	/** 业务对象 */
+	const formData = buildFormData({
+		mode,
+		row: (detailRow ?? row) as ChangeFormRow | undefined,
+		initialChangeType,
+	});
+
+	/** 表单组件需要的 props */
 	const formProps: ContractChangeFormProps = {
-		form: formData as ContractChangeFormVO,
-		defaultValues: formData as ContractChangeFormVO,
+		form: formData as ContractChangeFormVO & { id?: string },
+		defaultValues: formData as ContractChangeFormVO & { id?: string },
+		mode,
 	};
 
 	const defaultValues = formProps.defaultValues;
@@ -282,59 +364,112 @@ function openDialog({ mode, row }: { mode: Mode; row?: ChangeListItem }) {
 	addDialog({
 		title: () => `${modeText.value}${transformI18n($t("property-manage_contract-manage.contract-change.pageTitle"))}`,
 		props: formProps,
-
 		contentRenderer: () =>
 			h(ContractChangeForm, {
-				ref: ContractChangeFormInstance,
+				ref: contractChangeFormInstance,
 				...formProps,
-				mode: mode,
+				mode,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = ContractChangeFormInstance.value?.formComputed;
+			const formComputed = contractChangeFormInstance.value?.formComputed;
 			if (formComputed) {
 				await useDoBeforeClose({ defaultValues, formComputed, index, options });
 			}
 		},
-
 		footerButtons: [
 			{
 				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = ContractChangeFormInstance.value?.formComputed;
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = contractChangeFormInstance.value?.formComputed;
 					if (formComputed) {
 						await useDoBeforeClose({ defaultValues, formComputed, index, options });
 					}
 				},
 			},
+			...(isInfo.value
+				? []
+				: [
+						{
+							label: () => transformI18n($t("common.buttons.reset")),
+							type: "warning" as const,
+							btnClick: () => {
+								/** 手动重置表单 */
+								contractChangeFormInstance.value?.plusFormInstance?.handleReset();
+							},
+						},
+						{
+							label: () => transformI18n($t("common.buttons.submit")),
+							type: "success" as const,
+							btnClick: async ({ dialog: { options, index }, button }) => {
+								/** 提交表单时，校验 */
+								const result = await contractChangeFormInstance.value?.plusFormInstance?.handleSubmit();
+								if (!result) {
+									return;
+								}
 
-			{
-				label: () => transformI18n($t("common.buttons.reset")),
-				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					/** 手动重置表单 */
-					ContractChangeFormInstance.value?.plusFormInstance?.handleReset();
-				},
-			},
+								const payload = contractChangeFormInstance.value?.collectSubmitPayload?.();
+								if (!payload) {
+									return;
+								}
 
-			{
-				label: () => transformI18n($t("common.buttons.submit")),
-				type: "success",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					/** 提交表单时 校验 */
-					const res = await ContractChangeFormInstance.value?.plusFormInstance?.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
-						await doFetch();
-					}
-				},
-			},
+								button.btn.loading = true;
+
+								try {
+									if (mode === "add") {
+										await createChange(payload as ChangeCreatePayload);
+									} else {
+										await updateChange(payload as ChangeUpdatePayload);
+									}
+
+									ElMessage.success(transformI18n($t(changePageMessageKeys.saveSuccess)));
+									closeDialog(options, index);
+									await doFetch();
+								} finally {
+									button.btn.loading = false;
+								}
+							},
+						},
+					]),
 		],
 	});
+}
+
+function handleOpenAdd(initialChangeType?: ContractChangeFormVO["changeType"]) {
+	void openDialog({ mode: "add", initialChangeType });
+}
+
+function handleOpenEdit(row: ChangeFormRow) {
+	void openDialog({ mode: "edit", row });
+}
+
+function handleOpenInfo(row: ChangeFormRow) {
+	void openDialog({ mode: "info", row });
+}
+
+/**
+ * 删除合同变更记录。
+ * @description
+ * 页面层负责执行删除确认、调用删除接口，并在成功后同步刷新列表与提示消息。
+ */
+async function handleDelete(row: ChangeFormRow) {
+	try {
+		await ElMessageBox.confirm(
+			transformI18n($t(changePageMessageKeys.deleteConfirmMessage)),
+			transformI18n($t(changePageMessageKeys.deleteConfirmTitle)),
+			{
+				type: "warning",
+				confirmButtonText: transformI18n($t(changePageMessageKeys.deleteConfirmButton)),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
+			},
+		);
+	} catch {
+		return;
+	}
+
+	await deleteChange({ ids: [row.id ?? ""] });
+	ElMessage.success(transformI18n($t(changePageMessageKeys.deleteSuccess)));
+	await doFetch();
 }
 </script>
 
@@ -353,13 +488,13 @@ function openDialog({ mode, row }: { mode: Mode; row?: ChangeListItem }) {
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="handleOpenAdd(quickCreateChangeTypeMap.subject)">
 					{{ transformI18n($t("property-manage_contract-manage.contract-change.subjectChange")) }}
 				</ElButton>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="handleOpenAdd(quickCreateChangeTypeMap.period)">
 					{{ transformI18n($t("property-manage_contract-manage.contract-change.termadjustment")) }}
 				</ElButton>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="handleOpenAdd(quickCreateChangeTypeMap.asset)">
 					{{ transformI18n($t("property-manage_contract-manage.contract-change.assetchange")) }}
 				</ElButton>
 			</template>
@@ -374,11 +509,14 @@ function openDialog({ mode, row }: { mode: Mode; row?: ChangeListItem }) {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+						<ElButton type="info" @click="handleOpenInfo(row)">
 							{{ transformI18n($t("property-manage_contract-manage.contract-change.details")) }}
 						</ElButton>
-						<ElButton type="danger">
-							{{ transformI18n($t("property-manage_contract-manage.contract-change.cencel")) }}
+						<ElButton type="warning" @click="handleOpenEdit(row)">
+							{{ transformI18n($t("common.buttons.edit")) }}
+						</ElButton>
+						<ElButton type="danger" @click="handleDelete(row)">
+							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
 				</PureTable>

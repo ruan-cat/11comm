@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		// 起草合同
+		// 草稿合同
 		title: "property-manage_contract-manage.draft-contract.pageTitle",
 		icon: "mdi:file-edit",
 		roles: ["物业团队"],
@@ -9,35 +9,51 @@ definePage({
 	},
 });
 
-import { ref, h } from "vue";
+import { computed, h, ref } from "vue";
 import { cloneDeep } from "@pureadmin/utils";
-import { sleep } from "@antfu/utils";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 import { addDialog, closeDialog } from "@/components/ReDialog";
-import {
-	type ContractDraftFormVO,
-	type DraftContractListItem,
-	type DraftContractQueryParamsType,
-	contractTypeOptions,
-	draftContractStatusOptions,
-} from "@01s-11comm/type";
-import { type ContractDraftFormProps, defaultForm } from "./components/form";
-import ContractDraftForm from "./components/form.vue";
-import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
-import { useMode, type Mode } from "@/composables/use-mode";
-import { useToggle } from "@vueuse/core";
-import { consola } from "consola";
+import { useDoBeforeClose } from "@/composables/use-dialog-do-before-close";
 import { defaultAddDialogParams } from "@/config/constant";
+import { useMode, type Mode } from "@/composables/use-mode";
+import { useDraftContractListQuery } from "@/api/property-manage/contract-manage/draft-contract";
+import type { ContractDraftFormProps } from "./components/form";
+import { defaultForm } from "./components/form";
+import ContractDraftForm from "./components/form.vue";
+import ContractDraftDetail from "./components/detail.vue";
+import {
+	fetchDraftContractDetail,
+	useDraftContractCreateMutation,
+	useDraftContractDeleteMutation,
+	useDraftContractUpdateMutation,
+} from "./api";
+import { buildDraftContractCreatePayload, buildDraftContractFormValue, buildDraftContractUpdatePayload } from "./utils";
+import type {
+	ContractDraftDetailVO,
+	ContractDraftFormVO,
+	DraftContractListItem,
+	DraftContractQueryParamsType,
+} from "@01s-11comm/type";
+import { contractTypeOptions } from "@01s-11comm/type";
 
 const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+
+const draftContractMessageKeys = {
+	blockingUpload: "property-manage_contract-manage.draft-contract.messages.blockingUpload",
+	saveSuccess: "property-manage_contract-manage.draft-contract.messages.saveSuccess",
+	deleteSuccess: "property-manage_contract-manage.draft-contract.messages.deleteSuccess",
+	deleteConfirmTitle: "property-manage_contract-manage.draft-contract.dialogs.deleteConfirmTitle",
+	deleteConfirmMessage: "property-manage_contract-manage.draft-contract.dialogs.deleteConfirmMessage",
+} as const;
 
 const contractDraftFormInstance = ref<InstanceType<typeof ContractDraftForm> | null>(null);
 
 /**
- * 表格搜索栏 双向绑定的变量 原本的数据
+ * 表格搜索栏双向绑定的变量原始数据
  * @description
- * 为了满足搜索栏组件的校验需求 这里需要额外拓展为索引类型
+ * 用于初始化搜索栏、重置搜索栏，以及作为响应式搜索条件的基准值。
  */
 const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParamsType> = {
 	contractName: "",
@@ -46,15 +62,14 @@ const plusSearchModelRef: FieldValues & Partial<DraftContractQueryParamsType> = 
 	handler: "",
 };
 
-/** 表格搜索栏 重置功能用的默认数据 */
+/** 表格搜索栏默认值快照 */
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);
 
-/** 表格搜索栏变量 双向绑定的变量 响应式数据 */
+/** 表格搜索栏双向绑定的响应式数据 */
 const plusSearchModel = ref(plusSearchModelRef);
 
-/** 使用 TanStack Query 获取数据 */
+/** 查询列表的 TanStack Query 数据状态 */
 const {
-	tableData,
 	pureTableProps,
 	isFetching,
 	updateParams,
@@ -64,31 +79,13 @@ const {
 	handleCurrentPageChange,
 } = useDraftContractListQuery(plusSearchDefaultValues);
 
-/** 模式控制 */
-const { mode, modeText, setMode, isAdd, isEdit } = useMode();
+const createDraftContractMutation = useDraftContractCreateMutation();
+const updateDraftContractMutation = useDraftContractUpdateMutation();
+const deleteDraftContractMutation = useDraftContractDeleteMutation();
 
-/** 测试异步函数 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-}
+/** 当前对话框模式 */
 
-const statusLabelKeyMap = {
-	草稿: "property-manage_contract-manage.draft-contract.options.status.draft",
-	审批中: "property-manage_contract-manage.draft-contract.options.status.approving",
-	已生效: "property-manage_contract-manage.draft-contract.options.status.effective",
-	已终止: "property-manage_contract-manage.draft-contract.options.status.terminated",
-} as const;
-
-function translateStatusLabel(value?: string | null) {
-	if (!value) return value ?? "";
-	const key = statusLabelKeyMap[value as keyof typeof statusLabelKeyMap];
-	return key ? transformI18n($t(key)) : value;
-}
+const { mode, setMode, isAdd } = useMode();
 
 /** 表格列配置 */
 const columns = computed<TableColumnList>(() => [
@@ -159,35 +156,35 @@ const columns = computed<TableColumnList>(() => [
 		cellRenderer: ({ row }) => {
 			const draftRow = row as DraftContractListItem | undefined;
 			const status = draftRow?.status ?? "";
-			const label = translateStatusLabel(status);
-			const colorMap: Record<string, string> = {
-				草稿: "text-gray-500",
-				审批中: "text-blue-500",
-				已生效: "text-green-500",
-				已终止: "text-red-500",
+			const statusLabelMap: Record<string, string> = {
+				draft: "property-manage_contract-manage.draft-contract.options.status.draft",
+				pending_review: "property-manage_contract-manage.draft-contract.options.status.approving",
+				effective: "property-manage_contract-manage.draft-contract.options.status.effective",
+				terminated: "property-manage_contract-manage.draft-contract.options.status.terminated",
 			};
-			const cls = colorMap[status] || "";
-			return h("span", { class: cls }, label);
+			const key = statusLabelMap[status];
+			return key ? transformI18n($t(key)) : status;
 		},
 	},
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
-		width: 230,
+		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
 ]);
 
-/** 表格操作栏组件 配置  */
+/** 表格工具栏配置 */
 const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_contract-manage.draft-contract.tableTitle")),
 	columns: columns.value,
 }));
 
 /**
- * 表格搜索栏组件 表单配置
- * @see https://github.com/plus-pro-components/plus-pro-components/issues/184
+ * 表格搜索栏列配置
+ * @description
+ * 这里定义搜索项的标签、字段名和控件类型。
  */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
@@ -213,117 +210,158 @@ const plusSearchColumns = computed<PlusColumn[]>(() => [
 	},
 ]);
 
-/** 表格搜索栏组件 配置  */
+/** 表格搜索栏 props */
 const plusSearchProps = searchProps(plusSearchDefaultValues);
 
-/** 重置搜索条件并重新加载数据 */
+/** 重置搜索栏并刷新列表 */
 function handleReSearch() {
 	plusSearchModel.value = cloneDeep(plusSearchDefaultValues);
 	resetParams();
 }
 
-/** 执行搜索 */
+/** 根据当前搜索条件查询列表 */
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
 
-/** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
 	row?: DraftContractListItem;
 }
 
-/** 打开弹框 */
-function openDialog({ mode, row }: OpenDialogParams) {
+/**
+ * 生成起草合同弹窗标题。
+ * @description
+ * 根据信息态、创建态和编辑态统一映射对应的 i18n 文案，避免在弹窗配置里重复分支判断。
+ */
+function buildDialogTitle(currentMode: Mode) {
+	if (currentMode === "info") {
+		return transformI18n($t("common.buttons.info"));
+	}
+
+	return currentMode === "add"
+		? transformI18n($t("property-manage_contract-manage.draft-contract.dialogs.addTitle"))
+		: transformI18n($t("property-manage_contract-manage.draft-contract.dialogs.editTitle"));
+}
+
+/**
+ * 打开起草合同弹窗。
+ * @description
+ * 统一处理新增、编辑、详情三种模式下的详情拉取、表单默认值准备、弹窗挂载和提交保存流程。
+ */
+async function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
-	/** 业务对象 */
+	const detail = row?.id ? await fetchDraftContractDetail(row.id).catch(() => null) : null;
+
+	if (mode === "info") {
+		const dialogDetail: ContractDraftDetailVO | null = detail ?? null;
+
+		addDialog({
+			...defaultAddDialogParams,
+			title: () => transformI18n($t("common.buttons.info")),
+			width: "68%",
+			contentRenderer: () => h(ContractDraftDetail, { detail: dialogDetail, loading: false }),
+			footerButtons: [
+				{
+					label: () => transformI18n($t("common.buttons.cancel")),
+					type: "info",
+					btnClick: ({ dialog: { options, index } }) => {
+						closeDialog(options, index);
+					},
+				},
+			],
+		});
+
+		return;
+	}
+
+	/** 当前表单值 */
 	const contractDraftFormVO: ContractDraftFormVO = isAdd.value
 		? cloneDeep(defaultForm)
-		: isEdit.value
-			? cloneDeep({
-					...defaultForm,
-					contractName: row?.contractName || "",
-					contractNumber: row?.contractNumber || "",
-					contractType: row?.contractType || "",
-					handler: row?.handler || "",
-					contractAmount: row?.contractAmount || "",
-					startTime: row?.startTime || "",
-					endTime: row?.endTime || "",
-					partyA: row?.partyA || "",
-					partyAContact: "",
-					partyAPhone: "",
-					partyB: row?.partyB || "",
-					partyBContact: "",
-					partyBPhone: "",
-					handlerPhone: "",
-					signingTime: "",
-					description: "",
-					attachments: [],
-				})
-			: cloneDeep(defaultForm);
+		: cloneDeep(buildDraftContractFormValue(detail ?? row));
 
-	/** 表单组件需要的props */
+	/** 传入表单组件的 props */
 	const formProps: ContractDraftFormProps = {
 		form: contractDraftFormVO,
 		defaultValues: contractDraftFormVO,
+		detailAttachments: detail?.attachments ?? [],
+		mode,
 	};
 
-	/** 根据不同模式下 变化的表单默认重置对象 */
+	/** 关闭弹窗前用于脏值对比的默认快照 */
 	const defaultValues = formProps.defaultValues;
 
 	addDialog({
 		...defaultAddDialogParams,
-		title: () => {
-			if (isAdd.value) {
-				return transformI18n($t("property-manage_contract-manage.draft-contract.dialogs.addTitle"));
-			}
-			return transformI18n($t("property-manage_contract-manage.draft-contract.dialogs.editTitle"));
-		},
+		title: () => buildDialogTitle(mode),
+		width: "72%",
 		props: formProps,
-
 		contentRenderer: () =>
 			h(ContractDraftForm, {
 				ref: contractDraftFormInstance,
 				...formProps,
+				mode,
 			}),
-
 		async doBeforeClose({ options, index }) {
-			const formComputed = contractDraftFormInstance.value.formComputed;
+			const formComputed = contractDraftFormInstance.value?.formComputed;
 			await useDoBeforeClose({ defaultValues, formComputed, index, options });
 		},
-
 		footerButtons: [
 			{
 				label: () => transformI18n($t("common.buttons.cancel")),
 				type: "info",
-				btnClick: async ({ dialog: { options, index }, button }) => {
-					const formComputed = contractDraftFormInstance.value.formComputed;
+				btnClick: async ({ dialog: { options, index } }) => {
+					const formComputed = contractDraftFormInstance.value?.formComputed;
 					await useDoBeforeClose({ defaultValues, formComputed, index, options });
 				},
 			},
-
 			{
 				label: () => transformI18n($t("common.buttons.reset")),
 				type: "warning",
-				btnClick: ({ dialog: { options, index }, button }) => {
-					// 手动重置表单
-					contractDraftFormInstance.value.plusFormInstance.handleReset();
+				btnClick: () => {
+					contractDraftFormInstance.value?.plusFormInstance?.handleReset();
+					contractDraftFormInstance.value?.resetUploadState?.();
 				},
 			},
-
 			{
 				label: () => transformI18n($t("common.buttons.submit")),
 				type: "success",
 				btnClick: async ({ dialog: { options, index }, button }) => {
-					// 提交表单时 校验
-					const res = await contractDraftFormInstance.value.plusFormInstance.handleSubmit();
-					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
+					if (contractDraftFormInstance.value?.getHasBlockingUpload?.()) {
+						ElMessage.warning(transformI18n($t(draftContractMessageKeys.blockingUpload)));
+						return;
+					}
+
+					const res = await contractDraftFormInstance.value?.plusFormInstance?.handleSubmit();
+					if (!res) {
+						return;
+					}
+
+					button.btn.loading = true;
+
+					const formComputed = contractDraftFormInstance.value?.formComputed as ContractDraftFormVO;
+					const attachmentState = contractDraftFormInstance.value?.getAttachmentSubmitState?.();
+
+					try {
+						if (isAdd.value) {
+							await createDraftContractMutation.mutateAsync(buildDraftContractCreatePayload(formComputed));
+						} else {
+							await updateDraftContractMutation.mutateAsync(
+								buildDraftContractUpdatePayload({
+									id: detail?.id ?? row?.id ?? "",
+									form: formComputed,
+									retainAttachmentIds: attachmentState?.retainAttachmentIds ?? [],
+									deleteAttachmentIds: attachmentState?.deleteAttachmentIds ?? [],
+								}),
+							);
+						}
+
+						ElMessage.success(transformI18n($t(draftContractMessageKeys.saveSuccess)));
 						closeDialog(options, index);
-						await doFetch(); // 重新加载数据
+						await doFetch();
+					} finally {
+						button.btn.loading = false;
 					}
 				},
 			},
@@ -331,21 +369,30 @@ function openDialog({ mode, row }: OpenDialogParams) {
 	});
 }
 
-// 处理打印操作
-function handlePrint(row: DraftContractListItem) {
-	consola.log("打印合同:", row.contractName);
-	// TODO: 实现打印功能
-}
+/**
+ * 删除起草合同记录。
+ * @description
+ * 页面层先执行二次确认，再调用删除接口并刷新列表，避免误删后界面状态与服务端数据脱节。
+ */
+async function handleDelete(row: DraftContractListItem) {
+	try {
+		await ElMessageBox.confirm(
+			transformI18n($t(draftContractMessageKeys.deleteConfirmMessage)),
+			transformI18n($t(draftContractMessageKeys.deleteConfirmTitle)),
+			{
+				type: "warning",
+				confirmButtonText: transformI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
+			},
+		);
+	} catch {
+		return;
+	}
 
-// 处理删除操作
-function handleDelete(row: DraftContractListItem) {
-	consola.log("删除合同:", row.contractName);
-	// TODO: 实现删除功能
+	await deleteDraftContractMutation.mutateAsync({ ids: [row.id] });
+	ElMessage.success(transformI18n($t(draftContractMessageKeys.deleteSuccess)));
+	await doFetch();
 }
-
-onMounted(async () => {
-	// TanStack Query will auto-fetch on mount
-});
 </script>
 
 <template>
@@ -364,7 +411,7 @@ onMounted(async () => {
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
-					{{ transformI18n($t("property-manage_contract-manage.draft-contract.add")) }}
+					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 			</template>
 
@@ -378,11 +425,11 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<ElButton type="info" @click="openDialog({ mode: 'info', row })">
+							{{ transformI18n($t("common.buttons.info")) }}
+						</ElButton>
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
-						</ElButton>
-						<ElButton type="info" @click="handlePrint(row)">
-							{{ transformI18n($t("property-manage_contract-manage.draft-contract.print")) }}
 						</ElButton>
 						<ElButton type="danger" @click="handleDelete(row)">
 							{{ transformI18n($t("common.buttons.del")) }}

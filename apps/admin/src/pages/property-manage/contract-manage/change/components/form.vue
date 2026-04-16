@@ -3,13 +3,32 @@
   用于新增 修改合同变更
 -->
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
-import { useI18nConfig } from "@/composables/use-i18n-config";
-import type { ContractChangeFormVO } from "@01s-11comm/type";
+import type {
+	ChangeAttachmentDraft,
+	ChangeCreatePayload,
+	ChangeUpdatePayload,
+	ContractChangeFormVO,
+} from "@01s-11comm/type";
+import type { ResumableUploadCompletedAsset } from "../../shared-upload/types";
+import ContractManageSharedUpload from "../../shared-upload/index.vue";
+import {
+	buildChangeCreatePayload,
+	buildChangeUpdatePayload,
+	mergeChangeAttachmentDrafts,
+	normalizeChangeAttachmentDrafts,
+} from "../utils/attachment";
 import type { ContractChangeFormProps } from "./form";
 
 const props = defineProps<ContractChangeFormProps>();
+const changeFormMessageKeys = {
+	attachmentCountSuffix: "property-manage_contract-manage.contract-change.messages.attachmentCountSuffix",
+	attachmentRetained: "property-manage_contract-manage.contract-change.messages.attachmentRetained",
+	attachmentDeleted: "property-manage_contract-manage.contract-change.messages.attachmentDeleted",
+	restoreAttachment: "property-manage_contract-manage.contract-change.actions.restoreAttachment",
+	deleteAttachment: "property-manage_contract-manage.contract-change.actions.deleteAttachment",
+} as const;
 
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ContractChangeFormVO;
@@ -35,11 +54,50 @@ const toRefForm = cloneDeep(props.form) as FieldValues & ContractChangeFormVO;
  */
 const form = ref(toRefForm);
 
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
-});
+/** 只读态 */
+const isReadOnly = computed(() => props.mode === "info");
 
+/** 只读的表单对象 用于外部做判断 */
+const formComputed = computed(() => form.value);
+
+/** 已完成上传的附件 */
+const uploadedAssets = ref<ResumableUploadCompletedAsset[]>([]);
+
+type ExistingChangeAttachmentDraft = Extract<ChangeAttachmentDraft, { source: "existing" }>;
+
+/** 旧附件草稿 */
+const existingAttachmentDrafts = ref<ExistingChangeAttachmentDraft[]>([]);
+
+watch(
+	() => props.form.attachments,
+	(value) => {
+		const normalizedAttachments = normalizeChangeAttachmentDrafts(value ?? []);
+
+		existingAttachmentDrafts.value = normalizedAttachments.filter(
+			(item): item is ExistingChangeAttachmentDraft => item.source === "existing",
+		);
+		uploadedAssets.value = normalizedAttachments
+			.filter((item): item is ChangeAttachmentDraft & { source: "new" } => item.source === "new" && !item.deleted)
+			.map((item) => ({
+				uploadSessionId: item.uploadSessionId,
+				attachmentName: item.attachmentName,
+				attachmentType: item.attachmentType,
+				fileName: item.fileName,
+				fileSize: item.fileSize,
+				mimeType: item.mimeType,
+				fileUrl: item.fileUrl,
+				objectKey: item.objectKey,
+			}));
+	},
+	{ deep: true, immediate: true },
+);
+
+/** 附件草稿统一视图 */
+const attachmentDrafts = computed(() =>
+	mergeChangeAttachmentDrafts(existingAttachmentDrafts.value, uploadedAssets.value),
+);
+
+/** 合同类型选项 */
 const translatedContractTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.contractTypes.purchase")),
@@ -59,6 +117,7 @@ const translatedContractTypeOptions = computed(() => [
 	},
 ]);
 
+/** 变更类型选项 */
 const translatedChangeTypeOptions = computed(() => [
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.options.changeTypes.amount")),
@@ -82,7 +141,59 @@ const translatedChangeTypeOptions = computed(() => [
 	},
 ]);
 
-/** 表单项配置 */
+/**
+ * 为字段属性补充只读态。
+ * @description
+ * 合同变更详情态和编辑态共用同一套列配置，这里统一把 `disabled` 合并进字段属性。
+ */
+function withReadonly<T extends Record<string, unknown>>(fieldProps: T) {
+	return {
+		...fieldProps,
+		disabled: isReadOnly.value,
+	} as any;
+}
+
+/**
+ * 切换既有附件的删除状态。
+ * @description
+ * 历史附件在编辑态下通过草稿对象维护删除标记，提交时再统一折算成保留 ID 和删除 ID。
+ */
+function toggleExistingAttachmentDeleted(attachmentId: string, deleted: boolean) {
+	const target = existingAttachmentDrafts.value.find((item) => item.id === attachmentId);
+	if (!target) {
+		return;
+	}
+
+	target.deleted = deleted;
+}
+
+/**
+ * 组装提交 payload
+ * @description
+ * 由页面层决定最终调用创建还是更新接口
+ */
+function collectSubmitPayload() {
+	const { attachments: _attachments, ...formValue } = form.value;
+
+	if (props.mode === "add") {
+		return buildChangeCreatePayload(
+			formValue as Omit<ChangeCreatePayload, "newUploadSessionIds" | "attachmentMetas">,
+			attachmentDrafts.value,
+		);
+	}
+
+	return buildChangeUpdatePayload(
+		{
+			...(formValue as Omit<
+				ChangeUpdatePayload,
+				"retainAttachmentIds" | "deleteAttachmentIds" | "newUploadSessionIds" | "attachmentMetas"
+			>),
+			id: (props.form as ContractChangeFormVO & { id?: string }).id || "",
+		},
+		attachmentDrafts.value,
+	);
+}
+
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 合同变更信息分组标题
 	{
@@ -97,10 +208,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.contractName")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractNumber")),
@@ -108,12 +219,12 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n(
 				$t("property-manage_contract-manage.contract-change.form.placeholders.contractNumber"),
 			),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractType")),
@@ -122,10 +233,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		options: translatedContractTypeOptions.value,
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			filterable: true,
-		},
+		}),
 	},
 	// 甲方信息
 	{
@@ -134,10 +245,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyA")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyAContact")),
@@ -145,10 +256,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyAContact")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyAPhone")),
@@ -156,12 +267,11 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyAPhone")),
-		},
+		}),
 	},
-
 	// 乙方信息
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyB")),
@@ -169,10 +279,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyB")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyBContact")),
@@ -180,10 +290,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyBContact")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.partyBPhone")),
@@ -191,12 +301,11 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.partyBPhone")),
-		},
+		}),
 	},
-
 	// 经办信息
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.handler")),
@@ -204,10 +313,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.handler")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.handlerPhone")),
@@ -215,10 +324,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.handlerPhone")),
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.contractAmount")),
@@ -226,23 +335,23 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n(
 				$t("property-manage_contract-manage.contract-change.form.placeholders.contractAmount"),
 			),
-		},
+		}),
 	},
 	// 时间信息
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.startTime")),
 		prop: "startTime",
 		valueType: "date-picker",
-		fieldProps: {
+		fieldProps: withReadonly({
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.startTime")),
-		},
+		}),
 		required: true,
 		span: 8,
 	},
@@ -250,11 +359,11 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.endTime")),
 		prop: "endTime",
 		valueType: "date-picker",
-		fieldProps: {
+		fieldProps: withReadonly({
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.endTime")),
-		},
+		}),
 		required: true,
 		span: 8,
 	},
@@ -262,15 +371,14 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.signingTime")),
 		prop: "signingTime",
 		valueType: "date-picker",
-		fieldProps: {
+		fieldProps: withReadonly({
 			type: "datetime",
 			format: "YYYY-MM-DD HH:mm:ss",
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.signingTime")),
-		},
+		}),
 		required: true,
 		span: 8,
 	},
-
 	// 变更信息
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.changeType")),
@@ -279,10 +387,10 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		options: translatedChangeTypeOptions.value,
 		required: true,
 		span: 8,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			filterable: true,
-		},
+		}),
 	},
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.changer")),
@@ -290,20 +398,20 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "input",
 		required: true,
 		span: 16,
-		fieldProps: {
+		fieldProps: withReadonly({
 			clearable: true,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.changer")),
-		},
+		}),
 	},
 	// 变更前后内容
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.beforeChange")),
 		prop: "beforeChange",
 		valueType: "textarea",
-		fieldProps: {
+		fieldProps: withReadonly({
 			rows: 4,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.beforeChange")),
-		},
+		}),
 		required: true,
 		span: 24,
 	},
@@ -311,39 +419,23 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.afterChange")),
 		prop: "afterChange",
 		valueType: "textarea",
-		fieldProps: {
+		fieldProps: withReadonly({
 			rows: 4,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.afterChange")),
-		},
+		}),
 		required: true,
 		span: 24,
 	},
-
 	// 说明
 	{
 		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.description")),
 		prop: "description",
 		valueType: "textarea",
-		fieldProps: {
+		fieldProps: withReadonly({
 			rows: 4,
 			placeholder: transformI18n($t("property-manage_contract-manage.contract-change.form.placeholders.description")),
-		},
+		}),
 		required: true,
-		span: 24,
-	},
-
-	// 合同附件
-	{
-		label: transformI18n($t("property-manage_contract-manage.contract-change.form.fields.attachments")),
-		prop: "attachments",
-		valueType: "text",
-		fieldProps: {
-			action: "/api/upload",
-			multiple: true,
-			limit: 5,
-			accept: ".pdf,.doc,.docx,.xls,.xlsx",
-			tip: "支持上传PDF、Word、Excel文件,最多5个文件",
-		},
 		span: 24,
 	},
 ]);
@@ -524,20 +616,87 @@ const plusFormRules = computed<PlusFormRules>(() => ({
 defineExpose({
 	plusFormInstance,
 	formComputed,
+	collectSubmitPayload,
+	attachmentDrafts,
 });
 </script>
 
 <template>
-	<PlusForm
-		ref="plusFormRef"
-		v-model="form"
-		class="form-root"
-		:has-footer="false"
-		:default-values="defaultValues"
-		:columns="plusFormColumns"
-		:rules="plusFormRules"
-		:grid="{ cols: 24 }"
-	/>
+	<section class="form-root">
+		<PlusForm
+			ref="plusFormRef"
+			v-model="form"
+			:has-footer="false"
+			:default-values="defaultValues"
+			:columns="plusFormColumns"
+			:rules="plusFormRules"
+			:grid="{ cols: 24 }"
+		/>
+
+		<div class="mt-4 rounded-lg border border-dashed border-[var(--el-border-color)] p-4">
+			<div class="mb-3 flex items-center justify-between gap-3">
+				<div>
+					<div class="text-sm font-medium">
+						{{ transformI18n($t("property-manage_contract-manage.contract-change.form.fields.attachments")) }}
+					</div>
+				</div>
+				<el-tag type="info" effect="plain">
+					{{ attachmentDrafts.length }}
+					{{ transformI18n($t(changeFormMessageKeys.attachmentCountSuffix)) }}
+				</el-tag>
+			</div>
+
+			<template v-if="!isReadOnly">
+				<ContractManageSharedUpload v-model="uploadedAssets" biz-type="change" />
+			</template>
+
+			<div class="mt-4 space-y-3">
+				<div
+					v-for="attachment in existingAttachmentDrafts"
+					:key="attachment.id"
+					class="rounded-md border border-[var(--el-border-color-lighter)] p-3"
+				>
+					<div class="flex items-start justify-between gap-3">
+						<div class="min-w-0">
+							<div class="truncate text-sm font-medium">{{ attachment.attachmentName }}</div>
+							<div class="mt-1 text-xs text-[var(--el-text-color-secondary)]">
+								{{ attachment.attachmentType || "-" }} · {{ attachment.contractName || "-" }}
+							</div>
+						</div>
+
+						<div class="flex items-center gap-2">
+							<el-tag :type="attachment.deleted ? 'danger' : 'success'" effect="plain">
+								{{
+									attachment.deleted
+										? transformI18n($t(changeFormMessageKeys.attachmentDeleted))
+										: transformI18n($t(changeFormMessageKeys.attachmentRetained))
+								}}
+							</el-tag>
+							<template v-if="!isReadOnly">
+								<el-button
+									v-if="attachment.deleted"
+									size="small"
+									plain
+									@click="toggleExistingAttachmentDeleted(attachment.id, false)"
+								>
+									{{ transformI18n($t(changeFormMessageKeys.restoreAttachment)) }}
+								</el-button>
+								<el-button
+									v-else
+									size="small"
+									type="danger"
+									plain
+									@click="toggleExistingAttachmentDeleted(attachment.id, true)"
+								>
+									{{ transformI18n($t(changeFormMessageKeys.deleteAttachment)) }}
+								</el-button>
+							</template>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 </template>
 
 <style lang="scss" scoped>

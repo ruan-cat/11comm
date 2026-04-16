@@ -1,7 +1,7 @@
 import type { LocationQueryRaw, RouteParamsRaw } from "vue-router";
 
 /** 详情页参数值 */
-type DetailRouteParameterValue = string | number | readonly (string | number)[];
+type DetailRouteParameterValue = string | number | Array<string | number>;
 
 /** 详情页参数 */
 export interface DetailRouteParameter extends Record<string, DetailRouteParameterValue> {

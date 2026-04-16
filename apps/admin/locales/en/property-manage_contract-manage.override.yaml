@@ -1,0 +1,35 @@
+draft-contract:
+  dialogs:
+    deleteConfirmTitle: Prompt
+    deleteConfirmMessage: Are you sure you want to delete this contract draft?
+  actions:
+    restoreAttachment: Restore
+    removeAttachment: Remove
+  messages:
+    blockingUpload: There are unfinished upload tasks and the form cannot be submitted yet.
+    saveSuccess: Saved successfully.
+    deleteSuccess: Deleted successfully.
+    emptyDetail: No detail data available.
+shared-upload:
+  dropzoneTip: Click or drag files here. Uploads will first enter the shared resumable queue.
+  blockingAlert: Attachments cannot be treated as submittable while there are unfinished upload tasks.
+  missingPartSuffix: missing parts
+  actions:
+    start: Start
+    pause: Pause
+    resume: Resume
+    remove: Remove
+contract-change:
+  dialogs:
+    deleteConfirmTitle: Delete Confirmation
+    deleteConfirmMessage: Are you sure you want to delete this contract change?
+  actions:
+    confirmDelete: Confirm
+    restoreAttachment: Restore
+    deleteAttachment: Delete
+  messages:
+    saveSuccess: Saved successfully.
+    deleteSuccess: Deleted successfully.
+    attachmentCountSuffix: items
+    attachmentRetained: Retained
+    attachmentDeleted: Deleted

@@ -1,36 +1,63 @@
 <!--
   合同草稿表单
-  用于新增、修改合同草稿
+  用于新增和编辑合同草稿
 -->
 <script lang="ts" setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import { cloneDeep } from "@pureadmin/utils";
 import { $t, transformI18n } from "@/plugins/i18n";
-import { useI18nConfig } from "@/composables/use-i18n-config";
-import type { ContractDraftFormVO } from "@01s-11comm/type";
-import { contractTypeOptions } from "@01s-11comm/type";
-
-import { ContractDraftFormProps } from "./form";
-
-const { locale } = useI18nConfig();
+import {
+	attachmentTypeOptions,
+	contractTypeOptions,
+	type AttachmentDetailItem,
+	type AttachmentMetaInput,
+	type ContractDraftFormVO,
+} from "@01s-11comm/type";
+import type { ContractDraftFormProps } from "./form";
+import ContractDraftUpload from "./upload.vue";
+import type { ResumableUploadAttachmentTypeOption } from "../../shared-upload/types";
 
 const props = defineProps<ContractDraftFormProps>();
 
-/** 默认的表单重置变量 */
+/** 表单默认值 */
 const defaultValues = props.defaultValues as FieldValues & ContractDraftFormVO;
 
-/** 表单组件实例 要求对外直接导出本表单实例 */
+/** 表单实例 */
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
+/** 表单响应式数据 */
 const form = ref(cloneDeep(props.form) as FieldValues & ContractDraftFormVO);
-/** 只读的表单对象 用于外部做判断 */
-const formComputed = computed(() => {
-	return form.value;
+
+/** 对外暴露的表单值 */
+const formComputed = computed(() => form.value);
+
+const uploadRef = ref<{
+	reset: () => void;
+	getHasBlockingUpload: () => boolean;
+} | null>(null);
+const draftContractFormMessageKeys = {
+	restoreAttachment: "property-manage_contract-manage.draft-contract.actions.restoreAttachment",
+	removeAttachment: "property-manage_contract-manage.draft-contract.actions.removeAttachment",
+} as const;
+
+const uploadRenderKey = ref(0);
+const removedAttachmentIds = ref<string[]>([]);
+
+/** 已有附件列表 */
+const existingAttachments = computed(() => props.detailAttachments ?? []);
+
+/** 当前保留的附件 */
+const editableAttachments = computed(() => {
+	return existingAttachments.value.filter((item) => !removedAttachmentIds.value.includes(item.id));
 });
 
-/** 表单项配置 */
+/** 是否还有未完成上传 */
+const hasBlockingUpload = computed(() => uploadRef.value?.getHasBlockingUpload() ?? false);
+const uploadAttachmentTypeOptions = attachmentTypeOptions as ResumableUploadAttachmentTypeOption[];
+
+/** 表单列配置 */
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	// 合同基本信息
 	{
@@ -92,7 +119,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		/** @description 甲方联系电话 */
+		/** @description 甲方电话 */
 		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.partyAPhone")),
 		prop: "partyAPhone",
 		valueType: "input",
@@ -127,7 +154,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		},
 	},
 	{
-		/** @description 乙方联系电话 */
+		/** @description 乙方电话 */
 		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.partyBPhone")),
 		prop: "partyBPhone",
 		valueType: "input",
@@ -219,7 +246,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		span: 8,
 	},
 
-	// 说明
+	// 补充说明
 	{
 		/** @description 说明 */
 		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.description")),
@@ -228,23 +255,6 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		fieldProps: {
 			rows: 4,
 			placeholder: transformI18n($t("property-manage_contract-manage.draft-contract.form.placeholders.description")),
-		},
-		span: 24,
-	},
-
-	// 合同附件
-	{
-		/** @description 合同附件 */
-		label: transformI18n($t("property-manage_contract-manage.draft-contract.fields.attachments")),
-		prop: "attachments",
-		valueType: "text",
-		fieldProps: {
-			action: "/api/upload",
-			multiple: true,
-			limit: 5,
-			fileList: [],
-			accept: ".pdf,.doc,.docx,.xls,.xlsx",
-			tip: transformI18n($t("property-manage_contract-manage.draft-contract.form.placeholders.attachmentsTip")),
 		},
 		span: 24,
 	},
@@ -379,9 +389,62 @@ const plusFormRules = computed<PlusFormRules>(() => ({
 	],
 }));
 
+/**
+ * 切换既有附件的删除态。
+ * @description
+ * 历史附件不会直接从表单里移除，而是通过维护删除 ID 集合来表达“提交时删除/恢复”的意图。
+ */
+function toggleExistingAttachment(item: AttachmentDetailItem) {
+	const exists = removedAttachmentIds.value.includes(item.id);
+	removedAttachmentIds.value = exists
+		? removedAttachmentIds.value.filter((current) => current !== item.id)
+		: [...removedAttachmentIds.value, item.id];
+}
+
+/**
+ * 重置附件上传区状态。
+ * @description
+ * 关闭或重置表单时，除了恢复已删除附件标记，还需要重建上传子组件以清空内部续传队列状态。
+ */
+function resetUploadState() {
+	removedAttachmentIds.value = [];
+	uploadRenderKey.value += 1;
+	uploadRef.value?.reset?.();
+}
+
+/**
+ * 汇总附件提交状态。
+ * @description
+ * 将新上传附件、保留附件和删除附件三类信息整理成接口所需的 payload 片段。
+ */
+function getAttachmentSubmitState() {
+	const completedAttachments = form.value.attachments ?? [];
+	const newUploadSessionIds = Array.from(
+		new Set(completedAttachments.map((item) => item.uploadSessionId).filter((item): item is string => Boolean(item))),
+	);
+
+	const attachmentMetas: AttachmentMetaInput[] = completedAttachments
+		.filter((item) => Boolean(item.uploadSessionId))
+		.map((item) => ({
+			uploadSessionId: item.uploadSessionId,
+			attachmentName: item.attachmentName,
+			attachmentType: item.attachmentType,
+		}));
+
+	return {
+		newUploadSessionIds,
+		attachmentMetas,
+		retainAttachmentIds: editableAttachments.value.map((item) => item.id),
+		deleteAttachmentIds: removedAttachmentIds.value.slice(),
+	};
+}
+
 defineExpose({
 	plusFormInstance,
 	formComputed,
+	resetUploadState,
+	getHasBlockingUpload: () => hasBlockingUpload.value,
+	getAttachmentSubmitState,
 });
 </script>
 
@@ -396,6 +459,57 @@ defineExpose({
 			:rules="plusFormRules"
 			:grid="{ cols: 24 }"
 		/>
+
+		<section class="mt-4 space-y-4">
+			<div v-if="existingAttachments.length" class="rounded-lg border border-[var(--el-border-color-light)] p-4">
+				<div class="mb-3 text-sm font-medium text-[var(--el-text-color-primary)]">
+					{{ transformI18n($t("property-manage_contract-manage.draft-contract.fields.attachments")) }}
+				</div>
+				<div class="space-y-2">
+					<div
+						v-for="item in existingAttachments"
+						:key="item.id"
+						class="flex items-center justify-between gap-3 rounded-md bg-[var(--el-fill-color-light)] px-3 py-2"
+						:class="removedAttachmentIds.includes(item.id) ? 'opacity-50' : ''"
+					>
+						<div class="min-w-0">
+							<div class="truncate text-sm" :class="removedAttachmentIds.includes(item.id) ? 'line-through' : ''">
+								{{ item.attachmentName }}
+							</div>
+							<div class="text-xs text-[var(--el-text-color-secondary)]">
+								{{ item.attachmentType || "-" }} / {{ item.fileSize || 0 }} B
+							</div>
+						</div>
+						<ElButton
+							v-if="mode === 'edit'"
+							size="small"
+							:type="removedAttachmentIds.includes(item.id) ? 'success' : 'danger'"
+							link
+							@click="toggleExistingAttachment(item)"
+						>
+							{{
+								removedAttachmentIds.includes(item.id)
+									? transformI18n($t(draftContractFormMessageKeys.restoreAttachment))
+									: transformI18n($t(draftContractFormMessageKeys.removeAttachment))
+							}}
+						</ElButton>
+					</div>
+				</div>
+			</div>
+
+			<div class="rounded-lg border border-dashed border-[var(--el-border-color)] p-4">
+				<div class="mb-3 text-sm font-medium text-[var(--el-text-color-primary)]">
+					{{ transformI18n($t("property-manage_contract-manage.draft-contract.fields.attachments")) }}
+				</div>
+				<ContractDraftUpload
+					:key="uploadRenderKey"
+					ref="uploadRef"
+					v-model="form.attachments"
+					biz-type="draft_contract"
+					:attachment-type-options="uploadAttachmentTypeOptions"
+				/>
+			</div>
+		</section>
 	</section>
 </template>
 
