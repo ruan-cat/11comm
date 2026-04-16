@@ -145,6 +145,8 @@ https://01s-11comm-files.ruan-cat.com/<object-key>
 - `r2UploadId`
 - `status`：`initiated` | `uploading` | `paused` | `completed` | `aborted` | `expired`
 - `uploadedPartsCount`
+- `objectEtag`
+- `publicUrl`
 - `completedAt`
 - `expiresAt`
 - `remark`
@@ -191,7 +193,8 @@ https://01s-11comm-files.ruan-cat.com/<object-key>
 ### 数据模型上的核心原则
 
 - 上传中的临时状态，放在 `upload_sessions` / `upload_session_parts`
-- 最终业务附件，放在 `ct_attachments`
+- multipart 完成后的对象元数据，先收口在 `ct_upload_sessions`
+- 最终业务附件，统一在业务 `create/update` 成功时写入 `ct_attachments`
 - 不让“传了一半的文件”直接污染业务附件表
 
 ## 四、Nitro 接口设计
@@ -260,7 +263,8 @@ https://01s-11comm-files.ruan-cat.com/<object-key>
 作用：
 
 - 使用前端回传的 `partNumber + etag` 完成 multipart upload
-- 写入 `ct_attachments`
+- 将上传会话标记为 `completed`
+- 回填 `objectEtag` / `publicUrl`
 
 输入建议：
 
@@ -271,8 +275,9 @@ https://01s-11comm-files.ruan-cat.com/<object-key>
 
 输出建议：
 
-- `attachmentId`
+- `sessionId`
 - `fileUrl`
+- `objectKey`
 
 #### 5. `upload/abort.post`
 
@@ -314,6 +319,13 @@ https://01s-11comm-files.ruan-cat.com/<object-key>
 - `deleteAttachmentIds`
 - `newUploadSessionIds`
 - `attachmentMetas`
+
+这里有一个重要边界：
+
+- `upload/complete` 只负责把对象上传链路闭环
+- `draft-contract/create|update` 与 `change/create|update` 才负责将已完成的上传会话物化为正式 `ct_attachments`
+
+这样可以解决 `create` 场景里“业务主记录尚未生成，无法立即写附件表”的问题。
 
 ## 五、前端上传状态机
 
