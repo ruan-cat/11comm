@@ -1,5 +1,6 @@
-import type { BaseListQueryParams } from "../../../common";
-import type { OptionsType } from "../../../common";
+import type { BaseListQueryParams, OptionsType } from "../../../common";
+import type { AttachmentDetailItem } from "./attachment";
+import type { AttachmentMetaInput, CompletedAttachmentAsset } from "./upload";
 
 /**
  * @file 合同变更类型定义
@@ -67,11 +68,9 @@ export interface ChangeQueryParams extends BaseListQueryParams {
  * Status options
  */
 export const changeStatusOptions: OptionsType = [
-	{ label: "待审核", value: "待审核" },
-	{ label: "审核中", value: "审核中" },
-	{ label: "已通过", value: "已通过" },
-	{ label: "已拒绝", value: "已拒绝" },
-	{ label: "已撤回", value: "已撤回" },
+	{ label: "待审核", value: "pending" },
+	{ label: "已通过", value: "approved" },
+	{ label: "已拒绝", value: "rejected" },
 ];
 
 /**
@@ -79,6 +78,34 @@ export const changeStatusOptions: OptionsType = [
  * Change type
  */
 export type ChangeType = "合同金额" | "服务期限" | "服务内容" | "付款方式" | "合同主体";
+
+/**
+ * 变更页旧附件草稿
+ * Existing attachment draft item
+ */
+export interface ExistingChangeAttachmentDraft extends AttachmentDetailItem {
+	/** 来源 source */
+	source: "existing";
+	/** 是否标记删除 deleted */
+	deleted?: boolean;
+}
+
+/**
+ * 变更页新附件草稿
+ * New uploaded attachment draft item
+ */
+export interface NewChangeAttachmentDraft extends CompletedAttachmentAsset {
+	/** 来源 source */
+	source: "new";
+	/** 是否标记删除 deleted */
+	deleted?: boolean;
+}
+
+/**
+ * 变更页附件草稿联合类型
+ * Change attachment draft union
+ */
+export type ChangeAttachmentDraft = ExistingChangeAttachmentDraft | NewChangeAttachmentDraft;
 
 /**
  * 合同变更表单业务类型
@@ -125,6 +152,68 @@ export interface ContractChangeFormVO {
 	beforeChange: string;
 	/** 变更后 After change */
 	afterChange: string;
-	/** 附件 Attachments */
-	attachments?: any[];
+	/** 变更时间 Change time */
+	changeTime?: string;
+	/** 附件草稿 Attachments */
+	attachments: ChangeAttachmentDraft[];
+}
+
+/**
+ * 合同变更详情数据
+ * Contract change detail VO
+ */
+export interface ContractChangeDetailVO extends Omit<ContractChangeFormVO, "attachments"> {
+	/** ID */
+	id: string;
+	/** 关联合同 ID */
+	contractId: string;
+	/** 审批状态 Approval status */
+	status: string;
+	/** 审批人 Approver */
+	approver?: string;
+	/** 审批时间 Approval time */
+	approvalTime?: string;
+	/** 明细附件列表 Detail attachments */
+	attachments: AttachmentDetailItem[];
+	/** 创建时间 Create time */
+	createTime: string;
+	/** 更新时间 Update time */
+	updateTime: string;
+	/** 备注 Remark */
+	remark?: string;
+}
+
+/**
+ * 合同变更创建参数
+ * Contract change create payload
+ */
+export interface ChangeCreatePayload extends Omit<ContractChangeFormVO, "attachments"> {
+	/** 新上传会话 ID 列表 */
+	newUploadSessionIds: string[];
+	/** 附件元数据 */
+	attachmentMetas: AttachmentMetaInput[];
+	/** 备注 Remark */
+	remark?: string;
+}
+
+/**
+ * 合同变更更新参数
+ * Contract change update payload
+ */
+export interface ChangeUpdatePayload extends ChangeCreatePayload {
+	/** ID */
+	id: string;
+	/** 保留的旧附件 ID */
+	retainAttachmentIds: string[];
+	/** 删除的旧附件 ID */
+	deleteAttachmentIds: string[];
+}
+
+/**
+ * 合同变更删除参数
+ * Contract change delete payload
+ */
+export interface ChangeDeletePayload {
+	/** 批量删除 ID 列表 */
+	ids: string[];
 }

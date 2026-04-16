@@ -4,32 +4,37 @@
  * @module contract-manage
  */
 
+import { isNull } from "drizzle-orm";
 import {
+	date,
+	decimal,
 	index,
 	integer,
 	pgTable,
 	text,
 	timestamp,
-	varchar,
-	decimal,
-	date,
 	uniqueIndex,
 	uuid,
+	varchar,
 } from "drizzle-orm/pg-core";
-import { isNull } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
-	primaryId,
-	timestamps,
-	softDelete,
-	remarkField,
-	statusEnum,
 	auditStatusEnum,
 	contractStatusEnum,
+	primaryId,
+	remarkField,
+	softDelete,
+	statusEnum,
 	templateStatusEnum,
+	timestamps,
 } from "../../../common";
 import { hpOwners } from "../house-property-manage/schema";
+
+const uploadBizTypeValues = ["draft_contract", "change"] as const;
+const uploadSessionStatusValues = ["initiated", "uploading", "paused", "completed", "aborted", "expired"] as const;
+const attachmentUploadStatusValues = ["ready", "deleted"] as const;
+const storageProviderValues = ["r2"] as const;
 
 // ==========================================
 // Part A: Database Table Definitions
@@ -172,6 +177,26 @@ export const ctContracts = pgTable(
 		endTime: timestamp("end_time"),
 		/** 签订日期 */
 		signDate: date("sign_date"),
+		/** 甲方名称（表单回显快照） */
+		partyA: varchar("party_a", { length: 200 }),
+		/** 甲方联系人（表单回显快照） */
+		partyAContact: varchar("party_a_contact", { length: 50 }),
+		/** 甲方电话（表单回显快照） */
+		partyAPhone: varchar("party_a_phone", { length: 20 }),
+		/** 乙方名称（表单回显快照） */
+		partyB: varchar("party_b", { length: 200 }),
+		/** 乙方联系人（表单回显快照） */
+		partyBContact: varchar("party_b_contact", { length: 50 }),
+		/** 乙方电话（表单回显快照） */
+		partyBPhone: varchar("party_b_phone", { length: 20 }),
+		/** 经办人（表单回显快照） */
+		handler: varchar("handler", { length: 50 }),
+		/** 经办人电话（表单回显快照） */
+		handlerPhone: varchar("handler_phone", { length: 20 }),
+		/** 合同说明 */
+		description: text("description"),
+		/** 签订时间 */
+		signingTime: timestamp("signing_time"),
 		/** 合同状态 */
 		status: contractStatusEnum("status").default("draft"),
 		/** 备注 */
@@ -187,28 +212,82 @@ export const ctContracts = pgTable(
 	],
 );
 
-/** 合同附件表 */
-export const ctAttachments = pgTable(
-	"ct_attachments",
+/** 合同上传会话表 */
+export const ctUploadSessions = pgTable(
+	"ct_upload_sessions",
 	{
 		id: primaryId(),
-		/** 关联合同 ID */
-		contractId: uuid("contract_id")
-			.references(() => ctContracts.id, { onDelete: "cascade" })
-			.notNull(),
-		/** 附件名称 */
-		attachmentName: varchar("attachment_name", { length: 200 }).notNull(),
-		/** 附件类型 */
-		attachmentType: varchar("attachment_type", { length: 50 }),
-		/** 文件路径 */
-		filePath: text("file_path"),
-		/** 文件大小（字节） */
-		fileSize: integer("file_size"),
+		/** 业务类型：合同草稿 / 合同变更 */
+		bizType: varchar("biz_type", { length: 50 }).notNull(),
+		/** 业务 ID（创建态可为空） */
+		bizId: uuid("biz_id"),
+		/** 文件名 */
+		fileName: varchar("file_name", { length: 255 }).notNull(),
+		/** MIME 类型 */
+		mimeType: varchar("mime_type", { length: 255 }).notNull(),
+		/** 文件大小 */
+		fileSize: integer("file_size").notNull(),
+		/** 分片大小 */
+		chunkSize: integer("chunk_size").notNull(),
+		/** 分片总数 */
+		totalParts: integer("total_parts").notNull(),
+		/** 断点续传指纹 */
+		resumeFingerprint: varchar("resume_fingerprint", { length: 255 }).notNull(),
+		/** R2 bucket */
+		r2Bucket: varchar("r2_bucket", { length: 100 }).notNull(),
+		/** R2 对象 key */
+		r2ObjectKey: text("r2_object_key").notNull(),
+		/** R2 multipart uploadId
+		 * Cloudflare R2 returns uploadId values longer than 255 chars.
+		 * Use text to avoid insert failures during multipart session creation.
+		 */
+		r2UploadId: text("r2_upload_id").notNull(),
+		/** 会话状态 */
+		status: varchar("status", { length: 20 }).notNull().default("initiated"),
+		/** 已上传分片数量 */
+		uploadedPartsCount: integer("uploaded_parts_count").notNull().default(0),
+		/** 对象 ETag */
+		objectEtag: varchar("object_etag", { length: 255 }),
+		/** 公网访问地址 */
+		publicUrl: text("public_url"),
+		/** 完成时间 */
+		completedAt: timestamp("completed_at"),
+		/** 过期时间 */
+		expiresAt: timestamp("expires_at").notNull(),
 		/** 备注 */
 		remark: remarkField(),
 		...timestamps,
 	},
-	(table) => [index("ct_attachments_contract_id_idx").on(table.contractId)],
+	(table) => [
+		index("ct_upload_sessions_biz_type_idx").on(table.bizType),
+		index("ct_upload_sessions_status_idx").on(table.status),
+		index("ct_upload_sessions_resume_fingerprint_idx").on(table.resumeFingerprint),
+	],
+);
+
+/** 合同上传分片表 */
+export const ctUploadSessionParts = pgTable(
+	"ct_upload_session_parts",
+	{
+		id: primaryId(),
+		/** 上传会话 ID */
+		sessionId: uuid("session_id")
+			.references(() => ctUploadSessions.id, { onDelete: "cascade" })
+			.notNull(),
+		/** 分片序号 */
+		partNumber: integer("part_number").notNull(),
+		/** 分片 ETag */
+		etag: varchar("etag", { length: 255 }).notNull(),
+		/** 分片大小 */
+		partSize: integer("part_size").notNull(),
+		/** 上传完成时间 */
+		uploadedAt: timestamp("uploaded_at").notNull().defaultNow(),
+		...timestamps,
+	},
+	(table) => [
+		index("ct_upload_session_parts_session_id_idx").on(table.sessionId),
+		uniqueIndex("ct_upload_session_parts_session_part_idx").on(table.sessionId, table.partNumber),
+	],
 );
 
 /** 合同变更表 */
@@ -228,6 +307,16 @@ export const ctChanges = pgTable(
 		changeContent: text("change_content"),
 		/** 变更日期 */
 		changeDate: date("change_date"),
+		/** 变更人 */
+		changer: varchar("changer", { length: 50 }),
+		/** 变更说明 */
+		description: text("description"),
+		/** 变更前 */
+		beforeChange: text("before_change"),
+		/** 变更后 */
+		afterChange: text("after_change"),
+		/** 变更时间 */
+		changeTime: timestamp("change_time"),
 		/** 审批状态 */
 		approvalStatus: auditStatusEnum("approval_status").default("pending"),
 		/** 审批人 */
@@ -236,12 +325,59 @@ export const ctChanges = pgTable(
 		approvalTime: timestamp("approval_time"),
 		/** 备注 */
 		remark: remarkField(),
-
 		...timestamps,
 	},
 	(table) => [
 		index("ct_changes_contract_id_idx").on(table.contractId),
 		index("ct_changes_approval_status_idx").on(table.approvalStatus),
+	],
+);
+
+/** 合同附件表 */
+export const ctAttachments = pgTable(
+	"ct_attachments",
+	{
+		id: primaryId(),
+		/** 关联合同 ID */
+		contractId: uuid("contract_id")
+			.references(() => ctContracts.id, { onDelete: "cascade" })
+			.notNull(),
+		/** 关联变更 ID */
+		changeId: uuid("change_id").references(() => ctChanges.id, { onDelete: "cascade" }),
+		/** 附件名称 */
+		attachmentName: varchar("attachment_name", { length: 200 }).notNull(),
+		/** 附件类型 */
+		attachmentType: varchar("attachment_type", { length: 50 }),
+		/** 文件路径 */
+		filePath: text("file_path"),
+		/** 文件大小（字节） */
+		fileSize: integer("file_size"),
+		/** 存储提供方 */
+		storageProvider: varchar("storage_provider", { length: 20 }).notNull().default("r2"),
+		/** Bucket 名称 */
+		bucketName: varchar("bucket_name", { length: 100 }),
+		/** 对象 Key */
+		objectKey: text("object_key"),
+		/** 文件 URL */
+		fileUrl: text("file_url"),
+		/** MIME 类型 */
+		mimeType: varchar("mime_type", { length: 255 }),
+		/** 文件哈希 */
+		fileHash: varchar("file_hash", { length: 255 }),
+		/** 对象 ETag */
+		objectEtag: varchar("object_etag", { length: 255 }),
+		/** 上传会话 ID */
+		uploadSessionId: uuid("upload_session_id").references(() => ctUploadSessions.id, { onDelete: "set null" }),
+		/** 上传状态 */
+		uploadStatus: varchar("upload_status", { length: 20 }).notNull().default("ready"),
+		/** 备注 */
+		remark: remarkField(),
+		...timestamps,
+	},
+	(table) => [
+		index("ct_attachments_contract_id_idx").on(table.contractId),
+		index("ct_attachments_change_id_idx").on(table.changeId),
+		index("ct_attachments_upload_session_id_idx").on(table.uploadSessionId),
 	],
 );
 
@@ -451,29 +587,79 @@ export const updateCtContractSchema = z.object({
 	startTime: z.date().optional().nullable(),
 	endTime: z.date().optional().nullable(),
 	signDate: z.string().optional().nullable(),
+	partyA: z.string().max(200).optional().nullable(),
+	partyAContact: z.string().max(50).optional().nullable(),
+	partyAPhone: z.string().max(20).optional().nullable(),
+	partyB: z.string().max(200).optional().nullable(),
+	partyBContact: z.string().max(50).optional().nullable(),
+	partyBPhone: z.string().max(20).optional().nullable(),
+	handler: z.string().max(50).optional().nullable(),
+	handlerPhone: z.string().max(20).optional().nullable(),
+	description: z.string().optional().nullable(),
+	signingTime: z.date().optional().nullable(),
 	status: z.enum(["draft", "pending_review", "effective", "expired", "terminated"]).optional(),
 	remark: z.string().optional().nullable(),
 });
 
-// --- ctAttachments ---
-export const insertCtAttachmentSchema = createInsertSchema(ctAttachments, {
-	attachmentName: (schema) => schema.min(1, "附件名称不能为空").max(200),
+// --- ctUploadSessions ---
+export const insertCtUploadSessionSchema = createInsertSchema(ctUploadSessions, {
+	fileName: (schema) => schema.min(1, "文件名不能为空").max(255),
+	mimeType: (schema) => schema.min(1, "文件类型不能为空").max(255),
+	resumeFingerprint: (schema) => schema.min(1, "断点续传指纹不能为空").max(255),
+	r2Bucket: (schema) => schema.min(1, "R2 bucket 不能为空").max(100),
+	r2UploadId: (schema) => schema.min(1, "R2 uploadId 不能为空").max(1024),
+}).omit({
+	id: true,
+	createTime: true,
+	updateTime: true,
+	uploadedPartsCount: true,
+	objectEtag: true,
+	publicUrl: true,
+	completedAt: true,
+});
+
+export const selectCtUploadSessionSchema = createSelectSchema(ctUploadSessions);
+
+export const updateCtUploadSessionSchema = z.object({
+	id: z.string().uuid(),
+	bizType: z.enum(uploadBizTypeValues).optional(),
+	bizId: z.string().uuid().optional().nullable(),
+	fileName: z.string().min(1, "文件名不能为空").max(255).optional(),
+	mimeType: z.string().min(1, "文件类型不能为空").max(255).optional(),
+	fileSize: z.number().int().optional(),
+	chunkSize: z.number().int().optional(),
+	totalParts: z.number().int().optional(),
+	resumeFingerprint: z.string().min(1, "断点续传指纹不能为空").max(255).optional(),
+	r2Bucket: z.string().min(1, "R2 bucket 不能为空").max(100).optional(),
+	r2ObjectKey: z.string().min(1, "R2 对象 key 不能为空").optional(),
+	r2UploadId: z.string().min(1, "R2 uploadId 不能为空").max(1024).optional(),
+	status: z.enum(uploadSessionStatusValues).optional(),
+	uploadedPartsCount: z.number().int().optional(),
+	objectEtag: z.string().max(255).optional().nullable(),
+	publicUrl: z.string().optional().nullable(),
+	completedAt: z.date().optional().nullable(),
+	expiresAt: z.date().optional(),
+	remark: z.string().optional().nullable(),
+});
+
+// --- ctUploadSessionParts ---
+export const insertCtUploadSessionPartSchema = createInsertSchema(ctUploadSessionParts, {
+	etag: (schema) => schema.min(1, "分片 ETag 不能为空").max(255),
 }).omit({
 	id: true,
 	createTime: true,
 	updateTime: true,
 });
 
-export const selectCtAttachmentSchema = createSelectSchema(ctAttachments);
+export const selectCtUploadSessionPartSchema = createSelectSchema(ctUploadSessionParts);
 
-export const updateCtAttachmentSchema = z.object({
+export const updateCtUploadSessionPartSchema = z.object({
 	id: z.string().uuid(),
-	contractId: z.string().uuid().optional(),
-	attachmentName: z.string().min(1, "附件名称不能为空").max(200).optional(),
-	attachmentType: z.string().max(50).optional().nullable(),
-	filePath: z.string().optional().nullable(),
-	fileSize: z.number().int().optional().nullable(),
-	remark: z.string().optional().nullable(),
+	sessionId: z.string().uuid().optional(),
+	partNumber: z.number().int().optional(),
+	etag: z.string().min(1, "分片 ETag 不能为空").max(255).optional(),
+	partSize: z.number().int().optional(),
+	uploadedAt: z.date().optional(),
 });
 
 // --- ctChanges ---
@@ -492,9 +678,45 @@ export const updateCtChangeSchema = z.object({
 	changeReason: z.string().optional().nullable(),
 	changeContent: z.string().optional().nullable(),
 	changeDate: z.string().optional().nullable(),
+	changer: z.string().max(50).optional().nullable(),
+	description: z.string().optional().nullable(),
+	beforeChange: z.string().optional().nullable(),
+	afterChange: z.string().optional().nullable(),
+	changeTime: z.date().optional().nullable(),
 	approvalStatus: z.enum(["pending", "approved", "rejected"]).optional(),
 	approver: z.string().max(50).optional().nullable(),
 	approvalTime: z.date().optional().nullable(),
+	remark: z.string().optional().nullable(),
+});
+
+// --- ctAttachments ---
+export const insertCtAttachmentSchema = createInsertSchema(ctAttachments, {
+	attachmentName: (schema) => schema.min(1, "附件名称不能为空").max(200),
+}).omit({
+	id: true,
+	createTime: true,
+	updateTime: true,
+});
+
+export const selectCtAttachmentSchema = createSelectSchema(ctAttachments);
+
+export const updateCtAttachmentSchema = z.object({
+	id: z.string().uuid(),
+	contractId: z.string().uuid().optional(),
+	changeId: z.string().uuid().optional().nullable(),
+	attachmentName: z.string().min(1, "附件名称不能为空").max(200).optional(),
+	attachmentType: z.string().max(50).optional().nullable(),
+	filePath: z.string().optional().nullable(),
+	fileSize: z.number().int().optional().nullable(),
+	storageProvider: z.enum(storageProviderValues).optional(),
+	bucketName: z.string().max(100).optional().nullable(),
+	objectKey: z.string().optional().nullable(),
+	fileUrl: z.string().optional().nullable(),
+	mimeType: z.string().max(255).optional().nullable(),
+	fileHash: z.string().max(255).optional().nullable(),
+	objectEtag: z.string().max(255).optional().nullable(),
+	uploadSessionId: z.string().uuid().optional().nullable(),
+	uploadStatus: z.enum(attachmentUploadStatusValues).optional(),
 	remark: z.string().optional().nullable(),
 });
 
@@ -582,13 +804,21 @@ export type CtContract = typeof ctContracts.$inferSelect;
 export type NewCtContract = typeof ctContracts.$inferInsert;
 export type UpdateCtContract = z.infer<typeof updateCtContractSchema>;
 
-export type CtAttachment = typeof ctAttachments.$inferSelect;
-export type NewCtAttachment = typeof ctAttachments.$inferInsert;
-export type UpdateCtAttachment = z.infer<typeof updateCtAttachmentSchema>;
+export type CtUploadSession = typeof ctUploadSessions.$inferSelect;
+export type NewCtUploadSession = typeof ctUploadSessions.$inferInsert;
+export type UpdateCtUploadSession = z.infer<typeof updateCtUploadSessionSchema>;
+
+export type CtUploadSessionPart = typeof ctUploadSessionParts.$inferSelect;
+export type NewCtUploadSessionPart = typeof ctUploadSessionParts.$inferInsert;
+export type UpdateCtUploadSessionPart = z.infer<typeof updateCtUploadSessionPartSchema>;
 
 export type CtChange = typeof ctChanges.$inferSelect;
 export type NewCtChange = typeof ctChanges.$inferInsert;
 export type UpdateCtChange = z.infer<typeof updateCtChangeSchema>;
+
+export type CtAttachment = typeof ctAttachments.$inferSelect;
+export type NewCtAttachment = typeof ctAttachments.$inferInsert;
+export type UpdateCtAttachment = z.infer<typeof updateCtAttachmentSchema>;
 
 export type CtReview = typeof ctReviews.$inferSelect;
 export type NewCtReview = typeof ctReviews.$inferInsert;

@@ -1,0 +1,1 @@
+ALTER TABLE "ct_upload_sessions" ALTER COLUMN "r2_upload_id" SET DATA TYPE text;

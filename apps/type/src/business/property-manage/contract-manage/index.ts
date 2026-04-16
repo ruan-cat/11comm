@@ -16,3 +16,4 @@ export * from "./review";
 export * from "./print";
 export * from "./template";
 export * from "./attachment";
+export * from "./upload";

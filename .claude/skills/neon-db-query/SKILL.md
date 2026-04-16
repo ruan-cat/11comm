@@ -230,19 +230,21 @@ mcp__Neon__describe_table_schema {tableName: "sm_staff", projectId: "snowy-base-
 
 ### Contract (ct)
 
-| 表名              | 说明     |
-| ----------------- | -------- |
-| ct_first_parties  | 合同甲方 |
-| ct_second_parties | 合同乙方 |
-| ct_templates      | 合同模板 |
-| ct_clauses        | 合同条款 |
-| ct_types          | 合同类型 |
-| ct_contracts      | 合同记录 |
-| ct_attachments    | 合同附件 |
-| ct_changes        | 合同变更 |
-| ct_reviews        | 合同审批 |
-| ct_archives       | 合同归档 |
-| ct_prints         | 合同打印 |
+| 表名                    | 说明                                |
+| ----------------------- | ----------------------------------- |
+| ct_first_parties        | 合同甲方                            |
+| ct_second_parties       | 合同乙方                            |
+| ct_templates            | 合同模板                            |
+| ct_clauses              | 合同条款                            |
+| ct_types                | 合同类型                            |
+| ct_contracts            | 合同记录                            |
+| ct_attachments          | 合同附件                            |
+| ct_changes              | 合同变更                            |
+| ct_upload_sessions      | 合同上传会话（R2 multipart 控制面） |
+| ct_upload_session_parts | 合同上传分片记录                    |
+| ct_reviews              | 合同审批                            |
+| ct_archives             | 合同归档                            |
+| ct_prints               | 合同打印                            |
 
 ### Dev (dt)
 

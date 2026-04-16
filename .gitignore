@@ -93,3 +93,6 @@ vite.config.ts.*.mjs
 
 # 忽略本地缓存目录
 local_cache
+
+# 忽略 Superpowers 本地工作目录
+.superpowers/
