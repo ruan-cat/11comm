@@ -188,6 +188,51 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 - 验证方式：工作流重新触发后，`vdt deploy --diff-base <ref>` 正确解析选项，部署流程正常完成。
 - 后续约束：在 pnpm v10+ 的 CI 工作流中，通过 `pnpm run <script>` 向脚本传递额外选项时，**不要使用 `--` 分隔符**——pnpm 会将 `--` 原样透传到脚本命令中，可能导致 commander.js 等 CLI 框架将后续选项误判为位置参数。直接写 `pnpm run <script> --flag value` 即可。当脚本内部已使用 `--` 分隔符（如 `dotenvx run ... -- subcommand`）时，额外的 `--` 会产生双重分隔，破坏子命令的选项解析。
 
+### 2026-04-15 合同上传链路的浏览器直传 R2 联调事故
+
+- 问题现象：`draft-contract` 和 `change` 页面里的分段上传在浏览器中会停在失败态，前端能拿到 `init/status/sign-part` 响应，但文件始终无法真正上传完成。
+- 根因：断点续传链路有两个前置条件必须同时成立。第一，Neon 目标库必须已经存在 `ct_upload_sessions` / `ct_upload_parts` 等表，否则 `upload/init` 会直接因为 relation 不存在而失败。第二，Cloudflare R2 bucket 必须允许本地开发源站的 CORS 预检，否则浏览器对 presigned URL 的 `OPTIONS` / `PUT` 会被拦截。
+- 关键误导点：页面 toast 和本地状态不足以证明上传链路可用。真正可信的信号是浏览器 Network 面板里的真实请求顺序：`upload/init -> upload/status -> upload/sign-part -> OPTIONS presigned-url -> PUT presigned-url`。
+- 有效修复：先执行数据库迁移，确保上传会话表已经存在；再为 R2 bucket 配置允许 `http://localhost:8080` 的跨域规则，至少覆盖 `PUT`、`GET`、`HEAD`，并保证预检请求可通过。
+- 验证方式：浏览器里能连续看到 `init/status/sign-part/complete` 成功；R2 presigned URL 的 `OPTIONS` 不再返回 403；文件在页面内可新增、回显、删除，且对象真实落到 bucket 对应业务目录。
+- 后续约束：以后遇到“前端看起来像上传坏了”的问题，先用浏览器网络请求拆开控制面和数据面，不要先改页面组件。断点续传是否可用，必须以浏览器真实 `OPTIONS/PUT` 和服务端真实 `complete` 为准。
+
+### 2026-04-15 `r2-env.ts` 与 Vercel / R2 环境变量误判事故
+
+- 问题现象：实现 R2 上传时，容易误以为 Vercel 会像 Marketplace 集成一样自动注入 Cloudflare R2 所需环境变量，导致服务端代码设计成“平台自动提供”。
+- 根因：Cloudflare R2 并不是 Vercel 内建托管存储，本项目使用的是 Cloudflare 自己的 S3 兼容凭据。Vercel 这里只是普通宿主平台，`process.env` 里拿到的值全部来自项目自定义环境变量，而不是平台预置变量。
+- 关键误导点：看到部署平台是 Vercel，容易把“在 Vercel 上运行”误解成“Vercel 会自动知道 Cloudflare R2 的 bucket、endpoint、access key”。
+- 有效修复：把 `R2_ENDPOINT`、`R2_BUCKET`、`R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_PUBLIC_BASE_URL` 明确配置为 Vercel 项目的自定义 env，并让 `r2-env.ts` 只负责读取和校验这些值。
+- 验证方式：服务端启动时不再缺少 R2 配置；`sign-part` 和 `complete` 能基于这些 env 正常生成 presigned URL 并完成 multipart 上传。
+- 后续约束：以后再提到“Vercel 里如何获取 Cloudflare R2 信息”，默认答案应该是“从项目自定义环境变量读取”，不要再写成仿佛 Vercel 平台会自动提供。
+
+### 2026-04-15 `ct_upload_sessions.r2_upload_id` 长度建模错误事故
+
+- 问题现象：`upload/init` 走到创建 multipart upload 后，数据库写入上传会话失败，表现为字段长度超限或后续链路异常。
+- 根因：Cloudflare R2 返回的 multipart `UploadId` 实测长度可以明显超过 255；把 `ct_upload_sessions.r2_upload_id` 建成 `varchar(255)` 是错误建模。
+- 关键误导点：一开始容易怀疑是脏数据或某次异常返回，但真实联调时拿到的 `UploadId` 长度达到 300+，说明问题在 schema 上限本身。
+- 有效修复：把 `r2_upload_id` 从 `varchar(255)` 改为 `text`，并生成对应迁移。
+- 验证方式：`upload/init` 成功创建上传会话并落库，后续 `status/sign-part/complete` 能基于同一 `uploadId` 继续执行。
+- 后续约束：面对第三方云厂商返回的 opaque token、upload id、cursor 之类字段时，优先用 `text` 建模，不要先拍脑袋给一个 255 长度上限。
+
+### 2026-04-15 Windows 终端乱码与源码真实乱码混淆事故
+
+- 问题现象：PowerShell 或工具输出中的中文会显示成乱码，随后如果把终端里显示坏掉的文本重新写回源码，就会把原本正常的中文注释、JSDoc、i18n 文案真正污染成乱码。
+- 根因：终端显示层编码和文件实际 UTF-8 内容不是一回事；真正危险的不是“终端看起来乱码”，而是 agent 误把显示层乱码当成文件真实内容，再复制写回代码。
+- 关键误导点：看到 `Get-Content` 输出乱码，很容易误以为文件本身已坏，进而做出过度修复，删改掉原有中文注释、JSDoc 或 i18n。
+- 有效修复：修改前先以文件内容为准，不以终端显示为准；改完后显式扫描真实源码里是否出现替换字符 `�`、不应存在的 `\\uXXXX` 转义，必要时用测试和 diff 交叉确认。
+- 验证方式：目标文件中不存在真实的 `�` 替换字符；locale 文件没有新引入的 `\\uXXXX`；页面和测试里展示的中文正常；原有中文注释和 JSDoc 没被误删。
+- 后续约束：以后修中文相关问题时，先区分“终端显示乱码”与“文件内容乱码”。禁止把终端乱码直接拷回源码；禁止在 locale 文件里无必要地写 `\\uXXXX`；禁止借着“修乱码”顺手删掉已有中文注释或 JSDoc。
+
+### 2026-04-15 合同附件元数据回填遗漏事故
+
+- 问题现象：`change` 业务新增或修改附件后，详情接口返回的附件记录里 `contractNumber` 和 `contractName` 为空，页面显示成不完整的文件说明。
+- 根因：服务端在把附件表记录物化成 `AttachmentDetailItem` 时，把合同元数据写死成空字符串，没有从所属合同记录透传。
+- 关键误导点：上传、保存、删除本身都能成功，容易让人误以为后端数据完整；实际上问题发生在 detail materialization，而不是上传链路。
+- 有效修复：在 `change-service.ts` 中构造附件详情时，把所属合同的 `contractNumber` 和 `contractName` 作为上下文统一传入 DB 链路和内存回退链路。
+- 验证方式：Nitro 测试显式断言附件详情返回正确的合同编号与合同名称；页面详情回显不再出现空值。
+- 后续约束：以后新增附件类返回结构时，要把“列表记录”和“详情 VO”分开检查，尤其注意物化层是否遗漏业务上下文字段。
+
 ## 写入经验时必须保留的额外信息
 
 如果这次 bug 与仓库已有事故模式相似，写记忆时不要遗漏下面这些额外信息：
