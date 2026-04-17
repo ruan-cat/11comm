@@ -444,3 +444,18 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 1. 用全局 init-relizy 技能来优化本仓库的脚本。
 2. 及时更新 README 文档，说明清楚不再使用具体的脚本文件来完成发版了。
+
+## 039 <!-- TODO: --> 迭代 `bump.config.ts` 的智能 push: false, 配置
+
+我知道了，是 bump.config.ts 的 push: false, 配置不够智能。
+
+这个 push: false, 是为了在 "release:root": "bumpp --yes --release patch", 命令 ，在 release:root 这个命令内关闭，
+
+当 release:root 作为一个串行的子命令时，是不需要 push git tag 的。但是
+
+但是当我单独使用 "release:bumpp": "bumpp", 实现单独的 bumpp 包使用时，这个配置就卡断了后续必须的 git push。所以远程的 git tag 才缺失；
+
+请你实现一个智能化的 bump.config.ts push: false, 配置，
+
+1. 如果串行模式，有后续尾缀，那么就不要 push。为 false，git tag 由其他的的工具完成 push。
+2. 如果是单独使用 bumpp 命令来完成发版，就需要直接 push git tag。
