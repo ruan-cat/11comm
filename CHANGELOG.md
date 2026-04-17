@@ -1,3 +1,33 @@
+## v0.11.5-beta.1
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.11.4...v0.11.5-beta.1)
+
+### ✨ 新增功能
+
+- **contract-manage:** 落地合同断点续传服务端链路 ([539c82bf](https://github.com/ruan-cat/11comm/commit/539c82bf))
+- **contract-manage:** 接入合同页面断点续传上传 ([6fb6c5ea](https://github.com/ruan-cat/11comm/commit/6fb6c5ea))
+
+### 📖 Documentation
+
+- **prompts:** 新增 nitro 大文件上传面试提示草案 ([46fdc151](https://github.com/ruan-cat/11comm/commit/46fdc151))
+- Add resumable upload interview design ([f719bf5b](https://github.com/ruan-cat/11comm/commit/f719bf5b))
+- **contract-manage:** 补充断点续传方案与面试材料 ([dd81b0be](https://github.com/ruan-cat/11comm/commit/dd81b0be))
+- **skills:** 补充断点续传排错经验 ([b9f69cab](https://github.com/ruan-cat/11comm/commit/b9f69cab))
+- **release:** 同步发版文档并补充 relizy-runner 升级计划 ([d55ef40b](https://github.com/ruan-cat/11comm/commit/d55ef40b))
+- **status:** 标记方案与报告文档为已完成 ([ce7fa986](https://github.com/ruan-cat/11comm/commit/ce7fa986))
+
+### 🔧 更新配置
+
+- **release:** ⚠️ 切换根包发版链路到 bumpp + changelogen ([86d4d14b](https://github.com/ruan-cat/11comm/commit/86d4d14b))
+
+#### ⚠️ Breaking Changes
+
+- **release:** ⚠️ 切换根包发版链路到 bumpp + changelogen ([86d4d14b](https://github.com/ruan-cat/11comm/commit/86d4d14b))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## [0.11.4](https://github.com/ruan-cat/11comm/compare/v0.11.3...v0.11.4) (2026-04-09)
 
 - 📦 deps(root)!: 卸载 commit-and-tag-version 并消除旧链路依赖污染 ([8b2706a](https://github.com/ruan-cat/11comm/commit/8b2706adb5a30224d02bb897505b0811c985b712))
