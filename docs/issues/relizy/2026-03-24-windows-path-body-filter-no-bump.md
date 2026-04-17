@@ -1,5 +1,11 @@
 <!-- 已合并 等待pr合并 -->
 
+> 2026-04-17 当前状态补充：
+>
+> - 本文聚焦的是 `relizy@1.2.1` 在 Windows 下的路径过滤缺陷排查，不代表当前仓库的正式发版入口设计。
+> - 当前仓库现行子包入口已经从本地 `scripts/relizy-runner.ts` 收敛为 `relizy-runner` bin，根包链路也已切换为 `bumpp + changelogen`。
+> - 下文若提到 `pnpm release:relizy`、`scripts/relizy-runner.ts` 或旧接入方式，应视为历史上下文，而不是当前推荐实现。
+
 > 说明文档同步结论：若其他仓库复用本仓库这套 `relizy-runner` / relizy 接入方案，通用说明文档中应明确写明两点。第一，当前 runner 只负责补齐 **Windows 下 `grep` / `head` / `sed` 依赖** 与 **independent 首次接入时的 baseline tag 校验**，**不修复** `relizy@1.2.1` 在 Windows 下基于 `commit.body.includes(path.relative(...))` 的路径过滤误判。第二，若在 Windows 环境中已经补齐 GNU 工具、也已有 package baseline tag，却仍出现 `No packages to bump, no relevant commits found`，应优先排查本问题，而不是误判为 commit type、Emoji 或 runner 入口使用错误。
 
 # relizy：Windows 下 independent 发版误报「No packages to bump, no relevant commits found」

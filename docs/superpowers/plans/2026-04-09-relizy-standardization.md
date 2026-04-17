@@ -1,5 +1,11 @@
 # Relizy 标准化收敛 Implementation Plan
 
+> 2026-04-17 当前状态补充：
+>
+> - 本文对应的是 2026-04-09 的 Relizy 单链路收敛计划，已退为历史计划文档。
+> - 当前仓库现行发版基线已经扩展为：`release:sub` 使用 `relizy-runner + relizy`，`release:root` 使用 `bumpp + changelogen`，并由 workflow 从根 `CHANGELOG.md` 创建 GitHub Release。
+> - 文中保留的 `conventional-changelog-cli` / `changelog:conventional-changelog` 只代表当时计划快照，不再代表当前实现。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 将本仓库的 Relizy 发版入口从本地 `scripts/relizy-runner.ts` 收敛为 `@ruan-cat/utils` 提供的 `relizy-runner` bin，并同步删除旧 runner、更新 README 与验证命令。
@@ -94,13 +100,13 @@ Remove:
 - `release:relizy`
 - 任何 `tsx scripts/relizy-runner.ts ...` 形式的脚本
 
-- [ ] **Step 3: 保留非 Relizy 旧工具脚本**
+- [ ] **Step 3: 保留非 Relizy 辅助脚本（历史计划快照）**
 
 Keep unchanged:
 
 - `release:bumpp`
 - `release:changelogen`
-- `changelog:conventional-changelog`
+- `changelog:conventional-changelog`（仅为 2026-04-09 当时快照；当前仓库已移除）
 
 > **注意**：`changelog:commit-and-tag-version` 已于 2026-04-09 单独清理，原因是 `commit-and-tag-version` 将 `conventional-changelog@4.0.0` 锁死，导致旧版 `angular@6.0.0` 通过 pnpm shamefully-hoist 污染新链路，已彻底卸载该依赖。
 

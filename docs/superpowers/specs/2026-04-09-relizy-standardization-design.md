@@ -1,5 +1,11 @@
 # 2026-04-09 Relizy 标准化收敛设计
 
+> 2026-04-17 当前状态补充：
+>
+> - 本文是 2026-04-09 针对“Relizy 入口标准化”的阶段性设计，不再代表仓库当前完整发版基线。
+> - 当前现行链路已升级为：子包使用 `relizy-runner + relizy`，根包使用 `bumpp + changelogen`，GitHub Release 从根 `CHANGELOG.md` 提取。
+> - `conventional-changelog-cli` 与 `changelog:conventional-changelog` 已从现行根发版链路移除；下文若提到它们，应视为历史背景。
+
 ## 背景
 
 当前仓库已经接入 relizy，但仍保留一套仓库内自建的 [`scripts/relizy-runner.ts`](../../../../scripts/relizy-runner.ts) 兼容层，并由根 [`package.json`](../../../../package.json) 的 `release` / `release:relizy` 脚本通过 `tsx` 调用。这个实现与全局 `init-relizy` 技能当前基线不一致。
@@ -19,7 +25,7 @@
 1. 不将 `versionMode` 从 `independent` 改为其他模式。
 2. 不回滚 `apps/admin`、`apps/type` 的 `private: false` 现状。
 3. 不重写历史报告或 issue 调研文档的历史叙述，只修正当前有效入口和当前 README。
-4. 不清理全部旧发版链路依赖与脚本，例如 `bumpp`、`conventional-changelog-cli`；本次仅处理 Relizy 主链路。（`commit-and-tag-version` 已于 2026-04-09 单独清理：该工具将 `conventional-changelog@4.0.0` 锁死，导致 pnpm shamefully-hoist 将旧版 `angular@6.0.0` 提升到根 `node_modules`，遮蔽新链路需要的 `angular@8.3.0`，已彻底卸载。）
+4. 不清理全部旧发版链路依赖与脚本，例如 `bumpp`、`conventional-changelog-cli`；本次仅处理 Relizy 主链路。（这是 2026-04-09 的阶段性边界。当前仓库后续已继续演进，现行根链路已移除 `conventional-changelog-cli`。）
 
 ## 现状侦察结论
 

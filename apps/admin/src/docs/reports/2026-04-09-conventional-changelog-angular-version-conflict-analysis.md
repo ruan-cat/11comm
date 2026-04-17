@@ -2,6 +2,12 @@
 
 # conventional-changelog-angular 版本冲突导致 CHANGELOG 格式差异分析
 
+> 2026-04-17 当前状态补充：
+>
+> - 本文分析的是 2026-04-09 根包仍依赖 `conventional-changelog-cli` 时的依赖冲突事故。
+> - 当前仓库现行根发版链路已经切换为 `bumpp + changelogen`，不再把 `conventional-changelog-cli` 或 `changelog:conventional-changelog` 用作正式根发版方案。
+> - 因此，下文的依赖树、对照实验和修复建议仅作为历史排障背景保留，不再代表当前仓库的正式实现。
+
 ## 问题现象
 
 两个项目使用完全相同的命令生成 CHANGELOG：
@@ -411,4 +417,5 @@ pnpm remove commit-and-tag-version -w
 
 ### 推荐
 
-方案 A 更彻底 —— 移除已废弃的工具，消除依赖冲突根源。
+在本文分析所对应的历史阶段，方案 A 更彻底 —— 移除已废弃的工具，消除依赖冲突根源。  
+从当前仓库状态看，这条根因链已经被继续收敛：根包正式发版不再依赖 `conventional-changelog-cli`，而是改为 `bumpp + changelogen`。

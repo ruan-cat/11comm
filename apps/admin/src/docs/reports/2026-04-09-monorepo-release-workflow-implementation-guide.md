@@ -2,6 +2,12 @@
 
 # 2026-04-09 Monorepo 全套发版流程落地指南
 
+> 2026-04-17 当前状态补充：
+>
+> - 本报告保留 2026-04-09 的落地过程与推导链路，但仓库当前实现已经继续演进。
+> - 当前现行根包链路为 `bumpp + changelogen`，不再使用 `conventional-changelog-cli` 或 `changelog:conventional-changelog` 作为正式根发版方案。
+> - 下文凡出现 `conventional-changelog-cli` 或 `changelog:conventional-changelog`，都应视为历史快照；若与仓库当前代码冲突，以当前 `package.json`、`bump.config.ts`、`.github/workflows/release.yaml` 和根 `README.md` 为准。
+
 ## 概述
 
 本文档记录了在 pnpm monorepo 项目中，实现**子包独立版本管理 + 根包版本管理 + GitHub Release 自动生成**的完整流程。适用于任何需要在 monorepo 中实现独立发版的项目。
@@ -32,18 +38,18 @@
 		"relizy": "1.2.2-beta.0",
 		"bumpp": "^10.4.1",
 		"changelogen": "^0.6.2",
-		"conventional-changelog-cli": "^5.0.0"
+		"changelogithub": "^13.16.1"
 	}
 }
 ```
 
-| 工具                       | 职责                                       |
-| -------------------------- | ------------------------------------------ |
-| `relizy`                   | 子包独立版本管理（bump + changelog + tag） |
-| `bumpp`                    | 根包版本管理（bump + tag）                 |
-| `conventional-changelog`   | 根包 CHANGELOG.md 生成（由 bumpp 调用）    |
-| `changelogen`              | 提供 commit types 配置（被 relizy 复用）   |
-| `gh` CLI（GitHub Actions） | 创建 GitHub Release（CI 中预装，无需安装） |
+| 工具                       | 职责                                        |
+| -------------------------- | ------------------------------------------- |
+| `relizy`                   | 子包独立版本管理（bump + changelog + tag）  |
+| `bumpp`                    | 根包版本管理（bump + tag）                  |
+| `changelogen`              | 根包 CHANGELOG.md 生成与 commit types 配置  |
+| `changelogithub`           | 复用 changelog 类型配置，不参与正式 release |
+| `gh` CLI（GitHub Actions） | 创建 GitHub Release（CI 中预装，无需安装）  |
 
 ---
 
@@ -106,6 +112,7 @@ export default defineConfig({
 ### 2. `bump.config.ts` — 根包发版配置
 
 ```typescript
+import { execSync } from "node:child_process";
 import { defineConfig } from "bumpp";
 
 export default defineConfig({
@@ -113,8 +120,13 @@ export default defineConfig({
 	tag: "v%s",
 	// 不推送到远程仓库，由 release 流程最后统一 git push --follow-tags
 	push: false,
-	// 在执行完 bumpp 后执行本地的更新日志生成命令
-	execute: "pnpm run changelog:conventional-changelog",
+	// 在执行完 bumpp 后回写根 CHANGELOG，并显式传入本次新版本号
+	execute: (operation) => {
+		execSync(`pnpm exec changelogen --output CHANGELOG.md -r ${operation.state.newVersion}`, {
+			cwd: operation.options.cwd,
+			stdio: "inherit",
+		});
+	},
 	// 将暂存区的全部文件都提交
 	all: true,
 });
@@ -124,7 +136,7 @@ export default defineConfig({
 
 - `push: false`：不单独推送，等待最后统一 push
 - `tag: "v%s"`：根包使用 `v0.12.0` 格式的 tag
-- `execute`：bump 后自动执行 `conventional-changelog` 生成根包 CHANGELOG
+- `execute`：bump 后自动执行 `changelogen` 生成根包 CHANGELOG
 - `commit`：使用 `publish(root)` scope 与子包的 `publish` 区分
 
 ### 3. `changelog.config.ts` — 共享的 changelog 配置
@@ -159,7 +171,7 @@ export default {
 		"release:root": "bumpp --yes --release patch",
 		"release:dry": "relizy-runner release --dry-run --no-publish --no-provider-release --no-push --no-commit --no-clean --yes",
 		"git:push": "git push --follow-tags",
-		"changelog:conventional-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+		"changelog:root": "changelogen --output CHANGELOG.md"
 	}
 }
 ```
@@ -179,7 +191,7 @@ pnpm release
     │
     ├── 2. pnpm run release:root（bumpp）
     │   ├── bump 根 package.json version（patch）
-    │   ├── 执行 conventional-changelog 生成根 CHANGELOG 聚合 section
+    │   ├── 执行 changelogen 生成根 CHANGELOG 聚合 section
     │   ├── git commit（如 "📢 publish(root): release v0.12.0"）
     │   ├── git tag（如 v0.12.0）
     │   └── 不 push（push: false）
@@ -248,8 +260,8 @@ jobs:
 
           # 根据 tag 格式选择不同的 CHANGELOG 提取策略
           if [[ "$TAG" == v* ]]; then
-            # 根包 tag (v0.12.0) → conventional-changelog 格式
-            # section header: ## <small>0.12.0 (2026-04-09)</small>
+            # 根包 tag (v0.12.0) → changelogen 格式
+            # section header: ## v0.12.0
             VERSION="${TAG#v}"
             ESCAPED_VER=$(printf '%s' "$VERSION" | sed 's/[[\\.^$*+?(){}|]/\\&/g')
             NOTES=$(awk "/^## <small>${ESCAPED_VER}[[:space:]]/{found=1; next} found && /^## /{exit} found && /^# /{exit} found{print}" CHANGELOG.md)
@@ -287,10 +299,10 @@ jobs:
 
 **两种 CHANGELOG 格式的处理**：
 
-| tag 格式                     | 生成工具                                | CHANGELOG section header 格式      |
-| ---------------------------- | --------------------------------------- | ---------------------------------- |
-| `@scope/pkg@version`（子包） | relizy                                  | `## @scope/pkg@version (date)`     |
-| `v*`（根包）                 | conventional-changelog（由 bumpp 调用） | `## <small>version (date)</small>` |
+| tag 格式                     | 生成工具                     | CHANGELOG section header 格式        |
+| ---------------------------- | ---------------------------- | ------------------------------------ |
+| `@scope/pkg@version`（子包） | relizy                       | `## @scope/pkg@version (date)`       |
+| `v*`（根包）                 | changelogen（由 bumpp 调用） | `## vversion` / `## [vversion](...)` |
 
 工作流通过 `if [[ "$TAG" == v* ]]` 判断 tag 类型，分别用不同的 awk 模式提取对应 section。
 
@@ -303,7 +315,7 @@ jobs:
 ### 1. 安装依赖
 
 ```bash
-pnpm add -D relizy bumpp changelogen conventional-changelog-cli
+pnpm add -D relizy bumpp changelogen changelogithub @ruan-cat/utils @types/node pnpm-workspace-yaml
 ```
 
 ### 2. 创建配置文件
@@ -331,7 +343,7 @@ git push origin "@scope/package-a@1.0.0" "@scope/package-b@1.0.0"
 		"release:sub": "relizy-runner release --no-publish --no-provider-release --no-push --yes",
 		"release:root": "bumpp --yes --release patch",
 		"git:push": "git push --follow-tags",
-		"changelog:conventional-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+		"changelog:root": "changelogen --output CHANGELOG.md"
 	}
 }
 ```

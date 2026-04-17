@@ -3,6 +3,12 @@
   有参考意义 不予删除
 -->
 
+> 2026-04-17 当前状态补充：
+>
+> - 本文记录的是 2026-03-23 首次接入 `relizy` 时的阶段性方案，当时仓库仍存在 `release:relizy` 与本地 `scripts/relizy-runner.ts` 入口。
+> - 当前仓库现行子包入口已经收敛为 `relizy-runner` bin，根包正式发版链路也已切换为 `bumpp + changelogen`。
+> - 下文若出现 `release:relizy`、`scripts/relizy-runner.ts` 或旧 root changelog 口径，应视为历史背景；若与当前仓库代码冲突，以根 `package.json`、`README.md`、`bump.config.ts` 和 `.github/workflows/release.yaml` 为准。
+
 # 2026-03-23 接入 Relizy 独立发版方案并调整子包 private 约束
 
 ## 背景

@@ -62,20 +62,81 @@ pnpm --filter @01s-11comm/admin dev
 
 ## Relizy 发版
 
-根工作区已接入 `relizy`，采用 **independent** 模式管理 `apps/*` 下子包版本。`monorepo.packages` 与 [`pnpm-workspace.yaml`](./pnpm-workspace.yaml) 中的 `packages` 字段保持一致，由 [`relizy.config.ts`](./relizy.config.ts) 解析工作区清单并生成根 `CHANGELOG.md` 与各子包 `CHANGELOG.md`。
+根工作区当前使用 **两段式本地发版 + 一次性推送**：
 
-当前仓库的发版入口统一走 **`relizy-runner`**，该命令由 `@ruan-cat/utils@4.25.0+` 提供。它是 relizy 前面的**兼容与安全层**，不改变 relizy 的版本计算语义，只负责两件事：
+1. `release:sub`：由 `relizy-runner + relizy` 负责 `apps/*` 子包的 **independent** 版本计算、子包 changelog、根聚合 changelog、commit 与 scoped tags。
+2. `release:root`：由 `bumpp` 负责根包版本号与 `v*` tag，并在 [`bump.config.ts`](./bump.config.ts) 中通过 `changelogen --output CHANGELOG.md -r <newVersion>` 回写根 `CHANGELOG.md`。
+3. `git:push`：统一 `git push --follow-tags`，让子包 tag 与根包 tag 在一次 push 中到达远端。
+
+因此，`pnpm release` 的实际执行链路是：
+
+```bash
+pnpm run release:sub && pnpm run release:root && pnpm run git:push
+```
+
+### 子包入口：`relizy-runner`
+
+子包发版入口统一走 **`relizy-runner`**，该命令由 `@ruan-cat/utils@4.25.0+` 提供。它是 relizy 前面的**兼容与安全层**，不改变 relizy 的版本计算语义，只负责两件事：
 
 - 在 Windows 上补齐 Git for Windows 自带的 `grep` / `head` / `sed` 路径，避免 PowerShell / cmd 下的 GNU 工具缺失报错。
 - 在 `release` / `bump` 前检查 **independent** 模式所需的 package baseline tags，缺失时先打印补 tag 命令并阻断执行。
 
 因此，**不要绕过 runner 直接在当前仓库里调用裸 `relizy release ...`** 作为日常发版入口。
 
+### 根包入口：`bumpp + changelogen`
+
+根包不再通过 `conventional-changelog-cli` 生成 changelog，而是使用：
+
+- `pnpm run release:root`：`bumpp --yes --release patch`
+- `pnpm run changelog:root`：`changelogen --output CHANGELOG.md`
+
+`release:root` 会调用 [`bump.config.ts`](./bump.config.ts) 中的 `execute` 钩子，显式执行：
+
+```bash
+pnpm exec changelogen --output CHANGELOG.md -r <newVersion>
+```
+
+GitHub Actions 随后从根 `CHANGELOG.md` 中提取根包 `v*` tag 对应的 section，并为每个 tag 创建 GitHub Release。
+
+### 常用命令
+
+```bash
+# 主发版命令：子包 -> 根包 -> 统一推送
+pnpm release
+
+# 只预览子包 release 流程
+pnpm run release:dry
+
+# 批量生成子包与根聚合 changelog
+pnpm run changelog
+
+# 预览 changelog 生成
+pnpm run changelog:dry
+
+# 手动重建根 CHANGELOG.md
+pnpm run changelog:root
+
+# 手动使用根包工具
+pnpm run release:root
+pnpm run release:bumpp
+pnpm run release:changelogen
+```
+
+等价的底层入口如下：
+
+```bash
+pnpm exec relizy-runner release --no-publish --no-provider-release --no-push --yes
+pnpm exec relizy-runner release --dry-run --no-publish --no-provider-release --no-push --no-commit --no-clean --yes
+pnpm exec relizy-runner changelog
+pnpm exec relizy-runner changelog --dry-run
+pnpm exec changelogen --output CHANGELOG.md
+```
+
 ### `--yes` 是做什么的？
 
 `relizy release` 在真正 bump 前会弹出交互确认：**「Do you want to proceed with these version updates?」**。本地用终端跑、或在 CI / 自动化里没有附加输入时，进程会一直等 `(Y/n)`，表现为**卡住不动**。
 
-根脚本里的 **`--yes`** 是 relizy 官方选项（帮助文案：_Skip confirmation prompt about bumping packages_），用来**跳过这一步确认**，不改变版本计算、changelog 或 commit/tag 逻辑。当前 `relizy-runner` 仅在 `release` / `bump` 路径消费或自动追加 `--yes`；`changelog` 子命令**不要**携带 `--yes`。
+根脚本里的 **`--yes`** 是 relizy 官方选项（帮助文案：_Skip confirmation prompt about bumping packages_），用来**跳过这一步确认**，不改变版本计算、changelog 或 commit/tag 逻辑。当前 `relizy-runner` 仅在 `release` / `bump` 路径消费或自动追加 `--yes`。
 
 如果你需要本地人工逐步确认，不要改仓库脚本，直接使用 runner 提供的 `--no-yes`：
 
@@ -83,37 +144,34 @@ pnpm --filter @01s-11comm/admin dev
 pnpm exec relizy-runner release --no-publish --no-provider-release --no-yes
 ```
 
-### 常用命令
+### 已知上游差异：`changelog --dry-run --yes`
+
+为了与全局 `init-release-base-relizy-and-bumpp` 技能文档保持一致，仓库文档保留以下技能原文验证命令：
 
 ```bash
-# 正式发版
-pnpm release
-
-# 预览完整 release
-pnpm run release:dry
-
-# 生成 changelog
-pnpm run changelog
-
-# 预览 changelog 生成
-pnpm run changelog:dry
+pnpm exec relizy-runner changelog --dry-run --yes
 ```
 
-等价的底层入口如下：
+但当前 `@ruan-cat/utils` 提供的 `relizy-runner` 版本在 `changelog` 子命令下会报：
+
+```log
+error: unknown option '--yes'
+```
+
+因此，这条命令目前视为**上游已知差异**的记录口径，不在本仓库通过自建 runner、本地脚本或 vendor patch 绕过。  
+当前仓库的临时可执行命令仍是：
 
 ```bash
-pnpm exec relizy-runner release --no-publish --no-provider-release --yes
-pnpm exec relizy-runner release --dry-run --no-publish --no-provider-release --no-push --no-commit --no-clean --yes
-pnpm exec relizy-runner changelog
 pnpm exec relizy-runner changelog --dry-run
 ```
 
-**执行效果（`pnpm release` 默认）**
+### 执行效果（`pnpm release` 默认）
 
 - 基于 **Conventional Commits** 分析 `apps/admin` 与 `apps/type` 的变更。
 - 仅对有变更的子包生成独立版本号，并同步更新依赖它们的工作区包版本引用。
 - 在根目录生成聚合 `CHANGELOG.md`，同时为每个参与发版的子包生成各自的 `CHANGELOG.md`（生成后由 `format:changelog` 统一格式化）。
-- 创建并推送对应的 **git commit** 与 **package tag**。
+- 根包单独生成 `v*` tag，并通过 `changelogen` 生成根 changelog section。
+- 最终统一推送对应的 **git commit** 与 **package tag**。
 - **不**执行 `npm publish`，**不**创建 GitHub / GitLab **provider release**（由 `--no-publish`、`--no-provider-release` 与配置共同保证）。
 
 **常用 semver 升级示例（通过 pnpm 把参数传给 relizy）**
@@ -124,18 +182,11 @@ pnpm release -- --minor
 pnpm run release:dry -- --patch
 ```
 
-仅本地生成提交与 tag、**不 push**：
+仅本地生成子包提交与 tag、**不 push**：
 
 ```bash
 pnpm exec relizy-runner release --no-publish --no-provider-release --yes --no-push
 ```
-
-**注意事项**
-
-- `relizy` **不会**扫描 `private: true` 的 workspace 包，因此 `apps/admin` 和 `apps/type` 已改为可参与版本管理的包。
-- 这意味着两个子包**不再**享有 `private: true` 的「禁止发布」语义保护；当前仅通过 `relizy` 命令参数和配置显式禁用了 **publish** / **provider release**。
-- 若后续要**真的**接入 npm 发布，请先评估私有 registry、`publishConfig` 和权限策略，再移除 `--no-publish`。
-- 接入背景、`private` 调整与迁移注意点见 [relizy 独立发版破坏性变更说明](./apps/admin/src/docs/reports/2026-03-23-relizy-independent-release-breaking-change.md)。
 
 ### 预览（dry-run）
 
@@ -145,7 +196,7 @@ relizy 支持全局 `--dry-run`：**不写入文件、不创建 tag/commit、不
 # 仅预览 changelog 生成（不写盘、不改仓库）
 pnpm run changelog:dry
 
-# 预览完整 release（仍会先经过 runner 的基线 tag 检查）
+# 预览完整子包 release（仍会先经过 runner 的基线 tag 检查）
 pnpm run release:dry
 ```
 
@@ -157,8 +208,17 @@ pnpm run release:dry
 
 ```bash
 pnpm exec relizy-runner --help
-pnpm exec relizy-runner changelog --dry-run
+pnpm exec relizy-runner changelog --dry-run --yes
 pnpm exec relizy-runner release --dry-run --no-publish --no-provider-release --no-push --no-commit --no-clean --yes
+pnpm exec bumpp --help
+pnpm exec bumpp --dry-run --release patch --yes
+pnpm exec changelogen --output CHANGELOG.md -r 0.0.1
+```
+
+当前因上游差异需要实际补跑的 changelog dry-run 命令：
+
+```bash
+pnpm exec relizy-runner changelog --dry-run
 ```
 
 如果需要同时确认 relizy 本体可用，可补跑：
