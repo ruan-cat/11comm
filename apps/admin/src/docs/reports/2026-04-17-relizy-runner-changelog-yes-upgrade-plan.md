@@ -1,4 +1,4 @@
-<!-- TODO:  等待使用 -->
+<!-- 已完成 -->
 
 # 2026-04-17 升级 `@ruan-cat/utils` 的 `relizy-runner` 以兼容 `changelog --yes`
 
