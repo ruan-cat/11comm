@@ -445,7 +445,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 1. 用全局 init-relizy 技能来优化本仓库的脚本。
 2. 及时更新 README 文档，说明清楚不再使用具体的脚本文件来完成发版了。
 
-## 039 <!-- TODO: --> 迭代 `bump.config.ts` 的智能 push: false, 配置
+## 039 <!-- 已完成 --> 迭代 `bump.config.ts` 的智能 push: false, 配置
 
 我知道了，是 bump.config.ts 的 push: false, 配置不够智能。
 
