@@ -247,6 +247,53 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 不允许只修改动态 registry、memory repository 或 mock 包装层而不更新对应文档状态。
 - 对仍处于 mock/memory 数据源的接口，文档必须明确标记“非生产数据源”，避免被误当作真实数据库实现。
 
+#### 收费/缴费 mock 增量接口的双端支撑策略
+
+`D:\code\ruan-cat\01s-11comm-app` 已补充一批费用、欠费、支付、充电桩、报表和开门记录相关 mock endpoint。迁入时不能只把这些 endpoint 当作 app 兼容层处理，必须在 `apps/api` 内同时设计 app legacy adapter 和 admin canonical adapter。
+
+已确认的 app 侧来源包括：
+
+- `D:\code\ruan-cat\01s-11comm-app\src\api\fee.ts`
+- `D:\code\ruan-cat\01s-11comm-app\server\modules\fee\endpoints.ts`
+- `D:\code\ruan-cat\01s-11comm-app\src\tests\nitro-runtime\fee-endpoints.test.ts`
+- `D:\code\ruan-cat\01s-11comm-app\docs\superpowers\plans\2026-04-25-h5-mock-endpoint-coverage.md`
+
+双端支撑原则：
+
+- `apps/api` 内只保留一套领域服务和数据访问层，例如 fee、payment、owe-fee-callable、charge-machine、fee-report、machine-record；app 和 admin 通过不同 adapter 消费同一服务。
+- app adapter 必须保留 `/app/**` legacy 路径、GET/POST 兼容方式、旧字段名和旧响应结构，直到 app 前端完成调用迁移。
+- admin adapter 必须按 `apps/admin/src/router/rank/rank-route-keys.ts` 的三级业务路径组织规范接口，返回 `@01s-11comm/type` 定义的 `JsonVO`、`PageDTO` 和统一 DTO。
+- mock/memory repository 只能作为过渡数据源；最终应替换为 `apps/type/src/business/**/schema.ts` 中的 Drizzle schema 和 Neon 数据库。
+- 对当前 admin 没有明确三级业务路径的能力，不允许硬塞到不相关模块；必须记录为后台功能缺口，后续通过 admin 功能扩展规格补齐业务路径、菜单、页面和 CRUD。
+
+本批 endpoint 的迁移矩阵如下：
+
+| app legacy endpoint                                      | 业务含义     | admin canonical 业务坐标                                                                                                                                          | 迁移处理                                                                                |
+| -------------------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `/app/fee.listFee`                                       | 费用列表     | `propertyManage.expenseManage.houseCharge`、`propertyManage.expenseManage.expenseSummaryTable`                                                                    | app 保留旧响应；admin 提供分页费用列表和汇总筛选                                        |
+| `/app/feeApi/listOweFees`                                | 欠费列表     | `propertyManage.expenseManage.overduePaymentInformation`、`propertyManage.reportManage.arrearsDetailsList`、`propertyManage.reportManage.outstandingFeesAnalysis` | 同源查询欠费数据，app 字段保留，admin 字段规范化                                        |
+| `/app/fee.saveRoomCreateFee`                             | 房屋创建费用 | `propertyManage.expenseManage.houseCharge`、`propertyManage.expenseManage.contracteCharge`、`propertyManage.expenseManage.vehicleCharge`                          | 写接口必须走 schema 校验和事务边界，不能只复用 mock 返回                                |
+| `/app/feeConfig.listFeeConfigs`                          | 费用配置列表 | `propertyManage.expenseManage.expenseItemSetting`                                                                                                                 | admin 作为费用项配置 CRUD，app 作为创建费用选择器                                       |
+| `/app/payment.nativeQrcodePayment`                       | 二维码支付   | `propertyManage.expenseManage.paymentReview`、`propertyManage.reportManage.paymentDetailsForm`                                                                    | app 发起支付保持 legacy 契约；admin 管理支付审核和支付明细，不把支付动作伪装成后台 CRUD |
+| `/app/oweFeeCallable.listOweFeeCallable`                 | 欠费催缴列表 | `propertyManage.expenseManage.reminderForOverduePayments`、`propertyManage.reportManage.feeReminder`                                                              | app 查询历史，admin 负责催缴记录管理和统计                                              |
+| `/app/oweFeeCallable.writeOweFeeCallable`                | 写入欠费催缴 | `propertyManage.expenseManage.reminderForOverduePayments`、`propertyManage.reportManage.feeReminder`                                                              | 写接口必须可审计，后续需要落库催缴记录                                                  |
+| `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | 费用月度汇总 | `propertyManage.reportManage.expenseSummaryTable`、`propertyManage.reportManage.dataStatistics`                                                                   | admin 报表为 canonical，app 保留 summary legacy DTO                                     |
+| `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | 缴费明细     | `propertyManage.reportManage.paymentDetailsForm`、`propertyManage.reportManage.ownerPaymentDetails`                                                               | 同一支付明细服务输出两套 DTO                                                            |
+| `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | 房间费用明细 | `propertyManage.reportManage.statementExpenses`、`propertyManage.reportManage.arrearsDetailsList`                                                                 | 按房间、费用项、周期聚合，admin 支持筛选导出                                            |
+| `/app/dataReport.queryFeeDataReport`                     | 费用数据报表 | `propertyManage.reportManage.dataStatistics`                                                                                                                      | admin 作为数据统计看板，app 保留轻量指标                                                |
+| `/app/iot/listChargeMachineBmoImpl`                      | 充电桩列表   | admin 当前缺少明确三级业务路径                                                                                                                                    | `apps/api` 先保留 app legacy 能力；admin 页面和业务路径需另行补齐                       |
+| `/app/iot/listChargeMachineOrderBmoImpl`                 | 充电桩订单   | admin 当前缺少明确三级业务路径                                                                                                                                    | 先作为 charge-machine 领域服务保留，后续补后台订单管理                                  |
+| `/app/iot/listChargeMachinePortBmoImpl`                  | 充电桩端口   | admin 当前缺少明确三级业务路径                                                                                                                                    | 先保留 app 兼容，后续补设备/端口后台管理                                                |
+| `/app/machine/listMachineRecords`                        | 开门记录     | admin 当前缺少明确三级业务路径                                                                                                                                    | 不硬塞到费用模块；记录为门禁/设备日志后台缺口                                           |
+
+实现形态要求：
+
+1. 在 `apps/api` 内建立 fee 迁移波次，先迁移 app legacy registry 的路由注册和测试，再抽取领域服务。
+2. 为每个 legacy endpoint 建立 `legacyPath -> canonicalService -> legacyDto` 的 adapter；admin endpoint 则使用 `canonicalPath -> canonicalService -> adminDto`。
+3. app 侧兼容测试必须覆盖上表所有旧路径和方法；admin 侧测试必须覆盖对应 canonical 业务坐标的列表、详情、创建、统计或动作接口。
+4. 不允许 admin 和 app 各自维护两套 fee mock 数据；同一业务必须共享 seed、repository 或数据库查询。
+5. 当某个 app endpoint 找不到 admin 业务坐标时，不能阻断 app 迁入，但必须写入 admin 功能缺口清单，并在后续规格中补齐后台页面、菜单、权限和 CRUD。
+
 ### 阶段 2：建立 `apps/api` 影子服务
 
 新增最小 Nitro 服务，先不迁移大业务：
@@ -277,8 +324,9 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 
 1. 保持旧路径行为一致。
 2. 固定兼容测试。
-3. 增加 adapter，把 app legacy 字段映射到统一 schema/DTO。
-4. 再替换 mock/memory 数据源为真实数据库。
+3. 优先迁移 fee/payment/report 这一批已补齐 mock 和测试的 endpoint，形成第一条 app/admin 双端支撑样板。
+4. 增加 adapter，把 app legacy 字段映射到统一 schema/DTO。
+5. 再替换 mock/memory 数据源为真实数据库。
 
 ### 阶段 5：迁移 admin API 并补齐 CRUD
 
@@ -356,6 +404,10 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 38. 不在没有 `ai-memory-merge-inventory.md`、冲突矩阵和复核结论前合并或删除 app AI 记忆内容。
 39. 不用 app 同名 skill 覆盖主项目 canonical skill；同名 skill 必须先做职责和冲突比对。
 40. 不把只适用于 uni-app、移动端 mock、legacy API 或 app 局部组件迁移的经验升级为全仓库规则。
+41. 不把 `/app/fee*`、`/app/payment*`、`/app/reportFeeMonthStatistics*` 等 app legacy 路径直接作为 admin 的长期规范 API。
+42. 不让 admin 和 app 分别维护两套费用、支付、欠费、报表 mock 数据源。
+43. 不把充电桩、开门记录等当前缺少 admin 三级业务路径的能力硬塞进费用模块；必须记录为后台功能缺口。
+44. 不在没有 legacy 兼容测试和 admin canonical 测试的情况下迁移本批 fee/payment/report endpoint。
 
 ## 风险控制
 
@@ -368,6 +420,7 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 使用文档分层迁移：app 自有 Markdown 经过排除清单过滤后保留在 `apps/app`，再通过清单、重复组和敏感扫描逐步治理，不直接冲击主项目文档体系。
 - 使用字符集验收门禁：先完成源项目文件大小、SHA256、UTF-8 解码、替换字符和行尾基线检查，再复制到 `apps/app`，迁入后做源目标对账，未通过时停止迁移。
 - 使用 AI 记忆分级合并：app 记忆默认保留在 `apps/app`，只有通过价值评估、冲突矩阵和复核的内容才允许摘录到根级记忆或 canonical skill。
+- 使用双端 API 契约矩阵：每批 app legacy endpoint 必须明确 app 旧路径、admin canonical 业务坐标、共享领域服务、数据源状态和缺口归属，避免 admin/app 分叉实现。
 
 ## 验收标准
 
@@ -395,6 +448,8 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 已确认旧工具约束、外部客户端专属规则、临时 prompt、个人环境信息没有被提升为当前项目长期规则。
 - 已完成 Markdown 敏感信息扫描，真实凭据已脱敏或阻断迁入，演示账号和示例连接串已标注为示例/历史参考。
 - 与 Nitro legacy、动态 mock、endpoint coverage 相关的 app 文档已被标记为 `apps/api` 迁移期间需要持续同步的文档。
+- 已将 app 新增的 fee/payment/owe-fee/charge-machine/report/machine-record endpoint 纳入迁移矩阵，并标记每个 endpoint 的 admin canonical 业务坐标或后台功能缺口。
+- 已确认 `src/api/fee.ts`、`server/modules/fee/endpoints.ts`、`src/tests/nitro-runtime/fee-endpoints.test.ts` 这组 app 侧契约会作为 `apps/api` 迁移验收输入，而不是被迁移时丢弃。
 
 `apps/api` 阶段完成时必须满足：
 
@@ -404,3 +459,6 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - H3 API 均从 `nitro/h3` 导入。
 - 不存在鉴权中间件或鉴权插件。
 - 数据库连接通过请求事件和 runtimeConfig 安全读取。
+- 本批 fee/payment/report app legacy 路径在 `apps/api` 中有兼容测试，至少覆盖 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/iot/**`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`、`/app/machine/listMachineRecords`。
+- admin canonical endpoint 与 app legacy endpoint 共享同一领域服务或 repository，不存在两套互相漂移的费用、支付、欠费、报表数据源。
+- 对充电桩和开门记录这类当前缺少 admin 三级业务路径的能力，已生成后台功能缺口记录，不阻断 app 兼容迁入，但不得伪装为已完成 admin 支撑。
