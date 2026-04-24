@@ -125,12 +125,58 @@ apps/app/
 
 #### skills 与 AI 记忆文档处理
 
-- app 的 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 迁入后只描述 `apps/app` 子项目历史和约束，不自动提升为根级规则。
-- app 的 `.claude/skills/**`、`.agent/skills/**`、`.agents/skills/**` 先原样保留，后续通过 skills 合并任务逐项评估。
-- app 的 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 默认不迁入；如确有独特经验，后续只做人工摘录，不复制原目录。
-- 与 app 业务、uni-app、ColorUI 到 wot-design-uni、z-paging、动态标题、Nitro legacy/mock、Vite mock 兼容相关的技能优先标记为可迁移经验。
-- 与主项目已有技能同名或同职责的内容，必须先形成冲突矩阵，禁止直接覆盖主项目 skills。
-- AI 记忆文档中如果包含已过时的执行方式、子代理约束或外部工具规则，只能标记为 app 历史上下文，不能直接要求整个 monorepo 遵循。
+AI 记忆文档的迁移目标不是“把所有规则揉成一个大文件”，而是保留 app 历史上下文，并把少量可复用、可验证、仍然适用于当前 monorepo 的经验摘录到合适位置。
+
+合并总原则：
+
+- `apps/app` 是 app 历史记忆的默认归属地；根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 仍然是当前 monorepo 的最高优先级记忆入口。
+- 第一阶段只做快照保留、分类、冲突记录和摘录建议，不直接覆盖根级 AI 记忆文档，也不直接覆盖根级 skills。
+- AI 记忆的合并采用“保留原文 -> 建立清单 -> 分类评估 -> 摘录/引用 -> 复核”的流程；没有清单和复核结论时，禁止凭直觉合并。
+- app 历史记忆中的临时 prompt、一次性执行策略、旧工具约束、已废弃目录结构、外部客户端专属规则，只能作为历史证据保留，不能提升为 monorepo 长期规范。
+- 只有当一条经验同时满足“仍然真实、可复现、适用于 admin/app/api/type 至少两个长期模块、与根级规范不冲突”时，才允许提议进入根级 AI 记忆。
+
+迁入位置规则：
+
+| 来源内容                                                                                                | 第一阶段位置                  | 后续处理                                        |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------- |
+| app 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`                                                          | 原样进入 `apps/app/`          | 作为 app 子项目历史上下文，不自动提升为根级规则 |
+| app `.claude/skills/**`、`.agent/skills/**`、`.agents/skills/**`                                        | 原样进入 `apps/app/` 对应目录 | 进入 skills 价值清单和冲突矩阵，后续逐项合并    |
+| app `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**`                                     | 默认不迁入                    | 如确有独特经验，只人工摘录到清单，不复制原目录  |
+| app 业务、uni-app、ColorUI 到 wot-design-uni、z-paging、动态标题、Nitro legacy/mock、Vite mock 兼容经验 | 保留在 `apps/app` 原文位置    | 标记为可迁移经验，优先进入后续专题整理          |
+| 与主项目同名或同职责的 skills                                                                           | 保留 app 原文，不覆盖主项目   | 生成冲突矩阵，明确 canonical 指向和差异         |
+| 包含敏感信息或个人环境的记忆                                                                            | 阻断原样公开迁入或先脱敏      | 保留变量名、错误形态、复现步骤，移除真实值      |
+
+根级记忆提升规则：
+
+- 提升到根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 的内容必须是当前 monorepo 级别的长期规则；如果只是 app 子项目规则，应写入 `apps/app/CLAUDE.md` 等 app 作用域文件。
+- 根级 AI 记忆文件如果在本项目中保持同步副本关系，后续修改必须一次性同步到 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`，不能只改其中一个入口。
+- app 记忆中与根级规则冲突的内容，默认以根级规则为 canonical；只有在人工复核确认根级规则已经过时后，才允许另开任务修改根级规则。
+- 摘录进入根级记忆时必须保留来源引用，例如来源路径、原始主题和迁移日期，避免未来无法判断规则来源。
+- 不把“使用某个 AI 客户端/某个子代理工具/某个一次性命令”的历史要求提升为当前项目的通用要求。
+
+skills 合并规则：
+
+- app skills 先作为 app 子项目技能保留，不在第一阶段直接进入根级 `.claude/skills/**` 或 `.agents/skills/**`。
+- 同名 skill 必须先比较职责、触发条件、禁止项、示例和相关脚本；同名不等于可覆盖，不同名也可能职责冲突。
+- 可复用经验优先以“摘录补充 canonical skill”的方式进入主项目技能，而不是复制一份平行 skill。
+- 如果 app skill 只服务 uni-app、移动端 mock、legacy API 或 app 内组件迁移，应保留在 `apps/app` 作用域，不升级为全仓库技能。
+- 如果 app skill 中记录的是事故复盘、排错经验或迁移教训，应优先沉淀到专题报告或对应 canonical skill 的“历史事故/约束”章节。
+
+必须生成的合并证据：
+
+```text
+apps/app/docs/migration/ai-memory-merge-inventory.md
+```
+
+清单至少包含：来源路径、目标候选位置、主题、价值等级、是否仍然有效、适用范围、是否冲突、敏感信息状态、处理决策、canonical 指向、摘录摘要、复核人和复核日期。
+
+AI 记忆合并决策分为五类：
+
+- `keep-app-scope`：只保留在 `apps/app`，不进入根级规则。
+- `promote-root-memory`：摘录进入根级 AI 记忆，适用于整个 monorepo。
+- `merge-canonical-skill`：提炼进入主项目已有 canonical skill。
+- `archive-reference`：只作为历史证据或迁移参考，不进入执行规则。
+- `reject-or-redact`：因过时、冲突、敏感或误导风险而拒绝合并，或先脱敏再保留。
 
 #### 敏感信息检查
 
@@ -142,6 +188,37 @@ Markdown 迁入前后都要做敏感信息扫描，至少覆盖以下模式：`t
 - README 中的演示账号密码、参考系统账号等必须标记为“公开演示凭据/历史参考”，不能混同为生产密钥。
 - 如果发现真实数据库连接串、真实 API key、生产 token 或个人账号凭据，必须先脱敏再迁入可共享文档。
 - 脱敏不能破坏排错价值，必要时保留变量名、服务类型、错误形态和复现步骤，移除真实值。
+
+#### 字符集与文本完整性保护
+
+迁入 `D:\code\ruan-cat\01s-11comm-app` 时，不能依赖“看起来没乱码”的人工判断，也不能把 Windows 终端中的显示乱码当成源码真实乱码。迁移必须以字节级对账和 UTF-8 校验为准。
+
+复制规则：
+
+- 使用保留原始字节的文件复制方式完成第一轮快照迁入；禁止用 `Get-Content | Set-Content`、`Out-File`、编辑器另存为、脚本解码后重写等文本管道做批量复制。
+- 第一轮迁入只做 byte-for-byte 复制和过滤，不在复制过程中统一格式化、不批量转换编码、不批量改写行尾。
+- 二进制资源按字节复制；文本文件在复制完成后再单独做校验，不允许通过“重新保存”来修复未知问题。
+- 终端输出如果出现中文乱码，只能视为终端编码问题线索，不能把乱码文本复制回 Markdown、Vue、TypeScript 或配置文件。
+
+迁入前基线：
+
+- 在源项目生成排除 `.git`、`node_modules`、`dist`、`build`、`.output`、`.nuxt`、`.vite`、`coverage`、`.turbo`、`.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 后的文件清单。
+- 对每个待迁入文件记录相对路径、文件大小和 SHA256；文本文件额外记录是否存在 BOM、当前行尾形态和是否可严格按 UTF-8 解码。
+- 清单必须进入迁移证据材料，后续 `apps/app` 的目标文件用同一套相对路径和 SHA256 做对账。
+
+迁入后校验：
+
+- 对所有 byte-for-byte 迁入文件做源目标 SHA256 比对；未经过后续有意改写的文件必须完全一致。
+- 对 `.md`、`.ts`、`.tsx`、`.js`、`.vue`、`.json`、`.yaml`、`.yml`、`.css`、`.scss`、`.html`、`.env.example` 等文本文件做 UTF-8 严格解码检查。
+- 扫描新增的 Unicode replacement character（`U+FFFD`）、典型乱码标记 `锟`，以及异常新增的 `\uXXXX` 转义；合法的 `\uXXXX` 必须人工确认来源。
+- 使用 `git diff --check` 检查空白错误；文件纳入 Git 管理后，再用 `git ls-files --eol` 检查是否存在非预期 CRLF。
+- 抽样打开中文密集文件，例如 `README.md`、`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`、历史报告和 mock 说明，确认编辑器视角下文本正常。
+
+停止条件：
+
+- 只要源目标 SHA256 在未改写文件上不一致，必须停止后续迁移，回到源项目重新按字节复制。
+- 只要 UTF-8 解码失败、出现新增 `U+FFFD` 或明显 `锟` 乱码，必须停止并定位具体文件，不能继续迁移或提交。
+- 如果后续确实需要统一 LF 行尾或格式化，必须在完成 byte-for-byte 基线验收之后作为单独步骤处理，并记录哪些文件发生了有意改写。
 
 #### 迁移后索引与清单
 
@@ -270,6 +347,15 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 29. 不只迁移动态 mock 代码而遗漏 endpoint 文档、legacy 路径说明和数据源状态说明。
 30. 不由迁移执行代理自行 `git commit`；提交必须由用户明确授权后再单独处理。
 31. 不迁入 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 等无关 AI 客户端目录。
+32. 不使用 `Get-Content | Set-Content`、`Out-File`、脚本重新编码、编辑器批量另存为等文本管道做快照复制。
+33. 不把 PowerShell、终端、日志查看器中的显示乱码当成源码真实乱码并写回源码。
+34. 不在源目标 SHA256 不一致、UTF-8 解码失败、出现新增 `U+FFFD` 或明显 `锟` 乱码时继续迁移。
+35. 不在 byte-for-byte 基线验收完成前批量格式化、批量转换行尾或批量重写 Markdown。
+36. 不把 app 的 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 直接合并进根级 AI 记忆文档。
+37. 不把 app 历史记忆中的临时 prompt、旧工具约束、一次性执行策略提升为 monorepo 长期规则。
+38. 不在没有 `ai-memory-merge-inventory.md`、冲突矩阵和复核结论前合并或删除 app AI 记忆内容。
+39. 不用 app 同名 skill 覆盖主项目 canonical skill；同名 skill 必须先做职责和冲突比对。
+40. 不把只适用于 uni-app、移动端 mock、legacy API 或 app 局部组件迁移的经验升级为全仓库规则。
 
 ## 风险控制
 
@@ -280,6 +366,8 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 使用分模块验收：每次只迁移少量业务路径。
 - 使用 `apps/type` 作为唯一事实来源：所有 schema 变更按 Trinity Pattern 和导出链同步。
 - 使用文档分层迁移：app 自有 Markdown 经过排除清单过滤后保留在 `apps/app`，再通过清单、重复组和敏感扫描逐步治理，不直接冲击主项目文档体系。
+- 使用字符集验收门禁：先完成源项目文件大小、SHA256、UTF-8 解码、替换字符和行尾基线检查，再复制到 `apps/app`，迁入后做源目标对账，未通过时停止迁移。
+- 使用 AI 记忆分级合并：app 记忆默认保留在 `apps/app`，只有通过价值评估、冲突矩阵和复核的内容才允许摘录到根级记忆或 canonical skill。
 
 ## 验收标准
 
@@ -295,7 +383,16 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - app 项目自有 Markdown 已随快照保留到 `apps/app`，且未覆盖主项目根级 `docs/**`、`.claude/skills/**`、`.agents/skills/**`、`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`。
 - 已生成 `apps/app/docs/migration/markdown-inventory.md` 或等价清单，记录路径、类别、价值等级、重复关系、敏感信息状态和后续处理建议。
 - 已确认 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 没有进入 `apps/app`；如其中存在价值内容，只能在清单中记录人工摘录建议。
+- 已生成源项目待迁入文件的大小和 SHA256 基线，并对未有意改写的迁入文件完成源目标 SHA256 对账。
+- 已完成文本文件 UTF-8 严格解码检查，未发现新增 `U+FFFD`、明显 `锟` 乱码或未经确认的异常 `\uXXXX` 转义。
+- 已完成行尾检查；如果存在从 CRLF 到 LF 的有意规范化，必须和 byte-for-byte 快照验收分开记录。
+- 已确认 PowerShell 或终端输出中的显示乱码没有被当成源码内容写回任何 Markdown、Vue、TypeScript 或配置文件。
 - 已识别 `.claude/**`、`.agent/**`、`.agents/**` 内的重复 skills、根级 AI 记忆文档等重复组，并明确第一阶段只记录、不删除、不强行合并。
+- 已生成 `apps/app/docs/migration/ai-memory-merge-inventory.md` 或等价清单，记录每个 AI 记忆来源的目标候选位置、价值等级、适用范围、冲突状态、处理决策和 canonical 指向。
+- 已确认 app 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 只作为 `apps/app` 作用域历史上下文保留，未直接覆盖或拼接进主项目根级 AI 记忆。
+- 已完成 app skills 与主项目 canonical skills 的冲突矩阵；同名或同职责 skill 已标记为保留、摘录、合并、归档或拒绝。
+- 已确认进入根级 AI 记忆的任何摘录都保留来源路径和迁移日期，并且只包含当前 monorepo 长期有效的规则。
+- 已确认旧工具约束、外部客户端专属规则、临时 prompt、个人环境信息没有被提升为当前项目长期规则。
 - 已完成 Markdown 敏感信息扫描，真实凭据已脱敏或阻断迁入，演示账号和示例连接串已标注为示例/历史参考。
 - 与 Nitro legacy、动态 mock、endpoint coverage 相关的 app 文档已被标记为 `apps/api` 迁移期间需要持续同步的文档。
 
