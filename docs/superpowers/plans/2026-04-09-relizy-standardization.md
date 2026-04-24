@@ -1,3 +1,5 @@
+<!-- 已完成 -->
+
 # Relizy 标准化收敛 Implementation Plan
 
 > 2026-04-17 当前状态补充：

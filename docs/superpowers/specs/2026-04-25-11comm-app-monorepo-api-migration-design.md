@@ -54,14 +54,24 @@ apps/app/
 - `src/**`
 - `server/**`
 - `env/**`
+- `.claude/skills/**`
+- `.agents/skills/**`
+- `.agent/skills/**`
 - `package.json`
 - `vite.config.ts`
 - `nitro.config.ts`
 - `pages.config.ts`
 - `manifest.config.ts`
-- 现有脚本、配置和 mock 体系
+- 现有脚本、配置、mock 体系和有价值的技能经验
 
 只做 monorepo 必要适配，例如包名、workspace 识别、脚本入口、依赖安装策略。
+
+迁入 app 时还要同步盘点 app 项目内的 skills 技能。原则是先原样保留，再判断价值，不在第一阶段粗暴删除或改写：
+
+1. 识别 app 项目内 `.claude/skills/**`、`.agents/skills/**`、`.agent/skills/**` 的技能清单。
+2. 标记与 app 业务、uni-app、Nitro legacy、mock 数据、接口适配、排错经验相关的有价值技能。
+3. 对与当前 monorepo 技能冲突的内容，只记录冲突，不立即合并。
+4. 后续单独设计 skills 合并任务，把有价值经验迁入本项目统一技能体系。
 
 ### 阶段 2：建立 `apps/api` 影子服务
 
@@ -152,6 +162,9 @@ apps/app/
 18. 不把 app mock/memory repository 当作最终生产数据源。
 19. 不把 app legacy 字段直接污染 admin schema。
 20. 不删除 legacy 路由 `/app/**`、`/callComponent/**`，先保留兼容。
+21. 不粗暴删除从 app 项目迁入的 skills 技能。
+22. 不在第一阶段把 app skills 和本项目 skills 强行合并。
+23. 不把过时技能直接覆盖本项目已有 `.claude/skills/**` 或 `.agents/skills/**`。
 
 ## 风险控制
 
@@ -171,6 +184,8 @@ apps/app/
 - 根 workspace 能识别 `apps/app`。
 - 迁入不破坏现有 `apps/admin` 与 `apps/type`。
 - 用户既有暂存修改不被混入迁移提交。
+- app 项目内有价值的 skills 技能已被保留或记录到迁移清单。
+- app skills 与本项目 skills 的冲突点已记录，但未在第一阶段强行合并。
 
 `apps/api` 阶段完成时必须满足：
 
