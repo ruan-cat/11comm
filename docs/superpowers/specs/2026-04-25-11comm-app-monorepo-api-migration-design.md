@@ -178,6 +178,68 @@ AI 记忆合并决策分为五类：
 - `archive-reference`：只作为历史证据或迁移参考，不进入执行规则。
 - `reject-or-redact`：因过时、冲突、敏感或误导风险而拒绝合并，或先脱敏再保留。
 
+#### Memorix 记忆保全与项目身份迁移
+
+`01s-11comm-app` 被迁入后，原目录未来可能被删除，所以 Memorix 记忆不能只依赖旧路径继续存在。必须把 Memorix 当作独立的迁移对象处理，并把“源项目身份、alias、观测记录、会话摘要、可提升经验”全部纳入第一阶段证据。
+
+当前调研结论：
+
+- 本次 Codex 会话没有暴露 `mcp__memorix__*` 工具；这只能说明当前会话无法直接调用 Memorix MCP，不能推断项目没有历史记忆。
+- 本机存在 `memorix` CLI，可作为 MCP 不可用时的只读调研和迁移辅助入口。
+- `memorix status` 在 `D:\code\ruan-cat\01s-11comm-app` 下识别到项目名 `11comm-app`、项目 ID `ruan-cat/11comm-app`、数据目录 `C:\Users\pc\.memorix\data`。
+- `memorix doctor` 在同一目录下显示 canonical ID 为 `nwt-q/001-Smart-Community`，并把 `ruan-cat/11comm-app` 识别为 alias；`.project-aliases.json` 也记录了 `d:/code/ruan-cat/01s-11comm-app` 这个 rootPath。
+- 因此迁移时必须同时处理 `nwt-q/001-Smart-Community`、`ruan-cat/11comm-app`、`D:\code\ruan-cat\01s-11comm-app` 这三类身份线索，不能只按新目录 `apps/app` 重新建一个空记忆身份。
+
+Memorix 保全目标：
+
+| 对象                  | 第一阶段动作                                                                | 后续动作                                                                                            |
+| --------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 项目身份 alias        | 记录旧 canonical ID、alias、旧 rootPath、新 rootPath、git remote 和迁移日期 | 将 `apps/app` 或当前 monorepo 关联为 app 历史记忆的可检索入口，避免旧路径删除后无法命中             |
+| active observations   | 导出或清点 app 相关 active 记忆，记录 ID、title、type、topicKey、projectId  | 判断保留在 app 作用域、提升到根级 monorepo 记忆、归档或标记已解决                                   |
+| archived observations | 同样清点但默认不提升为执行规则                                              | 只在事故复盘、历史迁移背景或避免重复踩坑时引用                                                      |
+| sessions              | 保留最近会话摘要和关键决策链                                                | 合并到 `apps/app/docs/migration/memorix-session-summary.md` 或等价证据文件                          |
+| graph/entities        | 记录与 app 业务、legacy API、z-paging、wot-design-uni、Nitro mock 相关实体  | 与 AI 记忆清单交叉引用，避免只迁移 Markdown 而丢失关系型记忆                                        |
+| app 专属经验          | 保留在 `apps/app` 作用域                                                    | 例如 uni-app、ColorUI 迁移、z-paging、旧路径 mock 等经验，不默认污染主项目 admin/API canonical 规则 |
+| monorepo 通用经验     | 标记为可提升候选                                                            | 只有通过复核后才能进入根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 或 canonical skill                 |
+
+必须生成的 Memorix 迁移证据：
+
+```text
+apps/app/docs/migration/memorix-memory-inventory.md
+apps/app/docs/migration/memorix-project-alias-map.md
+apps/app/docs/migration/memorix-session-summary.md
+```
+
+`memorix-memory-inventory.md` 至少记录：memory id、title、type、status、projectId、topicKey、tags、related concepts、是否 active、是否含敏感信息、迁移决策、目标位置和复核结论。
+
+`memorix-project-alias-map.md` 至少记录：
+
+- 旧 rootPath：`D:\code\ruan-cat\01s-11comm-app`
+- 新 rootPath：`D:\code\ruan-cat\01s-11comm\apps\app`
+- 已观测项目身份：`ruan-cat/11comm-app`
+- 已观测 canonical/alias 身份：`nwt-q/001-Smart-Community`
+- 当前目标 monorepo 身份：`ruan-cat/11comm`
+- 是否需要把 app 历史身份作为 alias 绑定到新 monorepo 或 app 子项目入口
+
+推荐迁移流程：
+
+1. 在源项目目录运行 `memorix status`、`memorix doctor`、`memorix recent` 和若干业务关键词搜索，例如 `z-paging`、`Nitro legacy`、`mock endpoint`、`fee`，记录命令输出摘要。
+2. 从 `C:\Users\pc\.memorix\data` 中只读清点与 app 项目身份相关的 observations、archived observations、sessions 和 alias，不直接编辑 Memorix 数据文件。
+3. 用 `memorix-memory-inventory.md` 做中间层，不把所有 Memorix 内容直接写入根级 AI 记忆。
+4. 对每条记忆按 `keep-app-scope`、`promote-root-memory`、`merge-canonical-skill`、`archive-reference`、`reject-or-redact` 分类。
+5. 对需要保留但不应进入根级规则的记忆，在 `apps/app` 作用域建立引用；对需要长期作用于 monorepo 的记忆，再同步到根级 AI 记忆或对应 skill。
+6. 如果当前会话暴露 `mcp__memorix__*` 工具，优先用 MCP 做 session start、search、detail、store、resolve；如果没有暴露，则使用 `memorix` CLI 做只读清点，并在文档中明确“本会话无 MCP，使用 CLI 证据替代”。
+7. 迁入完成后，在新仓库根目录和 `apps/app` 目录分别运行 Memorix 查询，确认 app 历史记忆能被检索到；如果检索不到，不能删除旧项目目录。
+
+阻断条件：
+
+- 没有记录 `memorix status`、`memorix doctor` 和 alias 映射，就删除或废弃 `D:\code\ruan-cat\01s-11comm-app`。
+- 只迁移 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`，却没有清点 Memorix observations 和 sessions。
+- 把 `memorix status` 中某个 projectId 的 0 条 observations 误判为“没有记忆”，而没有交叉检查 `memorix doctor`、`.project-aliases.json`、observations、sessions 和关键词搜索。
+- 直接编辑 `C:\Users\pc\.memorix\data\*.json` 或 SQLite 数据库来“合并”记忆；Memorix 数据文件只能作为只读证据，写入应走 MCP 或 CLI。
+- 没有脱敏就把包含个人路径、账号、token、API key、数据库连接串的记忆写进可共享文档。
+- 没有验证新路径能检索 app 历史记忆，就删除旧项目、旧 alias 或旧 rootPath 线索。
+
 #### 敏感信息检查
 
 Markdown 迁入前后都要做敏感信息扫描，至少覆盖以下模式：`token`、`secret`、`password`、`passwd`、`DATABASE_URL`、`NEON`、`VERCEL`、`APP_SECRET`、`api_key`、`Bearer`、`私钥`、`密钥`、`口令`、`密码`。
@@ -470,6 +532,11 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 49. 不在没有 `dual-project-spec-compliance-matrix.md` 或等价清单前合并两个项目的 AI 记忆、skills 或 spec 规则。
 50. 不把只验证 app legacy 路径通过的测试结果解释为 admin 后台支撑已经完成。
 51. 不用单一端的 mock 测试替代 app legacy、API adapter、admin canonical、schema/type 四层验收。
+52. 不在没有 Memorix 记忆清单、项目 alias 映射和会话摘要保全前删除或废弃 `D:\code\ruan-cat\01s-11comm-app`。
+53. 不把当前会话没有暴露 Memorix MCP 工具误判为“app 项目没有 Memorix 历史”。
+54. 不直接编辑 `C:\Users\pc\.memorix\data\*.json`、`memorix.db` 或其他 Memorix 内部数据文件来合并记忆。
+55. 不在没有确认 `nwt-q/001-Smart-Community`、`ruan-cat/11comm-app`、旧 rootPath 和新 `apps/app` 路径关系前重建 app 记忆身份。
+56. 不把 app 的 Memorix 记忆全文无筛选写入根级 AI 记忆；必须先分类、脱敏、复核和标注来源。
 
 ## 风险控制
 
@@ -482,6 +549,7 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - 使用文档分层迁移：app 自有 Markdown 经过排除清单过滤后保留在 `apps/app`，再通过清单、重复组和敏感扫描逐步治理，不直接冲击主项目文档体系。
 - 使用字符集验收门禁：先完成源项目文件大小、SHA256、UTF-8 解码、替换字符和行尾基线检查，再复制到 `apps/app`，迁入后做源目标对账，未通过时停止迁移。
 - 使用 AI 记忆分级合并：app 记忆默认保留在 `apps/app`，只有通过价值评估、冲突矩阵和复核的内容才允许摘录到根级记忆或 canonical skill。
+- 使用 Memorix 记忆保全：在删除旧 app 项目前，必须清点 `nwt-q/001-Smart-Community` / `ruan-cat/11comm-app` 相关 observations、sessions、alias 和关键词检索结果，并生成迁移证据。
 - 使用双端 API 契约矩阵：每批 app legacy endpoint 必须明确 app 旧路径、admin canonical 业务坐标、共享领域服务、数据源状态和缺口归属，避免 admin/app 分叉实现。
 - 使用测试门禁：第一阶段必须保留 app 现有 Vitest 契约测试，并新增迁移完整性、workspace、双项目 spec 合规、`apps/api` adapter、schema/type 等分层测试或清单；任何阻断条件未解除时不得推进到收口旧服务。
 
@@ -505,9 +573,11 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - 已确认 PowerShell 或终端输出中的显示乱码没有被当成源码内容写回任何 Markdown、Vue、TypeScript 或配置文件。
 - 已识别 `.claude/**`、`.agent/**`、`.agents/**` 内的重复 skills、根级 AI 记忆文档等重复组，并明确第一阶段只记录、不删除、不强行合并。
 - 已生成 `apps/app/docs/migration/ai-memory-merge-inventory.md` 或等价清单，记录每个 AI 记忆来源的目标候选位置、价值等级、适用范围、冲突状态、处理决策和 canonical 指向。
+- 已生成 `apps/app/docs/migration/memorix-memory-inventory.md`、`memorix-project-alias-map.md`、`memorix-session-summary.md` 或等价清单，保全 app 项目 Memorix observations、sessions、alias 和旧路径身份线索。
 - 已确认 app 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 只作为 `apps/app` 作用域历史上下文保留，未直接覆盖或拼接进主项目根级 AI 记忆。
 - 已完成 app skills 与主项目 canonical skills 的冲突矩阵；同名或同职责 skill 已标记为保留、摘录、合并、归档或拒绝。
 - 已确认进入根级 AI 记忆的任何摘录都保留来源路径和迁移日期，并且只包含当前 monorepo 长期有效的规则。
+- 已确认 `memorix status`、`memorix doctor`、`.project-aliases.json` 和关键词检索结果没有互相矛盾；如存在 projectId / canonical alias 差异，已在 alias map 中记录并给出处理决策。
 - 已确认旧工具约束、外部客户端专属规则、临时 prompt、个人环境信息没有被提升为当前项目长期规则。
 - 已完成 Markdown 敏感信息扫描，真实凭据已脱敏或阻断迁入，演示账号和示例连接串已标注为示例/历史参考。
 - 与 Nitro legacy、动态 mock、endpoint coverage 相关的 app 文档已被标记为 `apps/api` 迁移期间需要持续同步的文档。
