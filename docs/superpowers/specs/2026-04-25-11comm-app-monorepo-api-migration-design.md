@@ -294,6 +294,61 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 4. 不允许 admin 和 app 各自维护两套 fee mock 数据；同一业务必须共享 seed、repository 或数据库查询。
 5. 当某个 app endpoint 找不到 admin 业务坐标时，不能阻断 app 迁入，但必须写入 admin 功能缺口清单，并在后续规格中补齐后台页面、菜单、权限和 CRUD。
 
+#### 第一阶段自测与 Vitest 验收设计
+
+第一阶段的目标不是“已经完成统一后端”，而是证明 `01s-11comm-app` 被安全迁入、可被 workspace 识别、app 原有契约没有被破坏，并且后续 `apps/api` 抽取有稳定测试输入。第一阶段不能只靠人工打开页面确认，必须建立可重复执行的测试和清单门禁。
+
+测试策略遵循两个来源：
+
+- 主项目规范：Vitest 用 `import { test, describe } from "vitest";`，测试文件使用 `*.test.ts`，Nitro/API 测试运行在 Node 环境；数据库 schema 以 `apps/type/src/business/**/schema.ts` 为唯一事实来源；Nitro H3 只能从 `"nitro/h3"` 导入；不新增任何鉴权。
+- app 项目沉淀：保留现有 `src/tests/nitro-runtime/**` 契约测试模式，继续以 shared endpoint registry、repository、dispatcher 验证 `/app/**` legacy 路径；API 迁移保持旧业务路径，不把前端接口批量改为 `/api/**`；列表、表单、错误提示等页面接入继续遵守 app skills 的 `api-migration`、`api-error-handling`、`z-paging-integration`、`use-wd-form` 等约束。
+
+第一阶段需要设计以下测试层：
+
+| 层级                         | 建议测试位置或工件                                                                 | 验证内容                                                                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 快照完整性测试               | `apps/app/src/tests/migration/app-snapshot.test.ts` 或根级等价迁移测试             | 源目标文件大小、SHA256、排除目录、嵌套 `.git`、UTF-8 严格解码、`U+FFFD` 和真实 `锟` 乱码检查                |
+| workspace 识别测试           | 根级脚本和迁移报告记录                                                             | `pnpm` workspace 能识别 `apps/app`，且不会破坏 `apps/admin`、`apps/type` 的既有过滤器和构建入口             |
+| app legacy endpoint 契约测试 | 迁入后的 `apps/app/src/tests/nitro-runtime/*.test.ts`                              | app 当前的 endpoint registry、runtime dispatcher、mock adapter 仍能通过，尤其是 fee/payment/report 这批路径 |
+| `apps/api` 双端 adapter 测试 | `apps/api/tests/legacy/*.test.ts`、`apps/api/tests/admin/*.test.ts`                | app legacy adapter 与 admin canonical adapter 调用同一 service/repository，只在 DTO 层分流                  |
+| schema 与类型导出测试        | `apps/type/src/tests/*.test.ts` 或等价类型检查                                     | 共享 schema 按 Trinity Pattern 暴露 Drizzle table、Zod schema、TS type；导出链使用 `export *`               |
+| AI 记忆与 spec 合规清单      | `apps/app/docs/migration/dual-project-spec-compliance-matrix.md` 或等价清单        | 两个项目的 AI 记忆、skills、OpenSpec/spec 规则逐条记录来源、适用范围、冲突状态、canonical 决策和验证方式    |
+| 文档与 mock 同步测试         | `apps/app/docs/migration/markdown-inventory.md`、mock 迁移清单和 endpoint coverage | mock endpoint 变更必须同步文档状态，标记 legacy 路径、规范路径、数据源状态和 admin 功能缺口                 |
+
+Vitest 设计要求：
+
+1. 先写会失败的迁移保护测试，再迁入或适配代码，最后让测试转绿；不能先复制完再补“看起来会过”的测试。
+2. Nitro、endpoint registry、repository、adapter 测试必须使用 Node 环境，不使用 jsdom 执行服务端代码。
+3. 页面组件或 uni-app DOM 行为才允许进入 jsdom 或组件测试；不要把 Nitro 运行时测试和页面渲染测试混在一个环境里。
+4. 测试必须围绕真实 registry、dispatcher、service/repository 组织，只在明确的 adapter 边界使用 fake repository，避免把 mock 断言成 mock。
+5. app legacy 响应结构按 app 当前测试保留；admin canonical 响应结构按主项目 `JsonVO`、`PageDTO` 和业务 schema 重新断言。
+6. 每个新增测试文件必须使用 `describe` 和 `test`，文件名以 `*.test.ts` 结尾，目录优先放在对应子包 `src/tests/`、`tests/` 下。
+
+fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
+
+- app legacy：迁入并保留 `src/tests/nitro-runtime/fee-endpoints.test.ts` 的覆盖，至少验证 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/iot/**`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`、`/app/machine/listMachineRecords`。
+- API legacy adapter：在 `apps/api` 中重复验证旧路径、HTTP method、分页字段、写接口成功/失败结构，确保 app 不需要同步大改。
+- admin canonical adapter：围绕费用、欠费、支付、报表等 admin 业务坐标验证列表、详情、创建、统计或动作接口；充电桩和开门记录先进入后台功能缺口测试清单，不伪装为已完成 admin 支撑。
+- 数据源一致性：同一业务测试应能证明 app legacy 和 admin canonical 来自同一 seed、repository、service 或数据库查询，禁止各自维护两套 mock。
+
+第一阶段严重问题阻断条件：
+
+- 源目标 SHA256 对账失败，且不是事先记录的有意改写。
+- `apps/app` 中出现 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**`、嵌套 `.git` 或其他明确排除目录。
+- UTF-8 严格解码失败，或出现新增 `U+FFFD`、真实 `锟` 乱码、未经确认的异常 `\uXXXX` 转义。
+- 根 workspace 无法识别 `apps/app`，或迁入导致 `apps/admin`、`apps/type` 的既有检查出现非预期失败。
+- app 现有 `src/tests/nitro-runtime/**` 中与迁入范围相关的 endpoint registry、dispatcher、mock adapter 测试失败。
+- 新增 `apps/api` 代码存在直接从 `"h3"` 导入、鉴权中间件/插件、私有 schema 事实来源或 app/admin 双数据源分叉。
+- 未生成 Markdown 清单、AI 记忆合并清单、双项目 spec 合规矩阵和 mock endpoint 迁移清单，却声称第一阶段完成。
+
+双项目 AI 技术沉淀的执行方式：
+
+1. 根级 `01s-11comm` 的 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 是 monorepo canonical 入口；app 项目的同名文件迁入后只作为 `apps/app` 作用域历史上下文。
+2. app skills 不直接覆盖根级 skills；同名或同职责 skill 先进入冲突矩阵，逐条决定 `keep-app-scope`、`promote-root-skill`、`extract-reference`、`reject-obsolete` 或 `archive-duplicate`。
+3. 每次实施 app 页面、组件、接口迁移时，必须先按 app 的 `check-trigger.md` 识别相关技能，再叠加主项目的 Nitro、schema、测试、行尾、报告规范。
+4. 每次实施 `apps/api`、`apps/type`、admin CRUD 时，以主项目 schema/Nitro/admin 规范为准；app legacy 规则只约束旧路径兼容和 DTO 适配，不反向污染 admin 长期 API。
+5. 冲突不能默默合并：必须记录来源文件、冲突描述、采用决策、验证方式和复核人/复核时间。
+
 ### 阶段 2：建立 `apps/api` 影子服务
 
 新增最小 Nitro 服务，先不迁移大业务：
@@ -408,6 +463,13 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 42. 不让 admin 和 app 分别维护两套费用、支付、欠费、报表 mock 数据源。
 43. 不把充电桩、开门记录等当前缺少 admin 三级业务路径的能力硬塞进费用模块；必须记录为后台功能缺口。
 44. 不在没有 legacy 兼容测试和 admin canonical 测试的情况下迁移本批 fee/payment/report endpoint。
+45. 不在没有红灯测试和转绿证据的情况下声称完成第一阶段迁移。
+46. 不把 Nitro、endpoint registry、repository、adapter 测试放进 jsdom 环境。
+47. 不跳过 app 项目的 `check-trigger.md` 和相关 skills 触发检查来迁移 app 页面、接口或组件。
+48. 不用 app legacy DTO 反向定义 admin 长期 DTO；admin canonical DTO 必须从主项目业务 schema 和后台业务坐标出发。
+49. 不在没有 `dual-project-spec-compliance-matrix.md` 或等价清单前合并两个项目的 AI 记忆、skills 或 spec 规则。
+50. 不把只验证 app legacy 路径通过的测试结果解释为 admin 后台支撑已经完成。
+51. 不用单一端的 mock 测试替代 app legacy、API adapter、admin canonical、schema/type 四层验收。
 
 ## 风险控制
 
@@ -421,6 +483,7 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 使用字符集验收门禁：先完成源项目文件大小、SHA256、UTF-8 解码、替换字符和行尾基线检查，再复制到 `apps/app`，迁入后做源目标对账，未通过时停止迁移。
 - 使用 AI 记忆分级合并：app 记忆默认保留在 `apps/app`，只有通过价值评估、冲突矩阵和复核的内容才允许摘录到根级记忆或 canonical skill。
 - 使用双端 API 契约矩阵：每批 app legacy endpoint 必须明确 app 旧路径、admin canonical 业务坐标、共享领域服务、数据源状态和缺口归属，避免 admin/app 分叉实现。
+- 使用测试门禁：第一阶段必须保留 app 现有 Vitest 契约测试，并新增迁移完整性、workspace、双项目 spec 合规、`apps/api` adapter、schema/type 等分层测试或清单；任何阻断条件未解除时不得推进到收口旧服务。
 
 ## 验收标准
 
@@ -450,6 +513,10 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 与 Nitro legacy、动态 mock、endpoint coverage 相关的 app 文档已被标记为 `apps/api` 迁移期间需要持续同步的文档。
 - 已将 app 新增的 fee/payment/owe-fee/charge-machine/report/machine-record endpoint 纳入迁移矩阵，并标记每个 endpoint 的 admin canonical 业务坐标或后台功能缺口。
 - 已确认 `src/api/fee.ts`、`server/modules/fee/endpoints.ts`、`src/tests/nitro-runtime/fee-endpoints.test.ts` 这组 app 侧契约会作为 `apps/api` 迁移验收输入，而不是被迁移时丢弃。
+- 已设计并记录第一阶段 Vitest 自测分层，包含快照完整性、workspace 识别、app legacy endpoint、`apps/api` 双端 adapter、schema/type、AI 记忆/spec 合规、mock 文档同步。
+- 已确认 Nitro/API 相关测试使用 Node 环境，页面组件测试才使用 jsdom 或组件测试环境。
+- 已生成 `apps/app/docs/migration/dual-project-spec-compliance-matrix.md` 或等价清单，记录主项目与 app 项目的 AI 记忆、skills、spec 规则的来源、适用范围、冲突状态、canonical 决策和验证方式。
+- 已记录第一阶段红灯测试、转绿测试和最终 fresh verification 命令；没有验证证据时不得宣称迁移完成。
 
 `apps/api` 阶段完成时必须满足：
 
@@ -461,4 +528,6 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 - 数据库连接通过请求事件和 runtimeConfig 安全读取。
 - 本批 fee/payment/report app legacy 路径在 `apps/api` 中有兼容测试，至少覆盖 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/iot/**`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`、`/app/machine/listMachineRecords`。
 - admin canonical endpoint 与 app legacy endpoint 共享同一领域服务或 repository，不存在两套互相漂移的费用、支付、欠费、报表数据源。
+- 已有 `apps/api/tests/legacy/**` 与 `apps/api/tests/admin/**` 或等价测试分别覆盖 app legacy DTO 和 admin canonical DTO，且同一业务共享 service/repository 的断言存在。
+- schema 相关改动已在 `apps/type` 完成 Trinity Pattern、导出链和类型检查；如涉及数据库迁移，已同步迁移文件和 Neon 表清单。
 - 对充电桩和开门记录这类当前缺少 admin 三级业务路径的能力，已生成后台功能缺口记录，不阻断 app 兼容迁入，但不得伪装为已完成 admin 支撑。
