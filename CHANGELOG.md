@@ -1,3 +1,41 @@
+## v1.0.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v0.11.5-beta.1...v1.0.0)
+
+### 🦄 代码重构
+
+- **admin:** 收敛入口类型与 tsconfig 范围 ([dbe36127](https://github.com/ruan-cat/11comm/commit/dbe36127))
+
+### 📖 Documentation
+
+- **release:** 记录技能升级计划与排障背景 ([df1f9748](https://github.com/ruan-cat/11comm/commit/df1f9748))
+- **prompts:** 标记 bumpp push 迭代任务已完成 ([3f85b793](https://github.com/ruan-cat/11comm/commit/3f85b793))
+- **architecture:** 记录 app 迁入与唯一 API 设计 ([2af48327](https://github.com/ruan-cat/11comm/commit/2af48327))
+- 沉淀迁移规格与 relizy 任务状态 ([ae9b7b03](https://github.com/ruan-cat/11comm/commit/ae9b7b03))
+- 细化 app 迁入文档治理策略 ([dd6c5078](https://github.com/ruan-cat/11comm/commit/dd6c5078))
+- 细化 11comm app 迁入设计的字符集与 AI 记忆合并规范 ([cc50fec0](https://github.com/ruan-cat/11comm/commit/cc50fec0))
+- **admin:** 补充 app 迁移双端 API 矩阵 ([39ea2f11](https://github.com/ruan-cat/11comm/commit/39ea2f11))
+- 补充 app 迁移自测验收方案 ([024c4785](https://github.com/ruan-cat/11comm/commit/024c4785))
+- 补充 app Memorix 迁移保全方案 ([edc7a693](https://github.com/ruan-cat/11comm/commit/edc7a693))
+- **migration:** 收口 Phase1 迁移文档 ([e9af24f4](https://github.com/ruan-cat/11comm/commit/e9af24f4))
+
+### ✅ Tests
+
+- **release:** 补充 bumpp push 策略校验 ([933e10d8](https://github.com/ruan-cat/11comm/commit/933e10d8))
+
+### 🤖 CI
+
+- 升级 GitHub Actions 到 Node 24 运行时 ([8d33e576](https://github.com/ruan-cat/11comm/commit/8d33e576))
+
+### 🔧 更新配置
+
+- **release:** 改用 bumpp 官方参数控制 push 策略 ([bcc53d54](https://github.com/ruan-cat/11comm/commit/bcc53d54))
+- **workspace:** 限定 lint-staged 只处理文本文件 ([dfb785e2](https://github.com/ruan-cat/11comm/commit/dfb785e2))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v0.11.5-beta.1
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.11.4...v0.11.5-beta.1)
