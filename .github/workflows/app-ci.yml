@@ -38,14 +38,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build App H5
+        run: pnpm -F @01s-11comm/app run build:h5:prod
+
       - name: Typecheck App
         run: pnpm -F @01s-11comm/app run type-check
 
       - name: Test App
         run: pnpm -F @01s-11comm/app exec vitest run
-
-      - name: Build App H5
-        run: pnpm -F @01s-11comm/app run build:h5:prod
 
       - name: Build App Nitro Vercel
         run: pnpm -F @01s-11comm/app run build:nitro:vercel
