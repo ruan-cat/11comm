@@ -18,6 +18,7 @@ allowedDeprecatedVersions:
   w3c-hr-time: "*"
 
 onlyBuiltDependencies:
+  - "@uni-helper/unocss-preset-uni"
   - "@parcel/watcher"
   - "@tailwindcss/oxide"
   - core-js
@@ -31,5 +32,11 @@ onlyBuiltDependencies:
   - vue3-danmaku
 
 overrides:
+  "@vitejs/plugin-vue-jsx": 5.1.5
+  bin-wrapper: "npm:bin-wrapper-china"
   css-select@^5.2.1: 5.2.0
   drizzle-orm: 0.42.0
+
+patchedDependencies:
+  vite-plugin-mock-dev-server@2.1.1: apps/app/patches/vite-plugin-mock-dev-server@2.1.1.patch
+  wot-design-uni@1.14.0: apps/app/patches/wot-design-uni@1.14.0.patch

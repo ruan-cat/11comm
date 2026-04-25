@@ -1,0 +1,51 @@
+name: App CI
+
+on:
+  push:
+    paths:
+      - "apps/app/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+      - "turbo.json"
+      - ".github/workflows/app-ci.yml"
+  pull_request:
+    paths:
+      - "apps/app/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+      - "turbo.json"
+      - ".github/workflows/app-ci.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck App
+        run: pnpm -F @01s-11comm/app run type-check
+
+      - name: Test App
+        run: pnpm -F @01s-11comm/app exec vitest run
+
+      - name: Build App H5
+        run: pnpm -F @01s-11comm/app run build:h5:prod
+
+      - name: Build App Nitro Vercel
+        run: pnpm -F @01s-11comm/app run build:nitro:vercel
