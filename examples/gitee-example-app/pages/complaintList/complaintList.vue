@@ -1,0 +1,119 @@
+<template>
+	<view>
+		<view v-if="noData==false">
+			<view v-for="(item,index) in orders" :key="index" class="bg-white margin-top margin-right-xs radius margin-left-xs padding">
+				<view class="flex padding-bottom-xs solid-bottom justify-between">
+					<view>{{item.complaintId}}</view>
+					<view class="text-gray">{{item.tel}}</view>
+				</view>
+				<view class="flex margin-top justify-between">
+					<view class="text-gray">投诉类型</view>
+					<view class="text-gray">{{item.typeName}}</view>
+				</view>
+				<view class="flex margin-top-xs justify-between">
+					<view class="text-gray">投诉人</view>
+					<view class="text-gray">{{item.complaintName}}</view>
+				</view>
+				<view class="flex margin-top-xs justify-between">
+					<view class="text-gray">房间</view>
+					<view class="text-gray">{{item.roomName}}</view>
+				</view>
+				<view class="flex margin-top-xs justify-between">
+					<view class="text-gray">投诉时间</view>
+					<view class="text-gray">{{item.createTime }}</view>
+				</view>
+				<view class="flex margin-top-xs justify-between">
+					<view class="text-gray">投诉内容</view>
+					<view class="text-gray">{{item.context}}</view>
+				</view>
+				<view class="solid-top flex justify-end margin-top padding-top-sm ">
+					<button class="cu-btn sm line-gray" @click="_complaintDetail(item)">详情</button>
+					<button class="cu-btn sm bg-green  margin-left" @click="_complaintDispatch(item)">办结</button>
+				</view>
+			</view>
+		</view>
+		<view v-else>
+			<no-data-page></no-data-page>
+		</view>
+	</view>
+</template>
+
+<script>
+	import {
+		loadTodoCompaint
+	} from '../../api/complaint/complaint.js'
+	import noDataPage from '@/components/no-data-page/no-data-page.vue'
+	import conf from '../../conf/config.js'
+	import {getCurrentCommunity} from '../../api/community/community.js'
+	export default {
+		data() {
+			return {
+				state: '10001',
+				orderImg: conf.baseUrl + 'img/order.png',
+				orders: [],
+				noData:false
+			}
+		},
+		onLoad() {
+			this.java110Context.onLoad();
+		},
+		onShow() {
+			this._loadComplaintOrder();
+		},
+		components: {
+			noDataPage
+		},
+		methods: {
+			_loadComplaintOrder: function() {
+				//
+				let _that = this;
+				let _userInfo = this.java110Context.getUserInfo();
+				let storeId = _userInfo.storeId;
+				let _objData = {
+					page: 1,
+					row: 15,
+					userId: _userInfo.userId,
+					communityId: getCurrentCommunity().communityId
+				};
+
+				loadTodoCompaint(this, _objData)
+					.then(function(res) {
+						if (res.statusCode != 200) {
+							uni.navigateTo({
+								url:'/pages/login/login'
+							})
+							return;
+						}
+						let _data = res.data;
+						_that.orders = _data.data;
+						if (_that.orders.length < 1) {
+							_that.noData = true;
+							return;
+						}
+						_that.orders.forEach(function(item) {
+							let dateStr = item.createTime;
+							let _startTime = dateStr.replace(/\-/g, "/")
+							let _date = new Date(_startTime);
+							item.createTime = (_date.getMonth() + 1) + '-' + _date.getDate();
+						});
+					})
+			},
+			_complaintDetail: function(_item) {
+				console.log('_item', _item);
+				uni.setStorageSync("_complaintOrderDetail_" + _item.complaintId, _item);
+				uni.navigateTo({
+					url: "/pages/complaintOrderDetail/complaintOrderDetail?complaintId=" + _item.complaintId
+				});
+			},
+			_complaintDispatch: function(_item) {
+				uni.navigateTo({
+					url: "/pages/complaintHandle/complaintHandle?complaintId=" + _item.complaintId + "&taskId=" + _item.taskId
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>

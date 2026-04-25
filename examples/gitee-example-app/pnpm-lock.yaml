@@ -1,0 +1,30 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      file-saver:
+        specifier: ^2.0.5
+        version: 2.0.5
+      vue-jsonp:
+        specifier: ^2.1.0
+        version: 2.1.0
+
+packages:
+
+  file-saver@2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
+
+  vue-jsonp@2.1.0:
+    resolution: {integrity: sha512-kezmjaAcMWdieO3tWxniC+82DitYUYjR1e2GsWIKHCTf+zhWUt2nPhN3dnmnAVhDQ+po3BspM7sKjiQaIhijUg==}
+
+snapshots:
+
+  file-saver@2.0.5: {}
+
+  vue-jsonp@2.1.0: {}
