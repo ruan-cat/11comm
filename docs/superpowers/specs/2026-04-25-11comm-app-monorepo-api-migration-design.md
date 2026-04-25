@@ -1,4 +1,4 @@
-<!-- TODO: 长任务 持续完成改造 -->
+<!-- 状态：Phase1 快照迁入已完成；Memorix canonical history retention gate 已拆分释放为 released-for-phase2-progress / pass-with-permanent-source-retention；旧源目录 D:\code\ruan-cat\01s-11comm-app 永久禁止删除、移动、归档、重命名或清空。 -->
 
 # 2026-04-25 11comm App 迁入 Monorepo 与唯一 Nitro API 设计
 
@@ -17,7 +17,7 @@
 2. `01s-11comm-app` 迁入为 `apps/app`。
 3. 迁入 app 时不保留原仓库 Git 历史，不使用 `git subtree`。
 4. app 迁入采用过滤快照复制：直接复制业务源码和必要上下文到 `apps/app`，但排除无用工具副本和构建产物，后续在 monorepo 内治理。
-5. 第一阶段以“不拆解 app 业务结构”为主，不立即重写 app 内部结构；“原样保留”不包含 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 等多工具垃圾副本。
+5. 第一阶段以“不拆解 app 业务结构”为主，不立即重写 app 内部结构；“原样保留”不包含 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 等多工具垃圾副本。本次受控清理进一步收敛 app-local OpenSpec/OPSX 冗余副本：只删除 `apps/app/.claude/commands/opsx/**` 与 `apps/app/.claude/skills/openspec-*`，不删除 app 专属非 OpenSpec skills；根 OpenSpec commands/skills 为 canonical。
 6. `apps/type` 继续作为数据库 Schema、Zod Schema、TypeScript 类型的唯一事实来源。
 7. Nitro 接口不新增任何鉴权逻辑，不引入 JWT、Token 校验、Neon Auth。
 
@@ -36,6 +36,7 @@
 
 - admin 和 app 都通过配置指向 `apps/api`。
 - `apps/admin/server` 与 `apps/app/server` 只作为迁移来源或临时兼容层，不作为长期生产 API。
+- Phase1 快照迁入验收只确认 `apps/app/server` 被保留为 legacy 来源；已经顺手改成 `nitro/h3` 的少量 import 不需要回滚，后续发现或尚未处理的直接 `"h3"` 导入、handler 风格和 legacy mock 写法，统一标记为 Phase1 之后的历史债务任务，在下一阶段/后续 `apps/api` 迁移时集中改造，不作为 Phase1 完成 blocker。
 - app legacy 路径 `/app/**`、`/callComponent/**` 先保留兼容，再逐步映射到规范 API。
 - 新增和补齐 CRUD 时，以 admin 的 `rank-route-keys.ts` 三级业务路径作为 canonical 业务坐标。
 
@@ -56,9 +57,9 @@ apps/app/
 - `src/**`
 - `server/**`
 - `env/**`
-- `.claude/skills/**`
-- `.agents/skills/**`
-- `.agent/skills/**`
+- `.claude/skills/**` 中的 app 专属非 OpenSpec skills
+- `.agents/skills/**` 如源项目存在则记录，当前 app 迁入结果为缺失
+- `.agent/skills/**` 已删除，不再作为 app-local 技能来源
 - `package.json`
 - `vite.config.ts`
 - `nitro.config.ts`
@@ -78,11 +79,11 @@ apps/app/
 
 如果这些被排除目录内存在极少量确有价值的迁移经验，只能在后续专项任务中人工摘录到迁移清单或统一技能体系，禁止整目录复制。
 
-迁入 app 时还要同步盘点 app 项目内的 skills 技能。原则是先原样保留，再判断价值，不在第一阶段粗暴删除或改写：
+迁入 app 时还要同步盘点 app 项目内的 skills 技能。原则是保留 app 专属非 OpenSpec skills，再判断价值，不在第一阶段粗暴删除或改写业务迁移经验；旧的“只记录不删除”口径已被本次受控清理收敛，app-local OpenSpec/OPSX 副本按根 canonical 删除：
 
-1. 识别 app 项目内 `.claude/skills/**`、`.agents/skills/**`、`.agent/skills/**` 的技能清单。
+1. 识别 app 项目内 `.claude/skills/**` 的 app 专属非 OpenSpec 技能清单，并记录 `.agents/skills/**` 缺失、`.agent` 已删除状态。
 2. 标记与 app 业务、uni-app、Nitro legacy、mock 数据、接口适配、排错经验相关的有价值技能。
-3. 对与当前 monorepo 技能冲突的内容，只记录冲突，不立即合并。
+3. 对与当前 monorepo 技能冲突的内容，只记录冲突，不立即合并；对 `apps/app/.claude/commands/opsx/**` 与 `apps/app/.claude/skills/openspec-*` 这类根 OpenSpec 已覆盖的重复副本，记录为 `dropped-after-root-canonical`。
 4. 后续单独设计 skills 合并任务，把有价值经验迁入本项目统一技能体系。
 
 ### 阶段 1.1：Markdown 文档迁移策略
@@ -96,7 +97,7 @@ apps/app/
 第一阶段采用“项目自有 Markdown 默认保留”的规则：
 
 - `README.md`、`CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 等根级说明和 AI 记忆文档原样进入 `apps/app`，视为 app 子项目作用域内的历史上下文。
-- `docs/**`、`openspec/**`、`src/**/README.md`、`src/**/index.md`、`.claude/**`、`.agent/**`、`.agents/**`、`.github/**` 下的项目自有 Markdown 默认保留路径不变。
+- `docs/**`、`openspec/**`、`src/**/README.md`、`src/**/index.md`、`.claude/**` 中的 app 专属非 OpenSpec Markdown、`.github/**` 下的项目自有 Markdown 默认保留路径不变；`apps/app/.agent` 已删除，`apps/app/.claude/commands/opsx/**` 与 `apps/app/.claude/skills/openspec-*` 已按根 canonical 受控删除。
 - `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 下的 Markdown 默认排除，不进入 `apps/app`。
 - `src/uni_modules/**`、`gitee-example/**` 等第三方或参考实现中的 Markdown 先随 app 快照保留，但迁移清单中必须标记为“第三方/参考资料”，不能升级为 monorepo 规范事实来源。
 - `node_modules/**`、`dist/**`、`.output/**`、coverage、临时缓存等依赖或构建产物不属于迁入对象，即使其中包含 Markdown 也不迁入。
@@ -106,19 +107,19 @@ apps/app/
 
 迁入后按价值分层建立清单，后续治理必须基于清单而不是凭文件名删除：
 
-| 类别                  | 文档形态                                                                                         | 处理策略                                           |
-| --------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
-| P0 迁移关键上下文     | Nitro 双运行时、legacy API、mock endpoint、Vite 兼容、迁移计划、当前 README 补充说明             | 保留并优先纳入迁移索引，迁移 `apps/api` 时持续同步 |
-| P1 app 业务与历史经验 | 业务页面迁移报告、OpenSpec 归档、组件 README、排错复盘、uni-app 兼容经验                         | 保留在 `apps/app`，必要时摘录到后续专题报告        |
-| P2 模板/第三方参考    | unibest/VitePress 基础文档、uni_modules 文档、gitee-example 参考说明                             | 保留但降权，清单中标记来源，不作为主项目规范       |
-| P3 重复或过时候选     | 多 AI 工具重复的 OpenSpec skills、完全相同的 `CLAUDE.md`/`AGENTS.md`/`GEMINI.md`、旧 prompt 草稿 | 第一阶段不删除，只记录重复关系和建议归档方向       |
+| 类别                  | 文档形态                                                                                         | 处理策略                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| P0 迁移关键上下文     | Nitro 双运行时、legacy API、mock endpoint、Vite 兼容、迁移计划、当前 README 补充说明             | 保留并优先纳入迁移索引，迁移 `apps/api` 时持续同步                                              |
+| P1 app 业务与历史经验 | 业务页面迁移报告、OpenSpec 归档、组件 README、排错复盘、uni-app 兼容经验                         | 保留在 `apps/app`，必要时摘录到后续专题报告                                                     |
+| P2 模板/第三方参考    | unibest/VitePress 基础文档、uni_modules 文档、gitee-example 参考说明                             | 保留但降权，清单中标记来源，不作为主项目规范                                                    |
+| P3 重复或过时候选     | 多 AI 工具重复的 OpenSpec skills、完全相同的 `CLAUDE.md`/`AGENTS.md`/`GEMINI.md`、旧 prompt 草稿 | OpenSpec/OPSX app-local 副本已按根 canonical 受控删除；其他重复项继续记录重复关系和建议归档方向 |
 
 #### 重复文档处理规则
 
 重复文档分为“精确重复”和“语义重叠”两类处理：
 
 1. 对精确重复文件，使用文件哈希或内容比对生成重复组。已观察到的典型重复包括多工具目录下的 OpenSpec skills，以及根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 同步副本。
-2. 对工具入口型重复文档，只保留当前项目需要的 `.claude/skills/**`、`.agent/skills/**`、`.agents/skills/**`；`.cursor/skills/**`、`.gemini/skills/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 默认排除。
+2. 对工具入口型重复文档，只保留当前项目需要的 app 专属非 OpenSpec `.claude/skills/**`；`.agent/skills/**` 已删除，`.agents/skills/**` 当前缺失；`.cursor/skills/**`、`.gemini/skills/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 默认排除。
 3. 对语义重叠但内容不同的文档，例如 app 的 Nitro/mock 经验与主项目 Nitro/API 规范，只记录“主项目 canonical 文档”和“app 历史来源文档”的关系，不直接合并。
 4. 后续去重只能采用“建立 canonical + 保留引用/归档”的方式，不能在没有清单和复核结论时直接删除。
 5. 如果 app 文档与主项目根级 `docs/**`、`.claude/skills/**`、`.agents/skills/**` 冲突，以主项目现有规范为默认 canonical，app 文档作为迁移来源或历史证据保留。
@@ -137,14 +138,15 @@ AI 记忆文档的迁移目标不是“把所有规则揉成一个大文件”�
 
 迁入位置规则：
 
-| 来源内容                                                                                                | 第一阶段位置                  | 后续处理                                        |
-| ------------------------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------- |
-| app 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`                                                          | 原样进入 `apps/app/`          | 作为 app 子项目历史上下文，不自动提升为根级规则 |
-| app `.claude/skills/**`、`.agent/skills/**`、`.agents/skills/**`                                        | 原样进入 `apps/app/` 对应目录 | 进入 skills 价值清单和冲突矩阵，后续逐项合并    |
-| app `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**`                                     | 默认不迁入                    | 如确有独特经验，只人工摘录到清单，不复制原目录  |
-| app 业务、uni-app、ColorUI 到 wot-design-uni、z-paging、动态标题、Nitro legacy/mock、Vite mock 兼容经验 | 保留在 `apps/app` 原文位置    | 标记为可迁移经验，优先进入后续专题整理          |
-| 与主项目同名或同职责的 skills                                                                           | 保留 app 原文，不覆盖主项目   | 生成冲突矩阵，明确 canonical 指向和差异         |
-| 包含敏感信息或个人环境的记忆                                                                            | 阻断原样公开迁入或先脱敏      | 保留变量名、错误形态、复现步骤，移除真实值      |
+| 来源内容                                                                                                | 第一阶段位置                      | 后续处理                                                                              |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------- |
+| app 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`                                                          | 原样进入 `apps/app/`              | 作为 app 子项目历史上下文，不自动提升为根级规则                                       |
+| app `.claude/skills/**` 中的 app 专属非 OpenSpec skills                                                 | 保留在 `apps/app/.claude/skills/` | 进入 skills 价值清单和冲突矩阵，后续逐项合并                                          |
+| app `.claude/commands/opsx/**`、`.claude/skills/openspec-*`、`.agent/**`                                | 删除或保持不存在                  | 根 OpenSpec commands/skills 为 canonical，迁移清单记录 `dropped-after-root-canonical` |
+| app `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**`                                     | 默认不迁入                        | 如确有独特经验，只人工摘录到清单，不复制原目录                                        |
+| app 业务、uni-app、ColorUI 到 wot-design-uni、z-paging、动态标题、Nitro legacy/mock、Vite mock 兼容经验 | 保留在 `apps/app` 原文位置        | 标记为可迁移经验，优先进入后续专题整理                                                |
+| 与主项目同名或同职责的 skills                                                                           | 保留 app 原文，不覆盖主项目       | 生成冲突矩阵，明确 canonical 指向和差异                                               |
+| 包含敏感信息或个人环境的记忆                                                                            | 阻断原样公开迁入或先脱敏          | 保留变量名、错误形态、复现步骤，移除真实值                                            |
 
 根级记忆提升规则：
 
@@ -156,7 +158,7 @@ AI 记忆文档的迁移目标不是“把所有规则揉成一个大文件”�
 
 skills 合并规则：
 
-- app skills 先作为 app 子项目技能保留，不在第一阶段直接进入根级 `.claude/skills/**` 或 `.agents/skills/**`。
+- app 专属非 OpenSpec skills 先作为 app 子项目技能保留，不在第一阶段直接进入根级 `.claude/skills/**` 或 `.agents/skills/**`；app-local OpenSpec/OPSX 副本已按根 canonical 删除。
 - 同名 skill 必须先比较职责、触发条件、禁止项、示例和相关脚本；同名不等于可覆盖，不同名也可能职责冲突。
 - 可复用经验优先以“摘录补充 canonical skill”的方式进入主项目技能，而不是复制一份平行 skill。
 - 如果 app skill 只服务 uni-app、移动端 mock、legacy API 或 app 内组件迁移，应保留在 `apps/app` 作用域，不升级为全仓库技能。
@@ -165,8 +167,10 @@ skills 合并规则：
 必须生成的合并证据：
 
 ```text
-apps/app/docs/migration/ai-memory-merge-inventory.md
+docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md
 ```
+
+为避免迁移过程文档膨胀和过期，第一阶段不再长期保留 `apps/app/docs/migration/*.md`。该目录下曾生成的过程性清单只作为临时审计材料，其有效结论必须压缩进 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md`、本设计文档和 Phase1 plan；后续阅读以 superpowers 文档为入口。
 
 清单至少包含：来源路径、目标候选位置、主题、价值等级、是否仍然有效、适用范围、是否冲突、敏感信息状态、处理决策、canonical 指向、摘录摘要、复核人和复核日期。
 
@@ -180,7 +184,14 @@ AI 记忆合并决策分为五类：
 
 #### Memorix 记忆保全与项目身份迁移
 
-`01s-11comm-app` 被迁入后，原目录未来可能被删除，所以 Memorix 记忆不能只依赖旧路径继续存在。必须把 Memorix 当作独立的迁移对象处理，并把“源项目身份、alias、观测记录、会话摘要、可提升经验”全部纳入第一阶段证据。
+`01s-11comm-app` 被迁入后，原目录仍必须永久保留，不能作为迁移收口、清理、退休、归档或释放 gate 的动作目标。由于 Memorix 记忆、项目身份和路径证据仍可能依赖旧路径，必须把 Memorix 当作独立的迁移对象处理，并把“源项目身份、alias、观测记录、会话摘要、可提升经验”全部纳入第一阶段证据。
+
+旧源目录保留红线：
+
+- `D:\code\ruan-cat\01s-11comm-app` 是完整独立 git 项目，必须永久保留。
+- 无论任何阶段、任何 gate 状态、任何 alias/export/import/retirement review 结论如何，都禁止删除、移动、归档、重命名或清空该目录。
+- 自动化代理、子代理、脚本、人工验收流程、迁移收口流程、清理流程、退休复核流程和释放 gate 流程都不得把该目录作为删除、移动、归档、重命名或清空对象。
+- 未来只允许对该目录做只读引用、保留路径证据、在文档中记录其存在，或使用只读命令采集迁移证据；禁止退役。
 
 当前调研结论：
 
@@ -194,10 +205,10 @@ Memorix 保全目标：
 
 | 对象                  | 第一阶段动作                                                                | 后续动作                                                                                            |
 | --------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| 项目身份 alias        | 记录旧 canonical ID、alias、旧 rootPath、新 rootPath、git remote 和迁移日期 | 将 `apps/app` 或当前 monorepo 关联为 app 历史记忆的可检索入口，避免旧路径删除后无法命中             |
+| 项目身份 alias        | 记录旧 canonical ID、alias、旧 rootPath、新 rootPath、git remote 和迁移日期 | 将 `apps/app` 或当前 monorepo 关联为 app 历史记忆的可检索入口；旧路径作为永久保留证据，不得删除     |
 | active observations   | 导出或清点 app 相关 active 记忆，记录 ID、title、type、topicKey、projectId  | 判断保留在 app 作用域、提升到根级 monorepo 记忆、归档或标记已解决                                   |
 | archived observations | 同样清点但默认不提升为执行规则                                              | 只在事故复盘、历史迁移背景或避免重复踩坑时引用                                                      |
-| sessions              | 保留最近会话摘要和关键决策链                                                | 合并到 `apps/app/docs/migration/memorix-session-summary.md` 或等价证据文件                          |
+| sessions              | 保留最近会话摘要和关键决策链                                                | 合并到 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价证据文件           |
 | graph/entities        | 记录与 app 业务、legacy API、z-paging、wot-design-uni、Nitro mock 相关实体  | 与 AI 记忆清单交叉引用，避免只迁移 Markdown 而丢失关系型记忆                                        |
 | app 专属经验          | 保留在 `apps/app` 作用域                                                    | 例如 uni-app、ColorUI 迁移、z-paging、旧路径 mock 等经验，不默认污染主项目 admin/API canonical 规则 |
 | monorepo 通用经验     | 标记为可提升候选                                                            | 只有通过复核后才能进入根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 或 canonical skill                 |
@@ -205,14 +216,12 @@ Memorix 保全目标：
 必须生成的 Memorix 迁移证据：
 
 ```text
-apps/app/docs/migration/memorix-memory-inventory.md
-apps/app/docs/migration/memorix-project-alias-map.md
-apps/app/docs/migration/memorix-session-summary.md
+docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md
 ```
 
-`memorix-memory-inventory.md` 至少记录：memory id、title、type、status、projectId、topicKey、tags、related concepts、是否 active、是否含敏感信息、迁移决策、目标位置和复核结论。
+`2026-04-25-phase1-consolidated-report.md` 至少记录：memory id、title、type、status、projectId、topicKey、tags、related concepts、是否 active、是否含敏感信息、迁移决策、目标位置和复核结论。
 
-`memorix-project-alias-map.md` 至少记录：
+`2026-04-25-phase1-consolidated-report.md` 至少记录：
 
 - 旧 rootPath：`D:\code\ruan-cat\01s-11comm-app`
 - 新 rootPath：`D:\code\ruan-cat\01s-11comm\apps\app`
@@ -225,20 +234,20 @@ apps/app/docs/migration/memorix-session-summary.md
 
 1. 在源项目目录运行 `memorix status`、`memorix doctor`、`memorix recent` 和若干业务关键词搜索，例如 `z-paging`、`Nitro legacy`、`mock endpoint`、`fee`，记录命令输出摘要。
 2. 从 `C:\Users\pc\.memorix\data` 中只读清点与 app 项目身份相关的 observations、archived observations、sessions 和 alias，不直接编辑 Memorix 数据文件。
-3. 用 `memorix-memory-inventory.md` 做中间层，不把所有 Memorix 内容直接写入根级 AI 记忆。
+3. 用 `2026-04-25-phase1-consolidated-report.md` 做中间层，不把所有 Memorix 内容直接写入根级 AI 记忆。
 4. 对每条记忆按 `keep-app-scope`、`promote-root-memory`、`merge-canonical-skill`、`archive-reference`、`reject-or-redact` 分类。
 5. 对需要保留但不应进入根级规则的记忆，在 `apps/app` 作用域建立引用；对需要长期作用于 monorepo 的记忆，再同步到根级 AI 记忆或对应 skill。
 6. 如果当前会话暴露 `mcp__memorix__*` 工具，优先用 MCP 做 session start、search、detail、store、resolve；如果没有暴露，则使用 `memorix` CLI 做只读清点，并在文档中明确“本会话无 MCP，使用 CLI 证据替代”。
-7. 迁入完成后，在新仓库根目录和 `apps/app` 目录分别运行 Memorix 查询，确认 app 历史记忆能被检索到；如果检索不到，不能删除旧项目目录。
+7. 迁入完成后，在新仓库根目录和 `apps/app` 目录分别运行 Memorix 查询，确认 app 历史记忆能被检索到；无论检索结果如何，都不能删除、移动、归档、重命名或清空旧项目目录。
 
 阻断条件：
 
-- 没有记录 `memorix status`、`memorix doctor` 和 alias 映射，就删除或废弃 `D:\code\ruan-cat\01s-11comm-app`。
+- 任何流程试图删除、移动、归档、重命名、清空或废弃 `D:\code\ruan-cat\01s-11comm-app`。
 - 只迁移 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`，却没有清点 Memorix observations 和 sessions。
 - 把 `memorix status` 中某个 projectId 的 0 条 observations 误判为“没有记忆”，而没有交叉检查 `memorix doctor`、`.project-aliases.json`、observations、sessions 和关键词搜索。
 - 直接编辑 `C:\Users\pc\.memorix\data\*.json` 或 SQLite 数据库来“合并”记忆；Memorix 数据文件只能作为只读证据，写入应走 MCP 或 CLI。
 - 没有脱敏就把包含个人路径、账号、token、API key、数据库连接串的记忆写进可共享文档。
-- 没有验证新路径能检索 app 历史记忆，就删除旧项目、旧 alias 或旧 rootPath 线索。
+- 没有验证新路径能检索 app 历史记忆，就删除旧 alias 或旧 rootPath 线索；旧源目录本身即使验证通过也永久不得删除。
 
 #### 敏感信息检查
 
@@ -287,7 +296,7 @@ Markdown 迁入前后都要做敏感信息扫描，至少覆盖以下模式：`t
 第一阶段完成后必须产出 Markdown 清单，建议位置为：
 
 ```text
-apps/app/docs/migration/markdown-inventory.md
+docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md
 ```
 
 清单至少包含：
@@ -360,22 +369,24 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 
 第一阶段的目标不是“已经完成统一后端”，而是证明 `01s-11comm-app` 被安全迁入、可被 workspace 识别、app 原有契约没有被破坏，并且后续 `apps/api` 抽取有稳定测试输入。第一阶段不能只靠人工打开页面确认，必须建立可重复执行的测试和清单门禁。
 
-测试策略遵循两个来源：
+测试策略遵循两个来源，并明确区分 Phase1 快照验收和后续统一 Nitro 服务改造：
 
-- 主项目规范：Vitest 用 `import { test, describe } from "vitest";`，测试文件使用 `*.test.ts`，Nitro/API 测试运行在 Node 环境；数据库 schema 以 `apps/type/src/business/**/schema.ts` 为唯一事实来源；Nitro H3 只能从 `"nitro/h3"` 导入；不新增任何鉴权。
+- 主项目规范：Vitest 用 `import { test, describe } from "vitest";`，测试文件使用 `*.test.ts`，Nitro/API 测试运行在 Node 环境；数据库 schema 以 `apps/type/src/business/**/schema.ts` 为唯一事实来源；新增或目标态 Nitro 代码，尤其未来 `apps/api`，H3 API 只能从 `"nitro/h3"` 导入，不新增任何鉴权，并统一使用 `@01s-11comm/type` 与 `apps/type` schema。
 - app 项目沉淀：保留现有 `src/tests/nitro-runtime/**` 契约测试模式，继续以 shared endpoint registry、repository、dispatcher 验证 `/app/**` legacy 路径；API 迁移保持旧业务路径，不把前端接口批量改为 `/api/**`；列表、表单、错误提示等页面接入继续遵守 app skills 的 `api-migration`、`api-error-handling`、`z-paging-integration`、`use-wd-form` 等约束。
 
-第一阶段需要设计以下测试层：
+Phase1 不以统一 `apps/app/server` 的历史 H3 import、handler 风格或 mock dispatcher 写法作为验收 blocker；已经完成的小范围 `nitro/h3` 改写可以保留，后续发现或尚未处理的 H3 写法统一作为下一阶段历史债务任务，只在 `apps/api` 抽取和最终独立单一 Nitro 接口服务整合时集中清理。Phase1 可以记录债务清单和测试输入，但不应把“legacy 写法未统一”解释为快照迁入失败。
 
-| 层级                         | 建议测试位置或工件                                                                 | 验证内容                                                                                                    |
-| ---------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 快照完整性测试               | `apps/app/src/tests/migration/app-snapshot.test.ts` 或根级等价迁移测试             | 源目标文件大小、SHA256、排除目录、嵌套 `.git`、UTF-8 严格解码、`U+FFFD` 和真实 `锟` 乱码检查                |
-| workspace 识别测试           | 根级脚本和迁移报告记录                                                             | `pnpm` workspace 能识别 `apps/app`，且不会破坏 `apps/admin`、`apps/type` 的既有过滤器和构建入口             |
-| app legacy endpoint 契约测试 | 迁入后的 `apps/app/src/tests/nitro-runtime/*.test.ts`                              | app 当前的 endpoint registry、runtime dispatcher、mock adapter 仍能通过，尤其是 fee/payment/report 这批路径 |
-| `apps/api` 双端 adapter 测试 | `apps/api/tests/legacy/*.test.ts`、`apps/api/tests/admin/*.test.ts`                | app legacy adapter 与 admin canonical adapter 调用同一 service/repository，只在 DTO 层分流                  |
-| schema 与类型导出测试        | `apps/type/src/tests/*.test.ts` 或等价类型检查                                     | 共享 schema 按 Trinity Pattern 暴露 Drizzle table、Zod schema、TS type；导出链使用 `export *`               |
-| AI 记忆与 spec 合规清单      | `apps/app/docs/migration/dual-project-spec-compliance-matrix.md` 或等价清单        | 两个项目的 AI 记忆、skills、OpenSpec/spec 规则逐条记录来源、适用范围、冲突状态、canonical 决策和验证方式    |
-| 文档与 mock 同步测试         | `apps/app/docs/migration/markdown-inventory.md`、mock 迁移清单和 endpoint coverage | mock endpoint 变更必须同步文档状态，标记 legacy 路径、规范路径、数据源状态和 admin 功能缺口                 |
+第一阶段需要设计以下测试层；其中涉及 `apps/api` 的内容在 Phase1 只要求形成后续验收输入、测试设计或清单，不要求在 Memorix gate 释放前创建正式 `apps/api` 实现：
+
+| 层级                                 | 建议测试位置或工件                                                                                                                            | 验证内容                                                                                                           |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 快照完整性测试                       | `apps/app/src/tests/migration/app-snapshot.test.ts` 或根级等价迁移测试                                                                        | 源目标文件大小、SHA256、排除目录、嵌套 `.git`、UTF-8 严格解码、`U+FFFD` 和真实 `锟` 乱码检查                       |
+| workspace 识别测试                   | 根级脚本和迁移报告记录                                                                                                                        | `pnpm` workspace 能识别 `apps/app`，且不会破坏 `apps/admin`、`apps/type` 的既有过滤器和构建入口                    |
+| app legacy endpoint 契约测试         | 迁入后的 `apps/app/src/tests/nitro-runtime/*.test.ts`                                                                                         | app 当前的 endpoint registry、runtime dispatcher、mock adapter 仍能通过，尤其是 fee/payment/report 这批路径        |
+| `apps/api` 双端 adapter 后续验收设计 | `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md`、后续 `apps/api/tests/legacy/*.test.ts`、`apps/api/tests/admin/*.test.ts` | 先记录 app legacy adapter 与 admin canonical adapter 应调用同一 service/repository；gate 释放后再在 DTO 层分流测试 |
+| schema 与类型导出测试                | `apps/type/src/tests/*.test.ts` 或等价类型检查                                                                                                | 共享 schema 按 Trinity Pattern 暴露 Drizzle table、Zod schema、TS type；导出链使用 `export *`                      |
+| AI 记忆与 spec 合规清单              | `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单                                                                | 两个项目的 AI 记忆、skills、OpenSpec/spec 规则逐条记录来源、适用范围、冲突状态、canonical 决策和验证方式           |
+| 文档与 mock 同步测试                 | `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md`、mock 迁移清单和 endpoint coverage                                        | mock endpoint 变更必须同步文档状态，标记 legacy 路径、规范路径、数据源状态和 admin 功能缺口                        |
 
 Vitest 设计要求：
 
@@ -400,7 +411,8 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - UTF-8 严格解码失败，或出现新增 `U+FFFD`、真实 `锟` 乱码、未经确认的异常 `\uXXXX` 转义。
 - 根 workspace 无法识别 `apps/app`，或迁入导致 `apps/admin`、`apps/type` 的既有检查出现非预期失败。
 - app 现有 `src/tests/nitro-runtime/**` 中与迁入范围相关的 endpoint registry、dispatcher、mock adapter 测试失败。
-- 新增 `apps/api` 代码存在直接从 `"h3"` 导入、鉴权中间件/插件、私有 schema 事实来源或 app/admin 双数据源分叉。
+- 如 Phase1 仅形成设计和清单，该项不适用；一旦新增 `apps/api` 代码，若存在直接从 `"h3"` 导入、鉴权中间件/插件、私有 schema 事实来源或 app/admin 双数据源分叉，则阻断对应目标态代码验收。
+- 把 legacy `apps/app/server` 既有直接 `"h3"` 导入或 handler 风格当作 Phase1 完成 blocker，或在 Phase1 里强行改写它们而破坏 app 侧快照契约。
 - 未生成 Markdown 清单、AI 记忆合并清单、双项目 spec 合规矩阵和 mock endpoint 迁移清单，却声称第一阶段完成。
 
 双项目 AI 技术沉淀的执行方式：
@@ -413,6 +425,8 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 
 ### 阶段 2：建立 `apps/api` 影子服务
 
+Memorix canonical history retention gate 已按用途拆分：主线程已从旧源目录 `D:\code\ruan-cat\01s-11comm-app` 启动 Memorix MCP session，返回 `Project: 11comm-app (nwt-q/001-Smart-Community)`，并能读取旧源 key memories；project-scoped search 命中 `obs:48`、`obs:53`、`obs:1839`，timeline 可展开。root / `apps/app` 视角也能检索迁移保全链 `obs:2676`、`obs:2677`、`obs:2681`、`obs:2744`。因此该 gate 对 Phase2 继续推进、准备和后续 `apps/api` 迁移不再阻断，标记为 `released-for-phase2-progress` / `pass-with-permanent-source-retention`。但 gate 释放、alias/export/import 完成、retirement review 通过或后续验收完成，都不赋予任何流程处置旧源目录的权限：`D:\code\ruan-cat\01s-11comm-app` 是完整独立 git 项目，必须永久保留，禁止删除、移动、归档、重命名或清空；CLI `status` 在旧源 alias 下显示何种 observations 数量也不得改变该红线。后续新增或迁入 `apps/api` 的 Nitro 代码必须遵守根目录 Nitro 代码规范：H3 API 从 `"nitro/h3"` 导入，不新增鉴权，不引入 JWT、Token 校验或 Neon Auth，统一使用 `@01s-11comm/type` 与 `apps/type/src/business/**/schema.ts` 单一事实来源，并最终整合为独立单一 Nitro 接口服务。
+
 新增最小 Nitro 服务，先不迁移大业务：
 
 - 健康检查
@@ -423,7 +437,7 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - 统一响应基础类型
 - 基础测试
 
-所有 H3 API 必须从 `nitro/h3` 导入。
+所有新增或目标态 H3 API 必须从 `nitro/h3` 导入；从 `apps/app/server` 迁出的 legacy endpoint 也必须在落入 `apps/api` 时完成 import 和 handler 风格统一。
 
 ### 阶段 3：接入 app/admin 到统一 API
 
@@ -477,6 +491,8 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 
 删除旧服务必须放在最后，且要有回滚路径。
 
+阶段 6 的“收口旧服务”只允许讨论 monorepo 内的 `apps/admin/server` 与 `apps/app/server`，不得扩展到旧源目录 `D:\code\ruan-cat\01s-11comm-app`。旧源目录不是待退役服务，不是清理目标，不是归档目标，也不是释放磁盘空间目标；任何自动化代理、子代理、脚本或人工验收流程都不得把它列入删除、移动、归档、重命名或清空计划。
+
 ## 第一阶段禁做清单
 
 以下事项必须记录并严格避免：
@@ -495,7 +511,7 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 12. 不批量重命名数据库字段。
 13. 不在 `apps/api` 内私自定义新的数据库表事实来源。
 14. 不新增 JWT、Token 校验、Neon Auth 或任何接口鉴权。
-15. 不从 `"h3"` 直接导入 H3 函数。
+15. 不在新增或目标态 Nitro 代码中从 `"h3"` 直接导入 H3 函数；Phase1 保留的 legacy `apps/app/server` 历史写法不追溯为本阶段 blocker，后续迁入 `apps/api` 时统一改造。
 16. 不全局安装工具包。
 17. 不让多个编辑子代理同时修改根级 `package.json`、`pnpm-lock.yaml`、`pnpm-workspace.yaml`、`turbo.json`、部署配置。
 18. 不把 app mock/memory repository 当作最终生产数据源。
@@ -518,7 +534,7 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 35. 不在 byte-for-byte 基线验收完成前批量格式化、批量转换行尾或批量重写 Markdown。
 36. 不把 app 的 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 直接合并进根级 AI 记忆文档。
 37. 不把 app 历史记忆中的临时 prompt、旧工具约束、一次性执行策略提升为 monorepo 长期规则。
-38. 不在没有 `ai-memory-merge-inventory.md`、冲突矩阵和复核结论前合并或删除 app AI 记忆内容。
+38. 不在没有 `2026-04-25-phase1-consolidated-report.md`、冲突矩阵和复核结论前合并或删除 app AI 记忆内容。
 39. 不用 app 同名 skill 覆盖主项目 canonical skill；同名 skill 必须先做职责和冲突比对。
 40. 不把只适用于 uni-app、移动端 mock、legacy API 或 app 局部组件迁移的经验升级为全仓库规则。
 41. 不把 `/app/fee*`、`/app/payment*`、`/app/reportFeeMonthStatistics*` 等 app legacy 路径直接作为 admin 的长期规范 API。
@@ -529,14 +545,16 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 46. 不把 Nitro、endpoint registry、repository、adapter 测试放进 jsdom 环境。
 47. 不跳过 app 项目的 `check-trigger.md` 和相关 skills 触发检查来迁移 app 页面、接口或组件。
 48. 不用 app legacy DTO 反向定义 admin 长期 DTO；admin canonical DTO 必须从主项目业务 schema 和后台业务坐标出发。
-49. 不在没有 `dual-project-spec-compliance-matrix.md` 或等价清单前合并两个项目的 AI 记忆、skills 或 spec 规则。
+49. 不在没有 `2026-04-25-phase1-consolidated-report.md` 或等价清单前合并两个项目的 AI 记忆、skills 或 spec 规则。
 50. 不把只验证 app legacy 路径通过的测试结果解释为 admin 后台支撑已经完成。
 51. 不用单一端的 mock 测试替代 app legacy、API adapter、admin canonical、schema/type 四层验收。
-52. 不在没有 Memorix 记忆清单、项目 alias 映射和会话摘要保全前删除或废弃 `D:\code\ruan-cat\01s-11comm-app`。
+52. 不在任何情况下删除、移动、归档、重命名、清空或废弃 `D:\code\ruan-cat\01s-11comm-app`；Memorix 记忆清单、项目 alias 映射和会话摘要保全只能作为只读迁移证据，不能作为处置旧源目录的前置条件。
 53. 不把当前会话没有暴露 Memorix MCP 工具误判为“app 项目没有 Memorix 历史”。
 54. 不直接编辑 `C:\Users\pc\.memorix\data\*.json`、`memorix.db` 或其他 Memorix 内部数据文件来合并记忆。
 55. 不在没有确认 `nwt-q/001-Smart-Community`、`ruan-cat/11comm-app`、旧 rootPath 和新 `apps/app` 路径关系前重建 app 记忆身份。
 56. 不把 app 的 Memorix 记忆全文无筛选写入根级 AI 记忆；必须先分类、脱敏、复核和标注来源。
+57. 不删除、移动、归档、重命名、清空或废弃旧源目录 `D:\code\ruan-cat\01s-11comm-app`；该目录必须永久保留，不受阶段、gate、alias/export/import、retirement review 或用户后续迁移验收结论影响。
+58. 不允许自动化代理、子代理、脚本、人工验收流程、迁移收口流程、清理流程、退休复核流程或释放 gate 流程把旧源目录 `D:\code\ruan-cat\01s-11comm-app` 作为删除、移动、归档、重命名或清空对象。
 
 ## 风险控制
 
@@ -549,9 +567,9 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - 使用文档分层迁移：app 自有 Markdown 经过排除清单过滤后保留在 `apps/app`，再通过清单、重复组和敏感扫描逐步治理，不直接冲击主项目文档体系。
 - 使用字符集验收门禁：先完成源项目文件大小、SHA256、UTF-8 解码、替换字符和行尾基线检查，再复制到 `apps/app`，迁入后做源目标对账，未通过时停止迁移。
 - 使用 AI 记忆分级合并：app 记忆默认保留在 `apps/app`，只有通过价值评估、冲突矩阵和复核的内容才允许摘录到根级记忆或 canonical skill。
-- 使用 Memorix 记忆保全：在删除旧 app 项目前，必须清点 `nwt-q/001-Smart-Community` / `ruan-cat/11comm-app` 相关 observations、sessions、alias 和关键词检索结果，并生成迁移证据。
+- 使用 Memorix 记忆保全：只读清点 `nwt-q/001-Smart-Community` / `ruan-cat/11comm-app` 相关 observations、sessions、alias 和关键词检索结果，并生成迁移证据；旧源目录 `D:\code\ruan-cat\01s-11comm-app` 必须永久保留，不得作为任何保全完成后的删除、退休、归档或清理对象。
 - 使用双端 API 契约矩阵：每批 app legacy endpoint 必须明确 app 旧路径、admin canonical 业务坐标、共享领域服务、数据源状态和缺口归属，避免 admin/app 分叉实现。
-- 使用测试门禁：第一阶段必须保留 app 现有 Vitest 契约测试，并新增迁移完整性、workspace、双项目 spec 合规、`apps/api` adapter、schema/type 等分层测试或清单；任何阻断条件未解除时不得推进到收口旧服务。
+- 使用测试门禁：第一阶段必须保留 app 现有 Vitest 契约测试，并新增迁移完整性、workspace、双项目 spec 合规、`apps/api` adapter 后续验收输入、schema/type 等分层测试设计或清单；任何阻断条件未解除时不得推进到收口旧服务。
 
 ## 验收标准
 
@@ -565,15 +583,15 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - app 项目内有价值的 skills 技能已被保留或记录到迁移清单。
 - app skills 与本项目 skills 的冲突点已记录，但未在第一阶段强行合并。
 - app 项目自有 Markdown 已随快照保留到 `apps/app`，且未覆盖主项目根级 `docs/**`、`.claude/skills/**`、`.agents/skills/**`、`CLAUDE.md`、`AGENTS.md`、`GEMINI.md`。
-- 已生成 `apps/app/docs/migration/markdown-inventory.md` 或等价清单，记录路径、类别、价值等级、重复关系、敏感信息状态和后续处理建议。
+- 已生成 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单，记录路径、类别、价值等级、重复关系、敏感信息状态和后续处理建议。
 - 已确认 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 没有进入 `apps/app`；如其中存在价值内容，只能在清单中记录人工摘录建议。
 - 已生成源项目待迁入文件的大小和 SHA256 基线，并对未有意改写的迁入文件完成源目标 SHA256 对账。
 - 已完成文本文件 UTF-8 严格解码检查，未发现新增 `U+FFFD`、明显 `锟` 乱码或未经确认的异常 `\uXXXX` 转义。
 - 已完成行尾检查；如果存在从 CRLF 到 LF 的有意规范化，必须和 byte-for-byte 快照验收分开记录。
 - 已确认 PowerShell 或终端输出中的显示乱码没有被当成源码内容写回任何 Markdown、Vue、TypeScript 或配置文件。
-- 已识别 `.claude/**`、`.agent/**`、`.agents/**` 内的重复 skills、根级 AI 记忆文档等重复组，并明确第一阶段只记录、不删除、不强行合并。
-- 已生成 `apps/app/docs/migration/ai-memory-merge-inventory.md` 或等价清单，记录每个 AI 记忆来源的目标候选位置、价值等级、适用范围、冲突状态、处理决策和 canonical 指向。
-- 已生成 `apps/app/docs/migration/memorix-memory-inventory.md`、`memorix-project-alias-map.md`、`memorix-session-summary.md` 或等价清单，保全 app 项目 Memorix observations、sessions、alias 和旧路径身份线索。
+- 已识别 `.claude/**`、`.agent/**`、`.agents/**` 内的重复 skills、根级 AI 记忆文档等重复组；app-local OpenSpec/OPSX 副本已按根 canonical 受控删除，其他重复项继续记录、不强行合并。
+- 已生成 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单，记录每个 AI 记忆来源的目标候选位置、价值等级、适用范围、冲突状态、处理决策和 canonical 指向。
+- 已生成 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单，保全 app 项目 Memorix observations、sessions、alias 和旧路径身份线索。
 - 已确认 app 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 只作为 `apps/app` 作用域历史上下文保留，未直接覆盖或拼接进主项目根级 AI 记忆。
 - 已完成 app skills 与主项目 canonical skills 的冲突矩阵；同名或同职责 skill 已标记为保留、摘录、合并、归档或拒绝。
 - 已确认进入根级 AI 记忆的任何摘录都保留来源路径和迁移日期，并且只包含当前 monorepo 长期有效的规则。
@@ -583,9 +601,10 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - 与 Nitro legacy、动态 mock、endpoint coverage 相关的 app 文档已被标记为 `apps/api` 迁移期间需要持续同步的文档。
 - 已将 app 新增的 fee/payment/owe-fee/charge-machine/report/machine-record endpoint 纳入迁移矩阵，并标记每个 endpoint 的 admin canonical 业务坐标或后台功能缺口。
 - 已确认 `src/api/fee.ts`、`server/modules/fee/endpoints.ts`、`src/tests/nitro-runtime/fee-endpoints.test.ts` 这组 app 侧契约会作为 `apps/api` 迁移验收输入，而不是被迁移时丢弃。
-- 已设计并记录第一阶段 Vitest 自测分层，包含快照完整性、workspace 识别、app legacy endpoint、`apps/api` 双端 adapter、schema/type、AI 记忆/spec 合规、mock 文档同步。
+- 已设计并记录第一阶段 Vitest 自测分层，包含快照完整性、workspace 识别、app legacy endpoint、`apps/api` 双端 adapter 后续验收输入、schema/type、AI 记忆/spec 合规、mock 文档同步。
 - 已确认 Nitro/API 相关测试使用 Node 环境，页面组件测试才使用 jsdom 或组件测试环境。
-- 已生成 `apps/app/docs/migration/dual-project-spec-compliance-matrix.md` 或等价清单，记录主项目与 app 项目的 AI 记忆、skills、spec 规则的来源、适用范围、冲突状态、canonical 决策和验证方式。
+- 已确认 legacy `apps/app/server` 已经改成 `nitro/h3` 的少量 import 不需要回滚；后续发现或尚未处理的直接 `"h3"` 导入、handler 风格和 mock dispatcher 写法属于下一阶段历史债务任务，不阻断 Phase1 快照迁入验收。
+- 已生成 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单，记录主项目与 app 项目的 AI 记忆、skills、spec 规则的来源、适用范围、冲突状态、canonical 决策和验证方式。
 - 已记录第一阶段红灯测试、转绿测试和最终 fresh verification 命令；没有验证证据时不得宣称迁移完成。
 
 `apps/api` 阶段完成时必须满足：
@@ -595,6 +614,7 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 - 不依赖 admin Vite 或 app uni 编译。
 - H3 API 均从 `nitro/h3` 导入。
 - 不存在鉴权中间件或鉴权插件。
+- 新增或迁入的接口统一使用 `@01s-11comm/type` 与 `apps/type/src/business/**/schema.ts` 单一事实来源，不在 `apps/api` 内建立私有 schema 体系。
 - 数据库连接通过请求事件和 runtimeConfig 安全读取。
 - 本批 fee/payment/report app legacy 路径在 `apps/api` 中有兼容测试，至少覆盖 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/iot/**`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`、`/app/machine/listMachineRecords`。
 - admin canonical endpoint 与 app legacy endpoint 共享同一领域服务或 repository，不存在两套互相漂移的费用、支付、欠费、报表数据源。
