@@ -17,6 +17,14 @@ import zhCn from "element-plus/es/locale/lang/zh-cn";
 import plusEn from "plus-pro-components/es/locale/lang/en";
 import plusZhCn from "plus-pro-components/es/locale/lang/zh-cn";
 
+type AppInstanceWithStorage = {
+	$storage: {
+		locale?: {
+			locale?: string;
+		};
+	};
+};
+
 export default defineComponent({
 	name: "app",
 	components: {
@@ -26,7 +34,8 @@ export default defineComponent({
 	},
 	computed: {
 		currentLocale() {
-			return this.$storage.locale?.locale === "zh" ? { ...zhCn, ...plusZhCn } : { ...en, ...plusEn };
+			const storage = (this as unknown as AppInstanceWithStorage).$storage;
+			return storage.locale?.locale === "zh" ? { ...zhCn, ...plusZhCn } : { ...en, ...plusEn };
 		},
 	},
 	beforeCreate() {

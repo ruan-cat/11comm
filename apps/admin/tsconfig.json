@@ -73,11 +73,7 @@
 		"types/*.d.ts",
 		"vite.config.ts",
 		// 测试文件
-		"tests/**/*.ts",
-		// vitepress 全部的文件
-		"**/.vitepress/**/*.ts",
-		"**/.vitepress/**/*.mts",
-		"**/.vitepress/**/*.vue"
+		"tests/**/*.ts"
 	],
 	"exclude": ["dist", "**/*.js", "node_modules", "src/**/*.tsx"]
 }

@@ -11,7 +11,7 @@ import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";
 import { VueQueryPlugin, type VueQueryPluginOptions } from "@tanstack/vue-query";
 
-import Table from "@pureadmin/table";
+import Table, { type PureTableInstallOptions } from "@pureadmin/table";
 import PureDescriptions from "@pureadmin/descriptions";
 
 // 引入重置样式
@@ -45,6 +45,10 @@ const vueQueryPluginOptions: VueQueryPluginOptions = {
 			},
 		},
 	},
+};
+
+const pureTableInstallOptions: PureTableInstallOptions = {
+	i18n: i18n as unknown as NonNullable<PureTableInstallOptions["i18n"]>,
 };
 
 // 自定义指令
@@ -88,9 +92,7 @@ getPlatformConfig(app).then(async (config) => {
 		 * @see https://github.com/pure-admin/vue-pure-admin/issues/926
 		 * @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/main.ts#L17-L19
 		 */
-		.use(Table, {
-			i18n,
-		})
+		.use(Table, pureTableInstallOptions)
 		.use(useVxeTable)
 		.use(PureDescriptions)
 		.use(useEcharts)

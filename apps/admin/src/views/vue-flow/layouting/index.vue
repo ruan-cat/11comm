@@ -2,7 +2,7 @@
 import "@vue-flow/core/dist/style.css";
 import "@vue-flow/core/dist/theme-default.css";
 import Icon from "./icon.vue";
-import { nextTick, ref } from "vue";
+import { nextTick, ref, type Ref } from "vue";
 import { useLayout } from "./useLayout";
 import { useShuffle } from "./useShuffle";
 import ProcessNode from "./processNode.vue";
@@ -12,7 +12,7 @@ import { Background } from "@vue-flow/background";
 import { Panel, VueFlow, useVueFlow } from "@vue-flow/core";
 import { initialEdges, initialNodes } from "./initialElements";
 
-const nodes = ref(initialNodes);
+const nodes = ref(initialNodes) as Ref<typeof initialNodes>;
 
 const edges = ref(initialEdges);
 
