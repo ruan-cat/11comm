@@ -20,6 +20,8 @@
 5. 第一阶段以“不拆解 app 业务结构”为主，不立即重写 app 内部结构；“原样保留”不包含 `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**` 等多工具垃圾副本。本次受控清理进一步收敛 app-local OpenSpec/OPSX 冗余副本：只删除 `apps/app/.claude/commands/opsx/**` 与 `apps/app/.claude/skills/openspec-*`，不删除 app 专属非 OpenSpec skills；根 OpenSpec commands/skills 为 canonical。
 6. `apps/type` 继续作为数据库 Schema、Zod Schema、TypeScript 类型的唯一事实来源。
 7. Nitro 接口不新增任何鉴权逻辑，不引入 JWT、Token 校验、Neon Auth。
+8. Phase2 的范围是“最小可运行 `apps/api` 影子服务 + fee/payment/report 首批纵切样板”；它不是只搭建无业务接口的纯基础设施空壳，也不是 repair/resource/parking 等多个模块并行迁移规划。
+9. 纯基础设施壳层加固、CI、部署、完整运行时配置和接入策略归入阶段 3；repair/resource/parking 等多模块扩张归入阶段 4。
 
 ## 目标架构
 
@@ -320,7 +322,7 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 
 #### 收费/缴费 mock 增量接口的双端支撑策略
 
-`D:\code\ruan-cat\01s-11comm-app` 已补充一批费用、欠费、支付、充电桩、报表和开门记录相关 mock endpoint。迁入时不能只把这些 endpoint 当作 app 兼容层处理，必须在 `apps/api` 内同时设计 app legacy adapter 和 admin canonical adapter。
+`D:\code\ruan-cat\01s-11comm-app` 已补充一批费用、欠费、支付、充电桩、报表和开门记录相关 mock endpoint。总设计需要保留这些 endpoint 的迁移线索，但 Phase2 只选择 fee/payment/report 作为首批纵切样板；充电桩、开门记录以及 repair/resource/parking 等多模块扩张只记录为后续波次或后台功能缺口。迁入时不能只把首批 endpoint 当作 app 兼容层处理，必须在 `apps/api` 内同时设计 app legacy adapter 和 admin canonical adapter。
 
 已确认的 app 侧来源包括：
 
@@ -331,13 +333,13 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 
 双端支撑原则：
 
-- `apps/api` 内只保留一套领域服务和数据访问层，例如 fee、payment、owe-fee-callable、charge-machine、fee-report、machine-record；app 和 admin 通过不同 adapter 消费同一服务。
+- `apps/api` 内只保留一套领域服务和数据访问层，Phase2 先围绕 fee、payment、owe-fee-callable、fee-report 建立样板；app 和 admin 通过不同 adapter 消费同一服务。
 - app adapter 必须保留 `/app/**` legacy 路径、GET/POST 兼容方式、旧字段名和旧响应结构，直到 app 前端完成调用迁移。
 - admin adapter 必须按 `apps/admin/src/router/rank/rank-route-keys.ts` 的三级业务路径组织规范接口，返回 `@01s-11comm/type` 定义的 `JsonVO`、`PageDTO` 和统一 DTO。
 - mock/memory repository 只能作为过渡数据源；最终应替换为 `apps/type/src/business/**/schema.ts` 中的 Drizzle schema 和 Neon 数据库。
 - 对当前 admin 没有明确三级业务路径的能力，不允许硬塞到不相关模块；必须记录为后台功能缺口，后续通过 admin 功能扩展规格补齐业务路径、菜单、页面和 CRUD。
 
-本批 endpoint 的迁移矩阵如下：
+Phase2 首批 fee/payment/report endpoint 的迁移矩阵如下：
 
 | app legacy endpoint                                      | 业务含义     | admin canonical 业务坐标                                                                                                                                          | 迁移处理                                                                                |
 | -------------------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -352,18 +354,23 @@ app 项目内存在 `src/api/mock/README.md`、`docs/superpowers/specs/*mock*`�
 | `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | 缴费明细     | `propertyManage.reportManage.paymentDetailsForm`、`propertyManage.reportManage.ownerPaymentDetails`                                                               | 同一支付明细服务输出两套 DTO                                                            |
 | `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | 房间费用明细 | `propertyManage.reportManage.statementExpenses`、`propertyManage.reportManage.arrearsDetailsList`                                                                 | 按房间、费用项、周期聚合，admin 支持筛选导出                                            |
 | `/app/dataReport.queryFeeDataReport`                     | 费用数据报表 | `propertyManage.reportManage.dataStatistics`                                                                                                                      | admin 作为数据统计看板，app 保留轻量指标                                                |
-| `/app/iot/listChargeMachineBmoImpl`                      | 充电桩列表   | admin 当前缺少明确三级业务路径                                                                                                                                    | `apps/api` 先保留 app legacy 能力；admin 页面和业务路径需另行补齐                       |
-| `/app/iot/listChargeMachineOrderBmoImpl`                 | 充电桩订单   | admin 当前缺少明确三级业务路径                                                                                                                                    | 先作为 charge-machine 领域服务保留，后续补后台订单管理                                  |
-| `/app/iot/listChargeMachinePortBmoImpl`                  | 充电桩端口   | admin 当前缺少明确三级业务路径                                                                                                                                    | 先保留 app 兼容，后续补设备/端口后台管理                                                |
-| `/app/machine/listMachineRecords`                        | 开门记录     | admin 当前缺少明确三级业务路径                                                                                                                                    | 不硬塞到费用模块；记录为门禁/设备日志后台缺口                                           |
+
+后续扩展或后台功能缺口候选如下，不进入 Phase2 首批纵切样板：
+
+| app legacy endpoint                      | 业务含义   | admin canonical 业务坐标       | 后续处理                                                     |
+| ---------------------------------------- | ---------- | ------------------------------ | ------------------------------------------------------------ |
+| `/app/iot/listChargeMachineBmoImpl`      | 充电桩列表 | admin 当前缺少明确三级业务路径 | 后续波次保留 app legacy 能力；admin 页面和业务路径需另行补齐 |
+| `/app/iot/listChargeMachineOrderBmoImpl` | 充电桩订单 | admin 当前缺少明确三级业务路径 | 后续波次作为 charge-machine 领域服务保留，并补后台订单管理   |
+| `/app/iot/listChargeMachinePortBmoImpl`  | 充电桩端口 | admin 当前缺少明确三级业务路径 | 后续波次保留 app 兼容，并补设备/端口后台管理                 |
+| `/app/machine/listMachineRecords`        | 开门记录   | admin 当前缺少明确三级业务路径 | 不硬塞到费用模块；记录为门禁/设备日志后台缺口                |
 
 实现形态要求：
 
-1. 在 `apps/api` 内建立 fee 迁移波次，先迁移 app legacy registry 的路由注册和测试，再抽取领域服务。
+1. 在 `apps/api` 内建立 fee/payment/report 首批纵切样板，先迁移 app legacy registry 的路由注册和测试，再抽取领域服务。
 2. 为每个 legacy endpoint 建立 `legacyPath -> canonicalService -> legacyDto` 的 adapter；admin endpoint 则使用 `canonicalPath -> canonicalService -> adminDto`。
-3. app 侧兼容测试必须覆盖上表所有旧路径和方法；admin 侧测试必须覆盖对应 canonical 业务坐标的列表、详情、创建、统计或动作接口。
+3. app 侧兼容测试必须覆盖 Phase2 首批表内旧路径和方法；admin 侧测试必须覆盖对应 canonical 业务坐标的列表、详情、创建、统计或动作接口。
 4. 不允许 admin 和 app 各自维护两套 fee mock 数据；同一业务必须共享 seed、repository 或数据库查询。
-5. 当某个 app endpoint 找不到 admin 业务坐标时，不能阻断 app 迁入，但必须写入 admin 功能缺口清单，并在后续规格中补齐后台页面、菜单、权限和 CRUD。
+5. 当某个 app endpoint 找不到 admin 业务坐标时，不能阻断 app 迁入，但必须写入 admin 功能缺口清单，并在后续规格中补齐后台页面、菜单、权限和 CRUD；这类 endpoint 不纳入 Phase2 首批验收。
 
 #### 第一阶段自测与 Vitest 验收设计
 
@@ -399,7 +406,7 @@ Vitest 设计要求：
 
 fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 
-- app legacy：迁入并保留 `src/tests/nitro-runtime/fee-endpoints.test.ts` 的覆盖，至少验证 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/iot/**`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`、`/app/machine/listMachineRecords`。
+- app legacy：迁入并保留 `src/tests/nitro-runtime/fee-endpoints.test.ts` 的覆盖，Phase2 首批至少验证 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`；`/app/iot/**` 和 `/app/machine/listMachineRecords` 只作为后续缺口或扩展波次输入，不阻断 Phase2。
 - API legacy adapter：在 `apps/api` 中重复验证旧路径、HTTP method、分页字段、写接口成功/失败结构，确保 app 不需要同步大改。
 - admin canonical adapter：围绕费用、欠费、支付、报表等 admin 业务坐标验证列表、详情、创建、统计或动作接口；充电桩和开门记录先进入后台功能缺口测试清单，不伪装为已完成 admin 支撑。
 - 数据源一致性：同一业务测试应能证明 app legacy 和 admin canonical 来自同一 seed、repository、service 或数据库查询，禁止各自维护两套 mock。
@@ -423,39 +430,50 @@ fee/payment/report 第一批 endpoint 的最小 Vitest 覆盖：
 4. 每次实施 `apps/api`、`apps/type`、admin CRUD 时，以主项目 schema/Nitro/admin 规范为准；app legacy 规则只约束旧路径兼容和 DTO 适配，不反向污染 admin 长期 API。
 5. 冲突不能默默合并：必须记录来源文件、冲突描述、采用决策、验证方式和复核人/复核时间。
 
-### 阶段 2：建立 `apps/api` 影子服务
+### 阶段 2：`apps/api` 影子服务与 fee/payment/report 首批纵切样板
 
 Memorix canonical history retention gate 已按用途拆分：主线程已从旧源目录 `D:\code\ruan-cat\01s-11comm-app` 启动 Memorix MCP session，返回 `Project: 11comm-app (nwt-q/001-Smart-Community)`，并能读取旧源 key memories；project-scoped search 命中 `obs:48`、`obs:53`、`obs:1839`，timeline 可展开。root / `apps/app` 视角也能检索迁移保全链 `obs:2676`、`obs:2677`、`obs:2681`、`obs:2744`。因此该 gate 对 Phase2 继续推进、准备和后续 `apps/api` 迁移不再阻断，标记为 `released-for-phase2-progress` / `pass-with-permanent-source-retention`。但 gate 释放、alias/export/import 完成、retirement review 通过或后续验收完成，都不赋予任何流程处置旧源目录的权限：`D:\code\ruan-cat\01s-11comm-app` 是完整独立 git 项目，必须永久保留，禁止删除、移动、归档、重命名或清空；CLI `status` 在旧源 alias 下显示何种 observations 数量也不得改变该红线。后续新增或迁入 `apps/api` 的 Nitro 代码必须遵守根目录 Nitro 代码规范：H3 API 从 `"nitro/h3"` 导入，不新增鉴权，不引入 JWT、Token 校验或 Neon Auth，统一使用 `@01s-11comm/type` 与 `apps/type/src/business/**/schema.ts` 单一事实来源，并最终整合为独立单一 Nitro 接口服务。
 
-新增最小 Nitro 服务，先不迁移大业务：
+第二阶段不是“先搭一个没有业务行为的 `apps/api` 空壳”，而是用最小可运行的影子服务承载 fee/payment/report 首批纵切样板，证明 app legacy endpoint、admin canonical adapter、共享 service/repository 和测试门禁可以在同一个 `apps/api` 内闭环。
 
-- 健康检查
-- CORS
-- runtimeConfig
-- 环境变量读取
-- 数据库连接
-- 统一响应基础类型
-- 基础测试
+第二阶段只做最小必要能力：
 
-所有新增或目标态 H3 API 必须从 `nitro/h3` 导入；从 `apps/app/server` 迁出的 legacy endpoint 也必须在落入 `apps/api` 时完成 import 和 handler 风格统一。
+- 建立 `apps/api` 的最小 Nitro 入口、健康检查、基础错误响应和本批样板所需的测试入口。
+- 迁入 fee/payment/report 首批 app legacy 路径，并保留旧路径、HTTP method、旧字段名和旧响应结构。
+- 为 fee/payment/report 建立 admin canonical adapter，按 `rank-route-keys.ts` 对应业务坐标输出规范 DTO。
+- 抽取首批共享 service/repository 或等价领域层，避免 app 和 admin 各自维护两套费用、支付、欠费、报表数据源。
+- 所有新增或目标态 H3 API 必须从 `nitro/h3` 导入；从 `apps/app/server` 迁出的 legacy endpoint 在落入 `apps/api` 时同步完成 import 和 handler 风格统一。
+- 继续禁止鉴权中间件、鉴权插件、JWT、Token 校验和 Neon Auth。
 
-### 阶段 3：接入 app/admin 到统一 API
+#### 阶段 2 非目标/禁做
 
-通过环境变量或代理配置，让两端可以指向 `apps/api`：
+- 不迁移 repair/resource/parking，也不把这些模块纳入 Phase2 并行规划。
+- 不做多模块并行迁移矩阵，不把充电桩、开门记录或其他后台功能缺口硬塞进 fee/payment/report 样板。
+- 不删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server` 或旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
+- 不做 app/admin 全量切流；两端可以通过测试或局部配置验证样板，但生产接入和批量切换留到后续阶段。
+- 不把 CI、部署、完整 runtimeConfig、环境变量治理、CORS 策略、日志监控和接入策略加固作为 Phase2 完成条件。
+- 不新增任何接口鉴权。
 
-- admin 使用统一 API base URL，不再依赖生产同源 `/api`。
-- app 短期保留 `/app/**`、`/callComponent/**` 旧路径契约。
-- 不在这一阶段大改页面和业务组件。
+### 阶段 3：`apps/api` 基础设施加固与接入准备
 
-### 阶段 4：迁移 app legacy API
+阶段 3 承接 Phase2 刻意不做的纯基础设施壳层和加固工作，为后续迁移波次和双端接入做准备：
 
-把 `apps/app/server/**` 中的 legacy dispatcher、runtime endpoints、memory repository、模块接口逐步迁入 `apps/api`。
+- 补齐 `apps/api` 独立启动、构建、测试、CI 和部署流程。
+- 补齐 `apps/api` 统一请求校验层；如需要直接使用 `zod`，从本阶段随 validation runtime 一起引入，Phase2 不保留未使用的直接 `zod` 依赖。
+- 加固 runtimeConfig、环境变量读取、CORS、日志、错误响应、健康检查和数据库连接方式。
+- 固化 API base URL、代理配置、回退策略和 app/admin 接入策略。
+- 建立 endpoint registry、统一响应基础类型、测试分层和部署验收清单。
+- 保持旧服务并行存在，不在本阶段执行 app/admin 全量切流。
 
-迁移顺序：
+### 阶段 4：扩展 app legacy API 迁移波次
 
-1. 保持旧路径行为一致。
-2. 固定兼容测试。
-3. 优先迁移 fee/payment/report 这一批已补齐 mock 和测试的 endpoint，形成第一条 app/admin 双端支撑样板。
+在 Phase2 样板和 Phase3 基础设施准备完成后，再把 `apps/app/server/**` 中的 legacy dispatcher、runtime endpoints、memory repository 和模块接口按波次迁入 `apps/api`。
+
+扩展顺序：
+
+1. 以 Phase2 的 fee/payment/report 样板为模板，保持旧路径行为一致。
+2. 每个波次先固定兼容测试，再迁移 endpoint、adapter、service/repository 和数据源。
+3. repair/resource/parking 等多模块扩张在本阶段规划和实施，按业务路径拆分，不在 Phase2 并行推进。
 4. 增加 adapter，把 app legacy 字段映射到统一 schema/DTO。
 5. 再替换 mock/memory 数据源为真实数据库。
 
@@ -482,7 +500,16 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 - `delete`
 - 必要的业务 action
 
-### 阶段 6：收口旧服务
+### 阶段 6：接入 app/admin 到统一 API
+
+通过环境变量或代理配置，让两端逐步指向 `apps/api`：
+
+- admin 使用统一 API base URL，不再依赖生产同源 `/api`。
+- app 短期保留 `/app/**`、`/callComponent/**` 旧路径契约。
+- 不一次性大改页面和业务组件，按已验收模块逐步切换。
+- 每批切流都必须保留回退路径和测试证据。
+
+### 阶段 7：收口旧服务
 
 确认 admin/app 都稳定消费 `apps/api` 后，再逐步退役：
 
@@ -491,7 +518,7 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 
 删除旧服务必须放在最后，且要有回滚路径。
 
-阶段 6 的“收口旧服务”只允许讨论 monorepo 内的 `apps/admin/server` 与 `apps/app/server`，不得扩展到旧源目录 `D:\code\ruan-cat\01s-11comm-app`。旧源目录不是待退役服务，不是清理目标，不是归档目标，也不是释放磁盘空间目标；任何自动化代理、子代理、脚本或人工验收流程都不得把它列入删除、移动、归档、重命名或清空计划。
+阶段 7 的“收口旧服务”只允许讨论 monorepo 内的 `apps/admin/server` 与 `apps/app/server`，不得扩展到旧源目录 `D:\code\ruan-cat\01s-11comm-app`。旧源目录不是待退役服务，不是清理目标，不是归档目标，也不是释放磁盘空间目标；任何自动化代理、子代理、脚本或人工验收流程都不得把它列入删除、移动、归档、重命名或清空计划。
 
 ## 第一阶段禁做清单
 
@@ -599,7 +626,7 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 - 已确认旧工具约束、外部客户端专属规则、临时 prompt、个人环境信息没有被提升为当前项目长期规则。
 - 已完成 Markdown 敏感信息扫描，真实凭据已脱敏或阻断迁入，演示账号和示例连接串已标注为示例/历史参考。
 - 与 Nitro legacy、动态 mock、endpoint coverage 相关的 app 文档已被标记为 `apps/api` 迁移期间需要持续同步的文档。
-- 已将 app 新增的 fee/payment/owe-fee/charge-machine/report/machine-record endpoint 纳入迁移矩阵，并标记每个 endpoint 的 admin canonical 业务坐标或后台功能缺口。
+- 已将 app 新增的 fee/payment/owe-fee/report endpoint 纳入 Phase2 首批迁移矩阵；charge-machine、machine-record 等当前缺少后台业务坐标的 endpoint 已标记为后续扩展波次或后台功能缺口。
 - 已确认 `src/api/fee.ts`、`server/modules/fee/endpoints.ts`、`src/tests/nitro-runtime/fee-endpoints.test.ts` 这组 app 侧契约会作为 `apps/api` 迁移验收输入，而不是被迁移时丢弃。
 - 已设计并记录第一阶段 Vitest 自测分层，包含快照完整性、workspace 识别、app legacy endpoint、`apps/api` 双端 adapter 后续验收输入、schema/type、AI 记忆/spec 合规、mock 文档同步。
 - 已对账 app `src/types`：旧源 `D:\code\ruan-cat\01s-11comm-app\src\types` 与目标 `apps/app/src/types` 均跟踪 27 个 `.ts` 类型源文件，缺失 0、额外 0，CRLF 归一化后文本差异 0；`auto-import.d.ts`、`components.d.ts`、`uni-pages.d.ts`、`async-component.d.ts`、`async-import.d.ts` 属于旧源与目标均 ignored 的插件生成声明文件，Phase1 不应手写全局声明补丁替代生成链路。
@@ -608,17 +635,22 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 - 已生成 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单，记录主项目与 app 项目的 AI 记忆、skills、spec 规则的来源、适用范围、冲突状态、canonical 决策和验证方式。
 - 已记录第一阶段红灯测试、转绿测试和最终 fresh verification 命令；没有验证证据时不得宣称迁移完成。
 
-`apps/api` 阶段完成时必须满足：
+第二阶段验收完成时必须满足：
 
 - API 可独立启动和构建。
 - 健康检查可访问。
 - 不依赖 admin Vite 或 app uni 编译。
+- `apps/api` 不是空壳：除健康检查和基础入口外，必须存在 fee/payment/report 首批纵切样板。
 - H3 API 均从 `nitro/h3` 导入。
 - 不存在鉴权中间件或鉴权插件。
 - 新增或迁入的接口统一使用 `@01s-11comm/type` 与 `apps/type/src/business/**/schema.ts` 单一事实来源，不在 `apps/api` 内建立私有 schema 体系。
-- 数据库连接通过请求事件和 runtimeConfig 安全读取。
-- 本批 fee/payment/report app legacy 路径在 `apps/api` 中有兼容测试，至少覆盖 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/iot/**`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`、`/app/machine/listMachineRecords`。
+- 本批 fee/payment/report app legacy 路径在 `apps/api` 中有兼容测试，至少覆盖 `/app/fee.listFee`、`/app/feeApi/listOweFees`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.listOweFeeCallable`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/feeConfig.listFeeConfigs`、三条 `/app/reportFeeMonthStatistics*`、`/app/dataReport.queryFeeDataReport`。
 - admin canonical endpoint 与 app legacy endpoint 共享同一领域服务或 repository，不存在两套互相漂移的费用、支付、欠费、报表数据源。
 - 已有 `apps/api/tests/legacy/**` 与 `apps/api/tests/admin/**` 或等价测试分别覆盖 app legacy DTO 和 admin canonical DTO，且同一业务共享 service/repository 的断言存在。
 - schema 相关改动已在 `apps/type` 完成 Trinity Pattern、导出链和类型检查；如涉及数据库迁移，已同步迁移文件和 Neon 表清单。
-- 对充电桩和开门记录这类当前缺少 admin 三级业务路径的能力，已生成后台功能缺口记录，不阻断 app 兼容迁入，但不得伪装为已完成 admin 支撑。
+- 未迁移 repair/resource/parking，且未把这些模块纳入 Phase2 多模块并行规划。
+- 未删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server` 或旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
+- 未做 app/admin 全量切流；如有局部验证，必须保留回退路径。
+- 充电桩、开门记录、repair/resource/parking 这类后续扩展能力不属于第二阶段验收；如实施过程中发现相关线索，只能作为后续阶段输入记录，不得伪装为第二阶段已完成支撑。
+- CI、部署、完整 runtimeConfig、环境变量治理、CORS 策略、日志监控和接入策略加固属于第三阶段验收，不作为第二阶段完成条件。
+- repair/resource/parking 等多模块扩张属于第四阶段验收，不作为第二阶段完成条件。
