@@ -1,0 +1,287 @@
+# Vue2 到 Vue3 uni-app 路由迁移映射表
+# 总计: 140 个页面文件 (排除副本文件)
+# 生成时间: 2025年
+# 适用范围: examples/gitee-exampl-app/pages/** → src/pages/** 的完整迁移
+
+# ====================================================================
+# 路由映射规则说明
+# ====================================================================
+# 1. 命名规范: 新路径使用 kebab-case，旧路径保持原有格式
+# 2. 模块分组: 按业务功能模块重新组织路径结构
+# 3. 分包策略: 复杂功能使用分包（pages-sub）
+# 4. 一致性: 保持业务逻辑的连续性
+# 5. 扩展性: 为未来新增功能预留空间
+
+# ====================================================================
+# 路由映射表 (按功能模块分组)
+# ====================================================================
+
+route_mappings:
+  # ===== 1. 基础模块 (8个页面) =====
+  basic_modules:
+    examples/gitee-exampl-app/pages/index/index.vue: src/pages/index/index.vue
+    examples/gitee-exampl-app/pages/index/work.vue: src/pages/work-dashboard/index.vue
+    examples/gitee-exampl-app/pages/login/login.vue: src/pages/login/login.vue
+    examples/gitee-exampl-app/pages/my/my.vue: src/pages/profile/index.vue
+    examples/gitee-exampl-app/pages/my/staffDetailAttendance.vue: src/pages/profile/attendance.vue
+    examples/gitee-exampl-app/pages/userInfo/userInfo.vue: src/pages/profile/user-info.vue
+    examples/gitee-exampl-app/pages/changePwd/changePwd.vue: src/pages/profile/change-password.vue
+    examples/gitee-exampl-app/pages/changeCommunity/changeCommunity.vue: src/pages/profile/change-community.vue
+
+  # ===== 2. 通讯录模块 (1个页面) - 已完成迁移 ✅ =====
+  address_modules:
+    examples/gitee-exampl-app/pages/addressList/addressList.vue: src/pages/address/list.vue
+
+  # ===== 3. 维修管理模块 (10个页面) - 已完成迁移 ✅ =====
+  repair_modules:
+    examples/gitee-exampl-app/pages/repairOrder/repairOrder.vue: src/pages-sub/repair/order-list.vue
+    examples/gitee-exampl-app/pages/repairAdd/repairAdd.vue: src/pages-sub/repair/add-order.vue
+    examples/gitee-exampl-app/pages/repairDetail/repairDetail.vue: src/pages-sub/repair/order-detail.vue
+    examples/gitee-exampl-app/pages/repairDispatch/repairDispatch.vue: src/pages-sub/repair/dispatch.vue
+    examples/gitee-exampl-app/pages/repairHandle/repairHandle.vue: src/pages-sub/repair/handle.vue
+    examples/gitee-exampl-app/pages/repairHandle/selectResource.vue: src/pages-sub/repair/select-resource.vue
+    examples/gitee-exampl-app/pages/repairDispatchFinish/repairDispatchFinish.vue: src/pages-sub/repair/finish.vue
+    examples/gitee-exampl-app/pages/repairOrder/repairEnd.vue: src/pages-sub/repair/end-order.vue
+    examples/gitee-exampl-app/pages/repairOrder/replyRepairAppraise.vue: src/pages-sub/repair/appraise-reply.vue
+    examples/gitee-exampl-app/pages/appraiseRepair/appraiseRepair.vue: src/pages-sub/repair/appraise.vue
+
+  # ===== 4. 投诉管理模块 (7个页面) =====
+  complaint_modules:
+    examples/gitee-exampl-app/pages/complaintList/complaintList.vue: src/pages-sub/complaint/list.vue
+    examples/gitee-exampl-app/pages/complaintOrder/complaintOrder.vue: src/pages-sub/complaint/order.vue
+    examples/gitee-exampl-app/pages/complaintOrderDetail/complaintOrderDetail.vue: src/pages-sub/complaint/detail.vue
+    examples/gitee-exampl-app/pages/complaintHandle/complaintHandle.vue: src/pages-sub/complaint/handle.vue
+    examples/gitee-exampl-app/pages/complaintFinish/complaintFinish.vue: src/pages-sub/complaint/finish.vue
+    examples/gitee-exampl-app/pages/auditComplaintOrder/auditComplaintOrder.vue: src/pages-sub/complaint/audit.vue
+    examples/gitee-exampl-app/pages/complaintOrderDetail/replyComplainAppraise.vue: src/pages-sub/complaint/appraise-reply.vue
+
+  # ===== 5. 巡检管理模块 (8个页面) =====
+  inspection_modules:
+    examples/gitee-exampl-app/pages/inspection/inspection.vue: src/pages-sub/inspection/task-list.vue
+    examples/gitee-exampl-app/pages/inspection/inspectionTodayReport.vue: src/pages-sub/inspection/today-report.vue
+    examples/gitee-exampl-app/pages/inspection/staffNoInspection.vue: src/pages-sub/inspection/staff-no-task.vue
+    examples/gitee-exampl-app/pages/excuteInspection/excuteInspection.vue: src/pages-sub/inspection/execute.vue
+    examples/gitee-exampl-app/pages/excuteOneInspection/excuteOneInspection.vue: src/pages-sub/inspection/execute-single.vue
+    examples/gitee-exampl-app/pages/excuteOneQrCodeInspection/excuteOneQrCodeInspection.vue: src/pages-sub/inspection/execute-qrcode.vue
+    examples/gitee-exampl-app/pages/inspectionTransfer/inspectionTransfer.vue: src/pages-sub/inspection/transfer.vue
+    examples/gitee-exampl-app/pages/inspectionReexamine/inspectionReexamine.vue: src/pages-sub/inspection/reexamine.vue
+
+  # ===== 6. 资源采购模块 (29个页面) =====
+  resource_modules:
+    # 采购申请流程 (5个)
+    examples/gitee-exampl-app/pages/purchaseRequest/purchaseRequest.vue: src/pages-sub/purchase/request.vue
+    examples/gitee-exampl-app/pages/purchaseReview/purchaseReview.vue: src/pages-sub/purchase/review.vue
+    examples/gitee-exampl-app/pages/purchaseList/purchaseList.vue: src/pages-sub/purchase/list.vue
+    examples/gitee-exampl-app/pages/purchasingSchedule/purchasingSchedule.vue: src/pages-sub/purchase/schedule.vue
+    examples/gitee-exampl-app/pages/urgentPurchaseApplyStep/urgentPurchaseApplyStep.vue: src/pages-sub/purchase/urgent-apply.vue
+
+    # 资源管理 (5个)
+    examples/gitee-exampl-app/pages/resource/addPurchaseApply.vue: src/pages-sub/resource/add-purchase-apply.vue
+    examples/gitee-exampl-app/pages/resource/editPurchaseApply.vue: src/pages-sub/resource/edit-purchase-apply.vue
+    examples/gitee-exampl-app/pages/resource/purchaseApplyDetail.vue: src/pages-sub/resource/purchase-apply-detail.vue
+    examples/gitee-exampl-app/pages/resource/purchaseApplyManage.vue: src/pages-sub/resource/purchase-apply-manage.vue
+    examples/gitee-exampl-app/pages/resource/purchaseApplyAuditOrders.vue: src/pages-sub/resource/purchase-apply-audit.vue
+
+    # 物品管理 (5个)
+    examples/gitee-exampl-app/pages/resource/addItemOut.vue: src/pages-sub/resource/add-item-out.vue
+    examples/gitee-exampl-app/pages/resource/itemEnterDo.vue: src/pages-sub/resource/item-enter.vue
+    examples/gitee-exampl-app/pages/resource/itemOutDo.vue: src/pages-sub/resource/item-out.vue
+    examples/gitee-exampl-app/pages/resource/itemOutManage.vue: src/pages-sub/resource/item-out-manage.vue
+    examples/gitee-exampl-app/pages/resource/itemOutAuditOrders.vue: src/pages-sub/resource/item-out-audit.vue
+
+    # 调拨管理 (5个)
+    examples/gitee-exampl-app/pages/resource/allocationStorehouseApply.vue: src/pages-sub/resource/allocation-apply.vue
+    examples/gitee-exampl-app/pages/resource/allocationStorehouseApplyDetail.vue: src/pages-sub/resource/allocation-detail.vue
+    examples/gitee-exampl-app/pages/resource/allocationStorehouseManage.vue: src/pages-sub/resource/allocation-manage.vue
+    examples/gitee-exampl-app/pages/resource/allocationStorehouseAuditOrders.vue: src/pages-sub/resource/allocation-audit.vue
+    examples/gitee-exampl-app/pages/resource/allocationEnterDo.vue: src/pages-sub/resource/allocation-enter.vue
+
+    # 库存管理 (4个)
+    examples/gitee-exampl-app/pages/resourceStoreManage/resourceStoreManage.vue: src/pages-sub/resource/store-manage.vue
+    examples/gitee-exampl-app/pages/resourceStoreReturn/resourceStoreReturn.vue: src/pages-sub/resource/store-return.vue
+    examples/gitee-exampl-app/pages/resourceStoreScrap/resourceStoreScrap.vue: src/pages-sub/resource/store-scrap.vue
+    examples/gitee-exampl-app/pages/resourceStoreTransfer/resourceStoreTransfer.vue: src/pages-sub/resource/store-transfer.vue
+
+    # 出入库管理 (1个)
+    examples/gitee-exampl-app/pages/pOutOfStorageRequest/pOutOfStorageRequest.vue: src/pages-sub/resource/out-storage-request.vue
+
+  # ===== 7. 费用管理模块 (14个页面) =====
+  fee_modules:
+    # 费用管理 (6个)
+    examples/gitee-exampl-app/pages/fee/createFee.vue: src/pages-sub/fee/create.vue
+    examples/gitee-exampl-app/pages/fee/oweFeeCallable.vue: src/pages-sub/fee/owe-callable.vue
+    examples/gitee-exampl-app/pages/fee/writeOweFeeCallable.vue: src/pages-sub/fee/write-owe-callable.vue
+    examples/gitee-exampl-app/pages/fee/roomPayFee.vue: src/pages-sub/fee/room-pay.vue
+    examples/gitee-exampl-app/pages/fee/payFeeByQrCode.vue: src/pages-sub/fee/pay-qrcode.vue
+    examples/gitee-exampl-app/pages/feeDetail/feeDetail.vue: src/pages-sub/fee/detail.vue
+
+    # 充值管理 (2个)
+    examples/gitee-exampl-app/pages/charge/charge.vue: src/pages-sub/fee/charge.vue
+    examples/gitee-exampl-app/pages/charge/chargeDetail.vue: src/pages-sub/fee/charge-detail.vue
+
+    # 报表统计 (6个)
+    examples/gitee-exampl-app/pages/report/reportFeeSummary.vue: src/pages-sub/report/fee-summary.vue
+    examples/gitee-exampl-app/pages/report/reportPayFeeDetail.vue: src/pages-sub/report/pay-fee-detail.vue
+    examples/gitee-exampl-app/pages/report/reportRoomFee.vue: src/pages-sub/report/room-fee.vue
+    examples/gitee-exampl-app/pages/report/dataReport.vue: src/pages-sub/report/data-report.vue
+    examples/gitee-exampl-app/pages/report/chargeMachineOrder.vue: src/pages-sub/report/charge-machine-order.vue
+    examples/gitee-exampl-app/pages/report/openDoorLog.vue: src/pages-sub/report/open-door-log.vue
+
+  # ===== 8. 房屋管理模块 (16个页面) =====
+  property_modules:
+    # 房屋基础管理 (4个)
+    examples/gitee-exampl-app/pages/roomList/roomList.vue: src/pages-sub/property/room-list.vue
+    examples/gitee-exampl-app/pages/roomDetail/roomDetail.vue: src/pages-sub/property/room-detail.vue
+    examples/gitee-exampl-app/pages/floorList/floorList.vue: src/pages-sub/property/floor-list.vue
+    examples/gitee-exampl-app/pages/unitList/unitList.vue: src/pages-sub/property/unit-list.vue
+
+    # 业主管理 (3个)
+    examples/gitee-exampl-app/pages/owner/owner.vue: src/pages-sub/property/owner-list.vue
+    examples/gitee-exampl-app/pages/owner/addOwner.vue: src/pages-sub/property/add-owner.vue
+    examples/gitee-exampl-app/pages/owner/editOwner.vue: src/pages-sub/property/edit-owner.vue
+
+    # 房屋申请 (5个) ✅ 已完成迁移
+    examples/gitee-exampl-app/pages/applyRoom/applyRoom.vue: src/pages-sub/property/apply-room.vue
+    examples/gitee-exampl-app/pages/applyRoomDetail/applyRoomDetail.vue: src/pages-sub/property/apply-room-detail.vue
+    examples/gitee-exampl-app/pages/applyRoomRecord/applyRoomRecord.vue: src/pages-sub/property/apply-room-record.vue
+    examples/gitee-exampl-app/pages/applyRoomRecordDetail/applyRoomRecordDetail.vue: src/pages-sub/property/apply-room-record-detail.vue
+    examples/gitee-exampl-app/pages/applyRoomRecordHandle/applyRoomRecordHandle.vue: src/pages-sub/property/apply-room-record-handle.vue
+
+    # 装修管理 (5个)
+    examples/gitee-exampl-app/pages/roomRenovation/roomRenovation.vue: src/pages-sub/property/renovation.vue
+    examples/gitee-exampl-app/pages/roomRenovationDetail/roomRenovationDetail.vue: src/pages-sub/property/renovation-detail.vue
+    examples/gitee-exampl-app/pages/roomRenovationRecord/roomRenovationRecord.vue: src/pages-sub/property/renovation-record.vue
+    examples/gitee-exampl-app/pages/roomRenovationRecordDetail/roomRenovationRecordDetail.vue: src/pages-sub/property/renovation-record-detail.vue
+    examples/gitee-exampl-app/pages/roomRenovationRecordHandle/roomRenovationRecordHandle.vue: src/pages-sub/property/renovation-record-handle.vue
+
+  # ===== 8.1. 选择器模块 (3个页面) - 已完成迁移 ✅ =====
+  selector_modules:
+    examples/gitee-exampl-app/pages/selectFloor/selectFloor.vue: src/pages-sub/selector/select-floor.vue
+    examples/gitee-exampl-app/pages/selectUnit/selectUnit.vue: src/pages-sub/selector/select-unit.vue
+    examples/gitee-exampl-app/pages/selectRoom/selectRoom.vue: src/pages-sub/selector/select-room.vue
+
+  # ===== 9. OA工作流模块 (8个页面) =====
+  oa_modules:
+    examples/gitee-exampl-app/pages/oaWorkflow/oaWorkflow.vue: src/pages-sub/oa/workflow.vue
+    examples/gitee-exampl-app/pages/newOaWorkflowForm/newOaWorkflowForm.vue: src/pages-sub/oa/workflow-form.vue
+    examples/gitee-exampl-app/pages/newOaWorkflowFormEdit/newOaWorkflowFormEdit.vue: src/pages-sub/oa/workflow-form-edit.vue
+    examples/gitee-exampl-app/pages/newOaWorkflowUndo/newOaWorkflowUndo.vue: src/pages-sub/oa/workflow-todo.vue
+    examples/gitee-exampl-app/pages/newOaWorkflowUndoAudit/newOaWorkflowUndoAudit.vue: src/pages-sub/oa/workflow-audit.vue
+    examples/gitee-exampl-app/pages/newOaWorkflowFinish/newOaWorkflowFinish.vue: src/pages-sub/oa/workflow-finish.vue
+    examples/gitee-exampl-app/pages/newOaWorkflowDetail/newOaWorkflowDetail.vue: src/pages-sub/oa/workflow-detail.vue
+    examples/gitee-exampl-app/pages/audit/undoAudit.vue: src/pages-sub/oa/audit-todo.vue
+
+  # ===== 10. 公告管理模块 (4个页面) =====
+  notice_modules:
+    examples/gitee-exampl-app/pages/notice/notice.vue: src/pages/notice/index.vue
+    examples/gitee-exampl-app/pages/notice/detail/noticeDetail.vue: src/pages/notice/detail.vue
+    examples/gitee-exampl-app/pages/activityes/activityes.vue: src/pages/activity/index.vue
+    examples/gitee-exampl-app/pages/activityDetail/activityDetail.vue: src/pages/activity/detail.vue
+
+  # ===== 11. 车辆管理模块 (5个页面) =====
+  parking_modules:
+    examples/gitee-exampl-app/pages/car/ownerCar.vue: src/pages-sub/parking/owner-car.vue
+    examples/gitee-exampl-app/pages/car/carInParkingArea.vue: src/pages-sub/parking/car-in.vue
+    examples/gitee-exampl-app/pages/car/carOutParkingArea.vue: src/pages-sub/parking/car-out.vue
+    examples/gitee-exampl-app/pages/car/barrierGate.vue: src/pages-sub/parking/barrier-gate.vue
+    examples/gitee-exampl-app/pages/car/barrierVideo.vue: src/pages-sub/parking/barrier-video.vue
+
+  # ===== 12. 工作管理模块 (8个页面) =====
+  work_modules:
+    examples/gitee-exampl-app/pages/work/workTask.vue: src/pages-sub/work/task-list.vue
+    examples/gitee-exampl-app/pages/work/startWork.vue: src/pages-sub/work/start-work.vue
+    examples/gitee-exampl-app/pages/work/doWork.vue: src/pages-sub/work/do-work.vue
+    examples/gitee-exampl-app/pages/work/workDetail.vue: src/pages-sub/work/work-detail.vue
+    examples/gitee-exampl-app/pages/work/editWrok.vue: src/pages-sub/work/edit-work.vue
+    examples/gitee-exampl-app/pages/work/copyWork.vue: src/pages-sub/work/copy-work.vue
+    examples/gitee-exampl-app/pages/work/doCopyWork.vue: src/pages-sub/work/do-copy-work.vue
+    examples/gitee-exampl-app/pages/work/doWorkAudit.vue: src/pages-sub/work/audit-work.vue
+
+  # ===== 13. 其他功能模块 (30个页面) =====
+  other_modules:
+    # 预约管理 (2个)
+    examples/gitee-exampl-app/pages/appointment/appointment.vue: src/pages-sub/appointment/index.vue
+    examples/gitee-exampl-app/pages/appointment/hou_one.vue: src/pages-sub/appointment/queue.vue
+
+    # 抄表管理 (6个)
+    examples/gitee-exampl-app/pages/meter/meterReading.vue: src/pages-sub/meter/reading.vue
+    examples/gitee-exampl-app/pages/meter/addmeter.vue: src/pages-sub/meter/add-meter.vue
+    examples/gitee-exampl-app/pages/meter/qrcodeMeter.vue: src/pages-sub/meter/qrcode-meter.vue
+    examples/gitee-exampl-app/pages/meter/shareMeter.vue: src/pages-sub/meter/share-meter.vue
+    examples/gitee-exampl-app/pages/meter/addShareReading.vue: src/pages-sub/meter/add-share-reading.vue
+    examples/gitee-exampl-app/pages/meter/auditShareReading.vue: src/pages-sub/meter/audit-share-reading.vue
+
+    # 优惠券管理 (3个)
+    examples/gitee-exampl-app/pages/coupon/writeOffCoupon.vue: src/pages-sub/coupon/write-off-coupon.vue
+    examples/gitee-exampl-app/pages/coupon/writeOffIntegral.vue: src/pages-sub/coupon/write-off-integral.vue
+    examples/gitee-exampl-app/pages/coupon/wirteOffReserve.vue: src/pages-sub/coupon/write-off-reserve.vue
+
+    # 物品发布 (2个)
+    examples/gitee-exampl-app/pages/itemRelease/itemRelease.vue: src/pages-sub/item/release.vue
+    examples/gitee-exampl-app/pages/itemRelease/itemReleaseDetail.vue: src/pages-sub/item/release-detail.vue
+
+    # 维护管理 (4个)
+    examples/gitee-exampl-app/pages/maintainance/maintainance.vue: src/pages-sub/maintenance/task-list.vue
+    examples/gitee-exampl-app/pages/maintainance/excuteMaintainance.vue: src/pages-sub/maintenance/execute.vue
+    examples/gitee-exampl-app/pages/maintainance/excuteOneMaintainance.vue: src/pages-sub/maintenance/execute-single.vue
+    examples/gitee-exampl-app/pages/maintainance/maintainanceTransfer.vue: src/pages-sub/maintenance/transfer.vue
+
+    # 视频管理 (2个)
+    examples/gitee-exampl-app/pages/video/videoList.vue: src/pages-sub/video/list.vue
+    examples/gitee-exampl-app/pages/video/playVideo.vue: src/pages-sub/video/play.vue
+
+    # 访客管理 (2个)
+    examples/gitee-exampl-app/pages/visit/visit.vue: src/pages-sub/visit/index.vue
+    examples/gitee-exampl-app/pages/visit/visitDetail.vue: src/pages-sub/visit/detail.vue
+
+    # 通用页面 (1个)
+    examples/gitee-exampl-app/pages/hcWebView/hcWebView.vue: src/pages/webview/index.vue
+
+# ====================================================================
+# 路由迁移统计信息
+# ====================================================================
+migration_stats:
+  total_pages: 140
+  modules_count: 14
+  pages_sub_count: 123 # 使用分包的页面数量
+  main_pages_count: 17 # 主包页面数量
+
+  module_breakdown:
+    basic_modules: 8
+    address_modules: 1
+    repair_modules: 10
+    complaint_modules: 7
+    inspection_modules: 8
+    resource_modules: 29
+    fee_modules: 14
+    property_modules: 16
+    selector_modules: 3
+    oa_modules: 8
+    notice_modules: 4
+    parking_modules: 5
+    work_modules: 8
+    other_modules: 30
+
+# ====================================================================
+# 路由迁移使用说明
+# ====================================================================
+usage_instructions: |
+  1. 使用 route-migration 子代理时，提供旧路径可自动查找对应的新路径
+  2. 所有路径映射已按功能模块分组，便于批量迁移
+  3. 新路径遵循 kebab-case 命名规范
+  4. 复杂功能模块使用 pages-sub 分包策略
+  5. 保持了业务逻辑的连续性和扩展性
+
+migration_priority: |
+  高优先级: basic_modules, address_modules, repair_modules, complaint_modules, selector_modules
+  中优先级: inspection_modules, resource_modules, oa_modules, notice_modules
+  低优先级: fee_modules, property_modules, parking_modules, work_modules, other_modules
+
+# ====================================================================
+# 版本信息
+# ====================================================================
+version: 1.0.0
+generated_date: 2025-01-XX
+last_updated: 2025-01-XX
+author: Claude Code AI Assistant
+description: 完整的 Vue2 到 Vue3 uni-app 项目路由迁移映射表

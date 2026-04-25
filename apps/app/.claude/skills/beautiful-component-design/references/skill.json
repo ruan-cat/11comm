@@ -1,0 +1,41 @@
+{
+  "name": "beautiful-component-design",
+  "description": "美观组件设计规范 - 提供文本与图标对齐、选择器组件美化、响应式友好、视觉美观的组件编写最佳实践。适用于 uni-app + Vue3 + wot-design-uni 项目",
+  "type": "project",
+  "color": "pink",
+  "trigger": {
+    "keywords": [
+      "美观组件",
+      "图标对齐",
+      "文本对齐",
+      "响应式设计",
+      "icon text align",
+      "组件样式",
+      "wot-design-uni 样式覆盖",
+      "时间轴组件",
+      "信息展示卡片",
+      "选择器对齐",
+      "picker 样式",
+      "表单对齐",
+      "标签宽度",
+      "label-width",
+      "title-width"
+    ]
+  },
+  "tags": [
+    "design",
+    "ui",
+    "component",
+    "responsive",
+    "alignment",
+    "icon",
+    "text",
+    "wot-design-uni",
+    "unocss",
+    "picker",
+    "form"
+  ],
+  "version": "1.1.0",
+  "createdAt": "2025-12-21",
+  "updatedAt": "2025-12-26"
+}

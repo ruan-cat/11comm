@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026-03-24 首页业务门户化 H5 设计稿</title>
+    <style>
+      :root {
+        --page-bg: linear-gradient(180deg, #f4f8ff 0%, #eaf1ff 100%);
+        --hero-bg: linear-gradient(135deg, #2363f6 0%, #7dbbff 100%);
+        --panel-bg: rgba(255, 255, 255, 0.88);
+        --panel-border: rgba(18, 38, 74, 0.06);
+        --panel-shadow: 0 18px 40px rgba(35, 99, 246, 0.12);
+        --card-shadow: 0 12px 30px rgba(18, 38, 74, 0.08);
+        --text-main: #142033;
+        --text-sub: #708098;
+        --accent: #2b69f7;
+        --accent-soft: rgba(43, 105, 247, 0.12);
+        --line-soft: rgba(255, 255, 255, 0.22);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: linear-gradient(180deg, #eef4ff 0%, #e6efff 100%);
+        color: var(--text-main);
+        font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      }
+
+      body {
+        padding: 28px 16px;
+      }
+
+      .preview-shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(320px, 420px) minmax(280px, 1fr);
+        gap: 28px;
+        align-items: start;
+      }
+
+      .phone-frame {
+        width: 100%;
+        border-radius: 34px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.48);
+        box-shadow:
+          0 24px 60px rgba(37, 99, 235, 0.16),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.58);
+        backdrop-filter: blur(8px);
+      }
+
+      .app {
+        min-height: 860px;
+        border-radius: 28px;
+        overflow: hidden;
+        background: var(--page-bg);
+        box-shadow: inset 0 0 0 1px rgba(18, 38, 74, 0.06);
+        position: relative;
+        padding-bottom: 108px;
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 18px 18px 40px;
+        background: var(--hero-bg);
+        color: #fff;
+      }
+
+      .hero::before,
+      .hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .hero::before {
+        width: 112px;
+        height: 112px;
+        top: -24px;
+        right: -16px;
+      }
+
+      .hero::after {
+        width: 72px;
+        height: 72px;
+        top: 68px;
+        right: 36px;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid var(--line-soft);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-title {
+        position: relative;
+        z-index: 1;
+        margin: 18px 0 8px;
+        font-size: 34px;
+        line-height: 1.12;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+
+      .hero-subtitle {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.86);
+      }
+
+      .notice-bar {
+        position: relative;
+        z-index: 1;
+        margin-top: 18px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid var(--line-soft);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .notice-dot {
+        width: 8px;
+        height: 8px;
+        margin-top: 7px;
+        border-radius: 999px;
+        background: #fff;
+        flex: none;
+      }
+
+      .notice-text {
+        font-size: 13px;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.94);
+      }
+
+      .main {
+        margin-top: -16px;
+        padding: 0 14px 18px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .secondary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .card {
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        box-shadow: var(--card-shadow);
+        padding: 14px 14px 15px;
+      }
+
+      .card.featured {
+        min-height: 148px;
+      }
+
+      .card.secondary {
+        min-height: 112px;
+        background: rgba(255, 255, 255, 0.88);
+      }
+
+      .card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .icon-wrap {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        background: linear-gradient(135deg, #e0ecff 0%, #f1f6ff 100%);
+        box-shadow: inset 0 0 0 1px rgba(43, 105, 247, 0.08);
+      }
+
+      .card-badge {
+        padding: 4px 9px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .card-title {
+        margin: 0 0 6px;
+        font-size: 15px;
+        line-height: 1.35;
+        font-weight: 800;
+        color: var(--text-main);
+      }
+
+      .card-description {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--text-sub);
+      }
+
+      .section-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 12px;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text-main);
+      }
+
+      .section-title::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 5px rgba(43, 105, 247, 0.12);
+      }
+
+      .catalog-stack {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .catalog-section {
+        width: 100%;
+        border-radius: 24px;
+        padding: 15px 15px 16px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        box-shadow: var(--card-shadow);
+      }
+
+      .catalog-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .catalog-title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .catalog-rail {
+        width: 4px;
+        height: 22px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #2b69f7 0%, #88bbff 100%);
+        box-shadow: 0 0 0 6px rgba(43, 105, 247, 0.12);
+        flex: none;
+      }
+
+      .catalog-name {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.2;
+        font-weight: 900;
+        color: var(--text-main);
+      }
+
+      .catalog-tag {
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: rgba(43, 105, 247, 0.08);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .catalog-item {
+        min-height: 104px;
+        padding: 14px 13px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #f8fbff 0%, #f1f6ff 100%);
+        border: 1px solid rgba(43, 105, 247, 0.08);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .catalog-item.wide {
+        grid-column: 1 / -1;
+        min-height: 88px;
+      }
+
+      .catalog-item-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .catalog-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        color: var(--accent);
+        font-size: 15px;
+        font-weight: 800;
+        box-shadow: inset 0 0 0 1px rgba(43, 105, 247, 0.08);
+      }
+
+      .catalog-item-title {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.35;
+        font-weight: 800;
+        color: var(--text-main);
+      }
+
+      .catalog-item-desc {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.55;
+        color: var(--text-sub);
+      }
+
+      .tabbar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.98);
+        border-top: 1px solid rgba(18, 38, 74, 0.08);
+      }
+
+      .tab-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 4px 0;
+        color: #6f7785;
+        font-size: 12px;
+      }
+
+      .tab-item.active {
+        color: var(--accent);
+      }
+
+      .tab-icon {
+        width: auto;
+        height: auto;
+        display: block;
+        font-size: 22px;
+        line-height: 1;
+        background: transparent;
+      }
+
+      .notes {
+        display: grid;
+        gap: 14px;
+      }
+
+      .note-panel {
+        border-radius: 24px;
+        padding: 18px 20px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(18, 38, 74, 0.06);
+        box-shadow: var(--panel-shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .note-title {
+        margin: 0 0 10px;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text-main);
+      }
+
+      .note-text {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.75;
+        color: #4f6078;
+      }
+
+      .note-list {
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .note-list li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 13px;
+        line-height: 1.65;
+        color: #4f6078;
+      }
+
+      .note-list li::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        margin-top: 7px;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 5px rgba(43, 105, 247, 0.12);
+        flex: none;
+      }
+
+      .spec-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(43, 105, 247, 0.08);
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      @media (max-width: 980px) {
+        .preview-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .phone-frame {
+          max-width: 420px;
+          margin: 0 auto;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 12px;
+        }
+
+        .featured-grid,
+        .secondary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-shell">
+      <div class="phone-frame">
+        <div class="app">
+          <section class="hero">
+            <div class="hero-badge">智慧社区工作门户</div>
+            <h1 class="hero-title">业务入口首页</h1>
+            <p class="hero-subtitle">
+              弱化个人欢迎语，强化今日业务语境与主任务入口。首页回到“快速发起业务”的职责，不依赖摘要统计接口。
+            </p>
+            <div class="notice-bar">
+              <div class="notice-dot"></div>
+              <div class="notice-text">
+                今日重点：优先处理投诉与报修事项。巡检打卡与设备保养继续作为辅助入口；公告文案前期可先用静态运营文案占位。
+              </div>
+            </div>
+          </section>
+
+          <main class="main">
+            <section class="featured-grid">
+              <article class="card featured">
+                <div class="card-head">
+                  <div class="icon-wrap">投</div>
+                  <div class="card-badge">高频</div>
+                </div>
+                <h2 class="card-title">投诉待办</h2>
+                <p class="card-description">首屏大卡直达，减少进入高频业务的点击层级，让首页第一屏更聚焦“快速进入”。</p>
+              </article>
+
+              <article class="card featured">
+                <div class="card-head">
+                  <div class="icon-wrap">修</div>
+                  <div class="card-badge">高频</div>
+                </div>
+                <h2 class="card-title">报修待办</h2>
+                <p class="card-description">
+                  与投诉并列，形成首页第一视觉重心。高频业务双卡并列，比旧式宫格更现代也更清晰。
+                </p>
+              </article>
+            </section>
+
+            <section>
+              <h3 class="section-title">辅助入口</h3>
+              <div class="secondary-grid">
+                <article class="card secondary">
+                  <div class="card-head">
+                    <div class="icon-wrap">巡</div>
+                    <div class="card-badge">常用</div>
+                  </div>
+                  <h4 class="card-title">巡检打卡</h4>
+                  <p class="card-description">保持可见，但视觉权重低于投诉与报修双主入口。</p>
+                </article>
+
+                <article class="card secondary">
+                  <div class="card-head">
+                    <div class="icon-wrap">养</div>
+                    <div class="card-badge">常用</div>
+                  </div>
+                  <h4 class="card-title">设备保养</h4>
+                  <p class="card-description">作为日常业务补充，不与高频入口争夺焦点。</p>
+                </article>
+              </div>
+            </section>
+
+            <section>
+              <h3 class="section-title">业务面板</h3>
+              <div class="catalog-stack">
+                <article class="catalog-section">
+                  <div class="catalog-head">
+                    <div class="catalog-title-group">
+                      <div class="catalog-rail"></div>
+                      <h4 class="catalog-name">维修报修</h4>
+                    </div>
+                    <div class="catalog-tag">主链路</div>
+                  </div>
+                  <div class="catalog-grid">
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">池</div>
+                        <h5 class="catalog-item-title">维修工单池</h5>
+                      </div>
+                      <p class="catalog-item-desc">承接报修流转前后的总入口，适合做第一批落眼的业务栏目。</p>
+                    </div>
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">待</div>
+                        <h5 class="catalog-item-title">维修待办</h5>
+                      </div>
+                      <p class="catalog-item-desc">处理分派、跟进与反馈动作，和顶部报修主入口前后呼应。</p>
+                    </div>
+                    <div class="catalog-item wide">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">结</div>
+                        <h5 class="catalog-item-title">维修已办</h5>
+                      </div>
+                      <p class="catalog-item-desc">回看完成记录与闭环结果，放成横向整块后更稳，不会被挤成细条。</p>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="catalog-section">
+                  <div class="catalog-head">
+                    <div class="catalog-title-group">
+                      <div class="catalog-rail"></div>
+                      <h4 class="catalog-name">工单业务</h4>
+                    </div>
+                    <div class="catalog-tag">流程</div>
+                  </div>
+                  <div class="catalog-grid">
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">发</div>
+                        <h5 class="catalog-item-title">发工作单</h5>
+                      </div>
+                      <p class="catalog-item-desc">保留新建派发入口，卡片化后比旧字形入口更有块面感。</p>
+                    </div>
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">办</div>
+                        <h5 class="catalog-item-title">办工作单</h5>
+                      </div>
+                      <p class="catalog-item-desc">承接执行中的流程操作，不和上方主入口抢焦点。</p>
+                    </div>
+                    <div class="catalog-item wide">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">抄</div>
+                        <h5 class="catalog-item-title">抄送工作单</h5>
+                      </div>
+                      <p class="catalog-item-desc">第三项改成整行承接，避免三等分小格带来的拥挤感和廉价感。</p>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="catalog-section">
+                  <div class="catalog-head">
+                    <div class="catalog-title-group">
+                      <div class="catalog-rail"></div>
+                      <h4 class="catalog-name">资源管理</h4>
+                    </div>
+                    <div class="catalog-tag">待办</div>
+                  </div>
+                  <div class="catalog-grid">
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">采</div>
+                        <h5 class="catalog-item-title">采购待办</h5>
+                      </div>
+                      <p class="catalog-item-desc">统一纳入物资审批线，栏目语义比“工作待办”更清楚。</p>
+                    </div>
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">领</div>
+                        <h5 class="catalog-item-title">领用待办</h5>
+                      </div>
+                      <p class="catalog-item-desc">与采购并列，形成资源流转中段入口。</p>
+                    </div>
+                    <div class="catalog-item wide">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">调</div>
+                        <h5 class="catalog-item-title">调拨待办</h5>
+                      </div>
+                      <p class="catalog-item-desc">第三项继续用整块承接，避免栏目内部退回旧式三栏小宫格。</p>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="catalog-section">
+                  <div class="catalog-head">
+                    <div class="catalog-title-group">
+                      <div class="catalog-rail"></div>
+                      <h4 class="catalog-name">访客放行</h4>
+                    </div>
+                    <div class="catalog-tag">辅助</div>
+                  </div>
+                  <div class="catalog-grid">
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">访</div>
+                        <h5 class="catalog-item-title">访客待办</h5>
+                      </div>
+                      <p class="catalog-item-desc">独立成栏目后不再混入资源类待办，标题语义也更干净。</p>
+                    </div>
+                    <div class="catalog-item">
+                      <div class="catalog-item-head">
+                        <div class="catalog-icon">放</div>
+                        <h5 class="catalog-item-title">物品放行</h5>
+                      </div>
+                      <p class="catalog-item-desc">与访客待办同组展示，形成门岗相关的轻量业务区。</p>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </main>
+
+          <nav class="tabbar">
+            <div class="tab-item active">
+              <div class="tab-icon">⌂</div>
+              <span>首页</span>
+            </div>
+            <div class="tab-item">
+              <div class="tab-icon">▦</div>
+              <span>工作台</span>
+            </div>
+            <div class="tab-item">
+              <div class="tab-icon">◌</div>
+              <span>通讯录</span>
+            </div>
+            <div class="tab-item">
+              <div class="tab-icon">◎</div>
+              <span>我的</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <aside class="notes">
+        <section class="note-panel">
+          <h2 class="note-title">设计稿说明</h2>
+          <p class="note-text">
+            这是一份完整的静态 H5
+            视觉稿，不依赖项目接口，也不强绑定当前实现。它主要用于后续反复调样、跨页面统一视觉语言，以及给其他页面做同源美术延展。
+          </p>
+          <ul class="note-list">
+            <li>定稿结构：B2 入口优先 + H3 轻公告头。</li>
+            <li>首屏焦点：投诉待办与报修待办双主入口。</li>
+            <li>顶部职责：品牌氛围与业务提醒，不承担摘要统计。</li>
+            <li>业务区组织：按标题拆成多块全宽业务面板，内部固定为 2 列大入口。</li>
+          </ul>
+        </section>
+
+        <section class="note-panel">
+          <h2 class="note-title">后续扩展建议</h2>
+          <ul class="note-list">
+            <li>如果未来补齐公告接口，优先替换顶部提醒带文案，不要先改整体布局。</li>
+            <li>如果其他页面需要统一美术语言，优先复用渐变头部、白色圆角卡片、双层级入口结构。</li>
+            <li>如果某页面没有稳定摘要数据，也优先使用轻公告头，而不是硬做统计卡。</li>
+          </ul>
+          <a class="spec-link" href="./2026-03-24-homepage-business-portal-visual-design.md">查看配套设计说明文档</a>
+        </section>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+diff --git a/components/common/util.ts b/components/common/util.ts
+index 6890d248bc993a91a9aba1807061263c1e49c12a..7a33218c77536a55c6d2cef85d16542763f49794 100644
+--- a/components/common/util.ts
++++ b/components/common/util.ts
+@@ -55,7 +55,7 @@ export function getType(target: unknown): string {
+  * @param kv - 配置对象，包含 labelKey 作为键值
+  * @returns 格式化后的字符串
+  */
+-export const defaultDisplayFormat = function (items: any[] | Record<string, any>, kv?: { labelKey?: string }): string {
++export const defaultDisplayFormat = function (items: any[] | Record<string, any>, kv?: { labelKey?: string; valueKey?: string }): string {
+   const labelKey: string = kv?.labelKey || 'value'
+ 
+   if (Array.isArray(items)) {
+@@ -404,7 +404,7 @@ export function objToStyle(styles: Record<string, any> | Record<string, any>[]):
+     // 对每个非空元素递归调用 objToStyle，然后通过分号连接
+     const result = styles
+       .filter(function (item) {
+-        return item != null && item !== ''
++        return item != null
+       })
+       .map(function (item) {
+         return objToStyle(item)
+diff --git a/components/composables/useUpload.ts b/components/composables/useUpload.ts
+index 87cf54b7982609d8c12e49f95d7fbfaba9310e8a..ad6367cad0cc47664bd91e62772bdce3f8df1181 100644
+--- a/components/composables/useUpload.ts
++++ b/components/composables/useUpload.ts
+@@ -174,7 +174,7 @@ export function useUpload(): UseUploadReturn {
+         size: item.size,
+         type: 'image',
+         thumb: item.path || ''
+-      }))
++      })) as ChooseFile[]
+     }
+     return [
+       {
+@@ -184,7 +184,7 @@ export function useUpload(): UseUploadReturn {
+         type: 'image',
+         thumb: (res.tempFiles as any).path || ''
+       }
+-    ]
++    ] as ChooseFile[]
+   }
+ 
+   /**
+diff --git a/components/wd-action-sheet/wd-action-sheet.vue b/components/wd-action-sheet/wd-action-sheet.vue
+index 111e04e89aedabd13bd1c62c17d7dc0a87fd1da3..7589ee87c5481c9a665539405b758d03caa21487 100644
+--- a/components/wd-action-sheet/wd-action-sheet.vue
++++ b/components/wd-action-sheet/wd-action-sheet.vue
+@@ -82,7 +82,8 @@ import { isArray } from '../common/util'
+ const props = defineProps(actionSheetProps)
+ const emit = defineEmits(['select', 'click-modal', 'cancel', 'closed', 'close', 'open', 'opened', 'update:modelValue'])
+ 
+-const formatPanels = ref<Array<Panel> | Array<Panel[]>>([])
++/** 各行面板始终为 Panel[]，避免 v-for 将 Panel 对象键名推断为 keyof Panel */
++const formatPanels = ref<Panel[][]>([])
+ 
+ const showPopup = ref<boolean>(false)
+ 
+diff --git a/components/wd-button/wd-button.vue b/components/wd-button/wd-button.vue
+index 3f4991fd68d9c768deca4d7b36d065b3934a5c65..ae55df0528b0714392216864f22c8654b4349bfd 100644
+--- a/components/wd-button/wd-button.vue
++++ b/components/wd-button/wd-button.vue
+@@ -99,7 +99,8 @@ const loadingStyle = computed(() => {
+ })
+ 
+ const openTypeValue = computed(() => {
+-  return props.disabled || props.loading ? undefined : props.openType
++  /** uni-app button 的 open-type 联合类型略滞后于组件库声明 */
++  return (props.disabled || props.loading ? undefined : props.openType) as any
+ })
+ 
+ watch(
+diff --git a/components/wd-swiper/wd-swiper.vue b/components/wd-swiper/wd-swiper.vue
+index 7d60a0a881525499d9b67b7092120eadaf98f0ae..12fde90c08cac8e16a806e5ea88e28c7affb11c3 100644
+--- a/components/wd-swiper/wd-swiper.vue
++++ b/components/wd-swiper/wd-swiper.vue
+@@ -144,9 +144,10 @@ const swiperIndicator = computed(() => {
+     indicatorPosition: indicatorPosition || 'bottom'
+   }
+   if (isObj(indicator)) {
+-    swiperIndicator.type = indicator.type || 'dots'
+-    swiperIndicator.minShowNum = indicator.minShowNum || 2
+-    swiperIndicator.showControls = indicator.showControls || false
++    const navExtra = indicator as Partial<SwiperNavProps>
++    swiperIndicator.type = navExtra.type || 'dots'
++    swiperIndicator.minShowNum = navExtra.minShowNum || 2
++    swiperIndicator.showControls = navExtra.showControls || false
+   }
+   return swiperIndicator
+ })
+diff --git a/components/wd-tour/wd-tour.vue b/components/wd-tour/wd-tour.vue
+index bc86b5e8d99fbb2bc856ae68a3541d8d5df46c89..f27be5523ad6d8f450d14f29babeb7c22f2113e4 100644
+--- a/components/wd-tour/wd-tour.vue
++++ b/components/wd-tour/wd-tour.vue
+@@ -60,7 +60,7 @@ export default {
+ <script lang="ts" setup>
+ import { ref, computed, watch, nextTick, type CSSProperties } from 'vue'
+ import { addUnit, getRect, getSystemInfo, isDef, objToStyle } from '../common/util'
+-import { tourProps, type TourEmits } from './types'
++import { tourProps, type TourEmits, type TourStep } from './types'
+ import { useRaf } from '../composables/useRaf'
+ import { useTranslate } from '../composables/useTranslate'
+ 
+@@ -112,8 +112,8 @@ const highlightClass = computed(() => {
+ })
+ 
+ // 计算属性
+-const currentStep = computed(() => {
+-  return props.steps[currentIndex.value] || {}
++const currentStep = computed((): Partial<TourStep> => {
++  return props.steps[currentIndex.value] ?? {}
+ })
+ // 提取公共的默认样式函数
+ function getDefaultStyle(): CSSProperties {
