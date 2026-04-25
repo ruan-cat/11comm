@@ -8,15 +8,16 @@ Memorix canonical history retention gate 已拆分释放：对 Phase2 继续推�
 
 ## 当前有效证据
 
-| 项目              | 结论                                                                                     |
-| ----------------- | ---------------------------------------------------------------------------------------- |
-| workspace 识别    | `pnpm -r list --depth -1` 已确认 root/admin/app/type 被识别。                            |
-| app 全量测试      | `pnpm -F @01s-11comm/app exec vitest run` 已通过，记录为 43 文件、126 测试。             |
-| app 重点测试      | fee endpoint 测试与 Uno 配置测试已通过。                                                 |
-| app type-check    | `pnpm -F @01s-11comm/app type-check` 已通过，且 `apps/app/dist` 不应因 type-check 生成。 |
-| Turbo 调度        | `build:nitro:vercel` dry run 已确认依赖 `build:h5:prod`。                                |
-| Chrome docs smoke | VitePress docs smoke 已通过；按用户要求不再保留静态截图资产。                            |
-| git whitespace    | 本轮相关文档 `git diff --check` 通过。                                                   |
+| 项目              | 结论                                                                                                                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| workspace 识别    | `pnpm -r list --depth -1` 已确认 root/admin/app/type 被识别。                                                                                                                                                              |
+| app 全量测试      | `pnpm -F @01s-11comm/app exec vitest run` 已通过，记录为 43 文件、126 测试。                                                                                                                                               |
+| app 重点测试      | fee endpoint 测试与 Uno 配置测试已通过。                                                                                                                                                                                   |
+| app type-check    | `pnpm -F @01s-11comm/app type-check` 已通过，且 `apps/app/dist` 不应因 type-check 生成。                                                                                                                                   |
+| app `src/types`   | 旧源与目标均跟踪 27 个 `.ts` 类型源文件；缺失 0、额外 0；CRLF 归一化后文本差异 0。`auto-import.d.ts`、`components.d.ts`、`uni-pages.d.ts`、`async-component.d.ts`、`async-import.d.ts` 在旧源和目标均为 ignored 生成文件。 |
+| Turbo 调度        | `build:nitro:vercel` dry run 已确认依赖 `build:h5:prod`。                                                                                                                                                                  |
+| Chrome docs smoke | VitePress docs smoke 已通过；按用户要求不再保留静态截图资产。                                                                                                                                                              |
+| git whitespace    | 本轮相关文档 `git diff --check` 通过。                                                                                                                                                                                     |
 
 ## 已收口问题
 

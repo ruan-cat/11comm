@@ -602,6 +602,7 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 - 已将 app 新增的 fee/payment/owe-fee/charge-machine/report/machine-record endpoint 纳入迁移矩阵，并标记每个 endpoint 的 admin canonical 业务坐标或后台功能缺口。
 - 已确认 `src/api/fee.ts`、`server/modules/fee/endpoints.ts`、`src/tests/nitro-runtime/fee-endpoints.test.ts` 这组 app 侧契约会作为 `apps/api` 迁移验收输入，而不是被迁移时丢弃。
 - 已设计并记录第一阶段 Vitest 自测分层，包含快照完整性、workspace 识别、app legacy endpoint、`apps/api` 双端 adapter 后续验收输入、schema/type、AI 记忆/spec 合规、mock 文档同步。
+- 已对账 app `src/types`：旧源 `D:\code\ruan-cat\01s-11comm-app\src\types` 与目标 `apps/app/src/types` 均跟踪 27 个 `.ts` 类型源文件，缺失 0、额外 0，CRLF 归一化后文本差异 0；`auto-import.d.ts`、`components.d.ts`、`uni-pages.d.ts`、`async-component.d.ts`、`async-import.d.ts` 属于旧源与目标均 ignored 的插件生成声明文件，Phase1 不应手写全局声明补丁替代生成链路。
 - 已确认 Nitro/API 相关测试使用 Node 环境，页面组件测试才使用 jsdom 或组件测试环境。
 - 已确认 legacy `apps/app/server` 已经改成 `nitro/h3` 的少量 import 不需要回滚；后续发现或尚未处理的直接 `"h3"` 导入、handler 风格和 mock dispatcher 写法属于下一阶段历史债务任务，不阻断 Phase1 快照迁入验收。
 - 已生成 `docs/superpowers/reports/2026-04-25-phase1-consolidated-report.md` 或等价清单，记录主项目与 app 项目的 AI 记忆、skills、spec 规则的来源、适用范围、冲突状态、canonical 决策和验证方式。
