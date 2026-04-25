@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"noEmit": true,
+		"types": ["node", "vitest"],
+		"paths": {
+			"server/*": ["server/*"]
+		}
+	},
+	"include": ["server/**/*.ts", "tests/**/*.ts", "nitro.config.ts", "vitest.config.ts"]
+}
