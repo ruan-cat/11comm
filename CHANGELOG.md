@@ -1,3 +1,32 @@
+## v1.0.1-beta.1
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.0...v1.0.1-beta.1)
+
+### ✨ 新增功能
+
+- **api:** ⚠️ 新增 Nitro 影子服务纵切样板 ([c747fe6a](https://github.com/ruan-cat/11comm/commit/c747fe6a))
+
+### 📖 Documentation
+
+- **migration:** 补充 app 类型目录对账证据 ([d2721759](https://github.com/ruan-cat/11comm/commit/d2721759))
+- **api-migration:** 细化 Phase2 Nitro 迁移方案 ([497e5aba](https://github.com/ruan-cat/11comm/commit/497e5aba))
+
+### ✅ Tests
+
+- **api:** 覆盖 Phase2 fee 接口契约 ([484392b4](https://github.com/ruan-cat/11comm/commit/484392b4))
+
+### 🤖 CI
+
+- **app:** 先生成 app 类型声明再执行 type-check ([b83a67a3](https://github.com/ruan-cat/11comm/commit/b83a67a3))
+
+#### ⚠️ Breaking Changes
+
+- **api:** ⚠️ 新增 Nitro 影子服务纵切样板 ([c747fe6a](https://github.com/ruan-cat/11comm/commit/c747fe6a))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v0.11.5-beta.1...v1.0.0)
