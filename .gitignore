@@ -76,9 +76,15 @@ vite.config.ts.*.mjs
 
 .vercel
 
-# 忽略 vitepress 项目生成的缓存
-*/**/.vitepress/dist
-*/**/.vitepress/cache
+# 忽略 VitePress 构建产物与中间缓存
+**/.vitepress/dist/
+**/.vitepress/cache/
+**/.vitepress/.cache/
+**/.vitepress/.temp/
+
+# 忽略通用中间缓存目录
+**/.cache/
+**/.temp/
 
 # 忽略typedoc生成的md文件
 /src/docs/typedoc-md
