@@ -8,7 +8,24 @@ export interface RuntimeBaseEnv {
   VITE_APP_PROXY_PREFIX?: string
   VITE_SERVER_BASEURL?: string
   VITE_UPLOAD_BASEURL?: string
+  VITE_11COMM_API_BASE_URL?: string
+  VITE_11COMM_API_SHADOW_ENABLE?: boolean | string
 }
+
+export const PHASE2_API_SHADOW_ENDPOINTS = [
+  '/app/fee.listFee',
+  '/app/fee.queryFeeDetail',
+  '/app/feeApi/listOweFees',
+  '/app/fee.saveRoomCreateFee',
+  '/app/payment.nativeQrcodePayment',
+  '/app/oweFeeCallable.listOweFeeCallable',
+  '/app/oweFeeCallable.writeOweFeeCallable',
+  '/app/reportFeeMonthStatistics.queryReportFeeSummary',
+  '/app/reportFeeMonthStatistics/queryPayFeeDetail',
+  '/app/reportFeeMonthStatistics.queryReportFeeDetailRoom',
+  '/app/dataReport.queryFeeDataReport',
+  '/app/feeConfig.listFeeConfigs',
+]
 
 /** 解析当前接口运行时 */
 export function resolveApiRuntime(env: RuntimeBaseEnv): ApiRuntime {
@@ -24,6 +41,15 @@ export function resolveApiRuntime(env: RuntimeBaseEnv): ApiRuntime {
 /** 判断 mock 代理是否启用 */
 export function isMockProxyEnabled(env: RuntimeBaseEnv): boolean {
   return String(env.VITE_APP_PROXY_ENABLE) === 'true'
+}
+
+export function isPhase2ApiShadowEndpoint(url: string): boolean {
+  const path = normalizeRequestPath(url)
+  return PHASE2_API_SHADOW_ENDPOINTS.some(endpoint => endpoint === path)
+}
+
+export function isApiShadowEnabled(env: RuntimeBaseEnv): boolean {
+  return String(env.VITE_11COMM_API_SHADOW_ENABLE) === 'true'
 }
 
 /** 解析 HTTP 请求基址 */
@@ -45,13 +71,21 @@ export function resolveHttpBaseUrl(env: RuntimeBaseEnv): string {
   return env.VITE_SERVER_BASEURL || ''
 }
 
+export function resolveHttpBaseUrlForPath(url: string, env: RuntimeBaseEnv): string {
+  if (isApiShadowEnabled(env) && isPhase2ApiShadowEndpoint(url)) {
+    return env.VITE_11COMM_API_BASE_URL || resolve11CommNitroServerBaseUrl()
+  }
+
+  return resolveHttpBaseUrl(env)
+}
+
 /** 为相对路径补全运行时基址 */
 export function prependRuntimeBaseUrl(url: string, env: RuntimeBaseEnv): string {
   if (/^https?:\/\//.test(url)) {
     return url
   }
 
-  const baseUrl = resolveHttpBaseUrl(env)
+  const baseUrl = resolveHttpBaseUrlForPath(url, env)
 
   if (!baseUrl) {
     return url
@@ -77,4 +111,13 @@ export function resolveUploadBaseUrl(env: RuntimeBaseEnv): string {
   }
 
   return env.VITE_UPLOAD_BASEURL || prependRuntimeBaseUrl('/upload', env)
+}
+
+function normalizeRequestPath(url: string): string {
+  try {
+    return new URL(url, 'http://local').pathname
+  }
+  catch {
+    return url.split('?')[0] || url
+  }
 }

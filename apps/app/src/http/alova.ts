@@ -4,7 +4,7 @@ import AdapterUniapp from '@alova/adapter-uniapp'
 import { createAlova } from 'alova'
 import { createServerTokenAuthentication } from 'alova/client'
 import VueHook from 'alova/vue'
-import { resolveHttpBaseUrl } from '@/http/runtime-base'
+import { resolveHttpBaseUrl, resolveHttpBaseUrlForPath } from '@/http/runtime-base'
 import { LOGIN_PAGE } from '@/router/config'
 import { ContentTypeEnum, ResultEnum, ShowMessage } from './tools/enum'
 
@@ -48,6 +48,8 @@ const alovaInstance = createAlova({
   statesHook: VueHook,
 
   beforeRequest: onAuthRequired((method) => {
+    method.baseURL = resolveHttpBaseUrlForPath(method.url, import.meta.env)
+
     // 设置默认 Content-Type
     method.config.headers = {
       ContentType: ContentTypeEnum.JSON,

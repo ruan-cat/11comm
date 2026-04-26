@@ -31,6 +31,10 @@ interface ImportMetaEnv {
   readonly NITRO_PORT: string
   /** 第二请求域名 */
   readonly VITE_API_SECONDARY_URL: string
+  /** Phase3 统一 apps/api 基址 */
+  readonly VITE_11COMM_API_BASE_URL: string
+  /** Phase3 Phase2 endpoint shadow 接入开关 */
+  readonly VITE_11COMM_API_SHADOW_ENABLE: 'true' | 'false'
   /** 是否清除console */
   readonly VITE_DELETE_CONSOLE: string
   // 更多环境变量...

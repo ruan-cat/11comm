@@ -1,9 +1,11 @@
 import { getDomains } from '@ruan-cat/domains'
 import { describe, expect, test } from 'vitest'
 import {
+  isPhase2ApiShadowEndpoint,
   prependRuntimeBaseUrl,
   resolveApiRuntime,
   resolveHttpBaseUrl,
+  resolveHttpBaseUrlForPath,
   resolveUploadBaseUrl,
 } from '@/http/runtime-base'
 
@@ -95,5 +97,46 @@ describe('runtime base url', () => {
         VITE_API_RUNTIME: 'nitro-standalone',
       }),
     ).toBe(`https://${nitroStandaloneDomain}/upload`)
+  })
+})
+
+describe('phase3 app api shadow base url', () => {
+  test('only enables shadow api base for Phase2 fee/payment/report endpoints', () => {
+    expect(isPhase2ApiShadowEndpoint('/app/fee.listFee')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/fee.queryFeeDetail')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/payment.nativeQrcodePayment')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/reportFeeMonthStatistics.queryReportFeeSummary')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.listOwnerRepairs')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/resourceStore.listResourceStores')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/owner.queryOwnerCars')).toBe(false)
+  })
+
+  test('uses shadow api base only when the switch is enabled', () => {
+    expect(
+      resolveHttpBaseUrlForPath('/app/fee.listFee', {
+        VITE_API_RUNTIME: 'nitro-standalone',
+        VITE_SERVER_BASEURL: 'http://legacy.example.com',
+        VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://127.0.0.1:3102')
+
+    expect(
+      resolveHttpBaseUrlForPath('/app/fee.queryFeeDetail', {
+        VITE_API_RUNTIME: 'nitro-standalone',
+        VITE_SERVER_BASEURL: 'http://legacy.example.com',
+        VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://127.0.0.1:3102')
+
+    expect(
+      resolveHttpBaseUrlForPath('/app/ownerRepair.listOwnerRepairs', {
+        VITE_API_RUNTIME: 'nitro-standalone',
+        VITE_SERVER_BASEURL: 'http://legacy.example.com',
+        VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://legacy.example.com')
   })
 })
