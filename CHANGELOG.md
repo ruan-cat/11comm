@@ -1,3 +1,34 @@
+## v1.0.1-beta.2
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.1...v1.0.1-beta.2)
+
+### ✨ 新增功能
+
+- **api:** 加固 Phase3 Nitro 基础设施 ([c2f94446](https://github.com/ruan-cat/11comm/commit/c2f94446))
+- **app:** 增加 Nitro shadow 接入策略 ([b151b8a6](https://github.com/ruan-cat/11comm/commit/b151b8a6))
+- **admin:** 增加 API shadow 接入策略 ([d49017c6](https://github.com/ruan-cat/11comm/commit/d49017c6))
+
+### 📖 Documentation
+
+- 合并 Phase2 汇总报告并更新交接规范 ([0f8f7ac6](https://github.com/ruan-cat/11comm/commit/0f8f7ac6))
+- 修复 VitePress 报告构建解析错误 ([637458e0](https://github.com/ruan-cat/11comm/commit/637458e0))
+- 补充 Phase3 启动准则 ([9bc508ed](https://github.com/ruan-cat/11comm/commit/9bc508ed))
+- **api:** 补充 Phase3 迁移计划 ([4ed95770](https://github.com/ruan-cat/11comm/commit/4ed95770))
+- **admin:** 记录 CloudBase 登录边界 ([88e5ecb4](https://github.com/ruan-cat/11comm/commit/88e5ecb4))
+
+### 🤖 CI
+
+- 修复 GitHub Actions 依赖安装与 Turbo 调用 ([520bdeff](https://github.com/ruan-cat/11comm/commit/520bdeff))
+- 加固 Phase3 API 验收门禁 ([a232a69c](https://github.com/ruan-cat/11comm/commit/a232a69c))
+
+### 🔧 更新配置
+
+- 忽略 VitePress 缓存与临时目录 ([180d3498](https://github.com/ruan-cat/11comm/commit/180d3498))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.1
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.0...v1.0.1-beta.1)
