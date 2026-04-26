@@ -1,4 +1,4 @@
-import type { PageDTO, PaymentDetailsFormListItem } from "@01s-11comm/type";
+import type { HouseChargeListItem, PageDTO, PaymentDetailsFormListItem } from "@01s-11comm/type";
 
 export interface LegacyPageQuery {
 	page?: number;
@@ -139,19 +139,15 @@ export interface Paginated<T> {
 	row: number;
 }
 
-export type AdminHouseChargeListItem = {
-	id: string;
+export type AdminHouseChargeListItem = HouseChargeListItem & {
 	houseId: string;
 	expenseItem: string;
 	receivableAmount: string;
 	receivedAmount: string;
 	billingPeriod: string;
-	status: string;
 	billDate: string;
 	dueDate: string;
 	remark: string;
-	createTime: string;
-	updateTime: string;
 };
 
 export type AdminHouseChargePage = PageDTO<AdminHouseChargeListItem>;

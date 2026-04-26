@@ -17,7 +17,8 @@
 		"typecheck": "tsc --noEmit",
 		"test": "vitest run",
 		"test:infra": "vitest run tests/infra tests/smoke tests/runtime",
-		"verify:phase3": "pnpm run test:infra && pnpm run typecheck && pnpm run build:node && pnpm run build:vercel && pnpm run build:cloudflare"
+		"verify:phase3": "pnpm run test:infra && pnpm run typecheck && pnpm run build:node && pnpm run build:vercel && pnpm run build:cloudflare",
+		"verify:phase4": "vitest run tests/legacy tests/admin tests/modules tests/runtime tests/infra && pnpm run typecheck && pnpm run build:node"
 	},
 	"dependencies": {
 		"@01s-11comm/type": "workspace:^",

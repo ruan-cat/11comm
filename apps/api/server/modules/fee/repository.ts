@@ -174,6 +174,7 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 				total: Number(countResult[0]?.total || 0),
 				list: rows.map((item) => ({
 					id: item.id,
+					name: item.expenseItem || "",
 					houseId: item.houseId,
 					expenseItem: item.expenseItem || "",
 					receivableAmount: item.receivableAmount || "",
@@ -492,6 +493,7 @@ function toOweFee(fee: FeeItem): OweFeeItem {
 function toAdminHouseCharge(fee: FeeItem): AdminHouseChargeListItem {
 	return {
 		id: fee.feeId,
+		name: fee.feeName,
 		houseId: fee.roomId,
 		expenseItem: fee.feeName,
 		receivableAmount: String(fee.receivedAmount),
