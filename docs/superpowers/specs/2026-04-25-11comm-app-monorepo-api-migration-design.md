@@ -1,4 +1,4 @@
-<!-- 状态：Phase1 快照迁入已完成；Phase2 已完成 `apps/api` 最小 Nitro 影子服务与 fee/payment/report 首批纵切样板；GitHub Actions、Cloudflare、Vercel checks 已在最新 dev HEAD 通过；当前可开启 Phase3；Memorix canonical history retention gate 已拆分释放为 released-for-phase2-progress / pass-with-permanent-source-retention；旧源目录 D:\code\ruan-cat\01s-11comm-app 永久禁止删除、移动、归档、重命名或清空。 -->
+<!-- 状态：Phase1 快照迁入已完成；Phase2 已完成 `apps/api` 最小 Nitro 影子服务与 fee/payment/report 首批纵切样板；Phase3/Phase4 已推进到独立 Nitro API 与首批业务迁移验证；Phase5 已完成 expenseManage 首波：houseCharge list/detail 只读联调、expenseItemSetting list/detail/create/update/delete-policy、admin hook/page 影子联调、Chrome MCP 与真实 Neon 验证；当前可开启 Phase6 切流准备，但不得把 houseCharge create/update/delete 视为已完成能力。Memorix canonical history retention gate 已拆分释放为 released-for-phase2-progress / pass-with-permanent-source-retention；旧源目录 D:\code\ruan-cat\01s-11comm-app 永久禁止删除、移动、归档、重命名或清空。 -->
 
 # 2026-04-25 11comm App 迁入 Monorepo 与唯一 Nitro API 设计
 
@@ -598,26 +598,267 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 
 ### 阶段 5：迁移 admin API 并补齐 CRUD
 
-按 `apps/admin/src/router/rank/rank-route-keys.ts` 的三级业务路径迁移。
+阶段 5 的目标不是一次性把后台全部接口重写完成，而是把 `apps/admin/server/api/**`
+中已经具备后台菜单坐标、类型定义和数据表事实来源的接口，按可验证波次迁移到 `apps/api`，
+并在每个波次内把该业务路径应该具备的后台 CRUD 或业务 action 补齐。
 
-优先处理：
+#### 5.1 当前基线
 
-- `property-manage/expense-manage`
-- `property-manage/house-property-manage`
-- `property-manage/parking-manage`
-- `property-manage/patrol-manage`
-- `property-manage/repairs-manage`
-- `operation-team`
-- `dev-team/menu-manage`
+进入阶段 5 时，迁移基线为：
 
-每个业务路径逐步补齐：
+- `apps/api` 已具备独立 Nitro 服务、运行时环境解析、CORS、health/ready、endpoint manifest、
+  app legacy dispatcher、Vitest 覆盖和 `verify:phase3` / `verify:phase4` 验证脚本。
+- `apps/api/server/modules` 当前只有 `fee` 与 `repair` 两个业务模块。
+- `apps/api/server/routes/api` 当前只有 5 条后台 canonical route：
+  - `property-manage/expense-manage/house-charge/list`
+  - `property-manage/report-manage/payment-details-form/list`
+  - `property-manage/repairs-manage/issues/list`
+  - `property-manage/repairs-manage/repairs-setting/list`
+  - `property-manage/repairs-manage/repairs-todo/list`
+- `fee` 模块已经具备 DB adapter + fallback runtime；`repair` 模块在 Phase4A 仍是 fallback-only runtime，
+  不能直接当成 DB-backed CRUD 样板。
+- `apps/admin/server/api/**` 中优先业务域多为 `list.post.ts` 形式的历史后台接口，只有少量模块已经具备
+  `detail/create/update/delete`。因此阶段 5 必须先做接口盘点和 CRUD 等级判定，不能机械地把所有目录都补成五个文件。
 
-- `list`
-- `detail`
-- `create`
-- `update`
-- `delete`
-- 必要的业务 action
+#### 5.2 阶段边界
+
+阶段 5 允许做：
+
+- 以 `apps/admin/src/router/rank/rank-route-keys.ts` 的三级业务路径为唯一后台业务坐标，迁移对应的 admin canonical API。
+- 以 `apps/type/src/business/**/schema.ts` 中已经存在的 Drizzle Table、Zod Schema 和 TypeScript Type
+  作为数据库事实来源，编写 `apps/api` 的 repository、service、admin adapter 和 route handler。
+- 对单个业务路径补齐 `list/detail/create/update/delete`，以及该路径在后台页面中真实需要的业务 action。
+- 保留 `apps/admin/server/api/**` 作为旧实现参考和回滚证据，不在阶段 5 删除旧实现。
+- 在 `apps/api` 中继续保留 app legacy adapter 与 admin adapter 的响应格式边界：app legacy 仍输出
+  `{ code: 0, msg, data }`，admin canonical 仍输出 `JsonVO<PageDTO<T>>` 或 `JsonVO<T>`。
+
+阶段 5 禁止做：
+
+- 不做 Phase6 的 app/admin 全量切流，不批量改 `apps/admin/src` 页面请求 base URL。
+- 不做 Phase7 的旧服务退役；不得删除、移动、归档、重命名、清空 `apps/admin/server`、`apps/app/server`
+  或 `D:\code\ruan-cat\01s-11comm-app`。
+- 不把 app legacy `/app/**`、`/callComponent/**` 响应格式原地改成 admin `JsonVO`。
+- 不新增 JWT、Token 校验、Neon Auth、Bearer/Authorization 校验或任何 Nitro 鉴权逻辑。
+- 不从 `"h3"` 直接导入 H3 helper；所有新增或目标态 Nitro 代码必须从 `"nitro/h3"` 导入。
+- 不在 `apps/api` 内定义 `pgTable`、`createInsertSchema`、`createSelectSchema`；schema 事实来源只在
+  `apps/type/src/business/**/schema.ts`。
+- 不用脚本批量生成或批量改写接口文件；每个波次必须人工核对 legacy 行为、schema、DTO 和测试。
+
+#### 5.3 业务坐标与优先级
+
+阶段 5 只处理 `rank-route-keys.ts` 中已经存在的三级业务路径。发现后台旧接口没有对应三级业务路径时，
+不得直接迁入运行时，应记录为 `route-review-required`。
+
+优先业务域仍为：
+
+| 优先级 | 业务域                               | 原因                                                                      | 阶段 5 处理方式                                                                                                 |
+| ------ | ------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| P0     | `propertyManage.expenseManage`       | 已有 `fee` 模块、`houseCharge` list route、费用 schema 和 DB adapter 样板 | 首批从 `houseCharge` 字段矩阵和读接口开始；若写入语义属于费用配置，则由 `expenseItemSetting` 承担首个 CRUD 样板 |
+| P0     | `propertyManage.reportManage`        | Phase2/Phase4 已触达支付明细和费用报表                                    | 先补 admin read-only 报表，不强行补写操作                                                                       |
+| P1     | `propertyManage.repairsManage`       | Phase4A 已有 repair 最小兼容迁移                                          | 先保持 fallback-only 边界；DB-backed CRUD 需单独评审 schema 与工单状态流                                        |
+| P1     | `propertyManage.housePropertyManage` | 费用、停车、报修等模块依赖房屋/业主数据                                   | 按 house/owner 信息先补 read/detail，再补写操作                                                                 |
+| P1     | `propertyManage.parkingManage`       | 有明确三级业务路径和 schema，但涉及车辆/车位联动                          | 按 ownerVehicle/carportInfo/parkingLot 分波次迁移                                                               |
+| P2     | `propertyManage.patrolManage`        | 路径清晰，但涉及计划、任务、点位和状态流                                  | 先补基础资料 CRUD，再处理任务 action                                                                            |
+| P2     | `operationTeam.*`                    | 多为运营基础配置和报表配置                                                | 按 system/data/merchant/reportConfiguration 分组迁移                                                            |
+| P3     | `devTeam.menuManage`                 | 有后台菜单坐标，但未必都对应 DB-backed schema                             | 先确认数据来源；只迁移有明确事实来源的 list/detail/write                                                        |
+
+每个实施波次最多覆盖 2-3 个三级业务路径。优先顺序不是永久排序，若某个路径缺少 schema、缺少旧接口证据、
+或字段映射不清晰，应立即降级到评审队列，转向同一业务域内证据更完整的路径。
+
+#### 5.4 CRUD 完整度等级
+
+阶段 5 不能只用“补齐 CRUD”描述工作量。每个三级业务路径必须先判定完整度等级：
+
+| 等级 | 名称             | 必需能力                                                                 | 适用场景                           |
+| ---- | ---------------- | ------------------------------------------------------------------------ | ---------------------------------- |
+| L0   | Inventory only   | 只完成旧接口、页面调用、schema、DTO、数据源盘点                          | 路径证据不足或 schema 缺失         |
+| L1   | List parity      | `list` 与旧后台列表行为一致，返回 `JsonVO<PageDTO<T>>`                   | 大多数历史 list-only mock 的第一步 |
+| L2   | Read parity      | `list` + `detail`，详情字段来自同一 repository/service                   | 页面已有详情、编辑回显或详情弹窗   |
+| L3   | CRUD parity      | `list/detail/create/update/delete`，写入使用 `apps/type` Zod schema 校验 | 表结构、字段映射、删除策略都明确   |
+| L4   | Business actions | 在 CRUD 外补齐审核、启用/停用、派单、核销、导出等 action                 | 页面确实有业务按钮或状态流         |
+
+删除能力必须单独判定：
+
+- 表含 `deletedAt` 或等价软删除字段时，优先实现软删除。
+- 表不含软删除字段时，只有在业务确认允许物理删除并有测试覆盖时，才实现 hard delete。
+- 若删除语义不清晰，不得假删除或只返回成功；应把 `delete` 标为 blocked，并拆出 schema/业务规则评审任务。
+
+#### 5.5 目标代码形态
+
+每个迁移波次在 `apps/api` 内使用同一套分层形态：
+
+```text
+apps/api/server/modules/{module}/
+  types.ts
+  repository.ts
+  service.ts
+  admin-adapter.ts
+  legacy-adapter.ts        # 只有同时服务 app legacy 时才新增或修改
+  runtime.ts
+  index.ts
+
+apps/api/server/routes/api/{business-path}/{tertiary-route}/
+  list.post.ts
+  detail.post.ts
+  create.post.ts
+  update.post.ts
+  delete.post.ts
+  {action}.post.ts
+```
+
+实现规则：
+
+- `route handler` 只负责读取请求、规范化入参、调用 adapter、捕获异常并返回 `adminFailure`。
+- `admin-adapter.ts` 只负责后台 DTO 与响应包装，返回 `JsonVO<T>` 或 `JsonVO<PageDTO<T>>`。
+- `service.ts` 放业务流程和状态规则，不直接处理 H3 event。
+- `repository.ts` 放 DB 查询与 fallback 实现；DB 表和 Zod schema 必须从 `@01s-11comm/type` 导入。
+- `runtime.ts` 负责根据 `hasDatabaseUrl(event)` / `useDb(event)` 选择 DB runtime 或 fallback runtime。若该模块仍处于
+  fallback-only 状态，必须在计划和测试中明确标注，不能伪装成生产 DB-backed CRUD。
+- `apps/type` 的导出必须继续使用 `export * from "./xxx"`，不得使用 `export type *` 或逐项导出。
+
+#### 5.6 单路径实施清单
+
+迁移任意一个三级业务路径前，必须完成以下清单：
+
+1. 坐标确认：在 `rank-route-keys.ts` 中确认三级业务路径存在，并记录 camelCase 坐标与 kebab-case API 路径。
+2. 旧实现证据：读取 `apps/admin/server/api/{business-path}/{route}/**`，确认旧 endpoint、入参、出参、错误格式和是否只有 mock。
+3. 前端调用证据：读取 `apps/admin/src` 中对应 API hooks、页面、表格列、表单弹窗和按钮，确认真实使用的字段与 action。
+4. 类型事实来源：读取 `apps/type/src/business/{domain}/{module}/schema.ts` 和同目录 DTO 文件，确认 Trinity schema、业务类型和导出链。
+5. 数据源判定：确认该路径能否 DB-backed；若只能 fallback，必须写入计划并限制为兼容切片。
+6. 红灯测试：先写或调整 Vitest，覆盖 adapter、service/repository、route handler 和失败分支。
+7. 分层实现：按 repository -> service -> admin adapter -> route handler 顺序落地。
+8. 兼容验证：旧 list 行为、分页字段、筛选字段、排序字段和错误结构不得被无意改变。
+9. 门禁扫描：运行类型检查、测试、构建、禁用模式扫描和受保护目录存在性检查。
+10. 进度记录：更新对应阶段计划或汇总报告，记录已迁移等级、未迁移 action、阻塞原因和验证命令。
+
+#### 5.7 阶段 5 推荐首波
+
+阶段 5 的首个可执行波次建议选择：
+
+```text
+propertyManage.expenseManage.houseCharge
+```
+
+理由：
+
+- `rank-route-keys.ts` 已存在 `propertyManage.expenseManage.houseCharge`。
+- `apps/api` 已有 `property-manage/expense-manage/house-charge/list.post.ts`。
+- `apps/api/server/modules/fee` 已具备 DB-backed runtime 样板。
+- `apps/type/src/business/property-manage/expense-manage/schema.ts` 已存在 `exHouseCharges`、
+  `insertExHouseChargeSchema`、`selectExHouseChargeSchema`、`updateExHouseChargeSchema`。
+- 该路径适合作为阶段 5 的 CRUD 标准样板，用来沉淀 `list/detail/create/update/delete` 的测试和路由格式。
+
+首波不要同时扩展整个 `expenseManage`。完成 `houseCharge` 后，再根据同样门禁扩展到：
+
+1. `expenseItemSetting`、`meterReadingType` 等配置型路径。
+2. `discountType`、`discountSetting`、`discountApply` 等折扣路径。
+3. `vehicleCharge`、`contracteCharge` 等收费实体路径。
+4. `paymentReview`、`refundReview`、`cancelFee`、`reminderForOverduePayments` 等状态流路径。
+
+首波实施前必须额外完成 `houseCharge` 与 `expenseItemSetting` 的字段归属矩阵。当前前端表单与
+`HouseChargeFormVO` 中存在收费项目配置字段，不能简单假设这些字段全部写入 `exHouseCharges`。若字段矩阵证明
+新增/编辑语义实际属于 `exExpenseItems`，则 `houseCharge` 本波只补 `list/detail`，由
+`expenseItemSetting` 承担首个 L3 CRUD 样板；不得把配置字段错误写入房屋收费账单表。
+
+#### 5.8 admin 前端 hook 与独立 Nitro 联调边界
+
+阶段 5 的接口迁移分成两个可验收子阶段，避免把“后端接口已迁入 `apps/api`”误读为“admin 页面已经切到
+独立 Nitro 服务”：
+
+- **Phase5A：后端 API 迁移与实库验证**。本阶段只要求 `apps/api` 中对应 admin canonical route
+  已实现、单元测试通过、能够在本地 Nitro 服务中连接真实 Neon，并完成 create/update/detail/list 等接口级验证。
+  Phase5A 不要求立刻修改 `apps/admin/src` 页面 hook，也不允许批量改 admin 全局请求 base URL。
+- **Phase5B：admin hook 补齐与页面级影子联调**。当某个三级业务路径达到 L2/L3/L4 后，必须在进入 Phase6
+  全量接入前，为该路径补齐 `apps/admin/src` 中真实页面需要的 API hook、表单 mutation、详情回显和按钮 action。
+  Phase5B 是该业务路径进入“可交付候选”的前置门禁，不得推迟到 Phase7 旧服务退役时才补。
+
+Phase5B 的实施要求如下：
+
+1. 先读取 `apps/admin/src` 中对应页面、现有 hook、表格列、表单弹窗和按钮，不凭空新增未被页面消费的接口包装。
+2. 在 admin hook 中补齐必要方法：`list`、`detail`、`create`、`update`、`delete` 或实际业务 action。
+   例如 `expenseItemSetting` 已在 `apps/api` 具备 `detail/create/update/delete` 后，admin 侧必须补齐同名 hook
+   和表单 mutation；`houseCharge` 若本波只达到 `list/detail`，admin 侧只接入只读 hook。页面可以保留新增、编辑、
+   删除入口作为 `pending/blocked` 开发坐标，但当前不得接入 `create/update/delete` hook，不得发送写请求，
+   不得伪造成功；点击这些入口只能提示待实现或策略未确认。
+3. hook 的 DTO 以 `@01s-11comm/type` 已有类型和 `apps/api` admin adapter 返回结构为准；若页面字段超出当前 schema，
+   必须回到字段归属矩阵判定，不得在 hook 中用临时字段吞掉问题。
+4. 本地联调必须同时启动两个服务：`apps/api` 独立 Nitro 服务连接真实 Neon，`apps/admin` 通过影子 API base URL
+   或 Vite proxy 指向该 Nitro 服务。不得把页面仍然命中 `apps/admin/server/api/**` 的结果当作新接口联调通过。
+5. 浏览器验收必须使用 Chrome MCP 或等价浏览器自动化打开 admin 页面，执行列表查询、详情回显、创建、更新、
+   删除策略或业务 action，并检查 Network 请求确实命中 `apps/api` 的 canonical 路径。对于 `houseCharge`
+   这类本波只读路径，验收只覆盖列表、详情和 pending/blocked 入口提示，并确认新增、编辑、删除点击不会产生写请求。
+6. 写入类页面验收必须追加 Neon 校验：通过 Neon MCP 查询或同等直连查询确认写入落库；如使用临时测试数据，
+   必须用唯一业务标识清理该测试数据，并记录清理结果。
+7. Phase5B 不做 admin 全局切流。每次只对 2-3 个三级业务路径启用影子联调，待路径级门禁通过后，才允许进入
+   Phase6 的 app/admin 渐进式接入计划。
+
+当前 `expenseManage` 首波的前端接入判定为：
+
+| 路径                                              | Phase5A 后端目标                                                   | Phase5B admin hook 目标                                                                                                                                              | 可交付判定                                                                                  |
+| ------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `propertyManage.expenseManage.houseCharge`        | `list/detail`，不实现不明确的账单写入                              | 补齐列表与详情 hook；新增、编辑、删除入口可保留为 `pending/blocked` 坐标，但不接 `create/update/delete` hook、不发送写请求、不伪造成功；点击只提示待实现或策略未确认 | 已通过浏览器列表/详情、pending/blocked 入口无写请求和 Neon 只读查询记录；写操作另拆后续任务 |
+| `propertyManage.expenseManage.expenseItemSetting` | `list/detail/create/update`；`delete` 明确返回 blocked/unsupported | 补齐 list/detail/create/update/delete hook 与表单 mutation；delete 按策略展示失败原因                                                                                | 浏览器完成创建、编辑、详情回显；Neon 查到更新值并清理测试数据                               |
+
+只有当 Phase5A 后端验证、Phase5B admin hook 联调、Neon 写入校验、禁用模式扫描和受保护目录检查全部通过后，
+该三级业务路径才可以标记为“可交付候选”。若当前字段集不能覆盖页面表单，例如需要持久化 `unit`、
+`prepaymentPeriod`、`prepaidPeriodDays`，或业务要求真正删除 `expenseItemSetting`，则必须先触发独立的
+schema-change-sync 任务：更新 `apps/type` schema、数据库迁移、seed、后端 DTO、前端 hook 和技能文档清单。
+在 schema 变更完成前，Phase5A/Phase5B 只能保持输入兼容或策略性 blocked，不能把未落库字段伪装为已支持。
+
+#### 5.9 验证门禁
+
+每个阶段 5 波次至少运行以下验证：
+
+```powershell
+pnpm -F @01s-11comm/api test
+pnpm -F @01s-11comm/api typecheck
+pnpm -F @01s-11comm/api build:node
+pnpm -F @01s-11comm/type typecheck
+git diff --check
+```
+
+涉及完整阶段收口时，追加：
+
+```powershell
+pnpm run ci
+```
+
+每个波次还必须运行禁用模式扫描：
+
+```powershell
+rg -n 'from [''"]h3[''"]' apps/api/server apps/api/tests
+rg -n "@neondatabase/auth|JWT|jwt|Neon Auth|Token 验证|token 验证|Bearer|Authorization" apps/api/server apps/api/tests
+rg -n "pgTable|createInsertSchema|createSelectSchema" apps/api/server apps/api/tests
+Test-Path apps/admin/server
+Test-Path apps/app/server
+Test-Path "D:\code\ruan-cat\01s-11comm-app"
+git status --short -- apps/admin/server apps/app/server
+```
+
+预期结果：
+
+- 三个 `rg` 禁用扫描无匹配。
+- 三个受保护目录 `Test-Path` 均为 `True`。
+- `apps/admin/server` 与 `apps/app/server` 没有删除、移动、重命名或清理状态。
+
+#### 5.10 Plan 编写要求
+
+执行阶段 5 代码迁移前，必须为具体波次编写计划文件：
+
+```text
+docs/superpowers/plans/YYYY-MM-DD-11comm-app-monorepo-api-migration-phase5.md
+```
+
+计划必须包含：
+
+- 本波次只覆盖哪些三级业务路径，且每个路径都能在 `rank-route-keys.ts` 中找到。
+- File Responsibility Map，明确哪些文件只读、哪些文件允许修改、哪些文件禁止修改。
+- CRUD 完整度目标，例如 `houseCharge = L3 CRUD parity`。
+- 红灯测试列表与期望失败原因。
+- repository/service/admin adapter/route handler 的实现顺序。
+- schema 变更触发条件；若触发 schema 变更，必须拆成独立 schema 同步任务，不能混在普通接口迁移中偷改。
+- 验证命令、禁用模式扫描、受保护目录检查和 pass/fail gate。
+- 未完成 action、blocked delete、route-review-required 的记录方式。
 
 ### 阶段 6：接入 app/admin 到统一 API
 
