@@ -4,6 +4,11 @@ import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
 import { consola } from "consola";
 import { type ViteVercelConfig } from "vite-plugin-vercel";
 import { root, alias, wrapperEnv, pathResolve, __APP_INFO__ } from "./build/utils";
+import { createProxyMiddleware } from "http-proxy-middleware";
+
+function escapeRegExp(value: string): string {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
 	consola.info("  当前的vite模式：", mode);
@@ -18,6 +23,38 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 	const VITE_11COMM_API_BASE_URL = env.VITE_11COMM_API_BASE_URL;
 	const VITE_11COMM_API_PROXY_PREFIX = env.VITE_11COMM_API_PROXY_PREFIX || "/api-shadow";
 	const VITE_11COMM_API_USE_PROXY = env.VITE_11COMM_API_USE_PROXY;
+
+	const adminApiShadowProxyPlugin = {
+		name: "admin-api-shadow-proxy",
+		enforce: "pre" as const,
+		configureServer(server) {
+			if (VITE_11COMM_API_USE_PROXY !== "true" || !VITE_11COMM_API_BASE_URL) {
+				return;
+			}
+
+			const prefixPattern = new RegExp("^" + escapeRegExp(VITE_11COMM_API_PROXY_PREFIX));
+			const proxy = createProxyMiddleware({
+				changeOrigin: true,
+				secure: false,
+				target: VITE_11COMM_API_BASE_URL,
+				pathRewrite: (path) => path.replace(prefixPattern, ""),
+				on: {
+					proxyReq(proxyReq) {
+						proxyReq.removeHeader("expect");
+					},
+				},
+			});
+
+			server.middlewares.use((req, res, next) => {
+				if (req.url?.startsWith(VITE_11COMM_API_PROXY_PREFIX)) {
+					proxy(req, res, next);
+					return;
+				}
+
+				next();
+			});
+		},
+	};
 
 	function IS_REVERSE_PROXY() {
 		return VITE_IS_REVERSE_PROXY === "true";
@@ -129,7 +166,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			},
 		},
 
-		plugins: getPluginsList(VITE_CDN, VITE_COMPRESSION, mode, env),
+		plugins: [adminApiShadowProxyPlugin, ...getPluginsList(VITE_CDN, VITE_COMPRESSION, mode, env)],
 
 		// https://cn.vitejs.dev/config/dep-optimization-options.html#dep-optimization-options
 		optimizeDeps: {
