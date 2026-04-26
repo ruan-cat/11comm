@@ -1,15 +1,26 @@
+import { randomUUID } from "node:crypto";
 import { and, desc, eq, like, sql } from "drizzle-orm";
 import {
+	exExpenseItems,
 	exHouseCharges,
 	exPayments,
+	insertExExpenseItemSchema,
 	rptExpenseSummaries,
 	rptPaymentDetails,
+	updateExExpenseItemSchema,
+	type ExExpenseItem,
+	type NewExExpenseItem,
 	type PaymentDetailsFormListItem,
+	type UpdateExExpenseItem,
 } from "@01s-11comm/type";
 import type { DbType } from "../../db";
 import type {
+	AdminExpenseItemSettingListItem,
 	AdminHouseChargeListItem,
 	DataReportItem,
+	ExpenseItemSettingDeletePolicy,
+	ExpenseItemSettingMutationInput,
+	ExpenseItemSettingQuery,
 	FeeConfigItem,
 	FeeDetailItem,
 	FeeItem,
@@ -23,6 +34,16 @@ import { formatDateTime } from "../../utils/format-date";
 
 export interface FeeRepository {
 	listHouseCharges: (params: ListHouseChargesParams) => Promise<{ list: AdminHouseChargeListItem[]; total: number }>;
+	getHouseChargeDetail: (id: string) => Promise<AdminHouseChargeListItem | null>;
+	listExpenseItemSettings: (
+		params: ExpenseItemSettingQuery,
+	) => Promise<{ list: AdminExpenseItemSettingListItem[]; total: number }>;
+	getExpenseItemSettingDetail: (id: string) => Promise<AdminExpenseItemSettingListItem | null>;
+	createExpenseItemSetting: (input: ExpenseItemSettingMutationInput) => Promise<AdminExpenseItemSettingListItem>;
+	updateExpenseItemSetting: (
+		input: ExpenseItemSettingMutationInput & { id: string },
+	) => Promise<AdminExpenseItemSettingListItem>;
+	deleteExpenseItemSetting: (id: string) => Promise<ExpenseItemSettingDeletePolicy>;
 	listFeeDetails: (params: FeeDetailQuery) => Promise<{ list: FeeDetailItem[] }>;
 	listOweFees: (
 		params: OweFeeQuery,
@@ -189,6 +210,89 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 				})),
 			};
 		},
+		async getHouseChargeDetail(id) {
+			const rows = await db.select().from(exHouseCharges).where(eq(exHouseCharges.id, id)).limit(1);
+			const item = rows[0];
+
+			return item
+				? {
+						id: item.id,
+						name: item.expenseItem || "",
+						houseId: item.houseId,
+						expenseItem: item.expenseItem || "",
+						receivableAmount: item.receivableAmount || "",
+						receivedAmount: item.receivedAmount || "",
+						billingPeriod: item.billingPeriod || "",
+						status: item.status || "unpaid",
+						billDate: item.billDate || "",
+						dueDate: item.dueDate || "",
+						remark: item.remark || "",
+						createTime: formatDateTime(item.createTime),
+						updateTime: formatDateTime(item.updateTime),
+					}
+				: null;
+		},
+		async listExpenseItemSettings(params) {
+			const conditions = [];
+			if (params.code) {
+				conditions.push(like(exExpenseItems.expenseCode, `%${params.code}%`));
+			}
+			if (params.expenseItem) {
+				conditions.push(like(exExpenseItems.itemName, `%${params.expenseItem}%`));
+			}
+			if (params.expenseIdentifier) {
+				conditions.push(like(exExpenseItems.expenseCode, `%${params.expenseIdentifier}%`));
+			}
+			if (params.paymentType) {
+				conditions.push(eq(exExpenseItems.paymentType, params.paymentType));
+			}
+			if (params.accountDeduction) {
+				conditions.push(eq(exExpenseItems.accountDeduction, toBooleanFlag(params.accountDeduction, false)));
+			}
+			if (params.status) {
+				conditions.push(eq(exExpenseItems.status, params.status as any));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(exExpenseItems)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(exExpenseItems)
+				.where(where)
+				.orderBy(desc(exExpenseItems.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map(toAdminExpenseItemSetting),
+			};
+		},
+		async getExpenseItemSettingDetail(id) {
+			const rows = await db.select().from(exExpenseItems).where(eq(exExpenseItems.id, id)).limit(1);
+			return rows[0] ? toAdminExpenseItemSetting(rows[0]) : null;
+		},
+		async createExpenseItemSetting(input) {
+			const parsed = toNewExpenseItem(input);
+			const rows = await db.insert(exExpenseItems).values(parsed).returning();
+			return toAdminExpenseItemSetting(rows[0]);
+		},
+		async updateExpenseItemSetting(input) {
+			const parsed = toUpdateExpenseItem(input);
+			const { id, ...changes } = parsed;
+			const rows = await db.update(exExpenseItems).set(changes).where(eq(exExpenseItems.id, id)).returning();
+			if (!rows[0]) {
+				throw new Error(`Expense item setting not found: ${id}`);
+			}
+
+			return toAdminExpenseItemSetting(rows[0]);
+		},
+		async deleteExpenseItemSetting(id) {
+			return createExpenseItemDeletePolicy(id);
+		},
 		async getPayFeeDetailReport(params) {
 			const countResult = await db.select({ total: sql<number>`count(*)` }).from(rptPaymentDetails);
 			const rows = await db
@@ -233,6 +337,7 @@ interface InMemoryFeeSeed {
 	feeDetails: FeeDetailItem[];
 	feeConfigs: FeeConfigItem[];
 	callables: OweFeeCallableItem[];
+	expenseItemSettings: AdminExpenseItemSettingListItem[];
 }
 
 class InMemoryFeeRepository implements FeeRepository {
@@ -240,12 +345,14 @@ class InMemoryFeeRepository implements FeeRepository {
 	private readonly feeDetails: FeeDetailItem[];
 	private readonly feeConfigs: FeeConfigItem[];
 	private readonly callables: OweFeeCallableItem[];
+	private readonly expenseItemSettings: AdminExpenseItemSettingListItem[];
 
 	constructor(seed?: Partial<InMemoryFeeSeed>) {
 		this.fees = structuredClone(seed?.fees ?? defaultFees);
 		this.feeDetails = structuredClone(seed?.feeDetails ?? defaultFeeDetails);
 		this.feeConfigs = structuredClone(seed?.feeConfigs ?? defaultFeeConfigs);
 		this.callables = structuredClone(seed?.callables ?? defaultCallables);
+		this.expenseItemSettings = structuredClone(seed?.expenseItemSettings ?? defaultExpenseItemSettings);
 	}
 
 	async listHouseCharges(params: ListHouseChargesParams) {
@@ -263,6 +370,94 @@ class InMemoryFeeRepository implements FeeRepository {
 		return {
 			...paginate(data, params.pageIndex, params.pageSize),
 		};
+	}
+
+	async getHouseChargeDetail(id: string) {
+		const item = this.fees.map(toAdminHouseCharge).find((charge) => charge.id === id);
+		return item ?? null;
+	}
+
+	async listExpenseItemSettings(params: ExpenseItemSettingQuery) {
+		let data = [...this.expenseItemSettings];
+		if (params.code) {
+			data = data.filter((item) => item.code.includes(params.code || ""));
+		}
+		if (params.expenseItem) {
+			data = data.filter((item) => item.expenseItem.includes(params.expenseItem || ""));
+		}
+		if (params.expenseIdentifier) {
+			data = data.filter((item) => item.expenseIdentifier.includes(params.expenseIdentifier || ""));
+		}
+		if (params.paymentType) {
+			data = data.filter((item) => item.paymentType === params.paymentType);
+		}
+		if (params.accountDeduction) {
+			data = data.filter((item) => item.accountDeduction === params.accountDeduction);
+		}
+		if (params.status) {
+			data = data.filter((item) => item.status === params.status);
+		}
+
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async getExpenseItemSettingDetail(id: string) {
+		return this.expenseItemSettings.find((item) => item.id === id) ?? null;
+	}
+
+	async createExpenseItemSetting(input: ExpenseItemSettingMutationInput) {
+		const parsed = toNewExpenseItem(input);
+		const now = formatDateTime(new Date());
+		const item = toAdminExpenseItemSetting({
+			...parsed,
+			id: randomUUID(),
+			createTime: now,
+			updateTime: now,
+		});
+		this.expenseItemSettings.unshift(item);
+
+		return item;
+	}
+
+	async updateExpenseItemSetting(input: ExpenseItemSettingMutationInput & { id: string }) {
+		const parsed = toUpdateExpenseItem(input);
+		const index = this.expenseItemSettings.findIndex((item) => item.id === parsed.id);
+		if (index === -1) {
+			throw new Error(`Expense item setting not found: ${parsed.id}`);
+		}
+
+		const current = this.expenseItemSettings[index];
+		const now = formatDateTime(new Date());
+		const updated = toAdminExpenseItemSetting({
+			id: current.id,
+			expenseType: parsed.expenseType ?? current.feeType,
+			itemName: parsed.itemName ?? current.expenseItem,
+			expenseCode: parsed.expenseCode ?? current.code,
+			paymentType: parsed.paymentType ?? current.paymentType,
+			unitPrice: parsed.unitPrice ?? current.billingUnitPrice,
+			fixedFee: parsed.fixedFee ?? current.fixedFee,
+			formula: parsed.formula ?? current.formula,
+			billingCycle: parsed.billingCycle ?? current.paymentCycle,
+			accountDeduction:
+				parsed.accountDeduction === undefined
+					? toBooleanFlag(current.accountDeduction, false)
+					: parsed.accountDeduction,
+			mobilePayment:
+				parsed.mobilePayment === undefined ? toBooleanFlag(current.mobilePayment, true) : parsed.mobilePayment,
+			roundingMode: parsed.roundingMode ?? current.roundingMode,
+			decimalPlaces: parsed.decimalPlaces ?? current.decimalPlaces,
+			status: parsed.status ?? current.status,
+			remark: parsed.remark ?? current.remark,
+			createTime: current.createTime,
+			updateTime: now,
+		});
+		this.expenseItemSettings[index] = updated;
+
+		return updated;
+	}
+
+	async deleteExpenseItemSetting(id: string) {
+		return createExpenseItemDeletePolicy(id);
 	}
 
 	async listLegacyFees(params: LegacyFeeQuery) {
@@ -469,6 +664,172 @@ function paginate<T>(data: T[], page: number, row: number) {
 	};
 }
 
+interface ExpenseItemSettingRecord {
+	id: string;
+	expenseType: string;
+	itemName: string;
+	expenseCode?: string | null;
+	paymentType?: string | null;
+	unitPrice?: string | number | null;
+	fixedFee?: string | number | null;
+	formula?: string | null;
+	billingCycle?: string | null;
+	accountDeduction?: boolean | string | null;
+	mobilePayment?: boolean | string | null;
+	roundingMode?: string | null;
+	decimalPlaces?: string | number | null;
+	status?: string | null;
+	remark?: string | null;
+	createTime?: Date | string | number | null;
+	updateTime?: Date | string | number | null;
+}
+
+function toNewExpenseItem(input: ExpenseItemSettingMutationInput): NewExExpenseItem {
+	const draft = {
+		expenseType: String(input.feeType ?? ""),
+		itemName: String(input.expenseItem ?? ""),
+		expenseCode: blankToNull(input.code ?? input.expenseIdentifier),
+		paymentType: blankToNull(input.paymentType),
+		unitPrice: toDecimalString(input.billingUnitPrice, "0"),
+		fixedFee: toDecimalString(input.fixedFee, "0"),
+		formula: blankToNull(input.formula),
+		billingCycle: blankToNull(input.paymentCycle),
+		accountDeduction: toBooleanFlag(input.accountDeduction, false),
+		mobilePayment: toBooleanFlag(input.mobilePayment, true),
+		roundingMode: toRoundingMode(input.roundingMode),
+		decimalPlaces: toDecimalPlaces(input.decimalPlaces, 2),
+		status: toStatus(input.status),
+		remark: blankToNull(input.remark),
+	};
+
+	return insertExExpenseItemSchema.parse(draft) as NewExExpenseItem;
+}
+
+function toUpdateExpenseItem(input: ExpenseItemSettingMutationInput & { id: string }): UpdateExExpenseItem {
+	const draft: Record<string, unknown> = { id: input.id };
+	assignIfPresent(draft, "expenseType", input.feeType);
+	assignIfPresent(draft, "itemName", input.expenseItem);
+	assignIfPresent(draft, "expenseCode", input.code ?? input.expenseIdentifier, blankToNull);
+	assignIfPresent(draft, "paymentType", input.paymentType, blankToNull);
+	assignIfPresent(draft, "unitPrice", input.billingUnitPrice, (value) => toDecimalString(value, "0"));
+	assignIfPresent(draft, "fixedFee", input.fixedFee, (value) => toDecimalString(value, "0"));
+	assignIfPresent(draft, "formula", input.formula, blankToNull);
+	assignIfPresent(draft, "billingCycle", input.paymentCycle, blankToNull);
+	assignIfPresent(draft, "accountDeduction", input.accountDeduction, (value) => toBooleanFlag(value, false));
+	assignIfPresent(draft, "mobilePayment", input.mobilePayment, (value) => toBooleanFlag(value, true));
+	assignIfPresent(draft, "roundingMode", input.roundingMode, toRoundingMode);
+	assignIfPresent(draft, "decimalPlaces", input.decimalPlaces, (value) => toDecimalPlaces(value, 2));
+	assignIfPresent(draft, "status", input.status, toStatus);
+	assignIfPresent(draft, "remark", input.remark, blankToNull);
+
+	return updateExExpenseItemSchema.parse(draft) as UpdateExExpenseItem;
+}
+
+function assignIfPresent(
+	draft: Record<string, unknown>,
+	key: string,
+	value: unknown,
+	mapper: (value: unknown) => unknown = (item) => item,
+): void {
+	if (value !== undefined) {
+		draft[key] = mapper(value);
+	}
+}
+
+function toAdminExpenseItemSetting(item: ExExpenseItem | ExpenseItemSettingRecord): AdminExpenseItemSettingListItem {
+	const code = toStringOrEmpty(item.expenseCode);
+
+	return {
+		id: item.id,
+		code,
+		feeType: item.expenseType || "",
+		expenseItem: item.itemName || "",
+		expenseIdentifier: code,
+		paymentType: toStringOrEmpty(item.paymentType),
+		paymentCycle: toStringOrEmpty(item.billingCycle),
+		formula: toStringOrEmpty(item.formula),
+		billingUnitPrice: toStringOrEmpty(item.unitPrice),
+		fixedFee: toStringOrEmpty(item.fixedFee),
+		accountDeduction: toEnabledFlag(item.accountDeduction, "disabled"),
+		mobilePayment: toEnabledFlag(item.mobilePayment, "enabled"),
+		roundingMode: toRoundingMode(item.roundingMode),
+		decimalPlaces: toDecimalPlaces(item.decimalPlaces, 2),
+		status: toStatus(item.status),
+		createTime: formatDateTime(item.createTime),
+		updateTime: formatDateTime(item.updateTime),
+		remark: item.remark ?? "",
+	};
+}
+
+function createExpenseItemDeletePolicy(id: string): ExpenseItemSettingDeletePolicy {
+	return {
+		id,
+		success: false,
+		allowed: false,
+		deleted: false,
+		status: "unsupported",
+		reason: "delete unsupported: ex_expense_items has no deletedAt column and physical delete is blocked by policy",
+	};
+}
+
+function toStringOrEmpty(value: unknown): string {
+	if (value === undefined || value === null) {
+		return "";
+	}
+	return String(value);
+}
+
+function blankToNull(value: unknown): string | null {
+	if (value === undefined || value === null) {
+		return null;
+	}
+	const result = String(value).trim();
+	return result === "" ? null : result;
+}
+
+function toDecimalString(value: unknown, fallback: string): string {
+	if (value === undefined || value === null || String(value).trim() === "") {
+		return fallback;
+	}
+	return String(value);
+}
+
+function toBooleanFlag(value: unknown, fallback: boolean): boolean {
+	if (value === undefined || value === null || value === "") {
+		return fallback;
+	}
+	if (typeof value === "boolean") {
+		return value;
+	}
+
+	const normalized = String(value).trim().toLowerCase();
+	if (["1", "true", "yes", "enabled", "enable", "on"].includes(normalized)) {
+		return true;
+	}
+	if (["0", "false", "no", "disabled", "disable", "off"].includes(normalized)) {
+		return false;
+	}
+
+	return fallback;
+}
+
+function toEnabledFlag(value: unknown, fallback: "enabled" | "disabled"): string {
+	return toBooleanFlag(value, fallback === "enabled") ? "enabled" : "disabled";
+}
+
+function toRoundingMode(value: unknown): "round" | "ceil" | "floor" {
+	return value === "ceil" || value === "floor" || value === "round" ? value : "round";
+}
+
+function toDecimalPlaces(value: unknown, fallback: number): number {
+	const result = Number(value);
+	return Number.isInteger(result) && result >= 0 ? result : fallback;
+}
+
+function toStatus(value: unknown): "enabled" | "disabled" {
+	return value === "disabled" ? "disabled" : "enabled";
+}
+
 function toOweFee(fee: FeeItem): OweFeeItem {
 	return {
 		oweFeeId: `OWE_${fee.feeId}`,
@@ -650,5 +1011,28 @@ const defaultCallables: OweFeeCallableItem[] = [
 		endTime: "2026-04-30",
 		remark: "已电话提醒业主尽快缴费",
 		createTime: "2026-04-15 10:00:00",
+	},
+];
+
+const defaultExpenseItemSettings: AdminExpenseItemSettingListItem[] = [
+	{
+		id: "00000000-0000-4000-8000-000000000001",
+		code: "FEE_PROPERTY",
+		feeType: "PROPERTY",
+		expenseItem: "Property fee",
+		expenseIdentifier: "FEE_PROPERTY",
+		paymentType: "monthly",
+		paymentCycle: "1",
+		formula: "fixedFee",
+		billingUnitPrice: "0",
+		fixedFee: "128",
+		accountDeduction: "enabled",
+		mobilePayment: "enabled",
+		roundingMode: "round",
+		decimalPlaces: 2,
+		status: "enabled",
+		createTime: "2026-04-26 10:00:00",
+		updateTime: "2026-04-26 10:00:00",
+		remark: "phase5a default",
 	},
 ];

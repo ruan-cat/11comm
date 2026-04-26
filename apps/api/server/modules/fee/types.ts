@@ -1,4 +1,9 @@
-import type { HouseChargeListItem, PageDTO, PaymentDetailsFormListItem } from "@01s-11comm/type";
+import type {
+	ExpenseItemSettingListItem,
+	HouseChargeListItem,
+	PageDTO,
+	PaymentDetailsFormListItem,
+} from "@01s-11comm/type";
 
 export interface LegacyPageQuery {
 	page?: number;
@@ -152,3 +157,53 @@ export type AdminHouseChargeListItem = HouseChargeListItem & {
 
 export type AdminHouseChargePage = PageDTO<AdminHouseChargeListItem>;
 export type PaymentDetailsFormPage = PageDTO<PaymentDetailsFormListItem>;
+
+export type AdminExpenseItemSettingListItem = ExpenseItemSettingListItem & {
+	mobilePayment: string;
+	roundingMode: string;
+	decimalPlaces: number;
+};
+
+export interface ExpenseItemSettingQuery {
+	pageIndex: number;
+	pageSize: number;
+	code?: string;
+	expenseItem?: string;
+	expenseIdentifier?: string;
+	paymentType?: string;
+	accountDeduction?: string;
+	status?: string;
+}
+
+export interface ExpenseItemSettingMutationInput {
+	id?: string;
+	code?: string;
+	feeType?: string;
+	expenseItem?: string;
+	expenseIdentifier?: string;
+	paymentType?: string;
+	paymentCycle?: string;
+	formula?: string;
+	billingUnitPrice?: string | number;
+	fixedFee?: string | number;
+	accountDeduction?: string | boolean;
+	mobilePayment?: string | boolean;
+	roundingMode?: string;
+	decimalPlaces?: string | number;
+	status?: string;
+	remark?: string | null;
+	unit?: unknown;
+	prepaymentPeriod?: unknown;
+	prepaidPeriodDays?: unknown;
+}
+
+export interface ExpenseItemSettingDeletePolicy {
+	id: string;
+	success: false;
+	allowed: false;
+	deleted: false;
+	status: "unsupported";
+	reason: string;
+}
+
+export type AdminExpenseItemSettingPage = PageDTO<AdminExpenseItemSettingListItem>;
