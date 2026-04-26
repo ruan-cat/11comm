@@ -426,6 +426,68 @@ Phase2 首批 fee/payment/report endpoint 的迁移矩阵如下：
 4. 不允许 admin 和 app 各自维护两套 fee mock 数据；同一业务必须共享 seed、repository 或数据库查询。
 5. 当某个 app endpoint 找不到 admin 业务坐标时，不能阻断 app 迁入，但必须写入 admin 功能缺口清单，并在后续规格中补齐后台页面、菜单、权限和 CRUD；这类 endpoint 不纳入 Phase2 首批验收。
 
+### `apps/api` 接口文件组织设计
+
+`apps/api/server/modules/{domain}` 不是直接照搬 `apps/app/server/modules`，也不是直接照搬 `apps/admin/server`。它是唯一 Nitro API 服务中的领域模块，用一套领域服务同时支撑 app legacy 接口和 admin canonical 接口。
+
+以 `apps/api/server/modules/fee` 为样板时，三类来源的职责如下：
+
+| 来源                                               | 进入 `apps/api` 后的角色           | 说明                                                                                                                                            |
+| -------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/app/server/modules/{domain}`                 | legacy endpoint 与旧 DTO 契约来源  | 提供 `/app/**`、`/callComponent/**` 旧路径、旧字段、GET/POST 兼容方式和旧响应形态。迁入后由 `legacy-endpoints.ts` 与 `legacy-adapter.ts` 承接。 |
+| `apps/admin/server/api/**` 与 `rank-route-keys.ts` | admin canonical 路由和返回结构参考 | 提供后台业务路径、文件路由风格、`JsonVO<PageDTO<T>>` 响应结构和三级业务坐标。迁入后由 `server/routes/api/**` 与 `admin-adapter.ts` 承接。       |
+| `apps/api/server/modules/{domain}`                 | 新 API 的领域模块                  | 只保留一套 repository/service/runtime，再通过不同 adapter 输出 app legacy DTO 与 admin canonical DTO。                                          |
+
+领域模块推荐文件结构如下：
+
+```text
+apps/api/server/modules/{domain}/
+  types.ts             # 当前迁移波次需要的 DTO、query、result 类型
+  repository.ts        # 数据访问层；可按阶段使用 fallback/in-memory 或 DB repository
+  service.ts           # 领域业务能力层；app 和 admin 都只能通过它复用业务逻辑
+  legacy-adapter.ts    # 把 service 结果转换为 app 旧字段和旧响应语义
+  admin-adapter.ts     # 把 service 结果转换为 admin JsonVO/PageDTO 和 canonical DTO
+  legacy-endpoints.ts  # 只登记允许迁入 runtime 的 /app/** 或 /callComponent/** 旧路径
+  runtime.ts           # 组装 repository、service、legacyAdapter、adminAdapter
+  index.ts             # 统一导出当前 domain 模块
+```
+
+其中 `server/modules/**` 只是领域模块目录，不是 Nitro 文件路由目录。真正会被 Nitro 文件路由系统直接暴露的文件在 `server/routes/**`；app legacy 路径则通过 `nitro.config.ts` 的 `/app/**` handler 进入统一 dispatcher。
+
+app legacy 请求链路：
+
+```text
+/app/fee.listFee
+  -> nitro.config.ts handlers: /app/**
+  -> server/handlers/legacy-dispatch.ts
+  -> server/shared/runtime/runtime-endpoints.ts
+  -> server/modules/fee/legacy-endpoints.ts
+  -> server/modules/fee/legacy-adapter.ts
+  -> server/modules/fee/service.ts
+  -> server/modules/fee/repository.ts
+```
+
+admin canonical 请求链路：
+
+```text
+/api/property-manage/expense-manage/house-charge/list
+  -> server/routes/api/property-manage/expense-manage/house-charge/list.post.ts
+  -> server/modules/fee/runtime.ts
+  -> server/modules/fee/admin-adapter.ts
+  -> server/modules/fee/service.ts
+  -> server/modules/fee/repository.ts
+```
+
+`runtime.ts` 是每个领域模块的装配入口。它决定当前请求使用 fallback repository 还是 DB repository，并把同一个 service 注入到 legacy/admin 两套 adapter 中。fee 样板已经允许在存在数据库配置时使用 DB repository；repair Wave 4A 则刻意保持 fallback-only，DB adapter 和 `useDb(event)` 分支必须另开任务评审后再加入。
+
+这个组织方式的关键约束是：
+
+1. app 旧路径只在 `legacy-endpoints.ts` 白名单登记，禁止把所有 legacy endpoint 一次性暴露出去。
+2. app 旧字段只允许停留在 `legacy-adapter.ts`，不能反向污染 admin canonical DTO 或 `apps/type` schema。
+3. admin 路由只放在 `server/routes/api/**`，并按 `rank-route-keys.ts` 的业务路径组织。
+4. 业务逻辑只能沉到 `service.ts` 和 `repository.ts`，避免 legacy adapter 与 admin adapter 各写一套查询或 mock 数据。
+5. 每个迁移波次必须同时有 legacy tests、admin tests、service/repository tests 和 runtime manifest tests，不能只验证其中一端。
+
 #### 第一阶段自测与 Vitest 验收设计
 
 第一阶段的目标不是“已经完成统一后端”，而是证明 `01s-11comm-app` 被安全迁入、可被 workspace 识别、app 原有契约没有被破坏，并且后续 `apps/api` 抽取有稳定测试输入。第一阶段不能只靠人工打开页面确认，必须建立可重复执行的测试和清单门禁。
