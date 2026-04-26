@@ -1,4 +1,48 @@
 <script lang="ts" setup>
+/**
+ * 房屋收费页面后续开发待办说明
+ *
+ * 当前阶段状态：
+ * - Phase5 仅完成 `houseCharge` 的列表与详情读取联调。
+ * - 页面保留新增、编辑、删除按钮入口，但这些入口当前只是后续接线坐标，不代表写接口已经完成。
+ * - 当前禁止使用 mock、testAsync 或静默成功来伪造 create/update/delete，否则会误导后续联调和验收。
+ *
+ * 业务判断：
+ * - “房屋收费”业务本身需要新增、编辑、删除/作废类操作入口，这不是业务上说不通。
+ * - 但当前页面表单字段有一批更像“收费项目配置”的字段，例如费用类型、收费项目、缴费类型、
+ *   账户抵扣、手机缴费、取整方式、计算公式、计费单价、固定费用等。
+ * - 这些字段更贴近 `expenseItemSetting` / `exExpenseItems`，不能直接写入房屋收费账单表 `exHouseCharges`。
+ *
+ * 后续必须完成的字段调整：
+ * - 将本页面的新增/编辑表单调整为真正的房屋收费账单模型。
+ * - 推荐围绕以下字段重新设计表单：
+ *   - `houseId`：关联房屋。
+ *   - `expenseItem`：收费项目名称或收费项目引用。
+ *   - `receivableAmount`：应收金额。
+ *   - `receivedAmount`：已收金额，通常新增时默认为 0。
+ *   - `billingPeriod`：账单周期。
+ *   - `billDate`：账单生成日期。
+ *   - `dueDate`：到期日期。
+ *   - `status`：缴费状态，例如 unpaid/partial/paid/cancelled 等。
+ *   - `remark`：备注。
+ * - 若需要从收费项目配置生成房屋账单，应设计为“选择收费项目后生成账单”的业务动作，
+ *   不应把收费项目配置字段混入房屋收费账单表单。
+ *
+ * 后续必须补齐的后端与接口：
+ * - 在字段归属确认后，再为 `houseCharge` 补齐 create/update/delete 或更准确的业务 action。
+ * - create/update 必须使用 `apps/type/src/business/property-manage/expense-manage/schema.ts`
+ *   中 `exHouseCharges` 对应的 Drizzle/Zod schema 做校验。
+ * - 删除不应默认做物理删除；需要先确认账单删除策略。
+ *   - 未缴且未生效账单：可评审是否允许删除。
+ *   - 已缴账单：通常不能删除，应考虑作废、退款、冲正或审计保留。
+ *   - 部分缴费账单：必须有明确业务规则后才能开放操作。
+ *
+ * 后续前端接线要求：
+ * - 保留本页面按钮入口，用 TODO/disabled/pending 提示表达“待实现”，不要直接删除入口。
+ * - 后端接口完成后，在 `apps/admin/src/api/property-manage/expense-manage/house-charge/index.ts`
+ *   增加对应 hook，再把本页面 `openDialog` 和删除入口接到真实 mutation。
+ * - 联调时必须走 `/api-shadow` 命中独立 `apps/api`，并用真实 Neon 验证写入、查询和清理测试数据。
+ */
 definePage({
 	meta: {
 		// 房屋收费
@@ -22,13 +66,14 @@ import HouseChargeForm from "./components/form.vue";
 // 从类型库导入正确的类型
 import type { HouseChargeListItem, HouseChargeQueryParams } from "@01s-11comm/type";
 import { statusOptions } from "@01s-11comm/type";
-import { useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
-import { useToggle } from "@vueuse/core";
-import { consola } from "consola";
+import { getHouseChargeDetail, useHouseChargeListQuery } from "@/api/property-manage/expense-manage/house-charge";
 import { defaultAddDialogParams } from "@/config/constant";
 import { addDialog, closeDialog } from "@/components/ReDialog";
+import { ElMessage } from "element-plus";
 
 const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
+const houseChargeMutationPendingMessage =
+	"房屋收费写接口尚未完成字段归属与删除策略评审，当前仅保留前端入口，不提交数据。";
 
 /** 表单组件实例 */
 const houseChargeFormInstance = ref<InstanceType<typeof HouseChargeForm> | null>(null);
@@ -103,7 +148,7 @@ const columns = computed<TableColumnList>(() => [
 	{
 		/** @see https://vscode.dev/github/pure-admin/pure-admin-table/blob/main/src/columns.tsx#L36 */
 		headerRenderer: createHeaderRenderer(transformI18n($t("common.table.operation"))),
-		width: 230,
+		width: 260,
 		fixed: "right",
 		slot: "operation",
 	},
@@ -149,6 +194,17 @@ function handleReSearch() {
 function handleSearch() {
 	updateParams({ ...plusSearchModel.value, pageIndex: 1 });
 }
+
+async function handleDetail(row: HouseChargeListItem) {
+	try {
+		const response = await getHouseChargeDetail({ id: row.id });
+		const detail = response.data;
+		ElMessage.success(detail?.name || detail?.expenseItem || row.name || "查询成功");
+	} catch (error) {
+		ElMessage.error("查询详情失败");
+	}
+}
+
 /** 打开弹框 参数 */
 interface OpenDialogParams {
 	mode: Mode;
@@ -158,19 +214,20 @@ interface OpenDialogParams {
 /** 模式控制 */
 const { mode, setMode, isAdd, isEdit } = useMode();
 
-/** 测试异步函数 */
-const [isFetchingT, setIsLoadingT] = useToggle(false);
-
-/** 模拟异步操作函数 */
-async function testAsync() {
-	setIsLoadingT(true);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
-	await sleep(1300);
-	setIsLoadingT(false);
-	consola.log("模拟异步操作, isFetchingT ", isFetchingT.value);
+function warnHouseChargeMutationPending() {
+	ElMessage.warning(houseChargeMutationPendingMessage);
 }
 
-/** 打开弹框 */
+function handleDeletePending(row: HouseChargeListItem) {
+	ElMessage.warning(`${row.name || "房屋收费"}：${houseChargeMutationPendingMessage}`);
+}
+
+/**
+ * TODO(Phase5 后续波次):
+ * 这是 houseCharge create/update 的前端入口占位。
+ * 只有字段归属确认写入 `exHouseCharges` 正确，且后端补齐 create/update 后，才能在这里接真实 hook。
+ * 当前禁止复用 mock/testAsync 假提交，避免把收费项目配置字段错误写入房屋收费账单。
+ */
 function openDialog({ mode, row }: OpenDialogParams) {
 	setMode(mode);
 
@@ -253,10 +310,7 @@ function openDialog({ mode, row }: OpenDialogParams) {
 				btnClick: async ({ dialog: { options, index }, button }) => {
 					const res = await houseChargeFormInstance.value?.plusFormInstance?.handleSubmit();
 					if (res) {
-						button.btn.loading = true;
-						await testAsync();
-						button.btn.loading = false;
-						closeDialog(options, index);
+						warnHouseChargeMutationPending();
 					}
 				},
 			},
@@ -283,6 +337,10 @@ onMounted(async () => {
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
+				<!--
+					TODO(Phase5 后续波次):
+					保留 houseCharge 新增入口，等待 create 接口和字段归属评审完成后接入真实 hook。
+				-->
 				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
@@ -298,13 +356,21 @@ onMounted(async () => {
 					@page-current-change="handleCurrentPageChange"
 				>
 					<template #operation="{ row }">
+						<!--
+							TODO(Phase5 后续波次):
+							编辑入口仅用于保留前端接线位置；后端 create/update 未完成前不提交数据。
+						-->
 						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
-						<ElButton type="info">
+						<ElButton type="info" @click="handleDetail(row)">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="danger">
+						<!--
+							TODO(Phase5 后续波次):
+							exHouseCharges 当前没有 deletedAt；delete 只有在业务确认软删除/物理删除策略后才能接真实 hook。
+						-->
+						<ElButton type="danger" @click="handleDeletePending(row)">
 							{{ transformI18n($t("common.buttons.del")) }}
 						</ElButton>
 					</template>
