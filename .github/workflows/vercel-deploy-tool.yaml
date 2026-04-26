@@ -28,33 +28,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 安装pnpm
+      - name: 安装 pnpm 包管理器
         uses: pnpm/action-setup@v5
-        with:
-          run_install: |
-            - recursive: true
-            - args: [--global, "vercel", "@dotenvx/dotenvx", "tsx", "turbo"]
 
-      - name: 安装node
+      - name: 安装 Node.js 运行时
         uses: actions/setup-node@v6
         with:
           node-version: 22.14.0
           cache: pnpm
 
-      - name: 检查版本
+      - name: 安装工作区依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 检查本地工具版本
         run: |
           node -v
           pnpm -v
-          vc -v
+          pnpm exec vercel --version
+          pnpm exec turbo info
 
-      - name: pnpm全局检查依赖包
-        run: pnpm ls -g
+      - name: 登录 Turbo 远程缓存
+        run: pnpm exec turbo login --token=${{ env.TURBO_TOKEN }} --team=${{ env.TURBO_TEAM }}
 
-      - name: turbo login 远程登录
-        run: turbo login --token=${{env.TURBO_TOKEN}} --team=${{env.TURBO_TEAM}}
-
-      - name: turbo link 链接远程项目
-        run: turbo link --token=${{env.TURBO_TOKEN}} --scope=${{env.TURBO_TEAM}} --yes
+      - name: 关联 Turbo 远程缓存项目
+        run: pnpm exec turbo link --token=${{ env.TURBO_TOKEN }} --scope=${{ env.TURBO_TEAM }} --yes
 
       - name: 运行自写的vercel部署工具
         run: |

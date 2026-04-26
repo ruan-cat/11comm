@@ -1,4 +1,4 @@
-name: Release
+name: 发布 Release
 
 on:
   push:
@@ -13,6 +13,7 @@ permissions: write-all
 
 jobs:
   release:
+    name: 创建 GitHub Release
     runs-on: ubuntu-latest
     steps:
       # 该工作流要求我们必传 pnpm-lock.yaml 否则初始化失败
@@ -28,22 +29,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 安装pnpm
+      - name: 安装 pnpm 包管理器
         uses: pnpm/action-setup@v5
-        with:
-          run_install: |
-            - recursive: true
-            - args: [--global, "npm"]
 
-      - name: 安装node
+      - name: 安装 Node.js 运行时
         uses: actions/setup-node@v6
         with:
-          node-version: lts/*
+          node-version: 22.14.0
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
 
       - name: corepack手动再安装一次pnpm
         run: corepack enable && corepack install
+
+      - name: 安装工作区依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 检查本地工具版本
+        run: |
+          node -v
+          pnpm -v
+          pnpm exec gh --version || gh --version
 
       # 目前对于该项目来说 是不需要构建发布东西的
       # - name: Build

@@ -49,3 +49,12 @@ jobs:
 
       - name: 运行全量 Turbo CI
         run: pnpm run ci
+
+      - name: 验证 API Phase3 基础设施
+        run: pnpm -F @01s-11comm/api run verify:phase3
+
+      - name: 扫描禁止的 API 模式
+        run: |
+          ! rg -n "from ['\"]h3['\"]" apps/api
+          ! rg -n "@neondatabase/auth|JWT|jwt|Neon Auth|Token 验证|token 验证|Bearer|Authorization" apps/api/server apps/api/tests
+          ! rg -n "pgTable|createInsertSchema|createSelectSchema" apps/api/server apps/api/tests
