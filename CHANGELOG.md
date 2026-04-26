@@ -1,3 +1,29 @@
+## v1.0.1-beta.4
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.3...v1.0.1-beta.4)
+
+### ✨ 新增功能
+
+- **api:** 迁移费用管理 Phase5 后台接口 ([bad86f7c](https://github.com/ruan-cat/11comm/commit/bad86f7c))
+- **admin:** 接入费用管理 Phase5 影子接口 ([6a4d268e](https://github.com/ruan-cat/11comm/commit/6a4d268e))
+
+### 📖 Documentation
+
+- **api-migration:** 记录 Phase5 完成门禁 ([b142ef63](https://github.com/ruan-cat/11comm/commit/b142ef63))
+
+### ✅ Tests
+
+- **api:** 补充费用管理 Phase5 后端验证 ([1fd7d4c0](https://github.com/ruan-cat/11comm/commit/1fd7d4c0))
+- **admin:** 补充费用管理 Phase5 hook 测试 ([e584dc64](https://github.com/ruan-cat/11comm/commit/e584dc64))
+
+### 🔧 更新配置
+
+- **admin:** 增加 API 影子代理中间件 ([148e344c](https://github.com/ruan-cat/11comm/commit/148e344c))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.3
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.2...v1.0.1-beta.3)
