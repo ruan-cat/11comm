@@ -60,6 +60,17 @@ describe("fee admin canonical adapter", () => {
 				totalPages: expect.any(Number),
 			},
 		});
+		expect(response.data.list[0]).toMatchObject({
+			id: expect.any(String),
+			name: expect.any(String),
+			status: expect.any(String),
+			createTime: expect.any(String),
+			updateTime: expect.any(String),
+			remark: expect.any(String),
+			houseId: expect.any(String),
+			expenseItem: expect.any(String),
+			receivableAmount: expect.any(String),
+		});
 	});
 
 	test("returns payment-details-form list with JsonVO PageDTO shape", async () => {

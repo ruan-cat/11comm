@@ -8,7 +8,7 @@ import {
 import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-endpoints";
 
 describe("fee legacy endpoints", () => {
-	test("registers only Phase2 fee payment report legacy endpoints", () => {
+	test("keeps Phase2 fee payment report endpoints registered and excludes device endpoints", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		expect(findEndpointDefinition(registry, "GET", "/app/fee.listFee")).toBeTruthy();

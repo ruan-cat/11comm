@@ -60,12 +60,17 @@ describe("endpoint registry runtime", () => {
 		});
 	});
 
-	test("runtime endpoint definitions only include Phase2 allowed legacy endpoints", () => {
+	test("runtime endpoint definitions include only allowed Phase2 and Phase4A legacy endpoints", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		expect(findEndpointDefinition(registry, "GET", "/app/fee.listFee")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/payment.nativeQrcodePayment")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/reportFeeMonthStatistics.queryReportFeeSummary")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listOwnerRepairs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/repairSetting.listRepairSettings")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/dict.queryRepairStates")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
 	});
