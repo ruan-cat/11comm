@@ -145,7 +145,73 @@ describe("fee admin canonical adapter", () => {
 			},
 		});
 	});
+
+	test("house-charge route returns admin failure when runtime adapter throws", async () => {
+		process.env.DATABASE_URL = "postgres://example.invalid/test";
+		mockedReadBody.mockResolvedValue({
+			pageIndex: 1,
+			pageSize: 20,
+		});
+		const event = createRouteEvent({
+			context: {
+				feeRuntime: {
+					adminAdapter: {
+						listHouseCharges: async () => {
+							throw new Error("runtime unavailable");
+						},
+					},
+				},
+			},
+		});
+
+		const response = await houseChargeListHandler(event);
+
+		expect(response).toMatchObject({
+			success: false,
+			code: 500,
+			data: null,
+		});
+		expect(event.res.status).toBe(500);
+	});
+
+	test("payment-details route returns admin failure when runtime adapter throws", async () => {
+		process.env.DATABASE_URL = "postgres://example.invalid/test";
+		mockedReadBody.mockResolvedValue({
+			pageIndex: 1,
+			pageSize: 20,
+		});
+		const event = createRouteEvent({
+			context: {
+				feeRuntime: {
+					adminAdapter: {
+						listPaymentDetailsForm: async () => {
+							throw new Error("runtime unavailable");
+						},
+					},
+				},
+			},
+		});
+
+		const response = await paymentDetailsFormListHandler(event);
+
+		expect(response).toMatchObject({
+			success: false,
+			code: 500,
+			data: null,
+		});
+		expect(event.res.status).toBe(500);
+	});
 });
+
+function createRouteEvent(options: { context?: Record<string, unknown> } = {}): any {
+	return {
+		context: options.context ?? {},
+		res: {
+			headers: new Headers(),
+			status: 200,
+		},
+	};
+}
 
 function restoreEnv(name: string, value: string | undefined): void {
 	if (value === undefined) {

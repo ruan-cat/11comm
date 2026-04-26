@@ -10,9 +10,14 @@
 	"scripts": {
 		"dev": "nitro dev",
 		"build": "nitro build",
+		"build:node": "nitro build --preset node-server",
+		"build:vercel": "nitro build --preset vercel",
+		"build:cloudflare": "nitro build --preset cloudflare-module",
 		"preview": "nitro preview",
 		"typecheck": "tsc --noEmit",
-		"test": "vitest run"
+		"test": "vitest run",
+		"test:infra": "vitest run tests/infra tests/smoke tests/runtime",
+		"verify:phase3": "pnpm run test:infra && pnpm run typecheck && pnpm run build:node && pnpm run build:vercel && pnpm run build:cloudflare"
 	},
 	"dependencies": {
 		"@01s-11comm/type": "workspace:^",

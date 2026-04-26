@@ -11,8 +11,10 @@ describe("api smoke endpoints", () => {
 		expect(response).toMatchObject({
 			success: true,
 			service: "@01s-11comm/api",
-			phase: "phase2-shadow",
+			phase: "phase3-infra",
 			health: "/__nitro/health",
+			ready: "/__nitro/ready",
+			endpoints: "/__nitro/endpoints",
 		});
 	});
 
@@ -23,6 +25,11 @@ describe("api smoke endpoints", () => {
 			success: true,
 			service: "@01s-11comm/api",
 			status: "ok",
+			checks: {
+				database: {
+					configured: expect.any(Boolean),
+				},
+			},
 		});
 		expect(response.timestamp).toEqual(expect.any(String));
 	});

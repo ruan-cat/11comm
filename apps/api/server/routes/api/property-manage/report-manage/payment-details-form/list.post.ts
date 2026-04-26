@@ -1,21 +1,21 @@
-import { defineHandler, readBody } from "nitro/h3";
+import { defineHandler, readBody, setResponseStatus } from "nitro/h3";
 import { getFeeRuntime } from "../../../../../modules/fee/runtime";
+import { adminFailure } from "../../../../../shared/runtime/response-builder";
+import { toOptionalTrimmedString } from "../../../../../utils/string";
 
 export default defineHandler(async (event) => {
-	const body = (await readBody(event)) as Record<string, unknown>;
-	const { adminAdapter } = getFeeRuntime(event);
+	try {
+		const body = (await readBody(event)) as Record<string, unknown>;
+		const { adminAdapter } = getFeeRuntime(event);
 
-	return adminAdapter.listPaymentDetailsForm({
-		pageIndex: Number(body.pageIndex || 1),
-		pageSize: Number(body.pageSize || 20),
-		name: asOptionalString(body.name),
-		status: asOptionalString(body.status),
-	});
-});
-
-function asOptionalString(value: unknown): string | undefined {
-	if (value === undefined || value === null || `${value}`.trim() === "") {
-		return undefined;
+		return await adminAdapter.listPaymentDetailsForm({
+			pageIndex: Number(body.pageIndex || 1),
+			pageSize: Number(body.pageSize || 20),
+			name: toOptionalTrimmedString(body.name),
+			status: toOptionalTrimmedString(body.status),
+		});
+	} catch (error) {
+		setResponseStatus(event, 500);
+		return adminFailure("查询失败", error);
 	}
-	return `${value}`.trim();
-}
+});

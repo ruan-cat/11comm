@@ -1,7 +1,7 @@
 import { defineHandler } from "nitro/h3";
-import { hasDatabaseUrl } from "../../db";
 import { getPublicRuntimeConfig } from "../../shared/runtime/env";
 import { getApiRequestContext } from "../../shared/runtime/request-context";
+import { runtimeEndpointManifest } from "../../shared/runtime/runtime-endpoints";
 
 export default defineHandler((event) => {
 	const requestContext = getApiRequestContext(event);
@@ -11,13 +11,7 @@ export default defineHandler((event) => {
 		success: true,
 		service: publicConfig.serviceName,
 		phase: publicConfig.phase,
-		status: "ok",
 		requestId: requestContext.requestId,
-		timestamp: new Date().toISOString(),
-		checks: {
-			database: {
-				configured: hasDatabaseUrl(event),
-			},
-		},
+		data: runtimeEndpointManifest,
 	};
 });

@@ -4,6 +4,8 @@ export interface LegacyResponse<T> {
 	code: number;
 	msg: string;
 	data: T;
+	requestId?: string;
+	errorCode?: string;
 }
 
 export function legacySuccess<T>(data: T, msg = "操作成功"): LegacyResponse<T> {
@@ -14,11 +16,17 @@ export function legacySuccess<T>(data: T, msg = "操作成功"): LegacyResponse<
 	};
 }
 
-export function legacyFailure(message: string, code = 500): LegacyResponse<null> {
+export function legacyFailure(
+	message: string,
+	code = 500,
+	meta: { requestId?: string; errorCode?: string } = {},
+): LegacyResponse<null> {
 	return {
 		code,
 		msg: message,
 		data: null,
+		requestId: meta.requestId,
+		errorCode: meta.errorCode,
 	};
 }
 
