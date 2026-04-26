@@ -23,6 +23,24 @@
 8. Phase2 的范围是“最小可运行 `apps/api` 影子服务 + fee/payment/report 首批纵切样板”；它不是只搭建无业务接口的纯基础设施空壳，也不是 repair/resource/parking 等多个模块并行迁移规划。
 9. 纯基础设施壳层加固、CI、部署、完整运行时配置和接入策略归入阶段 3；repair/resource/parking 等多模块扩张归入阶段 4。
 
+## 后续报告编写规范
+
+本迁移设计的后续迁移、CI、复核、多代理协作任务默认不再为每个子代理、每个阶段、每个检查点拆分多个报告文件。用户已经明确不喜欢大量碎片化报告文件，后续文档沉淀应以单一汇总报告为默认行为。
+
+如确实需要编写报告，应只创建或持续维护一个汇总报告文件，建议总长度约 3500 行左右。该长度应足以覆盖背景、探索过程、实现记录、验证证据、复核结论、遗留风险和后续 TODO，不应因为子任务数量较多而自动拆成多个报告。
+
+汇总报告应按章节收纳探索、编辑、复核、验证证据和后续事项。子代理反馈应由主代理合并入同一个汇总报告，或直接汇总到最终回复；不允许制造多个碎片化报告文件来分别承载子代理、阶段或检查点反馈。
+
+只有在以下情况之一成立时，才允许拆分报告：
+
+1. 用户当次明确要求拆分报告。
+2. 外部工具或平台强制要求多个文件。
+3. 单文件已经大到明显影响阅读、检索、编辑器打开或工具处理。
+
+拆分前必须说明理由，并尽量保持最少文件数。若已有多个临时报告，应优先把有效内容合并进一个汇总报告；合并后是否删除临时文件，必须按用户确认执行，不得静默删除用户可能需要的历史报告。
+
+该规范优先约束本迁移设计的后续阶段。它与旧 `CLAUDE.md`、`AGENTS.md` 中“子代理以报告文件反馈”的旧习惯发生冲突时，以单一汇总报告规范为准，除非用户当次明确要求多文件。
+
 ## 目标架构
 
 ```text
@@ -112,7 +130,7 @@ apps/app/
 | 类别                  | 文档形态                                                                                         | 处理策略                                                                                        |
 | --------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
 | P0 迁移关键上下文     | Nitro 双运行时、legacy API、mock endpoint、Vite 兼容、迁移计划、当前 README 补充说明             | 保留并优先纳入迁移索引，迁移 `apps/api` 时持续同步                                              |
-| P1 app 业务与历史经验 | 业务页面迁移报告、OpenSpec 归档、组件 README、排错复盘、uni-app 兼容经验                         | 保留在 `apps/app`，必要时摘录到后续专题报告                                                     |
+| P1 app 业务与历史经验 | 业务页面迁移报告、OpenSpec 归档、组件 README、排错复盘、uni-app 兼容经验                         | 保留在 `apps/app`，必要时摘录到单一汇总报告的对应章节                                           |
 | P2 模板/第三方参考    | unibest/VitePress 基础文档、uni_modules 文档、gitee-example 参考说明                             | 保留但降权，清单中标记来源，不作为主项目规范                                                    |
 | P3 重复或过时候选     | 多 AI 工具重复的 OpenSpec skills、完全相同的 `CLAUDE.md`/`AGENTS.md`/`GEMINI.md`、旧 prompt 草稿 | OpenSpec/OPSX app-local 副本已按根 canonical 受控删除；其他重复项继续记录重复关系和建议归档方向 |
 
@@ -146,7 +164,7 @@ AI 记忆文档的迁移目标不是“把所有规则揉成一个大文件”�
 | app `.claude/skills/**` 中的 app 专属非 OpenSpec skills                                                 | 保留在 `apps/app/.claude/skills/` | 进入 skills 价值清单和冲突矩阵，后续逐项合并                                          |
 | app `.claude/commands/opsx/**`、`.claude/skills/openspec-*`、`.agent/**`                                | 删除或保持不存在                  | 根 OpenSpec commands/skills 为 canonical，迁移清单记录 `dropped-after-root-canonical` |
 | app `.cursor/**`、`.gemini/**`、`.qoder/**`、`.trae/**`、`.kiro/**`                                     | 默认不迁入                        | 如确有独特经验，只人工摘录到清单，不复制原目录                                        |
-| app 业务、uni-app、ColorUI 到 wot-design-uni、z-paging、动态标题、Nitro legacy/mock、Vite mock 兼容经验 | 保留在 `apps/app` 原文位置        | 标记为可迁移经验，优先进入后续专题整理                                                |
+| app 业务、uni-app、ColorUI 到 wot-design-uni、z-paging、动态标题、Nitro legacy/mock、Vite mock 兼容经验 | 保留在 `apps/app` 原文位置        | 标记为可迁移经验，优先进入单一汇总报告的后续整理章节                                  |
 | 与主项目同名或同职责的 skills                                                                           | 保留 app 原文，不覆盖主项目       | 生成冲突矩阵，明确 canonical 指向和差异                                               |
 | 包含敏感信息或个人环境的记忆                                                                            | 阻断原样公开迁入或先脱敏          | 保留变量名、错误形态、复现步骤，移除真实值                                            |
 
@@ -164,7 +182,7 @@ skills 合并规则：
 - 同名 skill 必须先比较职责、触发条件、禁止项、示例和相关脚本；同名不等于可覆盖，不同名也可能职责冲突。
 - 可复用经验优先以“摘录补充 canonical skill”的方式进入主项目技能，而不是复制一份平行 skill。
 - 如果 app skill 只服务 uni-app、移动端 mock、legacy API 或 app 内组件迁移，应保留在 `apps/app` 作用域，不升级为全仓库技能。
-- 如果 app skill 中记录的是事故复盘、排错经验或迁移教训，应优先沉淀到专题报告或对应 canonical skill 的“历史事故/约束”章节。
+- 如果 app skill 中记录的是事故复盘、排错经验或迁移教训，应优先沉淀到单一汇总报告的对应章节或对应 canonical skill 的“历史事故/约束”章节。
 
 必须生成的合并证据：
 
@@ -460,6 +478,9 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 
 - 补齐 `apps/api` 独立启动、构建、测试、CI 和部署流程。
 - 补齐 `apps/api` 统一请求校验层；如需要直接使用 `zod`，从本阶段随 validation runtime 一起引入，Phase2 不保留未使用的直接 `zod` 依赖。
+- GitHub Actions CI 必须先 checkout，再 setup pnpm，再使用 `actions/setup-node@v6` 配置 Node 22.14.0 和 pnpm cache，随后运行 `pnpm install --frozen-lockfile`；依赖安装不得发生在 Node 22.14.0 配置之前。
+- CI 必须使用 workspace-local `pnpm exec turbo` 和根脚本 `pnpm run ci` 做全量 Turbo build；禁止全局安装或调用全局 `turbo`/`tsx`。
+- workflow、job、step 名称必须使用语义化中文；`actions/checkout@v6`、`pnpm/action-setup@v5`、`actions/setup-node@v6` 等必要 action major versions 不得为绕过问题而降级。
 - 加固 runtimeConfig、环境变量读取、CORS、日志、错误响应、健康检查和数据库连接方式。
 - 固化 API base URL、代理配置、回退策略和 app/admin 接入策略。
 - 建立 endpoint registry、统一响应基础类型、测试分层和部署验收清单。
@@ -654,3 +675,12 @@ Memorix canonical history retention gate 已按用途拆分：主线程已从旧
 - 充电桩、开门记录、repair/resource/parking 这类后续扩展能力不属于第二阶段验收；如实施过程中发现相关线索，只能作为后续阶段输入记录，不得伪装为第二阶段已完成支撑。
 - CI、部署、完整 runtimeConfig、环境变量治理、CORS 策略、日志监控和接入策略加固属于第三阶段验收，不作为第二阶段完成条件。
 - repair/resource/parking 等多模块扩张属于第四阶段验收，不作为第二阶段完成条件。
+
+Phase2 -> Phase3 的 GitHub workflow 交接验收必须满足：
+
+- `pnpm install --frozen-lockfile` 在本地和 GitHub Actions 中均通过；lockfile 不得引用不存在的 package snapshot。
+- 全量 CI 使用 `pnpm run ci`，并由 workspace-local Turbo 覆盖全部子包 build。
+- `App 专项 CI` 必须继续通过 H5 production build、type-check、Vitest 和 Nitro Vercel build。
+- workflow 不包含 `run_install`、`--global`、`pnpm ls -g`、直接 `turbo --version` 或其他依赖全局工具的步骤。
+- workflow、job、step 名称为语义化中文。
+- 不通过降级 `actions/checkout@v6`、`pnpm/action-setup@v5`、`actions/setup-node@v6` 等必要 action major versions 规避 CI 问题。

@@ -48,6 +48,22 @@ pnpm -r list --depth -1
 - `pnpm-lock.yaml` 只新增 `apps/api` importer，不保留整文件格式化 churn。
 - `apps/api` 没有直接 `zod` 依赖；Nitro build 产物中出现的 `zod+drizzle-zod` chunk 来自 `@01s-11comm/type`/`drizzle-zod` 传递依赖，不代表 Phase2 直接依赖 `zod`。
 
+### 2026-04-26 GitHub workflow 失败修复记录
+
+GitHub Actions 已补充为 Phase2 -> Phase3 交接验收输入。失败证据如下：
+
+- `CI` run `24943223560`：job `tester`，step `安装pnpm` 失败。
+- `App CI` run `24943223567`：job `build`，step `Install dependencies` 失败。
+- 直接错误为 `ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY`，缺少 `drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.15.6)(gel@2.2.0)` 的 lockfile snapshot。
+
+根因与修复：
+
+- `.github/workflows/ci.yaml` 通过 `pnpm/action-setup@v5` 的 `run_install` 在 `actions/setup-node@v6` 配置 Node 22.14.0 前递归安装依赖，并全局安装 `tsx`/`turbo`，同时违反项目禁止全局安装工具包的约束。
+- `pnpm-lock.yaml` 中 `apps/api` importer 的 `drizzle-orm` peer resolution 指向 `@types/pg@8.15.6`，但 lockfile 已存在并实际复用的是 `@types/pg@8.11.6` snapshot。
+- workflow 已调整为 checkout -> setup pnpm -> setup Node 22.14.0 with pnpm cache -> `pnpm install --frozen-lockfile` -> 输出 node/pnpm/workspace-local turbo 版本 -> 可选 Turbo 远程缓存登录/链接 -> `pnpm run ci`。
+- 全量 CI 使用 `pnpm exec turbo` 调用 workspace-local Turbo，不再全局安装 `tsx` 或 `turbo`；workflow、job、step 名称改为语义化中文，且保留 `actions/checkout@v6`、`pnpm/action-setup@v5`、`actions/setup-node@v6`。
+- `apps/api` importer 的 `drizzle-orm` resolution 已最小对齐到现有 `@types/pg@8.11.6` snapshot；本地 `pnpm install --frozen-lockfile` 继续暴露 `nitro` 和 `vitest` importer resolution 指向不存在 snapshot，已同样对齐到 lockfile 中已有 snapshot。不修改 `package.json` 依赖版本。
+
 Phase2 不负责：
 
 - 不迁移 repair/resource/parking。
@@ -1373,6 +1389,7 @@ Expected:
 
 ```text
 apps/api CI workflow。
+GitHub Actions workflow 正确性验收：Node 22.14.0 后安装依赖、`pnpm install --frozen-lockfile` 通过、workspace-local Turbo 全量构建、禁止全局安装 `turbo`/`tsx`、保留必要 action major versions、workflow/job/step 使用语义化中文命名；全量 Turbo CI pass criteria 包含 `@01s-11comm/admin`、`@01s-11comm/api`、`@01s-11comm/app`、`@01s-11comm/type` 四个 workspace 包。
 根 turbo API build/test 编排。
 部署 preset 与部署平台配置。
 统一请求校验层与 validation runtime；如需要直接使用 `zod`，从该阶段引入。
@@ -1411,6 +1428,30 @@ Expected:
 - `git diff --check` 无输出。
 - 不执行 git commit，除非用户明确授权。
 
+- [x] **Step 8: 验证 GitHub workflow 正确性纳入 Phase2 -> Phase3 交接**
+
+Run:
+
+```powershell
+pnpm install --frozen-lockfile
+rg -n "run_install|--global|pnpm ls -g|turbo --version" .github/workflows/ci.yaml .github/workflows/app-ci.yml
+pnpm run ci
+pnpm -F @01s-11comm/app run build:h5:prod
+pnpm -F @01s-11comm/app run type-check
+pnpm -F @01s-11comm/app exec vitest run
+pnpm -F @01s-11comm/app run build:nitro:vercel
+git diff --check
+```
+
+Expected:
+
+- frozen lockfile 安装不再因 `drizzle-orm` peer resolution 缺失 snapshot 失败。
+- workflow 不再包含 `run_install`、全局安装、全局 pnpm 包检查或直接 `turbo --version`。
+- 根 `pnpm run ci` 通过 workspace-local Turbo 覆盖 `@01s-11comm/admin`、`@01s-11comm/api`、`@01s-11comm/app`、`@01s-11comm/type` 四个 workspace 包。
+- `App 专项 CI` 的 H5 production build、type-check、Vitest 和 Nitro Vercel build 均通过。
+- `git diff --check` 无输出。
+- Phase3 承接 CI 时必须保留 Node 22.14.0 后安装依赖、workspace-local Turbo、必要 action major versions 不降级和语义化中文命名这些约束。
+
 ## Testing and Verification Summary
 
 Phase2 最终验收命令：
@@ -1433,6 +1474,14 @@ git -C $oldSource status --short
 $oldSourceItems = Get-ChildItem -LiteralPath $oldSource -Force
 $oldSourceItems.Count -gt 0
 git diff --check -- apps/api docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase2.md
+pnpm install --frozen-lockfile
+rg -n "run_install|--global|pnpm ls -g|turbo --version" .github/workflows/ci.yaml .github/workflows/app-ci.yml
+pnpm run ci
+pnpm -F @01s-11comm/app run build:h5:prod
+pnpm -F @01s-11comm/app run type-check
+pnpm -F @01s-11comm/app exec vitest run
+pnpm -F @01s-11comm/app run build:nitro:vercel
+git diff --check
 ```
 
 Pass criteria:
@@ -1445,3 +1494,5 @@ Pass criteria:
 - `apps/api` 不存在私有 Drizzle/Zod schema 定义。
 - 旧服务目录和旧源目录仍存在，旧源目录仍是非空 git 项目，且没有 Phase2 造成的处置痕迹。
 - Phase2 未把 charge-machine/open-door、repair/resource/parking 伪装为已迁移能力。
+- GitHub Actions workflow 正确性已纳入 Phase2 -> Phase3 交接验收；CI 必须在 Node 22.14.0 配置完成后运行 `pnpm install --frozen-lockfile`，并通过 `pnpm run ci` 使用 workspace-local Turbo 全量构建 `@01s-11comm/admin`、`@01s-11comm/api`、`@01s-11comm/app`、`@01s-11comm/type` 四个 workspace 包。
+- `App 专项 CI` 必须继续通过 H5 production build、type-check、Vitest 和 Nitro Vercel build。
