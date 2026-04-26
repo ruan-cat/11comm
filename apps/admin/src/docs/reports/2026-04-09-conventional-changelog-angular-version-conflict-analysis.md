@@ -97,7 +97,7 @@ conventional-changelog -p angular -i CHANGELOG.md -s
 
 ### 包混装关系图
 
-```mermaid
+```text
 graph TB
     subgraph ROOT["01s-11comm 根 node_modules (shamefully-hoist)"]
         R1A["root conventional-changelog<br/>4.0.0"]
@@ -143,7 +143,7 @@ graph TB
 
 ### eams-component-lib 为什么没有此问题
 
-```mermaid
+```text
 graph TB
     subgraph ROOT_E["eams 根 node_modules (shamefully-hoist)"]
         RE1["root angular preset<br/>8.3.1"]
@@ -168,7 +168,7 @@ graph TB
 
 ### 两仓对照
 
-```mermaid
+```text
 graph TB
     subgraph TOP["eams-component-lib"]
         direction LR
@@ -204,7 +204,7 @@ graph TB
 
 ### 图 1：两个项目的 angular 版本 hoist 对比
 
-```mermaid
+```text
 graph TB
     subgraph "01s-11comm 根 node_modules (shamefully-hoist=true)"
         ROOT_A["node_modules/conventional-changelog-angular<br/>→ <b>6.0.0</b> (被 hoist)"]
@@ -247,7 +247,7 @@ graph TB
 
 ### 图 2：preset-loader 加载流程与失败路径
 
-```mermaid
+```text
 flowchart TD
     START["conventional-changelog -p angular"]
     LOAD["preset-loader@5.0.0<br/>import('conventional-changelog-angular')"]
@@ -281,7 +281,7 @@ flowchart TD
 
 ### 图 3：API 版本断代详解
 
-```mermaid
+```text
 graph LR
     subgraph "旧 API (angular ≤ 7.0.0)"
         OLD_EXPORT["module.exports = Promise.all([<br/>  conventionalChangelog,<br/>  parserOpts,<br/>  recommendedBumpOpts,<br/>  writerOpts<br/>])"]

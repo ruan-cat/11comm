@@ -124,7 +124,7 @@ v1.2.2-beta.0
 
 `provider-release` 依赖 `release` 流程中产生的上下文信息（哪些包被 bumped、从哪个 tag 到哪个 tag 的范围等）。当单独调用 `provider-release` 时，它没有这些上下文，因此找不到需要创建 release 的版本。
 
-relizy 官方的文档中虽然有 "Separate Bump and Publish" 示例展示了 `provider-release` 单独使用，但那个示例中 `provider-release` 运行在一个 checkout 了特定 tag 的独立 job 里（`ref: v${{ needs.bump.outputs.version }}`），并且是针对单包仓库的 `v*` 格式 tag，不适用于 monorepo independent 模式。
+relizy 官方的文档中虽然有 "Separate Bump and Publish" 示例展示了 `provider-release` 单独使用，但那个示例中 `provider-release` 运行在一个 checkout 了特定 tag 的独立 job 里（<code v-pre>ref: v${{ needs.bump.outputs.version }}</code>），并且是针对单包仓库的 `v*` 格式 tag，不适用于 monorepo independent 模式。
 
 **结论**：`relizy provider-release` 单独运行在 CI 中缺少上下文，不适合"本地生成 tag → CI 创建 release"的工作流。它的设计初衷是作为 `relizy release` 全流程的一个子步骤，而非独立使用。
 
