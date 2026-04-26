@@ -1,3 +1,24 @@
+## v1.0.1-beta.3
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.2...v1.0.1-beta.3)
+
+### ✨ 新增功能
+
+- **api:** 迁入 repair Wave4A 最小兼容切片 ([e55ed2ee](https://github.com/ruan-cat/11comm/commit/e55ed2ee))
+
+### 📖 Documentation
+
+- **cloudbase:** 整理小程序登录与文件服务方案 ([96ec53a3](https://github.com/ruan-cat/11comm/commit/96ec53a3))
+- **api:** 完成 Phase4 迁移计划与响应格式调研 ([12e08437](https://github.com/ruan-cat/11comm/commit/12e08437))
+
+### ✅ Tests
+
+- **api:** 覆盖 repair Wave4A 迁移门禁 ([e9959632](https://github.com/ruan-cat/11comm/commit/e9959632))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.2
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.1...v1.0.1-beta.2)
