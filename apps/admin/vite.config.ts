@@ -15,6 +15,9 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 	const VITE_PROXY_PREFIX = env.VITE_PROXY_PREFIX;
 	const VITE_BASE_URL = env.VITE_BASE_URL;
 	const VITE_IS_REVERSE_PROXY = env.VITE_IS_REVERSE_PROXY;
+	const VITE_11COMM_API_BASE_URL = env.VITE_11COMM_API_BASE_URL;
+	const VITE_11COMM_API_PROXY_PREFIX = env.VITE_11COMM_API_PROXY_PREFIX || "/api-shadow";
+	const VITE_11COMM_API_USE_PROXY = env.VITE_11COMM_API_USE_PROXY;
 
 	function IS_REVERSE_PROXY() {
 		return VITE_IS_REVERSE_PROXY === "true";
@@ -101,6 +104,16 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 								target: VITE_BASE_URL,
 								secure: false,
 								rewrite: (path) => path.replace(new RegExp("^" + VITE_PROXY_PREFIX), ""),
+							},
+						}
+					: {}),
+				...(VITE_11COMM_API_USE_PROXY === "true" && VITE_11COMM_API_BASE_URL
+					? {
+							[VITE_11COMM_API_PROXY_PREFIX]: {
+								changeOrigin: true,
+								target: VITE_11COMM_API_BASE_URL,
+								secure: false,
+								rewrite: (path) => path.replace(new RegExp("^" + VITE_11COMM_API_PROXY_PREFIX), ""),
 							},
 						}
 					: {}),

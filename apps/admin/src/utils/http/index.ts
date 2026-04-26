@@ -5,17 +5,15 @@ import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
 import { ElMessage } from "element-plus";
+import { resolveAdminApiBaseUrl } from "./api-base-url";
 
 // import { useRouter } from "vue-router";
 // const router = useRouter();
 
-const VITE_IS_REVERSE_PROXY = import.meta.env?.VITE_IS_REVERSE_PROXY;
-const VITE_PROXY_PREFIX = import.meta.env.VITE_PROXY_PREFIX;
-const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
 /**
  * 根据是否需要反向代理，配置请求地址
  */
-const baseURL = VITE_IS_REVERSE_PROXY === "true" ? VITE_PROXY_PREFIX : VITE_BASE_URL;
+const baseURL = resolveAdminApiBaseUrl(import.meta.env);
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
