@@ -1,4 +1,4 @@
-<!-- 状态：Phase1 快照迁入已完成；Memorix canonical history retention gate 已拆分释放为 released-for-phase2-progress / pass-with-permanent-source-retention；旧源目录 D:\code\ruan-cat\01s-11comm-app 永久禁止删除、移动、归档、重命名或清空。 -->
+<!-- 状态：Phase1 快照迁入已完成；Phase2 已完成 `apps/api` 最小 Nitro 影子服务与 fee/payment/report 首批纵切样板；GitHub Actions、Cloudflare、Vercel checks 已在最新 dev HEAD 通过；当前可开启 Phase3；Memorix canonical history retention gate 已拆分释放为 released-for-phase2-progress / pass-with-permanent-source-retention；旧源目录 D:\code\ruan-cat\01s-11comm-app 永久禁止删除、移动、归档、重命名或清空。 -->
 
 # 2026-04-25 11comm App 迁入 Monorepo 与唯一 Nitro API 设计
 
@@ -22,6 +22,42 @@
 7. Nitro 接口不新增任何鉴权逻辑，不引入 JWT、Token 校验、Neon Auth。
 8. Phase2 的范围是“最小可运行 `apps/api` 影子服务 + fee/payment/report 首批纵切样板”；它不是只搭建无业务接口的纯基础设施空壳，也不是 repair/resource/parking 等多个模块并行迁移规划。
 9. 纯基础设施壳层加固、CI、部署、完整运行时配置和接入策略归入阶段 3；repair/resource/parking 等多模块扩张归入阶段 4。
+
+## 当前阶段状态与 Phase3 启动准则
+
+Phase1 快照迁入已经完成，Phase2 也已经完成并通过最新 dev HEAD 验收。当前 `apps/api` 已具备独立 Nitro 影子服务边界，包含独立 package、独立启动/测试/类型检查/构建入口、健康检查和 root route；首批业务纵切只覆盖 fee/payment/report，不把其他业务域伪装为已完成能力。
+
+Phase2 已完成边界如下：
+
+- `apps/api` 作为独立 Nitro 服务存在，且不依赖 admin Vite 或 app uni 编译运行。
+- app legacy 侧以白名单方式覆盖 fee/payment/report 首批兼容路由，保留 `/app/**` 旧契约、旧字段和旧响应形态。
+- admin canonical 侧已完成两个样板接口：`POST /api/property-manage/expense-manage/house-charge/list` 与 `POST /api/property-manage/report-manage/payment-details-form/list`。
+- app legacy adapter 与 admin canonical adapter 共享同一 fee runtime/service/repository，避免维护两套互相漂移的数据源。
+- 真实 Neon 数据库连接和完整 runtimeConfig 未作为 Phase2 blocker；Phase2 已验证无数据库 URL fallback、测试、类型检查和构建，真实运行环境接入进入 Phase3。
+
+当前允许启动 Phase3。Phase3 聚焦部署与运行时治理，不扩大为更多业务域迁移：
+
+- API 部署 preset 与部署平台配置。
+- 完整 runtimeConfig、环境变量治理、CORS 策略、日志、监控与错误追踪。
+- admin/app API base URL 接入策略。
+- 回退策略、局部切流验证和旧服务对照验证。
+- 将 Phase2 的最小 runtime helper 固化为可扩展基础设施规范。
+
+Phase3 必须继续使用以下质量门禁：
+
+- `pnpm install --frozen-lockfile` 作为依赖安装门禁。
+- `pnpm run ci` 作为 monorepo 全量门禁，并通过 workspace-local Turbo 覆盖 admin/api/app/type。
+- `App 专项 CI` 继续作为 app 侧补充门禁，覆盖 H5 production build、type-check、Vitest 和 Nitro Vercel build。
+- workflow 不得重新引入 `run_install`、`--global`、`pnpm ls -g`、直接 `turbo --version`、直接 `run: turbo` 或其他依赖全局工具的步骤。
+- 必要 action major versions 不降级；语义化中文 workflow、job、step 名称继续保留。
+
+Phase4 或后续阶段再处理 repair/resource/parking、charge-machine/open-door、machine-record、更多 admin 三级业务路径 CRUD 和其他 app legacy endpoint 扩展。上述内容不得被包装为 Phase3 的前置阻断项；Phase3 只需要为这些后续波次提供可部署、可配置、可观测、可回退的 API 基础设施。
+
+外部部署 checks 的处理准则如下：
+
+- GitHub Actions 是主门禁；本地可复现的构建、类型、测试和 lockfile 问题必须在本地修复后再推送验证。
+- Cloudflare 与 Vercel check-runs 若失败，应先用 `gh`、GitHub API 或 GitHub MCP 读取 check 状态、run 详情和可用日志。
+- 能本地复现的部署构建错误归入代码或配置修复；外部平台无日志、权限缺失、项目绑定缺失、环境变量缺失或平台侧配置问题，应明确标记为平台侧风险，不得伪装成本地代码已验证失败。
 
 ## 后续报告编写规范
 
