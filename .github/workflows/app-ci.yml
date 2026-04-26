@@ -1,4 +1,4 @@
-name: App CI
+name: App 专项 CI
 
 on:
   push:
@@ -19,33 +19,34 @@ on:
       - ".github/workflows/app-ci.yml"
 
 jobs:
-  build:
+  app-ci:
+    name: App 专项构建与验证
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: 检出仓库代码
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
+      - name: 安装 pnpm 包管理器
         uses: pnpm/action-setup@v5
 
-      - name: Setup Node
+      - name: 安装 Node.js 运行时
         uses: actions/setup-node@v6
         with:
           node-version: 22.14.0
           cache: pnpm
 
-      - name: Install dependencies
+      - name: 安装工作区依赖
         run: pnpm install --frozen-lockfile
 
-      - name: Build App H5
+      - name: 构建 App H5 产物
         run: pnpm -F @01s-11comm/app run build:h5:prod
 
-      - name: Typecheck App
+      - name: 检查 App 类型
         run: pnpm -F @01s-11comm/app run type-check
 
-      - name: Test App
+      - name: 运行 App 单元测试
         run: pnpm -F @01s-11comm/app exec vitest run
 
-      - name: Build App Nitro Vercel
+      - name: 构建 App Nitro Vercel 产物
         run: pnpm -F @01s-11comm/app run build:nitro:vercel
