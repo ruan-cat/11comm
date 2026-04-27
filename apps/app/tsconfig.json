@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "noEmit": true,
     "target": "ESNext",
     "lib": ["esnext", "dom"],
     "baseUrl": ".",
@@ -23,6 +22,7 @@
     "allowImportingTsExtensions": true,
     "allowJs": true,
     "noImplicitThis": true,
+    "noEmit": true,
     "outDir": "dist",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,

@@ -1,8 +1,8 @@
 {
   "name": "@01s-11comm/app",
-  "private": true,
   "type": "module",
   "version": "3.12.4",
+  "private": true,
   "unibest-version": "3.12.4",
   "packageManager": "pnpm@10.32.1",
   "description": "unibest - 最好的 uniapp 开发模板",
@@ -101,7 +101,7 @@
     "prepare": "husky",
     "lint": "eslint",
     "lint:oxlint": "oxlint --fix --fix-suggestions --fix-dangerously",
-    "lint:eslint": "eslint --fix --no-warn-ignored --ignore-pattern docs/.vitepress/**",
+    "lint:eslint": "eslint --fix --no-warn-ignored --ignore-pattern \"docs/.vitepress/**\"",
     "lint:fix": "pnpm run lint:oxlint && pnpm run lint:eslint",
     "lint:prettier": "prettier --config=../../prettier.config.mjs --write \"src/**/*.{js,ts,json,tsx,css,scss,vue,html,md}\"",
     "format": "pnpm lint:prettier",
