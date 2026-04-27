@@ -63,7 +63,7 @@ Phase4 或后续阶段再处理 repair/resource/parking、charge-machine/open-do
 
 本迁移设计的后续迁移、CI、复核、多代理协作任务默认不再为每个子代理、每个阶段、每个检查点拆分多个报告文件。用户已经明确不喜欢大量碎片化报告文件，后续文档沉淀应以单一汇总报告为默认行为。
 
-如确实需要编写报告，应只创建或持续维护一个汇总报告文件，建议总长度约 3500 行左右。该长度应足以覆盖背景、探索过程、实现记录、验证证据、复核结论、遗留风险和后续 TODO，不应因为子任务数量较多而自动拆成多个报告。
+如确实需要编写报告，应只创建或持续维护一个汇总报告文件，建议总长度约 3500 行左右。该长度应足以覆盖背景、探索过程、实现记录、验证证据、复核结论、遗留风险和后续事项，不应因为子任务数量较多而自动拆成多个报告。
 
 汇总报告应按章节收纳探索、编辑、复核、验证证据和后续事项。子代理反馈应由主代理合并入同一个汇总报告，或直接汇总到最终回复；不允许制造多个碎片化报告文件来分别承载子代理、阶段或检查点反馈。
 
@@ -311,7 +311,7 @@ Markdown 迁入前后都要做敏感信息扫描，至少覆盖以下模式：`t
 
 处理原则：
 
-- 示例占位符可以保留，但必须能明确看出是示例，例如 `user:pass`、`ep-xxx`、`your-api-key-here`。
+- 示例值可以保留，但必须能明确看出是示例，例如 `user:pass`、`ep-xxx`、`your-api-key-here`。
 - README 中的演示账号密码、参考系统账号等必须标记为“公开演示凭据/历史参考”，不能混同为生产密钥。
 - 如果发现真实数据库连接串、真实 API key、生产 token 或个人账号凭据，必须先脱敏再迁入可共享文档。
 - 脱敏不能破坏排错价值，必要时保留变量名、服务类型、错误形态和复现步骤，移除真实值。
@@ -432,11 +432,11 @@ Phase2 首批 fee/payment/report endpoint 的迁移矩阵如下：
 
 以 `apps/api/server/modules/fee` 为样板时，三类来源的职责如下：
 
-| 来源                                               | 进入 `apps/api` 后的角色           | 说明                                                                                                                                            |
-| -------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/app/server/modules/{domain}`                 | legacy endpoint 与旧 DTO 契约来源  | 提供 `/app/**`、`/callComponent/**` 旧路径、旧字段、GET/POST 兼容方式和旧响应形态。迁入后由 `legacy-endpoints.ts` 与 `legacy-adapter.ts` 承接。 |
-| `apps/admin/server/api/**` 与 `rank-route-keys.ts` | admin canonical 路由和返回结构参考 | 提供后台业务路径、文件路由风格、`JsonVO<PageDTO<T>>` 响应结构和三级业务坐标。迁入后由 `server/routes/api/**` 与 `admin-adapter.ts` 承接。       |
-| `apps/api/server/modules/{domain}`                 | 新 API 的领域模块                  | 只保留一套 repository/service/runtime，再通过不同 adapter 输出 app legacy DTO 与 admin canonical DTO。                                          |
+| 来源                                               | 进入 `apps/api` 后的角色           | 说明                                                                                                                                                                                                                                                                          |
+| -------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/app/server/modules/{domain}`                 | legacy endpoint 与旧 DTO 契约来源  | 提供 `/app/**`、`/callComponent/**` 旧路径、旧字段、GET/POST 兼容方式和旧响应形态。当前 `apps/api/nitro.config.ts` 只承接 `/app/**` handler；`/callComponent/**` 仍以 `apps/app` legacy runtime 为默认回退来源，只有补齐 `apps/api` compat handler 与测试后才能切入统一 API。 |
+| `apps/admin/server/api/**` 与 `rank-route-keys.ts` | admin canonical 路由和返回结构参考 | 提供后台业务路径、文件路由风格、`JsonVO<PageDTO<T>>` 响应结构和三级业务坐标。迁入后由 `server/routes/api/**` 与 `admin-adapter.ts` 承接。                                                                                                                                     |
+| `apps/api/server/modules/{domain}`                 | 新 API 的领域模块                  | 只保留一套 repository/service/runtime，再通过不同 adapter 输出 app legacy DTO 与 admin canonical DTO。                                                                                                                                                                        |
 
 领域模块推荐文件结构如下：
 
@@ -447,7 +447,7 @@ apps/api/server/modules/{domain}/
   service.ts           # 领域业务能力层；app 和 admin 都只能通过它复用业务逻辑
   legacy-adapter.ts    # 把 service 结果转换为 app 旧字段和旧响应语义
   admin-adapter.ts     # 把 service 结果转换为 admin JsonVO/PageDTO 和 canonical DTO
-  legacy-endpoints.ts  # 只登记允许迁入 runtime 的 /app/** 或 /callComponent/** 旧路径
+  legacy-endpoints.ts  # 登记允许迁入 runtime 的 legacy 旧路径；当前 apps/api 只默认承接 /app/**，/callComponent/** 需要独立 compat handler gate
   runtime.ts           # 组装 repository、service、legacyAdapter、adminAdapter
   index.ts             # 统一导出当前 domain 模块
 ```
@@ -862,21 +862,345 @@ docs/superpowers/plans/YYYY-MM-DD-11comm-app-monorepo-api-migration-phase5.md
 
 ### 阶段 6：接入 app/admin 到统一 API
 
-通过环境变量或代理配置，让两端逐步指向 `apps/api`：
+阶段 6 的目标不是继续扩大 `apps/api` 的业务实现面，而是把已经通过 Phase2 至 Phase5 验收的能力，以可配置、可观测、可回退的方式接入 `apps/admin` 和 `apps/app`。本阶段继续遵循影子迁移原则：先新增统一 endpoint、代理和兼容层，再通过测试与联调验证，随后按批切换消费端，保留回退开关，最后只记录清理候选，不删除旧服务。
 
-- admin 使用统一 API base URL，不再依赖生产同源 `/api`。
-- app 短期保留 `/app/**`、`/callComponent/**` 旧路径契约。
-- 不一次性大改页面和业务组件，按已验收模块逐步切换。
-- 每批切流都必须保留回退路径和测试证据。
+#### 6.1 目标边界
+
+阶段 6 只处理消费端接入策略和首批切流，不处理旧服务退役：
+
+- 允许新增或收敛 admin/app 指向 `apps/api` 的 base URL、dev proxy、生产环境变量和运行时选择逻辑。
+- 允许为 app legacy `/app/**` 增加 proxy、adapter、compat allowlist 或 endpoint manifest，使旧页面无需一次性改写即可消费 `apps/api`；`/callComponent/**` 短期保留旧契约，但当前不能默认视为已由 `apps/api` 承接。
+- 允许把 Phase2 至 Phase5 已验收的 fee/payment/report、repair 只读切片、expenseManage 首波接口纳入首批切流候选。
+- 不删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`、旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
+- 不把 `houseCharge create/update/delete` 写成已完成能力；Phase5 已完成的是 `houseCharge list/detail` 只读联调和 `expenseItemSetting` 相关能力。
+- 不新增 Nitro 鉴权，不引入 `@neondatabase/auth`，不增加 JWT、Token、Bearer、Authorization 校验中间件或插件。
+
+#### 6.2 入口与配置策略
+
+统一 API 入口必须成为显式配置，而不是隐含在生产同源 `/api` 假设中：
+
+- admin 侧以 `VITE_11COMM_API_BASE_URL` 表示独立 `apps/api` 地址，以 `VITE_11COMM_API_USE_PROXY=true` 和 `VITE_11COMM_API_PROXY_PREFIX` 表示本地或灰度代理入口；关闭统一 API 时回退到既有 `VITE_BASE_URL`、`VITE_PROXY_PREFIX` 和旧同源路径。
+- admin 侧保留 `VITE_11COMM_API_SHADOW_ENABLE` 作为模块级影子开关；Phase6 可把该开关从 Phase5 单模块联调用途提升为首批切流 gate，但不能让全站默认无条件走 `apps/api`。
+- app 侧继续使用 `VITE_API_RUNTIME`、`VITE_SERVER_BASEURL`、`VITE_APP_PROXY_ENABLE`、`VITE_APP_PROXY_PREFIX`，并以 `VITE_11COMM_API_BASE_URL` 和兼容 endpoint allowlist 控制哪些 legacy path 命中 `apps/api`。
+- 生产部署必须明确记录 admin H5、app H5、`apps/api` 三者域名关系；跨域访问需要走部署平台允许的 CORS 或同平台 rewrite，但不能通过新增鉴权逻辑掩盖跨域问题。
+- 每个切流批次必须声明“目标 base URL、代理前缀、开启变量、关闭变量、预期命中的服务、回退后命中的服务”六项信息。
+
+#### 6.3 admin 接入策略
+
+admin 接入以 HTTP client 和 API hook 层为边界，不做页面级大规模改写：
+
+- 优先在 `apps/admin/src/utils/http/api-base-url.ts`、`apps/admin/vite.config.ts` 和已迁移业务 hook 内收敛 `apps/api` base URL 解析，不在每个页面组件里拼接环境变量。
+- 已经完成影子联调的 hook 可以从“模块私有 `resolvePhase5ApiUrl`”逐步收敛为统一 helper；收敛前必须保留原行为，收敛后必须有单元测试覆盖 proxy、direct base URL、legacy fallback 三种路径。
+- 首批 admin 切流只覆盖已经在 `apps/api/tests/admin/**` 和页面联调中通过的接口；未通过 L2/L3/L4 验收的三级业务路径仍走旧路径。
+- admin 请求可以继续携带现有客户端 header，但 `apps/api` 不得新增服务端鉴权校验；本阶段验收关注路由命中、响应格式、数据一致性和回退能力。
+
+#### 6.4 app 旧路径兼容策略
+
+app 接入的核心是保留旧契约，而不是让页面一次性改成 canonical API：
+
+- `/app/**` 与 `/callComponent/**` 在 Phase6 内继续作为 app 对外契约存在；页面、组合式函数和现有 `src/api/**` 不需要批量改路径。
+- `apps/api` 负责通过 legacy adapter 或 compat route 输出 app 旧响应形态；admin canonical route 继续输出 admin 规范响应，两者共享同一个 domain service/repository。
+- 当前 `apps/api/nitro.config.ts` 只有 `/app/**` handler；`apps/app/nitro.config.ts` 才同时具备 `/app/**` 与 `/callComponent/**`。因此 `/callComponent/**` 在 Phase6 首批默认状态是 `not-cut / compat-handler-required`：要么继续回退到 `apps/app` legacy runtime，要么先作为 Phase6 前置或独立任务补齐 `apps/api` compat handler、dispatcher 登记和契约测试。
+- app 侧 `resolveHttpBaseUrlForPath` 或等价 compat helper 只能让 allowlist 内已验收 endpoint 指向 `apps/api`；allowlist 之外仍按当前 runtime 回退到 mock、legacy Nitro 或生产别名。
+- 首批 app 切流必须覆盖 legacy DTO、旧字段、旧响应码和旧路径的契约测试；不能只验证 admin canonical endpoint 成功。
+
+#### 6.5 分批切流顺序
+
+阶段 6 推荐按风险从低到高推进：
+
+1. **配置空跑批次**：只打开 dev proxy 或 direct base URL，验证 `apps/api` 当前真实健康与清单端点 `/__nitro/health`、`/__nitro/ready`、`/__nitro/endpoints`，不切页面流量。
+2. **admin 只读批次**：切换 `houseCharge list/detail`、payment/report 只读接口，验证列表、详情、分页和真实 Neon 只读数据。
+3. **admin 配置型写批次**：切换 `expenseItemSetting list/detail/create/update/delete-policy`，写操作必须带测试数据创建、查询、清理或 delete-policy 证据。
+4. **app legacy 费用批次**：切换 Phase2 fee/payment/report legacy allowlist，验证 `/app/**` 旧响应形态和旧页面消费；`/callComponent/core/list` 与其他 `/callComponent/**` 保持 `not-cut / compat-handler-required`，不进入首批切流。
+5. **repair 只读兼容批次**：只切 Phase4 已声明的 repair 最小兼容切片，不顺手扩展 parking/resource/charge-machine/open-door。
+
+每批只能包含已经具备 `apps/api` 路由、adapter、service/repository、测试和验收记录的 endpoint；发现缺口时，该 endpoint 留在旧路径，不扩大批次范围。
+
+#### 6.6 回退策略
+
+阶段 6 的回退必须是开关级、批次级、 endpoint 级可执行回退：
+
+- admin 全局回退：关闭 `VITE_11COMM_API_SHADOW_ENABLE` 或 `VITE_11COMM_API_USE_PROXY`，移除/置空 `VITE_11COMM_API_BASE_URL`，回到既有 `VITE_BASE_URL`、`VITE_PROXY_PREFIX` 或相对 `/api`。
+- admin 模块回退：从模块 allowlist 移除对应三级业务路径，保留 hook 旧 URL 行为，不改页面组件。
+- app 全局回退：关闭 app 的统一 API shadow 开关或把 `VITE_API_RUNTIME` 回到原 runtime，使 legacy path 继续走既有 mock、legacy Nitro 或生产域名。
+- app endpoint 回退：从 compat allowlist 移除单个 `/app/**` endpoint，使该 endpoint 回到旧 runtime；`/callComponent/**` 在未补齐 `apps/api` compat handler 前本来就必须保持旧 runtime。
+- 回退后必须补跑同一批次的冒烟命令，证明旧路径仍可用；不能只修改环境变量后口头宣布回退完成。
+
+#### 6.7 验收证据
+
+每批切流的验收记录至少包含：
+
+- 配置证据：本批启用的 env、proxy 前缀、目标 base URL、服务端地址和回退开关。
+- 路由证据：请求实际命中的 `apps/api` endpoint、legacy fallback endpoint 或旧服务 endpoint。
+- 测试证据：对应 `apps/api` Vitest、admin hook 测试、app legacy 契约测试、必要的浏览器或 H5 联调记录。
+- 数据证据：真实 Neon 只读查询或写入闭环证据；没有数据库 URL 的环境必须明确记录为未执行该项，不得伪造。
+- 回退证据：关闭开关后同一 endpoint 回到旧路径的命令输出或页面联调截图说明。
+- 受保护目录证据：`apps/admin/server`、`apps/app/server` 和 `D:\code\ruan-cat\01s-11comm-app` 仍存在且未被本阶段清理。
+
+#### 6.8 风险与禁止事项
+
+- 不把 `apps/api` 的可访问性等同于 app/admin 已完成全量切流。
+- 不把 app legacy 测试通过解释为 admin canonical 已通过，也不把 admin canonical 测试通过解释为 app legacy 已通过。
+- 不在阶段 6 修改数据库 schema；若切流暴露 schema 缺口，记录为 schema-change 任务并暂停相关 endpoint 切流。
+- 不在 `apps/api` 内创建私有 Drizzle table、Zod schema 或类型事实来源。
+- 不用批量脚本重写页面请求路径；必须通过 shared helper、proxy、adapter、allowlist 和小批次 hook 收敛推进。
+- 不把旧服务退役、旧目录删除、历史源目录处置写入 Phase6 完成条件。
+
+#### 6.9 完成判定
+
+阶段 6 完成时必须满足：
+
+- admin 和 app 都具备明确的统一 API base URL 配置、代理路径和回退路径。
+- 首批已验收 endpoint 已经按批切到 `apps/api`，并有测试证据、数据证据、回退证据和验收记录。
+- 未切流 endpoint 保持旧路径可用，且在切流矩阵中标明原因、阻塞项和下一批条件。
+- `/app/**` 与 `/callComponent/**` 旧路径契约仍然存在；首批 `/app/**` legacy adapter 可由 `apps/api` 提供兼容输出，`/callComponent/**` 必须在切流矩阵中标明 `not-cut / compat-handler-required` 或提供已补齐 compat handler 与测试的证据。
+- `apps/admin/server`、`apps/app/server` 和旧源目录仍被保留；Phase7 才能讨论 monorepo 内旧服务收口。
+
+#### 6.10 Phase6/Phase7 阶段门边界
+
+Phase6 的完成结论是：当前改造范围已经能够支撑“公共、独立 `apps/api` Nitro 服务同时服务 admin H5 与 app H5”的目标形态，但这只代表统一 API 中台、双端接入、兼容 adapter、回退路径和首批切流机制具备可交付基础，不代表 admin/app 已经完成全量 endpoint 切流。
+
+Phase6 验收必须以三个 dev 服务同时运行作为本地端到端验证前提。最低本地验证拓扑如下：
+
+- `apps/api`：运行 `pnpm -F @01s-11comm/api dev`，默认 `http://127.0.0.1:3102`，提供公共 Nitro API、legacy compat handler、dispatcher 与生产 DB adapter 验证入口。
+- `apps/admin`：运行 `pnpm -F @01s-11comm/admin dev`，默认 `http://127.0.0.1:8080`；验证统一 API 时必须显式设置 `VITE_11COMM_API_SHADOW_ENABLE=true`、`VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102`，并按 proxy 模式设置 `VITE_11COMM_API_USE_PROXY=true`、`VITE_11COMM_API_PROXY_PREFIX=/api-shadow`。
+- `apps/app`：运行 `pnpm -F @01s-11comm/app dev:h5`，默认 `http://127.0.0.1:3000`；验证统一 API 时必须显式设置 `VITE_11COMM_API_SHADOW_ENABLE=true`、`VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102`。如使用 `dev:h5:nitro`，它会额外拉起 app 自身 legacy Nitro，不等同于公共 `apps/api`。
+
+admin/app 的浏览器验证不能只停留在接口测试或单元测试。每个进入首批切流的业务路径都必须保留页面级证据：页面可打开、关键列表/详情/提交动作可完成、Network 面板能证明请求命中预期服务、失败时能回退到 legacy 路径或明确阻断。admin canonical 验证与 app legacy/app H5 验证必须分别记录，不能互相代替。
+
+最低浏览器验收矩阵：
+
+| 端       | 浏览器入口                                                   | 必须证明                                                                                                     | 失败时处理                                 |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| API      | `http://127.0.0.1:3102/__nitro/health`、`/__nitro/endpoints` | 独立 Nitro 服务可访问，endpoint manifest 包含本批路由                                                        | 停止切流，先修复公共 API 服务              |
+| admin H5 | `http://127.0.0.1:8080`                                      | 页面可打开；`/api-shadow/**` 或 direct base URL 请求命中 `apps/api`；已切流 admin endpoint 返回 `JsonVO`     | 回退到旧 `/api/**`，记录未切流原因         |
+| app H5   | `http://127.0.0.1:3000`                                      | 页面可打开；allowlist 内 `/app/**` 请求可从 app origin 命中 `apps/api`；allowlist 外 endpoint 仍回旧 runtime | 从 allowlist 移除该 endpoint 或关闭 shadow |
+
+Phase6 首批切流只能理解为“已验收 endpoint 的小批次切流”。禁止把首批 `/app/**`、admin hook 或 fee/expense 样板切流误读为全量切流；未进入切流矩阵、未通过浏览器验证、未具备回退路径的 endpoint 一律保持旧路径。
+
+以下边界必须在 Phase6 结束和 Phase7 开始之间保持可见：
+
+- `/callComponent/**` 默认仍是 `not-cut / compat-handler-required`，除非已经补齐 `apps/api` compat handler、dispatcher 登记、契约测试和浏览器证据。
+- `house-charge` 的 `create/update/delete` 不属于当前已完成能力；若写入语义继续由 `expenseItemSetting` 承担，必须在切流矩阵中明确标注。
+- app 侧只允许按 allowlist 渐进迁移 repair 等业务路径；未列入 allowlist 的 app endpoint 不得经由批量改写或默认代理切到 `apps/api`。
+- 生产 DB readiness 必须单独确认，包括 Neon 连接、目标表结构、生产数据语义、失败回滚和只读/写入权限边界；本地 mock 或 memory repository 通过不能替代生产 DB readiness。
+- 旧源目录 `D:\code\ruan-cat\01s-11comm-app` 永久保留，不进入 Phase6 完成项、Phase7 收口项、磁盘清理项或自动化归档项。
+
+Phase7 只能在以上边界均被记录后进入“收口评审/规划”状态。删除旧服务必须是最后动作，且每一步都要有回滚路径；在 admin/app 尚未全量稳定消费 `apps/api` 前，Phase7 不得执行 `apps/admin/server`、`apps/app/server` 的删除、清空、移动或归档。
+
+#### 6.11 2026-04-27 唯一阶段记录：Phase6 补证与 Phase7 准入判断
+
+本节是 2026-04-27 阶段 6 补证、阶段 7 readiness gate、endpoint 盘点和删除候选清单的唯一沉淀位置。不得再为同一批信息在 `docs/superpowers/reports` 下生成并行报告；后续如需更新阶段门结论，应直接维护本设计文档对应章节。
+
+当前结论：
+
+- `apps/api` 已经具备公共、独立 Nitro API 服务的基础形态，并能在本地三端 dev 中同时被 admin H5 与 app H5 访问。
+- 该结论只覆盖 Phase6 首批已验收 endpoint，不代表 admin/app 已完成全量切流。
+- Phase7 当前只能进入规划、盘点、补证和删除候选清单阶段，不能进入旧服务删除执行态。
+- `apps/admin/server`、`apps/app/server` 和旧源目录 `D:\code\ruan-cat\01s-11comm-app` 继续受保护；不得删除、移动、归档、重命名或清空。
+
+当前 `apps/api` 已承载能力：
+
+| 分组                          | 当前已承载 endpoint                                                                     | 状态                                                                                          |
+| ----------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Nitro infra                   | `GET /`、`GET /__nitro/health`、`GET /__nitro/ready`、`GET /__nitro/endpoints`          | health/endpoints 可用于本地探针；`ready` 在本地无 DB URL 时返回 `503 DATABASE_CONFIG_MISSING` |
+| admin expense-item-setting    | `create`、`delete`、`detail`、`list`、`update`                                          | Phase6 首批已切流到 `apps/api`，仍需按页面批次补齐更多 Chrome MCP 和回退证据                  |
+| admin house-charge            | `list`、`detail`                                                                        | Phase6 首批只读能力已切流；`create/update/delete` 不是已完成能力                              |
+| admin repairs/report          | `repairs-todo/list`、`repairs-setting/list`、`issues/list`、`payment-details-form/list` | `apps/api` 已有 route 文件；进入删除候选前仍需页面级调用方证据                                |
+| app fee/payment/report legacy | 12 个 Phase2 `/app/**` allowlist endpoint                                               | app H5 本地可从页面上下文访问 `apps/api`，但只代表首批 `/app/**`                              |
+| app repair legacy             | 5 个 `/app/**` repair endpoint                                                          | `apps/api` manifest 已登记；当前未纳入 app allowlist，不得按已切流处理                        |
+| `/callComponent/**`           | 无                                                                                      | `apps/api` 尚无 compat handler，继续保持 `not-cut / compat-handler-required`                  |
+
+Phase6 本地三端 dev 补证记录：
+
+```log
+apps/api:   http://127.0.0.1:3102
+admin H5:   http://127.0.0.1:8080
+app H5:     http://127.0.0.1:3000
+
+admin Chrome MCP Network:
+GET  http://127.0.0.1:8080/api-shadow/__nitro/health -> 200
+GET  http://127.0.0.1:8080/api-shadow/__nitro/ready -> 503, code DATABASE_CONFIG_MISSING
+GET  http://127.0.0.1:8080/api-shadow/__nitro/endpoints -> 200
+POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/house-charge/list -> 200
+POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/expense-item-setting/list -> 200
+
+app Chrome MCP Network:
+GET http://127.0.0.1:3102/__nitro/health -> 200
+GET http://127.0.0.1:3102/__nitro/ready -> 503, code DATABASE_CONFIG_MISSING
+GET http://127.0.0.1:3102/__nitro/endpoints -> 200, manifest count 17
+GET http://127.0.0.1:3102/app/fee.listFee?page=1&row=1&communityId=COMM_001 -> 200
+GET http://127.0.0.1:3102/app/oweFeeCallable.listOweFeeCallable?page=1&row=1&communityId=COMM_001 -> 200
+
+cleanup:
+ports 3102/8080/3000 released
+```
+
+readiness 结论：
+
+- 本地 `GET /__nitro/ready` 返回 `503 DATABASE_CONFIG_MISSING` 是预期的缺 DB URL readiness 响应，只能证明请求命中了 `apps/api`，不能证明生产或灰度 DB readiness。
+- Phase7 执行态前必须在目标环境补齐 DB readiness 证据，包括 Neon 连接、目标表结构、读写权限、失败回滚和数据语义。
+
+反向依赖扫描结论：
+
+| 范围                           |                                       当前扫描结果 | Phase7 判断                               |
+| ------------------------------ | -------------------------------------------------: | ----------------------------------------- |
+| `apps/api/server/routes/api`   |                             11 个 admin route 文件 | 只覆盖少量首批 admin endpoint             |
+| `apps/api` app legacy manifest |                           17 个 `/app/**` endpoint | 不含 `/callComponent/**`                  |
+| `apps/admin/server/api`        |                                  155 个旧 API 文件 | 不具备整体删除证据                        |
+| `apps/admin/src/api`           |                        119 个唯一 `/api/**` 字符串 | 大量前端调用仍未迁入 `apps/api`           |
+| `apps/app/server`              |                              69 个 TypeScript 文件 | 仍承担 legacy runtime、契约来源和回退职责 |
+| `apps/app/server` legacy URL   | 209 个唯一 `/app/**`、2 个唯一 `/callComponent/**` | 远未达到整体收口条件                      |
+
+删除候选分级：
+
+| 等级                       | 范围                                                                                             | 判定                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `forbidden`                | `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`                        | 受保护路径，Phase7 gate 通过前禁止删除、移动、归档、重命名、清空           |
+| `forbidden`                | `apps/admin/server/api` 整体                                                                     | 仍有 155 个旧 API 文件和大量 `/api/**` 调用方                              |
+| `forbidden`                | `apps/app/server` 整体                                                                           | 仍有大量 `/app/**` 和 `/callComponent/**` legacy endpoint                  |
+| `forbidden`                | `/callComponent/**`                                                                              | `apps/api` 未挂载，app legacy 仍挂载，必须保留                             |
+| `forbidden`                | `house-charge/create`、`house-charge/update`、`house-charge/delete`                              | Phase6 明确未切流，写入字段归属、delete policy、DB 证据未补齐              |
+| `forbidden`                | 未迁入 `apps/api` 的 admin `/api/**` 与 app `/app/**`                                            | 仍有前端调用或 legacy runtime 责任，不得删除                               |
+| `candidate-after-evidence` | 已在 `apps/api` 承载的 Phase2 fee/payment/report app legacy endpoint                             | 需补齐 app 页面级 Chrome MCP、回退演练、调用方确认和 DB readiness 后再评审 |
+| `candidate-after-evidence` | 已在 `apps/api` 承载的 `expense-item-setting` CRUD 与 `house-charge` list/detail 的旧 admin 实现 | 需补齐 admin 页面级 Chrome MCP、回退演练和调用方确认后再评审               |
+| `candidate-after-evidence` | 已在 `apps/api` 承载的 repair admin list endpoint 与 repair app 5 个 endpoint                    | 当前只具备 API 侧或局部证据；需补 app allowlist、页面调用、回退和 DB 证据  |
+| `not-candidate`            | `apps/api/server/**`                                                                             | 目标服务实现，不是旧服务删除对象                                           |
+| `not-candidate`            | `apps/app/src/http/runtime-base.ts`、`apps/app/nitro.config.ts`                                  | 当前承担 shadow allowlist、回退决策和 legacy 挂载证据，不是删除候选        |
+
+Phase7 下一步最小执行顺序：
+
+1. 保持当前改动未提交状态，由人工审查 Phase6 代码、测试、配置和本设计文档更新。
+2. 生成可复核的全量 endpoint 对照表，覆盖 `apps/api` manifest、`apps/admin/server/api`、`apps/admin/src/api`、`apps/app/server` 和 `apps/app/src` 调用方。
+3. 对每个 endpoint 标注是否已由 `apps/api` 承载、是否有前端调用、是否有单测、是否有 Chrome MCP 证据、是否有回退证据、是否需要 DB readiness。
+4. 单独处理 `/callComponent/**`：先补 `apps/api` compat handler 设计、contract test、app runtime allowlist 或回退策略，不进入删除候选。
+5. 对 `candidate-after-evidence` 项补齐页面级正向证据、shadow=false 或 allowlist 移除后的回退证据、DB ready 或 mock/seed 边界说明。
+6. 复判 Phase7 readiness gate。只有 gate 明确从 `no-go-for-execution` 变为可执行后，才能创建旧服务收口执行计划。
 
 ### 阶段 7：收口旧服务
 
-确认 admin/app 都稳定消费 `apps/api` 后，再逐步退役：
+确认 admin/app 都稳定消费 `apps/api`，且 Phase7 收口评审通过后，再逐步退役：
 
 - `apps/admin/server`
 - `apps/app/server`
 
-删除旧服务必须放在最后，且要有回滚路径。
+Phase7 的第一步不是删除目录，而是收口评审、依赖扫描和退役计划。进入 Phase7 执行态前必须满足：
+
+- 已存在全量 endpoint 状态矩阵，至少包含 `cut-to-apps-api`、`legacy-fallback`、`blocked`、`not-applicable`、`removed-by-design` 五类状态。
+- admin H5、app H5、`apps/api` 三端在本地三 dev 服务和目标灰度/生产环境均有浏览器证据；Network 记录能证明已切流 endpoint 命中 `apps/api`。
+- 生产或灰度 DB readiness 已确认，不能只依赖本地 memory repository、mock runtime 或单元测试。
+- 每个 `legacy-fallback` 与 `blocked` endpoint 都明确说明为什么仍需要旧 server，或为什么不影响旧 server 收口。
+- 已完成反向依赖扫描，覆盖 `apps/admin/src`、`apps/app/src`、Vite/Nitro 配置、proxy 配置、测试、CI、部署脚本和文档，确认没有运行时入口仍依赖将要退役的旧 server。
+- 已演练回退：关闭统一 API 开关、移出 allowlist、恢复旧 route/proxy 或恢复目录都必须有明确步骤。
+
+#### 7.1 三端本地真实 dev 验证流程
+
+阶段 7 是大规模收口阶段，不能只依赖 Vitest、接口单测或静态扫描。每一批 Phase7 改造都必须先跑一次本地三端 dev 基线，改造后再复跑同一套基线，确认公共、独立的 `apps/api` Nitro 服务能够同时支撑 admin H5 与 app H5。三端验证的目标不是证明某个单独接口可用，而是证明真实浏览器页面、Vite 代理、运行时 base URL、API dispatcher、legacy adapter、admin canonical adapter 和回退路径在同一个本地拓扑里同时成立。
+
+本地验证前提：
+
+- `3102`、`8080`、`3000` 三个端口必须为空；如果因为本机占用改用其他端口，报告中必须记录实际端口、进程号和对应环境变量。
+- 不得复用未知来源的历史 dev 进程；启动前必须确认三端进程来源，启动后记录 `apps/api`、`apps/admin`、`apps/app` 三个 dev 的日志窗口或日志文件。
+- `apps/admin/server`、`apps/app/server` 和旧源目录 `D:\code\ruan-cat\01s-11comm-app` 在验证期间必须仍然存在；阶段 7 的验证只能证明“可以收口”，不能把验证动作本身变成删除动作。
+- app 端不得用 `pnpm -F @01s-11comm/app dev:h5:nitro` 代替公共 API 验证；该命令会拉起 app 自身 legacy Nitro，只能作为 legacy 对照，不能证明 `apps/api` 同时支撑双端。
+
+推荐启动命令如下。PowerShell 每个终端只启动一个 dev，便于保留日志和结束进程：
+
+```powershell
+# Terminal 1: 公共 Nitro API
+pnpm -F @01s-11comm/api dev
+
+# Terminal 2: admin H5，经 Vite proxy 命中 apps/api
+$env:TURBO_ENV_MODE = "loose"
+$env:VITE_11COMM_API_SHADOW_ENABLE = "true"
+$env:VITE_11COMM_API_BASE_URL = "http://127.0.0.1:3102"
+$env:VITE_11COMM_API_USE_PROXY = "true"
+$env:VITE_11COMM_API_PROXY_PREFIX = "/api-shadow"
+pnpm -F @01s-11comm/admin dev
+
+# Terminal 3: app H5，直接以统一 API base URL 命中 apps/api
+$env:VITE_11COMM_API_SHADOW_ENABLE = "true"
+$env:VITE_11COMM_API_BASE_URL = "http://127.0.0.1:3102"
+pnpm -F @01s-11comm/app dev:h5
+```
+
+启动后先做 readiness 探针：
+
+```powershell
+Invoke-WebRequest http://127.0.0.1:3102/__nitro/health
+Invoke-WebRequest http://127.0.0.1:3102/__nitro/endpoints
+Invoke-WebRequest http://127.0.0.1:8080/api-shadow/__nitro/health
+Invoke-WebRequest http://127.0.0.1:3000/
+```
+
+Chrome MCP 验证必须覆盖两个前端入口：
+
+| 验证对象 | Chrome MCP 操作                                                                                               | 必须保留的证据                                                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 公共 API | 打开或 fetch `http://127.0.0.1:3102/__nitro/health` 与 `http://127.0.0.1:3102/__nitro/endpoints`              | health 返回 `@01s-11comm/api` 或等价服务标识；manifest 包含本批候选 endpoint；如 ready/DB 探针失败，必须标注是本地配置缺失还是生产阻断          |
+| admin H5 | 打开 `http://127.0.0.1:8080`，进入本批业务页面；通过页面交互或 MCP evaluate 请求 `/api-shadow/**`             | 页面可渲染；Network 中已切流 endpoint 命中 `/api-shadow/**` 并返回 admin `JsonVO`；本批列表、详情、写入或业务 action 的结果与旧 server 对照一致 |
+| app H5   | 打开 `http://127.0.0.1:3000`，进入本批 app 页面；验证 allowlist 内 `/app/**` 请求命中 `http://127.0.0.1:3102` | 页面可渲染；allowlist 内 legacy endpoint 返回 `{ code: 0, msg, data }` 旧格式；allowlist 外 endpoint 不得被默认代理误切到 `apps/api`            |
+| 回退路径 | 关闭 shadow 开关、移出 allowlist 或恢复旧 proxy 后重试同一页面/接口                                           | 能回到旧路径；无法回退的 endpoint 不允许进入旧服务收口候选                                                                                      |
+
+阶段 7 每批候选 endpoint 必须形成验证矩阵，至少包含以下字段：
+
+| 字段                 | 说明                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| `businessPath`       | admin 三级业务路径或 app 页面/模块坐标                                                     |
+| `adminCanonicalPath` | admin 规范 API 路径；没有 admin 端能力时填 `not-applicable`                                |
+| `appLegacyPath`      | app 旧路径；没有 app 端能力时填 `not-applicable`                                           |
+| `targetService`      | `apps/api`、`apps/admin/server`、`apps/app/server` 或 `blocked`                            |
+| `responseContract`   | admin `JsonVO`、app `{ code, msg, data }`、文件流、导出、统计等契约                        |
+| `dataSource`         | DB repository、fallback repository、memory/mock、第三方或未知                              |
+| `fallbackPlan`       | 关闭 shadow、移出 allowlist、恢复 proxy、恢复旧 route 或其他回退步骤                       |
+| `vitestEvidence`     | 对应 `apps/api/tests/**`、`apps/admin/src/**/tests/**` 或 `apps/app/src/tests/**` 测试文件 |
+| `browserEvidence`    | Chrome MCP 截图、Network 请求、console 摘要、页面 URL 和操作结果                           |
+| `retirementDecision` | `can-disable-entry`、`keep-for-fallback`、`blocked`、`delete-candidate`                    |
+
+通过标准：
+
+- 三个 dev 服务同时运行，`apps/api` health 与 endpoint manifest 可访问。
+- admin H5 和 app H5 都能在真实浏览器中打开目标页面，且本批已切流请求能从 Network 证明命中 `apps/api`。
+- admin canonical 与 app legacy 响应契约分别正确，不能用某一端成功替代另一端。
+- 本批 endpoint 的回退路径已经实测，不只是文档描述。
+- 旧 server 目录仍存在，且没有新增业务入口继续写入旧 server。
+- 浏览器 console、Network、服务端日志中的错误都已分类：已知无关问题可记录为 residual，不得吞掉 API 路由、CORS、base URL、DB readiness 或 adapter 契约错误。
+
+阻断标准：
+
+- `apps/api` 无法独立启动，或只能通过 `apps/admin/server`、`apps/app/server` 间接提供能力。
+- admin/app 页面只在旧 server、mock runtime 或 app 自身 legacy Nitro 下可用，却被标记为 `cut-to-apps-api`。
+- `/callComponent/**`、未列入 allowlist 的 `/app/**`、未完成的 `house-charge create/update/delete` 被包装成已完成双端能力。
+- 生产或灰度 DB readiness 未确认，而本批收口会删除或禁用旧 server 中唯一的数据来源。
+- Chrome MCP 只能证明接口 fetch 成功，不能证明真实页面和 Network 命中路径。
+- 任一候选 endpoint 无法回退，或回退步骤会触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
+
+验证完成后必须清理本地进程并记录端口释放：
+
+```powershell
+Get-NetTCPConnection -LocalPort 3102,8080,3000 -State Listen
+# 确认目标进程后再执行：
+Stop-Process -Id <pid> -Force
+```
+
+Phase7 验收报告必须记录启动命令、环境变量、实际端口、Chrome MCP 入口 URL、关键 Network 请求、console 摘要、Vitest 命令与结果、回退演练结果、残留风险和本批旧 server 收口决策。没有这份三端本地真实 dev 证据，任何旧 server 禁用、目录清理或删除候选结论都不得通过评审。
+
+Phase7 允许做：
+
+- 编写旧服务收口评审、endpoint 状态矩阵、反向依赖扫描报告和删除候选清单。
+- 冻结 `apps/admin/server`、`apps/app/server` 新增业务入口，要求新增能力只进入 `apps/api`。
+- 移除已经无运行时引用、无 fallback 责任、且有测试覆盖的旧 proxy/route 注册。
+- 将旧 server 中仍有价值的契约、mock、排错经验迁入设计文档、验收记录或 canonical skill，但不能把旧服务继续扩张成新事实来源。
+
+Phase7 禁止做：
+
+- 禁止把 Phase6 未完成的切流、schema 变更、业务迁移或生产接入补丁混入“旧服务收口”。
+- 禁止把 `/callComponent/**`、`house-charge create/update/delete` 或未纳入 app allowlist 的 repair endpoint 包装成已完成能力。
+- 禁止删除仍承担 fallback、契约来源、mock 对照或回滚职责的旧 server 目录。
+- 禁止用单端测试替代双端浏览器验证；admin canonical、app legacy、公共 API、生产 DB readiness 必须分别给证据。
+- 禁止触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
+
+删除旧服务必须放在最后，且要有回滚路径。真正删除 `apps/admin/server` 或 `apps/app/server` 必须作为单独评审、单独变更、单独回滚方案处理；默认 Phase7 只允许先禁用入口、移除注册、保留目录，直到删除门槛全部满足。
 
 阶段 7 的“收口旧服务”只允许讨论 monorepo 内的 `apps/admin/server` 与 `apps/app/server`，不得扩展到旧源目录 `D:\code\ruan-cat\01s-11comm-app`。旧源目录不是待退役服务，不是清理目标，不是归档目标，也不是释放磁盘空间目标；任何自动化代理、子代理、脚本或人工验收流程都不得把它列入删除、移动、归档、重命名或清空计划。
 
