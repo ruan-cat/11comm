@@ -2,6 +2,7 @@ import { getDomains } from '@ruan-cat/domains'
 import { describe, expect, test } from 'vitest'
 import {
   isPhase2ApiShadowEndpoint,
+  PHASE2_API_SHADOW_ENDPOINTS,
   prependRuntimeBaseUrl,
   resolveApiRuntime,
   resolveHttpBaseUrl,
@@ -100,43 +101,85 @@ describe('runtime base url', () => {
   })
 })
 
-describe('phase3 app api shadow base url', () => {
-  test('only enables shadow api base for Phase2 fee/payment/report endpoints', () => {
+describe('phase6 app api shadow base url', () => {
+  const legacyRuntimeEnv = {
+    VITE_API_RUNTIME: 'nitro-standalone',
+    VITE_SERVER_BASEURL: 'http://legacy.example.com',
+    VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+  }
+
+  test('allowlists only Phase6 fee payment report endpoints with legacy test coverage', () => {
+    expect(PHASE2_API_SHADOW_ENDPOINTS).toEqual([
+      '/app/fee.listFee',
+      '/app/fee.queryFeeDetail',
+      '/app/feeApi/listOweFees',
+      '/app/fee.saveRoomCreateFee',
+      '/app/payment.nativeQrcodePayment',
+      '/app/oweFeeCallable.listOweFeeCallable',
+      '/app/oweFeeCallable.writeOweFeeCallable',
+      '/app/reportFeeMonthStatistics.queryReportFeeSummary',
+      '/app/reportFeeMonthStatistics/queryPayFeeDetail',
+      '/app/reportFeeMonthStatistics.queryReportFeeDetailRoom',
+      '/app/dataReport.queryFeeDataReport',
+      '/app/feeConfig.listFeeConfigs',
+    ])
+
     expect(isPhase2ApiShadowEndpoint('/app/fee.listFee')).toBe(true)
-    expect(isPhase2ApiShadowEndpoint('/app/fee.queryFeeDetail')).toBe(true)
-    expect(isPhase2ApiShadowEndpoint('/app/payment.nativeQrcodePayment')).toBe(true)
-    expect(isPhase2ApiShadowEndpoint('/app/reportFeeMonthStatistics.queryReportFeeSummary')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/feeConfig.listFeeConfigs')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/oweFeeCallable.listOweFeeCallable')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.listOwnerRepairs')).toBe(false)
-    expect(isPhase2ApiShadowEndpoint('/app/resourceStore.listResourceStores')).toBe(false)
-    expect(isPhase2ApiShadowEndpoint('/app/owner.queryOwnerCars')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/callComponent/core/list')).toBe(false)
   })
 
-  test('uses shadow api base only when the switch is enabled', () => {
+  test('uses apps/api base for allowlisted app endpoint when shadow is enabled', () => {
     expect(
-      resolveHttpBaseUrlForPath('/app/fee.listFee', {
-        VITE_API_RUNTIME: 'nitro-standalone',
-        VITE_SERVER_BASEURL: 'http://legacy.example.com',
-        VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+      prependRuntimeBaseUrl('/app/fee.listFee', {
+        ...legacyRuntimeEnv,
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
-    ).toBe('http://127.0.0.1:3102')
+    ).toBe('http://127.0.0.1:3102/app/fee.listFee')
+  })
+
+  test('uses apps/api base for newly cut over fee config and owe fee callable endpoints', () => {
+    expect(
+      prependRuntimeBaseUrl('/app/oweFeeCallable.listOweFeeCallable?page=1', {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://127.0.0.1:3102/app/oweFeeCallable.listOweFeeCallable?page=1')
 
     expect(
-      resolveHttpBaseUrlForPath('/app/fee.queryFeeDetail', {
-        VITE_API_RUNTIME: 'nitro-standalone',
-        VITE_SERVER_BASEURL: 'http://legacy.example.com',
-        VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+      prependRuntimeBaseUrl('/app/feeConfig.listFeeConfigs', {
+        ...legacyRuntimeEnv,
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
-    ).toBe('http://127.0.0.1:3102')
+    ).toBe('http://127.0.0.1:3102/app/feeConfig.listFeeConfigs')
+  })
 
+  test('falls back to existing runtime base for non-allowlisted app endpoint when shadow is enabled', () => {
     expect(
-      resolveHttpBaseUrlForPath('/app/ownerRepair.listOwnerRepairs', {
-        VITE_API_RUNTIME: 'nitro-standalone',
-        VITE_SERVER_BASEURL: 'http://legacy.example.com',
-        VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
+      prependRuntimeBaseUrl('/app/unknown.endpoint', {
+        ...legacyRuntimeEnv,
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
-    ).toBe('http://legacy.example.com')
+    ).toBe('http://legacy.example.com/app/unknown.endpoint')
+  })
+
+  test('falls back to existing runtime base when shadow is disabled', () => {
+    expect(
+      prependRuntimeBaseUrl('/app/fee.listFee', {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'false',
+      }),
+    ).toBe('http://legacy.example.com/app/fee.listFee')
+  })
+
+  test('keeps callComponent legacy contract on the existing runtime base', () => {
+    expect(
+      prependRuntimeBaseUrl('/callComponent/core/list', {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://legacy.example.com/callComponent/core/list')
   })
 })

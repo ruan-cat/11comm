@@ -14,6 +14,8 @@ describe("fee legacy endpoints", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/fee.listFee")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/fee.queryFeeDetail")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/payment.nativeQrcodePayment")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/oweFeeCallable.listOweFeeCallable")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/feeConfig.listFeeConfigs")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/reportFeeMonthStatistics.queryReportFeeSummary")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineOrderBmoImpl")).toBeUndefined();
@@ -63,6 +65,20 @@ describe("fee legacy endpoints", () => {
 			totalAmount: expect.any(Number),
 		});
 
+		const callableList = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/oweFeeCallable.listOweFeeCallable",
+			query: { page: 1, row: 5, communityId: "COMM_001" },
+		});
+		expect(callableList.data).toMatchObject({
+			list: expect.any(Array),
+		});
+		expect(callableList.data.list[0]).toMatchObject({
+			feeId: expect.any(String),
+			callableWayName: expect.any(String),
+			remark: expect.any(String),
+		});
+
 		const writeCallable = await dispatchEndpoint(registry, {
 			method: "POST",
 			path: "/app/oweFeeCallable.writeOweFeeCallable",
@@ -91,6 +107,16 @@ describe("fee legacy endpoints", () => {
 			totalRoom: 1,
 			successRoom: 1,
 			errorRoom: 0,
+		});
+
+		const feeConfigs = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/feeConfig.listFeeConfigs",
+			query: { page: 1, row: 5, communityId: "COMM_001" },
+		});
+		expect(feeConfigs.data[0]).toMatchObject({
+			configId: expect.any(String),
+			feeName: expect.any(String),
 		});
 
 		const payment = await dispatchEndpoint(registry, {
