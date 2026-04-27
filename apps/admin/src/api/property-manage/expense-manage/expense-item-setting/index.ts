@@ -5,18 +5,18 @@
 
 import { useListQuery } from "@/composables/use-list-query";
 import { http } from "@/utils/http";
-import { isAdminApiShadowEnabled, resolveAdminShadowApiBaseUrl } from "@/utils/http/api-base-url";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { ExpenseItemSettingListItem, ExpenseItemSettingQueryParams, JsonVO } from "@01s-11comm/type";
 
 /** API 路径前缀 */
 const API_PREFIX = "/api/property-manage/expense-manage/expense-item-setting";
 
 /** API 路径 */
-const LIST_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/list`);
-const DETAIL_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/detail`);
-const CREATE_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/create`);
-const UPDATE_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/update`);
-const DELETE_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/delete`);
+const LIST_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/list`, import.meta.env);
+const DETAIL_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/detail`, import.meta.env);
+const CREATE_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/create`, import.meta.env);
+const UPDATE_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/update`, import.meta.env);
+const DELETE_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/delete`, import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "expenseItemSetting";
@@ -109,14 +109,6 @@ export function deleteExpenseItemSetting(payload: ExpenseItemSettingDeletePayloa
 			validateStatus: () => true,
 		},
 	);
-}
-
-function resolvePhase5ApiUrl(path: string): string {
-	if (!isAdminApiShadowEnabled(import.meta.env)) {
-		return path;
-	}
-
-	return `${resolveAdminShadowApiBaseUrl(import.meta.env)}${path}`;
 }
 
 export default useExpenseItemSettingListQuery;

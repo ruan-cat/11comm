@@ -75,16 +75,16 @@ interface ImportMetaEnv {
 	/** 临时token */
 	VITE_temp_token?: string;
 
-	/** Phase3 统一 apps/api 基址 */
+	/** Phase6 统一 apps/api 基址 */
 	VITE_11COMM_API_BASE_URL?: string;
 
-	/** Phase3 统一 apps/api dev proxy 前缀 */
+	/** Phase6 统一 apps/api dev proxy 前缀 */
 	VITE_11COMM_API_PROXY_PREFIX?: string;
 
-	/** Phase3 是否使用 dev proxy 接入统一 apps/api */
+	/** Phase6 是否使用 dev proxy 接入统一 apps/api */
 	VITE_11COMM_API_USE_PROXY?: `${boolean}`;
 
-	/** Phase3 是否启用局部 shadow API 接入 */
+	/** Phase6 是否启用局部 shadow API 接入 */
 	VITE_11COMM_API_SHADOW_ENABLE?: `${boolean}`;
 }
 

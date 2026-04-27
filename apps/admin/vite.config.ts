@@ -20,9 +20,10 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 	const VITE_PROXY_PREFIX = env.VITE_PROXY_PREFIX;
 	const VITE_BASE_URL = env.VITE_BASE_URL;
 	const VITE_IS_REVERSE_PROXY = env.VITE_IS_REVERSE_PROXY;
-	const VITE_11COMM_API_BASE_URL = env.VITE_11COMM_API_BASE_URL;
-	const VITE_11COMM_API_PROXY_PREFIX = env.VITE_11COMM_API_PROXY_PREFIX || "/api-shadow";
-	const VITE_11COMM_API_USE_PROXY = env.VITE_11COMM_API_USE_PROXY;
+	const VITE_11COMM_API_BASE_URL = process.env.VITE_11COMM_API_BASE_URL || env.VITE_11COMM_API_BASE_URL;
+	const VITE_11COMM_API_PROXY_PREFIX =
+		process.env.VITE_11COMM_API_PROXY_PREFIX || env.VITE_11COMM_API_PROXY_PREFIX || "/api-shadow";
+	const VITE_11COMM_API_USE_PROXY = process.env.VITE_11COMM_API_USE_PROXY || env.VITE_11COMM_API_USE_PROXY;
 
 	const adminApiShadowProxyPlugin = {
 		name: "admin-api-shadow-proxy",

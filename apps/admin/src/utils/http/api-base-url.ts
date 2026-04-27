@@ -27,3 +27,11 @@ export function resolveAdminShadowApiBaseUrl(env: AdminApiBaseEnv): string {
 export function isAdminApiShadowEnabled(env: AdminApiBaseEnv): boolean {
 	return env.VITE_11COMM_API_SHADOW_ENABLE === "true";
 }
+
+export function resolveAdminApiRequestUrl(path: string, env: AdminApiBaseEnv): string {
+	if (!isAdminApiShadowEnabled(env)) {
+		return path;
+	}
+
+	return `${resolveAdminShadowApiBaseUrl(env)}${path}`;
+}

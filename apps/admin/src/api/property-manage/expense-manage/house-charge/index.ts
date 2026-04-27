@@ -5,15 +5,15 @@
 
 import { useListQuery } from "@/composables/use-list-query";
 import { http } from "@/utils/http";
-import { isAdminApiShadowEnabled, resolveAdminShadowApiBaseUrl } from "@/utils/http/api-base-url";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { HouseChargeListItem, HouseChargeQueryParams, JsonVO } from "@01s-11comm/type";
 
 /** API 路径前缀 */
 const API_PREFIX = "/api/property-manage/expense-manage/house-charge";
 
 /** API 路径 */
-const LIST_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/list`);
-const DETAIL_API_URL = resolvePhase5ApiUrl(`${API_PREFIX}/detail`);
+const LIST_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/list`, import.meta.env);
+const DETAIL_API_URL = resolveAdminApiRequestUrl(`${API_PREFIX}/detail`, import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "houseCharge";
@@ -51,14 +51,6 @@ export function useHouseChargeListQuery(initialParams: Partial<HouseChargeQueryP
  */
 export function getHouseChargeDetail(payload: HouseChargeDetailPayload) {
 	return http.post<JsonVO<HouseChargeDetailVO | null>, HouseChargeDetailPayload>(DETAIL_API_URL, { data: payload });
-}
-
-function resolvePhase5ApiUrl(path: string): string {
-	if (!isAdminApiShadowEnabled(import.meta.env)) {
-		return path;
-	}
-
-	return `${resolveAdminShadowApiBaseUrl(import.meta.env)}${path}`;
 }
 
 export default useHouseChargeListQuery;
