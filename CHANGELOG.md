@@ -1,3 +1,28 @@
+## v1.0.1-beta.5
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.4...v1.0.1-beta.5)
+
+### ✨ 新增功能
+
+- **admin:** 接入统一 API shadow 切流 ([eaed1c8f](https://github.com/ruan-cat/11comm/commit/eaed1c8f))
+
+### 📖 Documentation
+
+- **api-migration:** 补充 Phase6 计划与 Phase7 门禁 ([22da5b95](https://github.com/ruan-cat/11comm/commit/22da5b95))
+
+### ✅ Tests
+
+- **api-migration:** 补齐 legacy shadow 契约测试 ([850c97f1](https://github.com/ruan-cat/11comm/commit/850c97f1))
+
+### 🔧 更新配置
+
+- **app:** 修复 H5 lint 提交前校验 ([d3e7af1a](https://github.com/ruan-cat/11comm/commit/d3e7af1a))
+- **app:** 配置统一 API shadow 环境 ([37ff767a](https://github.com/ruan-cat/11comm/commit/37ff767a))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.4
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.3...v1.0.1-beta.4)
